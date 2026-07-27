@@ -147,11 +147,17 @@ namespace KillerShell
                     .Select(x => $"{(x.Mode == SearchTerm.SearchMode.Content ? 1 : 0)}~{Uri.EscapeDataString(x.Pattern)}"));
                 string filters = string.Join(";", t.Filters.Select(f =>
                     $"{f.FieldIndex}~{f.ConditionIndex}~{Uri.EscapeDataString(f.Text)}~{(f.Date.HasValue ? f.Date.Value.Ticks.ToString() : "")}~{Uri.EscapeDataString(f.SizeText)}~{f.UnitIndex}"));
+                // The browse fields are APPENDED, never inserted: the nine original fields keep
+                // their indices, so a blob written by an older build still parses. They are what
+                // makes a folder tab come back as a folder tab - CaptureTab stores a browsed
+                // folder in RootPath as well, but a tab restored from that alone is a search
+                // scoped at the folder, which is how a restored tab came back empty.
                 lines.Add(string.Join("|",
                     Uri.EscapeDataString(t.Title), Uri.EscapeDataString(t.RootPath),
                     Uri.EscapeDataString(t.IncludePatterns), Uri.EscapeDataString(t.ExcludePatterns),
                     t.CaseSensitive ? "1" : "0", t.SortIndex.ToString(), t.SortAsc ? "1" : "0",
-                    terms, filters));
+                    terms, filters,
+                    Uri.EscapeDataString(t.CurrentFolder), t.IsBrowsing ? "1" : "0"));
             }
             Services.ThemeManager.SetSetting("Tabs", string.Join("\n", lines));
         }
@@ -176,6 +182,15 @@ namespace KillerShell
                     t.CaseSensitive   = p[4] == "1";
                     t.SortIndex       = int.TryParse(p[5], out int si) ? si : 0;
                     t.SortAsc         = p[6] == "1";
+
+                    // Browse state, appended after the nine original fields. A blob from a build
+                    // that predates it is nine fields long and simply restores as a search tab,
+                    // which is what it was.
+                    if (p.Length >= 11)
+                    {
+                        t.CurrentFolder = Uri.UnescapeDataString(p[9]);
+                        t.IsBrowsing    = p[10] == "1";
+                    }
 
                     var g = t.Groups[0];
                     g.Terms.Clear();

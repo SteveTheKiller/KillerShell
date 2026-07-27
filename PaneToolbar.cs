@@ -89,6 +89,17 @@ namespace KillerShell
                     pane.OverflowPanel.Children.Insert(0, el);
                     pane.OverflowBtn.Visibility = Visibility.Visible;
                 }
+
+                // One shed button is not worth a chevron. The chevron is as wide as the narrowest
+                // thing it can hide, so shedding exactly one buys almost no room and costs a click
+                // to reach a single icon. Overflow only earns its place at two or more.
+                if (pane.OverflowPanel.Children.Count == 1
+                    && pane.OverflowPanel.Children[0] is FrameworkElement only && only.Name != null)
+                {
+                    pane.OverflowPanel.Children.Remove(only);
+                    InsertBack(pane, only, only.Name);
+                    pane.OverflowBtn.Visibility = Visibility.Collapsed;
+                }
             }
             finally { _reflowing = false; }
         }

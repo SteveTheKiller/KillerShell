@@ -1041,6 +1041,7 @@
                          PreviewMouseLeftButtonUp="ResultsList_PreviewMouseLeftButtonUp"
                          PreviewMouseRightButtonDown="ResultsList_PreviewMouseRightButtonDown"
                          ContextMenuOpening="ResultsList_ContextMenuOpening"
+                         SelectionChanged="ResultsList_SelectionChanged"
                          ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <ListBox.Resources>
                         <!-- One menu for all three views. No per-item Tag bindings: the

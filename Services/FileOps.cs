@@ -54,6 +54,13 @@ namespace KillerShell.Services
         public int Succeeded;
         public int Skipped;
         public bool Canceled;
+
+        /// <summary>
+        /// The shell refused the operation on permissions. Its own Access Denied box is
+        /// suppressed (FOF_NOERRORUI), so the caller owns the answer - see DeleteSelection.
+        /// </summary>
+        public bool AccessDenied;
+
         public readonly List<(string Path, string Error)> Failed = new();
     }
 
@@ -370,7 +377,13 @@ namespace KillerShell.Services
         /// makes it a recycle rather than a delete, and it is also what puts the operation on
         /// Explorer's undo stack, so Ctrl+Z there brings the files back.
         /// </summary>
-        public static FileOpResult Recycle(IEnumerable<string> paths)
+        /// <param name="silent">
+        /// Suppress the shell's progress dialog too. Set by the elevated <c>--recycle</c> helper
+        /// (App.xaml.cs), which has no window and no message pump - asking the shell to draw
+        /// progress in a process with nothing to pump it is how that call hangs or quietly bails.
+        /// The interactive path leaves it false, because a long recycle has to show something.
+        /// </param>
+        public static FileOpResult Recycle(IEnumerable<string> paths, bool silent = false)
         {
             var list = new List<string>(paths);
             var result = new FileOpResult();
@@ -384,7 +397,14 @@ namespace KillerShell.Services
             {
                 wFunc  = FO_DELETE,
                 pFrom  = joined,
-                fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_WANTNUKEWARNING,
+                // FOF_NOERRORUI: the shell no longer draws its own Access Denied box, which is
+                // the one piece of UI in this app that was not ours. The refusal comes back as a
+                // return code instead and the caller answers it in a themed dialog. FOF_SILENT is
+                // deliberately NOT set - the progress dialog is the shell's job here, and killing
+                // it would leave a long recycle with no feedback at all - except in the headless
+                // helper, which passes silent and has nothing to pump a dialog with.
+                fFlags = (ushort)(FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_WANTNUKEWARNING
+                                  | FOF_NOERRORUI | (silent ? FOF_SILENT : 0)),
             };
 
             int rc = SHFileOperation(ref op);
@@ -392,6 +412,7 @@ namespace KillerShell.Services
             if (rc != 0 || op.fAnyOperationsAborted)
             {
                 result.Canceled = op.fAnyOperationsAborted;
+                result.AccessDenied = rc == DE_ACCESSDENIEDSRC || rc == ERROR_ACCESS_DENIED;
                 if (rc != 0) result.Failed.Add((list[0], "SHFileOperation returned " + rc));
             }
             else result.Succeeded = list.Count;
@@ -515,6 +536,13 @@ namespace KillerShell.Services
         private const ushort FOF_ALLOWUNDO      = 0x0040;
         private const ushort FOF_NOCONFIRMATION = 0x0010;
         private const ushort FOF_WANTNUKEWARNING= 0x4000;   // still warn if it CANNOT be recycled
+        private const ushort FOF_NOERRORUI       = 0x0400;   // we draw the failure, not the shell
+        private const ushort FOF_SILENT          = 0x0004;   // no progress dialog either
+
+        // SHFileOperation's own code for a permissions refusal, plus the Win32 one it sometimes
+        // returns instead. Neither is documented as exclusive, so both are treated the same.
+        private const int DE_ACCESSDENIEDSRC  = 0x78;
+        private const int ERROR_ACCESS_DENIED = 5;
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct SHFILEOPSTRUCT

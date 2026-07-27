@@ -73,6 +73,54 @@ namespace KillerShell
             }
         }
 
+        /// <summary>
+        /// Retry a recycle the unelevated process was refused. Same shape as the shell relaunch
+        /// above: a second instance is started elevated, does the one job it was given and exits.
+        /// Nothing happens in THIS window - if the prompt is declined, nothing was deleted.
+        /// </summary>
+        internal void RecycleElevated(System.Collections.Generic.IReadOnlyList<string> paths)
+        {
+            string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+            if (string.IsNullOrEmpty(exe) || paths.Count == 0) return;
+
+            var args = new System.Text.StringBuilder("--recycle");
+            foreach (string p in paths) args.Append(" \"").Append(TrimForArg(p)).Append('"');
+
+            var psi = new ProcessStartInfo(exe)
+            {
+                UseShellExecute = true,          // required for the runas verb
+                Verb = "runas",
+                Arguments = args.ToString(),
+            };
+
+            try
+            {
+                var proc = Process.Start(psi);
+                if (proc == null) return;
+
+                // The helper has no UI, so its exit code is the only thing it can tell us. Left
+                // unwatched, a delete that Controlled Folder Access refused looked exactly like
+                // one that worked: a UAC prompt, then nothing, and the file still there.
+                proc.EnableRaisingEvents = true;
+                proc.Exited += (_, _) =>
+                {
+                    int code = proc.ExitCode;
+                    proc.Dispose();
+                    if (code == 0) return;
+                    Dispatcher.BeginInvoke((Action)(() =>
+                        SetTabStatusKey(_active, "Str_Status_ElevatedDeleteFailed")));
+                };
+            }
+            catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
+            {
+                // ERROR_CANCELLED: declined at the prompt. Same as above, that is an answer.
+            }
+            catch (Exception ex)
+            {
+                SetTabStatusKey(_active, "Str_Status_ElevateFailed", ex.Message);
+            }
+        }
+
         /// <summary>A path safe to quote on a command line: no trailing slash unless it is a root.</summary>
         private static string TrimForArg(string folder)
         {

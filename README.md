@@ -84,7 +84,7 @@ It is one portable exe. No installer, no runtime, no agent, no account. Drop it 
 ## Download
 
 - Prebuilt binary: <https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe>
-- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.0.0/KillerShell-1.0.0-src.zip>
+- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.0.1/KillerShell-1.0.1-src.zip>
 
 ## Build
 

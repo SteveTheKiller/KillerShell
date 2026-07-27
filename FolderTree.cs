@@ -124,24 +124,35 @@ namespace KillerShell
         {
             if (!IsLoaded) return;
 
-            // Anything the user has opened is kept as the SAME node object, so its own subtree
-            // and IsExpanded survive; only genuinely new entries get fresh nodes.
-            var keep = new Dictionary<string, FolderNode>(StringComparer.OrdinalIgnoreCase);
-            foreach (var c in Children)
-                if (c.IsExpanded || c.IsLoaded) keep[c.Name] = c;
-
             string path = Path;
             var fresh = await Task.Run(() => EnumerateChildren(path)).ConfigureAwait(true);
 
-            Children.Clear();
-            foreach (var n in fresh)
+            // Reconciled IN PLACE rather than cleared and refilled. Clear() removes the container
+            // holding the tree's selection, and WPF answers a lost selection by selecting the
+            // PARENT node - so any file op that refreshed the tree raised SelectedItemChanged for
+            // the folder above and navigated the pane up one. Deleting a file in Documents landed
+            // you in your home folder. Removing only what actually left the disk keeps the
+            // selected node and its container exactly where they were.
+            var byName = new Dictionary<string, FolderNode>(StringComparer.OrdinalIgnoreCase);
+            foreach (var n in fresh) byName[n.Name] = n;
+
+            for (int i = Children.Count - 1; i >= 0; i--)
+                if (!byName.ContainsKey(Children[i].Name)) Children.RemoveAt(i);
+
+            var have = new Dictionary<string, FolderNode>(StringComparer.OrdinalIgnoreCase);
+            foreach (var c in Children) have[c.Name] = c;
+
+            for (int i = 0; i < fresh.Count; i++)
             {
-                if (keep.TryGetValue(n.Name, out var existing))
+                if (have.TryGetValue(fresh[i].Name, out var existing))
                 {
-                    Children.Add(existing);
+                    // Anything the user has opened stays the SAME node object, so its own subtree
+                    // and IsExpanded survive; only genuinely new entries get fresh nodes.
+                    int at = Children.IndexOf(existing);
+                    if (at != i) Children.Move(at, i);
                     await existing.RefreshAsync();   // its children are stale for the same reason
                 }
-                else Children.Add(n);
+                else Children.Insert(i, fresh[i]);
             }
         }
 

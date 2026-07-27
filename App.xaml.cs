@@ -72,6 +72,26 @@ namespace KillerShell
                 return;
             }
 
+            // Elevated retry of a recycle this user was refused: KillerShell.exe --recycle "<p>"...
+            // Started by RecycleElevated (Elevation.cs) with the runas verb. It does the one job
+            // and exits WITHOUT a window - the window that asked is still open behind it, and its
+            // folder watcher picks the deletion up on its own.
+            if (e.Args.Length > 1 &&
+                string.Equals(e.Args[0], "--recycle", StringComparison.OrdinalIgnoreCase))
+            {
+                var targets = new System.Collections.Generic.List<string>();
+                for (int i = 1; i < e.Args.Length; i++) targets.Add(e.Args[i]);
+
+                // Silent, because there is no window here to pump the shell's progress dialog.
+                // The exit code is this process's ONLY channel back to the window that started
+                // it - Controlled Folder Access blocks by BINARY, not by token, so an elevated
+                // retry can be refused exactly like the first attempt, and always exiting 0
+                // made that look identical to a successful delete.
+                var recycled = Services.FileOps.Recycle(targets, silent: true);
+                Shutdown(recycled.Succeeded > 0 ? 0 : 1);
+                return;
+            }
+
             // Demo / screenshot mode: KillerShell.exe --demo fills tabs with fabricated
             // results so marketing screenshots never leak real file names. It also shows
             // the About card in its signed state (About.cs) so captures taken from an

@@ -188,10 +188,35 @@ namespace KillerShell
             {
                 // No progress dialog: the shell owns this one and shows its own if it is slow.
                 var r = FileOps.Recycle(paths);
+
+                // The shell's Access Denied box is suppressed now (FOF_NOERRORUI), so a refusal
+                // arrives as a flag and is answered in our own dialog instead. Skipping the
+                // refresh is deliberate: nothing has been deleted yet, and if the elevated retry
+                // goes ahead the watcher picks the change up when that process finishes.
+                if (r.AccessDenied && !IsElevated) { OfferElevatedRecycle(paths); return; }
+
                 ReportResult(r);
             }
 
             RefreshAfterFileOp();
+        }
+
+        /// <summary>
+        /// The shell refused the recycle on permissions. Windows used to draw its own Access
+        /// Denied box here; this is the same offer in KillerShell's dialog. An elevated retry is
+        /// genuinely the only thing that can still do it, so the offer is worth making rather
+        /// than reporting a failure and stopping.
+        /// </summary>
+        private void OfferElevatedRecycle(List<string> paths)
+        {
+            var dlg = new ConfirmDialog(Loc("Str_Dlg_DeleteDeniedMsg"),
+                                        string.Join(Environment.NewLine, paths.Take(8)),
+                                        Loc("Str_Btn_RetryAdmin")) { Owner = this };
+            dlg.ShowDialog();
+
+            if (!dlg.Confirmed) { SetTabStatusKey(_active, "Str_Status_DeleteDenied"); return; }
+
+            RecycleElevated(paths);   // Elevation.cs
         }
 
         // ── New folder / rename ──────────────────────────────────
@@ -250,13 +275,19 @@ namespace KillerShell
         }
 
         /// <summary>
-        /// The watcher (BrowseWatcher.cs) picks most of this up on its own, but it only follows
-        /// the ACTIVE tab's folder - a copy into a folder shown in the tree, or a rename that
-        /// happened faster than the debounce, would otherwise sit stale. Cheap enough to just do.
+        /// Bring the tree back in step after a file operation, and the listing too when nothing
+        /// else is watching it. The tree has no watcher of its own, so it is always refreshed.
         /// </summary>
         private void RefreshAfterFileOp()
         {
-            if (_active != null && _active.IsBrowsing && !string.IsNullOrEmpty(_active.CurrentFolder))
+            // Only when nothing else will do it. The watcher patches the active folder entry by
+            // entry (BrowseWatcher.cs), which is the one way a delete can leave the scroll
+            // position where it was; re-listing here as well cleared and refilled the collection
+            // and threw the pane back to the top of the folder on every single file operation.
+            // A null watcher means there is nothing to patch the list - This PC, demo mode, a
+            // share that refused a watch - and there the re-list is still the only refresh.
+            if (_watcher == null && _active != null && _active.IsBrowsing
+                && !string.IsNullOrEmpty(_active.CurrentFolder))
                 _ = NavigateTo(_active.CurrentFolder!, record: false);   // Browse.cs
 
             _ = RefreshTreeAsync();   // FolderTree.cs

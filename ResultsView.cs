@@ -427,6 +427,33 @@ namespace KillerShell
 
     public partial class MainWindow
     {
+        /// <summary>
+        /// The selected item's full path, in the footer.
+        /// </summary>
+        /// <remarks>
+        /// Every view trims a long name to fit its row or its tile, and the part it trims is
+        /// usually the part that tells two files apart - two exports of the same report differ
+        /// in the tail, not the head. The footer is the one place in the window sized for an
+        /// unbounded string, and ElideFooterStatus cuts it from the FRONT, so what survives a
+        /// narrow window is the file name rather than the drive letter.
+        ///
+        /// A selection dropping to nothing deliberately leaves the line alone. Clearing a
+        /// selection is not news, and blanking here would eat the "Done - 3 item(s)" a file
+        /// operation just put there.
+        /// </remarks>
+        internal void ResultsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is not ListBox list) return;
+
+            int count = list.SelectedItems.Count;
+            if (count == 0) return;
+
+            if (count == 1 && list.SelectedItem is Models.SearchResult one)
+                SetFooterStatus(one.FilePath);
+            else
+                SetFooterStatus(string.Format(Loc("Str_Status_Selected"), count.ToString("N0")));
+        }
+
         private int _viewMode;   // 0 list, 1 icons, 2 details
 
         // The card template stays inline on the ListBox in MainWindow.xaml rather than becoming a

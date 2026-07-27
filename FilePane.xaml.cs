@@ -168,6 +168,7 @@ namespace KillerShell
         private void ResultsList_PreviewMouseRightButtonDown(object s, MouseButtonEventArgs e) => Owner.ResultsList_PreviewMouseRightButtonDown(s, e);
         private void ResultsList_PreviewMouseWheel(object s, MouseWheelEventArgs e)            => Owner.ResultsList_PreviewMouseWheel(s, e);
         private void ResultsList_ContextMenuOpening(object s, ContextMenuEventArgs e)          => Owner.ResultsList_ContextMenuOpening(s, e);
+        private void ResultsList_SelectionChanged(object s, SelectionChangedEventArgs e)       => Owner.ResultsList_SelectionChanged(s, e);
 
         // ── Results context menu ─────────────────────────────────
         private void MenuOpen_Click(object s, RoutedEventArgs e)           => Owner.MenuOpen_Click(s, e);

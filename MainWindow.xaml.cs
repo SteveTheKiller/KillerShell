@@ -123,12 +123,30 @@ namespace KillerShell
                 // to Loaded rather than done in the ctor because navigating reveals the folder
                 // in the tree, and the tree's roots are not built until InitFolderTree above has
                 // run. Restored tabs and piped tabs are left exactly as they were.
-                if (!DemoMode && !_active.IsBrowsing
-                    && _active.PipeFiles == null
-                    && string.IsNullOrEmpty(_active.RootPath)
-                    && StartupPaths.Count == 0)
+                if (!DemoMode && _active.PipeFiles == null && StartupPaths.Count == 0)
                 {
-                    _ = NavigateTo(HomeFolder);   // Browse.cs
+                    // A restored folder tab carries the folder it was closed in but not its
+                    // listing (Session.cs), so it is re-listed here. Without this it came back as
+                    // an empty search form with a path sitting in the location box, because
+                    // CaptureTab also stores a browsed folder as the search root and a non-empty
+                    // RootPath used to be enough to skip this block entirely.
+                    string back = _active.CurrentFolder;
+                    bool resume = _active.IsBrowsing && back.Length > 0
+                                  && (IsThisPc(back) || Directory.Exists(back));
+
+                    // A session written before the browse fields existed has no CurrentFolder at
+                    // all, only the RootPath that CaptureTab left behind - so the test for "is
+                    // there anything to show here" is whether the tab has a pattern to run, not
+                    // whether it has a root. A tab with nothing to search must never be left
+                    // sitting on an empty pane: browse its scope if that is a real folder, and
+                    // fall back to Home if it is not.
+                    bool hasSearch = _active.Groups.Any(
+                        g => g.Terms.Any(t => !string.IsNullOrWhiteSpace(t.Pattern)));
+
+                    if (resume) _ = NavigateTo(back, record: false);                   // Browse.cs
+                    else if (!hasSearch)
+                        _ = NavigateTo(Directory.Exists(_active.RootPath)              // Browse.cs
+                                       ? _active.RootPath : HomeFolder);
                 }
 
                 // A path from Explorer wins over Home: it is the thing the user actually

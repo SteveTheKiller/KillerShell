@@ -246,9 +246,9 @@ Write-Host ($sumsLines -join "`n")
 
 # --- 7. Landing page + README release info ---
 # killershell.net is a MANUAL Cloudflare Pages drop, so nothing here deploys. The hero block
-# (version, released, sha256), the verEgg footer on every page, and the README's GPL3
+# (version, released, size, sha256), the verEgg footer on every page, and the README's GPL3
 # source-zip link all carry release facts the script already knows, so they are rewritten and
-# committed BEFORE the tag. Note the hero has no size row (unlike KillerScan) and the hash is
+# committed BEFORE the tag. The hero carries a size row like KillerScan's, but the hash is
 # stored UPPERCASE here, so the patterns below match this site, not that one.
 # ReadAllText/WriteAllText keep the files BOM-less UTF-8 (PS 5.1 Set-Content -Encoding UTF8 adds a BOM).
 Step "Updating shell-landing and README release info"
@@ -265,6 +265,7 @@ $indexRaw  = [System.IO.File]::ReadAllText($indexPath)
 $indexNew  = $indexRaw
 $indexNew  = $indexNew -replace '(<span class="k">version</span>&nbsp;<span class="v">)KillerShell v[0-9]+\.[0-9]+\.[0-9]+', ('${1}' + "KillerShell v$Version")
 $indexNew  = $indexNew -replace '(<span class="k">released</span>&nbsp;<span class="v">)[0-9]{4}-[0-9]{2}-[0-9]{2}', ('${1}' + $releaseDate)
+$indexNew  = $indexNew -replace '(<span class="k">size</span>&nbsp;<span class="v">)[^<]*', ('${1}' + $exeMB + ' exe')
 $indexNew  = $indexNew -replace '(<span class="v hash">)[0-9A-Fa-f]{32}<br>[0-9A-Fa-f]{32}', ('${1}' + $hashUpper.Substring(0, 32) + '<br>' + $hashUpper.Substring(32, 32))
 if ($indexNew -eq $indexRaw) {
     Write-Warning 'index.html hero block did not change - check the release-info markup still matches the patterns in this script.'
@@ -281,6 +282,7 @@ if ($DryRun) {
     Write-Host "DryRun: would write these release facts and commit them:" -ForegroundColor Yellow
     Write-Host "  version  : KillerShell v$Version"
     Write-Host "  released : $releaseDate"
+    Write-Host "  size     : $exeMB exe"
     Write-Host "  sha256   : $hashUpper"
     Write-Host "  verEgg   : v$Version on index, about, technical, howto"
     Write-Host "  README   : source zip link -> $Tag$(if ($readmeNew -eq $readmeRaw) { ' (already current)' })"

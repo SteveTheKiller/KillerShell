@@ -430,6 +430,11 @@
     <sys:String x:Key="Str_Fo_RenameTitle">New name</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">New folder</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Delete {0} item(s) permanently? This cannot be undone - they do not go to the Recycle Bin.</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows refused to delete this. If Controlled Folder Access is on, retrying as administrator will NOT help - it blocks by app, not by permission level, and KillerShell has to be added to its allowed apps list in Windows Security. Retry as administrator anyway?</sys:String>
+    <sys:String x:Key="Str_Btn_RetryAdmin">Retry as admin</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Delete refused - permission denied</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0} items selected</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Elevated delete was refused too - check Controlled Folder Access in Windows Security</sys:String>
 
     <!-- File-operation shortcuts and their outcomes -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">cut / copy / paste files</sys:String>
