@@ -4,7 +4,7 @@
 
 Free shell for power users. One window holds a file browser, a PowerShell or CMD terminal and a text editor, on one tab strip and one set of keys, so finding a file, reading it, changing it and running something against it never means switching tools. Search is built into the browser rather than bolted on: any folder by filename wildcard or by file content, streamed live with no index to build and nothing to wait for.
 
-It is one portable exe. No installer, no runtime, no agent, no account. Drop it on a machine that is not yours, do the work, delete it.
+It is one portable exe. No runtime, no agent, no account. Drop it on a machine that is not yours, do the work, delete it.
 #### Open-source, GPLv3, run portable or install for just you or every user on the PC.
 ##### Part of [KillerTools.net](https://KillerTools.net).
 
