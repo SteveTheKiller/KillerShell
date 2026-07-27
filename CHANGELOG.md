@@ -4,6 +4,11 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - Unreleased
+
+### Fixed
+- **The update prompt is a KillerShell dialog now, not a Windows one.** Clicking Update in the About card raised a stock Win32 message box, grey chrome and all, at the exact moment the About card was on screen showing off the theme behind it. It now uses the same themed confirm dialog as the install and quit prompts, and its text is localized rather than built in code. It was the last stock message box left in the app; KillerScan made the same swap in 1.5.4.
+
 ## [1.0.2] - 2026-07-27
 
 1.0.2 is a small bug fix release - the results scrollbar takes clicks again, Ctrl+N opens a genuinely new window instead of your last session, F7 with nothing selected opens a blank document, and the Update button's label no longer disappears when you hover it.

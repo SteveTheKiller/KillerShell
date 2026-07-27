@@ -130,10 +130,14 @@ namespace KillerShell
             var tag = _updateTag;
             if (string.IsNullOrEmpty(tag)) return;
 
-            var confirm = MessageBox.Show(this,
-                $"Download and install {AppDisplayName} {tag}?\n\nThe app will close and reopen automatically.",
-                AppDisplayName, MessageBoxButton.OKCancel, MessageBoxImage.Question);
-            if (confirm != MessageBoxResult.OK) return;
+            // The themed dialog, not MessageBox. This was the last stock Windows box left in the
+            // app, and it appeared at the one moment the About card is on screen - so the theme
+            // was on display right behind a grey Win32 prompt. KillerScan made the same swap.
+            var dlg = new ConfirmDialog(string.Format(Loc("Str_Dlg_UpdateMsg"), tag),
+                                        Loc("Str_Dlg_UpdateBullets"),
+                                        Loc("Str_Btn_Update")) { Owner = this };
+            dlg.ShowDialog();
+            if (!dlg.Confirmed) return;
 
             AboutUpdateButton.IsEnabled = false;
             AboutUpdateText.Text = "Downloading...";
