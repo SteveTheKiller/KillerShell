@@ -4,6 +4,16 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-07-27
+
+1.0.2 is a small bug fix release - the results scrollbar takes clicks again, Ctrl+N opens a genuinely new window instead of your last session, F7 with nothing selected opens a blank document, and the Update button's label no longer disappears when you hover it.
+
+### Fixed
+- **The results scrollbar can be clicked and dragged again.** The press handler treated anything that was not a row as empty space, started the rubber-band selection and captured the mouse - so a click on the scrollbar was swallowed before the scrollbar ever saw it, and dragging the thumb did nothing at all. A press that lands inside the scrollbar now returns before the marquee branch. The scrollbar is not empty space, it is the one piece of chrome inside that control that owns its own clicks.
+- **Ctrl+N opens a new window, not a copy of your last session.** A second window runs as its own process, and that process was reading the same saved tab list the first one did, so a new window came up carrying every tab from last time. It now launches with a `--new-window` flag that skips the session restore, giving one fresh tab pointed at the folder you were in, or Home if there was not one. Both windows still write the same saved session on exit, so whichever you close last is the one that is remembered.
+- **F7 with nothing selected opens a blank document instead of doing nothing.** The key only ever acted on a selection, and an empty one set a status line and returned, which from the outside was indistinguishable from a dead key. It now opens an untitled document, the same one the rail's pencil gives you. With a file selected it still opens that file, and the Edit row on the context menu is unchanged, since it is always seeded by whatever is under the pointer.
+- **The Update button's label is readable on hover.** Hovering fills the button with the accent, but the label was painted in that same accent and had its own explicit `Foreground`, so it vanished into the fill. The caption now inherits its color from the button's border via `TextElement.Foreground` and the hover trigger swaps it to `OnPrimaryBrush`, which every theme already defines as white. A trigger cannot reach the button's Content by name - it sits outside the template's namescope - which is why the color is carried down by inheritance rather than set on the TextBlock.
+
 ## [1.0.1] - 2026-07-27
 
 1.0.1 is a bug fix release - a delete no longer walks the pane up a folder, a restored tab comes back as the folder it was instead of an empty search form, a refused delete asks in KillerShell's own dialog rather than Windows', a file operation stops throwing the listing back to the top of the folder, and the toolbar stops hiding a lone button behind an overflow chevron. The selected file's full path also lands in the footer, where a trimmed name cannot hide it.

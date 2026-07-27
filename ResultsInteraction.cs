@@ -34,6 +34,12 @@ namespace KillerShell
             _dragArmed = false;
             _dragSeed  = null;
 
+            // The scrollbar is not a row, so it used to fall through to the marquee branch
+            // below - which captures the mouse and leaves the scrollbar with nothing to drag.
+            // Clicking or dragging it did nothing at all. It is not "empty space" either; it is
+            // the one piece of chrome inside this control that owns its own clicks.
+            if (InScrollBar(e.OriginalSource as DependencyObject)) return;
+
             var item = ItemUnder(e.OriginalSource as DependencyObject);
             if (item != null)
             {
@@ -129,6 +135,19 @@ namespace KillerShell
             if (presenter == null) return null;
             if (VisualTreeHelper.GetChildrenCount(presenter) == 0) return null;
             return VisualTreeHelper.GetChild(presenter, 0) as Panel;
+        }
+
+        /// <summary>True when the press landed on the list's scrollbar rather than its content.</summary>
+        private static bool InScrollBar(DependencyObject? d)
+        {
+            while (d != null)
+            {
+                if (d is System.Windows.Controls.Primitives.ScrollBar) return true;
+                d = d is Visual or System.Windows.Media.Media3D.Visual3D
+                    ? VisualTreeHelper.GetParent(d)
+                    : LogicalTreeHelper.GetParent(d);
+            }
+            return false;
         }
 
         // OriginalSource can be a non-visual (a Run inside a TextBlock, say), and asking

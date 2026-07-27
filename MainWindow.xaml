@@ -1045,15 +1045,27 @@
                             <Button x:Name="AboutUpdateButton" Visibility="Collapsed" Margin="0,14,0,0" HorizontalAlignment="Left" Cursor="Hand" Click="AboutUpdateButton_Click">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="ub" Background="Transparent" BorderBrush="{DynamicResource PrimaryBrush}" BorderThickness="1" CornerRadius="4" Padding="12,6">
+                                        <!-- The caption INHERITS its color from this border rather than
+                                             setting its own: hovering fills the border with the accent,
+                                             and accent-on-accent left the label invisible. A trigger
+                                             cannot reach the Content by TargetName - it is outside the
+                                             template's namescope - so the color is carried down by
+                                             TextElement.Foreground, which the ContentPresenter passes on. -->
+                                        <Border x:Name="ub" Background="Transparent" BorderBrush="{DynamicResource PrimaryBrush}" BorderThickness="1" CornerRadius="4" Padding="12,6"
+                                                TextElement.Foreground="{DynamicResource PrimaryBrush}">
                                             <ContentPresenter/>
                                         </Border>
                                         <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ub" Property="Background" Value="{DynamicResource PrimaryBrush}"/></Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ub" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                                                <Setter TargetName="ub" Property="TextElement.Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                            </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
-                                <TextBlock x:Name="AboutUpdateText" Foreground="{DynamicResource PrimaryBrush}" FontSize="12"/>
+                                <!-- No Foreground here on purpose - an explicit one beats the inherited
+                                     value and the hover swap above would never reach it. -->
+                                <TextBlock x:Name="AboutUpdateText" FontSize="12"/>
                             </Button>
                         </StackPanel>
                     </Grid>

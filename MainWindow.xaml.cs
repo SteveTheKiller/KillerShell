@@ -57,7 +57,14 @@ namespace KillerShell
             catch { /* icon missing - wordmark alone is fine */ }
 
             Pane.TabStrip.ItemsSource = _tabs;
-            if (DemoMode || !TryRestoreTabs()) ActivateTab(CreateTab());   // Session.cs / Tabs.cs
+
+            // A window opened with Ctrl+N is a NEW window, not a resumed session. It runs as its
+            // own process (NewWindow.cs), so without this it read the same saved tab list the
+            // first window did and came up carrying every tab from last time.
+            bool freshWindow = Array.Exists(Environment.GetCommandLineArgs(),
+                a => string.Equals(a, "--new-window", StringComparison.OrdinalIgnoreCase));
+
+            if (DemoMode || freshWindow || !TryRestoreTabs()) ActivateTab(CreateTab());   // Session.cs / Tabs.cs
 
             // Restore the saved app-wide accessibility size (AppScale.cs). After the tabs so
             // _active exists, though the restore path never writes a status line.
@@ -975,7 +982,14 @@ namespace KillerShell
                 // that is the house style, and F7 was the one still free - F4, the file
                 // manager's traditional edit key, has been the address bar here since before
                 // there was an editor to give it to.
-                FromKeyboard(MenuEdit_Click);          // ResultsMenu.cs
+                //
+                // With NOTHING selected the key opens a blank document instead of reporting that
+                // it needs a file. MenuEdit_Click only ever acts on a selection, so an empty one
+                // set a status line and returned, which from the outside looked like a dead key.
+                // The menu row keeps that behavior - it is always seeded by what is under the
+                // pointer, so it has a file by definition.
+                if (Pane.ResultsList.SelectedItems.Count == 0) NewDocument();   // EditorTabs.cs
+                else FromKeyboard(MenuEdit_Click);                              // ResultsMenu.cs
                 e.Handled = true;
             }
             else if (ctrl && !shift && e.Key == System.Windows.Input.Key.D)
