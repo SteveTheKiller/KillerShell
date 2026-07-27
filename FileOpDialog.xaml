@@ -1,0 +1,188 @@
+<!-- Progress and conflict UI for file operations (Services/FileOps.cs).
+
+     One window, two faces: a progress view while work is running, and a conflict card when a
+     target already exists. Same window rather than two, because a conflict interrupts a running
+     operation - a second window would leave the progress dialog sitting behind it saying nothing
+     while the user answers.
+
+     Chrome is ConfirmDialog's, down to the shadow halo and the grain layer, so this reads as the
+     same family of dialog rather than a new one. -->
+<Window x:Class="KillerShell.FileOpDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="KillerShell"
+        Width="480" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        ShowInTaskbar="False">
+
+    <Border x:Name="RootBorder" Opacity="0"
+            Background="{DynamicResource BackgroundBrush}"
+            BorderBrush="{DynamicResource CardBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="6"
+            Margin="10">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="3" Direction="270" Opacity="0.6"/>
+        </Border.Effect>
+        <Grid>
+            <Border IsHitTestVisible="False" CornerRadius="6"
+                    Opacity="{DynamicResource GrainOpacity}"
+                    Background="{DynamicResource GrainTileBrush}"/>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="36"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Title bar -->
+                <Border Grid.Row="0" Background="Transparent"
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                    <Grid Margin="14,0">
+                        <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" Margin="1,2,0,0"
+                                        Opacity="{DynamicResource IconShadowOpacity}">
+                                <StackPanel.Effect><BlurEffect Radius="3"/></StackPanel.Effect>
+                                <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="15"><Run Text="Killer" Foreground="#D8000000"/><Run Text="Shell" FontSize="19.5" FontWeight="Bold" Foreground="#D8000000"/></TextBlock>
+                            </StackPanel>
+                            <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="15"><Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="19.5" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}"/></TextBlock>
+                        </Grid>
+                        <Button Content="&#x2715;" Click="Cancel_Click" HorizontalAlignment="Right"
+                                Width="28" FontSize="11" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="bg" Background="Transparent" CornerRadius="3">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                                                        <Setter TargetName="bg" Property="Background" Value="#33C42B1C"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- ══════════ BODY ══════════ -->
+                <Grid Grid.Row="1" Margin="24,14,24,10">
+
+                    <!-- ── PROGRESS ── -->
+                    <StackPanel x:Name="ProgressView">
+                        <TextBlock x:Name="OpLabel" Foreground="{DynamicResource TextBrush}"
+                                   FontSize="13" Margin="0,0,0,10"/>
+
+                        <!-- Path first, because "which file is it stuck on" is the question this
+                             dialog exists to answer. Head-trimmed: the tail of a path identifies
+                             the file, the head is the folder you already know you are in. -->
+                        <TextBlock x:Name="CurrentFile" Foreground="{DynamicResource MutedTextBrush}"
+                                   FontFamily="{DynamicResource MonoFont}" FontSize="11"
+                                   TextTrimming="WordEllipsis" Margin="0,0,0,10"/>
+
+                        <!-- Two star columns rather than a ProgressBar: the stock control drags
+                             its own chrome in and would not follow the theme. A ratio across two
+                             columns needs no measuring code and resizes for free. -->
+                        <Border Background="{DynamicResource PaneBrush}"
+                                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1"
+                                CornerRadius="3" Height="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition x:Name="BarFill" Width="0*"/>
+                                    <ColumnDefinition x:Name="BarRest" Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Background="{DynamicResource PrimaryBrush}" CornerRadius="2"/>
+                            </Grid>
+                        </Border>
+
+                        <TextBlock x:Name="CountLabel" Foreground="{DynamicResource DimTextBrush}"
+                                   FontFamily="{DynamicResource MonoFont}" FontSize="11"
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <!-- ── CONFLICT ── -->
+                    <StackPanel x:Name="ConflictView" Visibility="Collapsed">
+                        <TextBlock x:Name="ConflictTitle" Foreground="{DynamicResource TextBrush}"
+                                   FontSize="13" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+                        <!-- Both sides, so "replace" is an informed choice rather than a guess.
+                             Newer / larger is not highlighted on purpose: which one you want
+                             depends on what you are doing, and a hint here would read as advice. -->
+                        <Border Background="{DynamicResource PaneBrush}"
+                                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="12,9" Margin="0,0,0,8">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Str_Fo_Existing}"
+                                           Foreground="{DynamicResource DimTextBrush}"
+                                           FontFamily="Consolas" FontSize="10" Margin="0,0,0,4"/>
+                                <TextBlock x:Name="TargetInfo" Foreground="{DynamicResource MutedTextBrush}"
+                                           FontFamily="{DynamicResource MonoFont}" FontSize="11"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="{DynamicResource PaneBrush}"
+                                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="12,9">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Str_Fo_Incoming}"
+                                           Foreground="{DynamicResource DimTextBrush}"
+                                           FontFamily="Consolas" FontSize="10" Margin="0,0,0,4"/>
+                                <TextBlock x:Name="SourceInfo" Foreground="{DynamicResource MutedTextBrush}"
+                                           FontFamily="{DynamicResource MonoFont}" FontSize="11"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <CheckBox x:Name="ApplyAll" Content="{DynamicResource Str_Fo_ApplyAll}"
+                                  FontSize="12" Margin="0,12,0,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- ══════════ BUTTONS ══════════ -->
+                <Grid Grid.Row="2" Margin="24,4,24,18">
+                    <!-- Cancel alone while work runs; the four-way choice while a conflict is up.
+                         Same cell, swapped - the window must not resize between the two. -->
+                    <StackPanel x:Name="ProgressButtons" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="{DynamicResource Str_Btn_Cancel}" Click="Cancel_Click"
+                                Style="{StaticResource SurfaceButton}" MinWidth="86"/>
+                    </StackPanel>
+
+                    <StackPanel x:Name="ConflictButtons" Orientation="Horizontal"
+                                HorizontalAlignment="Right" Visibility="Collapsed">
+                        <Button Content="{DynamicResource Str_Btn_Cancel}" Click="Cancel_Click"
+                                Style="{StaticResource SurfaceButton}" MinWidth="76" Margin="0,0,8,0"/>
+                        <Button Content="{DynamicResource Str_Btn_Skip}" Click="Skip_Click"
+                                Style="{StaticResource SurfaceButton}" MinWidth="76" Margin="0,0,8,0"/>
+                        <Button Content="{DynamicResource Str_Btn_KeepBoth}" Click="KeepBoth_Click"
+                                Style="{StaticResource SurfaceButton}" MinWidth="86" Margin="0,0,8,0"/>
+                        <!-- Replace is the destructive one and sits last, where the eye lands
+                             after reading the safer options. -->
+                        <Button Content="{DynamicResource Str_Btn_Replace}" Click="Replace_Click"
+                                Style="{StaticResource DangerButton}" MinWidth="86"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

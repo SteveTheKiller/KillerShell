@@ -1,0 +1,439 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - English (en-US) strings. x:Key values are looked up at
+         runtime; never change them. Other locales layer over this file; any
+         key they omit falls back here. {0}/{1} placeholders are filled by the
+         app - keep them.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">语言</sys:String>
+    <sys:String x:Key="Str_TT_Theme">主题</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">在标志上滚动滚轮可调整应用大小</sys:String>
+    <sys:String x:Key="Str_St_AppSize">应用大小 {0}%</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">主题</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">强调色</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">范围：</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(未选择文件夹 - 点击以选择)</sys:String>
+    <sys:String x:Key="Str_TT_Scope">点击以更改搜索文件夹</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">选择根搜索文件夹</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">筛选</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">包含</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">排除</sys:String>
+    <sys:String x:Key="Str_TT_Include">用分号分隔的模式，例如 *.txt;*.log</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">用分号分隔的要跳过的路径或模式</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">区分大小写</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ 添加筛选</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">高级</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">扩展名</sys:String>
+    <sys:String x:Key="Str_Filter_Date">修改日期</sys:String>
+    <sys:String x:Key="Str_Filter_Size">大小</sys:String>
+    <sys:String x:Key="Str_Cond_Is">是</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">不是</sys:String>
+    <sys:String x:Key="Str_Cond_Before">早于</sys:String>
+    <sys:String x:Key="Str_Cond_After">晚于</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">大于</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">小于</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">模式帮助</sys:String>
+    <sys:String x:Key="Str_Help_Title">模式</sys:String>
+    <sys:String x:Key="Str_Help_Star">所有以 .log 结尾的文件</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">以 report 开头的名称</sys:String>
+    <sys:String x:Key="Str_Help_Middle">包含 2024 的名称</sys:String>
+    <sys:String x:Key="Str_Help_Q">? 代表恰好一个字符</sys:String>
+    <sys:String x:Key="Str_Help_List">用 ; 分隔多个模式</sys:String>
+    <sys:String x:Key="Str_Help_Plain">纯文本也可以 - 匹配包含它的名称</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">排除还会按名称跳过整个文件夹</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">新搜索</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">新建搜索标签页</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">关闭标签页</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">取消</sys:String>
+    <sys:String x:Key="Str_Btn_Select">选择</sys:String>
+    <sys:String x:Key="Str_QA_Home">主文件夹</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">桌面</sys:String>
+    <sys:String x:Key="Str_QA_Documents">文档</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">下载</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">图片</sys:String>
+    <sys:String x:Key="Str_TT_Up">上一级文件夹</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">（无子文件夹 - 点击选择以使用此文件夹）</sys:String>
+    <sys:String x:Key="Str_Col_Name">名称</sys:String>
+    <sys:String x:Key="Str_Col_Folder">位置</sys:String>
+    <sys:String x:Key="Str_Sort_Found">默认顺序</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">筛选这些结果（Ctrl+F）</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">在这些结果中搜索</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">第二个窗格  |  右键切换左右 / 上下</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">更多工具</sys:String>
+    <sys:String x:Key="Str_TT_Sort">排序方式</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">此电脑</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">在这些结果中搜索</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">来自 {1} 的 {0} 个结果  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">还没有可供搜索的结果。</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">无法启动管理员 shell：{0}</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">便携版</sys:String>
+    <sys:String x:Key="Str_Btn_Install">安装 KillerShell...</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">安装</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">将 KillerShell 安装到你的用户配置文件？</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">- 开始菜单快捷方式&#x0A;- 显示在添加/删除程序中</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">桌面快捷方式</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">为所有用户安装（需要管理员权限）</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell 已为本电脑上的所有用户安装，因此将更新该副本。Windows 将请求授权。</sys:String>
+    <sys:String x:Key="Str_St_InstallCancelled">安装已取消</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">退出 KillerShell？</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">记住我打开的标签页</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">记住我的选择</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">退出</sys:String>
+    <sys:String x:Key="Str_Col_Size">大小</sys:String>
+    <sys:String x:Key="Str_Col_Modified">修改时间</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">{0} 个文件夹，{1} 个文件</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">列表视图</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">图标视图</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">详细信息视图</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">搜索词</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ 添加搜索词</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ 添加组</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">清除</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">搜索</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">停止</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">结果</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">结果  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">导出结果</sys:String>
+    <sys:String x:Key="Str_TT_Result">点击展开  |  双击在 Explorer 中显示  |  右键查看更多</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">全部展开</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">全部折叠</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">打开文件</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">打开方式...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">在 Explorer 中显示</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">最小化</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">最大化</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">还原</sys:String>
+    <sys:String x:Key="Str_Menu_Close">关闭</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">就绪</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">根路径无效或缺失。</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">请至少添加一个搜索词或筛选条件。</sys:String>
+    <sys:String x:Key="Str_Status_Done">用时 {0} 秒  -  匹配到 {1} 个文件。</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">已停止。</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">已清除。</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">暂无可导出的内容。</sys:String>
+    <sys:String x:Key="Str_Status_Exported">已导出：{0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">导出失败：{0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">已扫描 {0} 个文件</sys:String>
+    <sys:String x:Key="Str_Count_Matches">{0} 处匹配</sys:String>
+
+    <!-- About overlay -->
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">面向高级用户的自由 shell。文件浏览器、终端和文本编辑器共享一个窗口、一条标签栏和一套快捷键。无需安装。</sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> 出品的实用工具。</sys:String>
+    <sys:String x:Key="Str_About_Version">版本</sys:String>
+    <sys:String x:Key="Str_About_Publisher">发布者</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">指纹</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  由一名现场技术员打造</sys:String>
+
+    <!-- HTML report -->
+    <sys:String x:Key="Str_Rpt_Meta">生成于 {0} &#183; {1} 个文件 &#183; {2} 个匹配</sys:String>
+    <sys:String x:Key="Str_Rpt_MetaList">生成于 {0} &#183; {1} 个项目</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">{0} 的列表。</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">在 {0} 中搜索{1}。</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">文件名包含 {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">文件内容包含 {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">所有内容</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">或</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">命中方式</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... 还有 {0} 条</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">由 {0} 生成</sys:String>
+
+    <!-- Term/group chips + tooltips -->
+    <sys:String x:Key="Str_Mode_Name">名称</sys:String>
+    <sys:String x:Key="Str_Mode_Content">内容</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">文件名 / 通配符（如 *.log）</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">内容搜索（文件内的文本）</sys:String>
+    <sys:String x:Key="Str_Group_Any">任一</sys:String>
+    <sys:String x:Key="Str_Group_All">全部</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">任一：本组中任何一个搜索词命中即匹配</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">全部：文件必须匹配本组中的每个搜索词</sys:String>
+    <sys:String x:Key="Str_Join_And">且</sys:String>
+    <sys:String x:Key="Str_Join_Or">或</sys:String>
+    <sys:String x:Key="Str_Chk_CloseTabs">关闭我打开的标签页</sys:String>
+
+    <!-- Help card: shortcuts -->
+    <sys:String x:Key="Str_Help_Shortcuts">快捷键</sys:String>
+    <sys:String x:Key="Str_Ks_Run">运行搜索</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">关闭弹窗、停止搜索，然后询问是否退出</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">筛选结果</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">新建搜索标签页</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">关闭当前标签页</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">下一个标签页（Shift：上一个）</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">跳到标签页 1-9（9 = 最后）</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">添加搜索词</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">添加过滤器</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">选择文件夹</sys:String>
+    <sys:String x:Key="Str_Ks_Help">显示此卡片</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">切换区分大小写</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">清除结果</sys:String>
+    <sys:String x:Key="Str_Ks_Address">编辑位置 - 输入路径后按 Enter</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">在这些结果中搜索，新建标签页</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">显示或隐藏搜索面板</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">展开全部结果</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">折叠全部结果</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">在此文件夹中打开 PowerShell 标签页</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">在此文件夹中打开 CMD 标签页</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">以管理员身份打开 PowerShell</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">以管理员身份打开 CMD</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">将结果导出为 HTML</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">将结果导出为 CSV</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">快捷键在整个窗口内有效。展开的下拉列表、日期框和结果筛选框会自行处理 Enter。</sys:String>
+
+    <!-- Font dialog, reached from the row under the theme flyout -->
+    <sys:String x:Key="Str_Fonts_Row">字体...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">字体</sys:String>
+    <sys:String x:Key="Str_Fonts_App">应用</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">终端</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">默认</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">在列表上滚动滚轮即可浏览字体，每次更改立即生效。</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0} 没有可读字母 - 保留上一个字体</sys:String>
+
+    <!-- Associations card (Associations.cs, AssociationsCard.cs) -->
+    <sys:String x:Key="Str_Assoc_Row">文件关联...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">文件关联</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">将 KillerShell 注册到 Windows，让它出现在“打开方式”中、Settings 的默认应用里，以及任意文件夹和驱动器的右键菜单中。</sys:String>
+    <sys:String x:Key="Str_Assoc_What">文本类型</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat、.cmd 和 .reg 改为获得“用 KillerShell 编辑”一项。双击它们仍会照常运行或合并，因为悄悄改掉这一点，会让人白白搭上一个下午。</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">为这台电脑上的所有用户注册</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">以管理员身份运行 KillerShell 才能为所有用户注册</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">注册</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">移除注册</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">打开 Windows 默认应用...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">尚未注册。Windows 目前不会为任何文件类型提供 KillerShell。</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">已为您的账户注册。Windows 不会替您切换默认应用，请在 Settings 中按文件类型自行选择 KillerShell。</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">已为这台电脑上的所有用户注册。Windows 不会替您切换默认应用，请在 Settings 中按文件类型自行选择 KillerShell。</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">这是便携版。关联会指向此 .exe 当前所在的位置，移动或删除它之后关联就会失效。</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">已注册到 Windows</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">注册已移除</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows 不接受该更改</sys:String>
+
+    <!-- Title-bar caption on an elevated window, beside the wordmark -->
+    <sys:String x:Key="Str_Title_Elevated">- 已提升权限</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">显示或隐藏窗格工具栏</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">打开新窗口</sys:String>
+
+    <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+    <sys:String x:Key="Str_TT_Recents">最近访问的文件夹</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">暂无最近的文件夹</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">清除列表</sys:String>
+
+    <!-- Results density, on the rail (Density.cs) -->
+    <sys:String x:Key="Str_TT_Density">结果密度 - 单击切换，滚轮调节</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">密度：宽敞</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">密度：宽松</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">密度：紧凑</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">密度：紧密</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">密度：最小</sys:String>
+
+    <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+    <sys:String x:Key="Str_Term_Copy">复制</sys:String>
+    <sys:String x:Key="Str_Term_Paste">粘贴</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">全选</sys:String>
+    <sys:String x:Key="Str_Term_Clear">清屏</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">新建终端</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">打开此文件夹</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">字体...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">编辑提示符...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">重置提示符</sys:String>
+    <sys:String x:Key="Str_Term_Close">关闭终端</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">要恢复随附的提示符脚本吗？您对此文件所做的修改将会丢失。</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">重置</sys:String>
+    <!-- Rail button: left click opens PowerShell, right click picks -->
+    <sys:String x:Key="Str_TT_Terminal">打开终端  (F8)  -  右键选择</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">以管理员身份运行 PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">命令提示符</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">以管理员身份运行命令提示符</sys:String>
+
+    <!-- Browsing, drop targets and the results context menu (2.0) -->
+    <sys:String x:Key="Str_Scope_Dropped">拖入的文件</sys:String>
+    <sys:String x:Key="Str_Tab_Dropped">拖入 ({0})</sys:String>
+    <sys:String x:Key="Str_TT_SearchPanel">显示或隐藏搜索面板  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">显示或隐藏文件夹树</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">折叠侧边面板</sys:String>
+    <sys:String x:Key="Str_TT_Bookmarks">已保存的位置  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">保存此文件夹</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">显示隐藏和系统项目</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">文件夹置于文件之上</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">添加到收藏夹</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">从收藏夹移除</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">显示或隐藏已保存的位置</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">转到已保存的位置 1-10（0 = 第十个）</sys:String>
+    <sys:String x:Key="Str_TT_Back">后退</sys:String>
+    <sys:String x:Key="Str_TT_Forward">前进</sys:String>
+    <sys:String x:Key="Str_Status_Listing">正在打开 {0}...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">{0} 个项目</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">无法打开 {0}</sys:String>
+    <sys:String x:Key="Str_Menu_OpenAdmin">以管理员身份打开</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">在此文件夹中搜索</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">在此打开终端</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">在此以管理员身份打开终端</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">排除此文件夹</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">复制完整路径</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">复制文件名</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">复制文件夹路径</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">复制匹配的行</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">复制 SHA-256</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">属性</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">更多 Windows 选项...</sys:String>
+    <sys:String x:Key="Str_Status_Copied">已复制 {0} 项到剪贴板</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">已复制 {0} 个匹配行</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">已复制 {0} 个文件 - 可在资源管理器中粘贴</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">没有可复制的匹配行(文件名匹配没有行)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">无法访问剪贴板 - 其他应用正在占用</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">正在计算 {0} 的哈希...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">已复制 {0} 的 SHA-256</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">无法读取文件以计算哈希</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">已拒绝提权</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">该命令只能用于文件，不能用于文件夹</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows 未能打开它</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">正在排除 {0} - 重新搜索后生效</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} 已被排除</sys:String>
+
+    <!-- 快捷键卡片：分类标题、列表 / 键盘切换和提示 -->
+    <sys:String x:Key="Str_Ks_About">显示关于卡片</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">搜索</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">导航</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">标签页</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">视图</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">文件</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">编辑</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">帮助</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">列表</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">键盘</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">按住 Ctrl、Shift 或 Alt 可预览该层</sys:String>
+
+    <!-- 资源管理器惯用快捷键 -->
+    <sys:String x:Key="Str_Ks_BackForward">后退 / 前进</sys:String>
+    <sys:String x:Key="Str_Ks_Back">后退</sys:String>
+    <sys:String x:Key="Str_Ks_Up">向上一级文件夹</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">刷新 - 重新列出文件夹，或重新运行搜索</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">选择全部结果</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">将光标置于搜索框</sys:String>
+
+    <!-- 文件操作：进度、冲突及其按钮 -->
+    <sys:String x:Key="Str_Fo_Copying">正在复制...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">正在移动...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">正在删除...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{0} / {1}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} 已存在。要保留哪一个？</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">已存在</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">即将复制</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">对本批其余项目执行相同操作</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">替换</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">跳过</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">两者都保留</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">重命名</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">删除</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">新名称</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">新建文件夹</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">要永久删除 {0} 个项目吗？此操作无法撤销，它们不会进入回收站。</sys:String>
+
+    <!-- 文件操作快捷键及其结果 -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">剪切 / 复制 / 粘贴文件</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">重命名</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">移到回收站</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">永久删除</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">新建文件夹</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">请先打开一个文件夹 - 搜索标签页没有可放置的位置</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">无法将文件夹放入其自身</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">完成 - {0} 个项目</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">在 {0} 个项目后取消</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} 个完成，{1} 个失败</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">操作未能完成</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">无法重命名 - {0}</sys:String>
+
+    <!-- 文件操作右键菜单 -->
+    <sys:String x:Key="Str_Menu_Cut">剪切</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">复制</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">粘贴</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">重命名</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">删除  (Shift：永久删除)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">新建文件夹</sys:String>
+
+
+    <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
+    <sys:String x:Key="Str_Fonts_Editor">编辑器文本</sys:String>
+
+    <sys:String x:Key="Str_Prof_Edit">编辑 PowerShell 配置文件</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">正在询问 {0} 配置文件的位置...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} 未响应 - 找不到其配置文件。</sys:String>
+    <sys:String x:Key="Str_Prof_None">未找到 PowerShell</sys:String>
+
+    <sys:String x:Key="Str_Menu_Edit">编辑</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} 太大，无法编辑（{1} MB）。</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">保存  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">撤销  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">重做  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">查找  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">转到行  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">自动换行</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">编辑器设置</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">行</sys:String>
+
+    <sys:String x:Key="Str_Ed_OptLineNumbers">行号</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">突出显示当前行</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">显示空格和制表符</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">插入空格而不是制表符</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">自动换行</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">缩进</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">字体和字号...</sys:String>
+
+    <sys:String x:Key="Str_Ed_Undo">撤销</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">重做</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">剪切</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">复制</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">粘贴</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">全选</sys:String>
+    <sys:String x:Key="Str_Ed_Find">查找...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">转到行...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">保存</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">设置...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">关闭文件</sys:String>
+
+    <sys:String x:Key="Str_TT_TermCwd">在标签页中打开此文件夹</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">新建终端  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">以管理员身份新建终端  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">在标签页中打开此文件夹</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">清屏</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">字体...</sys:String>
+
+    <sys:String x:Key="Str_Ed_WrapOn">自动换行已开启。</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">自动换行已关闭 - 滚动以查看较长的行。</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">已保存 {0}。</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">无法保存 {0}：{1}</sys:String>
+    <sys:String x:Key="Str_TT_TabOverflow">所有标签页</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">拖动调整列宽  -  双击还原</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">新建文档</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">未命名</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">另存为</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">所有文件</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">无法打开 {0}：{1}</sys:String>
+    <sys:String x:Key="Str_Dlg_DiscardMsg">不保存就关闭此文件？您的更改将会丢失。</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">放弃</sys:String>
+
+</ResourceDictionary>

@@ -1,0 +1,93 @@
+# Vendored third-party source. This file RAISES the bar for this tree, it does not lower it.
+#
+# The IDE analyzers report most findings at suggestion severity, which Visual Studio draws as a
+# blue squiggle and MSBuild never prints. Elevating them to warning here is what makes them
+# visible to a build, and so fixable and countable. KillerShell's own code sits outside this
+# folder and keeps exactly the severities it has today.
+#
+# The formatting block below is NOT a suppression. IDE0055 has no opinion of its own - it
+# compares against whatever convention is declared, and with nothing declared it assumes the
+# .NET default of four spaces and flags all 111,945 lines of a tree that is consistently
+# tab-indented. What follows states the convention this code is actually written in, so the rule
+# measures it against its own standard and still fires on anything that breaks it. Keeping
+# upstream's formatting is deliberate: it is what lets a fresh extract of the next release be
+# diffed against this copy to see only the changes we made (AvalonEdit/VENDORED.md lists them).
+
+[*.cs]
+
+# Every analyzer finding is a warning in here, so nothing hides at suggestion severity.
+dotnet_analyzer_diagnostic.severity = warning
+
+# ---- the convention this tree is written in (SharpDevelop house style) ----
+indent_style = tab
+indent_size = 4
+tab_width = 4
+# LF, which is what the upstream tree ships. Declaring crlf here (the Windows default, and what
+# KillerShell's own files use) accounted for 29,540 formatting findings on its own.
+end_of_line = lf
+insert_final_newline = true
+
+# Allman for types, methods and local functions; same-line for everything else, including
+# properties, accessors and control blocks. That is what the source does, throughout.
+csharp_new_line_before_open_brace = types, methods, local_functions
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+
+# ---- documented exceptions ----
+# Every one of these was audited site by site before being turned down, and each is recorded in
+# AvalonEdit/VENDORED.md with the same reasoning. None of them is "too many to fix".
+
+# IDE0058, expression value never used. All 240 sites read: 109 are StringBuilder.Append, the
+# rest are ICollection.Remove returning bool, WPF CommandBindings.Add returning an index, and
+# P/Invoke return codes. No defect among them. The fix is to spray "_ =" across 240 idiomatic
+# calls, which makes the code worse to read for nothing. Microsoft ships this rule silent by
+# default; it only speaks here because this file turns everything up to warning.
+dotnet_diagnostic.IDE0058.severity = none
+
+# IDE0046 and IDE0045, collapse if/else into a conditional expression. 609 sites in a text
+# rendering engine, where being able to put a breakpoint on a branch is worth more than the
+# line saved. Preference, not defect - the same call as IDE0055 above.
+dotnet_diagnostic.IDE0046.severity = none
+dotnet_diagnostic.IDE0045.severity = none
+
+# IDE0290, use a primary constructor. 141 constructors of a WPF library rewritten into a C# 12
+# shape for no correctness gain, on a project targeting net48.
+dotnet_diagnostic.IDE0290.severity = none
+
+# IDE1006, naming. All 30 are private: event handlers following the sender_Event convention
+# (textArea_MouseMove and friends) plus two private event fields. Renaming them is safe, since
+# nothing here is public, but it is 30 more divergences from upstream in the merge list to
+# rename a convention that is consistent across the tree and instantly readable. Say the word
+# and this becomes a rename pass instead of an exception.
+dotnet_diagnostic.IDE1006.severity = none
+
+# IDE0010, populate switch. 14 partial switches that deliberately handle a few keys or enum
+# members and let everything else fall through. Filling them in would add arms nobody wrote.
+dotnet_diagnostic.IDE0010.severity = none
+
+# IDE0060, unused parameter. 6 sites, four of them public API, so the parameter cannot be
+# removed without changing the surface of the vendored library. Worth knowing about rather than
+# fixing: TextView.InvalidateLayer takes a KnownLayer and ignores it, which means it invalidates
+# every layer regardless of what you pass. That is upstream behavior and not ours to change.
+dotnet_diagnostic.IDE0060.severity = none
+
+# IDE0051, unused private member. Two sites, both false in context. HighlightingManager's
+# LoadHighlighting is called from the #else branch and so exists only for release builds, which
+# is why upstream hung a CA1811 SuppressMessage on it; deleting it would break the release
+# configuration while Debug stayed green. ImeNativeWrapper's GCS_COMPSTR names a real IMM32
+# flag and is worth keeping beside its siblings as documentation.
+dotnet_diagnostic.IDE0051.severity = none
+
+# IDE0072, populate switch expression. Both sites already have a "_ =>" arm; the rule wants
+# every UnicodeCategory and every enum member spelled out beside it.
+dotnet_diagnostic.IDE0072.severity = none
+
+# IDE0130 wants the namespace to match the folder. The folder is third_party\AvalonEdit and the
+# namespace is ICSharpCode.AvalonEdit; satisfying it would mean renaming the namespace of every
+# file, breaking every using in the tree and changing the API of the code we vendored. This is
+# the one rule here that cannot be satisfied rather than merely being unfixed. Also in
+# AvalonEdit/VENDORED.md.
+dotnet_diagnostic.IDE0130.severity = none

@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+    <!-- Dark family - TEAL accent overlay. -->
+    <SolidColorBrush x:Key="PrimaryBrush"        Color="#1FB8A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="PrimaryHoverBrush"   Color="#1FB8A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="PrimaryPressedBrush" Color="#1FB8A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="HeaderLineBrush"     Color="#1FB8A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="OutlineBtnBrush"     Color="#1FB8A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ScrollThumbHoverBrush" Color="#1FB8A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RowSelectedBrush"    Color="#0D2B2A" po:Freeze="True"/>
+    <!-- Selection fill + its text. Split from RowSelectedBrush so the light family can
+         use the darker accent fill with white text (KillerPDF Light.xaml) without
+         dragging the button pressed-states dark with it. -->
+    <SolidColorBrush x:Key="SelectionBg"        Color="#0D2B2A" po:Freeze="True"/>
+    <SolidColorBrush x:Key="SelectionFg"        Color="#1FB8A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="OutlinePressedBrush" Color="#0D2B2A" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ScrollThumbBrush"    Color="#881FB8A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TabEdgeBrush"        Color="#661FB8A8" po:Freeze="True"/>
+</ResourceDictionary>

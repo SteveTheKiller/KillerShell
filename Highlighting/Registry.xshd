@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!--
+  Windows registry export files. Not shipped by AvalonEdit, so this is ours.
+
+  The one thing this has to get right is telling a DELETION apart from an edit
+  at a glance: a key line beginning with a minus removes the whole key, and a
+  value set to a bare minus removes that value. Both are one character away from
+  the line that merely sets something, and both get the danger color - reading a
+  .reg somebody sent you is exactly the moment you want to notice.
+-->
+<SyntaxDefinition name="Registry" extensions=".reg" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment"       foreground="#57A64A" />
+  <Color name="Header"        foreground="#C586C0" fontWeight="bold" />
+  <Color name="Key"           foreground="#4EC9B0" fontWeight="bold" />
+  <Color name="KeyDelete"     foreground="#E05252" fontWeight="bold" />
+  <Color name="ValueName"     foreground="#9CDCFE" />
+  <Color name="ValueDelete"   foreground="#E05252" />
+  <Color name="DataType"      foreground="#4A9FE0" />
+  <Color name="String"        foreground="#D69D63" />
+  <Color name="NumberLiteral" foreground="#B5CEA8" />
+
+  <RuleSet ignoreCase="true">
+    <Span color="Comment">
+      <Begin>;</Begin>
+    </Span>
+
+    <!-- The version line. A .reg without one does nothing at all when double
+         clicked, which is worth being able to see is present. -->
+    <Rule color="Header">
+      ^\s*(Windows Registry Editor Version [\d.]+|REGEDIT4)\s*$
+    </Rule>
+
+    <!-- Key removal first: it also matches the ordinary key pattern, and the
+         earlier rule wins. -->
+    <Rule color="KeyDelete">
+      ^\s*\[-.*\]\s*$
+    </Rule>
+    <Rule color="Key">
+      ^\s*\[.*\]\s*$
+    </Rule>
+
+    <!-- A value set to a bare minus is a deletion. Same reason as above: it has
+         to be matched before the plain value-name rule. -->
+    <Rule color="ValueDelete">
+      ^\s*(".*?"|@)\s*=\s*-\s*$
+    </Rule>
+    <Rule color="ValueName">
+      ^\s*(".*?"|@)\s*(?==)
+    </Rule>
+
+    <Keywords color="DataType">
+      <Word>dword</Word>
+      <Word>qword</Word>
+      <Word>hex</Word>
+    </Keywords>
+
+    <!-- The typed binary forms: hex(2) expandable string, hex(7) multi string,
+         hex(b) qword, and the rest. -->
+    <Rule color="DataType">
+      \bhex\([0-9a-fA-F]\)
+    </Rule>
+
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+      <RuleSet>
+        <Span begin="\\" end="." />
+      </RuleSet>
+    </Span>
+
+    <Rule color="NumberLiteral">
+      \b[0-9a-fA-F]{2}\b|\b\d+\b
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

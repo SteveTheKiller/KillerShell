@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+  CSV and TSV. Not shipped by AvalonEdit, so this is ours.
+
+  Deliberately the smallest definition here. A .xshd colors by PATTERN, and a
+  CSV's meaning is entirely positional - "column 3" is not something a regex can
+  see - so anything ambitious would be guessing. What it can do honestly is make
+  the separators visible and keep quoted fields whole, which between them answer
+  the two questions you open a CSV in a text editor to ask: where does this row
+  actually split, and is that comma inside a quoted field or between two.
+-->
+<SyntaxDefinition name="Csv" extensions=".csv;.tsv" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="String"        foreground="#D69D63" />
+  <Color name="Separator"     foreground="#E0AC42" fontWeight="bold" />
+  <Color name="NumberLiteral" foreground="#B5CEA8" />
+  <Color name="Comment"       foreground="#57A64A" />
+
+  <RuleSet ignoreCase="true">
+    <!-- Some exports lead with a # banner line. Harmless to honor and it stops
+         the header being read as data. -->
+    <Span color="Comment">
+      <Begin>^\#</Begin>
+    </Span>
+
+    <!-- Quoted first, so a separator inside a field is part of the field and
+         does not light up. The doubled quote is CSV's own escape. -->
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+      <RuleSet>
+        <Span begin='""' end="" />
+      </RuleSet>
+    </Span>
+
+    <Rule color="Separator">
+      [,;\t]
+    </Rule>
+
+    <Rule color="NumberLiteral">
+      (?&lt;![\w.\-])-?\d+(\.\d+)?([eE][+-]?\d+)?(?![\w.])
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

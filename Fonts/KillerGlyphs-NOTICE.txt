@@ -1,0 +1,51 @@
+KillerGlyphs.ttf
+================
+
+What it is
+----------
+A 26-glyph subset of Terminess Nerd Font, bundled with KillerShell so that the
+shipped PowerShell prompt renders correctly on a machine that has no Nerd Font
+installed. It is a FALLBACK face, not a text face: the terminal draws a cell
+from it only when the font the user actually chose has no glyph for that
+codepoint (Terminal/TerminalControl.cs).
+
+It carries only the codepoints a stock Windows monospaced font is missing:
+
+    U+00B1                  plus-minus, the git dirty marker
+    U+2191, U+2193          arrows, git ahead / behind
+    U+276F                  the prompt chevron
+    U+E0A0 - U+E0A3         powerline: branch, line number, and friends
+    U+E0B0 - U+E0BF         powerline: the separators
+
+2,928 bytes. Everything else - all ~11,700 Nerd Font icons, the embedded
+bitmap strikes, the glyph-name table - was dropped.
+
+Attribution
+-----------
+Read out of the source font's own name table:
+
+    Copyright (C) 2020 Dimitar Toshkov Zhekov
+    Copyright (C) 2023 Tilman Blumenbach
+    Licensed under the SIL Open Font License, Version 1.1
+
+The subset declares the same license in its own name table (name ID 13) and
+points at https://openfontlicense.org/ (name ID 14).
+
+Renamed to "KillerGlyphs" deliberately. The OFL requires that a Modified
+Version not be distributed under the original name, and this is very much a
+modified version - twenty-six glyphs out of eleven thousand.
+
+License text
+------------
+KillerGlyphs-OFL.txt, beside this file. The body was lifted from the name table
+of SIL's own Gentium Basic fonts, which are installed on this machine - eight
+files carrying it byte for byte identically, which is what makes it trustworthy
+as the canonical wording rather than one font's variant of it.
+
+Rebuilding the subset
+---------------------
+    pip install fonttools
+    python subset.py          # see the CHANGELOG entry for 2.0.0
+
+Source: TerminessNerdFont-Regular.ttf
+SHA-256: 01CFD0C6AB8C968DED0F8BED6085419F0C49BD0F2B8E4E6A8F6C6377B8B6703D

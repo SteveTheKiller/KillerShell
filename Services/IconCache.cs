@@ -1,0 +1,302 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
+namespace KillerShell.Services
+{
+    // Real Windows shell icons, cached per extension and per size, so a 100k-result search costs
+    // a handful of shell calls rather than 100k. SHGFI_USEFILEATTRIBUTES resolves the icon from
+    // the extension string alone with no disk access, except for the few types that carry a
+    // per-file icon (.exe, .ico, .lnk).
+    //
+    // Two sources, because SHGetFileInfo can only ever hand back 16px or 32px:
+    //   - 32px and below come straight from SHGetFileInfo, the cheap path the list view uses.
+    //   - 48px and above go through the system image list (SHGetImageList), which is the only
+    //     way to reach the 48px extra-large and 256px jumbo images the icon view needs.
+    //
+    // The 32px path stays the default so nothing about the list view changes: it draws at 18
+    // logical px and downsampling 32 -> 18 is free, while at the 250% app zoom ceiling it is
+    // still only 45px from a 32px source. Note SHGFI_LARGEICON is 0 - large is the default and
+    // SMALLICON is the opt-in flag - so that OR is documentation rather than arithmetic.
+    public static class IconCache
+    {
+        private static readonly Dictionary<string, ImageSource?> Cache = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>The 32px icon. Kept as the default so existing callers are unaffected.</summary>
+        public static ImageSource? For(string filePath) => For(filePath, 32);
+
+        /// <summary>The icon at the smallest shell size that covers <paramref name="px"/>.</summary>
+        /// <param name="isDirectory">
+        /// Folders have no extension to key on, and the extension-only fast path would answer a
+        /// folder with the generic unknown-file icon. Setting this resolves by real path instead,
+        /// which costs a disk touch per folder but is also what picks up a custom folder icon.
+        /// </param>
+        public static ImageSource? For(string filePath, int px, bool isDirectory = false)
+        {
+            string ext;
+            try { ext = Path.GetExtension(filePath); } catch { ext = string.Empty; }
+            if (string.IsNullOrEmpty(ext)) ext = ".";
+
+            // Per-file: types whose icon is baked into the file itself rather than shared by
+            // every file of that type. Folders can carry a custom icon too (desktop.ini), so a
+            // browsed directory is resolved by path rather than as one shared folder glyph.
+            bool perFile = isDirectory
+                        || ext.Equals(".exe", StringComparison.OrdinalIgnoreCase)
+                        || ext.Equals(".ico", StringComparison.OrdinalIgnoreCase)
+                        || ext.Equals(".lnk", StringComparison.OrdinalIgnoreCase);
+
+            int shil = ShilFor(px);
+            string key = (perFile ? filePath : ext) + "|" + shil + (isDirectory ? "|d" : string.Empty);
+
+            lock (Cache)
+                if (Cache.TryGetValue(key, out var hit)) return hit;
+
+            string target = perFile ? filePath : "x" + ext;
+            bool real = perFile;
+
+            // The per-file query asks the shell about a REAL path, and a demo path is not on disk
+            // (DemoFileSystem.cs). The shell answers a question about a path that does not exist
+            // with nothing at all, so every fabricated folder in the tree and every fabricated
+            // folder, .exe, .ico and .lnk row would draw blank - and the blank would be cached.
+            // Substituting something that resolves to the same GENERIC icon fixes the row without
+            // pretending the file is there: a directory that certainly exists for a folder, and
+            // the extension-only synthetic name for the rest. The cache key is still the fake
+            // path, so this costs one shell call per fake path rather than one per row.
+            if (perFile && MainWindow.DemoMode && !OnDisk(filePath, isDirectory))
+            {
+                if (isDirectory) target = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+                else { target = "x" + ext; real = false; }
+            }
+
+            var img = shil == SHIL_LARGE ? LoadSmallPath(target, real)
+                                         : LoadFromImageList(target, real, shil);
+
+            // The image list can legitimately come up empty on a locked-down or unusual shell.
+            // Falling back to the 32px path is better than a blank tile.
+            if (img == null && shil != SHIL_LARGE) img = LoadSmallPath(target, real);
+
+            lock (Cache) Cache[key] = img;
+            return img;
+        }
+
+        // Only ever asked in demo mode, so the ordinary path pays nothing for it.
+        private static bool OnDisk(string filePath, bool isDirectory)
+        {
+            try { return isDirectory ? Directory.Exists(filePath) : File.Exists(filePath); }
+            catch { return false; }
+        }
+
+        private static int ShilFor(int px)
+            => px <= 32 ? SHIL_LARGE
+             : px <= 48 ? SHIL_EXTRALARGE
+                        : SHIL_JUMBO;
+
+        // ── 32px path (SHGetFileInfo) ────────────────────────────
+        /// <summary>
+        /// The "This PC" computer icon. It has no path for the shell to resolve, so it comes
+        /// from imageres.dll, which is where Explorer's own copy lives - index 104 is the
+        /// computer. A machine with a replaced imageres just gets no icon rather than a wrong
+        /// one, which is why the failure returns null instead of substituting a folder.
+        /// </summary>
+        public static ImageSource? ForComputer(int px)
+        {
+            string key = ":computer:|" + px;
+            lock (Cache)
+                if (Cache.TryGetValue(key, out var hit)) return hit;
+
+            ImageSource? img = null;
+            IntPtr large = IntPtr.Zero, small = IntPtr.Zero;
+            try
+            {
+                string res = System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.System), "imageres.dll");
+
+                if (ExtractIconEx(res, 104, out large, out small, 1) > 0)
+                {
+                    IntPtr use = px <= 16 && small != IntPtr.Zero ? small : large;
+                    if (use != IntPtr.Zero) img = FromHIcon(use, crop: false);
+                }
+            }
+            catch { /* an unusual or locked-down shell: no icon rather than a wrong one */ }
+            finally
+            {
+                if (large != IntPtr.Zero) DestroyIcon(large);
+                if (small != IntPtr.Zero) DestroyIcon(small);
+            }
+
+            lock (Cache) Cache[key] = img;
+            return img;
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern int ExtractIconEx(string file, int index,
+                                                out IntPtr large, out IntPtr small, int count);
+
+        private static ImageSource? LoadSmallPath(string pathOrName, bool real)
+        {
+            var info = new SHFILEINFO();
+            uint flags = SHGFI_ICON | SHGFI_LARGEICON;
+            if (!real) flags |= SHGFI_USEFILEATTRIBUTES;
+
+            IntPtr r = SHGetFileInfo(pathOrName, FILE_ATTRIBUTE_NORMAL, ref info,
+                                     (uint)Marshal.SizeOf<SHFILEINFO>(), flags);
+            if (r == IntPtr.Zero || info.hIcon == IntPtr.Zero) return null;
+
+            try { return FromHIcon(info.hIcon, crop: false); }
+            finally { DestroyIcon(info.hIcon); }
+        }
+
+        // ── 48px / 256px path (system image list) ────────────────
+        // SHGFI_SYSICONINDEX gives the file type's index into the system image list; the image
+        // list for the requested size then hands back that entry as an icon we own.
+        private static ImageSource? LoadFromImageList(string pathOrName, bool real, int shil)
+        {
+            var info = new SHFILEINFO();
+            uint flags = SHGFI_SYSICONINDEX;
+            if (!real) flags |= SHGFI_USEFILEATTRIBUTES;
+
+            IntPtr r = SHGetFileInfo(pathOrName, FILE_ATTRIBUTE_NORMAL, ref info,
+                                     (uint)Marshal.SizeOf<SHFILEINFO>(), flags);
+            if (r == IntPtr.Zero) return null;
+
+            IImageList? list = null;
+            IntPtr hIcon = IntPtr.Zero;
+            try
+            {
+                var iid = IID_IImageList;
+                if (SHGetImageList(shil, ref iid, out list) != 0 || list == null) return null;
+                if (list.GetIcon(info.iIcon, ILD_TRANSPARENT, ref hIcon) != 0 || hIcon == IntPtr.Zero)
+                    return null;
+
+                // Jumbo only: see TrimCanvas for why.
+                return FromHIcon(hIcon, crop: shil == SHIL_JUMBO);
+            }
+            catch { return null; }
+            finally
+            {
+                if (hIcon != IntPtr.Zero) DestroyIcon(hIcon);
+                if (list != null) Marshal.ReleaseComObject(list);
+            }
+        }
+
+        private static ImageSource? FromHIcon(IntPtr hIcon, bool crop)
+        {
+            try
+            {
+                var src = Imaging.CreateBitmapSourceFromHIcon(hIcon, Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+                if (crop) src = TrimCanvas(src);
+                src.Freeze();
+                return src;
+            }
+            catch { return null; }
+        }
+
+        // Windows does not have a 256px icon for most file types. Ask the jumbo list for one and
+        // it hands back the 32px or 48px image sitting in the middle of a 256px transparent
+        // canvas, which drawn into a tile becomes a postage stamp floating in space. So measure
+        // the opaque bounds and crop to them.
+        //
+        // Only when the content is genuinely small: an icon that fills most of the canvas is a
+        // real 256px asset, and its transparent margin is deliberate design that should be kept.
+        // Below 60% is well clear of that and unambiguously the centered-small-icon case.
+        private static BitmapSource TrimCanvas(BitmapSource src)
+        {
+            int w = src.PixelWidth, h = src.PixelHeight;
+            if (w <= 64 || h <= 64) return src;
+
+            // CopyPixels below reads 4 bytes per pixel with alpha last, so make sure that is what
+            // the bitmap actually is before trusting the arithmetic.
+            var bgra = src;
+            if (bgra.Format != PixelFormats.Bgra32)
+            {
+                try { bgra = new FormatConvertedBitmap(src, PixelFormats.Bgra32, null, 0); }
+                catch { return src; }
+            }
+
+            int stride = w * 4;
+            var px = new byte[stride * h];
+            try { bgra.CopyPixels(px, stride, 0); }
+            catch { return src; }
+
+            int minX = w, minY = h, maxX = -1, maxY = -1;
+            for (int y = 0; y < h; y++)
+            {
+                int row = y * stride;
+                for (int x = 0; x < w; x++)
+                {
+                    if (px[row + (x * 4) + 3] <= 8) continue;   // effectively transparent
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
+            }
+
+            if (maxX < 0 || maxY < 0) return src;   // fully transparent, nothing to trim
+
+            int cw = maxX - minX + 1, ch = maxY - minY + 1;
+            if (cw > w * 0.6 || ch > h * 0.6) return src;   // a real large icon; leave it alone
+
+            try { return new CroppedBitmap(src, new Int32Rect(minX, minY, cw, ch)); }
+            catch { return src; }
+        }
+
+        // ── Interop ──────────────────────────────────────────────
+        private const uint SHGFI_ICON              = 0x100;
+        private const uint SHGFI_LARGEICON         = 0x0;    // the default; see the class note
+        private const uint SHGFI_USEFILEATTRIBUTES = 0x10;
+        private const uint SHGFI_SYSICONINDEX      = 0x4000;
+        private const uint FILE_ATTRIBUTE_NORMAL   = 0x80;
+
+        private const int SHIL_LARGE      = 0;   // 32px
+        private const int SHIL_EXTRALARGE = 2;   // 48px
+        private const int SHIL_JUMBO      = 4;   // 256px
+
+        private const int ILD_TRANSPARENT = 1;
+
+        private static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct SHFILEINFO
+        {
+            public IntPtr hIcon;
+            public int    iIcon;
+            public uint   dwAttributes;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string szDisplayName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]  public string szTypeName;
+        }
+
+        // Only GetIcon is ever called, but every method above it in the vtable has to be declared
+        // for the slots to line up. Draw's parameter is a struct we never build, so it is left as
+        // an IntPtr rather than dragging IMAGELISTDRAWPARAMS in.
+        [ComImport, Guid("46EB5926-582E-4017-9FDF-E8998DAA0950"),
+         InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface IImageList
+        {
+            [PreserveSig] int Add(IntPtr hbmImage, IntPtr hbmMask, ref int pi);
+            [PreserveSig] int ReplaceIcon(int i, IntPtr hicon, ref int pi);
+            [PreserveSig] int SetOverlayImage(int iImage, int iOverlay);
+            [PreserveSig] int Replace(int i, IntPtr hbmImage, IntPtr hbmMask);
+            [PreserveSig] int AddMasked(IntPtr hbmImage, int crMask, ref int pi);
+            [PreserveSig] int Draw(IntPtr pimldp);
+            [PreserveSig] int Remove(int i);
+            [PreserveSig] int GetIcon(int i, int flags, ref IntPtr picon);
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes,
+            ref SHFILEINFO psfi, uint cbFileInfo, uint uFlags);
+
+        [DllImport("shell32.dll")]
+        private static extern int SHGetImageList(int iImageList, ref Guid riid, out IImageList? ppv);
+
+        [DllImport("user32.dll")]
+        private static extern bool DestroyIcon(IntPtr hIcon);
+    }
+}

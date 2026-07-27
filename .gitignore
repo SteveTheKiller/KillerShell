@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Publish
+publish/
+*.pubxml.user
+
+# OS junk
+Thumbs.db
+.DS_Store
+
+# Working art assets (source .xcf, exports). Published web assets live in shell-landing/brand/.
+# Leading slash anchors this to the repo root: unanchored, "brand/" matches at ANY depth and
+# swallows shell-landing/brand/ too, so a new published icon there would be silently untracked.
+/brand/

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<script>/* Apply saved theme + accent before first paint to avoid a reload flash, and paint the
+theme's background on the very first frame (the browser's default white shows otherwise). */
+(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem('kshell-theme');if(t){d.setAttribute('data-theme',t);if({dark:1,light:1,hc:1}[t]){var v=localStorage.getItem('kshell-av');if(v){var s=v.split('|');d.style.setProperty('--accent',s[0]);d.style.setProperty('--btn',s[1]);}}}}catch(e){}
+var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a5234',cyanotic:'#0a4a6e'};d.style.backgroundColor=bg[t]||bg.dark;})();</script>
+<link rel="preload" href="brand/KillerShell.ttf" as="font" type="font/ttf" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="darkreader-lock">
+<title>KillerShell - Technical</title>
+<link rel="canonical" href="https://killershell.net/technical.html">
+<meta name="description" content="How KillerShell works under the hood: how it walks a folder tree, matches filenames, streams file contents line by line, moves files, hosts a shell and edits text, all without ever building an index.">
+<link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
+<script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
+<link rel="stylesheet" href="ks.css?v=4">
+<style>
+.page-hero { text-align: center; padding: 44px 16px 8px; }
+.page-hero .wm-logo { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
+.page-hero p { color: var(--muted); font-size: 15px; margin: 4px auto 0; max-width: 540px; }
+.content-inner { max-width: 860px; margin: 0 auto; padding: 0 28px 56px; }
+.tech-sec { scroll-margin-top: 84px; }
+@media (min-width: 901px){ .shell { grid-template-columns: 268px 1fr; } .content { margin: 8px 8px 0 2px; } }
+.sb-tabs .on { border-bottom: 0; }
+.outline { padding: 8px 0; overflow-y: auto; flex: 1; }
+.outline a { display: block; padding: 8px 16px 8px 18px; font-size: 13px; color: var(--text2); border-left: 2px solid transparent; }
+.outline a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent); filter: none; }
+.outline a.on { color: var(--accent); border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--sidebar)); }
+@media (max-width: 900px) { .outline { display:flex; flex-direction:row; flex-wrap:wrap; padding:8px; gap:4px; } .outline a { border-left:0; border-radius:5px; padding:6px 10px; } .outline a.on { border-left:0; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<a href="index.html" class="tb-home" title="KillerShell home">
+<img class="tb-icon" src="brand/ksh-icon.png" alt="KillerShell" width="44" height="44">
+<img class="wm-logo tb-wm" src="brand/killershell-logo-dark-blue.svg" alt="KillerShell">
+</a>
+<a class="tb-dl" href="https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe"><svg viewBox="0 0 24 24"><path d="M11 4h2v7h3l-4 5-4-5h3V4zM5 18h14v2H5z"/></svg><span data-i18n="nav_dl">Download</span></a>
+<span class="tb-spacer"></span>
+<nav class="tb-nav">
+<a href="howto.html" data-i18n="nav_howto">How to</a>
+<a href="technical.html" class="on" data-i18n="nav_tech">Technical</a>
+<a href="about.html" data-i18n="nav_about">About</a>
+</nav>
+<div class="tgrp" role="group" aria-label="Theme">
+<button class="swatch sw-dark"     data-theme="dark"     title="Dark"></button>
+<button class="swatch sw-light"    data-theme="light"    title="Light"></button>
+<button class="swatch sw-hc"       data-theme="hc"       title="Black"></button>
+<button class="swatch sw-blood"    data-theme="blood"    title="Blood"></button>
+<button class="swatch sw-greed"    data-theme="greed"    title="Greed"></button>
+<button class="swatch sw-cyanotic" data-theme="cyanotic" title="Cyanotic"></button>
+</div>
+<div class="acc-fly accent-switch" id="accentSwitch">
+<button class="acc-toggle" id="accentToggle" aria-haspopup="true" aria-expanded="false" title="Accent color"></button>
+<div class="acc-pop" id="accentPop" hidden role="group" aria-label="Accent color">
+<span class="acc-pop-label" data-i18n="accent_label">accent:</span>
+<button class="acc" data-accent="red"    style="background:#DD504B;color:#DD504B" title="Red"></button>
+<button class="acc" data-accent="orange" style="background:#E8962C;color:#E8962C" title="Orange"></button>
+<button class="acc" data-accent="green"  style="background:#1EA54C;color:#1EA54C" title="Green"></button>
+<button class="acc" data-accent="teal"   style="background:#1FB8A8;color:#1FB8A8" title="Teal"></button>
+<button class="acc" data-accent="blue"   style="background:#50AEE8;color:#50AEE8" title="Blue"></button>
+<button class="acc" data-accent="purple" style="background:#B982E3;color:#B982E3" title="Purple"></button>
+</div>
+</div>
+<div class="lang-switch" role="group" aria-label="Language">
+<button class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false" title="Language" aria-label="Language">&#127760;</button>
+<div class="lang-menu" id="langMenu" hidden>
+<button class="lang-item" data-lang="en">English</button>
+<button class="lang-item" data-lang="bn">&#2476;&#2494;&#2434;&#2482;&#2494;</button>
+<button class="lang-item" data-lang="de">Deutsch</button>
+<button class="lang-item" data-lang="es">Espanol</button>
+<button class="lang-item" data-lang="fr">Francais</button>
+<button class="lang-item" data-lang="tr">Turkce</button>
+<button class="lang-item" data-lang="zh-cn">&#20013;&#25991; (&#31616;&#20307;)</button>
+<button class="lang-item" data-lang="zh">&#20013;&#25991; (&#32321;&#39636;)</button>
+</div>
+</div>
+</div>
+
+<div class="shell">
+<aside class="sidebar">
+<div class="sb-tabs"><span class="on">Technical</span></div>
+<nav class="outline">
+<a href="#stack" class="on" data-i18n="t_nav_stack">Tech stack</a>
+<a href="#install" data-i18n="t_nav_install">Install &amp; data</a>
+<a href="#pipeline" data-i18n="t_nav_pipeline">The search pipeline</a>
+<a href="#matching" data-i18n="t_nav_matching">Matching files</a>
+<a href="#filters" data-i18n="t_nav_filters">Filters &amp; terms</a>
+<a href="#streaming" data-i18n="t_nav_streaming">Streaming &amp; memory</a>
+<a href="#export" data-i18n="t_nav_export">Export</a>
+<a href="#fileops" data-i18n="t_nav_fileops">File operations</a>
+<a href="#terminal" data-i18n="t_nav_terminal">The terminal</a>
+<a href="#editor" data-i18n="t_nav_editor">The editor</a>
+<a href="#themes" data-i18n="t_nav_themes">Themes &amp; languages</a>
+<a href="#glossary" data-i18n="t_nav_glossary">Glossary</a>
+</nav>
+</aside>
+<div class="content">
+<div class="content-scroll">
+<div class="content-inner">
+
+<section class="page-hero">
+<span class="page-title" data-i18n="t_hero_kicker">The Tech of</span>
+<img class="wm-logo" src="brand/killershell-logo-dark-blue.svg" alt="KillerShell">
+<p data-i18n="t_hero_sub">A look under the hood at how KillerShell walks a folder tree, matches filenames, reads inside files, moves them around, hosts a shell and edits text, all without ever building an index.</p>
+</section>
+
+<div class="tech-sec" id="stack">
+<h2 data-i18n="t_stack_h">Tech stack</h2>
+<p data-i18n="t_stack_p">KillerShell is a native Windows app. There is no Electron, no browser engine, no runtime to install, and no background service. Everything below ships inside a single .exe that runs on its own:</p>
+<table class="spec-table"><tr><th data-i18n="t_stack_c">Component</th><th data-i18n="t_stack_d">Detail</th></tr>
+<tr><td data-i18n="t_stack_ui">UI</td><td data-i18n="t_stack_ui_d">WPF on .NET Framework 4.8 (net48), x64, custom window chrome</td></tr>
+<tr><td data-i18n="t_stack_search">Search engine</td><td data-i18n="t_stack_search_d">A parallel engine: one walker feeds a worker per CPU core, and results are pushed to the UI in batches, cancelable at any time</td></tr>
+<tr><td data-i18n="t_stack_walk">File walk</td><td data-i18n="t_stack_walk_d">A breadth-first walk built on <code>Directory.EnumerateFiles</code>, yielding files one at a time and skipping folders it cannot read</td></tr>
+<tr><td data-i18n="t_stack_read">Content read</td><td data-i18n="t_stack_read_d">A buffered <code>FileStream</code> and <code>StreamReader</code> that reads each file line by line, with a null-byte check to skip binaries</td></tr>
+<tr><td data-i18n="t_stack_export">Export</td><td data-i18n="t_stack_export_d">A self-contained HTML report or CSV, written directly from the result set, no libraries required</td></tr>
+<tr><td data-i18n="t_stack_term">Terminal</td><td data-i18n="t_stack_term_d">A hosted console: the shell you picked runs as a real child process and its output is drawn by the app, with the working directory tracked from the shell's own OSC 7 reports</td></tr>
+<tr><td data-i18n="t_stack_ed">Editor</td><td data-i18n="t_stack_ed_d">AvalonEdit (MIT), vendored as source and compiled into the exe rather than shipped as a DLL, so the app is still one file</td></tr>
+<tr><td data-i18n="t_stack_pkg">Packaging</td><td data-i18n="t_stack_pkg_d">Single executable. Run it portable, or install it for your account or for every user on the PC.</td></tr>
+</table>
+</div>
+
+<div class="tech-sec" id="install">
+<h2 data-i18n="t_install_h">Install &amp; data</h2>
+<p data-i18n="t_install_p1">KillerShell is a single .exe. Put it anywhere and run it as is, or use the built-in installer, which copies the app in, adds a Start Menu shortcut, and registers a normal Windows uninstall entry. Installing for your own account needs no admin rights; installing for every user on the PC asks for permission once and puts it in Program Files, which is the same machine-wide install <code>/silent</code> performs for winget, Chocolatey and RMM tools. Either way there is no .NET runtime and nothing else to install.</p>
+<p data-i18n="t_install_p2">Your settings, such as the last folder you searched and your theme choice, are kept in the registry under your own account rather than in a file next to the .exe, so the program stays a clean single file you can move around. When you run it from outside its installed location, a <b>PORTABLE</b> badge appears so you know which copy you are using.</p>
+</div>
+
+<div class="tech-sec" id="pipeline">
+<h2 data-i18n="t_pipe_h">The search pipeline</h2>
+<p data-i18n="t_pipe_p1">A search is one continuous pass over a folder tree. You give KillerShell a starting folder and one or more search terms, then it walks every file underneath and tests each one against your terms as it goes. There is no separate indexing step and nothing is stored between runs, so the first search on a folder is just as fast as the tenth.</p>
+<p data-i18n="t_pipe_p2">Each term is either a <b>name</b> term, matched against the filename, or a <b>text</b> term, matched against the contents of the file. You can mix as many of each as you like in a single pass, and optional include and exclude filters narrow which files are looked at in the first place. A piped tab - search within results - runs this same pass over a snapshot of another tab's result list instead of walking a folder.</p>
+
+<figure class="diagram">
+<svg viewBox="0 0 820 470" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="pfAcc" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="var(--accent)"/></marker>
+</defs>
+<rect x="260" y="16" width="300" height="52" rx="8" fill="var(--modal)" stroke="var(--accent)"/>
+<text x="410" y="39" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="700" font-family="monospace">folder + terms + filters</text>
+<text x="410" y="57" text-anchor="middle" fill="var(--muted)" font-size="11">what you type in and press search</text>
+<line x1="410" y1="68" x2="410" y2="98" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#pfAcc)"/>
+
+<rect x="250" y="100" width="320" height="52" rx="8" fill="var(--panel)" stroke="var(--pane-border)"/>
+<text x="410" y="123" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600">walk the tree, one file at a time</text>
+<text x="410" y="141" text-anchor="middle" fill="var(--muted)" font-size="11">streamed, never listed up front; unreadable folders skipped</text>
+<line x1="410" y1="152" x2="410" y2="182" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#pfAcc)"/>
+
+<rect x="270" y="184" width="280" height="48" rx="8" fill="var(--panel)" stroke="var(--pane-border)"/>
+<text x="410" y="205" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">filters: exclude, then include</text>
+<text x="410" y="222" text-anchor="middle" fill="var(--muted)" font-size="11">files outside the scope are dropped here</text>
+<line x1="410" y1="232" x2="410" y2="262" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#pfAcc)"/>
+
+<rect x="120" y="264" width="270" height="70" rx="8" fill="var(--panel)" stroke="var(--pane-border)"/>
+<text x="255" y="288" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">name terms</text>
+<text x="255" y="307" text-anchor="middle" fill="var(--muted)" font-size="11">wildcard match on the</text>
+<text x="255" y="322" text-anchor="middle" fill="var(--muted)" font-size="11">filename</text>
+<rect x="430" y="264" width="270" height="70" rx="8" fill="var(--panel)" stroke="var(--pane-border)"/>
+<text x="565" y="288" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">text terms</text>
+<text x="565" y="307" text-anchor="middle" fill="var(--muted)" font-size="11">read the file line by line,</text>
+<text x="565" y="322" text-anchor="middle" fill="var(--muted)" font-size="11">skip if it looks binary</text>
+<line x1="255" y1="334" x2="360" y2="378" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pfAcc)"/>
+<line x1="565" y1="334" x2="460" y2="378" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pfAcc)"/>
+
+<rect x="250" y="380" width="320" height="48" rx="8" fill="var(--modal)" stroke="var(--accent)"/>
+<text x="410" y="401" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="700" font-family="monospace">results, batched every ~150 ms</text>
+<text x="410" y="418" text-anchor="middle" fill="var(--muted)" font-size="11">stream into the list as they are found; cancel any time</text>
+</svg>
+<figcaption data-i18n="t_pipe_cap">The whole search is one streamed pass. Files flow through the filters, each surviving file is tested against every term, and any file with at least one hit is added to the next batch pushed to the results list. Because results are batched about every 150 milliseconds, the list fills in smoothly instead of freezing until the end.</figcaption>
+</figure>
+</div>
+
+<div class="tech-sec" id="matching">
+<h2 data-i18n="t_match_h">Matching files</h2>
+<p data-i18n="t_match_p">Every file that clears the filters is tested against each of your terms. The two kinds of term work differently.</p>
+
+<h3 id="names" data-i18n="t_match_names_h">Name terms: wildcards</h3>
+<p data-i18n="t_match_names_p">A name term is a wildcard pattern tested against the filename. An asterisk stands for any run of characters and a question mark stands for a single character, the same shorthand Windows itself uses. The pattern is turned into an anchored regular expression once, so <code>*.log</code> matches any name ending in ".log" and <code>report_?.txt</code> matches "report_1.txt" but not "report_final.txt".</p>
+<div class="codeblock">*.log        <span class="cm">// any name ending in .log</span><br>report_*.xlsx <span class="cm">// report_ then anything, then .xlsx</span><br>?.tmp        <span class="cm">// a single character, then .tmp</span></div>
+
+<h3 id="contents" data-i18n="t_match_content_h">Text terms: reading inside files</h3>
+<p data-i18n="t_match_content_p1">A text term looks for a run of characters inside the file. Before reading, KillerShell checks the first few kilobytes for a null byte, which almost never appears in text but is common in programs, images, and archives. If it finds one, the file is treated as binary and skipped, so a content search does not waste time scanning a photo or an .exe.</p>
+<p data-i18n="t_match_content_p2">Files that pass that check are read one line at a time through a buffered reader that also honors a byte-order mark if the file has one. The whole file is never loaded into memory at once, so a multi-gigabyte log is no heavier to search than a small note. Each line that contains the term is recorded with its line number and its text, trimmed of surrounding whitespace - up to the first 100 matched lines per file, so one pathological file cannot flood the results.</p>
+</div>
+
+<div class="tech-sec" id="filters">
+<h2 data-i18n="t_filters_h">Filters &amp; multiple terms</h2>
+<p data-i18n="t_filters_p1">Include and exclude filters decide which files are looked at before any term is tested. Both take a list of patterns separated by semicolons, trimmed of spaces. Alongside them, filter rows narrow the pass by extension, date modified, or file size; a file must clear every active filter before any term is tested.</p>
+<ul class="blurb-list">
+<li data-i18n="t_filters_inc"><b>Include</b> patterns are wildcards tested against the filename. When any include is set, a file has to match at least one of them to be searched at all, so <code>*.txt;*.log</code> limits the pass to text and log files.</li>
+<li data-i18n="t_filters_exc"><b>Exclude</b> patterns work two ways at once. A pattern that matches a folder name anywhere in the path, such as <code>bin</code>, <code>obj</code>, or <code>node_modules</code>, drops everything under that folder. The same pattern is also tested as a wildcard against the filename, so <code>*.min.js</code> skips minified files wherever they sit.</li>
+</ul>
+<p data-i18n="t_filters_p2">Every term you add runs in the same single pass over the tree, so searching for three names and two phrases costs one walk of the folder, not five. Each term keeps its own running match count, shown as a small badge next to it, so you can see at a glance which patterns are hitting and which are not.</p>
+</div>
+
+<div class="tech-sec" id="streaming">
+<h2 data-i18n="t_stream_h">Streaming, memory, and cancellation</h2>
+<p data-i18n="t_stream_p1">The reason KillerShell can start on a huge folder like your whole user profile without a long wait is that it never builds a list of the tree up front. The walk yields one file at a time and the search reacts to each file as it arrives, so work begins on the first file instead of after the last. Folders it is not allowed to read are quietly stepped over rather than stopping the search.</p>
+<p data-i18n="t_stream_p2">The search itself runs on background workers, one per CPU core, which keeps the window responsive and lets a long search be canceled the moment you ask. Results are collected and handed to the UI in batches on a fixed timer, about once every 150 milliseconds, along with the running file count and the file currently being read. That single, gentle pace is what stops a fast search from flooding the interface with thousands of tiny updates.</p>
+<p data-i18n="t_stream_p3">Memory stays flat because nothing large is ever held at once. Files are read through fixed 64 KB buffers, content is streamed line by line, and only the lines that actually matched are kept. A search across hundreds of thousands of files uses about the same memory as a search across a handful.</p>
+</div>
+
+<div class="tech-sec" id="export">
+<h2 data-i18n="t_export_h">Export</h2>
+<p data-i18n="t_export_p">Any result set can be written to a self-contained HTML report: the matched files, the matched lines with their line numbers, and the search that produced them. The report is a single file that opens in any browser with no dependencies, which makes it easy to attach to a ticket or keep as a record of what was found and where. A CSV export sits alongside it for spreadsheets.</p>
+</div>
+
+<div class="tech-sec" id="fileops">
+<h2 data-i18n="t_fops_h">File operations</h2>
+<p data-i18n="t_fops_p1">Copy and move run on a background worker with a progress card showing the current file and a real byte count, so a large copy never freezes the window. A name collision at the destination stops the worker and asks, showing both files' size and date, with Replace, Skip or Keep both and a "do the same for the rest" checkbox. The worker genuinely waits on that answer rather than copying ahead of it, so nothing is overwritten while the question is still on screen.</p>
+<p data-i18n="t_fops_p2">A move within one volume is performed as a rename, which is a directory-entry change rather than a data copy, so it is instant whatever the size. Across volumes it copies first and deletes the source only once the copy has landed. Sending to the Recycle Bin is the one operation that goes through the Windows shell, because there is no other way in, and that is also what puts it on Explorer's undo stack, so <code>Ctrl+Z</code> in Explorer brings the files back.</p>
+<p data-i18n="t_fops_p3">Drops onto a browsed folder follow Explorer's modifier rules exactly: Shift moves, Ctrl copies, and neither means move within a drive and copy across drives. Files already sitting in the target folder are ignored rather than raising a collision with themselves, and a folder cannot be dropped into its own child.</p>
+</div>
+
+<div class="tech-sec" id="terminal">
+<h2 data-i18n="t_term_h">The terminal</h2>
+<p data-i18n="t_term_p1">A shell tab starts the host you picked as an ordinary child process with the folder you were looking at as its working directory, then draws its output itself. Nothing about the shell is emulated or wrapped: the process is a real PowerShell, Windows PowerShell or cmd.exe, so your modules, aliases and profile all behave the way they do anywhere else.</p>
+<p data-i18n="t_term_p2">The working directory shown on the shell's toolbar comes from the shell reporting it, not from KillerShell guessing. Shells emit an OSC 7 escape sequence naming their current directory, which is parsed out of the stream, so the readout stays correct through a <code>cd</code>, a script or a pushd, and clicking it opens that exact folder as a browsing tab.</p>
+<p data-i18n="t_term_p3">The <code>$PROFILE</code> path is obtained by launching the shell binary with <code>-NoProfile -NonInteractive</code> and asking it for <code>$PROFILE.CurrentUserCurrentHost</code>, then validating that what came back is a single rooted path ending in .ps1. Assuming <code>Documents\PowerShell\</code> instead would be wrong on any machine where OneDrive Known Folder Move has redirected Documents, which on a managed fleet is most of them, and the assumed path is a file the shell will never load.</p>
+<p data-i18n="t_term_p4">The shipped prompt draws powerline separators, a git branch mark and a chevron. No monospaced font Windows ships has any of them, so the exe carries <code>KillerGlyphs.ttf</code>: 26 glyphs, 2,928 bytes, subset from Terminess Nerd Font under the SIL OFL. The renderer asks the font you chose for a glyph and only falls back to that face for the codepoints it does not have, stretching the fallback glyph to the chosen face's cell width so a separator still butts against the next cell. Your font choice is untouched; it just stops being able to fail on those characters. A whole Nerd Font would have cost 2.6 MB, almost all of it icons no prompt draws.</p>
+</div>
+
+<div class="tech-sec" id="editor">
+<h2 data-i18n="t_ed_h">The editor</h2>
+<p data-i18n="t_ed_p1">The editor is AvalonEdit, the component behind SharpDevelop, vendored into the repository as source and compiled into the exe rather than referenced as a DLL. That keeps KillerShell a single portable file and costs about 640 KB. The vendored tree was audited to zero compiler warnings on the way in, without suppressing any of them.</p>
+<p data-i18n="t_ed_p2">Encoding is decided by inspecting the file's bytes, not by the editor's own loader, which hands back a UTF-8 encoding that <i>writes</i> a byte-order mark. Left alone, a plain .txt or .bat would silently grow three bytes at the front the first time it was saved. A BOM that is present is kept, a BOM that is absent stays absent, and bytes that do not decode as UTF-8 fall back to the system ANSI codepage rather than being replaced with U+FFFD. Both the encoding and the line ending are shown under the document, because whether PowerShell 5.1 will read a script depends on both and neither is visible in the text.</p>
+<p data-i18n="t_ed_p3">Syntax definitions for .bat, .reg, .ini, .yaml, .log and .csv are hand-written and embedded, since AvalonEdit ships none of them. Rather than maintain a repainted copy of every definition for each of the six themes, the shipped colors are run through the same contrast guard the terminal uses: hue is preserved and only lightness is moved, far enough to clear a readable contrast ratio against whatever the current background is. The original color is remembered per definition, so switching themes repeatedly cannot ratchet a color away from what its author intended.</p>
+</div>
+
+<div class="tech-sec" id="themes">
+<h2 data-i18n="t_themes_h">Themes &amp; languages</h2>
+<p data-i18n="t_themes_p">KillerShell ships with six themes (Dark, Light, Black, Blood, Greed, and Cyanotic), each with its own set of accent colors, all switchable live from the toolbar. The interface is localized in ten languages: English, Spanish, German, French, Turkish, Czech, Japanese, Chinese in both Traditional and Simplified, and Bengali. Every visible string is resolved through a resource lookup, so switching language reflows the whole window with no restart.</p>
+<p data-i18n="t_themes_p2">The whole app also scales. Rolling the wheel over the title-bar wordmark drives a layout transform on the content host, roughly 2% a notch between 70% and 250%, remembered between runs. Because it is a layout transform rather than a render transform, text reflows and re-rasterizes at the new size instead of being stretched as a bitmap, and the title bar and footer stay a fixed size so the wordmark never moves out from under the pointer.</p>
+</div>
+
+<div class="tech-sec" id="glossary">
+<h2 data-i18n="t_gloss_h">Glossary</h2>
+<p data-i18n="t_gloss_p">Plain-language definitions of the terms used on this page, in alphabetical order.</p>
+<table class="spec-table"><tr><th data-i18n="t_gloss_term">Term</th><th data-i18n="t_gloss_mean">What it means</th></tr>
+<tr><td data-i18n="t_g_binary">Binary file</td><td data-i18n="t_g_binary_d">A file that holds data rather than readable text, such as a program, image, or archive. KillerShell detects these by a null byte near the start and skips them during a content search.</td></tr>
+<tr><td data-i18n="t_g_bom">Byte-order mark</td><td data-i18n="t_g_bom_d">A few bytes at the very start of a text file that state how its characters are encoded. KillerShell reads it so unusual encodings are handled correctly.</td></tr>
+<tr><td data-i18n="t_g_case">Case sensitivity</td><td data-i18n="t_g_case_d">Whether uppercase and lowercase letters are treated as different. The default is off, so "Error" and "error" both match; a toggle turns it on for both names and content.</td></tr>
+<tr><td data-i18n="t_g_content">Content search</td><td data-i18n="t_g_content_d">Searching inside the text of files for a run of characters, as opposed to searching their names.</td></tr>
+<tr><td data-i18n="t_g_filter">Include / exclude filter</td><td data-i18n="t_g_filter_d">Semicolon-separated patterns that decide which files are searched. Include narrows the pass to matching files; exclude drops matching files and folders.</td></tr>
+<tr><td data-i18n="t_g_fallback">Font fallback</td><td data-i18n="t_g_fallback_d">Drawing a character from a second font when the chosen one has no glyph for it. KillerShell does this per character in the terminal, so a prompt's powerline and git symbols render whatever font you picked.</td></tr>
+<tr><td data-i18n="t_g_index">Index</td><td data-i18n="t_g_index_d">A prebuilt catalog of files that some search tools rely on. KillerShell does not use one, which is why it needs no setup and no waiting for a catalog to build.</td></tr>
+<tr><td data-i18n="t_g_line">Line number</td><td data-i18n="t_g_line_d">The position of a matched line within its file, counted from the top, recorded so you can jump straight to it.</td></tr>
+<tr><td data-i18n="t_g_osc">OSC 7</td><td data-i18n="t_g_osc_d">A short escape sequence a shell emits to announce its current directory. KillerShell reads it, which is why the folder shown on a shell tab's toolbar stays right through a cd or a script.</td></tr>
+<tr><td data-i18n="t_g_portable">Portable</td><td data-i18n="t_g_portable_d">Able to run from anywhere without being installed. KillerShell runs as a loose .exe and shows a PORTABLE badge when it does.</td></tr>
+<tr><td data-i18n="t_g_regex">Regular expression</td><td data-i18n="t_g_regex_d">A precise pattern-matching notation. KillerShell converts each wildcard filename pattern into one internally to test names quickly.</td></tr>
+<tr><td data-i18n="t_g_stream">Streaming</td><td data-i18n="t_g_stream_d">Reading a file or a folder tree a small piece at a time instead of loading it whole, which keeps memory low no matter the size.</td></tr>
+<tr><td data-i18n="t_g_term">Term</td><td data-i18n="t_g_term_d">One search request: a pattern plus whether it applies to filenames or file contents. A single pass can run many terms at once.</td></tr>
+<tr><td data-i18n="t_g_wildcard">Wildcard</td><td data-i18n="t_g_wildcard_d">A filename pattern where an asterisk stands for any characters and a question mark for a single character, such as *.log or report_?.txt.</td></tr>
+</table>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<footer class="statusbar">
+<span class="left"><a href="https://github.com/SteveTheKiller/KillerShell" target="_blank" rel="noopener">Source on GitHub</a> &middot; GPLv3 &middot; Part of <a href="https://killertools.net" target="_blank" rel="noopener">killertools.net</a></span>
+<span class="right"><span id="verEgg" title="click me">v1.0.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
+</footer>
+<div class="egg-toast" id="eggToast"></div>
+<div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>
+<script src="ks-i18n.js?v=1"></script>
+<script src="ks.js?v=2"></script>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.outline a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
+  var sc=document.querySelector('.content-scroll');
+  function onScroll(){ var y=(sc?sc.scrollTop:window.scrollY)+100, cur=secs[0]; secs.forEach(function(s){ if(s&&s.offsetTop<=y) cur=s; });
+    links.forEach(function(a){ a.classList.toggle('on', cur && a.getAttribute('href')==='#'+cur.id); }); }
+  (sc||window).addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+(function(){
+  var diagrams=[].slice.call(document.querySelectorAll('.diagram svg'));
+  var lb=document.getElementById('diagram-lightbox');
+  if(!diagrams.length||!lb) return;
+  var inner=lb.querySelector('.dlb-inner');
+  function close(){ lb.hidden=true; inner.innerHTML=''; document.body.style.overflow=''; }
+  diagrams.forEach(function(svg){
+    svg.addEventListener('click',function(){ inner.innerHTML=svg.outerHTML; lb.hidden=false; document.body.style.overflow='hidden'; });
+  });
+  lb.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+})();
+</script>
+</body>
+</html>

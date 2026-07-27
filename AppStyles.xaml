@@ -1,0 +1,113 @@
+<!--
+    KillerShell app-specific styles - the bits the shared KillerUI/Grunge kit (Controls.xaml)
+    doesn't carry because they're particular to KillerShell's search UI. Merge this AFTER a
+    Grunge palette + Controls.xaml. All brushes use DynamicResource so they follow theme/accent.
+
+    (The old "Dark Terminal" DarkTheme.xaml is replaced by: a Grunge palette + Controls.xaml + this.)
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Monospace face used throughout the search/results UI. -->
+    <FontFamily x:Key="MonoFont">Consolas</FontFamily>
+
+    <!-- Small caps-y section label ("FILTERS", "SEARCH TERMS", "RESULTS"). -->
+    <Style x:Key="SectionHeader" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+
+    <!-- Per-term mode toggle [F]/[C] - a compact square that reads as an accent chip. -->
+    <Style x:Key="ModeButton" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Width" Value="62"/>
+        <Setter Property="Height" Value="26"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="b"
+                            Background="{DynamicResource RowSelectedBrush}"
+                            BorderBrush="{DynamicResource OutlineBtnBrush}"
+                            BorderThickness="1" CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Effect="{DynamicResource TextStrokeSoft}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="b" Property="Background" Value="{DynamicResource OutlineBtnBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Small destructive button (the per-term "x"). Red-fills on hover like the caption close. -->
+    <Style x:Key="DangerButton" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="b" Background="Transparent" CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                            <Setter TargetName="b" Property="Background" Value="#33C42B1C"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Result-row labels, in the three weights the tile and details templates use.
+
+         These exist ONLY so the selected row can flip its text to SelectionFg. A local
+         Foreground="..." on the TextBlock beats both inheritance and any trigger, so the
+         TextElement.Foreground setter on the row's IsSelected trigger can never reach a
+         label that sets its own brush - which is every label in those templates. Moving
+         the base brush into a Setter puts it BELOW the style's own trigger, so selection
+         wins. Light family: SelectionBg is the dark accent fill, SelectionFg is white. -->
+    <Style x:Key="ResultText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ResultMuted" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ResultDim" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,439 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - English (en-US) strings. x:Key values are looked up at
+         runtime; never change them. Other locales layer over this file; any
+         key they omit falls back here. {0}/{1} placeholders are filled by the
+         app - keep them.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">ভাষা</sys:String>
+    <sys:String x:Key="Str_TT_Theme">থিম</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">অ্যাপের আকার বদলাতে লোগোর উপর স্ক্রোল করুন</sys:String>
+    <sys:String x:Key="Str_St_AppSize">অ্যাপের আকার {0}%</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">থিম</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">অ্যাকসেন্ট</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">যেখানে:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(কোনো ফোল্ডার নির্বাচন করা হয়নি - বেছে নিতে ক্লিক করুন)</sys:String>
+    <sys:String x:Key="Str_TT_Scope">অনুসন্ধানের ফোল্ডার পরিবর্তন করতে ক্লিক করুন</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">অনুসন্ধানের মূল ফোল্ডার নির্বাচন করুন</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">ফিল্টার</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">অন্তর্ভুক্ত</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">বাদ দিন</sys:String>
+    <sys:String x:Key="Str_TT_Include">সেমিকোলন দিয়ে পৃথক করা প্যাটার্ন, যেমন *.txt;*.log</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">এড়িয়ে যাওয়ার জন্য সেমিকোলন দিয়ে পৃথক করা পাথ বা প্যাটার্ন</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">অক্ষরের ছোট-বড় বিবেচ্য</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ ফিল্টার যোগ করুন</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">উন্নত</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">এক্সটেনশন</sys:String>
+    <sys:String x:Key="Str_Filter_Date">পরিবর্তনের তারিখ</sys:String>
+    <sys:String x:Key="Str_Filter_Size">আকার</sys:String>
+    <sys:String x:Key="Str_Cond_Is">হল</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">নয়</sys:String>
+    <sys:String x:Key="Str_Cond_Before">আগে</sys:String>
+    <sys:String x:Key="Str_Cond_After">পরে</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">এর বেশি</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">এর কম</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">প্যাটার্ন সহায়তা</sys:String>
+    <sys:String x:Key="Str_Help_Title">প্যাটার্ন</sys:String>
+    <sys:String x:Key="Str_Help_Star">.log দিয়ে শেষ হওয়া সবকিছু</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">report দিয়ে শুরু হওয়া নাম</sys:String>
+    <sys:String x:Key="Str_Help_Middle">2024 আছে এমন নাম</sys:String>
+    <sys:String x:Key="Str_Help_Q">? মানে ঠিক একটি অক্ষর</sys:String>
+    <sys:String x:Key="Str_Help_List">একাধিক প্যাটার্ন ; দিয়ে আলাদা করুন</sys:String>
+    <sys:String x:Key="Str_Help_Plain">সাধারণ লেখাও চলবে - যে নামে এটি আছে তার সাথে মিলবে</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">বাদ দেওয়া নাম অনুযায়ী পুরো ফোল্ডারও এড়িয়ে যায়</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">নতুন অনুসন্ধান</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">নতুন অনুসন্ধান ট্যাব</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">ট্যাব বন্ধ করুন</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">বাতিল</sys:String>
+    <sys:String x:Key="Str_Btn_Select">নির্বাচন করুন</sys:String>
+    <sys:String x:Key="Str_QA_Home">হোম</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">ডেস্কটপ</sys:String>
+    <sys:String x:Key="Str_QA_Documents">ডকুমেন্টস</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">ডাউনলোড</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">ছবি</sys:String>
+    <sys:String x:Key="Str_TT_Up">এক ফোল্ডার উপরে</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(কোনো সাবফোল্ডার নেই - এই ফোল্ডারটি ব্যবহার করতে নির্বাচন করুন চাপুন)</sys:String>
+    <sys:String x:Key="Str_Col_Name">নাম</sys:String>
+    <sys:String x:Key="Str_Col_Folder">অবস্থান</sys:String>
+    <sys:String x:Key="Str_Sort_Found">যেমন পাওয়া</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">এই ফলাফলগুলি ফিল্টার করুন (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">দ্বিতীয় প্যান  |  পাশাপাশি / উপর-নিচ বদলাতে ডান-ক্লিক করুন</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">আরও টুল</sys:String>
+    <sys:String x:Key="Str_TT_Sort">সাজান</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">এই পিসি</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{1} থেকে {0}টি ফলাফল  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">অনুসন্ধানের জন্য এখনও কোনো ফলাফল নেই।</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">এলিভেটেড শেল চালু করা যায়নি: {0}</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">পোর্টেবল</sys:String>
+    <sys:String x:Key="Str_Btn_Install">KillerShell ইনস্টল করুন...</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">ইনস্টল</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">আপনার ইউজার প্রোফাইলে KillerShell ইনস্টল করবেন?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">- স্টার্ট মেনু শর্টকাট&#x0A;- Add/Remove Programs-এ দেখা যাবে</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">ডেস্কটপ শর্টকাট</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">সব ব্যবহারকারীর জন্য ইনস্টল করুন (অ্যাডমিন প্রয়োজন)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell ইতিমধ্যেই এই পিসির সব ব্যবহারকারীর জন্য ইনস্টল করা আছে, তাই সেই কপিটিই হালনাগাদ হবে। Windows অনুমতি চাইবে।</sys:String>
+    <sys:String x:Key="Str_St_InstallCancelled">ইনস্টল বাতিল হয়েছে</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell বন্ধ করবেন?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">আমার খোলা ট্যাবগুলি মনে রাখুন</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">আমার পছন্দ মনে রাখুন</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Col_Size">আকার</sys:String>
+    <sys:String x:Key="Str_Col_Modified">পরিবর্তিত</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">{0}টি ফোল্ডার, {1}টি ফাইল</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">তালিকা ভিউ</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">আইকন ভিউ</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">বিস্তারিত ভিউ</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">অনুসন্ধানের শব্দ</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ শব্দ যোগ করুন</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ গ্রুপ যোগ করুন</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">পরিষ্কার করুন</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">অনুসন্ধান</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">থামুন</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">ফলাফল</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">ফলাফল  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">ফলাফল রপ্তানি করুন</sys:String>
+    <sys:String x:Key="Str_TT_Result">প্রসারিত করতে ক্লিক করুন  |  Explorer-এ দেখাতে ডাবল-ক্লিক করুন  |  আরও অপশনের জন্য ডান-ক্লিক করুন</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">সব প্রসারিত করুন</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">সব সংকুচিত করুন</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">ফাইল খুলুন</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">এর মাধ্যমে খুলুন...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">Explorer-এ দেখান</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">মিনিমাইজ</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">ম্যাক্সিমাইজ</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">পুনরুদ্ধার</sys:String>
+    <sys:String x:Key="Str_Menu_Close">বন্ধ করুন</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">প্রস্তুত</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">অবৈধ বা অনুপস্থিত মূল পাথ।</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">অন্তত একটি অনুসন্ধানের শব্দ বা ফিল্টার যোগ করুন।</sys:String>
+    <sys:String x:Key="Str_Status_Done">{0} সেকেন্ডে সম্পন্ন  -  {1}টি ফাইল মিলেছে।</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">থামানো হয়েছে।</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">পরিষ্কার করা হয়েছে।</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">রপ্তানি করার মতো এখনও কিছু নেই।</sys:String>
+    <sys:String x:Key="Str_Status_Exported">রপ্তানি করা হয়েছে: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">রপ্তানি ব্যর্থ হয়েছে: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">{0}টি ফাইল স্ক্যান করা হয়েছে</sys:String>
+    <sys:String x:Key="Str_Count_Matches">{0}টি মিল</sys:String>
+
+    <!-- About overlay -->
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">পাওয়ার ইউজারদের জন্য বিনামূল্যের শেল। ফাইল ব্রাউজার, টার্মিনাল ও টেক্সট এডিটর একটি উইন্ডো, একটি ট্যাব স্ট্রিপ ও একই কীবোর্ড ভাগ করে নেয়। ইনস্টল করার প্রয়োজন নেই। একটি </sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> ইউটিলিটি।</sys:String>
+    <sys:String x:Key="Str_About_Version">সংস্করণ</sys:String>
+    <sys:String x:Key="Str_About_Publisher">প্রকাশক</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">থাম্বপ্রিন্ট</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  একজন ফিল্ড টেক দ্বারা নির্মিত</sys:String>
+
+    <!-- HTML report -->
+    <sys:String x:Key="Str_Rpt_Meta">তৈরি {0} &#183; {1}টি ফাইল &#183; {2}টি ম্যাচ</sys:String>
+    <sys:String x:Key="Str_Rpt_MetaList">তৈরি {0} &#183; {1}টি আইটেম</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">{0} এর তালিকা।</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">{0}-এ খোঁজা হয়েছে: {1}।</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">ফাইলনামে {0} আছে</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">ফাইলের কনটেন্টে {0} আছে</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">সবকিছু</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">বা</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">যেভাবে মিলেছে</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... আরও {0}টি</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">{0} দিয়ে তৈরি</sys:String>
+
+    <!-- Term/group chips + tooltips -->
+    <sys:String x:Key="Str_Mode_Name">নাম</sys:String>
+    <sys:String x:Key="Str_Mode_Content">কনটেন্ট</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">ফাইলনাম / ওয়াইল্ডকার্ড  (যেমন *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">কনটেন্ট সার্চ  (ফাইলের ভেতরের টেক্সট)</sys:String>
+    <sys:String x:Key="Str_Group_Any">যেকোনো</sys:String>
+    <sys:String x:Key="Str_Group_All">সব</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">যেকোনো: এই গ্রুপের যেকোনো টার্ম মিললেই ফাইল মেলে</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">সব: ফাইলকে এই গ্রুপের প্রতিটি টার্মের সাথে মিলতে হবে</sys:String>
+    <sys:String x:Key="Str_Join_And">এবং</sys:String>
+    <sys:String x:Key="Str_Join_Or">বা</sys:String>
+    <sys:String x:Key="Str_Chk_CloseTabs">আমার খোলা ট্যাব বন্ধ করুন</sys:String>
+
+    <!-- Help card: shortcuts -->
+    <sys:String x:Key="Str_Help_Shortcuts">শর্টকাট</sys:String>
+    <sys:String x:Key="Str_Ks_Run">সার্চ চালান</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">পপআপ বন্ধ, সার্চ থামানো, তারপর বেরোনোর প্রস্তাব</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">ফলাফল ফিল্টার করুন</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">নতুন সার্চ ট্যাব</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">বর্তমান ট্যাব বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">পরের ট্যাব (Shift: আগেরটি)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">ট্যাব 1-9 এ যান (9 = শেষ)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">সার্চ টার্ম যোগ করুন</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">ফিল্টার যোগ করুন</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">ফোল্ডার বাছুন</sys:String>
+    <sys:String x:Key="Str_Ks_Help">এই কার্ড দেখান</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">কেস-সংবেদনশীল মিল চালু/বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">ফলাফল মুছুন</sys:String>
+    <sys:String x:Key="Str_Ks_Address">অবস্থান সম্পাদনা করুন - পাথ লিখে Enter চাপুন</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">এই ফলাফলের ভিতরে খুঁজুন, নতুন ট্যাবে</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">সার্চ প্যানেল দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">সব ফলাফল খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">সব ফলাফল বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">এই ফোল্ডারে একটি PowerShell ট্যাব খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">এই ফোল্ডারে একটি CMD ট্যাব খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell প্রশাসক হিসেবে খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD প্রশাসক হিসেবে খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">ফলাফল HTML হিসেবে এক্সপোর্ট করুন</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">ফলাফল CSV হিসেবে এক্সপোর্ট করুন</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">শর্টকাট উইন্ডোর যেকোনো জায়গায় কাজ করে। খোলা ড্রপডাউন, তারিখের ঘর ও ফলাফল ফিল্টার Enter নিজেদের জন্য রাখে।</sys:String>
+
+    <!-- Font dialog, reached from the row under the theme flyout -->
+    <sys:String x:Key="Str_Fonts_Row">ফন্ট...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">ফন্ট</sys:String>
+    <sys:String x:Key="Str_Fonts_App">অ্যাপ</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">টার্মিনাল</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">ডিফল্ট</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">তালিকার উপরে হুইল ঘুরিয়ে ফন্ট দেখুন। প্রতিটি পরিবর্তন সঙ্গে সঙ্গে কার্যকর হয়।</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0}-তে পাঠযোগ্য অক্ষর নেই - আগের ফন্ট রাখা হচ্ছে</sys:String>
+
+    <!-- Associations card (Associations.cs, AssociationsCard.cs) -->
+    <sys:String x:Key="Str_Assoc_Row">ফাইল অ্যাসোসিয়েশন...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">ফাইল অ্যাসোসিয়েশন</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">KillerShell-কে Windows-এ নিবন্ধন করুন, যাতে এটি “দিয়ে খুলুন” মেনুতে, Settings-এর ডিফল্ট অ্যাপ তালিকায় এবং যেকোনো ফোল্ডার ও ড্রাইভের ডান ক্লিক মেনুতে দেখা যায়।</sys:String>
+    <sys:String x:Key="Str_Assoc_What">টেক্সট ধরন</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd ও .reg-এর জন্য বদলে “KillerShell দিয়ে সম্পাদনা করুন” সারিটি যোগ হয়। এগুলিতে ডাবল ক্লিক আগের মতোই সেগুলি চালায় বা মার্জ করে, কারণ চুপচাপ সেটি বদলে দিলে কারও একটা বিকেল নষ্ট হয়।</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">এই পিসির সব ব্যবহারকারীর জন্য নিবন্ধন করুন</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">সব ব্যবহারকারীর জন্য নিবন্ধন করতে KillerShell প্রশাসক হিসেবে চালান</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">নিবন্ধন করুন</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">নিবন্ধন সরান</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Windows-এর ডিফল্ট অ্যাপ খুলুন...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">নিবন্ধিত নয়। Windows এখনো কোনো ফাইল ধরনের জন্য KillerShell দেখায় না।</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">আপনার অ্যাকাউন্টের জন্য নিবন্ধিত। Windows আপনার হয়ে ডিফল্ট বদলাবে না; Settings-এ প্রতিটি ফাইল ধরনের জন্য KillerShell নিজে বেছে নিন।</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">এই পিসির সব ব্যবহারকারীর জন্য নিবন্ধিত। Windows আপনার হয়ে ডিফল্ট বদলাবে না; Settings-এ প্রতিটি ফাইল ধরনের জন্য KillerShell নিজে বেছে নিন।</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">এই কপিটি পোর্টেবল। অ্যাসোসিয়েশনগুলি এই .exe ফাইলটি এখন যেখানে আছে সেখানেই নির্দেশ করবে, আর ফাইলটি সরালে বা মুছলে কাজ করবে না।</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Windows-এ নিবন্ধিত হয়েছে</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">নিবন্ধন সরানো হয়েছে</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows সেই পরিবর্তন গ্রহণ করেনি</sys:String>
+
+    <!-- Title-bar caption on an elevated window, beside the wordmark -->
+    <sys:String x:Key="Str_Title_Elevated">- উন্নীত অধিকার</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">প্যানেলের বার দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">নতুন উইন্ডো খুলুন</sys:String>
+
+    <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+    <sys:String x:Key="Str_TT_Recents">সম্প্রতি দেখা ফোল্ডার</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">এখনো কোনো সাম্প্রতিক ফোল্ডার নেই</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">তালিকা মুছুন</sys:String>
+
+    <!-- Results density, on the rail (Density.cs) -->
+    <sys:String x:Key="Str_TT_Density">ফলাফলের ঘনত্ব - ক্লিকে বদলান, হুইলে ধাপে ধাপে</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">ঘনত্ব: প্রশস্ত</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">ঘনত্ব: আরামদায়ক</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">ঘনত্ব: সংক্ষিপ্ত</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">ঘনত্ব: ঘন</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">ঘনত্ব: সর্বনিম্ন</sys:String>
+
+    <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+    <sys:String x:Key="Str_Term_Copy">কপি করুন</sys:String>
+    <sys:String x:Key="Str_Term_Paste">পেস্ট করুন</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">সব নির্বাচন করুন</sys:String>
+    <sys:String x:Key="Str_Term_Clear">পরিষ্কার করুন</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">নতুন টার্মিনাল</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">এই ফোল্ডার খুলুন</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">ফন্ট...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">প্রম্পট সম্পাদনা...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">প্রম্পট রিসেট করুন</sys:String>
+    <sys:String x:Key="Str_Term_Close">টার্মিনাল বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">সরবরাহ করা প্রম্পট স্ক্রিপ্ট ফিরিয়ে আনবেন? এই ফাইলে করা আপনার পরিবর্তনগুলি হারিয়ে যাবে।</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">রিসেট</sys:String>
+    <!-- Rail button: left click opens PowerShell, right click picks -->
+    <sys:String x:Key="Str_TT_Terminal">টার্মিনাল খুলুন  (F8)  -  বেছে নিতে ডান ক্লিক করুন</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell প্রশাসক হিসেবে</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">কমান্ড প্রম্পট</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">কমান্ড প্রম্পট প্রশাসক হিসেবে</sys:String>
+
+    <!-- Browsing, drop targets and the results context menu (2.0) -->
+    <sys:String x:Key="Str_Scope_Dropped">ড্রপ করা ফাইল</sys:String>
+    <sys:String x:Key="Str_Tab_Dropped">ড্রপ করা ({0})</sys:String>
+    <sys:String x:Key="Str_TT_SearchPanel">সার্চ প্যানেল দেখান বা লুকান  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">ফোল্ডার ট্রি দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">পাশের প্যানেলগুলো বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_TT_Bookmarks">সংরক্ষিত অবস্থান  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">এই ফোল্ডার সংরক্ষণ করুন</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">লুকানো ও সিস্টেম আইটেম দেখান</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">ফোল্ডার ফাইলের উপরে রাখুন</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">প্রিয় তালিকায় যোগ করুন</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">প্রিয় তালিকা থেকে সরান</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">সংরক্ষিত অবস্থান দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">সংরক্ষিত অবস্থান 1-10 এ যান (0 = দশম)</sys:String>
+    <sys:String x:Key="Str_TT_Back">পেছনে</sys:String>
+    <sys:String x:Key="Str_TT_Forward">সামনে</sys:String>
+    <sys:String x:Key="Str_Status_Listing">{0} খোলা হচ্ছে...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">{0} টি আইটেম</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">{0} খোলা যাচ্ছে না</sys:String>
+    <sys:String x:Key="Str_Menu_OpenAdmin">অ্যাডমিনিস্ট্রেটর হিসেবে খুলুন</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">এই ফোল্ডারের ভেতরে খুঁজুন</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">এখানে টার্মিনাল খুলুন</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">এখানে প্রশাসক হিসেবে টার্মিনাল খুলুন</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">এই ফোল্ডার বাদ দিন</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">পুরো পাথ কপি করুন</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">ফাইলের নাম কপি করুন</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">ফোল্ডারের পাথ কপি করুন</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">মিলে যাওয়া লাইন কপি করুন</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">SHA-256 কপি করুন</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">বৈশিষ্ট্য</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">Windows-এর আরও অপশন...</sys:String>
+    <sys:String x:Key="Str_Status_Copied">{0} টি ক্লিপবোর্ডে কপি হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">{0} টি মিলে যাওয়া লাইন কপি হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">{0} টি ফাইল কপি হয়েছে - Explorer-এ পেস্ট করুন</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">কপি করার মতো মিলে যাওয়া লাইন নেই (নামের মিলে লাইন থাকে না)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">ক্লিপবোর্ডে পৌঁছানো যায়নি - অন্য একটি অ্যাপ সেটি ধরে রেখেছে</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">{0} এর হ্যাশ করা হচ্ছে...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">{0} এর SHA-256 কপি হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">হ্যাশ করার জন্য ফাইলটি পড়া যায়নি</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">অনুমতি বাড়ানো প্রত্যাখ্যান করা হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">এই কমান্ডটি শুধু ফাইলে কাজ করে, ফোল্ডারে নয়</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows এটি খুলতে পারেনি</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">{0} বাদ দেওয়া হচ্ছে - প্রয়োগ করতে আবার সার্চ করুন</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} ইতিমধ্যেই বাদ দেওয়া আছে</sys:String>
+
+    <!-- শর্টকাট কার্ড: বিভাগের শিরোনাম, তালিকা / কীবোর্ড টগল এবং ইঙ্গিত -->
+    <sys:String x:Key="Str_Ks_About">অ্যাবাউট কার্ড দেখান</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">অনুসন্ধান</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">নেভিগেশন</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">ট্যাব</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">ভিউ</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">ফাইল</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">সম্পাদনা</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">সহায়তা</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">তালিকা</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">কীবোর্ড</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">সেই স্তরটি দেখতে Ctrl, Shift বা Alt চেপে ধরে রাখুন</sys:String>
+
+    <!-- এক্সপ্লোরার-প্রচলিত শর্টকাট -->
+    <sys:String x:Key="Str_Ks_BackForward">পিছনে / সামনে</sys:String>
+    <sys:String x:Key="Str_Ks_Back">পিছনে</sys:String>
+    <sys:String x:Key="Str_Ks_Up">এক ফোল্ডার উপরে</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">রিফ্রেশ - ফোল্ডার আবার তালিকাভুক্ত করুন বা সার্চ আবার চালান</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">সব ফলাফল নির্বাচন করুন</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">কার্সার সার্চ বাক্সে রাখুন</sys:String>
+
+    <!-- ফাইল অপারেশন: অগ্রগতি, দ্বন্দ্ব এবং বোতাম -->
+    <sys:String x:Key="Str_Fo_Copying">কপি করা হচ্ছে...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">সরানো হচ্ছে...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">মুছে ফেলা হচ্ছে...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{1} এর মধ্যে {0}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} এখানে ইতিমধ্যেই আছে। কোনটি রাখতে চান?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">ইতিমধ্যেই আছে</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">কপি করা হবে</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">এই ব্যাচের বাকি সবের জন্য একই কাজ করুন</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">প্রতিস্থাপন</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">এড়িয়ে যান</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">দুটোই রাখুন</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">নাম পরিবর্তন</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">মুছুন</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">নতুন নাম</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">নতুন ফোল্ডার</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">{0} টি আইটেম স্থায়ীভাবে মুছবেন? এটি ফেরানো যাবে না - এগুলো রিসাইকেল বিনে যাবে না।</sys:String>
+
+    <!-- ফাইল অপারেশনের শর্টকাট ও ফলাফল -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">ফাইল কাট / কপি / পেস্ট করুন</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">নাম পরিবর্তন করুন</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">রিসাইকেল বিনে পাঠান</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">স্থায়ীভাবে মুছুন</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">নতুন ফোল্ডার</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">আগে একটি ফোল্ডার খুলুন - সার্চ ট্যাবে রাখার জায়গা নেই</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">ফোল্ডারকে তার নিজের ভিতরে ফেলা যাবে না</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">সম্পন্ন - {0} টি আইটেম</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">{0} টি আইটেমের পর বাতিল</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} টি সম্পন্ন, {1} টি ব্যর্থ</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">এটি কাজ করেনি</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">নাম পরিবর্তন করা যায়নি - {0}</sys:String>
+
+    <!-- ফাইল অপারেশনের কনটেক্সট মেনু -->
+    <sys:String x:Key="Str_Menu_Cut">কাট</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">কপি</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">পেস্ট</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">নাম পরিবর্তন</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">মুছুন  (Shift: স্থায়ীভাবে)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">নতুন ফোল্ডার</sys:String>
+
+
+    <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
+    <sys:String x:Key="Str_Fonts_Editor">এডিটরের লেখা</sys:String>
+
+    <sys:String x:Key="Str_Prof_Edit">PowerShell প্রোফাইল সম্পাদনা করুন</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">{0}-কে তার প্রোফাইলের অবস্থান জিজ্ঞাসা করা হচ্ছে...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} সাড়া দেয়নি - এর প্রোফাইল খুঁজে পাওয়া যায়নি।</sys:String>
+    <sys:String x:Key="Str_Prof_None">কোনো PowerShell পাওয়া যায়নি</sys:String>
+
+    <sys:String x:Key="Str_Menu_Edit">সম্পাদনা</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} সম্পাদনা করার জন্য অত্যধিক বড় ({1} MB)।</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">সংরক্ষণ  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">পূর্বাবস্থা  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">পুনরায় করুন  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">খুঁজুন  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">লাইনে যান  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">ওয়ার্ড র‍্যাপ</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">এডিটর সেটিংস</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">লাইন</sys:String>
+
+    <sys:String x:Key="Str_Ed_OptLineNumbers">লাইন নম্বর</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">বর্তমান লাইন হাইলাইট করুন</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">স্পেস ও ট্যাব দেখান</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">ট্যাবের বদলে স্পেস দিন</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">ওয়ার্ড র‍্যাপ</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">ইন্ডেন্ট</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">ফন্ট ও আকার...</sys:String>
+
+    <sys:String x:Key="Str_Ed_Undo">পূর্বাবস্থা</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">পুনরায় করুন</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">কাটুন</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">কপি করুন</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">পেস্ট করুন</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">সব নির্বাচন করুন</sys:String>
+    <sys:String x:Key="Str_Ed_Find">খুঁজুন...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">লাইনে যান...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">সংরক্ষণ</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">সেটিংস...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">ফাইল বন্ধ করুন</sys:String>
+
+    <sys:String x:Key="Str_TT_TermCwd">এই ফোল্ডারটি একটি ট্যাবে খুলুন</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">নতুন টার্মিনাল  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">প্রশাসক হিসেবে নতুন টার্মিনাল  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">এই ফোল্ডারটি একটি ট্যাবে খুলুন</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">পরিষ্কার করুন</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">ফন্ট...</sys:String>
+
+    <sys:String x:Key="Str_Ed_WrapOn">ওয়ার্ড র‍্যাপ চালু।</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">ওয়ার্ড র‍্যাপ বন্ধ - লম্বা লাইন দেখতে স্ক্রোল করুন।</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">{0} সংরক্ষিত হয়েছে।</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">{0} সংরক্ষণ করা যায়নি: {1}</sys:String>
+    <sys:String x:Key="Str_TT_TabOverflow">সব ট্যাব</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">টেনে প্রস্থ বদলান  -  ডাবল-ক্লিকে আগের অবস্থায়</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">নতুন নথি</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">শিরোনামহীন</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">এইভাবে সংরক্ষণ করুন</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">সব ফাইল</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">{0} খোলা যায়নি: {1}</sys:String>
+    <sys:String x:Key="Str_Dlg_DiscardMsg">সংরক্ষণ না করেই ফাইলটি বন্ধ করবেন? আপনার পরিবর্তনগুলি হারিয়ে যাবে।</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">বাতিল করুন</sys:String>
+
+</ResourceDictionary>

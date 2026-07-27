@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "KillerShell": {
+      "commandName": "Project"
+    },
+    "KF (Demo)": {
+      "commandName": "Project",
+      "commandLineArgs": "--demo"
+    }
+  }
+}

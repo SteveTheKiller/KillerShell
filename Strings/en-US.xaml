@@ -1,0 +1,456 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - English (en-US) strings. x:Key values are looked up at
+         runtime; never change them. Other locales layer over this file; any
+         key they omit falls back here. {0}/{1} placeholders are filled by the
+         app - keep them.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">Language</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Theme</sys:String>
+    <!-- App-wide accessibility zoom: wheel over the title-bar wordmark (AppScale.cs) -->
+    <sys:String x:Key="Str_TT_AppSize">Scroll over the wordmark to resize the app</sys:String>
+    <sys:String x:Key="Str_St_AppSize">App size {0}%</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">theme</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">accent</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">in:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(no folder selected - click to choose)</sys:String>
+    <!-- Source name in the scope breadcrumb when a tab was made by dropping files on the window -->
+    <sys:String x:Key="Str_Scope_Dropped">dropped files</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Click to change search folder</sys:String>
+    <!-- Browsing (Browse.cs) -->
+    <sys:String x:Key="Str_TT_SearchPanel">Show or hide the search panel  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">Show or hide the folder tree</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Collapse the side panels</sys:String>
+    <!-- Favorites (Bookmarks.cs) -->
+    <sys:String x:Key="Str_TT_Bookmarks">Saved locations  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Save this folder</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Show hidden and system items</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Keep folders above files</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">Add to favorites</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">Remove from favorites</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">show or hide saved locations</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">go to saved location 1-10 (0 = tenth)</sys:String>
+    <sys:String x:Key="Str_TT_Back">Back</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Forward</sys:String>
+    <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
+    <sys:String x:Key="Str_Status_Listing">Opening {0}...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">{0} item(s)</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">Cannot open {0}</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">Select root search folder</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">FILTERS</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">include</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">exclude</sys:String>
+    <sys:String x:Key="Str_TT_Include">Semicolon-separated patterns, e.g. *.txt;*.log</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">Semicolon-separated paths or patterns to skip</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">case sensitive</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ add filter</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">advanced</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">extension</sys:String>
+    <sys:String x:Key="Str_Filter_Date">date modified</sys:String>
+    <sys:String x:Key="Str_Filter_Size">size</sys:String>
+    <sys:String x:Key="Str_Cond_Is">is</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">is not</sys:String>
+    <sys:String x:Key="Str_Cond_Before">before</sys:String>
+    <sys:String x:Key="Str_Cond_After">after</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">over</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">under</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">Pattern help</sys:String>
+    <sys:String x:Key="Str_Help_Title">PATTERNS</sys:String>
+    <sys:String x:Key="Str_Help_Star">everything ending in .log</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">names starting with report</sys:String>
+    <sys:String x:Key="Str_Help_Middle">names containing 2024</sys:String>
+    <sys:String x:Key="Str_Help_Q">? stands for exactly one character</sys:String>
+    <sys:String x:Key="Str_Help_List">list several patterns with ; between them</sys:String>
+    <sys:String x:Key="Str_Help_Plain">plain text works too - matches names containing it</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">exclude also skips whole folders by name</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">new search</sys:String>
+    <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
+    <sys:String x:Key="Str_Tab_Dropped">dropped ({0})</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">New search tab</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Close tab</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">Cancel</sys:String>
+    <sys:String x:Key="Str_Btn_Select">Select</sys:String>
+    <sys:String x:Key="Str_QA_Home">Home</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">Desktop</sys:String>
+    <sys:String x:Key="Str_QA_Documents">Documents</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">Downloads</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">Pictures</sys:String>
+    <sys:String x:Key="Str_TT_Up">Up one folder</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(no subfolders - click Select to use this folder)</sys:String>
+    <sys:String x:Key="Str_Col_Name">name</sys:String>
+    <sys:String x:Key="Str_Col_Folder">location</sys:String>
+    <sys:String x:Key="Str_Sort_Found">as found</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">Filter these results (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Search within these results</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Second pane  |  right-click to flip side-by-side / stacked</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">More tools</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Sort by</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">This PC</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">Search within these results</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{0} results from {1}  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">No results to search within yet.</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">Could not start an elevated shell: {0}</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">PORTABLE</sys:String>
+    <sys:String x:Key="Str_Btn_Install">Install KillerShell...</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">Install</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">Install KillerShell to your user profile?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">- Start Menu shortcut&#x0A;- Appears in Add/Remove Programs</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">Desktop shortcut</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">Install for all users (Admin required)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell is already installed for all users on this PC, so this will update that copy. Windows will ask for permission.</sys:String>
+    <sys:String x:Key="Str_St_InstallCancelled">Install canceled</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">Quit KillerShell?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">Remember my open tabs</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">Remember my choice</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">Quit</sys:String>
+    <sys:String x:Key="Str_Col_Size">size</sys:String>
+    <sys:String x:Key="Str_Col_Modified">modified</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">{0} folder(s), {1} file(s)</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">List view</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">Icon view</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">Details view</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">SEARCH TERMS</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ add term</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ add group</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">CLEAR</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">SEARCH</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">STOP</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">RESULTS</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">RESULTS  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">Export results</sys:String>
+    <sys:String x:Key="Str_TT_Result">Click to expand  |  Double-click to reveal in Explorer  |  Right-click for more</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">EXPAND ALL</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">COLLAPSE ALL</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">Open file</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">Open with...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">Show in Explorer</sys:String>
+    <!-- Results context menu (ResultsMenu.cs). Copy commands act on the whole selection. -->
+    <sys:String x:Key="Str_Menu_OpenAdmin">Open as administrator</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">Search inside this folder</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">Open terminal here</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Open terminal here as administrator</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Exclude this folder</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">Copy full path</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">Copy file name</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">Copy folder path</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">Copy matched lines</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">Copy SHA-256</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">Properties</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">More Windows options...</sys:String>
+    <!-- Status lines those commands write; {0} is a count or a file name -->
+    <sys:String x:Key="Str_Status_Copied">Copied {0} to the clipboard</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">Copied {0} matched lines</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">Copied {0} file(s) - paste in Explorer</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">No matched lines to copy (name matches have none)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">Could not reach the clipboard - another app is holding it</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">Hashing {0}...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">SHA-256 of {0} copied</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">Could not read the file to hash it</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">Elevation declined</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">That command only works on files, not folders</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows would not open that</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">Excluding {0} - run the search again to apply it</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} is already excluded</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">Minimize</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">Maximize</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">Restore</sys:String>
+    <sys:String x:Key="Str_Menu_Close">Close</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">Ready</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">Invalid or missing root path.</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">Add at least one search term or filter.</sys:String>
+    <sys:String x:Key="Str_Status_Done">Done in {0}s  -  {1} file(s) matched.</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">Stopped.</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">Cleared.</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">Nothing to export yet.</sys:String>
+    <sys:String x:Key="Str_Status_Exported">Exported: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">Export failed: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">{0} files scanned</sys:String>
+    <sys:String x:Key="Str_Count_Matches">{0} matches</sys:String>
+
+    <!-- About overlay -->
+    <!-- Tagline is composed in XAML: DescA + "GPLv3 " + [Killer Tools link] + DescB.
+         GPLv3 and the product name stay out of the translatable text (family standard). -->
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Free shell for power users. A file browser, a terminal and a text editor share one window, one tab strip and one set of keys. No installer, no runtime, no account. A </sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> utility.</sys:String>
+    <sys:String x:Key="Str_About_Version">VERSION</sys:String>
+    <sys:String x:Key="Str_About_Publisher">PUBLISHER</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">THUMBPRINT</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  built by a field tech</sys:String>
+
+    <!-- HTML report (exported in the app's current language) -->
+    <sys:String x:Key="Str_Rpt_Meta">Generated {0} &#183; {1} files &#183; {2} matches</sys:String>
+    <!-- Browsing export: a folder listing counts items and has no matches or query -->
+    <sys:String x:Key="Str_Rpt_MetaList">Generated {0} &#183; {1} items</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">Listing of {0}.</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">Searched {0} for {1}.</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">file names containing {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">file contents containing {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">everything</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">or</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">found by</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... +{0} more</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">Generated by {0}</sys:String>
+
+    <!-- Term/group chips + tooltips (computed in the models, re-raised on language switch) -->
+    <sys:String x:Key="Str_Mode_Name">name</sys:String>
+    <sys:String x:Key="Str_Mode_Content">content</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">Filename / wildcard  (e.g. *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">Content search  (text inside files)</sys:String>
+    <sys:String x:Key="Str_Group_Any">ANY</sys:String>
+    <sys:String x:Key="Str_Group_All">ALL</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">ANY: a file matches if any term in this group hits</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">ALL: a file must match every term in this group</sys:String>
+    <sys:String x:Key="Str_Join_And">AND</sys:String>
+    <sys:String x:Key="Str_Join_Or">OR</sys:String>
+    <!-- Quit dialog: opt-out tab checkbox (unchecked = tabs are remembered) -->
+    <sys:String x:Key="Str_Chk_CloseTabs">Close my open tabs</sys:String>
+
+    <!-- Help card: keyboard shortcuts section (F1) -->
+    <sys:String x:Key="Str_Help_Shortcuts">Shortcuts</sys:String>
+    <sys:String x:Key="Str_Ks_Run">run the search</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">close popups, stop the search, then offer to quit</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">filter the results</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">new search tab</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">close the current tab</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">next tab (Shift: previous)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">jump to tab 1-9 (9 = last)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">add a search term</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">add a filter</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">choose the folder</sys:String>
+    <sys:String x:Key="Str_Ks_Help">show this card</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">toggle case-sensitive matching</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">clear the results</sys:String>
+    <sys:String x:Key="Str_Ks_Address">edit the location - type a path and press Enter</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">search within these results, in a new tab</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">show or hide the search panel</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">expand every result</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">collapse every result</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">open a PowerShell tab in this folder</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">open a CMD tab in this folder</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">open PowerShell as administrator</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">open CMD as administrator</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">export the results as HTML</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">export the results as CSV</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">Shortcuts work anywhere in the window. Open dropdowns, the date box, and the results filter keep Enter for themselves.</sys:String>
+
+    <!-- Font dialog, reached from the row under the theme flyout -->
+    <sys:String x:Key="Str_Fonts_Row">Fonts...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">FONTS</sys:String>
+    <sys:String x:Key="Str_Fonts_App">APP</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">TERMINAL</sys:String>
+    <sys:String x:Key="Str_Fonts_Editor">EDITOR TEXT</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">Default</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">Roll the wheel over a list to browse faces. Every change applies straight away.</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0} has no readable letters - keeping the previous font</sys:String>
+
+    <!-- Associations card (Associations.cs, AssociationsCard.cs). Registering is something we
+         can do; DEFAULTING is the user's call in Settings, and the wording has to keep those
+         two apart or the card is promising something Windows will not let it deliver. -->
+    <sys:String x:Key="Str_Assoc_Row">File associations...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">FILE ASSOCIATIONS</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">Register KillerShell with Windows so it appears in "Open with", in Settings under Default apps, and on the right-click menu of any folder and drive.</sys:String>
+    <sys:String x:Key="Str_Assoc_What">TEXT TYPES</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd and .reg get an "Edit with KillerShell" row instead. Their double-click still runs or merges them, because quietly changing that is how someone loses an afternoon.</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">Register for all users on this PC</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">Run KillerShell as administrator to register for all users</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">Register</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">Remove registration</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Open Windows default apps...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">Not registered. Windows does not offer KillerShell for any file type yet.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">Registered for your account. Windows will not switch a default for you - pick KillerShell per file type in Settings.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">Registered for all users on this PC. Windows will not switch a default for you - pick KillerShell per file type in Settings.</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">This copy is portable. The associations will point at wherever this .exe sits right now, and break if you move or delete it.</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Registered with Windows</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">Registration removed</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows would not accept that change</sys:String>
+
+    <!-- Title-bar caption on an elevated window, beside the wordmark -->
+    <sys:String x:Key="Str_Title_Elevated">- Escalated Privileges</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">hide or show the pane menubar</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">open a new window</sys:String>
+
+    <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+    <sys:String x:Key="Str_TT_Recents">Recently visited folders</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">No recent folders yet</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">Clear the list</sys:String>
+
+    <!-- Results density, on the rail (Density.cs) -->
+    <sys:String x:Key="Str_TT_Density">Results density - click to cycle, wheel to step</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">Density: roomy</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">Density: comfortable</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">Density: compact</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">Density: tight</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">Density: minimal</sys:String>
+
+    <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+    <sys:String x:Key="Str_Term_Copy">Copy</sys:String>
+    <sys:String x:Key="Str_Term_Paste">Paste</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">Select all</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Clear</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">New terminal</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">Open folder here</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">Fonts...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">Edit prompt...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">Reset prompt</sys:String>
+    <sys:String x:Key="Str_Term_Close">Close terminal</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">Put the shipped prompt script back? Your edits to this file will be lost.</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">Reset</sys:String>
+
+    <!-- PowerShell $PROFILE (ProfileMenu.cs, Terminal/ShellProfiles.cs) -->
+    <sys:String x:Key="Str_Prof_Edit">Edit PowerShell profile</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">Asking {0} where its profile is...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} did not answer - could not find its profile.</sys:String>
+    <sys:String x:Key="Str_Prof_None">No PowerShell found</sys:String>
+
+    <!-- Editor tabs (EditorTabs.cs, Editing/EditorControl.cs) -->
+    <sys:String x:Key="Str_Menu_Edit">Edit</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} is too big to edit ({1} MB).</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">Save  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">Undo  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">Redo  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">Find  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">Go to line  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Word wrap</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">Editor settings</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">line</sys:String>
+
+    <!-- Gear flyout -->
+    <sys:String x:Key="Str_Ed_OptLineNumbers">Line numbers</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">Highlight current line</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">Show spaces and tabs</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">Insert spaces, not tabs</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">Word wrap</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">INDENT</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">Font and size...</sys:String>
+
+    <!-- Right-click menu (Editing/EditorMenu.cs) -->
+    <sys:String x:Key="Str_Ed_Undo">Undo</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">Redo</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">Cut</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">Copy</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">Paste</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">Select all</sys:String>
+    <sys:String x:Key="Str_Ed_Find">Find...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">Go to line...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">Save</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">Settings...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">Close file</sys:String>
+
+    <!-- Shell bar (TerminalBar.cs) -->
+    <sys:String x:Key="Str_TT_TermCwd">Open this folder in a tab</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">New terminal  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">New terminal as administrator  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Open this folder in a tab</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Clear</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Fonts...</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOn">Word wrap on.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">Word wrap off - scroll to see long lines.</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">Saved {0}.</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">Could not save {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">Could not open {0}: {1}</sys:String>
+
+    <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
+    <sys:String x:Key="Str_TT_TabOverflow">All tabs</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">Drag to resize  -  double-click to reset</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">New document</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">untitled</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">Save as</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">All files</sys:String>
+
+    <sys:String x:Key="Str_Dlg_DiscardMsg">Close this file without saving? Your changes will be lost.</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">Discard</sys:String>
+
+    <!-- Rail button: left click opens PowerShell, right click picks -->
+    <sys:String x:Key="Str_TT_Terminal">Open a terminal  (F8)  -  right-click to choose</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell as administrator</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">Command Prompt</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">Command Prompt as administrator</sys:String>
+
+    <!-- Shortcuts card: category headings, the LIST / KEYBOARD toggle, and the keyboard's hint -->
+    <sys:String x:Key="Str_Ks_About">show the about card</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">SEARCH</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">NAVIGATION</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">TABS</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">VIEW</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">FILE</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">EDITING</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">HELP</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">LIST</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">KEYBOARD</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">hold Ctrl, Shift or Alt to preview that layer</sys:String>
+
+    <!-- Explorer-convention bindings -->
+    <sys:String x:Key="Str_Ks_BackForward">go back / forward</sys:String>
+    <sys:String x:Key="Str_Ks_Back">go back</sys:String>
+    <sys:String x:Key="Str_Ks_Up">go up one folder</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">refresh - re-list the folder, or re-run the search</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">select every result</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">put the caret in the search box</sys:String>
+
+    <!-- File operations: progress, conflicts, and their buttons -->
+    <sys:String x:Key="Str_Fo_Copying">Copying...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">Moving...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">Deleting...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{0} of {1}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} already exists here. Which one do you want to keep?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">ALREADY THERE</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">BEING COPIED IN</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">Do the same for everything else in this batch</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">Replace</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">Skip</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">Keep both</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">Rename</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">Delete</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">New name</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">New folder</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">Delete {0} item(s) permanently? This cannot be undone - they do not go to the Recycle Bin.</sys:String>
+
+    <!-- File-operation shortcuts and their outcomes -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">cut / copy / paste files</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">rename</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">send to the Recycle Bin</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">delete permanently</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">new folder</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">Open a folder first - there is nowhere to put these on a search tab</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">Cannot drop a folder into itself</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">Done - {0} item(s)</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">Canceled after {0} item(s)</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} done, {1} failed</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">That did not work</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">Could not rename - {0}</sys:String>
+
+    <!-- File-operation context menu -->
+    <sys:String x:Key="Str_Menu_Cut">Cut</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">Copy</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">Paste</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">Rename</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">Delete  (Shift: permanently)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">New folder</sys:String>
+
+</ResourceDictionary>

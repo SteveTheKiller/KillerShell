@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!--
+  YAML. Not shipped by AvalonEdit, so this is ours.
+
+  Case SENSITIVE, unlike the other four here: in YAML "True" and "true" are both
+  booleans but "TRUE" as a bare word is not, and more to the point keys are
+  case sensitive, so folding case would be lying about the format.
+-->
+<SyntaxDefinition name="Yaml" extensions=".yml;.yaml" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment"       foreground="#57A64A" />
+  <Color name="Key"           foreground="#9CDCFE" />
+  <Color name="String"        foreground="#D69D63" />
+  <Color name="Boolean"       foreground="#4A9FE0" fontWeight="bold" />
+  <Color name="NumberLiteral" foreground="#B5CEA8" />
+  <Color name="Anchor"        foreground="#C586C0" />
+  <Color name="Directive"     foreground="#4EC9B0" fontWeight="bold" />
+  <Color name="Punctuation"   foreground="#A0A0A0" />
+
+  <RuleSet ignoreCase="false">
+    <!-- A # only opens a comment at the start of a line or after whitespace.
+         Without that guard a URL's fragment, or a color in a value, would take
+         the rest of the line with it. -->
+    <Span color="Comment">
+      <Begin>(^|(?&lt;=\s))\#</Begin>
+    </Span>
+
+    <!-- Document and directive markers. The triple-dash separator appears in
+         nearly every multi-part manifest and is structure, not data. -->
+    <Rule color="Directive">
+      ^(---|\.\.\.)\s*$|^%\w+.*$
+    </Rule>
+
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+      <RuleSet>
+        <Span begin="\\" end="." />
+      </RuleSet>
+    </Span>
+    <Span color="String">
+      <Begin>'</Begin>
+      <End>'</End>
+    </Span>
+
+    <!-- The key, up to but not including its colon. Allows the leading dash of
+         a list item so "- name: x" lights the name too. -->
+    <Rule color="Key">
+      ^\s*(-\s+)?[\w.\-/]+(?=\s*:(\s|$))
+    </Rule>
+
+    <Rule color="Anchor">
+      (?&lt;=\s|^)[&amp;*][\w.\-]+
+    </Rule>
+
+    <Keywords color="Boolean">
+      <Word>true</Word>
+      <Word>false</Word>
+      <Word>True</Word>
+      <Word>False</Word>
+      <Word>yes</Word>
+      <Word>no</Word>
+      <Word>on</Word>
+      <Word>off</Word>
+      <Word>null</Word>
+      <Word>Null</Word>
+    </Keywords>
+
+    <Rule color="NumberLiteral">
+      \b0[xX][0-9a-fA-F]+|(?&lt;![\w.\-])-?\d+(\.\d+)?([eE][+-]?\d+)?\b
+    </Rule>
+
+    <Rule color="Punctuation">
+      [:\[\]{},]|(?&lt;=\s|^)-(?=\s)|(?&lt;=\s|^)[|&gt;][-+]?$
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!--
+  Log files. Not shipped by AvalonEdit, so this is ours, and it is the one on
+  this list a field tech opens most.
+
+  A log has no grammar to parse - it is whatever the tool that wrote it felt
+  like emitting - so this does not try. It lights the four things that make a
+  wall of text skimmable: the SEVERITY word, the timestamp, the identifiers
+  (GUIDs, error codes, paths) and quoted text. Everything else stays body text
+  on purpose, because a log where everything is colored is a log where nothing
+  stands out.
+
+  Severity words are matched anywhere on the line, not only in a leading level
+  field, because every logger formats that field differently and half of them do
+  not have one. A line reading "no errors found" going red is the price, and it
+  is worth paying to never miss one that matters.
+-->
+<SyntaxDefinition name="Log" extensions=".log;.out;.err;.trace" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Error"         foreground="#E05252" fontWeight="bold" />
+  <Color name="Warning"       foreground="#E0AC42" fontWeight="bold" />
+  <Color name="Success"       foreground="#4FB55E" fontWeight="bold" />
+  <Color name="Info"          foreground="#4A9FE0" />
+  <Color name="Verbose"       foreground="#808080" />
+  <Color name="Timestamp"     foreground="#4EC9B0" />
+  <Color name="Identifier"    foreground="#C586C0" />
+  <Color name="String"        foreground="#D69D63" />
+  <Color name="NumberLiteral" foreground="#B5CEA8" />
+
+  <RuleSet ignoreCase="true">
+    <!-- ISO 8601, the US date form Windows tools emit, and a bare clock.
+         Whichever the tool chose, the left edge of the line stops being noise. -->
+    <Rule color="Timestamp">
+      \b\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}:\d{2}([.,]\d+)?(Z|[+-]\d{2}:?\d{2})?)?\b
+      |
+      \b\d{1,2}/\d{1,2}/\d{2,4}([ ]\d{1,2}:\d{2}:\d{2}([ ]?[AaPp][Mm])?)?\b
+      |
+      \b\d{2}:\d{2}:\d{2}([.,]\d+)?\b
+    </Rule>
+
+    <Keywords color="Error">
+      <Word>error</Word>
+      <Word>errors</Word>
+      <Word>fatal</Word>
+      <Word>critical</Word>
+      <Word>failed</Word>
+      <Word>failure</Word>
+      <Word>fail</Word>
+      <Word>exception</Word>
+      <Word>denied</Word>
+      <Word>refused</Word>
+      <Word>timeout</Word>
+      <Word>unreachable</Word>
+      <Word>err</Word>
+    </Keywords>
+
+    <Keywords color="Warning">
+      <Word>warning</Word>
+      <Word>warnings</Word>
+      <Word>warn</Word>
+      <Word>deprecated</Word>
+      <Word>retrying</Word>
+      <Word>retry</Word>
+      <Word>skipped</Word>
+      <Word>missing</Word>
+    </Keywords>
+
+    <Keywords color="Success">
+      <Word>success</Word>
+      <Word>succeeded</Word>
+      <Word>successful</Word>
+      <Word>completed</Word>
+      <Word>complete</Word>
+      <Word>ok</Word>
+      <Word>passed</Word>
+      <Word>done</Word>
+      <Word>installed</Word>
+      <Word>started</Word>
+    </Keywords>
+
+    <Keywords color="Info">
+      <Word>info</Word>
+      <Word>information</Word>
+      <Word>notice</Word>
+    </Keywords>
+
+    <Keywords color="Verbose">
+      <Word>debug</Word>
+      <Word>trace</Word>
+      <Word>verbose</Word>
+    </Keywords>
+
+    <!-- GUIDs, HRESULTs and Win32 codes, and full paths. These are what you
+         copy out of a log, so they are worth being able to find. -->
+    <Rule color="Identifier">
+      \{?\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b\}?
+      |
+      \b0[xX][0-9a-fA-F]{4,16}\b
+      |
+      \b[a-zA-Z]:\\[^\s"'&lt;&gt;|]*
+      |
+      \\\\[^\s"'&lt;&gt;|]+
+    </Rule>
+
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+    </Span>
+
+    <Rule color="NumberLiteral">
+      \b\d+(\.\d+)?\b
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

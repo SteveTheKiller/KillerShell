@@ -1,0 +1,48 @@
+name: WinGet Release
+
+# Fires when a GitHub release is published (release.ps1 does that), and submits the new
+# version to microsoft/winget-pkgs via komac.
+#
+# NOTE: `komac update` only works once SteveTheKiller.KillerShell already exists in
+# winget-pkgs. The FIRST submission has to be created by hand, once:
+#
+#   komac new SteveTheKiller.KillerShell `
+#     --version 1.0.1 `
+#     --urls https://github.com/SteveTheKiller/KillerShell/releases/download/v1.0.1/KillerShell.exe `
+#     --submit
+#
+# After that PR is merged this workflow keeps it current on its own.
+# Requires a WINGET_TOKEN repo secret: a classic PAT with `public_repo` scope on a fork
+# of microsoft/winget-pkgs. Same setup as KillerScan.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.0.1)'
+        required: true
+
+jobs:
+  submit:
+    runs-on: windows-latest
+    steps:
+      - name: Install Komac
+        run: |
+          $tag = (Invoke-RestMethod "https://api.github.com/repos/russellbanks/Komac/releases/latest").tag_name
+          $ver = $tag.TrimStart('v')
+          $url = "https://github.com/russellbanks/Komac/releases/download/$tag/komac-$ver-x86_64-pc-windows-msvc.exe"
+          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP\komac.exe"
+          Add-Content $env:GITHUB_PATH $env:RUNNER_TEMP
+        shell: pwsh
+
+      - name: Submit to WinGet
+        run: |
+          $releaseTag = if ("${{ github.event_name }}" -eq "workflow_dispatch") { "${{ github.event.inputs.tag }}" } else { "${{ github.event.release.tag_name }}" }
+          $version = $releaseTag.TrimStart('v')
+          $url = "https://github.com/SteveTheKiller/KillerShell/releases/download/$releaseTag/KillerShell.exe"
+          komac update SteveTheKiller.KillerShell --version $version --urls $url --submit
+        env:
+          GITHUB_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        shell: pwsh

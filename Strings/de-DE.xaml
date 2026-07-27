@@ -1,0 +1,442 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - English (en-US) strings. x:Key values are looked up at
+         runtime; never change them. Other locales layer over this file; any
+         key they omit falls back here. {0}/{1} placeholders are filled by the
+         app - keep them.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">Sprache</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Design</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Mit dem Mausrad über dem Schriftzug die App-Größe ändern</sys:String>
+    <sys:String x:Key="Str_St_AppSize">App-Größe {0} %</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">Design</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">Akzent</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">in:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(kein Ordner ausgewählt - zum Auswählen klicken)</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Klicken, um den Suchordner zu ändern</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">Stammordner für die Suche auswählen</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">FILTER</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">einschließen</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">ausschließen</sys:String>
+    <sys:String x:Key="Str_TT_Include">Durch Semikolon getrennte Muster, z. B. *.txt;*.log</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">Durch Semikolon getrennte Pfade oder Muster, die übersprungen werden sollen</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">Groß-/Kleinschreibung beachten</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ Filter hinzufügen</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">Erweitert</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">Dateiendung</sys:String>
+    <sys:String x:Key="Str_Filter_Date">Änderungsdatum</sys:String>
+    <sys:String x:Key="Str_Filter_Size">Größe</sys:String>
+    <sys:String x:Key="Str_Cond_Is">ist</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">ist nicht</sys:String>
+    <sys:String x:Key="Str_Cond_Before">vor</sys:String>
+    <sys:String x:Key="Str_Cond_After">nach</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">über</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">unter</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">Muster-Hilfe</sys:String>
+    <sys:String x:Key="Str_Help_Title">MUSTER</sys:String>
+    <sys:String x:Key="Str_Help_Star">alles, was auf .log endet</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">Namen, die mit report beginnen</sys:String>
+    <sys:String x:Key="Str_Help_Middle">Namen, die 2024 enthalten</sys:String>
+    <sys:String x:Key="Str_Help_Q">? steht für genau ein Zeichen</sys:String>
+    <sys:String x:Key="Str_Help_List">mehrere Muster mit ; trennen</sys:String>
+    <sys:String x:Key="Str_Help_Plain">einfacher Text geht auch - trifft Namen, die ihn enthalten</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">Ausschließen überspringt auch ganze Ordner nach Name</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">Neue Suche</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Neuer Suchtab</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Tab schließen</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">Abbrechen</sys:String>
+    <sys:String x:Key="Str_Btn_Select">Auswählen</sys:String>
+    <sys:String x:Key="Str_QA_Home">Home</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">Desktop</sys:String>
+    <sys:String x:Key="Str_QA_Documents">Dokumente</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">Downloads</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">Bilder</sys:String>
+    <sys:String x:Key="Str_TT_Up">Einen Ordner nach oben</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(keine Unterordner - mit Auswählen diesen Ordner verwenden)</sys:String>
+    <sys:String x:Key="Str_Col_Name">Name</sys:String>
+    <sys:String x:Key="Str_Col_Folder">Ort</sys:String>
+    <sys:String x:Key="Str_Sort_Found">wie gefunden</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">Diese Ergebnisse filtern (Strg+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">In diesen Ergebnissen suchen</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Zweiter Bereich  |  Rechtsklick wechselt nebeneinander / übereinander</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">Weitere Werkzeuge</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Sortieren nach</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">Dieser PC</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">In diesen Ergebnissen suchen</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{0} Ergebnisse aus {1}  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">Noch keine Ergebnisse zum Durchsuchen.</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">Erhöhte Eingabeaufforderung konnte nicht gestartet werden: {0}</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">PORTABEL</sys:String>
+    <sys:String x:Key="Str_Btn_Install">KillerShell installieren...</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">Installieren</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell im Benutzerprofil installieren?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">- Startmenü-Verknüpfung&#x0A;- Erscheint unter Apps und Features</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">Desktop-Verknüpfung</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">Für alle Benutzer installieren (Administrator erforderlich)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell ist auf diesem PC bereits für alle Benutzer installiert, daher wird diese Kopie aktualisiert. Windows fragt nach der Berechtigung.</sys:String>
+    <sys:String x:Key="Str_St_InstallCancelled">Installation abgebrochen</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell beenden?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">Offene Tabs merken</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">Auswahl merken</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">Beenden</sys:String>
+    <sys:String x:Key="Str_Col_Size">Größe</sys:String>
+    <sys:String x:Key="Str_Col_Modified">geändert</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">{0} Ordner, {1} Datei(en)</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">Listenansicht</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">Symbolansicht</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">Detailansicht</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">SUCHBEGRIFFE</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ Begriff hinzufügen</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ Gruppe hinzufügen</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">LEEREN</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">SUCHEN</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">STOPP</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">ERGEBNISSE</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">ERGEBNISSE  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">Ergebnisse exportieren</sys:String>
+    <sys:String x:Key="Str_TT_Result">Klicken zum Aufklappen  |  Doppelklick: im Explorer anzeigen  |  Rechtsklick für mehr</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">ALLE AUFKLAPPEN</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">ALLE ZUKLAPPEN</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">Datei öffnen</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">Öffnen mit...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">Im Explorer anzeigen</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">Minimieren</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">Maximieren</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">Wiederherstellen</sys:String>
+    <sys:String x:Key="Str_Menu_Close">Schließen</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">Bereit</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">Ungültiger oder fehlender Stammpfad.</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">Mindestens einen Suchbegriff oder Filter hinzufügen.</sys:String>
+    <sys:String x:Key="Str_Status_Done">Fertig in {0}s  -  {1} Datei(en) gefunden.</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">Gestoppt.</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">Geleert.</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">Noch nichts zu exportieren.</sys:String>
+    <sys:String x:Key="Str_Status_Exported">Exportiert: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">Export fehlgeschlagen: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">{0} Dateien durchsucht</sys:String>
+    <sys:String x:Key="Str_Count_Matches">{0} Treffer</sys:String>
+
+    <!-- About overlay -->
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Freie Shell für Power-User. Dateimanager, Terminal und Texteditor teilen sich ein Fenster, eine Tableiste und einen Satz Tasten. Keine Installation, keine Laufzeit. Ein Dienstprogramm von </sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
+    <sys:String x:Key="Str_About_Version">VERSION</sys:String>
+    <sys:String x:Key="Str_About_Publisher">HERAUSGEBER</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">FINGERABDRUCK</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE-SHA-256</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  entwickelt von einem Field-Techniker</sys:String>
+
+    <!-- HTML report -->
+    <sys:String x:Key="Str_Rpt_Meta">Erstellt {0} &#183; {1} Dateien &#183; {2} Treffer</sys:String>
+    <sys:String x:Key="Str_Rpt_MetaList">Erstellt {0} &#183; {1} Elemente</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">Inhalt von {0}.</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">Durchsucht: {0} nach {1}.</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">Dateinamen mit {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">Dateiinhalten mit {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">alles</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">oder</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">gefunden durch</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... +{0} weitere</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">Erstellt von {0}</sys:String>
+
+    <!-- Term/group chips + tooltips -->
+    <sys:String x:Key="Str_Mode_Name">Name</sys:String>
+    <sys:String x:Key="Str_Mode_Content">Inhalt</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">Dateiname / Wildcards  (z. B. *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">Inhaltssuche  (Text in Dateien)</sys:String>
+    <sys:String x:Key="Str_Group_Any">EINE</sys:String>
+    <sys:String x:Key="Str_Group_All">ALLE</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">EINE: eine Datei passt, wenn irgendein Begriff dieser Gruppe trifft</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">ALLE: eine Datei muss jeden Begriff dieser Gruppe treffen</sys:String>
+    <sys:String x:Key="Str_Join_And">UND</sys:String>
+    <sys:String x:Key="Str_Join_Or">ODER</sys:String>
+    <sys:String x:Key="Str_Chk_CloseTabs">Meine offenen Tabs schließen</sys:String>
+
+    <!-- Help card: shortcuts -->
+    <sys:String x:Key="Str_Help_Shortcuts">Kurzbefehle</sys:String>
+    <sys:String x:Key="Str_Ks_Run">Suche starten</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">Popups schließen, Suche stoppen, dann Beenden anbieten</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">Ergebnisse filtern</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">neuer Suchtab</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">aktuellen Tab schließen</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">nächster Tab (Shift: voriger)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">zu Tab 1-9 springen (9 = letzter)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">Suchbegriff hinzufügen</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">Filter hinzufügen</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">Ordner wählen</sys:String>
+    <sys:String x:Key="Str_Ks_Help">diese Karte anzeigen</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">Groß-/Kleinschreibung umschalten</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">Ergebnisse leeren</sys:String>
+    <sys:String x:Key="Str_Ks_Address">Ort bearbeiten - Pfad eingeben und Eingabetaste drücken</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">in diesen Ergebnissen suchen, in einem neuen Tab</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">Suchbereich ein- oder ausblenden</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">alle Ergebnisse aufklappen</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">alle Ergebnisse zuklappen</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">PowerShell-Tab in diesem Ordner öffnen</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">CMD-Tab in diesem Ordner öffnen</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell als Administrator öffnen</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD als Administrator öffnen</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">Ergebnisse als HTML exportieren</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">Ergebnisse als CSV exportieren</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">Kurzbefehle gelten im ganzen Fenster. Geöffnete Dropdowns, das Datumsfeld und der Ergebnisfilter behalten die Eingabetaste für sich.</sys:String>
+
+    <!-- Font dialog, reached from the row under the theme flyout -->
+    <sys:String x:Key="Str_Fonts_Row">Schriftarten...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">SCHRIFTARTEN</sys:String>
+    <sys:String x:Key="Str_Fonts_App">ANWENDUNG</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">TERMINAL</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">Standard</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">Mit dem Mausrad über einer Liste durch die Schriftarten blättern. Jede Änderung wirkt sofort.</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0} hat keine lesbaren Buchstaben - die vorherige Schriftart bleibt</sys:String>
+
+    <!-- Associations card (Associations.cs, AssociationsCard.cs) -->
+    <sys:String x:Key="Str_Assoc_Row">Dateizuordnungen...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">DATEIZUORDNUNGEN</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">Registrieren Sie KillerShell bei Windows, damit es unter „Öffnen mit“, in Settings unter Standard-Apps und im Rechtsklickmenü jedes Ordners und Laufwerks erscheint.</sys:String>
+    <sys:String x:Key="Str_Assoc_What">TEXTTYPEN</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd und .reg bekommen stattdessen einen Eintrag „Bearbeiten mit KillerShell“. Ihr Doppelklick führt sie weiterhin aus oder trägt sie in die Registrierung ein, denn das stillschweigend zu ändern kostet jemanden einen Nachmittag.</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">Für alle Benutzer dieses PCs registrieren</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">Starten Sie KillerShell als Administrator, um es für alle Benutzer zu registrieren</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">Registrieren</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">Registrierung entfernen</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Windows-Standard-Apps öffnen...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">Nicht registriert. Windows bietet KillerShell noch für keinen Dateityp an.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">Für Ihr Konto registriert. Windows stellt keine Standard-App für Sie um: Wählen Sie KillerShell in Settings je Dateityp selbst aus.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">Für alle Benutzer dieses PCs registriert. Windows stellt keine Standard-App für Sie um: Wählen Sie KillerShell in Settings je Dateityp selbst aus.</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">Diese Kopie ist portabel. Die Zuordnungen zeigen auf den Ort, an dem diese .exe gerade liegt, und gehen ins Leere, wenn Sie sie verschieben oder löschen.</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Bei Windows registriert</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">Registrierung entfernt</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows hat diese Änderung nicht angenommen</sys:String>
+
+    <!-- Title-bar caption on an elevated window, beside the wordmark -->
+    <sys:String x:Key="Str_Title_Elevated">- Erhöhte Rechte</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">Bereichsleiste ein- oder ausblenden</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">neues Fenster öffnen</sys:String>
+
+    <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+    <sys:String x:Key="Str_TT_Recents">Zuletzt besuchte Ordner</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">Noch keine zuletzt besuchten Ordner</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">Liste leeren</sys:String>
+
+    <!-- Results density, on the rail (Density.cs) -->
+    <sys:String x:Key="Str_TT_Density">Ergebnisdichte - Klick wechselt, Mausrad stuft</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">Dichte: geräumig</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">Dichte: komfortabel</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">Dichte: kompakt</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">Dichte: eng</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">Dichte: minimal</sys:String>
+
+    <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+    <sys:String x:Key="Str_Term_Copy">Kopieren</sys:String>
+    <sys:String x:Key="Str_Term_Paste">Einfügen</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">Alles auswählen</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Leeren</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">Neues Terminal</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">Diesen Ordner öffnen</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">Schriftarten...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">Prompt bearbeiten...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">Prompt zurücksetzen</sys:String>
+    <sys:String x:Key="Str_Term_Close">Terminal schließen</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">Das mitgelieferte Prompt-Skript wiederherstellen? Ihre Änderungen an dieser Datei gehen verloren.</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">Zurücksetzen</sys:String>
+    <!-- Rail button: left click opens PowerShell, right click picks -->
+    <sys:String x:Key="Str_TT_Terminal">Terminal öffnen  (F8)  -  Rechtsklick zum Auswählen</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell als Administrator</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">Eingabeaufforderung</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">Eingabeaufforderung als Administrator</sys:String>
+
+    <!-- Browsing, drop targets and the results context menu (2.0) -->
+    <sys:String x:Key="Str_Scope_Dropped">abgelegte Dateien</sys:String>
+    <sys:String x:Key="Str_Tab_Dropped">abgelegt ({0})</sys:String>
+    <sys:String x:Key="Str_TT_SearchPanel">Suchbereich ein- oder ausblenden  (Strg+Umschalt+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">Ordnerbaum ein- oder ausblenden</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Seitenbereiche einklappen</sys:String>
+    <sys:String x:Key="Str_TT_Bookmarks">Gespeicherte Orte  (Strg+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Diesen Ordner speichern</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Versteckte und Systemelemente anzeigen</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Ordner über Dateien halten</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">Zu Favoriten hinzufügen</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">Aus Favoriten entfernen</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">gespeicherte Orte ein- oder ausblenden</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">zu gespeichertem Ort 1-10 springen (0 = zehnter)</sys:String>
+    <sys:String x:Key="Str_TT_Back">Zurück</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Vorwärts</sys:String>
+    <sys:String x:Key="Str_Status_Listing">{0} wird geöffnet...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">{0} Element(e)</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">{0} kann nicht geöffnet werden</sys:String>
+    <sys:String x:Key="Str_Menu_OpenAdmin">Als Administrator öffnen</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">In diesem Ordner suchen</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">Terminal hier öffnen</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Terminal hier als Administrator öffnen</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Diesen Ordner ausschließen</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">Vollständigen Pfad kopieren</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">Dateinamen kopieren</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">Ordnerpfad kopieren</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">Gefundene Zeilen kopieren</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">SHA-256 kopieren</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">Eigenschaften</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">Weitere Windows-Optionen...</sys:String>
+    <sys:String x:Key="Str_Status_Copied">{0} in die Zwischenablage kopiert</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">{0} gefundene Zeilen kopiert</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">{0} Datei(en) kopiert - im Explorer einfügen</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">Keine gefundenen Zeilen zum Kopieren (Namenstreffer haben keine)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">Zwischenablage nicht erreichbar - eine andere App hält sie</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">{0} wird gehasht...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">SHA-256 von {0} kopiert</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">Datei zum Hashen nicht lesbar</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">Rechteerhöhung abgelehnt</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">Dieser Befehl gilt nur für Dateien, nicht für Ordner</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows wollte das nicht öffnen</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">{0} wird ausgeschlossen - Suche erneut ausführen</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} ist bereits ausgeschlossen</sys:String>
+
+    <!-- Tastenkuerzel-Karte: Kategorien, der LISTE / TASTATUR-Umschalter und der Hinweis -->
+    <sys:String x:Key="Str_Ks_About">Info-Karte anzeigen</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">SUCHE</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">NAVIGATION</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">TABS</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">ANSICHT</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">DATEI</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">BEARBEITEN</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">HILFE</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">LISTE</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">TASTATUR</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">Strg, Umschalt oder Alt halten, um diese Ebene anzuzeigen</sys:String>
+
+    <!-- Explorer-Konventionen -->
+    <sys:String x:Key="Str_Ks_BackForward">zurück / vorwärts</sys:String>
+    <sys:String x:Key="Str_Ks_Back">zurück</sys:String>
+    <sys:String x:Key="Str_Ks_Up">einen Ordner nach oben</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">aktualisieren - Ordner neu auflisten oder Suche erneut ausführen</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">alle Ergebnisse auswählen</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">Cursor in das Suchfeld setzen</sys:String>
+
+    <!-- Dateioperationen: Fortschritt, Konflikte und deren Schaltflaechen -->
+    <sys:String x:Key="Str_Fo_Copying">Wird kopiert...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">Wird verschoben...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">Wird gelöscht...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{0} von {1}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} ist hier bereits vorhanden. Welche Datei möchten Sie behalten?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">BEREITS VORHANDEN</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">WIRD KOPIERT</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">Für alle weiteren Dateien in diesem Vorgang übernehmen</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">Ersetzen</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">Überspringen</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">Beide behalten</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">Umbenennen</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">Löschen</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">Neuer Name</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">Neuer Ordner</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">{0} Element(e) endgültig löschen? Das lässt sich nicht rückgängig machen - sie landen nicht im Papierkorb.</sys:String>
+
+    <!-- Tastenkuerzel fuer Dateioperationen und deren Ergebnisse -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">Dateien ausschneiden / kopieren / einfügen</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">umbenennen</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">in den Papierkorb verschieben</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">endgültig löschen</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">neuer Ordner</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">Öffnen Sie zuerst einen Ordner - auf einer Suchregisterkarte gibt es kein Ziel</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">Ein Ordner kann nicht in sich selbst abgelegt werden</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">Fertig - {0} Element(e)</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">Nach {0} Element(en) abgebrochen</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} erledigt, {1} fehlgeschlagen</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">Das hat nicht funktioniert</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">Umbenennen nicht möglich - {0}</sys:String>
+
+    <!-- Kontextmenue fuer Dateioperationen -->
+    <sys:String x:Key="Str_Menu_Cut">Ausschneiden</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">Kopieren</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">Einfügen</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">Umbenennen</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">Löschen  (Umschalt: endgültig)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">Neuer Ordner</sys:String>
+
+
+    <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
+    <sys:String x:Key="Str_Fonts_Editor">EDITORTEXT</sys:String>
+
+    <sys:String x:Key="Str_Prof_Edit">PowerShell-Profil bearbeiten</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">{0} wird nach dem Profilpfad gefragt...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} hat nicht geantwortet - Profil nicht gefunden.</sys:String>
+    <sys:String x:Key="Str_Prof_None">Kein PowerShell gefunden</sys:String>
+
+    <sys:String x:Key="Str_Menu_Edit">Bearbeiten</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} ist zu groß zum Bearbeiten ({1} MB).</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">Speichern  (Strg+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">Rückgängig  (Strg+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">Wiederholen  (Strg+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">Suchen  (Strg+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">Gehe zu Zeile  (Strg+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Zeilenumbruch</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">Editoreinstellungen</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">Zeile</sys:String>
+
+    <sys:String x:Key="Str_Ed_OptLineNumbers">Zeilennummern</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">Aktuelle Zeile hervorheben</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">Leerzeichen und Tabs anzeigen</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">Leerzeichen statt Tabs einfügen</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">Zeilenumbruch</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">EINZUG</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">Schriftart und Größe...</sys:String>
+
+    <sys:String x:Key="Str_Ed_Undo">Rückgängig</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">Wiederholen</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">Ausschneiden</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">Kopieren</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">Einfügen</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">Alles auswählen</sys:String>
+    <sys:String x:Key="Str_Ed_Find">Suchen...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">Gehe zu Zeile...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">Speichern</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">Einstellungen...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">Datei schließen</sys:String>
+
+    <sys:String x:Key="Str_TT_TermCwd">Diesen Ordner in einem Tab öffnen</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">Neues Terminal  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">Neues Terminal als Administrator  (Strg+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Diesen Ordner in einem Tab öffnen</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Leeren</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Schriftarten...</sys:String>
+
+    <sys:String x:Key="Str_Ed_WrapOn">Zeilenumbruch an.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">Zeilenumbruch aus - scrollen, um lange Zeilen zu sehen.</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">{0} gespeichert.</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">{0} konnte nicht gespeichert werden: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">{0} konnte nicht geöffnet werden: {1}</sys:String>
+
+    <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
+    <sys:String x:Key="Str_TT_TabOverflow">Alle Tabs</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">Ziehen zum Ändern der Breite  -  Doppelklick setzt zurück</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">Neues Dokument</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">unbenannt</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">Speichern unter</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">Alle Dateien</sys:String>
+
+    <sys:String x:Key="Str_Dlg_DiscardMsg">Datei ohne Speichern schließen? Ihre Änderungen gehen verloren.</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">Verwerfen</sys:String>
+
+</ResourceDictionary>

@@ -1,0 +1,18 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:editing="clr-namespace:ICSharpCode.AvalonEdit.Editing">
+	<ResourceDictionary.MergedDictionaries>
+		<!-- KillerShell: these were /ICSharpCode.AvalonEdit;component/... The source is compiled
+		     into KillerShell.exe rather than referenced as its own assembly, so there is no
+		     ICSharpCode.AvalonEdit assembly for a URI to name. See VENDORED.md. -->
+		<ResourceDictionary Source="/KillerShell;component/third_party/AvalonEdit/TextEditor.xaml" />
+		<ResourceDictionary Source="/KillerShell;component/third_party/AvalonEdit/Search/DropDownButton.xaml" />
+		<ResourceDictionary Source="/KillerShell;component/third_party/AvalonEdit/Search/SearchPanel.xaml" />
+		<ResourceDictionary Source="/KillerShell;component/third_party/AvalonEdit/CodeCompletion/CompletionList.xaml" />
+		<ResourceDictionary Source="/KillerShell;component/third_party/AvalonEdit/CodeCompletion/InsightWindow.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<Style TargetType="{x:Type editing:LineNumberMargin}">
+		<Setter Property="Control.Cursor" Value="/KillerShell;component/third_party/AvalonEdit/themes/RightArrow.cur"/>
+	</Style>
+</ResourceDictionary>

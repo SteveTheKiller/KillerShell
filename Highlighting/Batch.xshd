@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<!--
+  Batch / CMD. Not shipped by AvalonEdit, so this is ours.
+
+  ignoreCase, because cmd does: ECHO, Echo and echo are one keyword, and a
+  definition that only lit the lowercase spelling would leave half of every
+  real-world script gray.
+-->
+<SyntaxDefinition name="Batch" extensions=".bat;.cmd" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment"       foreground="#57A64A" />
+  <Color name="String"        foreground="#D69D63" />
+  <Color name="Keywords"      foreground="#4A9FE0" fontWeight="bold" />
+  <Color name="Commands"      foreground="#4EC9B0" />
+  <Color name="Label"         foreground="#C586C0" fontWeight="bold" />
+  <Color name="Variable"      foreground="#9CDCFE" />
+  <Color name="NumberLiteral" foreground="#B5CEA8" />
+  <Color name="Operators"     foreground="#E0AC42" />
+  <Color name="Punctuation"   foreground="#A0A0A0" />
+
+  <RuleSet ignoreCase="true">
+    <!-- REM has to be a whole word: a path called REMOTE is not a comment. -->
+    <Span color="Comment">
+      <Begin>\b(rem)\b</Begin>
+    </Span>
+    <Span color="Comment">
+      <Begin>::</Begin>
+    </Span>
+
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+    </Span>
+
+    <!-- A label, and a GOTO target. Anchored to the line start so a colon in
+         the middle of a set command does not light up. -->
+    <Rule color="Label">
+      ^\s*:[\w.\-$]+
+    </Rule>
+
+    <!-- %VAR%, %1, %~dp0 and the delayed-expansion !VAR! form. -->
+    <Rule color="Variable">
+      %[~a-zA-Z0-9_$:.\-]*%|%~?[\w$]*|![\w$]+!
+    </Rule>
+
+    <Keywords color="Keywords">
+      <Word>if</Word>
+      <Word>else</Word>
+      <Word>for</Word>
+      <Word>in</Word>
+      <Word>do</Word>
+      <Word>goto</Word>
+      <Word>call</Word>
+      <Word>exit</Word>
+      <Word>setlocal</Word>
+      <Word>endlocal</Word>
+      <Word>shift</Word>
+      <Word>pause</Word>
+      <Word>defined</Word>
+      <Word>not</Word>
+      <Word>exist</Word>
+      <Word>errorlevel</Word>
+      <Word>equ</Word>
+      <Word>neq</Word>
+      <Word>lss</Word>
+      <Word>leq</Word>
+      <Word>gtr</Word>
+      <Word>geq</Word>
+    </Keywords>
+
+    <!-- The built-ins a script actually runs. Deliberately a different color
+         from the control-flow keywords above: skimming a batch file is mostly
+         asking "what does this DO", and separating the verbs from the plumbing
+         is the whole answer. -->
+    <Keywords color="Commands">
+      <Word>echo</Word>
+      <Word>set</Word>
+      <Word>cd</Word>
+      <Word>chdir</Word>
+      <Word>pushd</Word>
+      <Word>popd</Word>
+      <Word>dir</Word>
+      <Word>copy</Word>
+      <Word>xcopy</Word>
+      <Word>robocopy</Word>
+      <Word>move</Word>
+      <Word>del</Word>
+      <Word>erase</Word>
+      <Word>md</Word>
+      <Word>mkdir</Word>
+      <Word>rd</Word>
+      <Word>rmdir</Word>
+      <Word>ren</Word>
+      <Word>rename</Word>
+      <Word>type</Word>
+      <Word>more</Word>
+      <Word>find</Word>
+      <Word>findstr</Word>
+      <Word>sort</Word>
+      <Word>start</Word>
+      <Word>title</Word>
+      <Word>color</Word>
+      <Word>cls</Word>
+      <Word>attrib</Word>
+      <Word>icacls</Word>
+      <Word>takeown</Word>
+      <Word>tasklist</Word>
+      <Word>taskkill</Word>
+      <Word>sc</Word>
+      <Word>net</Word>
+      <Word>netsh</Word>
+      <Word>reg</Word>
+      <Word>wmic</Word>
+      <Word>schtasks</Word>
+      <Word>powershell</Word>
+      <Word>pwsh</Word>
+      <Word>timeout</Word>
+      <Word>choice</Word>
+      <Word>where</Word>
+      <Word>ping</Word>
+      <Word>ipconfig</Word>
+      <Word>gpupdate</Word>
+      <Word>shutdown</Word>
+    </Keywords>
+
+    <Rule color="NumberLiteral">
+      \b0[xX][0-9a-fA-F]+|\b\d+\b
+    </Rule>
+
+    <!-- Redirection and chaining. Worth their own color: they are where a
+         script quietly throws output away, and they are easy to miss. -->
+    <Rule color="Operators">
+      2&gt;&amp;1|&gt;&gt;|&gt;|&lt;|\|\||\||&amp;&amp;|&amp;
+    </Rule>
+
+    <Rule color="Punctuation">
+      [(){}\[\],;=]+
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

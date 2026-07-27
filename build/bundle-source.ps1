@@ -1,0 +1,61 @@
+# Called by release.ps1 (and available to the csproj after Publish).
+# Produces <AppName>-<Version>-src.zip inside the publish folder.
+# PS 5.1 / PS 7 compatible. Uses git to list tracked files so bin/obj/.vs never ship.
+param(
+    [Parameter(Mandatory)][string]$ProjectDir,
+    [Parameter(Mandatory)][string]$Version,
+    [Parameter(Mandatory)][string]$AppName,
+    [Parameter(Mandatory)][string]$PublishDir
+)
+
+$ErrorActionPreference = 'Stop'
+
+$projectDirFull = (Resolve-Path $ProjectDir).Path
+$publishDirFull = if ([System.IO.Path]::IsPathRooted($PublishDir)) {
+    $PublishDir
+} else {
+    Join-Path $projectDirFull $PublishDir
+}
+
+if (-not (Test-Path $publishDirFull)) {
+    New-Item -ItemType Directory -Force -Path $publishDirFull | Out-Null
+}
+
+$zip = Join-Path $publishDirFull "$AppName-$Version-src.zip"
+# Never overwrite or delete an existing source bundle - keep it as-is.
+if (Test-Path $zip) {
+    Write-Host "Source bundle already present, keeping it: $zip" -ForegroundColor DarkGray
+    return
+}
+
+$staging = Join-Path $env:TEMP "$AppName-src-$([guid]::NewGuid())"
+try {
+    New-Item -ItemType Directory -Force -Path $staging | Out-Null
+    Push-Location $projectDirFull
+    try {
+        # Exclude the landing site: it is a separate deployable, not app source, and a
+        # release's own exe hash can never live correctly inside the source it is built
+        # from (circular). Keeps the bundle buildable-app-only and free of stale site info.
+        $files = @(& git ls-files 2>$null | Where-Object { $_ -notlike 'shell-landing/*' })
+        if ($LASTEXITCODE -ne 0 -or $files.Count -eq 0) {
+            Write-Warning "Source bundle skipped: git ls-files returned no tracked files (is git installed and is this a repo?)."
+            return
+        }
+        foreach ($f in $files) {
+            # git ls-files still lists files that were deleted but not yet committed; skip those.
+            if (-not (Test-Path $f)) { continue }
+            $dst = Join-Path $staging $f
+            $parent = Split-Path $dst -Parent
+            if (-not (Test-Path $parent)) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
+            Copy-Item $f $dst -Force
+        }
+        $rootLicense = Join-Path $projectDirFull 'LICENSE'
+        if (Test-Path $rootLicense) { Copy-Item $rootLicense (Join-Path $staging 'LICENSE') -Force }
+    } finally {
+        Pop-Location
+    }
+    Compress-Archive -Path (Join-Path $staging '*') -DestinationPath $zip -Force
+    Write-Host "Source bundle: $zip" -ForegroundColor Green
+} finally {
+    Remove-Item $staging -Recurse -Force -ErrorAction SilentlyContinue
+}

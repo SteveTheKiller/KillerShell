@@ -1,0 +1,442 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - Turkish (tr-TR) strings. x:Key values are looked up at
+         runtime; never change them. This file layers over en-US.xaml; any
+         key omitted here falls back to English. {0}/{1} placeholders are
+         filled by the app - keep them.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">Dil</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Tema</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Uygulama boyutunu değiştirmek için logo üzerinde tekerleği kaydırın</sys:String>
+    <sys:String x:Key="Str_St_AppSize">Uygulama boyutu %{0}</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">tema</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">vurgu</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">konum:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(klasör seçilmedi - seçmek için tıklayın)</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Arama klasörünü değiştirmek için tıklayın</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">Kök arama klasörünü seçin</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">FİLTRELER</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">dahil et</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">hariç tut</sys:String>
+    <sys:String x:Key="Str_TT_Include">Noktalı virgülle ayrılmış kalıplar, örn. *.txt;*.log</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">Atlanacak, noktalı virgülle ayrılmış yollar veya kalıplar</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">büyük/küçük harf duyarlı</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ filtre ekle</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">gelişmiş</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">uzantı</sys:String>
+    <sys:String x:Key="Str_Filter_Date">değiştirilme tarihi</sys:String>
+    <sys:String x:Key="Str_Filter_Size">boyut</sys:String>
+    <sys:String x:Key="Str_Cond_Is">eşit</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">değil</sys:String>
+    <sys:String x:Key="Str_Cond_Before">önce</sys:String>
+    <sys:String x:Key="Str_Cond_After">sonra</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">üzeri</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">altı</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">Kalıp yardımı</sys:String>
+    <sys:String x:Key="Str_Help_Title">KALIPLAR</sys:String>
+    <sys:String x:Key="Str_Help_Star">sonu .log olan her şey</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">report ile başlayan adlar</sys:String>
+    <sys:String x:Key="Str_Help_Middle">2024 içeren adlar</sys:String>
+    <sys:String x:Key="Str_Help_Q">? tam olarak bir karakteri temsil eder</sys:String>
+    <sys:String x:Key="Str_Help_List">birden fazla kalıbı ; ile ayırın</sys:String>
+    <sys:String x:Key="Str_Help_Plain">düz metin de olur - onu içeren adlarla eşleşir</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">hariç tutma, klasörleri adıyla toptan atlar</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">yeni arama</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Yeni arama sekmesi</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Sekmeyi kapat</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">İptal</sys:String>
+    <sys:String x:Key="Str_Btn_Select">Seç</sys:String>
+    <sys:String x:Key="Str_QA_Home">Ana klasör</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">Masaüstü</sys:String>
+    <sys:String x:Key="Str_QA_Documents">Belgeler</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">İndirilenler</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">Resimler</sys:String>
+    <sys:String x:Key="Str_TT_Up">Bir klasör yukarı</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(alt klasör yok - bu klasörü kullanmak için Seç'e tıklayın)</sys:String>
+    <sys:String x:Key="Str_Col_Name">ad</sys:String>
+    <sys:String x:Key="Str_Col_Folder">konum</sys:String>
+    <sys:String x:Key="Str_Sort_Found">bulunma sırası</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">Bu sonuçları filtrele (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Bu sonuçların içinde ara</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">İkinci bölme  |  yan yana / üst üste için sağ tıklayın</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">Diğer araçlar</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">Bu bilgisayar</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">Bu sonuçların içinde ara</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{1} içinden {0} sonuç  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">İçinde aranacak sonuç yok.</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">Yönetici kabuğu başlatılamadı: {0}</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">TAŞINABİLİR</sys:String>
+    <sys:String x:Key="Str_Btn_Install">KillerShell'i yükle...</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">Yükle</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell kullanıcı profilinize yüklensin mi?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">- Başlat menüsü kısayolu&#x0A;- Program ekle/kaldır içinde görünür</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">Masaüstü kısayolu</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">Tüm kullanıcılar için kur (Yönetici gerekir)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell bu bilgisayarda zaten tüm kullanıcılar için kurulu, bu nedenle o kopya güncellenecek. Windows izin isteyecek.</sys:String>
+    <sys:String x:Key="Str_St_InstallCancelled">Kurulum iptal edildi</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell kapatılsın mı?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">Açık sekmelerimi hatırla</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">Seçimimi hatırla</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">Çıkış</sys:String>
+    <sys:String x:Key="Str_Col_Size">boyut</sys:String>
+    <sys:String x:Key="Str_Col_Modified">değiştirilme</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">{0} klasör, {1} dosya</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">Liste görünümü</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">Simge görünümü</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">Ayrıntı görünümü</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">ARAMA TERİMLERİ</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ terim ekle</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ grup ekle</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">TEMİZLE</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">ARA</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">DURDUR</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">SONUÇLAR</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">SONUÇLAR  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">Sonuçları dışa aktar</sys:String>
+    <sys:String x:Key="Str_TT_Result">Genişletmek için tıklayın  |  Explorer'da göstermek için çift tıklayın  |  Daha fazlası için sağ tıklayın</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">TÜMÜNÜ AÇ</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">TÜMÜNÜ KAPAT</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">Dosyayı aç</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">Birlikte aç...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">Explorer'da göster</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">Simge durumuna küçült</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">Ekranı kapla</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">Geri yükle</sys:String>
+    <sys:String x:Key="Str_Menu_Close">Kapat</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">Hazır</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">Geçersiz veya eksik kök yol.</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">En az bir arama terimi veya filtre ekleyin.</sys:String>
+    <sys:String x:Key="Str_Status_Done">{0}s içinde tamamlandı  -  {1} dosya eşleşti.</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">Durduruldu.</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">Temizlendi.</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">Henüz dışa aktarılacak bir şey yok.</sys:String>
+    <sys:String x:Key="Str_Status_Exported">Dışa aktarıldı: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">Dışa aktarma başarısız: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">{0} dosya tarandı</sys:String>
+    <sys:String x:Key="Str_Count_Matches">{0} eşleşme</sys:String>
+
+    <!-- About overlay -->
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Güçlü kullanıcılar için özgür kabuk. Dosya tarayıcısı, terminal ve metin düzenleyici tek pencereyi, tek sekme şeridini ve tek tuş takımını paylaşır. Kurulum gerekmez. Bir </sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> aracı.</sys:String>
+    <sys:String x:Key="Str_About_Version">SÜRÜM</sys:String>
+    <sys:String x:Key="Str_About_Publisher">YAYINCI</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">PARMAK İZİ</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  bir saha teknisyeni tarafından yapıldı</sys:String>
+
+    <!-- HTML report -->
+    <sys:String x:Key="Str_Rpt_Meta">Oluşturuldu {0} &#183; {1} dosya &#183; {2} eşleşme</sys:String>
+    <sys:String x:Key="Str_Rpt_MetaList">Oluşturuldu {0} &#183; {1} öğe</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">{0} içeriği.</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">{0} içinde arandı: {1}.</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">{0} içeren dosya adları</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">{0} içeren dosya içerikleri</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">her şey</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">veya</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">bulan</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... +{0} daha</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">{0} tarafından oluşturuldu</sys:String>
+
+    <!-- Term/group chips + tooltips -->
+    <sys:String x:Key="Str_Mode_Name">ad</sys:String>
+    <sys:String x:Key="Str_Mode_Content">içerik</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">Dosya adı / joker  (örn. *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">İçerik araması  (dosya içindeki metin)</sys:String>
+    <sys:String x:Key="Str_Group_Any">BİRİ</sys:String>
+    <sys:String x:Key="Str_Group_All">TÜMÜ</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">BİRİ: bu gruptaki herhangi bir terim tutarsa dosya eşleşir</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">TÜMÜ: dosya bu gruptaki her terimle eşleşmelidir</sys:String>
+    <sys:String x:Key="Str_Join_And">VE</sys:String>
+    <sys:String x:Key="Str_Join_Or">VEYA</sys:String>
+    <sys:String x:Key="Str_Chk_CloseTabs">Açık sekmelerimi kapat</sys:String>
+
+    <!-- Help card: shortcuts -->
+    <sys:String x:Key="Str_Help_Shortcuts">Kısayollar</sys:String>
+    <sys:String x:Key="Str_Ks_Run">aramayı çalıştır</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">pencereleri kapat, aramayı durdur, sonra çıkmayı öner</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">sonuçları filtrele</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">yeni arama sekmesi</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">geçerli sekmeyi kapat</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">sonraki sekme (Shift: önceki)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">1-9 sekmesine git (9 = son)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">arama terimi ekle</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">filtre ekle</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">klasör seç</sys:String>
+    <sys:String x:Key="Str_Ks_Help">bu kartı göster</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">büyük/küçük harf duyarlılığını aç/kapat</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">sonuçları temizle</sys:String>
+    <sys:String x:Key="Str_Ks_Address">konumu düzenle - bir yol yazıp Enter'a basın</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">bu sonuçların içinde ara, yeni sekmede</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">arama panelini göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">tüm sonuçları aç</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">tüm sonuçları kapat</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">bu klasörde PowerShell sekmesi aç</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">bu klasörde CMD sekmesi aç</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell'i yönetici olarak aç</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD'yi yönetici olarak aç</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">sonuçları HTML olarak dışa aktar</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">sonuçları CSV olarak dışa aktar</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">Kısayollar pencerenin her yerinde çalışır. Açık açılır listeler, tarih kutusu ve sonuç filtresi Enter tuşunu kendine ayırır.</sys:String>
+
+    <!-- Font dialog, reached from the row under the theme flyout -->
+    <sys:String x:Key="Str_Fonts_Row">Yazı tipleri...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">YAZI TİPLERİ</sys:String>
+    <sys:String x:Key="Str_Fonts_App">UYGULAMA</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">TERMİNAL</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">Varsayılan</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">Listenin üzerinde tekerleği çevirerek yazı tiplerine göz atın. Her değişiklik hemen uygulanır.</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0} okunabilir harf içermiyor - önceki yazı tipi korunuyor</sys:String>
+
+    <!-- Associations card (Associations.cs, AssociationsCard.cs) -->
+    <sys:String x:Key="Str_Assoc_Row">Dosya ilişkilendirmeleri...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">DOSYA İLİŞKİLENDİRMELERİ</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">KillerShell'i Windows'a kaydedin; böylece "Birlikte aç" listesinde, Settings içindeki Varsayılan uygulamalar bölümünde ve her klasör ile sürücünün sağ tık menüsünde görünür.</sys:String>
+    <sys:String x:Key="Str_Assoc_What">METİN TÜRLERİ</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd ve .reg için bunun yerine "KillerShell ile düzenle" satırı eklenir. Çift tıklama bunları yine çalıştırır veya birleştirir, çünkü bunu sessizce değiştirmek birinin bir öğleden sonrasını kaybetmesine yol açar.</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">Bu bilgisayardaki tüm kullanıcılar için kaydet</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">Tüm kullanıcılar için kaydetmek üzere KillerShell'i yönetici olarak çalıştırın</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">Kaydet</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">Kaydı kaldır</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Windows varsayılan uygulamalarını aç...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">Kayıtlı değil. Windows KillerShell'i henüz hiçbir dosya türü için sunmuyor.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">Hesabınız için kayıtlı. Windows sizin yerinize varsayılanı değiştirmez; KillerShell'i Settings içinde her dosya türü için kendiniz seçin.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">Bu bilgisayardaki tüm kullanıcılar için kayıtlı. Windows sizin yerinize varsayılanı değiştirmez; KillerShell'i Settings içinde her dosya türü için kendiniz seçin.</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">Bu kopya taşınabilir. İlişkilendirmeler bu .exe dosyasının şu anda bulunduğu yeri gösterir; dosyayı taşır veya silerseniz bozulur.</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Windows'a kaydedildi</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">Kayıt kaldırıldı</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows bu değişikliği kabul etmedi</sys:String>
+
+    <!-- Title-bar caption on an elevated window, beside the wordmark -->
+    <sys:String x:Key="Str_Title_Elevated">- Yükseltilmiş ayrıcalıklar</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">bölme çubuğunu göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">yeni pencere aç</sys:String>
+
+    <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+    <sys:String x:Key="Str_TT_Recents">Son ziyaret edilen klasörler</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">Henüz son klasör yok</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">Listeyi temizle</sys:String>
+
+    <!-- Results density, on the rail (Density.cs) -->
+    <sys:String x:Key="Str_TT_Density">Sonuç yoğunluğu - tıklayarak değiştirin, tekerlekle ayarlayın</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">Yoğunluk: geniş</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">Yoğunluk: rahat</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">Yoğunluk: sıkışık</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">Yoğunluk: dar</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">Yoğunluk: en az</sys:String>
+
+    <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+    <sys:String x:Key="Str_Term_Copy">Kopyala</sys:String>
+    <sys:String x:Key="Str_Term_Paste">Yapıştır</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">Tümünü seç</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Temizle</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">Yeni terminal</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">Bu klasörü aç</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">Yazı tipleri...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">İstemi düzenle...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">İstemi sıfırla</sys:String>
+    <sys:String x:Key="Str_Term_Close">Terminali kapat</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">Birlikte gelen istem betiği geri yüklensin mi? Bu dosyada yaptığınız değişiklikler kaybolacak.</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">Sıfırla</sys:String>
+    <!-- Rail button: left click opens PowerShell, right click picks -->
+    <sys:String x:Key="Str_TT_Terminal">Terminal aç  (F8)  -  seçmek için sağ tıklayın</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell'i yönetici olarak</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">Komut İstemi</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">Komut İstemi'ni yönetici olarak</sys:String>
+
+    <!-- Browsing, drop targets and the results context menu (2.0) -->
+    <sys:String x:Key="Str_Scope_Dropped">bırakılan dosyalar</sys:String>
+    <sys:String x:Key="Str_Tab_Dropped">bırakılan ({0})</sys:String>
+    <sys:String x:Key="Str_TT_SearchPanel">Arama panelini göster veya gizle  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">Klasör ağacını göster veya gizle</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Yan panelleri daralt</sys:String>
+    <sys:String x:Key="Str_TT_Bookmarks">Kayıtlı konumlar  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Bu klasörü kaydet</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Gizli ve sistem öğelerini göster</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Klasörleri dosyaların üstünde tut</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">Favorilere ekle</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">Favorilerden kaldır</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">kayıtlı konumları göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">kayıtlı konum 1-10'a git (0 = onuncu)</sys:String>
+    <sys:String x:Key="Str_TT_Back">Geri</sys:String>
+    <sys:String x:Key="Str_TT_Forward">İleri</sys:String>
+    <sys:String x:Key="Str_Status_Listing">{0} açılıyor...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">{0} öğe</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">{0} açılamıyor</sys:String>
+    <sys:String x:Key="Str_Menu_OpenAdmin">Yönetici olarak aç</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">Bu klasörde ara</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">Burada terminal aç</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Burada yönetici olarak terminal aç</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Bu klasörü hariç tut</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">Tam yolu kopyala</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">Dosya adını kopyala</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">Klasör yolunu kopyala</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">Eşleşen satırları kopyala</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">SHA-256 değerini kopyala</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">Özellikler</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">Diğer Windows seçenekleri...</sys:String>
+    <sys:String x:Key="Str_Status_Copied">{0} panoya kopyalandı</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">{0} eşleşen satır kopyalandı</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">{0} dosya kopyalandı - Dosya Gezgini'ne yapıştırın</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">Kopyalanacak eşleşen satır yok (ad eşleşmelerinde satır bulunmaz)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">Panoya erişilemedi - başka bir uygulama kullanıyor</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">{0} için özet hesaplanıyor...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">{0} dosyasının SHA-256 değeri kopyalandı</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">Özet için dosya okunamadı</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">Yükseltme reddedildi</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">Bu komut yalnızca dosyalarda çalışır, klasörlerde değil</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows bunu açmadı</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">{0} hariç tutuluyor - uygulamak için yeniden arayın</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} zaten hariç tutuluyor</sys:String>
+
+    <!-- Kisayol karti: kategoriler, LISTE / KLAVYE degistirici ve ipucu -->
+    <sys:String x:Key="Str_Ks_About">hakkında kartını göster</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">ARAMA</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">GEZİNME</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">SEKMELER</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">GÖRÜNÜM</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">DOSYA</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">DÜZENLEME</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">YARDIM</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">LİSTE</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">KLAVYE</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">bu katmanı önizlemek için Ctrl, Shift veya Alt tuşunu basılı tutun</sys:String>
+
+    <!-- Gezgin kisayol gelenekleri -->
+    <sys:String x:Key="Str_Ks_BackForward">geri / ileri</sys:String>
+    <sys:String x:Key="Str_Ks_Back">geri</sys:String>
+    <sys:String x:Key="Str_Ks_Up">bir klasör yukarı</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">yenile - klasörü yeniden listele veya aramayı yeniden çalıştır</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">tüm sonuçları seç</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">imleci arama kutusuna getir</sys:String>
+
+    <!-- Dosya islemleri: ilerleme, catismalar ve dugmeleri -->
+    <sys:String x:Key="Str_Fo_Copying">Kopyalanıyor...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">Taşınıyor...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">Siliniyor...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{1} öğeden {0}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} burada zaten var. Hangisini tutmak istersiniz?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">ZATEN BURADA</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">KOPYALANACAK</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">Bu gruptaki diğer her şey için aynısını yap</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">Değiştir</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">Atla</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">İkisini de tut</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">Yeniden adlandır</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">Sil</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">Yeni ad</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">Yeni klasör</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">{0} öğe kalıcı olarak silinsin mi? Bu geri alınamaz - Geri Dönüşüm Kutusu'na gitmezler.</sys:String>
+
+    <!-- Dosya islemi kisayollari ve sonuclari -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">dosyaları kes / kopyala / yapıştır</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">yeniden adlandır</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">Geri Dönüşüm Kutusu'na gönder</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">kalıcı olarak sil</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">yeni klasör</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">Önce bir klasör açın - arama sekmesinde bunları koyacak bir yer yok</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">Bir klasör kendi içine bırakılamaz</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">Tamam - {0} öğe</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">{0} öğeden sonra iptal edildi</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} tamam, {1} başarısız</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">Bu işe yaramadı</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">Yeniden adlandırılamadı - {0}</sys:String>
+
+    <!-- Dosya islemleri baglam menusu -->
+    <sys:String x:Key="Str_Menu_Cut">Kes</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">Kopyala</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">Yapıştır</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">Yeniden adlandır</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">Sil  (Shift: kalıcı olarak)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">Yeni klasör</sys:String>
+
+
+    <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
+    <sys:String x:Key="Str_Fonts_Editor">DÜZENLEYİCİ METNİ</sys:String>
+
+    <sys:String x:Key="Str_Prof_Edit">PowerShell profilini düzenle</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">{0} uygulamasına profilinin yeri soruluyor...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} yanıt vermedi - profili bulunamadı.</sys:String>
+    <sys:String x:Key="Str_Prof_None">PowerShell bulunamadı</sys:String>
+
+    <sys:String x:Key="Str_Menu_Edit">Düzenle</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} düzenlenemeyecek kadar büyük ({1} MB).</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">Kaydet  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">Geri al  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">Yinele  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">Bul  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">Satıra git  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Sözcük kaydırma</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">Düzenleyici ayarları</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">satır</sys:String>
+
+    <sys:String x:Key="Str_Ed_OptLineNumbers">Satır numaraları</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">Geçerli satırı vurgula</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">Boşlukları ve sekmeleri göster</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">Sekme yerine boşluk ekle</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">Sözcük kaydırma</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">GİRİNTİ</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">Yazı tipi ve boyut...</sys:String>
+
+    <sys:String x:Key="Str_Ed_Undo">Geri al</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">Yinele</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">Kes</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">Kopyala</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">Yapıştır</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">Tümünü seç</sys:String>
+    <sys:String x:Key="Str_Ed_Find">Bul...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">Satıra git...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">Kaydet</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">Ayarlar...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">Dosyayı kapat</sys:String>
+
+    <sys:String x:Key="Str_TT_TermCwd">Bu klasörü bir sekmede aç</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">Yeni terminal  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">Yönetici olarak yeni terminal  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Bu klasörü bir sekmede aç</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Temizle</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Yazı tipleri...</sys:String>
+
+    <sys:String x:Key="Str_Ed_WrapOn">Sözcük kaydırma açık.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">Sözcük kaydırma kapalı - uzun satırları görmek için kaydırın.</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">{0} kaydedildi.</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">{0} kaydedilemedi: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">{0} açılamadı: {1}</sys:String>
+
+    <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
+    <sys:String x:Key="Str_TT_TabOverflow">Tüm sekmeler</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">Genişliği değiştirmek için sürükleyin  -  sıfırlamak için çift tıklayın</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">Yeni belge</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">adsız</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">Farklı kaydet</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">Tüm dosyalar</sys:String>
+
+    <sys:String x:Key="Str_Dlg_DiscardMsg">Bu dosya kaydedilmeden kapatılsın mı? Değişiklikleriniz kaybolacak.</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">At</sys:String>
+
+</ResourceDictionary>

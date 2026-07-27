@@ -1,0 +1,437 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - Japanese (ja-JP) strings. x:Key values are looked up at
+         runtime; never change them. This file layers over en-US.xaml; any key
+         omitted here falls back to English. {0}/{1} placeholders are filled by
+         the app - keep them.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">言語</sys:String>
+    <sys:String x:Key="Str_TT_Theme">テーマ</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">ワードマーク上でスクロールするとアプリのサイズを変更できます</sys:String>
+    <sys:String x:Key="Str_St_AppSize">アプリサイズ {0}%</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">テーマ</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">アクセント</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">場所:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(フォルダーが未選択です - クリックして選択)</sys:String>
+    <sys:String x:Key="Str_Scope_Dropped">ドロップされたファイル</sys:String>
+    <sys:String x:Key="Str_TT_Scope">クリックして検索フォルダーを変更</sys:String>
+    <sys:String x:Key="Str_TT_SearchPanel">検索パネルの表示・非表示  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">フォルダー ツリーの表示・非表示</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">サイドパネルを折りたたむ</sys:String>
+    <sys:String x:Key="Str_TT_Bookmarks">保存した場所  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">このフォルダーを保存</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">隠しファイルとシステム項目を表示</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">フォルダーをファイルより上に表示</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">お気に入りに追加</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">お気に入りから削除</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">保存した場所の表示を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">保存した場所 1-10 へ移動 (0 = 10 番目)</sys:String>
+    <sys:String x:Key="Str_TT_Back">戻る</sys:String>
+    <sys:String x:Key="Str_TT_Forward">進む</sys:String>
+    <sys:String x:Key="Str_Status_Listing">{0} を開いています...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">{0} 個の項目</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">{0} を開けません</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">検索の起点フォルダーを選択</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">フィルター</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">含める</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">除外する</sys:String>
+    <sys:String x:Key="Str_TT_Include">セミコロン区切りのパターン (例: *.txt;*.log)</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">スキップするパスやパターン (セミコロン区切り)</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">大文字と小文字を区別</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ フィルターを追加</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">詳細</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">拡張子</sys:String>
+    <sys:String x:Key="Str_Filter_Date">更新日時</sys:String>
+    <sys:String x:Key="Str_Filter_Size">サイズ</sys:String>
+    <sys:String x:Key="Str_Cond_Is">が次と一致</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">が次と不一致</sys:String>
+    <sys:String x:Key="Str_Cond_Before">より前</sys:String>
+    <sys:String x:Key="Str_Cond_After">より後</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">より大きい</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">より小さい</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">パターンのヘルプ</sys:String>
+    <sys:String x:Key="Str_Help_Title">パターン</sys:String>
+    <sys:String x:Key="Str_Help_Star">.log で終わるすべて</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">report で始まる名前</sys:String>
+    <sys:String x:Key="Str_Help_Middle">2024 を含む名前</sys:String>
+    <sys:String x:Key="Str_Help_Q">? は任意の 1 文字を表します</sys:String>
+    <sys:String x:Key="Str_Help_List">複数のパターンは ; で区切って並べます</sys:String>
+    <sys:String x:Key="Str_Help_Plain">ただの文字列でも動きます - それを含む名前に一致します</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">除外は名前でフォルダーごとスキップします</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">新しい検索</sys:String>
+    <sys:String x:Key="Str_Tab_Dropped">ドロップ ({0})</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">新しい検索タブ</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">タブを閉じる</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">キャンセル</sys:String>
+    <sys:String x:Key="Str_Btn_Select">選択</sys:String>
+    <sys:String x:Key="Str_QA_Home">ホーム</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">デスクトップ</sys:String>
+    <sys:String x:Key="Str_QA_Documents">ドキュメント</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">ダウンロード</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">ピクチャ</sys:String>
+    <sys:String x:Key="Str_TT_Up">一つ上のフォルダーへ</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(サブフォルダーはありません - 選択を押すとこのフォルダーを使います)</sys:String>
+    <sys:String x:Key="Str_Col_Name">名前</sys:String>
+    <sys:String x:Key="Str_Col_Folder">場所</sys:String>
+    <sys:String x:Key="Str_Sort_Found">検出順</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">この結果を絞り込む (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">この結果の中を検索</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">2 つ目のペイン  |  右クリックで左右 / 上下を切り替え</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">その他のツール</sys:String>
+    <sys:String x:Key="Str_TT_Sort">並べ替え</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">PC</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">この結果の中を検索</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{1} からの {0} 件  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">まだ検索できる結果がありません。</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">管理者シェルを開始できませんでした: {0}</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">ポータブル</sys:String>
+    <sys:String x:Key="Str_Btn_Install">KillerShell をインストール...</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">インストール</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell をユーザープロファイルにインストールしますか?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">- スタートメニューのショートカット&#x0A;- 「アプリと機能」に表示されます</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">デスクトップにショートカット</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">すべてのユーザーにインストール (管理者権限が必要)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell はこの PC にすべてのユーザー向けでインストール済みのため、そのコピーが更新されます。Windows が許可を求めます。</sys:String>
+    <sys:String x:Key="Str_St_InstallCancelled">インストールを中止しました</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell を終了しますか?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">開いているタブを記憶する</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">この選択を記憶する</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">終了</sys:String>
+    <sys:String x:Key="Str_Col_Size">サイズ</sys:String>
+    <sys:String x:Key="Str_Col_Modified">更新日時</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">{0} 個のフォルダー、{1} 個のファイル</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">一覧表示</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">アイコン表示</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">詳細表示</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">検索語</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ 検索語を追加</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ グループを追加</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">クリア</sys:String>
+
+    <!-- Search button -->
+    <sys:String x:Key="Str_Btn_Search">検索</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">停止</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">結果</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">結果  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">結果を書き出し</sys:String>
+    <sys:String x:Key="Str_TT_Result">クリックで展開  |  ダブルクリックでエクスプローラーに表示  |  右クリックでその他</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">すべて展開</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">すべて折りたたむ</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">ファイルを開く</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">プログラムから開く...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">エクスプローラーで表示</sys:String>
+    <sys:String x:Key="Str_Menu_OpenAdmin">管理者として開く</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">このフォルダー内を検索</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">ここでターミナルを開く</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">ここで管理者としてターミナルを開く</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">このフォルダーを除外</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">フルパスをコピー</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">ファイル名をコピー</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">フォルダーのパスをコピー</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">一致した行をコピー</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">SHA-256 をコピー</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">プロパティ</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">Windows のその他の操作...</sys:String>
+    <sys:String x:Key="Str_Status_Copied">{0} 件をクリップボードにコピーしました</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">一致した {0} 行をコピーしました</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">{0} 個のファイルをコピーしました - エクスプローラーで貼り付けできます</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">コピーできる一致行がありません (名前の一致には行がありません)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">クリップボードを利用できません - 他のアプリが使用中です</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">{0} をハッシュ計算中...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">{0} の SHA-256 をコピーしました</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">ファイルを読み取れずハッシュを計算できませんでした</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">昇格が拒否されました</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">このコマンドはファイル専用です (フォルダーには使えません)</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows がこれを開けませんでした</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">{0} を除外します - 反映するには再検索してください</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} はすでに除外されています</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">最小化</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">最大化</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">元のサイズに戻す</sys:String>
+    <sys:String x:Key="Str_Menu_Close">閉じる</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">準備完了</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">起点のパスが無効か見つかりません。</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">検索語かフィルターを 1 つ以上追加してください。</sys:String>
+    <sys:String x:Key="Str_Status_Done">{0} 秒で完了  -  {1} 個のファイルが一致。</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">停止しました。</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">クリアしました。</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">書き出せるものがまだありません。</sys:String>
+    <sys:String x:Key="Str_Status_Exported">書き出しました: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">書き出しに失敗しました: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">{0} 個のファイルを走査</sys:String>
+    <sys:String x:Key="Str_Count_Matches">{0} 件の一致</sys:String>
+
+    <!-- About overlay -->
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">パワーユーザーのための自由なシェル。ファイルブラウザー、ターミナル、テキストエディターが一つのウィンドウ、一つのタブバー、一つのキー操作を共有します。インストール不要。</sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> のユーティリティです。</sys:String>
+    <sys:String x:Key="Str_About_Version">バージョン</sys:String>
+    <sys:String x:Key="Str_About_Publisher">発行元</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">拇印</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE の SHA-256</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  現場の技術者が作りました</sys:String>
+
+    <!-- HTML report -->
+    <sys:String x:Key="Str_Rpt_Meta">生成 {0} &#183; {1} ファイル &#183; {2} 件の一致</sys:String>
+    <sys:String x:Key="Str_Rpt_MetaList">生成 {0} &#183; {1} 件</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">{0} の一覧。</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">{0} を {1} で検索しました。</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">{0} を含むファイル名</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">{0} を含むファイル内容</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">すべて</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">または</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">検出方法</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... 他 {0} 件</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">{0} で生成</sys:String>
+
+    <!-- Term/group chips + tooltips -->
+    <sys:String x:Key="Str_Mode_Name">名前</sys:String>
+    <sys:String x:Key="Str_Mode_Content">内容</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">ファイル名 / ワイルドカード (例: *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">内容検索 (ファイルの中のテキスト)</sys:String>
+    <sys:String x:Key="Str_Group_Any">いずれか</sys:String>
+    <sys:String x:Key="Str_Group_All">すべて</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">いずれか: グループ内の 1 つでも一致すればヒット</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">すべて: グループ内のすべてに一致する必要があります</sys:String>
+    <sys:String x:Key="Str_Join_And">かつ</sys:String>
+    <sys:String x:Key="Str_Join_Or">または</sys:String>
+    <sys:String x:Key="Str_Chk_CloseTabs">開いているタブを閉じる</sys:String>
+
+    <!-- Help card: keyboard shortcuts section (F1) -->
+    <sys:String x:Key="Str_Help_Shortcuts">ショートカット</sys:String>
+    <sys:String x:Key="Str_Ks_Run">検索を実行</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">ポップアップを閉じ、検索を止め、次に終了を確認</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">結果を絞り込む</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">新しい検索タブ</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">現在のタブを閉じる</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">次のタブ (Shift: 前へ)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">タブ 1-9 へ移動 (9 = 最後)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">検索語を追加</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">フィルターを追加</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">フォルダーを選ぶ</sys:String>
+    <sys:String x:Key="Str_Ks_Help">このカードを表示</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">大文字と小文字の区別を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">結果をクリア</sys:String>
+    <sys:String x:Key="Str_Ks_Address">場所を編集 - パスを入力して Enter</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">この結果の中を新しいタブで検索</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">検索パネルの表示を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">すべての結果を展開</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">すべての結果を折りたたむ</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">このフォルダーで PowerShell タブを開く</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">このフォルダーで CMD タブを開く</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell を管理者として開く</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD を管理者として開く</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">結果を HTML で書き出し</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">結果を CSV で書き出し</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">ショートカットはウィンドウ内のどこでも使えます。開いているドロップダウン、日付入力、結果フィルターでは Enter がそれぞれの動作に使われます。</sys:String>
+
+    <!-- Font dialog, reached from the row under the theme flyout -->
+    <sys:String x:Key="Str_Fonts_Row">フォント...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">フォント</sys:String>
+    <sys:String x:Key="Str_Fonts_App">アプリ</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">ターミナル</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">既定</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">リストの上でホイールを回すとフォントを切り替えられます。変更はすぐに反映されます。</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0} には読める文字がありません - 前のフォントのままにします</sys:String>
+
+    <!-- Associations card (Associations.cs, AssociationsCard.cs) -->
+    <sys:String x:Key="Str_Assoc_Row">ファイルの関連付け...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">ファイルの関連付け</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">KillerShell を Windows に登録すると、「プログラムから開く」、Settings の既定のアプリ、そしてすべてのフォルダーとドライブの右クリック メニューに表示されます。</sys:String>
+    <sys:String x:Key="Str_Assoc_What">テキストの種類</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat、.cmd、.reg には代わりに「KillerShell で編集」の項目が付きます。ダブルクリックはこれまでどおり実行または結合のままです。ここを黙って変えると、誰かの午後がまるごと消えるからです。</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">この PC のすべてのユーザーに登録する</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">すべてのユーザーに登録するには KillerShell を管理者として実行してください</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">登録</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">登録を解除</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Windows の既定のアプリを開く...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">未登録です。Windows はまだどのファイル形式でも KillerShell を候補に出しません。</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">お使いのアカウントに登録済みです。Windows が既定を切り替えることはありません。Settings でファイル形式ごとに KillerShell をご自分で選んでください。</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">この PC のすべてのユーザーに登録済みです。Windows が既定を切り替えることはありません。Settings でファイル形式ごとに KillerShell をご自分で選んでください。</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">このコピーはポータブル版です。関連付けは今この .exe がある場所を指すため、移動したり削除したりすると壊れます。</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Windows に登録しました</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">登録を解除しました</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows はその変更を受け付けませんでした</sys:String>
+
+    <!-- Title-bar caption on an elevated window, beside the wordmark -->
+    <sys:String x:Key="Str_Title_Elevated">- 昇格された特権</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">ペインのバーの表示を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">新しいウィンドウを開く</sys:String>
+
+    <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+    <sys:String x:Key="Str_TT_Recents">最近開いたフォルダー</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">最近のフォルダーはまだありません</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">履歴を消去</sys:String>
+
+    <!-- Results density, on the rail (Density.cs) -->
+    <sys:String x:Key="Str_TT_Density">結果の表示密度 - クリックで切り替え、ホイールで調整</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">密度: 広め</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">密度: ゆったり</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">密度: コンパクト</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">密度: 詰めて</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">密度: 最小</sys:String>
+
+    <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+    <sys:String x:Key="Str_Term_Copy">コピー</sys:String>
+    <sys:String x:Key="Str_Term_Paste">貼り付け</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">すべて選択</sys:String>
+    <sys:String x:Key="Str_Term_Clear">クリア</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">新しいターミナル</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">このフォルダーを開く</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">フォント...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">プロンプトを編集...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">プロンプトをリセット</sys:String>
+    <sys:String x:Key="Str_Term_Close">ターミナルを閉じる</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">付属のプロンプト スクリプトに戻しますか? このファイルへの変更は失われます。</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">リセット</sys:String>
+    <!-- Rail button: left click opens PowerShell, right click picks -->
+    <sys:String x:Key="Str_TT_Terminal">ターミナルを開く  (F8)  -  右クリックで選択</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell を管理者として</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">コマンド プロンプト</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">コマンド プロンプトを管理者として</sys:String>
+
+    <!-- ショートカットカード: カテゴリ見出し、リスト / キーボード切り替え、ヒント -->
+    <sys:String x:Key="Str_Ks_About">バージョン情報を表示</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">検索</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">ナビゲーション</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">タブ</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">表示</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">ファイル</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">編集</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">ヘルプ</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">リスト</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">キーボード</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">Ctrl、Shift、Alt を押している間、そのレイヤーを表示します</sys:String>
+
+    <!-- エクスプローラー準拠のショートカット -->
+    <sys:String x:Key="Str_Ks_BackForward">戻る / 進む</sys:String>
+    <sys:String x:Key="Str_Ks_Back">戻る</sys:String>
+    <sys:String x:Key="Str_Ks_Up">一つ上のフォルダーへ</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">更新 - フォルダーを再表示、または検索を再実行</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">すべての結果を選択</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">検索ボックスにカーソルを移動</sys:String>
+
+    <!-- ファイル操作: 進行状況、競合、ボタン -->
+    <sys:String x:Key="Str_Fo_Copying">コピーしています...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">移動しています...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">削除しています...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{1} 件中 {0} 件</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} は既にここにあります。どちらを残しますか?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">既にあるもの</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">コピーするもの</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">この処理の残りすべてに同じ操作を適用する</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">置き換える</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">スキップ</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">両方残す</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">名前の変更</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">削除</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">新しい名前</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">新しいフォルダー</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">{0} 件を完全に削除しますか? 元に戻せません。ごみ箱には入りません。</sys:String>
+
+    <!-- ファイル操作のショートカットと結果 -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">ファイルを切り取り / コピー / 貼り付け</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">名前を変更</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">ごみ箱に移動</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">完全に削除</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">新しいフォルダー</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">先にフォルダーを開いてください。検索タブには貼り付け先がありません</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">フォルダーを自分自身の中には入れられません</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">完了 - {0} 件</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">{0} 件で中止しました</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} 件完了、{1} 件失敗</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">実行できませんでした</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">名前を変更できません - {0}</sys:String>
+
+    <!-- ファイル操作のコンテキストメニュー -->
+    <sys:String x:Key="Str_Menu_Cut">切り取り</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">コピー</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">貼り付け</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">名前の変更</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">削除  (Shift: 完全に)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">新しいフォルダー</sys:String>
+
+
+    <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
+    <sys:String x:Key="Str_Fonts_Editor">エディターのテキスト</sys:String>
+
+    <sys:String x:Key="Str_Prof_Edit">PowerShell プロファイルを編集</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">{0} にプロファイルの場所を問い合わせています...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} が応答しません - プロファイルが見つかりませんでした。</sys:String>
+    <sys:String x:Key="Str_Prof_None">PowerShell が見つかりません</sys:String>
+
+    <sys:String x:Key="Str_Menu_Edit">編集</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} は大きすぎて編集できません ({1} MB)。</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">保存  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">元に戻す  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">やり直し  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">検索  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">指定行へ移動  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">折り返し</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">エディターの設定</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">行</sys:String>
+
+    <sys:String x:Key="Str_Ed_OptLineNumbers">行番号</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">現在の行を強調表示</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">スペースとタブを表示</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">タブではなくスペースを挿入</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">折り返し</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">インデント</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">フォントとサイズ...</sys:String>
+
+    <sys:String x:Key="Str_Ed_Undo">元に戻す</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">やり直し</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">切り取り</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">コピー</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">貼り付け</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">すべて選択</sys:String>
+    <sys:String x:Key="Str_Ed_Find">検索...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">指定行へ移動...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">保存</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">設定...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">ファイルを閉じる</sys:String>
+
+    <sys:String x:Key="Str_TT_TermCwd">このフォルダーをタブで開く</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">新しいターミナル  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">管理者として新しいターミナル  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">このフォルダーをタブで開く</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">クリア</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">フォント...</sys:String>
+
+    <sys:String x:Key="Str_Ed_WrapOn">折り返しオン。</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">折り返しオフ - 長い行はスクロールして表示します。</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">{0} を保存しました。</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">{0} を保存できませんでした: {1}</sys:String>
+    <sys:String x:Key="Str_TT_TabOverflow">すべてのタブ</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">ドラッグで幅を変更  -  ダブルクリックでリセット</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">新しいドキュメント</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">無題</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">名前を付けて保存</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">すべてのファイル</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">{0} を開けませんでした: {1}</sys:String>
+    <sys:String x:Key="Str_Dlg_DiscardMsg">保存せずにこのファイルを閉じますか? 変更内容は失われます。</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">破棄</sys:String>
+
+</ResourceDictionary>

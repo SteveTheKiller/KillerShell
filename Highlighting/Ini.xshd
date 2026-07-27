@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!--
+  INI and the pile of formats that are INI wearing another extension: .conf,
+  .cfg, .inf, .properties, .env. Not shipped by AvalonEdit, so this is ours.
+
+  Both comment markers are honored. The format has no standard - ; is the
+  Windows lineage and # is the unix one - and files that mix the two are
+  ordinary, so picking a side would leave half the comments looking like data.
+-->
+<SyntaxDefinition name="Ini" extensions=".ini;.conf;.cfg;.inf;.properties;.env" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment"       foreground="#57A64A" />
+  <Color name="Section"       foreground="#4EC9B0" fontWeight="bold" />
+  <Color name="Key"           foreground="#9CDCFE" />
+  <Color name="String"        foreground="#D69D63" />
+  <Color name="Boolean"       foreground="#4A9FE0" fontWeight="bold" />
+  <Color name="NumberLiteral" foreground="#B5CEA8" />
+  <Color name="Punctuation"   foreground="#A0A0A0" />
+
+  <RuleSet ignoreCase="true">
+    <Span color="Comment">
+      <Begin>;</Begin>
+    </Span>
+    <Span color="Comment">
+      <Begin>\#</Begin>
+    </Span>
+
+    <Rule color="Section">
+      ^\s*\[.*\]\s*$
+    </Rule>
+
+    <!-- The name, up to the separator but not including it: lookahead rather
+         than a capture, because .xshd colors whatever the whole match covers
+         and swallowing the = would take the punctuation with it. -->
+    <Rule color="Key">
+      ^\s*[^=:\s\[][^=:]*(?=[=:])
+    </Rule>
+
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+    </Span>
+    <Span color="String">
+      <Begin>'</Begin>
+      <End>'</End>
+    </Span>
+
+    <Keywords color="Boolean">
+      <Word>true</Word>
+      <Word>false</Word>
+      <Word>yes</Word>
+      <Word>no</Word>
+      <Word>on</Word>
+      <Word>off</Word>
+      <Word>enabled</Word>
+      <Word>disabled</Word>
+      <Word>null</Word>
+    </Keywords>
+
+    <Rule color="NumberLiteral">
+      \b0[xX][0-9a-fA-F]+|\b\d+(\.\d+)?\b
+    </Rule>
+
+    <Rule color="Punctuation">
+      [=:,]+
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

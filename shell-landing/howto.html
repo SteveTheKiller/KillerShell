@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<script>/* Apply saved theme + accent before first paint to avoid a reload flash, and paint the
+theme's background on the very first frame (the browser's default white shows otherwise). */
+(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem('kshell-theme');if(t){d.setAttribute('data-theme',t);if({dark:1,light:1,hc:1}[t]){var v=localStorage.getItem('kshell-av');if(v){var s=v.split('|');d.style.setProperty('--accent',s[0]);d.style.setProperty('--btn',s[1]);}}}}catch(e){}
+var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a5234',cyanotic:'#0a4a6e'};d.style.backgroundColor=bg[t]||bg.dark;})();</script>
+<link rel="preload" href="brand/KillerShell.ttf" as="font" type="font/ttf" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="darkreader-lock">
+<title>KillerShell - How to</title>
+<link rel="canonical" href="https://killershell.net/howto.html">
+<meta name="description" content="How to use KillerShell: browsing, searching, wildcard patterns, filters, file operations, tabs and panes, the terminal, the text editor, and every keyboard shortcut.">
+<link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
+<script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
+<link rel="stylesheet" href="ks.css?v=6">
+<style>
+.page-hero { text-align: center; padding: 44px 16px 8px; }
+.page-hero .wm-logo { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
+.page-hero p { color: var(--muted); font-size: 15px; margin: 4px auto 0; max-width: 560px; }
+.content-inner { max-width: 860px; margin: 0 auto; padding: 0 28px 56px; }
+.tech-sec { scroll-margin-top: 84px; }
+@media (min-width: 901px){ .shell { grid-template-columns: 268px 1fr; } .content { margin: 8px 8px 0 2px; } }
+.sb-tabs .on { border-bottom: 0; }
+.outline { padding: 8px 0; overflow-y: auto; flex: 1; }
+.outline a { display: block; padding: 8px 16px 8px 18px; font-size: 13px; color: var(--text2); border-left: 2px solid transparent; }
+.outline a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent); filter: none; }
+.outline a.on { color: var(--accent); border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--sidebar)); }
+@media (max-width: 900px) { .outline { display:flex; flex-direction:row; flex-wrap:wrap; padding:8px; gap:4px; } .outline a { border-left:0; border-radius:5px; padding:6px 10px; } .outline a.on { border-left:0; } }
+/* Shortcut tables: the gesture column is narrow, monospaced and never wraps mid-chord. */
+.keys-table td:first-child { width: 30%; font-family: Consolas, monospace; font-weight: 400; color: var(--accent); white-space: nowrap; }
+.keys-table { margin-bottom: 22px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<a href="index.html" class="tb-home" title="KillerShell home">
+<img class="tb-icon" src="brand/ksh-icon.png" alt="KillerShell" width="44" height="44">
+<img class="wm-logo tb-wm" src="brand/killershell-logo-dark-blue.svg" alt="KillerShell">
+</a>
+<a class="tb-dl" href="https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe"><svg viewBox="0 0 24 24"><path d="M11 4h2v7h3l-4 5-4-5h3V4zM5 18h14v2H5z"/></svg><span data-i18n="nav_dl">Download</span></a>
+<span class="tb-spacer"></span>
+<nav class="tb-nav">
+<a href="howto.html" class="on" data-i18n="nav_howto">How to</a>
+<a href="technical.html" data-i18n="nav_tech">Technical</a>
+<a href="about.html" data-i18n="nav_about">About</a>
+</nav>
+<div class="tgrp" role="group" aria-label="Theme">
+<button class="swatch sw-dark"     data-theme="dark"     title="Dark"></button>
+<button class="swatch sw-light"    data-theme="light"    title="Light"></button>
+<button class="swatch sw-hc"       data-theme="hc"       title="Black"></button>
+<button class="swatch sw-blood"    data-theme="blood"    title="Blood"></button>
+<button class="swatch sw-greed"    data-theme="greed"    title="Greed"></button>
+<button class="swatch sw-cyanotic" data-theme="cyanotic" title="Cyanotic"></button>
+</div>
+<div class="acc-fly accent-switch" id="accentSwitch">
+<button class="acc-toggle" id="accentToggle" aria-haspopup="true" aria-expanded="false" title="Accent color"></button>
+<div class="acc-pop" id="accentPop" hidden role="group" aria-label="Accent color">
+<span class="acc-pop-label" data-i18n="accent_label">accent:</span>
+<button class="acc" data-accent="red"    style="background:#DD504B;color:#DD504B" title="Red"></button>
+<button class="acc" data-accent="orange" style="background:#E8962C;color:#E8962C" title="Orange"></button>
+<button class="acc" data-accent="green"  style="background:#1EA54C;color:#1EA54C" title="Green"></button>
+<button class="acc" data-accent="teal"   style="background:#1FB8A8;color:#1FB8A8" title="Teal"></button>
+<button class="acc" data-accent="blue"   style="background:#50AEE8;color:#50AEE8" title="Blue"></button>
+<button class="acc" data-accent="purple" style="background:#B982E3;color:#B982E3" title="Purple"></button>
+</div>
+</div>
+<div class="lang-switch" role="group" aria-label="Language">
+<button class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false" title="Language" aria-label="Language">&#127760;</button>
+<div class="lang-menu" id="langMenu" hidden>
+<button class="lang-item" data-lang="en">English</button>
+<button class="lang-item" data-lang="bn">&#2476;&#2494;&#2434;&#2482;&#2494;</button>
+<button class="lang-item" data-lang="de">Deutsch</button>
+<button class="lang-item" data-lang="es">Espanol</button>
+<button class="lang-item" data-lang="fr">Francais</button>
+<button class="lang-item" data-lang="tr">Turkce</button>
+<button class="lang-item" data-lang="zh-cn">&#20013;&#25991; (&#31616;&#20307;)</button>
+<button class="lang-item" data-lang="zh">&#20013;&#25991; (&#32321;&#39636;)</button>
+</div>
+</div>
+</div>
+
+<div class="shell">
+<aside class="sidebar">
+<div class="sb-tabs"><span class="on" data-i18n="nav_howto">How to</span></div>
+<nav class="outline">
+<a href="#start" class="on" data-i18n="h_nav_start">Getting started</a>
+<a href="#browse" data-i18n="h_nav_browse">Browsing folders</a>
+<a href="#search" data-i18n="h_nav_search">Searching</a>
+<a href="#patterns" data-i18n="h_nav_patterns">Patterns &amp; filters</a>
+<a href="#results" data-i18n="h_nav_results">Working with results</a>
+<a href="#files" data-i18n="h_nav_files">Moving files around</a>
+<a href="#tabs" data-i18n="h_nav_tabs">Tabs &amp; panes</a>
+<a href="#terminal" data-i18n="h_nav_terminal">The terminal</a>
+<a href="#editor" data-i18n="h_nav_editor">The editor</a>
+<a href="#shortcuts" data-i18n="h_nav_shortcuts">Every shortcut</a>
+<a href="#looks" data-i18n="h_nav_looks">Themes &amp; fonts</a>
+<a href="#windows" data-i18n="h_nav_windows">Windows integration</a>
+<a href="#install" data-i18n="h_nav_install">Install &amp; update</a>
+</nav>
+</aside>
+<div class="content">
+<div class="content-scroll">
+<div class="content-inner">
+
+<section class="page-hero">
+<span class="page-title" data-i18n="h_hero_kicker">How to use</span>
+<img class="wm-logo" src="brand/killershell-logo-dark-blue.svg" alt="KillerShell">
+<p data-i18n="h_hero_sub">Every panel, key and gesture, from your first search to editing a file in a tab.</p>
+</section>
+
+<div class="tech-sec" id="start">
+<h2 data-i18n="h_start_h">Getting started</h2>
+<p data-i18n="h_start_p1">Download the .exe and run it. There is nothing to install, no account to make and no runtime to fetch. KillerShell opens on your home folder and is ready to work. If you want it in the Start Menu, the <b>PORTABLE</b> badge in the title bar opens the built-in installer.</p>
+<p data-i18n="h_start_p2">The window is a title bar, a rail of buttons down the left, a folder tree, one or more tabs, and a status bar. Press <b>F1</b> at any time for the shortcuts card, which lists every gesture as a plain list or drawn on a keyboard you can hold Ctrl over to see that layer.</p>
+<p data-i18n="h_start_p3">Two things are worth knowing up front. Every tab is independent: it can be a folder, a search, a terminal or an open file, and it keeps its own history and results. And <b>Esc</b> is the universal back-out. It closes whatever popup is open, then stops a running search, then offers to quit.</p>
+</div>
+
+<div class="tech-sec" id="browse">
+<h2 data-i18n="h_browse_h">Browsing folders</h2>
+<p data-i18n="h_browse_p1">A new tab opens on Home and lists what is there. Double-click a folder to enter it, or a file to open it in whatever Windows uses for that type. The folder tree down the left is rooted at This PC and follows wherever you go. Drag its edge to resize it; the width is remembered.</p>
+<p data-i18n="h_browse_p2">Navigation follows Explorer exactly. <b>Alt+Left</b> and <b>Alt+Right</b> go back and forward, <b>Backspace</b> also goes back, <b>Alt+Up</b> goes up a folder, and <b>Ctrl+L</b> or <b>F4</b> puts the caret in the address bar so you can type a path. <b>F5</b> refreshes. The chevron at the end of the address bar lists the folders you have visited recently.</p>
+<p data-i18n="h_browse_p3">Three views, on the toolbar: list (expandable cards), icons (32 to 256 pixel tiles) and details (sortable columns). Icons run on a virtualizing panel, so a hundred thousand items in tile view stays usable. Two toolbar toggles are remembered between sessions: show hidden and system items, and keep folders above files.</p>
+<p data-i18n="h_browse_p5">In details view, drag any divider to resize the column on its left; the columns to its right keep their widths and slide over. Double-click a divider to put its column back to the width it shipped with. The widths are remembered between sessions. Ctrl+wheel over the list resizes the icons in every view, not just tiles.</p>
+<p data-i18n="h_browse_p4"><b>Ctrl+B</b> opens the favorites drawer under the tree. Drop a folder on it to save it, or use the star on the rail for the folder you are in, then jump to the first ten with <b>Alt+1</b> through <b>Alt+0</b>.</p>
+</div>
+
+<div class="tech-sec" id="search">
+<h2 data-i18n="h_search_h">Searching</h2>
+<p data-i18n="h_search_p1"><b>Ctrl+Shift+S</b> opens the search panel on the right edge. The folder you are browsing is already filled in as the scope. Type a term and press <b>Enter</b>. Results stream in as they are found, so you can start reading before the walk finishes, and <b>Esc</b> stops it.</p>
+<p data-i18n="h_search_p2">Every term is either a <b>name</b> term, matched against the filename, or a <b>content</b> term, matched against the text inside the file. Click the small mode chip on a term to switch it. <b>Ctrl+Shift+A</b> adds another term, and all of them run in one pass over the tree, each with its own running match count so you can see which ones are hitting.</p>
+<p data-i18n="h_search_p3">Terms live in groups. An <b>ANY</b> group matches a file if any of its terms hit; an <b>ALL</b> group needs every term in it to hit. Add a second group when you want something like "any of these three error strings, but only in files whose name contains backup".</p>
+<p data-i18n="h_search_p4"><b>Alt+C</b> toggles case-sensitive matching, which is off by default. <b>Ctrl+E</b> puts the caret back in the search box, <b>Ctrl+Shift+L</b> clears the results, and <b>F5</b> runs the search again.</p>
+</div>
+
+<div class="tech-sec" id="patterns">
+<h2 data-i18n="h_pat_h">Patterns &amp; filters</h2>
+<p data-i18n="h_pat_p1">A name term is a wildcard pattern, the same shorthand Windows itself uses. An asterisk stands for any run of characters and a question mark for exactly one. Plain text with no wildcards in it is treated as "contains", so typing <code>log</code> finds every name with log anywhere in it.</p>
+<div class="codeblock">*.log          <span class="cm">// any name ending in .log</span><br>report_*.xlsx  <span class="cm">// report_ then anything, then .xlsx</span><br>?.tmp          <span class="cm">// one character, then .tmp</span><br>2024           <span class="cm">// any name containing 2024</span><br>*.txt;*.log    <span class="cm">// several patterns, separated by ;</span></div>
+<p data-i18n="h_pat_p2">Include and exclude take the same patterns, several at a time separated by semicolons. Include narrows the pass: with <code>*.txt;*.log</code> set, only text and log files are looked at at all. Exclude drops things, and does double duty. A pattern that matches a folder name anywhere in the path, like <code>node_modules</code>, skips that whole subtree, while <code>*.min.js</code> skips those files wherever they sit.</p>
+<p data-i18n="h_pat_p3"><b>F7</b> in the search panel adds a filter row: extension, date modified or size, with is / is not, before / after, over / under. Filters are AND-ed with the terms, so a file has to clear every active filter before any term is tested against it.</p>
+</div>
+
+<div class="tech-sec" id="results">
+<h2 data-i18n="h_res_h">Working with results</h2>
+<p data-i18n="h_res_p1">Every result is a real file. Click a row to expand it and see the matched lines with their line numbers, <b>Enter</b> to open it, <b>F6</b> to show it in Explorer, or right-click for everything else. <b>Ctrl+Right</b> and <b>Ctrl+Left</b> expand and collapse every row at once.</p>
+<p data-i18n="h_res_p2">The sort button orders by name, location, size or modified date. <b>Ctrl+F</b> filters the visible list live, which is a different thing from searching again: it hides rows you already have rather than walking the disk. <b>Ctrl+Shift+F</b> is the one that walks again, piping this result set into a new tab so the next search only touches the files that survived this one. Chain it as deep as you like.</p>
+<p data-i18n="h_res_p3">The copy commands on the right-click menu all act on the whole selection: full path, file name, folder path, matched lines, the files themselves (paste them in Explorer) or a SHA-256. There is also open as administrator, search inside this folder, exclude this folder, properties, and the real Windows shell menu under <b>More Windows options</b>, so anything your other tools add to Explorer is still one click away.</p>
+<p data-i18n="h_res_p4"><b>F9</b> exports a self-contained HTML report with its own theme switcher and sortable columns, and <b>Shift+F9</b> exports CSV. Both open anywhere with no dependencies, which makes them easy to attach to a ticket.</p>
+</div>
+
+<div class="tech-sec" id="files">
+<h2 data-i18n="h_files_h">Moving files around</h2>
+<p data-i18n="h_files_p1">Search results and folder listings behave the same way. <b>Ctrl+X</b>, <b>Ctrl+C</b> and <b>Ctrl+V</b> cut, copy and paste files, <b>F2</b> renames, <b>Delete</b> sends to the Recycle Bin, <b>Shift+Delete</b> destroys (and asks first), and <b>Ctrl+Shift+N</b> makes a folder.</p>
+<p data-i18n="h_files_p2">Copy and move run off the interface thread with a progress card showing the current file and a real byte count. If something already exists at the destination it stops and asks, showing both files' size and date, with Replace, Skip or Keep both and a checkbox to do the same for the rest of the batch. Nothing is copied while that question is on screen.</p>
+<p data-i18n="h_files_p3">A move within one drive is a rename, so it is instant at any size. Across drives it copies first and only deletes once the copy has landed. Recycling goes through the shell, which is also what puts the operation on Explorer's undo stack, so <b>Ctrl+Z</b> there brings the files back.</p>
+<p data-i18n="h_files_p4">Drag and drop works both ways. Drag out of KillerShell into Explorer or a mail client, holding Shift to move instead of copy. Drop onto a browsed folder and Explorer's rules apply: Shift moves, Ctrl copies, and neither means move within a drive and copy across drives. Drop onto a search tab instead and it sets the scope or pipes the files, since there is no folder to drop into.</p>
+</div>
+
+<div class="tech-sec" id="tabs">
+<h2 data-i18n="h_tabs_h">Tabs &amp; panes</h2>
+<p data-i18n="h_tabs_p1"><b>Ctrl+T</b> opens a tab, <b>Ctrl+W</b> closes one, <b>Ctrl+Tab</b> cycles (add Shift to go backwards), and <b>Ctrl+1</b> to <b>Ctrl+9</b> jump straight to one, with 9 meaning the last. Drag tabs to reorder them. On quit you are asked whether to remember the open tabs, and that answer can be remembered too.</p>
+<p data-i18n="h_tabs_p2"><b>F11</b> gives you a second pane. Right-click the button to flip between side by side and stacked. Each pane has its own tabs, its own toolbar and its own folder, so you can drag files from one to the other, or keep a search on the left and a shell on the right.</p>
+<p data-i18n="h_tabs_p3">Each kind of tab gets its own toolbar, because the buttons that make sense over a folder listing do not make sense over a document. A folder tab keeps the location row with back, forward, up, the star and the sort and view buttons. A shell tab swaps it for the live working directory plus new shell, elevate, open folder here, clear and fonts. A document tab gets save, undo, redo, find, go to line, wrap, a settings gear, and readouts for the path, encoding and line ending. <b>F10</b> hides the bar entirely on whichever pane you are in.</p>
+<p data-i18n="h_tabs_p5">Tabs divide the bar between them, but only down to a point: once they would get too narrow to read, the strip keeps as many as fit and a chevron at the right end lists every open tab so you can jump to one. The tab you are on is always in the strip.</p>
+<p data-i18n="h_tabs_p4"><b>Ctrl+N</b> opens a whole second window if you would rather have two.</p>
+</div>
+
+<div class="tech-sec" id="terminal">
+<h2 data-i18n="h_term_h">The terminal</h2>
+<p data-i18n="h_term_p1"><b>F8</b> opens PowerShell in the folder you are looking at, <b>Shift+F8</b> opens CMD, and <b>Ctrl+F8</b> opens PowerShell elevated. The terminal button on the rail does the same on a left click, and right-clicking it lets you pick the host. A shell opened from a result's right-click menu starts in that file's folder.</p>
+<p data-i18n="h_term_p2">The working directory is tracked live and shown on the shell's toolbar. Click it and that folder opens as a browsing tab, so you can cd around in the shell and then go and look at where you ended up. The right-click menu has copy, paste, select all, clear, a new terminal, open folder here, fonts, and edit or reset the prompt.</p>
+<p data-i18n="h_term_p3">KillerShell ships a prompt script you can edit or put back. Your own PowerShell <b>$PROFILE</b> is reachable from the rail menu, the shell's right-click menu or <b>Ctrl+comma</b>. The submenu lists the PowerShell hosts actually installed on the machine, because PowerShell 7 and Windows PowerShell do not share a profile and editing the wrong one is most of the "why is my profile not loading" in the world. It asks each host where its profile is rather than assuming a path, which matters on any machine where OneDrive has redirected Documents. A profile that does not exist yet is created.</p>
+<p data-i18n="h_term_p4">The prompt draws powerline separators, a git branch mark and its own chevron, none of which any monospaced font Windows ships actually has. Rather than making you install a Nerd Font, KillerShell carries a 26-glyph, 2.9 KB fallback face and uses it only for the characters your chosen font is missing. Pick any font you like; the prompt still renders.</p>
+</div>
+
+<div class="tech-sec" id="editor">
+<h2 data-i18n="h_ed_h">The editor</h2>
+<p data-i18n="h_ed_p1"><b>F7</b> on a result, or the Edit row on its right-click menu, opens that file in a tab. You get syntax highlighting, line numbers, undo and redo, find with <b>Ctrl+F</b>, go to line with <b>Ctrl+G</b>, save with <b>Ctrl+S</b>, and a full right-click menu. Word wrap is on by default.</p>
+<p data-i18n="h_ed_p2">Highlighting covers the formats a field tech actually opens: <code>.bat</code> and <code>.cmd</code>, <code>.reg</code>, <code>.ini</code> and its relatives, <code>.yml</code>, <code>.log</code> and <code>.csv</code>, on top of the programming languages the editor already knows. The registry one colors a key deletion and a value deletion in the danger color, because both are one character away from the line that merely sets something. The log one lights severity words, timestamps, GUIDs, error codes and paths, and deliberately leaves everything else as body text.</p>
+<p data-i18n="h_ed_p3">Your encoding is preserved, never invented. A byte-order mark that was there stays there, a file without one stays without one, and bytes that are not valid UTF-8 fall back to the system codepage rather than being replaced with question marks. The bar under the document shows the encoding and the line ending, because whether PowerShell 5.1 will read your script depends on both and neither is visible in the text.</p>
+<p data-i18n="h_ed_p4">The gear holds the settings that describe how you read code rather than what one file is, so they apply to every open document at once: line numbers, highlight the current line, show spaces and tabs, insert spaces instead of tabs, and indent width. The editor has its own slot in the Fonts dialog, filtered to fixed-width faces, and <b>Ctrl+wheel</b> over the text changes the same size.</p>
+<p data-i18n="h_ed_p5">Closing a tab with unsaved changes asks before it discards anything, and a document with unsaved changes shows a dot in front of its tab title. Very large files are refused rather than opened slowly.</p>
+</div>
+
+<div class="tech-sec" id="shortcuts">
+<h2 data-i18n="h_ks_h">Every shortcut</h2>
+<p data-i18n="h_ks_p">The same table the app shows on <b>F1</b>. Shortcuts work anywhere in the window; open dropdowns, the date box and the results filter keep Enter for themselves.</p>
+
+<table class="spec-table keys-table"><tr><th data-i18n="h_cat_search">Search</th><th data-i18n="h_ks_does">What it does</th></tr>
+<tr><td>Enter</td><td data-i18n="h_k_run">run the search</td></tr>
+<tr><td>Ctrl+E</td><td data-i18n="h_k_focus">put the caret in the search box</td></tr>
+<tr><td>Ctrl+Shift+A</td><td data-i18n="h_k_addterm">add a search term</td></tr>
+<tr><td>Shift+F7</td><td data-i18n="h_k_addfilter">add a filter</td></tr>
+<tr><td>Alt+C</td><td data-i18n="h_k_case">toggle case-sensitive matching</td></tr>
+<tr><td>Ctrl+F</td><td data-i18n="h_k_filter">filter the results</td></tr>
+<tr><td>Ctrl+Shift+F</td><td data-i18n="h_k_pipe">search within these results, in a new tab</td></tr>
+</table>
+
+<table class="spec-table keys-table"><tr><th data-i18n="h_cat_nav">Navigation</th><th data-i18n="h_ks_does">What it does</th></tr>
+<tr><td>Alt+Left / Right</td><td data-i18n="h_k_backfwd">go back / forward</td></tr>
+<tr><td>Backspace</td><td data-i18n="h_k_back">go back</td></tr>
+<tr><td>Alt+Up</td><td data-i18n="h_k_up">go up one folder</td></tr>
+<tr><td>Ctrl+L / F4</td><td data-i18n="h_k_address">edit the location - type a path and press Enter</td></tr>
+<tr><td>Ctrl+O</td><td data-i18n="h_k_folder">choose the folder</td></tr>
+<tr><td>Ctrl+B</td><td data-i18n="h_k_favs">show or hide saved locations</td></tr>
+<tr><td>Alt+1-0</td><td data-i18n="h_k_jumpfav">go to saved location 1 to 10 (0 = tenth)</td></tr>
+</table>
+
+<table class="spec-table keys-table"><tr><th data-i18n="h_cat_tabs">Tabs</th><th data-i18n="h_ks_does">What it does</th></tr>
+<tr><td>Ctrl+N</td><td data-i18n="h_k_newwin">open a new window</td></tr>
+<tr><td>Ctrl+T</td><td data-i18n="h_k_newtab">new search tab</td></tr>
+<tr><td>Ctrl+W</td><td data-i18n="h_k_closetab">close the current tab</td></tr>
+<tr><td>Ctrl+Tab</td><td data-i18n="h_k_nexttab">next tab (Shift: previous)</td></tr>
+<tr><td>Ctrl+1-9</td><td data-i18n="h_k_jumptab">jump to tab 1 to 9 (9 = last)</td></tr>
+<tr><td>F8 / Ctrl+`</td><td data-i18n="h_k_shell">open a PowerShell tab in this folder</td></tr>
+<tr><td>Shift+F8</td><td data-i18n="h_k_shellcmd">open a CMD tab in this folder</td></tr>
+<tr><td>Ctrl+F8 / Ctrl+Alt+`</td><td data-i18n="h_k_shelladmin">open PowerShell as administrator</td></tr>
+</table>
+
+<table class="spec-table keys-table"><tr><th data-i18n="h_cat_view">View</th><th data-i18n="h_ks_does">What it does</th></tr>
+<tr><td>F5</td><td data-i18n="h_k_refresh">refresh - re-list the folder, or re-run the search</td></tr>
+<tr><td>F10</td><td data-i18n="h_k_menubar">hide or show the pane menubar</td></tr>
+<tr><td>F11</td><td data-i18n="h_k_dual">second pane - right-click to flip side by side / stacked</td></tr>
+<tr><td>Ctrl+H</td><td data-i18n="h_k_hidden">show hidden and system items</td></tr>
+<tr><td>Ctrl+Shift+S</td><td data-i18n="h_k_panel">show or hide the search panel</td></tr>
+<tr><td>Ctrl+Right</td><td data-i18n="h_k_expand">expand every result</td></tr>
+<tr><td>Ctrl+Left</td><td data-i18n="h_k_collapse">collapse every result</td></tr>
+</table>
+
+<table class="spec-table keys-table"><tr><th data-i18n="h_cat_file">File</th><th data-i18n="h_ks_does">What it does</th></tr>
+<tr><td>Enter</td><td data-i18n="h_k_open">open file</td></tr>
+<tr><td>F7</td><td data-i18n="h_k_edit">edit the file in a tab</td></tr>
+<tr><td>Ctrl+,</td><td data-i18n="h_k_profile">edit PowerShell profile</td></tr>
+<tr><td>Ctrl+Shift+O</td><td data-i18n="h_k_openwith">open with...</td></tr>
+<tr><td>Ctrl+Shift+Enter</td><td data-i18n="h_k_openadmin">open as administrator</td></tr>
+<tr><td>F6</td><td data-i18n="h_k_explorer">show in Explorer</td></tr>
+<tr><td>F3</td><td data-i18n="h_k_searchhere">search inside this folder</td></tr>
+<tr><td>Ctrl+Shift+E</td><td data-i18n="h_k_exclude">exclude this folder</td></tr>
+<tr><td>Ctrl+D</td><td data-i18n="h_k_fav">add to favorites</td></tr>
+<tr><td>Alt+Enter</td><td data-i18n="h_k_props">properties</td></tr>
+<tr><td>Shift+F10</td><td data-i18n="h_k_shellmenu">more Windows options</td></tr>
+<tr><td>F9</td><td data-i18n="h_k_html">export the results as HTML</td></tr>
+<tr><td>Shift+F9</td><td data-i18n="h_k_csv">export the results as CSV</td></tr>
+</table>
+
+<table class="spec-table keys-table"><tr><th data-i18n="h_cat_edit">Editing</th><th data-i18n="h_ks_does">What it does</th></tr>
+<tr><td>Ctrl+A</td><td data-i18n="h_k_selall">select every result</td></tr>
+<tr><td>Ctrl+X / C / V</td><td data-i18n="h_k_ccp">cut / copy / paste files</td></tr>
+<tr><td>F2</td><td data-i18n="h_k_rename">rename</td></tr>
+<tr><td>Delete</td><td data-i18n="h_k_recycle">send to the Recycle Bin</td></tr>
+<tr><td>Shift+Delete</td><td data-i18n="h_k_destroy">delete permanently</td></tr>
+<tr><td>Ctrl+Shift+N</td><td data-i18n="h_k_newfolder">new folder</td></tr>
+<tr><td>Ctrl+Shift+L</td><td data-i18n="h_k_clear">clear the results</td></tr>
+<tr><td>Esc</td><td data-i18n="h_k_esc">close popups, stop the search, then offer to quit</td></tr>
+<tr><td>Ctrl+Shift+C</td><td data-i18n="h_k_cpath">copy full path</td></tr>
+<tr><td>Ctrl+Shift+M</td><td data-i18n="h_k_cname">copy file name</td></tr>
+<tr><td>Ctrl+Shift+D</td><td data-i18n="h_k_cfolder">copy folder path</td></tr>
+<tr><td>Ctrl+Shift+Y</td><td data-i18n="h_k_clines">copy matched lines</td></tr>
+<tr><td>Ctrl+Shift+H</td><td data-i18n="h_k_chash">copy SHA-256</td></tr>
+</table>
+
+<table class="spec-table keys-table"><tr><th data-i18n="h_cat_doc">In a document</th><th data-i18n="h_ks_does">What it does</th></tr>
+<tr><td>Ctrl+S</td><td data-i18n="h_k_edsave">save</td></tr>
+<tr><td>Ctrl+Z / Ctrl+Y</td><td data-i18n="h_k_edundo">undo / redo</td></tr>
+<tr><td>Ctrl+F</td><td data-i18n="h_k_edfind">find in this file</td></tr>
+<tr><td>Ctrl+G</td><td data-i18n="h_k_edgoto">go to line</td></tr>
+<tr><td>Ctrl+wheel</td><td data-i18n="h_k_edzoom">change the editor text size</td></tr>
+</table>
+
+<table class="spec-table keys-table"><tr><th data-i18n="h_cat_help">Help</th><th data-i18n="h_ks_does">What it does</th></tr>
+<tr><td>F1</td><td data-i18n="h_k_help">show the shortcuts card</td></tr>
+<tr><td>F12</td><td data-i18n="h_k_about">show the about card</td></tr>
+</table>
+</div>
+
+<div class="tech-sec" id="looks">
+<h2 data-i18n="h_look_h">Themes &amp; fonts</h2>
+<p data-i18n="h_look_p1">Six themes: Dark, Light, Black, Blood, Greed and Cyanotic, each with its own set of accent colors, all switchable live from the title bar. Nothing restarts.</p>
+<p data-i18n="h_look_p2">The Fonts dialog has three slots: the app, the terminal and the editor. The terminal and editor lists are filtered to fixed-width faces. Roll the wheel over a list to browse faces and each one applies as you land on it, so you see it before you commit to it.</p>
+<p data-i18n="h_look_p3">Roll the wheel over the wordmark in the title bar to resize the whole app, about 2% a notch between 70% and 250%. It reflows rather than stretching a bitmap, so text stays sharp, and the setting is remembered. The density button on the rail separately controls how tightly the result rows are packed.</p>
+<p data-i18n="h_look_p4">The language menu is the globe in the title bar. Ten languages, switched live: English, Spanish, German, French, Turkish, Czech, Japanese, Chinese in both Traditional and Simplified, and Bengali.</p>
+</div>
+
+<div class="tech-sec" id="windows">
+<h2 data-i18n="h_win_h">Windows integration</h2>
+<p data-i18n="h_win_p1">Out of the box KillerShell touches nothing outside its own settings key. If you want Windows to know what it is, the theme flyout has a <b>File associations</b> row that registers it: an "Open with" entry for every text type the editor handles, an "Open in KillerShell" row on folders, drives and the empty space inside a folder, an "Open KillerShell terminal here" row beside it, and the entry that makes KillerShell appear in Settings under Default apps.</p>
+<p data-i18n="h_win_p2">Registering and defaulting are two different things, and only one of them is KillerShell's to do. Since Windows 8 the key that records your default app has been protected by a signed hash, so any program claiming to make itself the default is either forging that or about to stop working when Windows notices. KillerShell registers, then opens Settings on its own entry so you can pick per file type. Nothing changes until you do.</p>
+<p data-i18n="h_win_p3"><code>.bat</code>, <code>.cmd</code> and <code>.reg</code> deliberately get an "Edit with KillerShell" row rather than taking the open verb. Their double-click runs or merges them, and quietly changing what that means is how someone loses an afternoon. <code>.ps1</code> is treated as ordinary text, because Windows already opens those in an editor on double-click.</p>
+<p data-i18n="h_win_p4">Per-user by default. Tick the box in an elevated window to register for everyone on the PC. Both uninstall paths take it back out again, so a registration never outlives the .exe it points at. If you are running portable the card says so, because the associations will point at wherever that .exe sits right now.</p>
+<p data-i18n="h_win_p5">Handing KillerShell a path works whether or not you register anything: <code>KillerShell.exe "C:\logs"</code> browses that folder, and <code>KillerShell.exe "C:\logs\today.log"</code> opens the file in an editor tab.</p>
+</div>
+
+<div class="tech-sec" id="install">
+<h2 data-i18n="h_ins_h">Install &amp; update</h2>
+<p data-i18n="h_ins_p1">Run the .exe from anywhere and a <b>PORTABLE</b> badge appears in the title bar. Click it to install: for just your account, which needs no admin rights, or for every user on the PC, which asks for permission once and puts KillerShell in Program Files with a Start Menu and Add/Remove Programs entry for everybody.</p>
+<p data-i18n="h_ins_p2">Installing for all users removes an existing per-user copy, so there is only ever one install and one uninstall entry, and your theme, accent, language and tabs are kept. Settings live in the registry under your own account rather than beside the .exe, so the program stays a single file you can move around.</p>
+<p data-i18n="h_ins_p3">For fleets, <code>/silent</code> performs the machine-wide install and <code>/uninstall</code> removes it, which is what winget, Chocolatey and RMM tools use. The in-app updater elevates by itself when the installed copy sits somewhere a normal user cannot write to.</p>
+<p data-i18n="h_ins_p4">Still stuck, or found something broken? The <a href="https://github.com/SteveTheKiller/KillerShell/issues" target="_blank" rel="noopener">issues page</a> is open to anyone, and a good deal of what KillerShell does started there.</p>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<footer class="statusbar">
+<span class="left"><a href="https://github.com/SteveTheKiller/KillerShell" target="_blank" rel="noopener" data-i18n="footer_src">Source on GitHub</a> &middot; GPLv3 &middot; Part of <a href="https://killertools.net" target="_blank" rel="noopener">killertools.net</a></span>
+<span class="right"><span id="verEgg" title="click me">v1.0.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
+</footer>
+<div class="egg-toast" id="eggToast"></div>
+<script src="ks-i18n.js?v=1"></script>
+<script src="ks.js?v=2"></script>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.outline a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
+  var sc=document.querySelector('.content-scroll');
+  function onScroll(){ var y=(sc?sc.scrollTop:window.scrollY)+100, cur=secs[0]; secs.forEach(function(s){ if(s&&s.offsetTop<=y) cur=s; });
+    links.forEach(function(a){ a.classList.toggle('on', cur && a.getAttribute('href')==='#'+cur.id); }); }
+  (sc||window).addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+</script>
+</body>
+</html>

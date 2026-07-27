@@ -1,0 +1,285 @@
+﻿// Copyright (c) 2014 AlphaSierraPapa for the SharpDevelop Team
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this
+// software and associated documentation files (the "Software"), to deal in the Software
+// without restriction, including without limitation the rights to use, copy, modify, merge,
+// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
+// to whom the Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+// PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Windows.Documents;
+
+using ICSharpCode.AvalonEdit.Document;
+
+namespace ICSharpCode.AvalonEdit.Highlighting
+{
+	/// <summary>
+	/// Represents a immutable piece text with highlighting information.
+	/// </summary>
+	public class RichText
+	{
+		/// <summary>
+		/// The empty string without any formatting information.
+		/// </summary>
+		public static readonly RichText Empty = new(string.Empty);
+		internal readonly int[] stateChangeOffsets;
+		internal readonly HighlightingColor[] stateChanges;
+
+		/// <summary>
+		/// Creates a RichText instance with the given text and RichTextModel.
+		/// </summary>
+		/// <param name="text">
+		/// The text to use in this RichText instance.
+		/// </param>
+		/// <param name="model">
+		/// The model that contains the formatting to use for this RichText instance.
+		/// <c>model.DocumentLength</c> should correspond to <c>text.Length</c>.
+		/// This parameter may be null, in which case the RichText instance just holds plain text.
+		/// </param>
+		public RichText(string text, RichTextModel? model = null)
+		{
+			this.Text = text ?? throw new ArgumentNullException("text");
+			if (model != null) {
+				HighlightedSection[] sections = [.. model.GetHighlightedSections(0, text.Length)];
+				stateChangeOffsets = new int[sections.Length];
+				stateChanges = new HighlightingColor[sections.Length];
+				for (int i = 0; i < sections.Length; i++) {
+					stateChangeOffsets[i] = sections[i].Offset;
+					// A RichTextModel section always carries a color; Empty stands in for "none".
+					stateChanges[i] = sections[i].Color ?? HighlightingColor.Empty;
+				}
+			} else {
+				stateChangeOffsets = [0];
+				stateChanges = [HighlightingColor.Empty];
+			}
+		}
+
+		internal RichText(string text, int[] offsets, HighlightingColor[] states)
+		{
+			this.Text = text;
+			Debug.Assert(offsets[0] == 0);
+			Debug.Assert(offsets.Last() <= text.Length);
+			this.stateChangeOffsets = offsets;
+			this.stateChanges = states;
+		}
+
+		/// <summary>
+		/// Gets the text.
+		/// </summary>
+		public string Text { get; }
+
+		/// <summary>
+		/// Gets the text length.
+		/// </summary>
+		public int Length => Text.Length;
+
+		private int GetIndexForOffset(int offset)
+		{
+			if (offset < 0 || offset > Text.Length) {
+				throw new ArgumentOutOfRangeException("offset");
+			}
+
+			int index = Array.BinarySearch(stateChangeOffsets, offset);
+			if (index < 0) {
+				// If no color change exists directly at offset,
+				// return the index of the color segment that contains offset.
+				index = ~index - 1;
+			}
+			return index;
+		}
+
+		private int GetEnd(int index)
+		{
+			// Gets the end of the color segment no. index.
+			if (index + 1 < stateChangeOffsets.Length) {
+				return stateChangeOffsets[index + 1];
+			} else {
+				return Text.Length;
+			}
+		}
+
+		/// <summary>
+		/// Gets the HighlightingColor for the specified offset.
+		/// </summary>
+		public HighlightingColor GetHighlightingAt(int offset)
+		{
+			return stateChanges[GetIndexForOffset(offset)];
+		}
+
+		/// <summary>
+		/// Retrieves the highlighted sections in the specified range.
+		/// The highlighted sections will be sorted by offset, and there will not be any nested or overlapping sections.
+		/// </summary>
+		public IEnumerable<HighlightedSection> GetHighlightedSections(int offset, int length)
+		{
+			int index = GetIndexForOffset(offset);
+			int pos = offset;
+			int endOffset = offset + length;
+			while (pos < endOffset) {
+				int endPos = Math.Min(endOffset, GetEnd(index));
+				yield return new HighlightedSection {
+					Offset = pos,
+					Length = endPos - pos,
+					Color = stateChanges[index]
+				};
+				pos = endPos;
+				index++;
+			}
+		}
+
+		/// <summary>
+		/// Creates a new RichTextModel with the formatting from this RichText.
+		/// </summary>
+		public RichTextModel ToRichTextModel()
+		{
+			return new RichTextModel(stateChangeOffsets, [.. stateChanges.Select(ch => ch.Clone())]);
+		}
+
+		/// <summary>
+		/// Gets the text.
+		/// </summary>
+		public override string ToString()
+		{
+			return Text;
+		}
+
+		/// <summary>
+		/// Creates WPF Run instances that can be used for TextBlock.Inlines.
+		/// </summary>
+		public Run[] CreateRuns()
+		{
+			Run[] runs = new Run[stateChanges.Length];
+			for (int i = 0; i < runs.Length; i++) {
+				int startOffset = stateChangeOffsets[i];
+				int endOffset = i + 1 < stateChangeOffsets.Length ? stateChangeOffsets[i + 1] : Text.Length;
+				Run r = new(Text[startOffset..endOffset]);
+				HighlightingColor state = stateChanges[i];
+				ApplyColorToTextElement(r, state);
+				runs[i] = r;
+			}
+			return runs;
+		}
+
+		internal static void ApplyColorToTextElement(TextElement r, HighlightingColor state)
+		{
+			if (state.Foreground != null) {
+				r.Foreground = state.Foreground.GetBrush(null);
+			}
+
+			if (state.Background != null) {
+				r.Background = state.Background.GetBrush(null);
+			}
+
+			if (state.FontWeight != null) {
+				r.FontWeight = state.FontWeight.Value;
+			}
+
+			if (state.FontStyle != null) {
+				r.FontStyle = state.FontStyle.Value;
+			}
+		}
+
+		/// <summary>
+		/// Produces HTML code for the line, with &lt;span style="..."&gt; tags.
+		/// </summary>
+		public string ToHtml(HtmlOptions? options = null)
+		{
+			StringWriter stringWriter = new(CultureInfo.InvariantCulture);
+			using (HtmlRichTextWriter htmlWriter = new(stringWriter, options)) {
+				htmlWriter.Write(this);
+			}
+			return stringWriter.ToString();
+		}
+
+		/// <summary>
+		/// Produces HTML code for a section of the line, with &lt;span style="..."&gt; tags.
+		/// </summary>
+		public string ToHtml(int offset, int length, HtmlOptions? options = null)
+		{
+			StringWriter stringWriter = new(CultureInfo.InvariantCulture);
+			using (HtmlRichTextWriter htmlWriter = new(stringWriter, options)) {
+				htmlWriter.Write(this, offset, length);
+			}
+			return stringWriter.ToString();
+		}
+
+		/// <summary>
+		/// Creates a substring of this rich text.
+		/// </summary>
+		public RichText Substring(int offset, int length)
+		{
+			if (offset == 0 && length == this.Length) {
+				return this;
+			}
+
+			string newText = Text.Substring(offset, length);
+			RichTextModel model = ToRichTextModel();
+			OffsetChangeMap map =
+			[
+				new OffsetChangeMapEntry(offset + length, Text.Length - offset - length, 0),
+				new OffsetChangeMapEntry(0, offset, 0),
+			];
+			model.UpdateOffsets(map);
+			return new RichText(newText, model);
+		}
+
+		/// <summary>
+		/// Concatenates the specified rich texts.
+		/// </summary>
+		public static RichText Concat(params RichText[] texts)
+		{
+			if (texts == null || texts.Length == 0) {
+				return Empty;
+			} else if (texts.Length == 1) {
+				return texts[0];
+			}
+
+			string newText = string.Concat(texts.Select(txt => txt.Text));
+			RichTextModel model = texts[0].ToRichTextModel();
+			int offset = texts[0].Length;
+			for (int i = 1; i < texts.Length; i++) {
+				model.Append(offset, texts[i].stateChangeOffsets, texts[i].stateChanges);
+				offset += texts[i].Length;
+			}
+			return new RichText(newText, model);
+		}
+
+		/// <summary>
+		/// Concatenates the specified rich texts.
+		/// </summary>
+		public static RichText operator +(RichText a, RichText b)
+		{
+			return RichText.Concat(a, b);
+		}
+
+		/// <summary>
+		/// Implicit conversion from string to RichText.
+		/// </summary>
+		// Null in, null out - callers convert optional strings through this.
+		[return: NotNullIfNotNull(nameof(text))]
+		public static implicit operator RichText?(string? text)
+		{
+			if (text != null) {
+				return new RichText(text);
+			} else {
+				return null;
+			}
+		}
+	}
+}
