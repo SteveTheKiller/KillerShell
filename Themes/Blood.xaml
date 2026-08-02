@@ -47,8 +47,9 @@
     <SolidColorBrush x:Key="SelectionFg"        Color="#e8485a" po:Freeze="True"/>
 
     <SolidColorBrush x:Key="InputBorderBrush"    Color="#401d1d" po:Freeze="True"/>
-    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#301315" po:Freeze="True"/>
-    <SolidColorBrush x:Key="MenuBorderBrush"     Color="#401d1d" po:Freeze="True"/>
+    <!-- Menu surface: KillerPDF's values, the family source of truth for colour. -->
+    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#1e0a0b" po:Freeze="True"/>
+    <SolidColorBrush x:Key="MenuBorderBrush"     Color="#4a2429" po:Freeze="True"/>
     <SolidColorBrush x:Key="MenuTextBrush"       Color="#f8c99e" po:Freeze="True"/>
     <SolidColorBrush x:Key="MenuHoverBrush"      Color="#54201f" po:Freeze="True"/>
     <SolidColorBrush x:Key="OutlinePressedBrush" Color="#44ffffff" po:Freeze="True"/>

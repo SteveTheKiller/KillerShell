@@ -7,8 +7,8 @@
                 <!-- [0] Grunge palette - swapped in place at runtime by ThemeManager -->
                 <ResourceDictionary Source="Themes/Dark.xaml"/>
                 <!-- Shared KillerUI control styles, then KillerShell's app-specific styles -->
-                <ResourceDictionary Source="Controls.xaml"/>
-                <ResourceDictionary Source="AppStyles.xaml"/>
+                <ResourceDictionary Source="Controls/Controls.xaml"/>
+                <ResourceDictionary Source="Controls/AppStyles.xaml"/>
                 <!-- [3] string base (LocaleManager layers the chosen locale at [4]) -->
                 <ResourceDictionary Source="Strings/en-US.xaml"/>
             </ResourceDictionary.MergedDictionaries>

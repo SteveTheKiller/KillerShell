@@ -1,0 +1,248 @@
+<!-- Themed replacement for Microsoft.Win32.OpenFileDialog / SaveFileDialog.
+     Same chrome, places rail, view modes and sortable columns as FolderPickerDialog - the row
+     styles and templates are shared from Controls.xaml - plus a file name box, a filter combo
+     and Open/Save behaviour. The property surface deliberately mirrors the Win32 dialogs
+     (Title, Filter, FilterIndex, FileName, InitialDirectory, DefaultExt, ...) so a call site
+     changes by one word. -->
+<Window x:Class="KillerShell.FileDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Select file"
+        Width="720" Height="520" MinWidth="560" MinHeight="420"
+        WindowStyle="None" ResizeMode="CanResize" ShowInTaskbar="False"
+        Background="{DynamicResource BackgroundBrush}"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        WindowStartupLocation="CenterOwner">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="8" CornerRadius="0"
+                            GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+
+    <Border x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>    <!-- title bar -->
+                <RowDefinition Height="Auto"/>  <!-- heading -->
+                <RowDefinition Height="Auto"/>  <!-- path row -->
+                <RowDefinition Height="*"/>     <!-- places | entries -->
+                <RowDefinition Height="Auto"/>  <!-- file name + filter -->
+                <RowDefinition Height="Auto"/>  <!-- footer -->
+            </Grid.RowDefinitions>
+
+            <!-- Shared film grain over the whole dialog surface -->
+            <Border Grid.RowSpan="6" IsHitTestVisible="False"
+                    Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+
+            <!-- Title bar -->
+            <Border Grid.Row="0" Background="Transparent" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid Margin="16,0">
+                    <Grid VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False">
+                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="15" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
+                            <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
+                            <Run Text="Killer" Foreground="#D8000000"/><Run Text="Shell" FontSize="19.5" FontWeight="Bold" Foreground="#D8000000"/>
+                        </TextBlock>
+                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="15">
+                            <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="19.5" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}"/>
+                        </TextBlock>
+                    </Grid>
+                    <Button Content="&#xE8BB;" Click="Cancel_Click" HorizontalAlignment="Right" Width="30" Height="26" FontSize="10"
+                            FontFamily="Segoe MDL2 Assets" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Foreground" Value="{DynamicResource ChromeTextBrush}"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="xb" Background="Transparent" CornerRadius="3">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                                                    <Setter TargetName="xb" Property="Background" Value="#33C42B1C"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Heading: the caller's Title, so "Import iCalendar" still reads as the prompt -->
+            <TextBlock x:Name="HeadingText" Grid.Row="1" Margin="16,0,16,8"
+                       Foreground="{DynamicResource MutedTextBrush}" FontFamily="Consolas" FontSize="12"/>
+
+            <!-- Path row: up one level + current path + view modes -->
+            <Grid Grid.Row="2" Margin="16,0,16,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="UpButton" Grid.Column="0" Content="&#xE74A;" Click="Up_Click" ToolTip="{DynamicResource Str_TT_Up}"
+                        Width="30" Height="28" Margin="0,0,6,0" FontSize="12" FontFamily="Segoe MDL2 Assets"
+                        Foreground="{DynamicResource TextBrush}" Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="ub" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource InputBorderBrush}"
+                                    BorderThickness="1" CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ub" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/></Trigger>
+                                <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4"/></Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <TextBox x:Name="PathBox" Grid.Column="1" Height="28" VerticalContentAlignment="Center" KeyDown="PathBox_KeyDown"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8,0,0,0" VerticalAlignment="Center">
+                    <Button x:Name="ViewListBtn"    Style="{StaticResource PickerViewBtn}" Content="&#xE8FD;" ToolTip="{DynamicResource Str_TT_ViewList}"    Click="ViewList_Click"/>
+                    <Button x:Name="ViewIconsBtn"   Style="{StaticResource PickerViewBtn}" Content="&#xE80A;" ToolTip="{DynamicResource Str_TT_ViewIcons}"   Click="ViewIcons_Click"   Margin="2,0"/>
+                    <Button x:Name="ViewDetailsBtn" Style="{StaticResource PickerViewBtn}" Content="&#xE700;" ToolTip="{DynamicResource Str_TT_ViewDetails}" Click="ViewDetails_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Main: quick places on the left, folder contents on the right -->
+            <Grid Grid.Row="3" Margin="16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="{DynamicResource BackgroundBrush}"
+                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="6">
+                  <Grid>
+                    <Border IsHitTestVisible="False" CornerRadius="6"
+                            Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                    <ListBox x:Name="PlacesList" Background="Transparent" BorderThickness="0" Padding="2,4"
+                             ItemContainerStyle="{StaticResource PickerRow}" SelectionChanged="Places_SelectionChanged"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Style="{StaticResource PickerRowContent}">
+                                    <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                               VerticalAlignment="Center" Margin="0,0,8,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Label}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                  </Grid>
+                </Border>
+
+                <Border Grid.Column="2" Background="{DynamicResource BackgroundBrush}"
+                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="6">
+                  <Grid>
+                    <Border IsHitTestVisible="False" CornerRadius="6"
+                            Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top" x:Name="DetailsHeader" Visibility="Collapsed" Margin="12,4,26,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Style="{StaticResource PickerColBtn}" Click="SortName_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{DynamicResource Str_Col_Name}"/>
+                                    <TextBlock x:Name="NameArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,1,0,0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="1" Style="{StaticResource PickerColBtn}" HorizontalContentAlignment="Right" Click="SortSize_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{DynamicResource Str_Col_Size}"/>
+                                    <TextBlock x:Name="SizeArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,1,0,0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="2" Style="{StaticResource PickerColBtn}" Margin="10,0,0,0" Click="SortModified_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{DynamicResource Str_Col_Modified}"/>
+                                    <TextBlock x:Name="ModArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,1,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <Grid>
+                            <ListBox x:Name="FileList" Background="Transparent" BorderThickness="0" Padding="2,4"
+                                     ItemContainerStyle="{StaticResource PickerRow}"
+                                     ItemTemplate="{StaticResource RowTemplate}"
+                                     ItemsPanel="{StaticResource PanelStack}"
+                                     SelectionChanged="Files_SelectionChanged" MouseDoubleClick="Files_DoubleClick"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                            <TextBlock x:Name="EmptyHint" Text="{DynamicResource Str_Dlg_NoMatchingFiles}" Visibility="Collapsed"
+                                       Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="11"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"
+                                       TextAlignment="Center" Margin="20"/>
+                        </Grid>
+                    </DockPanel>
+                  </Grid>
+                </Border>
+            </Grid>
+
+            <!-- File name + filter. Labels are DimTextBrush on the dark card: 3.15:1, the tier
+                 these brushes are calibrated for. -->
+            <Grid Grid.Row="4" Margin="16,12,16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource Str_Dlg_FileName}" VerticalAlignment="Center"
+                           Margin="0,0,10,0" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="11"/>
+                <TextBox x:Name="FileNameBox" Grid.Row="0" Grid.Column="1" Height="28"
+                         VerticalContentAlignment="Center" KeyDown="FileNameBox_KeyDown"/>
+
+                <TextBlock x:Name="FilterLabel" Grid.Row="1" Grid.Column="0" Text="{DynamicResource Str_Dlg_FileType}" VerticalAlignment="Center"
+                           Margin="0,8,10,0" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="11"/>
+                <ComboBox x:Name="FilterCombo" Grid.Row="1" Grid.Column="1" Height="28" Margin="0,8,0,0"
+                          SelectionChanged="Filter_SelectionChanged"/>
+            </Grid>
+
+            <!-- Footer: selection details on the left, actions on the right -->
+            <Grid Grid.Row="5" Margin="16,12,16,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <TextBlock x:Name="SelName" FontFamily="Consolas" FontSize="12" Foreground="{DynamicResource TextBrush}"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock x:Name="SelMeta" FontFamily="Consolas" FontSize="10" Foreground="{DynamicResource MutedTextBrush}"
+                               TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="{DynamicResource Str_Btn_Cancel}" Style="{StaticResource SurfaceButton}" MinWidth="90" Margin="0,0,8,0" Click="Cancel_Click"/>
+                    <Button x:Name="AcceptButton" Style="{StaticResource OutlineButton}" MinWidth="90" Click="OK_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

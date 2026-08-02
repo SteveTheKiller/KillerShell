@@ -33,8 +33,10 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 .also-card:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); filter: none; }
 .also-icon { width: 46px; height: 46px; border-radius: 9px; flex-shrink: 0; }
 .also-body { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; min-width: 0; }
+/* One height for all of them. Every app's SVG shares a 996-unit viewBox height, so this renders
+   "Killer" at the same size in each - no per-app fudge. The old .ks { height: 26px } override
+   was papering over the fact that these were mixed PNG and SVG art with different padding. */
 .also-wm { height: 30px; width: auto; display: block; max-width: 100%; object-fit: contain; object-position: left center; }
-.also-wm.ks { height: 26px; }
 .also-wm.light { display: none; }
 html[data-theme="light"] .also-wm.dark { display: none; }
 html[data-theme="light"] .also-wm.light { display: block; }
@@ -80,9 +82,11 @@ html[data-theme="light"] .also-wm.light { display: block; }
 <div class="lang-menu" id="langMenu" hidden>
 <button class="lang-item" data-lang="en">English</button>
 <button class="lang-item" data-lang="bn">&#2476;&#2494;&#2434;&#2482;&#2494;</button>
+<button class="lang-item" data-lang="cs">&#268;e&#353;tina</button>
 <button class="lang-item" data-lang="de">Deutsch</button>
 <button class="lang-item" data-lang="es">Espanol</button>
 <button class="lang-item" data-lang="fr">Francais</button>
+<button class="lang-item" data-lang="ja">&#26085;&#26412;&#35486;</button>
 <button class="lang-item" data-lang="tr">Turkce</button>
 <button class="lang-item" data-lang="zh-cn">&#20013;&#25991; (&#31616;&#20307;)</button>
 <button class="lang-item" data-lang="zh">&#20013;&#25991; (&#32321;&#39636;)</button>
@@ -140,25 +144,33 @@ html[data-theme="light"] .also-wm.light { display: block; }
 <a class="also-card" href="https://killerpdf.net" target="_blank" rel="noopener">
 <img class="also-icon" src="brand/kp-icon.png" alt="KillerPDF" width="46" height="46">
 <span class="also-body">
-<img class="also-wm dark" src="brand/killerpdf-wordmark-dark.png" alt="KillerPDF">
-<img class="also-wm light" src="brand/killerpdf-wordmark-light.png" alt="KillerPDF">
+<img class="also-wm dark" src="brand/killerpdf-logo-brand-dark.svg" alt="KillerPDF">
+<img class="also-wm light" src="brand/killerpdf-logo-brand-light.svg" alt="KillerPDF">
 <span class="also-tag" data-i18n="ak_3">Open-source PDF editor for Windows</span>
 </span>
 </a>
 <a class="also-card" href="https://killerscan.net" target="_blank" rel="noopener">
 <img class="also-icon" src="brand/ks-icon.png" alt="KillerScan" width="46" height="46">
 <span class="also-body">
-<img class="also-wm ks dark" src="brand/killerscan-wordmark-dark.png" alt="KillerScan">
-<img class="also-wm ks light" src="brand/killerscan-wordmark-light.png" alt="KillerScan">
+<img class="also-wm dark" src="brand/killerscan-logo-brand-dark.svg" alt="KillerScan">
+<img class="also-wm light" src="brand/killerscan-logo-brand-light.svg" alt="KillerScan">
 <span class="also-tag" data-i18n="ak_4">Open-source network scanner for Windows</span>
 </span>
 </a>
 <a class="also-card" href="https://killernotes.net" target="_blank" rel="noopener">
 <img class="also-icon" src="brand/kn-icon.png" alt="KillerNotes" width="46" height="46">
 <span class="also-body">
-<img class="also-wm dark" src="brand/killernotes-wordmark-dark.png" alt="KillerNotes">
-<img class="also-wm light" src="brand/killernotes-wordmark-light.png" alt="KillerNotes">
+<img class="also-wm dark" src="brand/killernotes-logo-brand-dark.svg" alt="KillerNotes">
+<img class="also-wm light" src="brand/killernotes-logo-brand-light.svg" alt="KillerNotes">
 <span class="also-tag" data-i18n="ak_kn">Open-source encrypted notepad for Windows</span>
+</span>
+</a>
+<a class="also-card" href="https://killendar.net" target="_blank" rel="noopener">
+<img class="also-icon" src="brand/kd-icon.png" alt="Killendar" width="46" height="46">
+<span class="also-body">
+<img class="also-wm dark" src="brand/killendar-logo-brand-dark.svg" alt="Killendar">
+<img class="also-wm light" src="brand/killendar-logo-brand-light.svg" alt="Killendar">
+<span class="also-tag" data-i18n="ak_kd">Open-source encrypted calendar for Windows</span>
 </span>
 </a>
 </div>
@@ -168,21 +180,21 @@ html[data-theme="light"] .also-wm.light { display: block; }
 </div>
 </div>
 <aside class="sidebar">
-<div class="sb-tabs"><span class="on">About</span></div>
+<div class="sb-tabs"><span class="on" data-i18n="nav_about">About</span></div>
 <nav class="outline">
 <a href="#maker" class="on" data-i18n="maker_h">The maker</a>
 <a href="#app" data-i18n="app_h">The app</a>
 <a href="#contact" data-i18n="contact_h">Contact &amp; links</a>
-<a href="#also">Also try...</a>
+<a href="#also" data-i18n="ak_2">Also try...</a>
 </nav>
 </aside>
 </div>
 <footer class="statusbar">
-<span class="left"><a href="https://github.com/SteveTheKiller/KillerShell" target="_blank" rel="noopener">Source on GitHub</a> &middot; GPLv3 &middot; Part of <a href="https://killertools.net" target="_blank" rel="noopener">killertools.net</a></span>
+<span class="left"><a href="https://github.com/SteveTheKiller/KillerShell" target="_blank" rel="noopener" data-i18n="footer_src">Source on GitHub</a> &middot; GPLv3 &middot; Part of <a href="https://killertools.net" target="_blank" rel="noopener">killertools.net</a></span>
 <span class="right"><span id="verEgg" title="click me">v1.0.2</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
-<script src="ks-i18n.js?v=1"></script>
+<script src="ks-i18n.js?v=2"></script>
 <script src="ks.js?v=2"></script>
 <script>
 (function(){

@@ -19,6 +19,8 @@ using ICSharpCode.AvalonEdit.Highlighting;
 // a plain .txt or .bat would silently grow three bytes at the front the first time it was saved
 // here. A BOM is a decision about somebody else's file: preserved when it is there, never added
 // when it is not.
+using KillerShell.Shell;
+
 namespace KillerShell.Editing
 {
     internal sealed partial class EditorControl : TextEditor

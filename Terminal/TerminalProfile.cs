@@ -6,6 +6,8 @@ using System.IO;
 // Resolution happens at OPEN time, not at startup. A field tech's machine gets PowerShell 7
 // installed mid-session often enough, and resolving once at launch would mean the app had to
 // be restarted before it noticed.
+using KillerShell.Shell;
+
 namespace KillerShell.Terminal
 {
     internal sealed class TerminalProfile

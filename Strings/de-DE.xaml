@@ -439,4 +439,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">Datei ohne Speichern schließen? Ihre Änderungen gehen verloren.</sys:String>
     <sys:String x:Key="Str_Btn_Discard">Verwerfen</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">Öffnen</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Speichern</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">Dateiname:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">Dateityp:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">Alle Dateien</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Hier passt nichts zum aktuellen Dateityp.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">Dieser Ordner existiert nicht.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">Diese Datei existiert nicht.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} ersetzen?</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">Als Administrator wiederholen</sys:String>
+    <sys:String x:Key="Str_Btn_Update">Aktualisieren</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows hat das Löschen verweigert. Wenn der Überwachte Ordnerzugriff aktiv ist, hilft ein Wiederholen als Administrator NICHT - er blockiert pro App, nicht pro Berechtigungsstufe, und KillerShell muss in Windows-Sicherheit zur Liste der zugelassenen Apps hinzugefügt werden. Trotzdem als Administrator wiederholen?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">Die App wird automatisch geschlossen und neu geöffnet.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">KillerShell {0} herunterladen und installieren?</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Löschen verweigert - Zugriff verweigert</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Auch das Löschen mit erweiterten Rechten wurde verweigert - prüfen Sie den Überwachten Ordnerzugriff in Windows-Sicherheit</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0} Elemente ausgewählt</sys:String>
+
 </ResourceDictionary>

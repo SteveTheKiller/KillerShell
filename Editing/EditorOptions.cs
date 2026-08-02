@@ -13,6 +13,8 @@ using System.Windows.Controls;
 // Read through a static constructor rather than an Init call wired into startup: they are needed
 // the first time an editor is built, which is the first moment they can matter, and the runtime
 // already guarantees that happens once and before anything reads one.
+using KillerShell.Shell;
+
 namespace KillerShell.Editing
 {
     internal static class EditorOptions

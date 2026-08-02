@@ -436,4 +436,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">সংরক্ষণ না করেই ফাইলটি বন্ধ করবেন? আপনার পরিবর্তনগুলি হারিয়ে যাবে।</sys:String>
     <sys:String x:Key="Str_Btn_Discard">বাতিল করুন</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">খুলুন</sys:String>
+    <sys:String x:Key="Str_Btn_Save">সংরক্ষণ</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">ফাইলের নাম:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">ফাইলের ধরন:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">সব ফাইল</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">বর্তমান ফাইলের ধরনের সঙ্গে মিলে এমন কিছু নেই।</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">ওই ফোল্ডারটি নেই।</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">ওই ফাইলটি নেই।</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} পরিবর্তন করবেন?</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">অ্যাডমিন হিসাবে পুনরায় চেষ্টা</sys:String>
+    <sys:String x:Key="Str_Btn_Update">আপডেট</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows এটি মুছতে অস্বিকার করেছে। Controlled Folder Access চালু থাকলে অ্যাডমিন হিসাবে পুনরায় চেষ্টা করলেও কাজ হবে না - এটি অনুমতির স্তর অনুসারে নয়, অ্যাপ অনুসারে বাধা দেয়, ও Windows Security-তে KillerShell-কে অনুমোদিত অ্যাপের তালিকায় যোগ করতে হবে। তারপরও অ্যাডমিন হিসাবে চেষ্টা করবেন?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">অ্যাপটি স্বয়ংক্রিয়বাবে বন্ধ হয়ে আবার খুলবে।</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">KillerShell {0} ডাউনলোড করে ইনস্টল করবেন?</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">মুছতে অস্বিকার - অনুমতি নেই</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">অ্যাডমিন অনুমতিতেও মুছতে অস্বিকার করা হয়েছে - Windows Security-তে Controlled Folder Access দেখুন</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0} টি আইটেম নির্বাচিত</sys:String>
+
 </ResourceDictionary>

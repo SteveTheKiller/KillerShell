@@ -18,11 +18,11 @@ using System.Text;
 // Deliberately PowerShell only. cmd's prompt is a PROMPT environment string with no way to run
 // code per line, so it cannot show a branch, an exit code or a duration - a cmd prompt would be
 // a different, much poorer feature wearing the same name.
-namespace KillerShell
+namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        private const string PromptResource = "KillerShell.Shell.KillerPrompt.ps1";
+        private const string PromptResource = "KillerShell.Terminal.KillerPrompt.ps1";
 
         /// <summary>The user's copy, the one the terminal menu opens for editing.</summary>
         internal static string PromptScriptPath => Path.Combine(PromptDir, "KillerPrompt.ps1");

@@ -28,15 +28,15 @@
     <sys:String x:Key="Str_TT_SearchPanel">Show or hide the search panel  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Show or hide the folder tree</sys:String>
     <sys:String x:Key="Str_TT_CollapseSidebar">Collapse the side panels</sys:String>
-    <!-- Favorites (Bookmarks.cs) -->
-    <sys:String x:Key="Str_TT_Bookmarks">Saved locations  (Ctrl+B)</sys:String>
-    <sys:String x:Key="Str_TT_Favorite">Save this folder</sys:String>
+    <!-- Bookmarks (Bookmarks.cs) -->
+    <sys:String x:Key="Str_TT_Bookmarks">Bookmarks  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Bookmark this folder</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Show hidden and system items</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Keep folders above files</sys:String>
-    <sys:String x:Key="Str_Menu_AddFavorite">Add to favorites</sys:String>
-    <sys:String x:Key="Str_Menu_RemoveFavorite">Remove from favorites</sys:String>
-    <sys:String x:Key="Str_Ks_Bookmarks">show or hide saved locations</sys:String>
-    <sys:String x:Key="Str_Ks_JumpBookmark">go to saved location 1-10 (0 = tenth)</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">Add to Bookmarks</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">Remove from Bookmarks</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">show or hide bookmarks</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">go to bookmark 1-10 (0 = tenth)</sys:String>
     <sys:String x:Key="Str_TT_Back">Back</sys:String>
     <sys:String x:Key="Str_TT_Forward">Forward</sys:String>
     <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
@@ -460,5 +460,17 @@
     <sys:String x:Key="Str_Menu_Rename">Rename</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Delete  (Shift: permanently)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">New folder</sys:String>
+
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">Open</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Save</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">File name:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">File type:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">All files</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Nothing here matches the current file type.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">That folder does not exist.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">That file does not exist.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">Replace {0}?</sys:String>
 
 </ResourceDictionary>

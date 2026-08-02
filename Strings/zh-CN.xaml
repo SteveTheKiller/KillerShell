@@ -436,4 +436,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">不保存就关闭此文件？您的更改将会丢失。</sys:String>
     <sys:String x:Key="Str_Btn_Discard">放弃</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">打开</sys:String>
+    <sys:String x:Key="Str_Btn_Save">保存</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">文件名：</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">文件类型：</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">所有文件</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">此处没有与当前文件类型匹配的项。</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">该文件夹不存在。</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">该文件不存在。</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">要替换 {0} 吗？</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">以管理员身份重试</sys:String>
+    <sys:String x:Key="Str_Btn_Update">更新</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows 拒绝删除此项。如果已开启“受控文件夹访问”，以管理员身份重试也无法解决：它按应用而非按权限级别拦截，需要在 Windows 安全中将 KillerShell 添加到其允许的应用列表。仍要以管理员身份重试吗？</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">应用将自动关闭并重新打开。</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">下载并安装 KillerShell {0}？</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">删除被拒绝 - 权限不足</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">使用提升权限删除也被拒绝 - 请检查 Windows 安全中的受控文件夹访问</sys:String>
+    <sys:String x:Key="Str_Status_Selected">已选择 {0} 项</sys:String>
+
 </ResourceDictionary>

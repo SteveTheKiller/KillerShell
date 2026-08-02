@@ -19,6 +19,8 @@ using System.Windows.Threading;
 // dispatcher timer drains that queue and does the parsing on the UI thread, so the buffer
 // needs no lock. The timer also coalesces: dumping a large file arrives as hundreds of reads
 // and repaints at most once per tick rather than once per read.
+using KillerShell.Shell;
+
 namespace KillerShell.Terminal
 {
     internal sealed partial class TerminalControl : FrameworkElement

@@ -439,4 +439,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">Bu dosya kaydedilmeden kapatılsın mı? Değişiklikleriniz kaybolacak.</sys:String>
     <sys:String x:Key="Str_Btn_Discard">At</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">Aç</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Kaydet</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">Dosya adı:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">Dosya türü:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">Tüm dosyalar</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Burada geçerli dosya türüyle eşleşen bir şey yok.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">Böyle bir klasör yok.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">Böyle bir dosya yok.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} değiştirilsin mi?</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">Yönetici olarak yeniden dene</sys:String>
+    <sys:String x:Key="Str_Btn_Update">Güncelle</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows bunu silmeyi reddetti. Denetimli Klasör Erişimi açıksa yönetici olarak yeniden denemek YARDIMCI OLMAZ - izin düzeyine göre değil uygulamaya göre engeller ve KillerShell'in Windows Güvenliği'ndeki izin verilen uygulamalar listesine eklenmesi gerekir. Yine de yönetici olarak denensin mi?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">Uygulama otomatik olarak kapanıp yeniden açılacak.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">KillerShell {0} indirilip kurulsun mu?</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Silme reddedildi - izin verilmedi</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Yükseltilmiş yetkiyle silme de reddedildi - Windows Güvenliği'nde Denetimli Klasör Erişimi'ni kontrol edin</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0} öğe seçildi</sys:String>
+
 </ResourceDictionary>

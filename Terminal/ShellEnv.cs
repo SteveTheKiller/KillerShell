@@ -32,7 +32,7 @@ using System.Windows.Media;
 // Colors are handed over as the resolved hex the window is actually painting, not as theme
 // names. A prompt should not have to carry its own copy of six palettes and keep them in step
 // with Themes/*.xaml; it asks what red means today and gets an answer.
-namespace KillerShell
+namespace KillerShell.Shell
 {
     public partial class MainWindow
     {

@@ -439,4 +439,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">Fermer ce fichier sans enregistrer ? Vos modifications seront perdues.</sys:String>
     <sys:String x:Key="Str_Btn_Discard">Abandonner</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">Ouvrir</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Enregistrer</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">Nom du fichier :</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">Type de fichier :</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">Tous les fichiers</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Rien ici ne correspond au type de fichier actuel.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">Ce dossier n'existe pas.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">Ce fichier n'existe pas.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">Remplacer {0} ?</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">Réessayer en administrateur</sys:String>
+    <sys:String x:Key="Str_Btn_Update">Mettre à jour</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows a refusé de supprimer ceci. Si l'Accès contrôlé aux dossiers est activé, réessayer en administrateur ne changera RIEN : il bloque par application, pas par niveau d'autorisation, et KillerShell doit être ajouté à sa liste d'applications autorisées dans Sécurité Windows. Réessayer en administrateur quand même ?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">L'application se fermera et se rouvrira automatiquement.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">Télécharger et installer KillerShell {0} ?</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Suppression refusée - autorisation refusée</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">La suppression élevée a aussi été refusée - vérifiez l'Accès contrôlé aux dossiers dans Sécurité Windows</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0} éléments sélectionnés</sys:String>
+
 </ResourceDictionary>

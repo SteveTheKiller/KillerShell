@@ -1,0 +1,277 @@
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+
+// KillerUI / Grunge - custom window chrome. Partial of MainWindow.
+// MainWindow.xaml must name: RootGrid (Opacity=0), MinimizeBtn/MaximizeBtn/CloseBtn,
+// ResizeGrip, and any of GrainBrush/TitleGrainBrush/ToolbarGrainBrush/StatusGrainBrush/FlyoutGrainBrush.
+// Ctor calls: SourceInitialized += MainWindow_SourceInitialized; ApplyGrainTexture(); Loaded += (_,_) => FadeInContent();
+namespace KillerShell.Shell
+{
+    public partial class MainWindow
+    {
+        private void MainWindow_SourceInitialized(object? sender, EventArgs e)
+        {
+            var hwnd = new WindowInteropHelper(this).Handle;
+            HwndSource.FromHwnd(hwnd)?.AddHook(WndProc);
+            ApplyWindowCorners(rounded: WindowState == WindowState.Normal);
+            ApplyThemeBorder(this);
+        }
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
+
+        private const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+        private const int DWMWCP_DONOTROUND = 1;
+        private const int DWMWCP_ROUND      = 2;
+        private const int DWMWA_BORDER_COLOR = 34;
+
+        /// <summary>Tints the Win11 DWM frame border to the theme's PaneBorderBrush, so the
+        /// 1px window outline follows the theme instead of staying system gray (the gray
+        /// frame appears as soon as a borderless window opts into DWM rounded corners).
+        /// Call at SourceInitialized and again after every theme change.</summary>
+        internal static void ApplyThemeBorder(Window w)
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(w).Handle;
+                if (hwnd == IntPtr.Zero) return;
+                // AppBorderBrush lets a theme tune the frame independently (Black's pane
+                // borders are intentionally near-invisible); PaneBorderBrush is the default.
+                if ((Application.Current.TryFindResource("AppBorderBrush")
+                     ?? Application.Current.TryFindResource("PaneBorderBrush")) is SolidColorBrush b)
+                {
+                    // COLORREF is 0x00BBGGRR
+                    int colorref = b.Color.R | (b.Color.G << 8) | (b.Color.B << 16);
+                    DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, ref colorref, sizeof(int));
+                }
+            }
+            catch { /* pre-Win11: attribute unsupported */ }
+        }
+
+        private void ApplyWindowCorners(bool rounded)
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                if (hwnd == IntPtr.Zero) return;
+                int pref = rounded ? DWMWCP_ROUND : DWMWCP_DONOTROUND;
+                DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref pref, sizeof(int));
+            }
+            catch { /* pre-Win11: no rounded-corner API */ }
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+            ApplyWindowCorners(rounded: WindowState == WindowState.Normal);
+            // Segoe MDL2: E923 restore (when maximized) / E922 maximize.
+            if (MaximizeBtn != null)
+                MaximizeBtn.Content = WindowState == WindowState.Maximized ? "" : "";
+        }
+
+        private void FadeInContent() => Anim.FadeIn(RootGrid);
+
+        private const int WM_GETMINMAXINFO = 0x0024;
+        private const int WM_ERASEBKGND    = 0x0014;
+        private const int WM_NCRBUTTONUP   = 0x00A5;
+        private const int HTCAPTION        = 2;
+        private const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WM_ERASEBKGND)
+            {
+                // KillerPDF's anti-flash trick: WPF paints the whole client area itself, so
+                // let nothing erase the background to a flat fill during a resize - that
+                // erase is the white flash. Claim the message and report success.
+                handled = true;
+                return new IntPtr(1);
+            }
+            if (msg == WM_NCRBUTTONUP && (int)wParam.ToInt64() == HTCAPTION)
+            {
+                // Right-click on the caption: the native system menu can't be themed,
+                // so suppress it and show our own Grunge menu instead.
+                Dispatcher.BeginInvoke((Action)ShowCaptionMenu);
+                handled = true;
+                return IntPtr.Zero;
+            }
+            if (msg == WM_GETMINMAXINFO)
+            {
+                WmGetMinMaxInfo(hwnd, lParam);
+                handled = true;
+            }
+            return IntPtr.Zero;
+        }
+
+        // Themed replacement for the caption's system menu (minimize / maximize-restore /
+        // close). Uses the implicit ContextMenu/MenuItem styles, so it grains and themes.
+        private void ShowCaptionMenu()
+        {
+            var menu = new System.Windows.Controls.ContextMenu();
+
+            var mini = new System.Windows.Controls.MenuItem { Header = Loc("Str_Menu_Minimize") };
+            mini.Click += (_, _) => WindowState = WindowState.Minimized;
+            menu.Items.Add(mini);
+
+            var maxi = new System.Windows.Controls.MenuItem
+                { Header = Loc(WindowState == WindowState.Maximized ? "Str_Menu_Restore" : "Str_Menu_Maximize") };
+            maxi.Click += (_, _) => WindowState =
+                WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            menu.Items.Add(maxi);
+
+            menu.Items.Add(new System.Windows.Controls.Separator());
+
+            var close = new System.Windows.Controls.MenuItem { Header = Loc("Str_Menu_Close") };
+            close.Click += (_, _) => Close();
+            menu.Items.Add(close);
+
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
+            menu.IsOpen = true;
+        }
+
+        // WM_GETMINMAXINFO is the OS asking how big and how SMALL this window may be. Because
+        // the reply below sets handled = true, whatever is left unset here is what the window
+        // gets - Windows' own answer is discarded.
+        //
+        // The minimum used to be left unset, and that is why the window could be dragged far
+        // below MinWidth. WPF's MinWidth / MinHeight are not consulted by the native resize at
+        // all on a WindowStyle="None" + WindowChrome window: the OS resizes the frame and asks
+        // only this question. Dragged narrow enough, the content became wider than the frame and
+        // the title bar and footer were clipped off the right - which looked like a layout bug
+        // and was really this.
+        //
+        // No longer static: it needs the window's own MinWidth and DPI.
+        private void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
+        {
+            var mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+
+            // MinWidth is in device-independent units and this struct is in physical pixels, so
+            // it has to go through the window's own DPI - on a 150% display the two differ by
+            // half again, and the raw number would let the window get a third smaller than asked.
+            var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+            mmi.ptMinTrackSize.x = (int)Math.Ceiling(MinWidth  * dpi.DpiScaleX);
+            mmi.ptMinTrackSize.y = (int)Math.Ceiling(MinHeight * dpi.DpiScaleY);
+
+            IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            if (monitor != IntPtr.Zero)
+            {
+                var info = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
+                GetMonitorInfo(monitor, ref info);
+                RECT work = info.rcWork;
+                RECT mon = info.rcMonitor;
+                mmi.ptMaxPosition.x = Math.Abs(work.left - mon.left);
+                mmi.ptMaxPosition.y = Math.Abs(work.top - mon.top);
+                mmi.ptMaxSize.x = Math.Abs(work.right - work.left);
+                mmi.ptMaxSize.y = Math.Abs(work.bottom - work.top);
+                mmi.ptMaxTrackSize.x = mmi.ptMaxSize.x;
+                mmi.ptMaxTrackSize.y = mmi.ptMaxSize.y;
+            }
+
+            // Written back unconditionally. It used to happen only inside the monitor branch, so
+            // on the rare occasion MonitorFromWindow failed, every value computed here was
+            // thrown away.
+            Marshal.StructureToPtr(mmi, lParam, true);
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr handle, uint flags);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+
+        private const int WM_NCLBUTTONDOWN = 0x00A1;
+        private const int HTBOTTOMRIGHT = 17;
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
+        private void ResizeGrip_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (WindowState != WindowState.Normal) return;
+            e.Handled = true;
+            var hwnd = new WindowInteropHelper(this).Handle;
+            SendMessage(hwnd, WM_NCLBUTTONDOWN, new IntPtr(HTBOTTOMRIGHT), IntPtr.Zero);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT { public int x; public int y; }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT { public int left, top, right, bottom; }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private struct MONITORINFO
+        {
+            public int cbSize;
+            public RECT rcMonitor;
+            public RECT rcWork;
+            public uint dwFlags;
+        }
+
+        private void MinimizeBtn_Click(object sender, RoutedEventArgs e)
+            => WindowState = WindowState.Minimized;
+
+        private void MaximizeBtn_Click(object sender, RoutedEventArgs e)
+            => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+        private void CloseBtn_Click(object sender, RoutedEventArgs e)
+            => Close();
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
+        }
+
+        // Film grain: bright + dark specks (~33% density) so it reads on dark and light themes.
+        private void ApplyGrainTexture()
+        {
+            const int size = 256;
+            var bmp = new WriteableBitmap(size, size, 96, 96, PixelFormats.Bgra32, null);
+            var pixels = new byte[size * size * 4];
+            var rng = new Random(1337);
+            for (int i = 0; i < pixels.Length; i += 4)
+            {
+                if (rng.Next(3) != 0) continue;
+                bool bright = rng.Next(2) == 0;
+                byte v = bright ? (byte)rng.Next(190, 255) : (byte)rng.Next(0, 50);
+                byte a = (byte)rng.Next(35, 95);
+                pixels[i]     = v;
+                pixels[i + 1] = v;
+                pixels[i + 2] = v;
+                pixels[i + 3] = a;
+            }
+            bmp.WritePixels(new Int32Rect(0, 0, size, size), pixels, size * 4, 0);
+
+            foreach (var name in new[] { "GrainBrush", "TitleGrainBrush", "ToolbarGrainBrush", "StatusGrainBrush", "FlyoutGrainBrush" })
+                if (FindName(name) is ImageBrush ib) ib.ImageSource = bmp;
+
+            var grainTile = new ImageBrush(bmp)
+            {
+                TileMode = TileMode.Tile,
+                ViewportUnits = BrushMappingMode.Absolute,
+                Viewport = new System.Windows.Rect(0, 0, size, size),
+                Stretch = Stretch.None
+            };
+            grainTile.Freeze();
+            Application.Current.Resources["GrainTileBrush"] = grainTile;
+        }
+    }
+}

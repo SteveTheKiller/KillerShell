@@ -434,4 +434,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">保存せずにこのファイルを閉じますか? 変更内容は失われます。</sys:String>
     <sys:String x:Key="Str_Btn_Discard">破棄</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">開く</sys:String>
+    <sys:String x:Key="Str_Btn_Save">保存</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">ファイル名:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">ファイルの種類:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">すべてのファイル</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">現在のファイルの種類に一致するものはありません。</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">そのフォルダーは存在しません。</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">そのファイルは存在しません。</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} を置き換えますか?</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">管理者として再試行</sys:String>
+    <sys:String x:Key="Str_Btn_Update">更新</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows がこの削除を拒否しました。制御されたフォルダー アクセスが有効な場合、管理者として再試行しても解決しません。権限レベルでなくアプリ単位でブロックするためで、Windows セキュリティで KillerShell を許可されたアプリの一覧に追加する必要があります。それでも管理者として再試行しますか?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">アプリは自動的に終了して再起動します。</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">KillerShell {0} をダウンロードしてインストールしますか?</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">削除が拒否されました - アクセス権がありません</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">管理者権限での削除も拒否されました - Windows セキュリティの制御されたフォルダー アクセスを確認してください</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0} 件を選択中</sys:String>
+
 </ResourceDictionary>

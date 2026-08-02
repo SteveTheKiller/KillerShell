@@ -5,6 +5,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Microsoft.Win32;
+using KillerShell.Shell;
+// App inherits Application.MainWindow (a Window property), which shadows the bare type name
+// KillerShell.Shell.MainWindow for member access (though not for "new MainWindow()", which
+// resolves to the type since a property can't be constructed). This alias sidesteps the clash.
+using AppMainWindow = KillerShell.Shell.MainWindow;
 
 namespace KillerShell
 {
@@ -96,7 +101,7 @@ namespace KillerShell
             // results so marketing screenshots never leak real file names. It also shows
             // the About card in its signed state (About.cs) so captures taken from an
             // unsigned local build match the released one.
-            KillerShell.MainWindow.DemoMode = Array.Exists(e.Args, a =>
+            AppMainWindow.DemoMode = Array.Exists(e.Args, a =>
                 string.Equals(a, "--demo", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(a, "/demo",  StringComparison.OrdinalIgnoreCase));
 
@@ -119,7 +124,7 @@ namespace KillerShell
                         string.Equals(a, "--cwd",   StringComparison.OrdinalIgnoreCase)) i++;
                     continue;
                 }
-                KillerShell.MainWindow.StartupPaths.Add(a);
+                AppMainWindow.StartupPaths.Add(a);
             }
 
             // Persist the theme/accent choice in HKCU so it survives restarts.
@@ -132,7 +137,7 @@ namespace KillerShell
 
             // An elevated window themes itself separately, and defaults to Blood - see
             // ThemeManager.ThemeKey. Has to be set before Initialize, which is what reads it.
-            Services.ThemeManager.Elevated = KillerShell.MainWindow.IsElevated;
+            Services.ThemeManager.Elevated = AppMainWindow.IsElevated;
 
             Services.ThemeManager.Initialize();    // restore saved theme before the window is built
             Services.LocaleManager.Initialize();   // then the saved language (en-US base + override)
@@ -365,12 +370,12 @@ namespace KillerShell
                 if (shellType is null) return;
                 object shell = Activator.CreateInstance(shellType)!;
                 object shortcut = shellType.InvokeMember("CreateShortcut",
-                    System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { lnkPath })!;
+                    System.Reflection.BindingFlags.InvokeMethod, null, shell, [lnkPath])!;
                 var sc = shortcut.GetType();
                 sc.InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty,
-                    null, shortcut, new object[] { targetPath });
+                    null, shortcut, [targetPath]);
                 sc.InvokeMember("WorkingDirectory", System.Reflection.BindingFlags.SetProperty,
-                    null, shortcut, new object[] { Path.GetDirectoryName(targetPath)! });
+                    null, shortcut, [Path.GetDirectoryName(targetPath)!]);
                 sc.InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod,
                     null, shortcut, null);
             }

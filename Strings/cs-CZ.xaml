@@ -437,4 +437,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">Zavřít soubor bez uložení? Vaše změny budou ztraceny.</sys:String>
     <sys:String x:Key="Str_Btn_Discard">Zahodit</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">Otevřít</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Uložit</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">Název souboru:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">Typ souboru:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">Všechny soubory</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Zde nic neodpovídá aktuálnímu typu souboru.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">Tato složka neexistuje.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">Tento soubor neexistuje.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">Nahradit {0}?</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">Zkusit znovu jako správce</sys:String>
+    <sys:String x:Key="Str_Btn_Update">Aktualizovat</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows odmítl toto smazat. Pokud je zapnutý Řízený přístup ke složkám, opakování jako správce NEPOMŮZE - blokuje podle aplikace, nikoli podle úrovně oprávnění, a KillerShell je nutné přidat do seznamu povolených aplikací v Zabezpečení Windows. Zkusit přesto znovu jako správce?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">Aplikace se automaticky zavře a znovu otevře.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">Stáhnout a nainstalovat KillerShell {0}?</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Smazání odmítnuto - přístup zamítnut</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">I smazání se zvýšenými právy bylo odmítnuto - zkontrolujte Řízený přístup ke složkám v Zabezpečení Windows</sys:String>
+    <sys:String x:Key="Str_Status_Selected">Vybráno {0} položek</sys:String>
+
 </ResourceDictionary>

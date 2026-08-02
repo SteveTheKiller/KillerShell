@@ -439,4 +439,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">¿Cerrar este archivo sin guardar? Se perderán los cambios.</sys:String>
     <sys:String x:Key="Str_Btn_Discard">Descartar</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">Abrir</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Guardar</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">Nombre de archivo:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">Tipo de archivo:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">Todos los archivos</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Aquí no hay nada que coincida con el tipo de archivo actual.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">Esa carpeta no existe.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">Ese archivo no existe.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">¿Reemplazar {0}?</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">Reintentar como administrador</sys:String>
+    <sys:String x:Key="Str_Btn_Update">Actualizar</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows se negó a eliminar esto. Si el Acceso controlado a carpetas está activado, reintentar como administrador NO ayudará: bloquea por aplicación, no por nivel de permisos, y hay que añadir KillerShell a su lista de aplicaciones permitidas en Seguridad de Windows. ¿Reintentar como administrador de todos modos?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">La aplicación se cerrará y volverá a abrirse automáticamente.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">¿Descargar e instalar KillerShell {0}?</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Eliminación rechazada: permiso denegado</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">La eliminación con permisos elevados también fue rechazada: comprueba el Acceso controlado a carpetas en Seguridad de Windows</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0} elementos seleccionados</sys:String>
+
 </ResourceDictionary>

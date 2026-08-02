@@ -7,6 +7,8 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+using KillerShell.Shell;
+
 namespace KillerShell.Services
 {
     // Real Windows shell icons, cached per extension and per size, so a 100k-result search costs

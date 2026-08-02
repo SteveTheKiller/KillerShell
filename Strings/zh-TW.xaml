@@ -436,4 +436,27 @@
     <sys:String x:Key="Str_Dlg_DiscardMsg">不儲存就關閉此檔案？您的變更將會遺失。</sys:String>
     <sys:String x:Key="Str_Btn_Discard">捨棄</sys:String>
 
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">開啟</sys:String>
+    <sys:String x:Key="Str_Btn_Save">儲存</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">檔案名稱：</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">檔案類型：</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">所有檔案</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">此處沒有符合目前檔案類型的項目。</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">該資料夾不存在。</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">該檔案不存在。</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">要取代 {0} 嗎？</sys:String>
+
+
+    <!-- Filling a pre-existing gap: these were en-US only. -->
+    <sys:String x:Key="Str_Btn_RetryAdmin">以系統管理員身分重試</sys:String>
+    <sys:String x:Key="Str_Btn_Update">更新</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows 拒絕刪除此項。若已開啟「受控資料夾存取」，以系統管理員身分重試也無法解決：它依應用程式而非權限層級進行阻擋，需要在 Windows 安全性中將 KillerShell 加入其允許的應用程式清單。仍要以系統管理員身分重試嗎？</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">應用程式將自動關閉並重新開啟。</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">下載並安裝 KillerShell {0}？</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">刪除遭拒 - 權限不足</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">使用提升權限刪除也遭拒 - 請檢查 Windows 安全性中的受控資料夾存取</sys:String>
+    <sys:String x:Key="Str_Status_Selected">已選取 {0} 項</sys:String>
+
 </ResourceDictionary>

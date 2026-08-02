@@ -2,6 +2,8 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+using KillerShell.Shell;
+
 namespace KillerShell.Models
 {
     // One filter row: [field] [condition toggle] [value]. The engine ANDs every

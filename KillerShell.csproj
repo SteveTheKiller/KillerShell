@@ -11,15 +11,15 @@
     <Product>KillerShell</Product>
     <Company>killertools.net</Company>
     <RootNamespace>KillerShell</RootNamespace>
-    <Version>1.0.3</Version>
-    <FileVersion>1.0.3.0</FileVersion>
-    <AssemblyVersion>1.0.3.0</AssemblyVersion>
-    <!-- Displayed version string (semver, matches the release tag: v1.0.3). -->
-    <InformationalVersion>1.0.3</InformationalVersion>
+    <Version>1.1.0</Version>
+    <FileVersion>1.1.0.0</FileVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <!-- Displayed version string (semver, matches the release tag: v1.1.0). -->
+    <InformationalVersion>1.1.0</InformationalVersion>
     <!-- Shown in the About card next to the version so a user can tell how old their build
          is. Must match the date on this version's CHANGELOG section - release.ps1 preflight
          fails the release if it does not. Bump it with the version. -->
-    <ReleaseDate>2026-07-27</ReleaseDate>
+    <ReleaseDate>2026-08-01</ReleaseDate>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <ApplicationIcon>Resources\ksh-icon.ico</ApplicationIcon>
     <PlatformTarget>x64</PlatformTarget>
@@ -28,6 +28,10 @@
 
   <ItemGroup>
     <Resource Include="Resources\ksh-icon.ico"/>
+    <!-- The icon Explorer shows for the text types KillerShell associates. EmbeddedResource,
+         not Resource: Associations.cs points DefaultIcon at a real path on disk, so App.xaml.cs
+         has to extract it beside the exe. Same arrangement as KillerPDF's pdf-file.ico. -->
+    <EmbeddedResource Include="Resources\text-file.ico"/>
     <Resource Include="Fonts\KillerShell.ttf"/>
     <!-- 26 glyphs, 2.9 KB: the handful a stock Windows monospaced font does NOT have but the
          shipped prompt draws - the powerline separators, the git branch mark, the prompt chevron
@@ -51,7 +55,7 @@
        the modules are: one exe, no loose files. It is unpacked to LocalAppData on first use and
        never overwritten there, so the copy the user edits survives an upgrade. -->
   <ItemGroup>
-    <EmbeddedResource Include="Shell\KillerPrompt.ps1" />
+    <EmbeddedResource Include="Terminal\KillerPrompt.ps1" />
   </ItemGroup>
 
   <!-- Syntax definitions AvalonEdit does not ship (Editing/KillerHighlighting.cs). Embedded for
