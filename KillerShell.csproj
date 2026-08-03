@@ -19,7 +19,7 @@
     <!-- Shown in the About card next to the version so a user can tell how old their build
          is. Must match the date on this version's CHANGELOG section - release.ps1 preflight
          fails the release if it does not. Bump it with the version. -->
-    <ReleaseDate>2026-08-01</ReleaseDate>
+    <ReleaseDate>2026-08-02</ReleaseDate>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <ApplicationIcon>Resources\ksh-icon.ico</ApplicationIcon>
     <PlatformTarget>x64</PlatformTarget>
@@ -126,6 +126,14 @@
 
   <ItemGroup>
     <Reference Include="System.Net.Http" />
+    <!-- Task Manager tab (Shell/ProcessListControl.cs): WMI lookups for a process's command
+         line, full path and owner - Win32_Process via System.Management, not present in the
+         default net48 reference set. -->
+    <Reference Include="System.Management" />
+    <!-- The tab's Services view (Shell/ProcessListControl.cs): ServiceController.GetServices()
+         for the base list and Start/Stop/Restart, not present in the default net48 reference set
+         either - it ships in the framework but is not pulled in automatically. -->
+    <Reference Include="System.ServiceProcess" />
   </ItemGroup>
 
   <ItemGroup>

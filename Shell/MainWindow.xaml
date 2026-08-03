@@ -80,63 +80,6 @@
                 <Button x:Name="CloseBtn"    Click="CloseBtn_Click"    Style="{StaticResource ChromeCloseButton}" Content="&#xE8BB;"/>
             </StackPanel>
 
-            <!-- Theme + accent flyout -->
-            <!-- StaysOpen so the flyout doesn't take mouse capture: the results list keeps
-                 scrolling under it. Outside clicks close it from code. -->
-            <!-- Placement follows the button: it used to hang below a title-bar glyph at the top
-                 right, and now opens upward off a rail button pinned to the bottom left, so the
-                 flyout grows over the pane instead of off the bottom edge. -->
-            <Popup x:Name="ThemePopup" PlacementTarget="{Binding ElementName=ThemeButton}" Placement="Top"
-                   StaysOpen="True" AllowsTransparency="True" HorizontalOffset="-6" VerticalOffset="-2">
-                <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                        BorderThickness="1" CornerRadius="6" Padding="12,10" Margin="14">
-                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
-                    <StackPanel>
-                        <TextBlock Text="{DynamicResource Str_Lbl_Theme}" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="10" Margin="0,0,0,4"/>
-                        <StackPanel x:Name="ThemeSwatches" Orientation="Horizontal">
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Dark"     Background="#3a3a3a" Click="ThemeSwatch_Click" ToolTip="Dark"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Light"    Background="#e8e8e8" Click="ThemeSwatch_Click" ToolTip="Light"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Black"    Background="#000000" Click="ThemeSwatch_Click" ToolTip="Black"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Blood"    Background="#4a1f20" Click="ThemeSwatch_Click" ToolTip="Blood"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Greed"    Background="#0a5234" Click="ThemeSwatch_Click" ToolTip="Greed"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Cyanotic" Background="#0a4a6e" Click="ThemeSwatch_Click" ToolTip="Cyanotic"/>
-                        </StackPanel>
-                        <TextBlock x:Name="AccentLabel" Text="{DynamicResource Str_Lbl_Accent}" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="10" Margin="0,8,0,4"/>
-                        <StackPanel x:Name="AccentSwatches" Orientation="Horizontal">
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Red"    Background="#DD504B" Click="AccentSwatch_Click" ToolTip="Red"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Orange" Background="#E8962C" Click="AccentSwatch_Click" ToolTip="Orange"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Green"  Background="#1ea54c" Click="AccentSwatch_Click" ToolTip="Green"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Teal"   Background="#1FB8A8" Click="AccentSwatch_Click" ToolTip="Teal"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Blue"   Background="#50AEE8" Click="AccentSwatch_Click" ToolTip="Blue"/>
-                            <Button Style="{StaticResource ThemeSwatch}" Tag="Purple" Background="#B982E3" Click="AccentSwatch_Click" ToolTip="Purple"/>
-                        </StackPanel>
-
-                        <!-- Fonts sit behind a row rather than in the flyout itself: a font
-                             list is hundreds of entries and belongs in a dialog, while this
-                             flyout is swatches you pick at a glance. Room below for more of
-                             these as other pickers break out. -->
-                        <Border Height="1" Margin="0,12,0,6" Background="{DynamicResource MenuBorderBrush}"/>
-                        <Button x:Name="FontsRowBtn" Click="FontsRow_Click"
-                                Style="{StaticResource MenuRowButton}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE8D2;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                           Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="{DynamicResource Str_Fonts_Row}" FontFamily="Consolas"
-                                           FontSize="11.5" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="AssocRowBtn" Click="AssocRow_Click"
-                                Style="{StaticResource MenuRowButton}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                           Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="{DynamicResource Str_Assoc_Row}" FontFamily="Consolas"
-                                           FontSize="11.5" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Border>
-            </Popup>
         </Grid>
 
         <!-- ══════════ ROW 1 - 2-PANEL GRID ══════════ -->
@@ -294,7 +237,8 @@
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                  ScrollViewer.CanContentScroll="False"
-                                 VirtualizingPanel.IsVirtualizing="False">
+                                 VirtualizingPanel.IsVirtualizing="False"
+                                 PreviewMouseWheel="BookmarksList_PreviewMouseWheel">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="Padding" Value="0"/>
@@ -316,6 +260,12 @@
                                             <Style TargetType="Border">
                                                 <Setter Property="Background" Value="Transparent"/>
                                                 <Style.Triggers>
+                                                    <!-- Tag="on" set from code (Bookmarks.cs UpdateBookmarksSelection) when this
+                                                         row is where the active tab actually is. Before IsMouseOver so a hover
+                                                         still reads on top of a selected row rather than being hidden by it. -->
+                                                    <Trigger Property="Tag" Value="on">
+                                                        <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
+                                                    </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
                                                     </Trigger>
@@ -485,16 +435,6 @@
                             FontSize="12" Margin="0,0,0,10" Click="Density_Click"
                             MouseWheel="Density_MouseWheel"
                             ToolTip="{DynamicResource Str_TT_Density}"/>
-                    <!-- E9A6 (two panes): open or close the second pane, right-click flips
-                         side-by-side / stacked. On the rail rather than in a pane toolbar
-                         because it acts on the WINDOW - in the toolbar there were two of them,
-                         one per pane, doing the identical thing, and either could be shed into
-                         the overflow chevron on a narrow split. Accents while open, like the
-                         search and bookmarks toggles above. -->
-                    <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE9A6;"
-                            FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
-                            MouseRightButtonUp="DualPaneOrient_Click"
-                            ToolTip="{DynamicResource Str_TT_DualPane}"/>
                     <!-- E70F (pencil): a blank document in a new tab in the FOCUSED pane, the
                          same glyph an editor tab carries (EditorTabs.GlyphEdit). No shortcut of
                          its own - F7 is the editor key and it belongs to the row you have
@@ -541,6 +481,71 @@
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
+                    <!-- E8FD (ViewAll/list, corrected 2026-08-02 - this comment used to say E9D9,
+                         which was never what the button below actually rendered; E9D9 was always
+                         reserved for the future Performance tab, now built below): opens or
+                         focuses the Task Manager tab - a live, filterable list of every process on
+                         the machine (Shell/ProcessTabs.cs, Shell/ProcessListControl.cs). Left click
+                         is the plain F9 open; right-click offers the Ctrl+F9 elevated relaunch too,
+                         same shape as the Terminal menu above, so the tooltip no longer has to
+                         spell out the elevated path in prose. -->
+                    <Button x:Name="TaskManagerRailBtn" Style="{StaticResource RailButton}" Content="&#xE8FD;"
+                            FontSize="12" Margin="0,0,0,10" Click="TaskManagerRail_Click"
+                            ToolTip="{DynamicResource Str_TT_TaskManager}">
+                        <Button.ContextMenu>
+                            <ContextMenu Placement="Top">
+                                <MenuItem Header="{DynamicResource Str_Rail_ProcessesOpen}" Click="RailProcessesOpen_Click" InputGestureText="F9">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8FD;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_Rail_ProcessesAdmin}" Click="RailProcessesAdmin_Click" InputGestureText="Ctrl+F9">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                    <!-- Open or close the second pane, right-click flips side-by-side / stacked.
+                         On the rail rather than in a pane toolbar because it acts on the WINDOW -
+                         in the toolbar there were two of them, one per pane, doing the identical
+                         thing, and either could be shed into the overflow chevron on a narrow
+                         split. Accents while open, like the search and bookmarks toggles above.
+                         ClosePane/OpenPane (E89F/E8A0), the dedicated glyph pair Steve picked
+                         (2026-08-02) - the glyph itself is kept in sync from code (DualPane.cs
+                         ApplyPaneLayout) on every open/close/orientation change, so E89F here is
+                         only the closed starting glyph before the first toggle ever runs. F10 -
+                         sits between Processes (F9) and Performance (F11) so the app-specific rail
+                         block reads in the same order as the F-keys themselves. -->
+                    <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE89F;"
+                            FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
+                            MouseRightButtonUp="DualPaneOrient_Click"
+                            ToolTip="{DynamicResource Str_TT_DualPane}"/>
+                    <!-- E9D9 (Processing): opens or focuses the Performance Monitor tab - hardware
+                         info plus live CPU/RAM/network/disk gauges (Shell/PerformanceTabs.cs,
+                         Shell/PerformanceMonitorControl.cs). Plain click only, no elevated variant
+                         - Performance needs none of the extra access an admin relaunch would grant
+                         (PerformanceTabs.cs has the full reasoning). -->
+                    <Button x:Name="PerformanceRailBtn" Style="{StaticResource RailButton}" Content="&#xE9D9;"
+                            FontSize="12" Margin="0,0,0,10" Click="PerformanceRail_Click"
+                            ToolTip="{DynamicResource Str_TT_Performance}"/>
+                    <!-- E71D (List) - matches RegistryEditorTabs.cs's RegistryEditorGlyph, the tab
+                         strip icon. Went through E945 (rendered as a lightning bolt, not the
+                         intended database-cylinder glyph) and E713 (Settings gear, too generic)
+                         before landing here. Opens or focuses the Registry Editor tab - a real
+                         regedit-equivalent browser/editor over the five hives
+                         (Shell/RegistryEditorTabs.cs, Shell/RegistryEditorControl.cs). Ctrl+F11
+                         ONLY - there is no unelevated variant at all (the registry needs admin to
+                         write most of what a registry editor exists to edit), so unlike Processes
+                         above this one gets no context menu; there is nothing to choose between. -->
+                    <Button x:Name="RegistryEditorRailBtn" Style="{StaticResource RailButton}" Content="&#xE71D;"
+                            FontSize="12" Margin="0,0,0,10" Click="RegistryEditorRail_Click"
+                            ToolTip="{DynamicResource Str_TT_RegistryEditor}"/>
+                    <!-- E81C (History): opens or focuses the Event Viewer tab - a filterable grid
+                         over the Application/System/Security event logs (Shell/EventViewerTabs.cs,
+                         Shell/EventViewerControl.cs). Ctrl+F12 ONLY - same reasoning as Registry
+                         Editor above: the Security log refuses a standard token outright, so there
+                         is no unelevated mode to offer and no context menu here either. -->
+                    <Button x:Name="EventViewerRailBtn" Style="{StaticResource RailButton}" Content="&#xE81C;"
+                            FontSize="12" Margin="0,0,0,10" Click="EventViewerRail_Click"
+                            ToolTip="{DynamicResource Str_TT_EventViewer}"/>
                     <!-- "?" (a literal, in Consolas): the shortcuts card, F1. Sits directly above
                          the globe, which is where KillerNotes and KillerScan put it - the rail
                          order is family furniture, so it has to match. -->
@@ -555,12 +560,143 @@
                             Margin="0,0,0,10" Click="LangButton_Click"
                             ToolTip="{DynamicResource Str_TT_Language}">
                         <Button.ContextMenu>
-                            <ContextMenu x:Name="LangMenu" Placement="Top"/>
+                            <!-- Family flyout standard, ported verbatim from KillerPDF: chrome
+                                 ONLY from FlyoutCard + FlyoutGrain, PanelMenuItem stripping the
+                                 MenuItem container. Content built in code (Language.cs
+                                 BuildLanguageMenu) as RadioButtons in a single StackPanel, same
+                                 shape as PDF's XAML-built LangFlyout. Placement set in code
+                                 (LangButton_Click, via FlyoutPlacement.cs) - pinned to the
+                                 content pane's bottom-left corner, PDF's own mechanism. -->
+                            <ContextMenu x:Name="LangMenu">
+                                <ContextMenu.Template>
+                                    <ControlTemplate TargetType="ContextMenu">
+                                        <Border Style="{StaticResource FlyoutCard}">
+                                            <Grid>
+                                                <ItemsPresenter/>
+                                                <Border Style="{StaticResource FlyoutGrain}"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ContextMenu.Template>
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style TargetType="MenuItem" BasedOn="{StaticResource PanelMenuItem}"/>
+                                </ContextMenu.ItemContainerStyle>
+                            </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
-                    <!-- E790 (paint roller): the theme + accent flyout (ThemePopup, below). -->
+                    <!-- E790 (paint roller): the theme + accent flyout, same family standard as
+                         LangMenu above - Button.ContextMenu, FlyoutCard/FlyoutGrain chrome,
+                         PanelMenuItem stripping. Content is XAML-built RadioButtons, matching
+                         KillerPDF's ThemeFlyout verbatim (Str_Theme_* names, ThemeGroup radios,
+                         AccentDot rows under Dark/Light/Black), plus KillerShell's own Fonts and
+                         File Associations rows kept below the theme picker - those two rows have
+                         no equivalent in PDF and were not part of what looked wrong, so they stay. -->
                     <Button x:Name="ThemeButton" Style="{StaticResource RailButton}" Content="&#xE790;"
-                            Click="ThemeButton_Click" ToolTip="{DynamicResource Str_TT_Theme}"/>
+                            Click="ThemeButton_Click" ToolTip="{DynamicResource Str_TT_Theme}">
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="ThemeFlyout">
+                                <ContextMenu.Template>
+                                    <ControlTemplate TargetType="ContextMenu">
+                                        <Border Style="{StaticResource FlyoutCard}">
+                                            <Grid>
+                                                <ItemsPresenter/>
+                                                <Border Style="{StaticResource FlyoutGrain}"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ContextMenu.Template>
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style TargetType="MenuItem" BasedOn="{StaticResource PanelMenuItem}"/>
+                                </ContextMenu.ItemContainerStyle>
+                                <StackPanel x:Name="ThemeSubmenu" Margin="12,10,14,10">
+                                    <RadioButton x:Name="ThemeDarkRadio"
+                                                 Content="{DynamicResource Str_Theme_Dark}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeDarkRadio_Checked"/>
+                                    <!-- Each family's picker sits under its own theme, matching
+                                         PDF (ROYGBIV order). Height="0" + ClipToBounds so the row
+                                         can be height-animated open/closed (SlideRow,
+                                         ThemeFlyout.cs) rather than just Visibility-toggled - the
+                                         outgoing row shrinks by the same amount the incoming one
+                                         grows, so the picker slides to the selected theme and the
+                                         total menu height never jumps mid-animation. -->
+                                    <StackPanel x:Name="DarkAccentRow" Orientation="Horizontal" Margin="10,-5,0,5" Height="0" ClipToBounds="True" Visibility="Collapsed">
+                                        <Border x:Name="AccentDotRed"    Style="{StaticResource AccentDot}" Background="#DD504B" Tag="Red"    MouseLeftButtonUp="AccentDot_Click"/>
+                                        <Border x:Name="AccentDotOrange" Style="{StaticResource AccentDot}" Background="#E8962C" Tag="Orange" MouseLeftButtonUp="AccentDot_Click"/>
+                                        <Border x:Name="AccentDotGreen"  Style="{StaticResource AccentDot}" Background="#1ea54c" Tag="Green"  MouseLeftButtonUp="AccentDot_Click"/>
+                                        <Border x:Name="AccentDotTeal"   Style="{StaticResource AccentDot}" Background="#1FB8A8" Tag="Teal"   MouseLeftButtonUp="AccentDot_Click"/>
+                                        <Border x:Name="AccentDotBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDot_Click"/>
+                                        <Border x:Name="AccentDotPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDot_Click"/>
+                                    </StackPanel>
+                                    <RadioButton x:Name="ThemeLightRadio"
+                                                 Content="{DynamicResource Str_Theme_Light}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeLightRadio_Checked"/>
+                                    <StackPanel x:Name="LightAccentRow" Orientation="Horizontal" Margin="10,-5,0,5" Height="0" ClipToBounds="True" Visibility="Collapsed">
+                                        <Border x:Name="AccentDotLightRed"    Style="{StaticResource AccentDot}" Background="#DD504B" Tag="Red"    MouseLeftButtonUp="AccentDotLight_Click"/>
+                                        <Border x:Name="AccentDotLightOrange" Style="{StaticResource AccentDot}" Background="#E8962C" Tag="Orange" MouseLeftButtonUp="AccentDotLight_Click"/>
+                                        <Border x:Name="AccentDotLightGreen"  Style="{StaticResource AccentDot}" Background="#1ea54c" Tag="Green"  MouseLeftButtonUp="AccentDotLight_Click"/>
+                                        <Border x:Name="AccentDotLightTeal"   Style="{StaticResource AccentDot}" Background="#1FB8A8" Tag="Teal"   MouseLeftButtonUp="AccentDotLight_Click"/>
+                                        <Border x:Name="AccentDotLightBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDotLight_Click"/>
+                                        <Border x:Name="AccentDotLightPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDotLight_Click"/>
+                                    </StackPanel>
+                                    <RadioButton x:Name="ThemeHCRadio"
+                                                 Content="{DynamicResource Str_Theme_Black}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeHCRadio_Checked"/>
+                                    <StackPanel x:Name="BlackAccentRow" Orientation="Horizontal" Margin="10,-5,0,5" Height="0" ClipToBounds="True" Visibility="Collapsed">
+                                        <Border x:Name="AccentDotBlackRed"    Style="{StaticResource AccentDot}" Background="#DD504B" Tag="Red"    MouseLeftButtonUp="AccentDotBlack_Click"/>
+                                        <Border x:Name="AccentDotBlackOrange" Style="{StaticResource AccentDot}" Background="#E8962C" Tag="Orange" MouseLeftButtonUp="AccentDotBlack_Click"/>
+                                        <Border x:Name="AccentDotBlackGreen"  Style="{StaticResource AccentDot}" Background="#1ea54c" Tag="Green"  MouseLeftButtonUp="AccentDotBlack_Click"/>
+                                        <Border x:Name="AccentDotBlackTeal"   Style="{StaticResource AccentDot}" Background="#1FB8A8" Tag="Teal"   MouseLeftButtonUp="AccentDotBlack_Click"/>
+                                        <Border x:Name="AccentDotBlackBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDotBlack_Click"/>
+                                        <Border x:Name="AccentDotBlackPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDotBlack_Click"/>
+                                    </StackPanel>
+                                    <RadioButton x:Name="ThemeBloodRadio"
+                                                 Content="{DynamicResource Str_Theme_Blood}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeBloodRadio_Checked"/>
+                                    <RadioButton x:Name="ThemeGreedRadio"
+                                                 Content="{DynamicResource Str_Theme_Greed}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeGreedRadio_Checked"/>
+                                    <RadioButton x:Name="ThemeCyanoticRadio"
+                                                 Content="{DynamicResource Str_Theme_Cyanotic}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeCyanoticRadio_Checked"/>
+
+                                    <!-- Fonts/File Associations: KillerShell-only rows, kept from
+                                         the old flyout content - not part of PDF's menu, and not
+                                         part of what was reported wrong, so left in place. -->
+                                    <Border Height="1" Margin="0,12,0,6" Background="{DynamicResource MenuBorderBrush}"/>
+                                    <Button x:Name="FontsRowBtn" Click="FontsRow_Click"
+                                            Style="{StaticResource MenuRowButton}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE8D2;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                                       Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource Str_Fonts_Row}" FontFamily="Consolas"
+                                                       FontSize="11.5" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="AssocRowBtn" Click="AssocRow_Click"
+                                            Style="{StaticResource MenuRowButton}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                                       Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource Str_Assoc_Row}" FontFamily="Consolas"
+                                                       FontSize="11.5" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
                 </StackPanel>
             </Grid>
 
@@ -844,7 +980,7 @@
                  wide, so a single-pane window lays out exactly as it did before. -->
             <Grid Grid.Column="3" x:Name="PaneHost">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="PaneColA" Width="*" MinWidth="180"/>
+                    <ColumnDefinition x:Name="PaneColA" Width="*" MinWidth="300"/>
                     <ColumnDefinition x:Name="PaneColSplit" Width="0"/>
                     <ColumnDefinition x:Name="PaneColB" Width="0" MinWidth="0"/>
                 </Grid.ColumnDefinitions>
@@ -857,12 +993,16 @@
                 <local:FilePane x:Name="LeftPane" Grid.Column="0" Grid.Row="0"/>
 
                 <!-- Both splitters exist; DualPane.cs shows whichever the orientation needs.
-                     ResizeBehavior is PreviousAndNext so the drag moves the boundary between
-                     the two panes and nothing else. -->
+                     PaneSplitV's ResizeBehavior is set in code (DualPane.cs PaneSplitV_DragStarted)
+                     rather than fixed here: floating windows use PreviousOnly so the drag only ever
+                     touches pane A (pane B's own width never changes - the window grows/shrinks
+                     instead), maximized/snapped windows fall back to the PreviousAndNext trade
+                     below because there is no room left to grow. -->
                 <GridSplitter x:Name="PaneSplitV" Grid.Column="1" Grid.Row="0" Width="6"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               Background="Transparent" Cursor="SizeWE" Visibility="Collapsed"
-                              ResizeBehavior="PreviousAndNext" ResizeDirection="Columns"/>
+                              ResizeBehavior="PreviousAndNext" ResizeDirection="Columns"
+                              DragStarted="PaneSplitV_DragStarted" DragDelta="PaneSplitV_DragDelta"/>
                 <GridSplitter x:Name="PaneSplitH" Grid.Row="1" Grid.Column="0" Height="6"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               Background="Transparent" Cursor="SizeNS" Visibility="Collapsed"
@@ -1462,7 +1602,7 @@
                                       Direction="270" Opacity="0.5"/>
                 </Border.Effect>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="TabDragGhostGlyph" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                    <TextBlock x:Name="TabDragGhostGlyph" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                Margin="0,0,5,0" VerticalAlignment="Center"
                                Foreground="{DynamicResource MutedTextBrush}"/>
                     <TextBlock x:Name="TabDragGhostText" FontFamily="Consolas" FontSize="11.5"

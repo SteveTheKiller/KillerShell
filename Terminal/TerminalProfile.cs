@@ -20,10 +20,20 @@ namespace KillerShell.Terminal
         /// <summary>MDL2 glyph for the tab, so a shell tab is not mistaken for a folder tab.</summary>
         public string Glyph { get; }
 
-        private TerminalProfile(string name, string cmd, TerminalSkin skin, string glyph, bool elevated)
+        /// <summary>
+        /// The resolved exe itself (unquoted, no arguments) - pwsh.exe, powershell.exe or
+        /// cmd.exe, wherever Resolve* actually found it. Kept alongside CommandLine (which has
+        /// the prompt injection and -NoLogo baked in and cannot be un-quoted reliably) so callers
+        /// that want the real file - the tab-strip overflow menu asking IconCache for the
+        /// system's own PowerShell/cmd icon (Tabs.cs) - do not have to re-derive it.
+        /// </summary>
+        public string ExePath { get; }
+
+        private TerminalProfile(string name, string cmd, string exePath, TerminalSkin skin, string glyph, bool elevated)
         {
             Name = name;
             CommandLine = cmd;
+            ExePath = exePath;
             Skin = skin;
             Glyph = glyph;
             Elevated = elevated;
@@ -33,13 +43,28 @@ namespace KillerShell.Terminal
         private static readonly string GlyphShell = ((char)0xE756).ToString();
         private static readonly string GlyphAdmin = ((char)0xE7EF).ToString();
 
-        public static TerminalProfile PowerShell(bool elevated = false) =>
-            new("PowerShell", ResolvePowerShell(), TerminalSkin.Default,
-                elevated ? GlyphAdmin : GlyphShell, elevated);
+        public static TerminalProfile PowerShell(bool elevated = false)
+        {
+            string exe = ResolvePowerShellExe();
 
-        public static TerminalProfile Cmd(bool elevated = false) =>
-            new("Command Prompt", ResolveCmd(), TerminalSkin.Lcd,
-                elevated ? GlyphAdmin : GlyphShell, elevated);
+            // KillerShell's own prompt, dot-sourced after the user's $PROFILE has run so it wins
+            // in here and nowhere else (MainWindow.PromptArgs, Terminal/PromptScript.cs).
+            // Empty when the prompt is switched off, which leaves the command line as it was.
+            string prompt = MainWindow.PromptArgs();
+            string cmd = exe.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase)
+                       ? Quote(exe)                          // the ResolveCmd() fallback path
+                       : Quote(exe) + " -NoLogo" + prompt;
+
+            return new("PowerShell", cmd, exe, TerminalSkin.Default,
+                       elevated ? GlyphAdmin : GlyphShell, elevated);
+        }
+
+        public static TerminalProfile Cmd(bool elevated = false)
+        {
+            string exe = ResolveCmdExe();
+            return new("Command Prompt", Quote(exe), exe, TerminalSkin.Lcd,
+                       elevated ? GlyphAdmin : GlyphShell, elevated);
+        }
 
         // ═══════════════════════════════════════════════════════════
         //  RESOLUTION
@@ -50,30 +75,25 @@ namespace KillerShell.Terminal
         /// on PATH, because an MSI install does not always reach the PATH of an already running
         /// session, and this app is often started from a shortcut rather than a shell.
         /// </summary>
-        private static string ResolvePowerShell()
+        private static string ResolvePowerShellExe()
         {
-            // KillerShell's own prompt, dot-sourced after the user's $PROFILE has run so it wins
-            // in here and nowhere else (MainWindow.PromptArgs, Terminal/PromptScript.cs).
-            // Empty when the prompt is switched off, which leaves the command line as it was.
-            string prompt = MainWindow.PromptArgs();
-
             string? pwsh = Find("pwsh.exe")
                         ?? InProgramFiles(@"PowerShell\7\pwsh.exe")
                         ?? InProgramFiles(@"PowerShell\7-preview\pwsh.exe");
-            if (pwsh != null) return Quote(pwsh) + " -NoLogo" + prompt;
+            if (pwsh != null) return pwsh;
 
             string ps = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),
                                      @"WindowsPowerShell\v1.0\powershell.exe");
-            if (File.Exists(ps)) return Quote(ps) + " -NoLogo" + prompt;
+            if (File.Exists(ps)) return ps;
 
-            return ResolveCmd();
+            return ResolveCmdExe();
         }
 
-        private static string ResolveCmd()
+        private static string ResolveCmdExe()
         {
             string cmd = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),
                                       "cmd.exe");
-            return File.Exists(cmd) ? Quote(cmd) : "cmd.exe";
+            return File.Exists(cmd) ? cmd : "cmd.exe";
         }
 
         /// <summary>First hit for <paramref name="exe"/> on PATH, or null.</summary>

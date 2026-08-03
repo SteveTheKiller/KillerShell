@@ -71,9 +71,14 @@ namespace KillerShell.Shell
         {
             base.OnStateChanged(e);
             ApplyWindowCorners(rounded: WindowState == WindowState.Normal);
-            // Segoe MDL2: E923 restore (when maximized) / E922 maximize.
+            // Segoe MDL2: E923 restore (when maximized) / E922 maximize. Built from a (char)
+            // cast, never typed as a literal PUA character - literal glyphs do not survive
+            // tooling (family-wide rule).
             if (MaximizeBtn != null)
-                MaximizeBtn.Content = WindowState == WindowState.Maximized ? "" : "";
+            {
+                int glyph = WindowState == WindowState.Maximized ? 0xE923 : 0xE922;
+                MaximizeBtn.Content = ((char)glyph).ToString();
+            }
         }
 
         private void FadeInContent() => Anim.FadeIn(RootGrid);
@@ -83,6 +88,12 @@ namespace KillerShell.Shell
         private const int WM_NCRBUTTONUP   = 0x00A5;
         private const int HTCAPTION        = 2;
         private const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
+
+        // Another KillerShell window handing us a tab it was dragged onto (TabHandoff.cs) -
+        // the reverse of tearing one out (TabTearOut.cs). Windows itself defines WM_COPYDATA's
+        // value; it does not belong beside the window-chrome messages above by meaning, only by
+        // being the one other message this WndProc has to answer.
+        private const int WM_COPYDATA = 0x004A;
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -106,6 +117,17 @@ namespace KillerShell.Shell
             {
                 WmGetMinMaxInfo(hwnd, lParam);
                 handled = true;
+            }
+            if (msg == WM_COPYDATA)
+            {
+                handled = true;
+                return HandleCopyData(lParam);   // TabHandoff.cs
+            }
+            if (msg == (int)WM_KS_TABHOVER)   // TabHandoff.cs
+            {
+                handled = true;
+                HandleTabHover(wParam, lParam);   // TabHandoff.cs
+                return IntPtr.Zero;
             }
             return IntPtr.Zero;
         }
@@ -185,6 +207,32 @@ namespace KillerShell.Shell
 
         [DllImport("user32.dll")]
         private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+
+        /// <summary>Work-area width of the monitor this window is currently on, in DIP. Same
+        /// GetMonitorInfo call WmGetMinMaxInfo already makes for the OS-level max track size,
+        /// reused here so DualPane.cs (F10 open, gutter drag) can ask "is there room to grow the
+        /// window" without a second, different way of asking Windows the same question. Returns
+        /// double.MaxValue on failure so a lookup miss never blocks a grow/split decision - the
+        /// caller's own fallback (split-in-place) is a safe default either way.</summary>
+        internal double MonitorWorkAreaWidthDip()
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                if (hwnd == IntPtr.Zero) return double.MaxValue;
+                IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+                if (monitor == IntPtr.Zero) return double.MaxValue;
+                var info = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
+                if (!GetMonitorInfo(monitor, ref info)) return double.MaxValue;
+                double workWidthPx = Math.Abs(info.rcWork.right - info.rcWork.left);
+                var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+                return workWidthPx / dpi.DpiScaleX;
+            }
+            catch
+            {
+                return double.MaxValue;
+            }
+        }
 
         private const int WM_NCLBUTTONDOWN = 0x00A1;
         private const int HTBOTTOMRIGHT = 17;

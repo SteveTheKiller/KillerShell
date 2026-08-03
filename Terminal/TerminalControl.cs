@@ -840,6 +840,15 @@ namespace KillerShell.Terminal
                     case Key.OemPlus: case Key.Add:       SetFontSize(_fontSize + 1); return true;
                     case Key.OemMinus: case Key.Subtract: SetFontSize(_fontSize - 1); return true;
                     case Key.D0: case Key.NumPad0:        SetFontSize(13); return true;
+
+                    // Bare Ctrl+V pastes, same as Windows Terminal. Without this case it fell
+                    // through to Encode()'s generic Ctrl+letter handling below, which sends the
+                    // raw C0 control byte (SYN, 0x16) to the shell instead of the clipboard -
+                    // a no-op in cmd.exe and unreliable in PowerShell. Ctrl+Shift+V and
+                    // Shift+Insert above already do this; this just gives the unshifted chord
+                    // the same treatment instead of leaving it as the only common paste
+                    // shortcut that silently did nothing.
+                    case Key.V: Paste(); return true;
                 }
             }
 

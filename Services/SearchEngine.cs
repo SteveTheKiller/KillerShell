@@ -309,14 +309,14 @@ namespace KillerShell
                 using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read,
                                               FileShare.Read, bufferSize: 65536);
 
-                // Skip likely binary files — null byte in first 4 KB
+                // Skip likely binary files - null byte in first 4 KB
                 var buf  = new byte[Math.Min(4096, fs.Length)];
                 int read = fs.Read(buf, 0, buf.Length);
                 for (int i = 0; i < read; i++)
                     if (buf[i] == 0) return matches;
                 fs.Seek(0, SeekOrigin.Begin);
 
-                // Stream line-by-line — never loads the whole file into memory
+                // Stream line-by-line - never loads the whole file into memory
                 using var reader = new StreamReader(fs, Encoding.UTF8,
                                                     detectEncodingFromByteOrderMarks: true,
                                                     bufferSize: 65536, leaveOpen: false);
@@ -334,7 +334,7 @@ namespace KillerShell
                     }
                 }
             }
-            catch { /* unreadable file — skip */ }
+            catch { /* unreadable file - skip */ }
             return matches;
         }
 

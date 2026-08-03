@@ -9,31 +9,34 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <link rel="preload" href="brand/KillerShell.ttf" as="font" type="font/ttf" crossorigin>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="darkreader-lock">
-<title>KillerShell - File browser, terminal and text editor in one Windows exe</title>
+<title>KillerShell - File browser, terminal, text editor and admin toolkit</title>
 <link rel="canonical" href="https://killershell.net/">
-<meta name="description" content="One exe, no agent, no account, no telemetry. Browse, search, drop into PowerShell and edit files without leaving the window. Free and open source, GPLv3.">
+<meta name="description" content="One exe, no agent, no account, no telemetry. Browse, search, drop into PowerShell, edit files, and manage processes, services and the registry without leaving the window. Free and open source, GPLv3.">
 <link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://killershell.net/">
-<meta property="og:title" content="KillerShell - File browser, terminal and text editor in one Windows exe">
-<meta property="og:description" content="One exe, no agent, no account, no telemetry. Browse, search, drop into PowerShell and edit files without leaving the window. Free and open source, GPLv3.">
+<meta property="og:title" content="KillerShell - File browser, terminal, text editor and admin toolkit">
+<meta property="og:description" content="One exe, no agent, no account, no telemetry. Browse, search, drop into PowerShell, edit files, and manage processes, services and the registry without leaving the window. Free and open source, GPLv3.">
 <meta property="og:image" content="https://killershell.net/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="KillerShell - File browser, terminal and text editor in one Windows exe">
-<meta name="twitter:description" content="One exe, no agent, no account, no telemetry. Browse, search, drop into PowerShell and edit files without leaving the window. Free and open source, GPLv3.">
+<meta name="twitter:title" content="KillerShell - File browser, terminal, text editor and admin toolkit">
+<meta name="twitter:description" content="One exe, no agent, no account, no telemetry. Browse, search, drop into PowerShell, edit files, and manage processes, services and the registry without leaving the window. Free and open source, GPLv3.">
 <meta name="twitter:image" content="https://killershell.net/og-image.png">
 <script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
-<link rel="stylesheet" href="ks.css?v=6">
+<link rel="stylesheet" href="ks.css?v=8">
 <style>
 /* ---- Page-specific (landing) ---- */
 .content-inner { max-width: 1100px; margin: 0 auto; padding: 0 28px 50px; }
 
 /* Hero */
 .hero { padding: 12px 0 28px; text-align: center; }
-.hero .wm-logo { height: clamp(54px, 10vw, 104px); margin: 0 auto; filter: drop-shadow(0 4px 7px rgba(0,0,0,0.5)); }
+/* The source SVG's own ink touches its viewBox's bottom edge with 0 margin (true of every app's
+   wordmark - it's how they're auto-cropped), so the glyphs read as flush/cut-off right against
+   the image's own box. Padding-bottom here buys breathing room without touching the SVG. */
+.hero .wm-logo { height: clamp(54px, 10vw, 104px); margin: 0 auto; padding-bottom: 6px; filter: drop-shadow(0 4px 7px rgba(0,0,0,0.5)); }
 .hero .hero-lockup { display: flex; align-items: center; justify-content: center; gap: clamp(10px, 2vw, 22px); flex-wrap: wrap; }
 .hero .hero-lockup .wm-logo { margin: 0; }
 .hero .hero-icon { height: clamp(120px, 24vw, 230px); width: auto; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5)); }
@@ -72,7 +75,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 .feature-card code { display: inline-block; margin-top: 4px; background: var(--panel); padding: 2px 7px; border-radius: 4px; font-family: Consolas, monospace; font-size: 12px; color: var(--text); white-space: nowrap; }
 
 /* Sidebar (screenshot strip) */
-.sb-thumbs { padding: 4px 12px 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
+.sb-thumbs { padding: 0 12px 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
 /* Grain fade overlays pinned to the sidebar top/bottom (not a mask on the scroller, so the
    scrollbar is never faded). Inset 8px from the right to clear the scrollbar. JS toggles .on:
    top only once scrolled down, bottom only while more shots remain below. */
@@ -112,7 +115,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <a class="tb-dl" href="https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe"><svg viewBox="0 0 24 24"><path d="M11 4h2v7h3l-4 5-4-5h3V4zM5 18h14v2H5z"/></svg><span data-i18n="nav_dl">Download</span></a>
 <span class="tb-spacer"></span>
 <nav class="tb-nav">
-<a href="howto.html" data-i18n="nav_howto">How to</a>
+<a href="help.html" data-i18n="nav_howto">Help</a>
 <a href="technical.html" data-i18n="nav_tech">Technical</a>
 <a href="about.html" data-i18n="nav_about">About</a>
 </nav>
@@ -163,7 +166,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <img class="hero-icon" src="brand/ksh-icon.png" alt="" aria-hidden="true" width="230" height="230">
 <img class="wm-logo" src="brand/killershell-logo-dark-blue.svg" alt="KillerShell">
 </div>
-<p class="tagline" data-i18n="tagline">A file browser, a terminal and a text editor in one portable Windows exe. Find a file, open a shell where it lives, edit it on the spot.</p>
+<p class="tagline" data-i18n="tagline">A file browser, terminal, text editor and admin toolkit in one portable Windows exe. Find a file, open a shell where it lives, edit it on the spot, or manage what's running underneath.</p>
 <div class="hero-blurbs">
 <div class="blurb"><h3 data-i18n="b1_t">Fully featured</h3><ul class="blurb-list" data-i18n="b1_d">
 <li><b>Browse</b> - list, icon and details views</li>
@@ -171,12 +174,13 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <li><b>Terminal</b> - PowerShell or CMD in a tab</li>
 <li><b>Editor</b> - F7, with syntax highlighting</li>
 <li><b>Files</b> - copy, move, rename, delete</li>
-<li><b>Refine</b> - filter, then search within results</li>
 <li><b>Tabs</b> - folders, searches, shells, files</li>
 <li><b>Export</b> - HTML report or CSV</li>
+<li><b>Processes</b> - F9, with services and live CPU/RAM</li>
+<li><b>Registry</b> - Ctrl+F11, lazy-loaded tree with search</li>
 <li><b>Themes</b> - six, with live accent colors</li>
 </ul></div>
-<div class="blurb"><h3 data-i18n="b2_t">Built from scratch</h3><p data-i18n="b2_d">KillerShell is written in C# and WPF on .NET Framework 4.8, so it runs as one self-contained native .exe with no runtime to install. The browser, the terminal and the editor are not three programs bolted together: they are one process sharing one tab strip, which is why moving between them costs nothing. No index, no background agent, nothing left running when you close the window.<br><br>The <a href="technical.html">Technical</a> page breaks down how it works, and <a href="howto.html">How to</a> covers every key and gesture.</p></div>
+<div class="blurb"><h3 data-i18n="b2_t">Built from scratch</h3><p data-i18n="b2_d">KillerShell is written in C# and WPF on .NET Framework 4.8, so it runs as one self-contained native .exe with no runtime to install. The browser, the terminal and the editor are not three programs bolted together: they are one process sharing one tab strip, which is why moving between them costs nothing. No index, no background agent, nothing left running when you close the window. It also carries a full admin toolkit - process and service management, a live performance monitor, Event Viewer and a registry editor, each one key away.<br><br>The <a href="technical.html">Technical</a> page breaks down how it works, and <a href="help.html">Help</a> covers every key and gesture.</p></div>
 <div class="blurb"><h3 data-i18n="b3_t">By a field tech, for field techs</h3><p data-i18n="b3_d">Created during everyday systems administration work at a large MSP, where the same loop ran all day: find the file, open a terminal in that folder, edit something. Three applications, three tab strips, and a lot of alt-tabbing between them to do one job.</p><p data-i18n="b3_d2">It was built to collapse that loop into one window: find what you need, drop into a shell already in the right folder, edit the file, close the ticket, move on.</p><br><p data-i18n="b3_d4">Read the story behind it on the <a href="about.html">About</a> page.</p></div>
 </div>
 <div class="hero-grid">
@@ -210,10 +214,14 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <div class="feature-card"><h3 data-i18n="f_sortfilter_t">Sort &amp; refine</h3><p data-i18n="f_sortfilter_d">Sort results by name, location, size, or modified date, and press Ctrl+F to filter the list live. Dropdown filters narrow by extension, date, or size.</p></div>
 <div class="feature-card"><h3 data-i18n="f_fileops_t">Real file operations</h3><p data-i18n="f_fileops_d">Copy, move, rename, new folder, and delete to the Recycle Bin or permanently. Copy and move show real progress and stop to ask on a collision, with both files' size and date in front of you.</p></div>
 <div class="feature-card"><h3 data-i18n="f_tabs_t">Tabs</h3><p data-i18n="f_tabs_d">Each tab is its own search, folder, terminal or open file, with its own history and results. Drag tabs to reorder, and optionally restore your open tabs on the next launch.</p></div>
-<div class="feature-card"><h3 data-i18n="f_panes_t">Two panes</h3><p data-i18n="f_panes_d">F11 splits the window side by side or stacked, each pane with its own tabs. Drag files from one to the other, or keep a search on the left and a shell on the right.</p></div>
+<div class="feature-card"><h3 data-i18n="f_panes_t">Two panes</h3><p data-i18n="f_panes_d">F10 splits the window side by side or stacked, each pane with its own tabs. Drag files from one to the other, or keep a search on the left and a shell on the right.</p></div>
 <div class="feature-card"><h3 data-i18n="f_term_t">Terminal in a tab</h3><p data-i18n="f_term_d">PowerShell, Windows PowerShell or CMD opens in the folder you are looking at, elevated if you want it. The working directory is tracked live, so one click turns it back into a browsing tab.</p></div>
 <div class="feature-card"><h3 data-i18n="f_editor_t">Editor in a tab</h3><p data-i18n="f_editor_d">Open any file with F7. Syntax highlighting, line numbers, find and go to line, with word wrap on by default. Your encoding and line endings are preserved exactly, never invented.</p></div>
 <div class="feature-card"><h3 data-i18n="f_export_t">HTML &amp; CSV export</h3><p data-i18n="f_export_d">Export results as a self-contained HTML report with matched lines and a built-in theme switcher, or as CSV for spreadsheets. Opens anywhere, no dependencies.</p></div>
+<div class="feature-card"><h3 data-i18n="f_procsvc_t">Processes &amp; services</h3><p data-i18n="f_procsvc_d">F9 opens a live CPU, memory and owner grid you can filter by name, path or user. End or restart a process, or start, stop and restart a service, each behind a confirm dialog.</p></div>
+<div class="feature-card"><h3 data-i18n="f_perf_t">Performance monitor</h3><p data-i18n="f_perf_d">F11 opens a Task-Manager-style live view: one tile per CPU, RAM, disk, network adapter and GPU, a minute of history on every graph, and a per-core CPU breakdown.</p></div>
+<div class="feature-card"><h3 data-i18n="f_evt_t">Event Viewer</h3><p data-i18n="f_evt_d">Ctrl+F12 opens the Application, System and Security logs with level and text filtering, full record detail with a raw XML view, and paging through the filtered results.</p></div>
+<div class="feature-card"><h3 data-i18n="f_reg_t">Registry Editor</h3><p data-i18n="f_reg_d">Ctrl+F11 opens a full tree over all five hives with type-aware value editing, create/rename/delete for keys and values, and Ctrl+F to search loaded names.</p></div>
 <div class="feature-card"><h3 data-i18n="f_keys_t">Keyboard driven</h3><p data-i18n="f_keys_d">Explorer's conventions where they exist, and single keys rather than chords where they do not. F1 shows every gesture as a list or on a visual keyboard you can hold Ctrl over.</p></div>
 <div class="feature-card"><h3 data-i18n="f_themes_t">Themes &amp; accents</h3><p data-i18n="f_themes_d">Six themes (Dark, Light, Black, Blood, Greed and Cyanotic) with per-theme accent colors, all switchable live.</p></div>
 <div class="feature-card"><h3 data-i18n="f_install_t">Install or run portable</h3><p data-i18n="f_install_d">Drop the .exe anywhere and run it, or install it for just you, or for every user on the PC.<br>No extra runtimes or dependencies are required.</p></div>
@@ -237,7 +245,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 
 <footer class="statusbar">
 <span class="left"><a href="https://github.com/SteveTheKiller/KillerShell" target="_blank" rel="noopener" data-i18n="footer_src">Source on GitHub</a> &middot; GPLv3 &middot; Part of <a href="https://killertools.net" target="_blank" rel="noopener">killertools.net</a></span>
-<span class="right"><span id="verEgg" title="click me">v1.0.2</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
+<span class="right"><span id="verEgg" title="click me">v1.1.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 
 <div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt="KillerShell screenshot"></div>

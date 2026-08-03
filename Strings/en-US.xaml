@@ -17,6 +17,12 @@
     <sys:String x:Key="Str_St_AppSize">App size {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">theme</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">accent</sys:String>
+    <sys:String x:Key="Str_Theme_Dark">Dark</sys:String>
+    <sys:String x:Key="Str_Theme_Light">Light</sys:String>
+    <sys:String x:Key="Str_Theme_Black">Black</sys:String>
+    <sys:String x:Key="Str_Theme_Blood">Blood</sys:String>
+    <sys:String x:Key="Str_Theme_Greed">Greed</sys:String>
+    <sys:String x:Key="Str_Theme_Cyanotic">Cyanotic</sys:String>
 
     <!-- Scope bar -->
     <sys:String x:Key="Str_Lbl_In">in:</sys:String>
@@ -30,8 +36,9 @@
     <sys:String x:Key="Str_TT_CollapseSidebar">Collapse the side panels</sys:String>
     <!-- Bookmarks (Bookmarks.cs) -->
     <sys:String x:Key="Str_TT_Bookmarks">Bookmarks  (Ctrl+B)</sys:String>
-    <sys:String x:Key="Str_TT_Favorite">Bookmark this folder</sys:String>
-    <sys:String x:Key="Str_TT_ShowHidden">Show hidden and system items</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Bookmark this folder  (Ctrl+D)</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Show hidden and system items  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Show file details  (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Keep folders above files</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Add to Bookmarks</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Remove from Bookmarks</sys:String>
@@ -79,7 +86,7 @@
     <sys:String x:Key="Str_Tab_New">new search</sys:String>
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
     <sys:String x:Key="Str_Tab_Dropped">dropped ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">New search tab</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">New search tab  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Close tab</sys:String>
 
     <!-- Folder picker -->
@@ -97,7 +104,7 @@
     <sys:String x:Key="Str_Sort_Found">as found</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filter these results (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Search within these results</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Second pane  |  right-click to flip side-by-side / stacked</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Second pane  (F10)  |  right-click to flip side-by-side / stacked</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">More tools</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sort by</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">This PC</sys:String>
@@ -106,6 +113,9 @@
     <sys:String x:Key="Str_Status_NoPipe">No results to search within yet.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Could not start an elevated shell: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutNeedsSave">Save the document before dragging it to another window</sys:String>
+    <sys:String x:Key="Str_Status_TermCwdNotFound">{0} is not a folder that exists</sys:String>
+    <sys:String x:Key="Str_Status_EdPathNotFound">{0} is not a location that exists</sys:String>
 
     <!-- Portable install + quit dialog -->
     <sys:String x:Key="Str_Portable">PORTABLE</sys:String>
@@ -126,6 +136,17 @@
     <sys:String x:Key="Str_Btn_Quit">Quit</sys:String>
     <sys:String x:Key="Str_Col_Size">size</sys:String>
     <sys:String x:Key="Str_Col_Modified">modified</sys:String>
+    <sys:String x:Key="Str_Details_Empty">No item selected</sys:String>
+    <sys:String x:Key="Str_Details_Created">created</sys:String>
+    <sys:String x:Key="Str_Details_Type">type</sys:String>
+    <sys:String x:Key="Str_Details_Attributes">attributes</sys:String>
+    <sys:String x:Key="Str_Details_Path">path</sys:String>
+    <sys:String x:Key="Str_Details_Folder">File folder</sys:String>
+    <sys:String x:Key="Str_Details_NoExt">File</sys:String>
+    <sys:String x:Key="Str_Details_ExtFile">{0} File</sys:String>
+    <sys:String x:Key="Str_Details_AttrReadOnly">read-only</sys:String>
+    <sys:String x:Key="Str_Details_AttrHidden">hidden</sys:String>
+    <sys:String x:Key="Str_Details_AttrSystem">system</sys:String>
     <sys:String x:Key="Str_Sum_Counts">{0} folder(s), {1} file(s)</sys:String>
     <sys:String x:Key="Str_TT_ViewList">List view</sys:String>
     <sys:String x:Key="Str_TT_ViewIcons">Icon view</sys:String>
@@ -142,7 +163,7 @@
     <!-- Results -->
     <sys:String x:Key="Str_Lbl_Results">RESULTS</sys:String>
     <sys:String x:Key="Str_Lbl_ResultsCount">RESULTS  ({0})</sys:String>
-    <sys:String x:Key="Str_Btn_Export">Export results</sys:String>
+    <sys:String x:Key="Str_Btn_Export">Export results  (Ctrl+Alt+E)  |  Ctrl+Alt+Shift+E for CSV</sys:String>
     <sys:String x:Key="Str_TT_Result">Click to expand  |  Double-click to reveal in Explorer  |  Right-click for more</sys:String>
     <sys:String x:Key="Str_Btn_ExpandAll">EXPAND ALL</sys:String>
     <sys:String x:Key="Str_Btn_CollapseAll">COLLAPSE ALL</sys:String>
@@ -259,6 +280,13 @@
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">open CMD as administrator</sys:String>
     <sys:String x:Key="Str_Ks_ExportHtml">export the results as HTML</sys:String>
     <sys:String x:Key="Str_Ks_ExportCsv">export the results as CSV</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManager">open the Processes/Services tab</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManagerAdmin">open the Processes/Services tab as administrator</sys:String>
+    <sys:String x:Key="Str_Ks_Performance">open the Performance tab</sys:String>
+    <sys:String x:Key="Str_Ks_ProcToggle">switch between Processes and Services</sys:String>
+    <sys:String x:Key="Str_Ks_EventViewer">open the Event Viewer tab (always elevated)</sys:String>
+    <sys:String x:Key="Str_Ks_RegistryEditor">open the Registry Editor tab (always elevated)</sys:String>
+    <sys:String x:Key="Str_Ks_RegFind">find a key or value name (Registry Editor tab)</sys:String>
     <sys:String x:Key="Str_Ks_Hint">Shortcuts work anywhere in the window. Open dropdowns, the date box, and the results filter keep Enter for themselves.</sys:String>
 
     <!-- Font dialog, reached from the row under the theme flyout -->
@@ -340,7 +368,13 @@
     <sys:String x:Key="Str_TT_EdGoto">Go to line  (Ctrl+G)</sys:String>
     <sys:String x:Key="Str_TT_EdWrap">Word wrap</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Editor settings</sys:String>
+    <sys:String x:Key="Str_TT_EdEncoding">Click to change the encoding the next save writes</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">line</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8">UTF-8</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8Bom">UTF-8 with BOM</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Le">UTF-16 LE</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Be">UTF-16 BE</sys:String>
+    <sys:String x:Key="Str_Ed_EncAnsi">ANSI (Windows-1252)</sys:String>
 
     <!-- Gear flyout -->
     <sys:String x:Key="Str_Ed_OptLineNumbers">Line numbers</sys:String>
@@ -365,12 +399,13 @@
     <sys:String x:Key="Str_Ed_CloseTab">Close file</sys:String>
 
     <!-- Shell bar (TerminalBar.cs) -->
-    <sys:String x:Key="Str_TT_TermCwd">Open this folder in a tab</sys:String>
+    <sys:String x:Key="Str_TT_TermCwd">Click to edit - type a folder and press Enter to cd there</sys:String>
     <sys:String x:Key="Str_TT_TermNew">New terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">New terminal as administrator  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Open this folder in a tab</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Clear</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Fonts...</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Click to edit - type a path and press Enter to rename/move the file</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Word wrap on.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Word wrap off - scroll to see long lines.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Saved {0}.</sys:String>
@@ -380,7 +415,8 @@
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
     <sys:String x:Key="Str_TT_TabOverflow">All tabs</sys:String>
     <sys:String x:Key="Str_TT_ColResize">Drag to resize  -  double-click to reset</sys:String>
-    <sys:String x:Key="Str_TT_NewDoc">New document</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">New document  (F7)  |  Ctrl+F7 retries an admin save if it's refused</sys:String>
+    <sys:String x:Key="Str_TT_NewDocAdmin">New document, admin-save retry  (Ctrl+F7)</sys:String>
     <sys:String x:Key="Str_Ed_Untitled">untitled</sys:String>
     <sys:String x:Key="Str_Ed_SaveAs">Save as</sys:String>
     <sys:String x:Key="Str_Ed_AllFiles">All files</sys:String>
@@ -438,6 +474,7 @@
     <sys:String x:Key="Str_Status_DeleteDenied">Delete refused - permission denied</sys:String>
     <sys:String x:Key="Str_Status_Selected">{0} items selected</sys:String>
     <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Elevated delete was refused too - check Controlled Folder Access in Windows Security</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedSaveFailed">Elevated save of {0} was refused too - check Controlled Folder Access in Windows Security</sys:String>
 
     <!-- File-operation shortcuts and their outcomes -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">cut / copy / paste files</sys:String>
@@ -472,5 +509,226 @@
     <sys:String x:Key="Str_Dlg_NoSuchFolder">That folder does not exist.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">That file does not exist.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Replace {0}?</sys:String>
+
+    <!-- Processes/Services tab (Shell/ProcessTabs.cs, Shell/ProcessListControl.cs). The tab's
+         user-facing label is "Processes/Services" now that it shows a Services view too - the
+         underlying mechanism (ProcessListControl, OpenTaskManager, RelaunchElevatedProcesses, the
+         command-line flag that opens it directly) all keep their existing "Process"/"TaskManager"
+         names, unchanged. -->
+    <sys:String x:Key="Str_TT_TaskManager">Processes/Services  (F9)  -  right-click to choose</sys:String>
+    <sys:String x:Key="Str_TabTitle_TaskManager">Processes/Services</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesOpen">Processes/Services</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesAdmin">Processes/Services as administrator</sys:String>
+    <sys:String x:Key="Str_TT_ProcFilter">Filter by name, path or user</sys:String>
+    <sys:String x:Key="Str_Col_ProcName">Name</sys:String>
+    <sys:String x:Key="Str_Col_ProcPid">PID</sys:String>
+    <sys:String x:Key="Str_Col_ProcUser">User</sys:String>
+    <sys:String x:Key="Str_Col_ProcCpu">CPU %</sys:String>
+    <sys:String x:Key="Str_Col_ProcMemory">Memory</sys:String>
+    <sys:String x:Key="Str_Col_ProcCommandLine">Command line</sys:String>
+    <sys:String x:Key="Str_Col_ProcPath">Path</sys:String>
+    <sys:String x:Key="Str_Menu_ProcOpenLocation">Open file location</sys:String>
+    <sys:String x:Key="Str_Menu_ProcKill">End process</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRestart">Restart</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRunAsAdmin">Restart as administrator</sys:String>
+    <sys:String x:Key="Str_Dlg_ProcKillMsg">End {0} (PID {1})? Unsaved work in that process will be lost.</sys:String>
+    <sys:String x:Key="Str_Proc_Killed">{0} ended</sys:String>
+    <sys:String x:Key="Str_Proc_AlreadyExited">{0} had already exited</sys:String>
+    <sys:String x:Key="Str_Proc_KillFailed">Could not end {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_Restarted">{0} restarted</sys:String>
+    <sys:String x:Key="Str_Proc_RestartFailed">Could not restart {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_RefreshFailed">Could not refresh the process list - {0}</sys:String>
+    <sys:String x:Key="Str_Proc_Loading">Loading process list...</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsTitle">Process Details</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsParentPid">Parent PID</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsStartTime">Start time</sys:String>
+    <sys:String x:Key="Str_TT_ProcPrev">Previous process  (Left arrow)</sys:String>
+    <sys:String x:Key="Str_TT_ProcNext">Next process  (Right arrow)</sys:String>
+    <sys:String x:Key="Str_TT_ProcCopyDetails">Copy details  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_ProcClose">Close  (Esc)</sys:String>
+
+    <!-- The Processes/Services mode toggle above the filter box: one icon button, its glyph the
+         current mode, its tooltip naming what clicking switches TO next. -->
+    <sys:String x:Key="Str_TT_ProcToggleToServices">Switch to Services  (Ctrl+.)</sys:String>
+    <sys:String x:Key="Str_TT_ProcToggleToProcesses">Switch to Processes  (Ctrl+.)</sys:String>
+
+    <!-- The Services view of the same tab. -->
+    <sys:String x:Key="Str_TT_SvcFilter">Filter by name, display name, path or account</sys:String>
+    <sys:String x:Key="Str_Col_SvcName">Name</sys:String>
+    <sys:String x:Key="Str_Col_SvcDisplayName">Display Name</sys:String>
+    <sys:String x:Key="Str_Col_SvcStatus">Status</sys:String>
+    <sys:String x:Key="Str_Col_SvcStartType">Startup Type</sys:String>
+    <sys:String x:Key="Str_Col_SvcLogOnAs">Log On As</sys:String>
+    <sys:String x:Key="Str_Col_SvcPath">Path</sys:String>
+    <sys:String x:Key="Str_Col_SvcDescription">Description</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStart">Start</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStop">Stop</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStartMsg">Start {0} ({1})?</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStopMsg">Stop {0} ({1})? Anything depending on it may stop working.</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcRestartMsg">Restart {0} ({1})? Anything depending on it will be briefly unavailable.</sys:String>
+    <sys:String x:Key="Str_Svc_Started">{0} started</sys:String>
+    <sys:String x:Key="Str_Svc_StartFailed">Could not start {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Stopped">{0} stopped</sys:String>
+    <sys:String x:Key="Str_Svc_StopFailed">Could not stop {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Restarted">{0} restarted</sys:String>
+    <sys:String x:Key="Str_Svc_RestartFailed">Could not restart {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_RefreshFailed">Could not refresh the service list - {0}</sys:String>
+    <sys:String x:Key="Str_Svc_Loading">Loading service list...</sys:String>
+    <sys:String x:Key="Str_Svc_DetailsTitle">Service Details</sys:String>
+    <sys:String x:Key="Str_TT_SvcPrev">Previous service  (Left arrow)</sys:String>
+    <sys:String x:Key="Str_TT_SvcNext">Next service  (Right arrow)</sys:String>
+    <sys:String x:Key="Str_TT_SvcCopyDetails">Copy details  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_SvcClose">Close  (Esc)</sys:String>
+
+    <!-- Event Viewer tab (Shell/EventViewerTabs.cs, Shell/EventViewerControl.cs) -->
+    <sys:String x:Key="Str_TT_EventViewer">Event Viewer  (Ctrl+F12)</sys:String>
+    <sys:String x:Key="Str_TabTitle_EventViewer">Event Viewer</sys:String>
+    <sys:String x:Key="Str_TT_EvtFilter">Filter by source, message, category or event ID</sys:String>
+    <sys:String x:Key="Str_TT_EvtLogPicker">Which log to read</sys:String>
+    <sys:String x:Key="Str_TT_EvtLevelPicker">Which levels to show</sys:String>
+    <sys:String x:Key="Str_TT_EvtRefresh">Reload the current log and level</sys:String>
+    <sys:String x:Key="Str_Col_EvtLevel">Level</sys:String>
+    <sys:String x:Key="Str_Col_EvtLog">Log</sys:String>
+    <sys:String x:Key="Str_Col_EvtTime">Date and time</sys:String>
+    <sys:String x:Key="Str_Col_EvtSource">Source</sys:String>
+    <sys:String x:Key="Str_Col_EvtId">Event ID</sys:String>
+    <sys:String x:Key="Str_Col_EvtCategory">Task category</sys:String>
+    <sys:String x:Key="Str_Col_EvtMessage">Message</sys:String>
+    <sys:String x:Key="Str_EvtLog_Application">Application</sys:String>
+    <sys:String x:Key="Str_EvtLog_System">System</sys:String>
+    <sys:String x:Key="Str_EvtLog_Security">Security</sys:String>
+    <sys:String x:Key="Str_EvtLog_All">All logs</sys:String>
+    <sys:String x:Key="Str_EvtLevel_All">All levels</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Error">Error</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Warning">Warning</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Information">Information</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyMessage">Copy message</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyDetails">Copy details</sys:String>
+    <sys:String x:Key="Str_Evt_Loading">Loading event log...</sys:String>
+    <sys:String x:Key="Str_Evt_RefreshFailed">Could not read the event log - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_AccessDenied">The Security log needs an elevated window to read - some entries may be missing</sys:String>
+    <sys:String x:Key="Str_Evt_NoMessage">(message data unavailable)</sys:String>
+    <sys:String x:Key="Str_Evt_MessageCopied">Message copied</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCopied">Details copied</sys:String>
+    <sys:String x:Key="Str_Evt_CopyFailed">Could not copy to the clipboard - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsLevel">Level</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsTime">Time</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsSource">Source</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsId">Event ID</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCategory">Task category</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsMessage">Message</sys:String>
+
+    <!-- Performance Monitor tab (Shell/PerformanceTabs.cs, Shell/PerformanceMonitorControl.cs) -->
+    <sys:String x:Key="Str_TT_Performance">Performance  (F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Performance">Performance</sys:String>
+    <sys:String x:Key="Str_Perf_Gathering">Reading hardware info...</sys:String>
+    <sys:String x:Key="Str_Perf_GatherFailed">Could not read hardware info - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_CountersUnavailable">Performance counters unavailable - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_Cpu">CPU</sys:String>
+    <sys:String x:Key="Str_Perf_Ram">RAM</sys:String>
+    <sys:String x:Key="Str_Perf_Network">Network</sys:String>
+    <sys:String x:Key="Str_Perf_Disk">Disk</sys:String>
+    <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Show logical processors</sys:String>
+    <sys:String x:Key="Str_Perf_Utilization">Utilization</sys:String>
+    <sys:String x:Key="Str_Perf_Throughput">Throughput</sys:String>
+    <sys:String x:Key="Str_Perf_Send">Send</sys:String>
+    <sys:String x:Key="Str_Perf_Receive">Receive</sys:String>
+    <sys:String x:Key="Str_Perf_ActiveTime">Active time</sys:String>
+    <sys:String x:Key="Str_Perf_TransferRate">Transfer rate</sys:String>
+    <sys:String x:Key="Str_Perf_ReadSpeed">Read speed</sys:String>
+    <sys:String x:Key="Str_Perf_WriteSpeed">Write speed</sys:String>
+    <sys:String x:Key="Str_Perf_DedicatedMemory">Dedicated GPU memory</sys:String>
+    <sys:String x:Key="Str_Perf_SharedMemory">Shared GPU memory</sys:String>
+    <sys:String x:Key="Str_Perf_InUse">In use</sys:String>
+    <sys:String x:Key="Str_Perf_Available">Available</sys:String>
+    <sys:String x:Key="Str_Perf_Committed">Committed</sys:String>
+    <sys:String x:Key="Str_Perf_Cores">Cores</sys:String>
+    <sys:String x:Key="Str_Perf_LogicalProcessors">Logical processors</sys:String>
+    <sys:String x:Key="Str_Perf_BaseSpeed">Base speed</sys:String>
+
+    <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Shell/RegistryEditorControl.cs) -->
+    <sys:String x:Key="Str_TT_RegistryEditor">Registry Editor  (Ctrl+F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_RegistryEditor">Registry Editor</sys:String>
+    <sys:String x:Key="Str_TT_RegFind">Find a key or value name  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_RegRefresh">Reload the selected key from disk  (F5)</sys:String>
+    <sys:String x:Key="Str_RegEd_FindNext">Find next</sys:String>
+    <sys:String x:Key="Str_RegEd_ComputerRoot">Computer</sys:String>
+    <sys:String x:Key="Str_RegEd_PathNotFound">That key doesn't exist</sys:String>
+    <sys:String x:Key="Str_RegEd_AccessDenied">Access denied - this key needs a higher level of access than even this elevated window has</sys:String>
+    <sys:String x:Key="Str_RegEd_NothingSelected">Select a key first</sys:String>
+    <sys:String x:Key="Str_RegEd_Refreshed">Refreshed</sys:String>
+    <sys:String x:Key="Str_RegEd_NoMatches">No matches found in the currently loaded part of the tree</sys:String>
+    <sys:String x:Key="Str_RegEd_NameEmpty">Enter a name</sys:String>
+    <sys:String x:Key="Str_RegEd_NameHasBackslash">A name can't contain a backslash</sys:String>
+    <sys:String x:Key="Str_RegEd_NameExists">A key or value with that name already exists here</sys:String>
+    <sys:String x:Key="Str_RegEd_NewKeyDefaultName">New Key #1</sys:String>
+    <sys:String x:Key="Str_RegEd_NewValueDefaultName">New Value</sys:String>
+    <sys:String x:Key="Str_RegEd_CreateFailed">Could not create it - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_RenameFailed">Could not rename it - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_DeleteFailed">Could not delete it - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_SaveFailed">Could not save the value - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}" and everything inside it was deleted</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" was deleted</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" saved</sys:String>
+    <sys:String x:Key="Str_RegEd_NameCopied">Name copied</sys:String>
+    <sys:String x:Key="Str_RegEd_PathCopied">Path copied</sys:String>
+    <sys:String x:Key="Str_RegEd_CopyFailed">Could not copy to the clipboard - {0}</sys:String>
+    <sys:String x:Key="Str_Col_RegName">Name</sys:String>
+    <sys:String x:Key="Str_Col_RegType">Type</sys:String>
+    <sys:String x:Key="Str_Col_RegData">Data</sys:String>
+    <sys:String x:Key="Str_Menu_RegNew">New</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewKey">Key</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewString">String Value</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewExpandString">Expandable String Value</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewMultiString">Multi-String Value</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewBinary">Binary Value</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewDWord">DWORD Value</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewQWord">QWORD Value</sys:String>
+    <sys:String x:Key="Str_Menu_RegModify">Modify...</sys:String>
+    <sys:String x:Key="Str_Menu_RegRename">Rename</sys:String>
+    <sys:String x:Key="Str_Menu_RegDelete">Delete</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyName">Copy name</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyPath">Copy full path</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewKeyMsg">Name the new key</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewValueMsg">Name the new value</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameKeyMsg">Rename the key "{0}"</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameValueMsg">Rename the value "{0}"</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteKeyMsg">Permanently delete the key "{0}" and everything inside it? This deletes every subkey and every value nested underneath it too, not just this one key - there is no undo, and removing the wrong key can stop a program from starting or break Windows itself.</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteValueMsg">Permanently delete the value "{0}"? This cannot be undone.</sys:String>
+    <!-- Value edit dialog (Controls/RegistryValueEditDialog.xaml) - adapts its input to the
+         value's RegistryValueKind, one dialog for all six editable types. -->
+    <sys:String x:Key="Str_RegEd_Save">Save</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueData">Value data</sys:String>
+    <sys:String x:Key="Str_RegEd_MultiHint">One entry per line</sys:String>
+    <sys:String x:Key="Str_RegEd_BinaryHint">Hex byte pairs, separated by spaces (e.g. 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_RegEd_Base">Base:</sys:String>
+    <sys:String x:Key="Str_RegEd_Hexadecimal">Hexadecimal</sys:String>
+    <sys:String x:Key="Str_RegEd_Decimal">Decimal</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidNumber">That's not a valid number for the selected base</sys:String>
+    <sys:String x:Key="Str_RegEd_OutOfRangeDword">That value is too large for a 32-bit DWORD</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidByte">"{0}" isn't a valid hex byte</sys:String>
+
+    <!-- Event details dialog (Controls/EventDetailsDialog.xaml) - double-click a row -->
+    <sys:String x:Key="Str_Evt_DetailsTitle">Event Details</sys:String>
+    <sys:String x:Key="Str_Evt_Keywords">Keywords</sys:String>
+    <sys:String x:Key="Str_Evt_Computer">Computer</sys:String>
+    <sys:String x:Key="Str_Evt_User">User / SID</sys:String>
+    <sys:String x:Key="Str_Evt_ProcessId">Process ID</sys:String>
+    <sys:String x:Key="Str_Evt_ThreadId">Thread ID</sys:String>
+    <sys:String x:Key="Str_Evt_ActivityId">Activity ID</sys:String>
+    <sys:String x:Key="Str_Evt_RecordId">Event record ID</sys:String>
+    <sys:String x:Key="Str_Evt_Opcode">Opcode</sys:String>
+    <sys:String x:Key="Str_Evt_ViewXml">View raw XML</sys:String>
+    <sys:String x:Key="Str_Evt_ViewFormatted">View formatted</sys:String>
+    <sys:String x:Key="Str_Evt_SearchOnline">Search this event online</sys:String>
+    <sys:String x:Key="Str_Btn_Close">Close</sys:String>
+    <sys:String x:Key="Str_TT_EvtPrev">Previous event  (Left arrow)</sys:String>
+    <sys:String x:Key="Str_TT_EvtNext">Next event  (Right arrow)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewXml">View raw XML  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewFormatted">View formatted  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtSearchOnline">Search this event online  (Alt+S)</sys:String>
+    <sys:String x:Key="Str_TT_EvtCopyDetails">Copy details  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_EvtClose">Close  (Esc)</sys:String>
 
 </ResourceDictionary>

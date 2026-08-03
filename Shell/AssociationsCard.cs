@@ -15,7 +15,7 @@ namespace KillerShell.Shell
     {
         private void AssocRow_Click(object sender, RoutedEventArgs e)
         {
-            ThemePopup.IsOpen = false;
+            ThemeFlyout.IsOpen = false;
             SyncAssocCard();
             AssocOverlay.Visibility = Visibility.Visible;
             Anim.FadeIn(AssocOverlay);

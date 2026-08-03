@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using KillerShell.Models;
 
@@ -62,6 +63,18 @@ namespace KillerShell
         /// </summary>
         internal bool MenuBarHidden { get; set; }
 
+        /// <summary>
+        /// Bumped on every selection change (Shell/DetailsPane.cs). An async stat/decode captures
+        /// the value before it starts and checks it again before touching the UI, so a selection
+        /// made while an earlier one is still resolving never lands its result over the new one.
+        /// </summary>
+        internal int DetailsGen;
+
+        /// <summary>Whether THIS pane's details strip is currently showing its thin collapsed
+        /// line - per pane, not per window, since each pane tracks its own selection (Shell/
+        /// DetailsPane.cs SyncDetailsPaneCollapse).</summary>
+        internal bool DetailsPaneCollapsed;
+
         // ── Tab strip ────────────────────────────────────────────
         // These two take the PANE rather than (sender, args): both act on this pane's own strip,
         // and the window's usual "act on whichever pane has focus" is a guess here - the band can
@@ -86,6 +99,12 @@ namespace KillerShell
         private void SortDir_Click(object s, RoutedEventArgs e)            => Owner.SortDir_Click(s, e);
         private void ShowHidden_Click(object s, RoutedEventArgs e)         => Owner.ShowHidden_Click(s, e);
         private void FoldersTop_Click(object s, RoutedEventArgs e)         => Owner.FoldersTop_Click(s, e);
+        // Passes THIS pane, like ToolStrip_SizeChanged above: the strip that opens/closes belongs
+        // to whichever pane's button was clicked, not necessarily the focused one.
+        private void DetailsPane_Click(object s, RoutedEventArgs e)        => Owner.DetailsPaneToggle_Click(this);
+        private void DetailsPaneContent_SizeChanged(object s, SizeChangedEventArgs e) => Owner.CorrectDetailsPaneHeight(this);
+        private void DetailsPaneGrip_DragDelta(object s, DragDeltaEventArgs e)         => Owner.DetailsPaneGrip_DragDelta(this, e);
+        private void DetailsPaneGrip_DragCompleted(object s, DragCompletedEventArgs e) => Owner.DetailsPaneGrip_DragCompleted(this, e);
         private void ExpandAll_Click(object s, RoutedEventArgs e)          => Owner.ExpandAll_Click(s, e);
         private void FavoriteStar_Click(object s, RoutedEventArgs e)      => Owner.FavoriteStar_Click(s, e);
 
@@ -101,6 +120,7 @@ namespace KillerShell
         private void ColGrip_MouseDown(object s, MouseButtonEventArgs e)   => Owner.ColGrip_MouseDown(s, e);
         private void ColGrip_MouseMove(object s, MouseEventArgs e)         => Owner.ColGrip_MouseMove(s, e);
         private void ColGrip_MouseUp(object s, MouseButtonEventArgs e)     => Owner.ColGrip_MouseUp(s, e);
+        private void DetailsHeader_MouseRightButtonUp(object s, MouseButtonEventArgs e) => Owner.DetailsHeader_MouseRightButtonUp(s, e);
 
         // ── Pipe + export ────────────────────────────────────────
         private void PipeButton_Click(object s, RoutedEventArgs e)         => Owner.PipeButton_Click(s, e);
@@ -170,7 +190,11 @@ namespace KillerShell
         private void ResultsList_PreviewMouseRightButtonDown(object s, MouseButtonEventArgs e) => Owner.ResultsList_PreviewMouseRightButtonDown(s, e);
         private void ResultsList_PreviewMouseWheel(object s, MouseWheelEventArgs e)            => Owner.ResultsList_PreviewMouseWheel(s, e);
         private void ResultsList_ContextMenuOpening(object s, ContextMenuEventArgs e)          => Owner.ResultsList_ContextMenuOpening(s, e);
-        private void ResultsList_SelectionChanged(object s, SelectionChangedEventArgs e)       => Owner.ResultsList_SelectionChanged(s, e);
+        private void ResultsList_SelectionChanged(object s, SelectionChangedEventArgs e)
+        {
+            Owner.ResultsList_SelectionChanged(s, e);
+            Owner.UpdateDetailsPaneForSelection(this);   // Shell/DetailsPane.cs - no-ops when closed
+        }
 
         // ── Results context menu ─────────────────────────────────
         private void MenuOpen_Click(object s, RoutedEventArgs e)           => Owner.MenuOpen_Click(s, e);
@@ -206,15 +230,22 @@ namespace KillerShell
         private void EditorGotoBox_KeyDown(object s, KeyEventArgs e)       => Owner.EditorGotoBox_KeyDown(s, e);
         private void EditorWrap_Click(object s, RoutedEventArgs e)         => Owner.EditorWrap_Click(s, e);
         private void EditorGear_Click(object s, RoutedEventArgs e)         => Owner.EditorGear_Click(s, e);
+        private void EdPath_Click(object s, MouseButtonEventArgs e)        => Owner.EdPath_Click(s, e);
+        private void EditorPathBox_KeyDown(object s, KeyEventArgs e)       => Owner.EditorPathBox_KeyDown(s, e);
+        private void EditorPathBox_LostFocus(object s, RoutedEventArgs e)  => Owner.EditorPathBox_LostFocus(s, e);
         private void EdOptLineNumbers_Click(object s, RoutedEventArgs e)   => Owner.EdOptLineNumbers_Click(s, e);
         private void EdOptCurrentLine_Click(object s, RoutedEventArgs e)   => Owner.EdOptCurrentLine_Click(s, e);
         private void EdOptWhitespace_Click(object s, RoutedEventArgs e)    => Owner.EdOptWhitespace_Click(s, e);
         private void EdOptSpaces_Click(object s, RoutedEventArgs e)        => Owner.EdOptSpaces_Click(s, e);
         private void EdIndent_Click(object s, RoutedEventArgs e)           => Owner.EdIndent_Click(s, e);
         private void EdOptFonts_Click(object s, RoutedEventArgs e)         => Owner.EdOptFonts_Click(s, e);
+        private void EditorEncoding_Click(object s, RoutedEventArgs e)     => Owner.EditorEncoding_Click(s, e);
+        private void EdEncoding_Click(object s, RoutedEventArgs e)         => Owner.EdEncoding_Click(s, e);
 
         // ── Shell bar (TerminalBar.cs) ───────────────────────────
         private void TermCwd_Click(object s, MouseButtonEventArgs e)       => Owner.TermCwd_Click(s, e);
+        private void TermCwdBox_KeyDown(object s, KeyEventArgs e)          => Owner.TermCwdBox_KeyDown(s, e);
+        private void TermCwdBox_LostFocus(object s, RoutedEventArgs e)     => Owner.TermCwdBox_LostFocus(s, e);
         private void TermNew_Click(object s, RoutedEventArgs e)            => Owner.TermNew_Click(s, e);
         private void TermAdmin_Click(object s, RoutedEventArgs e)          => Owner.TermAdmin_Click(s, e);
         private void TermFolder_Click(object s, RoutedEventArgs e)         => Owner.TermFolder_Click(s, e);

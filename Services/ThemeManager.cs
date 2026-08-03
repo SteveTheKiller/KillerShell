@@ -78,19 +78,21 @@ namespace KillerShell.Services
 
         private static void LoadDict(Theme theme)
         {
+            // Build the combined dictionary (base theme + accent overlay) OFF the live tree
+            // first, then publish it in ONE assignment. Setting merged[0] to a brand-new
+            // ResourceDictionary fires exactly one resource-invalidation pass across the whole
+            // app; the old code instead did existing[key] = newDict[key] in a loop, which fires
+            // a SEPARATE invalidation pass per key. With ~150+ keys in a theme dictionary (this
+            // app has ANSI terminal colors, editor syntax colors, registry/event-viewer colors
+            // on top of the usual chrome brushes - a lot more than a page-viewer app's palette),
+            // that was 150+ passes over the whole visual tree on every single theme click - the
+            // "HUGE lag... not instant like KillerPDF" Steve reported, 2026-08-02. Confirmed by
+            // him as reproducing even with zero terminal/editor tabs open, which ruled out
+            // RefreshTerminalThemes/RefreshEditorThemes and pointed straight at this loop.
+            var combined = new ResourceDictionary();
             var newDict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/Themes/{theme}.xaml") };
-            var merged  = Application.Current.Resources.MergedDictionaries;
-
-            if (merged.Count > 0)
-            {
-                var existing = merged[0];
-                foreach (object key in newDict.Keys)
-                    existing[key] = newDict[key];
-            }
-            else
-            {
-                merged.Add(newDict);
-            }
+            foreach (object key in newDict.Keys)
+                combined[key] = newDict[key];
 
             var accent = AccentFor(theme);
             if (HasAccents(theme) && accent != Accent.Green)
@@ -102,12 +104,17 @@ namespace KillerShell.Services
                     {
                         Source = new Uri($"pack://application:,,,/Themes/Accents/{family}/{accent}.xaml")
                     };
-                    var target = merged[0];
                     foreach (object key in accentDict.Keys)
-                        target[key] = accentDict[key];
+                        combined[key] = accentDict[key];
                 }
                 catch { /* overlay not present - base theme stands */ }
             }
+
+            var merged = Application.Current.Resources.MergedDictionaries;
+            if (merged.Count > 0)
+                merged[0] = combined;
+            else
+                merged.Add(combined);
         }
     }
 }

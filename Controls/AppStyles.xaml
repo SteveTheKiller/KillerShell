@@ -92,6 +92,23 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Icon-grid tile filename ONLY (Steve, 2026-08-02): the accent-green text moves from
+         the SELECTED state to the HOVERED state, so a hovered tile reads gray background +
+         green name, and a selected-but-not-hovered tile reads its default text color. Bound
+         to the tile Border's own IsMouseOver (ElementName=TileBd in FilePane.xaml) rather
+         than IsSelected, so hover naturally wins when a tile is both selected and hovered -
+         there is no IsSelected trigger here to fight it. Kept separate from ResultText,
+         which the details/list view's Name column still uses unchanged; that view was not
+         part of what was asked and keeps its selected-row-turns-green treatment as is. -->
+    <Style x:Key="TileResultText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, ElementName=TileBd}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="ResultMuted" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
         <Style.Triggers>

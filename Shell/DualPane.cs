@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using KillerShell.Models;
 
 // Dual pane: the second FilePane, the splitter, and which pane has focus. Partial of MainWindow.
@@ -30,6 +31,39 @@ namespace KillerShell.Shell
 
         /// <summary>The splitter track, which is also the drag target for resizing the split.</summary>
         private const double SplitPx = 4;
+
+        /// <summary>Minimum width for EITHER pane A or pane B (2026-08-02 resize rework). 300 is
+        /// enough for a details-view file listing (name + a size/date column or two) without
+        /// crushing into an icon soup; the old 180 predates the "each pane has a minimum width"
+        /// requirement and was really just "don't let it hit zero". Applies to the side-by-side
+        /// (column) case only - stacked/row orientation keeps its own 120 MinHeight, out of scope
+        /// of this change (Steve's spec was about width: the gutter and the window's right edge).</summary>
+        private const double PaneMinWidth = 300;
+
+        /// <summary>Pixels the WINDOW itself has grown because of the dual-pane split (F10 open in
+        /// floating mode, plus any gutter drag while floating). CloseSecondPane gives back exactly
+        /// this much so the window doesn't end up oversized once pane A is alone again.</summary>
+        private double _paneWindowGrowth;
+
+        /// <summary>True once the window has been grown for the current dual-pane session (as
+        /// opposed to split-in-place, where pane A shrank to make room and the window never
+        /// changed size). Tells CloseSecondPane whether there is anything to give back.</summary>
+        private bool _paneGrewWindow;
+
+        /// <summary>Decided fresh at the start of every gutter drag (WindowState can change without
+        /// the pane closing and reopening): floating -&gt; the drag grows/shrinks the WINDOW and
+        /// pane B's width never moves; maximized/snapped -&gt; there is no room to grow, so the
+        /// drag trades space between A and B like an ordinary split.</summary>
+        private bool _paneGutterGrowsWindow;
+
+        /// <summary>Pane A's width as of the last DragDelta tick, so PaneSplitV_DragDelta can read
+        /// what GridSplitter actually did (which may be less than the raw drag delta, clamped by
+        /// A's own MinWidth) instead of trusting the raw mouse delta and overshooting.</summary>
+        private double _gutterAWidthAtLastDelta;
+
+        /// <summary>This window's own MinWidth before any dual-pane minimum was layered on top,
+        /// captured once so it can be restored exactly when the split closes.</summary>
+        private double _paneSingleMinWidth = -1;
 
         // The channel between two side-by-side panes is the splitter plus this, and the two are
         // sized so that it comes to exactly PaneEdge: the gap either side of a pane then reads
@@ -150,8 +184,22 @@ namespace KillerShell.Shell
             bool slideCols = animate && _paneSideBySide;
             bool slideRows = animate && !_paneSideBySide;
 
+            // Opening the column split, animated - the one case where pane A's width must NOT be
+            // reset below (SlidePaneColumn/SlidePaneColumnGrow own setting it, to whatever pixel
+            // width they land on). Every other call here (close, orientation flip, a non-animated
+            // re-entry into columns) still wants the plain reset.
+            bool openingCols = slideCols && cols;
+
+            // The window's own OS-level minimum has to grow with the split, or the native
+            // WM_GETMINMAXINFO clamp (Chrome.cs WmGetMinMaxInfo, which reads this.MinWidth) would
+            // let the frame get dragged narrower than A's + B's own MinWidths and start crushing
+            // one of them. Captured once so it can be restored exactly when the split closes.
+            if (_paneSingleMinWidth < 0) _paneSingleMinWidth = MinWidth;
+            MinWidth = cols ? System.Math.Max(_paneSingleMinWidth, PaneMinWidth * 2 + SplitPx)
+                             : _paneSingleMinWidth;
+
             PaneColSplit.Width  = new GridLength(cols ? SplitPx : 0);
-            PaneColB.MinWidth   = cols ? 180 : 0;
+            PaneColB.MinWidth   = cols ? PaneMinWidth : 0;
             if (slideCols) SlidePaneColumn(cols);
             else PaneColB.Width = cols ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
 
@@ -162,12 +210,28 @@ namespace KillerShell.Shell
 
             // Reset the first track to an even split whenever the pairing changes; a drag from a
             // previous session's orientation would otherwise carry over as a lopsided start.
-            PaneColA.Width  = new GridLength(1, GridUnitType.Star);
+            //
+            // NOT while opening the column split (openingCols): pane A must keep its EXACT current
+            // width there (Steve, 2026-08-02 - "hitting f10 slides out a second pane... without
+            // changing the size of the first pane"). SlidePaneColumn/SlidePaneColumnGrow set A's
+            // final pixel width themselves; resetting it to star here would stomp that a moment
+            // before the tween even starts.
+            if (!openingCols) PaneColA.Width = new GridLength(1, GridUnitType.Star);
             PaneRowA.Height = new GridLength(1, GridUnitType.Star);
 
             // The rail button accents while the split is open, the same tell the search and
             // bookmarks toggles use (RailButton keys off Tag="on").
             DualPaneRailBtn.Tag = two ? "on" : null;
+
+            // The dedicated ClosePane/OpenPane glyph pair (Segoe MDL2 codepoints 0xE89F and
+            // 0xE8A0), which Steve picked specifically for this button (2026-08-02) rather than
+            // a chevron that also tracks orientation: 0xE89F while closed (clicking opens it),
+            // 0xE8A0 while open (clicking closes it). Built from (char) casts and never typed as
+            // a literal PUA character - literal glyphs do not survive tooling (family-wide rule;
+            // the codepoint is right there in the hex if this ever needs checking against
+            // Character Map).
+            int glyph = two ? 0xE8A0 : 0xE89F;
+            DualPaneRailBtn.Content = ((char)glyph).ToString();
 
             ApplyPaneMargins();
         }
@@ -222,31 +286,178 @@ namespace KillerShell.Shell
             PaneHost.ClipToBounds = false;
         }
 
+        // Steve, 2026-08-02: "hitting f10 slides out a second pane from the first pane without
+        // changing the size of the first pane. thats the behavior if the window is not maximized
+        // or snapped. if its maximized or snapped, then yeah hitting f10 should split the full
+        // area into two panes." Two branches, one per case; both leave pane A a literal PIXEL
+        // column and pane B a STAR column once they land, so the far-right window edge (an
+        // ordinary WPF Grid resize, no code needed) and the gutter (PaneSplitV_DragDelta below)
+        // only ever move pane B afterward, regardless of which branch opened the split.
         private void SlidePaneColumn(bool open)
         {
-            // Half of what the pair will share once the splitter has taken its cut. Read off
-            // pane A because it is the one currently holding the whole width.
-            double target = open ? System.Math.Max(180, (PaneColA.ActualWidth - SplitPx) / 2) : 0;
-            double from   = PaneColB.ActualWidth;
+            if (open)
+            {
+                // B's own default/minimum width, plus the gutter it needs to sit in - what the
+                // window would have to grow by to seat B alongside A without touching A at all.
+                double growth = PaneMinWidth + SplitPx;
+                bool canGrow = WindowState != WindowState.Maximized
+                               && ActualWidth + growth <= MonitorWorkAreaWidthDip();
+
+                if (canGrow)
+                {
+                    SlidePaneColumnGrow(growth);
+                    return;
+                }
+                // Maximized, snapped, or simply no room on the current monitor: fall through to
+                // the split-in-place branch below, same shape it has always had.
+            }
+
+            // Split-in-place: pane A shares its current width with B (on open), or gives it all
+            // back (on close). Half of what the pair will share once the splitter has taken its
+            // cut - read off pane A because it is the one currently holding the whole width.
+            double target = open ? System.Math.Max(PaneMinWidth, (PaneColA.ActualWidth - SplitPx) / 2) : 0;
+            double from    = PaneColB.ActualWidth;
 
             // On OPEN the pane was only just un-collapsed, so its ActualWidth is still 0 and the
             // target stands in as the size to freeze at.
             FreezePane(horizontal: true,
                        size: RightPane.ActualWidth > 8 ? RightPane.ActualWidth : target);
 
-            // MinWidth outranks Width in a Grid, so a track pinned at 180 cannot be tweened
-            // down to nothing. Released for the tween, restored when it lands.
+            // MinWidth outranks Width in a Grid, so a track pinned at PaneMinWidth cannot be
+            // tweened down to nothing. Released for the tween, restored when it lands.
             PaneColB.MinWidth = 0;
 
             SlideTrack(PaneColB, ColumnDefinition.WidthProperty, from, target, open,
                        settle: () =>
                        {
                            ThawPane();
-                           PaneColB.MinWidth = open ? 180 : 0;
+
+                           if (open)
+                           {
+                               // Pin A to whatever width it now holds. The invariant "A is a
+                               // literal pixel column, B is star" has to hold no matter which
+                               // branch opened the split, or the far-right-edge and gutter rules
+                               // below would only work after an F10 that happened to grow the
+                               // window, not one that split in place.
+                               PaneColA.Width = new GridLength(PaneColA.ActualWidth);
+                           }
+                           else if (_paneGrewWindow)
+                           {
+                               // This close is undoing a GROW-branch open (or gutter drags that
+                               // followed one) - give the window back exactly what it took.
+                               Width -= _paneWindowGrowth;
+                               _paneWindowGrowth = 0;
+                               _paneGrewWindow = false;
+                           }
+
+                           if (!open) PaneColA.Width = new GridLength(1, GridUnitType.Star);
+                           PaneColB.MinWidth = open ? PaneMinWidth : 0;
                            PaneColB.Width = open
                                ? new GridLength(1, GridUnitType.Star)
                                : new GridLength(0);
                        });
+        }
+
+        /// <summary>
+        /// F10 opened on a floating (not maximized/snapped) window with room to spare: pane A
+        /// keeps its EXACT current width, the window grows by <paramref name="growth"/> in one
+        /// shot so pane B (star) has real leftover space to slide into, and B tweens in from 0 up
+        /// to its share of that new space. Mirrors CloseSecondPane's job of giving the growth back
+        /// (handled in SlidePaneColumn's own settle, since close always runs through there).
+        /// </summary>
+        private void SlidePaneColumnGrow(double growth)
+        {
+            // Captured and pinned FIRST, before the window resize below can trigger any layout
+            // pass that might otherwise catch A mid-flight as still a star column.
+            PaneColA.Width = new GridLength(PaneColA.ActualWidth);
+
+            PaneColB.MinWidth = 0;   // released for the tween, restored in settle() below
+            double from = PaneColB.ActualWidth;   // 0 - B starts collapsed
+            double target = growth - SplitPx;     // B's own share once the gutter is subtracted
+
+            FreezePane(horizontal: true, size: target);
+
+            Width += growth;
+            _paneWindowGrowth += growth;
+            _paneGrewWindow = true;
+
+            SlideTrack(PaneColB, ColumnDefinition.WidthProperty, from, target, true,
+                       settle: () =>
+                       {
+                           ThawPane();
+                           PaneColB.MinWidth = PaneMinWidth;
+                           PaneColB.Width = new GridLength(1, GridUnitType.Star);
+                       });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  GUTTER DRAG (side-by-side only - PaneSplitV)
+        // ═══════════════════════════════════════════════════════════
+        // Steve, 2026-08-02: "when I drag the middle gutter it should resize pane a, pane b stays
+        // the same size and just goes along for the ride." Pane B is a star column once the split
+        // has landed (SlidePaneColumn/SlidePaneColumnGrow above), so it naturally keeps its own
+        // rendered width whenever pane A's literal pixel width changes AND the window's total
+        // width changes by that same amount - the window growing/shrinking in lockstep is what
+        // makes "B stays the same size" literally true instead of B just eating the difference.
+        //
+        // Maximized/snapped windows have no room to grow, so there the drag falls back to an
+        // ordinary PreviousAndNext trade between A and B - decided fresh at the start of every
+        // drag (DragStarted), because WindowState can change without the split closing and
+        // reopening (maximize the window mid-session, or un-maximize it).
+        //
+        // GridResizeBehavior has no "resize only the previous column" value - PreviousAndNext is
+        // the closest built-in option, but since PaneSplitV sits in its own dedicated column
+        // (Previous = PaneColA, Next = PaneColB), the splitter's own MoveSplitter logic converts
+        // BOTH columns to explicit pixel GridLengths on every tick, which would silently strip
+        // PaneColB back out of Star sizing. So PreviousAndNext is used in both modes (there is no
+        // narrower option to reach for), and the floating-mode branch below undoes that side
+        // effect on PaneColB every tick, right after growing the window to match whatever A
+        // actually moved - restoring the Pixel/Star invariant the rest of this class depends on.
+        private void PaneSplitV_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            _paneGutterGrowsWindow = WindowState != WindowState.Maximized;
+            PaneSplitV.ResizeBehavior = GridResizeBehavior.PreviousAndNext;
+            _gutterAWidthAtLastDelta = PaneColA.ActualWidth;
+        }
+
+        private void PaneSplitV_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            // Maximized/snapped: PreviousAndNext already traded space between A and B above: B is
+            // allowed to change here, so there is nothing left for this handler to do.
+            if (!_paneGutterGrowsWindow) return;
+
+            // GridSplitter (ResizeBehavior=PreviousAndNext) has already resized PaneColA by the
+            // time this fires. Reading what it actually did, rather than trusting
+            // e.HorizontalChange, means a drag clamped by A's own MinWidth doesn't grow the
+            // window by more than A actually moved.
+            double actualDelta = PaneColA.ActualWidth - _gutterAWidthAtLastDelta;
+            if (actualDelta == 0) return;
+
+            // Clamp the window's own growth/shrink to the monitor's work area and to the window's
+            // floor (MinWidth, already bumped for the open split in ApplyPaneLayout). If the raw
+            // delta would cross either line, pull pane A back to match so it never silently
+            // outruns what the window is actually allowed to become.
+            double maxWidth = MonitorWorkAreaWidthDip();
+            double newWidth = Width + actualDelta;
+            double clampedWidth = System.Math.Max(MinWidth, System.Math.Min(maxWidth, newWidth));
+            if (clampedWidth != newWidth)
+            {
+                double allowed = clampedWidth - Width;
+                PaneColA.Width = new GridLength(_gutterAWidthAtLastDelta + allowed);
+                actualDelta = allowed;
+            }
+
+            Width += actualDelta;
+            _paneWindowGrowth += actualDelta;
+            _paneGrewWindow = true;
+            _gutterAWidthAtLastDelta = PaneColA.ActualWidth;
+
+            // PreviousAndNext just converted PaneColB from Star to an explicit pixel GridLength
+            // as a side effect of resizing PaneColA - undo that every tick, now that the window
+            // has grown/shrunk to match. With PaneColB back on Star, it renders at exactly
+            // "whatever's left of the window" - the same width it had before this tick, since A's
+            // pixel width and the window's total width moved together.
+            PaneColB.Width = new GridLength(1, GridUnitType.Star);
         }
 
         private void SlidePaneRow(bool open)
@@ -428,6 +639,7 @@ namespace KillerShell.Shell
             // live pane themselves (Panes.cs ForEachPane), so one call covers both panes.
             ApplyResultsView();          // ResultsView.cs - view mode, buttons, details header
             UpdateViewOptionButtons();   // ViewOptions.cs - show hidden, folders on top
+            ForEachPane(ApplyDetailsPaneInPaneNoAnim);   // DetailsPane.cs - height (and preview width) too
 
             UpdatePaneFocusRing();
         }

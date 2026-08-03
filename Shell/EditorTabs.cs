@@ -137,6 +137,24 @@ namespace KillerShell.Shell
 
         internal void NewDoc_Click(object sender, RoutedEventArgs e) => NewDocument();
 
+        /// <summary>
+        /// Ctrl+F7: the same blank document as plain F7 (NewDocument), except this tab's save
+        /// retries elevated on an access-denied write instead of just failing (SaveActiveEditor /
+        /// Elevation.cs RetrySaveElevated). Only THIS tab gets that behavior - a document opened
+        /// the normal way keeps failing normally on a permissions error, so elevation is never a
+        /// surprise.
+        /// </summary>
+        internal void NewDocumentAdmin()
+        {
+            CaptureTab(_active);
+            var tab = CreateEditorTab(string.Empty);
+            if (tab == null) return;
+            tab.Editor!.ElevatedSaveOnFail = true;
+            ActivateTab(tab);
+        }
+
+        internal void NewDocAdmin_Click(object sender, RoutedEventArgs e) => NewDocumentAdmin();
+
         // ═══════════════════════════════════════════════════════════
         //  BUILD
         // ═══════════════════════════════════════════════════════════
@@ -287,8 +305,22 @@ namespace KillerShell.Shell
             }
 
             string name = Path.GetFileName(t.Editor.FilePath);
-            if (t.Editor.SaveFile(out string error)) SetTabStatusKey(t, "Str_Ed_Saved", name);
-            else                                     SetTabStatusKey(t, "Str_Ed_SaveFailed", name, error);
+            if (t.Editor.SaveFile(out string error, out bool accessDenied))
+            {
+                SetTabStatusKey(t, "Str_Ed_Saved", name);
+            }
+            else if (accessDenied && t.Editor.ElevatedSaveOnFail)
+            {
+                // Ctrl+F7's whole point: a permission-denied write on THIS tab retries through
+                // a second, elevated instance instead of just failing (Elevation.cs
+                // RetrySaveElevated). Title/bar refresh happens once that retry resolves.
+                RetrySaveElevated(t, name);
+                return;
+            }
+            else
+            {
+                SetTabStatusKey(t, "Str_Ed_SaveFailed", name, error);
+            }
 
             SetEditorTitle(t);
             SyncEditorBar(t);   // EditorBar.cs - the save button drops out of the accent

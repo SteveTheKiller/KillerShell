@@ -211,7 +211,7 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         private void FontsRow_Click(object sender, RoutedEventArgs e)
         {
-            ThemePopup.IsOpen = false;
+            ThemeFlyout.IsOpen = false;
             if (!_fontsBuilt) BuildFontCombos();
             SyncFontCombos();
             FontsOverlay.Visibility = Visibility.Visible;

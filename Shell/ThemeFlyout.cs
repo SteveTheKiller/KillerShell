@@ -1,90 +1,177 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using KillerShell.Services;
 
 // KillerUI / Grunge - title-bar theme + accent pickers. Partial of MainWindow.
-// MainWindow.xaml must provide: ThemeButton, ThemePopup (child = flyout Border),
-// ThemeSwatches (Buttons Tag=Theme name, Click=ThemeSwatch_Click),
-// AccentSwatches (Buttons Tag=Accent name, Click=AccentSwatch_Click), optional AccentLabel.
+// Ported verbatim from KillerPDF's RailFlyouts.cs/SettingsPanel.cs pattern (Steve, 2026-08-02:
+// "COPY THE EXACT MENU FROM KILLERPDF FOR EVERYTHING"): ThemeFlyout is a Button.ContextMenu with
+// FlyoutCard/FlyoutGrain chrome (MainWindow.xaml), opened the same way LangMenu already was -
+// which is what proved the positioning actually works, since Steve confirmed the language picker
+// landed in the right place while the old Popup-based ThemeFlyout did not.
 namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        private void ThemeSwatch_Click(object sender, RoutedEventArgs e)
+        private void ThemeDarkRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Dark);
+        private void ThemeLightRadio_Checked(object sender, RoutedEventArgs e)    => SelectTheme(Theme.Light);
+        private void ThemeHCRadio_Checked(object sender, RoutedEventArgs e)       => SelectTheme(Theme.Black);
+        private void ThemeBloodRadio_Checked(object sender, RoutedEventArgs e)    => SelectTheme(Theme.Blood);
+        private void ThemeGreedRadio_Checked(object sender, RoutedEventArgs e)    => SelectTheme(Theme.Greed);
+        private void ThemeCyanoticRadio_Checked(object sender, RoutedEventArgs e) => SelectTheme(Theme.Cyanotic);
+
+        private void SelectTheme(Theme theme)
         {
-            if (sender is Button b && b.Tag is string name && Enum.TryParse<Theme>(name, out var theme))
-            {
-                ThemeManager.Apply(theme);
-                ApplyThemeBorder(this);   // retint the DWM frame border to the new palette
-                UpdateThemeSwatchSelection();
-                UpdateAccentSwatches();
+            bool wasOpen = ThemeFlyout is not null && ThemeFlyout.IsOpen;
+            ThemeManager.Apply(theme);
+            ApplyThemeBorder(this);   // retint the DWM frame border to the new palette
+            // Radios are already synced - the user's own click just set this one and WPF's
+            // GroupName handles unchecking the rest. Dot rings + the pop-out slide still need
+            // driving; UpdateAccentRowsVisibility(animate: true) is the one that runs with no
+            // animation on flyout open instead (ThemeButton_Click below).
+            UpdateAccentSwatches();
+            UpdateAccentRowsVisibility(animate: true);
 
-                // A shell resolves its colors ONCE, when its palette is built - it has to, since
-                // it paints thousands of cells a frame and cannot carry a DynamicResource per
-                // cell. So a theme switch has to tell it to rebuild, or every open terminal
-                // keeps the colors of the theme it was opened under (TerminalTabs.cs).
-                RefreshTerminalThemes();
+            // A shell resolves its colors ONCE, when its palette is built - it has to, since
+            // it paints thousands of cells a frame and cannot carry a DynamicResource per
+            // cell. So a theme switch has to tell it to rebuild, or every open terminal
+            // keeps the colors of the theme it was opened under (TerminalTabs.cs).
+            RefreshTerminalThemes();
 
-                // An open document resolves its colors the same way and for the same reason
-                // (EditorTabs.cs, Editing/EditorControl.ApplyTheme).
-                RefreshEditorThemes();
-            }
+            // An open document resolves its colors the same way and for the same reason
+            // (EditorTabs.cs, Editing/EditorControl.ApplyTheme).
+            RefreshEditorThemes();
+
+            // Intentionally leave the flyout open so the user can try another theme right away,
+            // same as PDF - a theme swap's side effects can knock the popup closed behind our
+            // back, so check once layout settles and quietly reopen it in place if that happened.
+            if (wasOpen)
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                    (Action)(() => { if (ThemeFlyout is not null && !ThemeFlyout.IsOpen) ThemeFlyout.IsOpen = true; }));
         }
 
-        private void AccentSwatch_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button b && b.Tag is string name && Enum.TryParse<Accent>(name, out var accent))
-            {
-                ThemeManager.ApplyAccent(ThemeManager.Current, accent);
-                UpdateThemeSwatchSelection();
-                UpdateAccentSwatches();
+        // Each theme family has its own accent-dot row, remembered independently
+        // (ThemeManager.AccentChoiceFor). Clicking a dot sets that family's accent.
+        private void AccentDot_Click(object sender, MouseButtonEventArgs e)      => HandleAccentDot(sender, Theme.Dark);
+        private void AccentDotLight_Click(object sender, MouseButtonEventArgs e) => HandleAccentDot(sender, Theme.Light);
+        private void AccentDotBlack_Click(object sender, MouseButtonEventArgs e) => HandleAccentDot(sender, Theme.Black);
 
-                // The accent is a shell's cursor and selection color, so this needs the rebuild
-                // as much as a full theme switch does - and it is a document's caret, selection
-                // and current-line wash for the same reason.
-                RefreshTerminalThemes();
-                RefreshEditorThemes();
-            }
+        private void HandleAccentDot(object sender, Theme family)
+        {
+            if (sender is not FrameworkElement fe || fe.Tag is not string tag) return;
+            if (!Enum.TryParse<Accent>(tag, out var accent)) return;
+            ThemeManager.ApplyAccent(family, accent);
+            UpdateAccentSwatches();
+            RefreshTerminalThemes();
+            RefreshEditorThemes();
         }
 
         private void ThemeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (FindName("ThemePopup") is System.Windows.Controls.Primitives.Popup p)
-            {
-                p.IsOpen = !p.IsOpen;
-                if (p.IsOpen && p.Child is UIElement child) Anim.FadeIn(child);
-            }
+            UpdateThemeSwatchSelection();               // radios + accent dots to live state
+            UpdateAccentRowsVisibility(animate: false);  // snap to state, no slide on open
+            ToggleRailFlyout(ThemeFlyout);
         }
 
         private void UpdateThemeSwatchSelection()
-            => HighlightSwatches(FindName("ThemeSwatches") as Panel, ThemeManager.Current.ToString());
+        {
+            var cur = ThemeManager.Current;
+            ThemeDarkRadio.IsChecked     = cur == Theme.Dark;
+            ThemeLightRadio.IsChecked    = cur == Theme.Light;
+            ThemeHCRadio.IsChecked       = cur == Theme.Black;
+            ThemeBloodRadio.IsChecked    = cur == Theme.Blood;
+            ThemeGreedRadio.IsChecked    = cur == Theme.Greed;
+            ThemeCyanoticRadio.IsChecked = cur == Theme.Cyanotic;
+            UpdateAccentSwatches();
+        }
+
+        // Slides the accent-dot picker to sit under whichever of Dark/Light/Black is active.
+        // Ported verbatim from KillerPDF's SettingsPanel.cs UpdateAccentRowsVisibility/SlideRow:
+        // each row animates its own Height, and because the outgoing row shrinks by the same
+        // amount the incoming one grows (both AccentRowHeight, both AccentRowSlideMs, both
+        // linear), the combined height stays constant - the picker slides to the new theme
+        // instead of the whole flyout popping or resizing.
+        private void UpdateAccentRowsVisibility(bool animate)
+        {
+            var cur = ThemeManager.Current;
+            SlideRow(DarkAccentRow,  cur == Theme.Dark,  animate);
+            SlideRow(LightAccentRow, cur == Theme.Light, animate);
+            SlideRow(BlackAccentRow, cur == Theme.Black, animate);
+        }
+
+        private const double AccentRowHeight = 26;   // 18px dot + 8px breathing room
+        // Expand and collapse MUST share one duration (and stay linear): when switching between
+        // neutral themes one row opens while another closes, and equal linear durations keep
+        // their heights summing to a constant, so the popup's total height never dips/jumps
+        // mid-animation - which is what would force a Popup resize/reposition mid-slide.
+        private const double AccentRowSlideMs = 160;
+
+        private static void SlideRow(FrameworkElement row, bool show, bool animate)
+        {
+            if (row is null) return;
+            row.BeginAnimation(HeightProperty, null);   // drop any leftover/held animation
+            if (show)
+            {
+                row.Visibility = Visibility.Visible;
+                if (animate)
+                {
+                    row.Height = 0;
+                    row.BeginAnimation(HeightProperty,
+                        new DoubleAnimation(0, AccentRowHeight, TimeSpan.FromMilliseconds(AccentRowSlideMs)));
+                }
+                else row.Height = AccentRowHeight;
+            }
+            else if (animate && row.Visibility == Visibility.Visible && row.ActualHeight > 0.5)
+            {
+                var h = new DoubleAnimation(AccentRowHeight, 0, TimeSpan.FromMilliseconds(AccentRowSlideMs));
+                h.Completed += (_, __) => { row.BeginAnimation(HeightProperty, null); row.Height = 0; row.Visibility = Visibility.Collapsed; };
+                row.BeginAnimation(HeightProperty, h);
+            }
+            else
+            {
+                row.Height = 0;
+                row.Visibility = Visibility.Collapsed;
+            }
+        }
 
         private void UpdateAccentSwatches()
         {
-            if (FindName("AccentSwatches") is not Panel panel) return;
-            var t = ThemeManager.Current;
-            bool hasAccents = t == Theme.Dark || t == Theme.Light || t == Theme.Black;
-            var vis = hasAccents ? Visibility.Visible : Visibility.Collapsed;
-            panel.Visibility = vis;
-            if (FindName("AccentLabel") is UIElement lbl) lbl.Visibility = vis;
-            if (hasAccents)
-                HighlightSwatches(panel, ThemeManager.AccentChoiceFor(t).ToString());
+            var ring = TryFindResource("TextBrush") as Brush ?? Brushes.White;
+            void RingRow(Border[] dots, Accent chosen)
+            {
+                foreach (var dot in dots)
+                {
+                    bool sel = dot.Tag is string t && Enum.TryParse<Accent>(t, out var a) && a == chosen;
+                    dot.BorderBrush = sel ? ring : Brushes.Transparent;
+                }
+            }
+            RingRow([AccentDotRed, AccentDotOrange, AccentDotGreen, AccentDotTeal, AccentDotBlue, AccentDotPurple], ThemeManager.AccentChoiceFor(Theme.Dark));
+            RingRow([AccentDotLightRed, AccentDotLightOrange, AccentDotLightGreen, AccentDotLightTeal, AccentDotLightBlue, AccentDotLightPurple], ThemeManager.AccentChoiceFor(Theme.Light));
+            RingRow([AccentDotBlackRed, AccentDotBlackOrange, AccentDotBlackGreen, AccentDotBlackTeal, AccentDotBlackBlue, AccentDotBlackPurple], ThemeManager.AccentChoiceFor(Theme.Black));
         }
 
-        private void HighlightSwatches(Panel? panel, string current)
+        /// <summary>
+        /// Shared open/close for the rail's ContextMenu flyouts (Theme, Language) - PDF's
+        /// RailFlyouts.cs ToggleRailFlyout, verbatim. The content pane bounds the window, the
+        /// footer and the rail at once, so its bottom-left corner is the one spot a flyout can
+        /// hug without covering any of them.
+        /// </summary>
+        private void ToggleRailFlyout(ContextMenu menu)
         {
-            if (panel == null) return;
-            var activeRing = TryFindResource("PrimaryBrush") as Brush ?? Brushes.White;
-            var idleRing   = new SolidColorBrush(Color.FromArgb(0x40, 0xFF, 0xFF, 0xFF));
-            foreach (var child in panel.Children)
-            {
-                if (child is not Button b || b.Tag is not string name) continue;
-                bool active = name == current;
-                b.BorderBrush     = active ? activeRing : idleRing;
-                b.BorderThickness = new Thickness(active ? 2 : 1);
-            }
+            if (menu.IsOpen) { menu.IsOpen = false; return; }
+
+            FlyoutPlacement.UsePane(PaneHost);
+            FlyoutPlacement.Attach(menu, this);
+
+            menu.IsOpen = true;
+            menu.BeginAnimation(UIElement.OpacityProperty,
+                new DoubleAnimation(0, 1, new Duration(TimeSpan.FromMilliseconds(150)))
+                {
+                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                });
         }
     }
 }

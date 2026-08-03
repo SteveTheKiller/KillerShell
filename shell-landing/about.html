@@ -14,17 +14,17 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <meta name="description" content="About KillerShell and its maker, Steve the Killer, a field tech who got tired of alt-tabbing between a file browser, a terminal and an editor to do one job.">
 <link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
 <script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
-<link rel="stylesheet" href="ks.css?v=4">
+<link rel="stylesheet" href="ks.css?v=8">
 <style>
 .page-hero { text-align: center; padding: 44px 16px 8px; }
 .page-hero .wm-logo { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
 .page-hero p { color: var(--muted); font-size: 15px; margin-top: 4px; }
 .content-inner { max-width: 880px; margin: 0 auto; padding: 0 28px 56px; }
 .sb-tabs .on { border-bottom: 0; }
-.outline { padding: 8px 0; overflow-y: auto; flex: 1; }
+.outline { padding: 8px 0; overflow-y: auto; flex: 1; min-height: 0; }
 .outline a { display: block; padding: 8px 16px 8px 18px; font-size: 13px; color: var(--text2); border-left: 2px solid transparent; }
 .outline a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent); filter: none; }
-.outline a.on { color: var(--accent); border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--sidebar)); }
+.outline a.on { color: var(--accent-text); border-left-color: var(--accent); background: var(--accent); }
 @media (max-width: 900px) { .outline { display:flex; flex-direction:row; flex-wrap:wrap; padding:8px; gap:4px; } .outline a { border-left:0; border-radius:5px; padding:6px 10px; } .outline a.on { border-left:0; } }
 /* Also try (cross-promo): chrome follows the page theme, wordmark swaps light/dark */
 .also-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 12px; margin-top: 4px; }
@@ -53,7 +53,7 @@ html[data-theme="light"] .also-wm.light { display: block; }
 <a class="tb-dl" href="https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe"><svg viewBox="0 0 24 24"><path d="M11 4h2v7h3l-4 5-4-5h3V4zM5 18h14v2H5z"/></svg><span data-i18n="nav_dl">Download</span></a>
 <span class="tb-spacer"></span>
 <nav class="tb-nav">
-<a href="howto.html" data-i18n="nav_howto">How to</a>
+<a href="help.html" data-i18n="nav_howto">Help</a>
 <a href="technical.html" data-i18n="nav_tech">Technical</a>
 <a href="about.html" class="on" data-i18n="nav_about">About</a>
 </nav>
@@ -115,11 +115,11 @@ html[data-theme="light"] .also-wm.light { display: block; }
 
 <div class="about-card" id="app">
 <h2 data-i18n="app_h">The app</h2>
-<p data-i18n="app_p1"><b>KillerShell</b> is a native Windows file browser, terminal and text editor that ships as a single self-contained executable. Install it or run it portable. There is no service to register, no account, and no subscription. Hand someone the .exe and they can search a folder tree right away.</p>
-<p data-i18n="app_p2">It is built for a field tech's reality. It matches filenames with wildcard patterns, searches inside files one line at a time so it never loads a whole file into memory, runs several search terms in a single pass, and streams matches as it finds them. Everything happens locally, with no index, no telemetry, and no ads.</p>
-<p data-i18n="app_p4">It started as a search box and nothing else. But finding the file was never the end of the job: I would find it, then reach for Explorer to look at the folder, then for a terminal to run something against it, then for Notepad to read it, and every one of those was a different window with a different set of keys. So I kept pulling those tools in until the whole loop lived in one place. A tab is now a folder, a search, a PowerShell or CMD prompt opened where I was standing, or the file itself with syntax highlighting.</p>
-<p data-i18n="app_p5">The rule I held to while it grew was that everything gets a key. Not a chord buried in a menu - a real binding, single keys where I could find one free, and Explorer's own conventions everywhere they already existed, so nothing has to be relearned. F7 opens the file, F8 opens a shell in it, F11 splits the window, F1 draws the whole map on a keyboard you can hold a modifier over. A tool you have to go looking for with the mouse is a tool that costs you the thing it was supposed to save.</p>
-<p data-i18n="app_p3">Much of what it does was driven by the tickets it helped close. The <a href="https://github.com/SteveTheKiller/KillerShell/issues" target="_blank" rel="noopener">GitHub issues</a> page stays open to anyone, and your suggestions genuinely shape where it goes next. KillerShell is free software under the <b>GPL-3.0</b> license. The <a href="howto.html">How to</a> page walks through everything it does, and the <a href="technical.html">Technical</a> page has the deep details.</p>
+<p data-i18n="app_p1"><b>KillerShell</b> is a native Windows file browser, terminal, text editor and admin toolkit that ships as a single self-contained executable. Install it or run it portable. There is no service to register, no account, and no subscription. Hand someone the .exe and they're working within seconds.</p>
+<p data-i18n="app_p2">The search side is built for a field tech's reality: it matches filenames with wildcard patterns, searches inside files one line at a time so it never loads a whole file into memory, runs several search terms in a single pass, and streams matches as it finds them. Like everything else in KillerShell, it runs locally, with no index, no telemetry, and no ads.</p>
+<p data-i18n="app_p4">It started as a search box and nothing else. But finding the file was never the end of the job: I would find it, then reach for Explorer to look at the folder, then for a terminal to run something against it, then for Notepad to read it, and every one of those was a different window with a different set of keys. So I kept pulling those tools in until the whole loop lived in one place. A tab is now a folder, a search, a PowerShell or CMD prompt opened where I was standing, the file itself with syntax highlighting, or a live look at the processes, services and registry running underneath it all.</p>
+<p data-i18n="app_p5">The rule I held to while it grew was that everything gets a key. Not a chord buried in a menu - a real binding, single keys where I could find one free, and Explorer's own conventions everywhere they already existed, so nothing has to be relearned. F7 opens the file, F8 opens a shell in it, F10 splits the window, F1 draws the whole map on a keyboard you can hold a modifier over. A tool you have to go looking for with the mouse is a tool that costs you the thing it was supposed to save.</p>
+<p data-i18n="app_p3">Much of what it does was driven by the tickets it helped close. The <a href="https://github.com/SteveTheKiller/KillerShell/issues" target="_blank" rel="noopener">GitHub issues</a> page stays open to anyone, and your suggestions genuinely shape where it goes next. KillerShell is free software under the <b>GPL-3.0</b> license. The <a href="help.html">Help</a> page walks through everything it does, and the <a href="technical.html">Technical</a> page has the deep details.</p>
 </div>
 
 <div class="about-card" id="contact">
@@ -187,11 +187,13 @@ html[data-theme="light"] .also-wm.light { display: block; }
 <a href="#contact" data-i18n="contact_h">Contact &amp; links</a>
 <a href="#also" data-i18n="ak_2">Also try...</a>
 </nav>
+<div class="sb-fade sb-fade-top" aria-hidden="true"></div>
+<div class="sb-fade sb-fade-bottom" aria-hidden="true"></div>
 </aside>
 </div>
 <footer class="statusbar">
 <span class="left"><a href="https://github.com/SteveTheKiller/KillerShell" target="_blank" rel="noopener" data-i18n="footer_src">Source on GitHub</a> &middot; GPLv3 &middot; Part of <a href="https://killertools.net" target="_blank" rel="noopener">killertools.net</a></span>
-<span class="right"><span id="verEgg" title="click me">v1.0.2</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
+<span class="right"><span id="verEgg" title="click me">v1.1.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <script src="ks-i18n.js?v=2"></script>
@@ -204,6 +206,23 @@ html[data-theme="light"] .also-wm.light { display: block; }
   function onScroll(){ var y=(sc?sc.scrollTop:window.scrollY)+100, cur=secs[0]; secs.forEach(function(s){ if(s&&s.offsetTop<=y) cur=s; });
     links.forEach(function(a){ a.classList.toggle('on', cur && a.getAttribute('href')==='#'+cur.id); }); }
   (sc||window).addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+</script>
+<script>
+(function(){
+  var outline=document.querySelector('.outline');
+  var fadeTop=document.querySelector('.sb-fade-top');
+  var fadeBottom=document.querySelector('.sb-fade-bottom');
+  if(!outline) return;
+  function updateFade(){
+    var scrolledDown=outline.scrollTop>2;
+    var more=outline.scrollHeight-outline.clientHeight-outline.scrollTop>2;
+    if(fadeTop) fadeTop.classList.toggle('on', scrolledDown);
+    if(fadeBottom) fadeBottom.classList.toggle('on', more);
+  }
+  outline.addEventListener('scroll',updateFade,{passive:true});
+  window.addEventListener('resize',updateFade);
+  updateFade();
 })();
 </script>
 </body>

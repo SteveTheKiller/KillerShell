@@ -58,6 +58,17 @@ namespace KillerShell.Shell
 
             Pane.TabStrip.ItemsSource = _tabs;
 
+            // What a shell is told about the window hosting it (Terminal/ShellEnv.cs). Before
+            // any shell can be spawned, because a child inherits the environment as a COPY - a
+            // variable published after the fact never reaches a terminal already open. This used
+            // to run much later (still "before any shell," back when the earliest one could ever
+            // start was an explicit F11/Ctrl+Shift+~ press well after the constructor finished),
+            // but restore can now reopen a shell tab of its own (Session.cs TryRestoreTabs, via
+            // TabHandoff.cs ApplyHandoff) - moved up here, ahead of THAT, rather than leave a
+            // restored shell launching with no KS_STATE/KS_ACCENT and its prompt falling back to
+            // hardcoded colors (Steve, 2026-08-02).
+            InitShellEnv();
+
             // A window opened with Ctrl+N is a NEW window, not a resumed session. It runs as its
             // own process (NewWindow.cs), so without this it read the same saved tab list the
             // first window did and came up carrying every tab from last time.
@@ -103,6 +114,10 @@ namespace KillerShell.Shell
             // they are read by the listing and the tree, both of which run later.
             InitViewOptions();
 
+            // Details/preview strip, off by default (DetailsPane.cs). After the panes exist -
+            // it reads pane.ResultsList for the current selection the first time it opens.
+            InitDetailsPane();
+
             // Menubar hidden or showing (MenuBar.cs). After the panes exist and before the
             // first listing, so a hidden bar never flashes on screen at launch.
             InitMenuBar();
@@ -114,11 +129,6 @@ namespace KillerShell.Shell
 
             // Where new tabs open (AddressBar.cs).
             InitHomeFolder();
-
-            // What a shell is told about the window hosting it (Terminal/ShellEnv.cs). Before
-            // any shell can be spawned, because a child inherits the environment as a COPY -
-            // a variable published after the fact never reaches a terminal already open.
-            InitShellEnv();
 
             Loaded += (_, _) =>
             {
@@ -162,6 +172,7 @@ namespace KillerShell.Shell
 
                 ApplyElevationHalo();   // Elevation.cs - mark an admin window before it shows
                 ApplyStartupShell();    // and open the shell an elevated relaunch asked for
+                ApplyStartupTearOut();  // TabTearOut.cs - or the Processes/document tab a tear-out asked for
             };
             Closing += (_, _) =>
             {
@@ -196,21 +207,10 @@ namespace KillerShell.Shell
                 }
             };
 
-            // The theme flyout is StaysOpen (so scrolling under it works); close it
-            // ourselves on any click outside it or when the window loses focus.
-            PreviewMouseDown += (_, e) =>
-            {
-                if (!ThemePopup.IsOpen) return;
-                if (ThemePopup.Child is FrameworkElement c && c.IsMouseOver) return;
-                if (ThemeButton.IsMouseOver) return;   // its own click handles the toggle
-                ThemePopup.IsOpen = false;
-            };
-            Deactivated += (_, _) => ThemePopup.IsOpen = false;
-            // Popups don't follow their placement target - close on any window move/resize
-            // so the flyout can't float detached in space.
-            LocationChanged += (_, _) => ThemePopup.IsOpen = false;
-            SizeChanged     += (_, _) => ThemePopup.IsOpen = false;
-            StateChanged    += (_, _) => ThemePopup.IsOpen = false;
+            // ThemeFlyout is a Button.ContextMenu now (matching LangMenu, KillerPDF's pattern),
+            // and a ContextMenu's own popup already closes itself on an outside click or when
+            // the window is deactivated/moved - the hand-rolled close-tracking a raw Popup
+            // needed is gone along with the Popup.
         }
 
         private void VersionLabel_Click(object sender, System.Windows.Input.MouseButtonEventArgs e) => ShowAboutOverlay();  // About.cs
@@ -599,6 +599,26 @@ namespace KillerShell.Shell
             // a pty it is XOFF (EditorTabs.cs IsEditorChord).
             if (EditorHasFocus && !IsEditorChord(e, ctrl, shift, alt)) return;
 
+            // A FOCUSED TASK MANAGER OWNS THE KEYBOARD too, for the same reason - its filter box
+            // is a genuine text-editing surface, and a bare letter typed into it has to reach the
+            // box rather than being read as a shortcut. It reuses the SHELL's list as-is rather
+            // than growing its own or the editor's: there is no pty to protect from Ctrl+S/XOFF
+            // and no document to protect from Ctrl+G, so IsWindowChord's base list is already the
+            // whole answer (ProcessTabs.cs).
+            if (ProcessListHasFocus && !IsWindowChord(e, ctrl, shift, alt)) return;
+
+            // A FOCUSED EVENT VIEWER OWNS THE KEYBOARD too, for the same reason as the Task
+            // Manager just above - its log/level pickers and filter box are genuine input
+            // surfaces, and a bare letter typed into the filter has to reach it rather than being
+            // read as a shortcut (EventViewerTabs.cs).
+            if (EventViewerHasFocus && !IsWindowChord(e, ctrl, shift, alt)) return;
+
+            // A FOCUSED REGISTRY EDITOR OWNS THE KEYBOARD too, for the same reason as Task
+            // Manager/Event Viewer just above - its address bar and find box are genuine input
+            // surfaces, and a bare letter typed into either has to reach them rather than being
+            // read as a shortcut (RegistryEditorTabs.cs).
+            if (RegistryEditorHasFocus && !IsWindowChord(e, ctrl, shift, alt)) return;
+
             // Alt+1-0 jumps to a saved location. Alt chords arrive as Key.System with the real
             // key parked in SystemKey, so they have to be unwrapped before anything can match -
             // and they are checked first, ahead of every e.Key test below, which would all see
@@ -643,6 +663,16 @@ namespace KillerShell.Shell
                 if (real == System.Windows.Input.Key.Up)
                 {
                     NavUp_Click(this, new RoutedEventArgs());        // Browse.cs
+                    e.Handled = true;
+                    return;
+                }
+
+                // Alt+P: Explorer's own preview-pane toggle, and free in this app - reused here
+                // so it already means roughly the same thing to anyone coming from Explorer
+                // (DetailsPane.cs). Acts on the focused pane's own strip.
+                if (real == System.Windows.Input.Key.P)
+                {
+                    DetailsPaneToggle_Click(Pane);   // DetailsPane.cs
                     e.Handled = true;
                     return;
                 }
@@ -737,13 +767,36 @@ namespace KillerShell.Shell
                 BeginEditAddress();   // AddressBar.cs
                 e.Handled = true;
             }
-            else if (e.Key == System.Windows.Input.Key.F9)
+            else if (e.Key == System.Windows.Input.Key.F9 && !ctrl && !shift && !alt)
             {
-                // Both exports live on F9 now, shift picking the format, because F8 went to the
-                // shell - a primary feature deserved a key you can reach without looking, and
-                // export is not something you press twenty times an hour.
-                if (shift) ExportCsv_Click(this, new RoutedEventArgs());   // Export.cs - CSV
-                else       Export_Click(this, new RoutedEventArgs());      // Export.cs - HTML
+                // Plain F9: the Processes tab, singleton same as the rail icon
+                // (OpenTaskManager, ProcessTabs.cs). F9 took over from F11 (Steve, 2026-08-02) -
+                // export moved off F9 onto Ctrl+Alt+E below to make room for this. F11 itself went
+                // to the Performance tab below rather than staying unbound.
+                OpenTaskManager();   // ProcessTabs.cs
+                e.Handled = true;
+            }
+            else if (e.Key == System.Windows.Input.Key.F9 && ctrl && !shift && !alt)
+            {
+                // Ctrl+F9: the same Processes tab, elevated - relaunches KillerShell through UAC
+                // and lands directly on it, the same "--processes" flag an unelevated tear-out
+                // already uses to reopen the tab in a fresh window (TabTearOut.cs
+                // ApplyStartupTearOut), just started with the runas verb instead of plainly
+                // (Elevation.cs RelaunchElevatedProcesses). Mirrors F8 / Ctrl+F8 for the shell.
+                RelaunchElevatedProcesses();   // Elevation.cs
+                e.Handled = true;
+            }
+            else if (e.Key == System.Windows.Input.Key.F11 && !ctrl && !shift && !alt)
+            {
+                // Plain F11: the Performance Monitor tab, singleton same as the rail icon
+                // (OpenPerformanceMonitor, PerformanceTabs.cs). No Ctrl+F11 - unlike Processes and
+                // Event Viewer, Performance needs no elevated variant: every counter it reads
+                // (CPU/RAM/network/disk via PerformanceCounter, the one-time hardware inventory
+                // via WMI) is available to an ordinary user account, so there is nothing an
+                // elevated relaunch would unlock. BACKLOG.md's reservation note assumed elevation
+                // might be needed before this tab existed; it is not, and F11 is the only entry
+                // point.
+                OpenPerformanceMonitor();   // PerformanceTabs.cs
                 e.Handled = true;
             }
             // ── File operations (FileCommands.cs) ────────────────
@@ -790,35 +843,74 @@ namespace KillerShell.Shell
                 Pane.ResultsList.SelectAll();
                 e.Handled = true;
             }
-            else if (e.Key == System.Windows.Input.Key.F11 && !ctrl && !shift && !alt)
+            else if (IsF10(e) && ctrl && !shift && !alt)
             {
-                // Open the second pane, or close it. It had a provisional Ctrl+Shift+P, which is
-                // a two-hand chord for something you flick on and off constantly - and F11 came
-                // free when the menubar took F10, so the two layout keys now sit next to each
-                // other. Ctrl+Shift+P stays as an alias for anyone who learned it.
-                ToggleDualPane();   // DualPane.cs
+                // Ctrl+F10: hide the pane menubar, in both panes and on both kinds of tab
+                // (MenuBar.cs). Moved off plain F10 (Steve, 2026-08-02) so F10 could become Dual
+                // Pane; Shift+F10 (below) keeps meaning Windows' own context-menu key regardless.
+                ToggleMenuBar();
                 e.Handled = true;
             }
             else if (IsF10(e) && !ctrl && !shift && !alt)
             {
-                // F10: hide the pane menubar, in both panes and on both kinds of tab
-                // (MenuBar.cs). Handling it also stops WPF entering its menu mode, which is
-                // what a bare F10 otherwise means to a window.
-                ToggleMenuBar();
+                // Plain F10: the second pane, or close it. Was F11 until the Processes tab
+                // needed a home (Steve, 2026-08-02); handling the bare key also stops WPF
+                // entering its native menu-activation mode, which is what F10 otherwise means to
+                // a window. Ctrl+Shift+P stays as a legacy alias for anyone who learned it.
+                ToggleDualPane();   // DualPane.cs
                 e.Handled = true;
             }
-            else if (e.Key == System.Windows.Input.Key.F12)
+            else if (e.Key == System.Windows.Input.Key.F11 && ctrl && !shift && !alt)
+            {
+                // Ctrl+F11: the Registry Editor tab, elevated - there is no bare-F11 variant for
+                // this one; bare F11 stays the Performance tab (above) and is not repurposed.
+                // Relaunches KillerShell through UAC and lands directly on a fresh Registry
+                // Editor tab, the same "--registry" flag an unelevated tear-out already uses to
+                // reopen the tab in a new window (TabTearOut.cs ApplyStartupTearOut), just
+                // started with the runas verb instead of plainly (Elevation.cs
+                // RelaunchElevatedRegistryEditor). Mirrors Ctrl+F12 for Event Viewer.
+                RelaunchElevatedRegistryEditor();   // Elevation.cs
+                e.Handled = true;
+            }
+            else if (e.Key == System.Windows.Input.Key.F12 && ctrl && !shift && !alt)
+            {
+                // Ctrl+F12: the Event Viewer tab, elevated - there is no bare-F12 variant, because
+                // bare F12 is locked family-wide to the About card (below) and never repurposed.
+                // Relaunches KillerShell through UAC and lands directly on a fresh Event Viewer
+                // tab, the same "--eventviewer" flag an unelevated tear-out already uses to
+                // reopen the tab in a new window (TabTearOut.cs ApplyStartupTearOut), just
+                // started with the runas verb instead of plainly (Elevation.cs
+                // RelaunchElevatedEventViewer). Mirrors F9 / Ctrl+F9 for Processes.
+                RelaunchElevatedEventViewer();   // Elevation.cs
+                e.Handled = true;
+            }
+            else if (e.Key == System.Windows.Input.Key.F12 && !ctrl && !shift && !alt)
             {
                 // F12: the About card, same as KillerPDF. It was previously reachable only by
-                // clicking the version in the footer, which nobody finds by accident.
+                // clicking the version in the footer, which nobody finds by accident. Explicitly
+                // excludes Ctrl (above) so Ctrl+F12 does not ALSO open About - it used to, before
+                // Event Viewer needed the chord.
                 ShowAboutOverlay();   // About.cs
                 e.Handled = true;
             }
-            else if (ctrl && !shift && e.Key == System.Windows.Input.Key.E)
+            else if (ctrl && !shift && !alt && e.Key == System.Windows.Input.Key.E)
             {
-                // Explorer's Ctrl+E puts the caret in the search box, so this does too. Export
-                // moved off it to F9 / F8 (single keys, which is the family preference anyway).
+                // Explorer's Ctrl+E puts the caret in the search box, so this does too.
                 FocusSearchTerms();   // SearchPanel.cs
+                e.Handled = true;
+            }
+            else if (ctrl && alt && !shift && e.Key == System.Windows.Input.Key.E)
+            {
+                // Ctrl+Alt+E: export as HTML. Export used to live on F9, which the Processes tab
+                // needed (Steve, 2026-08-02) - Ctrl+E and Ctrl+Shift+E were already taken
+                // (search focus, exclude folder), so export moved here instead.
+                Export_Click(this, new RoutedEventArgs());   // Export.cs - HTML
+                e.Handled = true;
+            }
+            else if (ctrl && alt && shift && e.Key == System.Windows.Input.Key.E)
+            {
+                // Ctrl+Alt+Shift+E: the CSV variant, same reasoning as Ctrl+Alt+E above.
+                ExportCsv_Click(this, new RoutedEventArgs());   // Export.cs - CSV
                 e.Handled = true;
             }
             else if (ctrl && (e.Key == System.Windows.Input.Key.Right || e.Key == System.Windows.Input.Key.Left)
@@ -893,7 +985,7 @@ namespace KillerShell.Shell
                 // file. The editor keeps the bare key, because opening what you just found is
                 // the more common thing to want and it has no other keyboard route; adding a
                 // filter still has its own button in the search panel. Shift for the secondary,
-                // as with Shift+F8 for CMD and Shift+F9 for CSV.
+                // as with Shift+F8 for CMD.
                 AddFilter_Click(this, new RoutedEventArgs());
                 e.Handled = true;
             }
@@ -907,7 +999,8 @@ namespace KillerShell.Shell
             // ── Shell (TerminalTabs.cs) ─────────────────────────
             // F8 is the primary key: opening a shell in the folder you are looking at is one of
             // the reasons to use this app, and a two-hand chord is the wrong price for it. It
-            // took F8 from CSV export, which moved next to HTML export on Shift+F9.
+            // took F8 from CSV export, which moved to Ctrl+Alt+Shift+E once F9 itself went to the
+            // Processes tab (Steve, 2026-08-02).
             //
             // Shift picks CMD (the LCD skin), Ctrl asks for the elevated one - which relaunches
             // us through UAC (Elevation.cs) rather than opening a tab in this process.
@@ -954,9 +1047,10 @@ namespace KillerShell.Shell
             // on that method about the stale right-click seed.
             else if (ctrl && shift && e.Key == System.Windows.Input.Key.P)
             {
-                // Second pane. PROVISIONAL - no convention exists for this (Explorer has no
-                // dual pane at all), so it is a placeholder to re-cut with the rest once the
-                // overlay shows the whole map. Right-clicking the toolbar button flips the
+                // Second pane. This was the PROVISIONAL chord before bare F10 took over dual
+                // pane (Steve, 2026-08-02); kept as a legacy alias now that F10 is primary, for
+                // anyone whose hand already learned it, and listed on the F10 row in KsRows
+                // rather than as a row of its own. Right-clicking the toolbar button flips the
                 // orientation; that has no key yet on purpose.
                 ToggleDualPane();   // DualPane.cs
                 e.Handled = true;
@@ -990,6 +1084,14 @@ namespace KillerShell.Shell
                 // pointer, so it has a file by definition.
                 if (Pane.ResultsList.SelectedItems.Count == 0) NewDocument();   // EditorTabs.cs
                 else FromKeyboard(MenuEdit_Click);                              // ResultsMenu.cs
+                e.Handled = true;
+            }
+            else if (e.Key == System.Windows.Input.Key.F7 && ctrl && !shift && !alt)
+            {
+                // Ctrl+F7: the same blank document as plain F7, except THIS tab's save retries
+                // elevated on an access-denied write instead of just failing (EditorTabs.cs
+                // NewDocumentAdmin / SaveActiveEditor, Elevation.cs RetrySaveElevated).
+                NewDocumentAdmin();   // EditorTabs.cs
                 e.Handled = true;
             }
             else if (ctrl && !shift && e.Key == System.Windows.Input.Key.D)

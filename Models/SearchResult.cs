@@ -89,7 +89,7 @@ namespace KillerShell.Models
         public List<LineMatch> Lines { get; set; } = [];
     }
 
-    /// <summary>A single matched line — WPF-bindable (properties, not ValueTuple fields).</summary>
+    /// <summary>A single matched line - WPF-bindable (properties, not ValueTuple fields).</summary>
     public class LineMatch
     {
         public int    LineNumber { get; set; }

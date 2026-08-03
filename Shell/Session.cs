@@ -103,6 +103,15 @@ namespace KillerShell.Shell
             {
                 e.Cancel        = true;
                 _closeConfirmed = true;   // never re-prompt after the fade starts
+
+                // Give any open Processes tab's background owner-lookup thread, and any open
+                // Event Viewer tab's background log read, a chance to stop cleanly before the
+                // window (and the process behind it) goes away - see the remark on
+                // ProcessListControl.Shutdown() for the crash this prevents.
+                ShutdownAllProcessLists();       // ProcessTabs.cs
+                ShutdownAllEventViewers();       // EventViewerTabs.cs
+                ShutdownAllPerformanceMonitors();// PerformanceTabs.cs
+                ShutdownAllRegistryEditors();    // RegistryEditorTabs.cs
                 var fade = new System.Windows.Media.Animation.DoubleAnimation(0, TimeSpan.FromMilliseconds(140))
                 {
                     EasingFunction = new System.Windows.Media.Animation.QuadraticEase
@@ -152,6 +161,40 @@ namespace KillerShell.Shell
             var lines = new List<string>();
             foreach (var t in _tabs)
             {
+                // A shell, a document, a Processes tab, an Event Viewer tab and a Performance tab
+                // all have LIVE state - a pty, an open buffer, a refresh timer, a loaded log, a
+                // window of sparkline history - that a Title/RootPath/pattern blob cannot carry,
+                // so saving one the same way a browse/search tab is saved below produced a
+                // placeholder that LOOKED like the real thing on restore but was not: no control,
+                // no glyph, IsProcessList/IsTerminal/IsEditor/IsEventViewer/IsPerformanceMonitor
+                // all false. For Processes specifically that is what caused two "Processes" tabs
+                // to exist at once (Steve, 2026-08-02) - OpenTaskManager's singleton check scans
+                // for IsProcessList == true, so it walked straight past the broken restored one
+                // and opened a second, real one right next to it. A Performance tab's live
+                // counters and hardware inventory have no meaningful "restore" state either way -
+                // there is nothing to resurrect, only something to reopen fresh - so it follows
+                // the same rule from the start rather than needing a follow-up fix.
+                //
+                // What DOES restore these five well is the same idea TabTearOut.cs already uses
+                // for moving a tab to a brand new window: reopen it fresh rather than try to
+                // resurrect its exact state. BuildRelaunchArgs is that same builder (a shell tab
+                // comes back as a fresh shell in the same folder, a document as the same file
+                // reopened, Processes as a fresh Processes tab, Event Viewer as a fresh Event
+                // Viewer tab, Performance as a fresh Performance tab), marked with a leading \x01
+                // so TryRestoreTabs can tell it apart from the classic 11-field shape below without
+                // the two ever colliding - Uri.EscapeDataString never emits a raw \x01 byte, so no
+                // real Title can produce one by accident.
+                if (t.IsTerminal || t.IsEditor || t.IsProcessList || t.IsEventViewer || t.IsPerformanceMonitor
+                    || t.IsRegistryEditor)
+                {
+                    string? flags = BuildRelaunchArgs(t, out _);   // TabTearOut.cs
+                    if (flags != null) lines.Add("\x01" + flags);
+                    // An untitled or unsaved document has nothing safe to reopen - BuildRelaunchArgs
+                    // returns null for exactly that case, so it is simply dropped, same as a tear-out
+                    // of the same tab would refuse rather than lose the edit.
+                    continue;
+                }
+
                 string terms = string.Join(";", t.Groups.SelectMany(g => g.Terms)
                     .Where(x => !string.IsNullOrWhiteSpace(x.Pattern))
                     .Select(x => $"{(x.Mode == SearchTerm.SearchMode.Content ? 1 : 0)}~{Uri.EscapeDataString(x.Pattern)}"));
@@ -175,6 +218,25 @@ namespace KillerShell.Shell
         private bool TryRestoreTabs()
         {
             if (Services.ThemeManager.GetSetting("RememberTabs") == "0") return false;
+
+            // One-time flush, 2026-08-02. A build from before SaveTabsOnExit stopped writing
+            // shell/document/Processes tabs out at all (see the remark there) can leave a row
+            // behind that LOOKS restorable field-by-field - a shell tab has set a real,
+            // non-empty RootPath since earlier the same day (TerminalTabs.cs, "the tab title is
+            // where the shell is"), so the first fix here - drop any row with no folder, no
+            // browse flag and no search terms - did not catch it, and the row kept coming back
+            // as a control-less, blank-paned tab titled whatever the shell happened to be
+            // running. There is no field in the old format that reliably tells a genuine row
+            // from a broken one, so guessing harder is not the fix: flush the whole blob exactly
+            // once per install and start clean. SessionSchema marks that this has already
+            // happened, so it never repeats and never touches tabs saved AFTER this shipped.
+            if (Services.ThemeManager.GetSetting("SessionSchema") != "2")
+            {
+                Services.ThemeManager.SetSetting("Tabs", string.Empty);
+                Services.ThemeManager.SetSetting("SessionSchema", "2");
+                return false;
+            }
+
             var raw = Services.ThemeManager.GetSetting("Tabs");
             if (string.IsNullOrEmpty(raw)) return false;
 
@@ -182,8 +244,20 @@ namespace KillerShell.Shell
             {
                 foreach (var line in raw!.Split('\n'))
                 {
+                    // A shell, document or Processes tab, saved as BuildRelaunchArgs flags
+                    // rather than the classic 11-field shape below (see the remark on
+                    // SaveTabsOnExit). ApplyHandoff (TabHandoff.cs) is the exact same "reopen
+                    // fresh" parser a cross-window drag-merge uses on the receiving end - a
+                    // restore is just a merge into the window that is about to be itself.
+                    if (line.Length > 0 && line[0] == '\x01')
+                    {
+                        ApplyHandoff(line.Substring(1));   // TabHandoff.cs
+                        continue;
+                    }
+
                     var p = line.Split('|');
                     if (p.Length < 9) continue;
+
                     var t = CreateTab();
                     t.Title           = Uri.UnescapeDataString(p[0]);
                     t.RootPath        = Uri.UnescapeDataString(p[1]);

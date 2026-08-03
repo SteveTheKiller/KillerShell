@@ -1,8 +1,8 @@
 <p align="center">
-  <a href="https://killershell.net"><img src="docs/wordmark.png" width="640" alt="KillerShell - free shell for power users: file browser, terminal and text editor in one portable Windows exe"></a>
+  <a href="https://killershell.net"><img src="docs/wordmark.png" width="640" alt="KillerShell - free shell for power users: file browser, terminal, text editor and admin toolkit in one portable Windows exe"></a>
 </p>
 
-Free shell for power users. One window holds a file browser, a PowerShell or CMD terminal and a text editor, on one tab strip and one set of keys, so finding a file, reading it, changing it and running something against it never means switching tools. Search is built into the browser rather than bolted on: any folder by filename wildcard or by file content, streamed live with no index to build and nothing to wait for.
+Free shell for power users. One window holds a file browser, a PowerShell or CMD terminal, a text editor and a full admin toolkit, on one tab strip and one set of keys, so finding a file, reading it, changing it and running something against it never means switching tools. Search is built into the browser rather than bolted on: any folder by filename wildcard or by file content, streamed live with no index to build and nothing to wait for. Processes, services, performance and the registry are one key away too.
 
 It is one portable exe. No runtime, no agent, no account. Drop it on a machine that is not yours, do the work, delete it.
 #### Open-source, GPLv3, run portable or install for just you or every user on the PC.
@@ -15,7 +15,7 @@ It is one portable exe. No runtime, no agent, no account. Drop it on a machine t
 - Browse any folder in list, icon, or details view, with a folder tree, an address bar, and back / forward / up on Explorer's own keys
 - Details columns resize by dragging any divider, Explorer style: the divider sizes the column on its left, the ones to its right keep their widths and slide, and a double-click puts a column back. Ctrl+wheel over the list resizes the icons in every view, not just tiles. Both are remembered
 - Favorites drawer for the folders you live in, with Alt+1 to Alt+0 to jump to the first ten
-- Two panes, side by side or stacked (F11), each with its own tabs
+- Two panes, side by side or stacked (F10), each with its own tabs
 - A browsed folder tracks the disk, so a file deleted in another window disappears here too
 
 ### Terminal
@@ -53,9 +53,16 @@ It is one portable exe. No runtime, no agent, no account. Drop it on a machine t
 - Right-click anything for the full Windows shell menu, so whatever your other tools add to Explorer is still one click away
 - Copy the full path, file name, folder path, matched lines, the files themselves or a SHA-256, all from one menu
 
+### Admin tools
+
+- Processes/Services (F9, elevated on Ctrl+F9): a live grid of CPU, memory and owner per process, filterable by name, path or user; end or restart a process, or start, stop and restart a service, each behind a confirm dialog. Ctrl+period switches between the two views
+- Performance Monitor (F11): a Task-Manager-style live view with one tile per CPU, RAM, disk, network adapter and GPU, a minute of history on every graph, and a per-core CPU breakdown
+- Event Viewer (Ctrl+F12, always elevated): reads the Application, System and Security logs with level and text filtering, full record detail with a raw XML view, and paging through the filtered results
+- Registry Editor (Ctrl+F11, always elevated): a lazy-loading tree over all five hives, type-aware editing for every value kind, create/rename/delete for keys and values, and Ctrl+F to search loaded key and value names
+
 ### Interface
 
-- Keyboard first. Explorer's conventions where they exist (Enter opens, F2 renames, Alt+Enter for properties, Shift+F10 for the shell menu), and single keys rather than chords where they do not: F5 refresh, F6 reveal, F7 edit, F8 shell, F9 export, F11 split, F12 about
+- Keyboard first. Explorer's conventions where they exist (Enter opens, F2 renames, Alt+Enter for properties, Shift+F10 for the shell menu), and single keys rather than chords where they do not: F5 refresh, F6 reveal, F7 edit, F8 shell, F9 processes, F10 split, F11 performance, F12 about
 - F1 opens a shortcuts card that lists every gesture as both a grouped list and a visual keyboard, with layer buttons for the Ctrl / Shift / Alt maps and a live preview when you hold a real modifier
 - Tabs: each tab is an independent search, a folder, a terminal or a document; drag to reorder, optionally restored on the next launch. New tabs open in the pane you are looking at, and once they would get too narrow to read the strip keeps as many as fit and a chevron lists the rest
 - Three toolbars, one per kind of tab, so a document is not carrying a folder listing's sort and view buttons

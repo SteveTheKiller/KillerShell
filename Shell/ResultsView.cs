@@ -162,6 +162,45 @@ namespace KillerShell.Shell
         public Visibility LocationGripVisibility =>
             _locationHidden ? Visibility.Collapsed : Visibility.Visible;
 
+        // User-toggleable via the details header's right-click menu (ResultsView.cs
+        // DetailsHeader_MouseRightButtonUp, Services/ColumnVisibilityMenu.cs) - unlike
+        // LocationHidden above, which the app itself drives by context (browsing vs. search).
+        // Name is deliberately NOT toggleable here, the same way Explorer's own column chooser
+        // never lets you hide Name: it is the row's identity, not a fact about it.
+        private bool _sizeVisible = true;
+
+        public bool SizeVisible
+        {
+            get => _sizeVisible;
+            set
+            {
+                if (_sizeVisible == value) return;
+                _sizeVisible = value;
+                Notify();
+                Notify(nameof(SizeWidth));
+                Notify(nameof(NameWidth));
+                Notify(nameof(LocationWidth));
+                Notify(nameof(ModifiedWidth));
+            }
+        }
+
+        private bool _modifiedVisible = true;
+
+        public bool ModifiedVisible
+        {
+            get => _modifiedVisible;
+            set
+            {
+                if (_modifiedVisible == value) return;
+                _modifiedVisible = value;
+                Notify();
+                Notify(nameof(ModifiedWidth));
+                Notify(nameof(NameWidth));
+                Notify(nameof(LocationWidth));
+                Notify(nameof(SizeWidth));
+            }
+        }
+
         // ── Fitting the columns to the pane ──────────────────────
         // The widths above are what the USER set. What gets drawn is those scaled down when the
         // pane is too narrow to hold them, so the last column can never be cut off the right
@@ -193,7 +232,9 @@ namespace KillerShell.Shell
             get
             {
                 if (_availableWidth <= 0) return 1;              // not measured yet
-                double want = _namePx + _sizePx + _modifiedPx
+                double want = _namePx
+                            + (_sizeVisible ? _sizePx : 0)
+                            + (_modifiedVisible ? _modifiedPx : 0)
                             + (_locationHidden ? 0 : _locationPx);
                 if (want <= _availableWidth || want <= 0) return 1;
                 return _availableWidth / want;
@@ -207,8 +248,8 @@ namespace KillerShell.Shell
 
         public GridLength NameWidth     => new GridLength(Fit(_namePx));
         public GridLength LocationWidth => _locationHidden ? new GridLength(0) : new GridLength(Fit(_locationPx));
-        public GridLength SizeWidth     => new GridLength(Fit(_sizePx));
-        public GridLength ModifiedWidth => new GridLength(Fit(_modifiedPx));
+        public GridLength SizeWidth     => _sizeVisible ? new GridLength(Fit(_sizePx)) : new GridLength(0);
+        public GridLength ModifiedWidth => _modifiedVisible ? new GridLength(Fit(_modifiedPx)) : new GridLength(0);
 
         /// <summary>Set one column's width, clamped. Returns what it actually became.</summary>
         /// <remarks>
@@ -260,8 +301,8 @@ namespace KillerShell.Shell
             double t = 0;
             if (column != 1) t += _namePx;
             if (column != 2 && !_locationHidden) t += _locationPx;
-            if (column != 3) t += _sizePx;
-            if (column != 4) t += _modifiedPx;
+            if (column != 3 && _sizeVisible) t += _sizePx;
+            if (column != 4 && _modifiedVisible) t += _modifiedPx;
             return t;
         }
 
@@ -483,7 +524,36 @@ namespace KillerShell.Shell
                                     CultureInfo.InvariantCulture, out double w))
                     ResultsViewState.Current.SetColumnWidth(col, w);
 
+            // Size/Modified show-or-hide (right-click the details header - Services/
+            // ColumnVisibilityMenu.cs), persisted the same way the dragged widths above are.
+            // Name is not offered (see the remark on ResultsViewState.SizeVisible); Location
+            // already has its own context-driven show/hide and is left out of this menu so the
+            // two mechanisms cannot fight over the same column.
+            Services.ColumnVisibilityMenu.RestoreVisibility("ResultsDetails", DetailsColumnEntries());
+
             ApplyResultsView();
+        }
+
+        /// <summary>The Size/Modified toggle entries, rebuilt on demand rather than cached: the
+        /// getter/setter closures always read the CURRENT ResultsViewState.Current, and there is
+        /// only ever one instance of it, so rebuilding costs nothing and there is no stale
+        /// closure to worry about.</summary>
+        private static Services.ColumnVisibilityMenu.Entry[] DetailsColumnEntries() => new[]
+        {
+            new Services.ColumnVisibilityMenu.Entry("Size", "Str_Col_Size", true,
+                () => ResultsViewState.Current.SizeVisible,     v => ResultsViewState.Current.SizeVisible = v),
+            new Services.ColumnVisibilityMenu.Entry("Modified", "Str_Col_Modified", true,
+                () => ResultsViewState.Current.ModifiedVisible, v => ResultsViewState.Current.ModifiedVisible = v),
+        };
+
+        /// <summary>Right-click the details column-header band: the same shared toggle menu the
+        /// Event Viewer and Processes grids use (Services/ColumnVisibilityMenu.cs), anchored to
+        /// the header itself, not to whichever button happened to be under the pointer.</summary>
+        internal void DetailsHeader_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is not FrameworkElement el) return;
+            Services.ColumnVisibilityMenu.ShowFor(el, "ResultsDetails", DetailsColumnEntries());
+            e.Handled = true;
         }
 
         internal void ViewList_Click(object sender, RoutedEventArgs e)    => SetResultsView(0);

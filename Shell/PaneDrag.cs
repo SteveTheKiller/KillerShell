@@ -89,7 +89,36 @@ namespace KillerShell.Shell
                 return;
             }
 
-            int idx = InsertIndexFor(target, e);
+            PositionDropCaret(target, strip);
+        }
+
+        /// <summary>
+        /// Same insertion math as <see cref="InsertIndexFor"/>, but from a point already
+        /// expressed in the target's own TabStrip-local coordinates rather than a live
+        /// MouseEventArgs - what a CROSS-WINDOW hover has (TabHandoff.cs), since the pointer
+        /// dragging the tab is not in this process's input stream at all.
+        /// </summary>
+        private static int InsertIndexForPoint(FilePane target, Point p)
+        {
+            if (target.TabBar.Visibility != Visibility.Visible) return target.Tabs.Count;
+            if (p.Y < 0 || p.Y > target.TabBar.ActualHeight) return target.Tabs.Count;
+
+            double w = target.Tabs.Count > 0 ? target.TabStrip.ActualWidth / target.Tabs.Count : 0;
+            if (w <= 0) return target.Tabs.Count;
+
+            return Math.Max(0, Math.Min(target.Tabs.Count, (int)Math.Round(p.X / w)));
+        }
+
+        /// <summary>
+        /// Positions and shows TabDropCaret at the insertion point implied by
+        /// <paramref name="stripLocal"/> in <paramref name="target"/>'s own strip - the shared
+        /// core of the in-process ghost-drag caret (ShowDropCaret above) and the cross-window
+        /// incoming-hover caret (TabHandoff.cs ShowIncomingDropCaret). Caller is responsible for
+        /// DragLayer's own visibility and for the on/off-strip check.
+        /// </summary>
+        private void PositionDropCaret(FilePane target, Point stripLocal)
+        {
+            int idx = InsertIndexForPoint(target, stripLocal);
             double w = target.Tabs.Count > 0 ? target.TabStrip.ActualWidth / target.Tabs.Count : 0;
 
             var at = target.TabStrip.TransformToVisual(DragLayer)
@@ -199,19 +228,9 @@ namespace KillerShell.Shell
         /// position under the pointer; dropping anywhere else in the pane appends, because
         /// there is no position being pointed at.
         /// </summary>
+        // Rounded, so the boundary is the midpoint of a tab rather than its left edge - dropping
+        // on the right half of a tab means "after this one" (InsertIndexForPoint, above).
         private static int InsertIndexFor(FilePane target, MouseEventArgs e)
-        {
-            if (target.TabBar.Visibility != Visibility.Visible) return target.Tabs.Count;
-
-            var p = e.GetPosition(target.TabStrip);
-            if (p.Y < 0 || p.Y > target.TabBar.ActualHeight) return target.Tabs.Count;
-
-            double w = target.Tabs.Count > 0 ? target.TabStrip.ActualWidth / target.Tabs.Count : 0;
-            if (w <= 0) return target.Tabs.Count;
-
-            // Rounded, so the boundary is the midpoint of a tab rather than its left edge -
-            // dropping on the right half of a tab means "after this one".
-            return Math.Max(0, Math.Min(target.Tabs.Count, (int)Math.Round(p.X / w)));
-        }
+            => InsertIndexForPoint(target, e.GetPosition(target.TabStrip));
     }
 }

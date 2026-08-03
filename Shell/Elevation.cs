@@ -1,9 +1,11 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Security.Principal;
 using System.Windows;
 using System.Windows.Controls;
+using KillerShell.Models;
 using KillerShell.Terminal;
 
 // Running as admin: getting there, and making it obvious. Partial of MainWindow.
@@ -42,6 +44,33 @@ namespace KillerShell.Shell
         /// </summary>
         internal void RelaunchElevated(TerminalProfile profile, string folder)
         {
+            // Already elevated: the whole point of relaunching was to reach an elevated
+            // process, and this one already is one. Open the shell tab right here - same
+            // placement OpenShell (TerminalTabs.cs) already uses for an unelevated shell -
+            // instead of hopping through another UAC prompt and a second window.
+            if (IsElevated)
+            {
+                var target = Pane;                                   // Panes.cs - the focused pane
+                var tab = CreateTerminalTabIn(target, profile, folder);
+                if (tab == null) return;
+                FocusPane(target);                                   // Panes.cs
+                ActivateTab(tab);
+                return;
+            }
+
+            // The trailing slash is stripped so the quote that follows is not read as an
+            // escape - but NOT off a drive root, because "C:" is drive-RELATIVE and would
+            // resolve against the new process's current directory rather than naming the
+            // root. Same trap that sent Up-from-C: back to the home folder.
+            string flags = "--shell " + (profile.Skin == TerminalSkin.Lcd ? "cmd" : "pwsh")
+                          + " --cwd \"" + TrimForArg(folder) + "\"";
+
+            // Same reuse as RelaunchElevatedProcesses/RelaunchElevatedEventViewer below: an
+            // already-elevated window gets the shell tab handed to it instead of a fresh UAC
+            // prompt and another window.
+            IntPtr existing = FindElevatedKillerShellWindow();
+            if (existing != IntPtr.Zero) { SendHandoffArgs(flags, existing); return; }
+
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
@@ -49,13 +78,104 @@ namespace KillerShell.Shell
             {
                 UseShellExecute = true,          // required for the runas verb
                 Verb = "runas",
-                // The trailing slash is stripped so the quote that follows is not read as an
-                // escape - but NOT off a drive root, because "C:" is drive-RELATIVE and would
-                // resolve against the new process's current directory rather than naming the
-                // root. Same trap that sent Up-from-C: back to the home folder.
-                Arguments = "--shell " + (profile.Skin == TerminalSkin.Lcd ? "cmd" : "pwsh")
-                          + " --cwd \"" + TrimForArg(folder) + "\"",
+                Arguments = flags,
                 WorkingDirectory = folder,
+            };
+
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
+            {
+                // ERROR_CANCELLED: the user said no at the prompt. That is an answer, not a
+                // failure, so it passes silently - they know what they just clicked.
+            }
+            catch (Exception ex)
+            {
+                SetTabStatusKey(_active, "Str_Status_ElevateFailed", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Ctrl+F9: relaunch elevated with the Processes tab already open. Same shape as
+        /// RelaunchElevated above, but with nothing to carry across but the flag itself - reuses
+        /// "--processes", the same one an unelevated tear-out already hands to a fresh window
+        /// (TabTearOut.cs ApplyStartupTearOut), just started with the runas verb instead of
+        /// plainly. Nothing happens in THIS window: the request either becomes a second,
+        /// elevated window sitting on Processes, or is declined.
+        /// </summary>
+        internal void RelaunchElevatedProcesses()
+        {
+            // Already elevated: just open/switch to the tab in THIS window - same as
+            // EventViewerRail_Click's own IsElevated check below, and the same reasoning as
+            // RelaunchElevated above. No relaunch, no window search, nothing to hand off.
+            if (IsElevated) { OpenTaskManager(); return; }   // ProcessTabs.cs
+
+            // Reuse an already-elevated window if one is open, rather than prompting UAC again
+            // for a second one that would show the exact same machine-wide process list a
+            // heartbeat apart (TabHandoff.cs SendHandoffArgs / FindElevatedKillerShellWindow
+            // above).
+            IntPtr existing = FindElevatedKillerShellWindow();
+            if (existing != IntPtr.Zero) { SendHandoffArgs("--processes", existing); return; }
+
+            string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+            if (string.IsNullOrEmpty(exe)) return;
+
+            var psi = new ProcessStartInfo(exe)
+            {
+                UseShellExecute = true,          // required for the runas verb
+                Verb = "runas",
+                Arguments = "--processes",
+            };
+
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
+            {
+                // ERROR_CANCELLED: the user said no at the prompt. That is an answer, not a
+                // failure, so it passes silently - they know what they just clicked.
+            }
+            catch (Exception ex)
+            {
+                SetTabStatusKey(_active, "Str_Status_ElevateFailed", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Ctrl+F12: relaunch elevated with the Event Viewer tab already open. Same shape as
+        /// RelaunchElevatedProcesses above, and for the same reason there is nothing to carry
+        /// across but the flag itself - reuses "--eventviewer" the same way ApplyStartupTearOut
+        /// (TabTearOut.cs) already reopens a torn-out Event Viewer tab in a fresh window, just
+        /// started with the runas verb instead of plainly. There is no unelevated variant of this
+        /// call: bare F12 is locked family-wide to the About card, and the Security log this tab
+        /// reads refuses to open for a process that is not elevated, so an unelevated Event
+        /// Viewer would just be a worse Application/System-only version of Processes' own grid.
+        /// Nothing happens in THIS window: the request either becomes a second, elevated window
+        /// sitting on Event Viewer, or is declined.
+        /// </summary>
+        internal void RelaunchElevatedEventViewer()
+        {
+            // Already elevated: just open/switch to the tab in THIS window. Same check
+            // EventViewerRail_Click already makes for its own click path - this is the Ctrl+F12
+            // path hitting the exact same gap RelaunchElevatedProcesses had.
+            if (IsElevated) { OpenEventViewer(); return; }   // EventViewerTabs.cs
+
+            // Same reuse as RelaunchElevatedProcesses above: an already-elevated window gets the
+            // Event Viewer tab handed to it instead of a fresh UAC prompt and another window.
+            IntPtr existing = FindElevatedKillerShellWindow();
+            if (existing != IntPtr.Zero) { SendHandoffArgs("--eventviewer", existing); return; }
+
+            string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+            if (string.IsNullOrEmpty(exe)) return;
+
+            var psi = new ProcessStartInfo(exe)
+            {
+                UseShellExecute = true,          // required for the runas verb
+                Verb = "runas",
+                Arguments = "--eventviewer",
             };
 
             try
@@ -114,6 +234,133 @@ namespace KillerShell.Shell
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
             {
                 // ERROR_CANCELLED: declined at the prompt. Same as above, that is an answer.
+            }
+            catch (Exception ex)
+            {
+                SetTabStatusKey(_active, "Str_Status_ElevateFailed", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retry a document save that was refused with access denied - Ctrl+F7's whole point
+        /// (EditorTabs.cs SaveActiveEditor / EditorControl.ElevatedSaveOnFail). Same shape as
+        /// RecycleElevated above: the document's text is staged to a temp file in this document's
+        /// own encoding, a second instance is started elevated and copies that staged file over
+        /// the real, permission-denied path, then exits without a window. Nothing happens in
+        /// THIS window unless it succeeds - if the prompt is declined, nothing was written.
+        /// </summary>
+        internal void RetrySaveElevated(SearchTab t, string name)
+        {
+            string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+            if (string.IsNullOrEmpty(exe) || t.Editor == null) return;
+
+            string tempFile;
+            try
+            {
+                tempFile = Path.GetTempFileName();
+                t.Editor.ExportTextTo(tempFile);
+            }
+            catch (Exception ex)
+            {
+                SetTabStatusKey(t, "Str_Ed_SaveFailed", name, ex.Message);
+                return;
+            }
+
+            var psi = new ProcessStartInfo(exe)
+            {
+                UseShellExecute = true,          // required for the runas verb
+                Verb = "runas",
+                Arguments = "--elevated-save \"" + TrimForArg(tempFile) + "\" \""
+                          + TrimForArg(t.Editor.FilePath) + "\"",
+            };
+
+            try
+            {
+                var proc = Process.Start(psi);
+                if (proc == null) return;
+
+                // Same reasoning as RecycleElevated: the exit code is the only channel back, so
+                // a refused write does not silently read as a successful save.
+                proc.EnableRaisingEvents = true;
+                proc.Exited += (_, _) =>
+                {
+                    int code = proc.ExitCode;
+                    proc.Dispose();
+                    try { File.Delete(tempFile); } catch { /* best-effort cleanup */ }
+
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        if (code == 0)
+                        {
+                            t.Editor.IsModified = false;
+                            SetTabStatusKey(t, "Str_Ed_Saved", name);
+                        }
+                        else
+                        {
+                            SetTabStatusKey(t, "Str_Status_ElevatedSaveFailed", name);
+                        }
+                        SetEditorTitle(t);
+                        SyncEditorBar(t);
+                    }));
+                };
+            }
+            catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
+            {
+                // ERROR_CANCELLED: declined at the prompt. Same as above, that is an answer -
+                // nothing was written, so the tab stays exactly as dirty as it was.
+                try { File.Delete(tempFile); } catch { }
+            }
+            catch (Exception ex)
+            {
+                try { File.Delete(tempFile); } catch { }
+                SetTabStatusKey(t, "Str_Status_ElevateFailed", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Ctrl+F11: relaunch elevated with the Registry Editor tab already open. Same shape as
+        /// RelaunchElevatedEventViewer above, and for the same reason there is nothing to carry
+        /// across but the flag itself - reuses "--registry" the same way ApplyStartupTearOut
+        /// (TabTearOut.cs) already reopens a torn-out Registry tab in a fresh window, just started
+        /// with the runas verb instead of plainly. There is no unelevated variant of this call at
+        /// all: unlike Processes/Performance there is no bare F11 row for this (bare F11 stays the
+        /// Performance tab, untouched), and unlike Event Viewer's Application/System logs there is
+        /// no partial unelevated experience worth offering either - editing the registry as a
+        /// standard user is refused by Windows for most of the tree that matters, so a "working"
+        /// unelevated tab would just be a worse, half-broken version of this one. Nothing happens
+        /// in THIS window: the request either becomes a second, elevated window sitting on the
+        /// Registry Editor, or is declined.
+        /// </summary>
+        internal void RelaunchElevatedRegistryEditor()
+        {
+            // Already elevated: just open/switch to the tab in THIS window. Same check
+            // EventViewerRail_Click/RelaunchElevatedEventViewer already make for their own paths.
+            if (IsElevated) { OpenRegistryEditor(); return; }   // RegistryEditorTabs.cs
+
+            // Same reuse as RelaunchElevatedProcesses/RelaunchElevatedEventViewer above: an
+            // already-elevated window gets the Registry Editor tab handed to it instead of a
+            // fresh UAC prompt and another window.
+            IntPtr existing = FindElevatedKillerShellWindow();
+            if (existing != IntPtr.Zero) { SendHandoffArgs("--registry", existing); return; }
+
+            string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+            if (string.IsNullOrEmpty(exe)) return;
+
+            var psi = new ProcessStartInfo(exe)
+            {
+                UseShellExecute = true,          // required for the runas verb
+                Verb = "runas",
+                Arguments = "--registry",
+            };
+
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
+            {
+                // ERROR_CANCELLED: the user said no at the prompt. That is an answer, not a
+                // failure, so it passes silently - they know what they just clicked.
             }
             catch (Exception ex)
             {
@@ -186,8 +433,61 @@ namespace KillerShell.Shell
             ElevatedTag.Visibility = Visibility.Visible;
 
             // The taskbar and Alt+Tab read this, so an admin window is identifiable even when
-            // it is not the one you are looking at.
-            Title = "KillerShell [Administrator]";
+            // it is not the one you are looking at. Localized (not a hardcoded English literal):
+            // the exact same string the custom title bar shows beside the wordmark
+            // (MainWindow.xaml ElevatedTag, Str_Title_Elevated), so the one thing a user actually
+            // reads and the one thing Windows itself reports for the window agree - and so
+            // FindElevatedKillerShellWindow below can find another elevated window's title by
+            // matching against this process's own copy of that same string, in whatever locale
+            // is active, rather than an English word that would only ever match an en-US window.
+            Title = "KillerShell " + Loc("Str_Title_Elevated");
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  REUSE - hand an admin tab request to an already-elevated window instead of
+        //  prompting UAC and opening yet another one.
+        // ═══════════════════════════════════════════════════════════
+        /// <summary>
+        /// Any other, already-elevated KillerShell top-level window, or <see cref="IntPtr.Zero"/>
+        /// when none is open. Used by RelaunchElevatedProcesses/RelaunchElevatedEventViewer below
+        /// so opening a second admin tab does not re-prompt UAC and spawn another window when one
+        /// is already sitting there idle - the request is handed off into it instead
+        /// (TabHandoff.cs SendHandoffArgs), the same WM_COPYDATA path a dragged tab merges through.
+        /// </summary>
+        /// <remarks>
+        /// Elevation cannot be read off another process's token from here: a non-elevated caller
+        /// is denied access to query a higher-integrity process's token, and this caller may
+        /// itself be unelevated - that is the whole point, catching the case BEFORE prompting.
+        /// Instead this reads the window's own title text, which ApplyElevationHalo above already
+        /// stamps with the localized "- Escalated Privileges" suffix (Str_Title_Elevated) the
+        /// moment a window comes up elevated, and compares it against THIS process's own
+        /// localized copy of that same string - never a hardcoded English literal - so the match
+        /// still works whatever locale either window is running in.
+        /// </remarks>
+        private IntPtr FindElevatedKillerShellWindow()
+        {
+            string suffix = Loc("Str_Title_Elevated");
+            if (string.IsNullOrEmpty(suffix)) return IntPtr.Zero;
+
+            var self = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+            IntPtr found = IntPtr.Zero;
+
+            EnumWindows((hwnd, _) =>
+            {
+                if (hwnd == self || !IsKillerShellProcessWindow(hwnd)) return true;   // keep looking
+
+                int len = GetWindowTextLength(hwnd);
+                if (len == 0) return true;
+
+                var sb = new System.Text.StringBuilder(len + 1);
+                GetWindowText(hwnd, sb, sb.Capacity);
+                if (sb.ToString().IndexOf(suffix, StringComparison.Ordinal) < 0) return true;
+
+                found = hwnd;
+                return false;   // one elevated window is enough - stop enumerating
+            }, IntPtr.Zero);
+
+            return found;
         }
     }
 }

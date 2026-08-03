@@ -144,7 +144,13 @@ namespace KillerShell.Terminal
 
             // Theme colors, resolved once at construction. A theme switch rebuilds the palette
             // rather than tracking a DynamicResource per cell, which would be absurd.
-            p.Background = Res("PaneBrush",    C(0x1E1E1E));
+            // SurfaceBrush, not PaneBrush (Steve, 2026-08-02): the shell's own screen reads as a
+            // panel sunk slightly BELOW the pane surface it sits in, the same "elevated but not
+            // stark" step KillerPDF's floating annotation bars use - SurfaceBrush already sits
+            // between BackgroundBrush and PaneBrush in every theme (dialogs, dropdowns, the
+            // FileDialog previews), so this is the family's existing answer to that step, not a
+            // new color.
+            p.Background = Res("SurfaceBrush", C(0x1E1E1E));
             p.Foreground = Res("TextBrush",    C(0xE0E0E0));
             p.Cursor     = Res("PrimaryBrush", C(0x50AEE8));
             var sel = p.Cursor;

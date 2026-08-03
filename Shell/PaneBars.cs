@@ -2,18 +2,29 @@ using KillerShell.Models;
 
 // Which bar a pane wears. Partial of MainWindow.
 //
-// Three kinds of tab, three bars, and only ever one of them up:
+// Five kinds of tab, and only ever one bar up:
 //
-//   listing   LocationRow      back / forward / up / star / address / view / sort / filter
-//   shell     TerminalBar      where the shell is, plus the shell verbs   (TerminalBar.cs)
-//   document  the editor bar   save / undo / redo / find / go to / wrap / gear   (EditorBar.cs)
+//   listing        LocationRow    back / forward / up / star / address / view / sort / filter
+//   shell          TerminalBar    where the shell is, plus the shell verbs   (TerminalBar.cs)
+//   document       the editor bar save / undo / redo / find / go to / wrap / gear (EditorBar.cs)
+//   Task Manager   (none)         the filter box lives inside ProcessListControl itself
+//   Event Viewer   (none)         the log/level pickers and filter box live inside EventViewerControl
+//   Performance    (none)         the gauges and their readouts live inside PerformanceMonitorControl
+//   Registry       (none)         the address bar, tree and value grid live inside RegistryEditorControl
 //
 // They used to be one row for all three, with the listing tools hidden on a shell tab. That was
 // fine while a shell was the only other kind, because a shell does have a working directory and
 // the address row could just about carry it. A DOCUMENT has nothing the row can say: back and
 // forward have no history to walk, up has nowhere to go, the star saves a folder you are not
 // looking at, and the view and sort buttons act on a list that is not on screen. Chrome you have
-// to read past to reach the two controls you wanted is worse than no chrome.
+// to read past to reach the two controls you wanted is worse than no chrome. A Task Manager tab
+// is the same story again, minus even a bar of its own to carry - there is nothing about a
+// process list a location row could say, and its one control (the filter box) already lives
+// inside ProcessListControl (Shell/ProcessTabs.cs). An Event Viewer tab is the same story a
+// third time, with its own control (Shell/EventViewerControl.cs) carrying its own filter row. A
+// Performance tab is the same story a fourth time - there is nothing to filter or navigate over a
+// set of live gauges, so it wears no bar either. A Registry Editor tab is the same story a fifth
+// time, with its own control (Shell/RegistryEditorControl.cs) carrying its own address bar.
 //
 // The shell and document bars live inside their own hosts (FilePane.xaml), so they appear and
 // disappear with the thing they belong to. The only decision left here is the location row.
@@ -35,7 +46,8 @@ namespace KillerShell.Shell
         /// </remarks>
         private void ApplyPaneBars(SearchTab t)
         {
-            bool listing = !t.IsTerminal && !t.IsEditor;
+            bool listing = !t.IsTerminal && !t.IsEditor && !t.IsProcessList && !t.IsEventViewer
+                        && !t.IsPerformanceMonitor && !t.IsRegistryEditor;
             SetLocationRow(Pane, hidden: !listing || Pane.MenuBarHidden, animate: false);
         }
     }

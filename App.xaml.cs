@@ -97,6 +97,26 @@ namespace KillerShell
                 return;
             }
 
+            // Elevated retry of a document save Ctrl+F7's tab was refused, access-denied:
+            // KillerShell.exe --elevated-save "<tempfile>" "<destpath>". Started by
+            // RetrySaveElevated (Elevation.cs) with the runas verb. It does the one job and
+            // exits WITHOUT a window - the window that asked is still open behind it and picks
+            // the result up from this process's exit code, exactly like --recycle above.
+            if (e.Args.Length > 2 &&
+                string.Equals(e.Args[0], "--elevated-save", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    File.Copy(e.Args[1], e.Args[2], overwrite: true);
+                    Shutdown(0);
+                }
+                catch
+                {
+                    Shutdown(1);
+                }
+                return;
+            }
+
             // Demo / screenshot mode: KillerShell.exe --demo fills tabs with fabricated
             // results so marketing screenshots never leak real file names. It also shows
             // the About card in its signed state (About.cs) so captures taken from an

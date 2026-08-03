@@ -112,6 +112,11 @@ namespace KillerShell.Shell
                     if (IsThisPc(p) || Directory.Exists(p)) _bookmarks.Add(new Bookmark { Path = p });
                 }
 
+            // Whether the drawer itself was left open - same "1"/not-"1" convention as
+            // ShowHidden/FoldersTop/DetailsPaneOpen, so a drawer left open survives a restart
+            // instead of always coming back shut.
+            _bookmarksOpen = Services.ThemeManager.GetSetting("BookmarksOpen") == "1";
+
             _bookmarksUserSized = Services.ThemeManager.GetSetting("BookmarksUserSized") == "1";
 
             // Invariant culture on the round trip, as with the tree width - a stored "168.5"
@@ -227,6 +232,25 @@ namespace KillerShell.Shell
                     ? Visibility.Visible : Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Blocks the wheel outright when the drawer already shows every row - the "shouldn't
+        /// move at all" bug Steve reported (2026-08-02). SyncBookmarksScrollbar hides the bar
+        /// in this case, but hiding the bar was never enough on its own: the ScrollViewer's own
+        /// ExtentHeight comes from ITS layout of the rows, not from BookmarksPanel.Height, and
+        /// CorrectBookmarksOverflow's convergence leaves a sub-pixel gap between the two (the
+        /// same rounding BookmarksBorderExtra/Math.Ceiling exist to paper over elsewhere). That
+        /// residual was real ScrollableHeight the ScrollViewer was still happy to spend on a
+        /// wheel notch even with no visible bar and nowhere sensible for the content to go -
+        /// the rows would shift a pixel and immediately hit the far end, reading as a "wiggle".
+        /// Uses the exact same real-vs-viewport comparison as SyncBookmarksScrollbar so the two
+        /// decisions can never disagree.
+        /// </summary>
+        private void BookmarksList_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if (!TryMeasureBookmarksContent(out double real)) return;
+            if (BookmarksList.ActualHeight >= real - 0.5) e.Handled = true;
+        }
+
         // Same technique as TreePanel.FindHorizontalBar, the other orientation: a ScrollViewer
         // hosts two ScrollBars, so the search has to check which one it found.
         private static System.Windows.Controls.Primitives.ScrollBar? FindVerticalBar(DependencyObject root)
@@ -309,8 +333,15 @@ namespace KillerShell.Shell
             // SHORT would clip the last row rather than show extra space, which is just as
             // wrong. A small tolerance either way so this does not fight the sub-pixel jitter a
             // DoubleAnimation leaves behind once it lands on its target.
+            // Undershoot is never tolerated, even by a fraction of a pixel: a panel a hair
+            // SHORT of its content clips the bottom sliver of the last row against the
+            // ScrollViewer's own extent, which is exactly what read as "the bottom bookmark
+            // is getting cut off" (Steve, 2026-08-02) - the hover highlight's bottom edge and
+            // rounded corners were the only thing making a sub-pixel gap visible. Overshoot
+            // keeps its old tolerance so this does not fight the sub-pixel jitter a
+            // DoubleAnimation leaves behind once it lands on its target.
             double diff = BookmarksPanel.ActualHeight - panelNeeds;
-            bool needsCorrection = _bookmarksUserSized ? diff > 0.5 : Math.Abs(diff) > 0.5;
+            bool needsCorrection = _bookmarksUserSized ? diff > 0.5 : (diff > 0.5 || diff < 0);
             if (!needsCorrection) return;
 
             _bookmarksHeight = panelNeeds;
@@ -403,12 +434,35 @@ namespace KillerShell.Shell
             // E735 filled, E734 outline.
             Pane.FavoriteStarBtn.Content = ((char)(on ? 0xE735 : 0xE734)).ToString();
             Pane.FavoriteStarBtn.Tag     = on ? "on" : null;
+
+            UpdateBookmarksSelection();
+        }
+
+        /// <summary>
+        /// Highlights whichever bookmark row matches where the active tab actually is, the same
+        /// "reflects wherever you currently are" rule the star follows - riding the star's own
+        /// refresh points rather than a call site of its own, so the two can never drift apart.
+        /// </summary>
+        internal void UpdateBookmarksSelection()
+        {
+            string? here = _active != null && _active.IsBrowsing ? _active.CurrentFolder : null;
+
+            foreach (var b in _bookmarks)
+            {
+                bool on = !string.IsNullOrEmpty(here)
+                    && string.Equals(b.Path, here, StringComparison.OrdinalIgnoreCase);
+
+                if (BookmarkContainer(b) is { } container
+                    && FindDescendant<System.Windows.Controls.Border>(container) is { } row)
+                    row.Tag = on ? "on" : null;
+            }
         }
 
         // ── The slide-up ─────────────────────────────────────────
         private void BookmarksBtn_Click(object sender, RoutedEventArgs e)
         {
             _bookmarksOpen = !_bookmarksOpen;
+            Services.ThemeManager.SetSetting("BookmarksOpen", _bookmarksOpen ? "1" : "0");
 
             // It lives inside the tree sidebar, so there is nowhere for it to appear while that
             // is collapsed. Opening it opens the sidebar with it.
@@ -479,12 +533,16 @@ namespace KillerShell.Shell
         /// A terminal tab cannot be navigated - there is no channel to push a directory change
         /// into a running shell, so NavigateTo would only rewrite the tab's own bookkeeping
         /// (CurrentFolder/IsBrowsing) out from under it: the menubar would claim the folder
-        /// changed while the shell itself never moved. So when the focused tab is a terminal,
-        /// a bookmark opens a new browse tab instead of hijacking the shell's tab.
+        /// changed while the shell itself never moved. An editor tab has the same problem from
+        /// the other direction - NavigateTo would stomp its CurrentFolder/IsBrowsing bookkeeping
+        /// while a document is open in it, which is what issue #4 reported (bookmark opened "in
+        /// the style of tab that was focused" instead of the file browser). So when the focused
+        /// tab is either one, a bookmark opens a new browse tab instead of hijacking it.
         /// </remarks>
         private void OpenBookmark(Bookmark b)
         {
-            if (_active != null && _active.IsTerminal) ActivateTab(CreateTab());   // Tabs.cs
+            if (_active != null && (_active.IsTerminal || _active.IsEditor))
+                ActivateTab(CreateTab());   // Tabs.cs
             _ = NavigateTo(b.Path);   // Browse.cs
         }
 

@@ -14,7 +14,7 @@ using KillerShell.Terminal;
 // could tear a window into two panes you had deliberately closed, and it always moved your
 // focus to the other side of the window to do it. A shortcut whose effect depends on which pane
 // it decides to commandeer is a shortcut you have to watch. Predictable beats tidy: if you want
-// the shell beside a folder, F11 and put it there.
+// the shell beside a folder, F8 and put it there.
 namespace KillerShell.Shell
 {
     public partial class MainWindow
@@ -165,19 +165,19 @@ namespace KillerShell.Shell
             var term = new TerminalControl(profile.Skin);
             tab.Term = term;
             tab.TabGlyph = profile.Glyph;
-            tab.Title = profile.Name;
+            tab.TermExePath = profile.ExePath;
+            // The tab title is WHERE the shell is, not what it happens to be running - Browse.cs's
+            // own FolderTitle so a shell tab reads the same way a folder tab does. This used to
+            // follow the shell's own OSC 0/2 title instead (a long build showing up in the tab
+            // rather than staying "PowerShell"), but Steve wants the location, and one tab title
+            // should not mean two different things depending on which kind of tab it is
+            // (2026-08-02).
+            tab.Title = FolderTitle(folder);           // Browse.cs
             tab.IsBrowsing = false;
             tab.CurrentFolder = folder;
             // So the address row reads the shell's folder instead of "no folder selected" - the
             // path is still meaningful on a shell tab, which is why the nav buttons stay.
             tab.RootPath = folder;
-
-            // The tab title follows the shell: OSC 0/2 is what a prompt uses to report what it
-            // is running, so a long build shows up in the tab rather than staying "PowerShell".
-            term.Buffer.TitleChanged += title => Dispatcher.BeginInvoke(new Action(() =>
-            {
-                if (!string.IsNullOrWhiteSpace(title)) tab.Title = title;
-            }));
 
             // Menu rows the control cannot do itself, because they are about the pane and the
             // tab strip rather than about the shell (TerminalMenu.cs).
@@ -211,11 +211,13 @@ namespace KillerShell.Shell
             // menu-build time because the menu is not built until the first right-click.
             term.ProfileSubmenuOpening += BuildProfileMenu;
 
-            // And the folder follows a cd, so the OTHER pane can be pointed at it later.
+            // And the folder follows a cd, so the OTHER pane can be pointed at it later - and so
+            // the tab title does too, now that the title IS the location (see the remark above).
             term.Buffer.DirectoryChanged += dir => Dispatcher.BeginInvoke(new Action(() =>
             {
                 tab.CurrentFolder = dir;
                 tab.RootPath = dir;
+                tab.Title = FolderTitle(dir);   // Browse.cs
                 SyncTerminalBar(tab);   // TerminalBar.cs - the cwd readout is the shell's own now
             }));
 
@@ -311,11 +313,20 @@ namespace KillerShell.Shell
         // name / location / size / modified sort buttons sitting on top of a terminal or an
         // empty document. Forced Visible on the way back like the rest of these, then corrected
         // by ApplyResultsView below, which is the one place that owns whether it belongs.
+        // DetailsPaneBtn/DetailsPane cover the details/preview strip (Controls/FilePane.xaml,
+        // Shell/DetailsPane.cs): it slides out of the bottom of a results pane and reads the
+        // pane's OWN selection, which means nothing on a shell, document, Processes, Event
+        // Viewer, Performance or Registry Editor tab - none of those have a file selection to
+        // describe. Restoring
+        // it below just forces Visibility back to Visible like every other entry here; the real
+        // open/closed/height state is corrected right after by ApplyDetailsPaneInPaneNoAnim
+        // (DetailsPane.cs), same as ApplyResultsView/UpdateLocationColumn correct their own
+        // entries in this list.
         private static readonly string[] ListingOnlyTools =
         {
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "SortBtn", "SortDirButton",
             "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "PipeBtn", "ExportBtn",
-            "DetailsHeader",
+            "DetailsHeader", "DetailsPaneBtn", "DetailsPane",
         };
 
         /// <summary>
@@ -340,6 +351,7 @@ namespace KillerShell.Shell
 
             ApplyResultsView();        // ResultsView.cs - view mode owns some of these
             UpdateLocationColumn();    // ViewOptions.cs - browsing owns Pipe
+            ApplyDetailsPaneInPaneNoAnim();   // DetailsPane.cs - open/closed + height are its own to own
         }
 
         /// <summary>Tear down a shell when its tab closes. Called from FinishCloseTab.</summary>
@@ -386,8 +398,9 @@ namespace KillerShell.Shell
             // the feature it opens is worse than a missing history binding. Ctrl+r and prefix
             // plus Up still search history; nothing else opens a shell.
             if (key == System.Windows.Input.Key.F8) return true;
-            if (key == System.Windows.Input.Key.F11) return true;   // second pane
-            if (key == System.Windows.Input.Key.F12) return true;   // about card
+            if (key == System.Windows.Input.Key.F9) return true;    // Processes tab, plain or Ctrl for elevated
+            if (key == System.Windows.Input.Key.F11) return true;   // Performance tab
+            if (key == System.Windows.Input.Key.F12) return true;   // about card, or Ctrl for Event Viewer
 
             if (alt) return true;      // Alt chords are the app's: bookmarks, menus, Alt+F4
 

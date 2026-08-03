@@ -38,6 +38,16 @@ namespace KillerShell.Editing
         /// <summary>True on a blank document that has not been given a path yet.</summary>
         internal bool IsUntitled => FilePath.Length == 0;
 
+        /// <summary>
+        /// True only for a document opened via Ctrl+F7 (MainWindow.NewDocumentAdmin,
+        /// EditorTabs.cs). When a save on THIS tab fails with access denied, SaveActiveEditor
+        /// offers an elevated retry (Elevation.cs RetrySaveElevated) instead of just reporting
+        /// the failure. A document opened via plain F7 or by opening an existing file leaves
+        /// this false, so a permissions error there still fails normally rather than silently
+        /// attempting elevation.
+        /// </summary>
+        internal bool ElevatedSaveOnFail { get; set; }
+
         /// <summary>This editor's find bar, installed once in the constructor.</summary>
         internal ICSharpCode.AvalonEdit.Search.SearchPanel Find { get; }
 
@@ -49,6 +59,13 @@ namespace KillerShell.Editing
 
         /// <summary>Encoding as it was found on disk, written back unchanged on save.</summary>
         private Encoding _encoding = new UTF8Encoding(false);
+
+        /// <summary>
+        /// This document's encoding, for a caller that has to hand it back through AdoptPath -
+        /// a rename/move (EditorBar.cs EditorPathBox_KeyDown) keeps the file's existing encoding
+        /// rather than resetting it, the same way Save As's own AdoptPath call does not change it.
+        /// </summary>
+        internal Encoding CurrentEncoding => _encoding;
 
         /// <summary>
         /// What the bar shows for the encoding: "UTF-8", "UTF-8 BOM", "UTF-16 LE", "ANSI".
@@ -191,9 +208,44 @@ namespace KillerShell.Editing
             ApplyTheme();
         }
 
-        /// <summary>Write the file back in the encoding it was read in.</summary>
-        internal bool SaveFile(out string error)
+        /// <summary>
+        /// Change this document's ACTIVE encoding - what the next save writes - without touching
+        /// the text already loaded into it. Wired to the encoding readout's new picker
+        /// (EditorBar.cs EdEncoding_Click).
+        /// </summary>
+        /// <remarks>
+        /// Single-mode by design: this is "reopen" and "save as" folded into one, the simpler
+        /// half of what VS Code offers as two separate menus. The in-memory text is not
+        /// re-decoded from disk, so switching away from a lossy detection (ANSI on bytes that
+        /// were not really UTF-8) does not un-corrupt anything already read wrong - it only
+        /// changes what gets written from here on. A no-op pick (the label would come out the
+        /// same, e.g. clicking UTF-8 while already on UTF-8) leaves Dirty untouched, the same way
+        /// every other bar toggle only marks dirty on a real change.
+        /// </remarks>
+        internal void SetEncoding(Encoding encoding)
         {
+            string label = Describe(encoding);
+            if (label == EncodingLabel) return;
+
+            _encoding     = encoding;
+            EncodingLabel = label;
+
+            // An unsaved encoding change is a real pending change - the next save writes
+            // different bytes than the ones on disk even if not one character of text moved.
+            IsModified = true;
+            ReportDirty();
+        }
+
+        /// <summary>Write the file back in the encoding it was read in.</summary>
+        /// <param name="accessDenied">
+        /// True when the write failed specifically because access was denied - the one case
+        /// SaveActiveEditor (EditorTabs.cs) offers an elevated retry for, gated on
+        /// <see cref="ElevatedSaveOnFail"/>. Any other failure (disk full, path gone, file
+        /// locked by another process) reports normally, because elevation would not fix it.
+        /// </param>
+        internal bool SaveFile(out string error, out bool accessDenied)
+        {
+            accessDenied = false;
             try
             {
                 // The encoding instance carries its own preamble, so a file that arrived with a
@@ -205,8 +257,17 @@ namespace KillerShell.Editing
                 error = string.Empty;
                 return true;
             }
+            catch (UnauthorizedAccessException ex) { accessDenied = true; error = ex.Message; return false; }
             catch (Exception ex) { error = ex.Message; return false; }
         }
+
+        /// <summary>
+        /// Write the current text, in this document's own encoding, to an arbitrary path rather
+        /// than <see cref="FilePath"/>. Used only to stage the payload for an elevated save
+        /// retry (Elevation.cs RetrySaveElevated) - the elevated helper process then copies that
+        /// staged file over the real, permission-denied destination.
+        /// </summary>
+        internal void ExportTextTo(string path) => File.WriteAllText(path, Text, _encoding);
 
         /// <summary>
         /// How to read these bytes, and how many bytes of byte order mark to step over.
@@ -313,7 +374,11 @@ namespace KillerShell.Editing
         /// </remarks>
         internal void ApplyTheme()
         {
-            Color bg     = Res("PaneBrush",    Color.FromRgb(0x1E, 0x1E, 0x1E));
+            // SurfaceBrush, not PaneBrush (Steve, 2026-08-02) - the same "elevated but not
+            // stark" step the terminal now uses (TerminalPalette.cs), so a document reads as a
+            // page sunk slightly into the pane rather than flush with it. SurfaceBrush already
+            // sits between BackgroundBrush and PaneBrush in every theme.
+            Color bg     = Res("SurfaceBrush", Color.FromRgb(0x1E, 0x1E, 0x1E));
             Color fg     = Res("TextBrush",    Color.FromRgb(0xE0, 0xE0, 0xE0));
             Color dim    = Res("DimTextBrush", Color.FromRgb(0x80, 0x80, 0x80));
             Color accent = Res("PrimaryBrush", Color.FromRgb(0x50, 0xAE, 0xE8));
@@ -342,6 +407,16 @@ namespace KillerShell.Editing
             // one color guaranteed to have been picked to sit on this pane.
             TextArea.TextView.CurrentLineBackground =
                 new SolidColorBrush(Color.FromArgb(0x18, accent.R, accent.G, accent.B));
+
+            // AvalonEdit draws the current line with a BORDER as well as a background fill, and
+            // only the fill was ever themed here - the border stayed at AvalonEdit's own stock
+            // default (an olive/green pen, nothing to do with any KillerShell theme) and read as
+            // a stray unthemed outline around the caret's line (Steve, 2026-08-02). The wash
+            // above already marks the line clearly enough on its own; null turns the border off
+            // rather than trading one hardcoded color for another. The vendored CurrentLineBorder
+            // property predates nullable annotations and is typed as a non-nullable Pen, but the
+            // control genuinely accepts null at runtime (that is how you turn the border off).
+            TextArea.TextView.CurrentLineBorder = null!;
         }
 
         private static Color Res(string key, Color fallback)

@@ -33,6 +33,14 @@ namespace KillerShell.Models
         /// <summary>True when this tab is a shell rather than a folder or a search.</summary>
         public bool IsTerminal => Term != null;
 
+        /// <summary>
+        /// The shell's own exe (pwsh.exe/powershell.exe/cmd.exe), set alongside Term. Not used
+        /// to run anything - CommandLine already did that - only so something wanting a REAL
+        /// icon for a shell tab (the tab-strip overflow menu, Tabs.cs) can ask IconCache for the
+        /// system's own PowerShell/cmd icon instead of an app-drawn glyph.
+        /// </summary>
+        internal string? TermExePath;
+
         // ── Editing (Editing/) ───────────────────────────────────
         // A document tab owns its editor, and the editor owns the text, the undo stack and the
         // caret. Held here rather than rebuilt on activation for the same reason the shell is:
@@ -43,12 +51,74 @@ namespace KillerShell.Models
         /// <summary>True when this tab is a document rather than a folder, search or shell.</summary>
         public bool IsEditor => Editor != null;
 
+        // ── Task Manager (Shell/ProcessListControl.cs) ────────────
+        // A process-list tab owns its control the same way a shell owns its pty and a document
+        // owns its editor: the control holds a live refresh timer, a filter and the grid's own
+        // sort/scroll state, and rebuilding it on every tab switch would throw all of that away.
+        // Internal, not public: ProcessListControl is internal, and this model is public.
+        internal KillerShell.Shell.ProcessListControl? Procs;
+
+        /// <summary>True when this tab is a Task Manager rather than a folder, search, shell or document.</summary>
+        public bool IsProcessList => Procs != null;
+
+        // ── Event Viewer (Shell/EventViewerControl.cs) ─────────────
+        // Same "own host, own control" reasoning as Procs above: the control holds the log
+        // source/level pickers, the filter text and the grid's own sort/scroll state, plus a
+        // background load loop that would restart from nothing on every tab switch if this were
+        // rebuilt instead of moved. Internal, not public: EventViewerControl is internal, and
+        // this model is public.
+        internal KillerShell.Shell.EventViewerControl? Events;
+
+        /// <summary>True when this tab is an Event Viewer rather than a folder, search, shell,
+        /// document or Task Manager.</summary>
+        public bool IsEventViewer => Events != null;
+
+        // ── Performance Monitor (Shell/PerformanceMonitorControl.cs) ────
+        // Same "own host, own control" reasoning as Procs/Events above: the control holds the
+        // live refresh timer, the sparkline history for each metric, and a one-time cache of the
+        // static hardware info - rebuilding it on every tab switch would throw the graph history
+        // away and re-run the WMI hardware query for no reason. Internal, not public:
+        // PerformanceMonitorControl is internal, and this model is public.
+        internal KillerShell.Shell.PerformanceMonitorControl? Perf;
+
+        /// <summary>True when this tab is the Performance Monitor rather than a folder, search,
+        /// shell, document, Task Manager or Event Viewer.</summary>
+        public bool IsPerformanceMonitor => Perf != null;
+
+        // ── Registry Editor (Shell/RegistryEditorControl.cs) ────────────
+        // Same "own host, own control" reasoning as Procs/Events/Perf above: the control holds
+        // the loaded tree (which keys are expanded, which values are cached for the selected
+        // key) and rebuilding it on every tab switch would throw the whole browse position away.
+        // Internal, not public: RegistryEditorControl is internal, and this model is public.
+        internal KillerShell.Shell.RegistryEditorControl? Registry;
+
+        /// <summary>True when this tab is the Registry Editor rather than a folder, search,
+        /// shell, document, Task Manager, Event Viewer or Performance Monitor. Admin-only -
+        /// see Shell/RegistryEditorTabs.cs.</summary>
+        public bool IsRegistryEditor => Registry != null;
+
         // ── Browsing (Browse.cs) ─────────────────────────────────
         // A tab is either showing a folder's contents or a search's results, in the same
         // Results collection. IsBrowsing says which, so the sort can put folders first and the
         // nav buttons know whether they mean anything.
-        public bool   IsBrowsing;
-        public string CurrentFolder = string.Empty;
+        //
+        // Both notifying (2026-08-02, needed for the tab strip's real folder icon,
+        // TabFolderIconConverter): a plain field never repaints a bound row on its own - the
+        // same trap CLAUDE.md documents for KillerNotes' sidebar - and CurrentFolder changes
+        // constantly without the tab itself being replaced, on every navigation within it.
+        private bool _isBrowsing;
+        public bool IsBrowsing
+        {
+            get => _isBrowsing;
+            set { _isBrowsing = value; Notify(); }
+        }
+
+        private string _currentFolder = string.Empty;
+        public string CurrentFolder
+        {
+            get => _currentFolder;
+            set { _currentFolder = value; Notify(); }
+        }
 
         // Back / forward, browser-style: a list of visited folders plus a cursor into it, rather
         // than two stacks, so Forward survives going Back several steps.

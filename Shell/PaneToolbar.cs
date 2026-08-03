@@ -26,7 +26,7 @@ namespace KillerShell.Shell
         // able to push itself out.
         private static readonly string[] ShedOrder =
         {
-            "ExportBtn", "FoldersTopBtn", "ShowHiddenBtn",
+            "ExportBtn", "FoldersTopBtn", "ShowHiddenBtn", "DetailsPaneBtn",
             "ExpandAllButton", "SortDirButton",
         };
 
@@ -136,7 +136,7 @@ namespace KillerShell.Shell
         private static readonly string[] StripOrder =
         {
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "SortBtn", "SortDirButton",
-            "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn",
+            "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "DetailsPaneBtn",
             "PipeBtn", "ExportBtn", "OverflowBtn",
         };
 

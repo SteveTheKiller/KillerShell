@@ -48,12 +48,12 @@ namespace KillerShell.Shell
                 ["F4"]    = ("Nav",    "Str_Ks_Address"),
                 ["F5"]    = ("View",   "Str_Ks_Refresh"),
                 ["F8"]    = ("Tabs",   "Str_Ks_Shell"),
-                ["F9"]    = ("File",   "Str_Ks_ExportHtml"),
+                ["F9"]    = ("Tabs",   "Str_Ks_TaskManager"),
+                ["F11"]   = ("Tabs",   "Str_Ks_Performance"),
                 ["F2"]    = ("Edit",   "Str_Ks_Rename"),
                 ["F7"]    = ("Search", "Str_Ks_AddFilter"),
                 ["Del"]   = ("Edit",   "Str_Ks_Recycle"),
-                ["F10"]   = ("View",   "Str_Ks_MenuBar"),
-                ["F11"]   = ("View",   "Str_TT_DualPane"),
+                ["F10"]   = ("View",   "Str_TT_DualPane"),
                 ["F12"]   = ("Help",   "Str_Ks_About"),
                 ["Enter"] = ("Search", "Str_Ks_Run"),
                 ["Esc"]   = ("Edit",   "Str_Ks_Esc"),
@@ -83,7 +83,17 @@ namespace KillerShell.Shell
                 ["D7"]    = ("Tabs",   "Str_Ks_JumpTab"), ["D8"] = ("Tabs", "Str_Ks_JumpTab"),
                 ["D9"]    = ("Tabs",   "Str_Ks_JumpTab"),
                 ["F8"]    = ("Tabs",   "Str_Ks_ShellAdmin"),
+                ["F9"]    = ("Tabs",   "Str_Ks_TaskManagerAdmin"),
                 ["Grave"] = ("Tabs",   "Str_Ks_Shell"),
+                ["F10"]   = ("View",   "Str_Ks_MenuBar"),
+                // F12 is lit here, in the Ctrl layer ONLY - the Base layer's F12 (above) stays
+                // About and is unaffected. There is no unelevated Event Viewer to show anywhere
+                // else on the board.
+                ["F12"]   = ("Tabs",   "Str_Ks_EventViewer"),
+                // Same shape for F11: the Base layer's F11 (above) stays Performance, and this
+                // Ctrl layer entry is the ONLY place Registry Editor is lit - there is no
+                // unelevated variant to show anywhere else on the board.
+                ["F11"]   = ("Tabs",   "Str_Ks_RegistryEditor"),
             },
             [KbLayer.CtrlShift] = new()
             {
@@ -100,7 +110,6 @@ namespace KillerShell.Shell
             {
                 ["Del"] = ("Edit", "Str_Ks_DeleteForever"),
                 ["F8"]  = ("Tabs", "Str_Ks_ShellCmd"),
-                ["F9"]  = ("File", "Str_Ks_ExportCsv"),
                 ["F10"] = ("File", "Str_Menu_ShellMenu"),
             },
             [KbLayer.Alt] = new()
@@ -114,6 +123,7 @@ namespace KillerShell.Shell
                 ["D5"] = ("Nav", "Str_Ks_JumpBookmark"), ["D6"] = ("Nav", "Str_Ks_JumpBookmark"),
                 ["D7"] = ("Nav", "Str_Ks_JumpBookmark"), ["D8"] = ("Nav", "Str_Ks_JumpBookmark"),
                 ["D9"] = ("Nav", "Str_Ks_JumpBookmark"), ["D0"] = ("Nav", "Str_Ks_JumpBookmark"),
+                ["P"]  = ("View", "Str_TT_DetailsPane"),
             },
         };
 

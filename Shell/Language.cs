@@ -28,60 +28,66 @@ namespace KillerShell.Shell
 
         private void LangButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button b && b.ContextMenu != null)
-            {
-                BuildLanguageMenu(b.ContextMenu);
-                b.ContextMenu.PlacementTarget = b;
-                b.ContextMenu.IsOpen = true;
-                Anim.FadeIn(b.ContextMenu);
-            }
+            if (!LangMenu.IsOpen) BuildLanguageMenu(LangMenu);   // rebuild fresh on every open, not on close
+            ToggleRailFlyout(LangMenu);
         }
 
+        // Same family flyout standard as ThemeFlyout (MainWindow.xaml): a StackPanel of
+        // ThemeRadio-styled RadioButtons is the ContextMenu's one content item, auto-wrapped by
+        // WPF in a PanelMenuItem-styled container. Ported from KillerPDF's XAML-built LangFlyout,
+        // built in code here instead of ten repeated XAML blocks - same RadioButton content, same
+        // Grid(name, code) row shape.
         private void BuildLanguageMenu(ContextMenu menu)
         {
             menu.Items.Clear();
             var current = LocaleManager.Current;
 
+            var panel = new StackPanel { Margin = new Thickness(12, 10, 14, 10) };
+
             foreach (var (loc, name, code) in Languages)
             {
-                var grid = new Grid { MinWidth = 160 };
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                var grid = new Grid();
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-                var nameBlock = new TextBlock { Text = name, VerticalAlignment = VerticalAlignment.Center };
+                var nameBlock = new TextBlock
+                {
+                    Text = name,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    // Localization-safe family (family footer/statusbar standard, CLAUDE.md):
+                    // renders every language's own script instead of tofu boxes.
+                    FontFamily = new FontFamily("Segoe UI, Microsoft JhengHei UI, Nirmala UI"),
+                };
                 var codeBlock = new TextBlock
                 {
-                    Text = "(" + code + ")",
-                    Opacity = 0.5,
-                    Margin = new Thickness(22, 0, 0, 0),
+                    Text = code,
+                    Margin = new Thickness(12, 0, 0, 0),
                     VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Right,
                 };
+                codeBlock.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
                 Grid.SetColumn(codeBlock, 1);
                 grid.Children.Add(nameBlock);
                 grid.Children.Add(codeBlock);
 
-                var item = new MenuItem
+                var radio = new RadioButton
                 {
-                    Header = grid,
-                    Tag = loc.ToString(),
-                    HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                    GroupName = "LangGroup",
+                    Style = (Style)FindResource("ThemeRadio"),
+                    Content = grid,
                     IsChecked = loc == current,
+                    Tag = loc.ToString(),
                 };
-                if (loc == current && TryFindResource("PrimaryBrush") is Brush accent)
-                {
-                    nameBlock.Foreground = accent;
-                    nameBlock.FontWeight = FontWeights.SemiBold;
-                    codeBlock.Foreground = accent;
-                    codeBlock.Opacity = 0.85;
-                }
-                item.Click += Lang_Click;
-                menu.Items.Add(item);
+                radio.Checked += Lang_Checked;
+                panel.Children.Add(radio);
             }
+
+            menu.Items.Add(panel);
         }
 
-        private void Lang_Click(object sender, RoutedEventArgs e)
+        private void Lang_Checked(object sender, RoutedEventArgs e)
         {
-            if (sender is MenuItem mi && mi.Tag is string tag && Enum.TryParse<Locale>(tag, out var loc))
+            if (sender is RadioButton rb && rb.Tag is string tag && Enum.TryParse<Locale>(tag, out var loc))
             {
                 LocaleManager.Apply(loc);
                 RelocalizeDynamicUi();

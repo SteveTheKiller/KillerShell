@@ -4,13 +4,15 @@
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:kui="clr-namespace:KillerShell">
+                    xmlns:kui="clr-namespace:KillerShell"
+                    xmlns:cm="clr-namespace:System.ComponentModel;assembly=System">
 
     <ImageBrush x:Key="GrainTileBrush" TileMode="Tile"
                 ViewportUnits="Absolute" Viewport="0,0,256,256" Stretch="None"/>
 
     <kui:ThumbViewportFloorConverter x:Key="ThumbFloor"/>
     <kui:LastChildConverter x:Key="IsLastChild"/>
+    <kui:TabFolderIconConverter x:Key="TabFolderIcon"/>
 
     <FontFamily x:Key="WordmarkFont">/KillerShell;component/Fonts/#Typewriter - a602 (dead postman 2004)</FontFamily>
 
@@ -130,6 +132,18 @@
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+                        </Trigger>
+                        <!-- Checked/selected state - same Tag="on" convention and the same
+                             SelectionBg/SelectionFg pair every other checkable button style in
+                             this file uses (ToolbarButton, RailButton). Declared after
+                             IsMouseOver/IsPressed so an "on" row stays reading as ON while
+                             hovered rather than fading to the plain hover tint - editors, gear
+                             menu toggles (EditorBar.cs SyncEditorGear) and the shell/document
+                             bars all set this Tag and had nothing here to answer it (Steve,
+                             2026-08-02: "the menu options aren't showing selected state"). -->
+                        <Trigger Property="Tag" Value="on">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource SelectionBg}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.4"/>
@@ -486,7 +500,7 @@
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
-                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" StaysOpen="False"/>
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" StaysOpen="False" PopupAnimation="Fade"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -687,7 +701,7 @@
                                        Foreground="{DynamicResource PrimaryBrush}"
                                        VerticalAlignment="Center" HorizontalAlignment="Left"
                                        Visibility="Collapsed"/>
-                            <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center"/>
+                            <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center" Margin="6,0,0,0"/>
                             <TextBlock x:Name="Gesture" Grid.Column="2" Text="{TemplateBinding InputGestureText}"
                                        Foreground="{DynamicResource MutedTextBrush}" FontSize="11"
                                        VerticalAlignment="Center" Margin="24,0,0,0"/>
@@ -797,6 +811,122 @@
         <Setter Property="Padding" Value="12,8"/>
     </Style>
 
+    <!-- ============================================================
+         Family flyout standard, ported verbatim from KillerPDF (Steve, 2026-08-02: "COPY THE
+         EXACT MENU FROM KILLERPDF FOR EVERYTHING"). The rail's theme and language flyouts are
+         Button.ContextMenus whose chrome comes ONLY from FlyoutCard + FlyoutGrain, with
+         PanelMenuItem stripping the MenuItem container for panel content (a StackPanel of
+         RadioButtons, not clickable rows).
+         ============================================================ -->
+
+    <!-- The card: fill, frame, radius, shadow-room margin and the shadow itself. -->
+    <Style x:Key="FlyoutCard" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <!-- Margin is the room the drop shadow renders into: a Popup clips to its own bounds,
+             so without it the shadow is cut off square. -->
+        <Setter Property="Margin" Value="6"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- The grain overlay. LAST child of the card, so it lies OVER the items - including a
+         highlighted row's solid SelectionBg fill. Radius 5 = the card's 6 minus its 1px
+         border, so the texture stops exactly inside the frame. -->
+    <Style x:Key="FlyoutGrain" TargetType="Border">
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Background" Value="{DynamicResource GrainTileBrush}"/>
+        <Setter Property="Opacity" Value="{DynamicResource GrainOpacity}"/>
+    </Style>
+
+    <!-- ItemContainerStyle for a flyout whose content is a PANEL (swatches, radio lists)
+         rather than rows you click. Strips the MenuItem container down to its content: no
+         hover highlight bleeding across the card, no icon gutter. -->
+    <Style x:Key="PanelMenuItem" TargetType="MenuItem">
+        <Setter Property="Padding" Value="0"/>
+        <!-- A click inside the panel that bubbles up to this container counts as a MenuItem
+             click and closes the flyout without this. The theme flyout must survive a pick so
+             themes can be compared; the language flyout closes itself explicitly either way. -->
+        <Setter Property="StaysOpenOnClick" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <ContentPresenter ContentSource="Header"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Accent picker dot, family-standard (KillerPDF AccentDot). 18px filled circle, rings
+         in TextBrush when it is the family's current pick (set from code). -->
+    <Style x:Key="AccentDot" TargetType="Border">
+        <Setter Property="Width" Value="18"/>
+        <Setter Property="Height" Value="18"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Margin" Value="0,0,7,0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <!-- Ringed radio row for the theme/language flyouts (KillerPDF ThemeRadio). PrimaryBrush
+         stands in for PDF's RadioAccent, which KillerShell has no separate resource for. -->
+    <Style x:Key="ThemeRadio" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border x:Name="bd" Background="Transparent" CornerRadius="3"
+                            Margin="-8,0,2,0" Padding="10,4,10,4">
+                        <!-- DockPanel (not a horizontal StackPanel) so the content fills the row
+                             width, letting a right-aligned column (e.g. language codes) reach the
+                             right edge. -->
+                        <DockPanel LastChildFill="True" Background="Transparent">
+                            <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0" DockPanel.Dock="Left">
+                                <Ellipse x:Name="ring" Width="14" Height="14"
+                                         Stroke="{DynamicResource DimTextBrush}" StrokeThickness="1.5"
+                                         Fill="Transparent"/>
+                                <Ellipse x:Name="dot" Width="7" Height="7"
+                                         Fill="{DynamicResource PrimaryBrush}" Visibility="Collapsed"/>
+                            </Grid>
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="dot" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="ring" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="bd" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="Black" BlurRadius="3" ShadowDepth="1" Direction="270" Opacity="0.5"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ring" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="ThemeSwatch" TargetType="Button">
         <Setter Property="Width" Value="15"/>
         <Setter Property="Height" Value="15"/>
@@ -901,6 +1031,11 @@
     </Style>
 
     <SolidColorBrush x:Key="DangerRed" Color="#e04444"/>
+    <!-- Fixed, non-theme status colors, alongside DangerRed above - a severity dot has to read
+         the same regardless of which theme or accent is active, the way DangerRed already does
+         for a Processes tab. Added for the Event Viewer's Level column (Shell/EventViewerControl.cs). -->
+    <SolidColorBrush x:Key="WarningAmber" Color="#e0a83f"/>
+    <SolidColorBrush x:Key="InfoBlue" Color="#4a90d9"/>
 
     <Style x:Key="ChromeButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
@@ -1502,6 +1637,126 @@
         <WrapPanel Orientation="Horizontal" ItemWidth="96" ItemHeight="76"/>
     </ItemsPanelTemplate>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         DATAGRID  -  KillerScan's DataGrid styling (MainWindow.xaml), ported rather than
+         reinvented: this is the FIRST DataGrid in KillerShell (Shell/ProcessListControl.cs, the
+         Task Manager tab's process list), so the row/cell/header treatment lives here rather
+         than beside that one call site - any future grid in the app reuses these three keys
+         instead of growing its own. Every brush is one already themed elsewhere in the app
+         (TableHeaderBrush, MutedTextBrush, HeaderLineBrush, RowHoverBrush, RowAltBrush,
+         RowSelectedBrush, PrimaryBrush, TextBrush) - nothing new was added to the palette.
+         ═══════════════════════════════════════════════════════════ -->
+    <Style x:Key="DarkDataGridRow" TargetType="DataGridRow">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Style.Triggers>
+            <Trigger Property="AlternationIndex" Value="1">
+                <Setter Property="Background" Value="{DynamicResource RowAltBrush}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
+    <Style x:Key="DarkDataGridCell" TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="8,2"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Sortable column header: TableHeaderBrush behind, MutedTextBrush type at 11, and the
+         accent stripe underneath as a 1px HeaderLineBrush bottom border - the same treatment
+         FilePane.xaml's own details-view header already carries, so a DataGrid header and the
+         file-listing header read as the same furniture. Resize grippers are wired to the exact
+         PART_ names WPF expects; a template that drops them silently kills column resizing. -->
+    <Style x:Key="DarkDataGridColumnHeader" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{DynamicResource TableHeaderBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Padding" Value="8,0"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource HeaderLineBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <Border x:Name="hdrBg"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <TextBlock x:Name="sortGlyph" Grid.Column="1"
+                                           Text="&#x25B2;" FontSize="8"
+                                           VerticalAlignment="Center" Margin="6,1,0,0"
+                                           Foreground="{DynamicResource PrimaryBrush}"
+                                           Visibility="Collapsed"/>
+                            </Grid>
+                        </Border>
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left"
+                               Width="8" Margin="-4,0,0,0" Cursor="SizeWE">
+                            <Thumb.Template>
+                                <ControlTemplate TargetType="Thumb"><Border Background="Transparent"/></ControlTemplate>
+                            </Thumb.Template>
+                        </Thumb>
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right"
+                               Width="8" Margin="0,0,-4,0" Cursor="SizeWE">
+                            <Thumb.Template>
+                                <ControlTemplate TargetType="Thumb"><Border Background="Transparent"/></ControlTemplate>
+                            </Thumb.Template>
+                        </Thumb>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection" Value="{x:Static cm:ListSortDirection.Ascending}">
+                            <Setter TargetName="sortGlyph" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="sortGlyph" Property="Text" Value="&#x25B2;"/>
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="{x:Static cm:ListSortDirection.Descending}">
+                            <Setter TargetName="sortGlyph" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="sortGlyph" Property="Text" Value="&#x25BC;"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="hdrBg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="hdrBg" Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

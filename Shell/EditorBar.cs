@@ -1,8 +1,11 @@
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using KillerShell.Editing;
 using KillerShell.Models;
 
@@ -50,8 +53,16 @@ namespace KillerShell.Shell
             // An untitled document has no path to show yet, and an empty strip where the path
             // goes reads as a bug. It fills in for real the moment the first save picks a name.
             pane.EditorPathText.Text     = editor.IsUntitled ? Loc("Str_Ed_Untitled") : editor.FilePath;
-            pane.EditorEncodingText.Text = editor.EncodingLabel;
-            pane.EditorEolText.Text      = editor.NewLineLabel;
+
+            // Click-to-edit (EdPath_Click) only makes sense once there is a real path to rename -
+            // an untitled document has nothing on disk yet, so the cursor and tooltip stay off
+            // rather than inviting a click that silently does nothing.
+            pane.EditorPathText.Cursor  = editor.IsUntitled ? null : Cursors.IBeam;
+            pane.EditorPathText.ToolTip = editor.IsUntitled ? null : Loc("Str_TT_EdPath");
+
+            pane.EditorEncodingBtn.Content = editor.EncodingLabel;
+            pane.EditorEolText.Text        = editor.NewLineLabel;
+            SyncEditorEncodingMenu(pane, editor.EncodingLabel);
 
             // Tag="on" is what SurfaceButton's trigger reads to light a button in the accent -
             // the same signal the tab title's dot carries, so the two never disagree.
@@ -77,6 +88,16 @@ namespace KillerShell.Shell
             pane.EdIndent2.Tag = EditorOptions.IndentSize == 2 ? "on" : null;
             pane.EdIndent4.Tag = EditorOptions.IndentSize == 4 ? "on" : null;
             pane.EdIndent8.Tag = EditorOptions.IndentSize == 8 ? "on" : null;
+        }
+
+        /// <summary>Lights whichever row in the encoding popup matches the document's own label.</summary>
+        private static void SyncEditorEncodingMenu(FilePane pane, string label)
+        {
+            pane.EdEncUtf8.Tag    = label == "UTF-8"     ? "on" : null;
+            pane.EdEncUtf8Bom.Tag = label == "UTF-8 BOM" ? "on" : null;
+            pane.EdEncUtf16Le.Tag = label == "UTF-16 LE" ? "on" : null;
+            pane.EdEncUtf16Be.Tag = label == "UTF-16 BE" ? "on" : null;
+            pane.EdEncAnsi.Tag    = label == "ANSI"      ? "on" : null;
         }
 
         /// <summary>
@@ -147,6 +168,7 @@ namespace KillerShell.Shell
             // type-a-number-and-Enter with nothing to clear first.
             pane.EditorGotoBox.Text = ed.TextArea.Caret.Line.ToString(CultureInfo.InvariantCulture);
             pane.EditorGotoPopup.IsOpen = true;
+            if (pane.EditorGotoPopup.Child is UIElement gotoChild) Anim.FadeIn(gotoChild);
             pane.EditorGotoBox.SelectAll();
             pane.EditorGotoBox.Focus();
         }
@@ -205,6 +227,113 @@ namespace KillerShell.Shell
         }
 
         // ═══════════════════════════════════════════════════════════
+        //  PATH: click to rename/move (mirrors TerminalBar.cs TermCwd_Click)
+        // ═══════════════════════════════════════════════════════════
+        /// <summary>
+        /// Click the document's path to edit it in place - type a path and press Enter to rename
+        /// and/or move the file on disk. Only wired up once there IS a real file: an untitled
+        /// document has never been saved, so there is nothing yet to rename (SyncEditorBar gates
+        /// the cursor/tooltip on the same check, this is the belt-and-braces guard against a
+        /// stray click landing between the two).
+        /// </summary>
+        internal void EdPath_Click(object sender, MouseButtonEventArgs e)
+        {
+            var t = _active;
+            if (t.Editor == null || t.Editor.IsUntitled) return;
+            var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, t.Editor));
+            if (pane == null) return;
+
+            pane.EditorPathBox.Text = t.Editor.FilePath;
+            pane.EditorPathText.Visibility = Visibility.Collapsed;
+            pane.EditorPathBox.Visibility = Visibility.Visible;
+            pane.EditorPathBox.Focus();
+            pane.EditorPathBox.SelectAll();
+        }
+
+        private void EndEditEdPath(FilePane pane)
+        {
+            pane.EditorPathBox.Visibility = Visibility.Collapsed;
+            pane.EditorPathText.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>Enter commits (renames/moves the file), Escape cancels back to the readout.</summary>
+        internal void EditorPathBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is not TextBox box) return;
+            var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorPathBox, box));
+            if (pane == null) return;
+
+            if (e.Key == Key.Escape)
+            {
+                EndEditEdPath(pane);
+                e.Handled = true;
+                return;
+            }
+            if (e.Key != Key.Enter) return;
+            e.Handled = true;
+
+            var t = pane.Active;
+            if (t == null) { EndEditEdPath(pane); return; }
+            var editor = t.Editor;
+            if (editor == null || editor.IsUntitled) { EndEditEdPath(pane); return; }
+
+            string newPath = box.Text.Trim();
+            if (string.Equals(newPath, editor.FilePath, StringComparison.Ordinal))
+            { EndEditEdPath(pane); return; }   // genuinely unchanged
+
+            string? dir = Path.GetDirectoryName(newPath);
+            if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
+            {
+                // Stays in edit mode rather than reverting - same convention as the shell's cwd
+                // box (TerminalBar.cs): a typo is worth the chance to fix, not a round trip back
+                // through click-to-edit.
+                SetTabStatusKey(t, "Str_Status_EdPathNotFound", newPath);
+                return;
+            }
+
+            // A case-only rename ("readme.txt" -> "README.txt") is a real rename and has to skip
+            // the exists check, the same carve-out FileOps.Rename makes: on a case-insensitive
+            // volume that check would find the very file being renamed and refuse it.
+            bool caseOnly = string.Equals(newPath, editor.FilePath, StringComparison.OrdinalIgnoreCase);
+            if (!caseOnly && (File.Exists(newPath) || Directory.Exists(newPath)))
+            {
+                SetTabStatusKey(t, "Str_Status_RenameFailed", "already exists");
+                return;
+            }
+
+            try { File.Move(editor.FilePath, newPath); }
+            catch (Exception ex)
+            {
+                // File.Move throws before touching the source when the destination side of the
+                // move fails, so the original is untouched here and the tab is still correctly
+                // pointing at it - nothing below this runs.
+                SetTabStatusKey(t, "Str_Status_RenameFailed", ex.Message);
+                return;
+            }
+
+            // Same encoding, kept - a rename is not a re-save, so AdoptPath's re-highlight from
+            // the (possibly new) extension is the only thing that should change here.
+            editor.AdoptPath(newPath, editor.CurrentEncoding);
+
+            // Same follow-up SaveActiveEditor makes after a first Save As: the folder backing
+            // this tab has moved, so the address row and nav buttons have to move with it.
+            t.CurrentFolder = Path.GetDirectoryName(newPath) ?? string.Empty;
+            t.RootPath       = t.CurrentFolder;
+
+            SetEditorTitle(t);     // EditorTabs.cs - the tab's file name follows the new path
+            SyncEditorBar(t);      // the bar's own readout follows too
+            EndEditEdPath(pane);
+        }
+
+        /// <summary>Clicking away without pressing Enter cancels rather than commits.</summary>
+        internal void EditorPathBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is not TextBox box) return;
+            var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorPathBox, box));
+            if (pane != null) EndEditEdPath(pane);
+        }
+
+        // ═══════════════════════════════════════════════════════════
         //  THE GEAR
         // ═══════════════════════════════════════════════════════════
         internal void EditorGear_Click(object sender, RoutedEventArgs e)
@@ -215,6 +344,7 @@ namespace KillerShell.Shell
 
             SyncEditorGear(pane);
             pane.EditorGearPopup.IsOpen = !pane.EditorGearPopup.IsOpen;
+            if (pane.EditorGearPopup.IsOpen && pane.EditorGearPopup.Child is UIElement gearChild) Anim.FadeIn(gearChild);
         }
 
         internal void EdOptLineNumbers_Click(object sender, RoutedEventArgs e)
@@ -258,6 +388,52 @@ namespace KillerShell.Shell
         {
             foreach (var p in LivePanes()) p.EditorGearPopup.IsOpen = false;
             FontsRow_Click(this, new RoutedEventArgs());     // Fonts.cs
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  THE ENCODING PICKER
+        // ═══════════════════════════════════════════════════════════
+        /// <summary>
+        /// Open (or close) the encoding readout's own popup - same shape as the gear
+        /// (EditorGear_Click): anchored to the button that was clicked, not a fixed point.
+        /// </summary>
+        internal void EditorEncoding_Click(object sender, RoutedEventArgs e)
+        {
+            if (BarEditor == null) return;
+            var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, BarEditor));
+            if (pane == null) return;
+
+            SyncEditorEncodingMenu(pane, BarEditor.EncodingLabel);
+            pane.EditorEncodingPopup.IsOpen = !pane.EditorEncodingPopup.IsOpen;
+            if (pane.EditorEncodingPopup.IsOpen && pane.EditorEncodingPopup.Child is UIElement encChild) Anim.FadeIn(encChild);
+        }
+
+        /// <summary>
+        /// A row in the encoding popup was picked. Changes what the NEXT save writes
+        /// (EditorControl.SetEncoding) - a single "change encoding" action rather than VS Code's
+        /// separate reopen/save-with-encoding pair, which is more subsystem than a first pass
+        /// needs. The five keys mirror the standard set VS Code itself defaults to.
+        /// </summary>
+        internal void EdEncoding_Click(object sender, RoutedEventArgs e)
+        {
+            var ed = BarEditor;
+            if (ed == null || sender is not Button b || b.CommandParameter is not string key) return;
+
+            Encoding? encoding = key switch
+            {
+                "utf8"     => new UTF8Encoding(false),
+                "utf8bom"  => new UTF8Encoding(true),
+                "utf16le"  => new UnicodeEncoding(false, true),
+                "utf16be"  => new UnicodeEncoding(true, true),
+                "ansi"     => Encoding.Default,
+                _          => null,
+            };
+            if (encoding == null) return;
+
+            ed.SetEncoding(encoding);
+            SyncEditorBar(_active);
+
+            foreach (var p in LivePanes()) p.EditorEncodingPopup.IsOpen = false;
         }
     }
 }

@@ -265,8 +265,6 @@ namespace KillerShell.Shell
                 PlacementTarget = p.TabOverflowBtn,
             };
 
-            var glyphStyle = TryFindResource("MenuGlyph") as Style;
-
             foreach (var t in p.Tabs)
             {
                 var tab = t;   // captured per row, not per loop
@@ -276,12 +274,7 @@ namespace KillerShell.Shell
                 // underlined, and file names carry underscores all the time.
                 var item = new MenuItem { Header = tab.Title.Replace("_", "__") };
 
-                if (tab.TabGlyph.Length > 0)
-                {
-                    var g = new TextBlock { Text = tab.TabGlyph };
-                    if (glyphStyle != null) g.Style = glyphStyle;
-                    item.Icon = g;
-                }
+                item.Icon = OverflowRowIcon(tab);   // below
 
                 // Bold rather than a check mark: IsChecked draws into the Icon slot, which the
                 // tab's own glyph is already using, and the two cannot both show.
@@ -292,6 +285,73 @@ namespace KillerShell.Shell
             }
 
             menu.IsOpen = true;
+        }
+
+        /// <summary>
+        /// A tab's icon for the overflow dropdown. Real shell icons where a real path exists
+        /// (a folder or an open document), a plain color swatch otherwise.
+        /// </summary>
+        /// <remarks>
+        /// NOT an MDL2 glyph TextBlock (Steve, 2026-08-02, third attempt at this row's icon):
+        /// two different glyph techniques - a plain Style assignment, then a
+        /// SetResourceReference wrapped in a Viewbox - both rendered every row as the exact same
+        /// shape regardless of which codepoint was actually requested, which is not something a
+        /// resource-lookup or a clipping bug explains. Recents.cs's folder icons in this same
+        /// MenuItem.Icon slot, built from IconCache rather than a font glyph, were never reported
+        /// broken - so this sidesteps font rendering in this spot entirely rather than trying a
+        /// fourth variation of a technique that has now failed twice.
+        /// </remarks>
+        private static FrameworkElement OverflowRowIcon(SearchTab tab)
+        {
+            if (tab.IsBrowsing && !string.IsNullOrEmpty(tab.CurrentFolder)
+                && System.IO.Directory.Exists(tab.CurrentFolder))
+            {
+                return new Image
+                {
+                    Width = 16, Height = 16,
+                    Source = Services.IconCache.For(tab.CurrentFolder, 16, isDirectory: true),
+                };
+            }
+
+            if (tab.Editor != null && !tab.Editor.IsUntitled && System.IO.File.Exists(tab.Editor.FilePath))
+            {
+                return new Image
+                {
+                    Width = 16, Height = 16,
+                    Source = Services.IconCache.For(tab.Editor.FilePath, 16),
+                };
+            }
+
+            // A shell tab gets the SYSTEM's own PowerShell/cmd icon - the exact exe TermExePath
+            // names (TerminalProfile.ExePath, set alongside Term in TerminalTabs.cs) - rather
+            // than an app-drawn glyph. Unset in demo mode on purpose (CreateDemoTerminalTab):
+            // that path is real and local, and a demo screenshot fabricates everything else
+            // about a shell tab specifically to avoid putting anything of THIS machine on screen.
+            if (tab.IsTerminal && tab.TermExePath is string exePath && exePath.Length > 0
+                && System.IO.File.Exists(exePath))
+            {
+                return new Image
+                {
+                    Width = 16, Height = 16,
+                    Source = Services.IconCache.For(exePath, 16),
+                };
+            }
+
+            // A Processes tab, an Event Viewer tab, a Performance tab, or a document/shell with no
+            // real file to ask Explorer about (untitled, demo mode, a folder that has since been
+            // deleted/unplugged): nothing real to show an icon of, so a small color dot stands
+            // in - a shell in the accent, a Processes tab in DangerRed, an Event Viewer tab in
+            // WarningAmber, a Performance tab in InfoBlue (all fixed, non-theme keys already used
+            // for status color elsewhere - Controls.xaml), anything else muted.
+            var dot = new System.Windows.Shapes.Ellipse { Width = 8, Height = 8, Margin = new Thickness(4) };
+            string brush = tab.IsTerminal ? "PrimaryBrush"
+                : tab.IsProcessList         ? "DangerRed"
+                : tab.IsEventViewer         ? "WarningAmber"
+                : tab.IsPerformanceMonitor  ? "InfoBlue"
+                : tab.IsRegistryEditor      ? "PrimaryBrush"
+                : "MutedTextBrush";
+            dot.SetResourceReference(System.Windows.Shapes.Shape.FillProperty, brush);
+            return dot;
         }
 
         // Save the left panel's editable fields into the outgoing tab.
@@ -319,9 +379,13 @@ namespace KillerShell.Shell
             FiltersList.ItemsSource = t.Filters;
             Pane.ResultsList.ItemsSource = t.Results;
 
-            ApplyTerminalView(t);   // TerminalTabs.cs - a shell tab shows a pty, not a listing
-            ApplyEditorView(t);     // EditorTabs.cs   - and a document tab shows a document
-            ApplyPaneBars(t);       // PaneBars.cs     - each of the three wears its own bar
+            ApplyTerminalView(t);     // TerminalTabs.cs     - a shell tab shows a pty, not a listing
+            ApplyEditorView(t);       // EditorTabs.cs       - and a document tab shows a document
+            ApplyProcessListView(t);       // ProcessTabs.cs      - and a Task Manager tab shows the process grid
+            ApplyEventViewerView(t);       // EventViewerTabs.cs  - and an Event Viewer tab shows the log grid
+            ApplyPerformanceMonitorView(t);// PerformanceTabs.cs  - and a Performance tab shows the gauges
+            ApplyRegistryEditorView(t);    // RegistryEditorTabs.cs - and a Registry Editor tab shows the tree
+            ApplyPaneBars(t);              // PaneBars.cs         - each kind wears its own bar
 
             Pane.RootPathBox.Text             = t.RootPath;
             Pane.ScopePathLabel.Text          = t.PipeFiles != null ? t.PipeLabel
@@ -467,8 +531,12 @@ namespace KillerShell.Shell
         {
             if (!_tabs.Contains(t)) return;   // guard against a double-fire
 
-            CloseTerminal(t);   // TerminalTabs.cs - a shell tab has a pty to end
-            CloseEditor(t);     // EditorTabs.cs   - a document tab has a control to unhook
+            CloseTerminal(t);     // TerminalTabs.cs    - a shell tab has a pty to end
+            CloseEditor(t);       // EditorTabs.cs      - a document tab has a control to unhook
+            CloseProcessList(t);       // ProcessTabs.cs     - a Task Manager tab has a refresh timer to stop
+            CloseEventViewer(t);       // EventViewerTabs.cs - an Event Viewer tab has a background load to cancel
+            ClosePerformanceMonitor(t);// PerformanceTabs.cs - a Performance tab has a refresh timer and counters to stop
+            CloseRegistryEditor(t);    // RegistryEditorTabs.cs - a Registry Editor tab has a status-clear timer to stop
 
             // Only closing the ACTIVE tab changes what the pane shows - fade that.
             var snap = t == _active ? SnapshotPane() : null;
@@ -602,6 +670,12 @@ namespace KillerShell.Shell
             UpdateDragFeedback(_tabDragTab, e, over);
             if (over != null) return;
 
+            // Cleared the window's own frame entirely? Tell whichever OTHER KillerShell window
+            // is under the pointer to light up its own drop caret, live (TabHandoff.cs) - the
+            // cross-window twin of the ghost/caret feedback UpdateDragFeedback just gave for the
+            // in-process other-pane case above.
+            UpdateCrossWindowHover(e);   // TabHandoff.cs
+
             int cur = _tabs.IndexOf(_tabDragTab);
             double slide   = cont.ActualWidth + 1;               // +1 = tab margin gap
             double rawLeft = x - _tabGrabDX;
@@ -641,7 +715,8 @@ namespace KillerShell.Shell
             var  t = _tabDragTab;
             _tabDragTab  = null;
             _tabDragging = false;
-            HideDragFeedback();   // PaneDrag.cs - the ghost goes whatever the drop turns out to be
+            HideDragFeedback();       // PaneDrag.cs - the ghost goes whatever the drop turns out to be
+            ClearCrossWindowHover();  // TabHandoff.cs - and so does any OTHER window's caret
 
             if (!wasDragging)
             {
@@ -656,6 +731,20 @@ namespace KillerShell.Shell
             if (t != null && DropTargetPane(e) is { } target)
             {
                 MoveTabToPane(t, target, e);
+                return;
+            }
+
+            // Let go outside the window entirely? Browser-style, same as a browser tab: land on
+            // another KillerShell window and the tab MERGES into it (TabHandoff.cs); land on
+            // nothing recognized and it tears out into a new window instead (TabTearOut.cs).
+            // Checked after the other-pane case for the same reason as above - and because a
+            // drop truly outside the window can never also land on the other pane.
+            if (t != null && OutsideWindow(e))
+            {
+                var screenPt = PointToScreen(e.GetPosition(this));
+                var otherHwnd = FindOtherKillerShellWindowAt(screenPt);   // TabHandoff.cs
+                if (otherHwnd != IntPtr.Zero) MergeTabIntoWindow(t, otherHwnd);   // TabHandoff.cs
+                else TearOutTab(t);                                              // TabTearOut.cs
                 return;
             }
 

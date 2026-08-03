@@ -14,7 +14,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <meta name="description" content="How KillerShell works under the hood: how it walks a folder tree, matches filenames, streams file contents line by line, moves files, hosts a shell and edits text, all without ever building an index.">
 <link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
 <script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
-<link rel="stylesheet" href="ks.css?v=4">
+<link rel="stylesheet" href="ks.css?v=8">
 <style>
 .page-hero { text-align: center; padding: 44px 16px 8px; }
 .page-hero .wm-logo { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
@@ -23,11 +23,12 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 .tech-sec { scroll-margin-top: 84px; }
 @media (min-width: 901px){ .shell { grid-template-columns: 268px 1fr; } .content { margin: 8px 8px 0 2px; } }
 .sb-tabs .on { border-bottom: 0; }
-.outline { padding: 8px 0; overflow-y: auto; flex: 1; }
+.outline { padding: 8px 0; overflow-y: auto; flex: 1; min-height: 0; }
 .outline a { display: block; padding: 8px 16px 8px 18px; font-size: 13px; color: var(--text2); border-left: 2px solid transparent; }
 .outline a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent); filter: none; }
-.outline a.on { color: var(--accent); border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--sidebar)); }
-@media (max-width: 900px) { .outline { display:flex; flex-direction:row; flex-wrap:wrap; padding:8px; gap:4px; } .outline a { border-left:0; border-radius:5px; padding:6px 10px; } .outline a.on { border-left:0; } }
+.outline a.on { color: var(--accent-text); border-left-color: var(--accent); background: var(--accent); }
+.outline a.sub { padding-left: 32px; font-size: 12px; opacity: 0.82; }
+@media (max-width: 900px) { .outline { display:flex; flex-direction:row; flex-wrap:wrap; padding:8px; gap:4px; } .outline a { border-left:0; border-radius:5px; padding:6px 10px; } .outline a.on { border-left:0; } .outline a.sub { padding-left:10px; } }
 </style>
 </head>
 <body>
@@ -40,7 +41,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <a class="tb-dl" href="https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe"><svg viewBox="0 0 24 24"><path d="M11 4h2v7h3l-4 5-4-5h3V4zM5 18h14v2H5z"/></svg><span data-i18n="nav_dl">Download</span></a>
 <span class="tb-spacer"></span>
 <nav class="tb-nav">
-<a href="howto.html" data-i18n="nav_howto">How to</a>
+<a href="help.html" data-i18n="nav_howto">Help</a>
 <a href="technical.html" class="on" data-i18n="nav_tech">Technical</a>
 <a href="about.html" data-i18n="nav_about">About</a>
 </nav>
@@ -89,15 +90,24 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <a href="#install" data-i18n="t_nav_install">Install &amp; data</a>
 <a href="#pipeline" data-i18n="t_nav_pipeline">The search pipeline</a>
 <a href="#matching" data-i18n="t_nav_matching">Matching files</a>
+<a href="#names" class="sub" data-i18n="t_match_names_h">Name terms: wildcards</a>
+<a href="#contents" class="sub" data-i18n="t_match_content_h">Text terms: reading inside files</a>
 <a href="#filters" data-i18n="t_nav_filters">Filters &amp; terms</a>
 <a href="#streaming" data-i18n="t_nav_streaming">Streaming &amp; memory</a>
 <a href="#export" data-i18n="t_nav_export">Export</a>
 <a href="#fileops" data-i18n="t_nav_fileops">File operations</a>
 <a href="#terminal" data-i18n="t_nav_terminal">The terminal</a>
 <a href="#editor" data-i18n="t_nav_editor">The editor</a>
+<a href="#admin" data-i18n="t_nav_admin">Processes, performance &amp; registry</a>
+<a href="#admin-processes" class="sub" data-i18n="t_admin_processes_h">Processes &amp; services</a>
+<a href="#admin-performance" class="sub" data-i18n="t_admin_performance_h">Performance monitor</a>
+<a href="#admin-events" class="sub" data-i18n="t_admin_events_h">Event Viewer</a>
+<a href="#admin-registry" class="sub" data-i18n="t_admin_registry_h">Registry Editor</a>
 <a href="#themes" data-i18n="t_nav_themes">Themes &amp; languages</a>
 <a href="#glossary" data-i18n="t_nav_glossary">Glossary</a>
 </nav>
+<div class="sb-fade sb-fade-top" aria-hidden="true"></div>
+<div class="sb-fade sb-fade-bottom" aria-hidden="true"></div>
 </aside>
 <div class="content">
 <div class="content-scroll">
@@ -106,7 +116,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <section class="page-hero">
 <span class="page-title" data-i18n="t_hero_kicker">The Tech of</span>
 <img class="wm-logo" src="brand/killershell-logo-dark-blue.svg" alt="KillerShell">
-<p data-i18n="t_hero_sub">A look under the hood at how KillerShell walks a folder tree, matches filenames, reads inside files, moves them around, hosts a shell and edits text, all without ever building an index.</p>
+<p data-i18n="t_hero_sub">A look under the hood at how KillerShell walks a folder tree, matches filenames, reads inside files, moves them around, hosts a shell, edits text and manages processes, performance, events and the registry - all without ever building an index.</p>
 </section>
 
 <div class="tech-sec" id="stack">
@@ -218,9 +228,13 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="terminal">
 <h2 data-i18n="t_term_h">The terminal</h2>
+<h3 id="terminal-host" data-i18n="t_term_host_h">Running a real shell</h3>
 <p data-i18n="t_term_p1">A shell tab starts the host you picked as an ordinary child process with the folder you were looking at as its working directory, then draws its output itself. Nothing about the shell is emulated or wrapped: the process is a real PowerShell, Windows PowerShell or cmd.exe, so your modules, aliases and profile all behave the way they do anywhere else.</p>
+<h3 id="terminal-cwd" data-i18n="t_term_cwd_h">Tracking the working directory</h3>
 <p data-i18n="t_term_p2">The working directory shown on the shell's toolbar comes from the shell reporting it, not from KillerShell guessing. Shells emit an OSC 7 escape sequence naming their current directory, which is parsed out of the stream, so the readout stays correct through a <code>cd</code>, a script or a pushd, and clicking it opens that exact folder as a browsing tab.</p>
+<h3 id="terminal-profile" data-i18n="t_term_profile_h">Finding $PROFILE</h3>
 <p data-i18n="t_term_p3">The <code>$PROFILE</code> path is obtained by launching the shell binary with <code>-NoProfile -NonInteractive</code> and asking it for <code>$PROFILE.CurrentUserCurrentHost</code>, then validating that what came back is a single rooted path ending in .ps1. Assuming <code>Documents\PowerShell\</code> instead would be wrong on any machine where OneDrive Known Folder Move has redirected Documents, which on a managed fleet is most of them, and the assumed path is a file the shell will never load.</p>
+<h3 id="terminal-glyphs" data-i18n="t_term_glyphs_h">Prompt glyphs &amp; fallback fonts</h3>
 <p data-i18n="t_term_p4">The shipped prompt draws powerline separators, a git branch mark and a chevron. No monospaced font Windows ships has any of them, so the exe carries <code>KillerGlyphs.ttf</code>: 26 glyphs, 2,928 bytes, subset from Terminess Nerd Font under the SIL OFL. The renderer asks the font you chose for a glyph and only falls back to that face for the codepoints it does not have, stretching the fallback glyph to the chosen face's cell width so a separator still butts against the next cell. Your font choice is untouched; it just stops being able to fail on those characters. A whole Nerd Font would have cost 2.6 MB, almost all of it icons no prompt draws.</p>
 </div>
 
@@ -229,6 +243,18 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <p data-i18n="t_ed_p1">The editor is AvalonEdit, the component behind SharpDevelop, vendored into the repository as source and compiled into the exe rather than referenced as a DLL. That keeps KillerShell a single portable file and costs about 640 KB. The vendored tree was audited to zero compiler warnings on the way in, without suppressing any of them.</p>
 <p data-i18n="t_ed_p2">Encoding is decided by inspecting the file's bytes, not by the editor's own loader, which hands back a UTF-8 encoding that <i>writes</i> a byte-order mark. Left alone, a plain .txt or .bat would silently grow three bytes at the front the first time it was saved. A BOM that is present is kept, a BOM that is absent stays absent, and bytes that do not decode as UTF-8 fall back to the system ANSI codepage rather than being replaced with U+FFFD. Both the encoding and the line ending are shown under the document, because whether PowerShell 5.1 will read a script depends on both and neither is visible in the text.</p>
 <p data-i18n="t_ed_p3">Syntax definitions for .bat, .reg, .ini, .yaml, .log and .csv are hand-written and embedded, since AvalonEdit ships none of them. Rather than maintain a repainted copy of every definition for each of the six themes, the shipped colors are run through the same contrast guard the terminal uses: hue is preserved and only lightness is moved, far enough to clear a readable contrast ratio against whatever the current background is. The original color is remembered per definition, so switching themes repeatedly cannot ratchet a color away from what its author intended.</p>
+</div>
+
+<div class="tech-sec" id="admin">
+<h2 data-i18n="t_admin_h">Processes, performance, events &amp; the registry</h2>
+<h3 id="admin-processes" data-i18n="t_admin_processes_h">Processes &amp; services</h3>
+<p data-i18n="t_admin_p1">Processes/Services (F9, elevated on Ctrl+F9) is one control switching between two grids, not two features bolted together. CPU% is computed as a delta between two TotalProcessorTime samples on a 1.5s tick, not a lifetime average, and command line, executable path and parent PID come from a single bulk Win32_Process WMI query per tick rather than one query per row. Process owner lookups are the expensive part - a per-PID WMI GetOwner() call - so each is done once, cached, and run on its own background thread rather than blocking the refresh; that used to freeze the tab on first load before the lookup was moved off the UI thread. Services mode cross-references ServiceController.GetServices() with a bulk Win32_Service query for the fields ServiceController does not expose, such as start mode, path and log-on account. Every destructive action - end a process, stop or restart a service - goes through the app's own themed confirm dialog, never a stock message box.</p>
+<h3 id="admin-performance" data-i18n="t_admin_performance_h">Performance monitor</h3>
+<p data-i18n="t_admin_p2">Performance Monitor (F11) reads System.Diagnostics.PerformanceCounter directly: % Processor Time for CPU, with a per-core breakdown; Available and Committed bytes for RAM; % Disk Time and read/write bytes per second per physical disk; bytes sent and received per network adapter; and GPU Engine / GPU Adapter Memory summed the same way Task Manager itself does. Disks, adapters and GPUs are enumerated with WMI (Win32_DiskDrive, Win32_VideoController) rather than assumed to be singular. GPU counter instances are rescanned only every 8 ticks instead of every tick, because polling GetInstanceNames() on the GPU categories every second was spamming the Application event log with unrelated Perflib provider-reload errors. Every tile keeps 60 samples of history at a 1s tick, so its graph always shows the last minute.</p>
+<h3 id="admin-events" data-i18n="t_admin_events_h">Event Viewer</h3>
+<p data-i18n="t_admin_p3">Event Viewer (Ctrl+F12, always elevated) reads Application, System and Security through System.Diagnostics.Eventing.Reader rather than the older EventLog API, because EventLogQuery can push level filtering into the query itself and read newest-first. Each log is capped at 2,000 records and loaded in batches of 50 on a dedicated long-running thread, since a pooled thread can be reused mid-COM-cleanup and crash. There is no unelevated route to this tab at all: the Security log throws an access-denied error for a standard token, so the tab only exists behind Ctrl+F12.</p>
+<h3 id="admin-registry" data-i18n="t_admin_registry_h">Registry Editor</h3>
+<p data-i18n="t_admin_p4">Registry Editor (Ctrl+F11, always elevated) is the only one of the four with no background thread anywhere - registry reads are fast enough not to need one. The tree lazy-loads one level at a time with a placeholder-node pattern across all five hives, and Ctrl+F searches key and value names within whatever is already loaded rather than walking the whole registry, which is what real regedit's search does and blocks on. Because the registry has no atomic rename call, renaming a key is implemented as copy-subtree-to-new-name then delete-old. Deleting a key warns, more seriously than the process-kill confirm, that the whole subtree goes with it.</p>
 </div>
 
 <div class="tech-sec" id="themes">
@@ -264,7 +290,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 </div>
 <footer class="statusbar">
 <span class="left"><a href="https://github.com/SteveTheKiller/KillerShell" target="_blank" rel="noopener" data-i18n="footer_src">Source on GitHub</a> &middot; GPLv3 &middot; Part of <a href="https://killertools.net" target="_blank" rel="noopener">killertools.net</a></span>
-<span class="right"><span id="verEgg" title="click me">v1.0.2</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
+<span class="right"><span id="verEgg" title="click me">v1.1.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>
@@ -290,6 +316,23 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
   });
   lb.addEventListener('click',close);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+})();
+</script>
+<script>
+(function(){
+  var outline=document.querySelector('.outline');
+  var fadeTop=document.querySelector('.sb-fade-top');
+  var fadeBottom=document.querySelector('.sb-fade-bottom');
+  if(!outline) return;
+  function updateFade(){
+    var scrolledDown=outline.scrollTop>2;
+    var more=outline.scrollHeight-outline.clientHeight-outline.scrollTop>2;
+    if(fadeTop) fadeTop.classList.toggle('on', scrolledDown);
+    if(fadeBottom) fadeBottom.classList.toggle('on', more);
+  }
+  outline.addEventListener('scroll',updateFade,{passive:true});
+  window.addEventListener('resize',updateFade);
+  updateFade();
 })();
 </script>
 </body>

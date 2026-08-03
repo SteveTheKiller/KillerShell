@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -30,7 +32,7 @@ namespace KillerShell.Shell
             ("Nav",    "Alt+Left / Right", "Str_Ks_BackForward"),
             ("Nav",    "Backspace",      "Str_Ks_Back"),
             ("Nav",    "Alt+Up",         "Str_Ks_Up"),
-            ("Nav",    "Ctrl+L / F4",    "Str_Ks_Address"),
+            ("Nav",    "Ctrl+L / F4 / Alt+D", "Str_Ks_Address"),
             ("Nav",    "Ctrl+O",         "Str_Ks_Folder"),
             ("Nav",    "Ctrl+B",         "Str_Ks_Bookmarks"),
             ("Nav",    "Alt+1-0",        "Str_Ks_JumpBookmark"),
@@ -42,15 +44,16 @@ namespace KillerShell.Shell
             ("Tabs",   "Ctrl+1-9",       "Str_Ks_JumpTab"),
 
             ("View",   "F5",             "Str_Ks_Refresh"),
-            ("View",   "F10",            "Str_Ks_MenuBar"),
-            ("View",   "F11",            "Str_TT_DualPane"),
+            ("View",   "Ctrl+F10",       "Str_Ks_MenuBar"),
+            ("View",   "F10 / Ctrl+Shift+P", "Str_TT_DualPane"),
             ("View",   "Ctrl+H",         "Str_TT_ShowHidden"),
+            ("View",   "Alt+P",          "Str_TT_DetailsPane"),
             ("View",   "Ctrl+Shift+S",   "Str_Ks_SearchPanel"),
             ("View",   "Ctrl+Right",     "Str_Ks_ExpandAll"),
             ("View",   "Ctrl+Left",      "Str_Ks_CollapseAll"),
 
-            ("File",   "F9",             "Str_Ks_ExportHtml"),
-            ("File",   "Shift+F9",       "Str_Ks_ExportCsv"),
+            ("File",   "Ctrl+Alt+E",       "Str_Ks_ExportHtml"),
+            ("File",   "Ctrl+Alt+Shift+E", "Str_Ks_ExportCsv"),
 
             // Shells open as tabs in the focused pane, so they are grouped with tabs rather
             // than given a category of their own - one more heading for three rows would cost
@@ -63,6 +66,64 @@ namespace KillerShell.Shell
             ("Tabs",   "Shift+F8",       "Str_Ks_ShellCmd"),
             ("Tabs",   "Ctrl+F8 / Ctrl+Alt+`", "Str_Ks_ShellAdmin"),
 
+            // F9 (Steve, 2026-08-02): moved off F11 - F11 briefly held the Processes tab after
+            // Dual Pane moved to plain F10, then Steve wanted F11 gone entirely, so it ended up
+            // here instead, freeing F9 in turn by pushing export onto Ctrl+Alt+E above. Singleton
+            // same as the rail icon (TaskManagerRailBtn in MainWindow.xaml, OpenTaskManager in
+            // ProcessTabs.cs). Two rows, same shape as F8 / Ctrl+F8 for the shell: Ctrl+F9 relaunches
+            // elevated and lands on the same tab (Elevation.cs RelaunchElevatedProcesses). F11,
+            // freed up by this move, went to the Performance tab below rather than staying unbound.
+            ("Tabs",   "F9",             "Str_Ks_TaskManager"),
+            ("Tabs",   "Ctrl+F9",        "Str_Ks_TaskManagerAdmin"),
+
+            // F11: the Performance Monitor tab, singleton same as the rail icon
+            // (PerformanceRailBtn in MainWindow.xaml, OpenPerformanceMonitor in
+            // PerformanceTabs.cs). No Ctrl+F11 row - unlike Processes/Event Viewer, Performance
+            // needs no elevated variant, since every counter it reads is available to an ordinary
+            // user account (PerformanceTabs.cs has the full reasoning). BACKLOG.md's reservation
+            // note originally described Ctrl+F11 as the elevated variant, written before this tab
+            // existed and before that turned out not to be true.
+            ("Tabs",   "F11",            "Str_Ks_Performance"),
+
+            // Processes/Services tab - local to the grid (ProcessListControl.cs
+            // Grid_PreviewKeyDown), reachable only while a row is selected there and the grid has
+            // focus. Reuses the row context menu's own Str_Menu_* strings, the same "reuse the
+            // menu's own label" convention the Results context-menu rows below already follow,
+            // rather than a parallel Str_Ks_* set that would only restate the same words in ten
+            // locale files. Restart and Open file location are one row each because the same key
+            // does the same thing in both Processes and Services mode; End/Stop needs two rows
+            // since Delete means a different action depending which mode is showing, and Run as
+            // administrator/Start are each specific to one mode.
+            ("Edit",   "Del",            "Str_Menu_ProcKill"),
+            ("Edit",   "Del",            "Str_Menu_SvcStop"),
+            ("Edit",   "Ctrl+R",         "Str_Menu_ProcRestart"),
+            ("Edit",   "Ctrl+O",         "Str_Menu_ProcOpenLocation"),
+            ("Edit",   "Ctrl+Shift+A",   "Str_Menu_ProcRunAsAdmin"),
+            ("Edit",   "Ctrl+S",         "Str_Menu_SvcStart"),
+            ("Edit",   "Ctrl+.",         "Str_Ks_ProcToggle"),
+
+            // Ctrl+F12 ONLY - no bare-F-key row, unlike F9/Ctrl+F9 above, because there is no
+            // unelevated way in: bare F12 is locked family-wide to the About card, and the
+            // Security log this tab reads refuses to open for a process that is not elevated
+            // anyway (EventViewerTabs.cs, Elevation.cs RelaunchElevatedEventViewer).
+            ("Tabs",   "Ctrl+F12",       "Str_Ks_EventViewer"),
+
+            // Ctrl+F11 ONLY - same shape as Ctrl+F12 above and for the same reason: there is no
+            // unelevated way in, and bare F11 stays the Performance tab (Elevation.cs
+            // RelaunchElevatedRegistryEditor).
+            ("Tabs",   "Ctrl+F11",       "Str_Ks_RegistryEditor"),
+
+            // Registry Editor tab - local to the tree/grid (RegistryEditorControl.cs
+            // PreviewKeyDown), reachable only while the tab has focus, same convention as the
+            // Processes/Services rows above: reuse the context menu's own Str_Menu_* strings as
+            // labels rather than a parallel Str_Ks_* set.
+            ("Edit",   "F2",             "Str_Menu_RegRename"),
+            ("Edit",   "Del",            "Str_Menu_RegDelete"),
+            ("Search", "Ctrl+F",         "Str_Ks_RegFind"),
+            ("Edit",   "Ctrl+C",         "Str_Menu_RegCopyPath"),
+            ("Edit",   "Enter",          "Str_Menu_RegModify"),
+            ("View",   "F5",             "Str_TT_RegRefresh"),
+
             ("Edit",   "Ctrl+A",         "Str_Ks_SelectAll"),
             ("Edit",   "Ctrl+X / C / V", "Str_Ks_CutCopyPaste"),
             ("Edit",   "F2",             "Str_Ks_Rename"),
@@ -72,12 +133,18 @@ namespace KillerShell.Shell
             ("Edit",   "Ctrl+Shift+L",   "Str_Ks_Clear"),
             ("Edit",   "Esc",            "Str_Ks_Esc"),
 
+            // Editor-focus only - reach the document rather than the window (IsEditorChord,
+            // EditorTabs.cs).
+            ("Edit",   "Ctrl+G",         "Str_TT_EdGoto"),
+            ("Edit",   "Ctrl+S",         "Str_TT_EdSave"),
+
             // Results context-menu commands. These reuse the MENU's own Str_Menu_* strings as
             // their labels rather than adding a parallel set of Str_Ks_* keys: the card would
             // only be restating the menu row word for word, and duplicating the wording across
             // ten locale files is how the two drift apart. Locale key count is unchanged.
             ("File",   "Enter",           "Str_Menu_OpenFile"),
             ("File",   "F7",              "Str_Menu_Edit"),
+            ("File",   "Ctrl+F7",         "Str_TT_NewDocAdmin"),
             ("File",   "Ctrl+,",          "Str_Prof_Edit"),
             ("File",   "Ctrl+Shift+O",    "Str_Menu_OpenWith"),
             ("File",   "Ctrl+Shift+Enter","Str_Menu_OpenAdmin"),
@@ -121,14 +188,17 @@ namespace KillerShell.Shell
 
             ShortcutListHost.Children.Clear();
 
-            // Two columns side by side rather than one long scroll. Categories are dealt into the
-            // left column until it holds about half the rows, then the rest go right - so reading
-            // order is still top-left down, then top-right down, and a group is never split
-            // across the fold.
-            int total = KsRows.Length, running = 0;
-
+            // Two columns side by side rather than one long scroll. Categories are dealt out
+            // whole (a group is never split across the fold), but by rendered WEIGHT rather than
+            // raw row count - a plain count split looked balanced on paper and then rendered
+            // lopsided, because several rows wrap their description to two lines (long ones like
+            // "Second pane (F10) | right-click to flip side-by-side / stacked") while most don't,
+            // so whichever column happened to collect more of the long rows ran tall while the
+            // other sat half-empty. Each category goes to whichever column is currently lighter,
+            // which keeps the two columns close in actual height instead of item count.
             var left  = new StackPanel();
             var right = new StackPanel();
+            double leftWeight = 0, rightWeight = 0;
 
             var columns = new Grid();
             columns.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -142,8 +212,21 @@ namespace KillerShell.Shell
 
             foreach (string cat in KsCatOrder)
             {
-                var column = running * 2 < total ? left : right;
-                foreach (var c in KsRows) if (c.Cat == cat) running++;
+                var rowsInCat = KsRows.Where(r => r.Cat == cat).ToList();
+
+                // ~1 weight unit per heading, plus ~1 per description line, estimated from the
+                // resolved string's length against the desc column's rough character width at
+                // its font size - not exact (real wrapping depends on live layout), but close
+                // enough to stop one column from running away from the other.
+                double catWeight = 1.0;
+                foreach (var r in rowsInCat)
+                {
+                    string text = TryFindResource(r.Label) as string ?? "";
+                    catWeight += Math.Max(1, Math.Ceiling(text.Length / 42.0));
+                }
+
+                var column = leftWeight <= rightWeight ? left : right;
+                if (column == left) leftWeight += catWeight; else rightWeight += catWeight;
 
                 var heading = new TextBlock
                 {

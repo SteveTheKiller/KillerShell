@@ -174,13 +174,31 @@
                                             <Button DockPanel.Dock="Right" Content="x" Style="{StaticResource DangerButton}" Width="18" Height="18" Margin="6,0,0,0"
                                                     FocusVisualStyle="{x:Null}"
                                                     ToolTip="{DynamicResource Str_TT_CloseTab}" Tag="{Binding}" Click="CloseTab_Click"/>
+                                            <!-- A browsing tab's real Windows folder icon
+                                                 (TabFolderIconConverter) - the same source the
+                                                 overflow dropdown already uses. Width/Height
+                                                 pinned to 14 like the overflow dropdown pins its
+                                                 own Image to 16 - IconCache's px parameter picks
+                                                 which shell icon LIST to pull from (32px/48px/
+                                                 256px), not the bitmap's actual pixel size, so an
+                                                 unconstrained Image rendered at whatever that
+                                                 list's real icon size happens to be on the
+                                                 machine (Steve, 2026-08-02: tabs turned into
+                                                 giant folders). Stretch=Uniform downscales
+                                                 cleanly regardless. Visibility, not size, is what
+                                                 makes a null Source (not a folder tab) take no
+                                                 room - the collapse trigger below. -->
+                                            <Image x:Name="tabFolderIcon" DockPanel.Dock="Left"
+                                                   Width="14" Height="14" Stretch="Uniform"
+                                                   Margin="0,0,5,0" VerticalAlignment="Center"
+                                                   Source="{Binding Converter={StaticResource TabFolderIcon}}"/>
                                             <!-- Shell tabs carry a glyph so a terminal is not
                                                  mistaken for a folder at a glance. Collapsed
                                                  for every other kind of tab, so nothing about
                                                  a folder tab moves. -->
                                             <TextBlock x:Name="tabGlyph" DockPanel.Dock="Left"
                                                        Text="{Binding TabGlyph}" FontFamily="Segoe MDL2 Assets"
-                                                       FontSize="10" Margin="0,0,5,0" VerticalAlignment="Center"
+                                                       FontSize="12" Margin="0,0,5,0" VerticalAlignment="Center"
                                                        Foreground="{DynamicResource MutedTextBrush}"/>
                                             <TextBlock x:Name="tabLbl" Text="{Binding Title}" FontFamily="Consolas" FontSize="11"
                                                        Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center"
@@ -191,6 +209,9 @@
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding TabGlyph}" Value="">
                                         <Setter TargetName="tabGlyph" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Converter={StaticResource TabFolderIcon}}" Value="{x:Null}">
+                                        <Setter TargetName="tabFolderIcon" Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                     <!-- Last tab drops its right border: that 1px is a divider
                                          BETWEEN tabs, and on the strip's right edge it reads as a
@@ -545,9 +566,27 @@
                         <Button x:Name="ShowHiddenBtn" Content="&#xE7B3;" Width="26" Height="24" Padding="0" Margin="0,0,6,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_ShowHidden}" Click="ShowHidden_Click"/>
-                        <Button x:Name="FoldersTopBtn" Content="&#xE8B7;" Width="26" Height="24" Padding="0" Margin="0,0,6,0"
+                        <!-- Custom composite glyph (Steve, 2026-08-02): no single Segoe MDL2 glyph
+                             reads as "folders sort above files", so this stacks FolderHorizontal
+                             (F12B) as the base with CaretUpSolid8 (EDDB) centered on top, rather
+                             than reusing an unrelated glyph. -->
+                        <Button x:Name="FoldersTopBtn" Width="26" Height="24" Padding="0" Margin="0,0,6,0"
+                                Style="{StaticResource SurfaceButton}"
+                                ToolTip="{DynamicResource Str_TT_FoldersTop}" Click="FoldersTop_Click">
+                            <Grid>
+                                <TextBlock Text="&#xF12B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="&#xEDDB;" FontFamily="Segoe MDL2 Assets" FontSize="7"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0"/>
+                            </Grid>
+                        </Button>
+                        <!-- Details/preview strip toggle (Shell/DetailsPane.cs). Slides out of the
+                             BOTTOM of this pane, not a side panel - see the strip itself further
+                             down. Window-wide like ShowHidden/FoldersTop above it, so both panes
+                             agree on whether it is showing. -->
+                        <Button x:Name="DetailsPaneBtn" Content="&#xE75B;" Width="26" Height="24" Padding="0" Margin="0,0,6,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
-                                ToolTip="{DynamicResource Str_TT_FoldersTop}" Click="FoldersTop_Click"/>
+                                ToolTip="{DynamicResource Str_TT_DetailsPane}" Click="DetailsPane_Click"/>
                     <!-- Pipe: search WITHIN these results in a new tab. Collapsed while browsing
                          (ViewOptions.cs) - piping a folder listing into a search tab is the one
                          case where it reads as a filter and surprises you. -->
@@ -637,7 +676,8 @@
                 <Border x:Name="DetailsHeader" DockPanel.Dock="Top" Visibility="Collapsed"
                         Background="{DynamicResource TableHeaderBrush}" BorderBrush="{DynamicResource HeaderLineBrush}"
                         BorderThickness="0,0,0,1" CornerRadius="5,5,0,0"
-                        Padding="{Binding HeaderPad, Source={x:Static shellns:ResultsViewState.Current}}">
+                        Padding="{Binding HeaderPad, Source={x:Static shellns:ResultsViewState.Current}}"
+                        MouseRightButtonUp="DetailsHeader_MouseRightButtonUp">
                   <!-- The header lives inside a scroll viewer with BOTH bars disabled, which is
                        not about scrolling at all - it is the only thing that stops this Grid's
                        width reaching the window.
@@ -784,6 +824,153 @@
                     </Grid>
                 </Border>
 
+                <!-- DETAILS/PREVIEW STRIP (Shell/DetailsPane.cs): slides out of the BOTTOM of
+                     this pane, full width, NOT a side panel like Explorer's - Steve wants it
+                     under the listing. Declared AFTER PaneStatusBar (Bottom-docked children stack
+                     in declaration order, first = bottommost), so this sits just above the
+                     status strip and below the results list.
+                     Off by default (Height 0, Collapsed). DetailsPaneBtn (ToolStrip above) and
+                     Alt+P toggle it; ApplyDetailsPane animates Height from/to a MEASURED content
+                     height, never a guessed constant, until the user drags DetailsPaneGrip below -
+                     the Bookmarks-drawer lesson (a fixed pixel target drifts from a variable-
+                     length path/attributes row and a variable-aspect image), same estimate-then-
+                     measure-and-correct shape. ClipToBounds hides the content overshoot mid-
+                     animation.
+                     Split into two columns: file details (left) and an image preview / big shell
+                     icon (right) - DetailsPaneContent (Shell/DetailsPane.cs). -->
+                <!-- PaneBrush, not MenuBackgroundBrush (Steve, 2026-08-02): LocationRow above
+                     paints nothing of its own and lets the pane's PaneBrush show through - see
+                     the identical note on the shell bar further down - so this strip needs the
+                     same brush to read as one continuous band with the toolbar rather than a
+                     darker strip stacked under it. -->
+                <Border x:Name="DetailsPane" DockPanel.Dock="Bottom" Height="0" Visibility="Collapsed"
+                        ClipToBounds="True" Background="{DynamicResource PaneBrush}"
+                        BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="0,1,0,0">
+                    <Grid>
+                        <Grid x:Name="DetailsPaneContent" Margin="14,10,14,10" SizeChanged="DetailsPaneContent_SizeChanged">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <!-- Width is set from CODE (Shell/DetailsPane.cs ApplyDetailsPreviewWidth),
+                                 tracking the strip's own HEIGHT rather than being independently
+                                 draggable - Steve tried a side splitter here and it was "not
+                                 helpful". The 150 below is only the pre-layout placeholder. -->
+                            <ColumnDefinition x:Name="DetailsPreviewCol" Width="150"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Blank state: no selection. Fields stay hidden rather than showing
+                             empty/dashed rows - there is nothing to be specific about yet. -->
+                        <TextBlock x:Name="DetailsEmptyText" Grid.Column="0" Text="{DynamicResource Str_Details_Empty}"
+                                   Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}"
+                                   FontSize="11.5" VerticalAlignment="Center" Visibility="Collapsed"/>
+
+                        <StackPanel x:Name="DetailsFieldsGrid" Grid.Column="0" VerticalAlignment="Center">
+                            <!-- PrimaryBrush, matching ScopePathLabel's treatment of the current
+                                 location above (LocationRow) - the family's "this is the title
+                                 text" accent, not the plain TextBrush every field value below uses.
+                                 WordmarkFont + a size well above the field rows (10/11 below) - it
+                                 is the title of what you're looking at, so it should read as more
+                                 prominent (Steve, 2026-08-02). -->
+                            <TextBlock x:Name="DetailsNameText" FontFamily="{DynamicResource WordmarkFont}" FontSize="20"
+                                       FontWeight="SemiBold" Foreground="{DynamicResource PrimaryBrush}" Margin="0,0,0,9"
+                                       TextWrapping="Wrap">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="Black" BlurRadius="6" ShadowDepth="2" Direction="270" Opacity="0.6"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <Grid Margin="0,0,0,3">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_Col_Size}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock x:Name="DetailsSizeText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,3">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_Col_Modified}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock x:Name="DetailsModifiedText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,3">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Created}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock x:Name="DetailsCreatedText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,3">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Type}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock x:Name="DetailsTypeText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,3">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Attributes}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock x:Name="DetailsAttrText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Path}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock x:Name="DetailsPathText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11"
+                                           TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Static 1px divider between the details fields and the preview column -
+                             no longer a GridSplitter (Steve tried dragging it and said it was "not
+                             helpful"; the preview now widens with the STRIP's height instead, via
+                             DetailsPaneGrip below). Kept purely as a visual rule, matching the old
+                             splitter's line color. -->
+                        <Border Grid.Column="1" Width="1" HorizontalAlignment="Center" Margin="0,2"
+                                Background="{DynamicResource PaneBorderBrush}"/>
+
+                        <!-- Preview: DetailsPreviewImage is the real decoded thumbnail (images
+                             only, off the UI thread - Shell/DetailsPane.cs). DetailsPreviewIcon is
+                             the shell's own big icon (IconCache), shown for everything else and as
+                             the placeholder while an image decodes. Never both at once.
+                             Stretch, not Center: the column/row now sizes with the strip's height
+                             (Shell/DetailsPane.cs ApplyDetailsPreviewWidth), and the images need to
+                             fill that area - Stretch="Uniform" on each Image is what keeps them
+                             proportional inside it while it grows or shrinks. -->
+                        <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Image x:Name="DetailsPreviewImage" Stretch="Uniform"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Visibility="Collapsed" SnapsToDevicePixels="True"/>
+                            <Image x:Name="DetailsPreviewIcon" Stretch="Uniform"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Visibility="Collapsed" SnapsToDevicePixels="True"/>
+                        </Grid>
+                        </Grid>
+
+                        <!-- Horizontal resize grip: the STRIP's own height, not a column width.
+                             Same Thumb approach as BookmarksGrip (Shell/MainWindow.xaml) rather
+                             than a GridSplitter - DetailsPane.Height is also the property the
+                             open/close animation drives, and a splitter would fight that. Sits on
+                             the strip's TOP edge (VerticalAlignment="Top"), so dragging it resizes
+                             the boundary between the file listing above and this strip, the way an
+                             IDE's bottom-docked panel drags. -->
+                        <Thumb x:Name="DetailsPaneGrip" Height="5" VerticalAlignment="Top"
+                               Panel.ZIndex="60" Cursor="SizeNS"
+                               DragDelta="DetailsPaneGrip_DragDelta"
+                               DragCompleted="DetailsPaneGrip_DragCompleted">
+                            <Thumb.Template>
+                                <ControlTemplate TargetType="Thumb">
+                                    <!-- Transparent, not empty: a Border with no Background is
+                                         not hit-testable and the grip would be unusable. -->
+                                    <Border Background="Transparent">
+                                        <Rectangle x:Name="hint" Height="1" VerticalAlignment="Top"
+                                                   Fill="{DynamicResource PaneBorderBrush}" Opacity="0"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="hint" Property="Opacity" Value="1"/>
+                                        </Trigger>
+                                        <Trigger Property="IsDragging" Value="True">
+                                            <Setter TargetName="hint" Property="Opacity" Value="1"/>
+                                            <Setter TargetName="hint" Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Thumb.Template>
+                        </Thumb>
+                    </Grid>
+                </Border>
+
                 <!-- The list area sits on the in-between tone (MenuBackgroundBrush - between
                      the bar and pane tiers, like KillerPDF's annotation bars), grain-wrapped.
                      CornerRadius is driven from code (UpdatePaneStatusBar): square while the
@@ -797,9 +984,11 @@
                 <!-- A shell tab draws here instead of the listing. Declared BEFORE the list so
                      the list's context menus and drag handlers keep working normally when it is
                      the one showing; only one of the two is ever visible.
-                     The terminal paints PaneBrush itself, and the grain goes on TOP of it, so a
-                     shell sits on the same textured surface as the rest of the pane rather than
-                     looking like a black hole cut into it. -->
+                     The terminal paints SurfaceBrush itself (TerminalPalette.cs) - a step below
+                     PaneBrush, the same "elevated but not stark" surface KillerPDF's floating
+                     annotation bars use - so a shell reads as a screen sunk slightly into the
+                     pane rather than either the pane's own flat color or a black hole cut into
+                     it. -->
                 <Grid x:Name="TerminalHost" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -811,8 +1000,13 @@
                          could act on - you cannot cd a pty by clicking Back - so what is left is
                          the one thing that IS live: where the shell currently is, tracked from
                          OSC 7. The buttons are the rows a hand reaches for often enough not to
-                         want a right-click first; the rest stay in the menu. -->
-                    <Border Grid.Row="0" Height="26" Background="{DynamicResource MenuBackgroundBrush}"
+                         want a right-click first; the rest stay in the menu.
+                         PaneBrush, not MenuBackgroundBrush (Steve, 2026-08-02): the folder
+                         browsing LocationRow paints nothing of its own and lets the pane's own
+                         PaneBrush show through, which is what makes it blend into the active
+                         tab above it; MenuBackgroundBrush here was a full step darker, so this
+                         bar visibly seamed against the tab where the folder view never did. -->
+                    <Border Grid.Row="0" Height="26" Background="{DynamicResource PaneBrush}"
                             BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,0,0,1">
                         <Grid>
                             <Border IsHitTestVisible="False"
@@ -829,15 +1023,22 @@
                                            Foreground="{DynamicResource MutedTextBrush}"
                                            FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                            VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <!-- Clickable: this is the shell's cwd, and the thing you want
-                                     from it is the folder listing, which is what the row does
-                                     (TerminalBar.cs TermCwd_Click). -->
+                                <!-- Click to edit: type a folder and press Enter to cd the LIVE
+                                     shell there (TerminalBar.cs TermCwd_Click / TermCwdBox_*).
+                                     Opening the path as a folder TAB is TermFolderBtn's job
+                                     (the folder icon to the right) - this text is about the
+                                     shell, not the pane, so it no longer duplicates that button. -->
                                 <TextBlock x:Name="TermCwdText" Grid.Column="1"
                                            Foreground="{DynamicResource PrimaryBrush}"
                                            FontFamily="{DynamicResource MonoFont}" FontSize="12"
                                            VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                           Cursor="Hand" ToolTip="{DynamicResource Str_TT_TermCwd}"
+                                           Cursor="IBeam" ToolTip="{DynamicResource Str_TT_TermCwd}"
                                            MouseLeftButtonUp="TermCwd_Click"/>
+                                <TextBox x:Name="TermCwdBox" Grid.Column="1" Visibility="Collapsed"
+                                         FontFamily="{DynamicResource MonoFont}" FontSize="12"
+                                         VerticalContentAlignment="Center"
+                                         PreviewKeyDown="TermCwdBox_KeyDown"
+                                         LostFocus="TermCwdBox_LostFocus"/>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
                                     <Button x:Name="TermNewBtn" Content="&#xE756;" Width="24" Height="20" Padding="0"
@@ -881,8 +1082,12 @@
                          Verbs on the bar, preferences behind the gear. Encoding and line ending
                          are readouts rather than controls: a script PowerShell 5.1 will read
                          depends on both and neither is visible in the text, but changing either
-                         rewrites somebody's file just to look at it. -->
-                    <Border Grid.Row="0" Height="26" Background="{DynamicResource MenuBackgroundBrush}"
+                         rewrites somebody's file just to look at it.
+                         PaneBrush, not MenuBackgroundBrush (Steve, 2026-08-02): same fix as the
+                         shell bar above - MenuBackgroundBrush is a full step darker than the
+                         pane, so this bar visibly seamed against the tab above it where the
+                         folder view's own location row never does. -->
+                    <Border Grid.Row="0" Height="26" Background="{DynamicResource PaneBrush}"
                             BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,0,0,1">
                         <Grid>
                             <Border IsHitTestVisible="False"
@@ -1010,15 +1215,68 @@
                                 </StackPanel>
 
                                 <!-- The full path, because the tab only has room for the name and
-                                     two files called settings.json are otherwise identical. -->
+                                     two files called settings.json are otherwise identical. Click
+                                     to edit and press Enter to rename/move the file on disk
+                                     (EditorBar.cs EdPath_Click / EditorPathBox_*) - the same
+                                     click-to-edit shape as the shell's cwd box above. Cursor and
+                                     ToolTip are set from code (SyncEditorBar), not here, because
+                                     they only turn on once the document has a real path; an
+                                     untitled document has nothing yet to rename. -->
                                 <TextBlock x:Name="EditorPathText" Grid.Column="1" Margin="10,0,10,0"
                                            Foreground="{DynamicResource MutedTextBrush}"
                                            FontFamily="{DynamicResource MonoFont}" FontSize="11"
-                                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                           MouseLeftButtonUp="EdPath_Click"/>
+                                <TextBox x:Name="EditorPathBox" Grid.Column="1" Visibility="Collapsed"
+                                         FontFamily="{DynamicResource MonoFont}" FontSize="11"
+                                         VerticalContentAlignment="Center"
+                                         PreviewKeyDown="EditorPathBox_KeyDown"
+                                         LostFocus="EditorPathBox_LostFocus"/>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock x:Name="EditorEncodingText" Foreground="{DynamicResource DimTextBrush}"
-                                               FontFamily="Consolas" FontSize="10.5" VerticalAlignment="Center"/>
+                                    <!-- The encoding readout is a picker, not just a label - click
+                                         it to change what the NEXT save writes (EditorBar.cs
+                                         EditorEncoding_Click / EdEncoding_Click). Same borderless-
+                                         chip treatment as the readout it replaces at rest;
+                                         SurfaceButton's own hover/press states are what says it is
+                                         now clickable. Popup anchored to THIS button, not a fixed
+                                         point (the locked family flyout rule) - Placement="Bottom"
+                                         because the bar sits at the top of the pane, same as the
+                                         gear and go-to popups right next to it. -->
+                                    <Button x:Name="EditorEncodingBtn" Style="{StaticResource SurfaceButton}"
+                                            Background="Transparent" BorderThickness="0" Padding="4,2"
+                                            Foreground="{DynamicResource DimTextBrush}"
+                                            FontFamily="Consolas" FontSize="10.5" VerticalAlignment="Center"
+                                            ToolTip="{DynamicResource Str_TT_EdEncoding}" Click="EditorEncoding_Click"/>
+                                    <Popup x:Name="EditorEncodingPopup" PlacementTarget="{Binding ElementName=EditorEncodingBtn}"
+                                           Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
+                                           HorizontalOffset="-14" VerticalOffset="-2">
+                                        <Grid Margin="14">
+                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="6" IsHitTestVisible="False">
+                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
+                                            </Border>
+                                            <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
+                                                    BorderThickness="1" CornerRadius="6" Padding="6">
+                                                <StackPanel MinWidth="168">
+                                                    <Button x:Name="EdEncUtf8" CommandParameter="utf8" Content="{DynamicResource Str_Ed_EncUtf8}"
+                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
+                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdEncoding_Click"/>
+                                                    <Button x:Name="EdEncUtf8Bom" CommandParameter="utf8bom" Content="{DynamicResource Str_Ed_EncUtf8Bom}"
+                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
+                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdEncoding_Click"/>
+                                                    <Button x:Name="EdEncUtf16Le" CommandParameter="utf16le" Content="{DynamicResource Str_Ed_EncUtf16Le}"
+                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
+                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdEncoding_Click"/>
+                                                    <Button x:Name="EdEncUtf16Be" CommandParameter="utf16be" Content="{DynamicResource Str_Ed_EncUtf16Be}"
+                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
+                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdEncoding_Click"/>
+                                                    <Button x:Name="EdEncAnsi" CommandParameter="ansi" Content="{DynamicResource Str_Ed_EncAnsi}"
+                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
+                                                            Padding="10,3" FontSize="11" Click="EdEncoding_Click"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </Grid>
+                                    </Popup>
                                     <TextBlock x:Name="EditorEolText" Margin="10,0,0,0"
                                                Foreground="{DynamicResource DimTextBrush}"
                                                FontFamily="Consolas" FontSize="10.5" VerticalAlignment="Center"/>
@@ -1032,7 +1290,63 @@
                             Background="{DynamicResource GrainTileBrush}"
                             Opacity="{DynamicResource GrainOpacity}"/>
                 </Grid>
-                <ListBox x:Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="8,4,8,0" Focusable="False"
+                <!-- A Task Manager tab draws here, on the same terms as the shell and the
+                     document above it: declared before the list, only ever one of the four
+                     visible, and grain-wrapped so it sits on the pane's texture instead of in a
+                     hole cut out of it. Unlike the other two this has no separate bar row of its
+                     own - ProcessListControl carries its filter box and grid in one surface, so
+                     there is nothing here for a location-style bar to say. -->
+                <Grid x:Name="ProcessListHost" Visibility="Collapsed">
+                    <ContentControl x:Name="ProcessListSlot" Focusable="False"/>
+                    <Border IsHitTestVisible="False"
+                            Background="{DynamicResource GrainTileBrush}"
+                            Opacity="{DynamicResource GrainOpacity}"/>
+                </Grid>
+                <!-- An Event Viewer tab draws here, on the same terms as the Task Manager grid
+                     above: declared before the list, only ever one of the four visible, and
+                     grain-wrapped so it sits on the pane's texture instead of in a hole cut out
+                     of it. EventViewerControl carries its own log/level pickers and filter box
+                     in one surface, so there is nothing here for a location-style bar to say. -->
+                <Grid x:Name="EventViewerHost" Visibility="Collapsed">
+                    <ContentControl x:Name="EventViewerSlot" Focusable="False"/>
+                    <Border IsHitTestVisible="False"
+                            Background="{DynamicResource GrainTileBrush}"
+                            Opacity="{DynamicResource GrainOpacity}"/>
+                </Grid>
+                <!-- A Performance Monitor tab draws here, on the same terms as the Task Manager
+                     and Event Viewer grids above: declared before the list, only ever one of the
+                     five visible, and grain-wrapped so it sits on the pane's texture instead of in
+                     a hole cut out of it. PerformanceMonitorControl carries its own hardware panel
+                     and live gauges in one surface, so there is nothing here for a location-style
+                     bar to say. -->
+                <Grid x:Name="PerformanceHost" Visibility="Collapsed">
+                    <ContentControl x:Name="PerformanceSlot" Focusable="False"/>
+                    <Border IsHitTestVisible="False"
+                            Background="{DynamicResource GrainTileBrush}"
+                            Opacity="{DynamicResource GrainOpacity}"/>
+                </Grid>
+                <!-- A Registry Editor tab draws here, on the same terms as the other four host
+                     grids above: declared before the list, only ever one of six visible, and
+                     grain-wrapped so it sits on the pane's texture instead of in a hole cut out
+                     of it. RegistryEditorControl carries its own address bar, tree and value
+                     grid in one surface, so there is nothing here for a location-style bar to
+                     say. Admin-only tab - see Shell/RegistryEditorTabs.cs. -->
+                <Grid x:Name="RegistryEditorHost" Visibility="Collapsed">
+                    <ContentControl x:Name="RegistryEditorSlot" Focusable="False"/>
+                    <Border IsHitTestVisible="False"
+                            Background="{DynamicResource GrainTileBrush}"
+                            Opacity="{DynamicResource GrainOpacity}"/>
+                </Grid>
+                <!-- SurfaceBrush, not Transparent (Steve, 2026-08-02): a transparent list let the
+                     pane's own PaneBrush show through behind every row, so the folder listing -
+                     list, icons and details views alike, all three switch panels on this one
+                     ListBox - read as the exact same flat color as the surrounding pane. The
+                     terminal screen and the document editor already sit one step below the pane
+                     on SurfaceBrush (TerminalPalette.cs, EditorControl.cs); this brings the file
+                     browser's own content surface onto the same step. DynamicResource here is
+                     the native XAML equivalent of those two code-behind Res() lookups - both
+                     resolve against the live theme, so a theme switch still repaints it. -->
+                <ListBox x:Name="ResultsList" Background="{DynamicResource SurfaceBrush}" BorderThickness="0" Padding="8,4,8,0" Focusable="False"
                          FocusVisualStyle="{x:Null}" SelectionMode="Extended"
                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                          VirtualizingPanel.ScrollUnit="Pixel"
@@ -1172,7 +1486,11 @@
                              depends on both the file and the current size, and containers get
                              recycled onto different files as the grid scrolls (ResultsView.cs). -->
                         <DataTemplate x:Key="TileTemplate" DataType="{x:Type models:SearchResult}">
-                            <Border CornerRadius="4" Cursor="Hand"
+                            <!-- x:Name="TileBd" so TileResultText (AppStyles.xaml) can bind the
+                                 filename's hover-green to this Border's own IsMouseOver - the
+                                 exact same condition that already drives the gray hover
+                                 background below, so the two effects light up together. -->
+                            <Border x:Name="TileBd" CornerRadius="4" Cursor="Hand"
                                     Margin="{Binding TileMargin, Source={x:Static shellns:ResultsViewState.Current}}"
                                     Padding="{Binding TilePad, Source={x:Static shellns:ResultsViewState.Current}}"
                                     Tag="{Binding FilePath}" ToolTip="{Binding FilePath}"
@@ -1185,7 +1503,7 @@
                                                 <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                                <Setter Property="Background" Value="{DynamicResource SelectionBg}"/><Setter Property="TextElement.Foreground" Value="{DynamicResource SelectionFg}"/>
+                                                <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -1198,7 +1516,13 @@
                                            shellns:TileArt.Path="{Binding FilePath}"
                                            shellns:TileArt.IsDirectory="{Binding IsDirectory}"
                                            shellns:TileArt.Size="{Binding TileSize, Source={x:Static shellns:ResultsViewState.Current}}"/>
-                                    <TextBlock Text="{Binding FileName}" Style="{StaticResource ResultText}"
+                                    <!-- TileResultText, not the shared ResultText: the filename here
+                                         turns accent-green on HOVER, not on selection (Steve,
+                                         2026-08-02) - moved off the selected state, which now shows
+                                         the default text color. Scoped to this tile template only;
+                                         the details/list view's Name column still uses ResultText
+                                         and keeps its selected-row-turns-green behavior. -->
+                                    <TextBlock Text="{Binding FileName}" Style="{StaticResource TileResultText}"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="10.5"
                                                TextAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                                                MaxHeight="30"

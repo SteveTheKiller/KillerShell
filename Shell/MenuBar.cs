@@ -4,7 +4,7 @@ using System.Windows.Media.Animation;
 
 // Hiding the pane menubar. Partial of MainWindow.
 //
-// F10 collapses the location row - nav buttons, path, tool strip - in the FOCUSED pane, and
+// Ctrl+F10 collapses the location row - nav buttons, path, tool strip - in the FOCUSED pane, and
 // brings it back. Per pane, not window-wide: the two panes are usually doing different jobs, and
 // a shell you want bare does not mean you also want the folder listing beside it stripped of its
 // path and its view buttons.
@@ -13,10 +13,10 @@ using System.Windows.Media.Animation;
 // state. Per tab would mean the chrome jumped on every tab switch, which is the opposite of
 // what hiding it is for.
 //
-// F10 rather than a Ctrl chord because a bare F10 has meant "the menu bar" on Windows since
-// before any of this, and single keys are the house style. Shift+F10 keeps its own meaning as
-// Windows' context-menu key. It is listed in IsWindowChord (TerminalTabs.cs), so it still works
-// while a shell has focus.
+// Bare F10 toggles the second pane (dual pane) instead, since 2026-08-02 - see MainWindow.xaml.cs
+// for that handler and DualPane.cs for what it does. Menu bar moved to Ctrl+F10 to sit next to it
+// on the same key. Shift+F10 keeps its own meaning as Windows' context-menu key. Both F10 forms
+// are listed in IsWindowChord (TerminalTabs.cs), so they still work while a shell has focus.
 namespace KillerShell.Shell
 {
     public partial class MainWindow
