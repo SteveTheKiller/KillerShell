@@ -847,6 +847,11 @@
                         ClipToBounds="True" Background="{DynamicResource PaneBrush}"
                         BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="0,1,0,0">
                     <Grid>
+                        <!-- Drawn first, before DetailsPaneContent - the field labels/values below
+                             paint no opaque background of their own, so the texture shows through
+                             behind the text exactly like PaneContent's own grain layer does further
+                             up, instead of sitting on top of it. -->
+                        <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                         <Grid x:Name="DetailsPaneContent" Margin="14,10,14,10" SizeChanged="DetailsPaneContent_SizeChanged">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -1061,10 +1066,12 @@
                         </Grid>
                     </Border>
 
+                    <!-- No grain layer here (Steve, 2026-08-03): the terminal paints its own
+                         background AND every character it draws as one opaque surface
+                         (TerminalPalette.cs) with no gap for a background-only texture to show
+                         through - a grain Border declared after this ContentControl could only
+                         ever sit on top of the prompt text itself, never behind it. -->
                     <ContentControl Grid.Row="1" x:Name="TerminalSlot" Focusable="False"/>
-                    <Border Grid.Row="1" IsHitTestVisible="False"
-                            Background="{DynamicResource GrainTileBrush}"
-                            Opacity="{DynamicResource GrainOpacity}"/>
                 </Grid>
                 <!-- A document tab draws here, on the same terms as the shell above it: declared
                      before the list, only ever one of the three visible, and grain-wrapped so an
@@ -1285,10 +1292,11 @@
                         </Grid>
                     </Border>
 
+                    <!-- No grain layer here either, same reasoning as TerminalSlot above: the
+                         editor paints its own background and text as one opaque surface
+                         (Editing/EditorControl.ApplyTheme), so grain declared after it would only
+                         ever sit on top of the document's own writing. -->
                     <ContentControl Grid.Row="1" x:Name="EditorSlot" Focusable="False"/>
-                    <Border Grid.Row="1" IsHitTestVisible="False"
-                            Background="{DynamicResource GrainTileBrush}"
-                            Opacity="{DynamicResource GrainOpacity}"/>
                 </Grid>
                 <!-- A Task Manager tab draws here, on the same terms as the shell and the
                      document above it: declared before the list, only ever one of the four
@@ -1337,16 +1345,33 @@
                             Background="{DynamicResource GrainTileBrush}"
                             Opacity="{DynamicResource GrainOpacity}"/>
                 </Grid>
-                <!-- SurfaceBrush, not Transparent (Steve, 2026-08-02): a transparent list let the
-                     pane's own PaneBrush show through behind every row, so the folder listing -
-                     list, icons and details views alike, all three switch panels on this one
-                     ListBox - read as the exact same flat color as the surrounding pane. The
-                     terminal screen and the document editor already sit one step below the pane
-                     on SurfaceBrush (TerminalPalette.cs, EditorControl.cs); this brings the file
-                     browser's own content surface onto the same step. DynamicResource here is
-                     the native XAML equivalent of those two code-behind Res() lookups - both
-                     resolve against the live theme, so a theme switch still repaints it. -->
-                <ListBox x:Name="ResultsList" Background="{DynamicResource SurfaceBrush}" BorderThickness="0" Padding="8,4,8,0" Focusable="False"
+                <!-- SurfaceBrush, not the pane's own PaneBrush (Steve, 2026-08-02): a list with
+                     nothing painted behind it let the pane's own PaneBrush show through behind
+                     every row, so the folder listing - list, icons and details views alike, all
+                     three switch panels on this one ListBox - read as the exact same flat color
+                     as the surrounding pane. The terminal screen and the document editor already
+                     sit one step below the pane on SurfaceBrush (TerminalPalette.cs,
+                     EditorControl.cs); this brings the file browser's own content surface onto the
+                     same step.
+                     SurfaceBrush and the grain are their OWN Border layers below, not the
+                     ListBox's own Background - texture belongs on the flat surface only, never
+                     painted over the icons/text a row draws, so the ListBox itself stays
+                     Transparent and lets both layers show through in the gaps around its content
+                     (2026-08-03 fix: an opaque ListBox.Background here had been covering the grain
+                     outright, and a grain Border added AFTER the list instead painted texture
+                     straight over every icon). -->
+                <!-- Visibility bound to ResultsList's own, not left unconditional: every other tab
+                     type (shell, editor, registry, processes, events) collapses ResultsList when
+                     IT activates (TerminalTabs.cs and siblings all set Pane.ResultsList.Visibility
+                     = Collapsed), but these two backing layers are new elements those switches
+                     never knew to touch - left unconditional they kept painting an opaque flat
+                     layer over whatever tab type was actually showing (2026-08-03 fix: this is
+                     exactly what turned a live terminal into a blank textured tab). -->
+                <Border IsHitTestVisible="False" Background="{DynamicResource SurfaceBrush}"
+                        Visibility="{Binding Visibility, ElementName=ResultsList}"/>
+                <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"
+                        Visibility="{Binding Visibility, ElementName=ResultsList}"/>
+                <ListBox x:Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="8,4,8,0" Focusable="False"
                          FocusVisualStyle="{x:Null}" SelectionMode="Extended"
                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                          VirtualizingPanel.ScrollUnit="Pixel"

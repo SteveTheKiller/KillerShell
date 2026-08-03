@@ -88,6 +88,19 @@ namespace KillerShell.Shell
             LoadError = null;
 
             var kids = new List<RegistryNode>();
+
+            // --demo never touches the real registry - see Services\DemoRegistry.cs. RegistryKey
+            // is sealed, so there is no faking one; this reads the fabricated table instead of
+            // ever calling RegistryPathHelper.OpenKey.
+            if (MainWindow.DemoMode)
+            {
+                foreach (var name in KillerShell.Services.DemoRegistry.ChildrenOf(FullPath))
+                    kids.Add(new RegistryNode(FullPath + "\\" + name, name) { Parent = this });
+                Children.Clear();
+                foreach (var k in kids) Children.Add(k);
+                return;
+            }
+
             try
             {
                 using var key = RegistryPathHelper.OpenKey(FullPath, writable: false);
@@ -108,6 +121,17 @@ namespace KillerShell.Shell
             {
                 // Deleted or unmounted between the tree showing it and the click that expanded
                 // it - not worth a status message, the row is about to disappear on next refresh.
+            }
+            catch (ArgumentException)
+            {
+                // HKEY_CLASSES_ROOT is a merged HKLM+HKCU view and routinely carries a stray
+                // subkey some installer's COM registration left with an invalid name (embedded
+                // NUL, over-length). GetSubKeyNames() throws ArgumentException on the whole call
+                // rather than skipping just that one entry - same crash class the rest of this
+                // file already guards against (see the rename/delete/create catches below), just
+                // missing here. No dedicated status string for this - it is the same "nothing to
+                // show" outcome as a key vanishing mid-read (IOException, above), not a real
+                // access problem, so it stays silent the same way.
             }
 
             Children.Clear();
@@ -192,13 +216,28 @@ namespace KillerShell.Shell
             _                              => "REG_NONE",
         };
 
+        // HKEY_CLASSES_ROOT is a merged HKLM+HKCU view and, past the ArgumentException fix for
+        // malformed names, can also carry a value whose DATA is pathologically large (some stray
+        // COM registration blob stored as REG_SZ/REG_BINARY instead of the small string regedit
+        // expects). A DataGrid cell has to measure and lay out whatever string it is handed, and
+        // WPF's text layout is not linear in string length - a multi-megabyte cell freezes the UI
+        // thread for a long time with nothing to catch, which reads as "app hung", not "app
+        // crashed". Cap what ever reaches the grid; Modify still reads and edits the real,
+        // untruncated value, this only bounds what gets displayed.
+        private const int MaxDisplayChars = 4000;
+
+        private static string Truncate(string s)
+            => s.Length <= MaxDisplayChars
+                ? s
+                : s.Substring(0, MaxDisplayChars) + $"...  ({s.Length} chars total)";
+
         internal static string DataLabel(object? value, RegistryValueKind kind)
         {
             switch (kind)
             {
                 case RegistryValueKind.String:
                 case RegistryValueKind.ExpandString:
-                    return value as string ?? string.Empty;
+                    return Truncate(value as string ?? string.Empty);
 
                 case RegistryValueKind.DWord:
                 {
@@ -215,9 +254,13 @@ namespace KillerShell.Shell
                 case RegistryValueKind.Binary:
                 {
                     var bytes = value as byte[] ?? Array.Empty<byte>();
-                    return bytes.Length == 0
-                        ? string.Empty
-                        : string.Join(" ", bytes.Select(b => b.ToString("x2", System.Globalization.CultureInfo.InvariantCulture)));
+                    if (bytes.Length == 0) return string.Empty;
+                    // Cap the byte count BEFORE building the hex string, not after - a many-MB
+                    // blob turned into a "XX XX XX ..." string first would already have paid the
+                    // cost Truncate exists to avoid.
+                    int shown = Math.Min(bytes.Length, MaxDisplayChars / 3);
+                    var hex = string.Join(" ", bytes.Take(shown).Select(b => b.ToString("x2", System.Globalization.CultureInfo.InvariantCulture)));
+                    return shown < bytes.Length ? hex + $" ...  ({bytes.Length} bytes total)" : hex;
                 }
 
                 case RegistryValueKind.MultiString:
@@ -225,11 +268,11 @@ namespace KillerShell.Shell
                     var arr = value as string[] ?? Array.Empty<string>();
                     // " | " between entries, not the raw NUL/CRLF regedit's own file format uses -
                     // this is a grid cell, and entries have to stay visibly separated on one line.
-                    return string.Join("  |  ", arr);
+                    return Truncate(string.Join("  |  ", arr));
                 }
 
                 default:
-                    return value?.ToString() ?? string.Empty;
+                    return Truncate(value?.ToString() ?? string.Empty);
             }
         }
     }
@@ -898,6 +941,13 @@ namespace KillerShell.Shell
         private void LoadValues(RegistryNode node)
         {
             _values.Clear();
+
+            if (MainWindow.DemoMode)
+            {
+                PopulateDemoValues(node);
+                return;
+            }
+
             try
             {
                 using var key = RegistryPathHelper.OpenKey(node.FullPath, writable: false);
@@ -928,6 +978,29 @@ namespace KillerShell.Shell
             catch (SecurityException)      { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); }
             catch (UnauthorizedAccessException) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); }
             catch (IOException) { /* the key vanished between selection and read - grid is just empty */ }
+            catch (ArgumentException) { /* a value name in this key is malformed (same HKCR merged-view
+                                           issue as LoadChildren above) - GetValueNames() throws for the
+                                           whole key instead of skipping the bad entry; grid is just empty */ }
+        }
+
+        /// <summary>--demo's version of the block above - same default-first/alphabetical
+        /// ordering, read from Services\DemoRegistry.cs instead of a real RegistryKey.</summary>
+        private void PopulateDemoValues(RegistryNode node)
+        {
+            var rows = new List<RegistryValueRow>();
+            bool sawDefault = false;
+
+            foreach (var v in KillerShell.Services.DemoRegistry.ValuesOf(node.FullPath))
+            {
+                if (v.Name.Length == 0) sawDefault = true;
+                rows.Add(new RegistryValueRow(v.Name, v.Kind, v.Value));
+            }
+
+            if (!sawDefault) rows.Insert(0, new RegistryValueRow(string.Empty, RegistryValueKind.String, null));
+
+            foreach (var r in rows.OrderBy(r => r.Name.Length != 0)
+                                   .ThenBy(r => r.Name, StringComparer.OrdinalIgnoreCase))
+                _values.Add(r);
         }
 
         private void RefreshCurrent()

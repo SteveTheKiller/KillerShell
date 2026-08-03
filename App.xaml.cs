@@ -161,6 +161,20 @@ namespace KillerShell
 
             Services.ThemeManager.Initialize();    // restore saved theme before the window is built
             Services.LocaleManager.Initialize();   // then the saved language (en-US base + override)
+
+            // Keep text-file.ico in sync with whatever THIS build embeds. EnsureFileIcon
+            // otherwise only ever runs from RegisterAssociations (Associations.cs), so anyone who
+            // registered under an older build and never opens the Associations card again would
+            // keep serving a stale, rebranded-away icon for every text file defaulted to
+            // KillerShell forever (Steve, 2026-08-03 - exactly this bug). Cheap: EnsureFileIcon
+            // already no-ops once the on-disk file matches the embedded one, so this is one file
+            // read most launches. Gated on AssociationsRegistered so a portable copy nobody has
+            // opted into associations for still gets no write here - "never registers anything on
+            // its own" (Associations.cs file header) covers refreshing the icon too, not just
+            // creating the association in the first place.
+            if (AssociationsRegistered(machine: false) || AssociationsRegistered(machine: true))
+                EnsureFileIcon();
+
             new MainWindow().Show();
         }
 

@@ -184,7 +184,7 @@
     <sys:String x:Key="Str_Count_Matches">{0} 件の一致</sys:String>
 
     <!-- About overlay -->
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">パワーユーザーのための自由なシェル。ファイルブラウザー、ターミナル、テキストエディターが一つのウィンドウ、一つのタブバー、一つのキー操作を共有します。インストール不要。</sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">パワーユーザーのための自由なシェル。ファイルブラウザー、ターミナル、テキストエディターが一つのウィンドウ、一つのタブバー、一つのキー操作を共有します。インストールは任意。</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> のユーティリティです。</sys:String>
     <sys:String x:Key="Str_About_Version">バージョン</sys:String>
     <sys:String x:Key="Str_About_Publisher">発行元</sys:String>

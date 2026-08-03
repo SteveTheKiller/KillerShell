@@ -128,6 +128,20 @@ namespace KillerShell.Shell
             CreateEditorTab(@"C:\Users\steve\code\killer-scripts\Backup-Nightly.ps1",
                             DemoScript());                                 // EditorTabs.cs
 
+            // ── Tab 7: a second shell, canned - network triage rather than a repo ─
+            CreateDemoTerminalTab(@"C:\Users\steve", DemoTerminalSessionNetwork());  // TerminalTabs.cs
+
+            // ── Tabs 8-10: the admin tools, each backed by its own fabricated data
+            // (RegistryEditorControl/EventViewerControl/ProcessListControl all branch on
+            // MainWindow.DemoMode internally - Shell/RegistryEditorControl.cs, .../EventViewerControl.cs,
+            // .../ProcessListControl.cs - and populate themselves from Services/DemoRegistry.cs and
+            // their own fixed fake rows the moment they load, same as every other demo tab reads
+            // from a fabricated source instead of the real machine). Creating the tab here is
+            // enough; nothing about --demo has to reach into these controls from outside.
+            CreateRegistryEditorTab();          // RegistryEditorTabs.cs
+            CreateEventViewerTab();             // EventViewerTabs.cs
+            CreateProcessListTab();             // ProcessTabs.cs
+
             foreach (var old in placeholders) _tabs.Remove(old);
             UpdateTabBar();
             ActivateTab(t1);
@@ -252,6 +266,67 @@ namespace KillerShell.Shell
             return s.ToString();
         }
 
+        // A second canned session for a second demo shell tab (GenerateDemoData tab 7) - network
+        // triage at a client site rather than a repo, so the two shell tabs do not look like the
+        // same screenshot twice. Same escape/glyph/color construction as DemoTerminalSession
+        // above, and the same "exactly 25 rows" reasoning: nothing has scrolled off the top by
+        // the time the tab is first drawn.
+        private static string DemoTerminalSessionNetwork()
+        {
+            string esc    = ((char)0x1B).ToString();
+            string reset  = esc + "[0m";
+            string accent = esc + "[38;2;232;72;90m";     // ACCENT #e8485a
+            string fg     = esc + "[38;2;255;253;232m";   // FG     #fffde8
+            string dim    = esc + "[38;2;226;181;138m";   // DIM    #e2b58a
+            string ok     = esc + "[38;2;92;184;92m";     // OK     #5cb85c
+            string warn   = esc + "[38;2;232;180;92m";    // WARN   #e8b45c
+            string onAcc  = esc + "[48;2;232;72;90m";     // the accent block behind the path
+
+            string sep  = ((char)0xE0B0).ToString();      // powerline right arrow
+            string chev = ((char)0x276F).ToString();      // heavy right angle
+
+            // No git branch segment on this one - a client site's admin box is not a repo, and
+            // the prompt function only draws that segment when it finds a .git directory to ask
+            // about (Terminal\KillerPrompt.ps1).
+            string prompt = onAcc + fg + @" ~ " + reset + accent + sep + reset + "\r\n"
+                          + accent + chev + " " + reset;
+
+            var s = new System.Text.StringBuilder();
+
+            s.Append(prompt);
+            s.Append(warn + "Test-NetConnection" + reset + " fairview-dc01 " + dim + "-InformationLevel" + reset + " Detailed\r\n");
+            s.Append("\r\n");
+            s.Append("ComputerName           : fairview-dc01\r\n");
+            s.Append("RemoteAddress          : 10.20.4.10\r\n");
+            s.Append("InterfaceAlias         : Ethernet\r\n");
+            s.Append("SourceAddress          : 10.20.4.201\r\n");
+            s.Append(ok + "PingSucceeded          : True" + reset + "\r\n");
+            s.Append("PingReplyDetails (RTT) : 1 ms\r\n");
+            s.Append("\r\n");
+
+            s.Append(prompt);
+            s.Append(warn + "ipconfig" + reset + " " + dim + "/all" + reset + " " + dim + "|" + reset
+                   + " " + warn + "Select-String" + reset + " \"DNS Servers|Default Gateway\"\r\n");
+            s.Append("\r\n");
+            s.Append("   Default Gateway . . . . . . . . . : 10.20.4.1\r\n");
+            s.Append("   DNS Servers . . . . . . . . . . . : 10.20.4.10\r\n");
+            s.Append("                                       1.1.1.1\r\n");
+            s.Append("\r\n");
+
+            s.Append(prompt);
+            s.Append(warn + "Invoke-PatchWindow.ps1" + reset + " " + dim + "-Site" + reset + " Fairview "
+                   + dim + "-WhatIf" + reset + "\r\n");
+            s.Append("\r\n");
+            s.Append(dim + "WHATIF: " + reset + "would install 4 updates on FAIRVIEW-DC01, reboot required\r\n");
+            s.Append(dim + "WHATIF: " + reset + "would install 2 updates on FAIRVIEW-FS01, reboot required\r\n");
+            s.Append(warn + "WARNING: " + reset + "FAIRVIEW-WKS07 unreachable - skipped\r\n");
+            s.Append("\r\n");
+
+            // Ends on a fresh prompt, so the cursor is sitting where a reader expects it.
+            s.Append(prompt);
+            return s.ToString();
+        }
+
         /// <summary>
         /// A plausible body for a fabricated file, chosen by extension, so F7 on anything in the
         /// demo results opens a document that looks like what its name promises.
@@ -277,6 +352,12 @@ namespace KillerShell.Shell
                     return DemoLog();
                 case ".reg":
                     return DemoReg();
+                case ".md":
+                case ".markdown":
+                    return DemoMarkdown();
+                case ".yml":
+                case ".yaml":
+                    return DemoYaml();
                 default:
                     // Something honest rather than a fake body for a type we have not written
                     // one for. A blank tab would read as a bug in the editor.
@@ -328,6 +409,102 @@ namespace KillerShell.Shell
             L("\"Channel\"=\"stable\"");
             L("\"Retries\"=dword:00000003");
             L("\"Legacy\"=-");
+            return s.ToString();
+        }
+
+        // Backup-Verification.md, one of DemoFs.cs's own Documents\Runbooks entries - a runbook
+        // rather than a README, since the app already has a script open for the "here is what I
+        // work on" screenshot and a runbook is a different enough document to be worth its own
+        // capture. Headings, a table, a checklist, a fenced code block and a link all appear in
+        // the first screenful, which is what a Markdown highlighter capture needs to show off.
+        private static string DemoMarkdown()
+        {
+            var s = new System.Text.StringBuilder();
+            void L(string line = "") => s.Append(line).Append("\r\n");
+
+            L("# Backup Verification");
+            L();
+            L("Monthly check that the nightly job (`Backup-Nightly.ps1`) is actually restorable,");
+            L("not just running without error. Run the first Monday of every month.");
+            L();
+            L("## Checklist");
+            L();
+            L("- [x] Confirm last night's job exit code was `0` in `killershell.log`");
+            L("- [x] Spot-check file counts on the NAS against the source share");
+            L("- [ ] Restore one folder from the latest backup to a scratch location");
+            L("- [ ] Open three restored files and confirm they are not corrupt");
+            L("- [ ] Log the result in the [ticket tracker](https://rmm.example.net/tickets)");
+            L();
+            L("## Share sizes as of last run");
+            L();
+            L("| Share     | Files   | Size    | Last mirrored |");
+            L("|-----------|--------:|--------:|----------------|");
+            L("| Accounts  |  18,204 |  6.2 GB | 2026-07-03     |");
+            L("| Projects  |  42,910 | 41.8 GB | 2026-07-03     |");
+            L("| Scans     |   3,117 |  9.4 GB | 2026-07-03     |");
+            L();
+            L("## Restore a folder for spot-checking");
+            L();
+            L("```powershell");
+            L("robocopy \\\\nas01\\Accounts\\2026 D:\\Restore-Test\\Accounts-2026 /E /R:1 /W:1");
+            L("```");
+            L();
+            L("> **Note:** never restore back onto the live share. `D:\\Restore-Test` is wiped");
+            L("> automatically at the end of the month - see `Remove-OldLogs` in the nightly script");
+            L("> for the pattern this follows.");
+            L();
+            L("See also: [DR-Test-Checklist](DR-Test-Checklist.md), [index](index.md).");
+            return s.ToString();
+        }
+
+        // docker-compose.yml, from DemoFs.cs's homelab folder - a small reverse-proxy stack, the
+        // kind of thing a field tech's own homelab actually runs. Comments, nested mappings, a
+        // sequence, an environment block and a couple of quoted strings all appear in the first
+        // screenful, which is what a YAML highlighter capture needs to show off.
+        private static string DemoYaml()
+        {
+            var s = new System.Text.StringBuilder();
+            void L(string line = "") => s.Append(line).Append("\r\n");
+
+            L("# homelab reverse proxy - Traefik in front of Pi-hole");
+            L("# See notes.md for the DNS split-horizon setup this depends on.");
+            L();
+            L("services:");
+            L("  traefik:");
+            L("    image: traefik:v3.1");
+            L("    container_name: traefik");
+            L("    restart: unless-stopped");
+            L("    command:");
+            L("      - \"--providers.docker=true\"");
+            L("      - \"--providers.docker.exposedbydefault=false\"");
+            L("      - \"--entrypoints.web.address=:80\"");
+            L("      - \"--entrypoints.websecure.address=:443\"");
+            L("    ports:");
+            L("      - \"80:80\"");
+            L("      - \"443:443\"");
+            L("    volumes:");
+            L("      - /var/run/docker.sock:/var/run/docker.sock:ro");
+            L("      - ./traefik:/etc/traefik");
+            L();
+            L("  pihole:");
+            L("    image: pihole/pihole:latest");
+            L("    container_name: pihole");
+            L("    restart: unless-stopped");
+            L("    environment:");
+            L("      TZ: \"America/Denver\"");
+            L("      WEBPASSWORD_FILE: /run/secrets/pihole_password");
+            L("    volumes:");
+            L("      - ./pihole/etc-pihole:/etc/pihole");
+            L("      - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d");
+            L("    dns:");
+            L("      - 127.0.0.1");
+            L("      - 1.1.1.1");
+            L("    secrets:");
+            L("      - pihole_password");
+            L();
+            L("secrets:");
+            L("  pihole_password:");
+            L("    file: ./.env");
             return s.ToString();
         }
 

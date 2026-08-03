@@ -141,7 +141,7 @@
     <sys:String x:Key="Str_Count_Matches">{0} Treffer</sys:String>
 
     <!-- About overlay -->
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Freie Shell für Power-User. Dateimanager, Terminal und Texteditor teilen sich ein Fenster, eine Tableiste und einen Satz Tasten. Keine Installation, keine Laufzeit. Ein Dienstprogramm von </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Freie Shell für Power-User. Dateimanager, Terminal und Texteditor teilen sich ein Fenster, eine Tableiste und einen Satz Tasten. Installation optional, keine Laufzeit. Ein Dienstprogramm von</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSION</sys:String>
     <sys:String x:Key="Str_About_Publisher">HERAUSGEBER</sys:String>

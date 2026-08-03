@@ -80,15 +80,42 @@ namespace KillerShell
         {
             try
             {
-                if (File.Exists(FileIconPath)) return;
                 var asm = System.Reflection.Assembly.GetExecutingAssembly();
                 var rn = Array.Find(asm.GetManifestResourceNames(),
                     n => n.IndexOf("text-file", StringComparison.OrdinalIgnoreCase) >= 0
                          && n.EndsWith(".ico", StringComparison.OrdinalIgnoreCase));
                 if (rn == null) return;
+
                 using var rs = asm.GetManifestResourceStream(rn)!;
-                using var fs = File.Create(FileIconPath);
-                rs.CopyTo(fs);
+                using var ms = new MemoryStream();
+                rs.CopyTo(ms);
+                byte[] embedded = ms.ToArray();
+
+                // NOT "if it already exists, leave it" (the bug: an icon dropped by an OLDER
+                // build never got refreshed - RegisterAssociations only calls this once per
+                // install/re-register, so upgrading past a rebranded icon left every text
+                // association pointing at the file on disk from whenever it was first written,
+                // however many versions ago that was, until the user unregistered and
+                // re-registered by hand). Compare bytes and only rewrite when the embedded icon
+                // actually differs, so a repeat call after this fix stays a no-op once the file
+                // on disk matches what THIS build carries.
+                if (File.Exists(FileIconPath))
+                {
+                    try
+                    {
+                        byte[] onDisk = File.ReadAllBytes(FileIconPath);
+                        if (onDisk.Length == embedded.Length)
+                        {
+                            bool same = true;
+                            for (int i = 0; i < onDisk.Length; i++)
+                                if (onDisk[i] != embedded[i]) { same = false; break; }
+                            if (same) return;
+                        }
+                    }
+                    catch { /* fall through and try to overwrite */ }
+                }
+
+                File.WriteAllBytes(FileIconPath, embedded);
             }
             catch { }
         }

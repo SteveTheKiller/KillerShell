@@ -391,6 +391,19 @@ namespace KillerShell.Shell
             CancelLoad();
             _items.Clear();
 
+            // --demo has no real machine to read a log from (Shell/DemoMode.cs), so this never
+            // touches EventLogReader in demo mode - a fixed fabricated set instead, same
+            // "everything fixed" rule the rest of demo mode follows. The log/level pickers still
+            // work; PopulateDemoEvents filters the same fake rows the way a real Reload would
+            // have filtered real ones, so switching "System" -> "Security" in a capture still
+            // shows something plausible rather than an empty grid.
+            if (MainWindow.DemoMode)
+            {
+                PopulateDemoEvents(SelectedSource(), SelectedLevel());
+                ShowStatus(string.Empty, error: false);
+                return;
+            }
+
             var cts = new CancellationTokenSource();
             _loadCts = cts;
 
@@ -414,6 +427,69 @@ namespace KillerShell.Shell
             _loadCts?.Cancel();
             _loadCts = null;
         }
+
+        // ═══════════════════════════════════════════════════════════
+        //  DEMO DATA  -  --demo, see Reload() above. The same fabricated MSP workstation the rest
+        //  of demo mode invents (Shell/DemoMode.cs, Services/DemoFileSystem.cs) - the agent/backup
+        //  jobs the fake terminal session and file listings already reference show up here too, so
+        //  a capture with two of these tabs open agrees with itself about what actually happened.
+        // ═══════════════════════════════════════════════════════════
+        private static readonly DateTime DemoNow = new(2026, 7, 3, 8, 12, 0, DateTimeKind.Utc);
+
+        private void PopulateDemoEvents(LogSource source, LevelFilter level)
+        {
+            var all = new List<EventLogEntryInfo>
+            {
+                new("System", "Error", DemoNow.AddHours(-9), "Microsoft-Windows-WMI", 10,
+                    "None", "Event filter with query \"SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_Processor'\" could not be reactivated in namespace \"//./root/CIMV2\" because of error 0x80041003. Events cannot be delivered through this filter until the problem is corrected.",
+                    "Classic", "WKS-STEVE01", "SYSTEM", "1220", "3164", "-", "184213", "Info", DemoEventXml("System", 10, "Microsoft-Windows-WMI")),
+                new("System", "Warning", DemoNow.AddHours(-8).AddMinutes(-40), "Disk", 153,
+                    "None", "The IO operation at logical block address 0x2a41f0 for Disk 0 (PDO name: \\Device\\00000047) was retried.",
+                    "Classic", "WKS-STEVE01", "SYSTEM", "4", "8", "-", "184198", "Info", DemoEventXml("System", 153, "Disk")),
+                new("System", "Information", DemoNow.AddHours(-8).AddMinutes(-1), "Service Control Manager", 7036,
+                    "None", "The Background Intelligent Transfer Service service entered the running state.",
+                    "Classic", "WKS-STEVE01", "SYSTEM", "812", "-", "-", "184190", "Info", DemoEventXml("System", 7036, "Service Control Manager")),
+                new("Application", "Error", DemoNow.AddHours(-2).AddMinutes(-6), "Application Error", 1000,
+                    "(100)", "Faulting application name: SentinelServiceHost.exe, version 23.4.6.1, time stamp 0x6620a1b0\r\nFaulting module name: ntdll.dll, version 10.0.22621.3155, time stamp 0x1c93a2e4\r\nException code: 0xc0000005\r\nFault offset: 0x0000000000058a10\r\nFaulting process id: 0x7c4\r\nFaulting application start time: 0x1dbb2c4e0a1f2b3\r\nReport Id: 6b2e9e13-1c4a-4a2e-9e1e-7f0a2d3c4b5e",
+                    "Classic", "WKS-STEVE01", "-", "1988", "5544", "-", "184240", "Info", DemoEventXml("Application", 1000, "Application Error")),
+                new("Application", "Warning", DemoNow.AddHours(-1).AddMinutes(-30), "MsiInstaller", 1015,
+                    "None", "Windows Installer reconfigured the product. Product Name: Microsoft Edge WebView2 Runtime. Product Version: 126.0.2592.68. Reconfiguration success or error status: 0.",
+                    "Classic", "WKS-STEVE01", "SYSTEM", "2988", "-", "-", "184255", "Info", DemoEventXml("Application", 1015, "MsiInstaller")),
+                new("Application", "Information", DemoNow.AddMinutes(-52), "ESENT", 326,
+                    "General", "svchost (812,S,0) SRUJet: The database engine started a new instance (0).",
+                    "Classic", "WKS-STEVE01", "SYSTEM", "812", "-", "-", "184261", "Info", DemoEventXml("Application", 326, "ESENT")),
+                new("Application", "Information", DemoNow.AddMinutes(-18), "KillerShell", 1,
+                    "None", "KillerShell 1.1.0 started for user steve.",
+                    "Classic", "WKS-STEVE01", "steve", "5116", "-", "-", "184268", "Info", DemoEventXml("Application", 1, "KillerShell")),
+                new("Security", "Information", DemoNow.AddHours(-13).AddMinutes(-2), "Microsoft-Windows-Security-Auditing", 4624,
+                    "Logon", "An account was successfully logged on.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-5-18\r\n\tAccount Name:\t\tWKS-STEVE01$\r\n\r\nLogon Type:\t\t\t2\r\n\r\nNew Logon:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1001\r\n\tAccount Name:\t\tsteve\r\n\tAccount Domain:\t\tWKS-STEVE01",
+                    "Audit Success", "WKS-STEVE01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "{5b1e2a0c-1f4d-4b3e-9c2a-8e7f6d5c4b3a}", "51204", "Info", DemoEventXml("Security", 4624, "Microsoft-Windows-Security-Auditing")),
+                new("Security", "Information", DemoNow.AddHours(-13).AddMinutes(-2), "Microsoft-Windows-Security-Auditing", 4672,
+                    "Special Logon", "Special privileges assigned to new logon.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1001\r\n\tAccount Name:\t\tsteve\r\n\tAccount Domain:\t\tWKS-STEVE01",
+                    "Audit Success", "WKS-STEVE01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "-", "51205", "Info", DemoEventXml("Security", 4672, "Microsoft-Windows-Security-Auditing")),
+                new("Security", "Warning", DemoNow.AddHours(-6).AddMinutes(-11), "Microsoft-Windows-Security-Auditing", 4625,
+                    "Logon", "An account failed to log on.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-0-0\r\n\tAccount Name:\t\t-\r\n\r\nLogon Type:\t\t\t3\r\n\r\nAccount For Which Logon Failed:\r\n\tAccount Name:\t\tadministrator\r\n\r\nFailure Reason:\t\tUnknown user name or bad password.",
+                    "Audit Failure", "WKS-STEVE01", "S-1-0-0", "-", "-", "-", "51260", "Info", DemoEventXml("Security", 4625, "Microsoft-Windows-Security-Auditing")),
+            };
+
+            IEnumerable<EventLogEntryInfo> filtered = source == LogSource.All
+                ? all
+                : all.Where(e => string.Equals(e.LogName, LogNameFor(source), StringComparison.OrdinalIgnoreCase));
+
+            if (level != LevelFilter.All)
+                filtered = filtered.Where(e => string.Equals(e.Level, level.ToString(), StringComparison.OrdinalIgnoreCase));
+
+            foreach (var e in filtered) _items.Add(e);
+        }
+
+        /// <summary>A small, well-formed EventRecord-shaped XML body for the raw-XML view
+        /// (Controls/EventDetailsDialog.xaml) - real events carry far more, but this is enough to
+        /// show the view is not just switching to a blank tab.</summary>
+        private static string DemoEventXml(string logName, int eventId, string provider)
+            => "<Event xmlns=\"http://schemas.microsoft.com/win/2004/08/events/event\">"
+             + "<System><Provider Name=\"" + provider + "\"/><EventID>" + eventId + "</EventID>"
+             + "<Channel>" + logName + "</Channel><Computer>WKS-STEVE01</Computer></System>"
+             + "<EventData/></Event>";
 
         private LogSource SelectedSource()
             => _logBox.SelectedItem is ComboBoxItem { Tag: LogSource s } ? s : LogSource.Application;

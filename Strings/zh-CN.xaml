@@ -141,7 +141,7 @@
     <sys:String x:Key="Str_Count_Matches">{0} 处匹配</sys:String>
 
     <!-- About overlay -->
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">面向高级用户的自由 shell。文件浏览器、终端和文本编辑器共享一个窗口、一条标签栏和一套快捷键。无需安装。</sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">面向高级用户的自由 shell。文件浏览器、终端和文本编辑器共享一个窗口、一条标签栏和一套快捷键。安装可选。</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> 出品的实用工具。</sys:String>
     <sys:String x:Key="Str_About_Version">版本</sys:String>
     <sys:String x:Key="Str_About_Publisher">发布者</sys:String>

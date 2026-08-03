@@ -490,8 +490,22 @@ namespace KillerShell.Shell
         /// just several seconds of the UI thread doing real, blocking work with nothing else
         /// able to run in the meantime, which looks exactly like a freeze from the outside.
         /// </remarks>
+        // --demo has no real machine behind it (DemoFs.cs is the same idea for the file browser),
+        // so a Processes/Services tab in a demo capture cannot go anywhere near WMI/ServiceController
+        // either - populated once from a fixed fake list and left alone rather than resampled
+        // every tick, the same "everything fixed, no live resampling" rule the rest of demo mode
+        // follows (Shell/DemoMode.cs header comment).
+        private bool _demoProcPopulated;
+        private bool _demoSvcPopulated;
+
         private async void Refresh()
         {
+            if (MainWindow.DemoMode)
+            {
+                if (!_demoProcPopulated) { _demoProcPopulated = true; PopulateDemoProcesses(); }
+                return;
+            }
+
             if (_refreshing) return;
             _refreshing = true;
 
@@ -811,6 +825,12 @@ namespace KillerShell.Shell
         /// _svcItems.</summary>
         private async void RefreshServices()
         {
+            if (MainWindow.DemoMode)
+            {
+                if (!_demoSvcPopulated) { _demoSvcPopulated = true; PopulateDemoServices(); }
+                return;
+            }
+
             if (_svcRefreshing) return;
             _svcRefreshing = true;
 
@@ -892,6 +912,88 @@ namespace KillerShell.Shell
             }
 
             return (samples, seen);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  DEMO DATA  -  --demo, see Refresh()/RefreshServices() above. Fabricated to look like
+        //  the same MSP field-tech workstation the rest of demo mode invents (DemoFs.cs, DemoMode.cs):
+        //  the app's own processes, the security/RMM stack a managed endpoint actually runs, and
+        //  a couple of ordinary ones so the list does not read as curated.
+        // ═══════════════════════════════════════════════════════════
+        private void PopulateDemoProcesses()
+        {
+            _items.Clear();
+            _byPid.Clear();
+
+            void Row(int pid, string name, string user, double cpu, long memMb, string cmd, string path, string parentPid, string started)
+            {
+                var p = new ProcessInfo(pid)
+                {
+                    Name = name, User = user, CpuPercent = cpu, MemoryBytes = memMb * 1024L * 1024L,
+                    CommandLine = cmd, Path = path, ParentPid = parentPid, StartTimeLabel = started,
+                };
+                _items.Add(p);
+                _byPid[pid] = p;
+            }
+
+            Row(4,     "System",                 "SYSTEM",        0.0, 0,   "",                                                              "",                                                       "0",    "-");
+            Row(812,   "svchost.exe",             "SYSTEM",        0.4, 18,  @"C:\Windows\system32\svchost.exe -k DcomLaunch -p",             @"C:\Windows\System32\svchost.exe",                       "812",  "07:41:02");
+            Row(1144,  "MsMpEng.exe",             "SYSTEM",        3.8, 210, @"""C:\Program Files\Windows Defender\MsMpEng.exe""",             @"C:\Program Files\Windows Defender\MsMpEng.exe",        "812",  "07:41:19");
+            Row(1988,  "SentinelAgent.exe",       "SYSTEM",        2.1, 156, @"""C:\Program Files\SentinelOne\Sentinel Agent\SentinelAgent.exe""", @"C:\Program Files\SentinelOne\Sentinel Agent\SentinelAgent.exe", "812", "07:41:24");
+            Row(2240,  "AEMAgent.exe",            "SYSTEM",        0.9, 88,  @"""C:\Program Files (x86)\CentraStage\AEMAgent\AEMAgent.exe""",  @"C:\Program Files (x86)\CentraStage\AEMAgent\AEMAgent.exe", "812", "07:41:31");
+            Row(3312,  "ScreenConnect.ClientService.exe", "SYSTEM", 0.1, 24, @"""C:\Program Files (x86)\ScreenConnect Client\ScreenConnect.ClientService.exe""", @"C:\Program Files (x86)\ScreenConnect Client\ScreenConnect.ClientService.exe", "812", "07:41:33");
+            Row(4028,  "explorer.exe",            "steve",         1.2, 142, @"C:\Windows\Explorer.EXE",                                       @"C:\Windows\explorer.exe",                               "3844", "07:42:10");
+            Row(5116,  "KillerShell.exe",          "steve",         4.6, 198, @"""C:\Program Files\KillerShell\KillerShell.exe""",                @"C:\Program Files\KillerShell\KillerShell.exe",            "4028", "07:58:03");
+            Row(5544,  "pwsh.exe",                 "steve",         0.6, 76,  @"""C:\Program Files\PowerShell\7\pwsh.exe"" -NoLogo",            @"C:\Program Files\PowerShell\7\pwsh.exe",                "5116", "08:01:47");
+            Row(6002,  "Code.exe",                 "steve",        11.4, 612, @"""C:\Users\steve\AppData\Local\Programs\Microsoft VS Code\Code.exe""", @"C:\Users\steve\AppData\Local\Programs\Microsoft VS Code\Code.exe", "4028", "08:05:12");
+            Row(6188,  "chrome.exe",               "steve",         6.9, 890, @"""C:\Program Files\Google\Chrome\Application\chrome.exe""",     @"C:\Program Files\Google\Chrome\Application\chrome.exe", "4028", "08:06:40");
+            Row(6910,  "Teams.exe",                "steve",         2.8, 340, @"""C:\Program Files\WindowsApps\MSTeams\Teams.exe""",            @"C:\Program Files\WindowsApps\MSTeams\Teams.exe",        "4028", "08:07:02");
+            Row(7204,  "OUTLOOK.EXE",              "steve",         1.5, 265, @"""C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE""", @"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE", "4028", "08:07:19");
+            Row(7860,  "robocopy.exe",             "SYSTEM",        0.2, 6,   @"robocopy.exe D:\Shares\Accounts \\nas01\Accounts /MIR /FFT /Z /NP", @"C:\Windows\System32\robocopy.exe",                  "812",  "23:00:01");
+
+            ShowStatus(string.Empty, error: false);
+        }
+
+        private void PopulateDemoServices()
+        {
+            _svcItems.Clear();
+            _byName.Clear();
+
+            void Row(string name, string display, string status, string startup, string logOnAs, string path, string description, bool canStop)
+            {
+                var s = new ServiceInfo(name)
+                {
+                    DisplayName = display, Status = status, StartupType = startup,
+                    LogOnAs = logOnAs, Path = path, Description = description, CanStop = canStop,
+                };
+                _svcItems.Add(s);
+                _byName[name] = s;
+            }
+
+            Row("Sense",       "Windows Defender Advanced Threat Protection Service", "Running", "Automatic",  "LocalSystem",
+                @"C:\Windows\System32\SenseIR\SenseIR.exe", "Sends diagnostic and usage data to Microsoft.", true);
+            Row("WinDefend",   "Microsoft Defender Antivirus Service",                "Running", "Automatic",  "LocalSystem",
+                @"""C:\Program Files\Windows Defender\MsMpEng.exe""", "Helps protect users from malware and other potentially unwanted software.", false);
+            Row("SentinelAgent", "SentinelOne Agent",                                 "Running", "Automatic",  "LocalSystem",
+                @"""C:\Program Files\SentinelOne\Sentinel Agent\SentinelServiceHost.exe""", "Endpoint protection agent.", true);
+            Row("CagService",  "Datto RMM Agent",                                     "Running", "Automatic",  "LocalSystem",
+                @"""C:\Program Files (x86)\CentraStage\CagService.exe""", "Datto RMM remote monitoring and management agent.", true);
+            Row("ScreenConnect Client", "ScreenConnect Client",                       "Running", "Automatic",  "LocalSystem",
+                @"""C:\Program Files (x86)\ScreenConnect Client\ScreenConnect.ClientService.exe""", "Remote support client.", true);
+            Row("VeeamAgent",  "Veeam Agent for Microsoft Windows",                   "Stopped", "Manual",     "LocalSystem",
+                @"""C:\Program Files\Veeam\Endpoint Backup\VeeamAgent.exe""", "Runs and manages Veeam backup jobs.", false);
+            Row("Spooler",     "Print Spooler",                                       "Running", "Automatic",  "LocalSystem",
+                @"C:\Windows\System32\spoolsv.exe", "Loads files to memory for later printing.", true);
+            Row("WSearch",     "Windows Search",                                      "Running", "Automatic (Delayed Start)", "LocalSystem",
+                @"C:\Windows\System32\SearchIndexer.exe /Embedding", "Provides content indexing and property caching.", true);
+            Row("BITS",        "Background Intelligent Transfer Service",             "Running", "Automatic (Delayed Start)", "LocalSystem",
+                @"C:\Windows\System32\svchost.exe -k netsvcs -p", "Transfers files in the background using idle network bandwidth.", true);
+            Row("wuauserv",    "Windows Update",                                      "Stopped", "Manual",     "LocalSystem",
+                @"C:\Windows\System32\svchost.exe -k netsvcs -p", "Enables the detection, download and installation of updates.", false);
+            Row("RemoteRegistry", "Remote Registry",                                  "Stopped", "Disabled",   "NT AUTHORITY\\LocalService",
+                @"C:\Windows\System32\svchost.exe -k LocalService", "Enables remote users to modify registry settings on this computer.", false);
+
+            ShowStatus(string.Empty, error: false);
         }
 
         private void ApplyServiceSamples(List<ServiceSample> samples, HashSet<string> seen)

@@ -4,6 +4,25 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-08-02
+
+1.1.1 is a bug fix release - a Registry Editor crash and freeze on HKEY_CLASSES_ROOT, a stale
+file-association icon that never refreshed across upgrades, and some grain-texture regressions
+in the file browser - plus expanded `--demo` coverage for the admin tools and a couple more
+canned editor/terminal samples.
+
+### Fixed
+- Opening HKEY_CLASSES_ROOT in the Registry Editor tab crashed the app - the merged HKLM+HKCU classes view often has a stray key or value with an invalid name (embedded NUL, over-length) from some installer's COM registration, and `GetSubKeyNames()`/`GetValueNames()` throws for the whole call instead of skipping just that entry. That `ArgumentException` was already handled everywhere else in the tab (rename, delete, create); it is now caught in the tree-load and value-load paths too.
+- Selecting a value under HKEY_CLASSES_ROOT could still freeze the app afterward (Windows shows "not responding") even with the crash above fixed - a stray HKCR entry's DATA, not just its name, can be pathologically large, and the value grid handed the raw string/hex straight to a DataGrid cell with no cap, which is a genuine multi-second-or-worse WPF layout cost for a multi-megabyte cell rather than anything that throws. The grid now caps what it displays (4000 characters, or ~1300 bytes worth of hex for REG_BINARY) and says how much was cut off; Modify still reads and writes the real, untruncated value.
+- `text-file.ico` - the icon Explorer shows for every text extension (.txt, .md, .ps1, .yml, .csv, .ini and the rest of `Associations.TextExtensions`) defaulted to KillerShell - never refreshed once written next to the exe. A rebranded icon in a newer build sat unused forever unless someone unregistered and re-registered associations by hand. `EnsureFileIcon` now compares the on-disk file against the one embedded in the current build and rewrites it when they differ; a launch also refreshes it automatically when associations are already registered, so an upgrade alone is enough.
+- The file listing's icon/list/details views lost their grain texture entirely after `ResultsList`'s background moved from transparent to an opaque `SurfaceBrush` (the pane-level grain layer sat behind it and got covered). Restoring it naively painted texture on top of every icon and filename instead. Fixed properly: `SurfaceBrush` and the grain are their own layers behind a `Transparent` `ResultsList`, so texture only ever shows in the gaps around content, never over it - and their visibility is now tied to `ResultsList`'s own, so a shell/editor/registry/processes/events tab activating (which collapses `ResultsList`) does not leave an opaque layer sitting over it.
+- The file details strip never had a grain layer at all - added, drawn behind the field labels/values so it matches the rest of the pane's texture.
+- Removed the grain layer over the terminal and the text editor - both paint their own background and every character as one opaque surface with no exposed gap, so grain there could only ever sit on top of the writing, never behind it.
+
+### Added
+- `--demo` now fabricates data for the Registry Editor, Event Viewer and Processes/Services tabs too, each reading from its own fixed fake source (`Services/DemoRegistry.cs` for the registry tree/values) instead of the real machine, the same "everything fixed, nothing live" rule the rest of demo mode already follows. HKEY_CLASSES_ROOT\.386's `PerceivedType` value in the fake registry is the same key/value that crashed the tab before this release's fix.
+- Two more fabricated file bodies for the text editor demo (`.md`, `.yml`/`.yaml`), and a second canned terminal session (network triage at a client site) for a second demo shell tab, so a capture does not repeat the same script/session twice.
+
 ## [1.1.0] - 2026-08-02
 
 1.1.0 is primarily an admin tools release - Processes/Services, Registry Editor, Event Viewer and a Performance Monitor tab all built into the shell - plus the theme/language flyout rebuild, a file details/preview strip, and other smaller additions and fixes.
