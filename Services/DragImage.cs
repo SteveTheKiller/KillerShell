@@ -9,7 +9,7 @@ namespace KillerShell.Services
     /// Sets the real Windows shell drag image (IDragSourceHelper) before a DoDragDrop call, so
     /// dragging a file shows the file's own icon at reduced opacity following the cursor - the
     /// same thing Explorer does - instead of the bare default OS cursor a plain DataObject leaves
-    /// you with (Steve, 2026-08-04: "right now its like a text cursor").
+    /// you with (Steve, 2026-08-03: "right now its like a text cursor").
     ///
     /// This is genuinely how Explorer wires it, not a homemade stand-in: a system-rendered drag
     /// image is drawn by the same OLE drag loop that tracks the cursor, so it can never fight the
@@ -22,9 +22,12 @@ namespace KillerShell.Services
         /// <summary>
         /// Best-effort only: a missing drag image is cosmetic, never a reason to fail the drag
         /// itself, so every failure here is swallowed and the caller's DoDragDrop proceeds either
-        /// way.
+        /// way. <paramref name="data"/> must be a real native-COM IDataObject whose SetData
+        /// actually works (see NativeDataObject) - a System.Windows.Forms.DataObject's SetData
+        /// throws NotImplementedException, which InitializeFromBitmap below surfaces as
+        /// hr=0x80004001 (E_NOTIMPL) and silently gets no drag image at all.
         /// </summary>
-        public static void Attach(System.Windows.Forms.DataObject data, ImageSource? icon, int size = 48, double opacity = 0.5)
+        public static void Attach(System.Runtime.InteropServices.ComTypes.IDataObject data, ImageSource? icon, int size = 48, double opacity = 0.5)
         {
             if (icon is not BitmapSource bmp)
             {
@@ -60,8 +63,7 @@ namespace KillerShell.Services
 
                 // The helper takes ownership of the bitmap once this succeeds; only this code
                 // frees it, and only when the call failed.
-                int hr = helper.InitializeFromBitmap(ref shdi,
-                    (System.Runtime.InteropServices.ComTypes.IDataObject)data);
+                int hr = helper.InitializeFromBitmap(ref shdi, data);
                 System.Diagnostics.Debug.WriteLine($"[DragDiag] DragImage.Attach: InitializeFromBitmap hr=0x{hr:X8}");
                 if (hr == 0) hBitmap = IntPtr.Zero;
             }
@@ -173,6 +175,77 @@ namespace KillerShell.Services
                 System.Runtime.InteropServices.ComTypes.IDataObject pDataObject);
             [PreserveSig] int InitializeFromWindow(IntPtr hwnd, ref POINT ppt,
                 System.Runtime.InteropServices.ComTypes.IDataObject pDataObject);
+        }
+
+    }
+
+    /// <summary>
+    /// The DROP side of the same shell drag-image contract: the layered "ghost" bitmap
+    /// DragImage.Attach writes onto the data object is only ever drawn by whichever window's
+    /// IDropTarget calls IDropTargetHelper as the drag passes over it - Explorer's own drop
+    /// target does this automatically, which is why the icon can look fine dropping onto a real
+    /// Explorer window. WPF's own AllowDrop plumbing does NOT call it, so a drag that never
+    /// leaves KillerShell (pane to pane, or window to window of the same app) never got an image
+    /// at all - confirmed the hard way: hr=0 out of InitializeFromBitmap, no GiveFeedback issue,
+    /// and still nothing on screen for an all-KillerShell drag (Steve, 2026-08-03).
+    ///
+    /// One instance must live for the whole DragEnter..Drop/DragLeave span - the helper tracks its
+    /// own layered window per instance, so calling DragOver on a fresh instance instead of the one
+    /// DragEnter created would move nothing.
+    /// </summary>
+    internal sealed class DropTargetHelper : IDisposable
+    {
+        private object? _com;
+
+        public bool Enter(IntPtr hwnd, System.Runtime.InteropServices.ComTypes.IDataObject data, System.Windows.Point screenPt, int effect)
+        {
+            _com = new DragDropHelperCoClass();
+            if (_com is not IDropTargetHelperCom helper) { _com = null; return false; }
+            var pt = new POINT { x = (int)screenPt.X, y = (int)screenPt.Y };
+            int hr = helper.DragEnter(hwnd, data, ref pt, effect);
+            System.Diagnostics.Debug.WriteLine($"[DragDiag] DropTargetHelper.Enter: hr=0x{hr:X8}");
+            return hr == 0;
+        }
+
+        public void Over(System.Windows.Point screenPt, int effect)
+        {
+            if (_com is not IDropTargetHelperCom helper) return;
+            var pt = new POINT { x = (int)screenPt.X, y = (int)screenPt.Y };
+            helper.DragOver(ref pt, effect);
+        }
+
+        public void Drop(System.Runtime.InteropServices.ComTypes.IDataObject data, System.Windows.Point screenPt, int effect)
+        {
+            if (_com is not IDropTargetHelperCom helper) return;
+            var pt = new POINT { x = (int)screenPt.X, y = (int)screenPt.Y };
+            helper.Drop(data, ref pt, effect);
+        }
+
+        public void Leave()
+        {
+            (_com as IDropTargetHelperCom)?.DragLeave();
+        }
+
+        public void Dispose()
+        {
+            if (_com != null) { Marshal.ReleaseComObject(_com); _com = null; }
+        }
+
+        [StructLayout(LayoutKind.Sequential)] private struct POINT { public int x, y; }
+
+        [ComImport, Guid("4657278A-411B-11D2-839A-00C04FD918D0")]
+        private class DragDropHelperCoClass { }
+
+        [ComImport, Guid("4657278B-411B-11D2-839A-00C04FD918D0"),
+         InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface IDropTargetHelperCom
+        {
+            [PreserveSig] int DragEnter(IntPtr hwndTarget,
+                System.Runtime.InteropServices.ComTypes.IDataObject dataObject, ref POINT pt, int effect);
+            [PreserveSig] int DragLeave();
+            [PreserveSig] int DragOver(ref POINT pt, int effect);
+            [PreserveSig] int Drop(System.Runtime.InteropServices.ComTypes.IDataObject dataObject,
+                ref POINT pt, int effect);
         }
     }
 }

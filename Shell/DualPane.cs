@@ -105,11 +105,18 @@ namespace KillerShell.Shell
             if (RightPane.Tabs.Count == 0)
             {
                 RightPane.TabStrip.ItemsSource = RightPane.Tabs;
-                SeedPane(RightPane, folder);   // async; sets the focus ring when it lands
+                // restoreFocus:false - SeedPane would otherwise quietly hand focus BACK to
+                // LeftPane once its awaited navigation lands, which is what "opens but stays on
+                // the pane I was already in" was actually caused by. FocusPane below is called
+                // synchronously right after, while SeedPane's own quiet focus-set (before its
+                // first await) is still in effect, so this both finishes the tab activation
+                // properly AND is not later undone by SeedPane's finally.
+                SeedPane(RightPane, folder, restoreFocus: false);
+                FocusPane(RightPane);
             }
             else
             {
-                UpdatePaneFocusRing();
+                FocusPane(RightPane);
             }
         }
 
@@ -771,7 +778,7 @@ namespace KillerShell.Shell
         // pane. The tab is therefore created NOT browsing (so ActivateTab's own fire-and-forget
         // `_ = NavigateTo(...)` never triggers) and the navigation is done here, awaited, with
         // focus still pointed at the target pane.
-        private async void SeedPane(FilePane pane, string? folder)
+        private async void SeedPane(FilePane pane, string? folder, bool restoreFocus = true)
         {
             var keep = Pane;
             FocusPaneQuiet(pane);
@@ -785,7 +792,13 @@ namespace KillerShell.Shell
             }
             finally
             {
-                FocusPaneQuiet(keep);
+                // OpenSecondPane wants the newly-opened pane to KEEP real command focus (Steve,
+                // 2026-08-03: "when i hit f10 to open second pane, it should gain focus") rather
+                // than have it quietly handed back to whichever pane had it before - so that one
+                // caller passes restoreFocus:false and calls the real FocusPane itself right
+                // after kicking this off. Every other use of this method keeps the original
+                // quiet-restore behavior.
+                if (restoreFocus) FocusPaneQuiet(keep);
             }
 
             // The window-wide view settings have to be pushed into the new pane, or it comes up

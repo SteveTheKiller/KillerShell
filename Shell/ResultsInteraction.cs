@@ -25,14 +25,27 @@ namespace KillerShell.Shell
         private bool        _marqueeOn;
         private bool        _dragArmed;      // pressed on an item, waiting to clear the threshold
         private SearchResult? _dragSeed;     // the item that was pressed
+        private ListBoxItem?  _dragSeedItem; // its container, kept for a late re-resolve - see StartFileDrag
         private bool        _marqueeAdditive;
+
+        // Which pane a drag-out started from, captured in StartFileDrag while that pane still
+        // has real focus. Only the ACTIVE tab is watched for filesystem changes
+        // (BrowseWatcher.cs), and Window_Drop switches focus to the DROP pane before the move
+        // runs (FocusPane(dropPane), below) - so a cross-pane move left the SOURCE pane, now
+        // unwatched, showing the file it no longer has until the user clicked back into it
+        // (Steve, 2026-08-03: "it left a copy in the other folder... the old one disappeared
+        // when i clicked back into that folder - something needs to update"). Used by
+        // RefreshSourcePaneIfStale after the drop to re-list that pane's folder directly rather
+        // than waiting on a watcher it no longer has.
+        private FilePane? _dragSourcePane;
 
         internal void ResultsList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _pressAt   = e.GetPosition(Pane.ResultsList);
-            _marqueeOn = false;
-            _dragArmed = false;
-            _dragSeed  = null;
+            _pressAt      = e.GetPosition(Pane.ResultsList);
+            _marqueeOn    = false;
+            _dragArmed    = false;
+            _dragSeed     = null;
+            _dragSeedItem = null;
 
             // The scrollbar is not a row, so it used to fall through to the marquee branch
             // below - which captures the mouse and leaves the scrollbar with nothing to drag.
@@ -46,8 +59,9 @@ namespace KillerShell.Shell
             {
                 // On an item: arm a possible drag-out. Selection itself is left to the ListBox,
                 // which already does Ctrl and Shift the way everyone expects.
-                _dragArmed = true;
-                _dragSeed  = DataFor(item);
+                _dragArmed    = true;
+                _dragSeedItem = item;
+                _dragSeed     = DataFor(item);
                 System.Diagnostics.Debug.WriteLine($"[DragDiag] PressDown: seed={(_dragSeed == null ? "NULL (would have failed the old DataContext read too)" : _dragSeed.FilePath)}");
                 return;
             }
@@ -169,14 +183,16 @@ namespace KillerShell.Shell
             return null;
         }
 
-        // A freshly-realized container's DataContext binding is not guaranteed to have run by
-        // the exact tick input events fire on it - the generator's own item/container map has
-        // no such race (it is a plain dictionary the generator maintains synchronously the
-        // moment the container exists), so it is asked first and DataContext is only a
-        // fallback. This was the actual cause of "click first, then click and drag": the first
-        // press on a row could see a real ListBoxItem (item != null) while its DataContext
-        // still read null, so _dragSeed came back null and StartFileDrag silently did nothing
-        // (Steve, 2026-08-04, confirmed via a [DragDiag] trace: item=found but seed=null).
+        // A freshly-realized container's generator mapping AND its DataContext binding can both
+        // still read null at the exact tick PreviewMouseLeftButtonDown fires on it - a
+        // [DragDiag] trace caught it happening to BOTH at once on the very first press of a
+        // session (item != null, but this returned null either way), so neither one is a
+        // reliable fallback for the other at press time. What actually settles it is time: by
+        // the time StartFileDrag re-tries this same call (after the drag has cleared the
+        // system's move threshold, i.e. after several MouseMove ticks), the container has
+        // always caught up. See _dragSeedItem / StartFileDrag for the re-resolve
+        // (Steve, 2026-08-03: "i need to be able to click and drag immediately without having
+        // to click, stop, then click+drag").
         private static SearchResult? DataFor(ListBoxItem? item)
         {
             if (item == null) return null;
@@ -217,36 +233,53 @@ namespace KillerShell.Shell
 
         private void StartFileDrag()
         {
+            // Captured before anything about focus can change - see the field comment.
+            _dragSourcePane = Pane;
+
+            // Re-try the same lookup PressDown already did. If the container's generator
+            // mapping/DataContext were not caught up yet at press time, the time spent clearing
+            // the move threshold (several MouseMove ticks) is enough for them to have settled by
+            // now - see the comment above DataFor.
+            if (_dragSeed == null) _dragSeed = DataFor(_dragSeedItem);
+            System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: late-resolved seed={_dragSeed?.FilePath ?? "still null"}");
+
             var paths = FilesForCommand(_dragSeed).Where(File.Exists).ToArray();
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: seed={_dragSeed?.FilePath ?? "null"}, resolvedPaths={paths.Length}");
             if (paths.Length == 0) return;
 
-            // A real System.Windows.Forms.DataObject, not System.Windows.DataObject: the WPF one's
-            // COM interop implementation is not a fully-functional native IDataObject, so the
-            // shell's IDragSourceHelper cannot do its own bookkeeping on it and InitializeFromBitmap
-            // fails outright (E_NOTIMPL) - a documented WPF gotcha, confirmed here by DragImage's
-            // own trace. WinForms' DataObject is the real, complete native-COM-backed
-            // implementation (already referenced - UseWindowsForms is on for the Task Manager tab's
-            // WMI calls), and WPF's own DragDrop.DoDragDrop happily accepts one directly.
-            var data = new System.Windows.Forms.DataObject();
-            data.SetData(DataFormats.FileDrop, paths);          // what Explorer and mail clients read
-            data.SetData(DataFormats.UnicodeText, string.Join(Environment.NewLine, paths));
+            // A real native-COM IDataObject, not System.Windows.Forms.DataObject: the WinForms
+            // one's IDataObject.SetData throws NotImplementedException (it is written only to be
+            // read FROM as a drag source, never written TO), so the shell's IDragSourceHelper
+            // cannot write its own drag-image formats onto it and InitializeFromBitmap fails
+            // outright - confirmed here by DragImage's own trace: hr=0x80004001 (E_NOTIMPL),
+            // exactly the HRESULT a NotImplementedException becomes crossing the COM boundary
+            // (Steve, 2026-08-03). Services.NativeDataObject implements SetData for real.
+            var data = new Services.NativeDataObject();
+            data.SetHGlobal(Services.NativeDataObject.CF_HDROP, Services.NativeDataObject.BuildHDrop(paths));
+            data.SetHGlobal(Services.NativeDataObject.CF_UNICODETEXT,
+                Services.NativeDataObject.BuildUnicodeText(string.Join(Environment.NewLine, paths)));
 
             // The file's own icon at half opacity, following the cursor - the same thing Explorer
             // shows, and the whole reason a plain DoDragDrop reads as "just a cursor" (Steve,
-            // 2026-08-04). One icon even for a multi-file drag: which file's icon to show for a
+            // 2026-08-03). One icon even for a multi-file drag: which file's icon to show for a
             // dozen mixed types is not worth guessing at, and Explorer itself falls back the same
             // way for a mixed selection.
             var dragIcon = Services.IconCache.For(paths[0], 48);
             Services.DragImage.Attach(data, dragIcon);
 
-            // Copy AND Move offered: the drop target decides, so holding Shift while dropping
-            // into Explorer moves the files instead of copying them. Offering Copy alone made
-            // KillerShell the one place a Shift-drag silently did the wrong thing.
+            // Native ole32 DoDragDrop, not System.Windows.DragDrop.DoDragDrop: WPF re-wraps
+            // whatever it is handed in its own System.Windows.DataObject, which would throw away
+            // the SetData behavior NativeDataObject exists for. Calling ole32 directly keeps the
+            // shell's drag-image writes and our own data on the exact same object the drag loop
+            // uses. Copy AND Move offered: the drop target decides, so holding Shift while
+            // dropping into Explorer moves the files instead of copying them. Offering Copy alone
+            // made KillerShell the one place a Shift-drag silently did the wrong thing.
             try
             {
-                var finalEffect = DragDrop.DoDragDrop(Pane.ResultsList, data, DragDropEffects.Copy | DragDropEffects.Move);
-                System.Diagnostics.Debug.WriteLine($"[DragDiag] DoDragDrop returned: {finalEffect}");
+                const int DROPEFFECT_COPY = 1, DROPEFFECT_MOVE = 2;
+                int hr = Services.NativeDragDrop.DoDragDrop(data, new Services.SimpleDropSource(),
+                    DROPEFFECT_COPY | DROPEFFECT_MOVE, out int finalEffect);
+                System.Diagnostics.Debug.WriteLine($"[DragDiag] DoDragDrop returned: hr=0x{hr:X8}, effect={finalEffect}");
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[DragDiag] DoDragDrop THREW: {ex}"); }
         }
@@ -255,6 +288,63 @@ namespace KillerShell.Shell
         // Folders set the scope, files become a piped list to search inside. Both are things you
         // would otherwise reach through the picker or a second search, so dropping is a shortcut
         // rather than a new capability.
+
+        // Lives for one DragEnter..Drop/DragLeave span - see Services.DropTargetHelper. Without
+        // this, KillerShell's own AllowDrop plumbing never calls IDropTargetHelper, so the shell
+        // drag image DragImage.Attach wrote onto the data object never got drawn for a drag that
+        // stayed inside KillerShell (pane to pane, or window to window) - only a drop onto real
+        // Explorer, whose own drop target DOES call the helper, ever showed it (Steve, 2026-08-03).
+        private Services.DropTargetHelper? _dropImageHelper;
+
+        private static int EffectsToNative(DragDropEffects effects)
+        {
+            int e = 0;
+            if ((effects & DragDropEffects.Copy) != 0) e |= 1;
+            if ((effects & DragDropEffects.Move) != 0) e |= 2;
+            if ((effects & DragDropEffects.Link) != 0) e |= 4;
+            return e;
+        }
+
+        private void Window_DragEnter(object sender, DragEventArgs e)
+        {
+            // WPF raises its OWN DragEnter/DragLeave per element as the pointer crosses child
+            // elements within the same window (Image -> Border, pane -> pane), but there is only
+            // ONE real native OLE drag session for the whole window - confirmed in the trace: a
+            // second "DropTargetHelper.Enter: hr=0x00000000" fired mid-drag with no real
+            // DragLeave from the OS in between. The shell's IDropTargetHelper expects exactly one
+            // Enter, then Over*, then Drop/Leave for a session; calling Enter a second time while
+            // it still considers the first session open desyncs its internal state machine, and
+            // the very next call into that corrupted state is what threw
+            // AccessViolationException (Steve, 2026-08-03). So: only call Enter once per actual
+            // drag - if a helper is already active, this is just another crossing within the same
+            // session and gets treated as an Over, not a fresh Enter.
+            if (_dropImageHelper != null)
+            {
+                _dropImageHelper.Over(PointToScreen(e.GetPosition(this)), EffectsToNative(e.Effects));
+                return;
+            }
+
+            if (e.Data is not System.Runtime.InteropServices.ComTypes.IDataObject comData) return;
+            if (PresentationSource.FromVisual(this) is not System.Windows.Interop.HwndSource hwndSource) return;
+
+            var screenPt = PointToScreen(e.GetPosition(this));
+            _dropImageHelper = new Services.DropTargetHelper();
+            _dropImageHelper.Enter(hwndSource.Handle, comData, screenPt, EffectsToNative(e.Effects));
+        }
+
+        private void Window_DragLeave(object sender, DragEventArgs e)
+        {
+            // Do NOT tear the helper down here: this fires on every WPF-level crossing out of a
+            // child element too (leaving the Image just before entering the Border beneath it),
+            // not only when the drag actually leaves the window. Disposing here just to have
+            // Window_DragEnter immediately build a second Enter session for the next element is
+            // the same Enter-while-already-open desync that threw AccessViolationException.
+            // Window_Drop is where the real end of a KillerShell-hosted drag is Leave()'d and
+            // disposed; if the drag instead lands on another app, that app's own drop target
+            // calls IDropTargetHelper on ITS OWN COM instance, so nothing here needs to react to
+            // this window losing the drag either.
+        }
+
         private void Window_DragOver(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -262,6 +352,7 @@ namespace KillerShell.Shell
                 System.Diagnostics.Debug.WriteLine("[DragDiag] Window_DragOver: no FileDrop data present - Effects=None");
                 e.Effects = DragDropEffects.None;
                 e.Handled = true;
+                _dropImageHelper?.Over(PointToScreen(e.GetPosition(this)), EffectsToNative(e.Effects));
                 return;
             }
 
@@ -282,6 +373,7 @@ namespace KillerShell.Shell
 
             System.Diagnostics.Debug.WriteLine($"[DragDiag] Window_DragOver: OriginalSource={e.OriginalSource?.GetType().Name}, target={overTarget ?? "null"}, Effects={e.Effects}");
             e.Handled = true;
+            _dropImageHelper?.Over(PointToScreen(e.GetPosition(this)), EffectsToNative(e.Effects));
         }
 
         /// <summary>
@@ -296,7 +388,7 @@ namespace KillerShell.Shell
         /// window-wide TargetFolder() - that reads the FOCUSED pane, and dragging never moves
         /// focus off the pane you picked the file up FROM. Falling back to TargetFolder() here
         /// meant a drop into empty space in the OTHER pane silently landed back in the source
-        /// pane's own folder instead (Steve, 2026-08-04).
+        /// pane's own folder instead (Steve, 2026-08-03).
         /// </summary>
         private string? DropTarget(DragEventArgs e)
         {
@@ -322,10 +414,15 @@ namespace KillerShell.Shell
             return null;
         }
 
-        private void Window_Drop(object sender, DragEventArgs e)
+        private async void Window_Drop(object sender, DragEventArgs e)
         {
             e.Handled = true;
             System.Diagnostics.Debug.WriteLine($"[DragDiag] Window_Drop: fired, OriginalSource={e.OriginalSource?.GetType().Name}");
+
+            if (e.Data is System.Runtime.InteropServices.ComTypes.IDataObject comData)
+                _dropImageHelper?.Drop(comData, PointToScreen(e.GetPosition(this)), EffectsToNative(e.Effects));
+            _dropImageHelper?.Dispose();
+            _dropImageHelper = null;
             if (e.Data.GetData(DataFormats.FileDrop) is not string[] dropped || dropped.Length == 0)
             {
                 System.Diagnostics.Debug.WriteLine("[DragDiag] Window_Drop: no FileDrop data - bailing");
@@ -341,7 +438,7 @@ namespace KillerShell.Shell
                 // and-select after a move - reads and writes through the FOCUSED pane (_active /
                 // Pane). Focus never moves during a drag on its own, so without this a cross-pane
                 // drop kept acting on the pane you dragged FROM instead of the one you actually
-                // dropped into (Steve, 2026-08-04).
+                // dropped into (Steve, 2026-08-03).
                 if (PaneUnder(e.OriginalSource as DependencyObject) is { } dropPane && dropPane != Pane)
                     FocusPane(dropPane);   // Panes.cs
 
@@ -357,7 +454,19 @@ namespace KillerShell.Shell
 
                 bool ctrl  = (e.KeyStates & DragDropKeyStates.ControlKey) != 0;
                 bool shift = (e.KeyStates & DragDropKeyStates.ShiftKey)   != 0;
-                DropOntoFolder(incoming, target, e.AllowedEffects, ctrl, shift);
+
+                // Awaited in sequence, not run concurrently: DropOntoFolder's own post-move
+                // refresh (RunCopyMove -> NavigateToAndSelectAll) reads/writes the FOCUSED pane,
+                // and so does RefreshSourcePaneIfStale below. NavigateTo bails out if focus moved
+                // out from under it mid-listing (Browse.cs's "tab != _active" guard, there so a
+                // slow listing cannot land on top of a folder you have since moved away from) -
+                // so running these two back to back unawaited let whichever one's listing was
+                // still in flight when the other flipped focus get silently discarded. That was
+                // the one-drag-late bug (Steve, 2026-08-03: "i drag box.png and it disappears i
+                // drag box1 and box finally appears"). Awaiting the drop's own refresh here means
+                // it has already landed before the source pane's focus is touched at all.
+                await DropOntoFolder(incoming, target, e.AllowedEffects, ctrl, shift);
+                await RefreshSourcePaneIfStale(_dragSourcePane);
                 return;
             }
 
@@ -368,6 +477,29 @@ namespace KillerShell.Shell
             // and a folder in that bag is ambiguous rather than useful.
             if (files.Count > 0) { PipeDroppedFiles(files); return; }
             if (folders.Count > 0) ScopeToFolder(folders[0]);
+        }
+
+        /// <summary>
+        /// Re-list the pane a drag-out started from if a cross-pane move just left it stale -
+        /// see the _dragSourcePane field comment. A no-op for the ordinary case (drag stayed in
+        /// the same pane, or that pane isn't even browsing a real folder anymore).
+        /// </summary>
+        private async System.Threading.Tasks.Task RefreshSourcePaneIfStale(FilePane? sourcePane)
+        {
+            if (sourcePane == null || sourcePane == Pane) return;
+            if (!DualPane && sourcePane == RightPane) return;   // not actually on screen
+
+            var tab = sourcePane.Active;
+            if (tab == null || !tab.IsBrowsing || string.IsNullOrEmpty(tab.CurrentFolder)) return;
+
+            var keep = Pane;
+            FocusPaneQuiet(sourcePane);
+            // Awaited before restoring focus - NavigateTo checks "tab != _active" once its
+            // listing comes back (Browse.cs), so quiet-restoring focus before this finishes
+            // made it discard its own results, which is why the pane looked like it refreshed
+            // a whole drag late instead of right away.
+            await NavigateTo(tab.CurrentFolder, record: false);   // Browse.cs
+            FocusPaneQuiet(keep);
         }
 
         private void ScopeToFolder(string folder)

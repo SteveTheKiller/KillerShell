@@ -28,7 +28,7 @@ namespace KillerShell.Shell
         /// needs this: the pane you drag FROM keeps focus for the whole gesture (nothing about an
         /// in-flight OLE drag moves it), so resolving through the focused pane's tab landed a
         /// cross-pane drop back in the SOURCE pane's own folder instead of wherever the cursor
-        /// actually was in the destination pane (Steve, 2026-08-04: dropped in the right pane,
+        /// actually was in the destination pane (Steve, 2026-08-03: dropped in the right pane,
         /// landed back in the right pane's own folder, "my mouse wasnt over that folder").
         /// </summary>
         private static string? TargetFolder(FilePane pane)
@@ -124,7 +124,7 @@ namespace KillerShell.Shell
             }
             catch { SetTabStatusKey(_active, "Str_Status_ClipboardBusy"); return; }
 
-            RunCopyMove(files, target, move);
+            _ = RunCopyMove(files, target, move);
         }
 
         // ── Drop ─────────────────────────────────────────────────
@@ -135,7 +135,7 @@ namespace KillerShell.Shell
         /// which is what makes dragging to another drive feel safe and dragging within one feel
         /// like rearranging.
         /// </summary>
-        internal void DropOntoFolder(string[] sources, string target, DragDropEffects allowed, bool ctrl, bool shift)
+        internal async System.Threading.Tasks.Task DropOntoFolder(string[] sources, string target, DragDropEffects allowed, bool ctrl, bool shift)
         {
             if (sources.Length == 0 || !Directory.Exists(target)) return;
 
@@ -154,9 +154,14 @@ namespace KillerShell.Shell
             // A drop onto a folder row is "take me there", not just "file work somewhere else" -
             // Explorer does not do this, but a drop that leaves you staring at the folder you
             // just emptied the file out of does not feel like it landed anywhere (Steve,
-            // 2026-08-04: "it needs to move the folder and scroll me to the location of that
+            // 2026-08-03: "it needs to move the folder and scroll me to the location of that
             // file"). Copying leaves the source in place, so only a move navigates.
-            RunCopyMove(sources, target, move, navigateAfterMove: move);
+            //
+            // Awaited (not fired-and-forgotten) so the caller - Window_Drop - only touches
+            // focus for the source-pane refresh once THIS pane's own post-move refresh has
+            // actually finished (see RefreshSourcePaneIfStale's comment for what breaks
+            // otherwise: NavigateTo bails out if focus moved out from under it mid-listing).
+            await RunCopyMove(sources, target, move, navigateAfterMove: move);
         }
 
         private static bool IsInside(string candidate, string ancestor)
@@ -277,14 +282,17 @@ namespace KillerShell.Shell
 
         // ── Shared plumbing ──────────────────────────────────────
 
-        private void RunCopyMove(string[] sources, string target, bool move, bool navigateAfterMove = false)
+        private async System.Threading.Tasks.Task RunCopyMove(string[] sources, string target, bool move, bool navigateAfterMove = false)
         {
             var r = FileOpDialog.CopyOrMove(this, sources, target, move);
             ReportResult(r);
             RefreshAfterFileOp();
 
+            // Awaited rather than fired-and-forgotten: DropOntoFolder's caller (Window_Drop)
+            // needs this pane's own refresh to be fully landed before it goes near focus again
+            // for the source-pane refresh, or the two race (see RefreshSourcePaneIfStale).
             if (navigateAfterMove && !r.Canceled && r.SucceededTargets.Count > 0)
-                _ = NavigateToAndSelectAll(target, r.SucceededTargets);
+                await NavigateToAndSelectAll(target, r.SucceededTargets);
         }
 
         /// <summary>

@@ -9,7 +9,7 @@
         Icon="pack://application:,,,/Resources/ksh-icon.ico"
         Height="710" Width="1140" MinHeight="500" MinWidth="600"
         WindowStyle="None"
-        AllowDrop="True" DragOver="Window_DragOver" Drop="Window_Drop"
+        AllowDrop="True" DragEnter="Window_DragEnter" DragOver="Window_DragOver" DragLeave="Window_DragLeave" Drop="Window_Drop"
         Background="{DynamicResource BackgroundBrush}"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
