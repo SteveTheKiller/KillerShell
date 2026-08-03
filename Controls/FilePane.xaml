@@ -676,7 +676,7 @@
                 <Border x:Name="DetailsHeader" DockPanel.Dock="Top" Visibility="Collapsed"
                         Background="{DynamicResource TableHeaderBrush}" BorderBrush="{DynamicResource HeaderLineBrush}"
                         BorderThickness="0,0,0,1" CornerRadius="5,5,0,0"
-                        Padding="{Binding HeaderPad, Source={x:Static shellns:ResultsViewState.Current}}"
+                        Padding="{Binding ViewState.HeaderPad, RelativeSource={RelativeSource AncestorType=local:FilePane}}"
                         MouseRightButtonUp="DetailsHeader_MouseRightButtonUp">
                   <!-- The header lives inside a scroll viewer with BOTH bars disabled, which is
                        not about scrolling at all - it is the only thing that stops this Grid's
@@ -697,15 +697,15 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <!-- Tracks the row's icon column, or every row sits off its heading. -->
-                            <ColumnDefinition Width="{Binding RowIconColumn, Source={x:Static shellns:ResultsViewState.Current}}"/>
+                            <ColumnDefinition Width="{Binding ViewState.RowIconColumn, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                             <!-- Every column carries its own dragged width and the STAR is last:
                                  a filler that takes whatever is left over. Name used to be the
                                  star, which meant resizing anything had to move Name as well and
                                  a drag could visibly shift a column you were not touching. -->
-                            <ColumnDefinition Width="{Binding NameWidth, Source={x:Static shellns:ResultsViewState.Current}}"/>
-                            <ColumnDefinition Width="{Binding LocationWidth, Source={x:Static shellns:ResultsViewState.Current}}"/>
-                            <ColumnDefinition Width="{Binding SizeWidth, Source={x:Static shellns:ResultsViewState.Current}}"/>
-                            <ColumnDefinition Width="{Binding ModifiedWidth, Source={x:Static shellns:ResultsViewState.Current}}"/>
+                            <ColumnDefinition Width="{Binding ViewState.NameWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
+                            <ColumnDefinition Width="{Binding ViewState.LocationWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
+                            <ColumnDefinition Width="{Binding ViewState.SizeWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
+                            <ColumnDefinition Width="{Binding ViewState.ModifiedWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="1" Style="{StaticResource ColHeaderBtn}" Click="ColName_Click">
@@ -760,7 +760,7 @@
                                 ToolTip="{DynamicResource Str_TT_ColResize}"/>
                         <Border Grid.Column="2" Tag="2" Width="6" Margin="0,0,-3,0"
                                 HorizontalAlignment="Right" Background="Transparent" Cursor="SizeWE"
-                                Visibility="{Binding LocationGripVisibility, Source={x:Static shellns:ResultsViewState.Current}}"
+                                Visibility="{Binding ViewState.LocationGripVisibility, RelativeSource={RelativeSource AncestorType=local:FilePane}}"
                                 PreviewMouseLeftButtonDown="ColGrip_MouseDown"
                                 PreviewMouseMove="ColGrip_MouseMove"
                                 PreviewMouseLeftButtonUp="ColGrip_MouseUp"
@@ -912,7 +912,7 @@
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Path}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
                                 <TextBlock x:Name="DetailsPathText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11"
-                                           TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                                           TextWrapping="Wrap" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
                             </Grid>
                         </StackPanel>
 
@@ -1066,17 +1066,21 @@
                         </Grid>
                     </Border>
 
-                    <!-- No grain layer here (Steve, 2026-08-03): the terminal paints its own
+                    <!-- No grain Border here (Steve, 2026-08-03): the terminal paints its own
                          background AND every character it draws as one opaque surface
-                         (TerminalPalette.cs) with no gap for a background-only texture to show
-                         through - a grain Border declared after this ContentControl could only
-                         ever sit on top of the prompt text itself, never behind it. -->
+                         (TerminalPalette.cs) with no gap for a Border behind this ContentControl
+                         to show through. The grain itself is NOT missing though - TerminalControl
+                         .OnRender washes the tile onto its own background fill directly, under
+                         the glyphs, so texture still shows in every blank cell without ever
+                         landing on top of the writing. -->
                     <ContentControl Grid.Row="1" x:Name="TerminalSlot" Focusable="False"/>
                 </Grid>
                 <!-- A document tab draws here, on the same terms as the shell above it: declared
-                     before the list, only ever one of the three visible, and grain-wrapped so an
-                     open file sits on the pane's texture rather than in a hole cut out of it.
-                     The editor paints PaneBrush itself (Editing/EditorControl.ApplyTheme). -->
+                     before the list, only ever one of the three visible. The editor paints its
+                     own background (SurfaceBrush + the grain tile baked together into one
+                     DrawingBrush, Editing/EditorControl.ApplyTheme/SurfaceWithGrain) rather than
+                     sitting on a Border behind it - same reason as the terminal above: AvalonEdit
+                     fills its whole rect opaquely itself, so nothing behind it would ever show. -->
                 <Grid x:Name="EditorHost" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -1500,8 +1504,8 @@
                         </ItemsPanelTemplate>
                         <ItemsPanelTemplate x:Key="PanelWrap">
                             <local:VirtualizingWrapPanel
-                                ItemWidth="{Binding TileWidth, Source={x:Static shellns:ResultsViewState.Current}}"
-                                ItemHeight="{Binding TileHeight, Source={x:Static shellns:ResultsViewState.Current}}"/>
+                                ItemWidth="{Binding Tag.TileWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                ItemHeight="{Binding Tag.TileHeight, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                         </ItemsPanelTemplate>
 
                         <!-- ICON VIEW. Fixed-size tile: art on top, name wrapped to two lines
@@ -1516,8 +1520,8 @@
                                  exact same condition that already drives the gray hover
                                  background below, so the two effects light up together. -->
                             <Border x:Name="TileBd" CornerRadius="4" Cursor="Hand"
-                                    Margin="{Binding TileMargin, Source={x:Static shellns:ResultsViewState.Current}}"
-                                    Padding="{Binding TilePad, Source={x:Static shellns:ResultsViewState.Current}}"
+                                    Margin="{Binding Tag.TileMargin, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                    Padding="{Binding Tag.TilePad, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     Tag="{Binding FilePath}" ToolTip="{Binding FilePath}"
                                     PreviewMouseLeftButtonDown="ResultHeader_MouseDown">
                                 <Border.Style>
@@ -1536,11 +1540,11 @@
                                 <StackPanel>
                                     <Image HorizontalAlignment="Center" VerticalAlignment="Center"
                                            RenderOptions.BitmapScalingMode="HighQuality"
-                                           MaxWidth="{Binding TileSize, Source={x:Static shellns:ResultsViewState.Current}}"
-                                           Height="{Binding TileSize, Source={x:Static shellns:ResultsViewState.Current}}"
+                                           MaxWidth="{Binding Tag.TileSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                           Height="{Binding Tag.TileSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                            shellns:TileArt.Path="{Binding FilePath}"
                                            shellns:TileArt.IsDirectory="{Binding IsDirectory}"
-                                           shellns:TileArt.Size="{Binding TileSize, Source={x:Static shellns:ResultsViewState.Current}}"/>
+                                           shellns:TileArt.Size="{Binding Tag.TileSize, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                     <!-- TileResultText, not the shared ResultText: the filename here
                                          turns accent-green on HOVER, not on selection (Steve,
                                          2026-08-02) - moved off the selected state, which now shows
@@ -1551,7 +1555,7 @@
                                                FontFamily="{DynamicResource MonoFont}" FontSize="10.5"
                                                TextAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                                                MaxHeight="30"
-                                               Margin="{Binding TileNamePad, Source={x:Static shellns:ResultsViewState.Current}}"/>
+                                               Margin="{Binding Tag.TileNamePad, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -1561,7 +1565,7 @@
                              are duplicated from DetailsHeader; change both together. -->
                         <DataTemplate x:Key="DetailsRowTemplate" DataType="{x:Type models:SearchResult}">
                             <Border Cursor="Hand" Tag="{Binding FilePath}"
-                                    Padding="{Binding RowPad, Source={x:Static shellns:ResultsViewState.Current}}"
+                                    Padding="{Binding Tag.RowPad, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     PreviewMouseLeftButtonDown="ResultHeader_MouseDown">
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -1579,14 +1583,14 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <!-- Grows with the icon (RowIconColumn) - keep DetailsHeader in step. -->
-                                        <ColumnDefinition Width="{Binding RowIconColumn, Source={x:Static shellns:ResultsViewState.Current}}"/>
+                                        <ColumnDefinition Width="{Binding Tag.RowIconColumn, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                         <!-- Same five plus a trailing star filler as DetailsHeader,
                                              in the same order. Change one, change both. -->
-                                        <ColumnDefinition Width="{Binding NameWidth, Source={x:Static shellns:ResultsViewState.Current}}"/>
+                                        <ColumnDefinition Width="{Binding Tag.NameWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                         <!-- Collapses to 0 while browsing - see LocationWidth. -->
-                                        <ColumnDefinition Width="{Binding LocationWidth, Source={x:Static shellns:ResultsViewState.Current}}"/>
-                                        <ColumnDefinition Width="{Binding SizeWidth, Source={x:Static shellns:ResultsViewState.Current}}"/>
-                                        <ColumnDefinition Width="{Binding ModifiedWidth, Source={x:Static shellns:ResultsViewState.Current}}"/>
+                                        <ColumnDefinition Width="{Binding Tag.LocationWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                        <ColumnDefinition Width="{Binding Tag.SizeWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                        <ColumnDefinition Width="{Binding Tag.ModifiedWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <!-- TileArt rather than {Binding Icon}, which is a fixed 32px
@@ -1595,11 +1599,11 @@
                                          tile grid uses, so the shell hands back the right image
                                          at each step instead of a resized copy of one. -->
                                     <Image Grid.Column="0"
-                                           Width="{Binding RowIconSize, Source={x:Static shellns:ResultsViewState.Current}}"
-                                           Height="{Binding RowIconSize, Source={x:Static shellns:ResultsViewState.Current}}"
+                                           Width="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                           Height="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                            shellns:TileArt.Path="{Binding FilePath}"
                                            shellns:TileArt.IsDirectory="{Binding IsDirectory}"
-                                           shellns:TileArt.Size="{Binding RowIconSize, Source={x:Static shellns:ResultsViewState.Current}}"
+                                           shellns:TileArt.Size="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                            HorizontalAlignment="Left" VerticalAlignment="Center"
                                            RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <TextBlock Grid.Column="1" Text="{Binding FileName}" Style="{StaticResource ResultText}"
@@ -1645,7 +1649,7 @@
                             <Border Style="{StaticResource Card}" BorderThickness="1" Padding="0" Margin="2,0,4,8" Effect="{StaticResource ShadowBar}">
                                 <StackPanel>
                                     <Border BorderBrush="{DynamicResource PrimaryPressedBrush}" BorderThickness="2,0,0,0" CornerRadius="3,3,0,0"
-                                            Padding="{Binding CardPad, Source={x:Static shellns:ResultsViewState.Current}}"
+                                            Padding="{Binding Tag.CardPad, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                         Cursor="Hand" Tag="{Binding FilePath}"
                                             ToolTip="{DynamicResource Str_TT_Result}" MouseLeftButtonUp="ResultHeader_Click"
                                             PreviewMouseLeftButtonDown="ResultHeader_MouseDown">
@@ -1672,11 +1676,11 @@
                                                  {Binding Icon}: that one is a fixed 32px bitmap
                                                  and this climbs past it. -->
                                             <Image Grid.Column="0" VerticalAlignment="Center"
-                                                   Width="{Binding CardIconSize, Source={x:Static shellns:ResultsViewState.Current}}"
-                                                   Height="{Binding CardIconSize, Source={x:Static shellns:ResultsViewState.Current}}"
+                                                   Width="{Binding Tag.CardIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                   Height="{Binding Tag.CardIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                    shellns:TileArt.Path="{Binding FilePath}"
                                                    shellns:TileArt.IsDirectory="{Binding IsDirectory}"
-                                                   shellns:TileArt.Size="{Binding CardIconSize, Source={x:Static shellns:ResultsViewState.Current}}"
+                                                   shellns:TileArt.Size="{Binding Tag.CardIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                    Margin="0,0,9,0" RenderOptions.BitmapScalingMode="HighQuality"/>
                                             <TextBlock Grid.Column="1" Text="{Binding FileName}" Foreground="{DynamicResource TextBrush}"
                                                        FontFamily="{DynamicResource MonoFont}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>

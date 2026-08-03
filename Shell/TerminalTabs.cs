@@ -319,9 +319,8 @@ namespace KillerShell.Shell
         // Viewer, Performance or Registry Editor tab - none of those have a file selection to
         // describe. Restoring
         // it below just forces Visibility back to Visible like every other entry here; the real
-        // open/closed/height state is corrected right after by ApplyDetailsPaneInPaneNoAnim
-        // (DetailsPane.cs), same as ApplyResultsView/UpdateLocationColumn correct their own
-        // entries in this list.
+        // open/closed/height state is corrected right after by ApplyDetailsPane (DetailsPane.cs),
+        // same as ApplyResultsView/UpdateLocationColumn correct their own entries in this list.
         private static readonly string[] ListingOnlyTools =
         {
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "SortBtn", "SortDirButton",
@@ -351,7 +350,7 @@ namespace KillerShell.Shell
 
             ApplyResultsView();        // ResultsView.cs - view mode owns some of these
             UpdateLocationColumn();    // ViewOptions.cs - browsing owns Pipe
-            ApplyDetailsPaneInPaneNoAnim();   // DetailsPane.cs - open/closed + height are its own to own
+            ApplyDetailsPane(Pane, animate: false);   // DetailsPane.cs - open/closed + height are its own to own
         }
 
         /// <summary>Tear down a shell when its tab closes. Called from FinishCloseTab.</summary>

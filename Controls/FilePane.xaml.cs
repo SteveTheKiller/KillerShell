@@ -29,6 +29,20 @@ namespace KillerShell
             // it lands before the click is handled by whatever was actually hit - a button in
             // this pane must not run against the other pane's tab.
             PreviewMouseDown += (_, _) => Owner.FocusPane(this);
+
+            // Every tile/row/card DataTemplate reaches ViewState through ResultsList.Tag rather
+            // than a RelativeSource walk up to this UserControl (Steve, 2026-08-03 - "icons
+            // aren't loading"). RelativeSource AncestorType=local:FilePane is what the first cut
+            // of the per-pane view-state change used, and it left every icon blank: the bindings
+            // reaching DIRECT, non-templated descendants (DetailsHeader) resolved fine, but the
+            // ones inside the ListBox's item templates - realized and recycled by the custom
+            // VirtualizingWrapPanel/VirtualizingStackPanel - never did, so TileArt.Size stayed at
+            // its 0 default and TileArt.OnChanged's own `size <= 0` guard blanked every image.
+            // ResultsList itself is the shallow, non-recycled ancestor every item container sits
+            // under regardless of virtualization, and Tag is a plain DependencyProperty a
+            // RelativeSource binding can reach the same reliable way {Binding X, Source=...} used
+            // to reach the old static ResultsViewState.Current.
+            ResultsList.Tag = ViewState;
         }
 
         // Resolved on first use, not in the constructor: the pane is built during the window's
@@ -45,6 +59,23 @@ namespace KillerShell
         internal ObservableCollection<SearchTab> Tabs { get; } = [];
 
         internal SearchTab Active { get; set; } = null!;   // set before anything reads it
+
+        // ── Per-pane results view state ──────────────────────────
+        // Tile/row icon size, density, and the details-view column widths used to be ONE
+        // instance shared by both panes (ResultsViewState.Current) - zooming one pane zoomed
+        // both, since there was only ever one object for every tile/row/column binding in
+        // FilePane.xaml to read (Steve, 2026-08-03). Each pane now owns its own, the same way it
+        // owns Tabs/Active above.
+        internal ResultsViewState ViewState { get; } = new();
+
+        /// <summary>0 list, 1 icons, 2 details - which of the three result layouts this pane is
+        /// showing. Used to be one MainWindow field mirrored into both panes on every change
+        /// (Steve, 2026-08-03 - "i changed one pane into details list view and both panes
+        /// changed. they need to be independent too"); now each pane keeps its own, the same as
+        /// ViewState above. Defaults to 1 (icons) - a fresh install has no saved
+        /// "ResultsView{L,R}" setting to restore, so this field's own default IS what a first
+        /// run shows (Steve, 2026-08-03: "can we make sure icon view is the default").</summary>
+        internal int ViewMode { get; set; } = 1;
 
         /// <summary>
         /// Index of the leftmost tab currently in the strip. 0 whenever they all fit.
@@ -74,6 +105,24 @@ namespace KillerShell
         /// line - per pane, not per window, since each pane tracks its own selection (Shell/
         /// DetailsPane.cs SyncDetailsPaneCollapse).</summary>
         internal bool DetailsPaneCollapsed;
+
+        // ── Per-pane details/preview strip open state ────────────
+        // Used to be one MainWindow-wide bool/height mirrored into both panes on every open,
+        // close and drag (Steve, 2026-08-03 - "same with the details pane, i click one and they
+        // both change but they should be independent"). The strip's CONTENT already read this
+        // pane's own selection; only whether it was open, how tall, and whether the user had
+        // ever dragged it were still shared. Same fix shape as ViewMode/ViewState above: each
+        // pane now opens, closes and remembers its own height on its own.
+        internal bool DetailsPaneOpen { get; set; }
+
+        /// <summary>Whether THIS pane's user has ever dragged its details grip - once true, its
+        /// height is remembered rather than auto-fit to content (Shell/DetailsPane.cs).</summary>
+        internal bool DetailsPaneUserSized { get; set; }
+
+        /// <summary>THIS pane's details strip height, once dragged. Mirrors DetailsPane.cs's old
+        /// DetailsPaneHeightDefault constant (160) as the starting point before anything real has
+        /// been measured.</summary>
+        internal double DetailsPaneHeight { get; set; } = 160;
 
         // ── Tab strip ────────────────────────────────────────────
         // These two take the PANE rather than (sender, args): both act on this pane's own strip,

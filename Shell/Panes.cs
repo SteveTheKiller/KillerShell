@@ -53,14 +53,29 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
+        /// A stable per-pane settings-key suffix, for state that used to be one shared instance
+        /// and is now one per pane (FilePane.ViewState - zoom, density, column widths) but still
+        /// has to persist across restarts (Steve, 2026-08-03, "each pane should remember size").
+        /// LeftPane always exists; RightPane does too (DualPane only shows/hides it, never
+        /// creates or destroys it), so both keys are valid to read/write whether or not the
+        /// second pane is currently open.
+        /// </summary>
+        private string PaneKey(FilePane p) => ReferenceEquals(p, RightPane) ? "R" : "L";
+
+        /// <summary>
         /// Run <paramref name="apply"/> once per live pane, with focus pointed at each in turn,
         /// then hand focus back.
         ///
         /// This exists for WINDOW-WIDE settings that are mirrored into per-pane controls - the
-        /// results view mode, the show-hidden and folders-on-top toggles. Those write through
-        /// `Pane`, so on their own they only ever reached the focused pane: the second pane came
-        /// up in whatever view its XAML defaulted to, with its view buttons unlit, and changing
-        /// the view while focused on one pane left the other stale.
+        /// show-hidden and folders-on-top toggles, and (at startup / when DualPane first reveals
+        /// the second pane) applying each pane's own already-per-pane results view mode so
+        /// neither one is left sitting on whatever its XAML happened to default to. Those write
+        /// through `Pane`, so on their own they only ever reached the focused pane.
+        ///
+        /// The results view mode itself is NOT window-wide any more (Steve, 2026-08-03) - each
+        /// pane keeps its own (FilePane.ViewMode) and changing it now only touches the pane you
+        /// changed it in. ApplyResultsView still runs through here because the FIRST time a pane
+        /// becomes live its template/panel have never been set up at all.
         ///
         /// Per-TAB state is not this. That legitimately belongs to one pane and is applied by
         /// ActivateTab.

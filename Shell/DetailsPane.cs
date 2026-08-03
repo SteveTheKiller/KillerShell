@@ -11,9 +11,11 @@ using KillerShell.Models;
 // The details/preview strip that slides out of the BOTTOM of a results pane (Controls/FilePane.
 // xaml, "DetailsPane" - deliberately NOT a side panel like Explorer's). File details on the left,
 // an image preview - or the shell's own big icon for everything else - on the right. Partial of
-// MainWindow, mirroring ViewOptions.cs: the OPEN/CLOSED state is window-wide (both panes agree,
-// like ShowHidden/FoldersOnTop), but the CONTENT is per-pane, because each pane tracks its own
-// selection.
+// MainWindow. Open/closed, dragged height, and content are ALL per-pane (FilePane.DetailsPaneOpen/
+// DetailsPaneUserSized/DetailsPaneHeight) - each pane tracks its own selection, so there is no
+// reason left for the two strips to move together (Steve, 2026-08-03: "i click one and they both
+// change but they should be independent"). Unlike ShowHidden/FoldersOnTop, which genuinely are
+// meant to agree across both panes.
 //
 // Updates once per selection change (FilePane.xaml.cs forwards ResultsList_SelectionChanged
 // here), never on a timer - the folder listing's own file-watcher already keeps the rows
@@ -22,8 +24,6 @@ namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        internal static bool DetailsPaneOpen { get; private set; }
-
         // BitmapImage.DecodePixelWidth cap for the real image preview - a downscaled decode, not
         // a full-resolution load, so scrolling through a folder of large photos never hitches.
         private const int DetailsPreviewPx = 220;
@@ -59,9 +59,9 @@ namespace KillerShell.Shell
         // no longer a guessed constant either (Steve, 2026-08-02: "none of the details should
         // allow you to go smaller than they are... the grabhandle only allows us to go bigger")
         // - see DetailsPaneContentFloor, which measures the field rows that are actually showing.
-        // Used only as the strip's pre-layout starting point, before anything real has been
-        // measured yet.
-        private const double DetailsPaneHeightDefault = 160;
+        // The pre-layout starting point (before anything real has been measured) is now
+        // FilePane.DetailsPaneHeight's own field default (160) rather than a constant here, since
+        // the height itself moved onto the pane (Steve, 2026-08-03).
         // Before the results pane has ever laid out (first paint), there is nothing real to take
         // 50% of - same problem BookmarksCeiling has with TreePanel.ActualHeight, same fallback
         // shape: a generous fixed number rather than clamping everything to zero.
@@ -72,38 +72,35 @@ namespace KillerShell.Shell
             ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico",
         };
 
-        // Whether the user has ever dragged the grip. Until they do, the strip auto-fits its
-        // content on every open/selection change (ApplyDetailsPane/CorrectDetailsPaneHeight, the
-        // same estimate-then-measure-and-correct approach as the bookmarks drawer). Touching the
-        // grip switches it to an explicit, remembered height from then on, exactly like
-        // Bookmarks._bookmarksUserSized.
-        private bool _detailsPaneUserSized;
-
-        // Where the strip opens to once the user HAS dragged it. Only meaningful once
-        // _detailsPaneUserSized is true - see ApplyDetailsPane.
-        private double _detailsPaneHeight = DetailsPaneHeightDefault;
-
+        // Open/closed, user-sized-or-not, and the dragged height itself all live on FilePane now
+        // (DetailsPaneOpen/DetailsPaneUserSized/DetailsPaneHeight) - each pane opens, closes and
+        // remembers its own (Steve, 2026-08-03). Settings persist per pane under a PaneKey-
+        // suffixed key, same convention as the view-state settings in ResultsView.cs.
         private void InitDetailsPane()
         {
-            DetailsPaneOpen = Services.ThemeManager.GetSetting("DetailsPaneOpen") == "1";
-
-            _detailsPaneUserSized = Services.ThemeManager.GetSetting("DetailsPaneUserSized") == "1";
-
-            string? rawHeight = Services.ThemeManager.GetSetting("DetailsPaneHeight");
-            if (!string.IsNullOrEmpty(rawHeight) &&
-                double.TryParse(rawHeight, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double parsed))
+            foreach (var p in new[] { LeftPane, RightPane })
             {
-                _detailsPaneHeight = parsed;   // re-clamped against the live pane in ApplyDetailsPane
-            }
+                string key = PaneKey(p);
 
-            ForEachPane(ApplyDetailsPaneInPaneNoAnim);   // Panes.cs - no slide-open flash at launch
+                p.DetailsPaneOpen = Services.ThemeManager.GetSetting("DetailsPaneOpen" + key) == "1";
+                p.DetailsPaneUserSized = Services.ThemeManager.GetSetting("DetailsPaneUserSized" + key) == "1";
+
+                string? rawHeight = Services.ThemeManager.GetSetting("DetailsPaneHeight" + key);
+                if (!string.IsNullOrEmpty(rawHeight) &&
+                    double.TryParse(rawHeight, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double parsed))
+                {
+                    p.DetailsPaneHeight = parsed;   // re-clamped against the live pane in ApplyDetailsPane
+                }
+
+                ApplyDetailsPane(p, animate: false);   // no slide-open flash at launch
+            }
         }
 
         internal void DetailsPaneToggle_Click(FilePane pane)
         {
-            DetailsPaneOpen = !DetailsPaneOpen;
-            Services.ThemeManager.SetSetting("DetailsPaneOpen", DetailsPaneOpen ? "1" : "0");
-            ForEachPane(ApplyDetailsPaneInPaneAnim);
+            pane.DetailsPaneOpen = !pane.DetailsPaneOpen;
+            Services.ThemeManager.SetSetting("DetailsPaneOpen" + PaneKey(pane), pane.DetailsPaneOpen ? "1" : "0");
+            ApplyDetailsPane(pane, animate: true);
         }
 
         /// <summary>
@@ -115,48 +112,25 @@ namespace KillerShell.Shell
         /// </summary>
         internal void DetailsPaneGrip_DragDelta(FilePane pane, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {
-            if (!DetailsPaneOpen) return;
+            if (!pane.DetailsPaneOpen) return;
 
-            _detailsPaneUserSized = true;
+            pane.DetailsPaneUserSized = true;
 
-            _detailsPaneHeight = ClampDetailsPaneHeight(pane, pane.DetailsPane.ActualHeight - e.VerticalChange);
+            pane.DetailsPaneHeight = ClampDetailsPaneHeight(pane, pane.DetailsPane.ActualHeight - e.VerticalChange);
 
             pane.DetailsPane.BeginAnimation(FrameworkElement.HeightProperty, null);
-            pane.DetailsPane.Height = _detailsPaneHeight;
-            ApplyDetailsPreviewWidth(pane, _detailsPaneHeight);   // recompute live, every tick of the drag
+            pane.DetailsPane.Height = pane.DetailsPaneHeight;
+            ApplyDetailsPreviewWidth(pane, pane.DetailsPaneHeight);   // recompute live, every tick of the drag
         }
 
         internal void DetailsPaneGrip_DragCompleted(FilePane pane, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-            Services.ThemeManager.SetSetting("DetailsPaneHeight",
-                _detailsPaneHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
-            Services.ThemeManager.SetSetting("DetailsPaneUserSized", "1");
-
-            // Window-wide like DetailsPaneOpen - both panes' strips agree, mirrored on
-            // drag-complete (not live) so a drag never fights the pane that did not move.
-            ForEachPane(ApplyDetailsPaneHeightNoAnim);
+            string key = PaneKey(pane);
+            Services.ThemeManager.SetSetting("DetailsPaneHeight" + key,
+                pane.DetailsPaneHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
+            Services.ThemeManager.SetSetting("DetailsPaneUserSized" + key, "1");
+            // No ForEachPane here any more - only the pane whose grip actually moved changes.
         }
-
-        /// <summary>Pushes the current (persisted or just-dragged) height - and the preview width
-        /// that follows it - into whichever pane is focused when called through ForEachPane. A
-        /// pane that is currently showing its collapsed thin line (no selection, or a folder -
-        /// SyncDetailsPaneCollapse) is left alone: _detailsPaneHeight is still recorded for it
-        /// and takes effect the next time that pane has something meaningful to show.</summary>
-        private void ApplyDetailsPaneHeightNoAnim()
-        {
-            if (!DetailsPaneOpen || Pane.DetailsPaneCollapsed) return;
-
-            double h = ClampDetailsPaneHeight(Pane, _detailsPaneHeight);
-            Pane.DetailsPane.BeginAnimation(FrameworkElement.HeightProperty, null);
-            Pane.DetailsPane.Height = h;
-            ApplyDetailsPreviewWidth(Pane, h);
-        }
-
-        // Two no-arg wrappers - the shape ForEachPane (Panes.cs) expects - covering the one place
-        // that seeds a freshly opened second pane (DualPane.cs) without animating, and the toggle
-        // click, which does.
-        private void ApplyDetailsPaneInPaneNoAnim() => ApplyDetailsPane(Pane, animate: false);
-        private void ApplyDetailsPaneInPaneAnim()   => ApplyDetailsPane(Pane, animate: true);
 
         /// <summary>
         /// How tall the strip is allowed to get for this pane: never more than half of the whole
@@ -252,21 +226,21 @@ namespace KillerShell.Shell
         /// as the drag floor too (DetailsPaneContentFloor/ClampDetailsPaneHeight).
         /// </summary>
         private double NormalDetailsPaneHeight(FilePane pane)
-            => _detailsPaneUserSized
-             ? ClampDetailsPaneHeight(pane, _detailsPaneHeight)
+            => pane.DetailsPaneUserSized
+             ? ClampDetailsPaneHeight(pane, pane.DetailsPaneHeight)
              : ClampDetailsPaneHeight(pane, DetailsPaneContentFloor(pane));
 
         /// <summary>
         /// Grows or shrinks the strip between its thin collapsed line and its normal (dragged or
         /// measured) height, purely from whether the content just painted is meaningful (Steve,
         /// 2026-08-02: select nothing or a folder -> one thin line; select a file -> back to the
-        /// normal/last-dragged height). Independent of _detailsPaneUserSized - a user-dragged
+        /// normal/last-dragged height). Independent of DetailsPaneUserSized - a user-dragged
         /// height is remembered and restored, but the collapse itself is automatic and never
         /// needs a manual resize.
         /// </summary>
         private void SyncDetailsPaneCollapse(FilePane pane, bool animate)
         {
-            if (!DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
+            if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
 
             // The collapsed target is ALSO the real measured floor, not the bare constant - the
             // constant is only a sanity minimum for a degenerate pre-layout measurement, so the
@@ -286,9 +260,9 @@ namespace KillerShell.Shell
         /// <summary>Shows/hides one pane's strip and (re)paints it for that pane's own selection.</summary>
         private void ApplyDetailsPane(FilePane pane, bool animate)
         {
-            pane.DetailsPaneBtn.Tag = DetailsPaneOpen ? "on" : null;
+            pane.DetailsPaneBtn.Tag = pane.DetailsPaneOpen ? "on" : null;
 
-            if (DetailsPaneOpen)
+            if (pane.DetailsPaneOpen)
             {
                 pane.DetailsPane.Visibility = Visibility.Visible;
                 // Paints the fields/preview for the current selection, then (below) grows or
@@ -336,7 +310,7 @@ namespace KillerShell.Shell
         /// </summary>
         internal void CorrectDetailsPaneHeight(FilePane pane)
         {
-            if (!DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
+            if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
 
             // The collapsed thin line is owned entirely by SyncDetailsPaneCollapse - correcting
             // against measured content here would fight that animation every SizeChanged tick.
@@ -346,7 +320,7 @@ namespace KillerShell.Shell
             // content no longer drives it (the field rows are effectively fixed height anyway;
             // this only ever mattered for the auto-fit state, same split as
             // Bookmarks._bookmarksUserSized).
-            if (_detailsPaneUserSized) return;
+            if (pane.DetailsPaneUserSized) return;
 
             double needed = ClampDetailsPaneHeight(pane, DetailsPaneContentFloor(pane));
             if (Math.Abs(pane.DetailsPane.ActualHeight - needed) < 0.5) return;
@@ -365,7 +339,7 @@ namespace KillerShell.Shell
         /// </summary>
         internal void UpdateDetailsPaneForSelection(FilePane pane, bool animate = true)
         {
-            if (!DetailsPaneOpen) return;
+            if (!pane.DetailsPaneOpen) return;
 
             var list = pane.ResultsList;
             int count = list?.SelectedItems.Count ?? 0;

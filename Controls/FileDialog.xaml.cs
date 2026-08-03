@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 using KillerShell.Shell;
 
@@ -135,6 +136,10 @@ namespace KillerShell
             SourceInitialized += (_, _) =>
             {
                 MainWindow.ApplyThemeBorder(this);
+                // Rounded corners AND, on Windows 11, the standard window drop shadow that comes
+                // bundled with them for a chromeless popup (Steve, 2026-08-03 - see
+                // Chrome.cs ApplyWindowCorners's own remark). Never wired in here before now.
+                MainWindow.ApplyWindowCorners(this, rounded: true);
                 var src = (System.Windows.Interop.HwndSource?)PresentationSource.FromVisual(this);
                 src?.AddHook((IntPtr h, int msg, IntPtr w, IntPtr l, ref bool handled) =>
                 {
@@ -461,6 +466,33 @@ namespace KillerShell
             ViewListBtn.Tag    = _viewMode == 0 ? "on" : null;
             ViewIconsBtn.Tag   = _viewMode == 1 ? "on" : null;
             ViewDetailsBtn.Tag = _viewMode == 2 ? "on" : null;
+        }
+
+        /// <summary>
+        /// List view (the default) wraps into columns and scrolls RIGHT with vertical scrolling
+        /// explicitly disabled (see ApplyView) - a plain mouse wheel only ever drives vertical
+        /// scroll, so without this it had nothing to grab onto. Icons/Details already scroll fine
+        /// under the wheel since they scroll vertically.
+        /// </summary>
+        private void FileList_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (_viewMode != 0) return;
+            var sv = FindScrollViewer(FileList);
+            if (sv == null) return;
+            sv.ScrollToHorizontalOffset(sv.HorizontalOffset - e.Delta);
+            e.Handled = true;
+        }
+
+        private static ScrollViewer FindScrollViewer(DependencyObject root)
+        {
+            if (root is ScrollViewer found) return found;
+            int n = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < n; i++)
+            {
+                var result = FindScrollViewer(VisualTreeHelper.GetChild(root, i));
+                if (result != null) return result;
+            }
+            return null;
         }
 
         // ── Sorting ──────────────────────────────────────────────────────────────

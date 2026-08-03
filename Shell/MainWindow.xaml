@@ -189,11 +189,25 @@
                      in over their own height as a row slides under them
                      (TreePanel.SyncTreeEdgeFades), so they arrive exactly as fast as they become
                      true and neither pops. -->
-                <Border x:Name="TreeFadeTop" Grid.Row="0" Height="18" Opacity="0"
+                <!-- A straight 2-stop linear ramp (0 -> 1 alpha) reads as a hard edge against a
+                     busy tree of text and icons - the eye is far more sensitive to the first bit
+                     of opacity than the last, so a "smooth" linear fade still looks like it snaps
+                     on. Eased with extra stops instead, and the band is taller (18->30, 22->34)
+                     so the curve has room to read as a dissolve rather than a stripe.
+                     A first pass (Steve, 2026-08-03) still finished the ramp exactly AT the outer
+                     edge - full opacity landed on the very last pixel, which still reads as a
+                     snap because there is no room left to perceive it arriving. Both now reach
+                     their terminal value (fully solid for Bottom, fully clear for Top) with the
+                     LAST QUARTER of the band held flat at that value, so the transition visibly
+                     finishes with margin to spare rather than exactly on the boundary. -->
+                <Border x:Name="TreeFadeTop" Grid.Row="0" Height="30" Opacity="0"
                         VerticalAlignment="Top" Margin="0,0,12,0" IsHitTestVisible="False">
                     <Border.OpacityMask>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                             <GradientStop Color="#FF000000" Offset="0"/>
+                            <GradientStop Color="#E0000000" Offset="0.35"/>
+                            <GradientStop Color="#40000000" Offset="0.6"/>
+                            <GradientStop Color="#00000000" Offset="0.75"/>
                             <GradientStop Color="#00000000" Offset="1"/>
                         </LinearGradientBrush>
                     </Border.OpacityMask>
@@ -206,11 +220,14 @@
                      horizontal scrollbar the content's bottom edge moves UP by its height, and a
                      fade pinned to the row would sit over the scrollbar instead of over the last
                      row it is meant to be fading out. -->
-                <Border x:Name="TreeFadeBottom" Grid.Row="0" Height="22" Opacity="0"
+                <Border x:Name="TreeFadeBottom" Grid.Row="0" Height="34" Opacity="0"
                         VerticalAlignment="Bottom" Margin="0,0,12,0" IsHitTestVisible="False">
                     <Border.OpacityMask>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                             <GradientStop Color="#00000000" Offset="0"/>
+                            <GradientStop Color="#40000000" Offset="0.25"/>
+                            <GradientStop Color="#E0000000" Offset="0.5"/>
+                            <GradientStop Color="#FF000000" Offset="0.75"/>
                             <GradientStop Color="#FF000000" Offset="1"/>
                         </LinearGradientBrush>
                     </Border.OpacityMask>

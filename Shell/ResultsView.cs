@@ -15,15 +15,18 @@ namespace KillerShell.Shell
     // switching view swaps the panel and the template and nothing else.
 
     /// <summary>
-    /// Shared, bindable tile geometry. The wrap panel binds its ItemWidth/ItemHeight here and
-    /// every tile binds its icon size here, so one property change resizes the whole grid.
-    /// A single app-wide instance: the tile size is a view preference, not per tab, which is
-    /// also how Explorer treats it.
+    /// Bindable tile/row/column geometry for ONE pane (FilePane.ViewState). The wrap panel binds
+    /// its ItemWidth/ItemHeight here and every tile binds its icon size here, so one property
+    /// change resizes the whole grid.
     /// </summary>
+    /// <remarks>
+    /// Used to be a single app-wide instance (Steve, 2026-08-03 - "when I zoom in and out in one
+    /// pane, it does it in the other"): every binding in FilePane.xaml pointed at the same
+    /// static <c>Current</c>, so tile size, row icon size, density and every dragged column width
+    /// were shared by both panes whether you wanted that or not. Each pane now owns its own.
+    /// </remarks>
     public sealed class ResultsViewState : INotifyPropertyChanged
     {
-        public static ResultsViewState Current { get; } = new ResultsViewState();
-
         // The sizes the shell can actually serve well. 32 and 48 map to real shell icon sizes;
         // above that comes from the jumbo list (see Services/IconCache.cs).
         public static readonly int[] Steps = { 32, 48, 64, 96, 128, 192, 256 };
@@ -495,8 +498,6 @@ namespace KillerShell.Shell
                 SetFooterStatus(string.Format(Loc("Str_Status_Selected"), count.ToString("N0")));
         }
 
-        private int _viewMode;   // 0 list, 1 icons, 2 details
-
         // The card template stays inline on the ListBox in MainWindow.xaml rather than becoming a
         // keyed resource like the other two: it is ninety lines of nested markup and moving it
         // would be a large diff for no gain. Grab it once on the way past instead.
@@ -506,53 +507,67 @@ namespace KillerShell.Shell
         {
             _listTemplate ??= Pane.ResultsList.ItemTemplate;
 
-            if (int.TryParse(Services.ThemeManager.GetSetting("ResultsView"), out int v) && v >= 0 && v <= 2)
-                _viewMode = v;
+            // Tile/row zoom, density and the dragged column widths are per-PANE now (Steve,
+            // 2026-08-03 - see the remark on ResultsViewState), so both panes are restored here
+            // independently under their own settings keys - LeftPane and RightPane both exist
+            // from InitializeComponent regardless of whether the second pane is currently open,
+            // so there is always something to restore into.
+            foreach (var p in new[] { LeftPane, RightPane })
+            {
+                string key = PaneKey(p);
 
-            if (int.TryParse(Services.ThemeManager.GetSetting("ResultsTileSize"), NumberStyles.Integer,
-                             CultureInfo.InvariantCulture, out int px))
-                ResultsViewState.Current.TileSize = px;
+                if (int.TryParse(Services.ThemeManager.GetSetting("ResultsView" + key), out int v) && v >= 0 && v <= 2)
+                    p.ViewMode = v;
 
-            if (int.TryParse(Services.ThemeManager.GetSetting("ResultsRowIconSize"), NumberStyles.Integer,
-                             CultureInfo.InvariantCulture, out int rowPx))
-                ResultsViewState.Current.RowIconSize = rowPx;
+                if (int.TryParse(Services.ThemeManager.GetSetting("ResultsTileSize" + key), NumberStyles.Integer,
+                                 CultureInfo.InvariantCulture, out int px))
+                    p.ViewState.TileSize = px;
 
-            // Dragged details-column widths. Each restored independently, so one bad or missing
-            // value leaves the others alone rather than resetting the whole row.
-            foreach (int col in new[] { 1, 2, 3, 4 })
-                if (double.TryParse(Services.ThemeManager.GetSetting(ColSettingKey(col)), NumberStyles.Float,
-                                    CultureInfo.InvariantCulture, out double w))
-                    ResultsViewState.Current.SetColumnWidth(col, w);
+                if (int.TryParse(Services.ThemeManager.GetSetting("ResultsRowIconSize" + key), NumberStyles.Integer,
+                                 CultureInfo.InvariantCulture, out int rowPx))
+                    p.ViewState.RowIconSize = rowPx;
 
-            // Size/Modified show-or-hide (right-click the details header - Services/
-            // ColumnVisibilityMenu.cs), persisted the same way the dragged widths above are.
-            // Name is not offered (see the remark on ResultsViewState.SizeVisible); Location
-            // already has its own context-driven show/hide and is left out of this menu so the
-            // two mechanisms cannot fight over the same column.
-            Services.ColumnVisibilityMenu.RestoreVisibility("ResultsDetails", DetailsColumnEntries());
+                if (int.TryParse(Services.ThemeManager.GetSetting(SetDensity + key), out int d))
+                    p.ViewState.Density = d;
+
+                // Dragged details-column widths. Each restored independently, so one bad or
+                // missing value leaves the others alone rather than resetting the whole row.
+                foreach (int col in new[] { 1, 2, 3, 4 })
+                    if (double.TryParse(Services.ThemeManager.GetSetting(ColSettingKey(col) + key), NumberStyles.Float,
+                                        CultureInfo.InvariantCulture, out double w))
+                        p.ViewState.SetColumnWidth(col, w);
+
+                // Size/Modified show-or-hide (right-click the details header - Services/
+                // ColumnVisibilityMenu.cs), persisted the same way the dragged widths above are.
+                // Name is not offered (see the remark on ResultsViewState.SizeVisible); Location
+                // already has its own context-driven show/hide and is left out of this menu so
+                // the two mechanisms cannot fight over the same column.
+                Services.ColumnVisibilityMenu.RestoreVisibility("ResultsDetails" + key, DetailsColumnEntries(p));
+            }
 
             ApplyResultsView();
         }
 
-        /// <summary>The Size/Modified toggle entries, rebuilt on demand rather than cached: the
-        /// getter/setter closures always read the CURRENT ResultsViewState.Current, and there is
-        /// only ever one instance of it, so rebuilding costs nothing and there is no stale
-        /// closure to worry about.</summary>
-        private static Services.ColumnVisibilityMenu.Entry[] DetailsColumnEntries() => new[]
+        /// <summary>The Size/Modified toggle entries for ONE pane, rebuilt on demand rather than
+        /// cached: the getter/setter closures capture <paramref name="pane"/>.ViewState directly,
+        /// so rebuilding costs nothing and there is no stale closure to worry about.</summary>
+        private static Services.ColumnVisibilityMenu.Entry[] DetailsColumnEntries(FilePane pane) => new[]
         {
             new Services.ColumnVisibilityMenu.Entry("Size", "Str_Col_Size", true,
-                () => ResultsViewState.Current.SizeVisible,     v => ResultsViewState.Current.SizeVisible = v),
+                () => pane.ViewState.SizeVisible,     v => pane.ViewState.SizeVisible = v),
             new Services.ColumnVisibilityMenu.Entry("Modified", "Str_Col_Modified", true,
-                () => ResultsViewState.Current.ModifiedVisible, v => ResultsViewState.Current.ModifiedVisible = v),
+                () => pane.ViewState.ModifiedVisible, v => pane.ViewState.ModifiedVisible = v),
         };
 
         /// <summary>Right-click the details column-header band: the same shared toggle menu the
         /// Event Viewer and Processes grids use (Services/ColumnVisibilityMenu.cs), anchored to
-        /// the header itself, not to whichever button happened to be under the pointer.</summary>
+        /// the header itself, not to whichever button happened to be under the pointer. Acts on
+        /// whichever pane the header belongs to - FilePane's own PreviewMouseDown already moved
+        /// focus there before this fires, so `Pane` is correct.</summary>
         internal void DetailsHeader_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is not FrameworkElement el) return;
-            Services.ColumnVisibilityMenu.ShowFor(el, "ResultsDetails", DetailsColumnEntries());
+            Services.ColumnVisibilityMenu.ShowFor(el, "ResultsDetails" + PaneKey(Pane), DetailsColumnEntries(Pane));
             e.Handled = true;
         }
 
@@ -562,16 +577,18 @@ namespace KillerShell.Shell
 
         private void SetResultsView(int mode)
         {
-            if (_viewMode == mode) return;
-            _viewMode = mode;
-            ApplyResultsView();
-            Services.ThemeManager.SetSetting("ResultsView", mode.ToString(CultureInfo.InvariantCulture));
+            if (Pane.ViewMode == mode) return;
+            Pane.ViewMode = mode;
+            ApplyResultsViewToPane();
+            Services.ThemeManager.SetSetting("ResultsView" + PaneKey(Pane), mode.ToString(CultureInfo.InvariantCulture));
         }
 
-        // The view mode is a WINDOW-wide setting mirrored into per-pane controls, so it has to
-        // reach every live pane, not just the focused one (Panes.cs). Writing through `Pane`
-        // alone left the second pane on whatever template its XAML defaulted to, with its three
-        // view buttons unlit, and changing the view from one pane left the other stale.
+        // Each pane keeps its own view mode now (Steve, 2026-08-03 - "i changed one pane into
+        // details list view and both panes changed"). ApplyResultsView still exists for the
+        // places that need to (re)apply BOTH panes' own current mode at once - startup (before
+        // dual pane may even be open) and DualPane.cs revealing the second pane for the first
+        // time, whose ItemsPanel/ItemTemplate have never been set up yet and would otherwise sit
+        // on whatever its XAML happened to default to.
         private void ApplyResultsView() => ForEachPane(ApplyResultsViewToPane);
 
         // Swap the panel and the template, then light the button that is now active. Same shape
@@ -584,22 +601,25 @@ namespace KillerShell.Shell
             // The card template is declared inline on the ListBox in FilePane.xaml, so the only
             // reference to it is the one the pane starts with. ActivateTab reaches this method
             // (via ApplyTerminalView -> ApplyPaneToolbarMode) during the Loaded handler, several
-            // lines BEFORE InitResultsView runs - and at that point _viewMode is still its field
-            // default of 0, so the assignment below wrote a null _listTemplate over the real
-            // template. InitResultsView then captured the null as "the list template", and every
-            // later switch to list view rendered rows as KillerShell.Models.SearchResult in the
-            // default black, because a ListBox with no ItemTemplate falls back to ToString().
-            // It survived this long because startup in icons or details view looks perfectly
-            // fine; only switching TO list view shows it.
+            // lines BEFORE InitResultsView runs - and at that point Pane.ViewMode is still
+            // whatever its field default is (1, icons - see FilePane.ViewMode), so on a build
+            // where that default was 0 (list) the assignment below wrote a null _listTemplate
+            // over the real template. InitResultsView then captured the null as "the list
+            // template", and every later switch to list view rendered rows as
+            // KillerShell.Models.SearchResult in the default black, because a ListBox with no
+            // ItemTemplate falls back to ToString(). It survived this long because startup in
+            // icons or details view looks perfectly fine; only switching TO list view shows it.
             _listTemplate ??= Pane.ResultsList.ItemTemplate;
 
+            int mode = Pane.ViewMode;
+
             Pane.ResultsList.ItemsPanel = (ItemsPanelTemplate)Pane.ResultsList.FindResource(
-                _viewMode == 1 ? "PanelWrap" : "PanelStack");
+                mode == 1 ? "PanelWrap" : "PanelStack");
 
             Pane.ResultsList.ItemTemplate =
-                _viewMode == 1 ? (DataTemplate)Pane.ResultsList.FindResource("TileTemplate") :
-                _viewMode == 2 ? (DataTemplate)Pane.ResultsList.FindResource("DetailsRowTemplate")
-                               : _listTemplate;
+                mode == 1 ? (DataTemplate)Pane.ResultsList.FindResource("TileTemplate") :
+                mode == 2 ? (DataTemplate)Pane.ResultsList.FindResource("DetailsRowTemplate")
+                          : _listTemplate;
 
             // Column headers belong to details view; expand/collapse-all only means anything for
             // the cards, which are the only layout with something to expand.
@@ -607,12 +627,25 @@ namespace KillerShell.Shell
             // Hidden, not Collapsed: the button sits in the header's right-hand strip, and a
             // collapsed element gives up its width, so every other control in that strip slid
             // sideways each time the view changed. Hidden keeps the slot.
-            Pane.DetailsHeader.Visibility   = _viewMode == 2 ? Visibility.Visible : Visibility.Collapsed;
-            Pane.ExpandAllButton.Visibility = _viewMode == 0 ? Visibility.Visible : Visibility.Hidden;
+            //
+            // Also gated on ResultsList actually being visible (Steve, 2026-08-03: a restored
+            // terminal tab in Details view showed the column-heading row above its empty prompt).
+            // ApplyPaneToolbarMode (TerminalTabs.cs) already collapses DetailsHeader correctly
+            // the moment a shell/editor/registry/processes/events tab activates - but at startup,
+            // InitResultsView's own ApplyResultsView call runs AFTER tab restore has already
+            // activated the saved tab, and this method used to set DetailsHeader purely from the
+            // view mode with no idea a terminal was on screen, undoing that collapse. Every
+            // non-listing tab kind sets Pane.ResultsList.Visibility = Collapsed on activation
+            // (TerminalTabs.cs/EditorTabs.cs/RegistryEditorTabs.cs/ProcessTabs.cs/
+            // EventViewerTabs.cs/PerformanceTabs.cs all do this already, so it is the one signal
+            // every one of them already agrees on), so it doubles as "is a listing even showing".
+            bool showingListing = Pane.ResultsList.Visibility == Visibility.Visible;
+            Pane.DetailsHeader.Visibility   = mode == 2 && showingListing ? Visibility.Visible : Visibility.Collapsed;
+            Pane.ExpandAllButton.Visibility = mode == 0 ? Visibility.Visible : Visibility.Hidden;
 
-            Pane.ViewListBtn.Tag    = _viewMode == 0 ? "on" : null;
-            Pane.ViewIconsBtn.Tag   = _viewMode == 1 ? "on" : null;
-            Pane.ViewDetailsBtn.Tag = _viewMode == 2 ? "on" : null;
+            Pane.ViewListBtn.Tag    = mode == 0 ? "on" : null;
+            Pane.ViewIconsBtn.Tag   = mode == 1 ? "on" : null;
+            Pane.ViewDetailsBtn.Tag = mode == 2 ? "on" : null;
 
             UpdateColumnArrows();
         }
@@ -671,8 +704,8 @@ namespace KillerShell.Shell
             // Each view steps its OWN ladder. The tile grid's art is the content, so it climbs to
             // 256; a card or a details row is text with a marker beside it, so it stops at 64.
             // Both are the same gesture in the same place, which is the part that matters.
-            var  state = ResultsViewState.Current;
-            bool tiles = _viewMode == 1;
+            var  state = Pane.ViewState;
+            bool tiles = Pane.ViewMode == 1;
             var  steps = tiles ? ResultsViewState.Steps : ResultsViewState.RowIconSteps;
             int  now   = tiles ? state.TileSize : state.RowIconSize;
 
@@ -690,7 +723,7 @@ namespace KillerShell.Shell
             if (tiles) state.TileSize    = steps[i];
             else       state.RowIconSize = steps[i];
 
-            Services.ThemeManager.SetSetting(tiles ? "ResultsTileSize" : "ResultsRowIconSize",
+            Services.ThemeManager.SetSetting((tiles ? "ResultsTileSize" : "ResultsRowIconSize") + PaneKey(Pane),
                 steps[i].ToString(CultureInfo.InvariantCulture));
 
             e.Handled = true;   // do not also scroll the list
@@ -730,41 +763,39 @@ namespace KillerShell.Shell
             _ => "ResultsColModified",
         };
 
-        private static void SaveColumn(int column)
-            => Services.ThemeManager.SetSetting(ColSettingKey(column),
-                   ResultsViewState.Current.GetColumnWidth(column).ToString("0.#", CultureInfo.InvariantCulture));
+        private void SaveColumn(FilePane pane, int column)
+            => Services.ThemeManager.SetSetting(ColSettingKey(column) + PaneKey(pane),
+                   pane.ViewState.GetColumnWidth(column).ToString("0.#", CultureInfo.InvariantCulture));
 
         /// <summary>
-        /// Tell the shared column state how much room the narrowest pane actually has.
+        /// Tell each pane's OWN column state how much room ITS pane actually has.
         /// </summary>
         /// <remarks>
         /// Driven off the pane's CONTENT grid rather than the details header: the header is
         /// collapsed in list and icon view, so it stops reporting a width exactly when you might
-        /// switch back to details at the new size. The NARROWEST pane wins, because one set of
-        /// widths is shared and a width that fits the wide pane would run off the edge of the
-        /// other.
+        /// switch back to details at the new size.
         ///
         /// This is also what stops the window chrome being clipped. Fixed pixel columns give the
         /// details Grid a large minimum desired width, and WPF propagates that all the way up -
         /// so a window dragged narrower than the columns' total pushed its own title bar and
         /// footer off the right edge. Scaling the columns keeps that minimum below the window.
+        /// Each pane fits itself now that column widths are per-pane (Steve, 2026-08-03) - there
+        /// is no longer a shared state that had to fit the narrowest of the two.
         /// </remarks>
         internal void UpdateColumnFit()
         {
-            double narrowest = double.MaxValue;
             foreach (var p in LivePanes())                       // Panes.cs
             {
                 double w = p.PaneContent.ActualWidth;
-                if (w > 0 && w < narrowest) narrowest = w;
-            }
-            if (narrowest == double.MaxValue) return;            // nothing measured yet
+                if (w <= 0) continue;                             // nothing measured yet
 
-            // What the columns can have: the pane's content minus the icon column and the row's
-            // own left and right padding (RowPad, which also clears the scrollbar).
-            var state = ResultsViewState.Current;
-            double icon = state.RowIconColumn.Value;
-            double pad  = state.RowPad.Left + state.RowPad.Right;
-            state.AvailableWidth = Math.Max(0, narrowest - icon - pad);
+                // What the columns can have: the pane's content minus the icon column and the
+                // row's own left and right padding (RowPad, which also clears the scrollbar).
+                var state = p.ViewState;
+                double icon = state.RowIconColumn.Value;
+                double pad  = state.RowPad.Left + state.RowPad.Right;
+                state.AvailableWidth = Math.Max(0, w - icon - pad);
+            }
         }
 
         /// <summary>
@@ -782,10 +813,10 @@ namespace KillerShell.Shell
             double band = Pane.DetailsHeader.ActualWidth;
             if (band <= 0) return ResultsViewState.ColMaxWidth;   // not measured yet
 
-            double icon = ResultsViewState.Current.RowIconColumn.Value;
+            double icon = Pane.ViewState.RowIconColumn.Value;
             double room = band - icon - 48;                       // padding + the filler's floor
             return Math.Max(ResultsViewState.ColMinWidth,
-                            room - ResultsViewState.Current.TotalWidthExcept(column));
+                            room - Pane.ViewState.TotalWidthExcept(column));
         }
 
         internal void ColGrip_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -794,7 +825,7 @@ namespace KillerShell.Shell
             if (!int.TryParse(grip.Tag as string, NumberStyles.Integer, CultureInfo.InvariantCulture,
                               out int column)) return;
 
-            var state = ResultsViewState.Current;
+            var state = Pane.ViewState;
 
             // Double-click a divider to put its column back to the width it shipped with. There
             // is no content-measuring auto-fit here: the list is virtualized and can hold six
@@ -802,7 +833,7 @@ namespace KillerShell.Shell
             if (e.ClickCount == 2)
             {
                 state.SetColumnWidth(column, state.DefaultColumnWidth(column));
-                SaveColumn(column);
+                SaveColumn(Pane, column);
                 e.Handled = true;
                 return;
             }
@@ -827,7 +858,7 @@ namespace KillerShell.Shell
             double dx = e.GetPosition(this).X - _colDragX;
 
             double want = Math.Min(_colDragStart + dx, MaxWidthFor(_colDrag));
-            ResultsViewState.Current.SetColumnWidth(_colDrag, want);
+            Pane.ViewState.SetColumnWidth(_colDrag, want);
         }
 
         internal void ColGrip_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -837,7 +868,7 @@ namespace KillerShell.Shell
 
             // Written once at the end rather than on every move - a drag is a hundred mouse
             // events and each Set would be a settings write.
-            SaveColumn(_colDrag);
+            SaveColumn(Pane, _colDrag);
             _colDrag = -1;
         }
     }

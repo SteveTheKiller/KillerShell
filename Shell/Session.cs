@@ -240,9 +240,24 @@ namespace KillerShell.Shell
             var raw = Services.ThemeManager.GetSetting("Tabs");
             if (string.IsNullOrEmpty(raw)) return false;
 
-            try
+            // Each LINE gets its own try/catch (Steve, 2026-08-03 - "empty folder every time I
+            // open the app, when there were previous things open"). This used to be one catch
+            // around the whole loop: one malformed line (a truncated %-escape from a corrupted
+            // settings value, say) aborted every tab after it, AND worse, left the line's own
+            // half-built SearchTab sitting in _tabs - CreateTab() had already added it before the
+            // throw, so a tab with a real Title/RootPath/glyph but everything past the throw
+            // still at its constructor default (not browsing, no editor, no terminal - "nothing")
+            // could end up as _tabs[0]. ApplyEditorView/ApplyTerminalView/etc. only ever ACT when
+            // their own type matches and no-op otherwise, on the assumption exactly one type is
+            // ever true - so activating a tab with every type flag false left whatever the
+            // PREVIOUS tab's EditorHost/TerminalSlot/ResultsList visibility happened to be
+            // (nothing resets it for a type nothing recognizes), while ApplyPaneBars, seeing no
+            // type flag set, correctly showed LocationRow - the exact "location row above a
+            // blank pane, No item selected" shape that got reported.
+            foreach (var line in raw!.Split('\n'))
             {
-                foreach (var line in raw!.Split('\n'))
+                SearchTab? t = null;
+                try
                 {
                     // A shell, document or Processes tab, saved as BuildRelaunchArgs flags
                     // rather than the classic 11-field shape below (see the remark on
@@ -258,7 +273,7 @@ namespace KillerShell.Shell
                     var p = line.Split('|');
                     if (p.Length < 9) continue;
 
-                    var t = CreateTab();
+                    t = CreateTab();
                     t.Title           = Uri.UnescapeDataString(p[0]);
                     t.RootPath        = Uri.UnescapeDataString(p[1]);
                     t.IncludePatterns = Uri.UnescapeDataString(p[2]);
@@ -306,8 +321,14 @@ namespace KillerShell.Shell
                         t.Filters.Add(f);
                     }
                 }
+                catch
+                {
+                    // This one line is corrupt - drop it, and drop the half-built tab it may
+                    // already have registered, rather than lose every tab after it (or worse,
+                    // leave a "nothing" tab behind for ActivateTab to land on).
+                    if (t != null) _tabs.Remove(t);
+                }
             }
-            catch { /* corrupt blob - fall back to a fresh tab */ }
 
             if (_tabs.Count == 0) return false;
             ActivateTab(_tabs[0]);

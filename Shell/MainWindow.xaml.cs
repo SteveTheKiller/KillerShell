@@ -106,9 +106,9 @@ namespace KillerShell.Shell
             // bookmarks because it reuses their separator, and before any navigation runs.
             InitRecents();
 
-            // Results density (Density.cs). Before the first listing so rows are never drawn
-            // roomy and then retightened a frame later.
-            InitDensity();
+            // Results density used to be restored here (Density.cs) - it is per-pane now, one
+            // more field on the same ViewState as zoom and column widths, so InitResultsView
+            // above restores it for both panes in the same pass (Steve, 2026-08-03).
 
             // Show-hidden and folders-on-top (ViewOptions.cs). Before nothing in particular -
             // they are read by the listing and the tree, both of which run later.

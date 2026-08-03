@@ -29,6 +29,13 @@ namespace KillerShell.Services
     {
         private static readonly Dictionary<string, ImageSource?> Cache = new(StringComparer.OrdinalIgnoreCase);
 
+        // Formats WIC can decode directly, so these get a real thumbnail of the image itself
+        // rather than the generic per-extension icon every other file type shares.
+        private static readonly HashSet<string> ImageExtensions = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp"
+        };
+
         /// <summary>The 32px icon. Kept as the default so existing callers are unaffected.</summary>
         public static ImageSource? For(string filePath) => For(filePath, 32);
 
@@ -53,6 +60,20 @@ namespace KillerShell.Services
                         || ext.Equals(".lnk", StringComparison.OrdinalIgnoreCase);
 
             int shil = ShilFor(px);
+
+            // Real thumbnail rather than a shared icon, for the formats WIC can decode. Demo mode
+            // is excluded the same way the perFile shell lookup below is - a fabricated path is
+            // not on disk, so there is no pixel data to thumbnail. Keyed on the write time so an
+            // edited image's thumbnail refreshes instead of showing a stale cached decode.
+            if (!isDirectory && !MainWindow.DemoMode && ImageExtensions.Contains(ext))
+            {
+                var thumb = ImageThumbnail(filePath, px, shil);
+                if (thumb != null) return thumb;
+                // Falls through to the generic icon below on any failure (corrupt file, unsupported
+                // variant of the format, file gone by the time it is read, etc.) rather than a
+                // blank tile.
+            }
+
             string key = (perFile ? filePath : ext) + "|" + shil + (isDirectory ? "|d" : string.Empty);
 
             lock (Cache)
@@ -91,6 +112,41 @@ namespace KillerShell.Services
         {
             try { return isDirectory ? Directory.Exists(filePath) : File.Exists(filePath); }
             catch { return false; }
+        }
+
+        private static ImageSource? ImageThumbnail(string filePath, int px, int shil)
+        {
+            string key;
+            try
+            {
+                if (!File.Exists(filePath)) return null;
+                key = filePath + "|" + shil + "|thumb|" + File.GetLastWriteTimeUtc(filePath).Ticks;
+            }
+            catch { return null; }
+
+            lock (Cache)
+                if (Cache.TryGetValue(key, out var hit)) return hit;
+
+            ImageSource? img;
+            try
+            {
+                var bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.CacheOption = BitmapCacheOption.OnLoad;   // decode now and release the file handle
+                bmp.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
+                // WIC downsamples DURING decode rather than after, so this costs nowhere near what
+                // loading the full-resolution image would - the same reason DecodePixelWidth is
+                // used instead of loading full size and scaling a RenderTargetBitmap down.
+                bmp.DecodePixelWidth = px;
+                bmp.UriSource = new Uri(filePath);
+                bmp.EndInit();
+                bmp.Freeze();
+                img = bmp;
+            }
+            catch { img = null; }   // corrupt file, an unsupported variant of the format, etc.
+
+            lock (Cache) Cache[key] = img;
+            return img;
         }
 
         private static int ShilFor(int px)

@@ -33,28 +33,29 @@ namespace KillerShell.Shell
             ["Str_St_DensityRoomy", "Str_St_DensityFull", "Str_St_DensityCompact",
              "Str_St_DensityTight", "Str_St_DensityMin"];
 
-        private void InitDensity()
-        {
-            if (int.TryParse(Services.ThemeManager.GetSetting(SetDensity), out int d))
-                ResultsViewState.Current.Density = d;   // clamps itself
-        }
+        // InitResultsView (ResultsView.cs) restores density for BOTH panes now, alongside zoom
+        // and column widths - it is one more field on the same per-pane ViewState (Steve,
+        // 2026-08-03), so it moved into that same per-pane restore loop rather than staying its
+        // own separate window-wide read. InitDensity is gone; nothing else called it.
 
-        /// <summary>Click steps one tighter, Roomy through Minimal, then back round to Roomy.</summary>
+        /// <summary>Click steps one tighter, Roomy through Minimal, then back round to Roomy.
+        /// Acts on the FOCUSED pane only now - density used to be one shared value, so the rail
+        /// button changing it changed both panes at once; each pane remembers its own.</summary>
         private void Density_Click(object sender, RoutedEventArgs e)
-            => ApplyDensity((ResultsViewState.Current.Density + 1) % ResultsViewState.DensityLevels);
+            => ApplyDensity((Pane.ViewState.Density + 1) % ResultsViewState.DensityLevels);
 
         /// <summary>Wheel up is roomier, wheel down is tighter - the direction the list moves.</summary>
         private void Density_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            ApplyDensity(ResultsViewState.Current.Density + (e.Delta > 0 ? -1 : 1));
+            ApplyDensity(Pane.ViewState.Density + (e.Delta > 0 ? -1 : 1));
             e.Handled = true;   // never let it fall through and scroll the results underneath
         }
 
         private void ApplyDensity(int level)
         {
-            var s = ResultsViewState.Current;
+            var s = Pane.ViewState;
             s.Density = level;
-            Services.ThemeManager.SetSetting(SetDensity, s.Density.ToString());
+            Services.ThemeManager.SetSetting(SetDensity + PaneKey(Pane), s.Density.ToString());
 
             // Named rather than silent: at a glance Compact and Minimal differ by a few pixels
             // per row, and without the caption a wheel notch reads as nothing having happened.

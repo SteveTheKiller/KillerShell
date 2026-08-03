@@ -192,7 +192,9 @@
                                      ItemTemplate="{StaticResource RowTemplate}"
                                      ItemsPanel="{StaticResource PanelStack}"
                                      SelectionChanged="Files_SelectionChanged" MouseDoubleClick="Files_DoubleClick"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.CanContentScroll="False"
+                                     PreviewMouseWheel="FileList_PreviewMouseWheel"/>
                             <TextBlock x:Name="EmptyHint" Text="{DynamicResource Str_Dlg_NoMatchingFiles}" Visibility="Collapsed"
                                        Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="11"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"

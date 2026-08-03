@@ -11,15 +11,15 @@
     <Product>KillerShell</Product>
     <Company>killertools.net</Company>
     <RootNamespace>KillerShell</RootNamespace>
-    <Version>1.1.1</Version>
-    <FileVersion>1.1.1.0</FileVersion>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
-    <!-- Displayed version string (semver, matches the release tag: v1.1.1). -->
-    <InformationalVersion>1.1.1</InformationalVersion>
+    <Version>1.1.2</Version>
+    <FileVersion>1.1.2.0</FileVersion>
+    <AssemblyVersion>1.1.2.0</AssemblyVersion>
+    <!-- Displayed version string (semver, matches the release tag: v1.1.2). -->
+    <InformationalVersion>1.1.2</InformationalVersion>
     <!-- Shown in the About card next to the version so a user can tell how old their build
          is. Must match the date on this version's CHANGELOG section - release.ps1 preflight
          fails the release if it does not. Bump it with the version. -->
-    <ReleaseDate>2026-08-02</ReleaseDate>
+    <ReleaseDate>2026-08-03</ReleaseDate>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <ApplicationIcon>Resources\ksh-icon.ico</ApplicationIcon>
     <PlatformTarget>x64</PlatformTarget>

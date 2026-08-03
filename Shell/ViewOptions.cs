@@ -46,7 +46,7 @@ namespace KillerShell.Shell
             // A flag rather than writing a width: the column is draggable now, and assigning 0
             // over the top would throw away whatever the user had sized it to the moment they
             // opened a folder. Hidden and zero-wide look identical; only one of them remembers.
-            ResultsViewState.Current.LocationHidden = browsing;
+            Pane.ViewState.LocationHidden = browsing;
 
             UpdateBrowseChrome(browsing);
         }

@@ -492,9 +492,25 @@ namespace KillerShell.Terminal
         {
             _drawnVersion = _buf.Version;
 
+            var rect = new Rect(0, 0, ActualWidth, ActualHeight);
             var bg = new SolidColorBrush(_palette.Background);
             bg.Freeze();
-            dc.DrawRectangle(bg, null, new Rect(0, 0, ActualWidth, ActualHeight));
+            dc.DrawRectangle(bg, null, rect);
+
+            // Grain sits on the background only, the same as every other pane surface in the
+            // app - drawn here rather than as a separate Border, because this control fills its
+            // whole rect opaquely itself (the line above), so nothing behind it could ever show
+            // through. Glyphs are drawn after this and land on top, so the texture never covers
+            // the writing (Steve, 2026-08-03 - a prior fix removed grain from here entirely
+            // instead of moving it into the paint, which left the terminal with no texture at
+            // all rather than texture only where there is no text).
+            if (TryFindResource("GrainTileBrush") is Brush grain)
+            {
+                double opacity = TryFindResource("GrainOpacity") is double d ? d : 0.2;
+                dc.PushOpacity(opacity);
+                dc.DrawRectangle(grain, null, rect);
+                dc.Pop();
+            }
 
             if (_glyphs == null) return;
 

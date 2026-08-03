@@ -20,7 +20,7 @@ namespace KillerShell.Shell
         {
             var hwnd = new WindowInteropHelper(this).Handle;
             HwndSource.FromHwnd(hwnd)?.AddHook(WndProc);
-            ApplyWindowCorners(rounded: WindowState == WindowState.Normal);
+            ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
             ApplyThemeBorder(this);
         }
 
@@ -55,11 +55,22 @@ namespace KillerShell.Shell
             catch { /* pre-Win11: attribute unsupported */ }
         }
 
-        private void ApplyWindowCorners(bool rounded)
+        /// <summary>
+        /// Sets the DWM rounded-corner preference for <paramref name="w"/>. Static and taking an
+        /// explicit Window, like ApplyThemeBorder above, so every other themed popup window in
+        /// the family (FileDialog, FolderPickerDialog, ...) can call it too rather than only
+        /// MainWindow ever getting rounded corners - and, on Windows 11, the standard window
+        /// drop shadow along with it: a chromeless (WindowStyle="None") popup with no corner
+        /// preference set renders with NEITHER a rounded frame NOR a shadow, which is exactly
+        /// what FileDialog/FolderPickerDialog looked like before this (Steve, 2026-08-03: "this
+        /// window has no drop shadow and the corners arent rounded") - they had ApplyThemeBorder
+        /// wired in already but never this.
+        /// </summary>
+        internal static void ApplyWindowCorners(Window w, bool rounded)
         {
             try
             {
-                var hwnd = new WindowInteropHelper(this).Handle;
+                var hwnd = new WindowInteropHelper(w).Handle;
                 if (hwnd == IntPtr.Zero) return;
                 int pref = rounded ? DWMWCP_ROUND : DWMWCP_DONOTROUND;
                 DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref pref, sizeof(int));
@@ -70,7 +81,7 @@ namespace KillerShell.Shell
         protected override void OnStateChanged(EventArgs e)
         {
             base.OnStateChanged(e);
-            ApplyWindowCorners(rounded: WindowState == WindowState.Normal);
+            ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
             // Segoe MDL2: E923 restore (when maximized) / E922 maximize. Built from a (char)
             // cast, never typed as a literal PUA character - literal glyphs do not survive
             // tooling (family-wide rule).
@@ -227,6 +238,39 @@ namespace KillerShell.Shell
                 double workWidthPx = Math.Abs(info.rcWork.right - info.rcWork.left);
                 var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
                 return workWidthPx / dpi.DpiScaleX;
+            }
+            catch
+            {
+                return double.MaxValue;
+            }
+        }
+
+        /// <summary>How much further this window's RIGHT edge could move before leaving its
+        /// monitor's work area, in DIP - what DualPane.cs's F10-grow decision actually needs
+        /// (Steve, 2026-08-03: F10 animated the second pane clean off screen on a window snapped
+        /// to the right half of the monitor). MonitorWorkAreaWidthDip alone answers "would the
+        /// FINAL width fit somewhere on this monitor", which was true even here - a snapped-right
+        /// window's ActualWidth is only about half the monitor's work width, so `ActualWidth +
+        /// growth` cleared that check easily. But growing happens IN PLACE (Left never moves,
+        /// only the right edge does), and this window's Left already sits at roughly the
+        /// midpoint, so there was never really room for the right edge to move without leaving
+        /// the monitor - MonitorWorkAreaWidthDip had no way to know that because it never looked
+        /// at Left at all. This measures the ACTUAL gap between the right edge and the work
+        /// area's own right edge instead. Same GetMonitorInfo call and DPI conversion as
+        /// MonitorWorkAreaWidthDip, same double.MaxValue-on-failure fallback.</summary>
+        internal double MonitorRoomToGrowRightDip()
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                if (hwnd == IntPtr.Zero) return double.MaxValue;
+                IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+                if (monitor == IntPtr.Zero) return double.MaxValue;
+                var info = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
+                if (!GetMonitorInfo(monitor, ref info)) return double.MaxValue;
+                var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+                double workRightDip = info.rcWork.right / dpi.DpiScaleX;
+                return workRightDip - (Left + ActualWidth);
             }
             catch
             {

@@ -4,6 +4,39 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-08-03
+
+1.1.2 is primarily a dual-pane release - each pane now keeps its own zoom, density, column
+layout, view mode and details/preview strip state instead of sharing one, and the F10 open/close
+animation (plus the gutter drag) had a full pass to fix a cluster of stretching, off-screen and
+stale-state bugs - alongside image thumbnails in the file listing, the app's own themed file
+dialog finally wired into Save As and exports, and a handful of smaller polish fixes.
+
+### Fixed
+- 1.1.1 shipped with the terminal and text editor's grain texture removed outright instead of
+  correctly relocated (both paint their own background as one opaque fill with no exposed gap for
+  a Border behind them to show through, so the fix that worked for the file listing did not apply
+  here). It is now painted directly into each control's own background fill
+  (`TerminalControl.OnRender`, `EditorControl.SurfaceWithGrain`), under the glyphs, so it shows in
+  every blank cell without ever landing on the writing.
+- Save As in the text editor, and both result-export formats (CSV, HTML), opened the stock Windows file dialog instead of the app's own themed `FileDialog` (Controls/FileDialog.xaml) - it was built as a drop-in stand-in for exactly this and simply never got wired into any of the three call sites that needed it.
+- The file dialog's list/icon views couldn't be scrolled with the mouse wheel - they use a plain `WrapPanel` rather than a virtualizing, scroll-aware one, but the ListBox still had `ScrollViewer.CanContentScroll` at its default of `True` (item-based scrolling), which silently does nothing against a panel that doesn't implement `IScrollInfo`. Set to `False` so the wheel scrolls by pixels instead.
+- The file dialog had no rounded corners and no window drop shadow - unlike MainWindow, it never called into the DWM rounded-corner API at all (only the separate theme-border-color call was wired in). `ApplyWindowCorners` (Chrome.cs) is now shared the same way `ApplyThemeBorder` already was, so the file dialog gets both the rounded frame and, on Windows 11, the standard shadow that comes with it for a chromeless popup.
+- The details pane's "path" field truncated with an ellipsis instead of wrapping, so a long path was only ever partly visible. It now wraps at word (path-segment) boundaries instead.
+- Restoring a previous session's tabs could show a tab with a real title but a blank pane and "No item selected" - a single corrupt saved line (a truncated escape sequence, say) aborted the whole restore loop, which could leave that line's half-built tab sitting in the tab list with everything past the failure still at its default (not browsing, no editor, no shell). Each saved line is now parsed in its own try/catch, so one bad line is dropped on its own instead of breaking every tab around it.
+- The folder tree's top/bottom edge fades read as a hard line instead of a dissolve - a plain 2-stop linear alpha ramp is more abrupt than it looks on paper against a tree full of text and icons. Both are now eased (held near-solid/near-clear at each end, most of the ramp in the middle) and taller (18/22px -> 30/34px) so the curve has room to actually read as a fade; a follow-up pass also gave both a flat plateau at their terminal value for the last quarter of the band, so the transition visibly finishes with margin to spare instead of landing exactly on the physical edge.
+- Dual pane's open/close animation (F10) and its gutter drag had a cluster of bugs in the same area, all fixed together: the second pane always opened at its bare minimum width regardless of how much room was actually available; closing it could visibly grow or stretch pane A instead of leaving it alone, or leave the window oversized instead of shrinking back; F10 and the gutter drag could both push the window (or the pane itself) past the screen edge on a monitor-snapped window; the window's own resize used to snap instantly instead of animating with the pane; and a second F10 press before the previous toggle's animation had finished could leave its bookkeeping stale, compounding on every repeat press. Now: the second pane opens at a comfortable width scaled to pane A's own size (capped, never smaller than the old minimum); pane A never changes size when closing - the window always shrinks back by exactly what the second pane occupied instead, except on a maximized window (which cannot resize independently of being maximized) where pane A animates into the space in sync with the second pane's own collapse; both F10 and the gutter drag check the real room left on the monitor before growing the window, so a snapped window correctly falls back to trading space between the panes in place; the window's resize now animates alongside the pane instead of snapping; and an interrupted toggle finishes cleanly before the next one is allowed to start.
+- A restored terminal (or editor/registry/processes/events) tab could show the file listing's column-heading row ("name / location / size / modified") sitting above it if the saved view mode was Details - the row's visibility was decided purely by view mode, with no idea whether a listing was even on screen, so `InitResultsView`'s own startup pass re-showed it a moment after tab restore had already correctly hidden it. Now also gated on the pane actually showing its results list, the same signal every non-listing tab already sets on activation.
+
+### Changed
+- Dual pane's two panes no longer share one results view state. Tile/row icon zoom, density, the details-view column widths/visibility, and now the list/icons/details view mode itself used to be shared across both panes (view mode was a single MainWindow field mirrored into both), so changing any of them in one pane did the same thing to the other. Each pane now keeps all of it independently, and each remembers its own across restarts.
+  - First cut of this reached each pane's state through a `RelativeSource` walk up to the `FilePane` UserControl, which broke every icon in every view (list, icons, details) - the walk resolved fine for the details header (a direct, non-templated descendant) but never for anything inside the results list's own item templates, realized and recycled by the custom virtualizing panels, so the icon size binding stayed at its default and every image blanked out. Fixed by reaching the state through the `ListBox`'s own `Tag` instead - shallower, and not dependent on how the virtualizing panels manage their realized containers.
+- The details/preview strip's open/closed state, dragged height, and whether the user had ever dragged it were still one shared MainWindow-wide state after the change above - opening, closing or resizing the strip in one pane did the same thing to the other, even though its content already read the right pane's own selection. Now per pane like everything else in this release, and each pane's strip remembers its own height across restarts too.
+- The About card's tagline trimmed "...one tab strip and one set of keys" down to "...one tab strip", dropping the keys clause.
+
+### Added
+- The file listing shows a real thumbnail for image files (.jpg, .jpeg, .png, .gif, .bmp, .tif, .tiff, .webp) instead of the generic shared icon, decoded and cached per file (keyed on its last-write time, so an edited image's thumbnail refreshes instead of staying stale).
+
 ## [1.1.1] - 2026-08-02
 
 1.1.1 is a bug fix release - a Registry Editor crash and freeze on HKEY_CLASSES_ROOT, a stale

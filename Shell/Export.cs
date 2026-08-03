@@ -30,13 +30,13 @@ namespace KillerShell.Shell
                 return;
             }
 
-            var dlg = new Microsoft.Win32.SaveFileDialog
+            var dlg = new FileDialog(FileDialogMode.Save)
             {
                 Filter   = "CSV File|*.csv",
                 FileName = $"KillerShell-{DateTime.Now:yyyyMMdd-HHmmss}.csv",
                 Title    = "Save results as CSV"
             };
-            if (dlg.ShowDialog() != true) return;
+            if (dlg.ShowDialog(this) != true) return;
 
             try
             {
@@ -71,14 +71,14 @@ namespace KillerShell.Shell
                 return;
             }
 
-            var dlg = new Microsoft.Win32.SaveFileDialog
+            var dlg = new FileDialog(FileDialogMode.Save)
             {
                 Filter   = "HTML Files|*.html",
                 FileName = $"KillerShell-{DateTime.Now:yyyyMMdd-HHmmss}.html",
                 Title    = "Save results as HTML"
             };
 
-            if (dlg.ShowDialog() == true)
+            if (dlg.ShowDialog(this) == true)
             {
                 try
                 {

@@ -331,13 +331,15 @@ namespace KillerShell.Shell
         /// if the user backed out.
         /// </summary>
         /// <remarks>
-        /// The stock shell dialog rather than the app's own FolderPickerDialog: that one picks a
-        /// FOLDER, and this needs a name typed into it as well. It is also the one surface here
-        /// that has to look like every other Save As on the machine.
+        /// The app's own FileDialog (Controls/FileDialog.xaml), not the stock shell one - it was
+        /// built as a themed stand-in for exactly this (Open/Save, a file name box, the same
+        /// Win32-shaped property surface) and this call site was simply never switched over to
+        /// it (Steve, 2026-08-03), so Save As kept popping the unthemed Windows dialog on top of
+        /// an otherwise fully themed app.
         /// </remarks>
         private bool PromptSaveAs(Editing.EditorControl editor)
         {
-            var dlg = new Microsoft.Win32.SaveFileDialog
+            var dlg = new FileDialog(FileDialogMode.Save)
             {
                 Title           = Loc("Str_Ed_SaveAs"),
                 Filter          = Loc("Str_Ed_AllFiles") + "|*.*",

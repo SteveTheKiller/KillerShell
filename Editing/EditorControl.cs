@@ -383,7 +383,7 @@ namespace KillerShell.Editing
             Color dim    = Res("DimTextBrush", Color.FromRgb(0x80, 0x80, 0x80));
             Color accent = Res("PrimaryBrush", Color.FromRgb(0x50, 0xAE, 0xE8));
 
-            Background            = new SolidColorBrush(bg);
+            Background            = SurfaceWithGrain(bg);
             Foreground            = new SolidColorBrush(fg);
             LineNumbersForeground = new SolidColorBrush(dim);
 
@@ -423,6 +423,49 @@ namespace KillerShell.Editing
         {
             if (Application.Current?.TryFindResource(key) is SolidColorBrush b) return b.Color;
             return fallback;
+        }
+
+        /// <summary>
+        /// A solid fill with the grain tile washed over it at the theme's GrainOpacity, so the
+        /// editor's page reads with the same texture as every other pane surface. AvalonEdit's
+        /// Background is a single Brush property with no layering of its own (unlike the file
+        /// listing's separate Border-behind-Transparent-content trick), so the two are baked
+        /// into one DrawingBrush here instead (Steve, 2026-08-03 - a prior fix removed grain
+        /// from the editor entirely rather than folding it into the background paint, which left
+        /// the page with no texture at all).
+        /// </summary>
+        private static Brush SurfaceWithGrain(Color bg)
+        {
+            var solid = new SolidColorBrush(bg);
+            if (Application.Current?.TryFindResource("GrainTileBrush") is not Brush grain)
+                return solid;
+            double opacity = Application.Current?.TryFindResource("GrainOpacity") is double d ? d : 0.2;
+
+            // Bake one 256x256 tile (matching GrainTileBrush's own Viewport in Controls.xaml)
+            // of solid-plus-grain, then tile THAT across the control at the same absolute pixel
+            // size everywhere else in the app uses. A RelativeToBoundingBox/Stretch=Fill brush
+            // would scale the grain with the control's size instead of holding it at a fixed
+            // pixel scale, and every Border-based use of GrainTileBrush elsewhere stays fixed.
+            var group = new DrawingGroup();
+            using (var ctx = group.Open())
+            {
+                var tile = new Rect(0, 0, 256, 256);
+                ctx.DrawRectangle(solid, null, tile);
+                ctx.PushOpacity(opacity);
+                ctx.DrawRectangle(grain, null, tile);
+                ctx.Pop();
+            }
+            group.Freeze();
+
+            var brush = new DrawingBrush(group)
+            {
+                Viewport = new Rect(0, 0, 256, 256),
+                ViewportUnits = BrushMappingMode.Absolute,
+                TileMode = TileMode.Tile,
+                Stretch = Stretch.None
+            };
+            brush.Freeze();
+            return brush;
         }
 
         // ═══════════════════════════════════════════════════════════
