@@ -1268,9 +1268,20 @@
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
-                                <!-- No Foreground here on purpose - an explicit one beats the inherited
-                                     value and the hover swap above would never reach it. -->
-                                <TextBlock x:Name="AboutUpdateText" FontSize="12"/>
+                                <!-- Explicit Style (not relying on TextElement.Foreground inheritance
+                                     from the Border above) so the base color is never left to chance. -->
+                                <TextBlock x:Name="AboutUpdateText" FontSize="12">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </Button>
                         </StackPanel>
                     </Grid>

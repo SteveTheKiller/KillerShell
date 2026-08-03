@@ -1489,7 +1489,7 @@
                             <MenuItem Header="{DynamicResource Str_Menu_Properties}"    Click="MenuProperties_Click" InputGestureText="Alt+Enter">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}"     Click="MenuShell_Click"      InputGestureText="Shift+F10">
+                            <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}"     Click="MenuShell_Click"      InputGestureText="Shift+F10" Tag="shellmenu">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>

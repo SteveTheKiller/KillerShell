@@ -483,7 +483,7 @@ namespace KillerShell
             e.Handled = true;
         }
 
-        private static ScrollViewer FindScrollViewer(DependencyObject root)
+        private static ScrollViewer? FindScrollViewer(DependencyObject root)
         {
             if (root is ScrollViewer found) return found;
             int n = VisualTreeHelper.GetChildrenCount(root);

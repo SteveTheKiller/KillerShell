@@ -4,6 +4,18 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2026-08-04
+
+1.1.3 is a bug fix release - a file drag-and-drop that silently did nothing when dropped onto a
+folder row, a rename that could scramble the details-pane preview and lose the row's selection,
+and a couple of smaller context-menu and About-card fixes.
+
+### Fixed
+- Dragging a file or folder onto a folder ROW in the listing did not move or copy it into that folder - the drop target was always resolved as the currently browsed folder, never the specific row under the pointer, so a drop onto a folder icon silently landed back in the same folder it started in and the "already there" filter then treated it as a no-op. The drop target now checks for a folder row under the pointer first and falls back to the browsed folder only when there isn't one.
+- Renaming the selected file could leave the details-pane preview showing a different, wrong file's thumbnail (and could drop the selection outright) - a rename was queued as two unrelated file-system events (old path gone, new path appeared) and handled as a plain delete-then-add, which replaced the row with a brand new object. That threw away the object identity selection and the async preview decode were both keyed on, and could let a recycled virtualized row briefly show another row's already-decoded thumbnail. Renames are now matched as a pair and applied to the SAME row in place, so its identity, selection and preview all stay put and only its name/path fields refresh.
+- "More Windows options" did nothing when right-clicking empty pane space instead of an actual file or folder - the context menu item has nothing to open a shell menu FOR without something under the pointer. It is now hidden from the menu entirely unless a file or folder is actually there.
+- The About card's "Update available" badge text relied on inheriting its color from an ancestor element rather than setting its own, which was not reliably landing. It now has its own explicit style for both the resting and hovered color.
+
 ## [1.1.2] - 2026-08-03
 
 1.1.2 is primarily a dual-pane release - each pane now keeps its own zoom, density, column
@@ -20,7 +32,7 @@ dialog finally wired into Save As and exports, and a handful of smaller polish f
   (`TerminalControl.OnRender`, `EditorControl.SurfaceWithGrain`), under the glyphs, so it shows in
   every blank cell without ever landing on the writing.
 - Save As in the text editor, and both result-export formats (CSV, HTML), opened the stock Windows file dialog instead of the app's own themed `FileDialog` (Controls/FileDialog.xaml) - it was built as a drop-in stand-in for exactly this and simply never got wired into any of the three call sites that needed it.
-- The file dialog's list/icon views couldn't be scrolled with the mouse wheel - they use a plain `WrapPanel` rather than a virtualizing, scroll-aware one, but the ListBox still had `ScrollViewer.CanContentScroll` at its default of `True` (item-based scrolling), which silently does nothing against a panel that doesn't implement `IScrollInfo`. Set to `False` so the wheel scrolls by pixels instead.
+- The file dialog's list/icon views couldn't be scrolled with the mouse wheel - they use a plain `WrapPanel` rather than a virtualizing, scroll-aware one, but the ListBox still had `ScrollViewer.CanContentScroll` at its default of `True` (item-based scrolling), which silently does nothing against a panel that doesn't implement `IScrollInfo`. Set to `False` so the wheel scrolls by pixels instead. The default List view still didn't scroll after that fix - it wraps into columns and scrolls sideways with vertical scrolling explicitly disabled, and a plain wheel only ever drives vertical scroll. The wheel now redirects to horizontal scroll while in that view.
 - The file dialog had no rounded corners and no window drop shadow - unlike MainWindow, it never called into the DWM rounded-corner API at all (only the separate theme-border-color call was wired in). `ApplyWindowCorners` (Chrome.cs) is now shared the same way `ApplyThemeBorder` already was, so the file dialog gets both the rounded frame and, on Windows 11, the standard shadow that comes with it for a chromeless popup.
 - The details pane's "path" field truncated with an ellipsis instead of wrapping, so a long path was only ever partly visible. It now wraps at word (path-segment) boundaries instead.
 - Restoring a previous session's tabs could show a tab with a real title but a blank pane and "No item selected" - a single corrupt saved line (a truncated escape sequence, say) aborted the whole restore loop, which could leave that line's half-built tab sitting in the tab list with everything past the failure still at its default (not browsing, no editor, no shell). Each saved line is now parsed in its own try/catch, so one bad line is dropped on its own instead of breaking every tab around it.

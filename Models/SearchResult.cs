@@ -69,6 +69,22 @@ namespace KillerShell.Models
         /// when the virtualized row is realized, so only visible rows pay for it).</summary>
         public System.Windows.Media.ImageSource? Icon => Services.IconCache.For(FilePath, 32, IsDirectory);
 
+        /// <summary>
+        /// Applied after an on-disk rename so the SAME object updates in place instead of being
+        /// removed-and-replaced (BrowseWatcher.ApplyWatchChanges). Keeping the object identity is
+        /// the point: it is what selection and the details-pane preview are keyed on, and a
+        /// remove-then-add briefly let a recycled virtualized row show another item's already-
+        /// decoded thumbnail (Steve, 2026-08-03: "i rename the file and the thumbnail changes").
+        /// </summary>
+        public void ApplyRename(string newPath, string newName)
+        {
+            FilePath = newPath;
+            FileName = newName;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileName)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilePath)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Icon)));
+        }
+
         /// <summary>Only matches with line hits - filename-term matches carry no useful
         /// detail rows (the query summary in the header already says what was searched).</summary>
         public IEnumerable<TermMatch> ContentMatches => Matches.Where(m => m.Lines.Count > 0);

@@ -49,7 +49,7 @@ namespace KillerShell.Shell
         internal void ResultsList_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = ItemUnder(e.OriginalSource as System.Windows.DependencyObject);
-            _menuSeed = item?.DataContext as SearchResult;
+            _menuSeed = DataFor(item);
 
             // Right-clicking outside the selection moves the selection there first, so the menu
             // always acts on what you are pointing at. Right-clicking inside it leaves the
@@ -67,8 +67,8 @@ namespace KillerShell.Shell
         // landed on something the visual walk did not resolve to a container.
         internal void ResultsList_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var seed = ItemUnder(Mouse.DirectlyOver as System.Windows.DependencyObject)?.DataContext as SearchResult
-                    ?? ItemUnder(e.OriginalSource as System.Windows.DependencyObject)?.DataContext as SearchResult;
+            var seed = DataFor(ItemUnder(Mouse.DirectlyOver as System.Windows.DependencyObject))
+                    ?? DataFor(ItemUnder(e.OriginalSource as System.Windows.DependencyObject));
 
             if (seed != null) _menuSeed = seed;
 
@@ -92,9 +92,20 @@ namespace KillerShell.Shell
                 _favMenuItem.Header = Loc(IsBookmarked(MenuFolder())
                     ? "Str_Menu_RemoveFavorite"
                     : "Str_Menu_AddFavorite");
+
+            // "More Windows options" needs an actual file or folder under the pointer - it opens
+            // the real shell menu FOR that item, and has nothing to be about over empty pane
+            // space. Right-clicking empty space used to still show it, and clicking it there
+            // either silently did nothing or, worse, acted on whatever was left selected from
+            // before (Steve, 2026-08-03: "when its just on the pane it doesnt work").
+            _shellMenuItem ??= Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
+                                        .FirstOrDefault(m => (m.Tag as string) == "shellmenu");
+            if (_shellMenuItem != null)
+                _shellMenuItem.Visibility = seed != null ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private MenuItem? _favMenuItem;
+        private MenuItem? _shellMenuItem;
 
         // ── Shells ───────────────────────────────────────────────
         // Same folder rule as Favorites below: a shell opens ON the seed when it is a folder and

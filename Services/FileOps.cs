@@ -62,6 +62,13 @@ namespace KillerShell.Services
         public bool AccessDenied;
 
         public readonly List<(string Path, string Error)> Failed = new();
+
+        /// <summary>
+        /// Final destination path of each successful copy/move, in case a conflict resolved to a
+        /// different name (KeepBoth's UniqueName) than the source's own filename - a caller that
+        /// wants to select/scroll to what actually landed needs the real name, not a guess.
+        /// </summary>
+        public readonly List<string> SucceededTargets = new();
     }
 
     public static class FileOps
@@ -215,6 +222,7 @@ namespace KillerShell.Services
                     if (move) MoveFile(item.Source, target, ref progress, onProgress, ct);
                     else      CopyFile(item.Source, target, ref progress, onProgress, ct);
                     result.Succeeded++;
+                    result.SucceededTargets.Add(target);
                 }
                 catch (OperationCanceledException) { result.Canceled = true; return result; }
                 catch (Exception ex) { result.Failed.Add((item.Source, ex.Message)); }
@@ -259,7 +267,7 @@ namespace KillerShell.Services
                     else return false;
                 }
 
-                try { Directory.Move(s, target); result.Succeeded++; }
+                try { Directory.Move(s, target); result.Succeeded++; result.SucceededTargets.Add(target); }
                 catch (Exception ex) { result.Failed.Add((s, ex.Message)); }
             }
 

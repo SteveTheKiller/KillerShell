@@ -41,7 +41,7 @@ namespace KillerShell.Shell
     internal static class FlyoutPlacement
     {
         /// <summary>The content pane. Set before every attach; every flyout positions against it.</summary>
-        private static FrameworkElement _pane;
+        private static FrameworkElement? _pane;
 
         internal static void UsePane(FrameworkElement pane) => _pane = pane;
 

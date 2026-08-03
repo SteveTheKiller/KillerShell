@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using KillerShell.Models;
 using KillerShell.Services;
 
 namespace KillerShell.Shell
@@ -20,11 +21,24 @@ namespace KillerShell.Shell
     public partial class MainWindow
     {
         /// <summary>The folder a paste or a new folder would land in, or null on a search tab.</summary>
-        private string? TargetFolder()
-            => _active != null && _active.IsBrowsing && !string.IsNullOrEmpty(_active.CurrentFolder)
-               && Directory.Exists(_active.CurrentFolder)
-                   ? _active.CurrentFolder
-                   : null;
+        private string? TargetFolder() => TargetFolder(Pane);
+
+        /// <summary>
+        /// Same, but for a SPECIFIC pane rather than whichever one is currently focused. A drop
+        /// needs this: the pane you drag FROM keeps focus for the whole gesture (nothing about an
+        /// in-flight OLE drag moves it), so resolving through the focused pane's tab landed a
+        /// cross-pane drop back in the SOURCE pane's own folder instead of wherever the cursor
+        /// actually was in the destination pane (Steve, 2026-08-04: dropped in the right pane,
+        /// landed back in the right pane's own folder, "my mouse wasnt over that folder").
+        /// </summary>
+        private static string? TargetFolder(FilePane pane)
+        {
+            var tab = pane.Active;
+            return tab != null && tab.IsBrowsing && !string.IsNullOrEmpty(tab.CurrentFolder)
+                   && Directory.Exists(tab.CurrentFolder)
+                       ? tab.CurrentFolder
+                       : null;
+        }
 
         /// <summary>Selected rows, or the row under the pointer if nothing is selected.</summary>
         private List<string> SelectedPaths()
@@ -135,7 +149,14 @@ namespace KillerShell.Shell
                 }
 
             bool move = shift || (!ctrl && (allowed & DragDropEffects.Move) != 0 && SameRoot(sources[0], target));
-            RunCopyMove(sources, target, move);
+            System.Diagnostics.Debug.WriteLine($"[DragDiag] DropOntoFolder: ctrl={ctrl}, shift={shift}, allowed={allowed}, sameRoot={SameRoot(sources[0], target)}, move={move}");
+
+            // A drop onto a folder row is "take me there", not just "file work somewhere else" -
+            // Explorer does not do this, but a drop that leaves you staring at the folder you
+            // just emptied the file out of does not feel like it landed anywhere (Steve,
+            // 2026-08-04: "it needs to move the folder and scroll me to the location of that
+            // file"). Copying leaves the source in place, so only a move navigates.
+            RunCopyMove(sources, target, move, navigateAfterMove: move);
         }
 
         private static bool IsInside(string candidate, string ancestor)
@@ -256,11 +277,35 @@ namespace KillerShell.Shell
 
         // ── Shared plumbing ──────────────────────────────────────
 
-        private void RunCopyMove(string[] sources, string target, bool move)
+        private void RunCopyMove(string[] sources, string target, bool move, bool navigateAfterMove = false)
         {
             var r = FileOpDialog.CopyOrMove(this, sources, target, move);
             ReportResult(r);
             RefreshAfterFileOp();
+
+            if (navigateAfterMove && !r.Canceled && r.SucceededTargets.Count > 0)
+                _ = NavigateToAndSelectAll(target, r.SucceededTargets);
+        }
+
+        /// <summary>
+        /// Same idea as AddressBar.cs's NavigateToAndSelect, generalized to more than one file: go
+        /// to the folder, then select and scroll to whichever of these paths actually landed
+        /// there. Real destination paths are needed rather than the sources' own filenames because
+        /// a KeepBoth conflict resolution can rename what actually landed (FileOps.UniqueName).
+        /// </summary>
+        private async System.Threading.Tasks.Task NavigateToAndSelectAll(string folder, List<string> files)
+        {
+            await NavigateTo(folder);   // Browse.cs
+
+            var hits = files.Select(f => _active.Results.FirstOrDefaultPath(f))
+                             .Where(h => h != null)
+                             .Cast<SearchResult>()
+                             .ToList();
+            if (hits.Count == 0) return;
+
+            Pane.ResultsList.SelectedItems.Clear();
+            foreach (var h in hits) Pane.ResultsList.SelectedItems.Add(h);
+            Pane.ResultsList.ScrollIntoView(hits[0]);
         }
 
         private void ReportResult(FileOpResult r)

@@ -24,7 +24,7 @@ namespace KillerShell.Shell
         // script written without one comes back as mojibake. Only these extensions, because
         // everywhere else a BOM is noise other tools have to step over. An EXISTING file keeps
         // whatever it already had - nothing here ever adds one (EditorControl.Detect).
-        private static readonly string[] BomExtensions = { ".ps1", ".psm1", ".psd1" };
+        private static readonly string[] BomExtensions = [".ps1", ".psm1", ".psd1"];
 
         // E70F, the pencil, so a document tab is not mistaken for a folder or a shell.
         private static readonly string GlyphEdit = ((char)0xE70F).ToString();

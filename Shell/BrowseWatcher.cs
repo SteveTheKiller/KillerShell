@@ -30,6 +30,7 @@ namespace KillerShell.Shell
         private DispatcherTimer?   _watchDebounce;
 
         private readonly HashSet<string> _touched = new(StringComparer.OrdinalIgnoreCase);
+        private readonly List<(string OldPath, string NewPath)> _renamedPairs = new();
         private bool _watchOverflow;
 
         // Past this many distinct paths in one burst, relist instead of patching entry by entry.
@@ -89,8 +90,17 @@ namespace KillerShell.Shell
 
         private void OnFsRenamed(object sender, RenamedEventArgs e)
         {
-            QueueChange(e.OldFullPath);
-            QueueChange(e.FullPath);
+            string oldPath = e.OldFullPath, newPath = e.FullPath;
+            Dispatcher.InvokeAsync(() =>
+            {
+                _renamedPairs.Add((oldPath, newPath));
+                _touched.Add(oldPath);
+                _touched.Add(newPath);
+
+                _watchDebounce ??= CreateDebounceTimer();
+                _watchDebounce.Stop();
+                _watchDebounce.Start();
+            }, DispatcherPriority.Background);
         }
 
         // The watcher's internal buffer overflowed, so an unknown number of events were dropped.
@@ -135,6 +145,7 @@ namespace KillerShell.Shell
             if (!Directory.Exists(folder))
             {
                 _touched.Clear();
+                _renamedPairs.Clear();
                 _watchOverflow = false;
                 string? up = folder;
                 while (up != null && !Directory.Exists(up)) up = ParentOf(up);
@@ -144,25 +155,54 @@ namespace KillerShell.Shell
 
             bool relist = _watchOverflow || _touched.Count > RelistThreshold;
             var paths = _touched.ToList();
+            var pairs = _renamedPairs.ToList();
             _touched.Clear();
+            _renamedPairs.Clear();
             _watchOverflow = false;
 
             if (relist) { await NavigateTo(folder, record: false); return; }
 
-            ApplyWatchChanges(tab, paths);
+            ApplyWatchChanges(tab, paths, pairs);
         }
 
         // One pass per changed path. Each is classified by what is on disk NOW rather than by
         // which event fired, because the events are already stale by the time the debounce
         // expires: a create followed by a delete should end as "not there", whichever order the
         // notifications happened to arrive in.
-        private void ApplyWatchChanges(SearchTab tab, List<string> paths)
+        private void ApplyWatchChanges(SearchTab tab, List<string> paths, List<(string OldPath, string NewPath)> pairs)
         {
             var byPath = new Dictionary<string, SearchResult>(StringComparer.OrdinalIgnoreCase);
             foreach (var r in tab.Results) byPath[r.FilePath] = r;
 
             int nextSeq = tab.Results.Count == 0 ? 0 : tab.Results.Max(r => r.Seq) + 1;
             bool changed = false;
+            bool selectionRenamed = false;
+
+            // Renames first, and IN PLACE: the generic create/delete loop below would otherwise
+            // see the old path vanish and the new path appear and treat that as an unrelated
+            // remove-then-add, which drops the row's object identity - exactly what selection and
+            // the details-pane preview are keyed on (Steve, 2026-08-03: renaming the selected file
+            // showed a different, wrong thumbnail). Mutating the SAME object keeps the container,
+            // the selection and the preview all pointed at the one row that actually changed.
+            foreach (var (oldPath, newPath) in pairs)
+            {
+                if (!byPath.TryGetValue(oldPath, out var existing)) continue;
+
+                string? parent = Path.GetDirectoryName(newPath);
+                if (!string.Equals(parent, tab.CurrentFolder, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!File.Exists(newPath) && !Directory.Exists(newPath)) continue;
+
+                bool wasSelected = ReferenceEquals(Pane.ResultsList?.SelectedItem, existing);
+
+                existing.ApplyRename(newPath, Path.GetFileName(newPath));
+                changed = true;
+                if (wasSelected) selectionRenamed = true;
+
+                paths.Remove(oldPath);
+                paths.Remove(newPath);
+                byPath.Remove(oldPath);
+                byPath[newPath] = existing;
+            }
 
             foreach (var path in paths)
             {
@@ -213,6 +253,11 @@ namespace KillerShell.Shell
 
             if (changed)
                 Pane.ResultsHeader.Text = string.Format(Loc("Str_Lbl_ResultsCount"), tab.Results.Count);
+
+            // The renamed row's own object survived, so the name/path fields shown in the
+            // details strip still read the OLD name until this refreshes them - the file's bytes
+            // did not change, so the already-decoded preview image is left alone on purpose.
+            if (selectionRenamed) UpdateDetailsPaneForSelection(Pane, animate: false);
         }
 
         private static bool IsHidden(string path)
