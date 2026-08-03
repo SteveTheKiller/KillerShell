@@ -284,13 +284,13 @@ if ($DryRun) {
     Write-Host "  released : $releaseDate"
     Write-Host "  size     : $exeMB exe"
     Write-Host "  sha256   : $hashUpper"
-    Write-Host "  verEgg   : v$Version on index, about, technical, howto"
+    Write-Host "  verEgg   : v$Version on index, about, technical, help"
     Write-Host "  README   : source zip link -> $Tag$(if ($readmeNew -eq $readmeRaw) { ' (already current)' })"
     Write-Host "DryRun: working tree left untouched." -ForegroundColor Yellow
 } else {
     if ($indexNew -ne $indexRaw) { [System.IO.File]::WriteAllText($indexPath, $indexNew) }
 
-    foreach ($page in 'index.html', 'about.html', 'technical.html', 'howto.html') {
+    foreach ($page in 'index.html', 'about.html', 'technical.html', 'help.html') {
         $p   = Join-Path $siteDir $page
         $raw = [System.IO.File]::ReadAllText($p)
         $new = $raw -replace '(id="verEgg"[^>]*>)v[0-9]+\.[0-9]+\.[0-9]+', ('${1}' + "v$Version")
