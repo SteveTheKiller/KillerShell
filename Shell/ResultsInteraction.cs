@@ -255,9 +255,17 @@ namespace KillerShell.Shell
             // exactly the HRESULT a NotImplementedException becomes crossing the COM boundary
             // (Steve, 2026-08-03). Services.NativeDataObject implements SetData for real.
             var data = new Services.NativeDataObject();
-            data.SetHGlobal(Services.NativeDataObject.CF_HDROP, Services.NativeDataObject.BuildHDrop(paths));
-            data.SetHGlobal(Services.NativeDataObject.CF_UNICODETEXT,
-                Services.NativeDataObject.BuildUnicodeText(string.Join(Environment.NewLine, paths)));
+            try
+            {
+                data.SetHGlobal(Services.NativeDataObject.CF_HDROP, Services.NativeDataObject.BuildHDrop(paths));
+                data.SetHGlobal(Services.NativeDataObject.CF_UNICODETEXT,
+                    Services.NativeDataObject.BuildUnicodeText(string.Join(Environment.NewLine, paths)));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: BuildHDrop/BuildUnicodeText THREW: {ex}");
+                return;  // Bail BEFORE attaching drag-image so no orphaned shell window is left behind
+            }
 
             // The file's own icon at half opacity, following the cursor - the same thing Explorer
             // shows, and the whole reason a plain DoDragDrop reads as "just a cursor" (Steve,
@@ -265,7 +273,7 @@ namespace KillerShell.Shell
             // dozen mixed types is not worth guessing at, and Explorer itself falls back the same
             // way for a mixed selection.
             var dragIcon = Services.IconCache.For(paths[0], 48);
-            Services.DragImage.Attach(data, dragIcon);
+            var dragHelper = Services.DragImage.Attach(data, dragIcon);
 
             // Native ole32 DoDragDrop, not System.Windows.DragDrop.DoDragDrop: WPF re-wraps
             // whatever it is handed in its own System.Windows.DataObject, which would throw away
@@ -282,6 +290,16 @@ namespace KillerShell.Shell
                 System.Diagnostics.Debug.WriteLine($"[DragDiag] DoDragDrop returned: hr=0x{hr:X8}, effect={finalEffect}");
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[DragDiag] DoDragDrop THREW: {ex}"); }
+            finally
+            {
+                // CRITICAL: Dispose the drag-image helper ONLY AFTER DoDragDrop returns. The helper
+                // owns the layered drag-image window and manages its lifecycle. Releasing it before
+                // the drag completes, or even too early after completion, can leave the window
+                // orphaned on the desktop. Keeping the helper alive ensures ole32's cleanup handler
+                // has the window context it needs to destroy the window deterministically.
+                dragHelper?.Dispose();
+                System.Diagnostics.Debug.WriteLine($"[DragDiag] Disposed drag-image helper");
+            }
         }
 
         // ── Accepting a drop ─────────────────────────────────────

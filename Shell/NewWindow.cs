@@ -24,10 +24,43 @@ namespace KillerShell.Shell
         /// </remarks>
         internal void OpenNewWindow()
         {
+            OpenNewWindowInternal(null, elevate: false);
+        }
+
+        /// <summary>
+        /// Open a new window explicitly unelevated, even if called from an elevated process.
+        /// Used when F8 (non-elevated shell) is pressed in an admin-only window.
+        /// </summary>
+        internal static void OpenUnelevated(string? folder = null)
+        {
+            // From an elevated process, we need to explicitly drop privileges. runas with /user
+            // is the standard way, but it prompts. Instead, use Explorer.exe as a launcher - it
+            // runs unelevated by default even when called from an elevated process, because
+            // Explorer is designed to be a shell that can launch things at any privilege level.
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
-            string? here = _active?.IsBrowsing == true ? _active.CurrentFolder : null;
+            // Use explorer.exe to launch KillerShell unelevated from an elevated context.
+            // Explorer will spawn it with the current user's regular (non-elevated) token.
+            var psi = new ProcessStartInfo("explorer.exe")
+            {
+                UseShellExecute = false,
+                Arguments = "\"" + exe + "\" --new-window" +
+                           (!string.IsNullOrEmpty(folder) ? " --cwd \"" + folder + "\"" : ""),
+                WorkingDirectory = string.IsNullOrEmpty(folder) ?
+                                  System.IO.Path.GetDirectoryName(exe) ?? string.Empty : folder,
+            };
+
+            try { Process.Start(psi); }
+            catch { /* failed to launch; nothing we can do from here */ }
+        }
+
+        private void OpenNewWindowInternal(string? folder, bool elevate)
+        {
+            string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+            if (string.IsNullOrEmpty(exe)) return;
+
+            string? here = _active?.IsBrowsing == true ? _active.CurrentFolder : (folder ?? null);
 
             // This PC is a sentinel rather than a directory, so it cannot be a working directory
             // and is not worth passing - the new window opens at home instead.

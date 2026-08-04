@@ -105,6 +105,8 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // tiles + detail
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
 
+            this.SetResourceReference(Grid.BackgroundProperty, "PaneBrush");
+
             var staticPanel = BuildStaticInfoPanel(out _staticInfoText);
             SetRow(staticPanel, 0);
             Children.Add(staticPanel);
@@ -508,7 +510,7 @@ namespace KillerShell.Shell
                 BorderThickness = new Thickness(1),
                 Child = text,
             };
-            panel.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
+            panel.SetResourceReference(Border.BackgroundProperty, "BackgroundBrush");
             panel.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
             return panel;
         }
@@ -598,7 +600,7 @@ namespace KillerShell.Shell
                 BorderThickness = new Thickness(1),
                 Child = body,
             };
-            card.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
+            card.SetResourceReference(Border.BackgroundProperty, "BackgroundBrush");
             card.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
             return card;
         }
@@ -972,7 +974,7 @@ namespace KillerShell.Shell
                 Cursor = Cursors.Hand,
                 Child = innerGrid,
             };
-            tileBorder.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
+            tileBorder.SetResourceReference(Border.BackgroundProperty, "BackgroundBrush");
 
             var capturedTile = tile;
             tileBorder.MouseLeftButtonUp += (_, _) => SelectTile(capturedTile);
@@ -984,7 +986,7 @@ namespace KillerShell.Shell
             tileBorder.MouseLeave += (_, _) =>
             {
                 if (!ReferenceEquals(_selectedTile, capturedTile))
-                    tileBorder.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
+                    tileBorder.SetResourceReference(Border.BackgroundProperty, "BackgroundBrush");
             };
 
             tile.TileBorder = tileBorder;
@@ -1014,7 +1016,7 @@ namespace KillerShell.Shell
 
         private static void SetTileVisualSelected(MetricTile tile, bool selected)
         {
-            tile.TileBorder.SetResourceReference(Border.BackgroundProperty, selected ? "SelectionBg" : "PaneBrush");
+            tile.TileBorder.SetResourceReference(Border.BackgroundProperty, selected ? "SelectionBg" : "BackgroundBrush");
             tile.TileSummaryText.SetResourceReference(TextBlock.ForegroundProperty, selected ? "SelectionFg" : "MutedTextBrush");
             if (selected)
                 tile.AccentBar.SetResourceReference(Border.BackgroundProperty, "PrimaryBrush");
@@ -1624,7 +1626,7 @@ namespace KillerShell.Shell
                     BorderThickness = new Thickness(1),
                     Child = _canvas,
                 };
-                Host.SetResourceReference(Border.BackgroundProperty, "SurfaceBrush");
+                Host.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
                 Host.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             }
 

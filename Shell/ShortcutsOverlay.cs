@@ -116,9 +116,9 @@ namespace KillerShell.Shell
             // Registry Editor tab - local to the tree/grid (RegistryEditorControl.cs
             // PreviewKeyDown), reachable only while the tab has focus, same convention as the
             // Processes/Services rows above: reuse the context menu's own Str_Menu_* strings as
-            // labels rather than a parallel Str_Ks_* set.
-            ("Edit",   "F2",             "Str_Menu_RegRename"),
-            ("Edit",   "Del",            "Str_Menu_RegDelete"),
+            // labels rather than a parallel Str_Ks_* set. F2 and Del are omitted here since they
+            // duplicate the general file/edit F2 (rename) and Del (recycle) rows above, and the
+            // Registry Editor's own key handlers override these bindings when that tab has focus.
             ("Search", "Ctrl+F",         "Str_Ks_RegFind"),
             ("Edit",   "Ctrl+C",         "Str_Menu_RegCopyPath"),
             ("Edit",   "Enter",          "Str_Menu_RegModify"),

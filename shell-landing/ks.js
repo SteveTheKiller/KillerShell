@@ -168,6 +168,26 @@
   }
 
   // ---- Easter egg: click the version number ----
+  // A small rotating set instead of one static line (Steve, 2026-08-03: "update the easter
+  // egg message"), so clicking it more than once is still worth doing. Picked without
+  // immediately repeating the line just shown.
+  var eggLines = [
+    'Explorer, cmd and Notepad walk into one window. Only one walks out.',
+    "Task Manager called. It wants its process list back.",
+    'Four tools walked into a tab strip. KillerShell walked out wearing all of them.',
+    'PowerShell, Registry Editor and a text editor, cornered in one exe. Nobody called for backup.',
+    "It's called KillerShell because “FileManagerButAlsoATerminalAndAlsoAnEditor.exe” didn't fit on the icon.",
+    "One exe, no installer, no subscription - the only thing dying here is your Explorer.exe habit."
+  ];
+  var lastEggLine = -1;
+  function nextEggLine() {
+    if (eggLines.length < 2) return eggLines[0];
+    var i;
+    do { i = Math.floor(Math.random() * eggLines.length); } while (i === lastEggLine);
+    lastEggLine = i;
+    return eggLines[i];
+  }
+
   var verEgg = document.getElementById('verEgg');
   var eggToast = document.getElementById('eggToast');
   if (verEgg) verEgg.addEventListener('click', function () {
@@ -184,7 +204,7 @@
       (function (el) { setTimeout(function () { el.remove(); }, (dur + 0.8) * 1000); })(d);
     }
     if (eggToast) {
-      eggToast.textContent = 'Explorer, cmd and Notepad walk into one window. Only one walks out.';
+      eggToast.textContent = nextEggLine();
       eggToast.classList.add('show');
       clearTimeout(verEgg._t);
       verEgg._t = setTimeout(function () { eggToast.classList.remove('show'); }, 2800);

@@ -26,13 +26,17 @@ namespace KillerShell.Services
         /// actually works (see NativeDataObject) - a System.Windows.Forms.DataObject's SetData
         /// throws NotImplementedException, which InitializeFromBitmap below surfaces as
         /// hr=0x80004001 (E_NOTIMPL) and silently gets no drag image at all.
+        ///
+        /// Returns a DragImageHelper that MUST be disposed after DoDragDrop returns - the helper
+        /// owns the layered drag-image window and must stay alive for the entire drag duration.
+        /// If initialization fails, returns null and the caller proceeds without a drag image.
         /// </summary>
-        public static void Attach(System.Runtime.InteropServices.ComTypes.IDataObject data, ImageSource? icon, int size = 48, double opacity = 0.5)
+        public static DragSourceHelper? Attach(System.Runtime.InteropServices.ComTypes.IDataObject data, ImageSource? icon, int size = 48, double opacity = 0.5)
         {
             if (icon is not BitmapSource bmp)
             {
                 System.Diagnostics.Debug.WriteLine("[DragDiag] DragImage.Attach: icon is not a BitmapSource - bailing");
-                return;
+                return null;
             }
 
             IntPtr hBitmap = IntPtr.Zero;
@@ -43,14 +47,14 @@ namespace KillerShell.Services
                 if (hBitmap == IntPtr.Zero)
                 {
                     System.Diagnostics.Debug.WriteLine("[DragDiag] DragImage.Attach: CreateDIBSection returned NULL");
-                    return;
+                    return null;
                 }
 
                 helperObj = new DragDropHelper();
                 if (helperObj is not IDragSourceHelper helper)
                 {
                     System.Diagnostics.Debug.WriteLine("[DragDiag] DragImage.Attach: DragDropHelper did not cast to IDragSourceHelper");
-                    return;
+                    return null;
                 }
 
                 var shdi = new SHDRAGIMAGE
@@ -66,14 +70,51 @@ namespace KillerShell.Services
                 int hr = helper.InitializeFromBitmap(ref shdi, data);
                 System.Diagnostics.Debug.WriteLine($"[DragDiag] DragImage.Attach: InitializeFromBitmap hr=0x{hr:X8}");
                 if (hr == 0) hBitmap = IntPtr.Zero;
+
+                // Success: return a wrapper that keeps the helper alive. Caller must dispose it
+                // after DoDragDrop returns.
+                if (hr == 0)
+                    return new DragSourceHelper(helperObj);
+                else
+                    return null;
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[DragDiag] DragImage.Attach THREW: {ex}"); }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DragDiag] DragImage.Attach THREW: {ex}");
+                return null;
+            }
             finally
             {
                 if (hBitmap != IntPtr.Zero) DeleteObject(hBitmap);
-                if (helperObj != null) Marshal.ReleaseComObject(helperObj);
+                // Only release if we're not returning it (success releases in the return statement above)
+                if (helperObj != null && hBitmap != IntPtr.Zero) Marshal.ReleaseComObject(helperObj);
             }
         }
+
+    /// <summary>
+    /// Wrapper that keeps the drag-image helper alive through the drag operation and releases it
+    /// when disposed. The helper manages the layered drag-image window, so it must not be released
+    /// before DoDragDrop returns.
+    /// </summary>
+    public sealed class DragSourceHelper : IDisposable
+    {
+        private object? _helper;
+
+        internal DragSourceHelper(object helper)
+        {
+            _helper = helper;
+        }
+
+        public void Dispose()
+        {
+            if (_helper != null)
+            {
+                System.Diagnostics.Debug.WriteLine("[DragDiag] DragSourceHelper.Dispose: releasing helper");
+                Marshal.ReleaseComObject(_helper);
+                _helper = null;
+            }
+        }
+    }
 
         /// <summary>
         /// A 32bpp top-down DIB with premultiplied alpha - what the shell's drag image expects,

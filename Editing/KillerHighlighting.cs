@@ -45,6 +45,11 @@ namespace KillerShell.Editing
             Add("Yaml",     new[] { ".yml", ".yaml" },                                          "Yaml.xshd");
             Add("Log",      new[] { ".log", ".out", ".err", ".trace" },                         "Log.xshd");
             Add("Csv",      new[] { ".csv", ".tsv" },                                           "Csv.xshd");
+            AddBuiltIn("MarkDown", new[] { ".md", ".markdown" });
+            AddBuiltIn("JSON", new[] { ".json" });
+            AddBuiltIn("XML", new[] { ".xml", ".config", ".xaml" });
+            AddBuiltIn("Python", new[] { ".py" });
+            AddBuiltIn("C#", new[] { ".cs" });
         }
 
         private static void Add(string name, string[] extensions, string resource)
@@ -63,6 +68,18 @@ namespace KillerShell.Editing
                 HighlightingManager.Instance.RegisterHighlighting(name, extensions, definition);
             }
             catch { /* one format loses its colors; the editor still opens the file */ }
+        }
+
+        /// <summary>Register a built-in AvalonEdit highlighting definition by name.</summary>
+        private static void AddBuiltIn(string definitionName, string[] extensions)
+        {
+            try
+            {
+                var definition = HighlightingManager.Instance.GetDefinition(definitionName);
+                if (definition != null)
+                    HighlightingManager.Instance.RegisterHighlighting(definitionName, extensions, definition);
+            }
+            catch { /* definition not found or registration failed */ }
         }
     }
 }

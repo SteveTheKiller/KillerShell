@@ -66,7 +66,7 @@ namespace KillerShell
         // both, since there was only ever one object for every tile/row/column binding in
         // FilePane.xaml to read (Steve, 2026-08-03). Each pane now owns its own, the same way it
         // owns Tabs/Active above.
-        internal ResultsViewState ViewState { get; } = new();
+        public ResultsViewState ViewState { get; } = new();
 
         /// <summary>0 list, 1 icons, 2 details - which of the three result layouts this pane is
         /// showing. Used to be one MainWindow field mirrored into both panes on every change

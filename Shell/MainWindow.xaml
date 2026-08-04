@@ -1247,41 +1247,20 @@
                                 </Border>
                             </Grid>
 
-                            <Button x:Name="AboutUpdateButton" Visibility="Collapsed" Margin="0,14,0,0" HorizontalAlignment="Left" Cursor="Hand" Click="AboutUpdateButton_Click">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <!-- The caption INHERITS its color from this border rather than
-                                             setting its own: hovering fills the border with the accent,
-                                             and accent-on-accent left the label invisible. A trigger
-                                             cannot reach the Content by TargetName - it is outside the
-                                             template's namescope - so the color is carried down by
-                                             TextElement.Foreground, which the ContentPresenter passes on. -->
-                                        <Border x:Name="ub" Background="Transparent" BorderBrush="{DynamicResource PrimaryBrush}" BorderThickness="1" CornerRadius="4" Padding="12,6"
-                                                TextElement.Foreground="{DynamicResource PrimaryBrush}">
-                                            <ContentPresenter/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ub" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                                                <Setter TargetName="ub" Property="TextElement.Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                                <!-- Explicit Style (not relying on TextElement.Foreground inheritance
-                                     from the Border above) so the base color is never left to chance. -->
-                                <TextBlock x:Name="AboutUpdateText" FontSize="12">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
-                                                    <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                            <!-- This used to be a bespoke Button+ControlTemplate that tried to hand its
+                                 own Foreground down through TextElement.Foreground inheritance/a
+                                 DataTrigger, and kept rendering with illegible text (Steve, 2026-08-03,
+                                 the 10th report of the same black-on-accent bug). The shared
+                                 OutlineButton style (Controls/Controls.xaml) already solves exactly
+                                 this - outline at rest, fills with the accent on hover, and a
+                                 TextStroke effect on the ContentPresenter so the label stays legible
+                                 either way - and is what every other outline button in the family
+                                 already uses (ConfirmDialog's OK button, etc). Using it here instead of
+                                 reinventing it is the actual fix. -->
+                            <Button x:Name="AboutUpdateButton" Style="{StaticResource OutlineButton}"
+                                    Visibility="Collapsed" Margin="0,14,0,0" HorizontalAlignment="Left"
+                                    Click="AboutUpdateButton_Click">
+                                <TextBlock x:Name="AboutUpdateText" FontSize="12"/>
                             </Button>
                         </StackPanel>
                     </Grid>

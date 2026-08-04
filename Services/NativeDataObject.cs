@@ -59,6 +59,7 @@ namespace KillerShell.Services
 
         public void GetData(ref FORMATETC format, out STGMEDIUM medium)
         {
+            System.Diagnostics.Debug.WriteLine($"[NativeDataObject.GetData] cfFormat={format.cfFormat}, tymed={format.tymed}");
             // A real COM caller (the shell, or ole32 itself) always crosses a true marshaled
             // boundary, where .NET converts a thrown exception into the DV_E_FORMATETC HRESULT
             // automatically - fine. But a drag that never leaves KillerShell hands the SAME
@@ -70,8 +71,23 @@ namespace KillerShell.Services
             // every real caller checks QueryGetData/GetDataPresent first anyway, so nothing that
             // matters ever sees this fallback.
             int i = FindMatch(ref format);
-            medium = i >= 0 ? DuplicateMedium(_entries[i].Medium)
-                            : new STGMEDIUM { tymed = TYMED.TYMED_NULL, unionmember = IntPtr.Zero };
+            if (i < 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"[NativeDataObject.GetData] No match found, returning empty");
+                medium = new STGMEDIUM { tymed = TYMED.TYMED_NULL, unionmember = IntPtr.Zero };
+                return;
+            }
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"[NativeDataObject.GetData] Found match at index {i}, duplicating...");
+                medium = DuplicateMedium(_entries[i].Medium);
+                System.Diagnostics.Debug.WriteLine($"[NativeDataObject.GetData] Duplicate succeeded");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[NativeDataObject.GetData] DuplicateMedium threw: {ex}");
+                medium = new STGMEDIUM { tymed = TYMED.TYMED_NULL, unionmember = IntPtr.Zero };
+            }
         }
 
         // Not throwing here either, for the same in-process reason as GetData above - GetDataHere

@@ -41,6 +41,16 @@ namespace KillerShell.Shell
                 return;
             }
 
+            // Non-elevated profile in an elevated window: can't attach a non-elevated shell to an
+            // elevated pseudoconsole (same UAC boundary). Launch a new non-elevated window instead.
+            // This is the mirror of RelaunchElevated above: F8 pressed in an admin-only KillerShell
+            // should open a new non-elevated window, not try (and fail) to add a tab here.
+            if (IsElevated)
+            {
+                OpenUnelevated(folder);
+                return;
+            }
+
             // The pane you are IN. A shell used to be forced into the right-hand pane, opening
             // it if it was shut, on the theory that folders left / shells right is a habit you
             // can build. In practice it meant a key you pressed while working in one pane threw

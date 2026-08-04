@@ -4,6 +4,18 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - Unreleased
+
+## [1.1.4] - 2026-08-03
+
+1.1.4 fixes a crash when dragging files to external applications like Teams and Telegram, plus a ghost icon that persisted on the desktop after dragging to external apps.
+
+### Fixed
+- Dragging a file to Teams, Telegram, or other external apps could crash KillerShell with an `AccessViolationException` - `NativeDataObject` did not check for NULL returns from `GlobalAlloc` and `GlobalLock`, so when either failed the code would attempt to access invalid memory. Error checking and exception handling added for all Win32 global-memory operations.
+- `NativeDataObject.GetData` could throw unhandled exceptions when called from a different thread (which happens when dragging to external apps), crashing the entire drag operation - now wrapped in a try-catch to return an empty medium on error, matching the same defensive behavior for in-process calls.
+- The HDROP structure building could overflow with very large file paths or many files - overflow checks added to prevent negative size calculations that could cause `GlobalAlloc` to fail.
+- Dragging a file to an external app left a ghost icon (the drag-image layered window) permanently visible on the desktop until the app closed - `IDragSourceHelper` manages the drag-image window lifecycle and must stay alive for the entire `DoDragDrop` call. The helper was being released immediately after initializing the drag image, before the drag even started, which orphaned the window and prevented ole32 from cleaning it up. The helper is now kept alive through the entire drag and only disposed after `DoDragDrop` returns.
+
 ## [1.1.3] - 2026-08-03
 
 1.1.3 is a bug fix release - a file drag-and-drop that silently did nothing when dropped onto a
@@ -16,7 +28,7 @@ About-card fixes.
 - Dragging a file or folder onto a folder ROW in the listing did not move or copy it into that folder - the drop target was always resolved as the currently browsed folder, never the specific row under the pointer, so a drop onto a folder icon silently landed back in the same folder it started in and the "already there" filter then treated it as a no-op. The drop target now checks for a folder row under the pointer first and falls back to the browsed folder only when there isn't one.
 - Renaming the selected file could leave the details-pane preview showing a different, wrong file's thumbnail (and could drop the selection outright) - a rename was queued as two unrelated file-system events (old path gone, new path appeared) and handled as a plain delete-then-add, which replaced the row with a brand new object. That threw away the object identity selection and the async preview decode were both keyed on, and could let a recycled virtualized row briefly show another row's already-decoded thumbnail. Renames are now matched as a pair and applied to the SAME row in place, so its identity, selection and preview all stay put and only its name/path fields refresh.
 - "More Windows options" did nothing when right-clicking empty pane space instead of an actual file or folder - the context menu item has nothing to open a shell menu FOR without something under the pointer. It is now hidden from the menu entirely unless a file or folder is actually there.
-- The About card's "Update available" badge text relied on inheriting its color from an ancestor element rather than setting its own, which was not reliably landing. It now has its own explicit style for both the resting and hovered color.
+- The About card's "Update available" button kept rendering with illegible text (reported repeatedly) - it was a bespoke Button+ControlTemplate trying to hand its own color down through TextElement.Foreground inheritance and a DataTrigger, both of which are exactly the kind of thing the shared `OutlineButton` style already exists to get right once. It now uses that shared style like every other outline button in the app instead of reinventing it.
 - Dragging a file out of KillerShell showed a bare text cursor instead of the shell's usual dragged-icon-at-reduced-opacity - `System.Windows.Forms.DataObject`'s `IDataObject.SetData` throws `NotImplementedException` (it is written only to be read from as a drag source, never written to), which silently defeated the shell's `IDragSourceHelper`. Drags now build a real native-COM `IDataObject` (`NativeDataObject`, backed by real Win32 `GlobalAlloc`/`GlobalLock`/`GlobalUnlock`) and use `ole32.dll`'s `DoDragDrop` directly instead of WPF's own wrapper, which re-boxes whatever `IDataObject` it is given and would have thrown the fix away.
 - Even with the drag image fixed as a source, dragging a file from one KillerShell pane onto another never rendered the shell's drag-image ghost - `IDropTargetHelper` (the DROP side that actually paints the layered bitmap) was never wired in; WPF's own `AllowDrop` plumbing has no idea it exists. Now wired into the window's `DragEnter`/`DragOver`/`Drop`.
 - Dragging a file could crash the app with `AccessViolationException` - WPF raises its own `DragEnter`/`DragLeave` per child element crossed within the SAME window (an Image, then the Border beneath it, then the pane), but there is only one real native OLE drag session for the whole window; calling the shell's `IDropTargetHelper.DragEnter` a second time while it still considered the first session open desynced its internal state machine. `DragEnter` now only calls it once per real drag (later crossings are treated as `DragOver`), and `DragLeave` is a no-op - the real teardown happens once, in `Drop`.
@@ -24,6 +36,9 @@ About-card fixes.
 - That same source-pane refresh then landed a whole drag late instead of immediately (drag `box.png`, it vanishes, but doesn't reappear moved until dragging `box1` next) - the destination pane's own post-move refresh and the new source-pane refresh both touched window focus without waiting on each other, and a listing whose folder's focus moved out from under it mid-flight silently discards its own results (by design, so a slow listing can't land on top of a folder you've since left). Both refreshes are now properly sequenced end to end instead of racing.
 - F10 (open second pane) showed the pane but never actually moved real command focus to it - the pane-seeding code always quietly handed focus back to whichever pane had it before. F10 now keeps real focus on the newly-opened pane.
 - Dragging a file needed a "warm-up" click first - clicking and dragging in one motion on a row that wasn't already selected silently did nothing. A freshly-realized row's container can still report no item for the press that lands on it (both the item-container generator lookup and the DataContext fallback could come back empty at that exact tick), so the seed the drag needs was lost immediately and never retried. The lookup is now retried once the drag actually clears the move threshold, by which point the container has always caught up.
+
+### Changed
+- KillerPrompt's path shortening kept 2 segments in full before abbreviating everything above them to a single letter, which could abbreviate a short, meaningful folder name like `code` down to `c` (`~\c\KillerShell\shell-landing`). Now keeps 3.
 
 ## [1.1.2] - 2026-08-03
 
