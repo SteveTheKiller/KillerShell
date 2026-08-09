@@ -103,7 +103,8 @@ Open `KillerShell.sln` in Visual Studio 2022 and build. No external dependencies
 
 GPL-3.0 - see [LICENSE](LICENSE).
 
-Two components carry their own licenses and keep them:
+Three components carry their own licenses and keep them:
 
 - AvalonEdit, the editor - MIT. See [third_party/AvalonEdit/LICENSE](third_party/AvalonEdit/LICENSE).
 - `Fonts/KillerGlyphs.ttf`, a 26-glyph subset of Terminess Nerd Font - SIL OFL 1.1. See [Fonts/KillerGlyphs-NOTICE.txt](Fonts/KillerGlyphs-NOTICE.txt) and [Fonts/KillerGlyphs-OFL.txt](Fonts/KillerGlyphs-OFL.txt).
+- `Resources/icons/98/*.png`, the 98SE theme's icon set - [Chicago95](https://github.com/grassmunk/Chicago95), GPL-3.0+/MIT. See [Resources/icons/98/ATTRIBUTION.md](Resources/icons/98/ATTRIBUTION.md) for the per-icon source map.

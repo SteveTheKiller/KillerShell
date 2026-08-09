@@ -105,6 +105,11 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // tiles + detail
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
 
+            // PaneBrush, the same tier as the file browser's location row and the ACTIVE TAB, so
+            // the tab floats down into this surface and the two read as one. The cards and tiles
+            // on top of it take the menu tier, exactly as the file listing and the terminal do -
+            // one rule for every tab: the tab's own surface is PaneBrush, its content is
+            // MenuBackgroundBrush (Steve, 2026-08-08).
             this.SetResourceReference(Grid.BackgroundProperty, "PaneBrush");
 
             var staticPanel = BuildStaticInfoPanel(out _staticInfoText);
@@ -510,8 +515,12 @@ namespace KillerShell.Shell
                 BorderThickness = new Thickness(1),
                 Child = text,
             };
-            panel.SetResourceReference(Border.BackgroundProperty, "BackgroundBrush");
-            panel.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
+            // PaneBrush, not BackgroundBrush: an info panel is CONTENT sitting on the tab's
+            // chrome, so it takes the same pane color as a terminal or a file listing. On the
+            // window tier it also inherited the full-window gradient on five of the themes and
+            // re-ramped it inside the panel (Steve, 2026-08-08).
+            panel.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
+            panel.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             return panel;
         }
 
@@ -600,8 +609,9 @@ namespace KillerShell.Shell
                 BorderThickness = new Thickness(1),
                 Child = body,
             };
-            card.SetResourceReference(Border.BackgroundProperty, "BackgroundBrush");
-            card.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
+            // PaneBrush - see BuildStaticInfoPanel above; a card is content on the tab's chrome.
+            card.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
+            card.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             return card;
         }
 
@@ -935,7 +945,16 @@ namespace KillerShell.Shell
             tile.ThumbGraph = new Sparkline(HistorySamples, thumbFixedScaleMax,
                 thumbSeriesBrushKeys.Length > 0 ? thumbSeriesBrushKeys : ["PrimaryBrush"]);
 
-            var accentBar = new Border { Width = 3, Background = Brushes.Transparent };
+            // Left corners match the tile's radius. The bar sits in column 0 of the tile's child
+            // grid, which is NOT clipped to the tile's CornerRadius, so a square bar painted its
+            // own hard corners straight over the rounded ones - the selected tile looked square
+            // down its left edge (Steve, 2026-08-08).
+            var accentBar = new Border
+            {
+                Width = 3,
+                Background = Brushes.Transparent,
+                CornerRadius = new CornerRadius(4, 0, 0, 4),
+            };
 
             var labelText = new TextBlock { FontSize = 11, FontWeight = FontWeights.Bold, Text = tile.Label };
             labelText.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
@@ -953,7 +972,9 @@ namespace KillerShell.Shell
             tile.ThumbGraph.Host.Height = 26;
             tile.ThumbGraph.Host.Margin = new Thickness(10, 0, 10, 7);
             tile.ThumbGraph.Host.BorderThickness = new Thickness(0);
-            tile.ThumbGraph.Host.SetResourceReference(Border.BackgroundProperty, "SurfaceBrush");
+            // The sparkline well sits INSIDE the tile, so it takes the tile's own tier rather than
+            // SurfaceBrush - which is #000000 on Black and punched a black hole in every tile.
+            tile.ThumbGraph.Host.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
 
             var body = new StackPanel();
             body.Children.Add(textStack);
@@ -974,7 +995,7 @@ namespace KillerShell.Shell
                 Cursor = Cursors.Hand,
                 Child = innerGrid,
             };
-            tileBorder.SetResourceReference(Border.BackgroundProperty, "BackgroundBrush");
+            tileBorder.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
 
             var capturedTile = tile;
             tileBorder.MouseLeftButtonUp += (_, _) => SelectTile(capturedTile);
@@ -986,7 +1007,7 @@ namespace KillerShell.Shell
             tileBorder.MouseLeave += (_, _) =>
             {
                 if (!ReferenceEquals(_selectedTile, capturedTile))
-                    tileBorder.SetResourceReference(Border.BackgroundProperty, "BackgroundBrush");
+                    tileBorder.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
             };
 
             tile.TileBorder = tileBorder;
@@ -1016,7 +1037,8 @@ namespace KillerShell.Shell
 
         private static void SetTileVisualSelected(MetricTile tile, bool selected)
         {
-            tile.TileBorder.SetResourceReference(Border.BackgroundProperty, selected ? "SelectionBg" : "BackgroundBrush");
+            // MenuBackgroundBrush when not selected, matching the tile's build and hover states.
+            tile.TileBorder.SetResourceReference(Border.BackgroundProperty, selected ? "SelectionBg" : "MenuBackgroundBrush");
             tile.TileSummaryText.SetResourceReference(TextBlock.ForegroundProperty, selected ? "SelectionFg" : "MutedTextBrush");
             if (selected)
                 tile.AccentBar.SetResourceReference(Border.BackgroundProperty, "PrimaryBrush");
@@ -1626,7 +1648,7 @@ namespace KillerShell.Shell
                     BorderThickness = new Thickness(1),
                     Child = _canvas,
                 };
-                Host.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
+                Host.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
                 Host.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             }
 

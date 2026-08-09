@@ -35,7 +35,8 @@ namespace KillerShell.Shell
             Loaded += (_, _) => FadeInContent();                 // Chrome.cs
             UpdateThemeSwatchSelection();                        // ThemeFlyout.cs
             UpdateAccentSwatches();
-            Services.ThemeManager.ThemeChanged += () => { UpdateThemeSwatchSelection(); UpdateAccentSwatches(); };
+            SyncTitleBarMetrics();                               // Chrome.cs
+            Services.ThemeManager.ThemeChanged += () => { UpdateThemeSwatchSelection(); UpdateAccentSwatches(); RepaintIcons(); SyncTitleBarMetrics(); };
 
             var ver = Assembly.GetExecutingAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "1.0.0";
@@ -75,7 +76,18 @@ namespace KillerShell.Shell
             bool freshWindow = Array.Exists(Environment.GetCommandLineArgs(),
                 a => string.Equals(a, "--new-window", StringComparison.OrdinalIgnoreCase));
 
-            if (DemoMode || freshWindow || !TryRestoreTabs()) ActivateTab(CreateTab());   // Session.cs / Tabs.cs
+            // An ELEVATED window does not restore the session either. It already refuses to SAVE
+            // it (see Closing, below: both instances share one settings store, and an admin
+            // window is a task you finish, not the one you live in) - not restoring is the mirror
+            // of that and was simply missed. An elevated relaunch is started with --eventviewer /
+            // --processes / --shell, never --new-window, so freshWindow was false and the admin
+            // window came up carrying every tab from the ordinary one. Each restored TERMINAL tab
+            // then asked for a non-elevated shell inside an elevated window, which OpenShell
+            // answers by bouncing the request back out through OpenUnelevated - one explorer.exe
+            // and one extra KillerShell PER RESTORED SHELL TAB. That is where the pile of Explorer
+            // windows came from: seven tabs, seven windows; eight tabs, eight (Steve, 2026-08-08).
+            if (DemoMode || freshWindow || IsElevated || !TryRestoreTabs())
+                ActivateTab(CreateTab());   // Session.cs / Tabs.cs
 
             // Restore the saved app-wide accessibility size (AppScale.cs). After the tabs so
             // _active exists, though the restore path never writes a status line.
@@ -211,6 +223,39 @@ namespace KillerShell.Shell
             // and a ContextMenu's own popup already closes itself on an outside click or when
             // the window is deactivated/moved - the hand-rolled close-tracking a raw Popup
             // needed is gone along with the Popup.
+        }
+
+        /// <summary>
+        /// Redraw every surface that gets its art from IconCache, after a theme change has moved
+        /// the app between the brand pack and the period 98 pack (IconCache.Pack).
+        ///
+        /// Needed because IconCache is asked through value converters and one-way bindings on the
+        /// row objects. Nothing about a row CHANGES when the theme does - the same folder is still
+        /// the same folder - so no binding re-evaluates on its own and every icon in the app keeps
+        /// the outgoing theme's art until the list is rebuilt for some unrelated reason. Refresh is
+        /// the cheap forced re-run: the bitmaps themselves are already decoded and cached per pack,
+        /// so this is a repaint and not a reload.
+        /// </summary>
+        private void RepaintIcons()
+        {
+            // Per pane: the listing and the tab strip both live on FilePane, and dual pane means
+            // both of them exist twice. RightPane is declared in the XAML so it is never null, only
+            // collapsed while the split is closed - refreshing it costs nothing and means the icons
+            // are already right the first time it is shown.
+            foreach (var pane in new[] { LeftPane, RightPane })
+            {
+                if (pane == null) continue;
+                try
+                {
+                    pane.ResultsList?.Items.Refresh();
+                    pane.TabStrip?.Items.Refresh();
+                }
+                catch { /* a list mid-rebuild refuses Refresh; the rebuild draws the new art anyway */ }
+            }
+
+            // Window-level: the tree and the saved locations are shared by both panes.
+            try { FolderTree?.Items.Refresh();    } catch { }
+            try { BookmarksList?.Items.Refresh(); } catch { }
         }
 
         private void VersionLabel_Click(object sender, System.Windows.Input.MouseButtonEventArgs e) => ShowAboutOverlay();  // About.cs
@@ -1280,13 +1325,32 @@ namespace KillerShell.Shell
         // progress callback.
         private void UpdatePaneStatusBar()
         {
-            bool any = Pane.ScannedText.Visibility == Visibility.Visible
-                    || !string.IsNullOrEmpty(Pane.StatsText.Text)
-                    || !string.IsNullOrEmpty(Pane.QueryText.Text);
+            // This bar belongs to the FILE BROWSER - item counts, the search query, "No item
+            // selected". A terminal, an editor or a tool tab has nothing to say through it, and
+            // it was showing over all of them: a shell tab carried a stray "No item selected"
+            // strip along its bottom edge (Steve, 2026-08-08).
+            //
+            // The test is whether the LISTING is on screen, not what kind the tab claims to be.
+            // Keying off IsBrowsing/IsSearching did not work and is why this came back twice: a
+            // shell tab is opened from a folder and keeps IsBrowsing true the whole time it is a
+            // terminal, so the guard passed and the strip stayed. Every non-listing kind collapses
+            // ResultsList on activation (TerminalTabs, EditorTabs, ProcessTabs, EventViewerTabs,
+            // PerformanceTabs, RegistryEditorTabs) and all of those run before this in ActivateTab,
+            // so reading the result of that cannot drift from it. ResultsView.cs makes the same
+            // test for the same reason.
+            bool browsing = Pane.ResultsList.Visibility == Visibility.Visible;
+
+            bool any = browsing
+                    && (Pane.ScannedText.Visibility == Visibility.Visible
+                        || !string.IsNullOrEmpty(Pane.StatsText.Text)
+                        || !string.IsNullOrEmpty(Pane.QueryText.Text));
 
             Pane.PaneStatusBar.Visibility = any ? Visibility.Visible : Visibility.Collapsed;
 
-            var radius = any ? new CornerRadius(0) : new CornerRadius(0, 0, 5, 5);
+            // Hands the pane's bottom rounding back to the list surface when the bar is gone. The
+            // 5 was a literal and kept two rounded corners on the flat theme; PaneRadius is 0 there.
+            double br = any ? 0 : PaneRadius;
+            var radius = new CornerRadius(0, 0, br, br);
             Pane.ResultsSurface.CornerRadius      = radius;
             Pane.ResultsSurfaceGrain.CornerRadius = radius;
         }

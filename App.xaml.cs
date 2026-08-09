@@ -15,6 +15,42 @@ namespace KillerShell
 {
     public partial class App : Application
     {
+        // ============================================================
+        // Text selection rendering
+        // ============================================================
+        /// <summary>
+        /// Turn OFF the adorner-based text selection renderer, app-wide and before any WPF text
+        /// control exists.
+        ///
+        /// The adorner renderer paints the selection fill in an adorner layer ON TOP of the text
+        /// and ignores SelectionTextBrush entirely. That is invisible while the fill is
+        /// semi-transparent, which is what the twelve ordinary themes use - the glyphs read
+        /// through it. 98SE's selection is a SOLID Win98 block (TextSelectionOpacity 1.0), so the
+        /// fill covered the glyphs completely and a selected address bar came up as a plain navy
+        /// rectangle with nothing legible in it (Steve, 2026-08-08).
+        ///
+        /// The non-adorner renderer draws the fill BEHIND the run and honours SelectionTextBrush,
+        /// so TextSelectionTextBrush (#ffffff on 98SE) actually reaches the glyphs.
+        ///
+        /// A STATIC ctor, not OnStartup: the switch is read once, the first time the framework
+        /// touches the text stack, and OnStartup can already be too late. It is also global rather
+        /// than per-theme - there is no way to flip it at runtime - but the other twelve themes
+        /// pass SelectionTextBrush as TextBrush, so the non-adorner path renders them identically.
+        ///
+        /// Themes/KillerUI/98SE.xaml has documented this switch since the theme landed; the code
+        /// to set it was never written, which is the whole bug.
+        /// </summary>
+        static App()
+        {
+            try
+            {
+                AppContext.SetSwitch(
+                    "Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering",
+                    false);
+            }
+            catch { /* an older framework without the switch: the selection just stays as it was */ }
+        }
+
         private const string RegKey = @"Software\KillerShell";
 
         // ============================================================

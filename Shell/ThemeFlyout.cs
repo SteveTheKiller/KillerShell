@@ -16,18 +16,29 @@ namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        private void ThemeDarkRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Dark);
-        private void ThemeLightRadio_Checked(object sender, RoutedEventArgs e)    => SelectTheme(Theme.Light);
-        private void ThemeHCRadio_Checked(object sender, RoutedEventArgs e)       => SelectTheme(Theme.Black);
-        private void ThemeBloodRadio_Checked(object sender, RoutedEventArgs e)    => SelectTheme(Theme.Blood);
-        private void ThemeGreedRadio_Checked(object sender, RoutedEventArgs e)    => SelectTheme(Theme.Greed);
-        private void ThemeCyanoticRadio_Checked(object sender, RoutedEventArgs e) => SelectTheme(Theme.Cyanotic);
+        private void ThemeDarkRadio_Checked(object sender, RoutedEventArgs e)      => SelectTheme(Theme.Dark);
+        private void ThemeLightRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Light);
+        private void ThemeHCRadio_Checked(object sender, RoutedEventArgs e)        => SelectTheme(Theme.Black);
+        private void Theme98SERadio_Checked(object sender, RoutedEventArgs e)      => SelectTheme(Theme.SE98);
+        private void ThemeBloodRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Blood);
+        private void ThemeGreedRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Greed);
+        private void ThemeCyanoticRadio_Checked(object sender, RoutedEventArgs e)  => SelectTheme(Theme.Cyanotic);
+        private void ThemeEctoplasmRadio_Checked(object sender, RoutedEventArgs e) => SelectTheme(Theme.Ectoplasm);
+        private void ThemeDecayRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Decay);
+        private void ThemeMourningRadio_Checked(object sender, RoutedEventArgs e)  => SelectTheme(Theme.Mourning);
+        private void ThemeSepulchreRadio_Checked(object sender, RoutedEventArgs e) => SelectTheme(Theme.Sepulchre);
+        private void ThemeDeliriumRadio_Checked(object sender, RoutedEventArgs e)  => SelectTheme(Theme.Delirium);
+        private void ThemeMalaiseRadio_Checked(object sender, RoutedEventArgs e)   => SelectTheme(Theme.Malaise);
 
         private void SelectTheme(Theme theme)
         {
             bool wasOpen = ThemeFlyout is not null && ThemeFlyout.IsOpen;
             ThemeManager.Apply(theme);
             ApplyThemeBorder(this);   // retint the DWM frame border to the new palette
+            // Corner preference is owned here too: 98SE squares even a floating window, so
+            // switching INTO or OUT OF a flat theme has to re-evaluate it, not just a state
+            // change. Same call KillerNotes makes from its own theme switch.
+            ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
             // Radios are already synced - the user's own click just set this one and WPF's
             // GroupName handles unchecking the rest. Dot rings + the pop-out slide still need
             // driving; UpdateAccentRowsVisibility(animate: true) is the one that runs with no
@@ -58,6 +69,7 @@ namespace KillerShell.Shell
         private void AccentDot_Click(object sender, MouseButtonEventArgs e)      => HandleAccentDot(sender, Theme.Dark);
         private void AccentDotLight_Click(object sender, MouseButtonEventArgs e) => HandleAccentDot(sender, Theme.Light);
         private void AccentDotBlack_Click(object sender, MouseButtonEventArgs e) => HandleAccentDot(sender, Theme.Black);
+        private void AccentDot98SE_Click(object sender, MouseButtonEventArgs e)  => HandleAccentDot(sender, Theme.SE98);
 
         private void HandleAccentDot(object sender, Theme family)
         {
@@ -79,12 +91,19 @@ namespace KillerShell.Shell
         private void UpdateThemeSwatchSelection()
         {
             var cur = ThemeManager.Current;
-            ThemeDarkRadio.IsChecked     = cur == Theme.Dark;
-            ThemeLightRadio.IsChecked    = cur == Theme.Light;
-            ThemeHCRadio.IsChecked       = cur == Theme.Black;
-            ThemeBloodRadio.IsChecked    = cur == Theme.Blood;
-            ThemeGreedRadio.IsChecked    = cur == Theme.Greed;
-            ThemeCyanoticRadio.IsChecked = cur == Theme.Cyanotic;
+            ThemeDarkRadio.IsChecked      = cur == Theme.Dark;
+            ThemeLightRadio.IsChecked     = cur == Theme.Light;
+            ThemeHCRadio.IsChecked        = cur == Theme.Black;
+            Theme98SERadio.IsChecked      = cur == Theme.SE98;
+            ThemeBloodRadio.IsChecked     = cur == Theme.Blood;
+            ThemeGreedRadio.IsChecked     = cur == Theme.Greed;
+            ThemeCyanoticRadio.IsChecked  = cur == Theme.Cyanotic;
+            ThemeEctoplasmRadio.IsChecked = cur == Theme.Ectoplasm;
+            ThemeDecayRadio.IsChecked     = cur == Theme.Decay;
+            ThemeMourningRadio.IsChecked  = cur == Theme.Mourning;
+            ThemeSepulchreRadio.IsChecked = cur == Theme.Sepulchre;
+            ThemeDeliriumRadio.IsChecked  = cur == Theme.Delirium;
+            ThemeMalaiseRadio.IsChecked   = cur == Theme.Malaise;
             UpdateAccentSwatches();
         }
 
@@ -100,6 +119,7 @@ namespace KillerShell.Shell
             SlideRow(DarkAccentRow,  cur == Theme.Dark,  animate);
             SlideRow(LightAccentRow, cur == Theme.Light, animate);
             SlideRow(BlackAccentRow, cur == Theme.Black, animate);
+            SlideRow(SE98AccentRow,  cur == Theme.SE98,  animate);
         }
 
         private const double AccentRowHeight = 26;   // 18px dot + 8px breathing room
@@ -151,6 +171,7 @@ namespace KillerShell.Shell
             RingRow([AccentDotRed, AccentDotOrange, AccentDotGreen, AccentDotTeal, AccentDotBlue, AccentDotPurple], ThemeManager.AccentChoiceFor(Theme.Dark));
             RingRow([AccentDotLightRed, AccentDotLightOrange, AccentDotLightGreen, AccentDotLightTeal, AccentDotLightBlue, AccentDotLightPurple], ThemeManager.AccentChoiceFor(Theme.Light));
             RingRow([AccentDotBlackRed, AccentDotBlackOrange, AccentDotBlackGreen, AccentDotBlackTeal, AccentDotBlackBlue, AccentDotBlackPurple], ThemeManager.AccentChoiceFor(Theme.Black));
+            RingRow([AccentDot98SERed, AccentDot98SEOrange, AccentDot98SEGreen, AccentDot98SETeal, AccentDot98SEBlue, AccentDot98SEPurple], ThemeManager.AccentChoiceFor(Theme.SE98));
         }
 
         /// <summary>

@@ -16,6 +16,33 @@ namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
+        /// <summary>
+        /// Pin the title bar's ROW, and the WindowChrome caption band, to the theme's
+        /// TitleBarHeight. Called from the ctor and again on every theme change, because the two
+        /// flat/non-flat captions are different heights (22 vs 36).
+        ///
+        /// Both halves are needed and neither works alone:
+        ///   - The ROW: a hardcoded 36 with a 22px caption Grid inside it centres the caption and
+        ///     leaves 7px of frame grey above and below it. That gap is INSIDE the row, so no
+        ///     amount of trimming the window's padding could reach it.
+        ///   - CaptionHeight: WindowChrome's drag band is measured from the top of the WINDOW and
+        ///     is a plain constant. Left at 36 over a 22px caption it would keep claiming 14px of
+        ///     the tab strip below, so the top of every tab would drag the window instead of
+        ///     selecting the tab.
+        ///
+        /// Code rather than markup: a RowDefinition takes a GridLength, not a Double, and
+        /// WindowChrome is not in the visual tree so a DynamicResource on it never resolves.
+        /// </summary>
+        private void SyncTitleBarMetrics()
+        {
+            double h = TryFindResource("TitleBarHeight") is double d && d > 0 ? d : 36.0;
+
+            if (TitleRow != null) TitleRow.Height = new GridLength(h);
+
+            var chrome = System.Windows.Shell.WindowChrome.GetWindowChrome(this);
+            if (chrome != null) chrome.CaptionHeight = h;
+        }
+
         private void MainWindow_SourceInitialized(object? sender, EventArgs e)
         {
             var hwnd = new WindowInteropHelper(this).Handle;
@@ -42,8 +69,12 @@ namespace KillerShell.Shell
             {
                 var hwnd = new WindowInteropHelper(w).Handle;
                 if (hwnd == IntPtr.Zero) return;
-                // AppBorderBrush lets a theme tune the frame independently (Black's pane
-                // borders are intentionally near-invisible); PaneBorderBrush is the default.
+                // AppBorderBrush is the frame's OWN key, and every palette picks it deliberately -
+                // Sepulchre's #44585b desaturated teal against a #4d3d2b brown pane border, for
+                // instance. It was briefly switched to PaneBorderBrush on the theory that the
+                // vendored palettes used this key for something else; they do not, and the switch
+                // painted Sepulchre's frame brown (Steve, 2026-08-08). PaneBorderBrush stays as
+                // the fallback for a palette that declines to state one.
                 if ((Application.Current.TryFindResource("AppBorderBrush")
                      ?? Application.Current.TryFindResource("PaneBorderBrush")) is SolidColorBrush b)
                 {
@@ -66,8 +97,18 @@ namespace KillerShell.Shell
         /// window has no drop shadow and the corners arent rounded") - they had ApplyThemeBorder
         /// wired in already but never this.
         /// </summary>
+        /// <summary>
+        /// True when the active theme is FLAT - 98SE. A flat theme draws its own hard frame and
+        /// must never get Win11 rounded corners: the rounding cut the corners off the bevel and
+        /// left the DWM frame curving around a square window (Steve, 2026-08-08). Read from the
+        /// palette rather than the theme name, so any future flat theme gets it for free.
+        /// </summary>
+        internal static bool FlatChrome =>
+            Application.Current?.TryFindResource("UseDialogCaption") is bool f && f;
+
         internal static void ApplyWindowCorners(Window w, bool rounded)
         {
+            if (FlatChrome) rounded = false;
             try
             {
                 var hwnd = new WindowInteropHelper(w).Handle;

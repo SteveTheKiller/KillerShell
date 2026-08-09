@@ -18,30 +18,43 @@
          language as the KillerPDF KillerDialog / KillerScan ConfirmDialog. -->
     <!-- BackgroundBrush (the titlebar dark), not SurfaceBrush: on Surface the
          Surface-filled checkbox boxes were invisible. -->
+    <!-- CornerRadius and the halo margin come from the theme. The halo is the transparent gutter
+         the drop shadow needs; a flat theme sets it to 0 because it casts no shadow, and leaving
+         a 10px invisible margin there would push the resize grab outside the visible window. -->
     <Border x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
             BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="1"
-            CornerRadius="6"
-            Margin="10">
+            CornerRadius="{DynamicResource PanelCornerRadius}"
+            Margin="{DynamicResource DialogHaloMargin}">
         <Border.Effect>
-            <DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="3" Direction="270" Opacity="0.6"/>
+            <!-- Scaled by the theme: 0 on a flat theme, so a 98SE dialog sits flat like a real
+                 Win98 one instead of floating on a soft shadow. -->
+            <DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="3" Direction="270"
+                              Opacity="{DynamicResource FlyoutShadowOpacity}"/>
         </Border.Effect>
         <Grid>
             <!-- Film grain over the whole dialog, one continuous surface. -->
-            <Border IsHitTestVisible="False" CornerRadius="6"
+            <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
                     Opacity="{DynamicResource GrainOpacity}"
                     Background="{DynamicResource GrainTileBrush}"/>
+            <!-- Raised dialog bevel. Nothing on any theme but 98SE. -->
+            <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                    BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+            <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                    BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
 
-            <Grid>
+            <Grid Margin="{DynamicResource DialogContentMargin}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="36"/>
+                    <!-- A dialog caption is 36 by default and a short 98SE band on a flat theme. -->
+                    <RowDefinition Height="{DynamicResource DialogTitleBarHeight}"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Title bar: transparent, wordmark like the main window -->
-                <Border Grid.Row="0" Background="Transparent"
+                <!-- Title bar: transparent by default so it shows the card's own face, or the
+                     theme's own caption band where one is asked for (98SE). -->
+                <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}"
                         MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                     <Grid Margin="14,0">
                         <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -82,6 +95,9 @@
                 </Border>
 
                 <!-- Body: message, optional bullet lines, optional checkboxes -->
+                <!-- DialogRowMargin is ADDED to the existing inset rather than replacing it: it
+                     is 0 on every ordinary theme, and 98SE uses it to pull the body in tight the
+                     way a Win98 dialog packs its content. -->
                 <StackPanel Grid.Row="1" Margin="24,20,24,16">
                     <TextBlock x:Name="MsgText" Foreground="{StaticResource TextBrush}"
                                FontSize="13" TextWrapping="Wrap" Margin="0,0,0,12"/>
@@ -99,6 +115,11 @@
                 </StackPanel>
 
                 <!-- Buttons -->
+                <!-- NOTE: DialogButtonsMargin is deliberately not bound here. It REPLACES this
+                     inset on 98SE (3,4,3,4 against 24,0,24,20), so binding it directly would
+                     re-space the button row on all twelve other themes unless its default were
+                     hand-set to 24,0,24,20 per dialog - and each dialog has a different inset.
+                     Left for the pass that unifies the dialog layouts. -->
                 <StackPanel Grid.Row="2" Orientation="Horizontal"
                             HorizontalAlignment="Right" Margin="24,0,24,20">
                     <Button Content="{DynamicResource Str_Btn_Cancel}" Click="Cancel_Click"

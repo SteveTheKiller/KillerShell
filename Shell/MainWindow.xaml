@@ -24,15 +24,52 @@
                             GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
     </shell:WindowChrome.WindowChrome>
 
-    <Grid x:Name="RootGrid" Opacity="0">
+    <!-- WINDOW FRAME. Four zero-thickness borders on every ordinary theme, so this costs nothing
+         and draws nothing there; on 98SE they become the hard Win98 double frame - a raised outer
+         pair and a recessed inner pair, light on top-left and dark on bottom-right. Wrapping the
+         root rather than sitting inside it, so the frame is genuinely the window's edge. -->
+    <!-- No Padding on this Border. The bevels below are its children, so a padding here pushed
+         them INSIDE the frame and the raised edge drew 5px in from the window instead of on it -
+         which is the odd border that kept showing up (Steve, 2026-08-08). The frame face fills
+         the whole window, the bevels sit on its true edge, and the CONTENT is inset instead, by
+         WindowFramePadding on RootGrid below. -->
+    <Border x:Name="WindowFrame" Background="{DynamicResource WindowFrameBrush}"
+            BorderBrush="{DynamicResource WindowEdgeBrush}"
+            BorderThickness="{DynamicResource WindowEdgeThickness}">
+        <Grid>
+            <Border BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+            <Border BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+            <Border Margin="{DynamicResource FrameInnerMargin}"
+                    BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameInnerLightThickness}"/>
+            <Border Margin="{DynamicResource FrameInnerMargin}"
+                    BorderBrush="{DynamicResource FrameInnerDarkBrush}"  BorderThickness="{DynamicResource FrameInnerDarkThickness}"/>
+
+    <Grid x:Name="RootGrid" Opacity="0" Margin="{DynamicResource WindowFramePadding}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="36"/>   <!-- 0: title bar -->
+            <!-- 0: title bar. Height is set from code (Chrome.cs SyncTitleBarMetrics) to whatever
+                 the theme's TitleBarHeight is, NOT hardcoded. It WAS hardcoded to 36 while the
+                 caption Grid inside it is TitleBarHeight - 22 on 98SE - and a child with an
+                 explicit Height CENTERS in its row, so 7px of bare frame grey landed above the
+                 caption and another 7 below it. That is the "bar above the titlebar" and the
+                 matching one under it (Steve, 2026-08-08); trimming WindowFramePadding could
+                 never reach it, because the gap was inside the row rather than outside it.
+                 A RowDefinition takes a GridLength, which is why this is code and not a
+                 DynamicResource on a Double. -->
+            <RowDefinition x:Name="TitleRow" Height="36"/>
             <RowDefinition Height="*"/>    <!-- 1: main content -->
             <RowDefinition Height="24"/>   <!-- 2: footer -->
         </Grid.RowDefinitions>
 
-        <!-- ══════════ ROW 0 - TITLE BAR ══════════ -->
-        <Grid Grid.Row="0" Background="{DynamicResource BackgroundBrush}">
+        <!-- ══════════ ROW 0 - TITLE BAR ══════════
+             Height and brush come from the theme (ThemeManager's 98SE chrome contract): 36 and
+             BackgroundBrush on every ordinary theme, a short Win98 caption with its own gradient
+             on a flat one. Bound rather than hardcoded so 98SE needs no branch here. -->
+        <!-- TitleBarBleed is a negative margin (-1,0,-1,0 on 98SE) that lets the caption run out
+             over the frame's inner bevel, the way a Win98 title bar meets its frame with no gap.
+             Zero everywhere else. -->
+        <Grid Grid.Row="0" Height="{DynamicResource TitleBarHeight}"
+              Margin="{DynamicResource TitleBarBleed}"
+              Background="{DynamicResource TitleBarBrush}">
             <Border IsHitTestVisible="False">
                 <Border.Background>
                     <ImageBrush x:Name="TitleGrainBrush" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,256,256" Stretch="None"/>
@@ -43,24 +80,38 @@
             <!-- App icon + wordmark, exactly like KillerScan: icon in the corner, then the
                  typewriter wordmark with a blurred dark copy behind the crisp text
                  (faded by IconShadowOpacity; 0 in light mode = no shadow). -->
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0">
-                <Image x:Name="TitleIcon" Width="27" Height="27" VerticalAlignment="Center" Margin="0,0,7,0"
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="{DynamicResource TitleBarPadding}">
+                <Image x:Name="TitleIcon" VerticalAlignment="Center"
+                       Width="{DynamicResource TitleIconSize}" Height="{DynamicResource TitleIconSize}"
+                       Margin="{DynamicResource TitleIconMargin}"
                        RenderOptions.BitmapScalingMode="HighQuality" IsHitTestVisible="False"/>
+                <!-- A Win98 caption has no logotype in it - just the icon and the window's name in
+                     plain bold. On a flat theme this shows and the wordmark below collapses; on
+                     every other theme it is the other way round (ThemeManager sets both). -->
+                <TextBlock x:Name="PlainTitle" Text="KillerShell" VerticalAlignment="Center"
+                           Visibility="{DynamicResource PlainTitleVisibility}"
+                           FontFamily="{DynamicResource ChromeFontFamily}" FontWeight="Bold" FontSize="11"
+                           Foreground="{DynamicResource ChromeTextBrush}"
+                           Margin="{DynamicResource TitleTextMargin}"/>
                 <!-- The wordmark drives the app-wide accessibility size: roll the wheel over it
                      (AppScale.cs). Hit-test-visible in the chrome so the wheel reaches it, which
                      also opts it out of the native caption - so window drag and double-click
                      maximize come back via the LogoBar handlers. Family standard; the website
                      link lives on the About card's wordmark. -->
                 <Grid x:Name="LogoBar" VerticalAlignment="Center" shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                      Visibility="{DynamicResource WordmarkVisibility}"
                       Cursor="Hand" ToolTip="{DynamicResource Str_TT_AppSize}" Background="Transparent"
                       MouseWheel="LogoBar_MouseWheel" MouseLeftButtonDown="LogoBar_MouseLeftButtonDown">
-                    <!-- Main-titlebar wordmark is 18/23.4 (KillerScan standard); dialogs use 15/19.5. -->
-                    <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="18" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
+                    <!-- Sizes come from the theme: 17/22 by default (the family standard), smaller
+                         on a flat theme whose caption bar is far shorter. WordmarkEmbossOpacity is
+                         the blurred dark copy behind the crisp text, 0 where an emboss is wrong. -->
+                    <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"
+                               Margin="1,2,0,0" Opacity="{DynamicResource WordmarkEmbossOpacity}">
                         <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
-                        <Run Text="Killer" Foreground="#D8000000"/><Run Text="Shell" FontSize="23.4" FontWeight="Bold" Foreground="#D8000000"/>
+                        <Run Text="Killer" Foreground="#D8000000"/><Run Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" FontWeight="Bold" Foreground="#D8000000"/>
                     </TextBlock>
-                    <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="18">
-                        <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="23.4" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}"/>
+                    <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}">
+                        <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}"/>
                     </TextBlock>
                 </Grid>
 
@@ -72,7 +123,12 @@
                            Text="{DynamicResource Str_Title_Elevated}"/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+            <!-- CaptionButtonsMargin: 0 on every ordinary theme, so the buttons run flush to the
+                 window edge exactly as they did. Win98 left a couple of pixels between the last
+                 button and the frame, which 98SE asks for with 0,0,3,0. -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                        Margin="{DynamicResource CaptionButtonsMargin}"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
                 <!-- Language and theme moved to the icon rail (column 0), the way KillerNotes
                      has them. The title bar keeps only the window buttons. -->
                 <Button x:Name="MinimizeBtn" Click="MinimizeBtn_Click" Style="{StaticResource ChromeButton}" Content="&#xE921;"/>
@@ -114,7 +170,45 @@
                          the tree above simply gives up the room (the Killculator arrangement). -->
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" Background="Transparent" Padding="4,6,2,6">
+                <!-- The edge fades are an OpacityMask on the TREE ITSELF, so its rows dissolve to
+                     transparent and the real window shows through. They used to be two Borders
+                     painted with BackgroundBrush sitting OVER the tree - which works only while
+                     that key is a flat colour. On Sepulchre, Decay, Delirium, Ectoplasm and
+                     Malaise it is a full-window LinearGradientBrush, so each 30px strip re-ramped
+                     the entire window gradient and showed up as a coloured band across the
+                     sidebar (Steve, 2026-08-08). Stop alphas and offsets are driven from
+                     TreePanel.cs SyncTreeEdgeFades. -->
+                <!-- SidebarPaneBrush is Transparent on every ordinary theme, so the tree keeps
+                     showing the window through it; on 98SE it is the sunken white list well, with
+                     the recessed bevel drawn by the two borders below. -->
+                <Border Grid.Row="0" Background="{DynamicResource SidebarPaneBrush}"
+                        Margin="{DynamicResource SidebarPanelMargin}">
+                    <Grid>
+                        <!-- SUNKEN, so the brushes are CROSSED against the thicknesses: the dark
+                             #808080 takes the TOP-LEFT thickness and the white takes the
+                             bottom-right. Paired the obvious way round it comes out raised, which
+                             is what the sidebar well was doing (Steve, 2026-08-08). -->
+                        <Border BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
+                        <Border BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
+                        <Border Margin="{DynamicResource PaneBevelInnerMargin}"
+                                BorderBrush="{DynamicResource PaneBevelDark2Brush}"  BorderThickness="{DynamicResource PaneBevel2LightThickness}"/>
+                        <Border Margin="{DynamicResource PaneBevelInnerMargin}"
+                                BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
+                <Border x:Name="TreeFadeHost" Background="Transparent" Padding="4,6,2,6">
+                    <Border.OpacityMask>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop x:Name="TreeFadeTopOuter" Color="#FF000000" Offset="0"/>
+                            <GradientStop x:Name="TreeFadeTopInner" Color="#FF000000" Offset="0.08"/>
+                            <GradientStop x:Name="TreeFadeBotInner" Color="#FF000000" Offset="0.92"/>
+                            <GradientStop x:Name="TreeFadeBotOuter" Color="#FF000000" Offset="0.995"/>
+                            <!-- Full opacity again below the ramp. The horizontal scrollbar lives
+                                 INSIDE this masked host, so without restoring alpha here the fade
+                                 dissolved the scrollbar along with the last row - a stop's colour
+                                 carries on past it to the end of the brush. -->
+                            <GradientStop x:Name="TreeFadeBotRestore" Color="#FF000000" Offset="0.996"/>
+                            <GradientStop Color="#FF000000" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.OpacityMask>
                     <TreeView x:Name="FolderTree" Style="{StaticResource FolderTreeView}"
                               TreeViewItem.Expanded="FolderTree_Expanded"
                               TreeViewItem.Collapsed="FolderTree_Collapsed"
@@ -176,6 +270,8 @@
                         </TreeView.ItemTemplate>
                     </TreeView>
                 </Border>
+                    </Grid>
+                </Border>
 
                 <!-- Edge fades, KillerNotes' NotesFade pattern on both ends: nodes dissolve into
                      the chrome as they scroll off rather than being clipped mid-row. The overlay
@@ -200,42 +296,6 @@
                      their terminal value (fully solid for Bottom, fully clear for Top) with the
                      LAST QUARTER of the band held flat at that value, so the transition visibly
                      finishes with margin to spare rather than exactly on the boundary. -->
-                <Border x:Name="TreeFadeTop" Grid.Row="0" Height="30" Opacity="0"
-                        VerticalAlignment="Top" Margin="0,0,12,0" IsHitTestVisible="False">
-                    <Border.OpacityMask>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#FF000000" Offset="0"/>
-                            <GradientStop Color="#E0000000" Offset="0.35"/>
-                            <GradientStop Color="#40000000" Offset="0.6"/>
-                            <GradientStop Color="#00000000" Offset="0.75"/>
-                            <GradientStop Color="#00000000" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.OpacityMask>
-                    <Grid>
-                        <Border Background="{DynamicResource BackgroundBrush}"/>
-                        <Border Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                    </Grid>
-                </Border>
-                <!-- Bottom margin is driven from code (TreePanel.cs): when the tree grows a
-                     horizontal scrollbar the content's bottom edge moves UP by its height, and a
-                     fade pinned to the row would sit over the scrollbar instead of over the last
-                     row it is meant to be fading out. -->
-                <Border x:Name="TreeFadeBottom" Grid.Row="0" Height="34" Opacity="0"
-                        VerticalAlignment="Bottom" Margin="0,0,12,0" IsHitTestVisible="False">
-                    <Border.OpacityMask>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#00000000" Offset="0"/>
-                            <GradientStop Color="#40000000" Offset="0.25"/>
-                            <GradientStop Color="#E0000000" Offset="0.5"/>
-                            <GradientStop Color="#FF000000" Offset="0.75"/>
-                            <GradientStop Color="#FF000000" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.OpacityMask>
-                    <Grid>
-                        <Border Background="{DynamicResource BackgroundBrush}"/>
-                        <Border Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                    </Grid>
-                </Border>
 
                 <!-- FAVORITES SLIDE-UP (Bookmarks.cs). Height animates 0 -> open so it rises
                      out of the sidebar's bottom edge, the way KillerNotes' Killculator does.
@@ -247,7 +307,14 @@
                         BorderBrush="{DynamicResource TreeLineBrush}" BorderThickness="0,1,0,0"
                         DragOver="BookmarksPanel_DragOver" Drop="BookmarksPanel_Drop">
                     <Grid>
-                        <Border Background="{DynamicResource BackgroundBrush}"/>
+                        <!-- Transparent, so the window's own background shows through the drawer.
+                             This used to paint BackgroundBrush, which is a full-window
+                             LinearGradientBrush on five of the themes - so the drawer re-ramped
+                             the entire left-to-right gradient inside its own width and could
+                             never line up with the sidebar it drops out of. Still a Border
+                             rather than nothing: Transparent keeps it hit-testable, which the
+                             panel's drag-and-drop needs. -->
+                        <Border Background="Transparent"/>
                         <Border Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                         <ListBox x:Name="BookmarksList" Background="Transparent" BorderThickness="0"
                                  Padding="4,4,2,4" Focusable="False" FocusVisualStyle="{x:Null}"
@@ -268,7 +335,7 @@
                             </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type shellns:Bookmark}">
-                                    <Border Padding="4,3" CornerRadius="3" Cursor="Hand"
+                                    <Border Padding="4,3" CornerRadius="{DynamicResource SmallCornerRadius}" Cursor="Hand"
                                             ToolTip="{Binding Path}"
                                             PreviewMouseLeftButtonDown="Bookmark_DragDown"
                                             PreviewMouseMove="Bookmark_DragMove"
@@ -276,12 +343,19 @@
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="Background" Value="Transparent"/>
+                                                <!-- Inherited by the row's label and glyph, so the
+                                                     selected trigger below can flip both at once. -->
+                                                <Setter Property="TextElement.Foreground" Value="{DynamicResource TextBrush}"/>
                                                 <Style.Triggers>
                                                     <!-- Tag="on" set from code (Bookmarks.cs UpdateBookmarksSelection) when this
                                                          row is where the active tab actually is. Before IsMouseOver so a hover
                                                          still reads on top of a selected row rather than being hidden by it. -->
                                                     <Trigger Property="Tag" Value="on">
                                                         <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
+                                                        <!-- SelectionFg, the colour that PAIRS with that fill. The label used to
+                                                             be hardcoded to TextBrush, which is black on 98SE - black text on a
+                                                             navy selection bar (Steve, 2026-08-08). -->
+                                                        <Setter Property="TextElement.Foreground" Value="{DynamicResource SelectionFg}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
@@ -310,9 +384,11 @@
                                             <Image Source="{Binding Icon}" Width="16" Height="16"
                                                    VerticalAlignment="Center" Margin="0,0,6,0"
                                                    RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            <!-- No Foreground here: it inherits TextElement.Foreground
+                                                 from the row Border, which flips to SelectionFg when
+                                                 the row is the active one. -->
                                             <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
                                                        FontFamily="{DynamicResource MonoFont}" FontSize="11"
-                                                       Foreground="{DynamicResource TextBrush}"
                                                        TextTrimming="CharacterEllipsis"/>
                                         </StackPanel>
                                     </Border>
@@ -543,24 +619,31 @@
                     <Button x:Name="PerformanceRailBtn" Style="{StaticResource RailButton}" Content="&#xE9D9;"
                             FontSize="12" Margin="0,0,0,10" Click="PerformanceRail_Click"
                             ToolTip="{DynamicResource Str_TT_Performance}"/>
-                    <!-- E71D (List) - matches RegistryEditorTabs.cs's RegistryEditorGlyph, the tab
-                         strip icon. Went through E945 (rendered as a lightning bolt, not the
-                         intended database-cylinder glyph) and E713 (Settings gear, too generic)
-                         before landing here. Opens or focuses the Registry Editor tab - a real
+                    <!-- E74C (OEM) - a four-pane window with a corner mark, which reads as the
+                         registry's hive/key structure far better than a plain list did. Went
+                         through E945 (rendered as a lightning bolt, not the intended
+                         database-cylinder glyph), E713 (Settings gear, too generic) and E71D
+                         (List) before landing here (Steve, 2026-08-08). NOTE: RegistryEditorTabs.cs
+                         RegistryEditorGlyph still carries E71D for the TAB strip - the two used to
+                         match deliberately, so change both or neither. Opens or focuses the
+                         Registry Editor tab - a real
                          regedit-equivalent browser/editor over the five hives
                          (Shell/RegistryEditorTabs.cs, Shell/RegistryEditorControl.cs). Ctrl+F11
                          ONLY - there is no unelevated variant at all (the registry needs admin to
                          write most of what a registry editor exists to edit), so unlike Processes
                          above this one gets no context menu; there is nothing to choose between. -->
-                    <Button x:Name="RegistryEditorRailBtn" Style="{StaticResource RailButton}" Content="&#xE71D;"
+                    <Button x:Name="RegistryEditorRailBtn" Style="{StaticResource RailButton}" Content="&#xE74C;"
                             FontSize="12" Margin="0,0,0,10" Click="RegistryEditorRail_Click"
                             ToolTip="{DynamicResource Str_TT_RegistryEditor}"/>
-                    <!-- E81C (History): opens or focuses the Event Viewer tab - a filterable grid
+                    <!-- E71D (List): the glyph Registry Editor used to carry, handed over when
+                         Registry moved to E74C (Steve, 2026-08-08). A list of log lines is what
+                         this tab actually is, and E81C (History) read as a clock, which is not
+                         the same idea. Opens or focuses the Event Viewer tab - a filterable grid
                          over the Application/System/Security event logs (Shell/EventViewerTabs.cs,
                          Shell/EventViewerControl.cs). Ctrl+F12 ONLY - same reasoning as Registry
                          Editor above: the Security log refuses a standard token outright, so there
                          is no unelevated mode to offer and no context menu here either. -->
-                    <Button x:Name="EventViewerRailBtn" Style="{StaticResource RailButton}" Content="&#xE81C;"
+                    <Button x:Name="EventViewerRailBtn" Style="{StaticResource RailButton}" Content="&#xE71D;"
                             FontSize="12" Margin="0,0,0,10" Click="EventViewerRail_Click"
                             ToolTip="{DynamicResource Str_TT_EventViewer}"/>
                     <!-- "?" (a literal, in Consolas): the shortcuts card, F1. Sits directly above
@@ -672,6 +755,22 @@
                                         <Border x:Name="AccentDotBlackBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDotBlack_Click"/>
                                         <Border x:Name="AccentDotBlackPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDotBlack_Click"/>
                                     </StackPanel>
+                                    <!-- 98SE is the fourth ACCENT family, so its picker row sits
+                                         under it exactly as Dark/Light/Black's do. The remaining
+                                         palettes below are single-accent and have no row. -->
+                                    <RadioButton x:Name="Theme98SERadio"
+                                                 Content="{DynamicResource Str_Theme_SE98}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="Theme98SERadio_Checked"/>
+                                    <StackPanel x:Name="SE98AccentRow" Orientation="Horizontal" Margin="10,-5,0,5" Height="0" ClipToBounds="True" Visibility="Collapsed">
+                                        <Border x:Name="AccentDot98SERed"    Style="{StaticResource AccentDot}" Background="#DD504B" Tag="Red"    MouseLeftButtonUp="AccentDot98SE_Click"/>
+                                        <Border x:Name="AccentDot98SEOrange" Style="{StaticResource AccentDot}" Background="#E8962C" Tag="Orange" MouseLeftButtonUp="AccentDot98SE_Click"/>
+                                        <Border x:Name="AccentDot98SEGreen"  Style="{StaticResource AccentDot}" Background="#1ea54c" Tag="Green"  MouseLeftButtonUp="AccentDot98SE_Click"/>
+                                        <Border x:Name="AccentDot98SETeal"   Style="{StaticResource AccentDot}" Background="#1FB8A8" Tag="Teal"   MouseLeftButtonUp="AccentDot98SE_Click"/>
+                                        <Border x:Name="AccentDot98SEBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDot98SE_Click"/>
+                                        <Border x:Name="AccentDot98SEPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDot98SE_Click"/>
+                                    </StackPanel>
                                     <RadioButton x:Name="ThemeBloodRadio"
                                                  Content="{DynamicResource Str_Theme_Blood}"
                                                  GroupName="ThemeGroup"
@@ -687,6 +786,43 @@
                                                  GroupName="ThemeGroup"
                                                  Style="{StaticResource ThemeRadio}"
                                                  Checked="ThemeCyanoticRadio_Checked"/>
+                                    <RadioButton x:Name="ThemeEctoplasmRadio"
+                                                 Content="{DynamicResource Str_Theme_Ectoplasm}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeEctoplasmRadio_Checked"/>
+                                    <RadioButton x:Name="ThemeDecayRadio"
+                                                 Content="{DynamicResource Str_Theme_Decay}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeDecayRadio_Checked"/>
+                                    <!-- Last four in KillerNotes' picker order: Malaise, Sepulchre,
+                                         Delirium, Mourning. There is no logic to it, but the two
+                                         apps listing the same thirteen themes in different orders
+                                         is worse than an arbitrary order shared by both (Steve,
+                                         2026-08-08). Note this is NOT the enum's order, which
+                                         KillerNotes also keeps separate - the enum is persistence,
+                                         this is presentation. -->
+                                    <RadioButton x:Name="ThemeMalaiseRadio"
+                                                 Content="{DynamicResource Str_Theme_Malaise}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeMalaiseRadio_Checked"/>
+                                    <RadioButton x:Name="ThemeSepulchreRadio"
+                                                 Content="{DynamicResource Str_Theme_Sepulchre}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeSepulchreRadio_Checked"/>
+                                    <RadioButton x:Name="ThemeDeliriumRadio"
+                                                 Content="{DynamicResource Str_Theme_Delirium}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeDeliriumRadio_Checked"/>
+                                    <RadioButton x:Name="ThemeMourningRadio"
+                                                 Content="{DynamicResource Str_Theme_Mourning}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeMourningRadio_Checked"/>
 
                                     <!-- Fonts/File Associations: KillerShell-only rows, kept from
                                          the old flyout content - not part of PDF's menu, and not
@@ -995,7 +1131,9 @@
                  when the orientation flips, so neither one loses its tabs or its scroll
                  position. Second pane is Collapsed until asked for, and its column/row is 0
                  wide, so a single-pane window lays out exactly as it did before. -->
-            <Grid Grid.Column="3" x:Name="PaneHost">
+            <!-- ContentPaneMargin: 0 everywhere, 0,5,0,0 on 98SE, which drops the content clear of
+                 the menu bar's raised bottom edge instead of butting straight against it. -->
+            <Grid Grid.Column="3" x:Name="PaneHost" Margin="{DynamicResource ContentPaneMargin}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="PaneColA" Width="*" MinWidth="300"/>
                     <ColumnDefinition x:Name="PaneColSplit" Width="0"/>
@@ -1031,7 +1169,32 @@
         </Grid>
 
         <!-- ══════════ ROW 2 - FOOTER (blends with the sidebar/panes, no divider line) ══════════ -->
-        <Border Grid.Row="2" Background="{DynamicResource BackgroundBrush}">
+        <!-- The footer's own bevel. Zero-thickness on every ordinary theme; on 98SE it is the
+             SUNKEN status strip - dark along the top edge, light along the bottom.
+
+             The two Thickness tokens are named for POSITION, not for the brush that goes in them:
+             *LightThickness is "1,1,0,0" (top + left) and *DarkThickness is "0,0,1,1" (bottom +
+             right). So a sunken control CROSSES them - Dark brush in the Light slot - and only a
+             RAISED control pairs them up by name. Pairing by name here is what made the footer
+             stand proud four times running (Steve, 2026-08-08); the version cell below was already
+             crossed, which is why one half of the footer looked right and the other did not. -->
+        <!-- FooterPadding is a MARGIN, not a Padding: 98SE's value is 0,0,-2,0 and WPF throws
+             outright on a negative Padding ("'0,0,-2,0' is not a valid value for property
+             'Padding'", Steve, 2026-08-08). The negative pulls the strip out past the frame's
+             inner bevel, which only a margin can do. -->
+        <Border Grid.Row="2" Background="{DynamicResource BackgroundBrush}"
+                Margin="{DynamicResource FooterPadding}">
+          <Grid>
+          <!-- NO strip-wide bevel here. There was one, and crossing its brushes to make it sunken
+               only turned one wrong footer into a different wrong footer.
+               A Win98 status bar is not a bevelled strip with things on it - it is a row of sunken
+               CELLS sitting on the plain window face, and what looks like a divider between them
+               is simply the gap. Bevelling the whole strip AND the version block put a box inside
+               a box, which is what read as "weird". KillerNotes is the reference (its footer is
+               the family's, ported from KillerScan) and it has no strip bevel at all: just the
+               cells. The status line gets its own cell below, the way it does there.
+               (Steve, 2026-08-08: "the footer still looks weird, look at the footer of
+               killernotes".) -->
           <!-- Two columns: the status area takes what is left, the version block sizes to its
                content on the right. The portable badge is deliberately NOT a column - it stays
                a CENTERED overlay spanning both, which is where it has always sat. Giving it its
@@ -1054,7 +1217,20 @@
                  above it (RailCol, 24 wide, so its icons center at 12). The dot is 3 wide, so
                  the row starts at 12 - 1.5. Everything after it moves with it, which is the
                  "tiny bit left" this is for. -->
-            <Grid Grid.Column="0" VerticalAlignment="Center" Margin="10.5,0,12,0">
+            <!-- The status line's own SUNKEN CELL, matching the version cell on the right. This
+                 is the half KillerShell was missing: it had the version block in a cell and the
+                 status line loose on the strip, then a bevel round the whole strip to make up for
+                 it. KillerNotes puts BOTH in cells and bevels nothing else, and the visible gap
+                 between the two is the divider.
+                 Crossed, like every sunken thing: DARK brush on the *LightThickness (top-left).
+                 FooterCellMargin is 0 and both brushes transparent on the twelve rounded themes,
+                 so this wrapper is inert there and the inner Grid keeps its exact old geometry. -->
+            <Grid Grid.Column="0" Margin="{DynamicResource FooterCellMargin}">
+              <Border IsHitTestVisible="False" Panel.ZIndex="2"
+                      BorderBrush="{DynamicResource FooterBevelDarkBrush}"  BorderThickness="{DynamicResource FooterCellLightThickness}"/>
+              <Border IsHitTestVisible="False" Panel.ZIndex="2"
+                      BorderBrush="{DynamicResource FooterBevelLightBrush}" BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
+            <Grid VerticalAlignment="Center" Margin="10.5,0,12,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -1084,6 +1260,7 @@
                            FontFamily="{DynamicResource MonoFont}" FontSize="11.5" VerticalAlignment="Center"
                            SizeChanged="StatusText_SizeChanged"/>
             </Grid>
+            </Grid>
             <!-- Portable mode indicator (hidden when installed), same as KillerScan. Centered
                  across the whole footer, NOT parked in a column - a column pins it next to the
                  version text. IsVisibleChanged re-runs the status elision, because the line's
@@ -1097,7 +1274,22 @@
                         Style="{StaticResource OutlineButton}" FontFamily="Segoe UI" FontSize="10" Padding="8,1"
                         VerticalAlignment="Center"/>
             </StackPanel>
+            <!-- On 98SE a status bar is a row of sunken CELLS rather than plain text on a strip,
+                 so the version block gets a margin and padding of its own there. Both are 0
+                 elsewhere, leaving the existing 0,0,16,0 to position it as before. -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
+                     bottom and right. Only the dark half was here, which drew half a box round
+                     the version text (Steve, 2026-08-08). Both are zero-thickness elsewhere. -->
+                <!-- SUNKEN, so the brushes are crossed against the thicknesses: the DARK brush
+                     takes the top-left thickness and the LIGHT brush the bottom-right. Wired the
+                     obvious way round it comes out RAISED, which is what the footer was doing
+                     (Steve, 2026-08-08). A status cell is a recess, not a button. -->
+                <Grid Margin="{DynamicResource FooterCellMargin}">
+                    <Border BorderBrush="{DynamicResource FooterBevelDarkBrush}"  BorderThickness="{DynamicResource FooterCellLightThickness}"/>
+                    <Border BorderBrush="{DynamicResource FooterBevelLightBrush}" BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                Margin="{DynamicResource FooterCellPadding}">
                 <TextBlock x:Name="VersionLabel" Text="v0.99" Foreground="{DynamicResource TextFooter}" FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center" Margin="0,0,12,0"
                            Cursor="Hand" ToolTip="About" MouseLeftButtonUp="VersionLabel_Click"/>
                 <!-- 14px trailing margin keeps the copyright clear of the corner grip (family standard) -->
@@ -1107,10 +1299,13 @@
                         <Run Text="Steve the Killer"/>
                     </Hyperlink>
                 </TextBlock>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
             <!-- Bottom-right resize grip: dotted triangle at the content corner, forwards a
                  HTBOTTOMRIGHT resize to Windows on drag (same as KillerPDF/KillerScan). -->
             <Canvas x:Name="ResizeGripDots" Grid.ColumnSpan="2" Width="13" Height="13"
+                    Visibility="{DynamicResource GripDotsVisibility}"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4"
                     Background="Transparent" Cursor="SizeNWSE"
                     MouseLeftButtonDown="ResizeGrip_MouseDown">
@@ -1121,6 +1316,29 @@
                 <Rectangle Canvas.Left="6"  Canvas.Top="10" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
                 <Rectangle Canvas.Left="10" Canvas.Top="10" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
             </Canvas>
+            <!-- The 98SE grip: three bevelled DIAGONAL lines, bottom-left to top-right, each a
+                 white highlight with a grey shadow one pixel down-right of it - the standard Win98
+                 sizing gripper (Steve, 2026-08-08). Collapsed on every other theme, which keeps
+                 the dots above.
+
+                 Lines rather than a 3x3 of squares: at 13px the diagonals have to be true
+                 hairlines to read, and SnapsToDevicePixels keeps them from smearing across two
+                 rows. Drawn shadow-first so the white sits on top where they touch, which is the
+                 order that makes the ridge read as raised. -->
+            <Canvas x:Name="ResizeGripLines" Grid.ColumnSpan="2" Width="13" Height="13"
+                    Visibility="{DynamicResource GripLinesVisibility}"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,3,3"
+                    Background="Transparent" Cursor="SizeNWSE"
+                    SnapsToDevicePixels="True"
+                    MouseLeftButtonDown="ResizeGrip_MouseDown">
+                <Line X1="12" Y1="1"  X2="1"  Y2="12" Stroke="{DynamicResource FrameOuterDarkBrush}"  StrokeThickness="1"/>
+                <Line X1="11" Y1="1"  X2="1"  Y2="11" Stroke="{DynamicResource FrameOuterLightBrush}" StrokeThickness="1"/>
+                <Line X1="12" Y1="5"  X2="5"  Y2="12" Stroke="{DynamicResource FrameOuterDarkBrush}"  StrokeThickness="1"/>
+                <Line X1="11" Y1="5"  X2="5"  Y2="11" Stroke="{DynamicResource FrameOuterLightBrush}" StrokeThickness="1"/>
+                <Line X1="12" Y1="9"  X2="9"  Y2="12" Stroke="{DynamicResource FrameOuterDarkBrush}"  StrokeThickness="1"/>
+                <Line X1="11" Y1="9"  X2="9"  Y2="11" Stroke="{DynamicResource FrameOuterLightBrush}" StrokeThickness="1"/>
+            </Canvas>
+          </Grid>
           </Grid>
         </Border>
 
@@ -1135,14 +1353,20 @@
                  renders through a bitmap effect (stays ClearType-crisp), and the whole surface
                  is grain-wrapped. -->
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AboutCard_Click">
-                <Border Background="{DynamicResource BackgroundBrush}" CornerRadius="6" IsHitTestVisible="False">
-                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="26" ShadowDepth="5" Direction="270" Opacity="0.6"/></Border.Effect>
+                <Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
+                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="26" ShadowDepth="5" Direction="270"
+                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 </Border>
                 <Border Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                        BorderThickness="1" CornerRadius="6">
+                        BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
                     <Grid>
-                        <Border IsHitTestVisible="False" CornerRadius="6"
+                        <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
                                 Opacity="{DynamicResource GrainOpacity}" Background="{DynamicResource GrainTileBrush}"/>
+                        <!-- Raised card bevel. Nothing on any theme but 98SE. -->
+                        <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                                BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                        <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                                BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
 
                         <!-- Close X: glyph reddens on hover (foreground via style setter so the trigger wins) -->
                         <Button Content="&#x2715;" Click="AboutClose_Click" HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -1172,6 +1396,14 @@
                             </Button.Style>
                         </Button>
 
+                        <!-- A caption BAND above the card's content. 0 high on every theme that
+                             does not ask for one, so their cards keep the exact layout they had;
+                             a flat theme gets the same band height as its dialogs, and the
+                             content drops below it. -->
+                        <Border VerticalAlignment="Top"
+                                Height="{DynamicResource AboutCaptionHeight}"
+                                Background="{DynamicResource DialogTitleBarBrush}"/>
+                        <StackPanel Margin="{DynamicResource AboutCaptionMargin}">
                         <StackPanel Margin="18,10,18,18">
                             <!-- Header: icon left, wordmark (links to the site) + tagline right.
                                  Width is pinned to the info panel below so the tagline wraps
@@ -1183,7 +1415,8 @@
                                 </Grid.ColumnDefinitions>
                                 <Image x:Name="AboutIcon" Grid.Column="0" Width="58" Height="58" Margin="0,0,15,0" VerticalAlignment="Center"
                                        RenderOptions.BitmapScalingMode="HighQuality">
-                                    <Image.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="3" Direction="270" Opacity="0.55"/></Image.Effect>
+                                    <Image.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="3" Direction="270"
+                                                                    Opacity="{DynamicResource IconShadowOpacity}"/></Image.Effect>
                                 </Image>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                     <Grid Margin="0,0,0,4" HorizontalAlignment="Left" Cursor="Hand" ToolTip="killershell.net"
@@ -1203,10 +1436,13 @@
                                  its own border so the field text never renders through a bitmap effect
                                  (stays ClearType-crisp). Field spacing and sizes match KillerScan. -->
                             <Grid x:Name="AboutInfoGrid">
-                                <Border Background="{DynamicResource PaneBrush}" CornerRadius="4" IsHitTestVisible="False">
-                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="14" ShadowDepth="2" Direction="270" Opacity="0.5"/></Border.Effect>
+                                <Border Background="{DynamicResource AboutPanelBrush}" CornerRadius="{DynamicResource ControlCornerRadius}" IsHitTestVisible="False">
+                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="14" ShadowDepth="2" Direction="270"
+                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                                 </Border>
-                                <Border Background="{DynamicResource PaneBrush}" CornerRadius="4" Padding="14,12,14,4">
+                                <Border Background="{DynamicResource AboutPanelBrush}" CornerRadius="{DynamicResource ControlCornerRadius}"
+                                        Padding="14,12,14,4"
+                                        BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1">
                                     <StackPanel>
                                         <StackPanel Margin="0,0,0,10">
                                             <TextBlock Text="{DynamicResource Str_About_Version}" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="10"/>
@@ -1263,6 +1499,7 @@
                                 <TextBlock x:Name="AboutUpdateText" FontSize="12"/>
                             </Button>
                         </StackPanel>
+                        </StackPanel>
                     </Grid>
                 </Border>
             </Grid>
@@ -1276,8 +1513,9 @@
               Background="#88000000" MouseLeftButtonDown="FontsOverlay_Click">
             <Border Width="420" VerticalAlignment="Center" HorizontalAlignment="Center"
                     Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                    BorderThickness="1" CornerRadius="8" MouseLeftButtonDown="FontsCard_Click">
-                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270" Opacity="0.6"/></Border.Effect>
+                    BorderThickness="1" CornerRadius="{DynamicResource WindowCornerRadius}" MouseLeftButtonDown="FontsCard_Click">
+                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270"
+                                                 Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <StackPanel Margin="24,20">
@@ -1358,8 +1596,9 @@
               Background="#88000000" MouseLeftButtonDown="AssocOverlay_Click">
             <Border Width="460" VerticalAlignment="Center" HorizontalAlignment="Center"
                     Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                    BorderThickness="1" CornerRadius="8" MouseLeftButtonDown="AssocCard_Click">
-                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270" Opacity="0.6"/></Border.Effect>
+                    BorderThickness="1" CornerRadius="{DynamicResource WindowCornerRadius}" MouseLeftButtonDown="AssocCard_Click">
+                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270"
+                                                 Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <StackPanel Margin="24,20">
@@ -1407,8 +1646,9 @@
               Background="#88000000" MouseLeftButtonDown="PatternHelpOverlay_Click">
             <Border Width="440" VerticalAlignment="Center" HorizontalAlignment="Center"
                     Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                    BorderThickness="1" CornerRadius="8" MouseLeftButtonDown="PatternHelpCard_Click">
-                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270" Opacity="0.6"/></Border.Effect>
+                    BorderThickness="1" CornerRadius="{DynamicResource WindowCornerRadius}" MouseLeftButtonDown="PatternHelpCard_Click">
+                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270"
+                                                 Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <!-- One dark surface with grain across the whole card - no inner box. -->
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
@@ -1499,8 +1739,9 @@
                  view needs a board's worth of room, the list does not. -->
             <Border x:Name="ShortcutCard" Width="460" VerticalAlignment="Center" HorizontalAlignment="Center"
                     Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                    BorderThickness="1" CornerRadius="8" MouseLeftButtonDown="ShortcutsCard_Click">
-                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270" Opacity="0.6"/></Border.Effect>
+                    BorderThickness="1" CornerRadius="{DynamicResource WindowCornerRadius}" MouseLeftButtonDown="ShortcutsCard_Click">
+                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270"
+                                                 Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <StackPanel Margin="24,20">
@@ -1637,10 +1878,17 @@
              accent reads as four broken lines instead of one loop. On Windows 10, where the
              window really is square, a rounded ring costs a couple of pixels at each corner -
              the cheaper of the two errors, and the one nobody notices. -->
-        <Border x:Name="ElevationHalo" Grid.RowSpan="3" Panel.ZIndex="100" CornerRadius="8"
+        <!-- The admin ring. Radius follows the window, so on 98SE it squares off with everything
+             else instead of curving inside a hard rectangular frame - which read as a stray
+             rounded outline round the admin window (Steve, 2026-08-08). -->
+        <Border x:Name="ElevationHalo" Grid.RowSpan="3" Panel.ZIndex="100"
+                CornerRadius="{DynamicResource WindowCornerRadius}"
                 Visibility="Collapsed" IsHitTestVisible="False" BorderThickness="2">
-            <Border x:Name="ElevationHaloInner" BorderThickness="1" CornerRadius="6" Opacity="0.35"/>
+            <Border x:Name="ElevationHaloInner" BorderThickness="1"
+                    CornerRadius="{DynamicResource PanelCornerRadius}" Opacity="0.35"/>
         </Border>
 
     </Grid>
+        </Grid>
+    </Border>
 </Window>

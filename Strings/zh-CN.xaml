@@ -697,5 +697,13 @@
     <sys:String x:Key="Str_Theme_Dark">深色</sys:String>
     <sys:String x:Key="Str_Theme_Greed">贪婪</sys:String>
     <sys:String x:Key="Str_Theme_Light">浅色</sys:String>
+    <!-- 98SE is a product name, not a word - untranslated. -->
+    <sys:String x:Key="Str_Theme_SE98">98SE</sys:String>
+    <sys:String x:Key="Str_Theme_Ectoplasm">灵质</sys:String>
+    <sys:String x:Key="Str_Theme_Decay">腐朽</sys:String>
+    <sys:String x:Key="Str_Theme_Mourning">哀悼</sys:String>
+    <sys:String x:Key="Str_Theme_Sepulchre">陵墓</sys:String>
+    <sys:String x:Key="Str_Theme_Delirium">谵妄</sys:String>
+    <sys:String x:Key="Str_Theme_Malaise">倦怠</sys:String>
 
 </ResourceDictionary>

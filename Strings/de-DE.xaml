@@ -700,5 +700,13 @@
     <sys:String x:Key="Str_Theme_Dark">Dunkel</sys:String>
     <sys:String x:Key="Str_Theme_Greed">Gier</sys:String>
     <sys:String x:Key="Str_Theme_Light">Hell</sys:String>
+    <!-- 98SE is a product name, not a word - untranslated. -->
+    <sys:String x:Key="Str_Theme_SE98">98SE</sys:String>
+    <sys:String x:Key="Str_Theme_Ectoplasm">Ektoplasma</sys:String>
+    <sys:String x:Key="Str_Theme_Decay">Verfall</sys:String>
+    <sys:String x:Key="Str_Theme_Mourning">Trauer</sys:String>
+    <sys:String x:Key="Str_Theme_Sepulchre">Grabmal</sys:String>
+    <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
+    <sys:String x:Key="Str_Theme_Malaise">Unwohlsein</sys:String>
 
 </ResourceDictionary>

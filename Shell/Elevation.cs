@@ -399,9 +399,17 @@ namespace KillerShell.Shell
                 return;
             }
 
+            // elevated: IsElevated, NOT the default false. This process IS the elevated host the
+            // relaunch above asked for, so the shell it is here to run is an elevated one and the
+            // profile has to say so. Built unelevated, it fell straight through OpenShell's
+            // "non-elevated profile in an elevated window" guard (TerminalTabs.cs), which bounced
+            // the request back OUT to a fresh unelevated window via explorer.exe - so Ctrl+F8 put
+            // up a UAC prompt and then handed back an ordinary window, spawning another
+            // explorer.exe and another KillerShell per press, while the admin window it had just
+            // created sat there with no terminal in it at all (Steve, 2026-08-08).
             var profile = string.Equals(kind, "cmd", StringComparison.OrdinalIgnoreCase)
-                ? TerminalProfile.Cmd()
-                : TerminalProfile.PowerShell();
+                ? TerminalProfile.Cmd(elevated: IsElevated)
+                : TerminalProfile.PowerShell(elevated: IsElevated);
 
             OpenStartupShell(profile, cwd);   // TerminalTabs.cs
         }

@@ -85,10 +85,13 @@ namespace KillerShell.Shell
                                 ? n : path,
                         ToolTip = path,
                     };
+                    // 20, matching the tab strip. The brand icons carry a drop shadow inside their
+                    // own box, so a 16px slot left the visible folder noticeably smaller than the
+                    // menu text beside it (Steve, 2026-08-08).
                     var icon = new Image
                     {
-                        Width = 16, Height = 16,
-                        Source = Services.IconCache.For(path, 16, isDirectory: true),
+                        Width = 20, Height = 20,
+                        Source = Services.IconCache.For(path, 20, isDirectory: true),
                     };
                     item.Icon = icon;
                     item.Click += (_, _) => GoRecent(path);

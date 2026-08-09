@@ -78,6 +78,17 @@ namespace KillerShell.Shell
         {
             OpenShell(profile, folder);
 
+            // Only strip the window down if a terminal actually appeared. Every line below is
+            // "this window exists to run ONE shell" - close the other tabs, hide the menubar,
+            // shut the sidebar, widen past 90 columns - and all of it is wrong if OpenShell
+            // bailed out instead of making one. It did exactly that when the profile arrived
+            // unelevated in an elevated window: the request left through OpenUnelevated and this
+            // ran anyway, leaving a chrome-less FILE BROWSER with no menubar, no tree and no
+            // address bar - "there's no way to know what folder I'm in" (Steve, 2026-08-08). The
+            // profile bug is fixed in Elevation.cs ApplyStartupShell; this guard means any future
+            // bail-out degrades to an ordinary usable window instead of a blind one.
+            if (Pane.Active?.Term == null) return;
+
             // Just the shell. The pane seeds itself with a folder tab at startup so the strip is
             // never empty (Tabs.cs), which is right for an ordinary window and wrong for this
             // one: it was launched to run ONE shell, and the leftover home tab is a second thing

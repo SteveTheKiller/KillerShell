@@ -9,9 +9,9 @@
 #   .\release.ps1 -SkipSign    # local test build only - never release unsigned
 #   .\release.ps1 -Choco       # also pack/push the Chocolatey package after the release
 #
-# Unlike KillerScan, this repo has no .github/workflows, so nothing is submitted to winget
-# automatically. If KillerShell is ever listed there, copy KillerScan's winget-release.yml
-# rather than adding a komac call here, so the two stay consistent.
+# winget is NOT submitted from here. Like KillerScan, this repo has
+# .github/workflows/winget-release.yml, which fires on "release: published" and runs komac
+# itself - so adding a komac call here would double-submit. Do not add one.
 #
 # The site is NOT deployed from here. killershell.net is a manual Cloudflare Pages drop, so
 # this script rewrites shell-landing/ with the real release facts and commits it; you drag the

@@ -1,16 +1,26 @@
 using System;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
 
 namespace KillerShell.Services
 {
-    public enum Theme { Dark, Light, Black, Blood, Greed, Cyanotic }
+    // Thirteen palettes, in picker order. SE98 cannot be written "98SE" because an enum member
+    // may not start with a digit; ThemeFileName below maps it back to the real file and accent
+    // folder name. Order matches KillerNotes, which is the reference for the theme set.
+    public enum Theme
+    {
+        Dark, Light, Black, SE98, Blood, Greed, Cyanotic, Ectoplasm, Decay,
+        Mourning, Sepulchre, Delirium, Malaise
+    }
     public enum Accent { Green, Red, Blue, Purple, Orange, Teal }
 
     /// <summary>
     /// KillerUI / Grunge theme engine. Swaps the palette dictionary (MergedDictionaries[0]) in
     /// place at runtime; control styles bind brushes via DynamicResource so an in-place per-key
     /// update repaints everything. Persistence is pluggable (wire GetSetting/SetSetting at startup).
-    /// Requires Themes/{Theme}.xaml color dictionaries (copy them from KillerScan) merged at [0].
+    /// Requires Themes/{Theme}.xaml at [0]. Shared trademark tokens are overlaid from
+    /// the linked KillerUI contract; local dictionaries hold product-specific resources.
     /// </summary>
     public static class ThemeManager
     {
@@ -21,15 +31,60 @@ namespace KillerShell.Services
         private static Accent _darkAccent  = Accent.Blue;
         private static Accent _lightAccent = Accent.Green;
         private static Accent _blackAccent = Accent.Orange;
+        private static Accent _se98Accent  = Accent.Green;
 
         public static Theme Current => _current;
         public static Accent AccentChoiceFor(Theme t) => AccentFor(t);
 
         private static Accent AccentFor(Theme t) =>
-            t == Theme.Light ? _lightAccent : t == Theme.Black ? _blackAccent : _darkAccent;
+            t == Theme.Light ? _lightAccent
+            : t == Theme.Black ? _blackAccent
+            : t == Theme.SE98 ? _se98Accent
+            : _darkAccent;
 
         private static bool HasAccents(Theme t) =>
-            t == Theme.Dark || t == Theme.Light || t == Theme.Black;
+            t == Theme.Dark || t == Theme.Light || t == Theme.Black || t == Theme.SE98;
+
+        /// <summary>
+        /// A foreground that is actually legible on <paramref name="fill"/>. Keeps the theme's
+        /// own <paramref name="preferred"/> when that already clears WCAG AA (4.5:1), and
+        /// otherwise falls back to whichever pole - near-black or white - scores higher.
+        /// </summary>
+        private static SolidColorBrush ReadableOn(SolidColorBrush? fill, SolidColorBrush? preferred)
+        {
+            var white = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF));
+            if (fill == null) return preferred ?? white;
+            if (preferred != null && Contrast(fill.Color, preferred.Color) >= 4.5) return preferred;
+
+            var ink = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10));
+            var pick = Contrast(fill.Color, ink.Color) >= Contrast(fill.Color, white.Color) ? ink : white;
+            pick.Freeze();
+            return pick;
+        }
+
+        /// <summary>WCAG 2.1 contrast ratio between two opaque colors, 1.0 to 21.0.</summary>
+        private static double Contrast(Color a, Color b)
+        {
+            double la = Relative(a), lb = Relative(b);
+            double hi = Math.Max(la, lb), lo = Math.Min(la, lb);
+            return (hi + 0.05) / (lo + 0.05);
+        }
+
+        private static double Relative(Color c)
+        {
+            static double Ch(byte v)
+            {
+                double s = v / 255.0;
+                return s <= 0.03928 ? s / 12.92 : Math.Pow((s + 0.055) / 1.055, 2.4);
+            }
+            return 0.2126 * Ch(c.R) + 0.7152 * Ch(c.G) + 0.0722 * Ch(c.B);
+        }
+
+        /// <summary>File stem for a theme, and the name of its accent folder. Only SE98 differs,
+        /// because an enum member cannot start with a digit but both the palette file and the
+        /// accent folder are named "98SE".</summary>
+        private static string ThemeFileName(Theme theme) =>
+            theme == Theme.SE98 ? "98SE" : theme.ToString();
 
         public static event Action? ThemeChanged;
 
@@ -48,17 +103,27 @@ namespace KillerShell.Services
 
         public static void Initialize()
         {
-            _current     = Enum.TryParse<Theme>(GetSetting(ThemeKey),       out var t)  ? t  : (Elevated ? Theme.Blood : _current);
+            // "98SE" is what the setting has always been written as by the other apps in the
+            // family, and it is what the file is called - but it does not parse as the enum
+            // member, so it is mapped by hand before TryParse gets a look at it.
+            string? saved = GetSetting(ThemeKey);
+            _current = saved == "98SE" ? Theme.SE98
+                     : Enum.TryParse<Theme>(saved, out var t) ? t
+                     : (Elevated ? Theme.Blood : _current);
+
             _darkAccent  = Enum.TryParse<Accent>(GetSetting("DarkAccent"),  out var da) ? da : _darkAccent;
             _lightAccent = Enum.TryParse<Accent>(GetSetting("LightAccent"), out var la) ? la : _lightAccent;
             _blackAccent = Enum.TryParse<Accent>(GetSetting("BlackAccent"), out var ba) ? ba : _blackAccent;
+            _se98Accent  = Enum.TryParse<Accent>(GetSetting("98SEAccent"),  out var wa) ? wa : _se98Accent;
             LoadDict(_current);
         }
 
         public static void Apply(Theme theme)
         {
             _current = theme;
-            SetSetting(ThemeKey, theme.ToString());
+            // Persist the FILE name, not the enum name, so the stored value reads "98SE" the
+            // same way every other app in the family writes it.
+            SetSetting(ThemeKey, ThemeFileName(theme));
             LoadDict(theme);
             ThemeChanged?.Invoke();
         }
@@ -67,6 +132,7 @@ namespace KillerShell.Services
         {
             if      (family == Theme.Light) { _lightAccent = accent; SetSetting("LightAccent", accent.ToString()); }
             else if (family == Theme.Black) { _blackAccent = accent; SetSetting("BlackAccent", accent.ToString()); }
+            else if (family == Theme.SE98)  { _se98Accent  = accent; SetSetting("98SEAccent",  accent.ToString()); }
             else                            { _darkAccent  = accent; SetSetting("DarkAccent",  accent.ToString()); }
 
             if (_current == family)
@@ -89,15 +155,23 @@ namespace KillerShell.Services
             // "HUGE lag... not instant like KillerPDF" Steve reported, 2026-08-02. Confirmed by
             // him as reproducing even with zero terminal/editor tabs open, which ruled out
             // RefreshTerminalThemes/RefreshEditorThemes and pointed straight at this loop.
+            // ThemeFileName, never theme.ToString(): the 98SE palette, its KillerUI half and its
+            // accent folder are all named for the digits, which the enum member cannot be.
+            string name = ThemeFileName(theme);
+
             var combined = new ResourceDictionary();
-            var newDict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/Themes/{theme}.xaml") };
+            var newDict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/Themes/{name}.xaml") };
             foreach (object key in newDict.Keys)
                 combined[key] = newDict[key];
+            KillerThemeContract.Apply(combined, name);
 
             var accent = AccentFor(theme);
             if (HasAccents(theme) && accent != Accent.Green)
             {
-                string family = theme == Theme.Light ? "Light" : theme == Theme.Black ? "Black" : "Dark";
+                string family = theme == Theme.Light ? "Light"
+                              : theme == Theme.Black ? "Black"
+                              : theme == Theme.SE98  ? "98SE"
+                              : "Dark";
                 try
                 {
                     var accentDict = new ResourceDictionary
@@ -109,6 +183,418 @@ namespace KillerShell.Services
                 }
                 catch { /* overlay not present - base theme stands */ }
             }
+
+
+            // ── 98SE chrome contract ────────────────────────────────────────────────────
+            //
+            // 98SE is the only FLAT theme: a hard 2px frame, raised bevels, a short Win98
+            // caption. It carries 126 keys no other palette declares, and controls that bind
+            // them have to resolve on all thirteen themes - so every one gets a neutral default
+            // here and 98SE's own value simply wins, with no branch on the theme name anywhere.
+            //
+            // SetIfAbsent, never a plain assignment: the palette is read FIRST and must not be
+            // overwritten. Mirror() points a token at an existing brush so a default tracks the
+            // theme instead of being a dead literal.
+            {
+                var Transparent = new SolidColorBrush(Colors.Transparent);
+                Transparent.Freeze();
+
+                void SetIfAbsent(string key, object value)
+                {
+                    if (!combined.Contains(key)) combined[key] = value;
+                }
+                void Mirror(string key, string source)
+                {
+                    if (!combined.Contains(key) && combined.Contains(source))
+                        combined[key] = combined[source];
+                    else if (!combined.Contains(key)) combined[key] = Transparent;
+                }
+
+            SetIfAbsent("AboutCaptionMargin", new Thickness(0));
+            Mirror("AboutPanelBrush", "PaneBrush");
+            // TRANSPARENT with zero thickness: no ordinary theme draws a lifted edge on its bars.
+            // Mirroring PaneBorderBrush would have been harmless only because the thickness is 0,
+            // which is the kind of accident that breaks the moment someone changes the thickness.
+            SetIfAbsent("BarEdgeBrush", Transparent);
+            SetIfAbsent("BarEdgeThickness", new Thickness(0));
+            SetIfAbsent("BarPadding", new Thickness(0));
+            Mirror("BarSepBrush", "PaneBorderBrush");
+            SetIfAbsent("BarSepWidth", 0.0);
+            SetIfAbsent("BarShadowOpacity", 0.38);
+            SetIfAbsent("BevelDarkBrush", Transparent);
+            SetIfAbsent("BevelDarkThickness", new Thickness(0));
+            SetIfAbsent("BevelLightBrush", Transparent);
+            SetIfAbsent("BevelLightThickness", new Thickness(0));
+            // The pane's outer radius and the nested-bar radius, as SCALARS. Tabs.cs builds its
+            // corners one at a time from first/last-tab state, so it needs the number rather than
+            // a ready-made CornerRadius - and it had the numbers as literals, which is why the
+            // panes kept three rounded corners on 98SE no matter what the markup said.
+            SetIfAbsent("PaneCornerRadiusValue", 6.0);
+            SetIfAbsent("BarCornerRadiusValue", 5.0);
+            // The pane card's outer inset and its 1px ring, and the tab strip's inset. Defaults are
+            // exactly what FilePane.xaml had hardcoded, so the twelve rounded themes are untouched.
+            SetIfAbsent("PaneOuterMargin", new Thickness(0, -1, 8, 0));
+            SetIfAbsent("TabBarMargin", new Thickness(0, 6, 8, 0));
+            SetIfAbsent("PaneEdgeThickness", new Thickness(1));
+            // The ACTIVE tab's dark bevel: BevelDarkThickness with the BOTTOM dropped, so the tab
+            // opens into the content below it instead of ruling a line across the join. 0 here
+            // rather than a computed "BevelDarkThickness minus its bottom" - on the twelve
+            // non-flat themes the bevel is zero already, so the two are the same value, and a
+            // literal cannot go wrong if a theme later states an asymmetric bevel.
+            SetIfAbsent("TabActiveBevelDarkThickness", new Thickness(0));
+            Mirror("BgFlyout", "MenuBackgroundBrush");
+            Mirror("ButtonEdgeBrush", "CardBorderBrush");
+            SetIfAbsent("CaptionButtonBrush", Transparent);
+            SetIfAbsent("CaptionButtonHeight", 36.0);
+            SetIfAbsent("CaptionButtonMargin", new Thickness(0));
+            SetIfAbsent("CaptionButtonWidth", 44.0);
+            SetIfAbsent("CaptionButtonsMargin", new Thickness(0));
+            Mirror("CaptionCloseBrush", "ChromeTextBrush");
+            SetIfAbsent("CaptionCloseGap", new Thickness(0));
+            // The close button's EXISTING hover: a red fill with white on it. Defaulting these to
+            // transparent would have removed the red hover from all twelve non-flat themes the
+            // moment ChromeCloseButton started binding them. 98SE states its own - a transparent
+            // hover and a black glyph, because a Win98 close button reacted only to being pressed.
+            // #e04444 is DangerRed's literal from Controls.xaml. It cannot be read from the
+            // palette - DangerRed is a control-level resource, not a theme key, so
+            // combined.Contains would always be false and the default would silently fall to
+            // transparent, removing the red hover everywhere.
+            if (!combined.Contains("CaptionCloseHoverBrush"))
+            {
+                var red = new SolidColorBrush(Color.FromRgb(0xE0, 0x44, 0x44)); red.Freeze();
+                combined["CaptionCloseHoverBrush"] = red;
+            }
+            if (!combined.Contains("CaptionCloseHoverFgBrush"))
+            {
+                var white = new SolidColorBrush(Colors.White); white.Freeze();
+                combined["CaptionCloseHoverFgBrush"] = white;
+            }
+            // TextBrush, not ChromeTextBrush: ChromeButton drew its glyphs in TextBrush before the
+            // caption tokens existed, and ChromeTextBrush is a good deal dimmer (#b6b6b6 against
+            // #e0e0e0 on Dark) - mirroring that would have quietly faded the window buttons on all
+            // twelve non-flat themes. 98SE states its own, so it is unaffected either way.
+            Mirror("CaptionGlyphBrush", "TextBrush");
+            // PaneBorderBrush, matching what SurfaceButton actually drew. CardBorderBrush is a
+            // different tier and is #787878 on Black, which would have put a bright grey box
+            // round every secondary button.
+            Mirror("ChipEdgeBrush", "PaneBorderBrush");
+            // SurfaceButton's EXISTING face and hover - PaneBrush filling, RowHoverBrush on hover.
+            // ChipFaceBrush had been mirroring SurfaceBrush, which is a different tier and would
+            // have restyled every secondary button in the app.
+            Mirror("ChipFaceBrush", "PaneBrush");
+            Mirror("ChipHoverBrush", "RowHoverBrush");
+            SetIfAbsent("ChromeFontFamily", new FontFamily("Segoe UI"));
+            SetIfAbsent("ContentPaneMargin", new Thickness(0));
+            SetIfAbsent("DialogButtonsMargin", new Thickness(0));
+            SetIfAbsent("DialogContentMargin", new Thickness(0));
+            SetIfAbsent("DialogFieldMargin", new Thickness(0));
+            // 10, the halo every dialog already reserved for its drop shadow. 98SE sets 0: it
+            // casts no shadow, and an invisible 10px gutter would put the resize grab outside
+            // the visible window.
+            SetIfAbsent("DialogHaloMargin", new Thickness(10));
+            SetIfAbsent("DialogInlineSelVisibility", Visibility.Collapsed);
+            SetIfAbsent("DialogRowMargin", new Thickness(0));
+            SetIfAbsent("DialogStatusBarHeight", 0.0);
+            SetIfAbsent("DialogStatusBarVisibility", Visibility.Collapsed);
+            // 36, the caption row height every dialog already used. 98SE states its own short
+            // band. Defaulting to KillerNotes' 28 would have shortened every dialog's title bar.
+            SetIfAbsent("DialogTitleBarHeight", 36.0);
+            SetIfAbsent("EdgeFadeOpacity", 1.0);
+            // The EDITOR's selection strength (Editing/EditorControl.cs), distinct from
+            // TextSelectionOpacity which is the plain TextBox one. 98SE states 0.75 with
+            // EditorSelectionOverlay true - a solid Win98 navy block with white text - where
+            // every other theme keeps the translucent accent wash at 1.0.
+            SetIfAbsent("EditorSelectionOpacity", 1.0);
+            SetIfAbsent("EditorSelectionOverlay", false);
+            // 1.0, because this scales the shadow BORDER's opacity and the effect already carries
+            // its own 0.5 - the twelve non-flat themes must keep exactly the shadow they had.
+            // 98SE states 0, which removes it entirely; a flat theme casts nothing.
+            SetIfAbsent("FlyoutShadowOpacity", 1.0);
+            Mirror("FooterBevelDarkBrush", "PaneBorderBrush");
+            Mirror("FooterBevelLightBrush", "PaneBorderBrush");
+            SetIfAbsent("FooterCellDarkThickness", new Thickness(0));
+            SetIfAbsent("FooterCellLightThickness", new Thickness(0));
+            SetIfAbsent("FooterCellMargin", new Thickness(0));
+            SetIfAbsent("FooterCellPadding", new Thickness(0));
+            SetIfAbsent("FooterPadding", new Thickness(0));
+            SetIfAbsent("FrameInnerDarkBrush", Transparent);
+            SetIfAbsent("FrameInnerDarkThickness", new Thickness(0));
+            SetIfAbsent("FrameInnerLightBrush", Transparent);
+            SetIfAbsent("FrameInnerLightThickness", new Thickness(0));
+            SetIfAbsent("FrameInnerMargin", new Thickness(0));
+            SetIfAbsent("FrameOuterDarkBrush", Transparent);
+            SetIfAbsent("FrameOuterDarkThickness", new Thickness(0));
+            SetIfAbsent("FrameOuterLightBrush", Transparent);
+            SetIfAbsent("FrameOuterLightThickness", new Thickness(0));
+            SetIfAbsent("GrainOpacity", 0.24);
+            SetIfAbsent("IconShadowOpacity", 0.9);
+            Mirror("InputEdgeBrush", "InputBorderBrush");
+            // The surface a LIST sits on - the file listing and the terminal screen. Defaults to
+            // the menu tier, which is where Steve put that content on 2026-08-08 (tab surface is
+            // PaneBrush, content is MenuBackgroundBrush), so the other twelve themes are
+            // unchanged. 98SE states #ffffff: a Win98 list is a sunken WHITE well, and on that
+            // theme the menu tier is #c0c0c0, which came out as a grey content area.
+            Mirror("ListPaneBrush", "MenuBackgroundBrush");
+
+            // Two KillerShell-only surfaces a RETRO theme wants BLACK even when the rest of its
+            // palette is light grey: the terminal screen and the Performance tab's metric tiles.
+            // Both default to the surface they already used, so the other twelve are untouched;
+            // 98SE states #000000 for each in its app layer (Themes/98SE.xaml).
+            Mirror("TerminalBackgroundBrush", "ListPaneBrush");
+            Mirror("MonitorCellBrush", "MenuBackgroundBrush");
+
+            // A terminal that overrides its BACKGROUND has to override its foreground and accent
+            // too, or the text is picked for the wrong surface. 98SE is the case that proves it:
+            // its TextBrush is #000000 and its PrimaryBrush #004f00, both chosen against a light
+            // grey app - on the black console they are invisible and nearly invisible (Steve,
+            // 2026-08-08). These default to the app's own, so the other twelve are unchanged.
+            Mirror("TerminalForegroundBrush", "TextBrush");
+            Mirror("TerminalAccentBrush", "PrimaryBrush");
+            SetIfAbsent("MenuBevel2DarkBrush", Transparent);
+            SetIfAbsent("MenuBevel2DarkThickness", new Thickness(0));
+            SetIfAbsent("MenuBevel2LightBrush", Transparent);
+            SetIfAbsent("MenuBevel2LightThickness", new Thickness(0));
+            SetIfAbsent("MenuBevelDarkBrush", Transparent);
+            SetIfAbsent("MenuBevelDarkThickness", new Thickness(0));
+            SetIfAbsent("MenuBevelInnerMargin", new Thickness(0));
+            SetIfAbsent("MenuBevelLightBrush", Transparent);
+            SetIfAbsent("MenuBevelLightThickness", new Thickness(0));
+            SetIfAbsent("MenuTextBrush", Transparent);
+            // The outline button, split into the six parts a Win98 button needs. Defaults keep
+            // exactly what OutlineButton already did: transparent at rest with an accent edge and
+            // accent text, filling with the accent on hover under the AA-derived label colour.
+            // 98SE turns it into a real raised grey button - a #c0c0c0 face at rest, lighter on
+            // hover, darker when pressed, black text throughout and NO accent anywhere.
+            SetIfAbsent("OutlineFaceBrush", Transparent);          // rest FILL (transparent = outline)
+            Mirror("OutlineRestBrush", "OutlineBtnBrush");         // rest EDGE
+            Mirror("OutlineTextBrush", "OutlineBtnBrush");         // rest TEXT
+            Mirror("OutlineHoverBrush", "OutlineBtnBrush");        // hover FILL
+            // OutlineHoverTextBrush is set AFTER the accent overlay, next to OnOutlineBtnBrush -
+            // it defaults to that value and it does not exist yet at this point in the method.
+            Mirror("OutlinePressedBrush", "RowSelectedBrush");     // pressed FILL
+            SetIfAbsent("PaneBevel2DarkThickness", new Thickness(0));
+            SetIfAbsent("PaneBevel2LightThickness", new Thickness(0));
+            SetIfAbsent("PaneBevelDark2Brush", Transparent);
+            SetIfAbsent("PaneBevelDarkBrush", Transparent);
+            SetIfAbsent("PaneBevelDarkThickness", new Thickness(0));
+            SetIfAbsent("PaneBevelInnerMargin", new Thickness(0));
+            SetIfAbsent("PaneBevelLight2Brush", Transparent);
+            SetIfAbsent("PaneBevelLightBrush", Transparent);
+            SetIfAbsent("PaneBevelLightThickness", new Thickness(0));
+            Mirror("PaneEdgeBrush", "PaneBorderBrush");
+            SetIfAbsent("PaneShadowOpacity", 0.6);
+            // TRANSPARENT: a theme radio row has no fill of its own on any ordinary theme.
+            // Mirroring SurfaceBrush would have put an opaque tile behind every option in the
+            // theme and language flyouts.
+            SetIfAbsent("RadioWellBrush", Transparent);
+            SetIfAbsent("RowSelectedBrush", Transparent);
+            SetIfAbsent("ScrollArrowSize", 0.0);
+            // 12, the width the ScrollBar style already used. 98SE asks for 16, a real Win98 bar.
+            SetIfAbsent("ScrollBarThickness", 12.0);
+            SetIfAbsent("ScrollThumbBrush", Transparent);
+            SetIfAbsent("ScrollThumbHoverBrush", Transparent);
+            // 4,0 - the inset the thumb already had, which is what makes it read as a slim
+            // overlay rather than filling the gutter. 98SE states 0: a Win98 thumb fills its
+            // track edge to edge. The horizontal orientation trigger flips this to 0,4 and the
+            // hover trigger to 2,2, both of which still override this as they always did.
+            SetIfAbsent("ScrollThumbMargin", new Thickness(4, 0, 4, 0));
+            // 3, the radius the thumb already had. 98SE states 0 - a Win98 thumb is square.
+            SetIfAbsent("ScrollThumbRadius", new CornerRadius(3));
+            SetIfAbsent("ScrollTrackBevelDark", Transparent);
+            SetIfAbsent("ScrollTrackBevelLight", Transparent);
+            // TRANSPARENT: the scrollbar is an overlay on every ordinary theme and has never had
+            // a visible track. Mirroring BackgroundBrush would have painted a gradient strip down
+            // the side of every list on the five gradient themes. 98SE states a real track.
+            SetIfAbsent("ScrollTrackBrush", Transparent);
+            // The address box's EXISTING fill was BackgroundBrush, not SurfaceBrush.
+            Mirror("SearchFieldBrush", "BackgroundBrush");
+            // TRANSPARENT, not PaneBrush: the sidebar well is a 98SE idea (a sunken white list
+            // box). Every other theme lets the window show through the tree exactly as before, so
+            // wiring this must not hand them an opaque fill they never had.
+            SetIfAbsent("SidebarPaneBrush", Transparent);
+            SetIfAbsent("SidebarPanelMargin", new Thickness(0));
+            // The slider's unfilled groove - InputBorderBrush, which is what ThinSlider drew.
+            // Transparent would have made the track vanish on every theme.
+            Mirror("SliderTrack", "InputBorderBrush");
+            // TRANSPARENT: a toolbar button has no face on any ordinary theme, it is a bare glyph
+            // that washes on hover. Mirroring PaneBrush would have given every one of them an
+            // opaque tile. 98SE states #c0c0c0 - there, a toolbar button IS a raised button.
+            SetIfAbsent("SortButtonBrush", Transparent);
+            Mirror("SurfaceHoverBrush", "RowHoverBrush");
+            // The text field's EXISTING values, moved into the contract rather than replaced by
+            // it: DarkTextBox drew a BackgroundBrush field with a PrimaryBrush selection at 0.3.
+            // Defaulting these to anything else would have restyled every input in the app the
+            // moment the template started binding them.
+            Mirror("TextFieldBrush", "BackgroundBrush");
+            Mirror("TextSelectionBrush", "PrimaryBrush");
+            SetIfAbsent("TextSelectionOpacity", 0.3);
+            // TextBrush, not SelectionFg. The existing selection is PrimaryBrush at 0.3 opacity -
+            // a translucent wash the normal text shows through - so the text colour must not
+            // change or every selection in the app would repaint. 98SE states white, which it
+            // needs because its selection is a solid navy fill at full opacity.
+            Mirror("TextSelectionTextBrush", "TextBrush");
+            SetIfAbsent("TitleBarBleed", new Thickness(0));
+            SetIfAbsent("TitleBarHeight", 36.0);
+            // These six are the title bar's EXISTING hardcoded numbers, moved into the contract
+            // rather than replaced by it. A generic default would have quietly resized the icon
+            // and the wordmark on all twelve non-flat themes the moment the markup started
+            // binding them; 98SE states its own and is the only theme that changes.
+            SetIfAbsent("TitleBarPadding", new Thickness(14, 0, 14, 0));
+            SetIfAbsent("TitleIconMargin", new Thickness(0, 0, 7, 0));
+            SetIfAbsent("TitleIconSize", 27.0);
+            SetIfAbsent("TitleTextMargin", new Thickness(0));
+            SetIfAbsent("TitleWordmarkBoldSize", 23.4);
+            SetIfAbsent("TitleWordmarkSize", 18.0);
+            SetIfAbsent("UseDialogCaption", false);
+            Mirror("WindowEdgeBrush", "AppBorderBrush");
+            SetIfAbsent("WindowEdgeThickness", new Thickness(0));
+            // The frame's FACE. 98SE does not declare one, and a transparent default left a
+            // see-through gutter around the window where its 5,4,5,5 padding is (Steve,
+            // 2026-08-08). AppBorderBrush is the right source: it is already the frame's colour,
+            // #c0c0c0 on 98SE - the Win98 grey the bevels are cut into. Harmless on the other
+            // twelve, whose WindowFramePadding is 0, so the Border has no visible area at all.
+            // NOT BackgroundBrush, which is a full-window gradient on five themes and would have
+            // re-ramped behind everything.
+            Mirror("WindowFrameBrush", "AppBorderBrush");
+            SetIfAbsent("WindowFrameMargin", new Thickness(0));
+            SetIfAbsent("WindowFramePadding", new Thickness(0));
+            SetIfAbsent("WindowFrameThickness", new Thickness(0));
+            // Defaults to the theme's own icon-shadow strength, which is what the wordmark's
+            // blurred copy already used. A flat theme states 0 - no emboss behind a Win98
+            // caption. Copied rather than SetIfAbsent(0.0), which would have removed the emboss
+            // from all twelve non-flat themes.
+            if (!combined.Contains("WordmarkEmbossOpacity"))
+                combined["WordmarkEmbossOpacity"] = combined.Contains("IconShadowOpacity")
+                    ? combined["IconShadowOpacity"] : 0.9;
+
+                // Derived, not defaulted: these follow from whether the theme asked for a flat
+                // Win98 caption at all, so they cannot be a fixed literal.
+                bool flat = combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool f && f;
+
+                // A Win98 caption has no logotype in it - just the icon and the window name in
+                // plain bold - so the wordmark and the plain title trade places.
+                combined["WordmarkVisibility"]   = flat ? Visibility.Collapsed : Visibility.Visible;
+                combined["PlainTitleVisibility"] = flat ? Visibility.Visible   : Visibility.Collapsed;
+
+                // The resize grip. Win98 drew three bevelled DIAGONAL lines in the corner, not the
+                // dotted triangle the rest of the family uses (Steve, 2026-08-08). The two shapes
+                // are different geometry, not a recolour, so both sit in the markup and trade
+                // visibility rather than one being restyled into the other.
+                combined["GripDotsVisibility"]  = flat ? Visibility.Collapsed : Visibility.Visible;
+                combined["GripLinesVisibility"] = flat ? Visibility.Visible   : Visibility.Collapsed;
+
+                // A Win98 caption button reacted only to being PRESSED, never to hover.
+                if (!combined.Contains("CaptionHoverBrush"))
+                    combined["CaptionHoverBrush"] = flat ? (object)Transparent : combined["RowHoverBrush"];
+
+                // A 1px MDL2 stroke disappears against a grey button face at 16px.
+                combined["CaptionGlyphWeight"] = flat ? FontWeights.Bold : FontWeights.Normal;
+
+                // The About card only gets a caption band when the theme asks for one; 0 keeps
+                // every other theme's card at the exact layout it already had.
+                combined["AboutCaptionHeight"] = flat ? combined["DialogTitleBarHeight"] : 0.0;
+
+                // A ready-made pane shadow at this theme's opacity, or NULL on a flat theme.
+                // Built per load and FROZEN: a DynamicResource inside a shared keyed Freezable's
+                // Opacity does not reliably resolve, which is how a flat theme ended up casting a
+                // full-strength shadow in KillerNotes.
+                if (combined["PaneShadowOpacity"] is double pso && pso > 0)
+                {
+                    var paneShadow = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 16, ShadowDepth = 5, Direction = 270, Opacity = pso };
+                    paneShadow.Freeze();
+                    combined["PaneShadowEffect"] = paneShadow;
+                }
+                else combined["PaneShadowEffect"] = null;
+
+                // The lighter BAR-tier shadow, for things that sit just proud of their surface -
+                // the active tab, toolbars. Same rule: NULL on a flat theme, which is what makes
+                // 98SE genuinely shadowless rather than shadowless-except-the-bits-I-missed.
+                if (combined["BarShadowOpacity"] is double bso && bso > 0)
+                {
+                    var barShadow = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 9, ShadowDepth = 0, Opacity = bso };
+                    barShadow.Freeze();
+                    combined["BarShadowEffect"] = barShadow;
+                }
+                else combined["BarShadowEffect"] = null;
+
+                // The heavy CARD shadow - dialogs, the About card, floating overlays. Scaled by
+                // FlyoutShadowOpacity, so a flat theme gets NULL and 98SE's dialogs sit flat
+                // against the window the way a Win98 dialog does.
+                if (combined["FlyoutShadowOpacity"] is double fso && fso > 0)
+                {
+                    var cardShadow = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 22, ShadowDepth = 4, Direction = 270, Opacity = 0.55 * fso };
+                    cardShadow.Freeze();
+                    combined["CardShadowEffect"] = cardShadow;
+                }
+                else combined["CardShadowEffect"] = null;
+
+                // The ACTIVE tab's accent stripe. 3px across the top by default; a flat theme gets
+                // none, because a Win98 tab is identified by its bevel and by being joined to the
+                // pane, not by a coloured bar. The padding compensates either way so the title
+                // never shifts as a tab activates (Steve, 2026-08-08).
+                if (!combined.Contains("TabStripeThickness"))
+                    combined["TabStripeThickness"] = flat ? new Thickness(0) : new Thickness(0, 3, 0, 0);
+                if (!combined.Contains("TabActivePadding"))
+                    combined["TabActivePadding"] = flat ? new Thickness(12, 4, 5, 5)
+                                                        : new Thickness(12, 1, 5, 5);
+
+                // A TAB is the panel radius on its TOP corners only - the bottom two are where it
+                // joins the pane and must stay square. Derived so it tracks PanelCornerRadius and
+                // squares off automatically on a flat theme rather than needing its own token.
+                if (!combined.Contains("TabCornerRadius"))
+                {
+                    double p = combined["PanelCornerRadius"] is CornerRadius pcr2 ? pcr2.TopLeft : 6.0;
+                    combined["TabCornerRadius"] = new CornerRadius(p, p, 0, 0);
+                }
+
+                // The close button's hover block follows the CARD's radius on its own corner and
+                // stays square on the three interior edges.
+                if (!combined.Contains("CaptionCloseCornerRadius"))
+                {
+                    double tr = combined["WindowCornerRadius"] is CornerRadius wcr ? wcr.TopRight : 0.0;
+                    combined["CaptionCloseCornerRadius"] = new CornerRadius(0, tr, 0, 0);
+                }
+            }
+
+            // OutlineButton's hover fills with OutlineBtnBrush but used to put OnPrimaryBrush on
+            // top of it. Those are two different tokens, and on any theme where the outline color
+            // is a MID tone they disagree badly: white on Sepulchre's #4faaa8 measures 2.75:1,
+            // Delirium 2.83, Black's #00ff66 just 1.36 (Steve, 2026-08-08 - the Install button in
+            // the portable badge was the one that showed it). Derived rather than hand-picked per
+            // theme so it cannot drift, and computed HERE, after the accent overlay, because
+            // picking an accent replaces OutlineBtnBrush.
+            combined["OnOutlineBtnBrush"] = ReadableOn(combined["OutlineBtnBrush"] as SolidColorBrush,
+                                                       combined["OnPrimaryBrush"] as SolidColorBrush);
+
+            // A dialog's caption band. TRANSPARENT by default, so the band shows the card's own
+            // face and is invisible - the family look, where a dialog title blends into the
+            // surface. A theme that genuinely wants a distinct caption declares UseDialogCaption
+            // and gets TitleBarBrush instead. Computed HERE, after the accent overlay: reading it
+            // earlier picks up the BASE TitleBarBrush, and the overlay then replaces that key
+            // without touching this copy, so every dialog would keep the base theme's caption
+            // colour while the main window followed the accent.
+            if (!combined.Contains("DialogTitleBarBrush"))
+            {
+                bool wantsCaption = combined.Contains("UseDialogCaption")
+                                 && combined["UseDialogCaption"] is bool dc && dc;
+                if (wantsCaption && combined.Contains("TitleBarBrush"))
+                    combined["DialogTitleBarBrush"] = combined["TitleBarBrush"];
+                else
+                {
+                    var clear = new SolidColorBrush(Colors.Transparent); clear.Freeze();
+                    combined["DialogTitleBarBrush"] = clear;
+                }
+            }
+
+            // The outline button's hover TEXT defaults to that AA-derived colour. Set here rather
+            // than in the contract block above, because OnOutlineBtnBrush does not exist until
+            // this line - a theme that states its own OutlineHoverTextBrush (98SE wants plain
+            // black) still wins, since this only fills a gap.
+            if (!combined.Contains("OutlineHoverTextBrush"))
+                combined["OutlineHoverTextBrush"] = combined["OnOutlineBtnBrush"];
 
             var merged = Application.Current.Resources.MergedDictionaries;
             if (merged.Count > 0)

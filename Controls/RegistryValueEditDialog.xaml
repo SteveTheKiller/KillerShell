@@ -24,10 +24,11 @@
             Background="{DynamicResource BackgroundBrush}"
             BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="1"
-            CornerRadius="6"
-            Margin="10">
+            CornerRadius="{DynamicResource PanelCornerRadius}"
+            Margin="{DynamicResource DialogHaloMargin}">
         <Border.Effect>
-            <DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="3" Direction="270" Opacity="0.6"/>
+            <DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="3" Direction="270"
+                              Opacity="{DynamicResource FlyoutShadowOpacity}"/>
         </Border.Effect>
         <Grid>
             <Border IsHitTestVisible="False" CornerRadius="6"

@@ -111,26 +111,45 @@ namespace KillerShell.Shell
                 var act = Pane.Active;
                 bool firstActive = act is { IsFirst: true };
                 bool lastActive  = act is { IsLast:  true };
-                Pane.ResultsPane.CornerRadius = new CornerRadius(firstActive ? 0 : 6, lastActive ? 0 : 6, 6, 6);
-                Pane.ScopeBar.CornerRadius    = new CornerRadius(firstActive ? 0 : 5, 0, 0, 0);
+                double r = PaneRadius, b = BarRadius;
+                Pane.ResultsPane.CornerRadius = new CornerRadius(firstActive ? 0 : r, lastActive ? 0 : r, r, r);
+                Pane.ScopeBar.CornerRadius    = new CornerRadius(firstActive ? 0 : b, 0, 0, 0);
                 // The details header is the top of the pane whenever the location row is hidden,
                 // so it has to nest inside the pane's curve the same way. Left at a fixed 5,5 it
                 // kept its own curve under a squared pane corner, and the sliver of pane showing
                 // outside the curve but inside the square border read as a hard edge.
                 Pane.DetailsHeader.CornerRadius =
-                    new CornerRadius(firstActive ? 0 : 5, lastActive ? 0 : 5, 0, 0);
+                    new CornerRadius(firstActive ? 0 : b, lastActive ? 0 : b, 0, 0);
                 // The ring line in the band IS the pane's top border, so it curves where the
                 // pane curves. Left flat and full-width it overshot the corner and read as a
                 // rule laid across the pane rather than as its edge (FilePane.xaml).
-                Pane.TabBarRing.CornerRadius  = new CornerRadius(firstActive ? 0 : 6, lastActive ? 0 : 6, 0, 0);
+                Pane.TabBarRing.CornerRadius  = new CornerRadius(firstActive ? 0 : r, lastActive ? 0 : r, 0, 0);
             }
             else
             {
-                Pane.ResultsPane.CornerRadius   = new CornerRadius(6);
-                Pane.ScopeBar.CornerRadius      = new CornerRadius(5, 0, 0, 0);
-                Pane.DetailsHeader.CornerRadius = new CornerRadius(5, 5, 0, 0);
+                double r = PaneRadius, b = BarRadius;
+                Pane.ResultsPane.CornerRadius   = new CornerRadius(r);
+                Pane.ScopeBar.CornerRadius      = new CornerRadius(b, 0, 0, 0);
+                Pane.DetailsHeader.CornerRadius = new CornerRadius(b, b, 0, 0);
             }
         }
+
+        /// <summary>
+        /// The pane's outer corner radius, from the theme: 6 on the twelve rounded themes, 0 on a
+        /// flat one. Every radius in this file used to be the literal 6 or 5, which is why the
+        /// terminal and the listing kept three rounded corners on 98SE however many CornerRadius
+        /// attributes in the markup were zeroed - these are assigned from code and overwrite
+        /// whatever the XAML said, on every tab change (Steve, 2026-08-08).
+        /// </summary>
+        private static double PaneRadius => RadiusOf("PaneCornerRadiusValue", 6.0);
+
+        /// <summary>The nested-bar radius: the scope bar and the details header, 5 / 0.</summary>
+        private static double BarRadius => RadiusOf("BarCornerRadiusValue", 5.0);
+
+        // A Double, not a CornerRadius resource: these are built per corner from first/last-tab
+        // state, so what is needed is the scalar, not a ready-made set of four.
+        private static double RadiusOf(string key, double fallback)
+            => Application.Current?.TryFindResource(key) is double d && d >= 0 ? d : fallback;
 
         // ═══════════════════════════════════════════════════════════
         //  OVERFLOW
@@ -272,15 +291,55 @@ namespace KillerShell.Shell
                 // Doubled, because a lone underscore in a MenuItem header is an access-key
                 // marker: "Backup_Nightly.ps1" would draw as "BackupNightly.ps1" with an N
                 // underlined, and file names carry underscores all the time.
-                var item = new MenuItem { Header = tab.Title.Replace("_", "__") };
+                // A close X at the END of the row, like KillerPDF's recent-documents dropdown, so
+                // a tab can be shut from the list without switching to it first (Steve,
+                // 2026-08-08). The header becomes a DockPanel rather than a string: the title
+                // takes the remaining width and the X docks right, so every row's X lines up.
+                var closeBtn = new Button
+                {
+                    Content = "x",
+                    Style = (Style)FindResource("DangerButton"),
+                    Width = 16,
+                    Height = 16,
+                    Margin = new Thickness(12, 0, 0, 0),
+                    FocusVisualStyle = null,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    ToolTip = TryFindResource("Str_TT_CloseTab"),
+                };
 
+                var label = new TextBlock
+                {
+                    // Doubled, because a lone underscore in a MenuItem header is an access-key
+                    // marker: "Backup_Nightly.ps1" would draw as "BackupNightly.ps1" with an N
+                    // underlined, and file names carry underscores all the time.
+                    Text = tab.Title.Replace("_", "__"),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                    // Bold rather than a check mark: IsChecked draws into the Icon slot, which
+                    // the tab's own icon is already using, and the two cannot both show.
+                    FontWeight = tab.IsActive ? FontWeights.Bold : FontWeights.Normal,
+                };
+
+                var row = new DockPanel { LastChildFill = true, MinWidth = 160 };
+                DockPanel.SetDock(closeBtn, Dock.Right);
+                row.Children.Add(closeBtn);
+                row.Children.Add(label);
+
+                var item = new MenuItem { Header = row };
                 item.Icon = OverflowRowIcon(tab);   // below
 
-                // Bold rather than a check mark: IsChecked draws into the Icon slot, which the
-                // tab's own glyph is already using, and the two cannot both show.
-                if (tab.IsActive) item.FontWeight = FontWeights.Bold;
+                var capturedTab = tab;
+                closeBtn.Click += (s, e) =>
+                {
+                    // Handled, or the click bubbles to the MenuItem underneath and switches to
+                    // the very tab that is being closed before the close runs.
+                    e.Handled = true;
+                    menu.IsOpen = false;
+                    FocusPane(p);
+                    CloseTab(capturedTab);          // Tabs.cs
+                };
 
-                item.Click += (_, _) => { FocusPane(p); SwitchToTab(tab); };
+                item.Click += (_, _) => { FocusPane(p); SwitchToTab(capturedTab); };
                 menu.Items.Add(item);
             }
 

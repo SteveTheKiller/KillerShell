@@ -4,7 +4,23 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.5] - Unreleased
+## [1.2.0] - Unreleased
+
+### Added
+- Seven new themes, bringing the picker to thirteen: 98SE, Ectoplasm, Decay, Mourning, Sepulchre, Delirium and Malaise. 98SE carries its own accent set, like Dark, Light and Black. All thirteen names are translated into every shipped language, except 98SE, which is a product name.
+- A KillerShell icon pack replaces the Windows shell icons throughout. Folders have their own art, and the special ones are drawn as themselves rather than as generic folders: Home, Desktop, Documents, Downloads, Pictures, Music, Videos, Favorites, Program Files and Windows, plus drives and This PC. Every tab kind has an icon too - shell, admin shell, a closed shell, text editor, Task Manager, Event Viewer, Performance and Registry Editor.
+- The 98SE theme draws a period icon set instead of the brand one, so the folders, drives, tabs and tool icons match the rest of the theme rather than sitting on it. Switching theme swaps the whole set live. The art is Chicago95 (GPL-3.0+/MIT, the same licence family as KillerShell), upscaled with nearest-neighbour so the pixels stay pixels; `Resources\icons\98\ATTRIBUTION.md` maps every icon to its source.
+
+### Changed
+- The new icons are used everywhere one is drawn: the sidebar tree, the places list, the file listing, the tab strip, the tab overflow list and recents all resolve through the same place, so nothing can end up with a different folder icon from its neighbour.
+- The app icon is the Killer seashell.
+- The shared KillerUI palettes are vendored into the repo instead of linked in from a sibling folder at build time. KillerShell now clones and builds on its own, the GPL source zip is complete, and the palettes stop drifting from the ones actually in use.
+
+### Fixed
+- Outline buttons are readable while hovered on every theme.
+- Opening any elevated tab no longer buries the desktop in Explorer windows. An admin window already refused to save the session, but still restored it, so it came up carrying every tab from the ordinary window - and each restored shell tab then asked for a non-elevated terminal inside an elevated window, which is answered by handing the request back out through explorer.exe. One stray Explorer window per open tab, every time. An elevated window no longer restores the session, matching its existing refusal to save one.
+- Ctrl+F8 opens an admin terminal again. The elevated window it relaunched into built its shell profile as unelevated, so the request fell through the "non-elevated shell in an elevated window" guard and was bounced straight back out to a new ordinary window through explorer.exe - meaning every press put up a UAC prompt and then spawned an extra explorer.exe and an extra KillerShell, while the admin window itself came up with no terminal in it. Same fix covers Ctrl+Shift+F8 for an admin CMD.
+- An admin shell window that fails to open its terminal no longer strips its own menubar, sidebar and tab strip, which left a file browser with no address bar and no way to tell which folder it was showing.
 
 ## [1.1.4] - 2026-08-03
 

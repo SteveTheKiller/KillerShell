@@ -11,7 +11,7 @@
     <x:Null x:Key="TextStroke"/>
     <x:Null x:Key="TextStrokeSoft"/>
 
-    <!-- KillerScan - LIGHT theme. Tiered surfaces ported from KillerPDF Themes/Light.xaml. -->
+    <!-- KillerShell additions for the shared KillerUI LIGHT theme. -->
     <SolidColorBrush x:Key="PrimaryBrush"        Color="#1b5e20" po:Freeze="True"/>
     <SolidColorBrush x:Key="PrimaryHoverBrush"   Color="#1b5e20" po:Freeze="True"/>
     <SolidColorBrush x:Key="PrimaryPressedBrush" Color="#1b5e20" po:Freeze="True"/>
@@ -39,15 +39,18 @@
 
     <SolidColorBrush x:Key="RowAltBrush"         Color="#14000000" po:Freeze="True"/>
     <SolidColorBrush x:Key="RowHoverBrush"       Color="#b2b2b2" po:Freeze="True"/>
-    <SolidColorBrush x:Key="RowSelectedBrush"    Color="#c8f5d8" po:Freeze="True"/>
+    <!-- SelectionBg's colour. This was #c8f5d8, the pale mint that belongs on a focused button
+         (OutlinePressedBrush, below) - as a selected-row fill it read as a highlighter stripe.
+         Light's selection is DARK on light. -->
+    <SolidColorBrush x:Key="RowSelectedBrush"    Color="#1b5e20" po:Freeze="True"/>
     <!-- Selection fill + its text. Split from RowSelectedBrush so the light family can
-         use the darker accent fill with white text (KillerPDF Light.xaml) without
+         use the darker shared KillerUI accent fill with white text without
          dragging the button pressed-states dark with it. -->
     <SolidColorBrush x:Key="SelectionBg"        Color="#1b5e20" po:Freeze="True"/>
     <SolidColorBrush x:Key="SelectionFg"        Color="#FFFFFF" po:Freeze="True"/>
 
     <SolidColorBrush x:Key="InputBorderBrush"    Color="#c0c0c0" po:Freeze="True"/>
-    <!-- Menu surface: KillerPDF's values, the family source of truth for colour. -->
+    <!-- Menu surface compatibility defaults; KillerUI overlays the authoritative values. -->
     <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#ffffff" po:Freeze="True"/>
     <SolidColorBrush x:Key="MenuBorderBrush"     Color="#a8a8a8" po:Freeze="True"/>
     <SolidColorBrush x:Key="MenuTextBrush"       Color="#555555" po:Freeze="True"/>

@@ -11,11 +11,11 @@
     <Product>KillerShell</Product>
     <Company>killertools.net</Company>
     <RootNamespace>KillerShell</RootNamespace>
-    <Version>1.1.4</Version>
-    <FileVersion>1.1.4.0</FileVersion>
-    <AssemblyVersion>1.1.4.0</AssemblyVersion>
-    <!-- Displayed version string (semver, matches the release tag: v1.1.4). -->
-    <InformationalVersion>1.1.4</InformationalVersion>
+    <Version>1.2.0</Version>
+    <FileVersion>1.2.0.0</FileVersion>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <!-- Displayed version string (semver, matches the release tag: v1.2.0). -->
+    <InformationalVersion>1.2.0</InformationalVersion>
     <!-- Shown in the About card next to the version so a user can tell how old their build
          is. Must match the date on this version's CHANGELOG section - release.ps1 preflight
          fails the release if it does not. Bump it with the version. -->
@@ -28,6 +28,19 @@
 
   <ItemGroup>
     <Resource Include="Resources\ksh-icon.ico"/>
+    <!-- The brand icon pack (IconCache.cs), drawn for every directory and every tab kind.
+         Generated from brand\icons: each is cropped to its ink, squared and written at 128px,
+         which covers the 20px draw size up to the 250% app-scale ceiling and gives folders the
+         same optical weight as the tool icons (the source folder art carries 70px of padding the
+         others do not). Regenerate rather than hand-editing anything in Resources\icons. -->
+    <Resource Include="Resources\icons\*.png"/>
+    <!-- The period icon pack the 98SE theme draws from, same 24 filenames as the brand pack above
+         so IconCache only has to swap a path prefix. Chicago95 art (GPL-3.0+/MIT), upscaled 5x
+         nearest-neighbour from its 32px originals to the same 160px canvas - integer scaling with
+         no interpolation, or the pixels stop being pixels. See Resources\icons\98\ATTRIBUTION.md
+         for the per-icon source map and the licence. NOT covered by the glob above: MSBuild's
+         Include is not recursive, so this needs its own line. -->
+    <Resource Include="Resources\icons\98\*.png"/>
     <!-- The icon Explorer shows for the text types KillerShell associates. EmbeddedResource,
          not Resource: Associations.cs points DefaultIcon at a real path on disk, so App.xaml.cs
          has to extract it beside the exe. Same arrangement as KillerPDF's pdf-file.ico. -->
@@ -147,4 +160,14 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- Everything this project compiles lives INSIDE this repo. KillerUI is a reference for the
+       design language, not a build input: its palettes were copied into Themes\KillerUI and its
+       theme contract into Services. This used to Import ..\KillerUI\KillerUI.ThemeAssets.props,
+       which linked the palettes in from a sibling folder outside the repo - so a clone did not
+       build, the GPL source zip was incomplete, and KillerShell silently rode whatever state the
+       kit happened to be in. It had drifted badly: eight of the thirteen palettes differed from
+       the ones actually in use, Blood worst of all, still on the old white accent months after it
+       moved to the warm peach (Steve, 2026-08-08 - "obviously using killerUI hasnt been working").
+       KillerNotes is the reference now; its vendored copies are the ones here. SDK-style globbing
+       picks the .xaml up as Page items with no entries needed. -->
 </Project>

@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace KillerShell.Shell
 {
@@ -48,8 +49,19 @@ namespace KillerShell.Shell
             // TreeView rather than dug out of its template: it bubbles, so the inner ScrollViewer
             // is reached without needing to have found it first. Loaded and SizeChanged are
             // covered too, for the passes where nothing scrolled but the extent moved.
+            // SyncTreeFade rides this too, not just SizeChanged above. The horizontal scrollbar
+            // appears when the tree's CONTENT gets wider - expand a deep folder and the widest
+            // label grows - which changes the ScrollViewer's ExtentWidth but NOT the TreeView's
+            // own size, so SizeChanged never fired and the lift was never recomputed. The bottom
+            // fade then sat straight over the scrollbar and greyed it out (Steve, 2026-08-08).
+            // ScrollChanged carries extent changes as well as scroll-position ones, which is
+            // exactly the event that was missing.
             FolderTree.AddHandler(System.Windows.Controls.ScrollViewer.ScrollChangedEvent,
-                new System.Windows.Controls.ScrollChangedEventHandler((_, _) => SyncTreeEdgeFades()));
+                new System.Windows.Controls.ScrollChangedEventHandler((_, _) =>
+                {
+                    SyncTreeEdgeFades();
+                    SyncTreeFade();
+                }));
 
             FolderTree.SizeChanged += (_, _) => SyncTreeEdgeFades();
             FolderTree.Loaded      += (_, _) => SyncTreeEdgeFades();
@@ -70,17 +82,47 @@ namespace KillerShell.Shell
         /// offset does, so an expanding folder just moves the ramp. Pinned on, it was drawing a
         /// fade over the last row of a tree that had nothing below it.
         /// </remarks>
+        private const double TopFadePx = 30;
+        private const double BotFadePx = 34;
+
         private void SyncTreeEdgeFades()
         {
             var sv = FindDescendant<System.Windows.Controls.ScrollViewer>(FolderTree);
-            if (sv == null) return;
+            if (sv == null || TreeFadeHost == null) return;
 
-            TreeFadeTop.Opacity    = Ramp(sv.VerticalOffset, TreeFadeTop.Height, 18);
-            TreeFadeBottom.Opacity = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset,
-                                          TreeFadeBottom.Height, 22);
+            double h = TreeFadeHost.ActualHeight;
+            if (h <= 1) return;                       // not laid out yet; a later pass covers it
+
+            // EdgeFadeOpacity is 0 on a FLAT theme: 98SE has no soft edges anywhere - a list ends
+            // at its sunken bevel, it does not dissolve - so the ramp is scaled to nothing rather
+            // than special-cased here (Steve, 2026-08-08).
+            double fade = Application.Current.TryFindResource("EdgeFadeOpacity") is double e ? e : 1.0;
+
+            double top = Ramp(sv.VerticalOffset, TopFadePx, 18) * fade;
+            double bot = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset, BotFadePx, 22) * fade;
+
+            // The mask is on the TREE, so a stop's ALPHA is how much of the tree survives there:
+            // 0 at the outer edge means that row has dissolved and the window shows through.
+            // Fully opaque when there is nothing past the edge, so an unscrolled tree is untouched.
+            TreeFadeTopOuter.Color = Alpha(1 - top);
+            TreeFadeBotOuter.Color = Alpha(1 - bot);
+
+            // Where each ramp finishes, as a fraction of the host. The bottom one is lifted by the
+            // horizontal scrollbar (SyncTreeFade below) so it dissolves the last ROW, not the bar.
+            // The scrollbar sits inside this host, so the ramp has to END above it and full
+            // opacity has to be restored below - otherwise the fade dissolves the scrollbar too.
+            double bar = ScrollBarHeight();
+            double barFrac = Math.Min(0.4, bar / h);
+
+            TreeFadeTopInner.Offset = Math.Min(0.45, TopFadePx / h);
+            TreeFadeBotInner.Offset = Math.Max(0.5, 1 - (BotFadePx + bar) / h);
+            TreeFadeBotOuter.Offset = Math.Max(TreeFadeBotInner.Offset + 0.001, 1 - barFrac);
+            TreeFadeBotRestore.Offset = Math.Min(1, TreeFadeBotOuter.Offset + 0.001);
         }
 
-        // Height is NaN until the border has been laid out, hence the fallback.
+        private static Color Alpha(double a) =>
+            Color.FromArgb((byte)Math.Round(Math.Min(1, Math.Max(0, a)) * 255), 0, 0, 0);
+
         private static double Ramp(double distance, double height, double fallback)
         {
             double h = double.IsNaN(height) || height <= 0 ? fallback : height;
@@ -97,21 +139,21 @@ namespace KillerShell.Shell
         /// on a scaled window (AppScale.cs) it is not that metric times anything predictable
         /// either. Measuring is the only version that stays right.
         /// </remarks>
-        private void SyncTreeFade()
+        private double ScrollBarHeight()
         {
             var sv = FindDescendant<System.Windows.Controls.ScrollViewer>(FolderTree);
-            double lift = 0;
-
-            if (sv != null && sv.ComputedHorizontalScrollBarVisibility == Visibility.Visible)
-            {
-                var bar = FindHorizontalBar(sv);
-                lift = bar?.ActualHeight ?? SystemParameters.HorizontalScrollBarHeight;
-            }
-
-            var m = TreeFadeBottom.Margin;
-            if (Math.Abs(m.Bottom - lift) < 0.5) return;     // no churn on every layout pass
-            TreeFadeBottom.Margin = new Thickness(m.Left, m.Top, m.Right, lift);
+            if (sv == null || sv.ComputedHorizontalScrollBarVisibility != Visibility.Visible) return 0;
+            var bar = FindHorizontalBar(sv);
+            return bar?.ActualHeight ?? SystemParameters.HorizontalScrollBarHeight;
         }
+
+        /// <summary>
+        /// Kept as the name the layout events call. It used to shorten the host by the scrollbar
+        /// height so a separate fade Border sat above the bar; the fade is an OpacityMask on the
+        /// host now, so shortening it would just crop the tree. The measurement moved into
+        /// ScrollBarHeight above and the mask ends its ramp there instead.
+        /// </summary>
+        private void SyncTreeFade() => SyncTreeEdgeFades();
 
         // FindDescendant takes the FIRST match of a type, and a ScrollViewer has two scrollbars,
         // so the orientation has to be checked rather than assumed.

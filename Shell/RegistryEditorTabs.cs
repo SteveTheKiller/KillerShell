@@ -21,7 +21,11 @@ namespace KillerShell.Shell
         // too generic) before landing here - a tree/list shape reads closer to a registry hive
         // browser and pairs cleanly against Processes' E8FD. Kept in this one constant so the
         // rail button and the tab strip can't drift apart the way they did before.
-        private static readonly string RegistryEditorGlyph = ((char)0xE71D).ToString();
+        // E74C (OEM) - a four-pane window with a corner mark, which reads as the registry's
+        // hive/key structure. E71D (List) went to Event Viewer, whose tab genuinely is a list of
+        // log lines (Steve, 2026-08-08). The rail button in MainWindow.xaml carries the same
+        // glyph; change both together or they drift, which is what this constant exists to stop.
+        private static readonly string RegistryEditorGlyph = ((char)0xE74C).ToString();
 
         // ═══════════════════════════════════════════════════════════
         //  OPEN

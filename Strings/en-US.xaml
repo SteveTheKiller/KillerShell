@@ -23,6 +23,14 @@
     <sys:String x:Key="Str_Theme_Blood">Blood</sys:String>
     <sys:String x:Key="Str_Theme_Greed">Greed</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">Cyanotic</sys:String>
+    <!-- 98SE is a product name, not a word - it stays untranslated in every locale. -->
+    <sys:String x:Key="Str_Theme_SE98">98SE</sys:String>
+    <sys:String x:Key="Str_Theme_Ectoplasm">Ectoplasm</sys:String>
+    <sys:String x:Key="Str_Theme_Decay">Decay</sys:String>
+    <sys:String x:Key="Str_Theme_Mourning">Mourning</sys:String>
+    <sys:String x:Key="Str_Theme_Sepulchre">Sepulchre</sys:String>
+    <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
+    <sys:String x:Key="Str_Theme_Malaise">Malaise</sys:String>
 
     <!-- Scope bar -->
     <sys:String x:Key="Str_Lbl_In">in:</sys:String>

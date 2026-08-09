@@ -128,7 +128,7 @@
                     <Border IsHitTestVisible="False" CornerRadius="6"
                             Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                     <ListBox x:Name="PlacesList" Background="Transparent" BorderThickness="0" Padding="2,4"
-                             ItemContainerStyle="{StaticResource PickerRow}" SelectionChanged="Places_SelectionChanged"
+                             ItemContainerStyle="{StaticResource PickerPlaceRow}" SelectionChanged="Places_SelectionChanged"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

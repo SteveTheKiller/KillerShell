@@ -258,11 +258,31 @@ namespace KillerShell.Shell
         }
 
         /// <summary>Shows/hides one pane's strip and (re)paints it for that pane's own selection.</summary>
+        /// <remarks>
+        /// The strip only ever belongs to a FILE LISTING - it describes the pane's file selection,
+        /// which a terminal, a document, Task Manager, Event Viewer, Performance and Registry
+        /// Editor do not have. This is the one place that owns DetailsPane.Visibility, so the guard
+        /// belongs HERE rather than in a caller.
+        ///
+        /// It was in a caller: ApplyPaneToolbarMode(true) collapses the whole ListingOnlyTools set
+        /// on a shell tab. That works right up until anything calls ApplyDetailsPane afterwards -
+        /// InitDetailsPane at startup, or DualPane's per-pane push when the split opens - because
+        /// this method looked only at DetailsPaneOpen and cheerfully put the strip back. With the
+        /// setting remembered as open from a previous session, a shell tab came up carrying a
+        /// "No item selected" strip along its bottom edge, and it survived three attempts at
+        /// fixing it in the callers (Steve, 2026-08-08).
+        ///
+        /// ResultsList.Visibility is the test rather than the tab kind: every non-listing kind
+        /// collapses it on activation and all of them run before this, so it cannot drift from
+        /// them the way an enumerated list of kinds would.
+        /// </remarks>
         private void ApplyDetailsPane(FilePane pane, bool animate)
         {
+            bool listing = pane.ResultsList.Visibility == Visibility.Visible;
+
             pane.DetailsPaneBtn.Tag = pane.DetailsPaneOpen ? "on" : null;
 
-            if (pane.DetailsPaneOpen)
+            if (pane.DetailsPaneOpen && listing)
             {
                 pane.DetailsPane.Visibility = Visibility.Visible;
                 // Paints the fields/preview for the current selection, then (below) grows or
@@ -340,6 +360,10 @@ namespace KillerShell.Shell
         internal void UpdateDetailsPaneForSelection(FilePane pane, bool animate = true)
         {
             if (!pane.DetailsPaneOpen) return;
+            // ...and no-ops on a non-listing tab too, for the same reason ApplyDetailsPane does:
+            // this is reachable straight from a selection change, and without the guard it would
+            // grow a collapsed strip back open over a terminal.
+            if (pane.ResultsList.Visibility != Visibility.Visible) return;
 
             var list = pane.ResultsList;
             int count = list?.SelectedItems.Count ?? 0;

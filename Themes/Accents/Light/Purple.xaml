@@ -8,9 +8,9 @@
     <SolidColorBrush x:Key="HeaderLineBrush"     Color="#5A1690" po:Freeze="True"/>
     <SolidColorBrush x:Key="OutlineBtnBrush"     Color="#5A1690" po:Freeze="True"/>
     <SolidColorBrush x:Key="ScrollThumbHoverBrush" Color="#5A1690" po:Freeze="True"/>
-    <SolidColorBrush x:Key="RowSelectedBrush"    Color="#e4d6f2" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RowSelectedBrush"    Color="#5A1690" po:Freeze="True"/>
     <!-- Selection fill + its text. Split from RowSelectedBrush so the light family can
-         use the darker accent fill with white text (KillerPDF Light.xaml) without
+         use the darker shared KillerUI accent fill with white text without
          dragging the button pressed-states dark with it. -->
     <SolidColorBrush x:Key="SelectionBg"        Color="#5A1690" po:Freeze="True"/>
     <SolidColorBrush x:Key="SelectionFg"        Color="#FFFFFF" po:Freeze="True"/>

@@ -10,7 +10,7 @@
     <DropShadowEffect x:Key="TextStroke"     Color="Black" BlurRadius="3" ShadowDepth="0.8" Direction="270" Opacity="0.7"/>
     <DropShadowEffect x:Key="TextStrokeSoft" Color="Black" BlurRadius="2" ShadowDepth="0.6" Direction="270" Opacity="0.45"/>
 
-    <!-- KillerScan - BLACK theme. OLED-style near-black with subtle surface tiering so
+    <!-- KillerShell additions for the shared KillerUI BLACK theme. OLED-style near-black with subtle surface tiering so
          elements read by background, not by bright borders (borders kept dark). -->
     <SolidColorBrush x:Key="PrimaryBrush"        Color="#00ff66" po:Freeze="True"/>
     <SolidColorBrush x:Key="PrimaryHoverBrush"   Color="#00ff66" po:Freeze="True"/>
@@ -44,13 +44,13 @@
     <SolidColorBrush x:Key="RowHoverBrush"       Color="#242424" po:Freeze="True"/>
     <SolidColorBrush x:Key="RowSelectedBrush"    Color="#003322" po:Freeze="True"/>
     <!-- Selection fill + its text. Split from RowSelectedBrush so the light family can
-         use the darker accent fill with white text (KillerPDF Light.xaml) without
+         use the darker shared KillerUI accent fill with white text without
          dragging the button pressed-states dark with it. -->
     <SolidColorBrush x:Key="SelectionBg"        Color="#003322" po:Freeze="True"/>
     <SolidColorBrush x:Key="SelectionFg"        Color="#00ff66" po:Freeze="True"/>
 
     <SolidColorBrush x:Key="InputBorderBrush"    Color="#2a2a2a" po:Freeze="True"/>
-    <!-- Menu surface: KillerPDF's values, the family source of truth for colour. -->
+    <!-- Menu surface compatibility defaults; KillerUI overlays the authoritative values. -->
     <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#000000" po:Freeze="True"/>
     <SolidColorBrush x:Key="MenuBorderBrush"     Color="#808080" po:Freeze="True"/>
     <SolidColorBrush x:Key="MenuTextBrush"       Color="#cccccc" po:Freeze="True"/>

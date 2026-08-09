@@ -13,6 +13,9 @@
     <kui:ThumbViewportFloorConverter x:Key="ThumbFloor"/>
     <kui:LastChildConverter x:Key="IsLastChild"/>
     <kui:TabFolderIconConverter x:Key="TabFolderIcon"/>
+    <!-- True when TabFolderIcon resolves to art, so the tab template can hide the MDL2 glyph
+         and avoid drawing a picture and a character for the same tab. -->
+    <kui:TabHasArtConverter x:Key="TabHasArt"/>
 
     <FontFamily x:Key="WordmarkFont">/KillerShell;component/Fonts/#Typewriter - a602 (dead postman 2004)</FontFamily>
 
@@ -53,13 +56,23 @@
                          theme + accent gets identical feedback from this one template. The old
                          PrimaryHoverBrush swap was invisible whenever a palette left hover ==
                          primary (which most did) - no per-palette hover brushes to sync now. -->
-                    <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="4">
+                    <Grid>
+                    <Border x:Name="border" Background="{TemplateBinding Background}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}"
+                            BorderBrush="{DynamicResource ButtonEdgeBrush}" BorderThickness="0">
                         <Grid>
-                            <Border x:Name="tint" CornerRadius="4" Background="Transparent"/>
+                            <Border x:Name="tint" CornerRadius="{DynamicResource ControlCornerRadius}" Background="Transparent"/>
                             <!-- Black stroke behind the white-on-accent label, per the family rule (null on Light) -->
                             <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" Effect="{DynamicResource TextStroke}"/>
                         </Grid>
                     </Border>
+                    <!-- Raised bevel. Nothing on any theme but 98SE, where a default button is a
+                         real raised control rather than a flat accent slab. -->
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="tint" Property="Background" Value="#2EFFFFFF"/></Trigger>
                         <Trigger Property="IsPressed" Value="True"><Setter TargetName="tint" Property="Background" Value="#38000000"/></Trigger>
@@ -71,30 +84,48 @@
     </Style>
 
     <Style x:Key="OutlineButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource OutlineBtnBrush}"/>
+        <!-- TRANSPARENT at rest. This is the family's outline button: an accent OUTLINE at rest
+             that fills solid on hover. It was filled with RowSelectedBrush, which on the newer
+             themes is a 27% white wash - so the Install button in the portable badge came up as
+             a milky lozenge in a colour belonging to no tier, with the accent text fighting it
+             (Steve, 2026-08-08). A filled rest state also leaves nowhere for hover to go. -->
+        <Setter Property="Background" Value="{DynamicResource OutlineFaceBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OutlineTextBrush}"/>
         <Setter Property="FontFamily" Value="Consolas"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Padding" Value="14,5"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource OutlineBtnBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OutlineRestBrush}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
+                    <Grid>
                     <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}" Padding="{TemplateBinding Padding}">
                         <!-- Black stroke so the label stays legible when hover turns it white-on-accent (null on Light) -->
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Effect="{DynamicResource TextStroke}"/>
                     </Border>
+                    <!-- Raised button bevel. Nothing on any theme but 98SE. -->
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
+                        <!-- OnOutlineBtnBrush, NOT OnPrimaryBrush: the fill here is
+                             OutlineBtnBrush, and the two tokens diverge. White on Sepulchre's
+                             #4faaa8 measures 2.75:1 and on Black's #00ff66 just 1.36:1.
+                             ThemeManager derives this one against the actual fill, after the
+                             accent overlay, so it clears AA on every theme and every accent. -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource OutlineBtnBrush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource OutlineHoverBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OutlineHoverTextBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource OutlineBtnBrush}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource OutlinePressedBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OutlineTextBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
                     </ControlTemplate.Triggers>
@@ -106,28 +137,40 @@
     <!-- Surface Button (secondary): fill one tier lighter than what it sits on, a dim border, and a
          hover that dims rather than colours. Accent on hover belongs to OutlineButton and
          PrimaryButton; a secondary button that lights up accent reads as the primary action. -->
+    <!-- ChipFaceBrush: the pane tier on every ordinary theme, a raised #c0c0c0 Win98 button face
+         on a flat one. Its hover follows ChipHoverBrush for the same reason. -->
     <Style x:Key="SurfaceButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource PaneBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ChipFaceBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Padding" Value="12,6"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}"/>
+        <!-- ChipEdgeBrush, defaulting to PaneBorderBrush: a button sitting ON a pane takes the
+             pane's own edge colour (CardBorderBrush is #787878 on Black, which drew a bright grey
+             box round every button). 98SE sets it transparent - its bevel is the edge. -->
+        <Setter Property="BorderBrush" Value="{DynamicResource ChipEdgeBrush}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
+                    <Grid>
                     <Border x:Name="border" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            CornerRadius="{DynamicResource ControlCornerRadius}" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
+                    <!-- Raised bevel. Nothing on any theme but 98SE. -->
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <!-- Order matters: IsPressed after IsMouseOver so it wins. -->
                         <!-- A real fill change, not an opacity fade - the fade is invisible on a
                              dark panel and the button reads as dead. (Steve, 2026-07-30.) -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ChipHoverBrush}"/>
                             <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource OutlineBtnBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
@@ -155,24 +198,41 @@
         </Setter>
     </Style>
 
+    <!-- TextFieldBrush and the selection pair come from the theme: the usual dark field on every
+         ordinary theme, a sunken white Win98 field with a recessed bevel on a flat one. -->
     <Style x:Key="DarkTextBox" TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource TextFieldBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}"/>
+        <!-- InputEdgeBrush, not InputBorderBrush: 98SE sets it transparent, because a Win98 field
+             is defined by its recessed bevel and a flat line drawn beside it reads as a doubled
+             edge. Defaults to InputBorderBrush, so every other theme is unchanged. -->
+        <Setter Property="BorderBrush" Value="{DynamicResource InputEdgeBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="6,3"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="CaretBrush" Value="{DynamicResource TextBrush}"/>
-        <Setter Property="SelectionBrush" Value="{DynamicResource PrimaryBrush}"/>
-        <Setter Property="SelectionOpacity" Value="0.3"/>
+        <Setter Property="SelectionBrush" Value="{DynamicResource TextSelectionBrush}"/>
+        <!-- The text ON a selection. WPF ignores this unless SelectionTextBrush is set, which is
+             why 98SE's white-on-navy needs it stated: at 100% selection opacity the default
+             leaves the original foreground showing through, i.e. black on navy. -->
+        <Setter Property="SelectionTextBrush" Value="{DynamicResource TextSelectionTextBrush}"/>
+        <Setter Property="SelectionOpacity" Value="{DynamicResource TextSelectionOpacity}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
+                    <Grid>
                     <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4">
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource ControlCornerRadius}">
                         <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                     </Border>
+                    <!-- Recessed field bevel - brushes CROSSED against the thicknesses so it
+                         sinks rather than raises. Nothing on any theme but 98SE. -->
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource InputHoverBrush}"/></Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/></Trigger>
@@ -229,7 +289,7 @@
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
                         <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4"/>
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource ControlCornerRadius}"/>
                         <Grid Margin="{TemplateBinding Padding}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -258,7 +318,7 @@
                                     BorderThickness="1" CornerRadius="5" Margin="6">
                                 <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
                                 <Grid>
-                                    <Border IsHitTestVisible="False" CornerRadius="4" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                                    <Border IsHitTestVisible="False" CornerRadius="{DynamicResource ControlCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                                     <ScrollViewer Margin="0,4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                         <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
                                     </ScrollViewer>
@@ -512,15 +572,61 @@
         </Setter>
     </Style>
 
+    <!-- Track and thickness come from the theme: a transparent 12px overlay bar on every ordinary
+         theme, a wider Win98 bar with a visible dithered track and a recessed edge on a flat one. -->
     <Style TargetType="ScrollBar">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Width" Value="12"/>
-        <Setter Property="MinWidth" Value="12"/>
+        <Setter Property="Background" Value="{DynamicResource ScrollTrackBrush}"/>
+        <Setter Property="Width" Value="{DynamicResource ScrollBarThickness}"/>
+        <Setter Property="MinWidth" Value="{DynamicResource ScrollBarThickness}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollBar">
-                    <Grid>
-                        <Track x:Name="PART_Track" IsDirectionReversed="True"
+                    <!-- Three rows: an arrow button at each end and the track between. The arrow
+                         rows are ScrollArrowSize high, which is 0 on every ordinary theme - so
+                         they collapse to nothing and the bar is the plain overlay it always was.
+                         98SE asks for 16 and gets real Win98 stepper buttons. -->
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition x:Name="ArrowUpRow"   Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition x:Name="ArrowDownRow" Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <RepeatButton x:Name="ArrowUp" Grid.Row="0" Command="ScrollBar.LineUpCommand"
+                                      Focusable="False" IsTabStop="False"
+                                      Height="{DynamicResource ScrollArrowSize}"
+                                      Content="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="8"
+                                      Foreground="{DynamicResource CaptionGlyphBrush}">
+                            <RepeatButton.Template>
+                                <ControlTemplate TargetType="RepeatButton">
+                                    <Grid>
+                                        <Border Background="{DynamicResource SortButtonBrush}"/>
+                                        <Border BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                        <Border BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </RepeatButton.Template>
+                        </RepeatButton>
+
+                        <RepeatButton x:Name="ArrowDown" Grid.Row="2" Command="ScrollBar.LineDownCommand"
+                                      Focusable="False" IsTabStop="False"
+                                      Height="{DynamicResource ScrollArrowSize}"
+                                      Content="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="8"
+                                      Foreground="{DynamicResource CaptionGlyphBrush}">
+                            <RepeatButton.Template>
+                                <ControlTemplate TargetType="RepeatButton">
+                                    <Grid>
+                                        <Border Background="{DynamicResource SortButtonBrush}"/>
+                                        <Border BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                        <Border BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </RepeatButton.Template>
+                        </RepeatButton>
+
+                        <Track x:Name="PART_Track" Grid.Row="1" IsDirectionReversed="True"
                                Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value}">
                             <Track.ViewportSize>
                                 <MultiBinding Converter="{StaticResource ThumbFloor}" ConverterParameter="64">
@@ -549,7 +655,16 @@
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Thumb">
-                                                        <Border x:Name="thumbBorder" Background="{DynamicResource ScrollThumbBrush}" CornerRadius="3" Margin="4,0"/>
+                                                        <Grid>
+                                                        <Border x:Name="thumbBorder" Background="{DynamicResource ScrollThumbBrush}"
+                                                                CornerRadius="{DynamicResource ScrollThumbRadius}"
+                                                                Margin="{DynamicResource ScrollThumbMargin}"/>
+                                                        <!-- Raised thumb bevel: 98SE only. -->
+                                                        <Border IsHitTestVisible="False" Margin="{DynamicResource ScrollThumbMargin}"
+                                                                BorderBrush="{DynamicResource ScrollTrackBevelLight}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                                        <Border IsHitTestVisible="False" Margin="{DynamicResource ScrollThumbMargin}"
+                                                                BorderBrush="{DynamicResource ScrollTrackBevelDark}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                                        </Grid>
                                                         <ControlTemplate.Triggers>
                                                             <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Horizontal">
                                                                 <Setter TargetName="thumbBorder" Property="Margin" Value="0,4"/>
@@ -580,6 +695,14 @@
                             <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
                             <Setter TargetName="PageBack"    Property="Command" Value="ScrollBar.PageLeftCommand"/>
                             <Setter TargetName="PageForward" Property="Command" Value="ScrollBar.PageRightCommand"/>
+                            <!-- The stepper buttons are laid out in ROWS, which is only right for
+                                 a vertical bar. One template serves both orientations here, so a
+                                 horizontal bar would get its arrows above and below the track
+                                 instead of left and right. Collapsed rather than misplaced; a
+                                 horizontal Win98 bar wanting real steppers needs its own
+                                 template, which is a bigger change than this pass. -->
+                            <Setter TargetName="ArrowUp"   Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ArrowDown" Property="Visibility" Value="Collapsed"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -616,13 +739,24 @@
                          instantly while its own children faded in, which is backwards. 150ms
                          ease-out, the curve Anim.FadeIn uses. (Steve, 2026-07-30.) -->
                     <Grid x:Name="MenuRoot" Opacity="0" Margin="5">
-                        <Border CornerRadius="4" Background="{TemplateBinding Background}" IsHitTestVisible="False">
+                        <Border CornerRadius="{DynamicResource ControlCornerRadius}" Background="{TemplateBinding Background}" IsHitTestVisible="False"
+                                Opacity="{DynamicResource FlyoutShadowOpacity}">
                             <Border.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="2" Direction="270" Opacity="0.5"/></Border.Effect>
                         </Border>
-                        <Border CornerRadius="4" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        <!-- Raised menu bevel, two pairs. Nothing on any theme but 98SE, whose
+                             menus are a hard raised box rather than a rounded shadowed card. -->
+                        <Border IsHitTestVisible="False" Panel.ZIndex="4"
+                                BorderBrush="{DynamicResource MenuBevelLightBrush}" BorderThickness="{DynamicResource MenuBevelLightThickness}"/>
+                        <Border IsHitTestVisible="False" Panel.ZIndex="4"
+                                BorderBrush="{DynamicResource MenuBevelDarkBrush}"  BorderThickness="{DynamicResource MenuBevelDarkThickness}"/>
+                        <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
+                                BorderBrush="{DynamicResource MenuBevel2LightBrush}" BorderThickness="{DynamicResource MenuBevel2LightThickness}"/>
+                        <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
+                                BorderBrush="{DynamicResource MenuBevel2DarkBrush}"  BorderThickness="{DynamicResource MenuBevel2DarkThickness}"/>
+                        <Border CornerRadius="{DynamicResource ControlCornerRadius}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}" Padding="4" SnapsToDevicePixels="True">
                             <Grid>
-                                <Border IsHitTestVisible="False" CornerRadius="4" Margin="-4"
+                                <Border IsHitTestVisible="False" CornerRadius="{DynamicResource ControlCornerRadius}" Margin="-4"
                                         Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                                 <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
                             </Grid>
@@ -821,19 +955,16 @@
 
     <!-- The card: fill, frame, radius, shadow-room margin and the shadow itself. -->
     <Style x:Key="FlyoutCard" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource BgFlyout}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource PanelCornerRadius}"/>
         <!-- Margin is the room the drop shadow renders into: a Popup clips to its own bounds,
              so without it the shadow is cut off square. -->
         <Setter Property="Margin" Value="6"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/>
-            </Setter.Value>
-        </Setter>
+        <!-- Null on a flat theme, so a 98SE flyout is a hard raised box with no halo. -->
+        <Setter Property="Effect" Value="{DynamicResource CardShadowEffect}"/>
     </Style>
 
     <!-- The grain overlay. LAST child of the card, so it lies OVER the items - including a
@@ -890,7 +1021,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Border x:Name="bd" Background="Transparent" CornerRadius="3"
+                    <!-- RadioWellBrush: transparent on every ordinary theme, so a theme row is a
+                         bare label; 98SE gives it a white well, the way a Win98 list of options
+                         sits in a sunken box. -->
+                    <Border x:Name="bd" Background="{DynamicResource RadioWellBrush}"
+                            CornerRadius="{DynamicResource SmallCornerRadius}"
                             Margin="-8,0,2,0" Padding="10,4,10,4">
                         <!-- DockPanel (not a horizontal StackPanel) so the content fills the row
                              width, letting a right-aligned column (e.g. language codes) reach the
@@ -988,8 +1123,10 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">
                     <Grid VerticalAlignment="Center">
+                        <!-- SliderTrack: the input edge on every ordinary theme, a #808080 sunken
+                             groove on 98SE. -->
                         <Border Height="3" CornerRadius="1.5" VerticalAlignment="Center"
-                                Background="{DynamicResource InputBorderBrush}"/>
+                                Background="{DynamicResource SliderTrack}"/>
                         <Track x:Name="PART_Track">
                             <Track.DecreaseRepeatButton>
                                 <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
@@ -1037,21 +1174,35 @@
     <SolidColorBrush x:Key="WarningAmber" Color="#e0a83f"/>
     <SolidColorBrush x:Key="InfoBlue" Color="#4a90d9"/>
 
+    <!-- Geometry and face come from the theme (ThemeManager's 98SE chrome contract), not from
+         literals: 44x36 with a transparent face and a row-hover wash on every ordinary theme, and
+         a short bevelled Win98 button with a real face and no hover on a flat one. Bound, so
+         98SE needs no branch and no second style. -->
     <Style x:Key="ChromeButton" TargetType="Button">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource CaptionButtonBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CaptionGlyphBrush}"/>
+        <Setter Property="FontWeight" Value="{DynamicResource CaptionGlyphWeight}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Width" Value="44"/>
-        <Setter Property="Height" Value="36"/>
+        <Setter Property="Margin" Value="{DynamicResource CaptionButtonMargin}"/>
+        <Setter Property="Width" Value="{DynamicResource CaptionButtonWidth}"/>
+        <Setter Property="Height" Value="{DynamicResource CaptionButtonHeight}"/>
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Bd" Background="{TemplateBinding Background}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <Grid>
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                        <!-- Raised bevel. Zero-thickness and transparent on every theme but 98SE,
+                             so it costs nothing and draws nothing there. -->
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bd" Property="Background" Value="{DynamicResource RowHoverBrush}"/></Trigger>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bd" Property="Background" Value="{DynamicResource CaptionHoverBrush}"/></Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -1060,21 +1211,41 @@
 
     <!-- Main-window close button: the WHOLE button fills danger red with a white glyph on
          hover, like KillerPDF's. The dialog close X's keep the glyph-only treatment. -->
+    <!-- Inherits geometry and the bevel from ChromeButton; only the corner and the hover differ.
+         On a flat theme it is a bevelled grey button with a black glyph and NO hover fill, which
+         is how Win98 drew it - it reacted to being pressed, not hovered (Steve, 2026-08-08). -->
     <Style x:Key="ChromeCloseButton" TargetType="Button" BasedOn="{StaticResource ChromeButton}">
-        <Setter Property="Foreground" Value="{DynamicResource ChromeTextBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource CaptionCloseBrush}"/>
+        <Setter Property="Margin" Value="{DynamicResource CaptionCloseGap}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <!-- Top-right corner rounded to 8, the radius Windows 11 rounds the window
-                         itself to. This button sits IN that corner, so a square red fill runs
-                         past the curve and the DWM slices the overhang off, leaving a chewed
-                         edge on hover. Only the top-right is rounded: the other three sit
-                         against the title bar and must stay flush. -->
-                    <Border x:Name="Bd" Background="Transparent" CornerRadius="0,8,0,0"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <Grid>
+                        <!-- The corner follows the WINDOW's radius: this button sits IN the
+                             top-right corner, so a square red fill runs past the curve and the
+                             DWM slices the overhang off, leaving a chewed edge on hover. Squares
+                             itself on a flat theme, where the window is square too. -->
+                        <Border x:Name="Bd" Background="{DynamicResource CaptionButtonBrush}"
+                                CornerRadius="{DynamicResource CaptionCloseCornerRadius}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border x:Name="bevelLight" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                        <Border x:Name="bevelDark" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DangerRed}"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource CaptionCloseHoverBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource CaptionCloseHoverFgBrush}"/>
+                        </Trigger>
+                        <!-- PRESSED: the bevel inverts, so the button visibly sinks. That is the
+                             only feedback a Win98 caption button ever gave - it had no hover
+                             state at all (Steve, 2026-08-08). Both bevels are zero-thickness on
+                             every other theme, so this trigger does nothing there. -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="bevelLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
+                            <Setter TargetName="bevelDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1085,6 +1256,10 @@
     <!-- Elevation (KillerPDF ShadowBar): lifts panels/cards slightly off the surface. -->
     <DropShadowEffect x:Key="ShadowBar" Color="Black" BlurRadius="6" ShadowDepth="3" Direction="270" Opacity="0.38"/>
     <!-- Stronger elevation for the results pane; casts down over the footer. -->
+    <!-- Kept for anything still referencing it directly. The LIVE one is PaneShadowEffect, built
+         per palette load in ThemeManager at that theme's PaneShadowOpacity and set to NULL on a
+         flat theme - 98SE has no shadows at all. A StaticResource here could never follow a theme
+         change, which is why the pane kept its shadow on 98SE (Steve, 2026-08-08). -->
     <DropShadowEffect x:Key="PaneShadow" Color="Black" BlurRadius="16" ShadowDepth="5" Direction="270" Opacity="0.6"/>
 
     <!-- Themed checkbox: small square, accent check, mono label. -->
@@ -1121,7 +1296,7 @@
         </Setter>
     </Style>
 
-    <!-- Sidebar icon-rail button, ported from KillerNotes (which took it from KillerPDF): bare
+    <!-- KillerUI sidebar icon-rail button: bare
          glyph with a soft shadow, turning the accent color on hover. Set Content to the glyph;
          override FontFamily/FontSize for text glyphs like a "?" button. -->
     <Style x:Key="RailButton" TargetType="Button">
@@ -1179,12 +1354,20 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="bg" Background="Transparent" CornerRadius="3">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
+                    <Grid>
+                        <Border x:Name="bg" Background="{DynamicResource SortButtonBrush}"
+                                CornerRadius="{DynamicResource SmallCornerRadius}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <!-- Raised bevel: 98SE only, where a toolbar button is a real button. -->
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="Tag" Value="on">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource SelectionBg}"/>
@@ -1443,6 +1626,34 @@
     <!-- File and folder picker internals: row container, text tiers, view-toggle and
      column-header buttons, and the view templates with their panels. -->
 
+    <!-- The places / bookmarks rail. Same behaviour as PickerRow but tight: PickerRow's 8,5 padding
+         plus 2,1 margin made each place about 28px tall around a 16px icon, so the rail showed far
+         fewer entries than it had room for. Its own style, because the file list uses PickerRow for
+         rows carrying three columns of detail that need the breathing room. -->
+    <Style x:Key="PickerPlaceRow" TargetType="ListBoxItem">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}" Padding="6,1" Margin="2,0">
+                        <ContentPresenter/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource SelectionBg}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Row container: hover + accent selection. -->
     <Style x:Key="PickerRow" TargetType="ListBoxItem">
         <Setter Property="Cursor" Value="Hand"/>
@@ -1535,12 +1746,20 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="bg" Background="Transparent" CornerRadius="3">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
+                    <Grid>
+                        <Border x:Name="bg" Background="{DynamicResource SortButtonBrush}"
+                                CornerRadius="{DynamicResource SmallCornerRadius}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <!-- Raised bevel: 98SE only, where a toolbar button is a real button. -->
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="Tag" Value="on">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource SelectionBg}"/>

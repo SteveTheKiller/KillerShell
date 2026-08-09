@@ -1,0 +1,86 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell additions for the shared KillerUI 98SE theme.
+
+         ONLY the keys the KillerUI layer does not define belong in here.
+         ThemeManager loads this file first and KillerThemeContract then
+         overlays Themes/KillerUI/<name>.xaml on top, so anything named in
+         both is won by the shared layer and restating it here is dead
+         weight. Everything below is derived from this theme's own base
+         palette rather than picked by eye, so it tracks the shared file.
+         ================================================================ -->
+
+    <!-- BLACK, even though 98SE's palette is otherwise light grey. A Win98-era console is a black
+         box, and the metric tiles read as little CRT readouts (Steve, 2026-08-08). These are
+         KillerShell-only keys, so they live in the app layer where the shared KillerUI half
+         cannot overwrite them. -->
+    <SolidColorBrush x:Key="TerminalBackgroundBrush" Color="#000000" po:Freeze="True"/>
+    <SolidColorBrush x:Key="MonitorCellBrush"        Color="#000000" po:Freeze="True"/>
+    <!-- ...and the text ON that black. 98SE's TextBrush is #000000 and its PrimaryBrush #004f00,
+         both picked against a light grey app - on a black console they are invisible and nearly
+         invisible. The console's own light grey and bright green, as CMD had. -->
+    <SolidColorBrush x:Key="TerminalForegroundBrush" Color="#c0c0c0" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TerminalAccentBrush"     Color="#00c000" po:Freeze="True"/>
+
+    <sys:Double x:Key="GrainOpacity">0.0</sys:Double>
+    <sys:Double x:Key="IconShadowOpacity">0.0</sys:Double>
+
+    <!-- Text-stroke shadows behind button labels. Nulled, as on Light: any Effect
+         rasterizes ClearType, so on a light surface the label just looks blurry. -->
+    <x:Null x:Key="TextStroke"/>
+    <x:Null x:Key="TextStrokeSoft"/>
+
+    <!-- Chrome the shared layer leaves to the app -->
+    <SolidColorBrush x:Key="TextFooter"          Color="#606060" po:Freeze="True"/>
+    <SolidColorBrush x:Key="MenuTextBrush"       Color="#404040" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TreeLineBrush"       Color="#808080" po:Freeze="True"/>
+    <!-- A faint wash, NOT the base layer's SelectionBg - see the note in Sepulchre.xaml. A
+         translucent BLACK rather than the white the dark themes use: 98SE's surfaces are
+         #c0c0c0 and #ffffff, so a white wash would be invisible on both. -->
+    <SolidColorBrush x:Key="RowSelectedBrush"    Color="#33000000" po:Freeze="True"/>
+    <SolidColorBrush x:Key="OutlinePressedBrush" Color="#33000000" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RowAltBrush"         Color="#14000000" po:Freeze="True"/>
+
+    <!-- Resting accent edge: the accent at 40%, for a lip that reads as accent-colored
+         without claiming to be the live thing. The active tab of the UNFOCUSED pane. -->
+    <SolidColorBrush x:Key="TabEdgeBrush"          Color="#66004f00" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ScrollThumbBrush"      Color="#88004f00" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ScrollThumbHoverBrush" Color="#004f00" po:Freeze="True"/>
+
+    <!-- Traffic light. Three FIXED colors on purpose: the status dot sits in the footer
+         permanently, and using the accent made "all fine" mean whatever accent was picked. -->
+    <SolidColorBrush x:Key="OkBrush"   Color="#1a7f37" po:Freeze="True"/>
+    <SolidColorBrush x:Key="WarnBrush" Color="#a86a00" po:Freeze="True"/>
+
+    <!-- Device-type label colors (darkened for a light pane) -->
+    <SolidColorBrush x:Key="TypeRouter"     Color="#B06000" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeWindows"    Color="#1D5FB0" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypePrinter"    Color="#9C3F66" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeSwitch"     Color="#5A5A5A" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeHypervisor" Color="#B02A2A" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeNas"        Color="#157A45" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeIot"        Color="#6A2A9C" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeServer"     Color="#B0481A" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeLinux"      Color="#7A6A10" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeDns"        Color="#1A6A8C" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeHa"         Color="#157A4F" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeMobile"     Color="#4040A8" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeCamera"     Color="#9A6800" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeSmarttv"    Color="#864A86" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TypeMedia"      Color="#256A9C" po:Freeze="True"/>
+
+    <!-- Shortcut categories. One color per group, shared by the list headings and the
+         keyboard map's keycap borders (KeyboardMapOverlay.cs). -->
+    <SolidColorBrush x:Key="KsCatFile"      Color="#009e99" po:Freeze="True"/>
+    <SolidColorBrush x:Key="KsCatNav"       Color="#6a11cc" po:Freeze="True"/>
+    <SolidColorBrush x:Key="KsCatView"      Color="#a316b5" po:Freeze="True"/>
+    <SolidColorBrush x:Key="KsCatSearch"    Color="#0077b3" po:Freeze="True"/>
+    <SolidColorBrush x:Key="KsCatEdit"      Color="#d1105a" po:Freeze="True"/>
+    <SolidColorBrush x:Key="KsCatTabs"      Color="#a67c00" po:Freeze="True"/>
+    <SolidColorBrush x:Key="KsCatHelp"      Color="#128c07" po:Freeze="True"/>
+
+</ResourceDictionary>

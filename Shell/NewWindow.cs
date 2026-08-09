@@ -40,8 +40,15 @@ namespace KillerShell.Shell
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
-            // Use explorer.exe to launch KillerShell unelevated from an elevated context.
-            // Explorer will spawn it with the current user's regular (non-elevated) token.
+            // KNOWN BROKEN, do not trust this path (Steve, 2026-08-08). "explorer.exe <file>"
+            // launches ONE file and takes no arguments for it: Explorer parses each remaining
+            // token as something to open, fails, and opens a folder window per token instead. So
+            // this does not start KillerShell with --new-window/--cwd at all, it just throws up
+            // Explorer windows. It only ever ran by accident - an elevated window restoring the
+            // session and asking for a non-elevated shell per tab - which is fixed at the source
+            // in MainWindow.xaml.cs (an elevated window no longer restores). Pressing F8 in an
+            // admin window still reaches here and still misbehaves; dropping privileges properly
+            // needs the shell's own ShellExecute via IShellDispatch2, not this.
             var psi = new ProcessStartInfo("explorer.exe")
             {
                 UseShellExecute = false,

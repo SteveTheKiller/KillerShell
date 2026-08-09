@@ -13,6 +13,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:KillerShell"
+             xmlns:svc="clr-namespace:KillerShell.Services"
              xmlns:shellns="clr-namespace:KillerShell.Shell"
              xmlns:models="clr-namespace:KillerShell.Models">
 
@@ -28,8 +29,23 @@
                    declaration order alone, and the 1px the pane is pulled up by (its -1 top
                    margin) lands its border ON TOP of the strip instead of behind it - which is
                    exactly the hairline that kept showing under the active tab. -->
-              <Border Grid.Row="0" x:Name="TabBar" Panel.ZIndex="20" Margin="0,6,8,0"
-                      Background="{DynamicResource BackgroundBrush}" Visibility="Collapsed"
+              <!-- The band is the WINDOW background, and so are the inactive tabs, so the strip
+                   simply disappears into the app behind it and only the active tab reads as a
+                   surface. Briefly moved to MenuBackgroundBrush; that lifted the band a step
+                   above the tabs sitting on it, and the tabs' 3px top margin turned into a
+                   visible grey line above every one of them (Steve, 2026-08-08). -->
+              <!-- TRANSPARENT, never BackgroundBrush. On Sepulchre, Decay, Delirium, Ectoplasm
+                   and Malaise that key is a full-window LinearGradientBrush, so painting it here
+                   re-ramped the ENTIRE window gradient inside the band's own width - a visible
+                   strip of mismatched gradient above every tab. Transparent lets the window's
+                   one continuous gradient show through, which is the only way the band can line
+                   up with the window it sits on (Steve, 2026-08-08). -->
+              <!-- Same story as the pane's own margin below: 0,6,8,0 on the rounded themes, all
+                   zeros on a flat one. The 8 on the right made the strip narrower than the window
+                   on that side only, and the 6 on top was the last gap left between the caption
+                   and the client area once ContentPaneMargin went to 0. -->
+              <Border Grid.Row="0" x:Name="TabBar" Panel.ZIndex="20" Margin="{DynamicResource TabBarMargin}"
+                      Background="Transparent" Visibility="Collapsed"
                       SizeChanged="TabBar_SizeChanged">
                <Grid>
                 <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
@@ -50,7 +66,11 @@
                      darkens toward the bottom and the tabs read as sitting in front of it.
                      The horizontal OpacityMask cross-fades the shadow out at both ends so it
                      dissolves toward the corners instead of cutting off in a straight line. -->
-                <Border IsHitTestVisible="False">
+                <!-- Opacity from the theme: 0 on a flat theme, so 98SE's tab strip is genuinely
+                     flat. This gradient is a SHADOW, and it was hardcoded - which is why the tabs
+                     still looked shadowed on 98SE after the tab's own DropShadowEffect was made
+                     theme-driven (Steve, 2026-08-08). -->
+                <Border IsHitTestVisible="False" Opacity="{DynamicResource BarShadowOpacity}">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                             <GradientStop Color="#00000000" Offset="0"/>
@@ -74,9 +94,13 @@
                      band's last row and its curved sides drop out of the band and land exactly
                      on the pane's own left/right border, same brush, same pixels. Tabs.cs keeps
                      the radii in step with the pane's. -->
+                <!-- PaneEdgeBrush, which a flat theme sets TRANSPARENT: on 98SE the tab's own
+                     bevel and the pane's bevel already describe the join, and this extra 1px rule
+                     drew as a grey line between the active tab and the content below it (Steve,
+                     2026-08-08). Every other theme keeps the ring exactly as before. -->
                 <Border x:Name="TabBarRing" Height="7" VerticalAlignment="Bottom" Margin="0,0,0,-6"
-                        BorderThickness="1,1,1,0" CornerRadius="6,6,0,0" IsHitTestVisible="False"
-                        BorderBrush="{DynamicResource PaneBorderBrush}"/>
+                        BorderThickness="1,1,1,0" CornerRadius="{DynamicResource TabCornerRadius}" IsHitTestVisible="False"
+                        BorderBrush="{DynamicResource PaneEdgeBrush}"/>
                 <DockPanel LastChildFill="True">
                 <!-- Overflow chevron: every tab in this pane, hidden ones included (Tabs.cs
                      TabOverflowMenu). Docked BEFORE the strip so the strip's remaining width is
@@ -148,10 +172,11 @@
                                 <!-- 1px bottom margin keeps an inactive tab clear of the ring
                                      line at the foot of the band; the active tab drops it and
                                      covers its own segment. -->
-                                <Border x:Name="tabBd" CornerRadius="6,6,0,0" Margin="0,3,0,1" Padding="12,4,5,5"
+                                <Border x:Name="tabBd" CornerRadius="{DynamicResource TabCornerRadius}" Margin="0,3,0,1" Padding="12,4,5,5"
                                         MinWidth="60"
-                                        Cursor="Hand" Background="{DynamicResource BackgroundBrush}"
-                                        BorderThickness="0,0,1,0" BorderBrush="{DynamicResource CardBorderBrush}"
+                                        Cursor="Hand" Background="Transparent"
+                                        BorderThickness="0,0,1,0"
+                                        BorderBrush="{DynamicResource PaneEdgeBrush}"
                                         MouseDown="Tab_MouseDown"
                                         PreviewMouseLeftButtonDown="Tab_DragDown"
                                         PreviewMouseMove="Tab_DragMove"
@@ -166,8 +191,27 @@
                                     <Grid>
                                         <!-- Grain follows the tab's radius, or the texture squares
                                              off the corner the border just rounded. -->
-                                        <Border IsHitTestVisible="False" CornerRadius="6,6,0,0" Margin="-12,-4,-5,-5"
-                                                Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                                        <!-- Opacity 0 by default: an INACTIVE tab is transparent, so
+                                             it already shows the band's grain through it, and its
+                                             own layer on top doubled the texture - the tabs read
+                                             visibly grainier than the strip they sit in (Steve,
+                                             2026-08-08). The ACTIVE tab is an opaque PaneBrush
+                                             fill that hides the band, so the IsActive trigger
+                                             below turns this back on for that one. -->
+                                        <Border x:Name="tabGrain" IsHitTestVisible="False"
+                                                CornerRadius="{DynamicResource TabCornerRadius}" Margin="-12,-4,-5,-5"
+                                                Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
+                                        <!-- Win98 tab bevel: light along the top and left, dark
+                                             down the right. A Win98 tab is a raised control, not
+                                             a flat card (Steve, 2026-08-08). The margins undo the
+                                             tab's padding so the bevel sits on its real edges.
+                                             Zero-thickness and transparent on the other twelve. -->
+                                        <Border x:Name="tabBevelLight" IsHitTestVisible="False" Margin="-12,-4,-5,-5" Panel.ZIndex="4"
+                                                BorderBrush="{DynamicResource BevelLightBrush}"
+                                                BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                        <Border x:Name="tabBevelDark" IsHitTestVisible="False" Margin="-12,-4,-5,-5" Panel.ZIndex="4"
+                                                BorderBrush="{DynamicResource BevelDarkBrush}"
+                                                BorderThickness="{DynamicResource BevelDarkThickness}"/>
                                         <DockPanel LastChildFill="True">
                                             <!-- Nulled here rather than on the shared DangerButton style,
                                                  which the term and filter x's also use. -->
@@ -189,7 +233,7 @@
                                                  makes a null Source (not a folder tab) take no
                                                  room - the collapse trigger below. -->
                                             <Image x:Name="tabFolderIcon" DockPanel.Dock="Left"
-                                                   Width="14" Height="14" Stretch="Uniform"
+                                                   Width="20" Height="20" Stretch="Uniform"
                                                    Margin="0,0,5,0" VerticalAlignment="Center"
                                                    Source="{Binding Converter={StaticResource TabFolderIcon}}"/>
                                             <!-- Shell tabs carry a glyph so a terminal is not
@@ -210,8 +254,17 @@
                                     <DataTrigger Binding="{Binding TabGlyph}" Value="">
                                         <Setter TargetName="tabGlyph" Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
+                                    <!-- No art for this tab kind (a search tab): hide the Image and
+                                         let the MDL2 glyph above stand in. Every other kind now
+                                         resolves to a brand icon, so the glyph is the exception
+                                         rather than the rule (Steve, 2026-08-08). -->
                                     <DataTrigger Binding="{Binding Converter={StaticResource TabFolderIcon}}" Value="{x:Null}">
                                         <Setter TargetName="tabFolderIcon" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <!-- ...and where there IS art, drop the glyph, or a shell tab
+                                         would carry both its picture and its Segoe character. -->
+                                    <DataTrigger Binding="{Binding Converter={StaticResource TabHasArt}}" Value="True">
+                                        <Setter TargetName="tabGlyph" Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                     <!-- Last tab drops its right border: that 1px is a divider
                                          BETWEEN tabs, and on the strip's right edge it reads as a
@@ -223,17 +276,40 @@
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
                                         <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource PaneBrush}"/>
-                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="0,3,0,0"/>
-                                        <!-- Reaches the foot of the band so its PaneBrush breaks
-                                             the ring line where the tab is. -->
+                                        <!-- Only the active tab draws its own grain - it is opaque,
+                                             so it hides the band's layer and needs to replace it. -->
+                                        <Setter TargetName="tabGrain" Property="Opacity" Value="{DynamicResource GrainOpacity}"/>
+                                        <!-- The accent stripe is theme-driven now: 3px on top by
+                                             default, 0 on a flat theme. A Win98 tab is identified
+                                             by its bevel and by being joined to the pane, not by
+                                             a coloured bar across the top (Steve, 2026-08-08). -->
+                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabStripeThickness}"/>
+                                        <!-- Reaches the foot of the band so its own fill breaks
+                                             the ring line where the tab is - that break is what
+                                             joins the tab to the content below it. -->
                                         <Setter TargetName="tabBd" Property="Margin" Value="0,3,0,0"/>
+                                        <!-- OPEN BOTTOM. The tab's dark bevel is 0,0,2,2 - right AND
+                                             bottom - so the active tab was drawing a 2px grey rule
+                                             along its own foot, directly between itself and the
+                                             content. That rule is the line Steve kept seeing under
+                                             the active tab, and no amount of work on the ring above
+                                             or the pane below could remove it, because it belonged
+                                             to the tab (Steve, 2026-08-08, fourth report).
+                                             A selected Win98 tab has no bottom edge at all: the
+                                             bevel runs top, left and right, and the bottom is open
+                                             into the page, which is what makes the two read as one
+                                             surface. TabActiveBevelDarkThickness is 0,0,2,0 on 98SE
+                                             and 0 everywhere else, where the bevel is 0 regardless. -->
+                                        <Setter TargetName="tabBevelDark" Property="BorderThickness" Value="{DynamicResource TabActiveBevelDarkThickness}"/>
                                         <!-- Top padding gives back the 3px the accent stripe takes,
                                              so the title doesn't drop when a tab activates. -->
-                                        <Setter TargetName="tabBd" Property="Padding" Value="12,1,5,5"/>
+                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabActivePadding}"/>
                                         <Setter TargetName="tabBd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
-                                        <Setter TargetName="tabBd" Property="Effect">
-                                            <Setter.Value><DropShadowEffect Color="Black" BlurRadius="9" ShadowDepth="0" Opacity="0.45"/></Setter.Value>
-                                        </Setter>
+                                        <!-- BarShadowEffect, built per palette in ThemeManager and
+                                             NULL on a flat theme - a hardcoded effect here kept
+                                             the active tab casting a shadow on 98SE, which has
+                                             none anywhere (Steve, 2026-08-08). -->
+                                        <Setter TargetName="tabBd" Property="Effect" Value="{DynamicResource BarShadowEffect}"/>
                                         <Setter TargetName="tabLbl" Property="Foreground" Value="{DynamicResource TextBrush}"/>
                                         <!-- Bold Consolas at 11px is nearly indistinguishable in Display mode;
                                              the half-point bump makes the active weight actually read as bold. -->
@@ -360,8 +436,23 @@
                    the strip is inside a ScrollViewer, which clips anything a tab overhangs.
                    With one tab the strip is collapsed and the -1 just eats 1px of the 6px gap.
                    ApplySearchPanel (SearchPanel.cs) reassigns this margin and repeats the -1. -->
-              <Border x:Name="ResultsPane" Grid.Row="1" Margin="0,-1,8,0" Background="{DynamicResource PaneBrush}"
-                    BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1" CornerRadius="6" Effect="{StaticResource PaneShadow}">
+              <!-- The listing surface takes the MENU tier and the location row above it takes
+                   PaneBrush - swapped from the obvious way round on purpose (Steve, 2026-08-08).
+                   It also happens to be the only pairing that reads on Black, where PaneBrush is
+                   #0a0a0a against a #000000 window (1.06:1, invisible) while the menu tier is
+                   #121212. -->
+              <!-- PaneOuterMargin: 0,-1,8,0 as it always was, and 0,-1,0,0 on a flat theme. That 8
+                   is an inset on the RIGHT only, with 0 on the left, so the pane sat visibly
+                   further from the window edge on one side than the other - the right edge that
+                   would not come down to the width of the left (Steve, 2026-08-08). It is right on
+                   the rounded themes, where the pane is a floating card with a shadow; a Win98
+                   client area fills its frame.
+                   PaneEdgeThickness: 1 normally. 0 on 98SE, where PaneEdgeBrush is transparent
+                   anyway, so the ring was invisible but still ate the pixel the raised bevel below
+                   needs to land on. -->
+              <Border x:Name="ResultsPane" Grid.Row="1" Margin="{DynamicResource PaneOuterMargin}" Background="{DynamicResource MenuBackgroundBrush}"
+                    BorderBrush="{DynamicResource PaneEdgeBrush}" BorderThickness="{DynamicResource PaneEdgeThickness}" CornerRadius="{DynamicResource PanelCornerRadius}"
+                    Effect="{DynamicResource PaneShadowEffect}">
               <!-- Clipped to the pane's own rounded corners (PaneClip.cs). A Border with a
                    CornerRadius does NOT clip its child, so anything that reaches the top of the
                    pane squares those corners off. Nothing did while the location row was always
@@ -369,16 +460,52 @@
                    then the terminal and the results list run straight into the curve. -->
               <Grid x:Name="PaneContent" SizeChanged="PaneContent_SizeChanged">
                 <!-- Same treatment as KillerPDF's document pane: the whole content pane is grain-wrapped. -->
-                <Border IsHitTestVisible="False" CornerRadius="5" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                <!-- THE TAB PAGE BEVEL. A Win98 tab control's page is a RAISED panel - white down
+                     the top and left, grey along the bottom and right - and the selected tab's own
+                     white left edge is the SAME line continuing upward. That continuity is what
+                     makes a tab and its page read as one object rather than a card sitting on a
+                     box (Steve, 2026-08-08: "the light gray edge of the active tab should now
+                     extend all the way down the side of the terminal down to the footer").
+                     RAISED, so the brushes PAIR with the thicknesses by name - light with
+                     LightThickness. Crossing them, which is what a sunken well does, would run a
+                     grey line down the side the tab's white edge is trying to meet.
+                     Declared here at the TOP of PaneContent so it sits under the terminal, the
+                     listing and the details strip; ZIndex lifts it back over them, because the
+                     terminal paints an opaque black screen edge to edge. Zero-thickness and
+                     transparent on the other twelve, so this costs them nothing. -->
+                <Border IsHitTestVisible="False" Panel.ZIndex="60"
+                        BorderBrush="{DynamicResource BevelLightBrush}"
+                        BorderThickness="{DynamicResource BevelLightThickness}"/>
+                <Border IsHitTestVisible="False" Panel.ZIndex="60"
+                        BorderBrush="{DynamicResource BevelDarkBrush}"
+                        BorderThickness="{DynamicResource BevelDarkThickness}"/>
               <DockPanel>
                 <!-- Location row: the tab's folder on the left (click to change), tab-level
                      actions on the right: pipe, export, close tab. -->
-                <Grid x:Name="LocationRow" DockPanel.Dock="Top" SizeChanged="ToolStrip_SizeChanged">
+                <!-- PaneBrush, the same tier the ACTIVE TAB is filled with, so the tab merges
+                     into this bar and the two read as one surface the listing hangs below.
+                     Square top corners are fine: PaneClip.cs clips this to the pane's radius. -->
+                <Grid x:Name="LocationRow" DockPanel.Dock="Top" SizeChanged="ToolStrip_SizeChanged"
+                      Background="{DynamicResource PaneBrush}"
+                      Margin="{DynamicResource BarPadding}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    <!-- Its own grain. The pane's grain layer is painted BEFORE this row, so the
+                         opaque PaneBrush above covers it and the bar came out as the one flat,
+                         textureless strip in the window (Steve, 2026-08-08). Spans every column
+                         and is declared first, so it sits under the buttons and the path. -->
+                    <Border Grid.ColumnSpan="3" IsHitTestVisible="False"
+                            Background="{DynamicResource GrainTileBrush}"
+                            Opacity="{DynamicResource GrainOpacity}"/>
+                    <!-- The bar's raised top edge. Nothing on any theme but 98SE, where a toolbar
+                         is lifted off the surface by a light line along its top and left. -->
+                    <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
+                            BorderBrush="{DynamicResource BarEdgeBrush}"
+                            BorderThickness="{DynamicResource BarEdgeThickness}"/>
                     <!-- Back / forward / up. Browser order and browser glyphs, because that is
                          what everyone's hand already expects at the top left. -->
                     <StackPanel x:Name="NavStrip" Grid.Column="0" Orientation="Horizontal" Margin="8,0,2,0" VerticalAlignment="Center">
@@ -461,7 +588,7 @@
                                  (AddressBar.cs). Collapsed until you click the row, Ctrl+L or
                                  Alt+D. -->
                             <TextBox x:Name="AddressBox" Grid.Column="1" Visibility="Collapsed"
-                                     Background="{DynamicResource BackgroundBrush}"
+                                     Background="{DynamicResource SearchFieldBrush}"
                                      Foreground="{DynamicResource TextBrush}"
                                      CaretBrush="{DynamicResource PrimaryBrush}"
                                      BorderBrush="{DynamicResource PrimaryBrush}" BorderThickness="1"
@@ -478,13 +605,19 @@
                             <!-- ViewToggleBtn, not a bare Button: an unstyled Button keeps WPF's
                                  default template and its system-blue hover, which is what made
                                  this square light up against the theme. -->
-                            <Button x:Name="RecentsBtn" Grid.Column="2" Content="&#xE70D;"
+                            <!-- The brand recents icon rather than the MDL2 chevron. Content is an
+                                 Image, so the glyph FontFamily/FontSize no longer apply. -->
+                            <Button x:Name="RecentsBtn" Grid.Column="2"
                                     Style="{StaticResource ViewToggleBtn}"
                                     Width="20" Height="20" Padding="0" Margin="4,0,0,0"
-                                    FontFamily="Segoe MDL2 Assets" FontSize="9"
                                     VerticalAlignment="Center"
                                     ToolTip="{DynamicResource Str_TT_Recents}"
                                     Click="Recents_Click">
+                                <Button.Content>
+                                    <Image Width="15" Height="15" Stretch="Uniform"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           Source="{x:Static svc:IconCache.RecentsArt}"/>
+                                </Button.Content>
                                 <Button.ContextMenu>
                                     <ContextMenu x:Name="RecentsMenu"/>
                                 </Button.ContextMenu>
@@ -519,11 +652,12 @@
                         <Popup x:Name="SortPopup" PlacementTarget="{Binding ElementName=SortBtn}" Placement="Bottom"
                                StaysOpen="False" AllowsTransparency="True" HorizontalOffset="-14" VerticalOffset="-2">
                             <Grid Margin="14">
-                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="6" IsHitTestVisible="False">
-                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
+                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
+                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
+                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                                 </Border>
                                 <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                        BorderThickness="1" CornerRadius="6" Padding="6">
+                                        BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
                                     <!-- The chosen key lights accent through SurfaceButton's
                                          Tag="on" trigger, so Tag is spoken for - the index
                                          rides on CommandParameter instead (Results.cs). -->
@@ -612,11 +746,12 @@
                         <Popup x:Name="ExportPopup" PlacementTarget="{Binding ElementName=ExportBtn}" Placement="Bottom"
                                StaysOpen="False" AllowsTransparency="True" HorizontalOffset="-14" VerticalOffset="-2">
                             <Grid Margin="14">
-                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="6" IsHitTestVisible="False">
-                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
+                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
+                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
+                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                                 </Border>
                                 <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                        BorderThickness="1" CornerRadius="6" Padding="6">
+                                        BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
                                     <StackPanel MinWidth="64">
                                         <!-- Format names, not prose - deliberately unlocalized,
                                              the same way the old two buttons were. -->
@@ -1012,7 +1147,7 @@
                          tab above it; MenuBackgroundBrush here was a full step darker, so this
                          bar visibly seamed against the tab where the folder view never did. -->
                     <Border Grid.Row="0" Height="26" Background="{DynamicResource PaneBrush}"
-                            BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,0,0,1">
+                            BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="0,0,0,1">
                         <Grid>
                             <Border IsHitTestVisible="False"
                                     Background="{DynamicResource GrainTileBrush}"
@@ -1099,7 +1234,7 @@
                          pane, so this bar visibly seamed against the tab above it where the
                          folder view's own location row never does. -->
                     <Border Grid.Row="0" Height="26" Background="{DynamicResource PaneBrush}"
-                            BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,0,0,1">
+                            BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="0,0,0,1">
                         <Grid>
                             <Border IsHitTestVisible="False"
                                     Background="{DynamicResource GrainTileBrush}"
@@ -1137,11 +1272,12 @@
                                            Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                            HorizontalOffset="-14" VerticalOffset="-2">
                                         <Grid Margin="14">
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="6" IsHitTestVisible="False">
-                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
+                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
+                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
+                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                                             </Border>
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                                    BorderThickness="1" CornerRadius="6" Padding="8,6">
+                                                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="8,6">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="{DynamicResource Str_Ed_GotoLabel}" VerticalAlignment="Center"
                                                                Foreground="{DynamicResource MutedTextBrush}"
@@ -1177,11 +1313,12 @@
                                            Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                            HorizontalOffset="-14" VerticalOffset="-2">
                                         <Grid Margin="14">
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="6" IsHitTestVisible="False">
-                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
+                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
+                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
+                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                                             </Border>
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                                    BorderThickness="1" CornerRadius="6" Padding="6">
+                                                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
                                                 <StackPanel MinWidth="188">
                                                     <Button x:Name="EdOptLineNumbers" Content="{DynamicResource Str_Ed_OptLineNumbers}"
                                                             Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
@@ -1263,11 +1400,12 @@
                                            Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                            HorizontalOffset="-14" VerticalOffset="-2">
                                         <Grid Margin="14">
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="6" IsHitTestVisible="False">
-                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
+                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
+                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
+                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                                             </Border>
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                                    BorderThickness="1" CornerRadius="6" Padding="6">
+                                                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
                                                 <StackPanel MinWidth="168">
                                                     <Button x:Name="EdEncUtf8" CommandParameter="utf8" Content="{DynamicResource Str_Ed_EncUtf8}"
                                                             Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
@@ -1371,8 +1509,22 @@
                      never knew to touch - left unconditional they kept painting an opaque flat
                      layer over whatever tab type was actually showing (2026-08-03 fix: this is
                      exactly what turned a live terminal into a blank textured tab). -->
-                <Border IsHitTestVisible="False" Background="{DynamicResource SurfaceBrush}"
+                <!-- MenuBackgroundBrush, matching the terminal screen (TerminalPalette.cs): the
+                     listing and the shell are the same tier, the content half of a tab. This was
+                     SurfaceBrush, which is #000000 on Black against the terminal's #121212 - so
+                     the file browser came up pure black while the terminal did not, in the same
+                     window (Steve, 2026-08-08). -->
+                <!-- ListPaneBrush: the menu tier on every ordinary theme (matching the terminal
+                     screen), and the sunken WHITE list well on 98SE, whose menu tier is #c0c0c0
+                     and would otherwise leave the file listing grey (Steve, 2026-08-08). -->
+                <Border IsHitTestVisible="False" Background="{DynamicResource ListPaneBrush}"
                         Visibility="{Binding Visibility, ElementName=ResultsList}"/>
+                <!-- Recessed list bevel - brushes CROSSED against the thicknesses so it reads as
+                     sunken, not raised. Nothing on any theme but 98SE. -->
+                <Border IsHitTestVisible="False" Visibility="{Binding Visibility, ElementName=ResultsList}"
+                        BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
+                <Border IsHitTestVisible="False" Visibility="{Binding Visibility, ElementName=ResultsList}"
+                        BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
                 <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"
                         Visibility="{Binding Visibility, ElementName=ResultsList}"/>
                 <ListBox x:Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="8,4,8,0" Focusable="False"

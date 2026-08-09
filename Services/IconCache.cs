@@ -36,6 +36,154 @@ namespace KillerShell.Services
             ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp"
         };
 
+        // ── Brand icon pack (brand\icons, normalised into Resources\icons) ───────────────
+        //
+        // Every directory in the app is drawn from here rather than from the shell, so the tree,
+        // the bookmarks, the listing, the tab strip, recents and the overflow list all agree.
+        // Loaded once and FROZEN: one bitmap is shared by every row, and a frozen ImageSource is
+        // safe to hand to the background threads the listing decodes on.
+        //
+        // A missing or unloadable resource yields null, and the caller falls through to the real
+        // shell icon rather than drawing a blank row.
+
+        /// <summary>
+        /// A named icon from the brand pack (Resources\icons), loaded once and frozen. Public so
+        /// the tab strip can ask for a specific one by name - TabFolderIconConverter maps a tab's
+        /// kind to its art. Null if the resource is missing, so callers fall back rather than
+        /// drawing blank.
+        /// </summary>
+        private static readonly Dictionary<string, ImageSource?> ArtCache =
+            new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// The icon pack the active theme draws from: the period Chicago95 art under
+        /// Resources\icons\98 on a flat theme, the brand pack at Resources\icons everywhere else.
+        /// Read off the palette through MainWindow.FlatChrome (Chrome.cs) rather than the theme
+        /// name, the same way the rounded-corner suppression does, so any future flat theme gets
+        /// it for free.
+        ///
+        /// The two packs carry the SAME 24 filenames at the same 160px canvas, so this is a
+        /// prefix and nothing else - no per-name table to keep in sync, and a name that only the
+        /// brand pack has still resolves, because a miss under 98\ falls back below.
+        /// </summary>
+        private static string Pack => MainWindow.FlatChrome ? "98/" : string.Empty;
+
+        public static ImageSource? Art(string name)
+        {
+            string pack = Pack;
+
+            // Cached by PACK AND name, not name alone. The tab strip asks per tab per repaint, and
+            // without this every repaint would decode the PNG again; a null is cached too, so a
+            // missing resource costs one failed load rather than one per frame. Keying the pack in
+            // lets both sets sit in the cache at once, so switching theme and back does not redecode
+            // and cannot hand back the other theme's art.
+            string key = pack + name;
+
+            lock (ArtCache)
+            {
+                if (ArtCache.TryGetValue(key, out var hit)) return hit;
+
+                var img = Load(pack + name);
+
+                // A 98 pack that is missing one of the names falls back to the brand art rather
+                // than drawing blank. Nothing is missing today; this is so adding a 25th brand icon
+                // cannot silently break the flat theme before its period version is drawn.
+                if (img == null && pack.Length > 0) img = Load(name);
+
+                ArtCache[key] = img;
+                return img;
+            }
+        }
+
+        private static ImageSource? Load(string relative)
+        {
+            try
+            {
+                var bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.UriSource = new Uri($"pack://application:,,,/Resources/icons/{relative}.png");
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
+                bmp.EndInit();
+                bmp.Freeze();          // frozen, so the listing's background threads can use it
+                return bmp;
+            }
+            catch { return null; }     // missing or unreadable - the caller caches the null
+        }
+
+        /// <summary>The recents button's art, bound straight from FilePane.xaml.</summary>
+        public static ImageSource? RecentsArt => Art("recents_icon");
+
+        // Properties, NOT static readonly fields. A field would resolve the pack once at type
+        // initialisation and pin every folder in the app to whichever theme happened to be active
+        // at startup; Art() is cached, so asking per call costs a dictionary hit.
+        private static ImageSource? GenericFolder => Art("folder_icon");
+        private static ImageSource? DriveArt      => Art("drive_icon");
+        private static ImageSource? ThisPcArt     => Art("my_pc_icon");
+
+        /// <summary>
+        /// Special folders mapped to their art's NAME, by real path. Built once - each
+        /// GetFolderPath is a registry read and this is asked per row.
+        ///
+        /// It holds names rather than resolved ImageSources on purpose: a map of bitmaps is built
+        /// at type initialisation and would pin every special folder to the icon pack that was
+        /// active at startup, so switching to or from the flat theme would leave Documents,
+        /// Downloads and the rest drawing the other theme's art. The name is resolved through the
+        /// cached Art() at draw time instead.
+        /// </summary>
+        private static readonly Dictionary<string, string> FolderArt = BuildFolderArt();
+
+        private static Dictionary<string, string> BuildFolderArt()
+        {
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            void Add(Environment.SpecialFolder f, string art)
+            {
+                try
+                {
+                    string p = Environment.GetFolderPath(f);
+                    if (!string.IsNullOrEmpty(p)) map[p.TrimEnd('\\')] = art;
+                }
+                catch { }
+            }
+            Add(Environment.SpecialFolder.UserProfile,  "home_folder_icon");
+            Add(Environment.SpecialFolder.Desktop,      "desktop_folder_icon");
+            Add(Environment.SpecialFolder.MyDocuments,  "documents_folder_icon");
+            Add(Environment.SpecialFolder.MyPictures,   "pictures_folder_icon");
+            Add(Environment.SpecialFolder.MyMusic,      "music_folder_icon");
+            Add(Environment.SpecialFolder.MyVideos,     "videos_folder_icon");
+            Add(Environment.SpecialFolder.Favorites,    "favorites_folder_icon");
+            Add(Environment.SpecialFolder.ProgramFiles, "program_files_icon");
+            Add(Environment.SpecialFolder.Windows,      "windows_folder_icon");
+
+            // Downloads has no SpecialFolder member on net48 - it is a KNOWNFOLDERID only - and
+            // it is the folder people pick out by its icon more than any other.
+            try
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                if (!string.IsNullOrEmpty(home))
+                    map[Path.Combine(home, "Downloads").TrimEnd('\\')] = "downloads_folder_icon";
+            }
+            catch { }
+
+            // NOTE: SpecialFolder.Recent has no art yet, so it is deliberately absent and falls
+            // through to the generic folder. Add "recent_folder_icon" here when it exists.
+            return map;
+        }
+
+        /// <summary>
+        /// The brand art for a directory: its own if it is a special folder, the drive or This PC
+        /// art for those, and the generic folder for everything else. Null only when the resource
+        /// failed to load, which sends the caller back to the shell icon.
+        /// </summary>
+        private static ImageSource? FolderArtFor(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+            if (MainWindow.IsThisPc(path)) return ThisPcArt;      // Browse.cs sentinel
+            if (path.Length <= 3) return DriveArt;                 // "C:\" and shorter is a root
+            return FolderArt.TryGetValue(path.TrimEnd('\\'), out var name)
+                 ? Art(name) ?? GenericFolder
+                 : GenericFolder;
+        }
+
         /// <summary>The 32px icon. Kept as the default so existing callers are unaffected.</summary>
         public static ImageSource? For(string filePath) => For(filePath, 32);
 
@@ -47,6 +195,14 @@ namespace KillerShell.Services
         /// </param>
         public static ImageSource? For(string filePath, int px, bool isDirectory = false)
         {
+            // Directories are drawn from the brand pack, never the shell: its own art for a
+            // special folder, drive or This PC art for those, the generic folder for the rest.
+            if (isDirectory)
+            {
+                var art = FolderArtFor(filePath);
+                if (art != null) return art;
+            }
+
             string ext;
             try { ext = Path.GetExtension(filePath); } catch { ext = string.Empty; }
             if (string.IsNullOrEmpty(ext)) ext = ".";
@@ -156,13 +312,15 @@ namespace KillerShell.Services
 
         // ── 32px path (SHGetFileInfo) ────────────────────────────
         /// <summary>
-        /// The "This PC" computer icon. It has no path for the shell to resolve, so it comes
-        /// from imageres.dll, which is where Explorer's own copy lives - index 104 is the
-        /// computer. A machine with a replaced imageres just gets no icon rather than a wrong
-        /// one, which is why the failure returns null instead of substituting a folder.
+        /// The "This PC" icon: the brand pack's my_pc art, falling back to imageres.dll (where
+        /// Explorer's own copy lives, index 104) only if that resource failed to load. This PC
+        /// has no path for the shell to resolve, which is why it needs its own entry point at
+        /// all - Bookmarks.cs calls straight into here rather than through For().
         /// </summary>
         public static ImageSource? ForComputer(int px)
         {
+            if (ThisPcArt != null) return ThisPcArt;
+
             string key = ":computer:|" + px;
             lock (Cache)
                 if (Cache.TryGetValue(key, out var hit)) return hit;

@@ -144,15 +144,18 @@ namespace KillerShell.Terminal
 
             // Theme colors, resolved once at construction. A theme switch rebuilds the palette
             // rather than tracking a DynamicResource per cell, which would be absurd.
-            // SurfaceBrush, not PaneBrush (Steve, 2026-08-02): the shell's own screen reads as a
-            // panel sunk slightly BELOW the pane surface it sits in, the same "elevated but not
-            // stark" step KillerPDF's floating annotation bars use - SurfaceBrush already sits
-            // between BackgroundBrush and PaneBrush in every theme (dialogs, dropdowns, the
-            // FileDialog previews), so this is the family's existing answer to that step, not a
-            // new color.
-            p.Background = Res("SurfaceBrush", C(0x1E1E1E));
-            p.Foreground = Res("TextBrush",    C(0xE0E0E0));
-            p.Cursor     = Res("PrimaryBrush", C(0x50AEE8));
+            // The MENU tier, matching the file listing (FilePane.xaml ResultsPane). The content
+            // half of a tab - a terminal screen or a folder listing - sits on that tier, while
+            // PaneBrush is the bar ABOVE it and the active tab, which merge into each other.
+            // Was SurfaceBrush until 2026-08-08 (a shell reading as sunk below its pane), then
+            // briefly PaneBrush; settled here so the terminal and the listing agree.
+            // TerminalBackgroundBrush, which defaults to ListPaneBrush so the shell and the file
+            // listing share a surface as before. 98SE overrides it to pure black: a Win98-era
+            // console is a BLACK box, and the white list well that suits a file listing there is
+            // completely wrong for a terminal (Steve, 2026-08-08).
+            p.Background = Res("TerminalBackgroundBrush", C(0x1E1E1E));
+            p.Foreground = Res("TerminalForegroundBrush", C(0xE0E0E0));
+            p.Cursor     = Res("TerminalAccentBrush",     C(0x50AEE8));
             var sel = p.Cursor;
             p.Selection  = Color.FromArgb(0x55, sel.R, sel.G, sel.B);
             return p;
