@@ -103,7 +103,9 @@
                 <Image x:Name="TitleIcon" VerticalAlignment="Center"
                        Width="{DynamicResource TitleIconSize}" Height="{DynamicResource TitleIconSize}"
                        Margin="{DynamicResource TitleIconMargin}"
-                       RenderOptions.BitmapScalingMode="HighQuality" IsHitTestVisible="False"/>
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                       MouseWheel="LogoBar_MouseWheel" MouseLeftButtonDown="LogoBar_MouseLeftButtonDown"/>
                 <!-- A Win98 caption has no logotype in it - just the icon and the window's name in
                      plain bold. On a flat theme this shows and the wordmark below collapses; on
                      every other theme it is the other way round (ThemeManager sets both). -->

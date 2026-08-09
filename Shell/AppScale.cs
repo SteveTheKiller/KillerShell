@@ -61,6 +61,16 @@ namespace KillerShell.Shell
                 ? Transform.Identity
                 : new ScaleTransform(scale, scale);
 
+            // Display-mode text is only crisp at 1:1 - under any other scale its pixel-snapped
+            // ClearType lands on fractional device pixels and the whole app smears, the rail's
+            // font glyphs worst of all (Steve, 2026-08-09: "everything is so blurry when i
+            // zoom"). Ideal mode renders correctly under a transform, so the scaled host swaps
+            // to it and back. 98SE looked better only because its aliased/pixel-art pieces hide
+            // the smear; this fixes the rest.
+            System.Windows.Media.TextOptions.SetTextFormattingMode(ScaleHost,
+                scale == 1.0 ? System.Windows.Media.TextFormattingMode.Display
+                             : System.Windows.Media.TextFormattingMode.Ideal);
+
             // The window runs Display + ClearType (MainWindow.xaml), which pixel-snaps glyphs
             // and color-fringes them for maximum crispness at 1:1. Under a fractional scale
             // (0.96, 1.12...) those snapped stems land on partial device pixels and the results

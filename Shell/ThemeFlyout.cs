@@ -30,10 +30,52 @@ namespace KillerShell.Shell
         private void ThemeDeliriumRadio_Checked(object sender, RoutedEventArgs e)  => SelectTheme(Theme.Delirium);
         private void ThemeMalaiseRadio_Checked(object sender, RoutedEventArgs e)   => SelectTheme(Theme.Malaise);
 
+        /// <summary>
+        /// Crossfade a theme/accent swap: snapshot the window as it looks NOW, run the swap
+        /// under the frozen picture, then fade the picture out over the repainted UI (Steve,
+        /// 2026-08-09: "theme changes are super slow now. cant we crossfade"). The same
+        /// snapshot-and-fade shape TabFadeGhost uses for tab switches. Best-effort: if the
+        /// snapshot fails for any reason the swap just runs bare, exactly as before.
+        /// </summary>
+        private void CrossfadeSwap(Action swap)
+        {
+            System.Windows.Controls.Image? ghost = null;
+            try
+            {
+                if (ActualWidth > 0 && ActualHeight > 0)
+                {
+                    var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(
+                        (int)Math.Ceiling(ActualWidth), (int)Math.Ceiling(ActualHeight),
+                        96, 96, PixelFormats.Pbgra32);
+                    rtb.Render(this);
+                    rtb.Freeze();
+                    ghost = new System.Windows.Controls.Image
+                    { Source = rtb, Stretch = Stretch.Fill, IsHitTestVisible = false };
+                    Grid.SetRowSpan(ghost, 3);
+                    System.Windows.Controls.Panel.SetZIndex(ghost, 9500);
+                    RootGrid.Children.Add(ghost);
+                }
+            }
+            catch { ghost = null; }
+
+            swap();
+
+            if (ghost == null) return;
+            var fade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(220))
+            { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+            var g = ghost;
+            fade.Completed += (_, _) => RootGrid.Children.Remove(g);
+            // Deferred one dispatcher pass so the new theme has actually PAINTED under the
+            // ghost before it starts to lift - fading over a half-repainted frame is the
+            // flicker this exists to hide.
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                (Action)(() => g.BeginAnimation(OpacityProperty, fade)));
+        }
+
         private void SelectTheme(Theme theme)
         {
             bool wasOpen = ThemeFlyout is not null && ThemeFlyout.IsOpen;
-            ThemeManager.Apply(theme);
+            CrossfadeSwap(() => ThemeManager.Apply(theme));
             ApplyThemeBorder(this);   // retint the DWM frame border to the new palette
             // Corner preference is owned here too: 98SE squares even a floating window, so
             // switching INTO or OUT OF a flat theme has to re-evaluate it, not just a state
@@ -75,7 +117,7 @@ namespace KillerShell.Shell
         {
             if (sender is not FrameworkElement fe || fe.Tag is not string tag) return;
             if (!Enum.TryParse<Accent>(tag, out var accent)) return;
-            ThemeManager.ApplyAccent(family, accent);
+            CrossfadeSwap(() => ThemeManager.ApplyAccent(family, accent));
             UpdateAccentSwatches();
             RefreshTerminalThemes();
             RefreshEditorThemes();

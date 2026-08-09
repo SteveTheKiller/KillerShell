@@ -704,7 +704,16 @@ namespace KillerShell.Services
                     { Color = Colors.Black, BlurRadius = 12, ShadowDepth = 2, Direction = 270, Opacity = 0.5 };
                     soft.Freeze();
                     combined["MenuShadowEffect"] = soft;
-                    combined["FlyoutCardEffect"] = combined["CardShadowEffect"];
+                    // Built HERE, not read from CardShadowEffect - that key is only created
+                    // further DOWN this method, so reading it stored null and every flyout card
+                    // lost its shadow on the ordinary themes (Steve, 2026-08-09: "can we please
+                    // get drop shadows on the theme and locale flyouts again?"). Same recipe
+                    // CardShadowEffect uses.
+                    double cardFso = combined["FlyoutShadowOpacity"] is double cf ? cf : 1.0;
+                    var cardShadow = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 22, ShadowDepth = 4, Direction = 270, Opacity = 0.55 * cardFso };
+                    cardShadow.Freeze();
+                    combined["FlyoutCardEffect"] = cardShadow;
                     // The ComboBox dropdown's own shadow - the literal its template hardcoded.
                     var combo = new DropShadowEffect
                     { Color = Colors.Black, BlurRadius = 22, ShadowDepth = 4, Direction = 270, Opacity = 0.55 };
