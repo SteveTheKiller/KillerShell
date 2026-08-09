@@ -1327,6 +1327,43 @@
         </Setter>
     </Style>
 
+    <!-- Close X for the About card and the Shortcuts card. Theme-split entirely through tokens
+         (AboutClose* in ThemeManager): on every ordinary theme it renders the ORIGINAL treatment
+         - a bare muted U+2715 that reddens on hover, no fill - and on 98SE it is a real Win98
+         caption button: grey bevelled face, black bold E8BB, sinks on press, no hover state.
+         ChromeCloseButton was tried here first and dragged the main window's red hover fill and
+         glyph onto the cards, which read wrong on the ordinary themes (Steve, 2026-08-09). -->
+    <Style x:Key="OverlayCloseButton" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Foreground" Value="{DynamicResource AboutCloseFg}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource AboutCloseFont}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="{DynamicResource CaptionGlyphWeight}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border Background="{DynamicResource CaptionButtonBrush}"/>
+                        <Border x:Name="bevelLight" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                        <Border x:Name="bevelDark" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource AboutCloseHoverFg}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="bevelLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
+                            <Setter TargetName="bevelDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Elevation (KillerPDF ShadowBar): lifts panels/cards slightly off the surface. -->
     <DropShadowEffect x:Key="ShadowBar" Color="Black" BlurRadius="6" ShadowDepth="3" Direction="270" Opacity="0.38"/>
     <!-- Stronger elevation for the results pane; casts down over the footer. -->
@@ -1608,15 +1645,16 @@
                         <Trigger Property="IsMouseOver" SourceName="Bd" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
                         </Trigger>
-                        <!-- TreeSelectedTextBrush mirrors TextBrush, so nothing changes on the
-                             ordinary themes (their RowSelectedBrush is a faint wash); 98SE
-                             states WHITE - its selected row is a solid navy block, and the tree
-                             labels were black on it (Steve, 2026-08-09, folder tree AND the
-                             registry tree, which share this style). The trees' item templates
-                             must NOT pin their own Foreground or this cannot reach the text. -->
+                        <!-- SelectionBg + SelectionFg, the SAME pair the places/bookmarks rows
+                             use - the tree used RowSelectedBrush, which on Delirium, Sepulchre,
+                             Malaise, Decay and Ectoplasm is a grey wash while the bookmarks
+                             below glow the accent, and the mismatch read as a bug (Steve,
+                             2026-08-09: "it should probably be orange"). One selection treatment
+                             everywhere; the trees' item templates must NOT pin their own
+                             Foreground or the Fg half cannot reach the text. -->
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource TreeSelectedTextBrush}"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SelectionBg}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
                         </Trigger>
                         <!-- Last sibling: cut the vertical to an elbow. Bound to the container
                              itself so a recycled container re-evaluates (LastChildConverter.cs). -->

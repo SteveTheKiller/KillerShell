@@ -56,7 +56,11 @@
                       Background="Transparent" Visibility="Collapsed"
                       SizeChanged="TabBar_SizeChanged">
                <Grid>
-                <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                <!-- NO grain layer of the band's own. ScaleHost's row-wide grain (MainWindow.xaml)
+                     already covers this area, so a second tile here DOUBLED the texture across the
+                     band and the transparent inactive tabs - "my inactive tabs had a different
+                     texture than the main bg" (Steve, 2026-08-09). The ACTIVE tab still carries
+                     its own layer, because its opaque fill hides the shared one. -->
                 <!-- The line across the top of the pane: PaneBorderBrush normally, the accent
                      when this pane has focus (DualPane.cs), exactly mirroring the pane border
                      it continues.
@@ -589,6 +593,16 @@
                     <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
                             BorderBrush="{DynamicResource BarEdgeDarkBrush}"
                             BorderThickness="{DynamicResource BarEdgeDarkThickness}"/>
+                    <!-- The divider between the menu bar and the content, the same
+                         BarUnderlineThickness rule the terminal and editor bars always carried -
+                         the folder bar never had one, so on the rounded themes the bar just bled
+                         into the listing at the active tab's left edge (Steve, 2026-08-09: "we
+                         need some kind of divider between the menubar and the content... it
+                         already exists for terminal and I think that looks good"). 0 on 98SE,
+                         where the raised/sunken bevels are the divider. -->
+                    <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
+                            BorderBrush="{DynamicResource PaneBorderBrush}"
+                            BorderThickness="{DynamicResource BarUnderlineThickness}"/>
                     <!-- Back / forward / up. Browser order and browser glyphs, because that is
                          what everyone's hand already expects at the top left. -->
                     <!-- Tightened (Steve, 2026-08-09: "too much padding in this filebrowser

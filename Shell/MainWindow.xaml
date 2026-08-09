@@ -1457,11 +1457,10 @@
                              hover fill the main window has. Size and margin come from the
                              AboutClose* tokens (ThemeManager): a small Win98 button inside the
                              caption band on a flat theme, the old 28x26 corner slot otherwise. -->
-                        <Button Content="&#xE8BB;" Click="AboutClose_Click" Style="{StaticResource ChromeCloseButton}"
+                        <Button Content="{DynamicResource AboutCloseGlyph}" Click="AboutClose_Click" Style="{StaticResource OverlayCloseButton}"
                                 HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="2"
                                 Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
-                                Margin="{DynamicResource AboutCloseMargin}"
-                                FontWeight="{DynamicResource CaptionGlyphWeight}"/>
+                                Margin="{DynamicResource AboutCloseMargin}"/>
 
                         <!-- A caption BAND above the card's content. 0 high on every theme that
                              does not ask for one, so their cards keep the exact layout they had;
@@ -1852,11 +1851,10 @@
                                FontFamily="{DynamicResource ChromeFontFamily}"
                                FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"/>
                 </Border>
-                <Button Content="&#xE8BB;" Click="ShortcutsClose_Click" Style="{StaticResource ChromeCloseButton}"
+                <Button Content="{DynamicResource AboutCloseGlyph}" Click="ShortcutsClose_Click" Style="{StaticResource OverlayCloseButton}"
                         HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="7"
                         Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
-                        Margin="{DynamicResource AboutCloseMargin}"
-                        FontWeight="{DynamicResource CaptionGlyphWeight}"/>
+                        Margin="{DynamicResource AboutCloseMargin}"/>
                 <StackPanel Margin="{DynamicResource ShortcutsContentMargin}">
                     <Grid Margin="0,0,0,12">
                         <!-- Hidden on a flat theme - the caption band above carries the title

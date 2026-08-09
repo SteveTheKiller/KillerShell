@@ -410,10 +410,6 @@ namespace KillerShell.Services
             // The Registry tree's fill: BackgroundBrush everywhere (the exact brush the tree
             // used before this key existed); 98SE states WHITE.
             Mirror("ToolTreeBrush", "BackgroundBrush");
-            // Selected TILE text: the tile view deliberately keeps its default text color when
-            // selected (2026-08-02), so this mirrors TextBrush - except on 98SE, whose solid
-            // navy SelectionBg made that unreadable and which states white.
-            Mirror("TileSelectedTextBrush", "TextBrush");
             // The details pane's big filename: the family wordmark face everywhere, Courier New
             // on 98SE. NOT Mirror(): WordmarkFont lives in App.xaml, not in the theme
             // dictionaries, so Mirror's missing-source fallback handed every ordinary theme a
@@ -554,8 +550,6 @@ namespace KillerShell.Services
             SetIfAbsent("ComboChevGlyphMargin", new Thickness(0, 1, 0, 0));
             SetIfAbsent("ComboChevGlyph", "\uE70D");
             SetIfAbsent("ComboChevFont", new System.Windows.Media.FontFamily("Segoe MDL2 Assets"));
-            // The trees' selected-row text - see FolderTreeItem.
-            Mirror("TreeSelectedTextBrush", "TextBrush");
             // The footer STATUS cell's inner inset. Deliberately its own key rather than reusing
             // FooterCellPadding, which belongs to the version cell and carries a different number.
             // Default is the literal MainWindow.xaml had, so the twelve rounded themes do not move.
@@ -661,6 +655,21 @@ namespace KillerShell.Services
                 combined["AboutCloseWidth"]  = flat ? 16.0 : 28.0;
                 combined["AboutCloseHeight"] = flat ? 14.0 : 26.0;
                 combined["AboutCloseMargin"] = flat ? new Thickness(0, 5, 5, 0) : new Thickness(0, 6, 6, 0);
+
+                // ...and the rest of the OverlayCloseButton split (Controls.xaml): the ordinary
+                // themes keep the card X's ORIGINAL look - muted U+2715, red glyph on hover, no
+                // fill - and 98SE gets the black bold E8BB on the grey caption-button face with
+                // no hover change at all.
+                combined["AboutCloseGlyph"] = flat ? "\uE8BB" : "\u2715";
+                combined["AboutCloseFont"]  = flat ? new System.Windows.Media.FontFamily("Segoe MDL2 Assets")
+                                                   : new System.Windows.Media.FontFamily("Segoe UI");
+                combined["AboutCloseFg"] = flat ? combined["CaptionCloseBrush"] : combined["MutedTextBrush"];
+                if (flat) combined["AboutCloseHoverFg"] = combined["CaptionCloseBrush"];
+                else
+                {
+                    var closeRed = new SolidColorBrush(Color.FromRgb(0xE0, 0x44, 0x44)); closeRed.Freeze();
+                    combined["AboutCloseHoverFg"] = closeRed;
+                }
 
                 // The About wordmark's hard 1px WHITE offset copy - the Win98 chiseled
                 // letterpress, only on a flat theme whose blurred shadow copy is off.
@@ -863,7 +872,12 @@ namespace KillerShell.Services
             if (!combined.Contains("OutlineHoverTextBrush"))
                 combined["OutlineHoverTextBrush"] = combined["OnOutlineBtnBrush"];
 
-            var merged = Application.Current.Resources.MergedDictionaries;
+            // Null-guarded (CS8602): Application.Current is null during design time and unit
+            // hosting, and the nullable analysis flags the bare dereference. Nothing to merge
+            // into without an application anyway.
+            var app = Application.Current;
+            if (app == null) return;
+            var merged = app.Resources.MergedDictionaries;
             if (merged.Count > 0)
                 merged[0] = combined;
             else
