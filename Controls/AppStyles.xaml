@@ -103,6 +103,14 @@
     <Style x:Key="TileResultText" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Style.Triggers>
+            <!-- TileSelectedTextBrush mirrors TextBrush on every ordinary theme, so a selected
+                 tile keeps its default text color there exactly as decided on 2026-08-02. 98SE
+                 states WHITE: its SelectionBg is a solid navy block and black-on-navy was
+                 unreadable (Steve, 2026-08-09). Declared BEFORE the hover trigger so hover
+                 still wins when a tile is both. -->
+            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource TileSelectedTextBrush}"/>
+            </DataTrigger>
             <DataTrigger Binding="{Binding IsMouseOver, ElementName=TileBd}" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
             </DataTrigger>

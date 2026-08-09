@@ -396,9 +396,17 @@
                                          thickness straight back to a top-only stripe.
                                          Padding drops 1px each side to pay for the new borders,
                                          so the title does not shift when focus arrives. -->
+                                    <!-- All four focused-state thickness/padding pairs are theme
+                                         tokens now, defaulting to exactly the literals they
+                                         replaced. On 98SE every thickness is 0 and every padding
+                                         is the active tab's own: the ring brush there is
+                                         transparent, and a transparent 1px border still kept the
+                                         tab's fill out of its own edge column - which let the menu
+                                         bar's white top line show through as a single white pixel
+                                         at the tab's right edge (Steve, 2026-08-09). -->
                                     <DataTrigger Binding="{Binding PaneFocused}" Value="True">
-                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="1,3,1,0"/>
-                                        <Setter TargetName="tabBd" Property="Padding" Value="11,1,4,5"/>
+                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusThickness}"/>
+                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusPadding}"/>
                                     </DataTrigger>
                                     <!-- The OUTERMOST side is the band's to draw (TabEdgeLeft /
                                          TabEdgeRight below), so the first and last tab must not
@@ -418,16 +426,16 @@
                                             <Condition Binding="{Binding PaneFocused}" Value="True"/>
                                             <Condition Binding="{Binding IsFirst}"     Value="True"/>
                                         </MultiDataTrigger.Conditions>
-                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="0,3,1,0"/>
-                                        <Setter TargetName="tabBd" Property="Padding" Value="12,1,4,5"/>
+                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusFirstThickness}"/>
+                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusFirstPadding}"/>
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding PaneFocused}" Value="True"/>
                                             <Condition Binding="{Binding IsLast}"      Value="True"/>
                                         </MultiDataTrigger.Conditions>
-                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="1,3,0,0"/>
-                                        <Setter TargetName="tabBd" Property="Padding" Value="11,1,5,5"/>
+                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusLastThickness}"/>
+                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusLastPadding}"/>
                                     </MultiDataTrigger>
                                     <!-- One tab in a focused pane owns BOTH edges, so it draws
                                          neither. Last of the three for the same reason. -->
@@ -437,8 +445,8 @@
                                             <Condition Binding="{Binding IsFirst}"     Value="True"/>
                                             <Condition Binding="{Binding IsLast}"      Value="True"/>
                                         </MultiDataTrigger.Conditions>
-                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="0,3,0,0"/>
-                                        <Setter TargetName="tabBd" Property="Padding" Value="12,1,5,5"/>
+                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusOnlyThickness}"/>
+                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusOnlyPadding}"/>
                                     </MultiDataTrigger>
                                 </DataTemplate.Triggers>
                             </DataTemplate>
@@ -1089,7 +1097,10 @@
                                  WordmarkFont + a size well above the field rows (10/11 below) - it
                                  is the title of what you're looking at, so it should read as more
                                  prominent (Steve, 2026-08-02). -->
-                            <TextBlock x:Name="DetailsNameText" FontFamily="{DynamicResource WordmarkFont}" FontSize="20"
+                            <!-- DetailsNameFont = WordmarkFont everywhere but 98SE, where the
+                                 typewriter face gives way to Courier New - the era's monospace
+                                 (Steve, 2026-08-09). -->
+                            <TextBlock x:Name="DetailsNameText" FontFamily="{DynamicResource DetailsNameFont}" FontSize="20"
                                        FontWeight="SemiBold" Foreground="{DynamicResource PrimaryBrush}" Margin="0,0,0,9"
                                        TextWrapping="Wrap">
                                 <TextBlock.Effect>
@@ -1601,20 +1612,9 @@
                     <Border IsHitTestVisible="False"
                             Background="{DynamicResource GrainTileBrush}"
                             Opacity="{DynamicResource GrainOpacity}"/>
-                    <!-- The tool tab's sunken well - the same four Borders every other content
-                         surface carries (Steve, 2026-08-09: the Processes/Services tab "will
-                         also need that beveled edge"). Scoped inside this host so it shows only
-                         with it; inert off 98SE. -->
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            Margin="{DynamicResource PaneBevelInnerMargin}"
-                            BorderBrush="{DynamicResource PaneBevelDark2Brush}"  BorderThickness="{DynamicResource PaneBevel2LightThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            Margin="{DynamicResource PaneBevelInnerMargin}"
-                            BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
+                    <!-- No host-level well here: a ring at this scope boxed in the control's own
+                         filter bar too. The 98SE tiers live INSIDE ProcessListControl now
+                         (ToolTabChrome: raised bar, sunken grid well - Steve, 2026-08-09). -->
                 </Grid>
                 <!-- An Event Viewer tab draws here, on the same terms as the Task Manager grid
                      above: declared before the list, only ever one of the four visible, and
@@ -1626,18 +1626,8 @@
                     <Border IsHitTestVisible="False"
                             Background="{DynamicResource GrainTileBrush}"
                             Opacity="{DynamicResource GrainOpacity}"/>
-                    <!-- Sunken well, same as ProcessListHost above (Steve, 2026-08-09: the Event
-                         Viewer "will also need that beveled edge"). Inert off 98SE. -->
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            Margin="{DynamicResource PaneBevelInnerMargin}"
-                            BorderBrush="{DynamicResource PaneBevelDark2Brush}"  BorderThickness="{DynamicResource PaneBevel2LightThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            Margin="{DynamicResource PaneBevelInnerMargin}"
-                            BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
+                    <!-- No host-level well - same reasoning as ProcessListHost above; the 98SE
+                         tiers live inside EventViewerControl now (ToolTabChrome). -->
                 </Grid>
                 <!-- A Performance Monitor tab draws here, on the same terms as the Task Manager
                      and Event Viewer grids above: declared before the list, only ever one of the

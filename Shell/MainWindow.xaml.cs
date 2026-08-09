@@ -611,7 +611,33 @@ namespace KillerShell.Shell
         // Releasing a modifier drops the keyboard preview back a layer. Nothing else listens for
         // key-up; this exists purely so the board follows the hand (KeyboardMapOverlay.cs).
         private void Window_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-            => KbSyncLayerFromModifiers();
+        {
+            KbSyncLayerFromModifiers();
+
+            // PrintScreen in an ELEVATED window (KeyUp, not KeyDown - WPF only ever raises the
+            // up event for PrtScn): the snip overlay Windows binds to the key runs unelevated
+            // and cannot come up over an elevated foreground window, so the key silently did
+            // nothing here (Steve, 2026-08-09). Hand the request to the default snipping tool
+            // through explorer.exe - the same de-elevation hand-off the shell tabs already use -
+            // so it launches at normal integrity and can take the shot.
+            if (e.Key == System.Windows.Input.Key.Snapshot && IsElevated)
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = "explorer.exe",
+                        Arguments = "ms-screenclip:",
+                        UseShellExecute = true,
+                    });
+                }
+                catch
+                {
+                    // The built-in PrtScn full-screen clipboard copy still happened; nothing
+                    // useful to report if the snip overlay itself refused to come up.
+                }
+            }
+        }
 
         // Global keys: Enter runs the search, Esc closes the filter bar or stops a
         // running search, Ctrl+F opens the results quick-filter.

@@ -341,7 +341,12 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
 
-            var toolbar = BuildToolbar(out _pathDisplayHost, out _pathDisplay, out _pathEdit);
+            // ToolTabChrome: the address row rides the RAISED menu-bar tier on 98SE, and the
+            // tree and value grid below sit in their own sunken WHITE wells (BuildSplit) -
+            // "the content should be sunken, the menubar raised... the sidebar with the reg
+            // tree should be one sunken white pane. the rest on the right too" (Steve,
+            // 2026-08-09). All of it inert on the ordinary themes.
+            var toolbar = ToolTabChrome.WrapBar(BuildToolbar(out _pathDisplayHost, out _pathDisplay, out _pathEdit));
             SetRow(toolbar, 0);
             Children.Add(toolbar);
 
@@ -565,7 +570,10 @@ namespace KillerShell.Shell
             // root Grid paints PaneBrush behind everything, so a plain Transparent override here
             // would show PaneBrush instead - setting BackgroundBrush explicitly reproduces the
             // exact color the folder tree shows rather than the one this tab's own pane uses.
-            tree.SetResourceReference(TreeView.BackgroundProperty, "BackgroundBrush");
+            // ToolTreeBrush, not BackgroundBrush directly: it mirrors BackgroundBrush on every
+            // ordinary theme (identical rendering), but 98SE states WHITE - the reg tree is a
+            // sunken white list well there, like Explorer's (Steve, 2026-08-09).
+            tree.SetResourceReference(TreeView.BackgroundProperty, "ToolTreeBrush");
 
             // Same visual chrome the folder sidebar uses (expander arrows, connecting lines), with
             // IsExpanded/IsSelected two-way bound to RegistryNode so the tree and the model agree
@@ -590,8 +598,10 @@ namespace KillerShell.Shell
             tree.SelectedItemChanged += Tree_SelectedItemChanged;
             tree.ContextMenuOpening += Tree_ContextMenuOpening;
             tree.PreviewKeyDown += Tree_PreviewKeyDown;
-            SetColumn(tree, 0);
-            split.Children.Add(tree);
+            // Sunken well around the tree - see the note on the toolbar in the constructor.
+            var treeHost = ToolTabChrome.WrapContent(tree, "ToolTreeBrush");
+            SetColumn(treeHost, 0);
+            split.Children.Add(treeHost);
 
             var splitter = new GridSplitter
             {
@@ -604,8 +614,11 @@ namespace KillerShell.Shell
             split.Children.Add(splitter);
 
             grid = BuildValueGrid();
-            SetColumn(grid, 2);
-            split.Children.Add(grid);
+            // Its own sunken WHITE well, separate from the tree's, with the skinny splitter
+            // between them as the divider (Steve, 2026-08-09).
+            var gridHost = ToolTabChrome.WrapContent(grid, "ToolContentBrush");
+            SetColumn(gridHost, 2);
+            split.Children.Add(gridHost);
 
             return split;
         }

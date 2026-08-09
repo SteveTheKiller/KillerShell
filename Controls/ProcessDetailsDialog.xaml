@@ -34,8 +34,16 @@
 
             <Border Grid.RowSpan="3" IsHitTestVisible="False"
                     Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+            <!-- Raised dialog bevel + caption band, the same pair ConfirmDialog carries: both
+                 inert on every ordinary theme (zero thickness / transparent band) and the full
+                 Win98 dialog treatment on 98SE (Steve, 2026-08-09: "can we theme the process
+                 details window?"). -->
+            <Border Grid.RowSpan="3" IsHitTestVisible="False" Panel.ZIndex="6"
+                    BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+            <Border Grid.RowSpan="3" IsHitTestVisible="False" Panel.ZIndex="6"
+                    BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
 
-            <Border Grid.Row="0" Background="Transparent" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid Margin="16,0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsHitTestVisible="False">
                         <Grid VerticalAlignment="Center">

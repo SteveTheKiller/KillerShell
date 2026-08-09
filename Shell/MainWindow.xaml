@@ -50,8 +50,11 @@
                  own bounds - identical to the Window Background under it, including the five
                  full-window gradient themes, so nothing moves anywhere else. -->
             <Border Margin="{DynamicResource WindowFramePadding}" Background="{DynamicResource BackgroundBrush}"/>
-            <Border BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
-            <Border BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+            <!-- Named so Elevation.cs can repaint the OUTERMOST ring in the accent on an admin
+                 window: on 98SE the elevation signal is the window's own edge line, not an
+                 overlay ring inside the client (Steve, 2026-08-09). -->
+            <Border x:Name="FrameOuterLightBd" BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+            <Border x:Name="FrameOuterDarkBd"  BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
             <Border Margin="{DynamicResource FrameInnerMargin}"
                     BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameInnerLightThickness}"/>
             <Border Margin="{DynamicResource FrameInnerMargin}"
@@ -1472,7 +1475,11 @@
                                        FontFamily="{DynamicResource ChromeFontFamily}"
                                        FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"/>
                         </Border>
-                        <StackPanel Margin="{DynamicResource AboutCaptionMargin}">
+                        <!-- AboutContentMargin, no longer AboutCaptionMargin: same 0 default, but
+                             98SE states extra TOP inset so the wordmark gets breathing room under
+                             the caption band (Steve, 2026-08-09: "a tiny bit of padding... above
+                             the wordmark, below the titlebar"). -->
+                        <StackPanel Margin="{DynamicResource AboutContentMargin}">
                         <StackPanel Margin="18,10,18,18">
                             <!-- Header: icon left, wordmark (links to the site) + tagline right.
                                  Width is pinned to the info panel below so the tagline wraps
@@ -1492,6 +1499,14 @@
                                           Background="Transparent" MouseLeftButtonUp="Wordmark_Click">
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,2,0,0" IsHitTestVisible="False"
                                                    Opacity="{DynamicResource IconShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="2"/></TextBlock.Effect><Run Text="Killer" FontSize="22" Foreground="#C0000000"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#C0000000"/></TextBlock>
+                                        <!-- The 98SE emboss: a hard WHITE copy 1px down-right,
+                                             no blur - the era's chiseled letterpress, since the
+                                             blurred shadow above is off on a flat theme.
+                                             AboutEmbossOpacity is 0 everywhere else (Steve,
+                                             2026-08-09: "the Shell needs stroke or something,
+                                             some kind of bevel effect for a tiny bit of depth"). -->
+                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,1,0,0" IsHitTestVisible="False"
+                                                   Opacity="{DynamicResource AboutEmbossOpacity}"><Run Text="Killer" FontSize="22" Foreground="#FFFFFF"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#FFFFFF"/></TextBlock>
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="22" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}"/></TextBlock>
                                     </Grid>
                                     <!-- Tagline is composed here, not in the .xaml string files: GPLv3 and

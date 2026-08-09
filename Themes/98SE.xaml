@@ -36,6 +36,20 @@
          striped, but not the same gray as the main window color"). #dfdfdf is the era's scrollbar
          channel grey, already in the palette. -->
     <SolidColorBrush x:Key="GridRowAltBrush" Color="#dfdfdf" po:Freeze="True"/>
+    <!-- A hovered monitor tile: a slightly lifted black, NOT RowHoverBrush - that is the window
+         face grey here and made the tile vanish into the window (Steve, 2026-08-09). -->
+    <SolidColorBrush x:Key="MonitorHoverBrush" Color="#1c1c1c" po:Freeze="True"/>
+    <!-- The tool tabs' sunken wells are WHITE client areas: the Events/Processes tables, the
+         Registry value grid (ToolContentBrush) and the Registry tree (ToolTreeBrush), like
+         Explorer's own panes (Steve, 2026-08-09). -->
+    <SolidColorBrush x:Key="ToolContentBrush" Color="#ffffff" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ToolTreeBrush"    Color="#ffffff" po:Freeze="True"/>
+    <!-- Selected tile text: white on the solid navy selection block. The family default keeps
+         the plain text color there, which is black here - unreadable (Steve, 2026-08-09). -->
+    <SolidColorBrush x:Key="TileSelectedTextBrush" Color="#ffffff" po:Freeze="True"/>
+    <!-- The Performance detail card lines up with the tab strip's right edge instead of
+         stopping 8px short of it (Steve, 2026-08-09). -->
+    <Thickness x:Key="MonitorDetailMargin">4,0,2,8</Thickness>
 
     <sys:Double x:Key="GrainOpacity">0.0</sys:Double>
     <sys:Double x:Key="IconShadowOpacity">0.0</sys:Double>

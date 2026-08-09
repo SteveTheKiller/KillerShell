@@ -130,7 +130,9 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            var toolbar = BuildToolbar(out _filterBox, out _modeToggleBtn);
+            // ToolTabChrome: raised menu-bar tier for the filter row, sunken white well for the
+            // grid on 98SE; inert on the ordinary themes (Steve, 2026-08-09).
+            var toolbar = ToolTabChrome.WrapBar(BuildToolbar(out _filterBox, out _modeToggleBtn));
             SetRow(toolbar, 0);
             Children.Add(toolbar);
 
@@ -155,8 +157,9 @@ namespace KillerShell.Shell
 
             _grid = BuildGrid();
             _grid.ItemsSource = _procView;
-            SetRow(_grid, 1);
-            Children.Add(_grid);
+            var gridHost = ToolTabChrome.WrapContent(_grid, "ToolContentBrush");
+            SetRow(gridHost, 1);
+            Children.Add(gridHost);
 
             _statusLine = BuildStatusLine();
             SetRow(_statusLine, 2);

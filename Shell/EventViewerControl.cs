@@ -82,7 +82,10 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            var toolbar = BuildToolbar(out _logBox, out _levelBox, out _filterBox);
+            // ToolTabChrome: on 98SE the filter row rides the RAISED menu-bar tier and the grid
+            // sits in a sunken white well, matching every other tab kind; both wrappers are
+            // inert on the ordinary themes (Steve, 2026-08-09).
+            var toolbar = ToolTabChrome.WrapBar(BuildToolbar(out _logBox, out _levelBox, out _filterBox));
             SetRow(toolbar, 0);
             Children.Add(toolbar);
 
@@ -93,8 +96,9 @@ namespace KillerShell.Shell
 
             _grid = BuildGrid();
             _grid.ItemsSource = _view;
-            SetRow(_grid, 1);
-            Children.Add(_grid);
+            var gridHost = ToolTabChrome.WrapContent(_grid, "ToolContentBrush");
+            SetRow(gridHost, 1);
+            Children.Add(gridHost);
 
             _statusLine = BuildStatusLine();
             SetRow(_statusLine, 2);

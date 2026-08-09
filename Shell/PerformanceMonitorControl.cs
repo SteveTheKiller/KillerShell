@@ -566,8 +566,12 @@ namespace KillerShell.Shell
                 Content = BuildDetailPanel(),
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                Margin = new Thickness(4, 0, 8, 8),
             };
+            // MonitorDetailMargin, not the literal 4,0,8,8: the 8px right gutter is right on the
+            // rounded themes, but on 98SE the tab strip above runs to the window edge and the
+            // detail card stopped 8px short of it - the "right edge is off" gap (Steve,
+            // 2026-08-09). 98SE closes it to 2 so the card lines up with the tabs.
+            detailScroller.SetResourceReference(FrameworkElement.MarginProperty, "MonitorDetailMargin");
             SetColumn(detailScroller, 1);
 
             grid.Children.Add(tileScroller);
@@ -1008,8 +1012,11 @@ namespace KillerShell.Shell
             tileBorder.MouseLeftButtonUp += (_, _) => SelectTile(capturedTile);
             tileBorder.MouseEnter += (_, _) =>
             {
+                // MonitorHoverBrush = RowHoverBrush everywhere but 98SE, where RowHoverBrush is
+                // the window face grey - a hovered black tile turned grey and vanished into the
+                // window (Steve, 2026-08-09). There it is a slightly lifted black instead.
                 if (!ReferenceEquals(_selectedTile, capturedTile))
-                    tileBorder.SetResourceReference(Border.BackgroundProperty, "RowHoverBrush");
+                    tileBorder.SetResourceReference(Border.BackgroundProperty, "MonitorHoverBrush");
             };
             tileBorder.MouseLeave += (_, _) =>
             {

@@ -400,6 +400,42 @@ namespace KillerShell.Services
             // stripe - white rows with a grey that is NOT the window face grey (Steve,
             // 2026-08-09).
             Mirror("GridRowAltBrush", "RowAltBrush");
+            // The Performance tab's hover fill: RowHoverBrush everywhere - but on 98SE that is
+            // the window face grey, which made a hovered black tile vanish into the window.
+            Mirror("MonitorHoverBrush", "RowHoverBrush");
+            // The tool tabs' content-well face (Events/Processes grid area, Registry values):
+            // Transparent everywhere, so nothing changes on the ordinary themes; 98SE states
+            // WHITE - a sunken client area.
+            SetIfAbsent("ToolContentBrush", Transparent);
+            // The Registry tree's fill: BackgroundBrush everywhere (the exact brush the tree
+            // used before this key existed); 98SE states WHITE.
+            Mirror("ToolTreeBrush", "BackgroundBrush");
+            // Selected TILE text: the tile view deliberately keeps its default text color when
+            // selected (2026-08-02), so this mirrors TextBrush - except on 98SE, whose solid
+            // navy SelectionBg made that unreadable and which states white.
+            Mirror("TileSelectedTextBrush", "TextBrush");
+            // The details pane's big filename: the family wordmark face everywhere, Courier New
+            // on 98SE.
+            Mirror("DetailsNameFont", "WordmarkFont");
+            // The About card's content inset - 0 like the old AboutCaptionMargin the wrapper
+            // borrowed; 98SE adds top room under the caption band.
+            SetIfAbsent("AboutContentMargin", new Thickness(0));
+            // Performance detail card's outer margin - the literal it replaced; 98SE closes the
+            // right gutter so the card lines up with the tab strip above.
+            SetIfAbsent("MonitorDetailMargin", new Thickness(4, 0, 8, 8));
+            // The dual-pane FOCUSED tab's border/padding sets - exactly the literals the four
+            // PaneFocused triggers in FilePane.xaml hardcoded. 98SE zeroes the thicknesses and
+            // keeps the active padding: its ring brush is transparent, and even a transparent
+            // 1px border kept the tab's fill out of its own edge column, which let the menu
+            // bar's white top line show through as a stray white pixel (Steve, 2026-08-09).
+            SetIfAbsent("TabFocusThickness",      new Thickness(1, 3, 1, 0));
+            SetIfAbsent("TabFocusFirstThickness", new Thickness(0, 3, 1, 0));
+            SetIfAbsent("TabFocusLastThickness",  new Thickness(1, 3, 0, 0));
+            SetIfAbsent("TabFocusOnlyThickness",  new Thickness(0, 3, 0, 0));
+            SetIfAbsent("TabFocusPadding",      new Thickness(11, 1, 4, 5));
+            SetIfAbsent("TabFocusFirstPadding", new Thickness(12, 1, 4, 5));
+            SetIfAbsent("TabFocusLastPadding",  new Thickness(11, 1, 5, 5));
+            SetIfAbsent("TabFocusOnlyPadding",  new Thickness(12, 1, 5, 5));
             Mirror("MonitorCellBrush", "MenuBackgroundBrush");
 
             // A terminal that overrides its BACKGROUND has to override its foreground and accent
@@ -592,6 +628,15 @@ namespace KillerShell.Services
                 combined["AboutCloseWidth"]  = flat ? 16.0 : 28.0;
                 combined["AboutCloseHeight"] = flat ? 14.0 : 26.0;
                 combined["AboutCloseMargin"] = flat ? new Thickness(0, 5, 5, 0) : new Thickness(0, 6, 6, 0);
+
+                // The About wordmark's hard 1px WHITE offset copy - the Win98 chiseled
+                // letterpress, only on a flat theme whose blurred shadow copy is off.
+                combined["AboutEmbossOpacity"] = flat ? 1.0 : 0.0;
+
+                // The elevation halo is an overlay ring on every ordinary theme; a flat theme
+                // hides it and marks an admin window by repainting the frame's outermost ring in
+                // the accent instead (Elevation.cs).
+                combined["ElevationHaloVisibility"] = flat ? Visibility.Collapsed : Visibility.Visible;
 
                 // A ready-made pane shadow at this theme's opacity, or NULL on a flat theme.
                 // Built per load and FROZEN: a DynamicResource inside a shared keyed Freezable's

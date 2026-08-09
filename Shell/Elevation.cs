@@ -433,7 +433,19 @@ namespace KillerShell.Shell
             // and a snapshot would leave the halo on the old color after a theme change.
             ElevationHalo.SetResourceReference(Border.BorderBrushProperty, "PrimaryBrush");
             ElevationHaloInner.SetResourceReference(Border.BorderBrushProperty, "PrimaryBrush");
-            ElevationHalo.Visibility = Visibility.Visible;
+            // Visibility from the THEME, not a hard Visible: on 98SE the inner halo is wrong
+            // twice over - a ring floating inside a hard rectangular frame, and it left the
+            // frame's own black outer line reading as "an odd black border" around the admin
+            // window (Steve, 2026-08-09). ElevationHaloVisibility is Collapsed on a flat theme
+            // and Visible everywhere else, and it follows a live theme switch.
+            ElevationHalo.SetResourceReference(UIElement.VisibilityProperty, "ElevationHaloVisibility");
+
+            // The flat theme's admin signal instead: the window's OUTERMOST frame ring - the
+            // pixel where the black line was - repaints in the accent, all four sides. On the
+            // ordinary themes these two borders are zero-thickness, so this draws nothing there
+            // and the halo above stays the signal.
+            FrameOuterLightBd.SetResourceReference(Border.BorderBrushProperty, "PrimaryBrush");
+            FrameOuterDarkBd.SetResourceReference(Border.BorderBrushProperty, "PrimaryBrush");
 
             // The ring reads as "something is different" from the corner of the eye; the caption
             // is what says WHAT. Accent, same as the ring, so the two are obviously one signal.
