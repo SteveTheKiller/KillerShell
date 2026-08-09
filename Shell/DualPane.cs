@@ -789,8 +789,19 @@ namespace KillerShell.Shell
                 // it wrong. UpdateTabBarInPane sets them, and every path here runs after it.
                 bool firstActive = p.Active?.IsFirst == true;
                 bool lastActive  = p.Active?.IsLast  == true;
-                p.TabEdgeLeft.Visibility  = lit && firstActive ? Visibility.Visible : Visibility.Collapsed;
-                p.TabEdgeRight.Visibility = lit && lastActive  ? Visibility.Visible : Visibility.Collapsed;
+                // Shown whenever the ACTIVE tab owns that edge, not only while lit: in single
+                // pane (and on the unfocused half of a dual pane) the pane's own border should
+                // continue up the active tab's outer side too, in the idle ring brush (Steve,
+                // 2026-08-09: "active tab now needs the same paneborder on that right edge when
+                // its the right most tab. same with the left side of the left active tab").
+                // TabRingIdleBrush mirrors PaneBorderBrush on the rounded themes and is
+                // transparent on 98SE, so the flat theme stays exactly as it is.
+                p.TabEdgeLeft.Visibility  = firstActive ? Visibility.Visible : Visibility.Collapsed;
+                p.TabEdgeRight.Visibility = lastActive  ? Visibility.Visible : Visibility.Collapsed;
+                p.TabEdgeLeft.SetResourceReference(Border.BackgroundProperty,
+                    lit ? "TabActiveRingBrush" : "TabRingIdleBrush");
+                p.TabEdgeRight.SetResourceReference(Border.BackgroundProperty,
+                    lit ? "TabActiveRingBrush" : "TabRingIdleBrush");
             }
         }
 

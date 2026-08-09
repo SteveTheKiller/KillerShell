@@ -99,6 +99,12 @@ namespace KillerShell.Terminal
             LoadFont();
             ApplySize();
             InvalidateVisual();
+
+            // Readout in the window's status line - "Text Size: 110%" - the same feedback the
+            // app-wide zoom gives (Steve, 2026-08-09). Best-effort: a terminal being resized
+            // before the window exists just skips it.
+            (System.Windows.Application.Current?.MainWindow as KillerShell.Shell.MainWindow)
+                ?.ShowTerminalTextSize(_fontSize);
         }
 
         public void SetSkin(TerminalSkin skin)
@@ -720,6 +726,7 @@ namespace KillerShell.Terminal
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             // Ctrl+wheel resizes the text, as it does in Windows Terminal and every browser.
+            // The status line shows the resulting percentage (AppScale.ShowTerminalTextSize).
             if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
             {
                 SetFontSize(_fontSize + (e.Delta > 0 ? 1 : -1));

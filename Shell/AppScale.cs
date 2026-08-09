@@ -110,17 +110,36 @@ namespace KillerShell.Shell
                 {
                     _appScaleHide!.Stop();
                     AppScaleLabel.Visibility = Visibility.Collapsed;
+                    StatusText.Visibility    = Visibility.Visible;
                 };
             }
 
             _appScaleHide.Stop();
 
             // Back at exactly 100%? Collapse at once - landing on the default is its own answer.
-            if (scale == 1.0) { AppScaleLabel.Visibility = Visibility.Collapsed; return; }
+            if (scale == 1.0)
+            {
+                AppScaleLabel.Visibility = Visibility.Collapsed;
+                StatusText.Visibility    = Visibility.Visible;
+                return;
+            }
 
+            // The readout REPLACES the status line in its own slot rather than sitting beside
+            // it - the traffic dot stays in the corner throughout (Steve, 2026-08-09).
             AppScaleLabel.Text       = string.Format(Loc("Str_St_AppSize"), (int)Math.Round(scale * 100));
             AppScaleLabel.Visibility = Visibility.Visible;
+            StatusText.Visibility    = Visibility.Collapsed;
             _appScaleHide.Start();
         }
+
+        /// <summary>
+        /// Ctrl+wheel in a terminal: show the text size in the status line, the way the app-zoom
+        /// readout shows its own percentage (Steve, 2026-08-09: "the text size % should appear
+        /// in the statusbar like 'Text Size: 110%'"). 13 is the terminal's default font size
+        /// (TerminalControl's Ctrl+0 reset), so 13 reads as 100%.
+        /// </summary>
+        internal void ShowTerminalTextSize(double fontSize)
+            => StatusText.Text = string.Format(Loc("Str_Status_TextSize"),
+                                               (int)Math.Round(fontSize / 13.0 * 100));
     }
 }

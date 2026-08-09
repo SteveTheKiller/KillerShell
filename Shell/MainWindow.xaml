@@ -107,8 +107,16 @@
                 <!-- A Win98 caption has no logotype in it - just the icon and the window's name in
                      plain bold. On a flat theme this shows and the wordmark below collapses; on
                      every other theme it is the other way round (ThemeManager sets both). -->
+                <!-- Wheel-zoomable like the wordmark: on a flat theme the wordmark is COLLAPSED,
+                     so this plain title is the only thing in the caption to roll the wheel over
+                     - without these the app zoom was simply unreachable on 98SE (Steve,
+                     2026-08-09). Opting into chrome hit-testing takes it out of the native
+                     caption, so drag and double-click-maximize come back via the LogoBar
+                     handlers, exactly as the wordmark does it. -->
                 <TextBlock x:Name="PlainTitle" Text="KillerShell" VerticalAlignment="Center"
                            Visibility="{DynamicResource PlainTitleVisibility}"
+                           shell:WindowChrome.IsHitTestVisibleInChrome="True" Background="Transparent"
+                           MouseWheel="LogoBar_MouseWheel" MouseLeftButtonDown="LogoBar_MouseLeftButtonDown"
                            FontFamily="{DynamicResource ChromeFontFamily}" FontWeight="Bold" FontSize="11"
                            Foreground="{DynamicResource ChromeTextBrush}"
                            Margin="{DynamicResource TitleTextMargin}"/>
@@ -1299,9 +1307,13 @@
                      16px inset, ChromeTextBrush, mono 11.5 - the exact slot and treatment
                      KillerScan gives its footer StatusText (MainWindow.xaml row 3). Hidden at
                      100%; a collapsed element takes no width or margin. -->
-                <TextBlock x:Name="AppScaleLabel" Grid.Column="0" Visibility="Collapsed" Foreground="{DynamicResource ChromeTextBrush}"
+                <!-- Column 2, the SAME slot as StatusText: while the readout shows, AppScale.cs
+                     collapses the status line so this takes its place - the traffic dot stays
+                     put in the corner (Steve, 2026-08-09: "it should replace the Ready but keep
+                     the green traffic light in the corner at all times"). -->
+                <TextBlock x:Name="AppScaleLabel" Grid.Column="2" Visibility="Collapsed" Foreground="{DynamicResource ChromeTextBrush}"
                            FontFamily="{DynamicResource MonoFont}" FontSize="11.5" VerticalAlignment="Center"
-                           Margin="0,0,14,0" ToolTip="{DynamicResource Str_TT_AppSize}"/>
+                           ToolTip="{DynamicResource Str_TT_AppSize}"/>
                 <!-- Traffic light: OkBrush / WarnBrush / DangerRed, set by ApplyStatusTone. The
                      resting state is green, not the accent - see MainWindow.xaml.cs. -->
                 <!-- Height pinned. With none it defaults to Stretch and grew to the full cell

@@ -142,6 +142,7 @@
 
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">Acerca de KillerShell</sys:String>
+    <sys:String x:Key="Str_Status_TextSize">Tamaño del texto: {0}%</sys:String>
     <sys:String x:Key="Str_About_DescA" xml:space="preserve">Shell libre para usuarios avanzados. Un explorador de archivos, una terminal y un editor de texto comparten una ventana, una barra de pestañas y un mismo teclado. Instalación opcional. Una utilidad de</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSIÓN</sys:String>

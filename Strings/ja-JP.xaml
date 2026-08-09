@@ -185,6 +185,7 @@
 
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">KillerShell について</sys:String>
+    <sys:String x:Key="Str_Status_TextSize">文字サイズ: {0}%</sys:String>
     <sys:String x:Key="Str_About_DescA" xml:space="preserve">パワーユーザーのための自由なシェル。ファイルブラウザー、ターミナル、テキストエディターが一つのウィンドウ、一つのタブバー、一つのキー操作を共有します。インストールは任意。</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> のユーティリティです。</sys:String>
     <sys:String x:Key="Str_About_Version">バージョン</sys:String>
