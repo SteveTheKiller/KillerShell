@@ -39,7 +39,20 @@ namespace KillerShell.Shell
             // ApplyPaneMargins rides along: the pane's window-edge inset is PaneOuterMargin's RIGHT
             // now (8 by default, 0 on 98SE), so without re-running it a theme switch left the old
             // theme's gap down the right of the pane until something else forced a relayout.
-            Services.ThemeManager.ThemeChanged += () => { UpdateThemeSwatchSelection(); UpdateAccentSwatches(); RepaintIcons(); SyncTitleBarMetrics(); ApplyPaneMargins(); LeftPane?.RefreshPaneClip(); RightPane?.RefreshPaneClip(); };
+            // RepaintIcons is DEFERRED to Background priority: it reloads a whole icon pack and
+            // touches every visible row, and running it synchronously inside the theme swap was
+            // the biggest slice of the freeze before the crossfade could start (Steve,
+            // 2026-08-09). The crossfade ghost is opaque over the window, so the stale icons
+            // repainting a beat later are never seen; without a ghost (startup, code-driven
+            // switches) a one-pass delay on icon art is imperceptible anyway. The cheap,
+            // layout-critical calls stay synchronous.
+            Services.ThemeManager.ThemeChanged += () =>
+            {
+                UpdateThemeSwatchSelection(); UpdateAccentSwatches(); SyncTitleBarMetrics();
+                ApplyPaneMargins(); LeftPane?.RefreshPaneClip(); RightPane?.RefreshPaneClip();
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                    (Action)RepaintIcons);
+            };
 
             var ver = Assembly.GetExecutingAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "1.0.0";

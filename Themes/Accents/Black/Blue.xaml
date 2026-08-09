@@ -13,7 +13,7 @@
          use the darker shared KillerUI accent fill with white text without
          dragging the button pressed-states dark with it. -->
     <SolidColorBrush x:Key="SelectionBg"        Color="#081a33" po:Freeze="True"/>
-    <SolidColorBrush x:Key="SelectionFg"        Color="#298DFF" po:Freeze="True"/>
+    <SolidColorBrush x:Key="SelectionFg"        Color="#ffffff" po:Freeze="True"/>
     <SolidColorBrush x:Key="OutlinePressedBrush" Color="#081a33" po:Freeze="True"/>
     <SolidColorBrush x:Key="ScrollThumbBrush"    Color="#88298DFF" po:Freeze="True"/>
     <SolidColorBrush x:Key="TabEdgeBrush"        Color="#66298DFF" po:Freeze="True"/>

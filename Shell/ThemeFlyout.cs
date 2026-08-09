@@ -92,11 +92,18 @@ namespace KillerShell.Shell
             // it paints thousands of cells a frame and cannot carry a DynamicResource per
             // cell. So a theme switch has to tell it to rebuild, or every open terminal
             // keeps the colors of the theme it was opened under (TerminalTabs.cs).
-            RefreshTerminalThemes();
-
-            // An open document resolves its colors the same way and for the same reason
-            // (EditorTabs.cs, Editing/EditorControl.ApplyTheme).
-            RefreshEditorThemes();
+            // DEFERRED behind the crossfade ghost (Steve, 2026-08-09: "theres still such a
+            // long pause before the theme crossfade"): these ran synchronously before the
+            // fade could start, so the click froze on the OLD frame for their whole cost.
+            // The ghost is opaque over everything, so the terminal and editor recoloring
+            // under it is invisible - Background priority lets the fade's first frames land
+            // first. Same for the documents.
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                (Action)(() =>
+                {
+                    RefreshTerminalThemes();
+                    RefreshEditorThemes();
+                }));
 
             // Intentionally leave the flyout open so the user can try another theme right away,
             // same as PDF - a theme swap's side effects can knock the popup closed behind our
