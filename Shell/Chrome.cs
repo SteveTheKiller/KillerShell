@@ -39,6 +39,13 @@ namespace KillerShell.Shell
 
             if (TitleRow != null) TitleRow.Height = new GridLength(h);
 
+            // Same treatment for the footer. 98SE's sunken cells need more room than the 24px the
+            // rounded themes use - the cell loses 2px a side to FooterCellMargin and the bevel
+            // borders paint OVER the content rather than reserving space, so at 24 the status and
+            // version text ran into the cell edges (Steve, 2026-08-09).
+            double fh = TryFindResource("FooterHeight") is double fd && fd > 0 ? fd : 24.0;
+            if (FooterRow != null) FooterRow.Height = new GridLength(fh);
+
             var chrome = System.Windows.Shell.WindowChrome.GetWindowChrome(this);
             if (chrome != null) chrome.CaptionHeight = h;
         }

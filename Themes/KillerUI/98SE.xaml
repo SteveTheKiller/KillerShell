@@ -107,8 +107,97 @@
        selected has no foot: top, left and right are bevelled and the bottom is open into the page,
        which is the whole reason it reads as joined to the content rather than sitting on it. -->
   <Thickness x:Key="TabActiveBevelDarkThickness">0,0,2,0</Thickness>
+  <!-- An INACTIVE tab: 2px dark down its right, ONE pixel along its foot. This value is settled -
+       do not move it again in either direction. The shared BevelDarkThickness is 0,0,2,2 and that
+       2px foot read as a doubled rule that made the raised menu bar below look sunken; 0 was then
+       tried and removed the line under the inactive tabs entirely, which is also wrong. A single
+       1px line is what Steve asked for (2026-08-09). -->
+  <Thickness x:Key="TabInactiveBevelDarkThickness">0,0,2,1</Thickness>
+  <!-- The family literal is -12,-4,-5,-5. The bottom is trimmed to -4 here: the pane rides up by
+       the page bevel's full 2px now (PaneOuterMargin), so a -5 overhang put the tab's right-hand
+       dark edge one pixel below its own foot, into the pane (Steve, 2026-08-09). -->
+  <Thickness x:Key="TabBevelMargin">-12,-4,-5,-4</Thickness>
+  <!-- The ACTIVE tab's DARK bevel stops 2px short of the tab's foot. The active tab runs to the
+       band's bottom - THROUGH the bar's 2px white top line, which its fill covers to break the
+       line - so a dark right edge reaching its foot poked a 2x2 dark block into the white line
+       ("a 2x1px gray dot going too far down the active tab right edge", Steve, 2026-08-09). -2
+       against the active padding's 4 ends it exactly where the white line begins. The LIGHT bevel
+       keeps TabBevelMargin: the white left edge is SUPPOSED to run through the line and join it. -->
+  <Thickness x:Key="TabActiveBevelDarkMargin">-12,-4,-5,-2</Thickness>
+  <!-- The family literal is 4,6,2,6. A Win98 list well is filled edge to edge: the 6px top was the
+       3px white strip Steve measured inside the sunken frame, and it pushed the scrollbar down
+       with it. 2px of left inset is kept so the first glyph is not welded to the bevel; top,
+       bottom and right go to zero so the scrollbar meets the frame (2026-08-09). -->
+  <Thickness x:Key="TreePanePadding">2,0,0,0</Thickness>
+  <!-- Square, like every other radius here. The Performance tab's tiles and sparkline hosts are
+       code-built, so they cannot take a DynamicResource and carried C# literals instead - the same
+       class of bug as the pane and tab radii. ThemeManager.Radius reads this. -->
+  <CornerRadius x:Key="ChartCornerRadius">0</CornerRadius>
+  <!-- The 45-degree cut across each top corner of a tab, in device pixels. 0 everywhere else, so
+       no other theme grows a chamfer. TabChamferConverter turns this into the clip geometry. -->
+  <sys:Double x:Key="TabChamfer">3</sys:Double>
+  <!-- The family literal is 12,4,5,5. One pixel off the bottom: a Win98 tab is slightly shorter
+       than the family's, which Steve asked for alongside the chamfer (2026-08-09). -->
+  <Thickness x:Key="TabPadding">12,4,5,4</Thickness>
+  <!-- The ACTIVE tab's padding. The derived default is 12,4,5,5, but the tab's bevel borders undo
+       the padding with a FIXED margin (TabBevelMargin, bottom -4) - so with a 5px bottom the
+       active tab's white left bevel stopped 1px above its own foot, and that pixel of bare face
+       broke the line where the tab joins the menu bar's white left edge (Steve, 2026-08-09:
+       "1px of gray in that left bevel line between the active tab and the menubar"). Bottom 4
+       matches TabBevelMargin exactly, so the bevel reaches the foot and the join is unbroken. -->
+  <Thickness x:Key="TabActivePadding">12,4,5,4</Thickness>
   <SolidColorBrush x:Key="BevelLightBrush" Color="#ffffff"/>
   <SolidColorBrush x:Key="BevelDarkBrush" Color="#808080"/>
+  <!-- The page well's bevel is NOT stated here: it reuses the PaneBevel* keys further down, the
+       same four this theme already gives the sidebar's tree well, so the two cannot drift apart.
+       A single-ring PageBevel* pair was tried on 2026-08-09 and Steve's answer was "THE BEVEL IS
+       COMPLETELY WRONG... supposed to look like the sunken sidebar pane". A Win98 recess is a
+       DOUBLE bevel; one 2px line is not it. -->
+
+  <!-- No borders at all on the details strip: flat down the left and right, and no rule along its
+       top either. Steve asked for the strip to be completely flat on its sides (2026-08-09). -->
+  <Thickness x:Key="DetailsPaneBorderThickness">0</Thickness>
+  <!-- The divider between the detail fields and the preview image, gone with them. -->
+  <sys:Double x:Key="DetailsDividerWidth">0</sys:Double>
+  <!-- The family literal, unchanged. DO NOT put a gap between tabs. A 2px right margin was tried
+       here to make the tab's RIGHT chamfer visible against the band, and Steve's answer was
+       immediate: "WHY ARE YOU ADDING SPACE BETWEEN TABS?!? I NEVER ASKED FOR THAT." Win98 tabs
+       butt against each other. If the right chamfer needs to read, it has to be solved by drawing
+       it, not by moving the tabs apart (2026-08-09). -->
+  <!-- Top 5 against the active tab's 3: an INACTIVE tab tops out 2px LOWER than the selected
+       one, which is how Win98 tells them apart. Top 4 was measured off a screenshot at only 1px
+       of difference, which did not read at all (Steve, 2026-08-09: "the inactive tabs need to be
+       1-2 px shorter than the active tab"). The active tab overrides this margin with 0,3,0,0 in
+       its IsActive trigger.
+       Bottom is 2, matching the pane's 2px ride-up (PaneOuterMargin): at 1 the inactive tab's
+       LAST row landed on the bar's FIRST white row, so its dark foot and every 2px dark divider
+       between tabs poked one pixel into the white line - the "1px gray dot" at each seam (Steve,
+       2026-08-09). At 2 the tab ends exactly where the white line begins. -->
+  <Thickness x:Key="TabMargin">0,5,0,2</Thickness>
+  <!-- The family literal, unchanged vertically. The cell grows by shedding FooterCellMargin, not
+       by padding the text - padding it inside a fixed 24px row only squeezes the line box. -->
+  <Thickness x:Key="FooterStatusPadding">10.5,0,12,0</Thickness>
+  <!-- The tab band's ring when the pane is not the lit half of a dual pane. Transparent here: the
+       tab's own bevel and the page bevel already describe the join, and this ring was drawing a
+       grey rule under the active tab plus two 1px verticals hanging 6px into the top of the pane,
+       the left one landing right where the menu bar starts (Steve, 2026-08-09). Mirrors
+       PaneBorderBrush everywhere else, so only this theme changes. -->
+  <SolidColorBrush x:Key="TabRingIdleBrush" Color="Transparent"/>
+  <!-- The dual-pane FOCUS ring, transparent like the idle ring above. It defaults to PrimaryBrush
+       (ThemeManager), which in dual pane drew the accent as a 1px line across the focused pane's
+       band, down its outer verticals, and a stripe over the active tab - all alien here, where a
+       tab is marked by its bevel and its join to the page (Steve, 2026-08-09). The focused pane
+       still reads from its selection and title colors. -->
+  <SolidColorBrush x:Key="TabActiveRingBrush" Color="Transparent"/>
+  <!-- No rule under the shell/document menu bar. A Win98 toolbar is a raised band with a highlight
+       along its top, not a panel underlined in grey. -->
+  <Thickness x:Key="BarUnderlineThickness">0</Thickness>
+  <!-- 24, the family height. DO NOT raise this. It was briefly 32 and Steve's reaction was
+       immediate: "WHY ARE YOU FUCKING UP THE FOOTER?!? YOU MADE IT TALLER?!?" He asked for the
+       sunken CELL to grow about 4px above and below - the box INSIDE the footer - not the footer
+       bar itself. The cell grows via FooterCellMargin below, which is the only thing that should
+       ever change here (2026-08-09). -->
+  <sys:Double x:Key="FooterHeight">24</sys:Double>
 
   <!-- The window's RAISED double bevel, exactly what Win32 draws for EDGE_RAISED on a sizing
        border. Two 1px rings wrapping the face, and BOTH are directional - light on the top/left,
@@ -225,12 +314,19 @@
   <sys:Double x:Key="PaneCornerRadiusValue">0</sys:Double>
   <sys:Double x:Key="BarCornerRadiusValue">0</sys:Double>
   <Thickness x:Key="ScrollThumbMargin">0</Thickness>
+  <!-- The HORIZONTAL thumb's inset. The shared template squeezed a horizontal thumb to 0,4 for
+       the slim-overlay look, which left an 8px thumb floating in this theme's 16px track - the
+       "too skinny" tree scrollbar (Steve, 2026-08-09). A Win98 thumb fills its track. -->
+  <Thickness x:Key="ScrollThumbMarginH">0</Thickness>
   <SolidColorBrush x:Key="ScrollTrackBrush" Color="#dfdfdf"/>
-  <!-- The channel is FLAT - a plain dithered fill with no bevel. Win98 sinks the client area a
-       scrollbar sits beside, not the scrollbar's own track, and giving the track its own groove
-       reads as a second recess inside the first. Left transparent deliberately. -->
-  <SolidColorBrush x:Key="ScrollTrackBevelDark" Color="#00000000"/>
-  <SolidColorBrush x:Key="ScrollTrackBevelLight" Color="#00000000"/>
+  <!-- Despite the names, these two are the THUMB's bevel - the ScrollBar template pairs them
+       with the Bevel*Thickness keys on the thumb's own borders, and nothing draws them on the
+       track. They were set transparent here on the reasoning that the CHANNEL should be flat
+       (which it is - ScrollTrackBrush is a plain fill), and that left the thumb a flat grey
+       slab (Steve, 2026-08-09: "the scrollbars should be raised, not flat"). A Win98 thumb is a
+       raised button: white top/left, #808080 bottom/right. -->
+  <SolidColorBrush x:Key="ScrollTrackBevelDark" Color="#808080"/>
+  <SolidColorBrush x:Key="ScrollTrackBevelLight" Color="#ffffff"/>
   <!-- 16px square line buttons at each end of the bar, matching the bar's own width. -->
   <sys:Double x:Key="ScrollArrowSize">16</sys:Double>
 
@@ -257,9 +353,14 @@
   <!-- Transparent: a pane carrying the sunken bevel already has its edge. -->
   <SolidColorBrush x:Key="PaneEdgeBrush" Color="#00000000"/>
   <!-- The pane fills its frame: no card inset on the right, and no 1px ring eating the pixel the
-       raised page bevel needs. The -1 on the top stays - it is what tucks the pane under the tab
-       strip so the active tab's open bottom meets it. -->
-  <Thickness x:Key="PaneOuterMargin">0,-1,0,0</Thickness>
+       raised page bevel needs.
+       -2 on the top, not -1 (Steve, 2026-08-09). The page bevel across the top of PaneContent is
+       2px of white (BevelLightThickness 2,2,0,0). At -1 the pane rode up only one of those two,
+       so the second pixel drew a white rule edge to edge UNDER the active tab, dividing the tab
+       from the menu bar below it. A full-width Border cannot be broken by one tab, so the pane
+       has to ride up by the bevel's whole thickness and let the active tab's own opaque PaneBrush
+       fill cover it. If BevelLightThickness ever changes here, this changes with it. -->
+  <Thickness x:Key="PaneOuterMargin">0,-2,0,0</Thickness>
   <Thickness x:Key="TabBarMargin">0</Thickness>
   <Thickness x:Key="PaneEdgeThickness">0</Thickness>
 
@@ -278,6 +379,9 @@
        inter-cell divider was a different width from the border gap. Each cell carries 2 on its
        top, right and bottom; the footer's own 2 on the left supplies the matching gap at the start
        of the row, so the last cell's own right margin closes it symmetrically. -->
+  <!-- IDENTICAL to KillerNotes (Themes/KillerUI/98SE.xaml) - do not "improve" it. KillerNotes is
+       the family reference and its footer is the one Steve is happy with. It was briefly 0,0,2,0
+       here in an attempt to grow the cell; the real defect was never this margin. -->
   <Thickness x:Key="FooterCellMargin">0,2,2,2</Thickness>
   <Thickness x:Key="FooterCellPadding">4,0,4,0</Thickness>
   <!-- Cells run the FULL width, flush with the sidebar's sunken edge above them - no inset of
@@ -330,8 +434,36 @@
        floating card outlined in grey, so the tool buttons read as sitting on it. A little more
        padding for the same reason - a taskbar has air around its buttons. -->
   <SolidColorBrush x:Key="BarEdgeBrush" Color="#ffffff"/>
-  <Thickness x:Key="BarEdgeThickness">1,1,0,0</Thickness>
-  <Thickness x:Key="BarPadding">3</Thickness>
+  <!-- LEFT and BOTTOM, both white. This is the path Steve described exactly (2026-08-09): the
+       active tab's white left strip continues DOWN the left of the menu bar, then turns and runs
+       HORIZONTALLY UNDER the menu bar. Left gives the vertical run, bottom gives the turn.
+       No TOP: the tab band is directly above and a white line there would cut the tab off from
+       the bar instead of letting the tab's own left edge flow into this one.
+       The dark half is RIGHT only for the same reason - a dark bottom would paint straight over
+       the horizontal white run this exists to draw. -->
+  <!-- LEFT is 2, matching the tab's own white edge exactly (BevelLightThickness is 2,2,0,0), so
+       the active tab's raised highlight CONTINUES down the side of the menu bar as one unbroken
+       line instead of stepping from 2px to 1px at the join (Steve, 2026-08-09). The bottom stays 1
+       - that is the horizontal run under the bar, a different edge doing a different job. -->
+  <!-- TOP is 2 now as well (Steve, 2026-08-09: the white line must continue to the LEFT of the
+       address bar, and the menu bar must read RAISED above the inactive tabs). The bar's top 2px
+       sit in the rows the pane rides up under the band (PaneOuterMargin -2), so the ACTIVE tab's
+       opaque fill covers its own segment and the line breaks at the tab exactly like a Win98 tab
+       page's top edge. Under the shorter inactive tabs it shows below their 1px dark foot. -->
+  <Thickness x:Key="BarEdgeThickness">2,2,0,1</Thickness>
+  <SolidColorBrush x:Key="BarEdgeDarkBrush" Color="#808080"/>
+  <Thickness x:Key="BarEdgeDarkThickness">0,0,1,0</Thickness>
+  <!-- No TOP inset. The 3px on top left a gap between the tab band and the location row, and
+       ResultsPane's MenuBackgroundBrush shows through it - a full step darker than the bar's
+       PaneBrush - so it read as a dark line under the active tab. Only the FOLDER branch has this
+       margin, which is why the terminal tab came out clean and the file browser did not (Steve,
+       2026-08-09). Sides and bottom keep their inset. -->
+  <!-- ZERO on all four sides. The menu bar has to sit FLUSH LEFT or its white left edge lands 3px
+       inside the pane and cannot line up with the active tab's white left strip above it - the two
+       have to be one continuous line (Steve, 2026-08-09). The bottom goes to 0 for the same
+       reason: the horizontal white run belongs directly under the bar, not floating 3px above the
+       content. A Win98 toolbar fills its page. -->
+  <Thickness x:Key="BarPadding">0</Thickness>
 
   <!-- The About card's info panel. Every other theme inherits the context-menu fill from
        ThemeManager; here that would be the same #c0c0c0 button face as the card behind it, so the
@@ -346,7 +478,15 @@
        one, and does not fill on hover: Win98 had neither. -->
   <SolidColorBrush x:Key="CaptionButtonBrush" Color="#c0c0c0"/>
   <SolidColorBrush x:Key="CaptionCloseBrush" Color="#000000"/>
-  <SolidColorBrush x:Key="CaptionCloseHoverBrush" Color="#00000000"/>
+  <!-- #c0c0c0, the SAME face as CaptionButtonBrush - NOT transparent (Steve, 2026-08-09, after
+       this was got wrong twice). "No hover effect" here does not mean a transparent fill: the
+       hover setters replace the button's opaque grey face, so transparent makes the face vanish
+       and the BLUE title bar gradient show straight through it. That blue wash is exactly what
+       Steve kept reporting on the close X. The only way to have nothing happen on hover is to
+       repaint the same colour the button already is. Win98 caption buttons have no hover state at
+       all - they are a raised bevel that reverses to sunken on press. -->
+  <SolidColorBrush x:Key="CaptionCloseHoverBrush" Color="#c0c0c0"/>
+  <SolidColorBrush x:Key="CaptionHoverBrush" Color="#c0c0c0"/>
   <SolidColorBrush x:Key="CaptionCloseHoverFgBrush" Color="#000000"/>
   <!-- Black glyphs, not ChromeTextBrush's white: the buttons have their own grey face now, so a
        white glyph would be invisible on it. -->

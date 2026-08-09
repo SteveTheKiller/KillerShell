@@ -141,6 +141,7 @@
     <sys:String x:Key="Str_Count_Matches">{0} correspondances</sys:String>
 
     <!-- About overlay -->
+    <sys:String x:Key="Str_About_Title">À propos de KillerShell</sys:String>
     <sys:String x:Key="Str_About_DescA" xml:space="preserve">Shell libre pour utilisateurs avancés. Un explorateur de fichiers, un terminal et un éditeur de texte partagent une fenêtre, une barre d'onglets et un même clavier. Installation facultative. Un utilitaire</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSION</sys:String>

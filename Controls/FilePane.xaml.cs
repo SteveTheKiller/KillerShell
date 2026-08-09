@@ -196,11 +196,27 @@ namespace KillerShell
         /// Radius 5, not the border's 6: the clip sits INSIDE a 1px border, so it has to follow
         /// the inner curve or it would show a hairline of content outside the stroke.
         /// </remarks>
+        /// <summary>
+        /// Recompute the pane clip after a THEME change. The clip is only rebuilt on SizeChanged,
+        /// and a theme switch does not resize anything, so without this the pane keeps the previous
+        /// theme's corner radius until the window is dragged - which is how a flat theme could come
+        /// up with rounded corners (Steve, 2026-08-09). Called from MainWindow's ThemeChanged.
+        /// `e` is unused by the handler, so passing null is safe.
+        /// </summary>
+        internal void RefreshPaneClip() => PaneContent_SizeChanged(PaneContent, null!);
+
         private void PaneContent_SizeChanged(object s, SizeChangedEventArgs e)
         {
             if (s is not FrameworkElement el) return;
+            // The 5,5 here was a C# LITERAL, which is why the content pane stayed ROUNDED on 98SE
+            // no matter what the markup and the palette said - a clip is geometry, so no
+            // DynamicResource can reach it (Steve, 2026-08-09: "WHY DID YOU MAKE THE CONTENT PANE
+            // ROUND?"). PaneCornerRadiusValue is 6 on the rounded themes and 0 on a flat one; the
+            // old literal was 5, so the twelve gain a single pixel of curve and now agree with the
+            // pane's own CornerRadius instead of being one off it.
+            double r = KillerShell.Services.ThemeManager.Radius("PaneCornerRadiusValue", 5);
             el.Clip = new System.Windows.Media.RectangleGeometry(
-                new Rect(0, 0, el.ActualWidth, el.ActualHeight), 5, 5);
+                new Rect(0, 0, el.ActualWidth, el.ActualHeight), r, r);
 
             // The details columns are pixel widths shared by both panes, so they have to be
             // re-fitted whenever either pane changes size (ResultsView.UpdateColumnFit).

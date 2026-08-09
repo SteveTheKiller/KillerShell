@@ -141,6 +141,7 @@
     <sys:String x:Key="Str_Count_Matches">{0} 筆相符</sys:String>
 
     <!-- About overlay -->
+    <sys:String x:Key="Str_About_Title">關於 KillerShell</sys:String>
     <sys:String x:Key="Str_About_DescA" xml:space="preserve">專為進階使用者打造的自由 shell。檔案瀏覽器、終端機與文字編輯器共用一個視窗、一列分頁與一組快速鍵。安裝可選。</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> 出品的實用工具。</sys:String>
     <sys:String x:Key="Str_About_Version">版本</sys:String>

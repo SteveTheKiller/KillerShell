@@ -226,6 +226,7 @@
     <!-- About overlay -->
     <!-- Tagline is composed in XAML: DescA + "GPLv3 " + [Killer Tools link] + DescB.
          GPLv3 and the product name stay out of the translatable text (family standard). -->
+    <sys:String x:Key="Str_About_Title">About KillerShell</sys:String>
     <sys:String x:Key="Str_About_DescA" xml:space="preserve">Free shell for power users. A file browser, a terminal and a text editor share one window and one tab strip. Installer optional, no runtime, no account. A </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> utility.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSION</sys:String>

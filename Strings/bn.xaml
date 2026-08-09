@@ -141,6 +141,7 @@
     <sys:String x:Key="Str_Count_Matches">{0}টি মিল</sys:String>
 
     <!-- About overlay -->
+    <sys:String x:Key="Str_About_Title">KillerShell সম্পর্কে</sys:String>
     <sys:String x:Key="Str_About_DescA" xml:space="preserve">পাওয়ার ইউজারদের জন্য বিনামূল্যের শেল। ফাইল ব্রাউজার, টার্মিনাল ও টেক্সট এডিটর একটি উইন্ডো, একটি ট্যাব স্ট্রিপ ও একই কীবোর্ড ভাগ করে নেয়। ইনস্টল ঐচ্ছিক। একটি</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> ইউটিলিটি।</sys:String>
     <sys:String x:Key="Str_About_Version">সংস্করণ</sys:String>

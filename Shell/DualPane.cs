@@ -693,7 +693,14 @@ namespace KillerShell.Shell
         {
             // An open search panel butts straight against the pane it sits beside, so the edge
             // margin goes with it - there is no window edge there any more either.
-            double edge = _searchOpen ? 0 : PaneEdge;      // SearchPanel.cs
+            // The window-edge inset comes from PaneOuterMargin's RIGHT, not the PaneEdge constant.
+            // 8 by default, which is what the constant was, but 0 on 98SE - a Win98 client area
+            // fills its frame, and the hardcoded 8 was the "right edge is too fat" gap Steve kept
+            // seeing (2026-08-09). PaneGutter stays a constant: the gap BETWEEN two panes is
+            // furniture, not a frame inset, and 98SE wants it just the same.
+            var om = Application.Current?.TryFindResource("PaneOuterMargin") as Thickness?
+                     ?? new Thickness(0, -1, PaneEdge, 0);
+            double edge = _searchOpen ? 0 : om.Right;      // SearchPanel.cs
             bool cols = DualPane && _paneSideBySide;
 
             SetPaneMargin(LeftPane, cols ? PaneGutter : edge);
@@ -709,11 +716,25 @@ namespace KillerShell.Shell
         // edge. Nothing to tuck under means nothing to pull up by.
         private static void SetPaneMargin(FilePane p, double right)
         {
-            double top = p.TabBar.Visibility == Visibility.Visible ? -1 : 0;
+            // Top/left/bottom come from PaneOuterMargin and TabBarMargin, NOT from literals. The
+            // -1 that used to be hardcoded here is what left the line Steve kept seeing under the
+            // active tab (2026-08-09): PaneContent's page bevel is 2px of white across its top
+            // (BevelLightThickness 2,2,0,0 on 98SE), the pane was pulled up only 1px against it, so
+            // 1px of that white ran edge to edge under the tab. The tab cannot break a full-width
+            // Border, so the pane has to ride far enough up for the tab's own opaque fill to cover
+            // it - which is a per-theme number and therefore a token. 98SE states -2.
+            // Only the RIGHT slot stays computed: it is the dual-pane gutter, decided by the
+            // caller, not by the palette.
+            var om = Application.Current?.TryFindResource("PaneOuterMargin") as Thickness?
+                     ?? new Thickness(0, -1, 8, 0);
+            var tm = Application.Current?.TryFindResource("TabBarMargin") as Thickness?
+                     ?? new Thickness(0, 6, 8, 0);
 
-            p.ResultsPane.Margin  = new Thickness(0, top, right, 0);
+            double top = p.TabBar.Visibility == Visibility.Visible ? om.Top : 0;
+
+            p.ResultsPane.Margin  = new Thickness(om.Left, top, right, om.Bottom);
             p.TabFadeGhost.Margin = p.ResultsPane.Margin;
-            p.TabBar.Margin       = new Thickness(0, 6, right, 0);
+            p.TabBar.Margin       = new Thickness(tm.Left, tm.Top, right, tm.Bottom);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -736,8 +757,17 @@ namespace KillerShell.Shell
                 // The ring line in the band is that same border continuing across the top of
                 // the pane, so it takes the same brush. It is a child of the band rather than a
                 // border on the band, which is what lets the active tab break it (FilePane.xaml).
+                // TabRingIdleBrush, NOT PaneBorderBrush: it mirrors PaneBorderBrush on the twelve
+                // rounded themes, but a flat theme states it transparent. Hardcoding the brush here
+                // overrode the transparent PaneEdgeBrush the markup binds, which is what drew the
+                // grey rule under the active tab and the grey stub at the left of the menu bar on
+                // 98SE (Steve, 2026-08-09).
+                // TabActiveRingBrush, not PrimaryBrush: it IS PrimaryBrush on every ordinary
+                // theme, but 98SE states it Transparent - the lit ring was drawing the accent
+                // across the top of the focused pane's band and down its sides on a theme whose
+                // tabs carry no accent at all (Steve, 2026-08-09, dual pane).
                 p.TabBarRing.SetResourceReference(Border.BorderBrushProperty,
-                    lit ? "PrimaryBrush" : "PaneBorderBrush");
+                    lit ? "TabActiveRingBrush" : "TabRingIdleBrush");
 
                 // And the active tab's own sides, via the model so the template can trigger on
                 // it. PaneDimmed is the other half: the active tab of the pane that does NOT

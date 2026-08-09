@@ -37,6 +37,19 @@
             BorderBrush="{DynamicResource WindowEdgeBrush}"
             BorderThickness="{DynamicResource WindowEdgeThickness}">
         <Grid>
+            <!-- THE CLIENT FACE. WindowFrameBrush fills the WHOLE window behind the content, and
+                 on 98SE it is a light-to-dark diagonal GRADIENT meant only for the frame's 3px
+                 face - so every transparent surface in the client area (the tab band, the
+                 bookmarks drawer, the rail gutter) showed the gradient instead of the flat
+                 #c0c0c0, each at a slightly different gray depending on where it sat. That is
+                 exactly "how is the sidebar a different gray than the details pane?" (Steve,
+                 2026-08-09): the sidebar was gradient, the details strip was painted PaneBrush.
+                 This Border repaints the flat window color over everything INSIDE the frame, so
+                 the gradient survives only on the frame face itself. On the other twelve themes
+                 WindowFramePadding is 0 and this paints BackgroundBrush at exactly the window's
+                 own bounds - identical to the Window Background under it, including the five
+                 full-window gradient themes, so nothing moves anywhere else. -->
+            <Border Margin="{DynamicResource WindowFramePadding}" Background="{DynamicResource BackgroundBrush}"/>
             <Border BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
             <Border BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
             <Border Margin="{DynamicResource FrameInnerMargin}"
@@ -57,7 +70,10 @@
                  DynamicResource on a Double. -->
             <RowDefinition x:Name="TitleRow" Height="36"/>
             <RowDefinition Height="*"/>    <!-- 1: main content -->
-            <RowDefinition Height="24"/>   <!-- 2: footer -->
+            <!-- FooterHeight, applied in Chrome.cs SyncTitleBarMetrics beside TitleRow. This was
+                 the only chrome height in the app still hardcoded, which is why the footer's
+                 sunken cell could not grow to fit its own text on 98SE (Steve, 2026-08-09). -->
+            <RowDefinition x:Name="FooterRow" Height="24"/>   <!-- 2: footer -->
         </Grid.RowDefinitions>
 
         <!-- ══════════ ROW 0 - TITLE BAR ══════════
@@ -163,7 +179,15 @@
 
             <!-- COLUMN 0 - FOLDER TREE. Open by default: this is a file manager now, and the
                  tree is how you get around in one. Collapses from the rail. -->
-            <Grid Grid.Column="0" x:Name="TreePanel">
+            <!-- ClipToBounds: when the tree is COLLAPSED its column goes to zero width, but the
+                 sunken well inside still measures its 2px of bevel and paints it outside the
+                 column - and the inner ring of that well is PaneBevelDark2Brush, which is #000000
+                 on 98SE. That is the black vertical line Steve kept reporting immediately to the
+                 left of the address bar (2026-08-09): it is the collapsed sidebar's well, not
+                 anything belonging to the pane, which is why every change made inside the pane
+                 left it exactly where it was. Clipping the panel to its own width stops a
+                 zero-width column drawing anything at all. -->
+            <Grid Grid.Column="0" x:Name="TreePanel" ClipToBounds="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <!-- Auto, so the favorites slide-up's animated Height drives the split and
@@ -194,7 +218,12 @@
                                 BorderBrush="{DynamicResource PaneBevelDark2Brush}"  BorderThickness="{DynamicResource PaneBevel2LightThickness}"/>
                         <Border Margin="{DynamicResource PaneBevelInnerMargin}"
                                 BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
-                <Border x:Name="TreeFadeHost" Background="Transparent" Padding="4,6,2,6">
+                <!-- TreePanePadding, not the literal 4,6,2,6. That 6px top inset let the well's
+                     own SidebarPaneBrush show above the first row as a white strip inside the
+                     sunken frame, and pushed the scrollbar down with it (Steve, 2026-08-09). A
+                     Win98 list well is filled edge to edge, so the flat theme zeroes the top,
+                     bottom and right; every other theme keeps the literal it had. -->
+                <Border x:Name="TreeFadeHost" Background="Transparent" Padding="{DynamicResource TreePanePadding}">
                     <Border.OpacityMask>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                             <GradientStop x:Name="TreeFadeTopOuter" Color="#FF000000" Offset="0"/>
@@ -668,14 +697,26 @@
                                  (LangButton_Click, via FlyoutPlacement.cs) - pinned to the
                                  content pane's bottom-left corner, PDF's own mechanism. -->
                             <ContextMenu x:Name="LangMenu">
+                                <!-- The raised bevel pair around the card is KillerNotes' exact
+                                     treatment (its LangMenu template): two Borders at the card's
+                                     own 6px margin, zero-thickness on every theme but 98SE, where
+                                     the flyout becomes a hard raised Win98 box (Steve, 2026-08-09:
+                                     "locale and theme flyout need the... beveled edge like in
+                                     killernotes"). -->
                                 <ContextMenu.Template>
                                     <ControlTemplate TargetType="ContextMenu">
-                                        <Border Style="{StaticResource FlyoutCard}">
-                                            <Grid>
-                                                <ItemsPresenter/>
-                                                <Border Style="{StaticResource FlyoutGrain}"/>
-                                            </Grid>
-                                        </Border>
+                                        <Grid>
+                                            <Border Style="{StaticResource FlyoutCard}">
+                                                <Grid>
+                                                    <ItemsPresenter/>
+                                                    <Border Style="{StaticResource FlyoutGrain}"/>
+                                                </Grid>
+                                            </Border>
+                                            <Border IsHitTestVisible="False" Margin="6"
+                                                    BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                            <Border IsHitTestVisible="False" Margin="6"
+                                                    BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                        </Grid>
                                     </ControlTemplate>
                                 </ContextMenu.Template>
                                 <ContextMenu.ItemContainerStyle>
@@ -695,14 +736,22 @@
                             Click="ThemeButton_Click" ToolTip="{DynamicResource Str_TT_Theme}">
                         <Button.ContextMenu>
                             <ContextMenu x:Name="ThemeFlyout">
+                                <!-- Same raised bevel pair as LangMenu above - the KillerNotes
+                                     flyout treatment, inert off 98SE. -->
                                 <ContextMenu.Template>
                                     <ControlTemplate TargetType="ContextMenu">
-                                        <Border Style="{StaticResource FlyoutCard}">
-                                            <Grid>
-                                                <ItemsPresenter/>
-                                                <Border Style="{StaticResource FlyoutGrain}"/>
-                                            </Grid>
-                                        </Border>
+                                        <Grid>
+                                            <Border Style="{StaticResource FlyoutCard}">
+                                                <Grid>
+                                                    <ItemsPresenter/>
+                                                    <Border Style="{StaticResource FlyoutGrain}"/>
+                                                </Grid>
+                                            </Border>
+                                            <Border IsHitTestVisible="False" Margin="6"
+                                                    BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                            <Border IsHitTestVisible="False" Margin="6"
+                                                    BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                        </Grid>
                                     </ControlTemplate>
                                 </ContextMenu.Template>
                                 <ContextMenu.ItemContainerStyle>
@@ -1153,14 +1202,20 @@
                      touches pane A (pane B's own width never changes - the window grows/shrinks
                      instead), maximized/snapped windows fall back to the PreviousAndNext trade
                      below because there is no room left to grow. -->
+                <!-- FocusVisualStyle nulled on both: a GridSplitter is focusable and KEEPS focus
+                     after a drag, and WPF's stock focus visual is a dotted rectangle - which is
+                     the full-height dashed line that sat between the panes after any resize
+                     (Steve, 2026-08-09, dual pane). Same fix the tab strip's ScrollViewer has. -->
                 <GridSplitter x:Name="PaneSplitV" Grid.Column="1" Grid.Row="0" Width="6"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               Background="Transparent" Cursor="SizeWE" Visibility="Collapsed"
+                              FocusVisualStyle="{x:Null}"
                               ResizeBehavior="PreviousAndNext" ResizeDirection="Columns"
                               DragStarted="PaneSplitV_DragStarted" DragDelta="PaneSplitV_DragDelta"/>
                 <GridSplitter x:Name="PaneSplitH" Grid.Row="1" Grid.Column="0" Height="6"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               Background="Transparent" Cursor="SizeNS" Visibility="Collapsed"
+                              FocusVisualStyle="{x:Null}"
                               ResizeBehavior="PreviousAndNext" ResizeDirection="Rows"/>
 
                 <local:FilePane x:Name="RightPane" Grid.Column="2" Grid.Row="0"
@@ -1230,7 +1285,16 @@
                       BorderBrush="{DynamicResource FooterBevelDarkBrush}"  BorderThickness="{DynamicResource FooterCellLightThickness}"/>
               <Border IsHitTestVisible="False" Panel.ZIndex="2"
                       BorderBrush="{DynamicResource FooterBevelLightBrush}" BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
-            <Grid VerticalAlignment="Center" Margin="10.5,0,12,0">
+            <!-- FooterCellPadding - the SAME key KillerNotes' status cell uses, because KillerNotes
+                 is the family reference and its footer is the one that looks right (Steve,
+                 2026-08-09: "YOU DID IT JUST FINE IN KILLERNOTES"). KillerShell was the odd one
+                 out, carrying a hardcoded 10.5,0,12,0 here while its version cell beside it
+                 already used the token - which is why this cell alone never matched.
+                 Do NOT invent a separate key for this. One was tried (FooterStatusPadding) on the
+                 theory that reusing FooterCellPadding would move the other twelve themes; the
+                 twelve default it to the same value, and KillerNotes has shipped this exact
+                 binding on both cells all along. -->
+            <Grid VerticalAlignment="Center" Margin="{DynamicResource FooterCellPadding}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -1245,7 +1309,10 @@
                            Margin="0,0,14,0" ToolTip="{DynamicResource Str_TT_AppSize}"/>
                 <!-- Traffic light: OkBrush / WarnBrush / DangerRed, set by ApplyStatusTone. The
                      resting state is green, not the accent - see MainWindow.xaml.cs. -->
-                <Border x:Name="StatusDot" Grid.Column="1" Width="3" Background="{DynamicResource OkBrush}" Margin="0,3,7,3" CornerRadius="2"/>
+                <!-- Height pinned. With none it defaults to Stretch and grew to the full cell
+                     interior, which pinned the row's minimum height and stopped the cell ever
+                     shrinking to fit its own text (Steve, 2026-08-09). -->
+                <Border x:Name="StatusDot" Grid.Column="1" Width="3" Height="12" Background="{DynamicResource OkBrush}" Margin="0,3,7,3" CornerRadius="2"/>
                 <!-- The running commentary: "Ready", "Opening C:\...", "164 item(s)", "Cannot
                      open X". No MaxWidth - the * column IS the bound, so the line uses whatever
                      the window gives it: it stops at the portable badge while that is showing,
@@ -1277,7 +1344,15 @@
             <!-- On 98SE a status bar is a row of sunken CELLS rather than plain text on a strip,
                  so the version block gets a margin and padding of its own there. Both are 0
                  elsewhere, leaving the existing 0,0,16,0 to position it as before. -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+            <!-- STRETCH, not Center. This is the copyright/version cell bug Steve reported over and
+                 over (2026-08-09): a vertically CENTERED StackPanel collapses to its content's
+                 height, so the sunken cell Grid inside it was only as tall as the text and could
+                 never match the status cell beside it, which sits directly in its column and
+                 stretches. No amount of tuning FooterCellMargin, FooterCellPadding or the row
+                 height could fix that - the cell was not short because of its own numbers, it was
+                 short because its PARENT refused to give it the row's height. The inner content
+                 keeps its own VerticalAlignment="Center" below, so the text still centres. -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0,0,16,0">
                 <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
                      bottom and right. Only the dark half was here, which drew half a box round
                      the version text (Steve, 2026-08-08). Both are zero-thickness elsewhere. -->
@@ -1368,41 +1443,35 @@
                         <Border IsHitTestVisible="False" Panel.ZIndex="6"
                                 BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
 
-                        <!-- Close X: glyph reddens on hover (foreground via style setter so the trigger wins) -->
-                        <Button Content="&#x2715;" Click="AboutClose_Click" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                Width="28" Height="26" Margin="0,6,6,0" Panel.ZIndex="2" FontSize="11"
-                                Background="Transparent" BorderThickness="0" Cursor="Hand">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border Background="Transparent">
-                                                    <ContentPresenter x:Name="cp" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Foreground" Value="#E04444"/>
-                                                        <Setter TargetName="cp" Property="Effect">
-                                                            <Setter.Value><DropShadowEffect Color="#000000" BlurRadius="4" ShadowDepth="1" Direction="270" Opacity="0.5"/></Setter.Value>
-                                                        </Setter>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                        <!-- Close X: ChromeCloseButton, the SAME style as the title bar's close, so
+                             every X in the app is the same X (the KillerNotes rule, Steve,
+                             2026-08-09). On 98SE that makes it a real bevelled caption button
+                             that sinks on press; elsewhere it is the bare glyph with the red
+                             hover fill the main window has. Size and margin come from the
+                             AboutClose* tokens (ThemeManager): a small Win98 button inside the
+                             caption band on a flat theme, the old 28x26 corner slot otherwise. -->
+                        <Button Content="&#xE8BB;" Click="AboutClose_Click" Style="{StaticResource ChromeCloseButton}"
+                                HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="2"
+                                Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
+                                Margin="{DynamicResource AboutCloseMargin}"
+                                FontWeight="{DynamicResource CaptionGlyphWeight}"/>
 
                         <!-- A caption BAND above the card's content. 0 high on every theme that
                              does not ask for one, so their cards keep the exact layout they had;
                              a flat theme gets the same band height as its dialogs, and the
-                             content drops below it. -->
-                        <Border VerticalAlignment="Top"
+                             content drops below it. AboutCaptionMargin insets the band from the
+                             card's overdrawn 2px bevel on 98SE (see the key's comment in the
+                             theme); 0 everywhere else. The title is the same family, size, weight
+                             and brush as the main window's plain caption ("About KillerShell",
+                             Steve, 2026-08-09 - matching KillerNotes' card). -->
+                        <Border VerticalAlignment="Top" ClipToBounds="True"
                                 Height="{DynamicResource AboutCaptionHeight}"
-                                Background="{DynamicResource DialogTitleBarBrush}"/>
+                                Margin="{DynamicResource AboutCaptionMargin}"
+                                Background="{DynamicResource DialogTitleBarBrush}">
+                            <TextBlock Text="{DynamicResource Str_About_Title}" VerticalAlignment="Center" Margin="8,0,0,0"
+                                       FontFamily="{DynamicResource ChromeFontFamily}"
+                                       FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"/>
+                        </Border>
                         <StackPanel Margin="{DynamicResource AboutCaptionMargin}">
                         <StackPanel Margin="18,10,18,18">
                             <!-- Header: icon left, wordmark (links to the site) + tagline right.
@@ -1744,6 +1813,14 @@
                                                  Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                <!-- Raised card bevel, the same EDGE_RAISED pair the About card carries. Nothing
+                     on any theme but 98SE, where the shortcuts card becomes a hard Win98 dialog
+                     box instead of a flat sheet (Steve, 2026-08-09: "i feel like the shortcuts
+                     window should be themed too"). -->
+                <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                        BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                        BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
                 <StackPanel Margin="24,20">
                     <Grid Margin="0,0,0,12">
                         <TextBlock Text="{DynamicResource Str_Help_Shortcuts}" Style="{StaticResource SectionHeader}" FontSize="13" Margin="0" VerticalAlignment="Center"/>

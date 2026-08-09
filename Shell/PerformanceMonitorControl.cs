@@ -505,13 +505,19 @@ namespace KillerShell.Shell
                 Text = "CPU   -\nRAM   -\nGPU   -\nNET   -",
             };
             text.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            text.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+            // Monitor* text brushes, not TextBrush/MutedTextBrush: everything in this control
+            // that sits ON a MonitorCellBrush surface uses them. They mirror the plain text
+            // brushes on every ordinary theme, but 98SE paints its cells BLACK (little CRT
+            // readouts) while its TextBrush is black too - invisible. There they are the retro
+            // phosphor greens (Steve, 2026-08-09: "text color in the black squares... maybe a
+            // retro green would look cool").
+            text.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
             var panel = new Border
             {
                 Margin = new Thickness(8, 8, 8, 8),
                 Padding = new Thickness(12, 10, 12, 10),
-                CornerRadius = new CornerRadius(4),
+                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
                 BorderThickness = new Thickness(1),
                 Child = text,
             };
@@ -573,7 +579,7 @@ namespace KillerShell.Shell
         {
             _detailTitle = new TextBlock { FontSize = 16, FontWeight = FontWeights.Bold };
             _detailTitle.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            _detailTitle.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+            _detailTitle.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
             _detailDescription = new TextBlock
             {
@@ -584,7 +590,7 @@ namespace KillerShell.Shell
                 VerticalAlignment = VerticalAlignment.Bottom,
             };
             _detailDescription.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            _detailDescription.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
+            _detailDescription.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
 
             var header = new Grid();
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -605,7 +611,7 @@ namespace KillerShell.Shell
             var card = new Border
             {
                 Padding = new Thickness(14, 12, 14, 12),
-                CornerRadius = new CornerRadius(4),
+                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
                 BorderThickness = new Thickness(1),
                 Child = body,
             };
@@ -619,7 +625,7 @@ namespace KillerShell.Shell
         {
             var tb = new TextBlock { FontSize = 10.5, Margin = new Thickness(0, 6, 0, 2) };
             tb.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            tb.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
+            tb.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
             tb.SetResourceReference(TextBlock.TextProperty, key);
             return tb;
         }
@@ -637,14 +643,14 @@ namespace KillerShell.Shell
                 {
                     Width = 8,
                     Height = 8,
-                    CornerRadius = new CornerRadius(4),
+                    CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
                     Margin = new Thickness(0, 0, 5, 0),
                     VerticalAlignment = VerticalAlignment.Center,
                 };
                 dot.SetResourceReference(Border.BackgroundProperty, brushKey);
                 var text = new TextBlock { FontSize = 10.5 };
                 text.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-                text.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
+                text.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
                 text.SetResourceReference(TextBlock.TextProperty, labelKey);
                 item.Children.Add(dot);
                 item.Children.Add(text);
@@ -657,12 +663,12 @@ namespace KillerShell.Shell
         {
             var label = new TextBlock { FontSize = 10 };
             label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            label.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
+            label.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
             label.SetResourceReference(TextBlock.TextProperty, labelKey);
 
             var value = new TextBlock { FontSize = 12, Margin = new Thickness(0, 2, 0, 0), Text = "-" };
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            value.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+            value.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
             var stack = new StackPanel { Margin = new Thickness(0, 0, 22, 10), MinWidth = 130 };
             stack.Children.Add(label);
@@ -953,16 +959,17 @@ namespace KillerShell.Shell
             {
                 Width = 3,
                 Background = Brushes.Transparent,
-                CornerRadius = new CornerRadius(4, 0, 0, 4),
+                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4), 0, 0,
+                    KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
             };
 
             var labelText = new TextBlock { FontSize = 11, FontWeight = FontWeights.Bold, Text = tile.Label };
             labelText.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            labelText.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+            labelText.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
             var summaryText = new TextBlock { FontSize = 10.5, Text = "-" };
             summaryText.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            summaryText.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
+            summaryText.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
             tile.TileSummaryText = summaryText;
 
             var textStack = new StackPanel { Margin = new Thickness(10, 7, 10, 4) };
@@ -991,7 +998,7 @@ namespace KillerShell.Shell
             var tileBorder = new Border
             {
                 Margin = new Thickness(6, 3, 6, 3),
-                CornerRadius = new CornerRadius(4),
+                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
                 Cursor = Cursors.Hand,
                 Child = innerGrid,
             };
@@ -1037,9 +1044,12 @@ namespace KillerShell.Shell
 
         private static void SetTileVisualSelected(MetricTile tile, bool selected)
         {
-            // MenuBackgroundBrush when not selected, matching the tile's build and hover states.
-            tile.TileBorder.SetResourceReference(Border.BackgroundProperty, selected ? "SelectionBg" : "MenuBackgroundBrush");
-            tile.TileSummaryText.SetResourceReference(TextBlock.ForegroundProperty, selected ? "SelectionFg" : "MutedTextBrush");
+            // MonitorCellBrush when not selected, ACTUALLY matching the tile's build and hover
+            // states now - the comment always said it matched, but the key here was
+            // MenuBackgroundBrush, so a deselected tile came back a different color than a
+            // freshly built one (on 98SE: #c0c0c0 instead of the black cell).
+            tile.TileBorder.SetResourceReference(Border.BackgroundProperty, selected ? "SelectionBg" : "MonitorCellBrush");
+            tile.TileSummaryText.SetResourceReference(TextBlock.ForegroundProperty, selected ? "SelectionFg" : "MonitorMutedBrush");
             if (selected)
                 tile.AccentBar.SetResourceReference(Border.BackgroundProperty, "PrimaryBrush");
             else
@@ -1644,7 +1654,7 @@ namespace KillerShell.Shell
                 Host = new Border
                 {
                     Height = 52,
-                    CornerRadius = new CornerRadius(3),
+                    CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 3)),
                     BorderThickness = new Thickness(1),
                     Child = _canvas,
                 };

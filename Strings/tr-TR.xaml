@@ -141,6 +141,7 @@
     <sys:String x:Key="Str_Count_Matches">{0} eşleşme</sys:String>
 
     <!-- About overlay -->
+    <sys:String x:Key="Str_About_Title">KillerShell Hakkında</sys:String>
     <sys:String x:Key="Str_About_DescA" xml:space="preserve">Güçlü kullanıcılar için özgür kabuk. Dosya tarayıcısı, terminal ve metin düzenleyici tek pencereyi, tek sekme şeridini ve tek tuş takımını paylaşır. Kurulum isteğe bağlı. Bir</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> aracı.</sys:String>
     <sys:String x:Key="Str_About_Version">SÜRÜM</sys:String>

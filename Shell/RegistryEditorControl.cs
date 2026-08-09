@@ -402,7 +402,7 @@ namespace KillerShell.Shell
             pathHost.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
             pathHost.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
             pathHost.BorderThickness = new Thickness(1);
-            pathHost.CornerRadius = new CornerRadius(3);
+            pathHost.CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 3));
 
             pathDisplay = new TextBlock
             {
@@ -481,7 +481,7 @@ namespace KillerShell.Shell
             bar.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
             bar.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
             bar.BorderThickness = new Thickness(1);
-            bar.CornerRadius = new CornerRadius(3);
+            bar.CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 3));
 
             var row = new Grid();
             row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -661,8 +661,9 @@ namespace KillerShell.Shell
             // style (Controls.xaml, still flat/square and used as-is by Task Manager/Event Viewer -
             // untouched here) is only overridden on the leftmost and rightmost columns via their
             // own HeaderStyle; the middle Type column keeps the grid's plain ColumnHeaderStyle.
-            name.HeaderStyle = BuildValueHeaderStyle(new CornerRadius(5, 0, 0, 0));
-            data.HeaderStyle = BuildValueHeaderStyle(new CornerRadius(0, 5, 0, 0));
+            var hr = KillerShell.Services.ThemeManager.Radius("BarCornerRadiusValue", 5);
+            name.HeaderStyle = BuildValueHeaderStyle(new CornerRadius(hr, 0, 0, 0));
+            data.HeaderStyle = BuildValueHeaderStyle(new CornerRadius(0, hr, 0, 0));
 
             // A long binary/multi-string value clips at the column edge just like the Processes/
             // Event Viewer grids do - the edit dialog (double-click / Enter / Modify...) is where

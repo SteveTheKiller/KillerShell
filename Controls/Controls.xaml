@@ -32,7 +32,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToolTip">
                     <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource ControlCornerRadius}" Padding="{TemplateBinding Padding}">
                         <Border.Effect><DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="2" Direction="270" Opacity="0.45"/></Border.Effect>
                         <ContentPresenter/>
                     </Border>
@@ -315,7 +315,7 @@
                                Placement="Bottom" AllowsTransparency="True" PopupAnimation="Fade">
                             <Border MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                     Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                    BorderThickness="1" CornerRadius="5" Margin="6">
+                                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Margin="6">
                                 <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
                                 <Grid>
                                     <Border IsHitTestVisible="False" CornerRadius="{DynamicResource ControlCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
@@ -368,7 +368,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CalendarDayButton">
-                    <Border x:Name="bg" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="4">
+                    <Border x:Name="bg" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -397,7 +397,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CalendarButton">
-                    <Border x:Name="bg" Background="Transparent" CornerRadius="4">
+                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource ControlCornerRadius}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -424,7 +424,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="{DynamicResource ControlCornerRadius}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -447,10 +447,10 @@
                         </DataTemplate>
                     </ControlTemplate.Resources>
                     <Border x:Name="PART_Root" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Margin="6" Padding="8,6">
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource PanelCornerRadius}" Margin="6" Padding="8,6">
                         <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
                         <Grid>
-                            <Border IsHitTestVisible="False" CornerRadius="5" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                            <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                             <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -540,7 +540,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="DatePicker">
                     <Border x:Name="border" Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource InputBorderBrush}"
-                            BorderThickness="1" CornerRadius="4">
+                            BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}">
                         <Grid Margin="7,0,4,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -591,11 +591,34 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition x:Name="ArrowDownRow" Height="Auto"/>
                         </Grid.RowDefinitions>
+                        <!-- Columns as well as rows, so ONE template serves both orientations. The
+                             steppers used to be laid out in rows only and were simply Collapsed on
+                             a horizontal bar, which is why a horizontal Win98 bar had no arrows.
+                             Now the Orientation trigger MOVES them: vertical parks them in
+                             row 0 / row 2 of column 1, horizontal in column 0 / column 2 of row 1.
+                             Both tracks are Auto, so whichever pair is empty measures to zero and
+                             the other twelve themes (ScrollArrowSize 0) still get nothing at all. -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="ArrowLeftCol"  Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition x:Name="ArrowRightCol" Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                        <RepeatButton x:Name="ArrowUp" Grid.Row="0" Command="ScrollBar.LineUpCommand"
+                        <!-- Marlett, not Segoe MDL2 (Steve, 2026-08-09: "the top scrollbar arrow
+                             looks wrong"). E70E/E70D are thin CHEVRONS, and at 8px they rendered
+                             as a wispy caret with ClearType color fringes. Marlett is the actual
+                             Win9x marker font - '5'/'6'/'3'/'4' are the solid up/down/left/right
+                             scrollbar triangles - and it is TrueType, so WPF can render it
+                             (unlike MS Sans Serif). Aliased, because the real thing was: a 5px
+                             triangle drawn through ClearType smears into color. Only 98SE ever
+                             sees these buttons (ScrollArrowSize is 0 everywhere else). -->
+                        <RepeatButton x:Name="ArrowUp" Grid.Row="0" Grid.Column="1" Command="ScrollBar.LineUpCommand"
                                       Focusable="False" IsTabStop="False"
+                                      Width="{DynamicResource ScrollArrowSize}"
                                       Height="{DynamicResource ScrollArrowSize}"
-                                      Content="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="8"
+                                      Content="5" FontFamily="Marlett" FontSize="10"
+                                      TextOptions.TextRenderingMode="Aliased"
+                                      TextOptions.TextFormattingMode="Display"
                                       Foreground="{DynamicResource CaptionGlyphBrush}">
                             <RepeatButton.Template>
                                 <ControlTemplate TargetType="RepeatButton">
@@ -609,10 +632,13 @@
                             </RepeatButton.Template>
                         </RepeatButton>
 
-                        <RepeatButton x:Name="ArrowDown" Grid.Row="2" Command="ScrollBar.LineDownCommand"
+                        <RepeatButton x:Name="ArrowDown" Grid.Row="2" Grid.Column="1" Command="ScrollBar.LineDownCommand"
                                       Focusable="False" IsTabStop="False"
+                                      Width="{DynamicResource ScrollArrowSize}"
                                       Height="{DynamicResource ScrollArrowSize}"
-                                      Content="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="8"
+                                      Content="6" FontFamily="Marlett" FontSize="10"
+                                      TextOptions.TextRenderingMode="Aliased"
+                                      TextOptions.TextFormattingMode="Display"
                                       Foreground="{DynamicResource CaptionGlyphBrush}">
                             <RepeatButton.Template>
                                 <ControlTemplate TargetType="RepeatButton">
@@ -626,7 +652,7 @@
                             </RepeatButton.Template>
                         </RepeatButton>
 
-                        <Track x:Name="PART_Track" Grid.Row="1" IsDirectionReversed="True"
+                        <Track x:Name="PART_Track" Grid.Row="1" Grid.Column="1" IsDirectionReversed="True"
                                Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value}">
                             <Track.ViewportSize>
                                 <MultiBinding Converter="{StaticResource ThumbFloor}" ConverterParameter="64">
@@ -666,13 +692,21 @@
                                                                 BorderBrush="{DynamicResource ScrollTrackBevelDark}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
                                                         </Grid>
                                                         <ControlTemplate.Triggers>
+                                                            <!-- ScrollThumbMarginH, not the literal 0,4: that squeeze is the
+                                                                 slim-overlay look, and on 98SE it left an 8px thumb floating in
+                                                                 a 16px track - the skinny tree scrollbar (Steve, 2026-08-09).
+                                                                 The token defaults to exactly the literal it replaced. -->
                                                             <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Horizontal">
-                                                                <Setter TargetName="thumbBorder" Property="Margin" Value="0,4"/>
+                                                                <Setter TargetName="thumbBorder" Property="Margin" Value="{DynamicResource ScrollThumbMarginH}"/>
                                                             </DataTrigger>
+                                                            <!-- Margin and Effect are theme tokens now (ThemeManager,
+                                                                 ScrollThumbHover*): the literals shrank the thumb out from
+                                                                 under its own bevel ring and glowed on a shadowless theme.
+                                                                 Defaults are exactly the old literals. -->
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter TargetName="thumbBorder" Property="Background" Value="{DynamicResource ScrollThumbHoverBrush}"/>
-                                                                <Setter TargetName="thumbBorder" Property="Margin" Value="2,2"/>
-                                                                <Setter TargetName="thumbBorder" Property="Effect"><Setter.Value><DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="0" Opacity="0.3"/></Setter.Value></Setter>
+                                                                <Setter TargetName="thumbBorder" Property="Margin" Value="{DynamicResource ScrollThumbHoverMargin}"/>
+                                                                <Setter TargetName="thumbBorder" Property="Effect" Value="{DynamicResource ScrollThumbHoverEffect}"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -695,14 +729,21 @@
                             <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
                             <Setter TargetName="PageBack"    Property="Command" Value="ScrollBar.PageLeftCommand"/>
                             <Setter TargetName="PageForward" Property="Command" Value="ScrollBar.PageRightCommand"/>
-                            <!-- The stepper buttons are laid out in ROWS, which is only right for
-                                 a vertical bar. One template serves both orientations here, so a
-                                 horizontal bar would get its arrows above and below the track
-                                 instead of left and right. Collapsed rather than misplaced; a
-                                 horizontal Win98 bar wanting real steppers needs its own
-                                 template, which is a bigger change than this pass. -->
-                            <Setter TargetName="ArrowUp"   Property="Visibility" Value="Collapsed"/>
-                            <Setter TargetName="ArrowDown" Property="Visibility" Value="Collapsed"/>
+                            <!-- The steppers MOVE rather than hiding. They used to be Collapsed
+                                 here because the template only had rows, so a horizontal bar would
+                                 have put its arrows above and below the track; with the columns
+                                 added above they relocate to either end of the track instead, and
+                                 a horizontal 98SE bar gets real Win98 steppers like the vertical
+                                 one always had. Glyph and command flip with them - Marlett '3'/'4'
+                                 are the solid left/right triangles, against '5'/'6' up/down. -->
+                            <Setter TargetName="ArrowUp"   Property="Grid.Row"    Value="1"/>
+                            <Setter TargetName="ArrowUp"   Property="Grid.Column" Value="0"/>
+                            <Setter TargetName="ArrowUp"   Property="Content"     Value="3"/>
+                            <Setter TargetName="ArrowUp"   Property="Command"     Value="ScrollBar.LineLeftCommand"/>
+                            <Setter TargetName="ArrowDown" Property="Grid.Row"    Value="1"/>
+                            <Setter TargetName="ArrowDown" Property="Grid.Column" Value="2"/>
+                            <Setter TargetName="ArrowDown" Property="Content"     Value="4"/>
+                            <Setter TargetName="ArrowDown" Property="Command"     Value="ScrollBar.LineRightCommand"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -710,7 +751,12 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
-                <Setter Property="Height" Value="12"/><Setter Property="MinHeight" Value="12"/><Setter Property="Width" Value="Auto"/>
+                <!-- ScrollBarThickness, not a literal 12: 98SE asks for a 16px bar and the
+                     horizontal one stayed 12 while the vertical one grew, so the two disagreed
+                     and the corner block never squared up. -->
+                <Setter Property="Height" Value="{DynamicResource ScrollBarThickness}"/>
+                <Setter Property="MinHeight" Value="{DynamicResource ScrollBarThickness}"/>
+                <Setter Property="Width" Value="Auto"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -818,7 +864,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="MenuItem">
                     <Border x:Name="MenuBd" Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding Padding}" CornerRadius="3" SnapsToDevicePixels="True">
+                            Padding="{TemplateBinding Padding}" CornerRadius="{DynamicResource SmallCornerRadius}" SnapsToDevicePixels="True">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="16"/>
@@ -849,17 +895,17 @@
                                    IsOpen="{TemplateBinding IsSubmenuOpen}">
                                 <!-- Mirrors the ContextMenu surface so submenus match the parent. -->
                                 <Grid Margin="5">
-                                    <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="4" IsHitTestVisible="False">
+                                    <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource ControlCornerRadius}" IsHitTestVisible="False">
                                         <Border.Effect>
                                             <DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="2" Direction="270" Opacity="0.5"/>
                                         </Border.Effect>
                                     </Border>
                                     <Border Background="{DynamicResource MenuBackgroundBrush}"
                                             BorderBrush="{DynamicResource MenuBorderBrush}"
-                                            BorderThickness="1" CornerRadius="4" Padding="4">
+                                            BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}" Padding="4">
                                         <Grid>
                                             <Border IsHitTestVisible="False" Opacity="{DynamicResource GrainOpacity}"
-                                                    CornerRadius="4" Margin="-4" Background="{DynamicResource GrainTileBrush}"/>
+                                                    CornerRadius="{DynamicResource ControlCornerRadius}" Margin="-4" Background="{DynamicResource GrainTileBrush}"/>
                                             <ItemsPresenter/>
                                         </Grid>
                                     </Border>
@@ -1096,7 +1142,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="4"
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource ControlCornerRadius}"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="Center"/>
@@ -1125,14 +1171,14 @@
                     <Grid VerticalAlignment="Center">
                         <!-- SliderTrack: the input edge on every ordinary theme, a #808080 sunken
                              groove on 98SE. -->
-                        <Border Height="3" CornerRadius="1.5" VerticalAlignment="Center"
+                        <Border Height="3" CornerRadius="{DynamicResource SmallCornerRadius}" VerticalAlignment="Center"
                                 Background="{DynamicResource SliderTrack}"/>
                         <Track x:Name="PART_Track">
                             <Track.DecreaseRepeatButton>
                                 <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
                                     <RepeatButton.Template>
                                         <ControlTemplate TargetType="RepeatButton">
-                                            <Border Height="3" CornerRadius="1.5" VerticalAlignment="Center"
+                                            <Border Height="3" CornerRadius="{DynamicResource SmallCornerRadius}" VerticalAlignment="Center"
                                                     Background="{DynamicResource PrimaryBrush}"/>
                                         </ControlTemplate>
                                     </RepeatButton.Template>
@@ -1272,7 +1318,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <StackPanel Orientation="Horizontal" Background="Transparent">
-                        <Border x:Name="box" Width="15" Height="15" CornerRadius="3" VerticalAlignment="Center"
+                        <Border x:Name="box" Width="15" Height="15" CornerRadius="{DynamicResource SmallCornerRadius}" VerticalAlignment="Center"
                                 Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource InputBorderBrush}" BorderThickness="1">
                             <TextBlock x:Name="check" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                        Foreground="{DynamicResource OnPrimaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -1389,7 +1435,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="bg" Background="Transparent" CornerRadius="3" Padding="{TemplateBinding Padding}">
+                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="Center"/>
                     </Border>
@@ -1510,7 +1556,7 @@
                                       ClickMode="Press" VerticalAlignment="Center"
                                       IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"/>
 
-                        <Border x:Name="Bd" Grid.Column="1" CornerRadius="3" Margin="2,0,0,0"
+                        <Border x:Name="Bd" Grid.Column="1" CornerRadius="{DynamicResource SmallCornerRadius}" Margin="2,0,0,0"
                                 Background="Transparent" Padding="{TemplateBinding Padding}"
                                 SnapsToDevicePixels="True">
                             <ContentPresenter x:Name="PART_Header" ContentSource="Header"
@@ -1579,7 +1625,11 @@
 
                         <!-- The PART_ names are what ScrollViewer wires its own scrolling to, so
                              Value binds one-way and the control drives it from there. -->
-                        <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Row="0" Grid.Column="1"
+                        <!-- RowSpan 2: the vertical bar runs down THROUGH the corner block rather
+                             than stopping above it. The corner was a bare 16x16 hole whenever a
+                             horizontal bar appeared, and the only thing that sensibly fills it is
+                             the bar itself (Steve, 2026-08-09). -->
+                        <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
                                    Orientation="Vertical" Cursor="Arrow"
                                    Minimum="0" Maximum="{TemplateBinding ScrollableHeight}"
                                    ViewportSize="{TemplateBinding ViewportHeight}"
@@ -1662,7 +1712,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Border x:Name="bg" Background="Transparent" CornerRadius="4" Padding="8,5" Margin="2,1">
+                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource ControlCornerRadius}" Padding="8,5" Margin="2,1">
                         <ContentPresenter/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -1870,8 +1920,11 @@
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Style.Triggers>
+            <!-- GridRowAltBrush, not RowAltBrush: identical on every ordinary theme (the token
+                 mirrors it), but 98SE states its own solid stripe so the Events/Processes/
+                 Registry tables read white-and-grey striped (Steve, 2026-08-09). -->
             <Trigger Property="AlternationIndex" Value="1">
-                <Setter Property="Background" Value="{DynamicResource RowAltBrush}"/>
+                <Setter Property="Background" Value="{DynamicResource GridRowAltBrush}"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>

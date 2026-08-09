@@ -24,6 +24,21 @@ namespace KillerShell.Services
     /// </summary>
     public static class ThemeManager
     {
+        /// <summary>
+        /// Read a corner radius out of the live theme. For code-built controls, which cannot use a
+        /// DynamicResource and so had their radii as C# literals - the exact bug that kept the
+        /// panes, tabs and status bar rounded on 98SE however many times the markup was zeroed.
+        /// Accepts either a CornerRadius token or a bare Double, and falls back to the literal the
+        /// caller used to carry so no theme moves if a key is missing.
+        /// </summary>
+        public static double Radius(string key, double fallback)
+        {
+            var v = System.Windows.Application.Current?.TryFindResource(key);
+            if (v is System.Windows.CornerRadius cr) return cr.TopLeft;
+            if (v is double d) return d;
+            return fallback;
+        }
+
         public static Func<string, string?> GetSetting { get; set; } = _ => null;
         public static Action<string, string> SetSetting { get; set; } = (_, _) => { };
 
@@ -217,6 +232,10 @@ namespace KillerShell.Services
             // which is the kind of accident that breaks the moment someone changes the thickness.
             SetIfAbsent("BarEdgeBrush", Transparent);
             SetIfAbsent("BarEdgeThickness", new Thickness(0));
+            // The bar's DARK half, so a raised toolbar has both edges. Transparent/0 by default,
+            // exactly like BarEdge* above, so no other theme grows one.
+            SetIfAbsent("BarEdgeDarkBrush", Transparent);
+            SetIfAbsent("BarEdgeDarkThickness", new Thickness(0));
             SetIfAbsent("BarPadding", new Thickness(0));
             Mirror("BarSepBrush", "PaneBorderBrush");
             SetIfAbsent("BarSepWidth", 0.0);
@@ -242,6 +261,35 @@ namespace KillerShell.Services
             // non-flat themes the bevel is zero already, so the two are the same value, and a
             // literal cannot go wrong if a theme later states an asymmetric bevel.
             SetIfAbsent("TabActiveBevelDarkThickness", new Thickness(0));
+            // The INACTIVE tab's dark bevel. Mirrors BevelDarkThickness's default of 0, so the
+            // twelve rounded themes are unaffected; a flat theme states a 1px foot instead of the
+            // shared 2px, because a doubled rule under the tab strip reads as a sunken menu bar.
+            SetIfAbsent("TabInactiveBevelDarkThickness", new Thickness(0));
+            // The tab band's ring line when the pane is NOT the lit half of a dual pane - which in
+            // a single-pane window is always. UpdatePaneFocusRing (DualPane.cs) used to hardcode
+            // PaneBorderBrush here, overriding the transparent PaneEdgeBrush the markup asks for,
+            // so on 98SE the ring drew a grey rule at the foot of the tab strip AND two 1px
+            // verticals hanging 6px into the top of the pane - the "line under the active tab" and
+            // the "little grey line at the left of the menu bar" were this one element (Steve,
+            // 2026-08-09). Mirrors PaneBorderBrush by default, so the twelve rounded themes keep
+            // exactly the brush they had; 98SE states it transparent.
+            Mirror("TabRingIdleBrush", "PaneBorderBrush");
+            // The 1px rule along the bottom of the shell/document bar (FilePane.xaml), which was a
+            // hardcoded literal in the markup. Default is that literal, so nothing else moves.
+            SetIfAbsent("BarUnderlineThickness", new Thickness(0, 0, 0, 1));
+            // The footer row's height, applied by Chrome.cs. 24 is what MainWindow.xaml hardcoded,
+            // so the twelve rounded themes are unchanged; a bevelled theme states a taller one
+            // because its sunken cells paint over the content instead of reserving space.
+            SetIfAbsent("FooterHeight", 24.0);
+            // The tab bevel's negative margin, which undoes the tab's padding so the bevel sits on
+            // the tab's real edges. Default is the literal FilePane.xaml carried; a flat theme
+            // trims the BOTTOM so the right-hand dark edge stops at the tab's foot instead of
+            // hanging a pixel into the pane below it.
+            SetIfAbsent("TabBevelMargin", new Thickness(-12, -4, -5, -5));
+            // The folder tree's inset inside its well (MainWindow.xaml TreeFadeHost). Default is
+            // the literal it replaced; a flat theme zeroes the top so the well's own fill does not
+            // show above the first row as a white strip, and the scrollbar starts at the frame.
+            SetIfAbsent("TreePanePadding", new Thickness(4, 6, 2, 6));
             Mirror("BgFlyout", "MenuBackgroundBrush");
             Mirror("ButtonEdgeBrush", "CardBorderBrush");
             SetIfAbsent("CaptionButtonBrush", Transparent);
@@ -341,6 +389,17 @@ namespace KillerShell.Services
             // Both default to the surface they already used, so the other twelve are untouched;
             // 98SE states #000000 for each in its app layer (Themes/98SE.xaml).
             Mirror("TerminalBackgroundBrush", "ListPaneBrush");
+            // Text ON a MonitorCellBrush surface (the Performance tab's tiles, info panel and
+            // detail card). Plain text brushes everywhere - except a theme whose cells are a
+            // different world from its page, like 98SE's black CRT readouts on a light grey app,
+            // which states retro phosphor greens (Steve, 2026-08-09).
+            Mirror("MonitorTextBrush", "TextBrush");
+            Mirror("MonitorMutedBrush", "MutedTextBrush");
+            // The DataGrids' alternate-row stripe (Events, Processes, Registry). RowAltBrush
+            // everywhere, exactly as the style hardcoded; 98SE states a real Win98-adjacent
+            // stripe - white rows with a grey that is NOT the window face grey (Steve,
+            // 2026-08-09).
+            Mirror("GridRowAltBrush", "RowAltBrush");
             Mirror("MonitorCellBrush", "MenuBackgroundBrush");
 
             // A terminal that overrides its BACKGROUND has to override its foreground and accent
@@ -398,8 +457,40 @@ namespace KillerShell.Services
             // track edge to edge. The horizontal orientation trigger flips this to 0,4 and the
             // hover trigger to 2,2, both of which still override this as they always did.
             SetIfAbsent("ScrollThumbMargin", new Thickness(4, 0, 4, 0));
+            // The HORIZONTAL thumb's inset - the 0,4 the template hardcoded in its orientation
+            // trigger, which kept the slim-overlay squeeze on 98SE's 16px bar (the "too skinny"
+            // tree scrollbar). 98SE states 0: a Win98 thumb fills its track.
+            SetIfAbsent("ScrollThumbMarginH", new Thickness(0, 4, 0, 4));
             // 3, the radius the thumb already had. 98SE states 0 - a Win98 thumb is square.
             SetIfAbsent("ScrollThumbRadius", new CornerRadius(3));
+            SetIfAbsent("ChartCornerRadius", new CornerRadius(4));
+            // The 45-degree cut across a tab's top corners. 0 = no chamfer, and
+            // TabChamferConverter returns a null Clip for 0, so the twelve rounded themes are not
+            // clipped at all. Only a flat theme states a value.
+            SetIfAbsent("TabChamfer", 0.0);
+            // The tab's own padding. Default is the literal FilePane.xaml carried; a flat theme
+            // trims a pixel off the bottom for the shorter Win98 tab.
+            SetIfAbsent("TabPadding", new Thickness(12, 4, 5, 5));
+            // No PageBevel* keys: the tab page reuses the PaneBevel* set the sidebar well already
+            // uses, so the two recesses are the same four Borders and cannot drift apart. A
+            // single-ring PageBevel* pair was tried on 2026-08-09 and rejected - a Win98 recess is
+            // a DOUBLE bevel (outer #808080/#ffffff, inner #000000/#c0c0c0 at a 1px margin).
+            // The details strip's own edge and its internal fields|preview divider. Defaults are
+            // the literals FilePane.xaml carried (a top rule and a 1px rule); a flat theme drops
+            // both so the strip is completely flat.
+            SetIfAbsent("DetailsPaneBorderThickness", new Thickness(0, 1, 0, 0));
+            SetIfAbsent("DetailsDividerWidth", 1.0);
+            // The tab's outer margin. Default is the literal it replaced; a flat theme opens a 2px
+            // gap on the right so both chamfered corners are visible against the band.
+            SetIfAbsent("TabMargin", new Thickness(0, 3, 0, 1));
+            // The ACTIVE tab's dark-bevel margin. Defaults to the same family literal the shared
+            // TabBevelMargin uses (harmless - only a flat theme draws tab bevels at all); 98SE
+            // pulls its bottom in so the dark right edge stops at the menu bar's white top line.
+            SetIfAbsent("TabActiveBevelDarkMargin", new Thickness(-12, -4, -5, -5));
+            // The footer STATUS cell's inner inset. Deliberately its own key rather than reusing
+            // FooterCellPadding, which belongs to the version cell and carries a different number.
+            // Default is the literal MainWindow.xaml had, so the twelve rounded themes do not move.
+            SetIfAbsent("FooterStatusPadding", new Thickness(10.5, 0, 12, 0));
             SetIfAbsent("ScrollTrackBevelDark", Transparent);
             SetIfAbsent("ScrollTrackBevelLight", Transparent);
             // TRANSPARENT: the scrollbar is an overlay on every ordinary theme and has never had
@@ -494,6 +585,14 @@ namespace KillerShell.Services
                 // every other theme's card at the exact layout it already had.
                 combined["AboutCaptionHeight"] = flat ? combined["DialogTitleBarHeight"] : 0.0;
 
+                // The About card's close X, now the shared ChromeCloseButton style: on a flat
+                // theme a small Win98 caption button sitting inside the 20px band (16x14 with a
+                // 3px gap, next to the band's 2,2,2 inset), elsewhere the 28x26 corner slot the
+                // bare glyph always occupied (Steve, 2026-08-09, matching KillerNotes' card).
+                combined["AboutCloseWidth"]  = flat ? 16.0 : 28.0;
+                combined["AboutCloseHeight"] = flat ? 14.0 : 26.0;
+                combined["AboutCloseMargin"] = flat ? new Thickness(0, 5, 5, 0) : new Thickness(0, 6, 6, 0);
+
                 // A ready-made pane shadow at this theme's opacity, or NULL on a flat theme.
                 // Built per load and FROZEN: a DynamicResource inside a shared keyed Freezable's
                 // Opacity does not reliably resolve, which is how a flat theme ended up casting a
@@ -518,6 +617,23 @@ namespace KillerShell.Services
                     combined["BarShadowEffect"] = barShadow;
                 }
                 else combined["BarShadowEffect"] = null;
+
+                // The scrollbar thumb's HOVER treatment - the 2px shrink and the soft glow the
+                // template hardcoded. On a flat theme the thumb is a raised bevelled button that
+                // fills its track, so shrinking it on hover pulled the fill out from under its
+                // own bevel ring, and the glow put a shadow on a theme that has none anywhere
+                // (Steve, 2026-08-09: "the scrollbars should be raised, not flat"). Defaults are
+                // exactly the literals the template carried, so the other twelve do not move.
+                if (!combined.Contains("ScrollThumbHoverMargin"))
+                    combined["ScrollThumbHoverMargin"] = flat ? new Thickness(0) : new Thickness(2);
+                if (flat) combined["ScrollThumbHoverEffect"] = null;
+                else
+                {
+                    var thumbGlow = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 4, ShadowDepth = 0, Opacity = 0.3 };
+                    thumbGlow.Freeze();
+                    combined["ScrollThumbHoverEffect"] = thumbGlow;
+                }
 
                 // The heavy CARD shadow - dialogs, the About card, floating overlays. Scaled by
                 // FlyoutShadowOpacity, so a flat theme gets NULL and 98SE's dialogs sit flat
@@ -568,6 +684,15 @@ namespace KillerShell.Services
             // picking an accent replaces OutlineBtnBrush.
             combined["OnOutlineBtnBrush"] = ReadableOn(combined["OutlineBtnBrush"] as SolidColorBrush,
                                                        combined["OnPrimaryBrush"] as SolidColorBrush);
+
+            // The dual-pane focus ring's brush: the active tab's side/stripe borders, the band's
+            // TabEdge verticals and the lit TabBarRing all draw with it. PrimaryBrush on every
+            // ordinary theme, exactly as they always did - but a theme may state its own, and 98SE
+            // states Transparent, because a Win98 tab is identified by its bevel and its join to
+            // the page, never by an accent ring (Steve, 2026-08-09, dual pane). Computed HERE,
+            // after the accent overlay, so it follows the picked accent like OnOutlineBtnBrush.
+            if (!combined.Contains("TabActiveRingBrush"))
+                combined["TabActiveRingBrush"] = combined["PrimaryBrush"];
 
             // A dialog's caption band. TRANSPARENT by default, so the band shows the card's own
             // face and is invisible - the family look, where a dialog title blends into the

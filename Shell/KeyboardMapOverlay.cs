@@ -282,7 +282,8 @@ namespace KillerShell.Shell
                     var bar = new Rectangle
                     {
                         Height = 3, VerticalAlignment = VerticalAlignment.Bottom,
-                        RadiusX = 1.5, RadiusY = 1.5,
+                        RadiusX = KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 1.5),
+                        RadiusY = KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 1.5),
                         Margin = new Thickness(3, 0, 3, 0),
                         Visibility = Visibility.Collapsed,
                     };
@@ -295,7 +296,7 @@ namespace KillerShell.Shell
                     var key = new Border
                     {
                         Width = U * w - 4, Height = 44,
-                        CornerRadius = new CornerRadius(4),
+                        CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ControlCornerRadius", 4)),
                         BorderThickness = new Thickness(1),
                         Margin = new Thickness(0, 0, 4, 0),
                         Child = inner,
@@ -359,7 +360,8 @@ namespace KillerShell.Shell
             b.SetBinding(Border.BorderBrushProperty,     new Binding("BorderBrush")     { RelativeSource = RelativeSource.TemplatedParent });
             b.SetBinding(Border.BorderThicknessProperty, new Binding("BorderThickness") { RelativeSource = RelativeSource.TemplatedParent });
             b.SetBinding(Border.PaddingProperty,         new Binding("Padding")         { RelativeSource = RelativeSource.TemplatedParent });
-            b.SetValue(Border.CornerRadiusProperty, new CornerRadius(3));
+            b.SetValue(Border.CornerRadiusProperty,
+                new CornerRadius(KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 3)));
 
             var cp = new FrameworkElementFactory(typeof(ContentPresenter));
             cp.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
