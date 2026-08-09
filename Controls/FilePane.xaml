@@ -1448,10 +1448,13 @@
                                            Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                            HorizontalOffset="-14" VerticalOffset="-2">
                                         <Grid Margin="14">
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
-                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
-                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
-                                            </Border>
+                                            <!-- MenuShadow tokens, not FlyoutShadowOpacity: that key is 0 on
+                                                 98SE, which erased these popups' shadows there - the tokens keep
+                                                 the ordinary themes' soft shadow and give 98SE the Win98 offset
+                                                 shadow (Steve, 2026-08-09: "we need the proper shadows"). -->
+                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
+                                                    Opacity="{DynamicResource MenuShadowOpacity}"
+                                                    Effect="{DynamicResource MenuShadowEffect}"/>
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                                     BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="8,6">
                                                 <StackPanel Orientation="Horizontal">
@@ -1489,37 +1492,39 @@
                                            Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                            HorizontalOffset="-14" VerticalOffset="-2">
                                         <Grid Margin="14">
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
-                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
-                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
-                                            </Border>
+                                            <!-- MenuShadow tokens, not FlyoutShadowOpacity: that key is 0 on
+                                                 98SE, which erased these popups' shadows there - the tokens keep
+                                                 the ordinary themes' soft shadow and give 98SE the Win98 offset
+                                                 shadow (Steve, 2026-08-09: "we need the proper shadows"). -->
+                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
+                                                    Opacity="{DynamicResource MenuShadowOpacity}"
+                                                    Effect="{DynamicResource MenuShadowEffect}"/>
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                                     BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
+                                                <!-- CheckRow, not accent-filled SurfaceButtons: these are TOGGLED
+                                                     OPTIONS, so they read as check-marked menu rows now, and the
+                                                     indent picker is three more of the same with the check on the
+                                                     active width (Steve, 2026-08-09). Tag="on" comes from the same
+                                                     code that always set it. -->
                                                 <StackPanel MinWidth="188">
                                                     <Button x:Name="EdOptLineNumbers" Content="{DynamicResource Str_Ed_OptLineNumbers}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdOptLineNumbers_Click"/>
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdOptLineNumbers_Click"/>
                                                     <Button x:Name="EdOptCurrentLine" Content="{DynamicResource Str_Ed_OptCurrentLine}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdOptCurrentLine_Click"/>
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdOptCurrentLine_Click"/>
                                                     <Button x:Name="EdOptWhitespace" Content="{DynamicResource Str_Ed_OptWhitespace}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdOptWhitespace_Click"/>
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdOptWhitespace_Click"/>
                                                     <Button x:Name="EdOptSpaces" Content="{DynamicResource Str_Ed_OptSpaces}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Margin="0,0,0,6" Click="EdOptSpaces_Click"/>
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,6" Click="EdOptSpaces_Click"/>
 
                                                     <TextBlock Text="{DynamicResource Str_Ed_OptIndent}" Margin="10,0,0,3"
                                                                Foreground="{DynamicResource DimTextBrush}"
                                                                FontFamily="Consolas" FontSize="10"/>
-                                                    <StackPanel Orientation="Horizontal" Margin="8,0,0,6">
-                                                        <Button x:Name="EdIndent2" CommandParameter="2" Content="2" Width="30" Height="20" Padding="0"
-                                                                FontSize="11" Style="{StaticResource SurfaceButton}" Click="EdIndent_Click"/>
-                                                        <Button x:Name="EdIndent4" CommandParameter="4" Content="4" Width="30" Height="20" Padding="0" Margin="4,0,0,0"
-                                                                FontSize="11" Style="{StaticResource SurfaceButton}" Click="EdIndent_Click"/>
-                                                        <Button x:Name="EdIndent8" CommandParameter="8" Content="8" Width="30" Height="20" Padding="0" Margin="4,0,0,0"
-                                                                FontSize="11" Style="{StaticResource SurfaceButton}" Click="EdIndent_Click"/>
-                                                    </StackPanel>
+                                                    <Button x:Name="EdIndent2" CommandParameter="2" Content="2"
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdIndent_Click"/>
+                                                    <Button x:Name="EdIndent4" CommandParameter="4" Content="4"
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdIndent_Click"/>
+                                                    <Button x:Name="EdIndent8" CommandParameter="8" Content="8"
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,6" Click="EdIndent_Click"/>
 
                                                     <!-- Font and size are NOT here. They live in
                                                          the Fonts dialog beside the app and
@@ -1576,28 +1581,29 @@
                                            Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                            HorizontalOffset="-14" VerticalOffset="-2">
                                         <Grid Margin="14">
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
-                                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
-                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
-                                            </Border>
+                                            <!-- MenuShadow tokens, not FlyoutShadowOpacity: that key is 0 on
+                                                 98SE, which erased these popups' shadows there - the tokens keep
+                                                 the ordinary themes' soft shadow and give 98SE the Win98 offset
+                                                 shadow (Steve, 2026-08-09: "we need the proper shadows"). -->
+                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
+                                                    Opacity="{DynamicResource MenuShadowOpacity}"
+                                                    Effect="{DynamicResource MenuShadowEffect}"/>
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                                     BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
+                                                <!-- CheckRow - same conversion as the gear popup: the picked
+                                                     encoding wears the check instead of an accent fill (Steve,
+                                                     2026-08-09). SyncEditorEncodingMenu already sets Tag="on". -->
                                                 <StackPanel MinWidth="168">
                                                     <Button x:Name="EdEncUtf8" CommandParameter="utf8" Content="{DynamicResource Str_Ed_EncUtf8}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdEncoding_Click"/>
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
                                                     <Button x:Name="EdEncUtf8Bom" CommandParameter="utf8bom" Content="{DynamicResource Str_Ed_EncUtf8Bom}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdEncoding_Click"/>
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
                                                     <Button x:Name="EdEncUtf16Le" CommandParameter="utf16le" Content="{DynamicResource Str_Ed_EncUtf16Le}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdEncoding_Click"/>
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
                                                     <Button x:Name="EdEncUtf16Be" CommandParameter="utf16be" Content="{DynamicResource Str_Ed_EncUtf16Be}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="EdEncoding_Click"/>
+                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
                                                     <Button x:Name="EdEncAnsi" CommandParameter="ansi" Content="{DynamicResource Str_Ed_EncAnsi}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Click="EdEncoding_Click"/>
+                                                            Style="{StaticResource CheckRow}" Click="EdEncoding_Click"/>
                                                 </StackPanel>
                                             </Border>
                                         </Grid>

@@ -208,15 +208,32 @@ namespace KillerShell
         private void PaneContent_SizeChanged(object s, SizeChangedEventArgs e)
         {
             if (s is not FrameworkElement el) return;
-            // The 5,5 here was a C# LITERAL, which is why the content pane stayed ROUNDED on 98SE
-            // no matter what the markup and the palette said - a clip is geometry, so no
-            // DynamicResource can reach it (Steve, 2026-08-09: "WHY DID YOU MAKE THE CONTENT PANE
-            // ROUND?"). PaneCornerRadiusValue is 6 on the rounded themes and 0 on a flat one; the
-            // old literal was 5, so the twelve gain a single pixel of curve and now agree with the
-            // pane's own CornerRadius instead of being one off it.
-            double r = KillerShell.Services.ThemeManager.Radius("PaneCornerRadiusValue", 5);
-            el.Clip = new System.Windows.Media.RectangleGeometry(
-                new Rect(0, 0, el.ActualWidth, el.ActualHeight), r, r);
+            // PER-CORNER now, mirroring ResultsPane.CornerRadius - which Tabs.cs squares on the
+            // top corner under a first/last ACTIVE tab. The old uniform RectangleGeometry kept
+            // clipping the bar's top-right ROUND while the pane's own border squared, which left
+            // "a tiny rounded bit of the menubar below the tab" whenever the rightmost tab was
+            // the active one (Steve, 2026-08-09). Tabs.cs calls RefreshPaneClip whenever it
+            // re-syncs the corners, so the clip can never lag them. (This also still covers the
+            // 98SE case: its CornerRadius is 0 everywhere, so the geometry is a plain rect.)
+            var cr = ResultsPane.CornerRadius;
+            double w = el.ActualWidth, h = el.ActualHeight;
+            if (w <= 0 || h <= 0) return;
+            double tl = cr.TopLeft, tr = cr.TopRight, br = cr.BottomRight, bl = cr.BottomLeft;
+            var g = new System.Windows.Media.StreamGeometry();
+            using (var c = g.Open())
+            {
+                c.BeginFigure(new Point(tl, 0), true, true);
+                c.LineTo(new Point(w - tr, 0), false, false);
+                if (tr > 0) c.ArcTo(new Point(w, tr), new Size(tr, tr), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
+                c.LineTo(new Point(w, h - br), false, false);
+                if (br > 0) c.ArcTo(new Point(w - br, h), new Size(br, br), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
+                c.LineTo(new Point(bl, h), false, false);
+                if (bl > 0) c.ArcTo(new Point(0, h - bl), new Size(bl, bl), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
+                c.LineTo(new Point(0, tl), false, false);
+                if (tl > 0) c.ArcTo(new Point(tl, 0), new Size(tl, tl), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
+            }
+            g.Freeze();
+            el.Clip = g;
 
             // The details columns are pixel widths shared by both panes, so they have to be
             // re-fitted whenever either pane changes size (ResultsView.UpdateColumnFit).

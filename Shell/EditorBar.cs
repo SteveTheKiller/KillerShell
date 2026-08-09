@@ -54,11 +54,11 @@ namespace KillerShell.Shell
             // goes reads as a bug. It fills in for real the moment the first save picks a name.
             pane.EditorPathText.Text     = editor.IsUntitled ? Loc("Str_Ed_Untitled") : editor.FilePath;
 
-            // Click-to-edit (EdPath_Click) only makes sense once there is a real path to rename -
-            // an untitled document has nothing on disk yet, so the cursor and tooltip stay off
-            // rather than inviting a click that silently does nothing.
-            pane.EditorPathText.Cursor  = editor.IsUntitled ? null : Cursors.IBeam;
-            pane.EditorPathText.ToolTip = editor.IsUntitled ? null : Loc("Str_TT_EdPath");
+            // Click-to-edit works for an UNTITLED document too now - typing a path is the
+            // save-as (EdPath_Click) - so the cursor and tooltip invite the click either way
+            // (Steve, 2026-08-09).
+            pane.EditorPathText.Cursor  = Cursors.IBeam;
+            pane.EditorPathText.ToolTip = Loc("Str_TT_EdPath");
 
             pane.EditorEncodingBtn.Content = editor.EncodingLabel;
             pane.EditorEolText.Text        = editor.NewLineLabel;
@@ -239,11 +239,17 @@ namespace KillerShell.Shell
         internal void EdPath_Click(object sender, MouseButtonEventArgs e)
         {
             var t = _active;
-            if (t.Editor == null || t.Editor.IsUntitled) return;
+            if (t.Editor == null) return;
             var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, t.Editor));
             if (pane == null) return;
 
-            pane.EditorPathBox.Text = t.Editor.FilePath;
+            // An UNTITLED document is editable here too now (Steve, 2026-08-09: "the filename
+            // in the addressbar of the text editor doesnt let me edit"): typing a path IS the
+            // save-as, so the box prefills with the tab's folder and a placeholder name to
+            // overtype instead of refusing the click.
+            pane.EditorPathBox.Text = t.Editor.IsUntitled
+                ? Path.Combine(string.IsNullOrEmpty(t.CurrentFolder) ? HomeFolder : t.CurrentFolder, "untitled.txt")
+                : t.Editor.FilePath;
             pane.EditorPathText.Visibility = Visibility.Collapsed;
             pane.EditorPathBox.Visibility = Visibility.Visible;
             pane.EditorPathBox.Focus();
@@ -275,10 +281,10 @@ namespace KillerShell.Shell
             var t = pane.Active;
             if (t == null) { EndEditEdPath(pane); return; }
             var editor = t.Editor;
-            if (editor == null || editor.IsUntitled) { EndEditEdPath(pane); return; }
+            if (editor == null) { EndEditEdPath(pane); return; }
 
             string newPath = box.Text.Trim();
-            if (string.Equals(newPath, editor.FilePath, StringComparison.Ordinal))
+            if (!editor.IsUntitled && string.Equals(newPath, editor.FilePath, StringComparison.Ordinal))
             { EndEditEdPath(pane); return; }   // genuinely unchanged
 
             string? dir = Path.GetDirectoryName(newPath);
@@ -293,27 +299,44 @@ namespace KillerShell.Shell
 
             // A case-only rename ("readme.txt" -> "README.txt") is a real rename and has to skip
             // the exists check, the same carve-out FileOps.Rename makes: on a case-insensitive
-            // volume that check would find the very file being renamed and refuse it.
-            bool caseOnly = string.Equals(newPath, editor.FilePath, StringComparison.OrdinalIgnoreCase);
+            // volume that check would find the very file being renamed and refuse it. Never
+            // applies to an untitled document, which has no original to case-rename.
+            bool caseOnly = !editor.IsUntitled
+                         && string.Equals(newPath, editor.FilePath, StringComparison.OrdinalIgnoreCase);
             if (!caseOnly && (File.Exists(newPath) || Directory.Exists(newPath)))
             {
                 SetTabStatusKey(t, "Str_Status_RenameFailed", "already exists");
                 return;
             }
 
-            try { File.Move(editor.FilePath, newPath); }
-            catch (Exception ex)
+            if (editor.IsUntitled)
             {
-                // File.Move throws before touching the source when the destination side of the
-                // move fails, so the original is untouched here and the tab is still correctly
-                // pointing at it - nothing below this runs.
-                SetTabStatusKey(t, "Str_Status_RenameFailed", ex.Message);
-                return;
+                // Committing a path on an UNTITLED document IS the save-as: adopt the name,
+                // then write the buffer there. On a failed write it stays in edit mode with the
+                // path already adopted, so a re-Enter simply retries.
+                editor.AdoptPath(newPath, editor.CurrentEncoding);
+                if (!editor.SaveFile(out string saveError, out _))
+                {
+                    SetTabStatusKey(t, "Str_Status_RenameFailed", saveError);
+                    return;
+                }
             }
+            else
+            {
+                try { File.Move(editor.FilePath, newPath); }
+                catch (Exception ex)
+                {
+                    // File.Move throws before touching the source when the destination side of
+                    // the move fails, so the original is untouched here and the tab is still
+                    // correctly pointing at it - nothing below this runs.
+                    SetTabStatusKey(t, "Str_Status_RenameFailed", ex.Message);
+                    return;
+                }
 
-            // Same encoding, kept - a rename is not a re-save, so AdoptPath's re-highlight from
-            // the (possibly new) extension is the only thing that should change here.
-            editor.AdoptPath(newPath, editor.CurrentEncoding);
+                // Same encoding, kept - a rename is not a re-save, so AdoptPath's re-highlight
+                // from the (possibly new) extension is the only thing that should change here.
+                editor.AdoptPath(newPath, editor.CurrentEncoding);
+            }
 
             // Same follow-up SaveActiveEditor makes after a first Save As: the folder backing
             // this tab has moved, so the address row and nav buttons have to move with it.

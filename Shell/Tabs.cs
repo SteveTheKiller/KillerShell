@@ -132,6 +132,12 @@ namespace KillerShell.Shell
                 Pane.ScopeBar.CornerRadius      = new CornerRadius(b, 0, 0, 0);
                 Pane.DetailsHeader.CornerRadius = new CornerRadius(b, b, 0, 0);
             }
+
+            // The content clip mirrors ResultsPane.CornerRadius per corner now
+            // (FilePane.xaml.cs PaneContent_SizeChanged), so it has to re-run whenever the
+            // corners just changed - otherwise a last-active tab squared the pane's border while
+            // the clip kept rounding the bar under it.
+            Pane.RefreshPaneClip();
         }
 
         /// <summary>

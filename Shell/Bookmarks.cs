@@ -204,9 +204,24 @@ namespace KillerShell.Shell
             var sv = FindDescendant<System.Windows.Controls.ScrollViewer>(BookmarksList);
             if (sv == null) return;
 
-            BookmarksFadeTop.Opacity    = Ramp(sv.VerticalOffset, BookmarksFadeTop.Height, 18);
-            BookmarksFadeBottom.Opacity = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset,
-                                               BookmarksFadeBottom.Height, 22);
+            // The fades are the list's own OpacityMask stops now (MainWindow.xaml,
+            // BmFade*): the outer stop's ALPHA drops toward transparent as rows slide past
+            // that edge, and the inner offsets track the list's live height so the band stays
+            // roughly 18/22px whatever the drawer's height is. Same ramp inputs as before.
+            double top    = Ramp(sv.VerticalOffset, 18, 18);
+            double bottom = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset, 22, 22);
+
+            BmFadeTopOuter.Color = System.Windows.Media.Color.FromArgb(
+                (byte)(255 - (int)(top * 255)), 0, 0, 0);
+            BmFadeBotOuter.Color = System.Windows.Media.Color.FromArgb(
+                (byte)(255 - (int)(bottom * 255)), 0, 0, 0);
+
+            double h = BookmarksList.ActualHeight;
+            if (h > 40)
+            {
+                BmFadeTopInner.Offset = 18.0 / h;
+                BmFadeBotInner.Offset = 1.0 - 22.0 / h;
+            }
         }
 
         /// <summary>

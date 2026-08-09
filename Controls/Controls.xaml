@@ -1327,6 +1327,40 @@
         </Setter>
     </Style>
 
+    <!-- A check-marked option row for the editor's gear and encoding popups: reads like a
+         MenuItem - transparent row, hover wash, a 16px check column that shows E73E while
+         Tag="on" - instead of the accent-filled buttons these were, which read as pressed
+         buttons rather than toggled options (Steve, 2026-08-09). The Tag="on" signal is the
+         SAME one the code already sets for SurfaceButton, so no code changes anywhere. -->
+    <Style x:Key="CheckRow" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Foreground" Value="{DynamicResource MenuTextBrush}"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}" Padding="4,3,10,3">
+                        <DockPanel LastChildFill="True">
+                            <TextBlock x:Name="check" DockPanel.Dock="Left" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="10" Width="16" VerticalAlignment="Center" Visibility="Hidden"/>
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Tag" Value="on">
+                            <Setter TargetName="check" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Close X for the About card and the Shortcuts card. Theme-split entirely through tokens
          (AboutClose* in ThemeManager): on every ordinary theme it renders the ORIGINAL treatment
          - a bare muted U+2715 that reddens on hover, no fill - and on 98SE it is a real Win98

@@ -358,6 +358,22 @@
                                  ScrollViewer.CanContentScroll="False"
                                  VirtualizingPanel.IsVirtualizing="False"
                                  PreviewMouseWheel="BookmarksList_PreviewMouseWheel">
+                            <!-- Edge fades as an OpacityMask on the LIST ITSELF, the tree's own
+                                 mechanism (TreeFadeHost): rows dissolve to TRANSPARENT and
+                                 whatever is genuinely behind them shows through. They were two
+                                 overlay Borders painted with BackgroundBrush, which is a
+                                 full-window gradient on five themes - each strip re-ramped the
+                                 entire gradient inside its own 18/22px and the list faded to the
+                                 WRONG color (Steve, 2026-08-09, second report). Stop alphas are
+                                 driven from Bookmarks.cs SyncBookmarksEdgeFades. -->
+                            <ListBox.OpacityMask>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop x:Name="BmFadeTopOuter" Color="#FF000000" Offset="0"/>
+                                    <GradientStop x:Name="BmFadeTopInner" Color="#FF000000" Offset="0.10"/>
+                                    <GradientStop x:Name="BmFadeBotInner" Color="#FF000000" Offset="0.90"/>
+                                    <GradientStop x:Name="BmFadeBotOuter" Color="#FF000000" Offset="1"/>
+                                </LinearGradientBrush>
+                            </ListBox.OpacityMask>
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="Padding" Value="0"/>
@@ -431,37 +447,9 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <!-- Edge fades, same treatment as the tree's (TreePanel.cs /
-                             SyncBookmarksEdgeFades): only there while there is something PAST
-                             that edge, ramped in over the fade's own height so a row dissolves
-                             rather than popping as it slides under. Inset 12px on the right to
-                             clear the list's own scrollbar. -->
-                        <Border x:Name="BookmarksFadeTop" Height="18" Opacity="0"
-                                VerticalAlignment="Top" Margin="0,0,12,0" IsHitTestVisible="False">
-                            <Border.OpacityMask>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Color="#FF000000" Offset="0"/>
-                                    <GradientStop Color="#00000000" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.OpacityMask>
-                            <Grid>
-                                <Border Background="{DynamicResource BackgroundBrush}"/>
-                                <Border Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                            </Grid>
-                        </Border>
-                        <Border x:Name="BookmarksFadeBottom" Height="22" Opacity="0"
-                                VerticalAlignment="Bottom" Margin="0,0,12,0" IsHitTestVisible="False">
-                            <Border.OpacityMask>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Color="#00000000" Offset="0"/>
-                                    <GradientStop Color="#FF000000" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.OpacityMask>
-                            <Grid>
-                                <Border Background="{DynamicResource BackgroundBrush}"/>
-                                <Border Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                            </Grid>
-                        </Border>
+                        <!-- The old overlay fade Borders lived here - replaced by the OpacityMask
+                             on BookmarksList above, which dissolves to what is really behind the
+                             rows instead of repainting BackgroundBrush at the wrong bounds. -->
 
                         <!-- Divider grip. Same Thumb approach as the tree's width handle, turned
                              through 90 degrees: the drawer's Height is animated by the open and
