@@ -515,7 +515,6 @@ namespace KillerShell.Shell
 
             var panel = new Border
             {
-                Margin = new Thickness(8, 8, 8, 8),
                 Padding = new Thickness(12, 10, 12, 10),
                 CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
                 BorderThickness = new Thickness(1),
@@ -527,6 +526,9 @@ namespace KillerShell.Shell
             // re-ramped it inside the panel (Steve, 2026-08-08).
             panel.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
             panel.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
+            // Monitor*Margin tokens: the literals the panel/scrollers/tiles always carried on
+            // every ordinary theme, collapsed to 2px seams on 98SE (Steve, 2026-08-09).
+            panel.SetResourceReference(FrameworkElement.MarginProperty, "MonitorInfoMargin");
             return panel;
         }
 
@@ -557,8 +559,8 @@ namespace KillerShell.Shell
                 Content = _tileListPanel,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                Margin = new Thickness(8, 0, 4, 8),
             };
+            tileScroller.SetResourceReference(FrameworkElement.MarginProperty, "MonitorTileListMargin");
             SetColumn(tileScroller, 0);
 
             var detailScroller = new ScrollViewer
@@ -1001,11 +1003,11 @@ namespace KillerShell.Shell
 
             var tileBorder = new Border
             {
-                Margin = new Thickness(6, 3, 6, 3),
                 CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
                 Cursor = Cursors.Hand,
                 Child = innerGrid,
             };
+            tileBorder.SetResourceReference(FrameworkElement.MarginProperty, "MonitorTileMargin");
             tileBorder.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
 
             var capturedTile = tile;

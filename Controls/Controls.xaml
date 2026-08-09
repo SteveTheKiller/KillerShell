@@ -260,9 +260,12 @@
                         <ContentPresenter VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <!-- ComboHighlightTextBrush = the PrimaryBrush this always set, except on
+                             98SE where MenuHoverBrush is solid NAVY and PrimaryBrush IS that navy
+                             - invisible highlighted items (Steve, 2026-08-09). White there. -->
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
@@ -274,7 +277,9 @@
     </Style>
 
     <Style TargetType="ComboBox">
-        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+        <!-- ComboFieldBrush = BackgroundBrush everywhere but 98SE, where an edit field is a
+             WHITE client area (Steve, 2026-08-09: "dropdowns should be white"). -->
+        <Setter Property="Background" Value="{DynamicResource ComboFieldBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="FontFamily" Value="Consolas"/>
         <Setter Property="FontSize" Value="12"/>
@@ -302,8 +307,19 @@
                                     <Style TargetType="TextBlock"><Setter Property="TextTrimming" Value="CharacterEllipsis"/></Style>
                                 </ContentPresenter.Resources>
                             </ContentPresenter>
-                            <TextBlock x:Name="chev" Grid.Column="1" Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="8"
-                                       Foreground="{DynamicResource DimTextBrush}" VerticalAlignment="Center" Margin="5,1,0,0"/>
+                            <!-- The drop arrow. On every ordinary theme this renders exactly the
+                                 bare chevron it always was (transparent face, zero bevels, same
+                                 margin); on 98SE it becomes the era's raised grey button filling
+                                 the field's right edge, with Marlett's solid triangle (Steve,
+                                 2026-08-09: "the dropdown button should be the gray button
+                                 style"). -->
+                            <Grid Grid.Column="1" Margin="{DynamicResource ComboChevMargin}" MinWidth="{DynamicResource ComboButtonMinWidth}">
+                                <Border Background="{DynamicResource ComboButtonBrush}"/>
+                                <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                <TextBlock x:Name="chev" Text="{DynamicResource ComboChevGlyph}" FontFamily="{DynamicResource ComboChevFont}" FontSize="8"
+                                           Foreground="{DynamicResource DimTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{DynamicResource ComboChevGlyphMargin}"/>
+                            </Grid>
                         </Grid>
                         <ToggleButton Focusable="False" ClickMode="Press"
                                       IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
@@ -313,10 +329,12 @@
                         </ToggleButton>
                         <Popup x:Name="PART_Popup" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                Placement="Bottom" AllowsTransparency="True" PopupAnimation="Fade">
+                            <!-- ComboPopupBrush: MenuBackgroundBrush everywhere, WHITE on 98SE -
+                                 a Win98 dropdown list is a white well with the navy highlight. -->
                             <Border MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                    Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Margin="6">
-                                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
+                                    Background="{DynamicResource ComboPopupBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
+                                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Margin="6"
+                                    Effect="{DynamicResource ComboPopupShadow}">
                                 <Grid>
                                     <Border IsHitTestVisible="False" CornerRadius="{DynamicResource ControlCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                                     <ScrollViewer Margin="0,4" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -785,9 +803,13 @@
                          instantly while its own children faded in, which is backwards. 150ms
                          ease-out, the curve Anim.FadeIn uses. (Steve, 2026-07-30.) -->
                     <Grid x:Name="MenuRoot" Opacity="0" Margin="5">
+                        <!-- MenuShadow*: the same values as before on every ordinary theme
+                             (opacity follows FlyoutShadowOpacity, soft 12px blur), and a HARD
+                             offset shadow at full opacity on 98SE - Win98 context menus cast a
+                             solid drop shadow (Steve, 2026-08-09). -->
                         <Border CornerRadius="{DynamicResource ControlCornerRadius}" Background="{TemplateBinding Background}" IsHitTestVisible="False"
-                                Opacity="{DynamicResource FlyoutShadowOpacity}">
-                            <Border.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="2" Direction="270" Opacity="0.5"/></Border.Effect>
+                                Opacity="{DynamicResource MenuShadowOpacity}"
+                                Effect="{DynamicResource MenuShadowEffect}">
                         </Border>
                         <!-- Raised menu bevel, two pairs. Nothing on any theme but 98SE, whose
                              menus are a hard raised box rather than a rounded shadowed card. -->
@@ -1009,8 +1031,10 @@
              so without it the shadow is cut off square. -->
         <Setter Property="Margin" Value="6"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <!-- Null on a flat theme, so a 98SE flyout is a hard raised box with no halo. -->
-        <Setter Property="Effect" Value="{DynamicResource CardShadowEffect}"/>
+        <!-- FlyoutCardEffect: CardShadowEffect on every ordinary theme exactly as before, and a
+             HARD offset shadow on 98SE - Win98 drew its menus with a solid drop shadow, so the
+             flyouts get it back with the bevel (Steve, 2026-08-09). -->
+        <Setter Property="Effect" Value="{DynamicResource FlyoutCardEffect}"/>
     </Style>
 
     <!-- The grain overlay. LAST child of the card, so it lies OVER the items - including a
@@ -1067,10 +1091,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <!-- RadioWellBrush: transparent on every ordinary theme, so a theme row is a
-                         bare label; 98SE gives it a white well, the way a Win98 list of options
-                         sits in a sunken box. -->
-                    <Border x:Name="bd" Background="{DynamicResource RadioWellBrush}"
+                    <!-- Transparent ROW, not RadioWellBrush: that key is the little white circle
+                         well behind the radio RING (see KillerNotes' copy of this template), and
+                         painting it across the whole row turned every flyout option into a WHITE
+                         pill on 98SE - the "wrong color" flyouts (Steve, 2026-08-09). The well
+                         ellipse below is where it actually belongs; both are transparent on every
+                         ordinary theme, so nothing changes there. -->
+                    <Border x:Name="bd" Background="Transparent"
                             CornerRadius="{DynamicResource SmallCornerRadius}"
                             Margin="-8,0,2,0" Padding="10,4,10,4">
                         <!-- DockPanel (not a horizontal StackPanel) so the content fills the row
@@ -1078,6 +1105,7 @@
                              right edge. -->
                         <DockPanel LastChildFill="True" Background="Transparent">
                             <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0" DockPanel.Dock="Left">
+                                <Ellipse Width="14" Height="14" Fill="{DynamicResource RadioWellBrush}"/>
                                 <Ellipse x:Name="ring" Width="14" Height="14"
                                          Stroke="{DynamicResource DimTextBrush}" StrokeThickness="1.5"
                                          Fill="Transparent"/>
@@ -1580,8 +1608,15 @@
                         <Trigger Property="IsMouseOver" SourceName="Bd" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
                         </Trigger>
+                        <!-- TreeSelectedTextBrush mirrors TextBrush, so nothing changes on the
+                             ordinary themes (their RowSelectedBrush is a faint wash); 98SE
+                             states WHITE - its selected row is a solid navy block, and the tree
+                             labels were black on it (Steve, 2026-08-09, folder tree AND the
+                             registry tree, which share this style). The trees' item templates
+                             must NOT pin their own Foreground or this cannot reach the text. -->
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TreeSelectedTextBrush}"/>
                         </Trigger>
                         <!-- Last sibling: cut the vertical to an elbow. Bound to the container
                              itself so a recycled container re-evaluates (LastChildConverter.cs). -->
@@ -1950,8 +1985,13 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
+            <!-- GridSelectedTextBrush mirrors PrimaryBrush - exactly the accent this trigger
+                 always set, so nothing changes on the ordinary themes. 98SE states WHITE: its
+                 selected row is a solid navy block and PrimaryBrush IS that navy, which is what
+                 made selected text unreadable in the Registry/Events/Processes tables (Steve,
+                 2026-08-09). -->
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource GridSelectedTextBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

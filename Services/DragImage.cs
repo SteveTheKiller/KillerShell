@@ -240,7 +240,23 @@ namespace KillerShell.Services
 
         public bool Enter(IntPtr hwnd, System.Runtime.InteropServices.ComTypes.IDataObject data, System.Windows.Point screenPt, int effect)
         {
-            _com = new DragDropHelperCoClass();
+            // Activator over Type.GetTypeFromCLSID, NOT `new` on a [ComImport] coclass. The drag
+            // SOURCE half CoCreates the SAME CLSID - the shell's DragDropHelper object serves both
+            // IDragSourceHelper and IDropTargetHelper - and the runtime types the shared RCW after
+            // whichever managed coclass got to it first. `new DragDropHelperCoClass()` then threw
+            // InvalidCastException ("Unable to cast object of type 'DragDropHelper' to type
+            // 'DragDropHelperCoClass'") the moment an OUTBOUND drag passed back over our own
+            // window - which is exactly a drag toward Telegram/Teams - and crashed the app
+            // (Steve, 2026-08-09). CreateInstance hands the RCW back untyped and the interface
+            // check below is a plain QueryInterface, which cannot hit the class-identity trap.
+            // The try/catch is belt and braces: a failed helper only costs the ghost image, and a
+            // drag must never crash over decoration.
+            try
+            {
+                var t = Type.GetTypeFromCLSID(new Guid("4657278A-411B-11D2-839A-00C04FD918D0"));
+                _com = t != null ? Activator.CreateInstance(t) : null;
+            }
+            catch { _com = null; return false; }
             if (_com is not IDropTargetHelperCom helper) { _com = null; return false; }
             var pt = new POINT { x = (int)screenPt.X, y = (int)screenPt.Y };
             int hr = helper.DragEnter(hwnd, data, ref pt, effect);
@@ -274,8 +290,8 @@ namespace KillerShell.Services
 
         [StructLayout(LayoutKind.Sequential)] private struct POINT { public int x, y; }
 
-        [ComImport, Guid("4657278A-411B-11D2-839A-00C04FD918D0")]
-        private class DragDropHelperCoClass { }
+        // No [ComImport] coclass here any more - see Enter() above: a second managed coclass for
+        // a CLSID the source half already instantiated is exactly what threw mid-drag.
 
         [ComImport, Guid("4657278B-411B-11D2-839A-00C04FD918D0"),
          InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

@@ -546,7 +546,14 @@ namespace KillerShell.Shell
 
         private Grid BuildSplit(out TreeView tree, out DataGrid grid)
         {
-            var split = new Grid { Margin = new Thickness(8, 0, 8, 6) };
+            var split = new Grid();
+            // RegSplitMargin = the 8,0,8,6 this always was, 0 on 98SE: the wells then run flush
+            // to the pane edges so the tree's left edge lines up under the menu bar's white left
+            // line and the right edge is the same thin line as the left (Steve, 2026-08-09:
+            // "the content pane should expand to the left to line up with the menubar...
+            // the right edge of the window too, should be like the left edge of the tree
+            // sidebar. very thin").
+            split.SetResourceReference(FrameworkElement.MarginProperty, "RegSplitMargin");
             // A fixed default width, narrower than the folder browser's own 240 (TreePanel.cs
             // TreeWidthDefault) - registry key names run shorter than folder paths, so the tree
             // does not need as much room at rest, and the value grid's Data column (a REG_BINARY
@@ -605,11 +612,14 @@ namespace KillerShell.Shell
 
             var splitter = new GridSplitter
             {
-                Width = 5,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Background = Brushes.Transparent,
+                FocusVisualStyle = null,   // same dotted-focus-rectangle fix as the pane splitters
             };
+            // RegSplitterWidth: the 5 it always was, 3 on 98SE - "the divider in regedit should
+            // be skinnier" (Steve, 2026-08-09).
+            splitter.SetResourceReference(FrameworkElement.WidthProperty, "RegSplitterWidth");
             SetColumn(splitter, 1);
             split.Children.Add(splitter);
 
@@ -627,7 +637,6 @@ namespace KillerShell.Shell
         {
             var grid = new DataGrid
             {
-                Margin = new Thickness(6, 0, 0, 0),
                 AutoGenerateColumns = false,
                 IsReadOnly = true,
                 BorderThickness = new Thickness(0),
@@ -650,6 +659,10 @@ namespace KillerShell.Shell
             // the constructor above) show through, so the header read as floating on an extra
             // layer instead of sitting directly on the tab.
             grid.Background = Brushes.Transparent;
+            // RegGridMargin: the 6,0,0,0 gap to the splitter it always had, 0 on 98SE - inside
+            // its own sunken well the gap read as "a slim white border to the left of the table"
+            // (Steve, 2026-08-09); the skinny splitter is the divider now.
+            grid.SetResourceReference(FrameworkElement.MarginProperty, "RegGridMargin");
             grid.CanUserReorderColumns = false;   // keeps Name/Data as the fixed first/last columns the header rounding below assumes
             grid.SetResourceReference(DataGrid.ForegroundProperty, "TextBrush");
             grid.SetResourceReference(DataGrid.HorizontalGridLinesBrushProperty, "PaneBorderBrush");

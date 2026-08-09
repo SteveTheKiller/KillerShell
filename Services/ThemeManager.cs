@@ -415,14 +415,32 @@ namespace KillerShell.Services
             // navy SelectionBg made that unreadable and which states white.
             Mirror("TileSelectedTextBrush", "TextBrush");
             // The details pane's big filename: the family wordmark face everywhere, Courier New
-            // on 98SE.
-            Mirror("DetailsNameFont", "WordmarkFont");
+            // on 98SE. NOT Mirror(): WordmarkFont lives in App.xaml, not in the theme
+            // dictionaries, so Mirror's missing-source fallback handed every ordinary theme a
+            // TRANSPARENT BRUSH as a font - "'#00FFFFFF' is not a valid value for property
+            // 'FontFamily'", the Mourning theme-switch crash (Steve, 2026-08-09).
+            if (!combined.Contains("DetailsNameFont"))
+                combined["DetailsNameFont"] =
+                    Application.Current?.TryFindResource("WordmarkFont") as System.Windows.Media.FontFamily
+                    ?? new System.Windows.Media.FontFamily("Consolas");
             // The About card's content inset - 0 like the old AboutCaptionMargin the wrapper
             // borrowed; 98SE adds top room under the caption band.
             SetIfAbsent("AboutContentMargin", new Thickness(0));
-            // Performance detail card's outer margin - the literal it replaced; 98SE closes the
-            // right gutter so the card lines up with the tab strip above.
-            SetIfAbsent("MonitorDetailMargin", new Thickness(4, 0, 8, 8));
+            // The Performance tab's outer margins and per-tile margin - the literals they
+            // replaced. 98SE collapses them to thin 2px seams so the black cells sit together
+            // instead of floating in grey gutters (Steve, 2026-08-09: "theres padding between
+            // all the black celles that should go away").
+            SetIfAbsent("MonitorDetailMargin",   new Thickness(4, 0, 8, 8));
+            SetIfAbsent("MonitorInfoMargin",     new Thickness(8, 8, 8, 8));
+            SetIfAbsent("MonitorTileListMargin", new Thickness(8, 0, 4, 8));
+            SetIfAbsent("MonitorTileMargin",     new Thickness(6, 3, 6, 3));
+            // The tool-tab grids' margin (Events/Processes) and the Registry split's own: the
+            // literals they replaced everywhere, 0 on 98SE so each sunken well is filled edge to
+            // edge and runs flush to the pane.
+            SetIfAbsent("ToolGridMargin", new Thickness(8, 0, 8, 8));
+            SetIfAbsent("RegSplitMargin", new Thickness(8, 0, 8, 6));
+            SetIfAbsent("RegGridMargin",  new Thickness(6, 0, 0, 0));
+            SetIfAbsent("RegSplitterWidth", 5.0);
             // The dual-pane FOCUSED tab's border/padding sets - exactly the literals the four
             // PaneFocused triggers in FilePane.xaml hardcoded. 98SE zeroes the thicknesses and
             // keeps the active padding: its ring brush is transparent, and even a transparent
@@ -523,6 +541,21 @@ namespace KillerShell.Services
             // TabBevelMargin uses (harmless - only a flat theme draws tab bevels at all); 98SE
             // pulls its bottom in so the dark right edge stops at the menu bar's white top line.
             SetIfAbsent("TabActiveBevelDarkMargin", new Thickness(-12, -4, -5, -5));
+            SetIfAbsent("TabSeamPatchBrush", Transparent);
+            // ComboBox chrome - all defaults are exactly what the template hardcoded, so the
+            // ordinary themes render untouched; 98SE turns the field white, the drop arrow into
+            // a raised grey Marlett-triangle button, and the list into a white well (Steve,
+            // 2026-08-09).
+            Mirror("ComboFieldBrush", "BackgroundBrush");
+            Mirror("ComboPopupBrush", "MenuBackgroundBrush");
+            SetIfAbsent("ComboButtonBrush", Transparent);
+            SetIfAbsent("ComboButtonMinWidth", 0.0);
+            SetIfAbsent("ComboChevMargin", new Thickness(5, 0, 0, 0));
+            SetIfAbsent("ComboChevGlyphMargin", new Thickness(0, 1, 0, 0));
+            SetIfAbsent("ComboChevGlyph", "\uE70D");
+            SetIfAbsent("ComboChevFont", new System.Windows.Media.FontFamily("Segoe MDL2 Assets"));
+            // The trees' selected-row text - see FolderTreeItem.
+            Mirror("TreeSelectedTextBrush", "TextBrush");
             // The footer STATUS cell's inner inset. Deliberately its own key rather than reusing
             // FooterCellPadding, which belongs to the version cell and carries a different number.
             // Default is the literal MainWindow.xaml had, so the twelve rounded themes do not move.
@@ -638,6 +671,59 @@ namespace KillerShell.Services
                 // the accent instead (Elevation.cs).
                 combined["ElevationHaloVisibility"] = flat ? Visibility.Collapsed : Visibility.Visible;
 
+                // Menu and flyout shadows. Win98 context menus cast a HARD solid drop shadow -
+                // the one shadow this otherwise-flat theme keeps (Steve, 2026-08-09) - while
+                // every ordinary theme keeps exactly the soft treatment it had: the ContextMenu
+                // template's 12px blur at FlyoutShadowOpacity, and the flyout cards' shared
+                // CardShadowEffect.
+                combined["MenuShadowOpacity"] = flat ? 1.0 : combined["FlyoutShadowOpacity"];
+                if (flat)
+                {
+                    // BlurRadius 5, not 0: fully hard-edged read as a black slab ("the drop
+                    // shadow has too hard of an edge", Steve, 2026-08-09) - this keeps the
+                    // Win98 offset-shadow shape with just enough softening to sit right.
+                    var hard = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 5, ShadowDepth = 5, Direction = 315, Opacity = 0.35 };
+                    hard.Freeze();
+                    combined["MenuShadowEffect"] = hard;
+                    combined["FlyoutCardEffect"] = hard;
+                    combined["ComboPopupShadow"] = hard;
+                }
+                else
+                {
+                    var soft = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 12, ShadowDepth = 2, Direction = 270, Opacity = 0.5 };
+                    soft.Freeze();
+                    combined["MenuShadowEffect"] = soft;
+                    combined["FlyoutCardEffect"] = combined["CardShadowEffect"];
+                    // The ComboBox dropdown's own shadow - the literal its template hardcoded.
+                    var combo = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 22, ShadowDepth = 4, Direction = 270, Opacity = 0.55 };
+                    combo.Freeze();
+                    combined["ComboPopupShadow"] = combo;
+                }
+
+                // The elevated window's edge - see Elevation.cs ApplyElevationHalo: a 2px accent
+                // band around the grey frame on a flat theme, the ordinary window edge otherwise.
+                combined["ElevationEdgeBrush"] = flat ? combined["PrimaryBrush"] : combined["WindowEdgeBrush"];
+                combined["ElevationEdgeThickness"] = flat ? new Thickness(2) : combined["WindowEdgeThickness"];
+
+                // The Shortcuts card's content inset: the 24,20 it always had, plus top room for
+                // the caption band on a flat theme.
+                combined["ShortcutsContentMargin"] = flat ? new Thickness(24, 28, 24, 20)
+                                                          : new Thickness(24, 20, 24, 20);
+
+                // The details filename's family drop shadow - null on a flat theme, which casts
+                // nothing (its 98SE depth comes from the hard white emboss copy instead).
+                if (flat) combined["DetailsNameEffect"] = null;
+                else
+                {
+                    var nameShadow = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 6, ShadowDepth = 2, Direction = 270, Opacity = 0.6 };
+                    nameShadow.Freeze();
+                    combined["DetailsNameEffect"] = nameShadow;
+                }
+
                 // A ready-made pane shadow at this theme's opacity, or NULL on a flat theme.
                 // Built per load and FROZEN: a DynamicResource inside a shared keyed Freezable's
                 // Opacity does not reliably resolve, which is how a flat theme ended up casting a
@@ -738,6 +824,17 @@ namespace KillerShell.Services
             // after the accent overlay, so it follows the picked accent like OnOutlineBtnBrush.
             if (!combined.Contains("TabActiveRingBrush"))
                 combined["TabActiveRingBrush"] = combined["PrimaryBrush"];
+
+            // Selected DataGrid CELL text - see DarkDataGridCell: the PrimaryBrush its selected
+            // trigger always set, so nothing changes off 98SE, which states white. HERE, after
+            // the accent overlay, for the same reason as TabActiveRingBrush above.
+            if (!combined.Contains("GridSelectedTextBrush"))
+                combined["GridSelectedTextBrush"] = combined["PrimaryBrush"];
+
+            // Highlighted ComboBox item text - same shape: the PrimaryBrush the trigger always
+            // set, white on 98SE where the highlight bar is the solid navy MenuHoverBrush.
+            if (!combined.Contains("ComboHighlightTextBrush"))
+                combined["ComboHighlightTextBrush"] = combined["PrimaryBrush"];
 
             // A dialog's caption band. TRANSPARENT by default, so the band shows the card's own
             // face and is invisible - the family look, where a dialog title blends into the

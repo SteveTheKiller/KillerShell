@@ -157,6 +157,9 @@ namespace KillerShell.Shell
 
             _grid = BuildGrid();
             _grid.ItemsSource = _procView;
+            // ToolGridMargin - see EventViewerControl: 8,0,8,8 everywhere, 0 on 98SE so the well
+            // is filled edge to edge (Steve, 2026-08-09).
+            _grid.SetResourceReference(FrameworkElement.MarginProperty, "ToolGridMargin");
             var gridHost = ToolTabChrome.WrapContent(_grid, "ToolContentBrush");
             SetRow(gridHost, 1);
             Children.Add(gridHost);

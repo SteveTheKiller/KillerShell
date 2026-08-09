@@ -337,10 +337,20 @@ namespace KillerShell.Shell
             if (IsDetailsPaneEmpty(pane)) return;
 
             // Once the user has dragged the grip, the strip keeps whatever height they chose -
-            // content no longer drives it (the field rows are effectively fixed height anyway;
-            // this only ever mattered for the auto-fit state, same split as
-            // Bookmarks._bookmarksUserSized).
-            if (pane.DetailsPaneUserSized) return;
+            // but NEVER below what the content actually needs. The old unconditional early
+            // return assumed the field rows were fixed height; a long filename WRAPS to a second
+            // line, and a user-sized strip then clipped it top and bottom (Steve, 2026-08-09:
+            // "filename should never get cutoff in details pane"). The chosen height still wins
+            // whenever it fits; the measured floor only ever lifts it.
+            if (pane.DetailsPaneUserSized)
+            {
+                double floor = ClampDetailsPaneHeight(pane, DetailsPaneContentFloor(pane));
+                if (pane.DetailsPane.ActualHeight >= floor - 0.5) return;
+                pane.DetailsPane.BeginAnimation(FrameworkElement.HeightProperty, null);
+                pane.DetailsPane.Height = floor;
+                ApplyDetailsPreviewWidth(pane, floor);
+                return;
+            }
 
             double needed = ClampDetailsPaneHeight(pane, DetailsPaneContentFloor(pane));
             if (Math.Abs(pane.DetailsPane.ActualHeight - needed) < 0.5) return;

@@ -55,9 +55,9 @@
                  overlay ring inside the client (Steve, 2026-08-09). -->
             <Border x:Name="FrameOuterLightBd" BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
             <Border x:Name="FrameOuterDarkBd"  BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
-            <Border Margin="{DynamicResource FrameInnerMargin}"
+            <Border x:Name="FrameInnerLightBd" Margin="{DynamicResource FrameInnerMargin}"
                     BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameInnerLightThickness}"/>
-            <Border Margin="{DynamicResource FrameInnerMargin}"
+            <Border x:Name="FrameInnerDarkBd" Margin="{DynamicResource FrameInnerMargin}"
                     BorderBrush="{DynamicResource FrameInnerDarkBrush}"  BorderThickness="{DynamicResource FrameInnerDarkThickness}"/>
 
     <Grid x:Name="RootGrid" Opacity="0" Margin="{DynamicResource WindowFramePadding}">
@@ -292,9 +292,12 @@
                                     <Image Source="{Binding Icon}" Width="16" Height="16"
                                            VerticalAlignment="Center" Margin="0,0,6,0"
                                            RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <!-- No pinned Foreground: it inherits from the TreeViewItem so
+                                         FolderTreeItem's selected trigger can turn it white on a
+                                         solid selection (98SE) - a local TextBrush here was what
+                                         kept selected rows black-on-navy (Steve, 2026-08-09). -->
                                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="11"
-                                               Foreground="{DynamicResource TextBrush}"
                                                TextTrimming="CharacterEllipsis"
                                                ToolTip="{Binding Path}"/>
                                 </StackPanel>
@@ -606,6 +609,22 @@
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
+                    <!-- Open or close the second pane, right-click flips side-by-side / stacked.
+                         On the rail rather than in a pane toolbar because it acts on the WINDOW -
+                         in the toolbar there were two of them, one per pane, doing the identical
+                         thing, and either could be shed into the overflow chevron on a narrow
+                         split. Accents while open, like the search and bookmarks toggles above.
+                         ClosePane/OpenPane (E89F/E8A0), the dedicated glyph pair Steve picked
+                         (2026-08-02) - the glyph itself is kept in sync from code (DualPane.cs
+                         ApplyPaneLayout) on every open/close/orientation change, so E89F here is
+                         only the closed starting glyph before the first toggle ever runs.
+                         Moved ABOVE the tool tabs (Steve, 2026-08-09: "admin tools should be
+                         together") - dual pane is a VIEW verb, so it rides with the view block
+                         and the four admin/tool tabs below sit as one contiguous group. -->
+                    <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE89F;"
+                            FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
+                            MouseRightButtonUp="DualPaneOrient_Click"
+                            ToolTip="{DynamicResource Str_TT_DualPane}"/>
                     <!-- E8FD (ViewAll/list, corrected 2026-08-02 - this comment used to say E9D9,
                          which was never what the button below actually rendered; E9D9 was always
                          reserved for the future Performance tab, now built below): opens or
@@ -628,21 +647,6 @@
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
-                    <!-- Open or close the second pane, right-click flips side-by-side / stacked.
-                         On the rail rather than in a pane toolbar because it acts on the WINDOW -
-                         in the toolbar there were two of them, one per pane, doing the identical
-                         thing, and either could be shed into the overflow chevron on a narrow
-                         split. Accents while open, like the search and bookmarks toggles above.
-                         ClosePane/OpenPane (E89F/E8A0), the dedicated glyph pair Steve picked
-                         (2026-08-02) - the glyph itself is kept in sync from code (DualPane.cs
-                         ApplyPaneLayout) on every open/close/orientation change, so E89F here is
-                         only the closed starting glyph before the first toggle ever runs. F10 -
-                         sits between Processes (F9) and Performance (F11) so the app-specific rail
-                         block reads in the same order as the F-keys themselves. -->
-                    <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE89F;"
-                            FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
-                            MouseRightButtonUp="DualPaneOrient_Click"
-                            ToolTip="{DynamicResource Str_TT_DualPane}"/>
                     <!-- E9D9 (Processing): opens or focuses the Performance Monitor tab - hardware
                          info plus live CPU/RAM/network/disk gauges (Shell/PerformanceTabs.cs,
                          Shell/PerformanceMonitorControl.cs). Plain click only, no elevated variant
@@ -1499,14 +1503,14 @@
                                           Background="Transparent" MouseLeftButtonUp="Wordmark_Click">
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,2,0,0" IsHitTestVisible="False"
                                                    Opacity="{DynamicResource IconShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="2"/></TextBlock.Effect><Run Text="Killer" FontSize="22" Foreground="#C0000000"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#C0000000"/></TextBlock>
-                                        <!-- The 98SE emboss: a hard WHITE copy 1px down-right,
-                                             no blur - the era's chiseled letterpress, since the
-                                             blurred shadow above is off on a flat theme.
-                                             AboutEmbossOpacity is 0 everywhere else (Steve,
-                                             2026-08-09: "the Shell needs stroke or something,
-                                             some kind of bevel effect for a tiny bit of depth"). -->
-                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,1,0,0" IsHitTestVisible="False"
-                                                   Opacity="{DynamicResource AboutEmbossOpacity}"><Run Text="Killer" FontSize="22" Foreground="#FFFFFF"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#FFFFFF"/></TextBlock>
+                                        <!-- The 98SE emboss: a hard WHITE copy 1px UP-LEFT, no
+                                             blur - light catching the top-left edges of a RAISED
+                                             glyph. Down-right was tried first and read as sunken
+                                             (Steve, 2026-08-09: "its the wrong way... it looks
+                                             sunken instead of raised"). AboutEmbossOpacity is 0
+                                             everywhere but 98SE. -->
+                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" IsHitTestVisible="False"
+                                                   Opacity="{DynamicResource AboutEmbossOpacity}"><TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform><Run Text="Killer" FontSize="22" Foreground="#FFFFFF"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#FFFFFF"/></TextBlock>
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="22" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}"/></TextBlock>
                                     </Grid>
                                     <!-- Tagline is composed here, not in the .xaml string files: GPLv3 and
@@ -1836,38 +1840,29 @@
                         BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
                 <Border IsHitTestVisible="False" Panel.ZIndex="6"
                         BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
-                <StackPanel Margin="24,20">
+                <!-- Caption band + shared close X, the About card's exact treatment: band and
+                     title only exist on a flat theme (height 0 / transparent elsewhere), the X is
+                     ChromeCloseButton everywhere so every X in the app is the same X (Steve,
+                     2026-08-09: "shortcuts window not themed yet"). -->
+                <Border VerticalAlignment="Top" ClipToBounds="True"
+                        Height="{DynamicResource AboutCaptionHeight}"
+                        Margin="{DynamicResource AboutCaptionMargin}"
+                        Background="{DynamicResource DialogTitleBarBrush}">
+                    <TextBlock Text="{DynamicResource Str_Help_Shortcuts}" VerticalAlignment="Center" Margin="8,0,0,0"
+                               FontFamily="{DynamicResource ChromeFontFamily}"
+                               FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"/>
+                </Border>
+                <Button Content="&#xE8BB;" Click="ShortcutsClose_Click" Style="{StaticResource ChromeCloseButton}"
+                        HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="7"
+                        Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
+                        Margin="{DynamicResource AboutCloseMargin}"
+                        FontWeight="{DynamicResource CaptionGlyphWeight}"/>
+                <StackPanel Margin="{DynamicResource ShortcutsContentMargin}">
                     <Grid Margin="0,0,0,12">
-                        <TextBlock Text="{DynamicResource Str_Help_Shortcuts}" Style="{StaticResource SectionHeader}" FontSize="13" Margin="0" VerticalAlignment="Center"/>
-                        <!-- Foreground lives in a Style setter so the hover/press triggers can win
-                             (a local value would beat them - that's why hover never turned red). -->
-                        <Button Content="&#xE8BB;" Click="ShortcutsClose_Click" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                Width="30" Height="26" FontSize="10" FontFamily="Segoe MDL2 Assets"
-                                Background="Transparent" BorderThickness="0" Cursor="Hand">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Foreground" Value="{DynamicResource ChromeTextBrush}"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="bg" Background="Transparent" CornerRadius="3">
-                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                                                        <Setter TargetName="bg" Property="Background" Value="#33C42B1C"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                        <!-- Hidden on a flat theme - the caption band above carries the title
+                             there, and this in-card copy would duplicate it. -->
+                        <TextBlock Text="{DynamicResource Str_Help_Shortcuts}" Style="{StaticResource SectionHeader}" FontSize="13" Margin="0" VerticalAlignment="Center"
+                                   Visibility="{DynamicResource WordmarkVisibility}"/>
                     </Grid>
 
                     <!-- LIST / KEYBOARD. Both views are generated from ONE table

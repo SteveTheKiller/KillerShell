@@ -425,6 +425,17 @@ namespace KillerShell.Shell
         // Point the whole UI at a tab: collections, config boxes, status, counters, button label.
         private void ActivateTab(SearchTab t)
         {
+            // Cancel a half-typed address edit before the switch. Clicking a tab does not move
+            // keyboard focus off the address TextBox (a Border press takes no focus), so
+            // LostFocus never fired and the box stayed visible carrying the OLD tab's path over
+            // the new tab (Steve, 2026-08-09: "the addressbar didnt change, see how it still
+            // says pictures?"). Same cancel-not-commit rule as clicking away.
+            if (Pane.AddressBox.Visibility == Visibility.Visible)
+            {
+                Pane.AddressBox.Visibility     = Visibility.Collapsed;
+                Pane.ScopePathLabel.Visibility = Visibility.Visible;
+            }
+
             _active = t;
             foreach (var tab in _tabs) tab.IsActive = tab == t;
 

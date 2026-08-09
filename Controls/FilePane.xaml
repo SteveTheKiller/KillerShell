@@ -250,6 +250,15 @@
                                         <Border x:Name="tabBevelDark" IsHitTestVisible="False" Margin="{DynamicResource TabBevelMargin}" Panel.ZIndex="4"
                                                 BorderBrush="{DynamicResource BevelDarkBrush}"
                                                 BorderThickness="{DynamicResource TabInactiveBevelDarkThickness}"/>
+                                        <!-- ACTIVE only (IsActive trigger): the 2x2 white corner
+                                             patch that lets the menu bar's white top line run
+                                             UNDER the active tab's dark right edge, the same
+                                             junction every inactive seam has. Transparent on
+                                             every theme but 98SE - see TabSeamPatchBrush. -->
+                                        <Border x:Name="tabSeamPatch" IsHitTestVisible="False" Panel.ZIndex="5"
+                                                Width="2" Height="2" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                                Margin="0,0,-5,-4" Visibility="Collapsed"
+                                                Background="{DynamicResource TabSeamPatchBrush}"/>
                                         <DockPanel LastChildFill="True">
                                             <!-- Nulled here rather than on the shared DangerButton style,
                                                  which the term and filter x's also use. -->
@@ -345,6 +354,7 @@
                                              default is the family TabBevelMargin literal, and
                                              every other theme draws no bevel anyway. -->
                                         <Setter TargetName="tabBevelDark" Property="Margin" Value="{DynamicResource TabActiveBevelDarkMargin}"/>
+                                        <Setter TargetName="tabSeamPatch" Property="Visibility" Value="Visible"/>
                                         <!-- Top padding gives back the 3px the accent stripe takes,
                                              so the title doesn't drop when a tab activates. -->
                                         <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabActivePadding}"/>
@@ -581,21 +591,17 @@
                             BorderThickness="{DynamicResource BarEdgeDarkThickness}"/>
                     <!-- Back / forward / up. Browser order and browser glyphs, because that is
                          what everyone's hand already expects at the top left. -->
-                    <StackPanel x:Name="NavStrip" Grid.Column="0" Orientation="Horizontal" Margin="8,0,2,0" VerticalAlignment="Center">
+                    <!-- Tightened (Steve, 2026-08-09: "too much padding in this filebrowser
+                         menubar", all themes): no separator after Up, the star scoots left, the
+                         address follows immediately. The one group separator left is the etched
+                         rule before the sort group in ToolStrip. -->
+                    <StackPanel x:Name="NavStrip" Grid.Column="0" Orientation="Horizontal" Margin="4,0,0,0" VerticalAlignment="Center">
                         <Button x:Name="NavBackBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE72B;"
                                 ToolTip="{DynamicResource Str_TT_Back}" Click="NavBack_Click"/>
                         <Button x:Name="NavForwardBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE72A;" Margin="2,0"
                                 ToolTip="{DynamicResource Str_TT_Forward}" Click="NavForward_Click"/>
                         <Button x:Name="NavUpBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE74A;"
                                 ToolTip="{DynamicResource Str_TT_Up}" Click="NavUp_Click"/>
-                        <!-- Win98 toolbar group separator: a 2px etched rule (dark line, light
-                             line to its right - that gradient IS BarSepBrush) between one group of
-                             tool buttons and the next. BarSepWidth is 0 on every other theme, so
-                             the Border measures to nothing and no other theme grows a divider.
-                             These two keys were declared in 98SE.xaml and defaulted in
-                             ThemeManager but drawn nowhere at all until now (2026-08-09). -->
-                        <Border Width="{DynamicResource BarSepWidth}" Margin="4,3,4,3"
-                                Background="{DynamicResource BarSepBrush}"/>
                         <!-- Favorite: sits immediately LEFT of the address, the way a browser
                              puts its bookmark star next to the URL, so saving where you are is
                              one reach from the path you are reading rather than across the row.
@@ -604,7 +610,7 @@
                              fourth nav button and compete with back/forward/up. It still gets a
                              hover tint and a hit area from the transparent border. -->
                         <Button x:Name="FavoriteStarBtn" Content="&#xE734;" Width="22" Height="22" Padding="0"
-                                Margin="6,0,2,0" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                Margin="2,0,0,0" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                 VerticalAlignment="Center" Cursor="Hand"
                                 ToolTip="{DynamicResource Str_TT_Favorite}" Click="FavoriteStar_Click">
                             <Button.Style>
@@ -637,7 +643,7 @@
                             </Button.Style>
                         </Button>
                     </StackPanel>
-                    <Border Grid.Column="1" x:Name="ScopeBar" CornerRadius="5,0,0,0" Padding="12,7,8,5"
+                    <Border Grid.Column="1" x:Name="ScopeBar" CornerRadius="5,0,0,0" Padding="6,7,8,5"
                             Cursor="Hand" ToolTip="{DynamicResource Str_TT_Scope}" MouseLeftButtonUp="ScopeBar_Click">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -719,11 +725,11 @@
                                 VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_ViewList}" Click="ViewList_Click"/>
                         <Button x:Name="ViewIconsBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE80A;" Margin="2,0"
                                 VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_ViewIcons}" Click="ViewIcons_Click"/>
-                        <Button x:Name="ViewDetailsBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE700;" Margin="0,0,8,0"
+                        <Button x:Name="ViewDetailsBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE700;" Margin="0,0,2,0"
                                 VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_ViewDetails}" Click="ViewDetails_Click"/>
-                        <!-- Second group separator, between the view modes and the sort controls.
-                             Same BarSep* pair, same zero width off 98SE. -->
-                        <Border Width="{DynamicResource BarSepWidth}" Margin="0,3,6,3"
+                        <!-- The one group separator in the strip, between the view modes and the
+                             sort controls. Same BarSep* pair, zero width off 98SE. -->
+                        <Border Width="{DynamicResource BarSepWidth}" Margin="2,3,4,3"
                                 Background="{DynamicResource BarSepBrush}"/>
                         <!-- Sort: key + direction. The key is ONE icon with a flyout, the same
                              shape as export - the 118px combo was the widest control in this
@@ -769,27 +775,27 @@
                                 </Border>
                             </Grid>
                         </Popup>
-                        <Button x:Name="SortDirButton" Content="&#xE70E;" Width="24" Height="24" Padding="0" Margin="0,0,6,0"
+                        <Button x:Name="SortDirButton" Content="&#xE70E;" Width="24" Height="24" Padding="0" Margin="0,0,2,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="10" Style="{StaticResource SurfaceButton}"
                                 VerticalAlignment="Center" Click="SortDir_Click"/>
                         <!-- Expand/collapse all: one glyph button, no words to shift width.
                              Hidden (not collapsed) outside list view - see ResultsView.cs. -->
                         <Button x:Name="ExpandAllButton" Style="{StaticResource SurfaceButton}"
-                                Width="26" Height="24" Padding="0" Margin="0,0,10,0" VerticalAlignment="Center"
+                                Width="26" Height="24" Padding="0" Margin="0,0,2,0" VerticalAlignment="Center"
                                 ToolTip="{DynamicResource Str_Btn_ExpandAll}" Click="ExpandAll_Click">
                             <TextBlock x:Name="ExpandAllGlyph" Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
                         <!-- View options (ViewOptions.cs). Both accent while on, via the
                              Tag="on" trigger SurfaceButton carries. -->
-                        <Button x:Name="ShowHiddenBtn" Content="&#xE7B3;" Width="26" Height="24" Padding="0" Margin="0,0,6,0"
+                        <Button x:Name="ShowHiddenBtn" Content="&#xE7B3;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_ShowHidden}" Click="ShowHidden_Click"/>
                         <!-- Custom composite glyph (Steve, 2026-08-02): no single Segoe MDL2 glyph
                              reads as "folders sort above files", so this stacks FolderHorizontal
                              (F12B) as the base with CaretUpSolid8 (EDDB) centered on top, rather
                              than reusing an unrelated glyph. -->
-                        <Button x:Name="FoldersTopBtn" Width="26" Height="24" Padding="0" Margin="0,0,6,0"
+                        <Button x:Name="FoldersTopBtn" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
                                 Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_FoldersTop}" Click="FoldersTop_Click">
                             <Grid>
@@ -803,13 +809,13 @@
                              BOTTOM of this pane, not a side panel - see the strip itself further
                              down. Window-wide like ShowHidden/FoldersTop above it, so both panes
                              agree on whether it is showing. -->
-                        <Button x:Name="DetailsPaneBtn" Content="&#xE75B;" Width="26" Height="24" Padding="0" Margin="0,0,6,0"
+                        <Button x:Name="DetailsPaneBtn" Content="&#xE75B;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_DetailsPane}" Click="DetailsPane_Click"/>
                     <!-- Pipe: search WITHIN these results in a new tab. Collapsed while browsing
                          (ViewOptions.cs) - piping a folder listing into a search tab is the one
                          case where it reads as a filter and surprises you. -->
-                        <Button x:Name="PipeBtn" Content="&#xE71C;" Width="26" Height="24" Padding="0" Margin="0,0,6,0"
+                        <Button x:Name="PipeBtn" Content="&#xE71C;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_Pipe}" Click="PipeButton_Click"/>
                         <!-- Dual pane moved to the icon rail (MainWindow.xaml). It was the one
@@ -1100,13 +1106,23 @@
                             <!-- DetailsNameFont = WordmarkFont everywhere but 98SE, where the
                                  typewriter face gives way to Courier New - the era's monospace
                                  (Steve, 2026-08-09). -->
-                            <TextBlock x:Name="DetailsNameText" FontFamily="{DynamicResource DetailsNameFont}" FontSize="20"
-                                       FontWeight="SemiBold" Foreground="{DynamicResource PrimaryBrush}" Margin="0,0,0,9"
-                                       TextWrapping="Wrap">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect Color="Black" BlurRadius="6" ShadowDepth="2" Direction="270" Opacity="0.6"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
+                            <!-- The filename's chrome is theme-split: the family drop shadow
+                                 (DetailsNameEffect, null on 98SE - a flat theme casts nothing)
+                                 and, on 98SE only, a hard 1px WHITE copy up-left of the crisp
+                                 text - the raised chisel, the same treatment the About wordmark
+                                 carries (Steve, 2026-08-09). The copy binds the live text so it
+                                 always mirrors what DetailsPane.cs writes. -->
+                            <Grid Margin="0,0,0,9">
+                                <TextBlock IsHitTestVisible="False" FontFamily="{DynamicResource DetailsNameFont}" FontSize="20"
+                                           FontWeight="SemiBold" Foreground="#FFFFFF" TextWrapping="Wrap"
+                                           Text="{Binding Text, ElementName=DetailsNameText}"
+                                           Opacity="{DynamicResource AboutEmbossOpacity}">
+                                    <TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform>
+                                </TextBlock>
+                                <TextBlock x:Name="DetailsNameText" FontFamily="{DynamicResource DetailsNameFont}" FontSize="20"
+                                           FontWeight="SemiBold" Foreground="{DynamicResource PrimaryBrush}"
+                                           TextWrapping="Wrap" Effect="{DynamicResource DetailsNameEffect}"/>
+                            </Grid>
                             <Grid Margin="0,0,0,3">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{DynamicResource Str_Col_Size}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>

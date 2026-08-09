@@ -96,6 +96,11 @@ namespace KillerShell.Shell
 
             _grid = BuildGrid();
             _grid.ItemsSource = _view;
+            // ToolGridMargin = the 8,0,8,8 the grid always had, except on 98SE, where it is 0: a
+            // Win98 well is filled edge to edge, and the 8px gutters showed the well's white face
+            // as a border around the table AND around the outside of its scrollbars (Steve,
+            // 2026-08-09).
+            _grid.SetResourceReference(FrameworkElement.MarginProperty, "ToolGridMargin");
             var gridHost = ToolTabChrome.WrapContent(_grid, "ToolContentBrush");
             SetRow(gridHost, 1);
             Children.Add(gridHost);

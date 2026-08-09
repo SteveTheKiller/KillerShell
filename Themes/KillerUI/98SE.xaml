@@ -117,13 +117,31 @@
        the page bevel's full 2px now (PaneOuterMargin), so a -5 overhang put the tab's right-hand
        dark edge one pixel below its own foot, into the pane (Steve, 2026-08-09). -->
   <Thickness x:Key="TabBevelMargin">-12,-4,-5,-4</Thickness>
-  <!-- The ACTIVE tab's DARK bevel stops 2px short of the tab's foot. The active tab runs to the
-       band's bottom - THROUGH the bar's 2px white top line, which its fill covers to break the
-       line - so a dark right edge reaching its foot poked a 2x2 dark block into the white line
-       ("a 2x1px gray dot going too far down the active tab right edge", Steve, 2026-08-09). -2
-       against the active padding's 4 ends it exactly where the white line begins. The LIGHT bevel
-       keeps TabBevelMargin: the white left edge is SUPPOSED to run through the line and join it. -->
+  <!-- The ACTIVE tab's DARK bevel margin, settled after THREE rounds (Steve, 2026-08-09):
+       -4 ran the dark edge 2px through the white line ("dripping down"), -2 alone left the
+       tab's own fill plugging the line ("a dot of light gray"). The answer is BOTH pieces:
+       -2 ends the dark edge level with the strip line, and TabSeamPatchBrush (below) paints
+       the tab's bottom-right 2x2 white so the bar's white top line runs beneath the dark edge
+       exactly as it does at every inactive seam. Change one without the other and one of the
+       two complaints comes back. -->
   <Thickness x:Key="TabActiveBevelDarkMargin">-12,-4,-5,-2</Thickness>
+  <!-- The 2x2 white corner patch under the active tab's dark right edge - see the note above. -->
+  <SolidColorBrush x:Key="TabSeamPatchBrush" Color="#ffffff"/>
+  <!-- ComboBox as Win98 drew it (Steve, 2026-08-09): WHITE edit field, WHITE dropdown list, a
+       raised grey arrow button filling the field's right edge with Marlett's solid triangle,
+       and WHITE text on the navy highlight bar. The ChevMargin undoes the field's 7,3 padding
+       (minus its 1px border) so the button reaches the field edges. -->
+  <SolidColorBrush x:Key="ComboFieldBrush" Color="#ffffff"/>
+  <SolidColorBrush x:Key="ComboPopupBrush" Color="#ffffff"/>
+  <SolidColorBrush x:Key="ComboButtonBrush" Color="#c0c0c0"/>
+  <sys:Double x:Key="ComboButtonMinWidth">16</sys:Double>
+  <Thickness x:Key="ComboChevMargin">5,-2,-6,-2</Thickness>
+  <Thickness x:Key="ComboChevGlyphMargin">0</Thickness>
+  <sys:String x:Key="ComboChevGlyph">6</sys:String>
+  <FontFamily x:Key="ComboChevFont">Marlett</FontFamily>
+  <SolidColorBrush x:Key="ComboHighlightTextBrush" Color="#ffffff"/>
+  <!-- Selected tree rows (folder sidebar, registry tree): white text on the solid navy block. -->
+  <SolidColorBrush x:Key="TreeSelectedTextBrush" Color="#ffffff"/>
   <!-- The dual-pane FOCUSED tab draws NO ring here at all: thicknesses zero, paddings the
        active tab's own. The family defaults (ThemeManager) are the accent ring's 1,3,1,0 sets;
        with this theme's transparent ring brush even those transparent borders kept the tab's

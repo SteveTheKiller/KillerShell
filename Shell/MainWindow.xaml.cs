@@ -624,20 +624,31 @@ namespace KillerShell.Shell
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = "explorer.exe",
-                        Arguments = "ms-screenclip:",
-                        UseShellExecute = true,
-                    });
+                    // Synthesize Win+Shift+S rather than launching anything: that chord is a
+                    // REGISTERED hotkey (the snip overlay's own), and registered hotkeys fire
+                    // regardless of the foreground window's integrity level - unlike the
+                    // explorer.exe ms-screenclip: hand-off tried first, which did nothing here
+                    // (Steve, 2026-08-09: "prtscrn doesnt work"). This routes the key press to
+                    // exactly whatever the user's default snipping tool is.
+                    const byte VK_LWIN = 0x5B, VK_SHIFT = 0x10, VK_S = 0x53;
+                    const uint KEYEVENTF_KEYUP = 0x0002;
+                    keybd_event(VK_LWIN, 0, 0, UIntPtr.Zero);
+                    keybd_event(VK_SHIFT, 0, 0, UIntPtr.Zero);
+                    keybd_event(VK_S, 0, 0, UIntPtr.Zero);
+                    keybd_event(VK_S, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event(VK_SHIFT, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+                    keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
                 }
                 catch
                 {
                     // The built-in PrtScn full-screen clipboard copy still happened; nothing
-                    // useful to report if the snip overlay itself refused to come up.
+                    // useful to report if the synthetic chord could not be sent.
                 }
             }
         }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
 
         // Global keys: Enter runs the search, Esc closes the filter bar or stops a
         // running search, Ctrl+F opens the results quick-filter.

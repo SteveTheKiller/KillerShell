@@ -440,12 +440,15 @@ namespace KillerShell.Shell
             // and Visible everywhere else, and it follows a live theme switch.
             ElevationHalo.SetResourceReference(UIElement.VisibilityProperty, "ElevationHaloVisibility");
 
-            // The flat theme's admin signal instead: the window's OUTERMOST frame ring - the
-            // pixel where the black line was - repaints in the accent, all four sides. On the
-            // ordinary themes these two borders are zero-thickness, so this draws nothing there
-            // and the halo above stays the signal.
-            FrameOuterLightBd.SetResourceReference(Border.BorderBrushProperty, "PrimaryBrush");
-            FrameOuterDarkBd.SetResourceReference(Border.BorderBrushProperty, "PrimaryBrush");
+            // The flat theme's admin signal instead: a 2px accent band AROUND the window's own
+            // grey bevel frame, drawn by the root Border's edge - NOT painted over the frame
+            // rings, which "ate up the gray border" when tried that way (Steve, 2026-08-09: "I
+            // still want the regular gray border, but I want the colored ring to be AROUND
+            // it"). ElevationEdge* resolve to the accent at 2px on a flat theme and to the
+            // window's ordinary WindowEdge values everywhere else, so nothing changes where the
+            // halo is the signal.
+            WindowFrame.SetResourceReference(Border.BorderBrushProperty, "ElevationEdgeBrush");
+            WindowFrame.SetResourceReference(Border.BorderThicknessProperty, "ElevationEdgeThickness");
 
             // The ring reads as "something is different" from the corner of the eye; the caption
             // is what says WHAT. Accent, same as the ring, so the two are obviously one signal.
