@@ -848,24 +848,68 @@
                              to. A Popup takes no layout space, so it can sit in the row itself.
                              Shadow on its own border, per the family standard: text must never
                              render through a bitmap effect or it loses ClearType. -->
+                        <!-- Restyled as a regular CONTEXT-MENU look (Steve, 2026-08-09): grained
+                             surface, transparent hover-wash rows instead of pill buttons, an
+                             icon gutter on the left (a cell grid for CSV, literal <> for HTML)
+                             and each row's real keyboard shortcut right-aligned - Ctrl+Alt+E and
+                             Ctrl+Alt+Shift+E are the bindings the shortcuts card already lists.
+                             Shadow rides the MenuShadow tokens like the editor popups. -->
                         <Popup x:Name="ExportPopup" PlacementTarget="{Binding ElementName=ExportBtn}" Placement="Bottom"
                                StaysOpen="False" AllowsTransparency="True" HorizontalOffset="-14" VerticalOffset="-2">
                             <Grid Margin="14">
-                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
-                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
-                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
-                                </Border>
+                                <Grid.Resources>
+                                    <Style x:Key="ExportRow" TargetType="Button">
+                                        <Setter Property="Cursor" Value="Hand"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource MenuTextBrush}"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}" Padding="8,4,10,4">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Grid.Resources>
+                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
+                                        Opacity="{DynamicResource MenuShadowOpacity}"
+                                        Effect="{DynamicResource MenuShadowEffect}"/>
                                 <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                         BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
-                                    <StackPanel MinWidth="64">
+                                    <StackPanel MinWidth="200">
                                         <!-- Format names, not prose - deliberately unlocalized,
                                              the same way the old two buttons were. -->
-                                        <Button Content="CSV" Style="{StaticResource SurfaceButton}"
-                                                Padding="10,3" FontSize="10" Margin="0,0,0,4" Click="ExportCsv_Click"/>
-                                        <Button Content="HTML" Style="{StaticResource SurfaceButton}"
-                                                Padding="10,3" FontSize="10" Click="Export_Click"/>
+                                        <Button Style="{StaticResource ExportRow}" Margin="0,0,0,2" Click="ExportCsv_Click">
+                                            <DockPanel LastChildFill="True">
+                                                <TextBlock DockPanel.Dock="Left" Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                                           Width="22" VerticalAlignment="Center"/>
+                                                <TextBlock DockPanel.Dock="Right" Text="Ctrl+Alt+Shift+E" Foreground="{DynamicResource DimTextBrush}"
+                                                           FontFamily="Consolas" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
+                                                <TextBlock Text="CSV" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center"/>
+                                            </DockPanel>
+                                        </Button>
+                                        <Button Style="{StaticResource ExportRow}" Click="Export_Click">
+                                            <DockPanel LastChildFill="True">
+                                                <TextBlock DockPanel.Dock="Left" Text="&lt;&gt;" FontFamily="Consolas" FontSize="11" FontWeight="Bold"
+                                                           Width="22" VerticalAlignment="Center"/>
+                                                <TextBlock DockPanel.Dock="Right" Text="Ctrl+Alt+E" Foreground="{DynamicResource DimTextBrush}"
+                                                           FontFamily="Consolas" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
+                                                <TextBlock Text="HTML" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center"/>
+                                            </DockPanel>
+                                        </Button>
                                     </StackPanel>
                                 </Border>
+                                <!-- The grain, OVER the rows like every menu - this popup was the
+                                     one untextured surface left (Steve, 2026-08-09). -->
+                                <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
                             </Grid>
                         </Popup>
                         <!-- Overflow chevron. Collapsed until something is actually shed, so a
@@ -1157,11 +1201,12 @@
                                 <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Type}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
                                 <TextBlock x:Name="DetailsTypeText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11" TextTrimming="CharacterEllipsis"/>
                             </Grid>
-                            <Grid Margin="0,0,0,3">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Attributes}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
-                                <TextBlock x:Name="DetailsAttrText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11" TextTrimming="CharacterEllipsis"/>
-                            </Grid>
+                            <!-- No attributes row (Steve, 2026-08-09: "i dont think ive ever seen
+                                 it have something") - it only ever showed R/H/S flags, which a
+                                 normal file lacks, so it read "-" nearly always. The hidden
+                                 TextBlock stays so DetailsPane.cs's async stat still has its
+                                 target without a code rewrite; nothing renders. -->
+                            <TextBlock x:Name="DetailsAttrText" Visibility="Collapsed"/>
                             <Grid Margin="0,0,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Path}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
