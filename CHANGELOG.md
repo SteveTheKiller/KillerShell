@@ -4,6 +4,13 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-08-10
+
+1.2.1 is a single-fix release, and an urgent one: in 1.2.0 every confirmation dialog closed the app instead of opening. Anyone on 1.2.0 should update.
+
+### Fixed
+- Confirmation dialogs open instead of closing the app. Deleting files, replacing an entry inside an archive, ending a process and installing the portable copy all ask before they act, and in 1.2.0 the window that does the asking died the instant it was built, taking the app and the open session with it. The actions themselves were never broken - the dialog in front of them could not appear. Its caption row was sized from a theme value that held the right number in the wrong form, which a theme file can express safely and a live theme lookup cannot. It affected every theme, and it went unnoticed through 1.2.0 because it only shows when a confirmation is actually reached.
+
 ## [1.2.0] - 2026-08-10
 
 1.2.0 opens archives like folders and lets you write to a .zip from inside one, adds a Storage Analyzer that draws a whole drive as a treemap, and brings the theme picker to thirteen with a full Windows 98 recreation and its own period icon set - plus a KillerShell icon pack throughout, a shortcuts card that knows the app is eight applets rather than one, and a rebuilt Performance tab. It also fixes the two drag bugs that had been chased since 1.1.4: one could corrupt the process heap and take the app down, the other left the drag icon stranded on the window.

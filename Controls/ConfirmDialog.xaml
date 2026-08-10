@@ -46,8 +46,12 @@
 
             <Grid Margin="{DynamicResource DialogContentMargin}">
                 <Grid.RowDefinitions>
-                    <!-- A dialog caption is 36 by default and a short 98SE band on a flat theme. -->
-                    <RowDefinition Height="{DynamicResource DialogTitleBarHeight}"/>
+                    <!-- A dialog caption is 36 by default and a short 98SE band on a flat theme.
+                         DialogTitleBarRowHeight, NOT DialogTitleBarHeight: this is a GridLength
+                         property and a DynamicResource gets no type conversion, so the double
+                         version threw and killed the app on every theme. ThemeManager derives the
+                         two from one number. -->
+                    <RowDefinition Height="{DynamicResource DialogTitleBarRowHeight}"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>

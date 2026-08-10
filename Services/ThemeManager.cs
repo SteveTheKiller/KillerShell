@@ -346,7 +346,27 @@ namespace KillerShell.Services
             SetIfAbsent("DialogStatusBarVisibility", Visibility.Collapsed);
             // 36, the caption row height every dialog already used. 98SE states its own short
             // band. Defaulting to KillerNotes' 28 would have shortened every dialog's title bar.
+            //
+            // This stays a DOUBLE: 98SE declares it as <sys:Double> and AboutCaptionHeight below
+            // derives from it numerically, and both are assigned to FrameworkElement.Height, which
+            // is a double.
             SetIfAbsent("DialogTitleBarHeight", 36.0);
+
+            // The SAME height as a GridLength, for the one consumer that is a RowDefinition.
+            //
+            // A DynamicResource is assigned to its target property with NO type conversion - unlike
+            // a literal XAML attribute, nothing runs a TypeConverter on the way in. So a double
+            // reaching RowDefinition.Height, which is a GridLength, throws InvalidOperationException
+            // out of DependencyObject.EvaluateExpression and takes the process down as an unhandled
+            // XamlParseException the moment the dialog is constructed.
+            //
+            // That is exactly what happened: ConfirmDialog.xaml bound its caption row to
+            // DialogTitleBarHeight, so clicking Install (or any other confirm) killed the app on
+            // every theme, and it read as "the installer just closes the app" (2026-08-10).
+            // Derived here rather than declared per theme so 98SE's own 20 is picked up too, and
+            // so no palette file has to carry the same number twice in two types.
+            combined["DialogTitleBarRowHeight"] = new GridLength(
+                combined["DialogTitleBarHeight"] is double dialogCaptionH ? dialogCaptionH : 36.0);
             SetIfAbsent("EdgeFadeOpacity", 1.0);
             // The EDITOR's selection strength (Editing/EditorControl.cs), distinct from
             // TextSelectionOpacity which is the plain TextBox one. 98SE states 0.75 with
