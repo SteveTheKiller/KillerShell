@@ -334,7 +334,7 @@ namespace KillerShell.Shell
         /// The app's own FileDialog (Controls/FileDialog.xaml), not the stock shell one - it was
         /// built as a themed stand-in for exactly this (Open/Save, a file name box, the same
         /// Win32-shaped property surface) and this call site was simply never switched over to
-        /// it (Steve, 2026-08-03), so Save As kept popping the unthemed Windows dialog on top of
+        /// it (2026-08-03), so Save As kept popping the unthemed Windows dialog on top of
         /// an otherwise fully themed app.
         /// </remarks>
         private bool PromptSaveAs(Editing.EditorControl editor)

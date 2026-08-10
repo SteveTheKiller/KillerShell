@@ -84,7 +84,7 @@ namespace KillerShell.Shell
             // bailed out instead of making one. It did exactly that when the profile arrived
             // unelevated in an elevated window: the request left through OpenUnelevated and this
             // ran anyway, leaving a chrome-less FILE BROWSER with no menubar, no tree and no
-            // address bar - "there's no way to know what folder I'm in" (Steve, 2026-08-08). The
+            // address bar - no way to tell what folder it is in (2026-08-08). The
             // profile bug is fixed in Elevation.cs ApplyStartupShell; this guard means any future
             // bail-out degrades to an ordinary usable window instead of a blind one.
             if (Pane.Active?.Term == null) return;
@@ -190,9 +190,9 @@ namespace KillerShell.Shell
             // The tab title is WHERE the shell is, not what it happens to be running - Browse.cs's
             // own FolderTitle so a shell tab reads the same way a folder tab does. This used to
             // follow the shell's own OSC 0/2 title instead (a long build showing up in the tab
-            // rather than staying "PowerShell"), but Steve wants the location, and one tab title
-            // should not mean two different things depending on which kind of tab it is
-            // (2026-08-02).
+            // rather than staying "PowerShell"), but the title should be the location, and one
+            // tab title should not mean two different things depending on which kind of tab it
+            // is (2026-08-02).
             tab.Title = FolderTitle(folder);           // Browse.cs
             tab.IsBrowsing = false;
             tab.CurrentFolder = folder;

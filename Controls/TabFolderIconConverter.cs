@@ -14,7 +14,7 @@ namespace KillerShell
     // It started as folder-tabs-only (a browsing tab used to carry no icon at all, because
     // TabGlyph - the strip's other slot - was a Segoe MDL2 glyph reserved for the non-folder
     // kinds). Now that there is real art for every kind, this answers for all of them and the
-    // glyph slot is only a fallback for anything without a picture (Steve, 2026-08-08).
+    // glyph slot is only a fallback for anything without a picture (2026-08-08).
     //
     // Bound to the WHOLE tab, not a single property, because the answer depends on several at
     // once - a search tab has a CurrentFolder too (its last-clicked result's folder) but is not

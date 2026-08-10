@@ -145,6 +145,47 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
+        /// Ctrl+F4: relaunch elevated with the Storage Analyzer tab already open, so a scan
+        /// can read the folders an ordinary token gets Access Denied on. Same shape as
+        /// RelaunchElevatedProcesses above - nothing to carry across but the "--storage" flag,
+        /// the same one an unelevated tear-out hands a fresh window (TabTearOut.cs
+        /// ApplyStartupTearOut), just started with the runas verb instead of plainly.
+        /// </summary>
+        internal void RelaunchElevatedStorage()
+        {
+            // Already elevated: just open/switch to the tab in THIS window.
+            if (IsElevated) { OpenStorageAnalyzer(); return; }   // StorageTabs.cs
+
+            // Reuse an already-elevated window if one is open, rather than prompting UAC again.
+            IntPtr existing = FindElevatedKillerShellWindow();
+            if (existing != IntPtr.Zero) { SendHandoffArgs("--storage", existing); return; }
+
+            string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+            if (string.IsNullOrEmpty(exe)) return;
+
+            var psi = new ProcessStartInfo(exe)
+            {
+                UseShellExecute = true,          // required for the runas verb
+                Verb = "runas",
+                Arguments = "--storage",
+            };
+
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
+            {
+                // ERROR_CANCELLED: the user said no at the prompt. That is an answer, not a
+                // failure, so it passes silently - they know what they just clicked.
+            }
+            catch (Exception ex)
+            {
+                SetTabStatusKey(_active, "Str_Status_ElevateFailed", ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Ctrl+F12: relaunch elevated with the Event Viewer tab already open. Same shape as
         /// RelaunchElevatedProcesses above, and for the same reason there is nothing to carry
         /// across but the flag itself - reuses "--eventviewer" the same way ApplyStartupTearOut
@@ -406,7 +447,7 @@ namespace KillerShell.Shell
             // the request back OUT to a fresh unelevated window via explorer.exe - so Ctrl+F8 put
             // up a UAC prompt and then handed back an ordinary window, spawning another
             // explorer.exe and another KillerShell per press, while the admin window it had just
-            // created sat there with no terminal in it at all (Steve, 2026-08-08).
+            // created sat there with no terminal in it at all (2026-08-08).
             var profile = string.Equals(kind, "cmd", StringComparison.OrdinalIgnoreCase)
                 ? TerminalProfile.Cmd(elevated: IsElevated)
                 : TerminalProfile.PowerShell(elevated: IsElevated);
@@ -435,18 +476,17 @@ namespace KillerShell.Shell
             ElevationHaloInner.SetResourceReference(Border.BorderBrushProperty, "PrimaryBrush");
             // Visibility from the THEME, not a hard Visible: on 98SE the inner halo is wrong
             // twice over - a ring floating inside a hard rectangular frame, and it left the
-            // frame's own black outer line reading as "an odd black border" around the admin
-            // window (Steve, 2026-08-09). ElevationHaloVisibility is Collapsed on a flat theme
+            // frame's own black outer line reading as an odd black border around the admin
+            // window. ElevationHaloVisibility is Collapsed on a flat theme
             // and Visible everywhere else, and it follows a live theme switch.
             ElevationHalo.SetResourceReference(UIElement.VisibilityProperty, "ElevationHaloVisibility");
 
             // The flat theme's admin signal instead: a 2px accent band AROUND the window's own
             // grey bevel frame, drawn by the root Border's edge - NOT painted over the frame
-            // rings, which "ate up the gray border" when tried that way (Steve, 2026-08-09: "I
-            // still want the regular gray border, but I want the colored ring to be AROUND
-            // it"). ElevationEdge* resolve to the accent at 2px on a flat theme and to the
-            // window's ordinary WindowEdge values everywhere else, so nothing changes where the
-            // halo is the signal.
+            // rings, which swallowed the gray border when tried that way - the regular gray
+            // border stays, with the colored ring AROUND it. ElevationEdge* resolve to the
+            // accent at 2px on a flat theme and to the window's ordinary WindowEdge values
+            // everywhere else, so nothing changes where the halo is the signal.
             WindowFrame.SetResourceReference(Border.BorderBrushProperty, "ElevationEdgeBrush");
             WindowFrame.SetResourceReference(Border.BorderThicknessProperty, "ElevationEdgeThickness");
 

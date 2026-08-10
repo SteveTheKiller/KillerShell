@@ -55,8 +55,7 @@ namespace KillerShell.Shell
             pane.EditorPathText.Text     = editor.IsUntitled ? Loc("Str_Ed_Untitled") : editor.FilePath;
 
             // Click-to-edit works for an UNTITLED document too now - typing a path is the
-            // save-as (EdPath_Click) - so the cursor and tooltip invite the click either way
-            // (Steve, 2026-08-09).
+            // save-as (EdPath_Click) - so the cursor and tooltip invite the click either way.
             pane.EditorPathText.Cursor  = Cursors.IBeam;
             pane.EditorPathText.ToolTip = Loc("Str_TT_EdPath");
 
@@ -243,8 +242,7 @@ namespace KillerShell.Shell
             var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, t.Editor));
             if (pane == null) return;
 
-            // An UNTITLED document is editable here too now (Steve, 2026-08-09: "the filename
-            // in the addressbar of the text editor doesnt let me edit"): typing a path IS the
+            // An UNTITLED document is editable here too now (2026-08-09): typing a path IS the
             // save-as, so the box prefills with the tab's folder and a placeholder name to
             // overtype instead of refusing the click.
             pane.EditorPathBox.Text = t.Editor.IsUntitled

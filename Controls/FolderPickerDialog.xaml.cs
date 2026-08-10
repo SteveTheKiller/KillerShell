@@ -245,14 +245,79 @@ namespace KillerShell
             ApplyView();
         }
 
+        /// <summary>
+        /// The three views differ in panel, template AND scroll direction - that last one is the
+        /// part that is easy to miss. List view wraps into columns and scrolls sideways, which
+        /// only works if vertical scrolling is DISABLED: an enabled vertical ScrollViewer hands
+        /// the panel infinite height, so a vertical WrapPanel never wraps and you get one tall
+        /// column.
+        /// </summary>
+        /// <remarks>
+        /// This is FileDialog.xaml.cs ApplyView, ported verbatim (2026-08-09). The copy here had
+        /// drifted badly: icons view asked for "PanelWrap", which is real but is declared in
+        /// FilePane.xaml's OWN ListBox resources - a pane-local key a dialog's FindResource can
+        /// never see, so it threw ResourceReferenceKeyNotFoundException and took the app down.
+        /// It also used PanelStack for LIST view, so the pane rendered as one tall column
+        /// instead of Explorer's columns-scrolling-right, never applied IconTemplate at all,
+        /// and set no scroll directions. The app-level keys, the ones a dialog can actually
+        /// resolve, are PanelListCols / PanelIconGrid / PanelStack and
+        /// RowTemplate / IconTemplate / DetailsTemplate, all in Controls.xaml.
+        /// </remarks>
         private void ApplyView()
         {
-            FolderList.ItemsPanel   = (ItemsPanelTemplate)FindResource(_viewMode == 1 ? "PanelWrap" : "PanelStack");
-            FolderList.ItemTemplate = (DataTemplate)FindResource(_viewMode == 2 ? "DetailsTemplate" : "RowTemplate");
+            switch (_viewMode)
+            {
+                case 1:  // icons: grid, wraps across, scrolls down
+                    FolderList.ItemsPanel   = (ItemsPanelTemplate)FindResource("PanelIconGrid");
+                    FolderList.ItemTemplate = (DataTemplate)FindResource("IconTemplate");
+                    ScrollViewer.SetHorizontalScrollBarVisibility(FolderList, ScrollBarVisibility.Disabled);
+                    ScrollViewer.SetVerticalScrollBarVisibility(FolderList, ScrollBarVisibility.Auto);
+                    break;
+
+                case 2:  // details: one row per entry, scrolls down
+                    FolderList.ItemsPanel   = (ItemsPanelTemplate)FindResource("PanelStack");
+                    FolderList.ItemTemplate = (DataTemplate)FindResource("DetailsTemplate");
+                    ScrollViewer.SetHorizontalScrollBarVisibility(FolderList, ScrollBarVisibility.Disabled);
+                    ScrollViewer.SetVerticalScrollBarVisibility(FolderList, ScrollBarVisibility.Auto);
+                    break;
+
+                default: // list: columns of small icons, scrolls RIGHT
+                    FolderList.ItemsPanel   = (ItemsPanelTemplate)FindResource("PanelListCols");
+                    FolderList.ItemTemplate = (DataTemplate)FindResource("RowTemplate");
+                    ScrollViewer.SetHorizontalScrollBarVisibility(FolderList, ScrollBarVisibility.Auto);
+                    ScrollViewer.SetVerticalScrollBarVisibility(FolderList, ScrollBarVisibility.Disabled);
+                    break;
+            }
+
             DetailsHeader.Visibility = _viewMode == 2 ? Visibility.Visible : Visibility.Collapsed;
             ViewListBtn.Tag    = _viewMode == 0 ? "on" : null;
             ViewIconsBtn.Tag   = _viewMode == 1 ? "on" : null;
             ViewDetailsBtn.Tag = _viewMode == 2 ? "on" : null;
+        }
+
+        /// <summary>
+        /// List view (the default) wraps into columns and scrolls RIGHT with vertical scrolling
+        /// explicitly disabled (see ApplyView) - a plain mouse wheel only ever drives vertical
+        /// scroll, so without this it has nothing to grab onto. Icons/Details already scroll fine
+        /// under the wheel since they scroll vertically. Ported from FileDialog.xaml.cs with the
+        /// view fix - the wheel was dead in this dialog's list view for the same reason.
+        /// </summary>
+        private void FolderList_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (_viewMode != 0) return;
+            var sv = FindScrollViewer(FolderList);
+            if (sv == null) return;
+            sv.ScrollToHorizontalOffset(sv.HorizontalOffset - e.Delta);
+            e.Handled = true;
+        }
+
+        private static ScrollViewer? FindScrollViewer(DependencyObject root)
+        {
+            if (root is ScrollViewer found) return found;
+            int n = System.Windows.Media.VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < n; i++)
+                if (FindScrollViewer(System.Windows.Media.VisualTreeHelper.GetChild(root, i)) is { } sv) return sv;
+            return null;
         }
 
         // ── Sorting ──────────────────────────────────────────────────────────────

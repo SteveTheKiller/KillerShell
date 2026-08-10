@@ -248,8 +248,8 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
-        /// Blocks the wheel outright when the drawer already shows every row - the "shouldn't
-        /// move at all" bug Steve reported (2026-08-02). SyncBookmarksScrollbar hides the bar
+        /// Blocks the wheel outright when the drawer already shows every row - it should not
+        /// move at all in that state (2026-08-02). SyncBookmarksScrollbar hides the bar
         /// in this case, but hiding the bar was never enough on its own: the ScrollViewer's own
         /// ExtentHeight comes from ITS layout of the rows, not from BookmarksPanel.Height, and
         /// CorrectBookmarksOverflow's convergence leaves a sub-pixel gap between the two (the
@@ -350,8 +350,8 @@ namespace KillerShell.Shell
             // DoubleAnimation leaves behind once it lands on its target.
             // Undershoot is never tolerated, even by a fraction of a pixel: a panel a hair
             // SHORT of its content clips the bottom sliver of the last row against the
-            // ScrollViewer's own extent, which is exactly what read as "the bottom bookmark
-            // is getting cut off" (Steve, 2026-08-02) - the hover highlight's bottom edge and
+            // ScrollViewer's own extent, which is exactly what read as the bottom bookmark
+            // being cut off (2026-08-02) - the hover highlight's bottom edge and
             // rounded corners were the only thing making a sub-pixel gap visible. Overshoot
             // keeps its old tolerance so this does not fight the sub-pixel jitter a
             // DoubleAnimation leaves behind once it lands on its target.
@@ -656,14 +656,26 @@ namespace KillerShell.Shell
         // Folders dropped on the open panel are saved. Files are ignored rather than having
         // their parent saved: dropping a file here is far more likely to be a miss than an
         // instruction to bookmark whatever folder it happened to be in.
+        // A drop ON A SAVED PLACE means the file operation - copy or move the payload INTO that
+        // folder, exactly as dropping on a folder row in the listing does. Only a drop on the
+        // drawer's EMPTY space still means "save this folder as a place". Both readings are
+        // natural and they never collide, because one is over a row and the other is not.
+        // Leaving e.Handled false is what hands the row case to the window's own drop pipeline
+        // (ResultsInteraction.cs Window_DragOver / Window_Drop -> DropTarget), so the effects,
+        // the conflict prompts, the drop image and the post-drop refresh are the SAME code the
+        // listing uses rather than a second implementation living here.
         private void BookmarksPanel_DragOver(object sender, DragEventArgs e)
         {
+            if (OverSidebarFolder(e.OriginalSource as DependencyObject)) return;   // ResultsInteraction.cs
+
             e.Effects = DroppedFolders(e).Count > 0 ? DragDropEffects.Copy : DragDropEffects.None;
             e.Handled = true;
         }
 
         private void BookmarksPanel_Drop(object sender, DragEventArgs e)
         {
+            if (OverSidebarFolder(e.OriginalSource as DependencyObject)) return;
+
             foreach (string f in DroppedFolders(e)) AddBookmark(f);
             e.Handled = true;
         }

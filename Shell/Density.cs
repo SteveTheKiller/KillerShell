@@ -34,8 +34,8 @@ namespace KillerShell.Shell
              "Str_St_DensityTight", "Str_St_DensityMin"];
 
         // InitResultsView (ResultsView.cs) restores density for BOTH panes now, alongside zoom
-        // and column widths - it is one more field on the same per-pane ViewState (Steve,
-        // 2026-08-03), so it moved into that same per-pane restore loop rather than staying its
+        // and column widths - it is one more field on the same per-pane ViewState
+        // (2026-08-03), so it moved into that same per-pane restore loop rather than staying its
         // own separate window-wide read. InitDensity is gone; nothing else called it.
 
         /// <summary>Click steps one tighter, Roomy through Minimal, then back round to Roomy.

@@ -143,7 +143,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">關於 KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">文字大小: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">專為進階使用者打造的自由 shell。檔案瀏覽器、終端機與文字編輯器共用一個視窗、一列分頁與一組快速鍵。安裝可選。</sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">一個可攜應用程式，集中管理一台電腦及其檔案。檔案瀏覽器、終端機、文字編輯器與管理工具共用一個視窗和一組快速鍵。安裝可選，免執行環境，免帳號。</sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> 出品的實用工具。</sys:String>
     <sys:String x:Key="Str_About_Version">版本</sys:String>
     <sys:String x:Key="Str_About_Publisher">發行者</sys:String>

@@ -57,7 +57,7 @@
                                    Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center" Margin="10,3,0,0"/>
                     </StackPanel>
                     <!-- Previous/Next: steps through the grid's current sort/filter order without
-                         closing and reopening the dialog (Steve). E76B/E76C is the same chevron
+                         closing and reopening the dialog. E76B/E76C is the same chevron
                          pair the rest of the app family uses for "points toward where you're
                          going" (the sidebar rail collapse chevron convention) - Left steps back,
                          Right steps forward. Placed in the title bar, clear of the four action
@@ -125,7 +125,7 @@
                 <Border x:Name="XmlHost" Visibility="Collapsed" Background="{DynamicResource PaneBrush}" CornerRadius="4"/>
             </Grid>
 
-            <!-- Footer: icon-only buttons with tooltips (Steve prefers glyphs over words), each
+            <!-- Footer: icon-only buttons with tooltips (glyphs over words), each
                  also bound to a dialog-scoped shortcut (see OnKeyDown) with the shortcut shown in
                  its own tooltip - the same "description  (shortcut)" format the rest of the app's
                  tooltips use (e.g. Str_TT_SearchPanel). Online lookup + XML toggle on the left,

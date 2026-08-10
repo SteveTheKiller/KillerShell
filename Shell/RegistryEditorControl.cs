@@ -327,7 +327,7 @@ namespace KillerShell.Shell
 
         internal RegistryEditorControl()
         {
-            // PaneBrush, painted here on the control's own root Grid (Steve, 2026-08-02): this
+            // PaneBrush, painted here on the control's own root Grid: this
             // sits inside ResultsSurface on MenuBackgroundBrush, a full step darker still than
             // PaneBrush - the toolbar/find-bar/split/status-line children below are all built
             // with an 8px outer Margin (never edge-to-edge the way the editor bar and its slot
@@ -343,9 +343,8 @@ namespace KillerShell.Shell
 
             // ToolTabChrome: the address row rides the RAISED menu-bar tier on 98SE, and the
             // tree and value grid below sit in their own sunken WHITE wells (BuildSplit) -
-            // "the content should be sunken, the menubar raised... the sidebar with the reg
-            // tree should be one sunken white pane. the rest on the right too" (Steve,
-            // 2026-08-09). All of it inert on the ordinary themes.
+            // content sunken, menu bar raised, with the reg tree sidebar and the right side
+            // each their own sunken white pane. All of it inert on the ordinary themes.
             var toolbar = ToolTabChrome.WrapBar(BuildToolbar(out _pathDisplayHost, out _pathDisplay, out _pathEdit));
             SetRow(toolbar, 0);
             Children.Add(toolbar);
@@ -385,8 +384,8 @@ namespace KillerShell.Shell
         private Grid BuildToolbar(out Border pathHost, out TextBlock pathDisplay, out TextBox pathEdit)
         {
             var bar = new Grid { Margin = new Thickness(8, 8, 8, 6) };
-            // PaneBrush, matching the terminal bar / document editor toolbar fix (Steve,
-            // 2026-08-02): this control sits inside ResultsSurface/PaneContent on
+            // PaneBrush, matching the terminal bar / document editor toolbar fix:
+            // this control sits inside ResultsSurface/PaneContent on
             // MenuBackgroundBrush, a step darker than the pane, the same as those two - without an
             // explicit override the toolbar row reads as a visibly darker band instead of a
             // continuation of the active tab above it.
@@ -549,10 +548,7 @@ namespace KillerShell.Shell
             var split = new Grid();
             // RegSplitMargin = the 8,0,8,6 this always was, 0 on 98SE: the wells then run flush
             // to the pane edges so the tree's left edge lines up under the menu bar's white left
-            // line and the right edge is the same thin line as the left (Steve, 2026-08-09:
-            // "the content pane should expand to the left to line up with the menubar...
-            // the right edge of the window too, should be like the left edge of the tree
-            // sidebar. very thin").
+            // line and the right edge is the same thin line as the left.
             split.SetResourceReference(FrameworkElement.MarginProperty, "RegSplitMargin");
             // A fixed default width, narrower than the folder browser's own 240 (TreePanel.cs
             // TreeWidthDefault) - registry key names run shorter than folder paths, so the tree
@@ -569,8 +565,8 @@ namespace KillerShell.Shell
                 Style = (Style)FindResourceStatic("FolderTreeView"),
                 Focusable = true,
             };
-            // BackgroundBrush, matching the folder browser's own tree sidebar (Steve, 2026-08-02
-            // - "regeditor sidebar should just have the same mainwindow background"): TreePanel.cs
+            // BackgroundBrush, matching the folder browser's own tree sidebar so the reg
+            // sidebar shares the main window background: TreePanel.cs
             // never sets a Background on the folder TreeView at all, so it inherits the
             // FolderTreeView style's Transparent default all the way up to the Window's own
             // Background="{DynamicResource BackgroundBrush}" (MainWindow.xaml). This control's own
@@ -579,7 +575,7 @@ namespace KillerShell.Shell
             // exact color the folder tree shows rather than the one this tab's own pane uses.
             // ToolTreeBrush, not BackgroundBrush directly: it mirrors BackgroundBrush on every
             // ordinary theme (identical rendering), but 98SE states WHITE - the reg tree is a
-            // sunken white list well there, like Explorer's (Steve, 2026-08-09).
+            // sunken white list well there, like Explorer's.
             tree.SetResourceReference(TreeView.BackgroundProperty, "ToolTreeBrush");
 
             // Same visual chrome the folder sidebar uses (expander arrows, connecting lines), with
@@ -617,15 +613,15 @@ namespace KillerShell.Shell
                 Background = Brushes.Transparent,
                 FocusVisualStyle = null,   // same dotted-focus-rectangle fix as the pane splitters
             };
-            // RegSplitterWidth: the 5 it always was, 3 on 98SE - "the divider in regedit should
-            // be skinnier" (Steve, 2026-08-09).
+            // RegSplitterWidth: the 5 it always was, 3 on 98SE - the regedit divider reads
+            // better skinnier there.
             splitter.SetResourceReference(FrameworkElement.WidthProperty, "RegSplitterWidth");
             SetColumn(splitter, 1);
             split.Children.Add(splitter);
 
             grid = BuildValueGrid();
             // Its own sunken WHITE well, separate from the tree's, with the skinny splitter
-            // between them as the divider (Steve, 2026-08-09).
+            // between them as the divider.
             var gridHost = ToolTabChrome.WrapContent(grid, "ToolContentBrush");
             SetColumn(gridHost, 2);
             split.Children.Add(gridHost);
@@ -652,16 +648,15 @@ namespace KillerShell.Shell
                 ItemsSource = _values,
             };
             // Transparent, matching ProcessListControl's own value grid (Shell/ProcessListControl.cs
-            // - the Task Manager tab, which Steve has not flagged) rather than the SurfaceBrush a
-            // prior round put here (Steve, 2026-08-02: "I dont think it needs that other background
-            // color either"): SurfaceBrush painted a second, flat panel behind the header's own
+            // - the Task Manager tab) rather than the SurfaceBrush a
+            // prior round put here: SurfaceBrush painted a second, flat panel behind the header's own
             // TableHeaderBrush band instead of letting this control's own PaneBrush root (set in
             // the constructor above) show through, so the header read as floating on an extra
             // layer instead of sitting directly on the tab.
             grid.Background = Brushes.Transparent;
             // RegGridMargin: the 6,0,0,0 gap to the splitter it always had, 0 on 98SE - inside
-            // its own sunken well the gap read as "a slim white border to the left of the table"
-            // (Steve, 2026-08-09); the skinny splitter is the divider now.
+            // its own sunken well the gap read as a slim white border to the left of the
+            // table; the skinny splitter is the divider now.
             grid.SetResourceReference(FrameworkElement.MarginProperty, "RegGridMargin");
             grid.CanUserReorderColumns = false;   // keeps Name/Data as the fixed first/last columns the header rounding below assumes
             grid.SetResourceReference(DataGrid.ForegroundProperty, "TextBrush");
@@ -679,7 +674,7 @@ namespace KillerShell.Shell
             var data = Col("Str_Col_RegData", nameof(RegistryValueRow.DataLabel), new DataGridLength(1, DataGridLengthUnitType.Star));
 
             // Rounded top corners on the OUTER two headers only, so the row reads as one radius-5
-            // band (Steve, 2026-08-02: "top two corners of the header need to be rounded") - the
+            // band with rounded top corners - the
             // family standard documented against Killendar's MonthView/TimeGridView day-name strip
             // (CalendarChrome.cs / MonthView.xaml: TableHeaderBrush, CornerRadius 5,5,0,0,
             // HeaderLineBrush bottom border). A DataGrid draws one DataGridColumnHeader per

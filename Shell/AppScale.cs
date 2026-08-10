@@ -63,10 +63,9 @@ namespace KillerShell.Shell
 
             // Display-mode text is only crisp at 1:1 - under any other scale its pixel-snapped
             // ClearType lands on fractional device pixels and the whole app smears, the rail's
-            // font glyphs worst of all (Steve, 2026-08-09: "everything is so blurry when i
-            // zoom"). Ideal mode renders correctly under a transform, so the scaled host swaps
-            // to it and back. 98SE looked better only because its aliased/pixel-art pieces hide
-            // the smear; this fixes the rest.
+            // font glyphs worst of all. Ideal mode renders correctly under a transform, so the
+            // scaled host swaps to it and back. 98SE looked better only because its
+            // aliased/pixel-art pieces hide the smear; this fixes the rest.
             System.Windows.Media.TextOptions.SetTextFormattingMode(ScaleHost,
                 scale == 1.0 ? System.Windows.Media.TextFormattingMode.Display
                              : System.Windows.Media.TextFormattingMode.Ideal);
@@ -135,7 +134,7 @@ namespace KillerShell.Shell
             }
 
             // The readout REPLACES the status line in its own slot rather than sitting beside
-            // it - the traffic dot stays in the corner throughout (Steve, 2026-08-09).
+            // it - the traffic dot stays in the corner throughout.
             AppScaleLabel.Text       = string.Format(Loc("Str_St_AppSize"), (int)Math.Round(scale * 100));
             AppScaleLabel.Visibility = Visibility.Visible;
             StatusText.Visibility    = Visibility.Collapsed;
@@ -144,8 +143,7 @@ namespace KillerShell.Shell
 
         /// <summary>
         /// Ctrl+wheel in a terminal: show the text size in the status line, the way the app-zoom
-        /// readout shows its own percentage (Steve, 2026-08-09: "the text size % should appear
-        /// in the statusbar like 'Text Size: 110%'"). 13 is the terminal's default font size
+        /// readout shows its own percentage. 13 is the terminal's default font size
         /// (TerminalControl's Ctrl+0 reset), so 13 reads as 100%.
         /// </summary>
         internal void ShowTerminalTextSize(double fontSize)

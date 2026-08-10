@@ -152,7 +152,7 @@ namespace KillerShell.Terminal
             // TerminalBackgroundBrush, which defaults to ListPaneBrush so the shell and the file
             // listing share a surface as before. 98SE overrides it to pure black: a Win98-era
             // console is a BLACK box, and the white list well that suits a file listing there is
-            // completely wrong for a terminal (Steve, 2026-08-08).
+            // completely wrong for a terminal (2026-08-08).
             p.Background = Res("TerminalBackgroundBrush", C(0x1E1E1E));
             p.Foreground = Res("TerminalForegroundBrush", C(0xE0E0E0));
             p.Cursor     = Res("TerminalAccentBrush",     C(0x50AEE8));

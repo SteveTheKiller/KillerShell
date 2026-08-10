@@ -145,7 +145,7 @@ namespace KillerShell.Shell
         /// flat one. Every radius in this file used to be the literal 6 or 5, which is why the
         /// terminal and the listing kept three rounded corners on 98SE however many CornerRadius
         /// attributes in the markup were zeroed - these are assigned from code and overwrite
-        /// whatever the XAML said, on every tab change (Steve, 2026-08-08).
+        /// whatever the XAML said, on every tab change.
         /// </summary>
         private static double PaneRadius => RadiusOf("PaneCornerRadiusValue", 6.0);
 
@@ -298,9 +298,9 @@ namespace KillerShell.Shell
                 // marker: "Backup_Nightly.ps1" would draw as "BackupNightly.ps1" with an N
                 // underlined, and file names carry underscores all the time.
                 // A close X at the END of the row, like KillerPDF's recent-documents dropdown, so
-                // a tab can be shut from the list without switching to it first (Steve,
-                // 2026-08-08). The header becomes a DockPanel rather than a string: the title
-                // takes the remaining width and the X docks right, so every row's X lines up.
+                // a tab can be shut from the list without switching to it first. The header
+                // becomes a DockPanel rather than a string: the title takes the remaining width
+                // and the X docks right, so every row's X lines up.
                 var closeBtn = new Button
                 {
                     Content = "x",
@@ -357,7 +357,7 @@ namespace KillerShell.Shell
         /// (a folder or an open document), a plain color swatch otherwise.
         /// </summary>
         /// <remarks>
-        /// NOT an MDL2 glyph TextBlock (Steve, 2026-08-02, third attempt at this row's icon):
+        /// NOT an MDL2 glyph TextBlock (2026-08-02, third attempt at this row's icon):
         /// two different glyph techniques - a plain Style assignment, then a
         /// SetResourceReference wrapped in a Viewbox - both rendered every row as the exact same
         /// shape regardless of which codepoint was actually requested, which is not something a
@@ -414,6 +414,7 @@ namespace KillerShell.Shell
                 : tab.IsEventViewer         ? "WarningAmber"
                 : tab.IsPerformanceMonitor  ? "InfoBlue"
                 : tab.IsRegistryEditor      ? "PrimaryBrush"
+                : tab.IsStorageAnalyzer     ? "InfoBlue"
                 : "MutedTextBrush";
             dot.SetResourceReference(System.Windows.Shapes.Shape.FillProperty, brush);
             return dot;
@@ -434,8 +435,7 @@ namespace KillerShell.Shell
             // Cancel a half-typed address edit before the switch. Clicking a tab does not move
             // keyboard focus off the address TextBox (a Border press takes no focus), so
             // LostFocus never fired and the box stayed visible carrying the OLD tab's path over
-            // the new tab (Steve, 2026-08-09: "the addressbar didnt change, see how it still
-            // says pictures?"). Same cancel-not-commit rule as clicking away.
+            // the new tab. Same cancel-not-commit rule as clicking away.
             if (Pane.AddressBox.Visibility == Visibility.Visible)
             {
                 Pane.AddressBox.Visibility     = Visibility.Collapsed;
@@ -461,6 +461,7 @@ namespace KillerShell.Shell
             ApplyEventViewerView(t);       // EventViewerTabs.cs  - and an Event Viewer tab shows the log grid
             ApplyPerformanceMonitorView(t);// PerformanceTabs.cs  - and a Performance tab shows the gauges
             ApplyRegistryEditorView(t);    // RegistryEditorTabs.cs - and a Registry Editor tab shows the tree
+            ApplyStorageAnalyzerView(t);   // StorageTabs.cs      - and a Storage tab shows the treemap
             ApplyPaneBars(t);              // PaneBars.cs         - each kind wears its own bar
 
             Pane.RootPathBox.Text             = t.RootPath;
@@ -613,6 +614,7 @@ namespace KillerShell.Shell
             CloseEventViewer(t);       // EventViewerTabs.cs - an Event Viewer tab has a background load to cancel
             ClosePerformanceMonitor(t);// PerformanceTabs.cs - a Performance tab has a refresh timer and counters to stop
             CloseRegistryEditor(t);    // RegistryEditorTabs.cs - a Registry Editor tab has a status-clear timer to stop
+            CloseStorageAnalyzer(t);   // StorageTabs.cs     - a Storage tab may have a scan mid-walk to cancel
 
             // Only closing the ACTIVE tab changes what the pane shows - fade that.
             var snap = t == _active ? SnapshotPane() : null;

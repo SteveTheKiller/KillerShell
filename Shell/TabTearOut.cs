@@ -87,7 +87,7 @@ namespace KillerShell.Shell
         {
             // CurrentFolder is meaningful on a shell tab too, not just a browse tab - it tracks
             // the live cwd (TerminalTabs.cs DirectoryChanged, "the tab title is where the shell
-            // is"). Gating this on IsBrowsing was the bug (Steve, 2026-08-02): IsBrowsing is
+            // is"). Gating this on IsBrowsing was the bug (2026-08-02): IsBrowsing is
             // false for every shell tab, so a restored or torn-out shell always fell back to
             // Home regardless of where it actually was. Only Home is truly folderless -
             // Processes, Event Viewer and Performance all ignore this out-param entirely (see
@@ -97,6 +97,7 @@ namespace KillerShell.Shell
             if (t.IsProcessList) return "--processes";
             if (t.IsEventViewer) return "--eventviewer";
             if (t.IsPerformanceMonitor) return "--performance";
+            if (t.IsStorageAnalyzer) return "--storage";
             // Only ever arrives here from an already-elevated window - RegistryEditorTabs.cs has
             // no unelevated entry point at all, so a torn-out or restored Registry tab can only
             // ever have existed inside a process that was already admin, the same reasoning
@@ -189,6 +190,11 @@ namespace KillerShell.Shell
             else if (Array.Exists(args, a => string.Equals(a, "--performance", StringComparison.OrdinalIgnoreCase)))
             {
                 OpenPerformanceMonitor();   // PerformanceTabs.cs - singleton; fine even as the window's first tab
+                acted = true;
+            }
+            else if (Array.Exists(args, a => string.Equals(a, "--storage", StringComparison.OrdinalIgnoreCase)))
+            {
+                OpenStorageAnalyzer();   // StorageTabs.cs - singleton; fine even as the window's first tab
                 acted = true;
             }
             else if (Array.Exists(args, a => string.Equals(a, "--registry", StringComparison.OrdinalIgnoreCase)))

@@ -1,8 +1,8 @@
 <p align="center">
-  <a href="https://killershell.net"><img src="docs/wordmark.png" width="640" alt="KillerShell - free shell for power users: file browser, terminal, text editor and admin toolkit in one portable Windows exe"></a>
+  <a href="https://killershell.net"><img src="docs/wordmark.png" width="640" alt="KillerShell - one portable Windows exe for managing a computer and everything on it"></a>
 </p>
 
-Free shell for power users. One window holds a file browser, a PowerShell or CMD terminal, a text editor and a full admin toolkit, on one tab strip and one set of keys, so finding a file, reading it, changing it and running something against it never means switching tools. Search is built into the browser rather than bolted on: any folder by filename wildcard or by file content, streamed live with no index to build and nothing to wait for. Processes, services, performance and the registry are one key away too.
+Free shell for power users - one app to manage a Windows machine and everything on it. A file browser, a PowerShell or CMD terminal, a text editor and a full admin toolkit share one window, one tab strip and one set of keys, so finding a file, reading it, changing it and running something against it never means switching tools. Search is built into the browser rather than bolted on: any folder by filename wildcard or by file content, streamed live with no index to build and nothing to wait for. Processes, services, performance, storage and the registry are one key away too.
 
 It is one portable exe. No runtime, no agent, no account. Drop it on a machine that is not yours, do the work, delete it.
 #### Open-source, GPLv3, run portable or install for just you or every user on the PC.
@@ -59,10 +59,11 @@ It is one portable exe. No runtime, no agent, no account. Drop it on a machine t
 - Performance Monitor (F11): a Task-Manager-style live view with one tile per CPU, RAM, disk, network adapter and GPU, a minute of history on every graph, and a per-core CPU breakdown
 - Event Viewer (Ctrl+F12, always elevated): reads the Application, System and Security logs with level and text filtering, full record detail with a raw XML view, and paging through the filtered results
 - Registry Editor (Ctrl+F11, always elevated): a lazy-loading tree over all five hives, type-aware editing for every value kind, create/rename/delete for keys and values, and Ctrl+F to search loaded key and value names
+- Storage Analyzer (F4, elevated on Ctrl+F4): scan a folder or drive and every file is drawn as a rectangle sized by how much room it takes, the WizTree and WinDirStat way of seeing where a disk went. Depth and minimum-size filters, coloring by file type or by top folder, and right-click to open, reveal in Explorer, copy the path or delete to the Recycle Bin
 
 ### Interface
 
-- Keyboard first. Explorer's conventions where they exist (Enter opens, F2 renames, Alt+Enter for properties, Shift+F10 for the shell menu), and single keys rather than chords where they do not: F5 refresh, F6 reveal, F7 edit, F8 shell, F9 processes, F10 split, F11 performance, F12 about
+- Keyboard first. Explorer's conventions where they exist (Enter opens, F2 renames, Alt+Enter for properties, Shift+F10 for the shell menu), and single keys rather than chords where they do not: F4 storage, F5 refresh, F6 reveal, F7 edit, F8 shell, F9 processes, F10 split, F11 performance, F12 about (the address bar answers to Ctrl+L and Alt+D)
 - F1 opens a shortcuts card that lists every gesture as both a grouped list and a visual keyboard, with layer buttons for the Ctrl / Shift / Alt maps and a live preview when you hold a real modifier
 - Tabs: each tab is an independent search, a folder, a terminal or a document; drag to reorder, optionally restored on the next launch. New tabs open in the pane you are looking at, and once they would get too narrow to read the strip keeps as many as fit and a chevron lists the rest
 - Three toolbars, one per kind of tab, so a document is not carrying a folder listing's sort and view buttons

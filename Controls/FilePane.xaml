@@ -41,13 +41,13 @@
                    simply disappears into the app behind it and only the active tab reads as a
                    surface. Briefly moved to MenuBackgroundBrush; that lifted the band a step
                    above the tabs sitting on it, and the tabs' 3px top margin turned into a
-                   visible grey line above every one of them (Steve, 2026-08-08). -->
+                   visible grey line above every one of them. -->
               <!-- TRANSPARENT, never BackgroundBrush. On Sepulchre, Decay, Delirium, Ectoplasm
                    and Malaise that key is a full-window LinearGradientBrush, so painting it here
                    re-ramped the ENTIRE window gradient inside the band's own width - a visible
                    strip of mismatched gradient above every tab. Transparent lets the window's
                    one continuous gradient show through, which is the only way the band can line
-                   up with the window it sits on (Steve, 2026-08-08). -->
+                   up with the window it sits on. -->
               <!-- Same story as the pane's own margin below: 0,6,8,0 on the rounded themes, all
                    zeros on a flat one. The 8 on the right made the strip narrower than the window
                    on that side only, and the 6 on top was the last gap left between the caption
@@ -58,8 +58,8 @@
                <Grid>
                 <!-- NO grain layer of the band's own. ScaleHost's row-wide grain (MainWindow.xaml)
                      already covers this area, so a second tile here DOUBLED the texture across the
-                     band and the transparent inactive tabs - "my inactive tabs had a different
-                     texture than the main bg" (Steve, 2026-08-09). The ACTIVE tab still carries
+                     band and the transparent inactive tabs - the inactive tabs ended up with a
+                     different texture than the main bg. The ACTIVE tab still carries
                      its own layer, because its opaque fill hides the shared one. -->
                 <!-- The line across the top of the pane: PaneBorderBrush normally, the accent
                      when this pane has focus (DualPane.cs), exactly mirroring the pane border
@@ -81,7 +81,7 @@
                 <!-- Opacity from the theme: 0 on a flat theme, so 98SE's tab strip is genuinely
                      flat. This gradient is a SHADOW, and it was hardcoded - which is why the tabs
                      still looked shadowed on 98SE after the tab's own DropShadowEffect was made
-                     theme-driven (Steve, 2026-08-08). -->
+                     theme-driven. -->
                 <Border IsHitTestVisible="False" Opacity="{DynamicResource BarShadowOpacity}">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -108,8 +108,8 @@
                      the radii in step with the pane's. -->
                 <!-- PaneEdgeBrush, which a flat theme sets TRANSPARENT: on 98SE the tab's own
                      bevel and the pane's bevel already describe the join, and this extra 1px rule
-                     drew as a grey line between the active tab and the content below it (Steve,
-                     2026-08-08). Every other theme keeps the ring exactly as before. -->
+                     drew as a grey line between the active tab and the content below it. Every
+                     other theme keeps the ring exactly as before. -->
                 <Border x:Name="TabBarRing" Height="7" VerticalAlignment="Bottom" Margin="0,0,0,-6"
                         BorderThickness="1,1,1,0" CornerRadius="{DynamicResource TabCornerRadius}" IsHitTestVisible="False"
                         BorderBrush="{DynamicResource PaneEdgeBrush}"/>
@@ -186,7 +186,7 @@
                                      covers its own segment. -->
                                 <!-- TabPadding, not the literal 12,4,5,5: 98SE trims the bottom by
                                      one so the tab sits about a pixel shorter, which is the Win98
-                                     proportion Steve asked for alongside the chamfer. -->
+                                     proportion that goes alongside the chamfer. -->
                                 <Border x:Name="tabBd" CornerRadius="{DynamicResource TabCornerRadius}" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
                                         MinWidth="60"
                                         Tag="{DynamicResource TabChamfer}"
@@ -222,8 +222,8 @@
                                         <!-- Opacity 0 by default: an INACTIVE tab is transparent, so
                                              it already shows the band's grain through it, and its
                                              own layer on top doubled the texture - the tabs read
-                                             visibly grainier than the strip they sit in (Steve,
-                                             2026-08-08). The ACTIVE tab is an opaque PaneBrush
+                                             visibly grainier than the strip they sit in. The
+                                             ACTIVE tab is an opaque PaneBrush
                                              fill that hides the band, so the IsActive trigger
                                              below turns this back on for that one. -->
                                         <Border x:Name="tabGrain" IsHitTestVisible="False"
@@ -231,7 +231,7 @@
                                                 Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
                                         <!-- Win98 tab bevel: light along the top and left, dark
                                              down the right. A Win98 tab is a raised control, not
-                                             a flat card (Steve, 2026-08-08). The margins undo the
+                                             a flat card. The margins undo the
                                              tab's padding so the bevel sits on its real edges.
                                              Zero-thickness and transparent on the other twelve. -->
                                         <!-- TabBevelMargin, not the literal -12,-4,-5,-5 it used to
@@ -239,7 +239,7 @@
                                              edge hangs below the tab, and the pane now rides up by
                                              the page bevel's full 2px (PaneOuterMargin), so on a
                                              flat theme that overhang showed one pixel of dark line
-                                             below the tab's foot (Steve, 2026-08-09). Default is
+                                             below the tab's foot. Default is
                                              exactly the old literal. -->
                                         <Border x:Name="tabBevelLight" IsHitTestVisible="False" Margin="{DynamicResource TabBevelMargin}" Panel.ZIndex="4"
                                                 BorderBrush="{DynamicResource BevelLightBrush}"
@@ -248,9 +248,8 @@
                                              BevelDarkThickness. That key is 0,0,2,2, so an
                                              INACTIVE tab drew a 2px dark band along its foot, and
                                              a doubled line under the tabs is what made the menu bar
-                                             below them read as sunken when it is not (Steve,
-                                             2026-08-09). An unselected Win98 tab has a SINGLE line
-                                             under it. -->
+                                             below them read as sunken when it is not. An unselected
+                                             Win98 tab has a SINGLE line under it. -->
                                         <Border x:Name="tabBevelDark" IsHitTestVisible="False" Margin="{DynamicResource TabBevelMargin}" Panel.ZIndex="4"
                                                 BorderBrush="{DynamicResource BevelDarkBrush}"
                                                 BorderThickness="{DynamicResource TabInactiveBevelDarkThickness}"/>
@@ -278,8 +277,8 @@
                                                  256px), not the bitmap's actual pixel size, so an
                                                  unconstrained Image rendered at whatever that
                                                  list's real icon size happens to be on the
-                                                 machine (Steve, 2026-08-02: tabs turned into
-                                                 giant folders). Stretch=Uniform downscales
+                                                 machine - the tabs turned into
+                                                 giant folders. Stretch=Uniform downscales
                                                  cleanly regardless. Visibility, not size, is what
                                                  makes a null Source (not a folder tab) take no
                                                  room - the collapse trigger below. -->
@@ -308,7 +307,7 @@
                                     <!-- No art for this tab kind (a search tab): hide the Image and
                                          let the MDL2 glyph above stand in. Every other kind now
                                          resolves to a brand icon, so the glyph is the exception
-                                         rather than the rule (Steve, 2026-08-08). -->
+                                         rather than the rule. -->
                                     <DataTrigger Binding="{Binding Converter={StaticResource TabFolderIcon}}" Value="{x:Null}">
                                         <Setter TargetName="tabFolderIcon" Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
@@ -333,7 +332,7 @@
                                         <!-- The accent stripe is theme-driven now: 3px on top by
                                              default, 0 on a flat theme. A Win98 tab is identified
                                              by its bevel and by being joined to the pane, not by
-                                             a coloured bar across the top (Steve, 2026-08-08). -->
+                                             a coloured bar across the top. -->
                                         <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabStripeThickness}"/>
                                         <!-- Reaches the foot of the band so its own fill breaks
                                              the ring line where the tab is - that break is what
@@ -342,10 +341,10 @@
                                         <!-- OPEN BOTTOM. The tab's dark bevel is 0,0,2,2 - right AND
                                              bottom - so the active tab was drawing a 2px grey rule
                                              along its own foot, directly between itself and the
-                                             content. That rule is the line Steve kept seeing under
+                                             content. That rule is the line that kept showing under
                                              the active tab, and no amount of work on the ring above
                                              or the pane below could remove it, because it belonged
-                                             to the tab (Steve, 2026-08-08, fourth report).
+                                             to the tab.
                                              A selected Win98 tab has no bottom edge at all: the
                                              bevel runs top, left and right, and the bottom is open
                                              into the page, which is what makes the two read as one
@@ -367,15 +366,15 @@
                                              it Transparent - the dual-pane focus ring (the 3px
                                              stripe the PaneFocused triggers below hardcode, and
                                              the band's TabEdge verticals) drew in the accent on a
-                                             theme whose tabs are marked by bevel alone (Steve,
-                                             2026-08-09, dual pane). The trigger THICKNESSES stay:
+                                             theme whose tabs are marked by bevel alone. The
+                                             trigger THICKNESSES stay:
                                              with a transparent brush they paint nothing and the
                                              padding compensation still holds the title steady. -->
                                         <Setter TargetName="tabBd" Property="BorderBrush" Value="{DynamicResource TabActiveRingBrush}"/>
                                         <!-- BarShadowEffect, built per palette in ThemeManager and
                                              NULL on a flat theme - a hardcoded effect here kept
                                              the active tab casting a shadow on 98SE, which has
-                                             none anywhere (Steve, 2026-08-08). -->
+                                             none anywhere. -->
                                         <Setter TargetName="tabBd" Property="Effect" Value="{DynamicResource BarShadowEffect}"/>
                                         <Setter TargetName="tabLbl" Property="Foreground" Value="{DynamicResource TextBrush}"/>
                                         <!-- Bold Consolas at 11px is nearly indistinguishable in Display mode;
@@ -417,7 +416,7 @@
                                          transparent, and a transparent 1px border still kept the
                                          tab's fill out of its own edge column - which let the menu
                                          bar's white top line show through as a single white pixel
-                                         at the tab's right edge (Steve, 2026-08-09). -->
+                                         at the tab's right edge. -->
                                     <DataTrigger Binding="{Binding PaneFocused}" Value="True">
                                         <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusThickness}"/>
                                         <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusPadding}"/>
@@ -514,14 +513,14 @@
                    With one tab the strip is collapsed and the -1 just eats 1px of the 6px gap.
                    ApplySearchPanel (SearchPanel.cs) reassigns this margin and repeats the -1. -->
               <!-- The listing surface takes the MENU tier and the location row above it takes
-                   PaneBrush - swapped from the obvious way round on purpose (Steve, 2026-08-08).
+                   PaneBrush - swapped from the obvious way round on purpose.
                    It also happens to be the only pairing that reads on Black, where PaneBrush is
                    #0a0a0a against a #000000 window (1.06:1, invisible) while the menu tier is
                    #121212. -->
               <!-- PaneOuterMargin: 0,-1,8,0 as it always was, and 0,-1,0,0 on a flat theme. That 8
                    is an inset on the RIGHT only, with 0 on the left, so the pane sat visibly
                    further from the window edge on one side than the other - the right edge that
-                   would not come down to the width of the left (Steve, 2026-08-08). It is right on
+                   would not come down to the width of the left. It is right on
                    the rounded themes, where the pane is a floating card with a shadow; a Win98
                    client area fills its frame.
                    PaneEdgeThickness: 1 normally. 0 on 98SE, where PaneEdgeBrush is transparent
@@ -542,11 +541,11 @@
                      the top and left, grey along the bottom and right - and the selected tab's own
                      white left edge is the SAME line continuing upward. That continuity is what
                      makes a tab and its page read as one object rather than a card sitting on a
-                     box (Steve, 2026-08-08: "the light gray edge of the active tab should now
-                     extend all the way down the side of the terminal down to the footer").
+                     box - the light gray edge of the active tab extends all the way down the
+                     side of the terminal to the footer.
                      SUPERSEDED 2026-08-09: this was RAISED (brushes paired with the thicknesses by
-                     name), which is what put a white line down the left of the pane. Steve wants
-                     the page to match the sidebar's sunken well instead, so it is now the same
+                     name), which is what put a white line down the left of the pane. The page
+                     should match the sidebar's sunken well instead, so it is now the same
                      double CROSSED bevel - see the block below.
                      Declared here at the TOP of PaneContent so it sits under the terminal, the
                      listing and the details strip; ZIndex lifts it back over them, because the
@@ -554,7 +553,7 @@
                      transparent on the other twelve, so this costs them nothing. -->
                 <!-- NO BEVEL ON PaneContent. It wraps the LOCATION ROW and the pane's whole stack,
                      so any frame drawn here rings the menu bar and the tabs as well as the content
-                     (Steve, 2026-08-09: "THE CONTENT PANE IS SUNKEN, NOT THE MENUBAR AND TABS").
+                     - and it is the CONTENT pane that is sunken, not the menu bar and tabs.
                      A raised pair lived here and put a white line down the left of everything; a
                      sunken quad replaced it and boxed in the menu bar. Both were the wrong SCOPE,
                      not the wrong brushes.
@@ -577,7 +576,7 @@
                     </Grid.ColumnDefinitions>
                     <!-- Its own grain. The pane's grain layer is painted BEFORE this row, so the
                          opaque PaneBrush above covers it and the bar came out as the one flat,
-                         textureless strip in the window (Steve, 2026-08-08). Spans every column
+                         textureless strip in the window. Spans every column
                          and is declared first, so it sits under the buttons and the path. -->
                     <Border Grid.ColumnSpan="3" IsHitTestVisible="False"
                             Background="{DynamicResource GrainTileBrush}"
@@ -586,7 +585,7 @@
                          is lifted off the surface by a light line along its top and left. -->
                     <!-- RAISED: the pair goes by NAME here - light on the LightThickness. That is
                          the opposite of the content well below, which crosses them to read as
-                         pressed in. Menu bar raised, content sunken (Steve, 2026-08-09). -->
+                         pressed in. Menu bar raised, content sunken. -->
                     <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
                             BorderBrush="{DynamicResource BarEdgeBrush}"
                             BorderThickness="{DynamicResource BarEdgeThickness}"/>
@@ -596,17 +595,16 @@
                     <!-- The divider between the menu bar and the content, the same
                          BarUnderlineThickness rule the terminal and editor bars always carried -
                          the folder bar never had one, so on the rounded themes the bar just bled
-                         into the listing at the active tab's left edge (Steve, 2026-08-09: "we
-                         need some kind of divider between the menubar and the content... it
-                         already exists for terminal and I think that looks good"). 0 on 98SE,
+                         into the listing at the active tab's left edge with nothing to divide
+                         the menubar from the content. 0 on 98SE,
                          where the raised/sunken bevels are the divider. -->
                     <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}"/>
                     <!-- Back / forward / up. Browser order and browser glyphs, because that is
                          what everyone's hand already expects at the top left. -->
-                    <!-- Tightened (Steve, 2026-08-09: "too much padding in this filebrowser
-                         menubar", all themes): no separator after Up, the star scoots left, the
+                    <!-- Tightened across all themes - the bar had too much padding: no separator
+                         after Up, the star scoots left, the
                          address follows immediately. The one group separator left is the etched
                          rule before the sort group in ToolStrip. -->
                     <StackPanel x:Name="NavStrip" Grid.Column="0" Orientation="Horizontal" Margin="4,0,0,0" VerticalAlignment="Center">
@@ -805,7 +803,7 @@
                         <Button x:Name="ShowHiddenBtn" Content="&#xE7B3;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_ShowHidden}" Click="ShowHidden_Click"/>
-                        <!-- Custom composite glyph (Steve, 2026-08-02): no single Segoe MDL2 glyph
+                        <!-- Custom composite glyph: no single Segoe MDL2 glyph
                              reads as "folders sort above files", so this stacks FolderHorizontal
                              (F12B) as the base with CaretUpSolid8 (EDDB) centered on top, rather
                              than reusing an unrelated glyph. -->
@@ -848,7 +846,7 @@
                              to. A Popup takes no layout space, so it can sit in the row itself.
                              Shadow on its own border, per the family standard: text must never
                              render through a bitmap effect or it loses ClearType. -->
-                        <!-- Restyled as a regular CONTEXT-MENU look (Steve, 2026-08-09): grained
+                        <!-- Restyled as a regular CONTEXT-MENU look: grained
                              surface, transparent hover-wash rows instead of pill buttons, an
                              icon gutter on the left (a cell grid for CSV, literal <> for HTML)
                              and each row's real keyboard shortcut right-aligned - Ctrl+Alt+E and
@@ -908,7 +906,7 @@
                                     </StackPanel>
                                 </Border>
                                 <!-- The grain, OVER the rows like every menu - this popup was the
-                                     one untextured surface left (Steve, 2026-08-09). -->
+                                     one untextured surface left. -->
                                 <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
                             </Grid>
                         </Popup>
@@ -1109,7 +1107,7 @@
                 </Border>
 
                 <!-- DETAILS/PREVIEW STRIP (Shell/DetailsPane.cs): slides out of the BOTTOM of
-                     this pane, full width, NOT a side panel like Explorer's - Steve wants it
+                     this pane, full width, NOT a side panel like Explorer's - it belongs
                      under the listing. Declared AFTER PaneStatusBar (Bottom-docked children stack
                      in declaration order, first = bottommost), so this sits just above the
                      status strip and below the results list.
@@ -1122,7 +1120,7 @@
                      animation.
                      Split into two columns: file details (left) and an image preview / big shell
                      icon (right) - DetailsPaneContent (Shell/DetailsPane.cs). -->
-                <!-- PaneBrush, not MenuBackgroundBrush (Steve, 2026-08-02): LocationRow above
+                <!-- PaneBrush, not MenuBackgroundBrush: LocationRow above
                      paints nothing of its own and lets the pane's PaneBrush show through - see
                      the identical note on the shell bar further down - so this strip needs the
                      same brush to read as one continuous band with the toolbar rather than a
@@ -1143,8 +1141,8 @@
                             <ColumnDefinition Width="16"/>
                             <!-- Width is set from CODE (Shell/DetailsPane.cs ApplyDetailsPreviewWidth),
                                  tracking the strip's own HEIGHT rather than being independently
-                                 draggable - Steve tried a side splitter here and it was "not
-                                 helpful". The 150 below is only the pre-layout placeholder. -->
+                                 draggable - a side splitter was tried here and was not
+                                 helpful. The 150 below is only the pre-layout placeholder. -->
                             <ColumnDefinition x:Name="DetailsPreviewCol" Width="150"/>
                         </Grid.ColumnDefinitions>
 
@@ -1160,15 +1158,14 @@
                                  text" accent, not the plain TextBrush every field value below uses.
                                  WordmarkFont + a size well above the field rows (10/11 below) - it
                                  is the title of what you're looking at, so it should read as more
-                                 prominent (Steve, 2026-08-02). -->
+                                 prominent. -->
                             <!-- DetailsNameFont = WordmarkFont everywhere but 98SE, where the
-                                 typewriter face gives way to Courier New - the era's monospace
-                                 (Steve, 2026-08-09). -->
+                                 typewriter face gives way to Courier New - the era's monospace. -->
                             <!-- The filename's chrome is theme-split: the family drop shadow
                                  (DetailsNameEffect, null on 98SE - a flat theme casts nothing)
                                  and, on 98SE only, a hard 1px WHITE copy up-left of the crisp
                                  text - the raised chisel, the same treatment the About wordmark
-                                 carries (Steve, 2026-08-09). The copy binds the live text so it
+                                 carries. The copy binds the live text so it
                                  always mirrors what DetailsPane.cs writes. -->
                             <Grid Margin="0,0,0,9">
                                 <TextBlock IsHitTestVisible="False" FontFamily="{DynamicResource DetailsNameFont}" FontSize="20"
@@ -1201,8 +1198,7 @@
                                 <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Type}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
                                 <TextBlock x:Name="DetailsTypeText" Grid.Column="1" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11" TextTrimming="CharacterEllipsis"/>
                             </Grid>
-                            <!-- No attributes row (Steve, 2026-08-09: "i dont think ive ever seen
-                                 it have something") - it only ever showed R/H/S flags, which a
+                            <!-- No attributes row - it only ever showed R/H/S flags, which a
                                  normal file lacks, so it read "-" nearly always. The hidden
                                  TextBlock stays so DetailsPane.cs's async stat still has its
                                  target without a code rewrite; nothing renders. -->
@@ -1216,8 +1212,8 @@
                         </StackPanel>
 
                         <!-- Static 1px divider between the details fields and the preview column -
-                             no longer a GridSplitter (Steve tried dragging it and said it was "not
-                             helpful"; the preview now widens with the STRIP's height instead, via
+                             no longer a GridSplitter (dragging it proved not
+                             helpful; the preview now widens with the STRIP's height instead, via
                              DetailsPaneGrip below). Kept purely as a visual rule, matching the old
                              splitter's line color. -->
                         <Border Grid.Column="1" Width="{DynamicResource DetailsDividerWidth}" HorizontalAlignment="Center" Margin="0,2"
@@ -1305,19 +1301,19 @@
                          the one thing that IS live: where the shell currently is, tracked from
                          OSC 7. The buttons are the rows a hand reaches for often enough not to
                          want a right-click first; the rest stay in the menu.
-                         PaneBrush, not MenuBackgroundBrush (Steve, 2026-08-02): the folder
+                         PaneBrush, not MenuBackgroundBrush: the folder
                          browsing LocationRow paints nothing of its own and lets the pane's own
                          PaneBrush show through, which is what makes it blend into the active
                          tab above it; MenuBackgroundBrush here was a full step darker, so this
                          bar visibly seamed against the tab where the folder view never did. -->
                     <!-- BarUnderlineThickness, not a literal 0,0,0,1: this rule is the line under
-                         the menu bar Steve asked to remove on 98SE (2026-08-09). The token defaults
+                         the menu bar that had to go on 98SE (2026-08-09). The token defaults
                          to exactly the literal it replaced, so the twelve rounded themes keep it. -->
                     <!-- Height 32, NOT 26: 32 is the folder LocationRow's natural height (the
                          ScopeBar's 20px recents button plus its 12,7,8,5 padding), and this bar
                          being shorter made the content pane start at a different height on a shell
-                         tab than on a folder tab - jarring on every tab switch (Steve,
-                         2026-08-09). If ScopeBar's padding or button size ever changes, keep this
+                         tab than on a folder tab - jarring on every tab switch.
+                         If ScopeBar's padding or button size ever changes, keep this
                          and the editor bar below in step. -->
                     <Border Grid.Row="0" Height="32" Background="{DynamicResource PaneBrush}"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
@@ -1330,8 +1326,7 @@
                                  never had them, which is why a TERMINAL tab's menu bar came out
                                  completely flat - no white line down its left continuing the
                                  active tab's bevel, no raised top, no dark right - while a folder
-                                 tab looked right (Steve, 2026-08-09: "not when the first tab is
-                                 selected"). Zero-thickness on every theme but 98SE. -->
+                                 tab looked right. Zero-thickness on every theme but 98SE. -->
                             <Border IsHitTestVisible="False" Panel.ZIndex="3"
                                     BorderBrush="{DynamicResource BarEdgeBrush}"
                                     BorderThickness="{DynamicResource BarEdgeThickness}"/>
@@ -1387,7 +1382,7 @@
                         </Grid>
                     </Border>
 
-                    <!-- No grain Border here (Steve, 2026-08-03): the terminal paints its own
+                    <!-- No grain Border here: the terminal paints its own
                          background AND every character it draws as one opaque surface
                          (TerminalPalette.cs) with no gap for a Border behind this ContentControl
                          to show through. The grain itself is NOT missing though - TerminalControl
@@ -1435,12 +1430,12 @@
                          are readouts rather than controls: a script PowerShell 5.1 will read
                          depends on both and neither is visible in the text, but changing either
                          rewrites somebody's file just to look at it.
-                         PaneBrush, not MenuBackgroundBrush (Steve, 2026-08-02): same fix as the
+                         PaneBrush, not MenuBackgroundBrush: same fix as the
                          shell bar above - MenuBackgroundBrush is a full step darker than the
                          pane, so this bar visibly seamed against the tab above it where the
                          folder view's own location row never does. -->
                     <!-- BarUnderlineThickness, not a literal 0,0,0,1: this rule is the line under
-                         the menu bar Steve asked to remove on 98SE (2026-08-09). The token defaults
+                         the menu bar that had to go on 98SE (2026-08-09). The token defaults
                          to exactly the literal it replaced, so the twelve rounded themes keep it. -->
                     <!-- Height 32 = the folder LocationRow's natural height, same as the shell bar
                          above, so the content starts at one height whatever kind of tab is up. -->
@@ -1453,7 +1448,7 @@
                                     Opacity="{DynamicResource GrainOpacity}"/>
                             <!-- Same raised bar edges as the folder LocationRow and the shell bar
                                  above - a DOCUMENT tab's menu bar was the same flat strip the
-                                 terminal's was (Steve, 2026-08-09). Zero-thickness off 98SE. -->
+                                 terminal's was. Zero-thickness off 98SE. -->
                             <Border IsHitTestVisible="False" Panel.ZIndex="3"
                                     BorderBrush="{DynamicResource BarEdgeBrush}"
                                     BorderThickness="{DynamicResource BarEdgeThickness}"/>
@@ -1496,7 +1491,7 @@
                                             <!-- MenuShadow tokens, not FlyoutShadowOpacity: that key is 0 on
                                                  98SE, which erased these popups' shadows there - the tokens keep
                                                  the ordinary themes' soft shadow and give 98SE the Win98 offset
-                                                 shadow (Steve, 2026-08-09: "we need the proper shadows"). -->
+                                                 shadow. -->
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
                                                     Opacity="{DynamicResource MenuShadowOpacity}"
                                                     Effect="{DynamicResource MenuShadowEffect}"/>
@@ -1540,7 +1535,7 @@
                                             <!-- MenuShadow tokens, not FlyoutShadowOpacity: that key is 0 on
                                                  98SE, which erased these popups' shadows there - the tokens keep
                                                  the ordinary themes' soft shadow and give 98SE the Win98 offset
-                                                 shadow (Steve, 2026-08-09: "we need the proper shadows"). -->
+                                                 shadow. -->
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
                                                     Opacity="{DynamicResource MenuShadowOpacity}"
                                                     Effect="{DynamicResource MenuShadowEffect}"/>
@@ -1549,7 +1544,7 @@
                                                 <!-- CheckRow, not accent-filled SurfaceButtons: these are TOGGLED
                                                      OPTIONS, so they read as check-marked menu rows now, and the
                                                      indent picker is three more of the same with the check on the
-                                                     active width (Steve, 2026-08-09). Tag="on" comes from the same
+                                                     active width. Tag="on" comes from the same
                                                      code that always set it. -->
                                                 <StackPanel MinWidth="188">
                                                     <Button x:Name="EdOptLineNumbers" Content="{DynamicResource Str_Ed_OptLineNumbers}"
@@ -1629,15 +1624,15 @@
                                             <!-- MenuShadow tokens, not FlyoutShadowOpacity: that key is 0 on
                                                  98SE, which erased these popups' shadows there - the tokens keep
                                                  the ordinary themes' soft shadow and give 98SE the Win98 offset
-                                                 shadow (Steve, 2026-08-09: "we need the proper shadows"). -->
+                                                 shadow. -->
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
                                                     Opacity="{DynamicResource MenuShadowOpacity}"
                                                     Effect="{DynamicResource MenuShadowEffect}"/>
                                             <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                                     BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
                                                 <!-- CheckRow - same conversion as the gear popup: the picked
-                                                     encoding wears the check instead of an accent fill (Steve,
-                                                     2026-08-09). SyncEditorEncodingMenu already sets Tag="on". -->
+                                                     encoding wears the check instead of an accent fill.
+                                                     SyncEditorEncodingMenu already sets Tag="on". -->
                                                 <StackPanel MinWidth="168">
                                                     <Button x:Name="EdEncUtf8" CommandParameter="utf8" Content="{DynamicResource Str_Ed_EncUtf8}"
                                                             Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
@@ -1669,8 +1664,8 @@
                     <!-- The document's own sunken well, exactly the terminal's four Borders one
                          host up: Grid.Row 1 ONLY so it rings the text surface and not the editor
                          bar, ZIndex over the editor because AvalonEdit paints opaquely edge to
-                         edge. "Something around the edge to define it... a sunken pane like the
-                         sidebar" (Steve, 2026-08-09). Inert off 98SE - every thickness is 0. -->
+                         edge. It puts something around the edge to define it - a sunken pane like
+                         the sidebar's. Inert off 98SE - every thickness is 0. -->
                     <Border Grid.Row="1" IsHitTestVisible="False" Panel.ZIndex="5"
                             BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
                     <Border Grid.Row="1" IsHitTestVisible="False" Panel.ZIndex="5"
@@ -1695,7 +1690,7 @@
                             Opacity="{DynamicResource GrainOpacity}"/>
                     <!-- No host-level well here: a ring at this scope boxed in the control's own
                          filter bar too. The 98SE tiers live INSIDE ProcessListControl now
-                         (ToolTabChrome: raised bar, sunken grid well - Steve, 2026-08-09). -->
+                         (ToolTabChrome: raised bar, sunken grid well). -->
                 </Grid>
                 <!-- An Event Viewer tab draws here, on the same terms as the Task Manager grid
                      above: declared before the list, only ever one of the four visible, and
@@ -1721,9 +1716,8 @@
                     <Border IsHitTestVisible="False"
                             Background="{DynamicResource GrainTileBrush}"
                             Opacity="{DynamicResource GrainOpacity}"/>
-                    <!-- Sunken well, same as the two hosts above (Steve, 2026-08-09: "the
-                         performance tab will need the bevel lines around it to seperate it from
-                         the rest"). Inert off 98SE. -->
+                    <!-- Sunken well, same as the two hosts above - the performance tab needs the
+                         bevel lines around it to separate it from the rest. Inert off 98SE. -->
                     <Border IsHitTestVisible="False" Panel.ZIndex="5"
                             BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
                     <Border IsHitTestVisible="False" Panel.ZIndex="5"
@@ -1747,7 +1741,23 @@
                             Background="{DynamicResource GrainTileBrush}"
                             Opacity="{DynamicResource GrainOpacity}"/>
                 </Grid>
-                <!-- SurfaceBrush, not the pane's own PaneBrush (Steve, 2026-08-02): a list with
+                <!-- A Storage Analyzer tab draws here, on the same terms as the other tool
+                     hosts above: declared before the list, only ever one visible, grain-wrapped.
+                     StorageAnalyzerControl carries its own target bar, treemap and storage-info
+                     footer in one surface (Shell/StorageAnalyzerControl.cs). Same sunken well
+                     as PerformanceHost, inert off 98SE. -->
+                <Grid x:Name="StorageHost" Visibility="Collapsed">
+                    <ContentControl x:Name="StorageSlot" Focusable="False"/>
+                    <Border IsHitTestVisible="False"
+                            Background="{DynamicResource GrainTileBrush}"
+                            Opacity="{DynamicResource GrainOpacity}"/>
+                    <!-- No host-level well - same reasoning as ProcessListHost/EventViewerHost:
+                         a well around the WHOLE host wrapped the control's own target bar in
+                         the sunken frame, so on 98SE the dark bevel ran ABOVE the bar and the
+                         bar read as recessed chrome (2026-08-09). The sunken tier is the
+                         TREEMAP only, and its bevels live inside StorageAnalyzerControl. -->
+                </Grid>
+                <!-- SurfaceBrush, not the pane's own PaneBrush: a list with
                      nothing painted behind it let the pane's own PaneBrush show through behind
                      every row, so the folder listing - list, icons and details views alike, all
                      three switch panels on this one ListBox - read as the exact same flat color
@@ -1773,25 +1783,25 @@
                      listing and the shell are the same tier, the content half of a tab. This was
                      SurfaceBrush, which is #000000 on Black against the terminal's #121212 - so
                      the file browser came up pure black while the terminal did not, in the same
-                     window (Steve, 2026-08-08). -->
+                     window. -->
                 <!-- ListPaneBrush: the menu tier on every ordinary theme (matching the terminal
                      screen), and the sunken WHITE list well on 98SE, whose menu tier is #c0c0c0
-                     and would otherwise leave the file listing grey (Steve, 2026-08-08). -->
+                     and would otherwise leave the file listing grey. -->
                 <Border IsHitTestVisible="False" Background="{DynamicResource ListPaneBrush}"
                         Visibility="{Binding Visibility, ElementName=ResultsList}"/>
                 <!-- Recessed list bevel - brushes CROSSED against the thicknesses so it reads as
                      sunken, not raised. Nothing on any theme but 98SE. -->
                 <!-- The CONTENT well, and the only recess in the pane - the menu bar above is
-                     raised, this is sunken (Steve, 2026-08-09). The full DOUBLE bevel the sidebar's
+                     raised, this is sunken. The full DOUBLE bevel the sidebar's
                      tree well uses: outer #808080/#ffffff, inner #000000/#c0c0c0 at a 1px margin,
-                     brushes CROSSED against the thicknesses. Steve's requirement is that this look
+                     brushes CROSSED against the thicknesses. The requirement is that this look
                      like the sunken sidebar pane, so it is literally the same four Borders.
                      NO Visibility binding to ResultsList. These used to carry one, which meant the
                      well existed ONLY on a folder tab - open a terminal and the recess vanished,
                      which is why the bevel "was not added" on the shell tab. The well belongs to
                      the content AREA, whatever is currently in it. -->
                 <!-- NO ZIndex, and Visibility bound to ResultsList exactly as the original pair
-                     was. Both black lines Steve reported - the one down the LEFT of the menu bar
+                     was. Both stray black lines - the one down the LEFT of the menu bar
                      and the one UNDER the inactive tabs - were THIS block: PaneBevelDark2Brush is
                      #000000 on 98SE (the only pure black in the pane), and ZIndex 70 lifted the
                      inner ring over the tab strip and the location row, so its left edge and its
@@ -1981,8 +1991,8 @@
                                            shellns:TileArt.IsDirectory="{Binding IsDirectory}"
                                            shellns:TileArt.Size="{Binding Tag.TileSize, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                     <!-- TileResultText, not the shared ResultText: the filename here
-                                         turns accent-green on HOVER, not on selection (Steve,
-                                         2026-08-02) - moved off the selected state, which now shows
+                                         turns accent-green on HOVER, not on selection
+                                         - moved off the selected state, which now shows
                                          the default text color. Scoped to this tile template only;
                                          the details/list view's Name column still uses ResultText
                                          and keeps its selected-row-turns-green behavior. -->

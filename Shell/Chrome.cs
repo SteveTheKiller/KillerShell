@@ -42,7 +42,7 @@ namespace KillerShell.Shell
             // Same treatment for the footer. 98SE's sunken cells need more room than the 24px the
             // rounded themes use - the cell loses 2px a side to FooterCellMargin and the bevel
             // borders paint OVER the content rather than reserving space, so at 24 the status and
-            // version text ran into the cell edges (Steve, 2026-08-09).
+            // version text ran into the cell edges.
             double fh = TryFindResource("FooterHeight") is double fd && fd > 0 ? fd : 24.0;
             if (FooterRow != null) FooterRow.Height = new GridLength(fh);
 
@@ -80,7 +80,7 @@ namespace KillerShell.Shell
                 // Sepulchre's #44585b desaturated teal against a #4d3d2b brown pane border, for
                 // instance. It was briefly switched to PaneBorderBrush on the theory that the
                 // vendored palettes used this key for something else; they do not, and the switch
-                // painted Sepulchre's frame brown (Steve, 2026-08-08). PaneBorderBrush stays as
+                // painted Sepulchre's frame brown. PaneBorderBrush stays as
                 // the fallback for a palette that declines to state one.
                 if ((Application.Current.TryFindResource("AppBorderBrush")
                      ?? Application.Current.TryFindResource("PaneBorderBrush")) is SolidColorBrush b)
@@ -100,14 +100,13 @@ namespace KillerShell.Shell
         /// MainWindow ever getting rounded corners - and, on Windows 11, the standard window
         /// drop shadow along with it: a chromeless (WindowStyle="None") popup with no corner
         /// preference set renders with NEITHER a rounded frame NOR a shadow, which is exactly
-        /// what FileDialog/FolderPickerDialog looked like before this (Steve, 2026-08-03: "this
-        /// window has no drop shadow and the corners arent rounded") - they had ApplyThemeBorder
+        /// what FileDialog/FolderPickerDialog looked like before this - they had ApplyThemeBorder
         /// wired in already but never this.
         /// </summary>
         /// <summary>
         /// True when the active theme is FLAT - 98SE. A flat theme draws its own hard frame and
         /// must never get Win11 rounded corners: the rounding cut the corners off the bevel and
-        /// left the DWM frame curving around a square window (Steve, 2026-08-08). Read from the
+        /// left the DWM frame curving around a square window. Read from the
         /// palette rather than the theme name, so any future flat theme gets it for free.
         /// </summary>
         internal static bool FlatChrome =>
@@ -295,8 +294,8 @@ namespace KillerShell.Shell
 
         /// <summary>How much further this window's RIGHT edge could move before leaving its
         /// monitor's work area, in DIP - what DualPane.cs's F10-grow decision actually needs
-        /// (Steve, 2026-08-03: F10 animated the second pane clean off screen on a window snapped
-        /// to the right half of the monitor). MonitorWorkAreaWidthDip alone answers "would the
+        /// (F10 animated the second pane clean off screen on a window snapped to the right half
+        /// of the monitor). MonitorWorkAreaWidthDip alone answers "would the
         /// FINAL width fit somewhere on this monitor", which was true even here - a snapped-right
         /// window's ActualWidth is only about half the monitor's work width, so `ActualWidth +
         /// growth` cleared that check easily. But growing happens IN PLACE (Left never moves,

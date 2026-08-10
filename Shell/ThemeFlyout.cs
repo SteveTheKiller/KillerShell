@@ -7,11 +7,10 @@ using System.Windows.Media.Animation;
 using KillerShell.Services;
 
 // KillerUI / Grunge - title-bar theme + accent pickers. Partial of MainWindow.
-// Ported verbatim from KillerPDF's RailFlyouts.cs/SettingsPanel.cs pattern (Steve, 2026-08-02:
-// "COPY THE EXACT MENU FROM KILLERPDF FOR EVERYTHING"): ThemeFlyout is a Button.ContextMenu with
-// FlyoutCard/FlyoutGrain chrome (MainWindow.xaml), opened the same way LangMenu already was -
-// which is what proved the positioning actually works, since Steve confirmed the language picker
-// landed in the right place while the old Popup-based ThemeFlyout did not.
+// Ported verbatim from KillerPDF's RailFlyouts.cs/SettingsPanel.cs pattern: ThemeFlyout is a
+// Button.ContextMenu with FlyoutCard/FlyoutGrain chrome (MainWindow.xaml), opened the same way
+// LangMenu already was - which is what proved the positioning actually works, since the
+// language picker landed in the right place while the old Popup-based ThemeFlyout did not.
 namespace KillerShell.Shell
 {
     public partial class MainWindow
@@ -32,12 +31,16 @@ namespace KillerShell.Shell
 
         /// <summary>
         /// Crossfade a theme/accent swap: snapshot the window as it looks NOW, run the swap
-        /// under the frozen picture, then fade the picture out over the repainted UI (Steve,
-        /// 2026-08-09: "theme changes are super slow now. cant we crossfade"). The same
-        /// snapshot-and-fade shape TabFadeGhost uses for tab switches. Best-effort: if the
-        /// snapshot fails for any reason the swap just runs bare, exactly as before.
+        /// under the frozen picture, then fade the picture out over the repainted UI, so a
+        /// slow theme change reads as one smooth transition. The same snapshot-and-fade shape
+        /// TabFadeGhost uses for tab switches. Best-effort: if the snapshot fails for any
+        /// reason the swap just runs bare, exactly as before.
+        /// The optional HEAVY work (terminal/editor recolor) runs under the fully opaque
+        /// ghost, and the fade only starts once it has run AND painted (the fade was
+        /// starting at Loaded priority while the heavy refreshes sat queued at Background,
+        /// which runs LATER, so they snapped in mid-fade).
         /// </summary>
-        private void CrossfadeSwap(Action swap)
+        private void CrossfadeSwap(Action swap, Action? heavy = null)
         {
             System.Windows.Controls.Image? ghost = null;
             try
@@ -58,24 +61,96 @@ namespace KillerShell.Shell
             }
             catch { ghost = null; }
 
+            // The theme flyout is a ContextMenu - a Popup with its own top-level HWND, so the
+            // window ghost neither INCLUDES it (rtb.Render(this) renders only the window's
+            // tree) nor COVERS it (the popup floats above everything in RootGrid). Left alone
+            // it recolored the instant the dictionaries swapped while the rest of the window
+            // sat frozen under the ghost. So the open flyout gets its OWN ghost,
+            // injected into its template root Grid and faded on the same clock as the
+            // window's. Explicit size + top-left alignment, not Stretch: the accent-row
+            // slide can change the menu's height under the ghost, and a stretched Image
+            // would distort with it. Same best-effort rule as the window snapshot.
+            Grid? menuRoot = null;
+            System.Windows.Controls.Image? menuGhost = null;
+            try
+            {
+                if (ThemeFlyout is { IsOpen: true }
+                    && System.Windows.Media.VisualTreeHelper.GetChildrenCount(ThemeFlyout) > 0
+                    && System.Windows.Media.VisualTreeHelper.GetChild(ThemeFlyout, 0) is Grid mroot
+                    && mroot.ActualWidth > 0 && mroot.ActualHeight > 0)
+                {
+                    var mrtb = new System.Windows.Media.Imaging.RenderTargetBitmap(
+                        (int)Math.Ceiling(mroot.ActualWidth), (int)Math.Ceiling(mroot.ActualHeight),
+                        96, 96, PixelFormats.Pbgra32);
+                    mrtb.Render(mroot);
+                    mrtb.Freeze();
+                    menuGhost = new System.Windows.Controls.Image
+                    {
+                        Source = mrtb, Stretch = Stretch.None, IsHitTestVisible = false,
+                        Width = mroot.ActualWidth, Height = mroot.ActualHeight,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Top,
+                    };
+                    System.Windows.Controls.Panel.SetZIndex(menuGhost, 9500);
+                    mroot.Children.Add(menuGhost);
+                    menuRoot = mroot;
+                }
+            }
+            catch { menuRoot = null; menuGhost = null; }
+
             swap();
 
-            if (ghost == null) return;
+            if (ghost == null)
+            {
+                if (menuRoot != null && menuGhost != null) menuRoot.Children.Remove(menuGhost);
+                heavy?.Invoke();
+                return;
+            }
             var fade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(220))
             { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
             var g = ghost;
             fade.Completed += (_, _) => RootGrid.Children.Remove(g);
-            // Deferred one dispatcher pass so the new theme has actually PAINTED under the
-            // ghost before it starts to lift - fading over a half-repainted frame is the
-            // flicker this exists to hide.
-            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
-                (Action)(() => g.BeginAnimation(OpacityProperty, fade)));
+            var mg = menuGhost; var mr = menuRoot;
+            // Ordering is the whole trick. This outer callback is queued at Background so it
+            // lands BEHIND every Background-deferred refresh the swap itself queued (the
+            // ThemeChanged handler's RepaintIcons - dispatcher order is FIFO within one
+            // priority). The heavy work then runs here, still under the opaque ghost. The
+            // fade is queued LAST, at Loaded - Render priority sits above Loaded, so the
+            // recolored frame is guaranteed to have painted under the ghost before it starts
+            // to lift. Fading over a half-repainted frame is the flicker this exists to hide.
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                (Action)(() =>
+                {
+                    heavy?.Invoke();
+                    Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                        (Action)(() =>
+                        {
+                            g.BeginAnimation(OpacityProperty, fade);
+                            if (mg != null && mr != null)
+                            {
+                                // Its own animation instance, same parameters: an Animation
+                                // already started on one target cannot be reused on another.
+                                var mfade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(220))
+                                { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+                                mfade.Completed += (_, _) => mr.Children.Remove(mg);
+                                mg.BeginAnimation(OpacityProperty, mfade);
+                            }
+                        }));
+                }));
         }
 
         private void SelectTheme(Theme theme)
         {
             bool wasOpen = ThemeFlyout is not null && ThemeFlyout.IsOpen;
-            CrossfadeSwap(() => ThemeManager.Apply(theme));
+            // A shell resolves its colors ONCE, when its palette is built - it has to, since
+            // it paints thousands of cells a frame and cannot carry a DynamicResource per
+            // cell. So a theme switch has to tell it to rebuild, or every open terminal
+            // keeps the colors of the theme it was opened under (TerminalTabs.cs). Passed as
+            // CrossfadeSwap's HEAVY work so it runs under the opaque ghost and the fade only
+            // starts after it has painted - deferring it at Background priority on its own
+            // put it AFTER the fade's start and it snapped in mid-fade.
+            CrossfadeSwap(() => ThemeManager.Apply(theme),
+                          () => { RefreshTerminalThemes(); RefreshEditorThemes(); });
             ApplyThemeBorder(this);   // retint the DWM frame border to the new palette
             // Corner preference is owned here too: 98SE squares even a floating window, so
             // switching INTO or OUT OF a flat theme has to re-evaluate it, not just a state
@@ -87,23 +162,6 @@ namespace KillerShell.Shell
             // animation on flyout open instead (ThemeButton_Click below).
             UpdateAccentSwatches();
             UpdateAccentRowsVisibility(animate: true);
-
-            // A shell resolves its colors ONCE, when its palette is built - it has to, since
-            // it paints thousands of cells a frame and cannot carry a DynamicResource per
-            // cell. So a theme switch has to tell it to rebuild, or every open terminal
-            // keeps the colors of the theme it was opened under (TerminalTabs.cs).
-            // DEFERRED behind the crossfade ghost (Steve, 2026-08-09: "theres still such a
-            // long pause before the theme crossfade"): these ran synchronously before the
-            // fade could start, so the click froze on the OLD frame for their whole cost.
-            // The ghost is opaque over everything, so the terminal and editor recoloring
-            // under it is invisible - Background priority lets the fade's first frames land
-            // first. Same for the documents.
-            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    RefreshTerminalThemes();
-                    RefreshEditorThemes();
-                }));
 
             // Intentionally leave the flyout open so the user can try another theme right away,
             // same as PDF - a theme swap's side effects can knock the popup closed behind our
@@ -124,10 +182,9 @@ namespace KillerShell.Shell
         {
             if (sender is not FrameworkElement fe || fe.Tag is not string tag) return;
             if (!Enum.TryParse<Accent>(tag, out var accent)) return;
-            CrossfadeSwap(() => ThemeManager.ApplyAccent(family, accent));
+            CrossfadeSwap(() => ThemeManager.ApplyAccent(family, accent),
+                          () => { RefreshTerminalThemes(); RefreshEditorThemes(); });
             UpdateAccentSwatches();
-            RefreshTerminalThemes();
-            RefreshEditorThemes();
         }
 
         private void ThemeButton_Click(object sender, RoutedEventArgs e)

@@ -112,6 +112,7 @@ namespace KillerShell.Shell
                 ShutdownAllEventViewers();       // EventViewerTabs.cs
                 ShutdownAllPerformanceMonitors();// PerformanceTabs.cs
                 ShutdownAllRegistryEditors();    // RegistryEditorTabs.cs
+                ShutdownAllStorageAnalyzers();   // StorageTabs.cs
                 var fade = new System.Windows.Media.Animation.DoubleAnimation(0, TimeSpan.FromMilliseconds(140))
                 {
                     EasingFunction = new System.Windows.Media.Animation.QuadraticEase
@@ -168,7 +169,7 @@ namespace KillerShell.Shell
                 // placeholder that LOOKED like the real thing on restore but was not: no control,
                 // no glyph, IsProcessList/IsTerminal/IsEditor/IsEventViewer/IsPerformanceMonitor
                 // all false. For Processes specifically that is what caused two "Processes" tabs
-                // to exist at once (Steve, 2026-08-02) - OpenTaskManager's singleton check scans
+                // to exist at once (2026-08-02) - OpenTaskManager's singleton check scans
                 // for IsProcessList == true, so it walked straight past the broken restored one
                 // and opened a second, real one right next to it. A Performance tab's live
                 // counters and hardware inventory have no meaningful "restore" state either way -
@@ -185,7 +186,7 @@ namespace KillerShell.Shell
                 // the two ever colliding - Uri.EscapeDataString never emits a raw \x01 byte, so no
                 // real Title can produce one by accident.
                 if (t.IsTerminal || t.IsEditor || t.IsProcessList || t.IsEventViewer || t.IsPerformanceMonitor
-                    || t.IsRegistryEditor)
+                    || t.IsRegistryEditor || t.IsStorageAnalyzer)
                 {
                     string? flags = BuildRelaunchArgs(t, out _);   // TabTearOut.cs
                     if (flags != null) lines.Add("\x01" + flags);
@@ -240,8 +241,8 @@ namespace KillerShell.Shell
             var raw = Services.ThemeManager.GetSetting("Tabs");
             if (string.IsNullOrEmpty(raw)) return false;
 
-            // Each LINE gets its own try/catch (Steve, 2026-08-03 - "empty folder every time I
-            // open the app, when there were previous things open"). This used to be one catch
+            // Each LINE gets its own try/catch (2026-08-03 - a corrupted session restored as an
+            // empty folder rather than the previously open tabs). This used to be one catch
             // around the whole loop: one malformed line (a truncated %-escape from a corrupted
             // settings value, say) aborted every tab after it, AND worse, left the line's own
             // half-built SearchTab sitting in _tabs - CreateTab() had already added it before the

@@ -20,8 +20,8 @@ namespace KillerShell.Shell
     /// change resizes the whole grid.
     /// </summary>
     /// <remarks>
-    /// Used to be a single app-wide instance (Steve, 2026-08-03 - "when I zoom in and out in one
-    /// pane, it does it in the other"): every binding in FilePane.xaml pointed at the same
+    /// Used to be a single app-wide instance, so zooming in one pane zoomed the other
+    /// too: every binding in FilePane.xaml pointed at the same
     /// static <c>Current</c>, so tile size, row icon size, density and every dragged column width
     /// were shared by both panes whether you wanted that or not. Each pane now owns its own.
     /// </remarks>
@@ -507,8 +507,8 @@ namespace KillerShell.Shell
         {
             _listTemplate ??= Pane.ResultsList.ItemTemplate;
 
-            // Tile/row zoom, density and the dragged column widths are per-PANE now (Steve,
-            // 2026-08-03 - see the remark on ResultsViewState), so both panes are restored here
+            // Tile/row zoom, density and the dragged column widths are per-PANE now (see the
+            // remark on ResultsViewState), so both panes are restored here
             // independently under their own settings keys - LeftPane and RightPane both exist
             // from InitializeComponent regardless of whether the second pane is currently open,
             // so there is always something to restore into.
@@ -583,8 +583,8 @@ namespace KillerShell.Shell
             Services.ThemeManager.SetSetting("ResultsView" + PaneKey(Pane), mode.ToString(CultureInfo.InvariantCulture));
         }
 
-        // Each pane keeps its own view mode now (Steve, 2026-08-03 - "i changed one pane into
-        // details list view and both panes changed"). ApplyResultsView still exists for the
+        // Each pane keeps its own view mode now - changing one pane's view used to change
+        // both panes. ApplyResultsView still exists for the
         // places that need to (re)apply BOTH panes' own current mode at once - startup (before
         // dual pane may even be open) and DualPane.cs revealing the second pane for the first
         // time, whose ItemsPanel/ItemTemplate have never been set up yet and would otherwise sit
@@ -628,8 +628,8 @@ namespace KillerShell.Shell
             // collapsed element gives up its width, so every other control in that strip slid
             // sideways each time the view changed. Hidden keeps the slot.
             //
-            // Also gated on ResultsList actually being visible (Steve, 2026-08-03: a restored
-            // terminal tab in Details view showed the column-heading row above its empty prompt).
+            // Also gated on ResultsList actually being visible (a restored terminal tab in
+            // Details view showed the column-heading row above its empty prompt).
             // ApplyPaneToolbarMode (TerminalTabs.cs) already collapses DetailsHeader correctly
             // the moment a shell/editor/registry/processes/events tab activates - but at startup,
             // InitResultsView's own ApplyResultsView call runs AFTER tab restore has already
@@ -779,7 +779,7 @@ namespace KillerShell.Shell
         /// details Grid a large minimum desired width, and WPF propagates that all the way up -
         /// so a window dragged narrower than the columns' total pushed its own title bar and
         /// footer off the right edge. Scaling the columns keeps that minimum below the window.
-        /// Each pane fits itself now that column widths are per-pane (Steve, 2026-08-03) - there
+        /// Each pane fits itself now that column widths are per-pane - there
         /// is no longer a shared state that had to fit the narrowest of the two.
         /// </remarks>
         internal void UpdateColumnFit()

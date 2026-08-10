@@ -40,7 +40,7 @@ namespace KillerShell.Shell
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
-            // KNOWN BROKEN, do not trust this path (Steve, 2026-08-08). "explorer.exe <file>"
+            // KNOWN BROKEN, do not trust this path (2026-08-08). "explorer.exe <file>"
             // launches ONE file and takes no arguments for it: Explorer parses each remaining
             // token as something to open, fails, and opens a folder window per token instead. So
             // this does not start KillerShell with --new-window/--cwd at all, it just throws up

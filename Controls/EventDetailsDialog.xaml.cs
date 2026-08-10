@@ -247,8 +247,8 @@ namespace KillerShell
             base.OnPreviewKeyDown(e);
         }
 
-        /// <summary>Dialog-scoped shortcuts for all four footer actions (Steve wants every
-        /// function reachable from the keyboard now that the buttons are icon-only). Same
+        /// <summary>Dialog-scoped shortcuts for all four footer actions (every function stays
+        /// reachable from the keyboard now that the buttons are icon-only). Same
         /// override-OnKeyDown pattern FileDialog.xaml.cs already uses for its own Escape-to-close,
         /// not the main window's global Window_PreviewKeyDown table - this binding is local to the
         /// dialog. Alt+letter combos arrive as Key.System with the real key in e.SystemKey, not

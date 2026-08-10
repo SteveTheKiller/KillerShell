@@ -15,7 +15,7 @@
          ================================================================ -->
 
     <!-- BLACK, even though 98SE's palette is otherwise light grey. A Win98-era console is a black
-         box, and the metric tiles read as little CRT readouts (Steve, 2026-08-08). These are
+         box, and the metric tiles read as little CRT readouts. These are
          KillerShell-only keys, so they live in the app layer where the shared KillerUI half
          cannot overwrite them. -->
     <SolidColorBrush x:Key="TerminalBackgroundBrush" Color="#000000" po:Freeze="True"/>
@@ -27,34 +27,37 @@
     <SolidColorBrush x:Key="TerminalAccentBrush"     Color="#00c000" po:Freeze="True"/>
     <!-- Text ON the black monitor cells (Performance tab). TextBrush is black here and MutedText
          near-black, both invisible on the CRT readouts, so the cells get phosphor greens instead:
-         the console green above for values and titles, a dimmer green for labels and captions
-         (Steve, 2026-08-09: "text color in the black squares... maybe a retro green"). -->
+         the console green above for values and titles, a dimmer green for labels and captions -
+         a retro green for the text in the black squares. -->
     <SolidColorBrush x:Key="MonitorTextBrush"  Color="#00c000" po:Freeze="True"/>
     <SolidColorBrush x:Key="MonitorMutedBrush" Color="#008000" po:Freeze="True"/>
     <!-- The Events/Processes/Registry tables' alternate-row stripe: a SOLID light grey on the
-         white rows, deliberately NOT the #c0c0c0 window face (Steve, 2026-08-09: "white and gray
-         striped, but not the same gray as the main window color"). #dfdfdf is the era's scrollbar
+         white rows, deliberately NOT the #c0c0c0 window face - white and gray striped, but not
+         the same gray as the main window color. #dfdfdf is the era's scrollbar
          channel grey, already in the palette. -->
     <SolidColorBrush x:Key="GridRowAltBrush" Color="#dfdfdf" po:Freeze="True"/>
     <!-- A hovered monitor tile: a slightly lifted black, NOT RowHoverBrush - that is the window
-         face grey here and made the tile vanish into the window (Steve, 2026-08-09). -->
+         face grey here and made the tile vanish into the window. -->
     <SolidColorBrush x:Key="MonitorHoverBrush" Color="#1c1c1c" po:Freeze="True"/>
     <!-- The tool tabs' sunken wells are WHITE client areas: the Events/Processes tables, the
          Registry value grid (ToolContentBrush) and the Registry tree (ToolTreeBrush), like
-         Explorer's own panes (Steve, 2026-08-09). -->
+         Explorer's own panes. -->
     <SolidColorBrush x:Key="ToolContentBrush" Color="#ffffff" po:Freeze="True"/>
     <SolidColorBrush x:Key="ToolTreeBrush"    Color="#ffffff" po:Freeze="True"/>
     <!-- The Performance tab's black cells sit together with thin 2px seams instead of floating
-         in grey gutters, and the info panel and detail card run flush to the pane edges - "the
-         padding between all the black cells should go away", and the right edge lines up with
-         the tab strip (Steve, 2026-08-09). -->
+         in grey gutters, and the info panel and detail card run flush to the pane edges - the
+         padding between all the black cells goes away, and the right edge lines up with
+         the tab strip. -->
     <Thickness x:Key="MonitorDetailMargin">0,0,0,2</Thickness>
     <Thickness x:Key="MonitorInfoMargin">0,0,0,2</Thickness>
     <Thickness x:Key="MonitorTileListMargin">0,0,2,2</Thickness>
     <Thickness x:Key="MonitorTileMargin">0,0,0,2</Thickness>
+    <!-- The cell grid runs flush to the pane edges; the cells' own 1px PaneBorderBrush frames
+         are the seams between neighbours. -->
+    <Thickness x:Key="MonitorGridMargin">0</Thickness>
     <!-- The tool-tab wells are filled edge to edge: no gutters around the Events/Processes
          grids, and the Registry split runs flush left and right with only the skinny splitter
-         dividing tree from values (Steve, 2026-08-09). -->
+         dividing tree from values. -->
     <Thickness x:Key="ToolGridMargin">0</Thickness>
     <Thickness x:Key="RegSplitMargin">0</Thickness>
     <Thickness x:Key="RegGridMargin">0</Thickness>

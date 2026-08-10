@@ -147,6 +147,13 @@
          for the base list and Start/Stop/Restart, not present in the default net48 reference set
          either - it ships in the framework but is not pulled in automatically. -->
     <Reference Include="System.ServiceProcess" />
+    <!-- Archive browsing (Services/ArchiveProvider.cs): ZipArchive and GZipStream. Both ship
+         IN .NET Framework and are not pulled in automatically, the same as the two above -
+         these are framework references, NOT packages, so the app keeps its zero-dependency
+         single-exe build. ZipFile/ZipArchive live in the .FileSystem assembly; the streams
+         live in the other. -->
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
   </ItemGroup>
 
   <ItemGroup>

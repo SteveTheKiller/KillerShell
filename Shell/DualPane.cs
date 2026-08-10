@@ -37,7 +37,7 @@ namespace KillerShell.Shell
         /// crushing into an icon soup; the old 180 predates the "each pane has a minimum width"
         /// requirement and was really just "don't let it hit zero". Applies to the side-by-side
         /// (column) case only - stacked/row orientation keeps its own 120 MinHeight, out of scope
-        /// of this change (Steve's spec was about width: the gutter and the window's right edge).</summary>
+        /// of this change (the spec was about width: the gutter and the window's right edge).</summary>
         private const double PaneMinWidth = 300;
 
         /// <summary>Decided fresh at the start of every gutter drag (WindowState can change without
@@ -202,7 +202,7 @@ namespace KillerShell.Shell
             // Reset the first track to an even split whenever the pairing changes; a drag from a
             // previous session's orientation would otherwise carry over as a lopsided start.
             //
-            // NOT during ANY animated column slide - open OR close (slideCols, Steve, 2026-08-03:
+            // NOT during ANY animated column slide - open OR close (slideCols,
             // fixed to also cover close, having only ever covered open). SlidePaneColumn owns
             // PaneColA.Width for the whole tween in both directions: pinned to its captured pixel
             // width throughout, only flipped to Star in its own settle() once B has actually
@@ -210,9 +210,9 @@ namespace KillerShell.Shell
             // tween starts, put A into the SAME star track as B for the entire animation - so
             // Grid's live layout grew A in lockstep with every frame of B's animated shrink,
             // reading as A visibly stretching WHILE the pane closed instead of B just sliding away
-            // and A snapping to reclaim the space only once B was actually gone (Steve, 2026-08-03:
-            // "it does a weird grow/stretch animation before closing... like the animation is the
-            // wrong way"). Every other call here (orientation flip, a non-animated re-entry into
+            // and A snapping to reclaim the space only once B was actually gone - a weird
+            // grow/stretch animation before closing, as if the animation ran the wrong
+            // way. Every other call here (orientation flip, a non-animated re-entry into
             // columns) still wants the plain reset.
             if (!slideCols) PaneColA.Width = new GridLength(1, GridUnitType.Star);
             PaneRowA.Height = new GridLength(1, GridUnitType.Star);
@@ -222,7 +222,7 @@ namespace KillerShell.Shell
             DualPaneRailBtn.Tag = two ? "on" : null;
 
             // The dedicated ClosePane/OpenPane glyph pair (Segoe MDL2 codepoints 0xE89F and
-            // 0xE8A0), which Steve picked specifically for this button (2026-08-02) rather than
+            // 0xE8A0), picked specifically for this button rather than
             // a chevron that also tracks orientation: 0xE89F while closed (clicking opens it),
             // 0xE8A0 while open (clicking closes it). Built from (char) casts and never typed as
             // a literal PUA character - literal glyphs do not survive tooling (family-wide rule;
@@ -284,10 +284,10 @@ namespace KillerShell.Shell
             PaneHost.ClipToBounds = false;
         }
 
-        // Steve, 2026-08-02: "hitting f10 slides out a second pane from the first pane without
-        // changing the size of the first pane. thats the behavior if the window is not maximized
-        // or snapped. if its maximized or snapped, then yeah hitting f10 should split the full
-        // area into two panes." Two branches, one per case; both leave pane A a literal PIXEL
+        // F10 slides out a second pane from the first pane without changing the size of the
+        // first pane when the window is not maximized or snapped; when it IS maximized or
+        // snapped, F10 splits the full
+        // area into two panes. Two branches, one per case; both leave pane A a literal PIXEL
         // column and pane B a STAR column once they land, so the far-right window edge (an
         // ordinary WPF Grid resize, no code needed) and the gutter (PaneSplitV_DragDelta below)
         // only ever move pane B afterward, regardless of which branch opened the split.
@@ -296,9 +296,8 @@ namespace KillerShell.Shell
             // Flushed FIRST, before anything below reads Width or starts a fresh
             // AnimateWindowWidth - a still-pending toggle's own settle() (see
             // FinishPendingPaneSlide's remark) touches both, and starting a fresh animation that
-            // the old settle then clobbers a moment later produced exactly "close stretches out
-            // like crazy instead of closing"
-            // (Steve, 2026-08-03) - a second F10 fired close enough behind the first that this
+            // the old settle then clobbers a moment later produced exactly the close stretching
+            // out instead of closing - a second F10 fired close enough behind the first that this
             // method's own later `FinishPendingPaneSlide()` call (buried inside SlideTrack) ran
             // too late to matter; by then this method had already computed its own width target
             // off not-yet-corrected numbers and already kicked off its own animation.
@@ -307,8 +306,8 @@ namespace KillerShell.Shell
             if (open)
             {
                 // The pane used to always open at its bare MINIMUM width (PaneMinWidth, 300)
-                // regardless of how much room there actually was - "it always pops out the pane
-                // this skinny" (Steve, 2026-08-03). Aim instead for something comfortably sized
+                // regardless of how much room there actually was, so it always popped out
+                // skinny. Aim instead for something comfortably sized
                 // relative to pane A's own current width (40%, capped so an ultrawide monitor
                 // does not open a needlessly huge second pane), then pull that back down - never
                 // below PaneMinWidth - to whatever room the monitor actually has. Falls back to
@@ -316,7 +315,7 @@ namespace KillerShell.Shell
                 const double desiredRatio = 0.4;
                 const double desiredCap = 600;
                 double desiredWidth = System.Math.Min(desiredCap, PaneColA.ActualWidth * desiredRatio);
-                // MonitorRoomToGrowRightDip, not MonitorWorkAreaWidthDip (Steve, 2026-08-03: F10
+                // MonitorRoomToGrowRightDip, not MonitorWorkAreaWidthDip (F10
                 // slid the second pane clean off screen on a window snapped to the right half of
                 // the monitor) - the width check alone says nothing about where the window's
                 // LEFT edge already sits, and growth happens in place, so a window already
@@ -352,11 +351,9 @@ namespace KillerShell.Shell
             // tweened down to nothing. Released for the tween, restored when it lands.
             PaneColB.MinWidth = 0;
 
-            // CLOSE: pane A must NEVER visibly change size, full stop - Steve, 2026-08-03, said
-            // three different ways across three rounds of feedback: "the main background snaps
-            // instantly and only the pane animates", "instead of sliding back down to one, it
-            // stretched pane 1 to the full width - the opposite of what it should do", and
-            // finally in caps, "PANE A SHOULD STAY WHERE IT IS, PANE B SHOULD SLIDE CLOSED."
+            // CLOSE: pane A must NEVER visibly change size, full stop - pane A stays where it
+            // is and pane B slides closed; the background must not snap instantly while only
+            // the pane animates, and pane A must never stretch to the full width on the way out.
             // Earlier attempts here tried to distinguish "did the ORIGINAL open grow the window,
             // or did it split A's own space in place" and only shrink the window back in the
             // first case, letting A visibly reclaim the space in the second (however smoothly
@@ -443,8 +440,7 @@ namespace KillerShell.Shell
         /// Animates the WINDOW's own Width to <paramref name="to"/>, on the same duration and
         /// easing shape as the pane-slide it accompanies (PaneSlideMs), so the window's own
         /// background/chrome grows or shrinks in step with the pane instead of snapping to its
-        /// final size in one frame while only the pane's frozen content visibly slides (Steve,
-        /// 2026-08-03).
+        /// final size in one frame while only the pane's frozen content visibly slides.
         /// </summary>
         private void AnimateWindowWidth(double to)
         {
@@ -483,7 +479,7 @@ namespace KillerShell.Shell
 
             FreezePane(horizontal: true, size: target);
 
-            // Animated rather than an instant `Width += growth` (Steve, 2026-08-03 - see
+            // Animated rather than an instant `Width += growth` (see
             // AnimateWindowWidth's own remark): a snap here left the window's own background/
             // chrome already at full size the instant the split started, with only the frozen
             // pane's reveal-wipe visibly animating on top of it.
@@ -501,8 +497,8 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  GUTTER DRAG (side-by-side only - PaneSplitV)
         // ═══════════════════════════════════════════════════════════
-        // Steve, 2026-08-02: "when I drag the middle gutter it should resize pane a, pane b stays
-        // the same size and just goes along for the ride." Pane B is a star column once the split
+        // Dragging the middle gutter resizes pane A; pane B stays the same size and just goes
+        // along for the ride. Pane B is a star column once the split
         // has landed (SlidePaneColumn/SlidePaneColumnGrow above), so it naturally keeps its own
         // rendered width whenever pane A's literal pixel width changes AND the window's total
         // width changes by that same amount - the window growing/shrinking in lockstep is what
@@ -516,9 +512,8 @@ namespace KillerShell.Shell
         // "Snapped" is NOT WindowState.Maximized - Aero-snapping a window (Win+Left/Right) leaves
         // it at WindowState.Normal, just repositioned/resized to a screen half, so the plain
         // `WindowState != Maximized` check below used to wave a snapped window through as
-        // "floating with room to grow" (Steve, 2026-08-03: "snapped window, i pulled the center
-        // divider left and it pulls the pane away from the window... i mean the right window
-        // edge" - dragging tried to SHRINK the window to keep B "the same size", which just
+        // "floating with room to grow" (on a snapped window, dragging the center divider left
+        // tried to SHRINK the window to keep B "the same size", which just
         // pulled the window's own right edge in off the screen edge it was snapped against,
         // leaving a gap between the window and the monitor's true right edge instead of B staying
         // flush with it). Same class of bug as the F10 fix above (MonitorRoomToGrowRightDip,
@@ -620,9 +615,9 @@ namespace KillerShell.Shell
         /// closure is where the real state lives (window-width giveback, MinWidth/Star restore,
         /// ThawPane) so skipping it on an interrupted tween left all of that stale. Pressing F10
         /// again before the 160ms open tween landed then started a SECOND SlideTrack before the
-        /// FIRST one's own landing logic had ever run, uncorrected - repeat presses compound
-        /// (Steve, 2026-08-03: "pressing f10 again stretches it further... the pane shouldnt grow
-        /// to take up the width of the missing pane"). Called at the top of every new SlideTrack,
+        /// FIRST one's own landing logic had ever run, uncorrected - repeat presses compound,
+        /// each F10 stretching the pane further into the width the missing pane left behind.
+        /// Called at the top of every new SlideTrack,
         /// so each toggle finishes cleanly before the next one is allowed to start.
         /// </summary>
         private void FinishPendingPaneSlide()
@@ -695,8 +690,8 @@ namespace KillerShell.Shell
             // margin goes with it - there is no window edge there any more either.
             // The window-edge inset comes from PaneOuterMargin's RIGHT, not the PaneEdge constant.
             // 8 by default, which is what the constant was, but 0 on 98SE - a Win98 client area
-            // fills its frame, and the hardcoded 8 was the "right edge is too fat" gap Steve kept
-            // seeing (2026-08-09). PaneGutter stays a constant: the gap BETWEEN two panes is
+            // fills its frame, and the hardcoded 8 read there as a too-fat gap along the right
+            // edge. PaneGutter stays a constant: the gap BETWEEN two panes is
             // furniture, not a frame inset, and 98SE wants it just the same.
             var om = Application.Current?.TryFindResource("PaneOuterMargin") as Thickness?
                      ?? new Thickness(0, -1, PaneEdge, 0);
@@ -717,8 +712,8 @@ namespace KillerShell.Shell
         private static void SetPaneMargin(FilePane p, double right)
         {
             // Top/left/bottom come from PaneOuterMargin and TabBarMargin, NOT from literals. The
-            // -1 that used to be hardcoded here is what left the line Steve kept seeing under the
-            // active tab (2026-08-09): PaneContent's page bevel is 2px of white across its top
+            // -1 that used to be hardcoded here is what left a persistent line under the
+            // active tab: PaneContent's page bevel is 2px of white across its top
             // (BevelLightThickness 2,2,0,0 on 98SE), the pane was pulled up only 1px against it, so
             // 1px of that white ran edge to edge under the tab. The tab cannot break a full-width
             // Border, so the pane has to ride far enough up for the tab's own opaque fill to cover
@@ -761,11 +756,11 @@ namespace KillerShell.Shell
                 // rounded themes, but a flat theme states it transparent. Hardcoding the brush here
                 // overrode the transparent PaneEdgeBrush the markup binds, which is what drew the
                 // grey rule under the active tab and the grey stub at the left of the menu bar on
-                // 98SE (Steve, 2026-08-09).
+                // 98SE.
                 // TabActiveRingBrush, not PrimaryBrush: it IS PrimaryBrush on every ordinary
                 // theme, but 98SE states it Transparent - the lit ring was drawing the accent
                 // across the top of the focused pane's band and down its sides on a theme whose
-                // tabs carry no accent at all (Steve, 2026-08-09, dual pane).
+                // tabs carry no accent at all (dual pane).
                 p.TabBarRing.SetResourceReference(Border.BorderBrushProperty,
                     lit ? "TabActiveRingBrush" : "TabRingIdleBrush");
 
@@ -791,9 +786,9 @@ namespace KillerShell.Shell
                 bool lastActive  = p.Active?.IsLast  == true;
                 // Shown whenever the ACTIVE tab owns that edge, not only while lit: in single
                 // pane (and on the unfocused half of a dual pane) the pane's own border should
-                // continue up the active tab's outer side too, in the idle ring brush (Steve,
-                // 2026-08-09: "active tab now needs the same paneborder on that right edge when
-                // its the right most tab. same with the left side of the left active tab").
+                // continue up the active tab's outer side too, in the idle ring brush - the
+                // rightmost active tab needs the pane border on its right edge, and the
+                // leftmost active tab the same on its left.
                 // TabRingIdleBrush mirrors PaneBorderBrush on the rounded themes and is
                 // transparent on 98SE, so the flat theme stays exactly as it is.
                 p.TabEdgeLeft.Visibility  = firstActive ? Visibility.Visible : Visibility.Collapsed;
@@ -833,8 +828,8 @@ namespace KillerShell.Shell
             }
             finally
             {
-                // OpenSecondPane wants the newly-opened pane to KEEP real command focus (Steve,
-                // 2026-08-03: "when i hit f10 to open second pane, it should gain focus") rather
+                // OpenSecondPane wants the newly-opened pane to KEEP real command focus (F10
+                // opening the second pane should leave that pane focused) rather
                 // than have it quietly handed back to whichever pane had it before - so that one
                 // caller passes restoreFocus:false and calls the real FocusPane itself right
                 // after kicking this off. Every other use of this method keeps the original

@@ -35,7 +35,19 @@ namespace KillerShell.Shell
 
             // This PC is a listing, not a directory, so it skips the path checks entirely.
             bool thisPc = IsThisPc(folder);
-            if (!thisPc)
+
+            // An archive location is the SAME kind of thing: a listing that no directory backs.
+            // It rides the This PC path rather than growing a second one - no GetFullPath (the
+            // a virtual path's separator is not a filename character), no Directory.Exists, no
+            // watcher, no tree reveal. What must exist is the archive FILE.
+            bool archive = Services.ArchiveProvider.TrySplit(folder, out string arcPath, out string arcEntry);
+            if (archive && !File.Exists(arcPath))
+            {
+                SetTabStatusKey(_active, "Str_Status_BadPath", arcPath);
+                return;
+            }
+
+            if (!thisPc && !archive)
             {
                 try { folder = Path.GetFullPath(folder); }
                 catch { SetTabStatusKey(_active, "Str_Status_BadPath", folder); return; }
@@ -65,7 +77,9 @@ namespace KillerShell.Shell
 
             tab.CurrentFolder = folder;
             tab.IsBrowsing    = true;
-            tab.Title         = thisPc ? Loc("Str_Nav_ThisPc") : FolderTitle(folder);
+            tab.Title         = thisPc  ? Loc("Str_Nav_ThisPc")
+                              : archive ? ArchiveTitle(arcPath, arcEntry)
+                              : FolderTitle(folder);
 
             // Cancel a listing still running for the folder we just left, or a slow network
             // share would land its results on top of the folder you moved to.
@@ -83,7 +97,25 @@ namespace KillerShell.Shell
             SetTabStatusKey(tab, "Str_Status_Listing", shown);
 
             List<SearchResult> entries;
+            string? archiveError = null;
             if (thisPc) entries = ListDrives();
+            else if (archive)
+            {
+                // Off the UI thread like an ordinary listing: reading a tar means walking the
+                // whole file, and a big one on a slow disk would otherwise freeze the window.
+                string capturedArc = arcPath, capturedEntry = arcEntry;
+                try
+                {
+                    var listed = await Task.Run(() =>
+                    {
+                        var rows = Services.ArchiveProvider.List(capturedArc, capturedEntry, out string? err);
+                        return (rows, err);
+                    }, ct);
+                    archiveError = listed.err;
+                    entries = ArchiveRows(capturedArc, listed.rows);
+                }
+                catch (OperationCanceledException) { return; }
+            }
             else
             {
                 try { entries = await Task.Run(() => ListFolder(folder, ct), ct); }
@@ -105,11 +137,15 @@ namespace KillerShell.Shell
             // REAL folder while the listing shows invented rows is worse than not watching: the
             // first event has ApplyWatchChanges reconcile the list against the disk, which deletes
             // every fabricated row on screen (BrowseWatcher.cs).
-            if (thisPc || DemoMode) StopWatching();
-            else                    StartWatching(folder);
+            // Nothing to watch inside an archive either - the entries are not files on disk, and
+            // pointing the watcher at the archive's own folder would have a save two folders
+            // away reconcile the listing against the disk and delete every row on screen.
+            if (thisPc || archive || DemoMode) StopWatching();
+            else                               StartWatching(folder);
 
             Pane.ResultsHeader.Text = string.Format(Loc("Str_Lbl_ResultsCount"), tab.Results.Count);
-            SetTabStatusKey(tab, "Str_Status_Listed", entries.Count.ToString("N0"));
+            if (archiveError != null) SetTabStatusKey(tab, "Str_Status_ArchiveFailed", archiveError);
+            else SetTabStatusKey(tab, "Str_Status_Listed", entries.Count.ToString("N0"));
             UpdateTabBar();
 
             UpdateFavoriteStar();   // Bookmarks.cs - a new folder changes what the star means
@@ -119,7 +155,10 @@ namespace KillerShell.Shell
             // Recorded AFTER the listing succeeded, not before: a path that turned out to be
             // unreadable is not somewhere you were, and putting it in the list would hand you a
             // row that fails every time you pick it.
-            RecordRecent(folder);   // Recents.cs
+            // Archive locations are deliberately NOT recorded: the recents menu drops any row
+            // that fails Directory.Exists, so every one of them would be filtered out on the
+            // next open anyway - a list entry that can never appear is worse than none.
+            if (!archive) RecordRecent(folder);   // Recents.cs
 
             // Point the tree at where we landed, whichever route got us here - the tree's own
             // selection handler is what called this in the first place when it was the route,
@@ -127,7 +166,44 @@ namespace KillerShell.Shell
             // chain can touch a slow drive and the listing is already on screen.
             // The tree is rooted AT the drives, so This PC is above everything it can show and
             // there is nothing to reveal.
-            if (!thisPc) _ = RevealInTree(folder);
+            // The tree shows directories, and nothing inside an archive is one.
+            if (!thisPc && !archive) _ = RevealInTree(folder);
+        }
+
+        // ── Archives as folders ──────────────────────────────────
+        /// <summary>Tab title inside an archive: the entry folder if there is one, otherwise
+        /// the archive's own file name, so a tab never reads as a bare "zip".</summary>
+        private static string ArchiveTitle(string archivePath, string entryPath)
+        {
+            if (entryPath.Length == 0) return Path.GetFileName(archivePath);
+            int slash = entryPath.LastIndexOf('/');
+            return slash < 0 ? entryPath : entryPath.Substring(slash + 1);
+        }
+
+        /// <summary>
+        /// Archive entries as listing rows. FilePath is the VIRTUAL path, so every existing
+        /// row behavior keeps working unchanged - double-click routes back through
+        /// ActivateEntry, the details pane and the icon lookup read the extension off the end
+        /// of it, and sorting sees ordinary names and sizes.
+        /// </summary>
+        private static List<SearchResult> ArchiveRows(string archivePath, List<Services.ArchiveEntryInfo> entries)
+        {
+            var rows = new List<SearchResult>(entries.Count);
+            int seq = 0;
+            foreach (var e in entries)
+            {
+                rows.Add(new SearchResult
+                {
+                    FilePath    = Services.ArchiveProvider.Combine(archivePath, e.EntryPath),
+                    FileName    = e.Name,
+                    Directory   = archivePath,
+                    IsDirectory = e.IsDirectory,
+                    SizeBytes   = e.Size,
+                    Modified    = e.Modified,
+                    Seq         = seq++,
+                });
+            }
+            return rows;
         }
 
         // ── This PC ──────────────────────────────────────────────
@@ -325,6 +401,16 @@ namespace KillerShell.Shell
         {
             if (string.IsNullOrEmpty(folder)) return null;
             if (IsThisPc(folder)) return null;
+
+            // Inside an archive, Up walks the entry path first and then steps OUT of the
+            // archive into the folder holding it, so climbing never dead-ends at the archive
+            // root (Services/ArchiveProvider.cs).
+            if (Services.ArchiveProvider.TrySplit(folder, out string arc, out string entry))
+            {
+                if (entry.Length > 0) return Services.ArchiveProvider.Parent(folder);
+                folder = arc;   // at the archive root: up means the archive FILE's own folder
+            }
+
             try
             {
                 var parent = System.IO.Directory.GetParent(folder);
@@ -345,6 +431,46 @@ namespace KillerShell.Shell
         internal async void ActivateEntry(SearchResult r)
         {
             if (r.IsDirectory) { await NavigateTo(r.FilePath); return; }
+
+            // A zip or a tarball is a place, not a document: entering it is what a file browser
+            // is for, and launching it would hand the job to whatever else is installed. Only
+            // formats this build can actually read enter - a .rar still launches, because
+            // WinRAR opening it is more useful than an error (Services/ArchiveProvider.cs).
+            if (Services.ArchiveProvider.IsReadable(r.FilePath) && File.Exists(r.FilePath))
+            {
+                await NavigateTo(r.FilePath);
+                return;
+            }
+
+            // Inside an archive there is nothing on disk to launch, so the entry is extracted
+            // to a temp copy first and THAT is opened. The copy is deliberately a copy: edits
+            // to it do not travel back into the archive, which is honest about what read-only
+            // browsing can promise.
+            if (Services.ArchiveProvider.TrySplit(r.FilePath, out string arc, out string entry) && entry.Length > 0)
+            {
+                SetTabStatusKey(_active, "Str_Status_Extracting", r.FileName);
+                var tab = _active;
+
+                // A block lambda returning the tuple, NOT an expression one: the out-parameter
+                // has to be captured to report WHY an extraction failed, and an expression
+                // lambda mixing a pattern with a null branch leaves Task.Run's return type to
+                // inference, which is exactly where a nullability warning would come from.
+                var (temp, error) = await Task.Run(() =>
+                {
+                    string? p = Services.ArchiveProvider.ExtractToTemp(arc, entry, out string? err);
+                    return (Path: p, Error: err);
+                });
+
+                if (temp == null)
+                {
+                    SetTabStatusKey(tab, "Str_Status_ExtractFailed", error ?? r.FileName);
+                    return;
+                }
+                SetTabStatus(tab, string.Empty);
+                System.Diagnostics.Process.Start(
+                    new System.Diagnostics.ProcessStartInfo(temp) { UseShellExecute = true });
+                return;
+            }
 
             if (File.Exists(r.FilePath))
                 System.Diagnostics.Process.Start(

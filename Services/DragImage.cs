@@ -9,7 +9,7 @@ namespace KillerShell.Services
     /// Sets the real Windows shell drag image (IDragSourceHelper) before a DoDragDrop call, so
     /// dragging a file shows the file's own icon at reduced opacity following the cursor - the
     /// same thing Explorer does - instead of the bare default OS cursor a plain DataObject leaves
-    /// you with (Steve, 2026-08-03: "right now its like a text cursor").
+    /// you with.
     ///
     /// This is genuinely how Explorer wires it, not a homemade stand-in: a system-rendered drag
     /// image is drawn by the same OLE drag loop that tracks the cursor, so it can never fight the
@@ -228,7 +228,7 @@ namespace KillerShell.Services
     /// Explorer window. WPF's own AllowDrop plumbing does NOT call it, so a drag that never
     /// leaves KillerShell (pane to pane, or window to window of the same app) never got an image
     /// at all - confirmed the hard way: hr=0 out of InitializeFromBitmap, no GiveFeedback issue,
-    /// and still nothing on screen for an all-KillerShell drag (Steve, 2026-08-03).
+    /// and still nothing on screen for an all-KillerShell drag (2026-08-03).
     ///
     /// One instance must live for the whole DragEnter..Drop/DragLeave span - the helper tracks its
     /// own layered window per instance, so calling DragOver on a fresh instance instead of the one
@@ -247,7 +247,7 @@ namespace KillerShell.Services
             // InvalidCastException ("Unable to cast object of type 'DragDropHelper' to type
             // 'DragDropHelperCoClass'") the moment an OUTBOUND drag passed back over our own
             // window - which is exactly a drag toward Telegram/Teams - and crashed the app
-            // (Steve, 2026-08-09). CreateInstance hands the RCW back untyped and the interface
+            // (2026-08-09). CreateInstance hands the RCW back untyped and the interface
             // check below is a plain QueryInterface, which cannot hit the class-identity trap.
             // The try/catch is belt and braces: a failed helper only costs the ghost image, and a
             // drag must never crash over decoration.

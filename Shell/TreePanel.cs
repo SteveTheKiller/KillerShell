@@ -53,7 +53,7 @@ namespace KillerShell.Shell
             // appears when the tree's CONTENT gets wider - expand a deep folder and the widest
             // label grows - which changes the ScrollViewer's ExtentWidth but NOT the TreeView's
             // own size, so SizeChanged never fired and the lift was never recomputed. The bottom
-            // fade then sat straight over the scrollbar and greyed it out (Steve, 2026-08-08).
+            // fade then sat straight over the scrollbar and greyed it out (2026-08-08).
             // ScrollChanged carries extent changes as well as scroll-position ones, which is
             // exactly the event that was missing.
             FolderTree.AddHandler(System.Windows.Controls.ScrollViewer.ScrollChangedEvent,
@@ -95,7 +95,7 @@ namespace KillerShell.Shell
 
             // EdgeFadeOpacity is 0 on a FLAT theme: 98SE has no soft edges anywhere - a list ends
             // at its sunken bevel, it does not dissolve - so the ramp is scaled to nothing rather
-            // than special-cased here (Steve, 2026-08-08).
+            // than special-cased here (2026-08-08).
             double fade = Application.Current.TryFindResource("EdgeFadeOpacity") is double e ? e : 1.0;
 
             double top = Ramp(sv.VerticalOffset, TopFadePx, 18) * fade;

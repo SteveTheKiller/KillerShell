@@ -12,8 +12,8 @@ using KillerShell.Models;
 // file), a Task Manager tab has no per-instance identity worth keeping separate - two of them
 // would show the exact same machine-wide list a heartbeat apart. So opening it is a SINGLETON:
 // the rail button focuses an existing Task Manager tab anywhere in the window before it creates
-// a new one. This is the one guess in this file worth double-checking against how Steve actually
-// wants it to behave; Terminal/Editor's "always make a new one" rule was deliberately not copied
+// a new one. This is the one guess in this file worth double-checking against the intended
+// behavior; Terminal/Editor's "always make a new one" rule was deliberately not copied
 // here because it did not seem to fit a live system view the way it fits a shell or a document.
 namespace KillerShell.Shell
 {

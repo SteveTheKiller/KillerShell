@@ -374,7 +374,7 @@ namespace KillerShell.Editing
         /// </remarks>
         internal void ApplyTheme()
         {
-            // SurfaceBrush, not PaneBrush (Steve, 2026-08-02) - the same "elevated but not
+            // SurfaceBrush, not PaneBrush (2026-08-02) - the same "elevated but not
             // stark" step the terminal now uses (TerminalPalette.cs), so a document reads as a
             // page sunk slightly into the pane rather than flush with it. SurfaceBrush already
             // sits between BackgroundBrush and PaneBrush in every theme.
@@ -411,7 +411,7 @@ namespace KillerShell.Editing
             // AvalonEdit draws the current line with a BORDER as well as a background fill, and
             // only the fill was ever themed here - the border stayed at AvalonEdit's own stock
             // default (an olive/green pen, nothing to do with any KillerShell theme) and read as
-            // a stray unthemed outline around the caret's line (Steve, 2026-08-02). The wash
+            // a stray unthemed outline around the caret's line (2026-08-02). The wash
             // above already marks the line clearly enough on its own; null turns the border off
             // rather than trading one hardcoded color for another. The vendored CurrentLineBorder
             // property predates nullable annotations and is typed as a non-nullable Pen, but the
@@ -430,7 +430,7 @@ namespace KillerShell.Editing
         /// editor's page reads with the same texture as every other pane surface. AvalonEdit's
         /// Background is a single Brush property with no layering of its own (unlike the file
         /// listing's separate Border-behind-Transparent-content trick), so the two are baked
-        /// into one DrawingBrush here instead (Steve, 2026-08-03 - a prior fix removed grain
+        /// into one DrawingBrush here instead (2026-08-03 - a prior fix removed grain
         /// from the editor entirely rather than folding it into the background paint, which left
         /// the page with no texture at all).
         /// </summary>

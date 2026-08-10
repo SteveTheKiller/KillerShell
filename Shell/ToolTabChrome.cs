@@ -10,8 +10,6 @@ namespace KillerShell.Shell
     /// shadow, both zero-thickness on every ordinary theme so nothing moves there. WrapContent
     /// sinks a content area into the same four-border crossed well the sidebar tree and the file
     /// listing use, over a face brush that is Transparent on every ordinary theme.
-    /// (Steve, 2026-08-09: "the content of the table and the table header should be sunken, but
-    /// the dropdowns and search field should be in the raised menubar".)
     /// </summary>
     internal static class ToolTabChrome
     {

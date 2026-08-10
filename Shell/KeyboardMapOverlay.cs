@@ -45,7 +45,13 @@ namespace KillerShell.Shell
             [KbLayer.Base] = new()
             {
                 ["F1"]    = ("Help",   "Str_Ks_Help"),
-                ["F4"]    = ("Nav",    "Str_Ks_Address"),
+                ["F4"]    = ("Tabs",   "Str_Ks_Storage"),
+                // Storage Analyzer locals - only live while that tab has focus, the same as the
+                // map's other tab-local caps. D/M/C sit on the home row under the fingers.
+                ["D"]     = ("View",   "Str_Ks_StorageDepth"),
+                ["M"]     = ("View",   "Str_Ks_StorageMin"),
+                ["C"]     = ("View",   "Str_Ks_StorageColor"),
+                ["Home"]  = ("Nav",    "Str_Ks_StorageHome"),
                 ["F5"]    = ("View",   "Str_Ks_Refresh"),
                 ["F8"]    = ("Tabs",   "Str_Ks_Shell"),
                 ["F9"]    = ("Tabs",   "Str_Ks_TaskManager"),
@@ -55,6 +61,9 @@ namespace KillerShell.Shell
                 ["Del"]   = ("Edit",   "Str_Ks_Recycle"),
                 ["F10"]   = ("View",   "Str_TT_DualPane"),
                 ["F12"]   = ("Help",   "Str_Ks_About"),
+                // Enter and Backspace keep their GLOBAL meaning on the cap - run the search, go
+                // back. In the Storage tab they zoom in and out, which is the same shape of
+                // action, so the cap is not relabelled for a tab-local variation.
                 ["Enter"] = ("Search", "Str_Ks_Run"),
                 ["Esc"]   = ("Edit",   "Str_Ks_Esc"),
                 ["Back"]  = ("Nav",    "Str_Ks_Back"),
@@ -70,6 +79,7 @@ namespace KillerShell.Shell
                 ["T"]     = ("Tabs",   "Str_Ks_NewTab"),
                 ["W"]     = ("Tabs",   "Str_Ks_CloseTab"),
                 ["Tab"]   = ("Tabs",   "Str_Ks_NextTab"),
+                ["Enter"] = ("Search", "Str_Ks_StorageScan"),
                 ["E"]     = ("Search", "Str_Ks_FocusSearch"),
                 ["A"]     = ("Edit",   "Str_Ks_SelectAll"),
                 ["C"]     = ("Edit",   "Str_Ks_CutCopyPaste"),
@@ -83,6 +93,7 @@ namespace KillerShell.Shell
                 ["D7"]    = ("Tabs",   "Str_Ks_JumpTab"), ["D8"] = ("Tabs", "Str_Ks_JumpTab"),
                 ["D9"]    = ("Tabs",   "Str_Ks_JumpTab"),
                 ["F8"]    = ("Tabs",   "Str_Ks_ShellAdmin"),
+                ["F4"]    = ("Tabs",   "Str_Ks_StorageAdmin"),
                 ["F9"]    = ("Tabs",   "Str_Ks_TaskManagerAdmin"),
                 ["Grave"] = ("Tabs",   "Str_Ks_Shell"),
                 ["F10"]   = ("View",   "Str_Ks_MenuBar"),

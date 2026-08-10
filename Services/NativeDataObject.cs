@@ -14,7 +14,7 @@ namespace KillerShell.Services
     /// needs SetData to work so it can stuff its own drag-image formats onto the same object.
     /// Confirmed the hard way: hr=0x80004001 (E_NOTIMPL, exactly the HRESULT a NotImplementedException
     /// becomes crossing a CCW) out of InitializeFromBitmap when handed a WinForms DataObject
-    /// (Steve, 2026-08-03). This class implements SetData for real, so the shell can write its
+    /// (2026-08-03). This class implements SetData for real, so the shell can write its
     /// formats, and GetData/QueryGetData for real, so a drop target (Explorer, or KillerShell's
     /// own Window_Drop) can still read FileDrop/UnicodeText back out.
     ///
@@ -66,7 +66,7 @@ namespace KillerShell.Services
             // managed object back around, and some of the calls into it along that path are
             // plain in-process C# dispatch with no marshaling boundary to do that conversion, so
             // a thrown exception here becomes a real unhandled exception instead and takes the
-            // whole drag down with it - confirmed the hard way (Steve, 2026-08-03). Returning an
+            // whole drag down with it - confirmed the hard way (2026-08-03). Returning an
             // empty medium instead of throwing is not strictly correct IDataObject behavior, but
             // every real caller checks QueryGetData/GetDataPresent first anyway, so nothing that
             // matters ever sees this fallback.

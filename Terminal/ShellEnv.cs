@@ -62,7 +62,7 @@ namespace KillerShell.Shell
             // The first three are the TERMINAL's own, not the app's. A prompt renders on the
             // console surface, so it has to be coloured for that surface - on 98SE the app is
             // light grey and the console is black, and publishing the app's #000000 text and
-            // #004f00 accent made the prompt invisible against it (Steve, 2026-08-08). All three
+            // #004f00 accent made the prompt invisible against it (2026-08-08). All three
             // default to the app's values, so nothing changes on a theme that does not override
             // its console.
             ("ACCENT", "TerminalAccentBrush"),

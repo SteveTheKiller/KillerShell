@@ -28,7 +28,7 @@
     <!-- A faint wash, NOT the base layer's SelectionBg. The shared layer means the solid "this
          one is active" fill by that name; KillerShell means the quiet tint behind a selected
          list row, and OutlineButton also rests on it - so the accent went straight in as a solid
-         fill and the Install button came up looking permanently pressed (Steve, 2026-08-08).
+         fill and the Install button came up looking permanently pressed.
          #44ffffff is what Blood, Greed and Cyanotic already use. -->
     <SolidColorBrush x:Key="RowSelectedBrush"    Color="#44ffffff" po:Freeze="True"/>
     <SolidColorBrush x:Key="OutlinePressedBrush" Color="#44ffffff" po:Freeze="True"/>

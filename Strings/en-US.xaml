@@ -228,7 +228,7 @@
          GPLv3 and the product name stay out of the translatable text (family standard). -->
     <sys:String x:Key="Str_About_Title">About KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Text Size: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Free shell for power users. A file browser, a terminal and a text editor share one window and one tab strip. Installer optional, no runtime, no account. A </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">One portable app to manage a computer and its files. A file browser, terminal, text editor and admin tools share one window and one set of keys. Installer optional, no runtime, no account. A </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> utility.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSION</sys:String>
     <sys:String x:Key="Str_About_Publisher">PUBLISHER</sys:String>
@@ -656,6 +656,53 @@
     <sys:String x:Key="Str_Perf_Cores">Cores</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Logical processors</sys:String>
     <sys:String x:Key="Str_Perf_BaseSpeed">Base speed</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Toggle full-width  -  drag the header to reorder cells</sys:String>
+
+    <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Shell/StorageAnalyzerControl.cs) -->
+    <sys:String x:Key="Str_TT_Storage">Storage Analyzer  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Storage Analyzer</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Storage Analyzer</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Storage Analyzer (elevated scan)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Storage Analyzer</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Storage Analyzer, elevated scan</sys:String>
+    <!-- Local to the Storage Analyzer tab, only while it has focus -->
+    <sys:String x:Key="Str_Ks_StorageScan">start the scan (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">cycle treemap depth (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">cycle the minimum size shown (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">switch coloring by type or folder (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">zoom into the selected folder (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">zoom out one level (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">back to the scan root (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">send the selected item to the Recycle Bin (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Scan</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Stop</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Choose a folder or drive to scan</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Choose a folder or drive, then Scan</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">That folder doesn't exist</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Scan stopped - showing what was read</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">skipped</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">Open in new tab</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Open in Explorer</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Copy path</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Delete (Recycle Bin)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Rescan</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Color by file type</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Color by top folder</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Depth</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">All</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">How many folder levels get their own rectangles - lower flattens the map to the big folders</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Min</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">All</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Hide anything smaller than this - the bytes still count inside the folder holding them</sys:String>
+    <sys:String x:Key="Str_Storage_Total">total</sys:String>
+
+    <!-- Archives browsed as folders (Services/ArchiveProvider.cs, Shell/Browse.cs) -->
+    <sys:String x:Key="Str_Status_Extracting">Extracting {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">Could not extract {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">Could not read the archive - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Archives open read-only - nothing can be added to one yet</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Dragging out of an archive isn't supported yet - open the file to extract a copy</sys:String>
+    <sys:String x:Key="Str_Storage_Free">free</sys:String>
 
     <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Shell/RegistryEditorControl.cs) -->
     <sys:String x:Key="Str_TT_RegistryEditor">Registry Editor  (Ctrl+F11)</sys:String>

@@ -13,8 +13,8 @@ using KillerShell.Models;
 // an image preview - or the shell's own big icon for everything else - on the right. Partial of
 // MainWindow. Open/closed, dragged height, and content are ALL per-pane (FilePane.DetailsPaneOpen/
 // DetailsPaneUserSized/DetailsPaneHeight) - each pane tracks its own selection, so there is no
-// reason left for the two strips to move together (Steve, 2026-08-03: "i click one and they both
-// change but they should be independent"). Unlike ShowHidden/FoldersOnTop, which genuinely are
+// reason left for the two strips to move together; they used to open and close as a pair when
+// they should be independent. Unlike ShowHidden/FoldersOnTop, which genuinely are
 // meant to agree across both panes.
 //
 // Updates once per selection change (FilePane.xaml.cs forwards ResultsList_SelectionChanged
@@ -28,13 +28,13 @@ namespace KillerShell.Shell
         // a full-resolution load, so scrolling through a folder of large photos never hitches.
         private const int DetailsPreviewPx = 220;
 
-        // The preview column's WIDTH is no longer independently draggable (Steve tried the old
-        // side-splitter and said it was "not helpful") - it now tracks the strip's own HEIGHT,
+        // The preview column's WIDTH is no longer independently draggable (the old
+        // side-splitter proved unhelpful in practice) - it now tracks the strip's own HEIGHT,
         // which is what the horizontal grip below the results list actually resizes. A taller
         // strip reads as wanting a bigger preview, so width = height * ratio; 1.4 is a plain
         // landscape-ish multiplier (wider than tall, like most photos). Its CEILING is no longer
-        // a fixed pixel cap (Steve, 2026-08-02: a wide/landscape image "should expand until it
-        // hits the info on the left") - see ApplyDetailsPreviewWidth, which computes the real
+        // a fixed pixel cap - a wide/landscape image should expand until it hits the info on
+        // the left - see ApplyDetailsPreviewWidth, which computes the real
         // leftover space instead.
         private const double DetailsPreviewWidthRatio = 1.4;
         private const double DetailsPreviewMinWidth   = 100;
@@ -48,20 +48,20 @@ namespace KillerShell.Shell
         // its margin either side.
         private const double DetailsPaneDividerWidth = 16;
 
-        // The strip's thin collapsed state - Steve, 2026-08-02: "no reason to eat half the
-        // screen for one dash-filled row". Roughly a status-bar line: enough for the "No item
+        // The strip's thin collapsed state - no reason to eat half the screen for one
+        // dash-filled row. Roughly a status-bar line: enough for the "No item
         // selected" text (or nothing at all, for a selected folder) to sit vertically centered.
         private const double DetailsPaneCollapsedHeight = 30;
 
         // Bounds for the strip's HEIGHT (the thing the new grip actually drags). No fixed max
         // constant - the ceiling is 50% of the results pane's own height (DetailsPaneCeiling),
         // computed live because that pane's height itself varies with the window. The FLOOR is
-        // no longer a guessed constant either (Steve, 2026-08-02: "none of the details should
-        // allow you to go smaller than they are... the grabhandle only allows us to go bigger")
+        // no longer a guessed constant either - the strip should never shrink below what its
+        // details actually need, with the grab handle only allowing growth from there
         // - see DetailsPaneContentFloor, which measures the field rows that are actually showing.
         // The pre-layout starting point (before anything real has been measured) is now
         // FilePane.DetailsPaneHeight's own field default (160) rather than a constant here, since
-        // the height itself moved onto the pane (Steve, 2026-08-03).
+        // the height itself moved onto the pane.
         // Before the results pane has ever laid out (first paint), there is nothing real to take
         // 50% of - same problem BookmarksCeiling has with TreePanel.ActualHeight, same fallback
         // shape: a generous fixed number rather than clamping everything to zero.
@@ -74,7 +74,7 @@ namespace KillerShell.Shell
 
         // Open/closed, user-sized-or-not, and the dragged height itself all live on FilePane now
         // (DetailsPaneOpen/DetailsPaneUserSized/DetailsPaneHeight) - each pane opens, closes and
-        // remembers its own (Steve, 2026-08-03). Settings persist per pane under a PaneKey-
+        // remembers its own. Settings persist per pane under a PaneKey-
         // suffixed key, same convention as the view-state settings in ResultsView.cs.
         private void InitDetailsPane()
         {
@@ -134,7 +134,7 @@ namespace KillerShell.Shell
 
         /// <summary>
         /// How tall the strip is allowed to get for this pane: never more than half of the whole
-        /// results pane (Steve: "there should be a max like 50% of the pane"), so the file listing
+        /// results pane, so the file listing
         /// above always keeps at least the other half.
         /// </summary>
         private double DetailsPaneCeiling(FilePane pane)
@@ -143,9 +143,9 @@ namespace KillerShell.Shell
         /// <summary>
         /// Measures just the FIELD content (or the empty-state text) exactly as it stands right
         /// now - whichever of Empty/Single/Multi just painted it - and returns the exact height
-        /// its rows need. This is the real floor the drag grip can never go below (Steve,
-        /// 2026-08-02: "none of the details should allow you to go smaller than they are... the
-        /// grabhandle only allows us to go bigger"), recomputed on every call rather than cached,
+        /// its rows need. This is the real floor the drag grip can never go below - the strip
+        /// must not shrink smaller than its visible details, the grab handle only allows
+        /// growth - recomputed on every call rather than cached,
         /// since a different file's populated fields (a wrapped attributes line, a longer path)
         /// need a different floor.
         ///
@@ -153,7 +153,7 @@ namespace KillerShell.Shell
         /// column (DetailsPreviewImage/DetailsPreviewIcon) or the DetailsPaneContent grid as a
         /// whole - the preview is decorative and adapts to whatever height it is given
         /// (Stretch="Uniform"), it never NEEDS a height. Measuring it too was the runaway-growth
-        /// bug (Steve, 2026-08-02): with the preview column's width fixed but height passed as
+        /// bug: with the preview column's width fixed but height passed as
         /// double.PositiveInfinity, a Uniform-stretch Image scales to fill that width and lets
         /// its height run free - desiredHeight = availWidth / aspectRatio - so a portrait or tall
         /// image measured multiple thousand pixels tall, and that reading became the "floor",
@@ -194,8 +194,8 @@ namespace KillerShell.Shell
         /// <summary>
         /// Sets the preview column's width from the strip's current height - the width-follows-
         /// height relationship the drag replaces the old side-splitter with. The ceiling is no
-        /// longer a fixed pixel cap (Steve, 2026-08-02: a wide/landscape image "should expand
-        /// until it hits the info on the left") - it is whatever is actually left of the strip's
+        /// longer a fixed pixel cap - a wide/landscape image should expand until it hits the
+        /// info on the left - it is whatever is actually left of the strip's
         /// width once the fields column has its reserved minimum, so a wide pane genuinely lets
         /// a landscape image grow. Stretch="Uniform" on the Image elements (FilePane.xaml) keeps
         /// aspect ratio regardless, so a portrait image still ends up narrower even with room to
@@ -232,8 +232,8 @@ namespace KillerShell.Shell
 
         /// <summary>
         /// Grows or shrinks the strip between its thin collapsed line and its normal (dragged or
-        /// measured) height, purely from whether the content just painted is meaningful (Steve,
-        /// 2026-08-02: select nothing or a folder -> one thin line; select a file -> back to the
+        /// measured) height, purely from whether the content just painted is meaningful
+        /// (select nothing or a folder -> one thin line; select a file -> back to the
         /// normal/last-dragged height). Independent of DetailsPaneUserSized - a user-dragged
         /// height is remembered and restored, but the collapse itself is automatic and never
         /// needs a manual resize.
@@ -270,7 +270,7 @@ namespace KillerShell.Shell
         /// this method looked only at DetailsPaneOpen and cheerfully put the strip back. With the
         /// setting remembered as open from a previous session, a shell tab came up carrying a
         /// "No item selected" strip along its bottom edge, and it survived three attempts at
-        /// fixing it in the callers (Steve, 2026-08-08).
+        /// fixing it in the callers.
         ///
         /// ResultsList.Visibility is the test rather than the tab kind: every non-listing kind
         /// collapses it on activation and all of them run before this, so it cannot drift from
@@ -339,8 +339,8 @@ namespace KillerShell.Shell
             // Once the user has dragged the grip, the strip keeps whatever height they chose -
             // but NEVER below what the content actually needs. The old unconditional early
             // return assumed the field rows were fixed height; a long filename WRAPS to a second
-            // line, and a user-sized strip then clipped it top and bottom (Steve, 2026-08-09:
-            // "filename should never get cutoff in details pane"). The chosen height still wins
+            // line, and a user-sized strip then clipped it top and bottom - the filename must
+            // never get cut off in the details pane. The chosen height still wins
             // whenever it fits; the measured floor only ever lifts it.
             if (pane.DetailsPaneUserSized)
             {
@@ -364,7 +364,7 @@ namespace KillerShell.Shell
         /// Repaints one pane's strip for whatever is now selected in it, then grows or collapses
         /// it to match (SyncDetailsPaneCollapse). No-ops when the strip is closed - no reason to
         /// stat a file or decode a thumbnail nobody can see. A folder gets the same collapsed
-        /// treatment as no selection (Steve, 2026-08-02: a folder's dash-filled fields are not
+        /// treatment as no selection (a folder's dash-filled fields are not
         /// worth the strip's usual height).
         /// </summary>
         internal void UpdateDetailsPaneForSelection(FilePane pane, bool animate = true)
@@ -423,6 +423,25 @@ namespace KillerShell.Shell
             pane.DetailsAttrText.Text = "...";
             string path = r.FilePath;
             bool isDir = r.IsDirectory;
+
+            // An archive ENTRY has no file behind it, so there is nothing to stat and nothing
+            // to decode: FileInfo and FileStream would both throw on the virtual path and be
+            // swallowed by the catches below, which is exception-driven control flow for a
+            // case that is known up front. Size and modified are already on the row, straight
+            // out of the archive's own directory (Services/ArchiveProvider.cs).
+            bool archiveEntry = Services.ArchiveProvider.TrySplit(path, out _, out string arcEntry)
+                                && arcEntry.Length > 0;
+            if (archiveEntry)
+            {
+                pane.DetailsCreatedText.Text = "-";
+                pane.DetailsAttrText.Text = "-";
+                pane.DetailsPreviewIcon.Source = Services.IconCache.For(path, 128, isDir);
+                pane.DetailsPreviewIcon.Visibility = Visibility.Visible;
+                pane.DetailsPreviewImage.Visibility = Visibility.Collapsed;
+                CorrectDetailsPaneHeight(pane);
+                return;
+            }
+
             _ = Task.Run(() =>
             {
                 DateTime created = default;

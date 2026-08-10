@@ -92,7 +92,7 @@
         </Style.Triggers>
     </Style>
 
-    <!-- Icon-grid tile filename ONLY (Steve, 2026-08-02): the accent-green text moves from
+    <!-- Icon-grid tile filename ONLY: the accent-green text moves from
          the SELECTED state to the HOVERED state, so a hovered tile reads gray background +
          green name, and a selected-but-not-hovered tile reads its default text color. Bound
          to the tile Border's own IsMouseOver (ElementName=TileBd in FilePane.xaml) rather
@@ -104,15 +104,14 @@
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Style.Triggers>
             <!-- SELECTED pairs with the SelectionBg fill, exactly like the places menu: black on
-                 Ectoplasm's bright block, white on 98SE's navy (Steve, 2026-08-09: "if the files
-                 are selected the text should be black like in the places menu"). Declared BEFORE
+                 Ectoplasm's bright block, white on 98SE's navy - selected file text matches the
+                 places menu's treatment. Declared BEFORE
                  hover so hover wins when a tile is both. -->
             <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
             </DataTrigger>
             <!-- HOVER pairs with the RowHoverBrush wash, so it is the theme's own TEXT color -
-                 SelectionFg here was black-on-dark-wash on Ectoplasm and unreadable (Steve,
-                 2026-08-09: "hovered files need white text"). -->
+                 SelectionFg here was black-on-dark-wash on Ectoplasm and unreadable. -->
             <DataTrigger Binding="{Binding IsMouseOver, ElementName=TileBd}" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
             </DataTrigger>

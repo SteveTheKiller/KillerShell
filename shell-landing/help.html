@@ -185,7 +185,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 
 <h2 class="help-cat" id="browse" data-i18n="h_nav_browse">Browsing folders</h2>
 <div class="acc-item"><button class="acc-head">Opening folders &amp; the tree<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p1">A new tab opens on Home and lists what is there. Double-click a folder to enter it, or a file to open it in whatever Windows uses for that type. The folder tree down the left is rooted at This PC and follows wherever you go. Drag its edge to resize it; the width is remembered.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Navigation keys<span class="kbd">Alt+Left/Right, Backspace, Alt+Up, Ctrl+L/F4</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p2">Navigation follows Explorer exactly. <b>Alt+Left</b> and <b>Alt+Right</b> go back and forward, <b>Backspace</b> also goes back, <b>Alt+Up</b> goes up a folder, and <b>Ctrl+L</b> or <b>F4</b> puts the caret in the address bar so you can type a path. <b>F5</b> refreshes. The chevron at the end of the address bar lists the folders you have visited recently.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Navigation keys<span class="kbd">Alt+Left/Right, Backspace, Alt+Up, Ctrl+L/Alt+D</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p2">Navigation follows Explorer exactly. <b>Alt+Left</b> and <b>Alt+Right</b> go back and forward, <b>Backspace</b> also goes back, <b>Alt+Up</b> goes up a folder, and <b>Ctrl+L</b> or <b>Alt+D</b> puts the caret in the address bar so you can type a path. <b>F5</b> refreshes. The chevron at the end of the address bar lists the folders you have visited recently.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">List, icons &amp; details views<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p3">Three views, on the toolbar: list (expandable cards), icons (32 to 256 pixel tiles) and details (sortable columns). Icons run on a virtualizing panel, so a hundred thousand items in tile view stays usable. Two toolbar toggles are remembered between sessions: show hidden and system items (<code>Ctrl+H</code>), and keep folders above files.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Resizing columns<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p5">In details view, drag any divider to resize the column on its left; the columns to its right keep their widths and slide over. Double-click a divider to put its column back to the width it shipped with. The widths are remembered between sessions. Ctrl+wheel over the list resizes the icons in every view, not just tiles.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Bookmarks<span class="kbd">Ctrl+B</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p4"><b>Ctrl+B</b> opens the bookmarks drawer under the tree. Drop a folder on it to save it, or use the star on the rail for the folder you are in, then jump to the first ten with <b>Alt+1</b> through <b>Alt+0</b>.</p></div></div></div>
@@ -240,6 +240,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <h2 class="help-cat" id="admin">Processes, Performance &amp; Registry</h2>
 <div class="acc-item"><button class="acc-head">Processes &amp; Services<span class="kbd">F9 / Ctrl+F9</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F9</b> opens the Processes/Services tab, a singleton the same way the rail's task-manager icon is - opening it twice just switches to the one already open. <b>Ctrl+F9</b> opens it elevated. <b>Ctrl+period</b> switches between the Processes and Services views.</p><p>With a row selected and the grid focused: <b>Delete</b> ends the process (or stops the service), <b>Ctrl+R</b> restarts a process, <b>Ctrl+O</b> opens its file location, <b>Ctrl+Shift+A</b> restarts a process as administrator, and <b>Ctrl+S</b> starts a stopped service.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Performance Monitor<span class="kbd">F11</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F11</b> opens the Performance tab, another singleton, tile-based like Task Manager's own Performance page: CPU, RAM, network, disk and GPU each get a live tile with a running graph. No elevation is needed - every counter it reads is available to an ordinary user account.</p><p>Press <b>L</b> on the CPU tile to toggle between one overall graph and a per-core view, so you can see whether load is spread across cores or pinned to one.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Storage Analyzer<span class="kbd">F4 / Ctrl+F4</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F4</b> opens the Storage Analyzer tab and <b>Ctrl+F4</b> opens it elevated, which is what you want on a system drive, since an ordinary account gets Access Denied on a good deal of it. The hard-drive icon on the rail does the same on a left click, and right-clicking it offers both. Put a folder or a drive in the target box, or pick one with Browse, and press Scan. The walk runs one worker per logical processor and never follows a junction or a symlink, so nothing is counted twice, and the status bar shows directories, files, bytes and skipped folders as it goes.</p><p>What you get is a treemap of the WizTree and WinDirStat kind: one rectangle per file, its area proportional to its size, with folders drawn as nested outlines around their contents. Double-click a folder to zoom into it, and use the breadcrumb above the map to climb back out. Right of Scan, <b>Depth</b> cycles All, 1, 2, 3 and 4 to limit how many folder levels get their own rectangles; at 1 each top-level folder is a single solid block, which is the quickest way to see where the space went. <b>Min size</b> hides anything under 1 MB, 10 MB or 100 MB. Both are view filters applied while drawing rather than rescans, so they are instant, and neither loses a byte: a capped folder is drawn as one rectangle carrying its whole subtree, and a hidden small file still counts inside the folder holding it. Coloring switches between file type and top-level folder. Depth, minimum size and coloring are all remembered between sessions.</p><p>With the tab focused, <b>Ctrl+Enter</b> starts the scan, <b>D</b> cycles depth, <b>M</b> cycles the minimum size, <b>C</b> switches coloring, <b>Enter</b> zooms into the selected folder, <b>Backspace</b> zooms out a level, <b>Home</b> goes back to the scan root, <b>Delete</b> sends the selected item to the Recycle Bin, <b>F5</b> rescans and <b>Esc</b> stops a running scan. Right-click a rectangle to open it in a new tab, show it in Explorer, copy its path or delete it. Delete is the only destructive thing in the tab and it always goes to the Recycle Bin through the shell's own confirmation, so nothing here can destroy a file; the map updates in place afterwards with no rescan. The footer shows the hovered or selected item's full path, its size and its share of what is on screen, alongside the drive's total and free space.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Event Viewer<span class="kbd">Ctrl+F12</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Ctrl+F12</b> opens the Event Viewer tab. There is no unelevated way in - it always opens elevated, because the Security log it reads refuses to open for a process that is not already administrator.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Registry Editor<span class="kbd">Ctrl+F11</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Ctrl+F11</b> opens the Registry Editor tab, also always elevated, for the same reason as Event Viewer - there is no unelevated way in.</p><p>With the tree or grid focused: <b>F2</b> renames a key or value, <b>Delete</b> removes one, <b>Ctrl+F</b> finds a key or value name, <b>Ctrl+C</b> copies the full path, <b>Enter</b> opens Modify on a value, and <b>F5</b> reloads the selected key from disk.</p></div></div></div>
 
@@ -269,7 +270,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="kbd-row"><span class="k">Alt+Left / Right</span><span class="d">go back / forward</span></div>
 <div class="kbd-row"><span class="k">Backspace</span><span class="d">go back</span></div>
 <div class="kbd-row"><span class="k">Alt+Up</span><span class="d">go up one folder</span></div>
-<div class="kbd-row"><span class="k">Ctrl+L / F4</span><span class="d">edit the location - type a path and press Enter</span></div>
+<div class="kbd-row"><span class="k">Ctrl+L / Alt+D</span><span class="d">edit the location - type a path and press Enter</span></div>
 <div class="kbd-row"><span class="k">Ctrl+O</span><span class="d">choose the folder (or open a process's file location)</span></div>
 <div class="kbd-row"><span class="k">Ctrl+B</span><span class="d">show or hide bookmarks</span></div>
 <div class="kbd-row"><span class="k">Alt+1-0</span><span class="d">go to bookmark 1 to 10 (0 = tenth)</span></div>
@@ -281,6 +282,8 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="kbd-row"><span class="k">Ctrl+W</span><span class="d">close the current tab</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Tab</span><span class="d">next tab (Shift: previous)</span></div>
 <div class="kbd-row"><span class="k">Ctrl+1-9</span><span class="d">jump to tab 1 to 9 (9 = last)</span></div>
+<div class="kbd-row"><span class="k">F4</span><span class="d">open the Storage Analyzer tab</span></div>
+<div class="kbd-row"><span class="k">Ctrl+F4</span><span class="d">open the Storage Analyzer tab as administrator</span></div>
 <div class="kbd-row"><span class="k">F8 / Ctrl+`</span><span class="d">open a PowerShell tab in this folder</span></div>
 <div class="kbd-row"><span class="k">Shift+F8</span><span class="d">open a CMD tab in this folder</span></div>
 <div class="kbd-row"><span class="k">Ctrl+F8 / Ctrl+Alt+`</span><span class="d">open PowerShell as administrator</span></div>
@@ -436,7 +439,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
   var KB_MAP = {
     base: {
       F1:["help","Help","show the shortcuts card"],
-      F4:["nav","Address","edit the location - type a path and press Enter"],
+      F4:["tabs","Storage","open the Storage Analyzer tab"],
       F5:["view","Refresh","refresh - re-list the folder, re-run the search, or reload a registry key"],
       F8:["tabs","Shell","open a PowerShell tab in this folder"],
       F9:["tabs","Task Mgr","open the Processes/Services tab"],
@@ -448,7 +451,11 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
       F12:["help","About","show the about card"],
       Enter:["search","Run","run the search"],
       Esc:["edit","Esc","close popups, stop the search, then offer to quit"],
-      Back:["nav","Back","go back"]
+      Back:["nav","Back","go back"],
+      D:["view","Depth","cycle treemap depth (Storage Analyzer)"],
+      M:["view","Min size","cycle the minimum size shown (Storage Analyzer)"],
+      C:["view","Color","switch coloring by type or folder (Storage Analyzer)"],
+      Home:["nav","Scan root","back to the scan root (Storage Analyzer)"]
     },
     ctrl: {
       N:["tabs","New win","open a new window"],
@@ -472,8 +479,10 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
       D5:["tabs","Tab 5","jump to tab 5"], D6:["tabs","Tab 6","jump to tab 6"],
       D7:["tabs","Tab 7","jump to tab 7"], D8:["tabs","Tab 8","jump to tab 8"],
       D9:["tabs","Tab 9","jump to tab 9 (9 = last)"],
+      F4:["tabs","Storage admin","open the Storage Analyzer tab as administrator"],
       F8:["tabs","Shell admin","open PowerShell as administrator"],
       F9:["tabs","Task Mgr admin","open the Processes/Services tab as administrator"],
+      Enter:["search","Scan","start the scan (Storage Analyzer)"],
       Grave:["tabs","Shell","open a PowerShell tab in this folder"],
       F10:["view","Menu bar","hide or show the pane menubar"],
       F12:["tabs","Event Viewer","open the Event Viewer tab (always elevated)"],

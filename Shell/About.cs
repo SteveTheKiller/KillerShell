@@ -32,7 +32,7 @@ namespace KillerShell.Shell
 
         // The certificate subject is the legal name ("Open Source Developer Stephen Riley"),
         // so the About card ties it back to the name people know. Gated on the subject actually
-        // being Steve's: a fork signed by somebody else must not claim the alias, and an
+        // matching that name: a fork signed by somebody else must not claim the alias, and an
         // unsigned build has no subject at all.
         private const string SignerName = "Stephen Riley";
         private const string AkaName    = "Steve the Killer";
@@ -72,7 +72,7 @@ namespace KillerShell.Shell
             // --demo previews the signed card (DemoMode.cs), using the real cert values.
             if (DemoMode) { sigValid = true; subject = DemoSubject; thumb = DemoThumbprint; }
             AboutPublisherBlock.Text  = sigValid ? subject : "(not signed or chain failed)";
-            // Shown only when the exe is signed by Steve AND the signature actually verifies -
+            // Shown only when the exe carries the expected signer AND the signature actually verifies -
             // reading a cert out of the file does not prove the file was not tampered with.
             bool signedByMe = sigValid && subject.IndexOf(SignerName, StringComparison.OrdinalIgnoreCase) >= 0;
             // Only the quoted alias goes in the run - the "AKA " prefix and the thekiller.net
@@ -295,7 +295,7 @@ namespace KillerShell.Shell
 
         // WinVerifyTrust P/Invoke. Reading the certificate out of the file only proves a cert is
         // embedded; it does not prove the signature validates. WinVerifyTrust does the full chain
-        // check, so a tampered or badly signed exe cannot show Steve's name or claim the AKA alias.
+        // check, so a tampered or badly signed exe cannot show the signer's name or claim the AKA alias.
         [StructLayout(LayoutKind.Sequential)]
         private struct WINTRUST_FILE_INFO
         {

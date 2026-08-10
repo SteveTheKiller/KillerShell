@@ -7,7 +7,7 @@ namespace KillerShell.Shell
     /// <summary>
     /// Where every rail flyout opens: the BOTTOM-LEFT CORNER OF THE CONTENT PANE.
     /// (From KillerPDF's Controls/FlyoutPlacement.cs - the family flyout standard, copied
-    /// verbatim, Steve 2026-08-02: "COPY THE EXACT MENU FROM KILLERPDF FOR EVERYTHING.")
+    /// verbatim, 2026-08-02.)
     ///
     /// That corner is the answer because of what bounds it, and all three matter:
     ///   - it is INSIDE the window, so a flyout never hangs over the desktop;
@@ -28,7 +28,7 @@ namespace KillerShell.Shell
     /// Button.ContextMenu, never a Popup - opened correctly the whole time with the exact same
     /// Attach/BottomLeftOfPane code below. The Popup path was the difference, not the math.
     /// Rather than keep patching a Popup's placement timing, ThemeFlyout was rebuilt as a
-    /// Button.ContextMenu exactly like LangMenu (Steve, 2026-08-02) - so both flyouts now go
+    /// Button.ContextMenu exactly like LangMenu (2026-08-02) - so both flyouts now go
     /// through the identical, already-proven-correct code path. The Popup overload below stays
     /// only because KillerPDF's own FlyoutPlacement.cs keeps it for any future Popup-based
     /// caller; nothing in KillerShell uses it anymore.

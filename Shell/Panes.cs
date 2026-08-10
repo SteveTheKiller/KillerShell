@@ -55,7 +55,7 @@ namespace KillerShell.Shell
         /// <summary>
         /// A stable per-pane settings-key suffix, for state that used to be one shared instance
         /// and is now one per pane (FilePane.ViewState - zoom, density, column widths) but still
-        /// has to persist across restarts (Steve, 2026-08-03, "each pane should remember size").
+        /// has to persist across restarts (2026-08-03).
         /// LeftPane always exists; RightPane does too (DualPane only shows/hides it, never
         /// creates or destroys it), so both keys are valid to read/write whether or not the
         /// second pane is currently open.
@@ -72,7 +72,7 @@ namespace KillerShell.Shell
         /// neither one is left sitting on whatever its XAML happened to default to. Those write
         /// through `Pane`, so on their own they only ever reached the focused pane.
         ///
-        /// The results view mode itself is NOT window-wide any more (Steve, 2026-08-03) - each
+        /// The results view mode itself is NOT window-wide any more (2026-08-03) - each
         /// pane keeps its own (FilePane.ViewMode) and changing it now only touches the pane you
         /// changed it in. ApplyResultsView still runs through here because the FIRST time a pane
         /// becomes live its template/panel have never been set up at all.

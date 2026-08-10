@@ -27,7 +27,7 @@ namespace KillerShell
         /// semi-transparent, which is what the twelve ordinary themes use - the glyphs read
         /// through it. 98SE's selection is a SOLID Win98 block (TextSelectionOpacity 1.0), so the
         /// fill covered the glyphs completely and a selected address bar came up as a plain navy
-        /// rectangle with nothing legible in it (Steve, 2026-08-08).
+        /// rectangle with nothing legible in it (2026-08-08).
         ///
         /// The non-adorner renderer draws the fill BEHIND the run and honours SelectionTextBrush,
         /// so TextSelectionTextBrush (#ffffff on 98SE) actually reaches the glyphs.
@@ -202,7 +202,7 @@ namespace KillerShell
             // otherwise only ever runs from RegisterAssociations (Associations.cs), so anyone who
             // registered under an older build and never opens the Associations card again would
             // keep serving a stale, rebranded-away icon for every text file defaulted to
-            // KillerShell forever (Steve, 2026-08-03 - exactly this bug). Cheap: EnsureFileIcon
+            // KillerShell forever (2026-08-03 - exactly this bug). Cheap: EnsureFileIcon
             // already no-ops once the on-disk file matches the embedded one, so this is one file
             // read most launches. Gated on AssociationsRegistered so a portable copy nobody has
             // opted into associations for still gets no write here - "never registers anything on

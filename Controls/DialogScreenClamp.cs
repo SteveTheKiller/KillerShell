@@ -6,9 +6,9 @@ using System.Windows.Media;
 
 namespace KillerShell
 {
-    // Shared by ProcessDetailsDialog, ServiceDetailsDialog and EventDetailsDialog (Steve: "we
-    // also need maximums so the window doesn't open larger than the window the user is on",
-    // meaning the MONITOR the user is on, not another app window). Each of those dialogs already
+    // Shared by ProcessDetailsDialog, ServiceDetailsDialog and EventDetailsDialog: these dialogs
+    // need maximums so they never open larger than the MONITOR the user is on (the monitor, not
+    // another app window). Each of those dialogs already
     // carries a fixed MaxHeight in its own XAML, but a fixed pixel value can still exceed a
     // small/laptop screen's actual work area - one helper here so the clamp logic is not tripled
     // across three files with three chances to drift.

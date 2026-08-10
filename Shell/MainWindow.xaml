@@ -30,7 +30,7 @@
          root rather than sitting inside it, so the frame is genuinely the window's edge. -->
     <!-- No Padding on this Border. The bevels below are its children, so a padding here pushed
          them INSIDE the frame and the raised edge drew 5px in from the window instead of on it -
-         which is the odd border that kept showing up (Steve, 2026-08-08). The frame face fills
+         which is the odd border that kept showing up. The frame face fills
          the whole window, the bevels sit on its true edge, and the CONTENT is inset instead, by
          WindowFramePadding on RootGrid below. -->
     <Border x:Name="WindowFrame" Background="{DynamicResource WindowFrameBrush}"
@@ -42,8 +42,8 @@
                  face - so every transparent surface in the client area (the tab band, the
                  bookmarks drawer, the rail gutter) showed the gradient instead of the flat
                  #c0c0c0, each at a slightly different gray depending on where it sat. That is
-                 exactly "how is the sidebar a different gray than the details pane?" (Steve,
-                 2026-08-09): the sidebar was gradient, the details strip was painted PaneBrush.
+                 exactly why the sidebar came out a different gray than the details pane:
+                 the sidebar was gradient, the details strip was painted PaneBrush.
                  This Border repaints the flat window color over everything INSIDE the frame, so
                  the gradient survives only on the frame face itself. On the other twelve themes
                  WindowFramePadding is 0 and this paints BackgroundBrush at exactly the window's
@@ -52,7 +52,7 @@
             <Border Margin="{DynamicResource WindowFramePadding}" Background="{DynamicResource BackgroundBrush}"/>
             <!-- Named so Elevation.cs can repaint the OUTERMOST ring in the accent on an admin
                  window: on 98SE the elevation signal is the window's own edge line, not an
-                 overlay ring inside the client (Steve, 2026-08-09). -->
+                 overlay ring inside the client. -->
             <Border x:Name="FrameOuterLightBd" BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
             <Border x:Name="FrameOuterDarkBd"  BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
             <Border x:Name="FrameInnerLightBd" Margin="{DynamicResource FrameInnerMargin}"
@@ -67,7 +67,7 @@
                  caption Grid inside it is TitleBarHeight - 22 on 98SE - and a child with an
                  explicit Height CENTERS in its row, so 7px of bare frame grey landed above the
                  caption and another 7 below it. That is the "bar above the titlebar" and the
-                 matching one under it (Steve, 2026-08-08); trimming WindowFramePadding could
+                 matching one under it; trimming WindowFramePadding could
                  never reach it, because the gap was inside the row rather than outside it.
                  A RowDefinition takes a GridLength, which is why this is code and not a
                  DynamicResource on a Double. -->
@@ -75,7 +75,7 @@
             <RowDefinition Height="*"/>    <!-- 1: main content -->
             <!-- FooterHeight, applied in Chrome.cs SyncTitleBarMetrics beside TitleRow. This was
                  the only chrome height in the app still hardcoded, which is why the footer's
-                 sunken cell could not grow to fit its own text on 98SE (Steve, 2026-08-09). -->
+                 sunken cell could not grow to fit its own text on 98SE. -->
             <RowDefinition x:Name="FooterRow" Height="24"/>   <!-- 2: footer -->
         </Grid.RowDefinitions>
 
@@ -111,8 +111,8 @@
                      every other theme it is the other way round (ThemeManager sets both). -->
                 <!-- Wheel-zoomable like the wordmark: on a flat theme the wordmark is COLLAPSED,
                      so this plain title is the only thing in the caption to roll the wheel over
-                     - without these the app zoom was simply unreachable on 98SE (Steve,
-                     2026-08-09). Opting into chrome hit-testing takes it out of the native
+                     - without these the app zoom was simply unreachable on 98SE.
+                     Opting into chrome hit-testing takes it out of the native
                      caption, so drag and double-click-maximize come back via the LogoBar
                      handlers, exactly as the wordmark does it. -->
                 <TextBlock x:Name="PlainTitle" Text="KillerShell" VerticalAlignment="Center"
@@ -195,7 +195,7 @@
             <!-- ClipToBounds: when the tree is COLLAPSED its column goes to zero width, but the
                  sunken well inside still measures its 2px of bevel and paints it outside the
                  column - and the inner ring of that well is PaneBevelDark2Brush, which is #000000
-                 on 98SE. That is the black vertical line Steve kept reporting immediately to the
+                 on 98SE. That is the black vertical line that kept showing immediately to the
                  left of the address bar (2026-08-09): it is the collapsed sidebar's well, not
                  anything belonging to the pane, which is why every change made inside the pane
                  left it exactly where it was. Clipping the panel to its own width stops a
@@ -213,7 +213,7 @@
                      that key is a flat colour. On Sepulchre, Decay, Delirium, Ectoplasm and
                      Malaise it is a full-window LinearGradientBrush, so each 30px strip re-ramped
                      the entire window gradient and showed up as a coloured band across the
-                     sidebar (Steve, 2026-08-08). Stop alphas and offsets are driven from
+                     sidebar. Stop alphas and offsets are driven from
                      TreePanel.cs SyncTreeEdgeFades. -->
                 <!-- SidebarPaneBrush is Transparent on every ordinary theme, so the tree keeps
                      showing the window through it; on 98SE it is the sunken white list well, with
@@ -224,7 +224,7 @@
                         <!-- SUNKEN, so the brushes are CROSSED against the thicknesses: the dark
                              #808080 takes the TOP-LEFT thickness and the white takes the
                              bottom-right. Paired the obvious way round it comes out raised, which
-                             is what the sidebar well was doing (Steve, 2026-08-08). -->
+                             is what the sidebar well was doing. -->
                         <Border BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
                         <Border BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
                         <Border Margin="{DynamicResource PaneBevelInnerMargin}"
@@ -233,7 +233,7 @@
                                 BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
                 <!-- TreePanePadding, not the literal 4,6,2,6. That 6px top inset let the well's
                      own SidebarPaneBrush show above the first row as a white strip inside the
-                     sunken frame, and pushed the scrollbar down with it (Steve, 2026-08-09). A
+                     sunken frame, and pushed the scrollbar down with it. A
                      Win98 list well is filled edge to edge, so the flat theme zeroes the top,
                      bottom and right; every other theme keeps the literal it had. -->
                 <Border x:Name="TreeFadeHost" Background="Transparent" Padding="{DynamicResource TreePanePadding}">
@@ -305,7 +305,7 @@
                                     <!-- No pinned Foreground: it inherits from the TreeViewItem so
                                          FolderTreeItem's selected trigger can turn it white on a
                                          solid selection (98SE) - a local TextBrush here was what
-                                         kept selected rows black-on-navy (Steve, 2026-08-09). -->
+                                         kept selected rows black-on-navy. -->
                                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                                TextTrimming="CharacterEllipsis"
@@ -335,7 +335,7 @@
                      of opacity than the last, so a "smooth" linear fade still looks like it snaps
                      on. Eased with extra stops instead, and the band is taller (18->30, 22->34)
                      so the curve has room to read as a dissolve rather than a stripe.
-                     A first pass (Steve, 2026-08-03) still finished the ramp exactly AT the outer
+                     A first pass (2026-08-03) still finished the ramp exactly AT the outer
                      edge - full opacity landed on the very last pixel, which still reads as a
                      snap because there is no room left to perceive it arriving. Both now reach
                      their terminal value (fully solid for Bottom, fully clear for Top) with the
@@ -368,13 +368,34 @@
                                  ScrollViewer.CanContentScroll="False"
                                  VirtualizingPanel.IsVirtualizing="False"
                                  PreviewMouseWheel="BookmarksList_PreviewMouseWheel">
+                            <!-- Bare template, so the list's only vertical chrome IS its Padding.
+                                 The DEFAULT ListBox template wraps the ScrollViewer in a Border
+                                 with a hardcoded Padding="1", which no measurement in Bookmarks.cs
+                                 counts - BookmarksContentHeight/TryMeasureBookmarksContent both
+                                 add Padding.Top+Bottom (8) while the template really took 10, so
+                                 the content sat 2px taller than the drawer, the viewport sheared
+                                 the last row's rounded corners flat, and the wheel/scrollbar
+                                 suppression (same 8px math) hid any way to scroll them back into
+                                 view. Making the geometry agree at the source
+                                 beats teaching the measurements about a hidden template literal. -->
+                            <ListBox.Template>
+                                <ControlTemplate TargetType="ListBox">
+                                    <ScrollViewer Focusable="False"
+                                                  Padding="{TemplateBinding Padding}"
+                                                  HorizontalScrollBarVisibility="Disabled"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  CanContentScroll="False">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ListBox.Template>
                             <!-- Edge fades as an OpacityMask on the LIST ITSELF, the tree's own
                                  mechanism (TreeFadeHost): rows dissolve to TRANSPARENT and
                                  whatever is genuinely behind them shows through. They were two
                                  overlay Borders painted with BackgroundBrush, which is a
                                  full-window gradient on five themes - each strip re-ramped the
                                  entire gradient inside its own 18/22px and the list faded to the
-                                 WRONG color (Steve, 2026-08-09, second report). Stop alphas are
+                                 WRONG color. Stop alphas are
                                  driven from Bookmarks.cs SyncBookmarksEdgeFades. -->
                             <ListBox.OpacityMask>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -415,7 +436,7 @@
                                                         <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
                                                         <!-- SelectionFg, the colour that PAIRS with that fill. The label used to
                                                              be hardcoded to TextBrush, which is black on 98SE - black text on a
-                                                             navy selection bar (Steve, 2026-08-08). -->
+                                                             navy selection bar. -->
                                                         <Setter Property="TextElement.Foreground" Value="{DynamicResource SelectionFg}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
@@ -612,12 +633,12 @@
                          in the toolbar there were two of them, one per pane, doing the identical
                          thing, and either could be shed into the overflow chevron on a narrow
                          split. Accents while open, like the search and bookmarks toggles above.
-                         ClosePane/OpenPane (E89F/E8A0), the dedicated glyph pair Steve picked
+                         ClosePane/OpenPane (E89F/E8A0), the dedicated glyph pair picked for this
                          (2026-08-02) - the glyph itself is kept in sync from code (DualPane.cs
                          ApplyPaneLayout) on every open/close/orientation change, so E89F here is
                          only the closed starting glyph before the first toggle ever runs.
-                         Moved ABOVE the tool tabs (Steve, 2026-08-09: "admin tools should be
-                         together") - dual pane is a VIEW verb, so it rides with the view block
+                         Moved ABOVE the tool tabs so the admin tools sit together
+                         - dual pane is a VIEW verb, so it rides with the view block
                          and the four admin/tool tabs below sit as one contiguous group. -->
                     <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE89F;"
                             FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
@@ -653,11 +674,31 @@
                     <Button x:Name="PerformanceRailBtn" Style="{StaticResource RailButton}" Content="&#xE9D9;"
                             FontSize="12" Margin="0,0,0,10" Click="PerformanceRail_Click"
                             ToolTip="{DynamicResource Str_TT_Performance}"/>
+                    <!-- EDA2 (HardDrive) - already proven to render as the folder picker's drive
+                         glyph, and distinct from Processes' E8FD, Event Viewer's E81C and
+                         Performance's E9D9. Opens or focuses the Storage Analyzer tab - scan a
+                         folder or drive into a WizTree-style treemap (Shell/StorageTabs.cs,
+                         Shell/StorageAnalyzerControl.cs). Right-click offers the elevated scan,
+                         same open/admin pair as Processes above (F4 / Ctrl+F4). -->
+                    <Button x:Name="StorageRailBtn" Style="{StaticResource RailButton}" Content="&#xEDA2;"
+                            FontSize="12" Margin="0,0,0,10" Click="StorageRail_Click"
+                            ToolTip="{DynamicResource Str_TT_Storage}">
+                        <Button.ContextMenu>
+                            <ContextMenu Placement="Top">
+                                <MenuItem Header="{DynamicResource Str_Rail_StorageOpen}" Click="RailStorageOpen_Click" InputGestureText="F4">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_Rail_StorageAdmin}" Click="RailStorageAdmin_Click" InputGestureText="Ctrl+F4">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
                     <!-- E74C (OEM) - a four-pane window with a corner mark, which reads as the
                          registry's hive/key structure far better than a plain list did. Went
                          through E945 (rendered as a lightning bolt, not the intended
                          database-cylinder glyph), E713 (Settings gear, too generic) and E71D
-                         (List) before landing here (Steve, 2026-08-08). NOTE: RegistryEditorTabs.cs
+                         (List) before landing here (2026-08-08). NOTE: RegistryEditorTabs.cs
                          RegistryEditorGlyph still carries E71D for the TAB strip - the two used to
                          match deliberately, so change both or neither. Opens or focuses the
                          Registry Editor tab - a real
@@ -670,7 +711,7 @@
                             FontSize="12" Margin="0,0,0,10" Click="RegistryEditorRail_Click"
                             ToolTip="{DynamicResource Str_TT_RegistryEditor}"/>
                     <!-- E71D (List): the glyph Registry Editor used to carry, handed over when
-                         Registry moved to E74C (Steve, 2026-08-08). A list of log lines is what
+                         Registry moved to E74C (2026-08-08). A list of log lines is what
                          this tab actually is, and E81C (History) read as a clock, which is not
                          the same idea. Opens or focuses the Event Viewer tab - a filterable grid
                          over the Application/System/Security event logs (Shell/EventViewerTabs.cs,
@@ -705,9 +746,8 @@
                                 <!-- The raised bevel pair around the card is KillerNotes' exact
                                      treatment (its LangMenu template): two Borders at the card's
                                      own 6px margin, zero-thickness on every theme but 98SE, where
-                                     the flyout becomes a hard raised Win98 box (Steve, 2026-08-09:
-                                     "locale and theme flyout need the... beveled edge like in
-                                     killernotes"). -->
+                                     the flyout becomes a hard raised Win98 box - the locale and
+                                     theme flyouts carry the same beveled edge as KillerNotes'. -->
                                 <ContextMenu.Template>
                                     <ControlTemplate TargetType="ContextMenu">
                                         <Grid>
@@ -853,8 +893,8 @@
                                     <!-- Last four in KillerNotes' picker order: Malaise, Sepulchre,
                                          Delirium, Mourning. There is no logic to it, but the two
                                          apps listing the same thirteen themes in different orders
-                                         is worse than an arbitrary order shared by both (Steve,
-                                         2026-08-08). Note this is NOT the enum's order, which
+                                         is worse than an arbitrary order shared by both.
+                                         Note this is NOT the enum's order, which
                                          KillerNotes also keeps separate - the enum is persistence,
                                          this is presentation. -->
                                     <RadioButton x:Name="ThemeMalaiseRadio"
@@ -1210,7 +1250,7 @@
                 <!-- FocusVisualStyle nulled on both: a GridSplitter is focusable and KEEPS focus
                      after a drag, and WPF's stock focus visual is a dotted rectangle - which is
                      the full-height dashed line that sat between the panes after any resize
-                     (Steve, 2026-08-09, dual pane). Same fix the tab strip's ScrollViewer has. -->
+                     (dual pane). Same fix the tab strip's ScrollViewer has. -->
                 <GridSplitter x:Name="PaneSplitV" Grid.Column="1" Grid.Row="0" Width="6"
                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                               Background="Transparent" Cursor="SizeWE" Visibility="Collapsed"
@@ -1236,11 +1276,11 @@
              *LightThickness is "1,1,0,0" (top + left) and *DarkThickness is "0,0,1,1" (bottom +
              right). So a sunken control CROSSES them - Dark brush in the Light slot - and only a
              RAISED control pairs them up by name. Pairing by name here is what made the footer
-             stand proud four times running (Steve, 2026-08-08); the version cell below was already
+             stand proud four times running; the version cell below was already
              crossed, which is why one half of the footer looked right and the other did not. -->
         <!-- FooterPadding is a MARGIN, not a Padding: 98SE's value is 0,0,-2,0 and WPF throws
              outright on a negative Padding ("'0,0,-2,0' is not a valid value for property
-             'Padding'", Steve, 2026-08-08). The negative pulls the strip out past the frame's
+             'Padding'"). The negative pulls the strip out past the frame's
              inner bevel, which only a margin can do. -->
         <Border Grid.Row="2" Background="{DynamicResource BackgroundBrush}"
                 Margin="{DynamicResource FooterPadding}">
@@ -1252,9 +1292,7 @@
                is simply the gap. Bevelling the whole strip AND the version block put a box inside
                a box, which is what read as "weird". KillerNotes is the reference (its footer is
                the family's, ported from KillerScan) and it has no strip bevel at all: just the
-               cells. The status line gets its own cell below, the way it does there.
-               (Steve, 2026-08-08: "the footer still looks weird, look at the footer of
-               killernotes".) -->
+               cells. The status line gets its own cell below, the way it does there. -->
           <!-- Two columns: the status area takes what is left, the version block sizes to its
                content on the right. The portable badge is deliberately NOT a column - it stays
                a CENTERED overlay spanning both, which is where it has always sat. Giving it its
@@ -1291,8 +1329,8 @@
               <Border IsHitTestVisible="False" Panel.ZIndex="2"
                       BorderBrush="{DynamicResource FooterBevelLightBrush}" BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
             <!-- FooterCellPadding - the SAME key KillerNotes' status cell uses, because KillerNotes
-                 is the family reference and its footer is the one that looks right (Steve,
-                 2026-08-09: "YOU DID IT JUST FINE IN KILLERNOTES"). KillerShell was the odd one
+                 is the family reference and its footer is the one that looks
+                 right. KillerShell was the odd one
                  out, carrying a hardcoded 10.5,0,12,0 here while its version cell beside it
                  already used the token - which is why this cell alone never matched.
                  Do NOT invent a separate key for this. One was tried (FooterStatusPadding) on the
@@ -1310,9 +1348,8 @@
                      KillerScan gives its footer StatusText (MainWindow.xaml row 3). Hidden at
                      100%; a collapsed element takes no width or margin. -->
                 <!-- Column 2, the SAME slot as StatusText: while the readout shows, AppScale.cs
-                     collapses the status line so this takes its place - the traffic dot stays
-                     put in the corner (Steve, 2026-08-09: "it should replace the Ready but keep
-                     the green traffic light in the corner at all times"). -->
+                     collapses the status line so this takes its place - it replaces the Ready
+                     text, while the green traffic dot stays put in the corner at all times. -->
                 <TextBlock x:Name="AppScaleLabel" Grid.Column="2" Visibility="Collapsed" Foreground="{DynamicResource ChromeTextBrush}"
                            FontFamily="{DynamicResource MonoFont}" FontSize="11.5" VerticalAlignment="Center"
                            ToolTip="{DynamicResource Str_TT_AppSize}"/>
@@ -1320,7 +1357,7 @@
                      resting state is green, not the accent - see MainWindow.xaml.cs. -->
                 <!-- Height pinned. With none it defaults to Stretch and grew to the full cell
                      interior, which pinned the row's minimum height and stopped the cell ever
-                     shrinking to fit its own text (Steve, 2026-08-09). -->
+                     shrinking to fit its own text. -->
                 <Border x:Name="StatusDot" Grid.Column="1" Width="3" Height="12" Background="{DynamicResource OkBrush}" Margin="0,3,7,3" CornerRadius="2"/>
                 <!-- The running commentary: "Ready", "Opening C:\...", "164 item(s)", "Cannot
                      open X". No MaxWidth - the * column IS the bound, so the line uses whatever
@@ -1353,8 +1390,8 @@
             <!-- On 98SE a status bar is a row of sunken CELLS rather than plain text on a strip,
                  so the version block gets a margin and padding of its own there. Both are 0
                  elsewhere, leaving the existing 0,0,16,0 to position it as before. -->
-            <!-- STRETCH, not Center. This is the copyright/version cell bug Steve reported over and
-                 over (2026-08-09): a vertically CENTERED StackPanel collapses to its content's
+            <!-- STRETCH, not Center. This is the recurring copyright/version cell
+                 bug (2026-08-09): a vertically CENTERED StackPanel collapses to its content's
                  height, so the sunken cell Grid inside it was only as tall as the text and could
                  never match the status cell beside it, which sits directly in its column and
                  stretches. No amount of tuning FooterCellMargin, FooterCellPadding or the row
@@ -1364,11 +1401,11 @@
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0,0,16,0">
                 <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
                      bottom and right. Only the dark half was here, which drew half a box round
-                     the version text (Steve, 2026-08-08). Both are zero-thickness elsewhere. -->
+                     the version text. Both are zero-thickness elsewhere. -->
                 <!-- SUNKEN, so the brushes are crossed against the thicknesses: the DARK brush
                      takes the top-left thickness and the LIGHT brush the bottom-right. Wired the
-                     obvious way round it comes out RAISED, which is what the footer was doing
-                     (Steve, 2026-08-08). A status cell is a recess, not a button. -->
+                     obvious way round it comes out RAISED, which is what the footer was
+                     doing. A status cell is a recess, not a button. -->
                 <Grid Margin="{DynamicResource FooterCellMargin}">
                     <Border BorderBrush="{DynamicResource FooterBevelDarkBrush}"  BorderThickness="{DynamicResource FooterCellLightThickness}"/>
                     <Border BorderBrush="{DynamicResource FooterBevelLightBrush}" BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
@@ -1402,7 +1439,7 @@
             </Canvas>
             <!-- The 98SE grip: three bevelled DIAGONAL lines, bottom-left to top-right, each a
                  white highlight with a grey shadow one pixel down-right of it - the standard Win98
-                 sizing gripper (Steve, 2026-08-08). Collapsed on every other theme, which keeps
+                 sizing gripper. Collapsed on every other theme, which keeps
                  the dots above.
 
                  Lines rather than a 3x3 of squares: at 13px the diagonals have to be true
@@ -1453,8 +1490,8 @@
                                 BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
 
                         <!-- Close X: ChromeCloseButton, the SAME style as the title bar's close, so
-                             every X in the app is the same X (the KillerNotes rule, Steve,
-                             2026-08-09). On 98SE that makes it a real bevelled caption button
+                             every X in the app is the same X (the KillerNotes
+                             rule). On 98SE that makes it a real bevelled caption button
                              that sinks on press; elsewhere it is the bare glyph with the red
                              hover fill the main window has. Size and margin come from the
                              AboutClose* tokens (ThemeManager): a small Win98 button inside the
@@ -1471,7 +1508,7 @@
                              card's overdrawn 2px bevel on 98SE (see the key's comment in the
                              theme); 0 everywhere else. The title is the same family, size, weight
                              and brush as the main window's plain caption ("About KillerShell",
-                             Steve, 2026-08-09 - matching KillerNotes' card). -->
+                             matching KillerNotes' card). -->
                         <Border VerticalAlignment="Top" ClipToBounds="True"
                                 Height="{DynamicResource AboutCaptionHeight}"
                                 Margin="{DynamicResource AboutCaptionMargin}"
@@ -1482,8 +1519,7 @@
                         </Border>
                         <!-- AboutContentMargin, no longer AboutCaptionMargin: same 0 default, but
                              98SE states extra TOP inset so the wordmark gets breathing room under
-                             the caption band (Steve, 2026-08-09: "a tiny bit of padding... above
-                             the wordmark, below the titlebar"). -->
+                             the caption band. -->
                         <StackPanel Margin="{DynamicResource AboutContentMargin}">
                         <StackPanel Margin="18,10,18,18">
                             <!-- Header: icon left, wordmark (links to the site) + tagline right.
@@ -1507,8 +1543,7 @@
                                         <!-- The 98SE emboss: a hard WHITE copy 1px UP-LEFT, no
                                              blur - light catching the top-left edges of a RAISED
                                              glyph. Down-right was tried first and read as sunken
-                                             (Steve, 2026-08-09: "its the wrong way... it looks
-                                             sunken instead of raised"). AboutEmbossOpacity is 0
+                                             instead of raised. AboutEmbossOpacity is 0
                                              everywhere but 98SE. -->
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" IsHitTestVisible="False"
                                                    Opacity="{DynamicResource AboutEmbossOpacity}"><TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform><Run Text="Killer" FontSize="22" Foreground="#FFFFFF"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#FFFFFF"/></TextBlock>
@@ -1574,8 +1609,8 @@
 
                             <!-- This used to be a bespoke Button+ControlTemplate that tried to hand its
                                  own Foreground down through TextElement.Foreground inheritance/a
-                                 DataTrigger, and kept rendering with illegible text (Steve, 2026-08-03,
-                                 the 10th report of the same black-on-accent bug). The shared
+                                 DataTrigger, and kept rendering with illegible text (2026-08-03,
+                                 the recurring black-on-accent bug). The shared
                                  OutlineButton style (Controls/Controls.xaml) already solves exactly
                                  this - outline at rest, fills with the accent on hover, and a
                                  TextStroke effect on the ContentPresenter so the label stays legible
@@ -1835,16 +1870,15 @@
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <!-- Raised card bevel, the same EDGE_RAISED pair the About card carries. Nothing
                      on any theme but 98SE, where the shortcuts card becomes a hard Win98 dialog
-                     box instead of a flat sheet (Steve, 2026-08-09: "i feel like the shortcuts
-                     window should be themed too"). -->
+                     box instead of a flat sheet - the shortcuts window is themed like the
+                     rest. -->
                 <Border IsHitTestVisible="False" Panel.ZIndex="6"
                         BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
                 <Border IsHitTestVisible="False" Panel.ZIndex="6"
                         BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
                 <!-- Caption band + shared close X, the About card's exact treatment: band and
                      title only exist on a flat theme (height 0 / transparent elsewhere), the X is
-                     ChromeCloseButton everywhere so every X in the app is the same X (Steve,
-                     2026-08-09: "shortcuts window not themed yet"). -->
+                     ChromeCloseButton everywhere so every X in the app is the same X. -->
                 <Border VerticalAlignment="Top" ClipToBounds="True"
                         Height="{DynamicResource AboutCaptionHeight}"
                         Margin="{DynamicResource AboutCaptionMargin}"
@@ -1967,7 +2001,7 @@
              the cheaper of the two errors, and the one nobody notices. -->
         <!-- The admin ring. Radius follows the window, so on 98SE it squares off with everything
              else instead of curving inside a hard rectangular frame - which read as a stray
-             rounded outline round the admin window (Steve, 2026-08-08). -->
+             rounded outline round the admin window. -->
         <Border x:Name="ElevationHalo" Grid.RowSpan="3" Panel.ZIndex="100"
                 CornerRadius="{DynamicResource WindowCornerRadius}"
                 Visibility="Collapsed" IsHitTestVisible="False" BorderThickness="2">

@@ -298,6 +298,10 @@ namespace KillerShell.Shell
             {
                 OpenPerformanceMonitor();   // PerformanceTabs.cs - singleton; fine even as an extra tab
             }
+            else if (tok.Exists(a => string.Equals(a, "--storage", StringComparison.OrdinalIgnoreCase)))
+            {
+                OpenStorageAnalyzer();   // StorageTabs.cs - singleton; fine even as an extra tab
+            }
             else if (tok.Exists(a => string.Equals(a, "--registry", StringComparison.OrdinalIgnoreCase)))
             {
                 // Only ever arrives here already elevated: RelaunchElevatedRegistryEditor only

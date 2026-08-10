@@ -47,7 +47,7 @@ namespace KillerShell.Shell
         private void ApplyPaneBars(SearchTab t)
         {
             bool listing = !t.IsTerminal && !t.IsEditor && !t.IsProcessList && !t.IsEventViewer
-                        && !t.IsPerformanceMonitor && !t.IsRegistryEditor;
+                        && !t.IsPerformanceMonitor && !t.IsRegistryEditor && !t.IsStorageAnalyzer;
             SetLocationRow(Pane, hidden: !listing || Pane.MenuBarHidden, animate: false);
         }
     }

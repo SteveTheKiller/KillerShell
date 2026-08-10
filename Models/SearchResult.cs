@@ -74,7 +74,7 @@ namespace KillerShell.Models
         /// removed-and-replaced (BrowseWatcher.ApplyWatchChanges). Keeping the object identity is
         /// the point: it is what selection and the details-pane preview are keyed on, and a
         /// remove-then-add briefly let a recycled virtualized row show another item's already-
-        /// decoded thumbnail (Steve, 2026-08-03: "i rename the file and the thumbnail changes").
+        /// decoded thumbnail after a rename (2026-08-03).
         /// </summary>
         public void ApplyRename(string newPath, string newName)
         {

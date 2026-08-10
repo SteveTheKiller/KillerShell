@@ -97,6 +97,16 @@ namespace KillerShell.Models
         /// see Shell/RegistryEditorTabs.cs.</summary>
         public bool IsRegistryEditor => Registry != null;
 
+        // ── Storage Analyzer (Shell/StorageAnalyzerControl.cs) ──────────
+        // Same "own host, own control" reasoning as the tool tabs above: the control holds
+        // the whole scanned tree - a full drive walk - and rebuilding it on a tab switch
+        // would throw the entire scan away. Internal, not public: StorageAnalyzerControl is
+        // internal, and this model is public.
+        internal KillerShell.Shell.StorageAnalyzerControl? Storage;
+
+        /// <summary>True when this tab is the Storage Analyzer rather than any other kind.</summary>
+        public bool IsStorageAnalyzer => Storage != null;
+
         // ── Browsing (Browse.cs) ─────────────────────────────────
         // A tab is either showing a folder's contents or a search's results, in the same
         // Results collection. IsBrowsing says which, so the sort can put folders first and the

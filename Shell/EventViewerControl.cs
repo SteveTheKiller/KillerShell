@@ -84,7 +84,7 @@ namespace KillerShell.Shell
 
             // ToolTabChrome: on 98SE the filter row rides the RAISED menu-bar tier and the grid
             // sits in a sunken white well, matching every other tab kind; both wrappers are
-            // inert on the ordinary themes (Steve, 2026-08-09).
+            // inert on the ordinary themes.
             var toolbar = ToolTabChrome.WrapBar(BuildToolbar(out _logBox, out _levelBox, out _filterBox));
             SetRow(toolbar, 0);
             Children.Add(toolbar);
@@ -98,8 +98,7 @@ namespace KillerShell.Shell
             _grid.ItemsSource = _view;
             // ToolGridMargin = the 8,0,8,8 the grid always had, except on 98SE, where it is 0: a
             // Win98 well is filled edge to edge, and the 8px gutters showed the well's white face
-            // as a border around the table AND around the outside of its scrollbars (Steve,
-            // 2026-08-09).
+            // as a border around the table AND around the outside of its scrollbars.
             _grid.SetResourceReference(FrameworkElement.MarginProperty, "ToolGridMargin");
             var gridHost = ToolTabChrome.WrapContent(_grid, "ToolContentBrush");
             SetRow(gridHost, 1);
@@ -267,7 +266,7 @@ namespace KillerShell.Shell
 
             // Right-click any column header for a show/hide checklist, persisted per grid
             // (Services/ColumnVisibilityMenu.cs) - the same shared menu the Processes tab uses.
-            // Task Category is hidden by default here (Steve, 2026-08-02): "All logs" already
+            // Task Category is hidden by default here (2026-08-02): "All logs" already
             // repeats the log-specific category vocabulary in Message, and Level/Log/Time/Source/
             // Event ID/Message cover what a first look at this tab actually needs.
             Services.ColumnVisibilityMenu.AttachTo(grid, "EventViewer",

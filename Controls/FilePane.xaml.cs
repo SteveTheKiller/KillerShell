@@ -31,8 +31,8 @@ namespace KillerShell
             PreviewMouseDown += (_, _) => Owner.FocusPane(this);
 
             // Every tile/row/card DataTemplate reaches ViewState through ResultsList.Tag rather
-            // than a RelativeSource walk up to this UserControl (Steve, 2026-08-03 - "icons
-            // aren't loading"). RelativeSource AncestorType=local:FilePane is what the first cut
+            // than a RelativeSource walk up to this UserControl, or the icons fail to load.
+            // RelativeSource AncestorType=local:FilePane is what the first cut
             // of the per-pane view-state change used, and it left every icon blank: the bindings
             // reaching DIRECT, non-templated descendants (DetailsHeader) resolved fine, but the
             // ones inside the ListBox's item templates - realized and recycled by the custom
@@ -64,17 +64,17 @@ namespace KillerShell
         // Tile/row icon size, density, and the details-view column widths used to be ONE
         // instance shared by both panes (ResultsViewState.Current) - zooming one pane zoomed
         // both, since there was only ever one object for every tile/row/column binding in
-        // FilePane.xaml to read (Steve, 2026-08-03). Each pane now owns its own, the same way it
+        // FilePane.xaml to read. Each pane now owns its own, the same way it
         // owns Tabs/Active above.
         public ResultsViewState ViewState { get; } = new();
 
         /// <summary>0 list, 1 icons, 2 details - which of the three result layouts this pane is
-        /// showing. Used to be one MainWindow field mirrored into both panes on every change
-        /// (Steve, 2026-08-03 - "i changed one pane into details list view and both panes
-        /// changed. they need to be independent too"); now each pane keeps its own, the same as
+        /// showing. Used to be one MainWindow field mirrored into both panes on every change,
+        /// so switching one pane's layout switched both; the panes need to be independent, so
+        /// now each pane keeps its own, the same as
         /// ViewState above. Defaults to 1 (icons) - a fresh install has no saved
         /// "ResultsView{L,R}" setting to restore, so this field's own default IS what a first
-        /// run shows (Steve, 2026-08-03: "can we make sure icon view is the default").</summary>
+        /// run shows, and icon view is the intended default.</summary>
         internal int ViewMode { get; set; } = 1;
 
         /// <summary>
@@ -108,8 +108,8 @@ namespace KillerShell
 
         // ── Per-pane details/preview strip open state ────────────
         // Used to be one MainWindow-wide bool/height mirrored into both panes on every open,
-        // close and drag (Steve, 2026-08-03 - "same with the details pane, i click one and they
-        // both change but they should be independent"). The strip's CONTENT already read this
+        // close and drag, so toggling one pane's strip toggled both when they should be
+        // independent. The strip's CONTENT already read this
         // pane's own selection; only whether it was open, how tall, and whether the user had
         // ever dragged it were still shared. Same fix shape as ViewMode/ViewState above: each
         // pane now opens, closes and remembers its own height on its own.
@@ -200,7 +200,7 @@ namespace KillerShell
         /// Recompute the pane clip after a THEME change. The clip is only rebuilt on SizeChanged,
         /// and a theme switch does not resize anything, so without this the pane keeps the previous
         /// theme's corner radius until the window is dragged - which is how a flat theme could come
-        /// up with rounded corners (Steve, 2026-08-09). Called from MainWindow's ThemeChanged.
+        /// up with rounded corners. Called from MainWindow's ThemeChanged.
         /// `e` is unused by the handler, so passing null is safe.
         /// </summary>
         internal void RefreshPaneClip() => PaneContent_SizeChanged(PaneContent, null!);
@@ -211,8 +211,8 @@ namespace KillerShell
             // PER-CORNER now, mirroring ResultsPane.CornerRadius - which Tabs.cs squares on the
             // top corner under a first/last ACTIVE tab. The old uniform RectangleGeometry kept
             // clipping the bar's top-right ROUND while the pane's own border squared, which left
-            // "a tiny rounded bit of the menubar below the tab" whenever the rightmost tab was
-            // the active one (Steve, 2026-08-09). Tabs.cs calls RefreshPaneClip whenever it
+            // a tiny rounded bit of the menubar visible below the tab whenever the rightmost tab
+            // was the active one. Tabs.cs calls RefreshPaneClip whenever it
             // re-syncs the corners, so the clip can never lag them. (This also still covers the
             // 98SE case: its CornerRadius is 0 everywhere, so the geometry is a plain rect.)
             var cr = ResultsPane.CornerRadius;

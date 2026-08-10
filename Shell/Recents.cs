@@ -73,24 +73,68 @@ namespace KillerShell.Shell
             }
             else
             {
+                int rows = live.Count;   // live folder rows still in the menu, for the last-X close
+
                 foreach (string p in live)
                 {
                     string path = p;   // captured per row, not per loop
 
                     // Name on the row, full path underneath as the tooltip. Fifteen full paths
                     // makes a menu as wide as the window and all of them start "C:\Users\...".
-                    var item = new MenuItem
+                    // The header is a Grid rather than a string so a remove-X can right-align
+                    // on the row - name in the star column, X in the Auto.
+                    var name = new TextBlock
                     {
-                        Header  = System.IO.Path.GetFileName(path.TrimEnd('\\')) is { Length: > 0 } n
-                                ? n : path,
-                        ToolTip = path,
+                        Text = System.IO.Path.GetFileName(path.TrimEnd('\\')) is { Length: > 0 } n
+                             ? n : path,
+                        VerticalAlignment = VerticalAlignment.Center,
                     };
+                    var head = new Grid();
+                    head.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                    head.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                    Grid.SetColumn(name, 0);
+                    head.Children.Add(name);
+
+                    var item = new MenuItem { Header = head, ToolTip = path };
+
+                    // The term/filter chips' exact X language: DangerButton, lowercase x, the
+                    // GLYPH reddens on hover - never a filled block. Drops just this entry.
+                    // Its Click never reaches the MenuItem (the Button captures the mouse), so
+                    // the menu stays open for removing several in a row.
+                    var remove = new Button
+                    {
+                        Content = "x", Width = 18, Height = 18,
+                        Padding = new Thickness(0), Margin = new Thickness(10, 0, 0, 0),
+                        Style = (Style)FindResource("DangerButton"),
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    remove.Click += (_, re) =>
+                    {
+                        re.Handled = true;
+                        _recents.RemoveAll(q => string.Equals(q, path, StringComparison.OrdinalIgnoreCase));
+                        Services.ThemeManager.SetSetting(SetRecents,
+                            string.Join(BookmarkSep.ToString(), _recents));
+                        menu.Items.Remove(item);
+                        // Removing the last folder row leaves only the separator and Clear -
+                        // close instead; the next open shows the empty row.
+                        if (--rows == 0) menu.IsOpen = false;
+                    };
+                    Grid.SetColumn(remove, 1);
+                    head.Children.Add(remove);
+
                     // 20, matching the tab strip. The brand icons carry a drop shadow inside their
                     // own box, so a 16px slot left the visible folder noticeably smaller than the
-                    // menu text beside it (Steve, 2026-08-08).
+                    // menu text beside it (2026-08-08). The -2 side margins are what make
+                    // 20 survive the shared MenuItem template's FIXED 16px icon gutter: they take
+                    // the Image's DESIRED width down to 16 so it fits the column, while the
+                    // arrange still draws the full 20 centered on the slot - without them the
+                    // layout clip sheared 4px off the icon's edge (2026-08-09). The spill
+                    // lands in the row's own 8px left padding and the header's 6px gap, so
+                    // nothing else moves.
                     var icon = new Image
                     {
                         Width = 20, Height = 20,
+                        Margin = new Thickness(-2, 0, -2, 0),
                         Source = Services.IconCache.For(path, 20, isDirectory: true),
                     };
                     item.Icon = icon;

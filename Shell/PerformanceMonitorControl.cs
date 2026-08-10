@@ -14,15 +14,18 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-// The control behind a Performance Monitor tab: a master/detail layout modeled on Windows' own
-// Task Manager Performance page (that is the explicit reference this was built against), redone
-// in KillerShell's own retro-terminal language - PaneBrush cards, MonoFont readouts, the app's
-// own SelectionBg/SelectionFg accent for "this tile is selected" - rather than a Fluent clone.
+// The control behind a Performance Monitor tab: a scrolling TWO-COLUMN GRID of full-size cells,
+// one per monitored item - CPU, RAM, one per PHYSICAL disk, one per network adapter, one per
+// GPU - each enumerated from the machine rather than assumed to be exactly one, in KillerShell's
+// own retro-terminal language: MonitorCellBrush cards, MonoFont readouts. Every cell carries its
+// own big live graph(s) and numeric fields, all live at once - no master/detail, no selection
+// (a grid of full-size cells with the graph and info inside each, replacing the old
+// Task-Manager-style tile list + detail panel).
 //
-// Left: a narrow scrolling column of small TILES, one per monitored item - CPU, RAM, one per
-// PHYSICAL disk, one per network adapter, one per GPU - each enumerated from the machine rather
-// than assumed to be exactly one. Right: a detail panel for whichever tile is selected, with one
-// or more big live graphs and a grid of numeric fields underneath.
+// The grid is the user's to arrange: each cell is 1 or 2 columns wide (the header's width toggle),
+// and dragging a cell's header reorders the cells live. Order and widths persist app-wide in ONE
+// setting ("PerfLayout" - "id:span|id:span|...", ids stable per metric, see CellId) so the layout
+// survives restarts and unknown/new hardware simply appends in natural order.
 //
 // Same "own host, own control, MOVED not rebuilt between activations" rule ProcessListControl and
 // EventViewerControl already carry (Shell/ProcessTabs.cs / Shell/EventViewerTabs.cs): a
@@ -57,17 +60,20 @@ namespace KillerShell.Shell
         private readonly TextBlock _statusLine;
         private readonly DispatcherTimer _statusClearTimer;
 
-        // ── Master/detail state ──────────────────────────────────
-        private StackPanel _tileListPanel = null!;
-        private TextBlock _detailTitle = null!;
-        private TextBlock _detailDescription = null!;
-        private StackPanel _graphsHost = null!;
-        private WrapPanel _fieldsHost = null!;
-        private TextBlock[]? _fieldValueBlocks;
+        // ── Cell-grid state ──────────────────────────────────────
+        private Grid _cellsGrid = null!;
 
+        // _tiles is the DISPLAY ORDER (drag-to-reorder rearranges it); _gpuTiles keeps its
+        // BUILD order forever - SampleGpus pairs sorted LUIDs against it by index, so letting a
+        // drag reorder it would relabel one adapter's activity as another's.
         private readonly List<MetricTile> _tiles = [];
         private readonly List<MetricTile> _gpuTiles = [];
-        private MetricTile? _selectedTile;
+
+        // Drag-to-reorder state: the cell whose header is held, where the press started (grid
+        // space), and whether the press has travelled far enough to count as a drag.
+        private MetricTile? _dragTile;
+        private Point _dragStart;
+        private bool _dragActive;
 
         private bool _countersAvailable;
 
@@ -109,16 +115,16 @@ namespace KillerShell.Shell
             // the tab floats down into this surface and the two read as one. The cards and tiles
             // on top of it take the menu tier, exactly as the file listing and the terminal do -
             // one rule for every tab: the tab's own surface is PaneBrush, its content is
-            // MenuBackgroundBrush (Steve, 2026-08-08).
+            // MenuBackgroundBrush.
             this.SetResourceReference(Grid.BackgroundProperty, "PaneBrush");
 
             var staticPanel = BuildStaticInfoPanel(out _staticInfoText);
             SetRow(staticPanel, 0);
             Children.Add(staticPanel);
 
-            var masterDetail = BuildMasterDetailPanel();
-            SetRow(masterDetail, 1);
-            Children.Add(masterDetail);
+            var cellsPanel = BuildCellsPanel();
+            SetRow(cellsPanel, 1);
+            Children.Add(cellsPanel);
 
             _statusLine = BuildStatusLine();
             SetRow(_statusLine, 2);
@@ -509,8 +515,7 @@ namespace KillerShell.Shell
             // that sits ON a MonitorCellBrush surface uses them. They mirror the plain text
             // brushes on every ordinary theme, but 98SE paints its cells BLACK (little CRT
             // readouts) while its TextBrush is black too - invisible. There they are the retro
-            // phosphor greens (Steve, 2026-08-09: "text color in the black squares... maybe a
-            // retro green would look cool").
+            // phosphor greens instead.
             text.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
             var panel = new Border
@@ -523,11 +528,11 @@ namespace KillerShell.Shell
             // PaneBrush, not BackgroundBrush: an info panel is CONTENT sitting on the tab's
             // chrome, so it takes the same pane color as a terminal or a file listing. On the
             // window tier it also inherited the full-window gradient on five of the themes and
-            // re-ramped it inside the panel (Steve, 2026-08-08).
+            // re-ramped it inside the panel.
             panel.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
             panel.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             // Monitor*Margin tokens: the literals the panel/scrollers/tiles always carried on
-            // every ordinary theme, collapsed to 2px seams on 98SE (Steve, 2026-08-09).
+            // every ordinary theme, collapsed to 2px seams on 98SE.
             panel.SetResourceReference(FrameworkElement.MarginProperty, "MonitorInfoMargin");
             return panel;
         }
@@ -545,87 +550,91 @@ namespace KillerShell.Shell
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  BUILD - master/detail shell
+        //  BUILD - the cell grid shell
         // ═══════════════════════════════════════════════════════════
-        private UIElement BuildMasterDetailPanel()
+        private UIElement BuildCellsPanel()
         {
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(210) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            _cellsGrid = new Grid();
+            _cellsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            _cellsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            _tileListPanel = new StackPanel();
-            var tileScroller = new ScrollViewer
+            var scroller = new ScrollViewer
             {
-                Content = _tileListPanel,
+                Content = _cellsGrid,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
             };
-            tileScroller.SetResourceReference(FrameworkElement.MarginProperty, "MonitorTileListMargin");
-            SetColumn(tileScroller, 0);
-
-            var detailScroller = new ScrollViewer
-            {
-                Content = BuildDetailPanel(),
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-            };
-            // MonitorDetailMargin, not the literal 4,0,8,8: the 8px right gutter is right on the
-            // rounded themes, but on 98SE the tab strip above runs to the window edge and the
-            // detail card stopped 8px short of it - the "right edge is off" gap (Steve,
-            // 2026-08-09). 98SE closes it to 2 so the card lines up with the tabs.
-            detailScroller.SetResourceReference(FrameworkElement.MarginProperty, "MonitorDetailMargin");
-            SetColumn(detailScroller, 1);
-
-            grid.Children.Add(tileScroller);
-            grid.Children.Add(detailScroller);
-            return grid;
+            // MonitorGridMargin: 2 a side so the cells' own 6px MonitorTileMargin lands their
+            // edges at 8, flush with the info panel above; 0 on 98SE so the cells run to the
+            // pane edge like every other well (the tab strip above runs to the window edge, and
+            // anything short of it reads as the right edge being off).
+            scroller.SetResourceReference(FrameworkElement.MarginProperty, "MonitorGridMargin");
+            return scroller;
         }
 
-        private UIElement BuildDetailPanel()
+        /// <summary>
+        /// Flows the cells into the two-column grid in _tiles order: a 1-wide cell takes the
+        /// next free half-row, a 2-wide cell takes a whole row (starting a fresh one if the
+        /// current row is half full). Rebuilds Grid.Row/Column/ColumnSpan only - the cell
+        /// elements themselves are built ONCE and keep their graph history across every
+        /// re-layout, which is the whole reason this tab survives reordering without wiping
+        /// a minute of samples.
+        /// </summary>
+        private void LayoutCells()
         {
-            _detailTitle = new TextBlock { FontSize = 16, FontWeight = FontWeights.Bold };
-            _detailTitle.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            _detailTitle.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+            _cellsGrid.Children.Clear();
+            _cellsGrid.RowDefinitions.Clear();
 
-            _detailDescription = new TextBlock
+            int row = 0, col = 0;
+            foreach (var tile in _tiles)
             {
-                FontSize = 11,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                TextWrapping = TextWrapping.Wrap,
-                MaxWidth = 320,
-                VerticalAlignment = VerticalAlignment.Bottom,
-            };
-            _detailDescription.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            _detailDescription.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
+                int span = tile.ColSpan;
+                if (span == 2 && col == 1) { row++; col = 0; }   // full-width starts its own row
+                if (col == 0) _cellsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            var header = new Grid();
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            SetColumn(_detailTitle, 0);
-            SetColumn(_detailDescription, 1);
-            header.Children.Add(_detailTitle);
-            header.Children.Add(_detailDescription);
+                SetRow(tile.CellBorder, row);
+                SetColumn(tile.CellBorder, col);
+                SetColumnSpan(tile.CellBorder, span);
+                _cellsGrid.Children.Add(tile.CellBorder);
 
-            _graphsHost = new StackPanel { Margin = new Thickness(0, 10, 0, 4) };
-            _fieldsHost = new WrapPanel { Margin = new Thickness(0, 10, 0, 0) };
-
-            var body = new StackPanel();
-            body.Children.Add(header);
-            body.Children.Add(_graphsHost);
-            body.Children.Add(_fieldsHost);
-
-            var card = new Border
-            {
-                Padding = new Thickness(14, 12, 14, 12),
-                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
-                BorderThickness = new Thickness(1),
-                Child = body,
-            };
-            // PaneBrush - see BuildStaticInfoPanel above; a card is content on the tab's chrome.
-            card.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
-            card.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
-            return card;
+                col += span;
+                if (col >= 2) { row++; col = 0; }
+            }
         }
+
+        // ── Layout persistence ───────────────────────────────────
+        // ONE setting, "id:span|id:span|..." in display order. Ids are stable per metric
+        // (CellId), so the layout survives restarts; hardware this machine grew since the
+        // setting was written simply appends in natural build order, and entries for hardware
+        // that went away are dropped on the next save.
+        private const string SetPerfLayout = "PerfLayout";
+
+        private void ApplySavedLayout()
+        {
+            string saved = Services.ThemeManager.GetSetting(SetPerfLayout) ?? string.Empty;
+            if (saved.Length == 0) return;
+
+            var order = new List<MetricTile>();
+            foreach (string entry in saved.Split(['|'], StringSplitOptions.RemoveEmptyEntries))
+            {
+                int colon = entry.LastIndexOf(':');
+                string id = colon > 0 ? entry[..colon] : entry;
+                var tile = _tiles.FirstOrDefault(t => t.Id == id);
+                if (tile == null || order.Contains(tile)) continue;
+
+                if (colon > 0 && int.TryParse(entry[(colon + 1)..], out int span))
+                    tile.ColSpan = span == 2 ? 2 : 1;
+                order.Add(tile);
+            }
+            foreach (var t in _tiles) if (!order.Contains(t)) order.Add(t);
+
+            _tiles.Clear();
+            _tiles.AddRange(order);
+        }
+
+        private void SaveLayout()
+            => Services.ThemeManager.SetSetting(SetPerfLayout,
+                   string.Join("|", _tiles.Select(t => t.Id + ":" + t.ColSpan)));
 
         private static TextBlock BuildGraphCaption(string key)
         {
@@ -691,12 +700,13 @@ namespace KillerShell.Shell
         private sealed class MetricTile
         {
             internal MetricKind Kind;
+            internal string Id = "";           // stable per metric ("cpu", "disk0", ...) - the layout setting's key
+            internal int ColSpan = 1;          // 1 = half row, 2 = full row; the header toggle flips it
             internal string Label = "";
             internal string Description = "-";
-            internal Border TileBorder = null!;
-            internal Border AccentBar = null!;
-            internal TextBlock TileSummaryText = null!;
-            internal Sparkline ThumbGraph = null!;
+            internal Border CellBorder = null!;
+            internal TextBlock TileSummaryText = null!;   // the live one-liner beside the cell title
+            internal TextBlock[] FieldValueBlocks = [];   // per-cell, built with the cell, always live
             internal Sparkline[] BigGraphs = [];
             internal string[] GraphCaptionKeys = [];
             internal string[] FieldLabelKeys = [];
@@ -754,7 +764,8 @@ namespace KillerShell.Shell
         {
             _tiles.Clear();
             _gpuTiles.Clear();
-            _tileListPanel.Children.Clear();
+            _cellsGrid.Children.Clear();
+            _cellsGrid.RowDefinitions.Clear();
 
             // Local, cheap, no WMI: whether these two counter categories exist at all on this
             // machine, checked once so SampleGpus doesn't have to probe (and possibly throw)
@@ -778,9 +789,14 @@ namespace KillerShell.Shell
                 _gpuTiles.Add(t);
             }
 
-            foreach (var tile in _tiles) _tileListPanel.Children.Add(tile.TileBorder);
+            ApplySavedLayout();
+            foreach (var tile in _tiles) BuildCell(tile);
+            LayoutCells();
 
-            if (_tiles.Count > 0) SelectTile(_tiles[0]);
+            // The CPU graph area's context menu wants real keyboard focus for WPF's built-in
+            // Shift+F10 / Menu-key handling - deferred so it lands after the grid has laid out.
+            if (_tiles.FirstOrDefault(t => t.Kind == MetricKind.Cpu)?.State is CpuState focusCs)
+                Dispatcher.BeginInvoke(new Action(() => focusCs.GraphArea.Focus()), DispatcherPriority.Background);
         }
 
         private static bool SafeCategoryExists(string category)
@@ -794,6 +810,7 @@ namespace KillerShell.Shell
             var tile = new MetricTile
             {
                 Kind = MetricKind.Cpu,
+                Id = "cpu",
                 Label = MainWindow.LocStatic("Str_Perf_Cpu"),
                 Description = info.Cpu,
             };
@@ -813,7 +830,8 @@ namespace KillerShell.Shell
             // Services/ColumnVisibilityMenu.cs (the app's one other checkable-menu user), so the
             // checkmark renders through the same, already-proven themed MenuItem template. The
             // Shift+F10 / Menu-key open comes free from WPF once this element is Focusable and
-            // actually has focus (done in SelectTile); the checked state is set fresh in Opened
+            // actually has focus (initial focus in BuildTiles, click-to-focus below); the
+            // checked state is set fresh in Opened
             // rather than baked in once, matching ColumnVisibilityMenu.ShowFor's own "read
             // GetVisible() fresh" habit. "L" is ALSO wired directly as a local single-key
             // shortcut while the CPU graph has focus, per this app's own established local-
@@ -830,6 +848,9 @@ namespace KillerShell.Shell
             {
                 if (e.Key == Key.L) { ToggleCpuCoreView(capturedTile); e.Handled = true; }
             };
+            // No selection to hand focus over anymore (the old SelectTile did this), so a click
+            // on the graph itself is what arms the L shortcut and Shift+F10.
+            cs.GraphArea.MouseLeftButtonDown += (_, _) => cs.GraphArea.Focus();
 
             tile.State = cs;
             tile.FieldLabelKeys = ["Str_Perf_Utilization", "Str_Perf_LogicalProcessors", "Str_Perf_Cores", "Str_Perf_BaseSpeed"];
@@ -841,7 +862,6 @@ namespace KillerShell.Shell
                 info.CpuBaseMhz > 0 ? (info.CpuBaseMhz / 1000.0).ToString("0.00", CultureInfo.InvariantCulture) + " GHz" : "-",
             ];
 
-            FinishTile(tile, 100);
             return tile;
         }
 
@@ -850,6 +870,7 @@ namespace KillerShell.Shell
             var tile = new MetricTile
             {
                 Kind = MetricKind.Ram,
+                Id = "ram",
                 Label = MainWindow.LocStatic("Str_Perf_Ram"),
                 Description = info.Ram,
                 State = new RamState(),
@@ -859,7 +880,6 @@ namespace KillerShell.Shell
                 FieldValues = ["-", "-", "-"],
             };
 
-            FinishTile(tile, 100);
             return tile;
         }
 
@@ -875,6 +895,7 @@ namespace KillerShell.Shell
             var tile = new MetricTile
             {
                 Kind = MetricKind.Disk,
+                Id = "disk" + index,
                 Label = label,
                 Description = d.Model,
                 State = new DiskState { InstanceName = d.InstanceName },
@@ -891,7 +912,6 @@ namespace KillerShell.Shell
                 FieldValues = ["-", "-", "-"],
             };
 
-            FinishTile(tile, 100);
             return tile;
         }
 
@@ -901,6 +921,7 @@ namespace KillerShell.Shell
             var tile = new MetricTile
             {
                 Kind = MetricKind.Network,
+                Id = "net" + index,
                 Label = label,
                 Description = instanceName,
                 State = new NetState { InstanceName = instanceName },
@@ -912,7 +933,6 @@ namespace KillerShell.Shell
                 FieldValues = ["-", "-"],
             };
 
-            FinishTile(tile, 0, "TypeWindows", "PrimaryBrush");
             return tile;
         }
 
@@ -922,6 +942,7 @@ namespace KillerShell.Shell
             var tile = new MetricTile
             {
                 Kind = MetricKind.Gpu,
+                Id = "gpu" + index,
                 Label = MainWindow.LocStatic("Str_Perf_Gpu") + " " + index,
                 Description = name,
                 State = gs,
@@ -945,174 +966,242 @@ namespace KillerShell.Shell
                 tile.FieldValues = ["-"];
             }
 
-            FinishTile(tile, 100);
             return tile;
         }
 
-        /// <summary>Builds the tile's own small on-screen Border (label, one-line summary, thumb
-        /// sparkline) - shared by every MetricKind. <paramref name="thumbSeriesBrushKeys"/> empty
-        /// means a single-series thumbnail in the accent color.</summary>
-        private void FinishTile(MetricTile tile, double thumbFixedScaleMax, params string[] thumbSeriesBrushKeys)
+        // ═══════════════════════════════════════════════════════════
+        //  CELLS  -  build, width toggle, drag-to-reorder
+        // ═══════════════════════════════════════════════════════════
+        /// <summary>
+        /// Builds the tile's CELL: header (title + live summary left, description right, width
+        /// toggle at the edge - and the header is the DRAG HANDLE), then the big graph(s),
+        /// legend and numeric fields, all always live. Built ONCE per tile; LayoutCells only
+        /// ever re-parents the finished Border, so graph history survives every reorder and
+        /// width change.
+        /// </summary>
+        private void BuildCell(MetricTile tile)
         {
-            tile.ThumbGraph = new Sparkline(HistorySamples, thumbFixedScaleMax,
-                thumbSeriesBrushKeys.Length > 0 ? thumbSeriesBrushKeys : ["PrimaryBrush"]);
+            var title = new TextBlock
+            { FontSize = 16, FontWeight = FontWeights.Bold, Text = tile.Label, VerticalAlignment = VerticalAlignment.Center };
+            title.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+            title.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
-            // Left corners match the tile's radius. The bar sits in column 0 of the tile's child
-            // grid, which is NOT clipped to the tile's CornerRadius, so a square bar painted its
-            // own hard corners straight over the rounded ones - the selected tile looked square
-            // down its left edge (Steve, 2026-08-08).
-            var accentBar = new Border
+            var summary = new TextBlock
+            { FontSize = 11, Text = "-", Margin = new Thickness(10, 0, 0, 2), VerticalAlignment = VerticalAlignment.Bottom };
+            summary.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+            summary.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
+            tile.TileSummaryText = summary;
+
+            // Ellipsis, not wrap: a half-width cell cannot spare three lines for a chipset's
+            // full marketing name - the full string rides the tooltip.
+            var description = new TextBlock
             {
-                Width = 3,
-                Background = Brushes.Transparent,
-                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4), 0, 0,
-                    KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
+                FontSize = 11, Text = tile.Description, ToolTip = tile.Description,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom,
+                Margin = new Thickness(10, 0, 8, 2),
             };
+            description.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+            description.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
 
-            var labelText = new TextBlock { FontSize = 11, FontWeight = FontWeights.Bold, Text = tile.Label };
-            labelText.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            labelText.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+            var widthBtn = BuildWidthToggle(tile);
 
-            var summaryText = new TextBlock { FontSize = 10.5, Text = "-" };
-            summaryText.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            summaryText.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
-            tile.TileSummaryText = summaryText;
-
-            var textStack = new StackPanel { Margin = new Thickness(10, 7, 10, 4) };
-            textStack.Children.Add(labelText);
-            textStack.Children.Add(summaryText);
-
-            tile.ThumbGraph.Host.Height = 26;
-            tile.ThumbGraph.Host.Margin = new Thickness(10, 0, 10, 7);
-            tile.ThumbGraph.Host.BorderThickness = new Thickness(0);
-            // The sparkline well sits INSIDE the tile, so it takes the tile's own tier rather than
-            // SurfaceBrush - which is #000000 on Black and punched a black hole in every tile.
-            tile.ThumbGraph.Host.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
+            // Transparent Background is load-bearing: without it the Grid's empty stretches are
+            // not hit-testable and the drag handle only worked when the press landed on text.
+            var header = new Grid { Background = Brushes.Transparent, Cursor = Cursors.SizeAll };
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            SetColumn(title, 0);
+            SetColumn(summary, 1);
+            SetColumn(description, 2);
+            SetColumn(widthBtn, 3);
+            header.Children.Add(title);
+            header.Children.Add(summary);
+            header.Children.Add(description);
+            header.Children.Add(widthBtn);
+            WireCellDrag(header, tile);
 
             var body = new StackPanel();
-            body.Children.Add(textStack);
-            body.Children.Add(tile.ThumbGraph.Host);
-
-            var innerGrid = new Grid();
-            innerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            innerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            SetColumn(accentBar, 0);
-            SetColumn(body, 1);
-            innerGrid.Children.Add(accentBar);
-            innerGrid.Children.Add(body);
-
-            var tileBorder = new Border
-            {
-                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
-                Cursor = Cursors.Hand,
-                Child = innerGrid,
-            };
-            tileBorder.SetResourceReference(FrameworkElement.MarginProperty, "MonitorTileMargin");
-            tileBorder.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
-
-            var capturedTile = tile;
-            tileBorder.MouseLeftButtonUp += (_, _) => SelectTile(capturedTile);
-            tileBorder.MouseEnter += (_, _) =>
-            {
-                // MonitorHoverBrush = RowHoverBrush everywhere but 98SE, where RowHoverBrush is
-                // the window face grey - a hovered black tile turned grey and vanished into the
-                // window (Steve, 2026-08-09). There it is a slightly lifted black instead.
-                if (!ReferenceEquals(_selectedTile, capturedTile))
-                    tileBorder.SetResourceReference(Border.BackgroundProperty, "MonitorHoverBrush");
-            };
-            tileBorder.MouseLeave += (_, _) =>
-            {
-                if (!ReferenceEquals(_selectedTile, capturedTile))
-                    tileBorder.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
-            };
-
-            tile.TileBorder = tileBorder;
-            tile.AccentBar = accentBar;
-        }
-
-        // ═══════════════════════════════════════════════════════════
-        //  SELECTION
-        // ═══════════════════════════════════════════════════════════
-        private void SelectTile(MetricTile tile)
-        {
-            if (ReferenceEquals(_selectedTile, tile)) return;
-            if (_selectedTile != null) SetTileVisualSelected(_selectedTile, false);
-            _selectedTile = tile;
-            SetTileVisualSelected(tile, true);
-            RebuildDetailFor(tile);
-
-            if (tile.Kind == MetricKind.Cpu && tile.State is CpuState cs)
-            {
-                var graphArea = cs.GraphArea;
-                // Give the graph area real keyboard focus once it has actually landed in the
-                // visual tree (RebuildDetailFor just reparented it) so WPF's built-in Shift+F10 /
-                // Menu-key handling has something focused to open the context menu on.
-                Dispatcher.BeginInvoke(new Action(() => graphArea.Focus()), DispatcherPriority.Background);
-            }
-        }
-
-        private static void SetTileVisualSelected(MetricTile tile, bool selected)
-        {
-            // MonitorCellBrush when not selected, ACTUALLY matching the tile's build and hover
-            // states now - the comment always said it matched, but the key here was
-            // MenuBackgroundBrush, so a deselected tile came back a different color than a
-            // freshly built one (on 98SE: #c0c0c0 instead of the black cell).
-            tile.TileBorder.SetResourceReference(Border.BackgroundProperty, selected ? "SelectionBg" : "MonitorCellBrush");
-            tile.TileSummaryText.SetResourceReference(TextBlock.ForegroundProperty, selected ? "SelectionFg" : "MonitorMutedBrush");
-            if (selected)
-                tile.AccentBar.SetResourceReference(Border.BackgroundProperty, "PrimaryBrush");
-            else
-                tile.AccentBar.Background = Brushes.Transparent;
-        }
-
-        private void RebuildDetailFor(MetricTile tile)
-        {
-            _detailTitle.Text = tile.Label;
-            _detailDescription.Text = tile.Description;
-
-            _graphsHost.Children.Clear();
+            body.Children.Add(header);
 
             if (tile.Kind == MetricKind.Cpu)
             {
                 var cs = (CpuState)tile.State!;
-                _graphsHost.Children.Add(BuildGraphCaption("Str_Perf_Utilization"));
+                body.Children.Add(BuildGraphCaption("Str_Perf_Utilization"));
+                // BOTH heights, not just the area's: the Host keeps its constructed 52 unless
+                // set, and a 52px well centered in a 160px Border reads as a band of dead
+                // space above and below the graph. The area stays fixed at 160 so the
+                // per-core toggle cannot change the cell's height.
                 cs.GraphArea.Height = 160;
-                _graphsHost.Children.Add(cs.GraphArea);
+                cs.AggregateGraph.Host.Height = 160;
+                body.Children.Add(cs.GraphArea);
             }
             else
             {
                 for (int i = 0; i < tile.BigGraphs.Length; i++)
                 {
                     if (i < tile.GraphCaptionKeys.Length)
-                        _graphsHost.Children.Add(BuildGraphCaption(tile.GraphCaptionKeys[i]));
+                        body.Children.Add(BuildGraphCaption(tile.GraphCaptionKeys[i]));
                     tile.BigGraphs[i].Host.Height = tile.BigGraphs.Length > 1 ? 90 : 160;
-                    _graphsHost.Children.Add(tile.BigGraphs[i].Host);
+                    body.Children.Add(tile.BigGraphs[i].Host);
                 }
             }
 
             if (tile.Kind == MetricKind.Network)
-                _graphsHost.Children.Add(BuildLegend(("TypeWindows", "Str_Perf_Send"), ("PrimaryBrush", "Str_Perf_Receive")));
+                body.Children.Add(BuildLegend(("TypeWindows", "Str_Perf_Send"), ("PrimaryBrush", "Str_Perf_Receive")));
             else if (tile.Kind == MetricKind.Disk)
-                _graphsHost.Children.Add(BuildLegend(("PrimaryBrush", "Str_Perf_ReadSpeed"), ("TypeWindows", "Str_Perf_WriteSpeed")));
+                body.Children.Add(BuildLegend(("PrimaryBrush", "Str_Perf_ReadSpeed"), ("TypeWindows", "Str_Perf_WriteSpeed")));
             else if (tile.Kind == MetricKind.Gpu && tile.BigGraphs.Length >= 3)
-                _graphsHost.Children.Add(BuildLegend(("PrimaryBrush", "Str_Perf_DedicatedMemory"), ("TypeWindows", "Str_Perf_SharedMemory")));
+                body.Children.Add(BuildLegend(("PrimaryBrush", "Str_Perf_DedicatedMemory"), ("TypeWindows", "Str_Perf_SharedMemory")));
 
-            _fieldsHost.Children.Clear();
-            _fieldValueBlocks = new TextBlock[tile.FieldLabelKeys.Length];
+            var fields = new WrapPanel { Margin = new Thickness(0, 10, 0, 0) };
+            tile.FieldValueBlocks = new TextBlock[tile.FieldLabelKeys.Length];
             for (int i = 0; i < tile.FieldLabelKeys.Length; i++)
             {
-                _fieldsHost.Children.Add(BuildField(tile.FieldLabelKeys[i], out var valueBlock));
-                _fieldValueBlocks[i] = valueBlock;
+                fields.Children.Add(BuildField(tile.FieldLabelKeys[i], out var valueBlock));
+                tile.FieldValueBlocks[i] = valueBlock;
             }
+            body.Children.Add(fields);
+
+            var cell = new Border
+            {
+                Padding = new Thickness(14, 12, 14, 12),
+                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
+                BorderThickness = new Thickness(1),
+                // Top, not the default Stretch: a grid row is as tall as its tallest cell, and
+                // a stretched shorter neighbor pads its own inside out to match - the "cells
+                // are too tall" complaint. Hugging the content leaves the gap OUTSIDE the
+                // card, where it reads as layout instead of dead space.
+                VerticalAlignment = VerticalAlignment.Top,
+                Child = body,
+            };
+            cell.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
+            cell.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
+            cell.SetResourceReference(FrameworkElement.MarginProperty, "MonitorTileMargin");
+            tile.CellBorder = cell;
 
             RefreshDetailFieldValues(tile);
         }
 
-        private void RefreshDetailFieldValues(MetricTile tile)
+        /// <summary>
+        /// The header's 1-column / 2-column toggle: E740 (expand) on a half-width cell, E73F
+        /// (back to half) on a full-width one. A bare Border + glyph rather than a Button - a
+        /// Button with Background=Transparent keeps WPF's default template and its system-blue
+        /// hover. Rest neutral, hover accent: the family icon hover language.
+        /// </summary>
+        private Border BuildWidthToggle(MetricTile tile)
         {
-            if (!ReferenceEquals(_selectedTile, tile) || _fieldValueBlocks == null) return;
-            for (int i = 0; i < _fieldValueBlocks.Length && i < tile.FieldValues.Length; i++)
-                _fieldValueBlocks[i].Text = tile.FieldValues[i];
+            var glyph = new TextBlock
+            {
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize = 12,
+                Text = ((char)(tile.ColSpan == 2 ? 0xE73F : 0xE740)).ToString(),
+            };
+            glyph.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
+
+            var btn = new Border
+            {
+                Background = Brushes.Transparent,   // hit-testable; hover recolors the GLYPH only
+                Padding = new Thickness(5, 3, 5, 3),
+                Cursor = Cursors.Hand,
+                VerticalAlignment = VerticalAlignment.Center,
+                Child = glyph,
+            };
+            btn.SetResourceReference(FrameworkElement.ToolTipProperty, "Str_Perf_ToggleWidth");
+
+            btn.MouseEnter += (_, _) => glyph.SetResourceReference(TextBlock.ForegroundProperty, "PrimaryBrush");
+            btn.MouseLeave += (_, _) => glyph.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
+
+            // Handled DOWN keeps the header's drag handler out of a toggle click.
+            btn.MouseLeftButtonDown += (_, e) => e.Handled = true;
+            btn.MouseLeftButtonUp += (_, e) =>
+            {
+                e.Handled = true;
+                tile.ColSpan = tile.ColSpan == 1 ? 2 : 1;
+                glyph.Text = ((char)(tile.ColSpan == 2 ? 0xE73F : 0xE740)).ToString();
+                LayoutCells();
+                SaveLayout();
+            };
+            return btn;
+        }
+
+        /// <summary>
+        /// Drag the header to reorder cells, live: past a 4px threshold the cell dims, and
+        /// whenever the pointer is over ANOTHER cell the dragged one takes that cell's slot in
+        /// _tiles and the grid re-flows immediately - the reorder IS the drag preview. Saved
+        /// once on release. Stable against oscillation because after a move the pointer sits
+        /// over the dragged cell itself, which CellAt ignores.
+        /// </summary>
+        private void WireCellDrag(Grid header, MetricTile tile)
+        {
+            header.MouseLeftButtonDown += (_, e) =>
+            {
+                _dragTile = tile;
+                _dragActive = false;
+                _dragStart = e.GetPosition(_cellsGrid);
+                header.CaptureMouse();
+            };
+            header.MouseMove += (_, e) =>
+            {
+                if (!ReferenceEquals(_dragTile, tile) || !header.IsMouseCaptured
+                    || e.LeftButton != MouseButtonState.Pressed) return;
+
+                var pos = e.GetPosition(_cellsGrid);
+                if (!_dragActive)
+                {
+                    if (Math.Abs(pos.X - _dragStart.X) < 4 && Math.Abs(pos.Y - _dragStart.Y) < 4) return;
+                    _dragActive = true;
+                    tile.CellBorder.Opacity = 0.65;
+                }
+
+                if (CellAt(pos, tile) is { } target)
+                {
+                    int from = _tiles.IndexOf(tile), to = _tiles.IndexOf(target);
+                    if (from >= 0 && to >= 0 && from != to)
+                    {
+                        _tiles.RemoveAt(from);
+                        _tiles.Insert(to, tile);
+                        LayoutCells();
+                    }
+                }
+            };
+            header.MouseLeftButtonUp += (_, _) =>
+            {
+                if (header.IsMouseCaptured) header.ReleaseMouseCapture();
+                if (ReferenceEquals(_dragTile, tile) && _dragActive) SaveLayout();
+                tile.CellBorder.Opacity = 1.0;
+                _dragTile = null;
+                _dragActive = false;
+            };
+            // Capture can be torn away (alt-tab, a popup) - never leave a cell dimmed.
+            header.LostMouseCapture += (_, _) => tile.CellBorder.Opacity = 1.0;
+        }
+
+        /// <summary>The cell under a grid-space point, ignoring the dragged one.</summary>
+        private MetricTile? CellAt(Point gridPoint, MetricTile ignore)
+        {
+            foreach (var t in _tiles)
+            {
+                if (ReferenceEquals(t, ignore)) continue;
+                var cell = t.CellBorder;
+                if (cell == null || cell.ActualWidth <= 0) continue;
+
+                Point topLeft = cell.TranslatePoint(new Point(0, 0), _cellsGrid);
+                if (gridPoint.X >= topLeft.X && gridPoint.X <= topLeft.X + cell.ActualWidth
+                 && gridPoint.Y >= topLeft.Y && gridPoint.Y <= topLeft.Y + cell.ActualHeight)
+                    return t;
+            }
+            return null;
+        }
+
+        /// <summary>Writes a tile's current FieldValues into its cell's own value blocks -
+        /// every cell is live all the time now, there is no selected-tile gate.</summary>
+        private static void RefreshDetailFieldValues(MetricTile tile)
+        {
+            for (int i = 0; i < tile.FieldValueBlocks.Length && i < tile.FieldValues.Length; i++)
+                tile.FieldValueBlocks[i].Text = tile.FieldValues[i];
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1289,7 +1378,6 @@ namespace KillerShell.Shell
             {
                 double pct = Math.Min(100, Math.Max(0, cs.Total.NextValue()));
                 tile.TileSummaryText.Text = pct.ToString("0.0", CultureInfo.InvariantCulture) + " %";
-                tile.ThumbGraph.Push(pct);
                 cs.AggregateGraph.Push(pct);
                 tile.FieldValues[0] = pct.ToString("0.0", CultureInfo.InvariantCulture) + " %";
 
@@ -1321,7 +1409,6 @@ namespace KillerShell.Shell
                         _totalRamGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB (" +
                         pct.ToString("0", CultureInfo.InvariantCulture) + "%)";
                     double clamped = Math.Min(100, pct);
-                    tile.ThumbGraph.Push(clamped);
                     if (tile.BigGraphs.Length > 0) tile.BigGraphs[0].Push(clamped);
                     tile.FieldValues[0] = usedGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
                     tile.FieldValues[1] = availGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
@@ -1352,7 +1439,6 @@ namespace KillerShell.Shell
                 double writeBps = ds.WriteBytes?.NextValue() ?? 0;
 
                 tile.TileSummaryText.Text = activePct.ToString("0", CultureInfo.InvariantCulture) + " %";
-                tile.ThumbGraph.Push(activePct);
                 tile.BigGraphs[0].Push(activePct);
                 tile.BigGraphs[1].Push(readBps, writeBps);
                 tile.FieldValues[0] = activePct.ToString("0", CultureInfo.InvariantCulture) + " %";
@@ -1373,7 +1459,6 @@ namespace KillerShell.Shell
                 double recv = ns.Recv?.NextValue() ?? 0;
 
                 tile.TileSummaryText.Text = "S: " + FormatThroughput(sent) + "  R: " + FormatThroughput(recv);
-                tile.ThumbGraph.Push(sent, recv);
                 tile.BigGraphs[0].Push(sent, recv);
                 tile.FieldValues[0] = FormatThroughput(sent);
                 tile.FieldValues[1] = FormatThroughput(recv);
@@ -1568,7 +1653,6 @@ namespace KillerShell.Shell
             util = Math.Min(100, Math.Max(0, util));
             var gs = (GpuState)tile.State!;
 
-            tile.ThumbGraph.Push(util);
             tile.BigGraphs[0].Push(util);
             tile.TileSummaryText.Text = util.ToString("0", CultureInfo.InvariantCulture) + " %";
             tile.FieldValues[0] = util.ToString("0", CultureInfo.InvariantCulture) + " %";

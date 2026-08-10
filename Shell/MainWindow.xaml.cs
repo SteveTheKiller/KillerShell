@@ -41,8 +41,8 @@ namespace KillerShell.Shell
             // theme's gap down the right of the pane until something else forced a relayout.
             // RepaintIcons is DEFERRED to Background priority: it reloads a whole icon pack and
             // touches every visible row, and running it synchronously inside the theme swap was
-            // the biggest slice of the freeze before the crossfade could start (Steve,
-            // 2026-08-09). The crossfade ghost is opaque over the window, so the stale icons
+            // the biggest slice of the freeze before the crossfade could
+            // start. The crossfade ghost is opaque over the window, so the stale icons
             // repainting a beat later are never seen; without a ghost (startup, code-driven
             // switches) a one-pass delay on icon art is imperceptible anyway. The cheap,
             // layout-critical calls stay synchronous.
@@ -83,7 +83,7 @@ namespace KillerShell.Shell
             // but restore can now reopen a shell tab of its own (Session.cs TryRestoreTabs, via
             // TabHandoff.cs ApplyHandoff) - moved up here, ahead of THAT, rather than leave a
             // restored shell launching with no KS_STATE/KS_ACCENT and its prompt falling back to
-            // hardcoded colors (Steve, 2026-08-02).
+            // hardcoded colors.
             InitShellEnv();
 
             // A window opened with Ctrl+N is a NEW window, not a resumed session. It runs as its
@@ -101,7 +101,7 @@ namespace KillerShell.Shell
             // then asked for a non-elevated shell inside an elevated window, which OpenShell
             // answers by bouncing the request back out through OpenUnelevated - one explorer.exe
             // and one extra KillerShell PER RESTORED SHELL TAB. That is where the pile of Explorer
-            // windows came from: seven tabs, seven windows; eight tabs, eight (Steve, 2026-08-08).
+            // windows came from: seven tabs, seven windows; eight tabs, eight.
             if (DemoMode || freshWindow || IsElevated || !TryRestoreTabs())
                 ActivateTab(CreateTab());   // Session.cs / Tabs.cs
 
@@ -136,7 +136,7 @@ namespace KillerShell.Shell
 
             // Results density used to be restored here (Density.cs) - it is per-pane now, one
             // more field on the same ViewState as zoom and column widths, so InitResultsView
-            // above restores it for both panes in the same pass (Steve, 2026-08-03).
+            // above restores it for both panes in the same pass.
 
             // Show-hidden and folders-on-top (ViewOptions.cs). Before nothing in particular -
             // they are read by the listing and the tree, both of which run later.
@@ -630,7 +630,7 @@ namespace KillerShell.Shell
             // PrintScreen in an ELEVATED window (KeyUp, not KeyDown - WPF only ever raises the
             // up event for PrtScn): the snip overlay Windows binds to the key runs unelevated
             // and cannot come up over an elevated foreground window, so the key silently did
-            // nothing here (Steve, 2026-08-09). Hand the request to the default snipping tool
+            // nothing here. Hand the request to the default snipping tool
             // through explorer.exe - the same de-elevation hand-off the shell tabs already use -
             // so it launches at normal integrity and can take the shot.
             if (e.Key == System.Windows.Input.Key.Snapshot && IsElevated)
@@ -641,7 +641,7 @@ namespace KillerShell.Shell
                     // REGISTERED hotkey (the snip overlay's own), and registered hotkeys fire
                     // regardless of the foreground window's integrity level - unlike the
                     // explorer.exe ms-screenclip: hand-off tried first, which did nothing here
-                    // (Steve, 2026-08-09: "prtscrn doesnt work"). This routes the key press to
+                    // (PrtScn still appeared dead). This routes the key press to
                     // exactly whatever the user's default snipping tool is.
                     const byte VK_LWIN = 0x5B, VK_SHIFT = 0x10, VK_S = 0x53;
                     const uint KEYEVENTF_KEYUP = 0x0002;
@@ -716,6 +716,13 @@ namespace KillerShell.Shell
             // surfaces, and a bare letter typed into either has to reach them rather than being
             // read as a shortcut (RegistryEditorTabs.cs).
             if (RegistryEditorHasFocus && !IsWindowChord(e, ctrl, shift, alt)) return;
+
+            // A FOCUSED STORAGE ANALYZER OWNS THE KEYBOARD too: its target box is a real text
+            // surface, and it carries its own single-key map over the treemap - D depth, M min
+            // size, C color mode, Backspace/Home/Enter to zoom, Delete to recycle
+            // (StorageAnalyzerControl.OnPreviewKeyDown). Same handover the three tool tabs
+            // above already use (StorageTabs.cs).
+            if (StorageAnalyzerHasFocus && !IsWindowChord(e, ctrl, shift, alt)) return;
 
             // Alt+1-0 jumps to a saved location. Alt chords arrive as Key.System with the real
             // key parked in SystemKey, so they have to be unwrapped before anything can match -
@@ -861,14 +868,26 @@ namespace KillerShell.Shell
             }
             else if (e.Key == System.Windows.Input.Key.F4 && !ctrl && !shift && !alt)
             {
-                // Explorer's address-bar key, alongside Ctrl+L and Alt+D.
-                BeginEditAddress();   // AddressBar.cs
+                // Plain F4: the Storage Analyzer tab, singleton same as the rail icon
+                // (OpenStorageAnalyzer, StorageTabs.cs). F4 took over from address-bar edit,
+                // exactly the handover BACKLOG.md reserved: that action keeps its two working
+                // aliases, Ctrl+L and Alt+D, so nothing was lost.
+                OpenStorageAnalyzer();   // StorageTabs.cs
+                e.Handled = true;
+            }
+            else if (e.Key == System.Windows.Input.Key.F4 && ctrl && !shift && !alt)
+            {
+                // Ctrl+F4: the same Storage Analyzer, elevated - an elevated scan sees the
+                // folders an ordinary token gets Access Denied on. Same relaunch shape as
+                // Ctrl+F9 for Processes ("--storage" flag, runas verb, reuse of an existing
+                // elevated window - Elevation.cs RelaunchElevatedStorage).
+                RelaunchElevatedStorage();   // Elevation.cs
                 e.Handled = true;
             }
             else if (e.Key == System.Windows.Input.Key.F9 && !ctrl && !shift && !alt)
             {
                 // Plain F9: the Processes tab, singleton same as the rail icon
-                // (OpenTaskManager, ProcessTabs.cs). F9 took over from F11 (Steve, 2026-08-02) -
+                // (OpenTaskManager, ProcessTabs.cs). F9 took over from F11 -
                 // export moved off F9 onto Ctrl+Alt+E below to make room for this. F11 itself went
                 // to the Performance tab below rather than staying unbound.
                 OpenTaskManager();   // ProcessTabs.cs
@@ -944,7 +963,7 @@ namespace KillerShell.Shell
             else if (IsF10(e) && ctrl && !shift && !alt)
             {
                 // Ctrl+F10: hide the pane menubar, in both panes and on both kinds of tab
-                // (MenuBar.cs). Moved off plain F10 (Steve, 2026-08-02) so F10 could become Dual
+                // (MenuBar.cs). Moved off plain F10 so F10 could become Dual
                 // Pane; Shift+F10 (below) keeps meaning Windows' own context-menu key regardless.
                 ToggleMenuBar();
                 e.Handled = true;
@@ -952,7 +971,7 @@ namespace KillerShell.Shell
             else if (IsF10(e) && !ctrl && !shift && !alt)
             {
                 // Plain F10: the second pane, or close it. Was F11 until the Processes tab
-                // needed a home (Steve, 2026-08-02); handling the bare key also stops WPF
+                // needed a home; handling the bare key also stops WPF
                 // entering its native menu-activation mode, which is what F10 otherwise means to
                 // a window. Ctrl+Shift+P stays as a legacy alias for anyone who learned it.
                 ToggleDualPane();   // DualPane.cs
@@ -1000,7 +1019,7 @@ namespace KillerShell.Shell
             else if (ctrl && alt && !shift && e.Key == System.Windows.Input.Key.E)
             {
                 // Ctrl+Alt+E: export as HTML. Export used to live on F9, which the Processes tab
-                // needed (Steve, 2026-08-02) - Ctrl+E and Ctrl+Shift+E were already taken
+                // needed - Ctrl+E and Ctrl+Shift+E were already taken
                 // (search focus, exclude folder), so export moved here instead.
                 Export_Click(this, new RoutedEventArgs());   // Export.cs - HTML
                 e.Handled = true;
@@ -1098,7 +1117,7 @@ namespace KillerShell.Shell
             // F8 is the primary key: opening a shell in the folder you are looking at is one of
             // the reasons to use this app, and a two-hand chord is the wrong price for it. It
             // took F8 from CSV export, which moved to Ctrl+Alt+Shift+E once F9 itself went to the
-            // Processes tab (Steve, 2026-08-02).
+            // Processes tab.
             //
             // Shift picks CMD (the LCD skin), Ctrl asks for the elevated one - which relaunches
             // us through UAC (Elevation.cs) rather than opening a tab in this process.
@@ -1146,7 +1165,7 @@ namespace KillerShell.Shell
             else if (ctrl && shift && e.Key == System.Windows.Input.Key.P)
             {
                 // Second pane. This was the PROVISIONAL chord before bare F10 took over dual
-                // pane (Steve, 2026-08-02); kept as a legacy alias now that F10 is primary, for
+                // pane; kept as a legacy alias now that F10 is primary, for
                 // anyone whose hand already learned it, and listed on the F10 row in KsRows
                 // rather than as a row of its own. Right-clicking the toolbar button flips the
                 // orientation; that has no key yet on purpose.
@@ -1381,7 +1400,7 @@ namespace KillerShell.Shell
             // This bar belongs to the FILE BROWSER - item counts, the search query, "No item
             // selected". A terminal, an editor or a tool tab has nothing to say through it, and
             // it was showing over all of them: a shell tab carried a stray "No item selected"
-            // strip along its bottom edge (Steve, 2026-08-08).
+            // strip along its bottom edge.
             //
             // The test is whether the LISTING is on screen, not what kind the tab claims to be.
             // Keying off IsBrowsing/IsSearching did not work and is why this came back twice: a

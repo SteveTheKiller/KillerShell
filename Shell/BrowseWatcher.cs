@@ -181,7 +181,7 @@ namespace KillerShell.Shell
             // Renames first, and IN PLACE: the generic create/delete loop below would otherwise
             // see the old path vanish and the new path appear and treat that as an unrelated
             // remove-then-add, which drops the row's object identity - exactly what selection and
-            // the details-pane preview are keyed on (Steve, 2026-08-03: renaming the selected file
+            // the details-pane preview are keyed on (2026-08-03: renaming the selected file
             // showed a different, wrong thumbnail). Mutating the SAME object keeps the container,
             // the selection and the preview all pointed at the one row that actually changed.
             foreach (var (oldPath, newPath) in pairs)

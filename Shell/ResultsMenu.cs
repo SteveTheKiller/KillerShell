@@ -97,7 +97,7 @@ namespace KillerShell.Shell
             // the real shell menu FOR that item, and has nothing to be about over empty pane
             // space. Right-clicking empty space used to still show it, and clicking it there
             // either silently did nothing or, worse, acted on whatever was left selected from
-            // before (Steve, 2026-08-03: "when its just on the pane it doesnt work").
+            // before (2026-08-03).
             _shellMenuItem ??= Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
                                         .FirstOrDefault(m => (m.Tag as string) == "shellmenu");
             if (_shellMenuItem != null)

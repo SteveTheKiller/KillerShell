@@ -131,7 +131,7 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             // ToolTabChrome: raised menu-bar tier for the filter row, sunken white well for the
-            // grid on 98SE; inert on the ordinary themes (Steve, 2026-08-09).
+            // grid on 98SE; inert on the ordinary themes.
             var toolbar = ToolTabChrome.WrapBar(BuildToolbar(out _filterBox, out _modeToggleBtn));
             SetRow(toolbar, 0);
             Children.Add(toolbar);
@@ -158,7 +158,7 @@ namespace KillerShell.Shell
             _grid = BuildGrid();
             _grid.ItemsSource = _procView;
             // ToolGridMargin - see EventViewerControl: 8,0,8,8 everywhere, 0 on 98SE so the well
-            // is filled edge to edge (Steve, 2026-08-09).
+            // is filled edge to edge.
             _grid.SetResourceReference(FrameworkElement.MarginProperty, "ToolGridMargin");
             var gridHost = ToolTabChrome.WrapContent(_grid, "ToolContentBrush");
             SetRow(gridHost, 1);
@@ -192,7 +192,7 @@ namespace KillerShell.Shell
         /// whole window closes with this tab still open (Shell/Session.cs OnClosing, via
         /// ProcessTabs.ShutdownAllProcessLists) - a Processes/Services tab left open at quit used
         /// to crash the app on exit with the same RaceOnRCWCleanup Managed Debugging Assistant
-        /// error the first-load freeze fix already hit once (Steve, 2026-08-02): EnrichOwners'
+        /// error the first-load freeze fix already hit once: EnrichOwners'
         /// background thread can still be mid-WMI-call when the process starts tearing down, and
         /// a COM RCW finalized while another thread still has it live is exactly what that MDA
         /// exists to catch. Cancelling here stops EnrichOwners between PIDs rather than mid-call,
@@ -214,13 +214,12 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         /// <summary>
         /// The filter box plus the Processes/Services mode toggle, in the same toolbar row
-        /// (Steve: "we need some sort of toggle up above near the search box"). A Grid rather
+        /// next to the search box. A Grid rather
         /// than the bare TextBox row 0 used to be - the toggle button lives in a fixed-width
         /// Auto column to the left, the filter box takes the remaining width.
         /// </summary>
         /// <remarks>
-        /// One icon button that switches modes on click, not two separate text buttons (Steve:
-        /// "maybe it should be one button that just switches instead of two buttons") - its
+        /// One icon button that switches modes on click, not two separate text buttons - its
         /// glyph is the only visual indicator of which mode is showing besides the column
         /// headers, so UpdateModeToggle keeps both the icon AND the tooltip in sync with _mode.
         /// </remarks>
@@ -360,7 +359,7 @@ namespace KillerShell.Shell
 
         /// <summary>Builds _serviceColumns/_serviceColEntries - the Services view's own column
         /// set, genuinely separate from the process one rather than forced onto ProcessInfo's
-        /// columns, since the two data shapes do not overlap (Steve's own call, per the task).</summary>
+        /// columns, since the two data shapes do not overlap.</summary>
         private void BuildServiceColumnsSet()
         {
             var name    = Col("Str_Col_SvcName",        "Name", 180);
@@ -443,7 +442,7 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  FILTER
         // ═══════════════════════════════════════════════════════════
-        /// <summary>Broadened (Steve: "the search doesnt work well") to match Name OR Path OR
+        /// <summary>Broadened to match Name OR Path OR
         /// User, not just Name - three plain IndexOf calls per row per keystroke, cheap even on a
         /// machine with hundreds of processes; nothing more expensive (no regex) was added.</summary>
         private bool ProcessFilterPredicate(object obj)
@@ -1231,7 +1230,7 @@ namespace KillerShell.Shell
                 enabled: s.IsRunning && s.CanStop, gesture: "Del");
 
             // E777: the SAME "start over" glyph the process menu's Restart already uses - one
-            // glyph, one meaning, everywhere in the app (Steve's own rule for this pass).
+            // glyph, one meaning, everywhere in the app.
             AddMenuItem(menu, "Str_Menu_ProcRestart", ((char)0xE777).ToString(), (_, _) => RestartServiceWithConfirm(s),
                 enabled: s.IsRunning && s.CanStop, gesture: "Ctrl+R");
 

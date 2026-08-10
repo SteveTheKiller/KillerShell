@@ -166,9 +166,9 @@ namespace KillerShell.Services
             // a SEPARATE invalidation pass per key. With ~150+ keys in a theme dictionary (this
             // app has ANSI terminal colors, editor syntax colors, registry/event-viewer colors
             // on top of the usual chrome brushes - a lot more than a page-viewer app's palette),
-            // that was 150+ passes over the whole visual tree on every single theme click - the
-            // "HUGE lag... not instant like KillerPDF" Steve reported, 2026-08-02. Confirmed by
-            // him as reproducing even with zero terminal/editor tabs open, which ruled out
+            // that was 150+ passes over the whole visual tree on every single theme click - a
+            // huge lag on theme switch, nowhere near KillerPDF's instant swap. Confirmed as
+            // reproducing even with zero terminal/editor tabs open, which ruled out
             // RefreshTerminalThemes/RefreshEditorThemes and pointed straight at this loop.
             // ThemeFileName, never theme.ToString(): the 98SE palette, its KillerUI half and its
             // accent folder are all named for the digits, which the enum member cannot be.
@@ -269,9 +269,9 @@ namespace KillerShell.Services
             // a single-pane window is always. UpdatePaneFocusRing (DualPane.cs) used to hardcode
             // PaneBorderBrush here, overriding the transparent PaneEdgeBrush the markup asks for,
             // so on 98SE the ring drew a grey rule at the foot of the tab strip AND two 1px
-            // verticals hanging 6px into the top of the pane - the "line under the active tab" and
-            // the "little grey line at the left of the menu bar" were this one element (Steve,
-            // 2026-08-09). Mirrors PaneBorderBrush by default, so the twelve rounded themes keep
+            // verticals hanging 6px into the top of the pane - the line under the active tab and
+            // the little grey line at the left of the menu bar were this one
+            // element. Mirrors PaneBorderBrush by default, so the twelve rounded themes keep
             // exactly the brush they had; 98SE states it transparent.
             Mirror("TabRingIdleBrush", "PaneBorderBrush");
             // The 1px rule along the bottom of the shell/document bar (FilePane.xaml), which was a
@@ -378,7 +378,7 @@ namespace KillerShell.Services
             SetIfAbsent("IconShadowOpacity", 0.9);
             Mirror("InputEdgeBrush", "InputBorderBrush");
             // The surface a LIST sits on - the file listing and the terminal screen. Defaults to
-            // the menu tier, which is where Steve put that content on 2026-08-08 (tab surface is
+            // the menu tier, which is where that content landed on 2026-08-08 (tab surface is
             // PaneBrush, content is MenuBackgroundBrush), so the other twelve themes are
             // unchanged. 98SE states #ffffff: a Win98 list is a sunken WHITE well, and on that
             // theme the menu tier is #c0c0c0, which came out as a grey content area.
@@ -392,13 +392,12 @@ namespace KillerShell.Services
             // Text ON a MonitorCellBrush surface (the Performance tab's tiles, info panel and
             // detail card). Plain text brushes everywhere - except a theme whose cells are a
             // different world from its page, like 98SE's black CRT readouts on a light grey app,
-            // which states retro phosphor greens (Steve, 2026-08-09).
+            // which states retro phosphor greens.
             Mirror("MonitorTextBrush", "TextBrush");
             Mirror("MonitorMutedBrush", "MutedTextBrush");
             // The DataGrids' alternate-row stripe (Events, Processes, Registry). RowAltBrush
             // everywhere, exactly as the style hardcoded; 98SE states a real Win98-adjacent
-            // stripe - white rows with a grey that is NOT the window face grey (Steve,
-            // 2026-08-09).
+            // stripe - white rows with a grey that is NOT the window face grey.
             Mirror("GridRowAltBrush", "RowAltBrush");
             // The Performance tab's hover fill: RowHoverBrush everywhere - but on 98SE that is
             // the window face grey, which made a hovered black tile vanish into the window.
@@ -414,7 +413,7 @@ namespace KillerShell.Services
             // on 98SE. NOT Mirror(): WordmarkFont lives in App.xaml, not in the theme
             // dictionaries, so Mirror's missing-source fallback handed every ordinary theme a
             // TRANSPARENT BRUSH as a font - "'#00FFFFFF' is not a valid value for property
-            // 'FontFamily'", the Mourning theme-switch crash (Steve, 2026-08-09).
+            // 'FontFamily'", the Mourning theme-switch crash.
             if (!combined.Contains("DetailsNameFont"))
                 combined["DetailsNameFont"] =
                     Application.Current?.TryFindResource("WordmarkFont") as System.Windows.Media.FontFamily
@@ -424,12 +423,15 @@ namespace KillerShell.Services
             SetIfAbsent("AboutContentMargin", new Thickness(0));
             // The Performance tab's outer margins and per-tile margin - the literals they
             // replaced. 98SE collapses them to thin 2px seams so the black cells sit together
-            // instead of floating in grey gutters (Steve, 2026-08-09: "theres padding between
-            // all the black celles that should go away").
+            // instead of floating in grey gutters.
             SetIfAbsent("MonitorDetailMargin",   new Thickness(4, 0, 8, 8));
             SetIfAbsent("MonitorInfoMargin",     new Thickness(8, 8, 8, 8));
             SetIfAbsent("MonitorTileListMargin", new Thickness(8, 0, 4, 8));
             SetIfAbsent("MonitorTileMargin",     new Thickness(6, 3, 6, 3));
+            // The cell GRID's outer margin (the 2026-08-09 grid-of-cells layout). 2 a side so
+            // the cells' own 6px MonitorTileMargin lands their edges at 8, flush with the info
+            // panel above; 0 on 98SE so the cells run to the pane edge like every other well.
+            SetIfAbsent("MonitorGridMargin", new Thickness(2, 0, 2, 5));
             // The tool-tab grids' margin (Events/Processes) and the Registry split's own: the
             // literals they replaced everywhere, 0 on 98SE so each sunken well is filled edge to
             // edge and runs flush to the pane.
@@ -441,7 +443,7 @@ namespace KillerShell.Services
             // PaneFocused triggers in FilePane.xaml hardcoded. 98SE zeroes the thicknesses and
             // keeps the active padding: its ring brush is transparent, and even a transparent
             // 1px border kept the tab's fill out of its own edge column, which let the menu
-            // bar's white top line show through as a stray white pixel (Steve, 2026-08-09).
+            // bar's white top line show through as a stray white pixel.
             SetIfAbsent("TabFocusThickness",      new Thickness(1, 3, 1, 0));
             SetIfAbsent("TabFocusFirstThickness", new Thickness(0, 3, 1, 0));
             SetIfAbsent("TabFocusLastThickness",  new Thickness(1, 3, 0, 0));
@@ -455,8 +457,8 @@ namespace KillerShell.Services
             // A terminal that overrides its BACKGROUND has to override its foreground and accent
             // too, or the text is picked for the wrong surface. 98SE is the case that proves it:
             // its TextBrush is #000000 and its PrimaryBrush #004f00, both chosen against a light
-            // grey app - on the black console they are invisible and nearly invisible (Steve,
-            // 2026-08-08). These default to the app's own, so the other twelve are unchanged.
+            // grey app - on the black console they are invisible and nearly invisible.
+            // These default to the app's own, so the other twelve are unchanged.
             Mirror("TerminalForegroundBrush", "TextBrush");
             Mirror("TerminalAccentBrush", "PrimaryBrush");
             SetIfAbsent("MenuBevel2DarkBrush", Transparent);
@@ -540,8 +542,7 @@ namespace KillerShell.Services
             SetIfAbsent("TabSeamPatchBrush", Transparent);
             // ComboBox chrome - all defaults are exactly what the template hardcoded, so the
             // ordinary themes render untouched; 98SE turns the field white, the drop arrow into
-            // a raised grey Marlett-triangle button, and the list into a white well (Steve,
-            // 2026-08-09).
+            // a raised grey Marlett-triangle button, and the list into a white well.
             Mirror("ComboFieldBrush", "BackgroundBrush");
             Mirror("ComboPopupBrush", "MenuBackgroundBrush");
             SetIfAbsent("ComboButtonBrush", Transparent);
@@ -560,8 +561,26 @@ namespace KillerShell.Services
             // a visible track. Mirroring BackgroundBrush would have painted a gradient strip down
             // the side of every list on the five gradient themes. 98SE states a real track.
             SetIfAbsent("ScrollTrackBrush", Transparent);
-            // The address box's EXISTING fill was BackgroundBrush, not SurfaceBrush.
-            Mirror("SearchFieldBrush", "BackgroundBrush");
+            // A text FIELD is a small recessed surface and must never carry the WINDOW's own
+            // gradient: BackgroundBrush is a full-window LinearGradientBrush on five themes,
+            // and a brush like that re-ramps its whole sweep inside every input box - which is
+            // exactly what put a gradient in the Storage tab's target box (2026-08-09). Solid
+            // themes keep exactly the color they always had (the gradient check simply fails
+            // and the old mirror runs); gradient themes get a SOLID field in the gradient's
+            // own starting color, so the fill still belongs to the palette. Computed HERE,
+            // before SearchFieldBrush, which now mirrors it - the two always shared one value
+            // and the address box had the same gradient. Derived-token order matters: a
+            // mirror reads its source at this line, not later (the FlyoutCardEffect lesson).
+            if (!combined.Contains("TextFieldBrush")
+                && combined["BackgroundBrush"] is LinearGradientBrush bgGrad
+                && bgGrad.GradientStops.Count > 0)
+            {
+                var solidField = new SolidColorBrush(bgGrad.GradientStops[0].Color);
+                solidField.Freeze();
+                combined["TextFieldBrush"] = solidField;
+            }
+            else Mirror("TextFieldBrush", "BackgroundBrush");
+            Mirror("SearchFieldBrush", "TextFieldBrush");
             // TRANSPARENT, not PaneBrush: the sidebar well is a 98SE idea (a sunken white list
             // box). Every other theme lets the window show through the tree exactly as before, so
             // wiring this must not hand them an opaque fill they never had.
@@ -575,11 +594,10 @@ namespace KillerShell.Services
             // opaque tile. 98SE states #c0c0c0 - there, a toolbar button IS a raised button.
             SetIfAbsent("SortButtonBrush", Transparent);
             Mirror("SurfaceHoverBrush", "RowHoverBrush");
-            // The text field's EXISTING values, moved into the contract rather than replaced by
-            // it: DarkTextBox drew a BackgroundBrush field with a PrimaryBrush selection at 0.3.
-            // Defaulting these to anything else would have restyled every input in the app the
-            // moment the template started binding them.
-            Mirror("TextFieldBrush", "BackgroundBrush");
+            // The selection's EXISTING values, moved into the contract rather than replaced by
+            // it: DarkTextBox drew a PrimaryBrush selection at 0.3. TextFieldBrush itself is
+            // computed further up (before SearchFieldBrush mirrors it), where the gradient
+            // themes get a solid field instead of the window sweep.
             Mirror("TextSelectionBrush", "PrimaryBrush");
             SetIfAbsent("TextSelectionOpacity", 0.3);
             // TextBrush, not SelectionFg. The existing selection is PrimaryBrush at 0.3 opacity -
@@ -603,8 +621,8 @@ namespace KillerShell.Services
             Mirror("WindowEdgeBrush", "AppBorderBrush");
             SetIfAbsent("WindowEdgeThickness", new Thickness(0));
             // The frame's FACE. 98SE does not declare one, and a transparent default left a
-            // see-through gutter around the window where its 5,4,5,5 padding is (Steve,
-            // 2026-08-08). AppBorderBrush is the right source: it is already the frame's colour,
+            // see-through gutter around the window where its 5,4,5,5 padding
+            // is. AppBorderBrush is the right source: it is already the frame's colour,
             // #c0c0c0 on 98SE - the Win98 grey the bevels are cut into. Harmless on the other
             // twelve, whose WindowFramePadding is 0, so the Border has no visible area at all.
             // NOT BackgroundBrush, which is a full-window gradient on five themes and would have
@@ -631,7 +649,7 @@ namespace KillerShell.Services
                 combined["PlainTitleVisibility"] = flat ? Visibility.Visible   : Visibility.Collapsed;
 
                 // The resize grip. Win98 drew three bevelled DIAGONAL lines in the corner, not the
-                // dotted triangle the rest of the family uses (Steve, 2026-08-08). The two shapes
+                // dotted triangle the rest of the family uses. The two shapes
                 // are different geometry, not a recolour, so both sit in the markup and trade
                 // visibility rather than one being restyled into the other.
                 combined["GripDotsVisibility"]  = flat ? Visibility.Collapsed : Visibility.Visible;
@@ -651,7 +669,7 @@ namespace KillerShell.Services
                 // The About card's close X, now the shared ChromeCloseButton style: on a flat
                 // theme a small Win98 caption button sitting inside the 20px band (16x14 with a
                 // 3px gap, next to the band's 2,2,2 inset), elsewhere the 28x26 corner slot the
-                // bare glyph always occupied (Steve, 2026-08-09, matching KillerNotes' card).
+                // bare glyph always occupied (matching KillerNotes' card).
                 combined["AboutCloseWidth"]  = flat ? 16.0 : 28.0;
                 combined["AboutCloseHeight"] = flat ? 14.0 : 26.0;
                 combined["AboutCloseMargin"] = flat ? new Thickness(0, 5, 5, 0) : new Thickness(0, 6, 6, 0);
@@ -681,15 +699,15 @@ namespace KillerShell.Services
                 combined["ElevationHaloVisibility"] = flat ? Visibility.Collapsed : Visibility.Visible;
 
                 // Menu and flyout shadows. Win98 context menus cast a HARD solid drop shadow -
-                // the one shadow this otherwise-flat theme keeps (Steve, 2026-08-09) - while
+                // the one shadow this otherwise-flat theme keeps - while
                 // every ordinary theme keeps exactly the soft treatment it had: the ContextMenu
                 // template's 12px blur at FlyoutShadowOpacity, and the flyout cards' shared
                 // CardShadowEffect.
                 combined["MenuShadowOpacity"] = flat ? 1.0 : combined["FlyoutShadowOpacity"];
                 if (flat)
                 {
-                    // BlurRadius 5, not 0: fully hard-edged read as a black slab ("the drop
-                    // shadow has too hard of an edge", Steve, 2026-08-09) - this keeps the
+                    // BlurRadius 5, not 0: fully hard-edged read as a black slab with too hard
+                    // of an edge - this keeps the
                     // Win98 offset-shadow shape with just enough softening to sit right.
                     var hard = new DropShadowEffect
                     { Color = Colors.Black, BlurRadius = 5, ShadowDepth = 5, Direction = 315, Opacity = 0.35 };
@@ -706,9 +724,7 @@ namespace KillerShell.Services
                     combined["MenuShadowEffect"] = soft;
                     // Built HERE, not read from CardShadowEffect - that key is only created
                     // further DOWN this method, so reading it stored null and every flyout card
-                    // lost its shadow on the ordinary themes (Steve, 2026-08-09: "can we please
-                    // get drop shadows on the theme and locale flyouts again?"). Same recipe
-                    // CardShadowEffect uses.
+                    // lost its shadow on the ordinary themes. Same recipe CardShadowEffect uses.
                     double cardFso = combined["FlyoutShadowOpacity"] is double cf ? cf : 1.0;
                     var cardShadow = new DropShadowEffect
                     { Color = Colors.Black, BlurRadius = 22, ShadowDepth = 4, Direction = 270, Opacity = 0.55 * cardFso };
@@ -771,7 +787,7 @@ namespace KillerShell.Services
                 // template hardcoded. On a flat theme the thumb is a raised bevelled button that
                 // fills its track, so shrinking it on hover pulled the fill out from under its
                 // own bevel ring, and the glow put a shadow on a theme that has none anywhere
-                // (Steve, 2026-08-09: "the scrollbars should be raised, not flat"). Defaults are
+                // (there, the scrollbars should read raised, not flat). Defaults are
                 // exactly the literals the template carried, so the other twelve do not move.
                 if (!combined.Contains("ScrollThumbHoverMargin"))
                     combined["ScrollThumbHoverMargin"] = flat ? new Thickness(0) : new Thickness(2);
@@ -799,7 +815,7 @@ namespace KillerShell.Services
                 // The ACTIVE tab's accent stripe. 3px across the top by default; a flat theme gets
                 // none, because a Win98 tab is identified by its bevel and by being joined to the
                 // pane, not by a coloured bar. The padding compensates either way so the title
-                // never shifts as a tab activates (Steve, 2026-08-08).
+                // never shifts as a tab activates.
                 if (!combined.Contains("TabStripeThickness"))
                     combined["TabStripeThickness"] = flat ? new Thickness(0) : new Thickness(0, 3, 0, 0);
                 if (!combined.Contains("TabActivePadding"))
@@ -827,7 +843,7 @@ namespace KillerShell.Services
             // OutlineButton's hover fills with OutlineBtnBrush but used to put OnPrimaryBrush on
             // top of it. Those are two different tokens, and on any theme where the outline color
             // is a MID tone they disagree badly: white on Sepulchre's #4faaa8 measures 2.75:1,
-            // Delirium 2.83, Black's #00ff66 just 1.36 (Steve, 2026-08-08 - the Install button in
+            // Delirium 2.83, Black's #00ff66 just 1.36 (the Install button in
             // the portable badge was the one that showed it). Derived rather than hand-picked per
             // theme so it cannot drift, and computed HERE, after the accent overlay, because
             // picking an accent replaces OutlineBtnBrush.
@@ -838,7 +854,7 @@ namespace KillerShell.Services
             // TabEdge verticals and the lit TabBarRing all draw with it. PrimaryBrush on every
             // ordinary theme, exactly as they always did - but a theme may state its own, and 98SE
             // states Transparent, because a Win98 tab is identified by its bevel and its join to
-            // the page, never by an accent ring (Steve, 2026-08-09, dual pane). Computed HERE,
+            // the page, never by an accent ring (dual pane). Computed HERE,
             // after the accent overlay, so it follows the picked accent like OnOutlineBtnBrush.
             if (!combined.Contains("TabActiveRingBrush"))
                 combined["TabActiveRingBrush"] = combined["PrimaryBrush"];

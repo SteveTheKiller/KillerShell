@@ -186,7 +186,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">O aplikaci KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Velikost textu: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Svobodný shell pro pokročilé uživatele. Správce souborů, terminál a textový editor sdílejí jedno okno, jeden pruh karet a jednu sadu kláves. Instalace volitelná. Nástroj</sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Jedna přenosná aplikace pro správu počítače a jeho souborů. Správce souborů, terminál, textový editor a nástroje pro správu sdílejí jedno okno a jednu sadu kláves. Instalace volitelná, žádné běhové prostředí, žádný účet. Nástroj </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERZE</sys:String>
     <sys:String x:Key="Str_About_Publisher">VYDAVATEL</sys:String>

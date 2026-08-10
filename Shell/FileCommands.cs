@@ -28,8 +28,8 @@ namespace KillerShell.Shell
         /// needs this: the pane you drag FROM keeps focus for the whole gesture (nothing about an
         /// in-flight OLE drag moves it), so resolving through the focused pane's tab landed a
         /// cross-pane drop back in the SOURCE pane's own folder instead of wherever the cursor
-        /// actually was in the destination pane (Steve, 2026-08-03: dropped in the right pane,
-        /// landed back in the right pane's own folder, "my mouse wasnt over that folder").
+        /// actually was in the destination pane (2026-08-03: dropped in the right pane, landed
+        /// back in the right pane's own folder).
         /// </summary>
         private static string? TargetFolder(FilePane pane)
         {
@@ -153,9 +153,9 @@ namespace KillerShell.Shell
 
             // A drop onto a folder row is "take me there", not just "file work somewhere else" -
             // Explorer does not do this, but a drop that leaves you staring at the folder you
-            // just emptied the file out of does not feel like it landed anywhere (Steve,
-            // 2026-08-03: "it needs to move the folder and scroll me to the location of that
-            // file"). Copying leaves the source in place, so only a move navigates.
+            // just emptied the file out of does not feel like it landed anywhere (2026-08-03 -
+            // navigate there and scroll to the dropped file). Copying leaves the source in
+            // place, so only a move navigates.
             //
             // Awaited (not fired-and-forgotten) so the caller - Window_Drop - only touches
             // focus for the source-pane refresh once THIS pane's own post-move refresh has

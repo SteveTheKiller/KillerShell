@@ -35,8 +35,8 @@
                     Opacity="{DynamicResource GrainOpacity}"
                     Background="{DynamicResource GrainTileBrush}"/>
             <!-- Raised dialog bevel, the ConfirmDialog/ProcessDetails pair - inert on every
-                 ordinary theme, the Win98 dialog edge on 98SE (Steve, 2026-08-09: "regedit the
-                 actual key when opened, the window needs to be themed"). -->
+                 ordinary theme, the Win98 dialog edge on 98SE, so the value-edit window is
+                 themed like the rest. -->
             <Border IsHitTestVisible="False" Panel.ZIndex="6"
                     BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
             <Border IsHitTestVisible="False" Panel.ZIndex="6"

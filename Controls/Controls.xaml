@@ -87,8 +87,8 @@
         <!-- TRANSPARENT at rest. This is the family's outline button: an accent OUTLINE at rest
              that fills solid on hover. It was filled with RowSelectedBrush, which on the newer
              themes is a 27% white wash - so the Install button in the portable badge came up as
-             a milky lozenge in a colour belonging to no tier, with the accent text fighting it
-             (Steve, 2026-08-08). A filled rest state also leaves nowhere for hover to go. -->
+             a milky lozenge in a colour belonging to no tier, with the accent text fighting it.
+             A filled rest state also leaves nowhere for hover to go. -->
         <Setter Property="Background" Value="{DynamicResource OutlineFaceBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource OutlineTextBrush}"/>
         <Setter Property="FontFamily" Value="Consolas"/>
@@ -168,7 +168,7 @@
                     <ControlTemplate.Triggers>
                         <!-- Order matters: IsPressed after IsMouseOver so it wins. -->
                         <!-- A real fill change, not an opacity fade - the fade is invisible on a
-                             dark panel and the button reads as dead. (Steve, 2026-07-30.) -->
+                             dark panel and the button reads as dead. -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource ChipHoverBrush}"/>
                             <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource OutlineBtnBrush}"/>
@@ -182,8 +182,8 @@
                              IsMouseOver/IsPressed so an "on" row stays reading as ON while
                              hovered rather than fading to the plain hover tint - editors, gear
                              menu toggles (EditorBar.cs SyncEditorGear) and the shell/document
-                             bars all set this Tag and had nothing here to answer it (Steve,
-                             2026-08-02: "the menu options aren't showing selected state"). -->
+                             bars all set this Tag and had nothing here to answer it, so the
+                             menu options were not showing their selected state. -->
                         <Trigger Property="Tag" Value="on">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource SelectionBg}"/>
                             <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
@@ -262,7 +262,7 @@
                     <ControlTemplate.Triggers>
                         <!-- ComboHighlightTextBrush = the PrimaryBrush this always set, except on
                              98SE where MenuHoverBrush is solid NAVY and PrimaryBrush IS that navy
-                             - invisible highlighted items (Steve, 2026-08-09). White there. -->
+                             - invisible highlighted items. White there. -->
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
@@ -278,7 +278,7 @@
 
     <Style TargetType="ComboBox">
         <!-- ComboFieldBrush = BackgroundBrush everywhere but 98SE, where an edit field is a
-             WHITE client area (Steve, 2026-08-09: "dropdowns should be white"). -->
+             WHITE client area - dropdowns are white there. -->
         <Setter Property="Background" Value="{DynamicResource ComboFieldBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="FontFamily" Value="Consolas"/>
@@ -310,9 +310,8 @@
                             <!-- The drop arrow. On every ordinary theme this renders exactly the
                                  bare chevron it always was (transparent face, zero bevels, same
                                  margin); on 98SE it becomes the era's raised grey button filling
-                                 the field's right edge, with Marlett's solid triangle (Steve,
-                                 2026-08-09: "the dropdown button should be the gray button
-                                 style"). -->
+                                 the field's right edge, with Marlett's solid triangle - the
+                                 dropdown button takes the gray button style. -->
                             <Grid Grid.Column="1" Margin="{DynamicResource ComboChevMargin}" MinWidth="{DynamicResource ComboButtonMinWidth}">
                                 <Border Background="{DynamicResource ComboButtonBrush}"/>
                                 <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
@@ -622,8 +621,8 @@
                             <ColumnDefinition x:Name="ArrowRightCol" Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Marlett, not Segoe MDL2 (Steve, 2026-08-09: "the top scrollbar arrow
-                             looks wrong"). E70E/E70D are thin CHEVRONS, and at 8px they rendered
+                        <!-- Marlett, not Segoe MDL2 - the MDL2 scrollbar arrows looked
+                             wrong. E70E/E70D are thin CHEVRONS, and at 8px they rendered
                              as a wispy caret with ClearType color fringes. Marlett is the actual
                              Win9x marker font - '5'/'6'/'3'/'4' are the solid up/down/left/right
                              scrollbar triangles - and it is TrueType, so WPF can render it
@@ -712,7 +711,7 @@
                                                         <ControlTemplate.Triggers>
                                                             <!-- ScrollThumbMarginH, not the literal 0,4: that squeeze is the
                                                                  slim-overlay look, and on 98SE it left an 8px thumb floating in
-                                                                 a 16px track - the skinny tree scrollbar (Steve, 2026-08-09).
+                                                                 a 16px track - the skinny tree scrollbar.
                                                                  The token defaults to exactly the literal it replaced. -->
                                                             <DataTrigger Binding="{Binding Orientation, RelativeSource={RelativeSource AncestorType={x:Type ScrollBar}}}" Value="Horizontal">
                                                                 <Setter TargetName="thumbBorder" Property="Margin" Value="{DynamicResource ScrollThumbMarginH}"/>
@@ -801,12 +800,12 @@
                          it is hosted inside one WPF owns - so the fade is driven from the template
                          with an EventTrigger on Loaded. Submenus already faded, so a menu appeared
                          instantly while its own children faded in, which is backwards. 150ms
-                         ease-out, the curve Anim.FadeIn uses. (Steve, 2026-07-30.) -->
+                         ease-out, the curve Anim.FadeIn uses. -->
                     <Grid x:Name="MenuRoot" Opacity="0" Margin="5">
                         <!-- MenuShadow*: the same values as before on every ordinary theme
                              (opacity follows FlyoutShadowOpacity, soft 12px blur), and a HARD
                              offset shadow at full opacity on 98SE - Win98 context menus cast a
-                             solid drop shadow (Steve, 2026-08-09). -->
+                             solid drop shadow. -->
                         <Border CornerRadius="{DynamicResource ControlCornerRadius}" Background="{TemplateBinding Background}" IsHitTestVisible="False"
                                 Opacity="{DynamicResource MenuShadowOpacity}"
                                 Effect="{DynamicResource MenuShadowEffect}">
@@ -847,16 +846,21 @@
         </Setter>
     </Style>
 
-    <!-- Menu icon glyph, matched to KillerPDF's MakeMenuItem (ContextMenu.cs): Segoe MDL2 at 12,
-         TextSecondary - MutedTextBrush here - left-aligned in the 16px gutter. It was 13px in
-         MenuTextBrush, which oversized it for the gutter AND made it accent along with the row
-         on hover; KillerPDF's icons hold a constant secondary tone. HorizontalAlignment is gone
-         because the template's icon presenter aligns Left, the way KillerPDF's does. -->
+    <!-- Menu icon glyph: Segoe MDL2 at 12, left-aligned in the 16px gutter. The 2026-08-09
+         selection/hover color language: icons rest on the plain text color and go accent with
+         the hovered row - never accent at rest, never accent on an accent fill. The hover
+         brush is ComboHighlightTextBrush rather than PrimaryBrush for the 98SE navy-wash
+         reason documented on the MenuItem template below. -->
     <Style x:Key="MenuGlyph" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType=MenuItem}}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Ported wholesale from KillerPDF's MenuItem template (MainWindow.xaml), brush names
@@ -936,16 +940,24 @@
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <!-- SELECTION, not a gray wash - solid SelectionBg fill with SelectionFg
-                             text, the same treatment a selected tool or tab gets. The gesture and
-                             chevron are recoloured too: they are MutedTextBrush at rest, which is
-                             unreadable on a saturated fill. Family standard, see KillerUI.
-                             (Steve, 2026-07-30.) -->
+                        <!-- HOVER, not selection: accent text on the neutral MenuHoverBrush wash.
+                             The 2026-08-09 selection/hover color language - SELECTED is white on
+                             the accent-tinted block, HOVER is accent on the neutral wash - and a
+                             hovered menu row is a hover, not a selection. The old SelectionBg
+                             fill was the "accent on accent" surface: it put the accent check
+                             glyph and accent-adjacent icons on an accent-tinted fill.
+                             ComboHighlightTextBrush, NOT PrimaryBrush, for the same reason the
+                             ComboBoxItem trigger above uses it: 98SE's MenuHoverBrush is solid
+                             navy and its PrimaryBrush IS that navy - accent-on-wash would be
+                             invisible there, so the token goes white on 98SE. Check, gesture and
+                             chevron ride the same brush so nothing muted is left to fight the
+                             navy. -->
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="MenuBd" Property="Background" Value="{DynamicResource SelectionBg}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
-                            <Setter TargetName="Gesture" Property="Foreground" Value="{DynamicResource SelectionFg}"/>
-                            <Setter TargetName="SubArrow" Property="Foreground" Value="{DynamicResource SelectionFg}"/>
+                            <Setter TargetName="MenuBd" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+                            <Setter TargetName="Check" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+                            <Setter TargetName="Gesture" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+                            <Setter TargetName="SubArrow" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
                         </Trigger>
                         <!-- Collapse the shortcut column when there is no gesture, so items
                              without one do not reserve its 24px left margin as phantom padding. -->
@@ -996,13 +1008,20 @@
            BasedOn="{StaticResource {x:Type Separator}}"/>
 
     <!-- Glyph for a MenuItem.Icon, so an icon in the new gutter is one line at the call site
-         and the size/color live in one place (family standard, see KillerScan App.xaml). -->
+         and the size/color live in one place (family standard, see KillerScan App.xaml).
+         Same rest/hover treatment as MenuGlyph above: plain text color at rest, accent (via
+         the 98SE-safe ComboHighlightTextBrush) on the hovered row. -->
     <Style x:Key="MenuIcon" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType=MenuItem}}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="Card" TargetType="Border">
@@ -1014,8 +1033,8 @@
     </Style>
 
     <!-- ============================================================
-         Family flyout standard, ported verbatim from KillerPDF (Steve, 2026-08-02: "COPY THE
-         EXACT MENU FROM KILLERPDF FOR EVERYTHING"). The rail's theme and language flyouts are
+         Family flyout standard, ported verbatim from KillerPDF - the exact KillerPDF menu is
+         the reference for everything here. The rail's theme and language flyouts are
          Button.ContextMenus whose chrome comes ONLY from FlyoutCard + FlyoutGrain, with
          PanelMenuItem stripping the MenuItem container for panel content (a StackPanel of
          RadioButtons, not clickable rows).
@@ -1033,7 +1052,7 @@
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <!-- FlyoutCardEffect: CardShadowEffect on every ordinary theme exactly as before, and a
              HARD offset shadow on 98SE - Win98 drew its menus with a solid drop shadow, so the
-             flyouts get it back with the bevel (Steve, 2026-08-09). -->
+             flyouts get it back with the bevel. -->
         <Setter Property="Effect" Value="{DynamicResource FlyoutCardEffect}"/>
     </Style>
 
@@ -1094,7 +1113,7 @@
                     <!-- Transparent ROW, not RadioWellBrush: that key is the little white circle
                          well behind the radio RING (see KillerNotes' copy of this template), and
                          painting it across the whole row turned every flyout option into a WHITE
-                         pill on 98SE - the "wrong color" flyouts (Steve, 2026-08-09). The well
+                         pill on 98SE - the "wrong color" flyouts. The well
                          ellipse below is where it actually belongs; both are transparent on every
                          ordinary theme, so nothing changes there. -->
                     <Border x:Name="bd" Background="Transparent"
@@ -1287,7 +1306,7 @@
          hover, like KillerPDF's. The dialog close X's keep the glyph-only treatment. -->
     <!-- Inherits geometry and the bevel from ChromeButton; only the corner and the hover differ.
          On a flat theme it is a bevelled grey button with a black glyph and NO hover fill, which
-         is how Win98 drew it - it reacted to being pressed, not hovered (Steve, 2026-08-08). -->
+         is how Win98 drew it - it reacted to being pressed, not hovered. -->
     <Style x:Key="ChromeCloseButton" TargetType="Button" BasedOn="{StaticResource ChromeButton}">
         <Setter Property="Foreground" Value="{DynamicResource CaptionCloseBrush}"/>
         <Setter Property="Margin" Value="{DynamicResource CaptionCloseGap}"/>
@@ -1315,7 +1334,7 @@
                         </Trigger>
                         <!-- PRESSED: the bevel inverts, so the button visibly sinks. That is the
                              only feedback a Win98 caption button ever gave - it had no hover
-                             state at all (Steve, 2026-08-08). Both bevels are zero-thickness on
+                             state at all. Both bevels are zero-thickness on
                              every other theme, so this trigger does nothing there. -->
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="bevelLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
@@ -1330,7 +1349,7 @@
     <!-- A check-marked option row for the editor's gear and encoding popups: reads like a
          MenuItem - transparent row, hover wash, a 16px check column that shows E73E while
          Tag="on" - instead of the accent-filled buttons these were, which read as pressed
-         buttons rather than toggled options (Steve, 2026-08-09). The Tag="on" signal is the
+         buttons rather than toggled options. The Tag="on" signal is the
          SAME one the code already sets for SurfaceButton, so no code changes anywhere. -->
     <Style x:Key="CheckRow" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
@@ -1366,7 +1385,7 @@
          - a bare muted U+2715 that reddens on hover, no fill - and on 98SE it is a real Win98
          caption button: grey bevelled face, black bold E8BB, sinks on press, no hover state.
          ChromeCloseButton was tried here first and dragged the main window's red hover fill and
-         glyph onto the cards, which read wrong on the ordinary themes (Steve, 2026-08-09). -->
+         glyph onto the cards, which read wrong on the ordinary themes. -->
     <Style x:Key="OverlayCloseButton" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Foreground" Value="{DynamicResource AboutCloseFg}"/>
@@ -1404,7 +1423,7 @@
     <!-- Kept for anything still referencing it directly. The LIVE one is PaneShadowEffect, built
          per palette load in ThemeManager at that theme's PaneShadowOpacity and set to NULL on a
          flat theme - 98SE has no shadows at all. A StaticResource here could never follow a theme
-         change, which is why the pane kept its shadow on 98SE (Steve, 2026-08-08). -->
+         change, which is why the pane kept its shadow on 98SE. -->
     <DropShadowEffect x:Key="PaneShadow" Color="Black" BlurRadius="16" ShadowDepth="5" Direction="270" Opacity="0.6"/>
 
     <!-- Themed checkbox: small square, accent check, mono label. -->
@@ -1511,8 +1530,12 @@
                                 BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <!-- Hover = accent glyph on the neutral wash (2026-08-09 color language).
+                             Declared BEFORE Tag="on" so a hovered SELECTED button keeps white-on-
+                             accent - the later trigger wins the Foreground, never accent-on-accent. -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="Tag" Value="on">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource SelectionBg}"/>
@@ -1682,8 +1705,8 @@
                         <!-- SelectionBg + SelectionFg, the SAME pair the places/bookmarks rows
                              use - the tree used RowSelectedBrush, which on Delirium, Sepulchre,
                              Malaise, Decay and Ectoplasm is a grey wash while the bookmarks
-                             below glow the accent, and the mismatch read as a bug (Steve,
-                             2026-08-09: "it should probably be orange"). One selection treatment
+                             below glow the accent, and the mismatch read as a bug - the tree
+                             should light the accent too. One selection treatment
                              everywhere; the trees' item templates must NOT pin their own
                              Foreground or the Fg half cannot reach the text. -->
                         <Trigger Property="IsSelected" Value="True">
@@ -1735,7 +1758,7 @@
                         <!-- RowSpan 2: the vertical bar runs down THROUGH the corner block rather
                              than stopping above it. The corner was a bare 16x16 hole whenever a
                              horizontal bar appeared, and the only thing that sensibly fills it is
-                             the bar itself (Steve, 2026-08-09). -->
+                             the bar itself. -->
                         <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
                                    Orientation="Vertical" Cursor="Arrow"
                                    Minimum="0" Maximum="{TemplateBinding ScrollableHeight}"
@@ -1915,8 +1938,12 @@
                                 BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <!-- Hover = accent glyph on the neutral wash (2026-08-09 color language).
+                             Declared BEFORE Tag="on" so a hovered SELECTED button keeps white-on-
+                             accent - the later trigger wins the Foreground, never accent-on-accent. -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="Tag" Value="on">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource SelectionBg}"/>
@@ -1966,7 +1993,7 @@
 
     <!-- ICONS view: 32px icon above a centred, wrapping name. Genuinely different from the
          list view - previously both used RowTemplate and only the panel differed, which read
-         as two list modes (Steve, 2026-07-29). -->
+         as two list modes. -->
     <DataTemplate x:Key="IconTemplate">
         <StackPanel Style="{StaticResource PickerRowContent}" Width="84">
             <Image Source="{Binding IconLarge}" Width="32" Height="32"
@@ -2000,7 +2027,7 @@
     <ItemsPanelTemplate x:Key="PanelStack"><VirtualizingStackPanel/></ItemsPanelTemplate>
 
     <!-- LIST view: fills a column top-to-bottom then starts the next column to the right, so
-         the pane scrolls HORIZONTALLY - Explorer's List view (Steve, 2026-07-29). Vertical
+         the pane scrolls HORIZONTALLY - Explorer's List view. Vertical
          orientation is what makes it wrap downward-then-across; the ListBox must also have
          VerticalScrollBarVisibility="Disabled" or the panel gets infinite height and never
          wraps at all. ItemHeight keeps the columns aligned. -->
@@ -2029,7 +2056,7 @@
         <Style.Triggers>
             <!-- GridRowAltBrush, not RowAltBrush: identical on every ordinary theme (the token
                  mirrors it), but 98SE states its own solid stripe so the Events/Processes/
-                 Registry tables read white-and-grey striped (Steve, 2026-08-09). -->
+                 Registry tables read white-and-grey striped. -->
             <Trigger Property="AlternationIndex" Value="1">
                 <Setter Property="Background" Value="{DynamicResource GridRowAltBrush}"/>
             </Trigger>
@@ -2060,8 +2087,7 @@
             <!-- GridSelectedTextBrush mirrors PrimaryBrush - exactly the accent this trigger
                  always set, so nothing changes on the ordinary themes. 98SE states WHITE: its
                  selected row is a solid navy block and PrimaryBrush IS that navy, which is what
-                 made selected text unreadable in the Registry/Events/Processes tables (Steve,
-                 2026-08-09). -->
+                 made selected text unreadable in the Registry/Events/Processes tables. -->
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource GridSelectedTextBrush}"/>
             </Trigger>

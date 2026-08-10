@@ -32,9 +32,8 @@ namespace KillerShell.Shell
         // has real focus. Only the ACTIVE tab is watched for filesystem changes
         // (BrowseWatcher.cs), and Window_Drop switches focus to the DROP pane before the move
         // runs (FocusPane(dropPane), below) - so a cross-pane move left the SOURCE pane, now
-        // unwatched, showing the file it no longer has until the user clicked back into it
-        // (Steve, 2026-08-03: "it left a copy in the other folder... the old one disappeared
-        // when i clicked back into that folder - something needs to update"). Used by
+        // unwatched, showing the file it no longer has until the user clicked back into it,
+        // which read as the drag leaving a stale copy behind. Used by
         // RefreshSourcePaneIfStale after the drop to re-list that pane's folder directly rather
         // than waiting on a watcher it no longer has.
         private FilePane? _dragSourcePane;
@@ -190,9 +189,9 @@ namespace KillerShell.Shell
         // reliable fallback for the other at press time. What actually settles it is time: by
         // the time StartFileDrag re-tries this same call (after the drag has cleared the
         // system's move threshold, i.e. after several MouseMove ticks), the container has
-        // always caught up. See _dragSeedItem / StartFileDrag for the re-resolve
-        // (Steve, 2026-08-03: "i need to be able to click and drag immediately without having
-        // to click, stop, then click+drag").
+        // always caught up. See _dragSeedItem / StartFileDrag for the re-resolve - it is what
+        // makes click-and-drag work immediately, without having to click, stop, then
+        // click+drag.
         private static SearchResult? DataFor(ListBoxItem? item)
         {
             if (item == null) return null;
@@ -243,6 +242,15 @@ namespace KillerShell.Shell
             if (_dragSeed == null) _dragSeed = DataFor(_dragSeedItem);
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: late-resolved seed={_dragSeed?.FilePath ?? "still null"}");
 
+            // Nothing inside an archive exists on disk, so File.Exists below filters every row
+            // out and the drag would just do nothing at all. Say why instead: dragging OUT of
+            // an archive means extracting first, which is the write half and is not built yet.
+            if (InArchive(Pane))
+            {
+                SetTabStatusKey(_active, "Str_Status_ArchiveNoDrag");
+                return;
+            }
+
             var paths = FilesForCommand(_dragSeed).Where(File.Exists).ToArray();
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: seed={_dragSeed?.FilePath ?? "null"}, resolvedPaths={paths.Length}");
             if (paths.Length == 0) return;
@@ -252,8 +260,8 @@ namespace KillerShell.Shell
             // read FROM as a drag source, never written TO), so the shell's IDragSourceHelper
             // cannot write its own drag-image formats onto it and InitializeFromBitmap fails
             // outright - confirmed here by DragImage's own trace: hr=0x80004001 (E_NOTIMPL),
-            // exactly the HRESULT a NotImplementedException becomes crossing the COM boundary
-            // (Steve, 2026-08-03). Services.NativeDataObject implements SetData for real.
+            // exactly the HRESULT a NotImplementedException becomes crossing the COM boundary.
+            // Services.NativeDataObject implements SetData for real.
             var data = new Services.NativeDataObject();
             try
             {
@@ -268,8 +276,8 @@ namespace KillerShell.Shell
             }
 
             // The file's own icon at half opacity, following the cursor - the same thing Explorer
-            // shows, and the whole reason a plain DoDragDrop reads as "just a cursor" (Steve,
-            // 2026-08-03). One icon even for a multi-file drag: which file's icon to show for a
+            // shows, and the whole reason a plain DoDragDrop reads as just a text cursor.
+            // One icon even for a multi-file drag: which file's icon to show for a
             // dozen mixed types is not worth guessing at, and Explorer itself falls back the same
             // way for a mixed selection.
             var dragIcon = Services.IconCache.For(paths[0], 48);
@@ -311,7 +319,7 @@ namespace KillerShell.Shell
         // this, KillerShell's own AllowDrop plumbing never calls IDropTargetHelper, so the shell
         // drag image DragImage.Attach wrote onto the data object never got drawn for a drag that
         // stayed inside KillerShell (pane to pane, or window to window) - only a drop onto real
-        // Explorer, whose own drop target DOES call the helper, ever showed it (Steve, 2026-08-03).
+        // Explorer, whose own drop target DOES call the helper, ever showed it.
         private Services.DropTargetHelper? _dropImageHelper;
 
         private static int EffectsToNative(DragDropEffects effects)
@@ -333,7 +341,7 @@ namespace KillerShell.Shell
             // Enter, then Over*, then Drop/Leave for a session; calling Enter a second time while
             // it still considers the first session open desyncs its internal state machine, and
             // the very next call into that corrupted state is what threw
-            // AccessViolationException (Steve, 2026-08-03). So: only call Enter once per actual
+            // AccessViolationException. So: only call Enter once per actual
             // drag - if a helper is already active, this is just another crossing within the same
             // session and gets treated as an Over, not a fresh Enter.
             if (_dropImageHelper != null)
@@ -387,6 +395,12 @@ namespace KillerShell.Shell
                           : ctrl  ? DragDropEffects.Copy
                           : DragDropEffects.Copy | DragDropEffects.Move;
             }
+            // Inside an archive there is nowhere to put anything: this build reads archives and
+            // does not write them. Without this the drop fell through to the SEARCH gesture
+            // below and quietly piped the files into a search, which looks like the app doing
+            // something random rather than refusing.
+            else if (InArchive(PaneUnder(e.OriginalSource as DependencyObject) ?? Pane))
+                e.Effects = DragDropEffects.None;
             else e.Effects = DragDropEffects.Link;            // search tab: scope or pipe, as before
 
             System.Diagnostics.Debug.WriteLine($"[DragDiag] Window_DragOver: OriginalSource={e.OriginalSource?.GetType().Name}, target={overTarget ?? "null"}, Effects={e.Effects}");
@@ -406,17 +420,70 @@ namespace KillerShell.Shell
         /// window-wide TargetFolder() - that reads the FOCUSED pane, and dragging never moves
         /// focus off the pane you picked the file up FROM. Falling back to TargetFolder() here
         /// meant a drop into empty space in the OTHER pane silently landed back in the source
-        /// pane's own folder instead (Steve, 2026-08-03).
+        /// pane's own folder instead.
         /// </summary>
         private string? DropTarget(DragEventArgs e)
         {
-            if (DataFor(ItemUnder(e.OriginalSource as DependencyObject)) is { } sr &&
+            var src = e.OriginalSource as DependencyObject;
+
+            // The SIDEBAR is a drop target too: a folder in the tree and a saved place are both
+            // "a folder you can see", and dropping onto one has to mean the same thing dropping
+            // onto a folder ROW does. Neither used to be checked at all, so a drop on either
+            // fell through to the focused pane's own folder and the files landed somewhere the
+            // pointer was never over. Checked FIRST, because a tree node and a bookmark row are
+            // more specific than "whatever pane this is inside".
+            if (FolderNodeUnder(src) is { } node && Directory.Exists(node.Path)) return node.Path;
+            if (BookmarkUnder(src) is { } bm && Directory.Exists(bm.Path)) return bm.Path;
+
+            if (DataFor(ItemUnder(src)) is { } sr &&
                 sr.IsDirectory && Directory.Exists(sr.FilePath))
                 return sr.FilePath;
 
-            var pane = PaneUnder(e.OriginalSource as DependencyObject) ?? Pane;
+            var pane = PaneUnder(src) ?? Pane;
             return TargetFolder(pane);
         }
+
+        /// <summary>The tree node a visual element sits in, or null. Walks to the TreeViewItem
+        /// and reads its DataContext rather than hit-testing the model directly, so the row's
+        /// icon, label and padding all count as the same target.</summary>
+        private static FolderNode? FolderNodeUnder(DependencyObject? d)
+        {
+            while (d != null)
+            {
+                if (d is TreeViewItem tvi) return tvi.DataContext as FolderNode;
+                d = d is Visual or System.Windows.Media.Media3D.Visual3D
+                    ? VisualTreeHelper.GetParent(d)
+                    : LogicalTreeHelper.GetParent(d);
+            }
+            return null;
+        }
+
+        /// <summary>The saved place a visual element sits in, or null. The bookmark rows are
+        /// plain Borders in a ListBox, so this reads the DataContext off whatever carries a
+        /// Bookmark - the row template's own Border does.</summary>
+        private static Bookmark? BookmarkUnder(DependencyObject? d)
+        {
+            while (d != null)
+            {
+                if (d is FrameworkElement { DataContext: Bookmark b }) return b;
+                d = d is Visual or System.Windows.Media.Media3D.Visual3D
+                    ? VisualTreeHelper.GetParent(d)
+                    : LogicalTreeHelper.GetParent(d);
+            }
+            return null;
+        }
+
+        /// <summary>True when the pointer is over a sidebar drop target - a tree node or a
+        /// saved place. Used by the drag-over feedback and by the bookmarks drawer, which has
+        /// to know whether a drop means "file operation" or "save this folder".</summary>
+        internal static bool OverSidebarFolder(DependencyObject? d)
+            => FolderNodeUnder(d) != null || BookmarkUnder(d) != null;
+
+        /// <summary>True when a pane is browsing INSIDE an archive, where writing is not
+        /// supported (Services/ArchiveProvider.cs).</summary>
+        private static bool InArchive(FilePane pane)
+            => pane.Active is { IsBrowsing: true } t
+               && Services.ArchiveProvider.TrySplit(t.CurrentFolder, out _, out _);
 
         /// <summary>The FilePane a visual element sits inside, or null if it is not in either one
         /// (e.g. the tab strip, a title-bar button).</summary>
@@ -456,7 +523,7 @@ namespace KillerShell.Shell
                 // and-select after a move - reads and writes through the FOCUSED pane (_active /
                 // Pane). Focus never moves during a drag on its own, so without this a cross-pane
                 // drop kept acting on the pane you dragged FROM instead of the one you actually
-                // dropped into (Steve, 2026-08-03).
+                // dropped into.
                 if (PaneUnder(e.OriginalSource as DependencyObject) is { } dropPane && dropPane != Pane)
                     FocusPane(dropPane);   // Panes.cs
 
@@ -480,11 +547,19 @@ namespace KillerShell.Shell
                 // slow listing cannot land on top of a folder you have since moved away from) -
                 // so running these two back to back unawaited let whichever one's listing was
                 // still in flight when the other flipped focus get silently discarded. That was
-                // the one-drag-late bug (Steve, 2026-08-03: "i drag box.png and it disappears i
-                // drag box1 and box finally appears"). Awaiting the drop's own refresh here means
+                // the one-drag-late bug: a dragged file disappeared and only reappeared after
+                // the NEXT drag. Awaiting the drop's own refresh here means
                 // it has already landed before the source pane's focus is touched at all.
                 await DropOntoFolder(incoming, target, e.AllowedEffects, ctrl, shift);
                 await RefreshSourcePaneIfStale(_dragSourcePane);
+                return;
+            }
+
+            // See Window_DragOver: an archive is read-only here, so say so rather than falling
+            // into the search gesture below.
+            if (InArchive(PaneUnder(e.OriginalSource as DependencyObject) ?? Pane))
+            {
+                SetTabStatusKey(_active, "Str_Status_ArchiveReadOnly");
                 return;
             }
 

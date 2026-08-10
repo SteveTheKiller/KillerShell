@@ -32,7 +32,9 @@ namespace KillerShell.Shell
             ("Nav",    "Alt+Left / Right", "Str_Ks_BackForward"),
             ("Nav",    "Backspace",      "Str_Ks_Back"),
             ("Nav",    "Alt+Up",         "Str_Ks_Up"),
-            ("Nav",    "Ctrl+L / F4 / Alt+D", "Str_Ks_Address"),
+            // Bare F4 moved to the Storage Analyzer (BACKLOG.md reserved exactly this handover);
+            // the address edit keeps its two other aliases, so nothing was lost.
+            ("Nav",    "Ctrl+L / Alt+D", "Str_Ks_Address"),
             ("Nav",    "Ctrl+O",         "Str_Ks_Folder"),
             ("Nav",    "Ctrl+B",         "Str_Ks_Bookmarks"),
             ("Nav",    "Alt+1-0",        "Str_Ks_JumpBookmark"),
@@ -66,8 +68,8 @@ namespace KillerShell.Shell
             ("Tabs",   "Shift+F8",       "Str_Ks_ShellCmd"),
             ("Tabs",   "Ctrl+F8 / Ctrl+Alt+`", "Str_Ks_ShellAdmin"),
 
-            // F9 (Steve, 2026-08-02): moved off F11 - F11 briefly held the Processes tab after
-            // Dual Pane moved to plain F10, then Steve wanted F11 gone entirely, so it ended up
+            // F9 (2026-08-02): moved off F11 - F11 briefly held the Processes tab after
+            // Dual Pane moved to plain F10, then F11 was dropped entirely, so it ended up
             // here instead, freeing F9 in turn by pushing export onto Ctrl+Alt+E above. Singleton
             // same as the rail icon (TaskManagerRailBtn in MainWindow.xaml, OpenTaskManager in
             // ProcessTabs.cs). Two rows, same shape as F8 / Ctrl+F8 for the shell: Ctrl+F9 relaunches
@@ -84,6 +86,28 @@ namespace KillerShell.Shell
             // note originally described Ctrl+F11 as the elevated variant, written before this tab
             // existed and before that turned out not to be true.
             ("Tabs",   "F11",            "Str_Ks_Performance"),
+
+            // F4: the Storage Analyzer tab, singleton same as the rail icon (StorageRailBtn in
+            // MainWindow.xaml, OpenStorageAnalyzer in StorageTabs.cs). Same open/admin pair as
+            // F9 / Ctrl+F9 - the elevated scan sees folders an ordinary token cannot open
+            // (Elevation.cs RelaunchElevatedStorage).
+            ("Tabs",   "F4",             "Str_Ks_Storage"),
+            ("Tabs",   "Ctrl+F4",        "Str_Ks_StorageAdmin"),
+
+            // Storage Analyzer tab - local to the treemap (StorageAnalyzerControl
+            // OnPreviewKeyDown), reachable only while that tab has focus, the same way the
+            // Processes grid's row keys and the CPU tile's L are. Filed under the EXISTING
+            // categories rather than a new "Storage" one, the same convention the Processes and
+            // Registry Editor rows below follow: a new category costs a KsCat* brush in thirteen
+            // themes and a Str_Ks_Cat* string in ten locale files to say one word.
+            ("Search", "Ctrl+Enter",     "Str_Ks_StorageScan"),
+            ("View",   "D",              "Str_Ks_StorageDepth"),
+            ("View",   "M",              "Str_Ks_StorageMin"),
+            ("View",   "C",              "Str_Ks_StorageColor"),
+            ("Nav",    "Enter",          "Str_Ks_StorageZoomIn"),
+            ("Nav",    "Backspace",      "Str_Ks_StorageZoomOut"),
+            ("Nav",    "Home",           "Str_Ks_StorageHome"),
+            ("Edit",   "Del",            "Str_Ks_StorageRecycle"),
 
             // Processes/Services tab - local to the grid (ProcessListControl.cs
             // Grid_PreviewKeyDown), reachable only while a row is selected there and the grid has

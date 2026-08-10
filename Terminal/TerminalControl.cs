@@ -101,7 +101,7 @@ namespace KillerShell.Terminal
             InvalidateVisual();
 
             // Readout in the window's status line - "Text Size: 110%" - the same feedback the
-            // app-wide zoom gives (Steve, 2026-08-09). Best-effort: a terminal being resized
+            // app-wide zoom gives. Best-effort: a terminal being resized
             // before the window exists just skips it.
             (System.Windows.Application.Current?.MainWindow as KillerShell.Shell.MainWindow)
                 ?.ShowTerminalTextSize(_fontSize);
@@ -507,7 +507,7 @@ namespace KillerShell.Terminal
             // app - drawn here rather than as a separate Border, because this control fills its
             // whole rect opaquely itself (the line above), so nothing behind it could ever show
             // through. Glyphs are drawn after this and land on top, so the texture never covers
-            // the writing (Steve, 2026-08-03 - a prior fix removed grain from here entirely
+            // the writing (2026-08-03 - a prior fix removed grain from here entirely
             // instead of moving it into the paint, which left the terminal with no texture at
             // all rather than texture only where there is no text).
             if (TryFindResource("GrainTileBrush") is Brush grain)
@@ -620,9 +620,12 @@ namespace KillerShell.Terminal
                         : fg);
                 brush.Freeze();
 
-                // Stretch a fallback glyph out to the chosen font's cell width, anchored at this
-                // cell's own left edge so nothing downstream of it moves.
-                bool stretch = viaFallback && Math.Abs(_fallbackScale - 1) > 0.005;
+                // Stretch a BUNDLED-fallback glyph out to the chosen font's cell width, anchored
+                // at this cell's own left edge so nothing downstream of it moves. Only the
+                // bundled face: _fallbackScale was measured against ITS advance, and a system-
+                // fallback glyph drawn through it would come out the wrong width. System faces
+                // draw unscaled on the cell advance instead.
+                bool stretch = ReferenceEquals(face, _fallback) && Math.Abs(_fallbackScale - 1) > 0.005;
                 if (stretch) dc.PushTransform(new ScaleTransform(_fallbackScale, 1, x, 0));
 
                 // Phosphor bleed: the same run again, translucent and a hair low, UNDER the
@@ -651,18 +654,84 @@ namespace KillerShell.Terminal
         }
 
         /// <summary>
-        /// The face <paramref name="cp"/> is drawn from: the chosen one, or the bundled fallback
-        /// when the chosen one has no glyph for it.
+        /// The face <paramref name="cp"/> is drawn from: the chosen one, the bundled fallback
+        /// when the chosen one has no glyph for it, or a SYSTEM face when neither does.
         /// </summary>
         /// <remarks>
-        /// Returns the primary for a codepoint NEITHER face has, so the box-drawing substitution
+        /// Returns the primary for a codepoint NO face has, so the box-drawing substitution
         /// in the caller happens against the font the rest of the line is in.
         /// </remarks>
         private GlyphTypeface FaceFor(GlyphTypeface primary, int cp)
         {
             if (primary.CharacterToGlyphMap.ContainsKey(cp)) return primary;
             if (_fallback != null && _fallback.CharacterToGlyphMap.ContainsKey(cp)) return _fallback;
-            return primary;
+            return SystemFaceFor(cp) ?? primary;
+        }
+
+        // ── System font fallback ─────────────────────────────────
+        // DrawGlyphRun has none of DrawText's automatic font linking, so before this existed a
+        // codepoint outside the chosen face and the bundled twenty-six rendered as a box - a
+        // prompt whose Nerd-Font icons are not in the chosen font came out as a row of them.
+        // Resolved per CODEPOINT, once per process, cached forever (null too - "nothing
+        // installed can draw this" is just as cacheable), shared by every open terminal.
+        private static readonly Dictionary<int, GlyphTypeface?> _sysFaceCache = [];
+
+        private static GlyphTypeface? SystemFaceFor(int cp)
+        {
+            lock (_sysFaceCache)
+                if (_sysFaceCache.TryGetValue(cp, out var cached)) return cached;
+
+            GlyphTypeface? found = null;
+            try
+            {
+                if (cp is >= 0xE000 and <= 0xF8FF)
+                {
+                    // Private Use Area: the art is font-SPECIFIC, so only a Nerd Font is
+                    // correct for a Nerd Font icon - resolving these against Segoe MDL2 or
+                    // any other PUA-carrying face would draw a real glyph with the WRONG
+                    // meaning, which is worse than a box. Scan installed families for the
+                    // Nerd Font naming conventions only.
+                    foreach (var fam in Fonts.SystemFontFamilies)
+                    {
+                        string name = fam.Source ?? string.Empty;
+                        if (name.IndexOf("Nerd Font", StringComparison.OrdinalIgnoreCase) < 0
+                            && name.IndexOf("NerdFont", StringComparison.OrdinalIgnoreCase) < 0
+                            && !name.EndsWith(" NF", StringComparison.OrdinalIgnoreCase)) continue;
+                        if (TryFaceFor(fam, cp, out found)) break;
+                    }
+                }
+                else
+                {
+                    // Ordinary symbols (arrows, dingbats, emoji, CJK, ...): the Segoe trio
+                    // covers nearly everything cheaply; a one-time full scan is the long tail.
+                    foreach (var name in new[] { "Segoe UI Symbol", "Segoe UI Emoji", "Segoe UI" })
+                        if (TryFaceFor(new FontFamily(name), cp, out found)) break;
+
+                    if (found == null)
+                        foreach (var fam in Fonts.SystemFontFamilies)
+                            if (TryFaceFor(fam, cp, out found)) break;
+                }
+            }
+            catch { found = null; }
+
+            lock (_sysFaceCache) _sysFaceCache[cp] = found;
+            return found;
+        }
+
+        private static bool TryFaceFor(FontFamily fam, int cp, out GlyphTypeface? face)
+        {
+            face = null;
+            try
+            {
+                var tf = new Typeface(fam, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                if (tf.TryGetGlyphTypeface(out var gt) && gt.CharacterToGlyphMap.ContainsKey(cp))
+                {
+                    face = gt;
+                    return true;
+                }
+            }
+            catch { /* a face that will not resolve is just not a candidate */ }
+            return false;
         }
 
         /// <summary>
@@ -696,15 +765,20 @@ namespace KillerShell.Terminal
                     dc.DrawRectangle(b, null, new Rect(x, y, _cellW, _cellH));
 
                     // Repaint the glyph underneath in the background color, so a block cursor
-                    // does not hide the character it is sitting on.
+                    // does not hide the character it is sitting on. Through FaceFor, so a
+                    // fallback-drawn glyph (a prompt icon, exactly where the cursor usually
+                    // sits) gets the same treatment as one from the chosen face.
                     var cell = _buf.LineAt(_buf.ScrollbackCount + _buf.CursorRow)[_buf.CursorCol];
-                    if (cell.Ch != 0 && cell.Ch != ' ' && _glyphs != null
-                        && _glyphs.CharacterToGlyphMap.TryGetValue(cell.Ch, out ushort gi))
+                    if (cell.Ch != 0 && cell.Ch != ' ' && _glyphs != null)
                     {
-                        var hole = new SolidColorBrush(_palette.Background);
-                        hole.Freeze();
-                        var run = MakeRun(_glyphs, [gi], [_cellW], new Point(x, y + _baseline));
-                        if (run != null) dc.DrawGlyphRun(hole, run);
+                        var face = FaceFor(_glyphs, cell.Ch);
+                        if (face.CharacterToGlyphMap.TryGetValue(cell.Ch, out ushort gi))
+                        {
+                            var hole = new SolidColorBrush(_palette.Background);
+                            hole.Freeze();
+                            var run = MakeRun(face, [gi], [_cellW], new Point(x, y + _baseline));
+                            if (run != null) dc.DrawGlyphRun(hole, run);
+                        }
                     }
                     break;
             }

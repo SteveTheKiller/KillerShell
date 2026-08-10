@@ -137,7 +137,7 @@ namespace KillerShell
             {
                 MainWindow.ApplyThemeBorder(this);
                 // Rounded corners AND, on Windows 11, the standard window drop shadow that comes
-                // bundled with them for a chromeless popup (Steve, 2026-08-03 - see
+                // bundled with them for a chromeless popup (2026-08-03 - see
                 // Chrome.cs ApplyWindowCorners's own remark). Never wired in here before now.
                 MainWindow.ApplyWindowCorners(this, rounded: true);
                 var src = (System.Windows.Interop.HwndSource?)PresentationSource.FromVisual(this);
