@@ -4,7 +4,12 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace KillerShell.Controls
+// KillerShell, not KillerShell.Controls: every other file in this folder is in KillerShell, and
+// all eleven XAML files here declare x:Class="KillerShell.<Name>", so the flat namespace IS the
+// convention. This file was the only one out of step. IDE0130 argues the reverse - that the
+// namespace should follow the folder - which here would mean rewriting every x:Class and every
+// XAML namespace reference to satisfy an analyzer. Left flat deliberately.
+namespace KillerShell
 {
     /// <summary>
     /// Builds the clip geometry that gives a tab its Win98 chamfer: the two TOP corners cut at 45

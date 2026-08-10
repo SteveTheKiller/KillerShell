@@ -96,7 +96,7 @@ namespace KillerShell.Services
         /// <summary>
         /// Turns a DataGrid's own (column, key, header, default) tuples into Entry structs,
         /// without wiring RestoreVisibility or a right-click handler - split out of AttachTo so a
-        /// control with more than one column SET for the same grid (Shell/ProcessListControl.cs,
+        /// control with more than one column SET for the same grid (Tools/ProcessListControl.cs,
         /// which swaps between a Processes column set and a Services one) can build both sets and
         /// wire its OWN single right-click handler that picks whichever set is current, instead of
         /// AttachTo silently wiring two independent handlers that would both fire on every

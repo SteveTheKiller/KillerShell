@@ -80,10 +80,10 @@ namespace KillerShell.Services
         internal int Changed;
 
         /// <summary>Entry names already present, when the collision policy was Report.</summary>
-        internal readonly List<string> Collisions = new();
+        internal readonly List<string> Collisions = [];
 
         /// <summary>Sources that could not be given a legal entry name, so were not added.</summary>
-        internal readonly List<string> Rejected = new();
+        internal readonly List<string> Rejected = [];
     }
 
     /// <summary>One file (or one empty folder, when the name ends in '/') queued for adding.</summary>
@@ -138,7 +138,7 @@ namespace KillerShell.Services
             // A drive spec has to go before the split, or "C:/x" keeps a "C:" segment. Anything
             // before a colon is dropped rather than escaped: no legal Windows file name has one.
             int colon = p.IndexOf(':');
-            if (colon >= 0) p = p.Substring(colon + 1);
+            if (colon >= 0) p = p[(colon + 1)..];
 
             var parts = new List<string>();
             foreach (string seg in p.Split('/'))
@@ -375,7 +375,7 @@ namespace KillerShell.Services
             if (oldPath.Length == 0) { result.ErrorKey = "Str_Status_ArchiveEntryGone"; return result; }
 
             int slash = oldPath.LastIndexOf('/');
-            string parent  = slash < 0 ? "" : oldPath.Substring(0, slash + 1);
+            string parent  = slash < 0 ? "" : oldPath[..(slash + 1)];
             string newPath = parent + newName.Trim();
 
             // A genuine no-op, not a case-only rename: those are real and have to go through.
@@ -418,7 +418,7 @@ namespace KillerShell.Services
                 if (norm.StartsWith(oldPath + "/", StringComparison.OrdinalIgnoreCase))
                 {
                     moved++;
-                    string tail = norm.Substring(oldPath.Length);   // keeps its leading '/'
+                    string tail = norm[oldPath.Length..];   // keeps its leading '/'
                     return trailing ? newPath + tail + "/" : newPath + tail;
                 }
                 return raw;
@@ -450,7 +450,7 @@ namespace KillerShell.Services
         {
             string dir  = Path.GetDirectoryName(archivePath) ?? ".";
             string leaf = Path.GetFileName(archivePath);
-            string stamp = Guid.NewGuid().ToString("N").Substring(0, 8);
+            string stamp = Guid.NewGuid().ToString("N")[..8];
             string temp   = Path.Combine(dir, leaf + TempMark + stamp + ".tmp");
             string backup = Path.Combine(dir, leaf + TempMark + stamp + ".bak");
 
@@ -503,7 +503,7 @@ namespace KillerShell.Services
                         written++;
                     }
 
-                    foreach (var a in adds ?? new List<ArchiveAddItem>())
+                    foreach (var a in adds ?? [])
                     {
                         ct.ThrowIfCancellationRequested();
                         done++;
@@ -631,12 +631,12 @@ namespace KillerShell.Services
         private static string UniqueEntryName(string name, HashSet<string> taken)
         {
             int slash = name.LastIndexOf('/');
-            string dir  = slash < 0 ? "" : name.Substring(0, slash + 1);
-            string leaf = slash < 0 ? name : name.Substring(slash + 1);
+            string dir  = slash < 0 ? "" : name[..(slash + 1)];
+            string leaf = slash < 0 ? name : name[(slash + 1)..];
 
             int dot = leaf.LastIndexOf('.');
-            string stem = dot <= 0 ? leaf : leaf.Substring(0, dot);
-            string ext  = dot <= 0 ? ""   : leaf.Substring(dot);
+            string stem = dot <= 0 ? leaf : leaf[..dot];
+            string ext  = dot <= 0 ? ""   : leaf[dot..];
 
             int n = 2;
             string candidate;

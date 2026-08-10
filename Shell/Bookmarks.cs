@@ -674,7 +674,10 @@ namespace KillerShell.Shell
             if (string.IsNullOrEmpty(path)) return;
             if (_active == null || !CanShowListing(_active))
             {
-                CaptureTab(_active);        // Tabs.cs - the outgoing tab keeps its state
+                // Only when there IS an outgoing tab. This branch is reached two ways - a tab that
+                // cannot show a listing, or no tab at all - and in the second case there is
+                // nothing to capture; CaptureTab takes a non-null SearchTab (CS8604).
+                if (_active != null) CaptureTab(_active);   // Tabs.cs - outgoing tab keeps its state
                 ActivateTab(CreateTab());
             }
             _ = NavigateTo(path);           // Browse.cs

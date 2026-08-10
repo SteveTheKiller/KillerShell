@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Microsoft.Win32;
 
 using KillerShell.Shell;
+using KillerShell.Tools;
 
 namespace KillerShell
 {
@@ -47,7 +48,7 @@ namespace KillerShell
 
                 case RegistryValueKind.MultiString:
                     MultiStringPanel.Visibility = Visibility.Visible;
-                    MultiStringBox.Text = string.Join(Environment.NewLine, currentValue as string[] ?? Array.Empty<string>());
+                    MultiStringBox.Text = string.Join(Environment.NewLine, currentValue as string[] ?? []);
                     Loaded += (_, _) => { MultiStringBox.Focus(); MultiStringBox.SelectAll(); };
                     break;
 
@@ -64,7 +65,7 @@ namespace KillerShell
                 case RegistryValueKind.Binary:
                 default:
                     BinaryPanel.Visibility = Visibility.Visible;
-                    var bytes = currentValue as byte[] ?? Array.Empty<byte>();
+                    var bytes = currentValue as byte[] ?? [];
                     BinaryBox.Text = string.Join(" ", bytes.Select(b => b.ToString("x2", CultureInfo.InvariantCulture)));
                     Loaded += (_, _) => { BinaryBox.Focus(); BinaryBox.SelectAll(); };
                     break;
@@ -84,7 +85,6 @@ namespace KillerShell
 
         private bool TryParseNumber(out ulong value, out string error)
         {
-            value = 0;
             error = string.Empty;
             string text = NumberBox.Text.Trim();
             var style = HexRadio.IsChecked == true ? NumberStyles.HexNumber : NumberStyles.Integer;
@@ -151,19 +151,19 @@ namespace KillerShell
         private static bool TryParseHexBytes(string text, out byte[] bytes, out string error)
         {
             error = string.Empty;
-            var parts = text.Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var parts = text.Split([' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
             var list = new System.Collections.Generic.List<byte>(parts.Length);
             foreach (var p in parts)
             {
                 if (!byte.TryParse(p, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte b))
                 {
-                    bytes = Array.Empty<byte>();
+                    bytes = [];
                     error = string.Format(MainWindow.LocStatic("Str_RegEd_InvalidByte"), p);
                     return false;
                 }
                 list.Add(b);
             }
-            bytes = list.ToArray();
+            bytes = [.. list];
             return true;
         }
 

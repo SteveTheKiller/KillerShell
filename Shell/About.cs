@@ -324,7 +324,7 @@ namespace KillerShell.Shell
         }
 
         private static readonly Guid WTD_VERIFY_GENERIC =
-            new Guid("00AAC56B-CD44-11d0-8CC2-00C04FC295EE");
+            new("00AAC56B-CD44-11d0-8CC2-00C04FC295EE");
 
         [DllImport("wintrust.dll", ExactSpelling = true, SetLastError = false,
                    CharSet = CharSet.Unicode)]
@@ -339,8 +339,7 @@ namespace KillerShell.Shell
         {
             var subject = "(not signed)";
             var thumb   = "(none)";
-            var exePath = string.Empty;
-
+            string? exePath;
             try
             {
                 exePath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;

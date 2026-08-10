@@ -10,7 +10,7 @@ using KillerShell.Shell;
 
 namespace KillerShell
 {
-    // Double-click a service row in Shell/ProcessListControl.cs (Grid_MouseDoubleClick, Services
+    // Double-click a service row in Tools/ProcessListControl.cs (Grid_MouseDoubleClick, Services
     // mode) to get here. Same shape as ProcessDetailsDialog.xaml.cs - see the remark there.
     public partial class ServiceDetailsDialog : Window
     {
@@ -26,6 +26,11 @@ namespace KillerShell
             _index = startIndex >= 0 && startIndex < entries.Count ? startIndex : 0;
 
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
+
+            // Opens sized to its content, then becomes an ordinary resizable window whose body
+            // scrolls instead of overflowing (Controls/DialogContentSize.cs).
+            DialogContentSize.ReleaseAfterFirstRender(this, BodyRow);
+
             SourceInitialized += (_, _) =>
             {
                 ApplyRoundedCorners();

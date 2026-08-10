@@ -15,14 +15,13 @@
              xmlns:local="clr-namespace:KillerShell"
              xmlns:svc="clr-namespace:KillerShell.Services"
              xmlns:shellns="clr-namespace:KillerShell.Shell"
-             xmlns:models="clr-namespace:KillerShell.Models"
-             xmlns:ctl="clr-namespace:KillerShell.Controls">
+             xmlns:models="clr-namespace:KillerShell.Models">
 
             <UserControl.Resources>
                 <!-- Turns the TabChamfer theme scalar into the tab's clip geometry. Win98 tabs cut
                      their top corners at 45 degrees, which a CornerRadius cannot express at all.
                      Returns null when the scalar is 0, so no other theme is clipped. -->
-                <ctl:TabChamferConverter x:Key="TabChamferConv"/>
+                <local:TabChamferConverter x:Key="TabChamferConv"/>
             </UserControl.Resources>
 
             <Grid>
@@ -1752,7 +1751,7 @@
                 <!-- A Storage Analyzer tab draws here, on the same terms as the other tool
                      hosts above: declared before the list, only ever one visible, grain-wrapped.
                      StorageAnalyzerControl carries its own target bar, treemap and storage-info
-                     footer in one surface (Shell/StorageAnalyzerControl.cs). Same sunken well
+                     footer in one surface (Tools/StorageAnalyzerControl.cs). Same sunken well
                      as PerformanceHost, inert off 98SE. -->
                 <Grid x:Name="StorageHost" Visibility="Collapsed">
                     <ContentControl x:Name="StorageSlot" Focusable="False"/>

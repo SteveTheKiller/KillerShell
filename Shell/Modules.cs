@@ -17,7 +17,7 @@ namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        private static readonly string[] BundledModules = { "KillerPivot", "KillerScripts" };
+        private static readonly string[] BundledModules = ["KillerPivot", "KillerScripts"];
 
         private static bool _modulesReady;
 
@@ -89,7 +89,7 @@ namespace KillerShell.Shell
 
                 // Resource names flatten the path and there are no subfolders in either module,
                 // so what is left after the prefix IS the file name, dot and all.
-                string file = res.Substring(prefix.Length);
+                string file = res[prefix.Length..];
 
                 using var src = asm.GetManifestResourceStream(res);
                 if (src == null) continue;

@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using KillerShell.Shell;
 
 // The control behind a Storage Analyzer tab: pick a folder or drive, scan it, and see every
 // byte as a WizTree/WinDirStat-style treemap - a rectangle per file, area proportional to
@@ -28,7 +29,7 @@ using System.Windows.Threading;
 // Same "own host, own control, MOVED not rebuilt between activations" rule as
 // ProcessListControl/EventViewerControl/PerformanceMonitorControl (Shell/StorageTabs.cs): the
 // scan result is the state, and a rebuild would throw a whole scan away on a tab switch.
-namespace KillerShell.Shell
+namespace KillerShell.Tools
 {
     internal sealed class StorageAnalyzerControl : Grid
     {

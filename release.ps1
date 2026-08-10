@@ -300,16 +300,53 @@ if ($DryRun) {
     if ($readmeNew -ne $readmeRaw) { [System.IO.File]::WriteAllText($readmePath, $readmeNew) }
 }
 
-# Claim check: the README language count is written by hand, so it silently goes stale the
-# moment a locale is added. Compare it against the shipping Strings/*.xaml count and warn.
-# Non-fatal - it is a docs claim, not a build input - but it should never be wrong at a tag.
-$localeCount = (Get-ChildItem (Join-Path $PSScriptRoot 'Strings') -Filter '*.xaml' -ErrorAction SilentlyContinue).Count
-if ($localeCount -gt 0 -and $readmeNew -match '([0-9]+) languages') {
-    $claimed = [int]$Matches[1]
-    if ($claimed -ne $localeCount) {
-        Write-Warning "README says '$claimed languages' but Strings/ has $localeCount locale files. Fix the README (and the language list next to it) before releasing."
+# Claim check. Everything above rewrites facts the script KNOWS (version, date, size, hash).
+# These are the claims it does not know and cannot compute a replacement for - counts written by
+# hand in prose, which go stale silently the moment a locale or a theme is added. 1.2.0 shipped
+# seven new themes and index.html still said "Six themes" until it was caught by hand, which is
+# exactly the failure this is here to prevent. Non-fatal - they are docs claims, not build
+# inputs - but none of them should be wrong at a tag.
+#
+# Both spellings are checked: the README writes digits ("10 languages"), the landing pages write
+# words ("thirteen themes"), and ks-i18n.js carries the same sentences again per locale.
+$numberWords = @{
+    1 = 'one'; 2 = 'two'; 3 = 'three'; 4 = 'four'; 5 = 'five'; 6 = 'six'; 7 = 'seven'
+    8 = 'eight'; 9 = 'nine'; 10 = 'ten'; 11 = 'eleven'; 12 = 'twelve'; 13 = 'thirteen'
+    14 = 'fourteen'; 15 = 'fifteen'; 16 = 'sixteen'
+}
+
+function Test-CountClaim {
+    param([string]$Label, [int]$Actual, [string]$Noun, [string[]]$Paths)
+
+    $word = $numberWords[$Actual]
+    foreach ($p in $Paths) {
+        if (-not (Test-Path $p)) { continue }
+        $text = [System.IO.File]::ReadAllText($p)
+        $name = Split-Path $p -Leaf
+
+        # Every "<number> <noun>" in the file, digits or the English word, and flag any that
+        # disagrees with what actually ships.
+        foreach ($m in [regex]::Matches($text, "(?i)\b([0-9]+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen)\s+(?:killer\s+)?$Noun\b")) {
+            $said = $m.Groups[1].Value
+            $ok = if ($said -match '^[0-9]+$') { [int]$said -eq $Actual } else { $said.ToLower() -eq $word }
+            if (-not $ok) {
+                Write-Warning "$name claims '$said $Noun' but the repo ships $Actual ($Label). Fix it before releasing."
+            }
+        }
     }
 }
+
+$siteFiles = @('index.html', 'about.html', 'technical.html', 'help.html', 'ks-i18n.js') |
+             ForEach-Object { Join-Path $siteDir $_ }
+$docFiles  = @($readmePath) + $siteFiles
+
+$localeCount = (Get-ChildItem (Join-Path $PSScriptRoot 'Strings') -Filter '*.xaml' -ErrorAction SilentlyContinue).Count
+if ($localeCount -gt 0) { Test-CountClaim 'Strings\*.xaml' $localeCount 'languages' $docFiles }
+
+# Themes\*.xaml is the palette set the picker offers - the same count the About card and the
+# theme flyout show.
+$themeCount = (Get-ChildItem (Join-Path $PSScriptRoot 'Themes') -Filter '*.xaml' -ErrorAction SilentlyContinue).Count
+if ($themeCount -gt 0) { Test-CountClaim 'Themes\*.xaml' $themeCount 'themes' $docFiles }
 
 if ($DryRun) {
     Write-Host "DryRun: would commit and push shell-landing + README for v$Version"

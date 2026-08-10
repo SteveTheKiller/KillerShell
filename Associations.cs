@@ -37,21 +37,21 @@ namespace KillerShell
         // Types whose default action already IS "show me the text", so taking the open verb
         // changes what OPENS them, never what they DO.
         internal static readonly string[] TextExtensions =
-        {
+        [
             ".txt", ".log", ".err", ".out", ".trace",
             ".ini", ".conf", ".cfg", ".inf", ".properties", ".env",
             ".yml", ".yaml", ".csv", ".tsv", ".md",
             ".ps1", ".psm1", ".psd1",
-        };
+        ];
 
         // Types whose default action runs or merges. We only ever ADD a verb to these, hung
         // off the shell's own ProgID for the extension rather than off one of ours.
         internal static readonly (string Ext, string ShellProgId)[] EditOnlyExtensions =
-        {
+        [
             (".bat", "batfile"),
             (".cmd", "cmdfile"),
             (".reg", "regfile"),
-        };
+        ];
 
         /// <summary>Our own verb key name, used everywhere so removal can find them all.</summary>
         private const string VerbOpen = "KillerShell";
@@ -171,7 +171,7 @@ namespace KillerShell
             using (var i = p.CreateSubKey("DefaultIcon"))
                 i.SetValue("", File.Exists(FileIconPath) ? "\"" + FileIconPath + "\",0" : exe + ",0");
             using (var c = p.CreateSubKey(@"shell\open\command")) c.SetValue("", "\"" + exe + "\" \"%1\"");
-            using (var s = p.CreateSubKey(@"shell\open")) s.SetValue("FriendlyAppName", AssocAppName);
+            using var s = p.CreateSubKey(@"shell\open"); s.SetValue("FriendlyAppName", AssocAppName);
         }
 
         // OpenWithProgids is the non-destructive half of this: it puts KillerShell in the

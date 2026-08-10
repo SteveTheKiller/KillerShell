@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using KillerShell.Models;
+using KillerShell.Shell;
 
 // The control behind a Processes/Services tab: a live, filterable, sortable list, toggling
 // between every process on the machine and every Windows service. Partial to nothing - this is a
@@ -36,7 +37,7 @@ using KillerShell.Models;
 // UserControl here would be the first exception to that convention for no real reason: the whole
 // surface is a filter box, a mode toggle, one DataGrid and one status line, none of which needs a
 // designer.
-namespace KillerShell.Shell
+namespace KillerShell.Tools
 {
     internal sealed class ProcessListControl : Grid
     {
@@ -60,11 +61,11 @@ namespace KillerShell.Shell
         private ViewMode _mode = ViewMode.Processes;
 
         private readonly DispatcherTimer _timer;
-        private readonly ObservableCollection<ProcessInfo> _items = new();
+        private readonly ObservableCollection<ProcessInfo> _items = [];
         private readonly ICollectionView _procView;
-        private readonly Dictionary<int, ProcessInfo> _byPid = new();
+        private readonly Dictionary<int, ProcessInfo> _byPid = [];
 
-        private readonly ObservableCollection<ServiceInfo> _svcItems = new();
+        private readonly ObservableCollection<ServiceInfo> _svcItems = [];
         private readonly ICollectionView _svcView;
         private readonly Dictionary<string, ServiceInfo> _byName = new(StringComparer.OrdinalIgnoreCase);
 
@@ -74,8 +75,8 @@ namespace KillerShell.Shell
         // idle for an hour after one busy second would show a number nobody could read anything
         // into. Two samples, taken RefreshInterval apart, are how every real task manager gets a
         // live percentage out of the same cumulative counter.
-        private readonly Dictionary<int, TimeSpan> _lastCpuTime  = new();
-        private readonly Dictionary<int, DateTime> _lastSampleAt = new();
+        private readonly Dictionary<int, TimeSpan> _lastCpuTime  = [];
+        private readonly Dictionary<int, DateTime> _lastSampleAt = [];
 
         // PIDs this process cannot open - protected or elevated processes, where
         // TotalProcessorTime and StartTime both throw Win32Exception. Remembered so the reads
@@ -91,7 +92,7 @@ namespace KillerShell.Shell
         // Permission does not change while a process lives, so one failure is conclusive for
         // that PID. Pruned with the other per-PID bookkeeping when a process exits, so a reused
         // PID starts clean rather than inheriting the old one's verdict.
-        private readonly HashSet<int> _unreadablePids = new();
+        private readonly HashSet<int> _unreadablePids = [];
 
         // Owner lookups are a per-instance WMI method INVOKE (GetOwner), which costs far more
         // than the one bulk SELECT the rest of a row comes from. A process's owner cannot change
@@ -129,10 +130,10 @@ namespace KillerShell.Shell
 
         // The two column sets a mode-toggle swaps between - see SetMode. Built once in BuildGrid;
         // never rebuilt on a later toggle, only shown/hidden by replacing grid.Columns wholesale.
-        private DataGridColumn[] _processColumns = Array.Empty<DataGridColumn>();
-        private DataGridColumn[] _serviceColumns = Array.Empty<DataGridColumn>();
-        private Services.ColumnVisibilityMenu.Entry[] _processColEntries = Array.Empty<Services.ColumnVisibilityMenu.Entry>();
-        private Services.ColumnVisibilityMenu.Entry[] _serviceColEntries = Array.Empty<Services.ColumnVisibilityMenu.Entry>();
+        private DataGridColumn[] _processColumns = [];
+        private DataGridColumn[] _serviceColumns = [];
+        private Services.ColumnVisibilityMenu.Entry[] _processColEntries = [];
+        private Services.ColumnVisibilityMenu.Entry[] _serviceColEntries = [];
 
         // Cancelled from Shutdown() - see the remark there. New one per control instance, not
         // reset between refreshes: EnrichOwners passes overlap fine (each is its own list of
@@ -371,7 +372,7 @@ namespace KillerShell.Shell
             var cmd    = Col("Str_Col_ProcCommandLine", "CommandLine", 320, visible: false);
             var path   = Col("Str_Col_ProcPath", "Path", 320);
 
-            _processColumns = new DataGridColumn[] { name, pid, user, cpu, memory, cmd, path };
+            _processColumns = [name, pid, user, cpu, memory, cmd, path];
             _processColEntries = Services.ColumnVisibilityMenu.BuildEntries(
                 (name,   "Name",        "Str_Col_ProcName",        true),
                 (pid,    "Pid",         "Str_Col_ProcPid",         true),
@@ -394,7 +395,7 @@ namespace KillerShell.Shell
             var logon   = Col("Str_Col_SvcLogOnAs",     "LogOnAs", 150);
             var path    = Col("Str_Col_SvcPath",        "Path", 320);
 
-            _serviceColumns = new DataGridColumn[] { name, display, status, start, logon, path };
+            _serviceColumns = [name, display, status, start, logon, path];
             _serviceColEntries = Services.ColumnVisibilityMenu.BuildEntries(
                 (name,    "Name",        "Str_Col_SvcName",        true),
                 (display, "DisplayName", "Str_Col_SvcDisplayName", true),
@@ -822,7 +823,7 @@ namespace KillerShell.Shell
                 using var searcher = new ManagementObjectSearcher(
                     "SELECT ProcessId, ParentProcessId, CommandLine, ExecutablePath FROM Win32_Process");
                 using var rows = searcher.Get();
-                foreach (ManagementObject row in rows)
+                foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
                     using (row)
                     {
@@ -852,7 +853,7 @@ namespace KillerShell.Shell
                 using var searcher = new ManagementObjectSearcher(
                     $"SELECT Handle FROM Win32_Process WHERE ProcessId = {pid}");
                 using var rows = searcher.Get();
-                foreach (ManagementObject row in rows)
+                foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
                     using (row)
                     {
@@ -999,7 +1000,7 @@ namespace KillerShell.Shell
             // interesting reads as invented immediately.
             //
             // The PIDs are not free either. Several of them are named by the fabricated event log
-            // (Shell\EventViewerControl.cs): 812 raises the BITS service event, 1188 the DNS and
+            // (Tools\EventViewerControl.cs): 812 raises the BITS service event, 1188 the DNS and
             // time-service warnings, 2988 the installer rows, 7204 hangs Outlook, and 5116 is the
             // app writing its own start-up entry. Changing one here means changing it there.
             Row(4,     "System",                  "SYSTEM",        0.1, 0,   "",                                                               "",                                                       "0",    "-");
@@ -1179,7 +1180,7 @@ namespace KillerShell.Shell
                 using var searcher = new ManagementObjectSearcher(
                     "SELECT Name, StartMode, PathName, StartName, Description FROM Win32_Service");
                 using var rows = searcher.Get();
-                foreach (ManagementObject row in rows)
+                foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
                     using (row)
                     {
@@ -1224,10 +1225,10 @@ namespace KillerShell.Shell
             if (s.StartsWith("\"", StringComparison.Ordinal))
             {
                 int end = s.IndexOf('"', 1);
-                return end > 0 ? s.Substring(1, end - 1) : s.Trim('"');
+                return end > 0 ? s[1..end] : s.Trim('"');
             }
             int sp = s.IndexOf(' ');
-            return sp > 0 ? s.Substring(0, sp) : s;
+            return sp > 0 ? s[..sp] : s;
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1521,7 +1522,7 @@ namespace KillerShell.Shell
 
             try
             {
-                using (var proc = Process.GetProcessById(p.Pid)) proc.Kill();
+                using var proc = Process.GetProcessById(p.Pid); proc.Kill();
             }
             catch (ArgumentException) { /* already gone - fine, still relaunch */ }
             catch (Exception ex) when (ex is Win32Exception
@@ -1563,12 +1564,12 @@ namespace KillerShell.Shell
             if (rest.StartsWith("\"", StringComparison.Ordinal))
             {
                 int end = rest.IndexOf('"', 1);
-                rest = end > 0 ? rest.Substring(end + 1) : string.Empty;
+                rest = end > 0 ? rest[(end + 1)..] : string.Empty;
             }
             else
             {
                 int sp = rest.IndexOf(' ');
-                rest = sp > 0 ? rest.Substring(sp + 1) : string.Empty;
+                rest = sp > 0 ? rest[(sp + 1)..] : string.Empty;
             }
             return rest.Trim();
         }

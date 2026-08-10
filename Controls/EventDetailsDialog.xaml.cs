@@ -13,10 +13,11 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using KillerShell.Editing;
 using KillerShell.Models;
 using KillerShell.Shell;
+using KillerShell.Tools;
 
 namespace KillerShell
 {
-    // Double-click a row in the Event Viewer grid (Shell/EventViewerControl.cs
+    // Double-click a row in the Event Viewer grid (Tools/EventViewerControl.cs
     // Grid_MouseDoubleClick) to get here: every field the grid's own columns have no room for,
     // plus the record's raw XML behind a toggle. Styled like the app's About card - grain-wrapped
     // surface, PaneBrush info panel, same field-label shape (DimTextBrush Consolas 10 caption over
@@ -54,6 +55,11 @@ namespace KillerShell
             XmlHost.Child = _xmlEditor;
 
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
+
+            // Opens sized to its content, then becomes an ordinary resizable window whose body
+            // scrolls instead of overflowing (Controls/DialogContentSize.cs).
+            DialogContentSize.ReleaseAfterFirstRender(this, BodyRow);
+
             SourceInitialized += (_, _) =>
             {
                 ApplyRoundedCorners();

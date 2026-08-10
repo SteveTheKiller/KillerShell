@@ -61,14 +61,14 @@ namespace KillerShell.Services
         /// </summary>
         public bool AccessDenied;
 
-        public readonly List<(string Path, string Error)> Failed = new();
+        public readonly List<(string Path, string Error)> Failed = [];
 
         /// <summary>
         /// Final destination path of each successful copy/move, in case a conflict resolved to a
         /// different name (KeepBoth's UniqueName) than the source's own filename - a caller that
         /// wants to select/scroll to what actually landed needs the real name, not a guess.
         /// </summary>
-        public readonly List<string> SucceededTargets = new();
+        public readonly List<string> SucceededTargets = [];
     }
 
     public static class FileOps

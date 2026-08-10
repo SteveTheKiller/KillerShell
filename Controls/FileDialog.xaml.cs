@@ -174,7 +174,7 @@ namespace KillerShell
             string seedName = "";
             if (!string.IsNullOrWhiteSpace(FileName))
             {
-                if (FileName.IndexOfAny(new[] { '\\', '/' }) >= 0)
+                if (FileName.IndexOfAny(['\\', '/']) >= 0)
                 {
                     var d = Path.GetDirectoryName(FileName);
                     if (!string.IsNullOrEmpty(d) && Directory.Exists(d)) startDir = d!;
@@ -230,7 +230,7 @@ namespace KillerShell
             if (FilterCombo.Items.Count == 0)
             {
                 FilterCombo.Items.Add(Loc("Str_Dlg_AllFiles"));
-                _filterPatterns.Add(new[] { "*.*" });
+                _filterPatterns.Add(["*.*"]);
             }
 
             int idx = FilterIndex - 1;
@@ -397,9 +397,9 @@ namespace KillerShell
             }
 
             // A wildcard retargets the listing rather than naming a file.
-            if (typed.IndexOfAny(new[] { '*', '?' }) >= 0)
+            if (typed.IndexOfAny(['*', '?']) >= 0)
             {
-                _filterPatterns.Insert(0, new[] { typed });
+                _filterPatterns.Insert(0, [typed]);
                 FilterCombo.Items.Insert(0, typed);
                 FilterCombo.SelectedIndex = 0;
                 FileNameBox.Clear();

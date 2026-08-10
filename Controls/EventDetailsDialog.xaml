@@ -15,7 +15,7 @@
     <!-- Same shape as the About card (MainWindow.xaml AboutOverlay): a grain-wrapped surface with
          its own drop shadow on a separate border so the text never renders through a bitmap
          effect. This one is a real Window rather than an overlay Grid, because the control that
-         opens it (Shell/EventViewerControl.cs) is a stand-alone control with no MainWindow overlay
+         opens it (Tools/EventViewerControl.cs) is a stand-alone control with no MainWindow overlay
          to reach - the same reason ProcessListControl's KillWithConfirm opens ConfirmDialog as its
          own Window instead. -->
     <shell:WindowChrome.WindowChrome>
@@ -25,15 +25,16 @@
 
     <Border x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
         <Grid>
-            <!-- Auto, not Star: SizeToContent="Height" above measures this Grid with an infinite
-                 available height, and a Star row collapses to zero under an infinite constraint.
-                 The ScrollViewer/AvalonEdit below still cap overflow once MaxHeight clamps the
-                 window - only one of FormattedScroll/XmlHost is ever visible, and a Collapsed
-                 element does not contribute to the row's measured height, so the row (and the
-                 window) re-sizes when XmlToggle_Click flips which one is shown. -->
+            <!-- BodyRow starts Auto and becomes Star after the first render
+                 (Controls/DialogContentSize.cs). Auto is what SizeToContent="Height" above needs,
+                 since a Star row measured against an infinite height collapses to zero - but an
+                 Auto row also hands its child an infinite height, so the ScrollViewer in it can
+                 never show a scrollbar and simply overflows the window once the height is capped
+                 or the user drags the frame. Auto is therefore only used to decide the OPENING
+                 size, and the row is released to Star once that is settled. -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition x:Name="BodyRow" Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 

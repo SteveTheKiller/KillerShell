@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using KillerShell.Tools;
 
 namespace KillerShell.Shell
 {

@@ -10,7 +10,7 @@ using KillerShell.Shell;
 
 namespace KillerShell
 {
-    // Double-click a process row in Shell/ProcessListControl.cs (Grid_MouseDoubleClick, Processes
+    // Double-click a process row in Tools/ProcessListControl.cs (Grid_MouseDoubleClick, Processes
     // mode) to get here. Trimmed copy of EventDetailsDialog's shape - same About-card styling,
     // same title-bar Previous/Next chevrons stepping through the grid's CURRENT sort/filter order,
     // same Escape/Ctrl+C/Left/Right dialog-scoped shortcuts - minus the raw-XML toggle and online
@@ -29,6 +29,11 @@ namespace KillerShell
             _index = startIndex >= 0 && startIndex < entries.Count ? startIndex : 0;
 
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
+
+            // Opens sized to its content, then becomes an ordinary resizable window whose body
+            // scrolls instead of overflowing (Controls/DialogContentSize.cs).
+            DialogContentSize.ReleaseAfterFirstRender(this, BodyRow);
+
             SourceInitialized += (_, _) =>
             {
                 ApplyRoundedCorners();

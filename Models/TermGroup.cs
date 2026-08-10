@@ -37,7 +37,7 @@ namespace KillerShell.Models
         private static string L(string key, string fallback) =>
             System.Windows.Application.Current?.TryFindResource(key) as string ?? fallback;
 
-        public ObservableCollection<SearchTerm> Terms { get; } = new();
+        public ObservableCollection<SearchTerm> Terms { get; } = [];
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void Notify([CallerMemberName] string? n = null)

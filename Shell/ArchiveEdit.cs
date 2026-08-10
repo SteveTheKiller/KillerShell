@@ -52,9 +52,8 @@ namespace KillerShell.Shell
         private List<string>? ArchiveSelection()
         {
             if (!ArchiveTarget(out _, out _)) return null;
-            return FilesForCommand(_menuSeed)          // ResultsInteraction.cs
-                .Where(p => ArchiveProvider.TrySplit(p, out _, out string e) && e.Length > 0)
-                .ToList();
+            return [.. FilesForCommand(_menuSeed)          // ResultsInteraction.cs
+                .Where(p => ArchiveProvider.TrySplit(p, out _, out string e) && e.Length > 0)];
         }
 
         /// <summary>
@@ -177,7 +176,7 @@ namespace KillerShell.Shell
             }
 
             int slash = entry.LastIndexOf('/');
-            string leaf = slash < 0 ? entry : entry.Substring(slash + 1);
+            string leaf = slash < 0 ? entry : entry[(slash + 1)..];
 
             var dlg = new RenameDialog(leaf) { Owner = this };
             dlg.ShowDialog();
@@ -230,7 +229,7 @@ namespace KillerShell.Shell
             if (extracted.Count == 0 && skippedFolder)
                 SetTabStatusKey(_active, "Str_Status_ArchiveNoDrag");
 
-            return extracted.ToArray();
+            return [.. extracted];
         }
 
         // ── Shared plumbing ──────────────────────────────────────

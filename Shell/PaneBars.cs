@@ -1,4 +1,5 @@
 using KillerShell.Models;
+using KillerShell.Tools;
 
 // Which bar a pane wears. Partial of MainWindow.
 //
@@ -21,10 +22,10 @@ using KillerShell.Models;
 // is the same story again, minus even a bar of its own to carry - there is nothing about a
 // process list a location row could say, and its one control (the filter box) already lives
 // inside ProcessListControl (Shell/ProcessTabs.cs). An Event Viewer tab is the same story a
-// third time, with its own control (Shell/EventViewerControl.cs) carrying its own filter row. A
+// third time, with its own control (Tools/EventViewerControl.cs) carrying its own filter row. A
 // Performance tab is the same story a fourth time - there is nothing to filter or navigate over a
 // set of live gauges, so it wears no bar either. A Registry Editor tab is the same story a fifth
-// time, with its own control (Shell/RegistryEditorControl.cs) carrying its own address bar.
+// time, with its own control (Tools/RegistryEditorControl.cs) carrying its own address bar.
 //
 // The shell and document bars live inside their own hosts (FilePane.xaml), so they appear and
 // disappear with the thing they belong to. The only decision left here is the location row.

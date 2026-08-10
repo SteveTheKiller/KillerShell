@@ -122,8 +122,8 @@ namespace KillerShell.Services
                 return true;
             }
 
-            archivePath = virtualPath.Substring(0, i);
-            entryPath = virtualPath.Substring(i + 1).Trim('/');
+            archivePath = virtualPath[..i];
+            entryPath = virtualPath[(i + 1)..].Trim('/');
             return IsReadable(archivePath);
         }
 
@@ -136,7 +136,7 @@ namespace KillerShell.Services
         {
             if (!TrySplit(virtualPath, out string archive, out string entry) || entry.Length == 0) return null;
             int slash = entry.LastIndexOf('/');
-            return slash < 0 ? archive : Combine(archive, entry.Substring(0, slash));
+            return slash < 0 ? archive : Combine(archive, entry[..slash]);
         }
 
         // ── Listing ──────────────────────────────────────────────
@@ -167,7 +167,7 @@ namespace KillerShell.Services
                     if (prefix.Length > 0)
                     {
                         if (!full.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
-                        full = full.Substring(prefix.Length);
+                        full = full[prefix.Length..];
                     }
                     if (full.Length == 0) continue;
 
@@ -192,7 +192,7 @@ namespace KillerShell.Services
 
                     // Deeper: the first segment is a folder at THIS level, whether or not the
                     // archive bothered to store an entry for it. Most zips do not.
-                    string dirName = full.Substring(0, slash);
+                    string dirName = full[..slash];
                     if (!dirs.TryGetValue(dirName, out var d))
                     {
                         d = new ArchiveEntryInfo
@@ -501,7 +501,7 @@ namespace KillerShell.Services
                 if (string.IsNullOrEmpty(safeName)) { error = "no file name"; return null; }
 
                 string dir = Path.Combine(Path.GetTempPath(), "KillerShell", "archive",
-                                          Guid.NewGuid().ToString("N").Substring(0, 8));
+                                          Guid.NewGuid().ToString("N")[..8]);
                 Directory.CreateDirectory(dir);
                 string dest = Path.Combine(dir, safeName);
 

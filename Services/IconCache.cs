@@ -235,10 +235,11 @@ namespace KillerShell.Services
             // cached decode.
             //
             // A fabricated demo path has no pixel data behind it, so there is nothing at the path
-            // to decode: the tile is DRAWN from the path instead (Services\DemoImages.cs), which
-            // is what lets the icon view show a grid of actual pictures in a capture without
-            // reading, or shipping, a single real photograph. A path that is not one of the
-            // fabricated pictures answers null and falls through to the generic icon below.
+            // to decode: the tile comes from Services\DemoImages.cs instead, which answers with a
+            // photograph from the demo folder beside the repo when there is one and a picture drawn
+            // from the path when there is not. Either way the icon view shows a grid of real
+            // pictures in a capture without a single photograph being shipped. A path that is not
+            // one of the fabricated pictures answers null and falls through to the generic icon.
             if (!isDirectory && ImageExtensions.Contains(ext))
             {
                 if (MainWindow.DemoMode)
@@ -309,23 +310,11 @@ namespace KillerShell.Services
             lock (Cache)
                 if (Cache.TryGetValue(key, out var hit)) return hit;
 
-            ImageSource? img;
-            try
-            {
-                var bmp = new BitmapImage();
-                bmp.BeginInit();
-                bmp.CacheOption = BitmapCacheOption.OnLoad;   // decode now and release the file handle
-                bmp.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-                // WIC downsamples DURING decode rather than after, so this costs nowhere near what
-                // loading the full-resolution image would - the same reason DecodePixelWidth is
-                // used instead of loading full size and scaling a RenderTargetBitmap down.
-                bmp.DecodePixelWidth = px;
-                bmp.UriSource = new Uri(filePath);
-                bmp.EndInit();
-                bmp.Freeze();
-                img = bmp;
-            }
-            catch { img = null; }   // corrupt file, an unsupported variant of the format, etc.
+            // Downsampled during the decode and turned the right way up: a portrait phone photo is
+            // stored as a landscape frame plus an EXIF tag, and nothing in WPF reads that tag, so
+            // every one of them used to tile on its side. Null on a corrupt file, an unsupported
+            // variant of the format, or a file that went away (Services\ImageOrientation.cs).
+            ImageSource? img = ImageOrientation.Load(filePath, px, ignoreColorProfile: true);
 
             lock (Cache) Cache[key] = img;
             return img;
@@ -502,7 +491,7 @@ namespace KillerShell.Services
 
         private const int ILD_TRANSPARENT = 1;
 
-        private static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+        private static Guid IID_IImageList = new("46EB5926-582E-4017-9FDF-E8998DAA0950");
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct SHFILEINFO

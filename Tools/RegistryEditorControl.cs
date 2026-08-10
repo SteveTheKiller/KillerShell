@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using KillerShell.Shell;
 
 // The control behind the Registry Editor tab: a real, working regedit-equivalent - browse the
 // five hives, view and edit values, create/rename/delete keys and values, search - built entirely
@@ -28,7 +29,7 @@ using Microsoft.Win32;
 //
 // Reached only through Ctrl+F11 (Elevation.cs RelaunchElevatedRegistryEditor) - see the file
 // header on RegistryEditorTabs.cs for why there is no unelevated variant at all.
-namespace KillerShell.Shell
+namespace KillerShell.Tools
 {
     // ═══════════════════════════════════════════════════════════
     //  TREE MODEL  -  one node per key, children loaded only when a node is actually expanded.
@@ -38,7 +39,7 @@ namespace KillerShell.Shell
     // ═══════════════════════════════════════════════════════════
     internal sealed class RegistryNode : INotifyPropertyChanged
     {
-        private static readonly RegistryNode Placeholder = new RegistryNode(string.Empty, string.Empty, isPlaceholder: true);
+        private static readonly RegistryNode Placeholder = new(string.Empty, string.Empty, isPlaceholder: true);
 
         public string Name { get; }
         public string FullPath { get; }
@@ -48,7 +49,7 @@ namespace KillerShell.Shell
         /// walk back up to the parent key without the control keeping a second, parallel map.</summary>
         internal RegistryNode? Parent { get; set; }
 
-        public ObservableCollection<RegistryNode> Children { get; } = new ObservableCollection<RegistryNode>();
+        public ObservableCollection<RegistryNode> Children { get; } = [];
 
         public bool IsLoaded { get; private set; }
 
@@ -164,13 +165,13 @@ namespace KillerShell.Shell
     internal static class RegistryPathHelper
     {
         internal static readonly (string Name, RegistryKey Root)[] Hives =
-        {
+        [
             ("HKEY_CLASSES_ROOT",   Registry.ClassesRoot),
             ("HKEY_CURRENT_USER",   Registry.CurrentUser),
             ("HKEY_LOCAL_MACHINE",  Registry.LocalMachine),
             ("HKEY_USERS",          Registry.Users),
             ("HKEY_CURRENT_CONFIG", Registry.CurrentConfig),
-        };
+        ];
 
         /// <summary>Opens <paramref name="fullPath"/> fresh - the caller disposes it. Returns null
         /// for an unknown hive name or a key that no longer exists; never throws for that case,
@@ -181,12 +182,12 @@ namespace KillerShell.Shell
             if (string.IsNullOrEmpty(fullPath)) return null;
 
             int sep = fullPath.IndexOf('\\');
-            string hiveName = sep < 0 ? fullPath : fullPath.Substring(0, sep);
-            string sub      = sep < 0 ? string.Empty : fullPath.Substring(sep + 1);
+            string hiveName = sep < 0 ? fullPath : fullPath[..sep];
+            string sub      = sep < 0 ? string.Empty : fullPath[(sep + 1)..];
 
-            foreach (var h in Hives)
-                if (string.Equals(h.Name, hiveName, StringComparison.OrdinalIgnoreCase))
-                    return sub.Length == 0 ? h.Root : h.Root.OpenSubKey(sub, writable);
+            foreach (var (Name, Root) in Hives)
+                if (string.Equals(Name, hiveName, StringComparison.OrdinalIgnoreCase))
+                    return sub.Length == 0 ? Root : Root.OpenSubKey(sub, writable);
 
             return null;
         }
@@ -194,7 +195,7 @@ namespace KillerShell.Shell
         internal static string ParentPath(string fullPath)
         {
             int idx = fullPath.LastIndexOf('\\');
-            return idx < 0 ? string.Empty : fullPath.Substring(0, idx);
+            return idx < 0 ? string.Empty : fullPath[..idx];
         }
     }
 
@@ -229,7 +230,7 @@ namespace KillerShell.Shell
         private static string Truncate(string s)
             => s.Length <= MaxDisplayChars
                 ? s
-                : s.Substring(0, MaxDisplayChars) + $"...  ({s.Length} chars total)";
+                : s[..MaxDisplayChars] + $"...  ({s.Length} chars total)";
 
         internal static string DataLabel(object? value, RegistryValueKind kind)
         {
@@ -253,7 +254,7 @@ namespace KillerShell.Shell
 
                 case RegistryValueKind.Binary:
                 {
-                    var bytes = value as byte[] ?? Array.Empty<byte>();
+                    var bytes = value as byte[] ?? [];
                     if (bytes.Length == 0) return string.Empty;
                     // Cap the byte count BEFORE building the hex string, not after - a many-MB
                     // blob turned into a "XX XX XX ..." string first would already have paid the
@@ -265,7 +266,7 @@ namespace KillerShell.Shell
 
                 case RegistryValueKind.MultiString:
                 {
-                    var arr = value as string[] ?? Array.Empty<string>();
+                    var arr = value as string[] ?? [];
                     // " | " between entries, not the raw NUL/CRLF regedit's own file format uses -
                     // this is a grid cell, and entries have to stay visibly separated on one line.
                     return Truncate(string.Join("  |  ", arr));
@@ -301,8 +302,8 @@ namespace KillerShell.Shell
     // ═══════════════════════════════════════════════════════════
     internal sealed class RegistryEditorControl : Grid
     {
-        private readonly ObservableCollection<RegistryNode> _roots = new();
-        private readonly ObservableCollection<RegistryValueRow> _values = new();
+        private readonly ObservableCollection<RegistryNode> _roots = [];
+        private readonly ObservableCollection<RegistryValueRow> _values = [];
 
         private readonly TreeView _tree;
         private readonly DataGrid _grid;
@@ -708,14 +709,14 @@ namespace KillerShell.Shell
                 RowHeight = 24,
                 AlternationCount = 2,
                 ItemsSource = _values,
+                // Transparent, matching ProcessListControl's own value grid (Tools/ProcessListControl.cs
+                // - the Task Manager tab) rather than the SurfaceBrush a
+                // prior round put here: SurfaceBrush painted a second, flat panel behind the header's own
+                // TableHeaderBrush band instead of letting this control's own PaneBrush root (set in
+                // the constructor above) show through, so the header read as floating on an extra
+                // layer instead of sitting directly on the tab.
+                Background = Brushes.Transparent
             };
-            // Transparent, matching ProcessListControl's own value grid (Shell/ProcessListControl.cs
-            // - the Task Manager tab) rather than the SurfaceBrush a
-            // prior round put here: SurfaceBrush painted a second, flat panel behind the header's own
-            // TableHeaderBrush band instead of letting this control's own PaneBrush root (set in
-            // the constructor above) show through, so the header read as floating on an extra
-            // layer instead of sitting directly on the tab.
-            grid.Background = Brushes.Transparent;
             // RegGridMargin: the 6,0,0,0 gap to the splitter it always had, 0 on 98SE - inside
             // its own sunken well the gap read as a slim white border to the left of the
             // table; the skinny splitter is the divider now.

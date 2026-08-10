@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Media;
 using KillerShell.Models;
+using KillerShell.Tools;
 
 // Event Viewer tabs, and where they land. Partial of MainWindow.
 //

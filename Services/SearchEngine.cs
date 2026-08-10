@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using KillerShell.Models;
 
-namespace KillerShell
+namespace KillerShell.Services
 {
     // Multicore search: one producer walks the directory tree into a bounded queue,
     // one worker per core evaluates files, and the calling task pumps result batches
@@ -64,7 +64,7 @@ namespace KillerShell
             includeNames.RemoveAll(p => p == "*.*" || p == "*");
             var includeRx = includeNames.Select(p => WildcardRegex(LoosenPattern(p), false)).ToList();
 
-            var activeFilters = (filters ?? new List<SearchFilter>()).Where(f => f.IsActive).ToList();
+            var activeFilters = (filters ?? []).Where(f => f.IsActive).ToList();
 
             // Term plan: per group, the AND/OR mode plus each term's compiled name regex
             // (null for content terms, which stream the file instead).
@@ -116,10 +116,10 @@ namespace KillerShell
                 };
 
                 bool fileMatches = true;   // groups are AND-ed together
-                foreach (var plan in groupPlans)
+                foreach (var (And, Terms) in groupPlans)
                 {
-                    bool groupSat = plan.And;   // AND starts true, OR starts false
-                    foreach (var (term, nameRx) in plan.Terms)
+                    bool groupSat = And;   // AND starts true, OR starts false
+                    foreach (var (term, nameRx) in Terms)
                     {
                         bool hit;
                         if (nameRx != null)
@@ -133,7 +133,7 @@ namespace KillerShell
                             hit = lines.Count > 0;
                             if (hit) result.Matches.Add(new TermMatch { Term = term, Lines = lines });
                         }
-                        groupSat = plan.And ? (groupSat && hit) : (groupSat || hit);
+                        groupSat = And ? (groupSat && hit) : (groupSat || hit);
                     }
                     fileMatches = fileMatches && groupSat;
                 }
@@ -228,7 +228,7 @@ namespace KillerShell
             while (queue.Count > 0)
             {
                 string dir = queue.Dequeue();
-                IEnumerable<string> files = Enumerable.Empty<string>();
+                IEnumerable<string> files = [];
 
                 try { files = Directory.EnumerateFiles(dir); }
                 catch { /* skip inaccessible */ }
@@ -236,7 +236,7 @@ namespace KillerShell
                 foreach (var f in files)
                     yield return f;
 
-                IEnumerable<string> subdirs = Enumerable.Empty<string>();
+                IEnumerable<string> subdirs = [];
                 try { subdirs = Directory.EnumerateDirectories(dir); }
                 catch { /* skip inaccessible */ }
 
@@ -341,11 +341,10 @@ namespace KillerShell
         // ── Pattern helpers ──────────────────────────────────────
         private static List<string> ParsePatterns(string raw)
         {
-            if (string.IsNullOrWhiteSpace(raw)) return new List<string>();
-            return raw.Split(';')
+            if (string.IsNullOrWhiteSpace(raw)) return [];
+            return [.. raw.Split(';')
                       .Select(p => p.Trim())
-                      .Where(p => p.Length > 0)
-                      .ToList();
+                      .Where(p => p.Length > 0)];
         }
 
         // Excludes match two ways: as a whole path segment ("bin", "node_modules")

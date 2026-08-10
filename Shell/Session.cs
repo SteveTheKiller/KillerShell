@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using KillerShell.Models;
+using KillerShell.Tools;
 
 // Session concerns: the portable Install flow, the smart-Esc quit prompt, and tab
 // persistence to the registry. Partial of MainWindow.
@@ -267,7 +268,7 @@ namespace KillerShell.Shell
                     // restore is just a merge into the window that is about to be itself.
                     if (line.Length > 0 && line[0] == '\x01')
                     {
-                        ApplyHandoff(line.Substring(1));   // TabHandoff.cs
+                        ApplyHandoff(line[1..]);   // TabHandoff.cs
                         continue;
                     }
 

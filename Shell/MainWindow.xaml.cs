@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using KillerShell.Models;
+using KillerShell.Tools;
 
 namespace KillerShell.Shell
 {
@@ -1105,7 +1106,7 @@ namespace KillerShell.Shell
                 e.Handled = true;
             }
             else if (ctrl && (e.Key == System.Windows.Input.Key.Right || e.Key == System.Windows.Input.Key.Left)
-                     && !(e.OriginalSource is TextBox))
+                     && e.OriginalSource is not TextBox)
             {
                 // Explicit expand / collapse - the toolbar button toggles, these don't.
                 // Skipped inside a TextBox so Ctrl+arrow keeps its word-jump meaning there.
@@ -1169,7 +1170,7 @@ namespace KillerShell.Shell
                 // row and Select all in a focused shell. This handler previews from the window
                 // root, so without the gate its meaning would be decided here every time and
                 // neither of those could ever fire. See ChordOwnedByFocus above.
-                _active.Groups[_active.Groups.Count - 1].Terms.Add(new SearchTerm());
+                _active.Groups[^1].Terms.Add(new SearchTerm());
                 e.Handled = true;
             }
             else if (shift && !ctrl && !alt && e.Key == System.Windows.Input.Key.F7)
@@ -1467,10 +1468,10 @@ namespace KillerShell.Shell
             while (lo < hi)
             {
                 int mid = (lo + hi) / 2;   // drop `mid` characters off the front
-                if (MeasureStatus(Ellipsis + _statusFull.Substring(mid)) <= avail) hi = mid;
+                if (MeasureStatus(Ellipsis + _statusFull[mid..]) <= avail) hi = mid;
                 else lo = mid + 1;
             }
-            StatusText.Text = Ellipsis + _statusFull.Substring(Math.Min(lo, _statusFull.Length));
+            StatusText.Text = Ellipsis + _statusFull[Math.Min(lo, _statusFull.Length)..];
         }
 
         private void StatusText_SizeChanged(object sender, SizeChangedEventArgs e) => ElideFooterStatus();
@@ -1558,14 +1559,14 @@ namespace KillerShell.Shell
         // SetTabStatusKey calls would be forty chances to get it wrong. A raw SetTabStatus has no
         // key and is always green - those are progress messages.
         private static readonly string[] WarnKeys =
-        {
+        [
             "Str_Status_FileOnly", "Str_Status_ClipboardBusy", "Str_Status_ElevationDeclined",
-        };
+        ];
 
         private static readonly string[] ErrorKeys =
-        {
+        [
             "Str_Status_BadPath", "Str_Status_ShellFailed",
-        };
+        ];
 
         private void ApplyStatusTone(string? key)
         {

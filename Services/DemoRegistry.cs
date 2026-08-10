@@ -37,8 +37,8 @@ namespace KillerShell.Services
         private static readonly Dictionary<string, List<ValueEntry>> Values =
             new(StringComparer.OrdinalIgnoreCase);
 
-        private static readonly List<string> NoChildren = new();
-        private static readonly List<ValueEntry> NoValues = new();
+        private static readonly List<string> NoChildren = [];
+        private static readonly List<ValueEntry> NoValues = [];
 
         /// <summary>Subkey NAMES directly under <paramref name="fullPath"/> ("HIVE\Sub\Key"),
         /// already sorted the way RegistryNode.LoadChildren sorts real ones. Empty for a key that
@@ -60,14 +60,14 @@ namespace KillerShell.Services
         }
 
         private static void Val(string fullPath, params ValueEntry[] entries)
-            => Values[fullPath] = new List<ValueEntry>(entries);
+            => Values[fullPath] = [.. entries];
 
         private static ValueEntry S(string name, string value)  => new(name, RegistryValueKind.String, value);
         private static ValueEntry D(string name, int value)     => new(name, RegistryValueKind.DWord, value);
         private static ValueEntry B(string name, params byte[] value) => new(name, RegistryValueKind.Binary, value);
 
         // The other three kinds the grid can label and format (RegistryValueFormat in
-        // Shell\RegistryEditorControl.cs handles all six). Present so the Type column has
+        // Tools\RegistryEditorControl.cs handles all six). Present so the Type column has
         // something other than REG_SZ and REG_DWORD in it: a capture of a registry editor that
         // only ever shows two of the six types does not demonstrate the editor reads the rest.
         // The CLR types matter - DataLabel casts them - so a MultiString must be a string array
@@ -79,7 +79,7 @@ namespace KillerShell.Services
         static DemoRegistry()
         {
             // ── HKEY_CLASSES_ROOT ────────────────────────────────
-            // The extensions KillerShell itself can associate (Shell\Associations.cs) plus the
+            // The extensions KillerShell itself can associate (Associations.cs) plus the
             // ProgIDs behind them, so expanding this hive lands on the keys the associations card
             // is actually talking about rather than on an arbitrary slice of a merged view.
             Key("HKEY_CLASSES_ROOT",
@@ -110,7 +110,7 @@ namespace KillerShell.Services
             Val(@"HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\shell\open\command",
                 S("", @"""C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"" ""%1"""));
 
-            // The app's own ProgID, written exactly the way Shell\Associations.cs writes a real
+            // The app's own ProgID, written exactly the way Associations.cs writes a real
             // one - DefaultIcon pointing at the extracted .ico beside the exe included.
             Key(@"HKEY_CLASSES_ROOT\KillerShell.Document", "DefaultIcon", "shell");
             Val(@"HKEY_CLASSES_ROOT\KillerShell.Document",
@@ -252,7 +252,7 @@ namespace KillerShell.Services
                 M("Sites", "Cedar Ridge", "Fairview", "Lakeside"));
 
             // The install record, matching the fabricated Program Files folder and the fabricated
-            // process list (Services\DemoFileSystem.cs, Shell\ProcessListControl.cs).
+            // process list (Services\DemoFileSystem.cs, Tools\ProcessListControl.cs).
             Val(@"HKEY_LOCAL_MACHINE\SOFTWARE\KillerTools\KillerShell",
                 S("InstallPath", @"C:\Program Files\KillerShell"),
                 S("Version", "1.1.0"),
@@ -318,7 +318,7 @@ namespace KillerShell.Services
                 D("ScheduledInstallTime", 3));
 
             // The service side of the same machine the Services view lists
-            // (Shell\ProcessListControl.cs PopulateDemoServices) - the Start and Type numbers here
+            // (Tools\ProcessListControl.cs PopulateDemoServices) - the Start and Type numbers here
             // are the ones behind "Automatic" and "Disabled" over there.
             Key(@"HKEY_LOCAL_MACHINE\SYSTEM", "CurrentControlSet", "Select");
             Val(@"HKEY_LOCAL_MACHINE\SYSTEM\Select",

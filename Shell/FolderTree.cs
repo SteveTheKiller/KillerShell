@@ -27,7 +27,7 @@ namespace KillerShell.Shell
     // that opens onto nothing is the right trade.
     public sealed class FolderNode : INotifyPropertyChanged
     {
-        private static readonly FolderNode Placeholder = new FolderNode("", "", false);
+        private static readonly FolderNode Placeholder = new("", "", false);
 
         public string Path { get; }
         public string Name { get; }
@@ -36,7 +36,7 @@ namespace KillerShell.Shell
         // mid-session, and their label is "Local Disk (C:)" rather than a bare folder name.
         public bool IsDrive { get; }
 
-        public ObservableCollection<FolderNode> Children { get; } = new ObservableCollection<FolderNode>();
+        public ObservableCollection<FolderNode> Children { get; } = [];
 
         public FolderNode(string path, string name, bool mayHaveChildren)
         {
@@ -219,7 +219,7 @@ namespace KillerShell.Shell
 
     public partial class MainWindow
     {
-        private readonly ObservableCollection<FolderNode> _treeRoots = new ObservableCollection<FolderNode>();
+        private readonly ObservableCollection<FolderNode> _treeRoots = [];
 
         // Guards the two-way sync between tree and results pane. Selecting a node navigates, and
         // navigating selects a node; without this they ping-pong.
@@ -341,8 +341,7 @@ namespace KillerShell.Shell
 
             if (_treeMenuNode == null) { e.Handled = true; return; }   // empty space: no menu
 
-            if (_treeMenuItem == null)
-                _treeMenuItem = FolderTree.ContextMenu?.Items.OfType<MenuItem>()
+            _treeMenuItem ??= FolderTree.ContextMenu?.Items.OfType<MenuItem>()
                                           .FirstOrDefault(m => (m.Tag as string) == "fav");
             if (_treeMenuItem != null)
                 _treeMenuItem.Header = Loc(IsBookmarked(_treeMenuNode.Path)
@@ -444,7 +443,7 @@ namespace KillerShell.Shell
             if (p == null || !Directory.Exists(p)) return;
             AfterMenuCloses(() =>
             {
-                if (!Services.ShellContextMenu.Show(this, new[] { p }))
+                if (!Services.ShellContextMenu.Show(this, [p]))
                     SetTabStatusKey(_active, "Str_Status_ShellFailed");
             });
         }
@@ -633,16 +632,22 @@ namespace KillerShell.Shell
                 current.IsExpanded = true;
             }
 
+            // Restore what was found, never assign false: ToggleTreeHidden calls in here from
+            // inside its own _treeSyncing = true guard, and stamping false on the way out would
+            // reopen that guard early - the same class of bug as the tree toggle navigating the
+            // pane. Saved at the last moment rather than method entry, because the awaits above
+            // yield to the dispatcher and the flag can legitimately change while they run.
+            bool wasSyncing = _treeSyncing;
             _treeSyncing = true;
-            current.IsSelected = true;
-            _treeSyncing = false;
+            try { current.IsSelected = true; }
+            finally { _treeSyncing = wasSyncing; }
         }
 
         private static IEnumerable<string> RelativeSegments(string rootPath, string fullPath)
         {
-            string rest = fullPath.Substring(rootPath.Length);
-            return rest.Split(new[] { System.IO.Path.DirectorySeparatorChar,
-                                      System.IO.Path.AltDirectorySeparatorChar },
+            string rest = fullPath[rootPath.Length..];
+            return rest.Split([ System.IO.Path.DirectorySeparatorChar,
+                                      System.IO.Path.AltDirectorySeparatorChar ],
                               StringSplitOptions.RemoveEmptyEntries);
         }
     }

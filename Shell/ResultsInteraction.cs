@@ -247,10 +247,10 @@ namespace KillerShell.Shell
             var selected = Pane.ResultsList.SelectedItems.OfType<SearchResult>().ToList();
 
             if (seed != null && !selected.Contains(seed))
-                return new List<string> { seed.FilePath };
+                return [seed.FilePath];
 
-            if (selected.Count > 0) return selected.Select(r => r.FilePath).ToList();
-            return seed != null ? new List<string> { seed.FilePath } : new List<string>();
+            if (selected.Count > 0) return [.. selected.Select(r => r.FilePath)];
+            return seed != null ? [seed.FilePath] : [];
         }
 
         private void StartFileDrag()
@@ -262,7 +262,7 @@ namespace KillerShell.Shell
             // mapping/DataContext were not caught up yet at press time, the time spent clearing
             // the move threshold (several MouseMove ticks) is enough for them to have settled by
             // now - see the comment above DataFor.
-            if (_dragSeed == null) _dragSeed = DataFor(_dragSeedItem);
+            _dragSeed ??= DataFor(_dragSeedItem);
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: late-resolved seed={_dragSeed?.FilePath ?? "still null"}");
 
             // Nothing inside an archive exists on disk, so the File.Exists filter would remove
@@ -272,7 +272,7 @@ namespace KillerShell.Shell
 
             var paths = fromArchive
                 ? ExtractForDragOut(FilesForCommand(_dragSeed))
-                : FilesForCommand(_dragSeed).Where(File.Exists).ToArray();
+                : [.. FilesForCommand(_dragSeed).Where(File.Exists)];
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: seed={_dragSeed?.FilePath ?? "null"}, resolvedPaths={paths.Length}");
             if (paths.Length == 0) return;
 
@@ -293,6 +293,7 @@ namespace KillerShell.Shell
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: BuildHDrop/BuildUnicodeText THREW: {ex}");
+                data.ReleaseAll();   // the first SetHGlobal may already hold a global
                 return;  // Bail BEFORE attaching drag-image so no orphaned shell window is left behind
             }
 
@@ -334,13 +335,17 @@ namespace KillerShell.Shell
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[DragDiag] DoDragDrop THREW: {ex}"); }
             finally
             {
-                // CRITICAL: Dispose the drag-image helper ONLY AFTER DoDragDrop returns. The helper
-                // owns the layered drag-image window and manages its lifecycle. Releasing it before
-                // the drag completes, or even too early after completion, can leave the window
-                // orphaned on the desktop. Keeping the helper alive ensures ole32's cleanup handler
-                // has the window context it needs to destroy the window deterministically.
+                // Only after DoDragDrop returns, and in this order. The helper wrapper goes first;
+                // then ReleaseAll drops every medium the shell stored on the data object during
+                // the drag, and THAT is what destroys the layered drag-image window - the shell
+                // object that owns the window is referenced through those media's pUnkForRelease,
+                // so until they are released its refcount never reaches zero and the drag icon
+                // sits on screen until the app exits. That was the ghost, on every external drop.
+                // Disposing the helper alone never fixed it because the helper wrapper holds a
+                // different reference from the ones SetData stored (NativeDataObject.ReleaseAll).
                 dragHelper?.Dispose();
-                System.Diagnostics.Debug.WriteLine($"[DragDiag] Disposed drag-image helper");
+                data.ReleaseAll();
+                System.Diagnostics.Debug.WriteLine($"[DragDiag] Disposed drag-image helper and released data object media");
             }
         }
 
@@ -355,6 +360,11 @@ namespace KillerShell.Shell
         // stayed inside KillerShell (pane to pane, or window to window) - only a drop onto real
         // Explorer, whose own drop target DOES call the helper, ever showed it.
         private Services.DropTargetHelper? _dropImageHelper;
+
+        // Set by every DragEnter/DragOver, cleared by DragLeave: how a deferred check tells a
+        // REAL exit from the window apart from WPF's synthetic child-element crossings. See
+        // Window_DragLeave.
+        private bool _dragOverWindow;
 
         private static int EffectsToNative(DragDropEffects effects)
         {
@@ -378,6 +388,8 @@ namespace KillerShell.Shell
             // AccessViolationException. So: only call Enter once per actual
             // drag - if a helper is already active, this is just another crossing within the same
             // session and gets treated as an Over, not a fresh Enter.
+            _dragOverWindow = true;
+
             if (_dropImageHelper != null)
             {
                 _dropImageHelper.Over(PointToScreen(e.GetPosition(this)), EffectsToNative(e.Effects));
@@ -394,19 +406,43 @@ namespace KillerShell.Shell
 
         private void Window_DragLeave(object sender, DragEventArgs e)
         {
-            // Do NOT tear the helper down here: this fires on every WPF-level crossing out of a
-            // child element too (leaving the Image just before entering the Border beneath it),
-            // not only when the drag actually leaves the window. Disposing here just to have
-            // Window_DragEnter immediately build a second Enter session for the next element is
-            // the same Enter-while-already-open desync that threw AccessViolationException.
-            // Window_Drop is where the real end of a KillerShell-hosted drag is Leave()'d and
-            // disposed; if the drag instead lands on another app, that app's own drop target
-            // calls IDropTargetHelper on ITS OWN COM instance, so nothing here needs to react to
-            // this window losing the drag either.
+            // This fires on every WPF-level crossing out of a child element too (leaving the
+            // Image just before entering the Border beneath it), not only when the drag actually
+            // leaves the window - so the helper must NOT be torn down synchronously here.
+            // Disposing per crossing, with Window_DragEnter immediately opening a second Enter
+            // session for the next element, is the Enter-while-already-open desync that threw
+            // AccessViolationException.
+            //
+            // But a REAL exit does have to Leave() the helper. This method's previous body was a
+            // comment asserting that when the drag moves on to another app, that app's own drop
+            // target takes over the drag image - which is only true of targets that call
+            // IDropTargetHelper, like Explorer. Telegram, GIMP and most non-shell apps never do,
+            // so nothing ever told the shell the cursor left this window and the drag image
+            // stayed painted at the last Over() position, sitting on the window edge until the
+            // app exited. That was the ghost icon's second half (the first was the data object
+            // never releasing what the shell stored on it - NativeDataObject.ReleaseAll).
+            //
+            // Telling the two apart: a synthetic child crossing raises the matching DragEnter
+            // SYNCHRONOUSLY, in this same dispatcher pass, before any queued operation can run. A
+            // real exit raises nothing. So: clear the flag, let the queued check run after the
+            // current pass, and only tear down if no Enter/Over has set the flag again by then.
+            // Re-entry later is fine - Window_DragEnter builds a fresh helper and a fresh Enter,
+            // which is a legitimate new session after a Leave().
+            _dragOverWindow = false;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_dragOverWindow || _dropImageHelper == null) return;
+                _dropImageHelper.Leave();
+                _dropImageHelper.Dispose();
+                _dropImageHelper = null;
+                DragTrace("Window_DragLeave: real exit - drag image released");
+            }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
         private void Window_DragOver(object sender, DragEventArgs e)
         {
+            _dragOverWindow = true;   // see Window_DragLeave - proves the drag is still inside
+
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 DragTrace("Window_DragOver: no FileDrop data present - Effects=None");
@@ -673,7 +709,7 @@ namespace KillerShell.Shell
 
             t.PipeFiles = files;
             t.RootPath  = System.IO.Path.GetDirectoryName(files[0]) ?? string.Empty;
-            t.PipeArgs  = new object[] { files.Count.ToString("N0"), Loc("Str_Scope_Dropped"), string.Empty };
+            t.PipeArgs  = [files.Count.ToString("N0"), Loc("Str_Scope_Dropped"), string.Empty];
             t.PipeLabel = string.Format(Loc("Str_Pipe_Scope"), t.PipeArgs);
             t.Title     = string.Format(Loc("Str_Tab_Dropped"), files.Count.ToString("N0"));
 

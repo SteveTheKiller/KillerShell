@@ -24,7 +24,7 @@ namespace KillerShell.Shell
         /// </remarks>
         internal void OpenNewWindow()
         {
-            OpenNewWindowInternal(null, elevate: false);
+            OpenNewWindowInternal(null);
         }
 
         /// <summary>
@@ -62,7 +62,16 @@ namespace KillerShell.Shell
             catch { /* failed to launch; nothing we can do from here */ }
         }
 
-        private void OpenNewWindowInternal(string? folder, bool elevate)
+        /// <remarks>
+        /// This took a `bool elevate` that nothing in the method ever read: no `Verb = "runas"` was
+        /// ever set, so a caller asking for an elevated window would have got an ordinary one and
+        /// no warning - and the catch below still reports it as `Str_Status_ElevateFailed`, which
+        /// is what gives the intent away. Only one caller exists and it passes false, so nothing
+        /// shipped broken, but a flag that silently does nothing is a trap. It is gone; if an
+        /// elevated new window is ever wanted, it needs the real relaunch Elevation.cs already
+        /// does, not a parameter.
+        /// </remarks>
+        private void OpenNewWindowInternal(string? folder)
         {
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;

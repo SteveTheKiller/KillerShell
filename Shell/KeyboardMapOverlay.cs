@@ -33,8 +33,8 @@ namespace KillerShell.Shell
         private TextBlock? _kbHoverAct;   // caption of the key under the mouse (marquee restart on layer switch)
         private string? _kbHoverId;
         private TextBlock? _kbScopeName;  // the applet name in the board's scope caption
-        private readonly Dictionary<string, (Border Cap, TextBlock Act, Rectangle Bar)> _kbKeys = new();
-        private readonly Dictionary<KbLayer, Button> _kbLayerBtns = new();
+        private readonly Dictionary<string, (Border Cap, TextBlock Act, Rectangle Bar)> _kbKeys = [];
+        private readonly Dictionary<KbLayer, Button> _kbLayerBtns = [];
 
         private const string KsViewSetting = "ShortcutView";   // "list" (default) | "keyboard"
 
@@ -59,7 +59,7 @@ namespace KillerShell.Shell
         /// <summary>What each keycap shows on the layer now displayed. Rebuilt by
         /// <see cref="SetKbLayer"/>; read by the hover handlers and the detail line, so all
         /// three agree on what a cap currently means.</summary>
-        private Dictionary<string, KsBinding> _kbLit = new();
+        private Dictionary<string, KsBinding> _kbLit = [];
 
         /// <summary>
         /// Which binding lights which keycap, for one layer in the scope now active.
@@ -466,21 +466,21 @@ namespace KillerShell.Shell
             _kbLit = KbLit(layer);
             foreach (var kv in _kbKeys)   // no KeyValuePair deconstruction on net48
             {
-                var vis = kv.Value;
+                var (Cap, Act, Bar) = kv.Value;
                 if (_kbLit.TryGetValue(kv.Key, out var b))
                 {
-                    vis.Cap.SetResourceReference(Border.BorderBrushProperty, "KsCat" + b.Cat);
-                    vis.Bar.SetResourceReference(Shape.FillProperty, "KsCat" + b.Cat);
-                    vis.Bar.Visibility = Visibility.Visible;
-                    vis.Act.SetResourceReference(TextBlock.TextProperty, b.Label);
-                    vis.Act.SetResourceReference(TextBlock.ForegroundProperty, "KsCat" + b.Cat);
-                    vis.Act.Visibility = Visibility.Visible;
+                    Cap.SetResourceReference(Border.BorderBrushProperty, "KsCat" + b.Cat);
+                    Bar.SetResourceReference(Shape.FillProperty, "KsCat" + b.Cat);
+                    Bar.Visibility = Visibility.Visible;
+                    Act.SetResourceReference(TextBlock.TextProperty, b.Label);
+                    Act.SetResourceReference(TextBlock.ForegroundProperty, "KsCat" + b.Cat);
+                    Act.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    vis.Cap.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
-                    vis.Bar.Visibility = Visibility.Collapsed;
-                    vis.Act.Visibility = Visibility.Collapsed;
+                    Cap.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
+                    Bar.Visibility = Visibility.Collapsed;
+                    Act.Visibility = Visibility.Collapsed;
                 }
             }
 

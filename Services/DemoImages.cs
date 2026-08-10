@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-// Pictures for the fabricated machine's image files, DRAWN at run time from the file's own path.
+// Pictures for the fabricated machine's image files: real photographs when they are sitting beside
+// the repo, and a drawn field when they are not.
 //
 // The problem this solves: everything about the fabricated machine (Services\DemoFileSystem.cs) is
 // a table, not a disk. A row named "fairview-rack-front.jpg" has no bytes anywhere, so the
@@ -11,27 +13,46 @@ using System.Windows.Media.Imaging;
 // which meant the two views whose entire selling point is showing you the picture were the two
 // views demo mode could not demonstrate.
 //
-// Nothing ships and nothing is probed. An earlier version loaded photographs from a folder on
-// disk, which put a real user directory into the source of a public repository and made a capture
-// depend on the one machine that folder existed on. Both are wrong here, and the second one is
-// wrong twice over for a mode whose whole promise is that it never reads real data. Every pixel
-// below is arithmetic - a smooth two-octave value-noise field run through a color ramp - so an
-// image row shows an image without an image existing anywhere.
+// TWO SOURCES, tried in this order:
 //
-// The result is a pure function of the fabricated path. Same picture on every launch, on every
-// machine and in every view, so the icon view's tile and the details strip's preview for one file
-// cannot disagree, and a capture retaken next month matches the one taken today. That is the same
-// intent as the fixed RNG seed in DemoMode.cs and the fixed sizes and dates in DemoFileSystem.cs.
+// 1. A photograph from code\Demo\KillerShell, which is where demo material for the family lives
+//    (KillerNotes reads its own folder beside this one). That folder sits OUTSIDE the repo and is
+//    never committed or shipped, so no photograph and no personal directory reaches the public
+//    source. The assignment is by INDEX into the fabricated machine's fixed walk, not by name, so
+//    the file names on screen stay invented while the pixels behind them are real.
+// 2. Failing that - no folder, or a file with no codec - a picture DRAWN from the path. Every
+//    pixel is arithmetic, a smooth two-octave value-noise field run through a color ramp, so an
+//    image row still shows an image. This is the fallback, not a dead branch: it is what a
+//    checkout without the folder gets, which is every machine but the one taking the screenshots.
+//
+// Either way the answer is a pure function of the fabricated path, the same on every launch and in
+// every view, so the icon view's tile and the details strip's preview for one file cannot disagree
+// and a capture retaken next month matches the one taken today. That is the same intent as the
+// fixed RNG seed in DemoMode.cs and the fixed sizes and dates in DemoFileSystem.cs. The one thing
+// that does move a capture is adding or removing a photograph, which reshuffles which fabricated
+// row wears which picture.
 namespace KillerShell.Services
 {
     internal static class DemoImages
     {
         private static readonly object Gate = new();
 
-        // Every fabricated path that gets a picture, taken from the fabricated machine's own fixed
-        // walk. A row the listing draws an image icon for is exactly a row this answers, so
-        // nothing is left in a broken half-state.
-        private static HashSet<string>? _known;
+        // Every fabricated path that gets a picture, mapped to its position in the fabricated
+        // machine's own fixed walk. A row the listing draws an image icon for is exactly a row this
+        // answers, so nothing is left in a broken half-state. The POSITION is what picks the
+        // photograph, which is why this is a map and not a set.
+        private static Dictionary<string, int>? _known;
+
+        // The photographs, sorted by file name so the order cannot depend on how the file system
+        // happened to enumerate the folder. Empty when the folder is not there. Built on the first
+        // Render call, and Render is only ever reached in demo mode, so an ordinary run never goes
+        // looking for it.
+        private static List<string>? _photos;
+
+        // What is taken as a photograph in that folder. The same set DemoFileSystem.cs treats as a
+        // picture, so anything dropped in there is readable by exactly the rows that want one.
+        private static readonly string[] PhotoExtensions =
+            [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp"];
 
         // Keyed by path AND size. The listing asks for a small tile and the details strip asks for
         // a much larger preview; drawing the large one to answer a 32px tile would cost many times
@@ -50,9 +71,9 @@ namespace KillerShell.Services
 
         /// <summary>
         /// The picture for a fabricated image path at <paramref name="px"/> on its longest side,
-        /// or null when the path is not one of the fabricated machine's pictures. Frozen, so the
-        /// background threads the listing and the details strip decode on can hand it to the UI
-        /// thread directly.
+        /// or null when the path is not one of the fabricated machine's pictures. A photograph from
+        /// the demo folder when there is one, otherwise drawn. Frozen, so the background threads the
+        /// listing and the details strip decode on can hand it to the UI thread directly.
         /// </summary>
         internal static BitmapSource? Render(string fakePath, int px)
         {
@@ -60,30 +81,94 @@ namespace KillerShell.Services
 
             string key = fakePath + "|" + px;
 
-            HashSet<string> known;
+            Dictionary<string, int> known;
+            List<string> photos;
             lock (Gate)
             {
                 _known ??= BuildKnown();
+                _photos ??= BuildPhotos();
                 known = _known;
+                photos = _photos;
                 if (Cache.TryGetValue(key, out var hit)) return hit;
             }
 
-            if (!known.Contains(fakePath)) return null;
+            if (!known.TryGetValue(fakePath, out int index)) return null;
 
-            // Drawn OUTSIDE the lock: two threads racing on the same tile draw the same pixels,
-            // because the image is a function of the path, so the wasted work is one tile and the
-            // alternative is every listing thread queueing behind whichever one is drawing.
-            var img = Draw(fakePath, px);
+            // Loaded and drawn OUTSIDE the lock: two threads racing on the same tile produce the
+            // same pixels, because the picture is a function of the path, so the wasted work is one
+            // tile and the alternative is every listing thread queueing behind whichever one is
+            // working.
+            //
+            // Modulo, so a folder holding fewer photographs than the machine has picture rows still
+            // fills every row rather than leaving the tail drawn and the head photographic - a grid
+            // mixing the two reads as a bug in a screenshot.
+            BitmapSource? img = photos.Count > 0
+                ? ImageOrientation.Load(photos[index % photos.Count], px, ignoreColorProfile: false)
+                : null;
+
+            img ??= Draw(fakePath, px);
 
             lock (Gate) Cache[key] = img;
             return img;
         }
 
-        private static HashSet<string> BuildKnown()
+        private static Dictionary<string, int> BuildKnown()
         {
-            var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (string p in DemoFs.ImagePaths) set.Add(p);
-            return set;
+            var map = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            int i = 0;
+            foreach (string p in DemoFs.ImagePaths)
+                if (!map.ContainsKey(p)) map[p] = i++;
+            return map;
+        }
+
+        /// <summary>
+        /// The demo photo folder, code\Demo\KillerShell, found by walking up from the running exe
+        /// (bin\Debug\net48 and the rest) and then across. Deliberately the same lookup KillerNotes'
+        /// DemoMode.cs does for its own folder: one convention for where demo material lives, so a
+        /// second app does not invent a second place to put it. Empty when it is not there, which is
+        /// not an error - see the fallback at the top of this file.
+        /// </summary>
+        private static string PhotoDir()
+        {
+            try
+            {
+                var dir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+                for (int up = 0; up < 6 && dir != null; up++, dir = dir.Parent)
+                {
+                    string candidate = Path.Combine(dir.FullName, "Demo", "KillerShell");
+                    if (Directory.Exists(candidate)) return candidate;
+
+                    string sibling = Path.Combine(dir.FullName, "..", "Demo", "KillerShell");
+                    if (Directory.Exists(sibling)) return Path.GetFullPath(sibling);
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        private static List<string> BuildPhotos()
+        {
+            var found = new List<string>();
+            try
+            {
+                string dir = PhotoDir();
+                if (dir.Length == 0) return found;
+
+                foreach (string file in Directory.GetFiles(dir))
+                    foreach (string ext in PhotoExtensions)
+                        if (file.EndsWith(ext, StringComparison.OrdinalIgnoreCase))
+                        {
+                            found.Add(file);
+                            break;
+                        }
+
+                // Sorted by NAME rather than left in enumeration order, which is what makes the
+                // same folder produce the same assignment on a second machine.
+                found.Sort((a, b) => string.Compare(Path.GetFileName(a), Path.GetFileName(b),
+                                                    StringComparison.OrdinalIgnoreCase));
+            }
+            catch { found.Clear(); }
+            return found;
         }
 
         private static BitmapSource Draw(string path, int px)

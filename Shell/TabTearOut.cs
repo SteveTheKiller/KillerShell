@@ -156,7 +156,7 @@ namespace KillerShell.Shell
                 {
                     int j = s.IndexOf(' ', i);
                     if (j < 0) j = s.Length;
-                    result.Add(s.Substring(i, j - i));
+                    result.Add(s[i..j]);
                     i = j;
                 }
             }

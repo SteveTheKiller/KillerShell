@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
+using KillerShell.Services;
 using KillerShell.Shell;
 
 namespace KillerShell.Models
@@ -12,7 +13,7 @@ namespace KillerShell.Models
     // include/exclude + results + run state. The left panel and results pane always
     // show the ACTIVE tab; switching tabs swaps every ItemsSource/field over to the
     // incoming tab (see MainWindow ApplyTab/CaptureTab).
-    public class SearchTab : INotifyPropertyChanged
+    public class SearchTab(string title) : INotifyPropertyChanged
     {
         public ObservableCollection<TermGroup>    Groups  { get; } = [];
         public ObservableCollection<SearchFilter> Filters { get; } = [];
@@ -51,58 +52,58 @@ namespace KillerShell.Models
         /// <summary>True when this tab is a document rather than a folder, search or shell.</summary>
         public bool IsEditor => Editor != null;
 
-        // ── Task Manager (Shell/ProcessListControl.cs) ────────────
+        // ── Task Manager (Tools/ProcessListControl.cs) ────────────
         // A process-list tab owns its control the same way a shell owns its pty and a document
         // owns its editor: the control holds a live refresh timer, a filter and the grid's own
         // sort/scroll state, and rebuilding it on every tab switch would throw all of that away.
         // Internal, not public: ProcessListControl is internal, and this model is public.
-        internal KillerShell.Shell.ProcessListControl? Procs;
+        internal KillerShell.Tools.ProcessListControl? Procs;
 
         /// <summary>True when this tab is a Task Manager rather than a folder, search, shell or document.</summary>
         public bool IsProcessList => Procs != null;
 
-        // ── Event Viewer (Shell/EventViewerControl.cs) ─────────────
+        // ── Event Viewer (Tools/EventViewerControl.cs) ─────────────
         // Same "own host, own control" reasoning as Procs above: the control holds the log
         // source/level pickers, the filter text and the grid's own sort/scroll state, plus a
         // background load loop that would restart from nothing on every tab switch if this were
         // rebuilt instead of moved. Internal, not public: EventViewerControl is internal, and
         // this model is public.
-        internal KillerShell.Shell.EventViewerControl? Events;
+        internal KillerShell.Tools.EventViewerControl? Events;
 
         /// <summary>True when this tab is an Event Viewer rather than a folder, search, shell,
         /// document or Task Manager.</summary>
         public bool IsEventViewer => Events != null;
 
-        // ── Performance Monitor (Shell/PerformanceMonitorControl.cs) ────
+        // ── Performance Monitor (Tools/PerformanceMonitorControl.cs) ────
         // Same "own host, own control" reasoning as Procs/Events above: the control holds the
         // live refresh timer, the sparkline history for each metric, and a one-time cache of the
         // static hardware info - rebuilding it on every tab switch would throw the graph history
         // away and re-run the WMI hardware query for no reason. Internal, not public:
         // PerformanceMonitorControl is internal, and this model is public.
-        internal KillerShell.Shell.PerformanceMonitorControl? Perf;
+        internal KillerShell.Tools.PerformanceMonitorControl? Perf;
 
         /// <summary>True when this tab is the Performance Monitor rather than a folder, search,
         /// shell, document, Task Manager or Event Viewer.</summary>
         public bool IsPerformanceMonitor => Perf != null;
 
-        // ── Registry Editor (Shell/RegistryEditorControl.cs) ────────────
+        // ── Registry Editor (Tools/RegistryEditorControl.cs) ────────────
         // Same "own host, own control" reasoning as Procs/Events/Perf above: the control holds
         // the loaded tree (which keys are expanded, which values are cached for the selected
         // key) and rebuilding it on every tab switch would throw the whole browse position away.
         // Internal, not public: RegistryEditorControl is internal, and this model is public.
-        internal KillerShell.Shell.RegistryEditorControl? Registry;
+        internal KillerShell.Tools.RegistryEditorControl? Registry;
 
         /// <summary>True when this tab is the Registry Editor rather than a folder, search,
         /// shell, document, Task Manager, Event Viewer or Performance Monitor. Admin-only -
         /// see Shell/RegistryEditorTabs.cs.</summary>
         public bool IsRegistryEditor => Registry != null;
 
-        // ── Storage Analyzer (Shell/StorageAnalyzerControl.cs) ──────────
+        // ── Storage Analyzer (Tools/StorageAnalyzerControl.cs) ──────────
         // Same "own host, own control" reasoning as the tool tabs above: the control holds
         // the whole scanned tree - a full drive walk - and rebuilding it on a tab switch
         // would throw the entire scan away. Internal, not public: StorageAnalyzerControl is
         // internal, and this model is public.
-        internal KillerShell.Shell.StorageAnalyzerControl? Storage;
+        internal KillerShell.Tools.StorageAnalyzerControl? Storage;
 
         /// <summary>True when this tab is the Storage Analyzer rather than any other kind.</summary>
         public bool IsStorageAnalyzer => Storage != null;
@@ -180,9 +181,7 @@ namespace KillerShell.Models
         public List<string>? PipeFiles;
         public string PipeLabel = string.Empty;   // breadcrumb shown in the location row
 
-        public SearchTab(string title) { _title = title; }
-
-        private string _title;
+        private string _title = title;
         public string Title
         {
             get => _title;

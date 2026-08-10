@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace KillerShell.Models
 {
     /// <summary>
-    /// One row of the Task Manager tab (Shell/ProcessListControl.cs): a live process, resampled
+    /// One row of the Task Manager tab (Tools/ProcessListControl.cs): a live process, resampled
     /// on every refresh tick rather than rebuilt, so a row's identity survives a tick and the
     /// grid's selection/scroll position does too.
     /// </summary>
@@ -14,11 +14,9 @@ namespace KillerShell.Models
     /// PLACE on every tick rather than replaced, so CpuPercent/MemoryBytes have to raise
     /// PropertyChanged or the cells they are bound to would freeze at whatever they first showed.
     /// </remarks>
-    public class ProcessInfo : INotifyPropertyChanged
+    public class ProcessInfo(int pid) : INotifyPropertyChanged
     {
-        public int Pid { get; }
-
-        public ProcessInfo(int pid) => Pid = pid;
+        public int Pid { get; } = pid;
 
         private string _name = string.Empty;
         public string Name

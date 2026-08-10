@@ -722,7 +722,7 @@
                          which was never what the button below actually rendered; E9D9 was always
                          reserved for the future Performance tab, now built below): opens or
                          focuses the Task Manager tab - a live, filterable list of every process on
-                         the machine (Shell/ProcessTabs.cs, Shell/ProcessListControl.cs). Left click
+                         the machine (Shell/ProcessTabs.cs, Tools/ProcessListControl.cs). Left click
                          is the plain F9 open; right-click offers the Ctrl+F9 elevated relaunch too,
                          same shape as the Terminal menu above, so the tooltip no longer has to
                          spell out the elevated path in prose. -->
@@ -742,7 +742,7 @@
                     </Button>
                     <!-- E9D9 (Processing): opens or focuses the Performance Monitor tab - hardware
                          info plus live CPU/RAM/network/disk gauges (Shell/PerformanceTabs.cs,
-                         Shell/PerformanceMonitorControl.cs). Plain click only, no elevated variant
+                         Tools/PerformanceMonitorControl.cs). Plain click only, no elevated variant
                          - Performance needs none of the extra access an admin relaunch would grant
                          (PerformanceTabs.cs has the full reasoning). -->
                     <Button x:Name="PerformanceRailBtn" Style="{StaticResource RailButton}" Content="&#xE9D9;"
@@ -752,7 +752,7 @@
                          glyph, and distinct from Processes' E8FD, Event Viewer's E81C and
                          Performance's E9D9. Opens or focuses the Storage Analyzer tab - scan a
                          folder or drive into a WizTree-style treemap (Shell/StorageTabs.cs,
-                         Shell/StorageAnalyzerControl.cs). Right-click offers the elevated scan,
+                         Tools/StorageAnalyzerControl.cs). Right-click offers the elevated scan,
                          same open/admin pair as Processes above (F4 / Ctrl+F4). -->
                     <Button x:Name="StorageRailBtn" Style="{StaticResource RailButton}" Content="&#xEDA2;"
                             FontSize="12" Margin="0,0,0,10" Click="StorageRail_Click"
@@ -777,7 +777,7 @@
                          match deliberately, so change both or neither. Opens or focuses the
                          Registry Editor tab - a real
                          regedit-equivalent browser/editor over the five hives
-                         (Shell/RegistryEditorTabs.cs, Shell/RegistryEditorControl.cs). Ctrl+F11
+                         (Shell/RegistryEditorTabs.cs, Tools/RegistryEditorControl.cs). Ctrl+F11
                          ONLY - there is no unelevated variant at all (the registry needs admin to
                          write most of what a registry editor exists to edit), so unlike Processes
                          above this one gets no context menu; there is nothing to choose between. -->
@@ -789,7 +789,7 @@
                          this tab actually is, and E81C (History) read as a clock, which is not
                          the same idea. Opens or focuses the Event Viewer tab - a filterable grid
                          over the Application/System/Security event logs (Shell/EventViewerTabs.cs,
-                         Shell/EventViewerControl.cs). Ctrl+F12 ONLY - same reasoning as Registry
+                         Tools/EventViewerControl.cs). Ctrl+F12 ONLY - same reasoning as Registry
                          Editor above: the Security log refuses a standard token outright, so there
                          is no unelevated mode to offer and no context menu here either. -->
                     <Button x:Name="EventViewerRailBtn" Style="{StaticResource RailButton}" Content="&#xE71D;"
@@ -1079,8 +1079,14 @@
                             <ItemsControl x:Name="FiltersList">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:SearchFilter}">
+                                        <!-- Shadow on a SEPARATE sibling border, per the rule Controls.xaml states
+                                             twice: an Effect on the border the text lives in rasterizes the whole
+                                             subtree and the text loses ClearType. This card carried ShadowBar on
+                                             its own content border until 2026-08-10. -->
+                                        <Grid Margin="0,0,0,6">
+                                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="5" Effect="{StaticResource ShadowBar}"/>
                                         <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                                                BorderThickness="1" CornerRadius="5" Margin="0,0,0,6" Padding="6" Effect="{StaticResource ShadowBar}">
+                                                BorderThickness="1" CornerRadius="5" Padding="6">
                                             <Grid>
                                             <Border IsHitTestVisible="False" CornerRadius="4" Margin="-6"
                                                     Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
@@ -1179,6 +1185,7 @@
                                             </StackPanel>
                                             </Grid>
                                         </Border>
+                                        </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -1255,8 +1262,12 @@
                             <ItemsControl x:Name="TermsList">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:TermGroup}">
+                                        <!-- Shadow on a SEPARATE sibling border - same fix and same reason as the
+                                             filter card below (Controls.xaml's own rule; effects rasterize text). -->
+                                        <Grid Margin="0,0,0,8">
+                                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="5" Effect="{StaticResource ShadowBar}"/>
                                         <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                                                BorderThickness="1" CornerRadius="5" Margin="0,0,0,8" Padding="6" Effect="{StaticResource ShadowBar}">
+                                                BorderThickness="1" CornerRadius="5" Padding="6">
                                             <Grid>
                                             <Border IsHitTestVisible="False" CornerRadius="4" Margin="-6"
                                                     Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
@@ -1299,6 +1310,7 @@
                                             </StackPanel>
                                             </Grid>
                                         </Border>
+                                        </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

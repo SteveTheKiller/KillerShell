@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using KillerShell.Shell;
 
 // The control behind a Performance Monitor tab: a scrolling TWO-COLUMN GRID of full-size cells,
 // one per monitored item - CPU, RAM, one per PHYSICAL disk, one per network adapter, one per
@@ -36,7 +37,7 @@ using System.Windows.Threading;
 // Built entirely in code rather than a separate .xaml, same convention every other Shell/ control
 // follows (see the file header on ProcessListControl.cs) - there is nothing here a designer would
 // help with.
-namespace KillerShell.Shell
+namespace KillerShell.Tools
 {
     internal sealed class PerformanceMonitorControl : Grid
     {
@@ -120,7 +121,7 @@ namespace KillerShell.Shell
             // Grain over that opaque face, spanning all three rows. PaneContent's own grain layer
             // is the FIRST child of its Grid, so it paints UNDER everything - an opaque root here
             // hides it and the tab comes up as the one flat, textureless surface in the window.
-            // Same treatment as the other four tool tabs (Shell/ToolTabChrome.cs Grain), and the
+            // Same treatment as the other four tool tabs (Tools/ToolTabChrome.cs Grain), and the
             // same reason the folder location row carries its own grain over its own PaneBrush.
             // Added before the row content so the panel, tiles and status line all paint above it;
             // 0 opacity on 98SE, which draws no grain anywhere.
@@ -1798,12 +1799,27 @@ namespace KillerShell.Shell
                 }
                 _canvas.SizeChanged += (_, _) => Redraw();
 
+                var wellRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 3));
+
+                // The graph well repaints grain over its own opaque face, exactly like the metric
+                // cell it sits inside (see BuildDetailBody): an opaque MonitorCellBrush surface
+                // covers the grain painted below it, and this well was the one such surface left
+                // flat after the cells and the info panel were fixed on 2026-08-10. Grain first,
+                // canvas second, so the plot lines draw over the texture; rounding matched to the
+                // well's own corners because a Border does not clip its child.
+                var wellGrain = ToolTabChrome.Grain();
+                wellGrain.CornerRadius = wellRadius;
+
+                var wellHost = new Grid();
+                wellHost.Children.Add(wellGrain);
+                wellHost.Children.Add(_canvas);
+
                 Host = new Border
                 {
                     Height = 52,
-                    CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 3)),
+                    CornerRadius = wellRadius,
                     BorderThickness = new Thickness(1),
-                    Child = _canvas,
+                    Child = wellHost,
                 };
                 Host.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
                 Host.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");

@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using KillerShell.Models;
 
-namespace KillerShell
+namespace KillerShell.Services
 {
     // Styled, interactive HTML report - mirrors the KillerScan exporter: an embedded
     // six-theme switcher + accent picker and click-to-sort columns. One compact table
@@ -152,7 +152,7 @@ namespace KillerShell
             {
                 0 => L("Str_Rpt_Everything", "everything"),
                 1 => termBits[0],
-                _ => string.Join(", ", termBits.Take(termBits.Count - 1)) + $" {or} " + termBits[termBits.Count - 1],
+                _ => string.Join(", ", termBits.Take(termBits.Count - 1)) + $" {or} " + termBits[^1],
             };
             sb.AppendLine($"<p class='query'>{(browsing
                 ? string.Format(L("Str_Rpt_Listing", "Listing of {0}."), $"<b>{Esc(rootPath)}</b>")

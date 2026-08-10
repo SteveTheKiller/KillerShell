@@ -161,8 +161,8 @@ namespace KillerShell.Services
         private const uint SEE_MASK_INVOKEIDLIST = 0x0000000C;
         private const uint SEE_MASK_ASYNCOK      = 0x00100000;
 
-        private static Guid IID_IShellFolder = new Guid("000214E6-0000-0000-C000-000000000046");
-        private static Guid IID_IContextMenu = new Guid("000214E4-0000-0000-C000-000000000046");
+        private static Guid IID_IShellFolder = new("000214E6-0000-0000-C000-000000000046");
+        private static Guid IID_IContextMenu = new("000214E4-0000-0000-C000-000000000046");
 
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT { public int X; public int Y; }

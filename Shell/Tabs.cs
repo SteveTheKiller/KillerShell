@@ -92,7 +92,7 @@ namespace KillerShell.Shell
             if (strip.Count > 0)
             {
                 strip[0].IsFirst              = true;
-                strip[strip.Count - 1].IsLast = !chevron;
+                strip[^1].IsLast = !chevron;
             }
 
             if (show)
@@ -331,8 +331,11 @@ namespace KillerShell.Shell
                 row.Children.Add(closeBtn);
                 row.Children.Add(label);
 
-                var item = new MenuItem { Header = row };
-                item.Icon = OverflowRowIcon(tab);   // below
+                var item = new MenuItem
+                {
+                    Header = row,
+                    Icon = OverflowRowIcon(tab)   // below
+                };
 
                 var capturedTab = tab;
                 closeBtn.Click += (s, e) =>
@@ -441,8 +444,8 @@ namespace KillerShell.Shell
             // off a list bound to something else would store another tab's rows here, and
             // storing an empty list instead would throw away what this tab had.
             if (ReferenceEquals(Pane.ResultsList.ItemsSource, t.Results))
-                t.SelectedPaths = Pane.ResultsList.SelectedItems
-                    .OfType<SearchResult>().Select(r => r.FilePath).ToList();
+                t.SelectedPaths = [.. Pane.ResultsList.SelectedItems
+                    .OfType<SearchResult>().Select(r => r.FilePath)];
         }
 
         // Point the whole UI at a tab: collections, config boxes, status, counters, button label.
@@ -612,7 +615,7 @@ namespace KillerShell.Shell
         {
             var list = pane.ResultsList;
             if (!ReferenceEquals(list.ItemsSource, t.Results)) return null;
-            return list.SelectedItems.OfType<SearchResult>().Select(r => r.FilePath).ToList();
+            return [.. list.SelectedItems.OfType<SearchResult>().Select(r => r.FilePath)];
         }
 
         /// <summary>

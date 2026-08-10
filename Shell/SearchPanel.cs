@@ -62,10 +62,14 @@ namespace KillerShell.Shell
             // focus, which is why the other one kept the wrong margin.
             ApplyPaneMargins();
 
-            // Right-hand panel, so its contents stay pinned to the RIGHT edge during the tween.
+            // Right-hand panel, so its INNER edge is the LEFT one - freeze there and the panel
+            // slides out under the window's right frame, mirroring the tree, which is a left
+            // panel and freezes Right (see SlideColumn's freezeAlign doc in PanelSlide.cs).
+            // This froze Right, the OUTER edge, so the panel stood still while the results pane
+            // wiped across the top of it - the mirror image of the sidebar bug fixed 2026-08-10.
             SlideColumn(SearchCol, SearchPanel, _searchOpen,
                         SearchPanelWidth, minOpen: 200, maxOpen: 380,
-                        freezeAlign: HorizontalAlignment.Right, animate: animate);
+                        freezeAlign: HorizontalAlignment.Left, animate: animate);
         }
 
         /// <summary>

@@ -85,7 +85,7 @@ namespace KillerShell.Shell
                     // Browsing tabs take their path from CurrentFolder, not the search panel's
                     // root box - that box is empty while browsing, so the report used to head
                     // itself "Searched  for everything."
-                    new HtmlExporter().Export(dlg.FileName, tab.Results,
+                    new Services.HtmlExporter().Export(dlg.FileName, tab.Results,
                         [.. tab.Groups.SelectMany(g => g.Terms)],
                         tab.IsBrowsing ? tab.CurrentFolder ?? string.Empty : Pane.RootPathBox.Text,
                         tab.IsBrowsing);

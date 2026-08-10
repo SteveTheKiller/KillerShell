@@ -29,7 +29,7 @@ namespace KillerShell.Shell
     {
         // The sizes the shell can actually serve well. 32 and 48 map to real shell icon sizes;
         // above that comes from the jumbo list (see Services/IconCache.cs).
-        public static readonly int[] Steps = { 32, 48, 64, 96, 128, 192, 256 };
+        public static readonly int[] Steps = [32, 48, 64, 96, 128, 192, 256];
 
         private int _tileSize = 96;
 
@@ -38,7 +38,7 @@ namespace KillerShell.Shell
             get => _tileSize;
             set
             {
-                int v = Math.Max(Steps[0], Math.Min(Steps[Steps.Length - 1], value));
+                int v = Math.Max(Steps[0], Math.Min(Steps[^1], value));
                 if (v == _tileSize) return;
                 _tileSize = v;
                 Notify();
@@ -72,7 +72,7 @@ namespace KillerShell.Shell
         // a marker and starts setting the row height, which is what the tile grid is for. One
         // value drives both row layouts, so a size picked in the cards is still there in
         // details - the way TileSize carries across tabs.
-        public static readonly int[] RowIconSteps = { 16, 20, 24, 32, 40, 48, 64 };
+        public static readonly int[] RowIconSteps = [16, 20, 24, 32, 40, 48, 64];
 
         private int _rowIconSize = 16;
 
@@ -82,7 +82,7 @@ namespace KillerShell.Shell
             set
             {
                 int v = Math.Max(RowIconSteps[0],
-                                 Math.Min(RowIconSteps[RowIconSteps.Length - 1], value));
+                                 Math.Min(RowIconSteps[^1], value));
                 if (v == _rowIconSize) return;
                 _rowIconSize = v;
                 Notify();
@@ -98,7 +98,7 @@ namespace KillerShell.Shell
         /// The details row's icon column - the art plus the gap to the name. Duplicated into
         /// DetailsHeader, which has to keep the same width or every row sits off its heading.
         /// </summary>
-        public GridLength RowIconColumn => new GridLength(_rowIconSize + 10);
+        public GridLength RowIconColumn => new(_rowIconSize + 10);
 
         // ═══════════════════════════════════════════════════════════
         //  DETAILS COLUMNS
@@ -249,7 +249,7 @@ namespace KillerShell.Shell
         // width is unavoidable and is what Explorer does too.
         private double Fit(double px) => Math.Max(24, px * FitFactor);
 
-        public GridLength NameWidth     => new GridLength(Fit(_namePx));
+        public GridLength NameWidth     => new(Fit(_namePx));
         public GridLength LocationWidth => _locationHidden ? new GridLength(0) : new GridLength(Fit(_locationPx));
         public GridLength SizeWidth     => _sizeVisible ? new GridLength(Fit(_sizePx)) : new GridLength(0);
         public GridLength ModifiedWidth => _modifiedVisible ? new GridLength(Fit(_modifiedPx)) : new GridLength(0);
@@ -359,25 +359,25 @@ namespace KillerShell.Shell
 
         // Tiles. The name keeps its two lines at every level - trimming a file name to one line
         // is lost information, which is the opposite of what density is for.
-        private static readonly double[] TileExtraW = { 30, 16, 12, 8, 4 };
-        private static readonly double[] TileExtraH = { 62, 52, 46, 40, 34 };
+        private static readonly double[] TileExtraW = [30, 16, 12, 8, 4];
+        private static readonly double[] TileExtraH = [62, 52, 46, 40, 34];
 
         private static readonly Thickness[] TilePads =
-        {
-            new Thickness(6, 8, 6, 8), new Thickness(4, 6, 4, 6), new Thickness(3, 4, 3, 4),
-            new Thickness(2, 2, 2, 2), new Thickness(1, 1, 1, 1),
-        };
+        [
+            new(6, 8, 6, 8), new(4, 6, 4, 6), new(3, 4, 3, 4),
+            new(2, 2, 2, 2), new(1, 1, 1, 1),
+        ];
 
         private static readonly Thickness[] TileMargins =
-        {
-            new Thickness(6), new Thickness(3), new Thickness(2), new Thickness(1), new Thickness(0),
-        };
+        [
+            new(6), new(3), new(2), new(1), new(0),
+        ];
 
         private static readonly Thickness[] TileNamePads =
-        {
-            new Thickness(2, 8, 2, 0), new Thickness(2, 6, 2, 0), new Thickness(2, 4, 2, 0),
-            new Thickness(2, 2, 2, 0), new Thickness(2, 1, 2, 0),
-        };
+        [
+            new(2, 8, 2, 0), new(2, 6, 2, 0), new(2, 4, 2, 0),
+            new(2, 2, 2, 0), new(2, 1, 2, 0),
+        ];
 
         public Thickness TilePad     => TilePads[_density];
         public Thickness TileMargin  => TileMargins[_density];
@@ -389,24 +389,24 @@ namespace KillerShell.Shell
         // decoration. The left number is shared with the column headers, which is why HeaderPad
         // exists: the two have to step together or every row sits off its own heading.
         private static readonly Thickness[] RowPads =
-        {
-            new Thickness(20, 5, 36, 5), new Thickness(14, 3, 30, 3), new Thickness(10, 1, 26, 1),
-            new Thickness(8, 1, 24, 1),  new Thickness(6, 0, 22, 0),
-        };
+        [
+            new(20, 5, 36, 5), new(14, 3, 30, 3), new(10, 1, 26, 1),
+            new(8, 1, 24, 1),  new(6, 0, 22, 0),
+        ];
 
         private static readonly Thickness[] CardPads =
-        {
-            new Thickness(20, 9, 20, 9), new Thickness(14, 6, 14, 6), new Thickness(10, 4, 10, 4),
-            new Thickness(8, 3, 8, 3),   new Thickness(6, 2, 6, 2),
-        };
+        [
+            new(20, 9, 20, 9), new(14, 6, 14, 6), new(10, 4, 10, 4),
+            new(8, 3, 8, 3),   new(6, 2, 6, 2),
+        ];
 
         // The header's own vertical padding is fixed - it is a band of type, not a row of
         // results, and letting it shrink would just make the column names harder to hit.
         private static readonly Thickness[] HeaderPads =
-        {
-            new Thickness(20, 4, 36, 4), new Thickness(14, 4, 30, 4), new Thickness(10, 4, 26, 4),
-            new Thickness(8, 4, 24, 4),  new Thickness(6, 4, 22, 4),
-        };
+        [
+            new(20, 4, 36, 4), new(14, 4, 30, 4), new(10, 4, 26, 4),
+            new(8, 4, 24, 4),  new(6, 4, 22, 4),
+        ];
 
         public Thickness RowPad    => RowPads[_density];
         public Thickness CardPad   => CardPads[_density];
@@ -558,13 +558,13 @@ namespace KillerShell.Shell
         /// <summary>The Size/Modified toggle entries for ONE pane, rebuilt on demand rather than
         /// cached: the getter/setter closures capture <paramref name="pane"/>.ViewState directly,
         /// so rebuilding costs nothing and there is no stale closure to worry about.</summary>
-        private static Services.ColumnVisibilityMenu.Entry[] DetailsColumnEntries(FilePane pane) => new[]
-        {
+        private static Services.ColumnVisibilityMenu.Entry[] DetailsColumnEntries(FilePane pane) =>
+        [
             new Services.ColumnVisibilityMenu.Entry("Size", "Str_Col_Size", true,
                 () => pane.ViewState.SizeVisible,     v => pane.ViewState.SizeVisible = v),
             new Services.ColumnVisibilityMenu.Entry("Modified", "Str_Col_Modified", true,
                 () => pane.ViewState.ModifiedVisible, v => pane.ViewState.ModifiedVisible = v),
-        };
+        ];
 
         /// <summary>Right-click the details column-header band: the same shared toggle menu the
         /// Event Viewer and Processes grids use (Services/ColumnVisibilityMenu.cs), anchored to

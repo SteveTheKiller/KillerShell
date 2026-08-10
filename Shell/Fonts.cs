@@ -171,7 +171,7 @@ namespace KillerShell.Shell
 
         // A narrow letter, two wide ones, a digit and a space. If a face gives all five the same
         // advance it is fixed width; a proportional face fails on the first pair.
-        private static readonly char[] WidthProbe = { 'i', 'M', 'W', '0', ' ' };
+        private static readonly char[] WidthProbe = ['i', 'M', 'W', '0', ' '];
 
         /// <summary>
         /// True for a fixed-width family. The terminal list is filtered by this because the

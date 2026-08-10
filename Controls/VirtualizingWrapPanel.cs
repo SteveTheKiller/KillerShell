@@ -131,8 +131,7 @@ namespace KillerShell
             {
                 for (int i = first; i <= last; i++, childIndex++)
                 {
-                    var child = generator.GenerateNext(out bool newlyRealized) as UIElement;
-                    if (child == null) break;
+                    if (generator.GenerateNext(out bool newlyRealized) is not UIElement child) break;
 
                     if (newlyRealized)
                     {
@@ -228,8 +227,8 @@ namespace KillerShell
         }
 
         // ── IScrollInfo ──────────────────────────────────────────
-        private Size  _extent   = new Size(0, 0);
-        private Size  _viewport = new Size(0, 0);
+        private Size  _extent   = new(0, 0);
+        private Size  _viewport = new(0, 0);
         private Point _offset;
 
         public bool CanVerticallyScroll   { get; set; }
@@ -290,8 +289,7 @@ namespace KillerShell
         // is possible, so this scrolls the target's row just inside the viewport.
         public Rect MakeVisible(Visual visual, Rect rectangle)
         {
-            var child = visual as UIElement;
-            if (child == null) return rectangle;
+            if (visual is not UIElement child) return rectangle;
 
             int childIndex = InternalChildren.IndexOf(child);
             if (childIndex < 0) return rectangle;

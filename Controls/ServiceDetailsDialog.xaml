@@ -13,7 +13,7 @@
         WindowStartupLocation="CenterOwner">
 
     <!-- Same trimmed EventDetailsDialog shape ProcessDetailsDialog.xaml uses, for the Services
-         view of the same Processes/Services tab (Shell/ProcessListControl.cs). -->
+         view of the same Processes/Services tab (Tools/ProcessListControl.cs). -->
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="8" CornerRadius="0"
                             GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
@@ -21,12 +21,16 @@
 
     <Border x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
         <Grid>
-            <!-- Auto, not Star: SizeToContent="Height" above measures this Grid with an infinite
-                 available height, and a Star row collapses to zero under an infinite constraint.
-                 The ScrollViewer below still caps overflow once MaxHeight clamps the window. -->
+            <!-- BodyRow starts Auto and becomes Star after the first render
+                 (Controls/DialogContentSize.cs). Auto is what SizeToContent="Height" above needs,
+                 since a Star row measured against an infinite height collapses to zero - but an
+                 Auto row also hands its child an infinite height, so the ScrollViewer in it can
+                 never show a scrollbar and simply overflows the window once the height is capped
+                 or the user drags the frame. Auto is therefore only used to decide the OPENING
+                 size, and the row is released to Star once that is settled. -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition x:Name="BodyRow" Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 

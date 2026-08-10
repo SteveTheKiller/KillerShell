@@ -25,10 +25,10 @@ namespace KillerShell.Shell
         // those are the ones that vanish. The chevron itself is excluded too - it must never be
         // able to push itself out.
         private static readonly string[] ShedOrder =
-        {
+        [
             "ExportBtn", "FoldersTopBtn", "ShowHiddenBtn", "DetailsPaneBtn",
             "ExpandAllButton", "SortDirButton",
-        };
+        ];
 
         /// <summary>
         /// Width the path is never squeezed below. The strip may take everything else the row
@@ -134,11 +134,11 @@ namespace KillerShell.Shell
 
         // Declared left-to-right order of everything in the strip, used to restore position.
         private static readonly string[] StripOrder =
-        {
+        [
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "SortBtn", "SortDirButton",
             "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "DetailsPaneBtn",
             "PipeBtn", "ExportBtn", "OverflowBtn",
-        };
+        ];
 
         internal void Overflow_Click(FilePane pane)
         {

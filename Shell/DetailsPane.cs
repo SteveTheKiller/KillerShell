@@ -454,6 +454,19 @@ namespace KillerShell.Shell
                 return;
             }
 
+            // A fabricated demo row has no file behind it either, so the stat below would throw
+            // into its catch and leave both fields as dashes - which read as a bug in the very
+            // captures demo mode exists to produce. The fabricated table answers instead:
+            // Created is derived on the entry (DemoFs.Entry.Created, deterministic and earlier
+            // than Modified), attributes stay a dash, which is what a normal real file shows
+            // anyway. Falls through to the stat for a path demo mode does not know, e.g. a real
+            // file opened through a dialog while --demo is up.
+            if (DemoMode && Services.DemoFs.Find(path) is { } demoEntry)
+            {
+                pane.DetailsCreatedText.Text = demoEntry.Created.ToString("yyyy-MM-dd HH:mm");
+                pane.DetailsAttrText.Text = "-";
+            }
+            else
             _ = Task.Run(() =>
             {
                 DateTime created = default;
@@ -493,9 +506,9 @@ namespace KillerShell.Shell
             pane.DetailsPreviewIcon.Visibility = Visibility.Visible;
 
             // --demo has no file behind the selected row, so there is nothing at this path to
-            // decode: the preview is DRAWN from the path instead (Services/DemoImages.cs), which
-            // is the only way this strip can show an actual picture in a capture without reading a
-            // real one off the machine. Null for a path that is not one of the fabricated
+            // decode: the preview comes from Services/DemoImages.cs instead, which answers with a
+            // photograph from the demo folder beside the repo when there is one and a picture drawn
+            // from the path when there is not. Null for a path that is not one of the fabricated
             // pictures, and the strip then keeps the generic icon it already painted above.
             if (!isDir && IsDetailsImageFile(path))
             {
@@ -566,26 +579,15 @@ namespace KillerShell.Shell
 
         /// <summary>
         /// Decodes a downscaled preview off the UI thread. Runs entirely inside the calling
-        /// (background) thread; the returned BitmapImage is frozen, so handing it back to the UI
+        /// (background) thread; the returned bitmap is frozen, so handing it back to the UI
         /// thread afterward is safe. Returns null on any failure (corrupt file, unreadable codec,
         /// file removed mid-decode) rather than throwing - the caller falls back to the icon.
+        /// Downscaled AT decode time, not after, and turned the right way up: a portrait photo off
+        /// a phone is stored as a landscape frame plus an EXIF tag that WPF does not read on its
+        /// own, so the preview used to show it on its side (Services/ImageOrientation.cs).
         /// </summary>
-        private static BitmapImage? DecodeDetailsPreview(string path, int px)
-        {
-            try
-            {
-                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var bmp = new BitmapImage();
-                bmp.BeginInit();
-                bmp.CacheOption = BitmapCacheOption.OnLoad;      // fully read + decoded before EndInit returns
-                bmp.DecodePixelWidth = px;                       // downscale AT decode time, not after
-                bmp.StreamSource = fs;
-                bmp.EndInit();
-                bmp.Freeze();
-                return bmp;
-            }
-            catch { return null; }
-        }
+        private static BitmapSource? DecodeDetailsPreview(string path, int px)
+            => Services.ImageOrientation.Load(path, px, ignoreColorProfile: false);
 
         private static string DetailsFormatBytes(long b)
         {

@@ -39,17 +39,17 @@ namespace KillerShell.Editing
             if (_done) return;
             _done = true;
 
-            Add("Batch",    new[] { ".bat", ".cmd" },                                           "Batch.xshd");
-            Add("Registry", new[] { ".reg" },                                                   "Registry.xshd");
-            Add("Ini",      new[] { ".ini", ".conf", ".cfg", ".inf", ".properties", ".env" },   "Ini.xshd");
-            Add("Yaml",     new[] { ".yml", ".yaml" },                                          "Yaml.xshd");
-            Add("Log",      new[] { ".log", ".out", ".err", ".trace" },                         "Log.xshd");
-            Add("Csv",      new[] { ".csv", ".tsv" },                                           "Csv.xshd");
-            AddBuiltIn("MarkDown", new[] { ".md", ".markdown" });
-            AddBuiltIn("JSON", new[] { ".json" });
-            AddBuiltIn("XML", new[] { ".xml", ".config", ".xaml" });
-            AddBuiltIn("Python", new[] { ".py" });
-            AddBuiltIn("C#", new[] { ".cs" });
+            Add("Batch",    [".bat", ".cmd"],                                           "Batch.xshd");
+            Add("Registry", [".reg"],                                                   "Registry.xshd");
+            Add("Ini",      [".ini", ".conf", ".cfg", ".inf", ".properties", ".env"],   "Ini.xshd");
+            Add("Yaml",     [".yml", ".yaml"],                                          "Yaml.xshd");
+            Add("Log",      [".log", ".out", ".err", ".trace"],                         "Log.xshd");
+            Add("Csv",      [".csv", ".tsv"],                                           "Csv.xshd");
+            AddBuiltIn("MarkDown", [".md", ".markdown"]);
+            AddBuiltIn("JSON", [".json"]);
+            AddBuiltIn("XML", [".xml", ".config", ".xaml"]);
+            AddBuiltIn("Python", [".py"]);
+            AddBuiltIn("C#", [".cs"]);
         }
 
         private static void Add(string name, string[] extensions, string resource)

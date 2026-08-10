@@ -67,7 +67,7 @@ It is one portable exe. No runtime, no agent, no account. Drop it on a machine t
 - F1 opens a shortcuts card that lists every gesture as both a grouped list and a visual keyboard, with layer buttons for the Ctrl / Shift / Alt maps and a live preview when you hold a real modifier
 - Tabs: each tab is an independent search, a folder, a terminal or a document; drag to reorder, optionally restored on the next launch. New tabs open in the pane you are looking at, and once they would get too narrow to read the strip keeps as many as fit and a chevron lists the rest
 - Three toolbars, one per kind of tab, so a document is not carrying a folder listing's sort and view buttons
-- Six killer themes with live accent colors; UI localized in 10 languages
+- Thirteen killer themes with live accent colors, including a full Windows 98 recreation with its own icon set; UI localized in 10 languages
 - App-wide accessibility zoom: roll the wheel over the wordmark to resize everything between 70% and 250%
 - Run portable, or install for just you or for every user on the PC (`/silent` installs machine-wide for winget/RMM)
 
@@ -75,12 +75,12 @@ It is one portable exe. No runtime, no agent, no account. Drop it on a machine t
 
 <table>
 <tr>
-<td width="50%"><img src="docs/dual-pane.png" alt="Dual pane with the editor and a terminal"><br><sub>Two panes on one tab strip - a script open in the editor on the left, a PowerShell tab on the right.</sub></td>
-<td width="50%"><img src="docs/tiles-search.png" alt="Tile view with a live filename search"><br><sub>Tile view with a filename search still streaming: 14 matches in 1.87s, no index. Six themes with live accent colors.</sub></td>
+<td width="50%"><img src="docs/editor-icons.png" alt="Dual pane with a PowerShell script in the editor and an icon view"><br><sub>Two panes on one tab strip - a backup script open in the editor, an icon view beside it. Every folder has its own art, and the special ones are drawn as themselves.</sub></td>
+<td width="50%"><img src="docs/context-menu.png" alt="Results context menu"><br><sub>The results menu: edit, open as administrator, search inside this folder, open a terminal here, analyze storage, copy a SHA-256.</sub></td>
 </tr>
 <tr>
-<td><img src="docs/context-menu.png" alt="Results context menu"><br><sub>The results menu: edit, open as administrator, search inside this folder, open a terminal here, copy a SHA-256.</sub></td>
-<td><img src="docs/localization.png" alt="The editor on the Spanish locale"><br><sub>Ten languages - here Spanish, with a PowerShell script open in the editor.</sub></td>
+<td><img src="docs/performance-events.png" alt="The Performance tab with an Event Viewer record open"><br><sub>Task Manager, Event Viewer, Registry Editor, Services and a storage map are tabs like any other - here live CPU and RAM against an event record.</sub></td>
+<td><img src="docs/theme-98se.png" alt="The 98SE theme with a terminal and thumbnails"><br><sub>Thirteen themes, including 98SE - square corners, raised bevels and a period icon set, with a real PowerShell tab inside it.</sub></td>
 </tr>
 </table>
 

@@ -39,6 +39,23 @@ namespace KillerShell.Services
             public bool IsDir;
             public long Size;
             public DateTime Modified;
+
+            // Derived rather than declared: 255 table rows each carrying a second hand-typed
+            // date would drift and add nothing a capture can check. Hashed from the name, so it
+            // is the same on every launch (the fixed-walk rule ImagePaths documents), and always
+            // EARLIER than Modified, because a created-after-modified pair is the kind of
+            // impossible detail a screenshot reader does notice. The details pane is the
+            // consumer: it used to stat the fabricated path, get nothing, and show "-".
+            public DateTime Created
+            {
+                get
+                {
+                    int h = 0;
+                    foreach (char c in Name) h = h * 31 + c;
+                    h &= 0x7FFFFFF;
+                    return Modified.AddDays(-(1 + h % 400)).AddMinutes(-(h % 720));
+                }
+            }
         }
 
         private const long Kb = 1024L;
@@ -164,6 +181,29 @@ namespace KillerShell.Services
         /// </summary>
         internal static IReadOnlyList<Entry> Children(string path)
             => Table.TryGetValue(Key(path), out var kids) ? kids : Nothing;
+
+        /// <summary>
+        /// The fabricated entry behind a full path, or null when the table has no such row (a
+        /// drive root, or a path that was never fabricated). The details pane uses this for the
+        /// fields a real row would be stat'd for - the fabricated path has no file behind it, so
+        /// a stat answers nothing and the pane showed "-" where a capture wants a value.
+        /// </summary>
+        internal static Entry? Find(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+
+            int cut = path.LastIndexOf('\\');
+            if (cut <= 0 || cut == path.Length - 1) return null;   // a root, or trailing slash
+
+            string folder = path[..cut];
+            string name = path[(cut + 1)..];
+            if (folder.Length == 2 && folder[1] == ':') folder += "\\";   // "C:" is drive-relative
+
+            if (!Table.TryGetValue(Key(folder), out var kids)) return null;
+            foreach (var e in kids)
+                if (string.Equals(e.Name, name, StringComparison.OrdinalIgnoreCase)) return e;
+            return null;
+        }
 
         /// <summary>
         /// "Local Disk (C:)" style label, the shape FolderNode.DriveLabel gives a real volume, so
@@ -317,7 +357,7 @@ namespace KillerShell.Services
 
             // The app's own install folder, so a capture that browses to it shows something. The
             // exe name and the version folder agree with the fabricated process list and the fake
-            // Application-log start-up event (Shell\ProcessListControl.cs, Shell\EventViewerControl.cs).
+            // Application-log start-up event (Tools\ProcessListControl.cs, Tools\EventViewerControl.cs).
             Add(@"C:\Program Files\KillerShell",
                 D("Modules", 2026, 7, 1),
                 F("KillerShell.exe", 26 * Mb, 2026, 7, 1),

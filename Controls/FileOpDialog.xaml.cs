@@ -23,14 +23,14 @@ namespace KillerShell
     // proceed without the answer) and the worker then waits on an event the buttons set.
     public partial class FileOpDialog : Window
     {
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cts = new();
 
         // Set once "do this for the rest" is ticked; every later collision answers from here
         // without troubling the user again.
         private ConflictChoice? _applyAll;
 
         private ConflictChoice _answer = ConflictChoice.Cancel;
-        private readonly ManualResetEventSlim _answered = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _answered = new(false);
 
         // True once the worker has finished and asked us to close, so OnClosing can tell a real
         // completion apart from the user shutting the window mid-copy.

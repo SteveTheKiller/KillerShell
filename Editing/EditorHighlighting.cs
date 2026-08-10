@@ -26,13 +26,13 @@ namespace KillerShell.Editing
         // rather than by the HighlightingColor object: that type implements IEquatable by VALUE,
         // so two unrelated colors that happen to share a foreground would land in one bucket and
         // overwrite each other's original.
-        private static readonly Dictionary<string, Color> Shipped = new();
+        private static readonly Dictionary<string, Color> Shipped = [];
 
         // Definition name -> the background its colors were last lifted against. Keyed by NAME for
         // the same reason Shipped is: the vendored AvalonEdit makes no promise about reference
         // identity or value equality for a definition object, and two definitions sharing a name
         // are the same language. See the early return in MakeReadable.
-        private static readonly Dictionary<string, Color> LastBackground = new();
+        private static readonly Dictionary<string, Color> LastBackground = [];
 
         /// <summary>
         /// Lift every color in <paramref name="definition"/> clear of <paramref name="background"/>.

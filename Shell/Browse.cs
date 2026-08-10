@@ -223,7 +223,7 @@ namespace KillerShell.Shell
         {
             if (entryPath.Length == 0) return Path.GetFileName(archivePath);
             int slash = entryPath.LastIndexOf('/');
-            return slash < 0 ? entryPath : entryPath.Substring(slash + 1);
+            return slash < 0 ? entryPath : entryPath[(slash + 1)..];
         }
 
         /// <summary>

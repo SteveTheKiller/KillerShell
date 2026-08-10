@@ -105,7 +105,7 @@ namespace KillerShell.Shell
         // laggy as whatever the target window happens to be doing at that instant. PostMessage
         // just queues it and moves on.
         private static IntPtr PackPoint(Point p)
-            => new IntPtr(((int)p.X & 0xFFFF) | (((int)p.Y & 0xFFFF) << 16));
+            => new(((int)p.X & 0xFFFF) | (((int)p.Y & 0xFFFF) << 16));
 
         private static Point UnpackPoint(IntPtr lParam)
         {

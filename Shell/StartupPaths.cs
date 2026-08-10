@@ -13,7 +13,7 @@ namespace KillerShell.Shell
     public partial class MainWindow
     {
         /// <summary>Bare (non-flag) command-line arguments, filled by App.OnStartup.</summary>
-        internal static readonly List<string> StartupPaths = new();
+        internal static readonly List<string> StartupPaths = [];
 
         /// <summary>
         /// Opens whatever the shell asked us to open: a folder becomes a browse tab, a file

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace KillerShell.Models
 {
     /// <summary>
-    /// One row of the Services view of the Processes/Services tab (Shell/ProcessListControl.cs):
+    /// One row of the Services view of the Processes/Services tab (Tools/ProcessListControl.cs):
     /// a single Windows service, resampled on every refresh tick the same way ProcessInfo is
     /// rather than rebuilt, so a row's identity (keyed by Name, which is stable for a service's
     /// whole lifetime unlike a process's PID) survives a tick and the grid's selection/scroll
@@ -20,11 +20,9 @@ namespace KillerShell.Models
     /// notify too rather than only Status - the cost of doing so is one extra Notify() call on an
     /// already-cheap setter, not worth special-casing.
     /// </remarks>
-    public sealed class ServiceInfo : INotifyPropertyChanged
+    public sealed class ServiceInfo(string name) : INotifyPropertyChanged
     {
-        public string Name { get; }
-
-        public ServiceInfo(string name) => Name = name;
+        public string Name { get; } = name;
 
         private string _displayName = string.Empty;
         public string DisplayName

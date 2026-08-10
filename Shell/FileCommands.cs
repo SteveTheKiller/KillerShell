@@ -42,7 +42,7 @@ namespace KillerShell.Shell
 
         /// <summary>Selected rows, or the row under the pointer if nothing is selected.</summary>
         private List<string> SelectedPaths()
-            => FilesForCommand(_menuSeed).Where(p => File.Exists(p) || Directory.Exists(p)).ToList();
+            => [.. FilesForCommand(_menuSeed).Where(p => File.Exists(p) || Directory.Exists(p))];
 
         // ── Context-menu entry points ────────────────────────────
         // Thin wrappers rather than wiring the menu straight at the commands: the menu passes

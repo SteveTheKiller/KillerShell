@@ -58,7 +58,7 @@ namespace KillerShell.Shell
         // published under. Deliberately short of the full theme dictionary: these are the seven
         // roles a prompt actually uses, and every one of them exists in all six themes.
         private static readonly (string Key, string Res)[] PromptColors =
-        {
+        [
             // The first three are the TERMINAL's own, not the app's. A prompt renders on the
             // console surface, so it has to be coloured for that surface - on 98SE the app is
             // light grey and the console is black, and publishing the app's #000000 text and
@@ -72,7 +72,7 @@ namespace KillerShell.Shell
             ("DIM",    "DimTextBrush"),
             ("OK",     "OkBrush"),
             ("WARN",   "WarnBrush"),
-        };
+        ];
 
         // ═══════════════════════════════════════════════════════════
         //  SETUP
@@ -129,8 +129,8 @@ namespace KillerShell.Shell
                 sb.Append("VERSION=").Append(ShellVersion).Append('\n');
                 sb.Append("SESSION=").Append(Process.GetCurrentProcess().Id).Append('\n');
 
-                foreach (var c in PromptColors)
-                    sb.Append(c.Key).Append('=').Append(Hex(c.Res)).Append('\n');
+                foreach (var (Key, Res) in PromptColors)
+                    sb.Append(Key).Append('=').Append(Hex(Res)).Append('\n');
 
                 // Written whole, in one call: a prompt reading this file mid-write would
                 // otherwise see half a palette and paint itself in whatever survived.

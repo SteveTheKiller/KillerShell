@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 using KillerShell.Models;
+using KillerShell.Shell;
 
 // The control behind an Event Viewer tab: a filterable, sortable grid over the three classic
 // Windows Event Logs. Partial to nothing - same stand-alone shape as ProcessListControl.cs, and
@@ -41,7 +42,7 @@ using KillerShell.Models;
 // that is not, and there is no bare-key variant that would let you land here unelevated in the
 // first place. Application and System still work fine without elevation, but the tab does not
 // try to be two different things depending on the token it happens to be running with.
-namespace KillerShell.Shell
+namespace KillerShell.Tools
 {
     internal sealed class EventViewerControl : Grid
     {
@@ -58,7 +59,7 @@ namespace KillerShell.Shell
         private const int FastFirstBatch = 200;
         private const int ApplyBatchSize = 50;
 
-        private readonly ObservableCollection<EventLogEntryInfo> _items = new();
+        private readonly ObservableCollection<EventLogEntryInfo> _items = [];
         private readonly ICollectionView _view;
 
         private readonly ComboBox  _logBox;
@@ -431,8 +432,8 @@ namespace KillerShell.Shell
             var source = SelectedSource();
             var level  = SelectedLevel();
             string[] logs = source == LogSource.All
-                ? new[] { "Application", "System", "Security" }
-                : new[] { LogNameFor(source) };
+                ? ["Application", "System", "Security"]
+                : [LogNameFor(source)];
 
             ShowStatus(MainWindow.LocStatic("Str_Evt_Loading"), error: false, sticky: true);
 

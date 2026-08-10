@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using KillerShell.Models;
+using KillerShell.Tools;
 
 // --demo / /demo: fabricated tabs and results for marketing screenshots, so captures
 // never leak real file names or folder structures. Also hides the install badge, and
@@ -45,28 +46,28 @@ namespace KillerShell.Shell
             t2.Filters.Add(new SearchFilter { FieldIndex = SearchFilter.FieldExt, Text = "ps1" });
             t2.QueryLabel = "content: TODO  |  extension is ps1";
             string scripts = @"C:\Users\Demo\code\killer-scripts";
-            AddDemoResult(t2, scripts, "Backup-Nightly.ps1", 12, new DateTime(2026, 5, 14), new List<LineMatch>
-            {
+            AddDemoResult(t2, scripts, "Backup-Nightly.ps1", 12, new DateTime(2026, 5, 14),
+            [
                 // These two line numbers are not arbitrary: tab 7 opens this same file in the
                 // editor, and DemoScript() puts those comments on exactly these lines. A capture
                 // with the search results and the open document side by side would otherwise
                 // show them disagreeing about where the hits are.
                 new() { LineNumber = 44,  LineText = "# TODO: skip locked files instead of retrying forever" },
                 new() { LineNumber = 110, LineText = "# TODO: email the report when the share is unreachable" },
-            });
-            AddDemoResult(t2, scripts, "Deploy-Agent.ps1", 9, new DateTime(2026, 6, 2), new List<LineMatch>
-            {
+            ]);
+            AddDemoResult(t2, scripts, "Deploy-Agent.ps1", 9, new DateTime(2026, 6, 2),
+            [
                 new() { LineNumber = 77, LineText = "# TODO: pull the tenant list from the API" },
-            });
-            AddDemoResult(t2, scripts, "Get-StaleProfiles.ps1", 6, new DateTime(2026, 3, 21), new List<LineMatch>
-            {
+            ]);
+            AddDemoResult(t2, scripts, "Get-StaleProfiles.ps1", 6, new DateTime(2026, 3, 21),
+            [
                 new() { LineNumber = 14, LineText = "# TODO: exclude service accounts" },
                 new() { LineNumber = 31, LineText = "# TODO: make the age threshold a parameter" },
-            });
-            AddDemoResult(t2, @"C:\Users\Demo\code\homelab", "Rotate-Certs.ps1", 8, new DateTime(2026, 1, 9), new List<LineMatch>
-            {
+            ]);
+            AddDemoResult(t2, @"C:\Users\Demo\code\homelab", "Rotate-Certs.ps1", 8, new DateTime(2026, 1, 9),
+            [
                 new() { LineNumber = 5, LineText = "# TODO: wire up the renewal webhook" },
-            });
+            ]);
             if (t2.Results.Count > 0) t2.Results[0].IsExpanded = true;   // show off line matches
             FinishDemoTab(t2, 23907, 4.32);
 
@@ -74,7 +75,7 @@ namespace KillerShell.Shell
             var t3 = CreateTab();
             t3.Title     = "~\\Documents > invoice";
             t3.RootPath  = t1.RootPath;
-            t3.PipeFiles = t1.Results.Select(r => r.FilePath).ToList();
+            t3.PipeFiles = [.. t1.Results.Select(r => r.FilePath)];
             t3.PipeArgs  = [t1.Results.Count.ToString("N0"), t1.Title, "name: invoice"];
             t3.PipeLabel = string.Format(Loc("Str_Pipe_Scope"), t3.PipeArgs);
             t3.Groups[0].Terms[0].Pattern = "2026";
@@ -92,8 +93,8 @@ namespace KillerShell.Shell
             // A second browsed folder rather than a repeat of the one above: Documents shows the
             // icon view drawing a different glyph per file type, and this shows the other half of
             // what that view does, which is not drawing a glyph at all. Every file here is an
-            // image, so every tile is a picture drawn from its own path (Services\DemoImages.cs),
-            // and selecting one puts the same picture in the details strip's preview.
+            // image, so every tile carries a real picture (Services\DemoImages.cs), and selecting
+            // one puts the same picture in the details strip's preview.
             //
             // It has to be its own tab because the icon/list choice belongs to the PANE, not to a
             // tab - there is no way to open one tab already in the icon view - so the set instead
@@ -119,7 +120,7 @@ namespace KillerShell.Shell
 
             // ── Tabs 9-11: the admin tools, each backed by its own fabricated data
             // (RegistryEditorControl/EventViewerControl/ProcessListControl all branch on
-            // MainWindow.DemoMode internally - Shell/RegistryEditorControl.cs, .../EventViewerControl.cs,
+            // MainWindow.DemoMode internally - Tools/RegistryEditorControl.cs, .../EventViewerControl.cs,
             // .../ProcessListControl.cs - and populate themselves from Services/DemoRegistry.cs and
             // their own fixed fake rows the moment they load, same as every other demo tab reads
             // from a fabricated source instead of the real machine). Creating the tab here is
@@ -183,7 +184,7 @@ namespace KillerShell.Shell
                 Modified  = modified,
                 Seq       = t.Results.Count,
             };
-            r.Matches.Add(new TermMatch { Term = term, Lines = lines ?? new List<LineMatch>() });
+            r.Matches.Add(new TermMatch { Term = term, Lines = lines ?? [] });
             if (term.MatchCount < 0) term.MatchCount = 0;
             term.MatchCount += lines is { Count: > 0 } ? lines.Count : 1;
             t.Results.Add(r);
@@ -362,31 +363,17 @@ namespace KillerShell.Shell
         private static string DemoTextFor(string path)
         {
             string ext = System.IO.Path.GetExtension(path).ToLowerInvariant();
-            switch (ext)
+            return ext switch
             {
-                case ".ps1":
-                case ".psm1":
-                case ".psd1":
-                    return DemoScript();
-                case ".log":
-                case ".err":
-                case ".out":
-                case ".trace":
-                    return DemoLog();
-                case ".reg":
-                    return DemoReg();
-                case ".md":
-                case ".markdown":
-                    return DemoMarkdown();
-                case ".yml":
-                case ".yaml":
-                    return DemoYaml();
-                default:
-                    // Something honest rather than a fake body for a type we have not written
-                    // one for. A blank tab would read as a bug in the editor.
-                    return "This file is part of KillerShell's --demo data." + "\r\n"
-                         + "It has no contents on disk - the whole machine is invented." + "\r\n";
-            }
+                ".ps1" or ".psm1" or ".psd1" => DemoScript(),
+                ".log" or ".err" or ".out" or ".trace" => DemoLog(),
+                ".reg" => DemoReg(),
+                ".md" or ".markdown" => DemoMarkdown(),
+                ".yml" or ".yaml" => DemoYaml(),
+                _ => "This file is part of KillerShell's --demo data." + "\r\n"
+                                         + "It has no contents on disk - the whole machine is invented." + "\r\n",// Something honest rather than a fake body for a type we have not written
+                                                                                                                  // one for. A blank tab would read as a bug in the editor.
+            };
         }
 
         private static string DemoLog()

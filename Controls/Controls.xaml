@@ -1308,7 +1308,7 @@
     <SolidColorBrush x:Key="DangerRed" Color="#e04444"/>
     <!-- Fixed, non-theme status colors, alongside DangerRed above - a severity dot has to read
          the same regardless of which theme or accent is active, the way DangerRed already does
-         for a Processes tab. Added for the Event Viewer's Level column (Shell/EventViewerControl.cs). -->
+         for a Processes tab. Added for the Event Viewer's Level column (Tools/EventViewerControl.cs). -->
     <SolidColorBrush x:Key="WarningAmber" Color="#e0a83f"/>
     <SolidColorBrush x:Key="InfoBlue" Color="#4a90d9"/>
 
@@ -2101,7 +2101,7 @@
 
     <!-- ═══════════════════════════════════════════════════════════
          DATAGRID  -  KillerScan's DataGrid styling (MainWindow.xaml), ported rather than
-         reinvented: this is the FIRST DataGrid in KillerShell (Shell/ProcessListControl.cs, the
+         reinvented: this is the FIRST DataGrid in KillerShell (Tools/ProcessListControl.cs, the
          Task Manager tab's process list), so the row/cell/header treatment lives here rather
          than beside that one call site - any future grid in the app reuses these three keys
          instead of growing its own. Every brush is one already themed elsewhere in the app

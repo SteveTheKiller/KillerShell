@@ -537,7 +537,7 @@
     <sys:String x:Key="Str_Dlg_NoSuchFile">That file does not exist.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Replace {0}?</sys:String>
 
-    <!-- Processes/Services tab (Shell/ProcessTabs.cs, Shell/ProcessListControl.cs). The tab's
+    <!-- Processes/Services tab (Shell/ProcessTabs.cs, Tools/ProcessListControl.cs). The tab's
          user-facing label is "Processes/Services" now that it shows a Services view too - the
          underlying mechanism (ProcessListControl, OpenTaskManager, RelaunchElevatedProcesses, the
          command-line flag that opens it directly) all keep their existing "Process"/"TaskManager"
@@ -612,7 +612,7 @@
     <sys:String x:Key="Str_TT_SvcCopyDetails">Copy details  (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_SvcClose">Close  (Esc)</sys:String>
 
-    <!-- Event Viewer tab (Shell/EventViewerTabs.cs, Shell/EventViewerControl.cs) -->
+    <!-- Event Viewer tab (Shell/EventViewerTabs.cs, Tools/EventViewerControl.cs) -->
     <sys:String x:Key="Str_TT_EventViewer">Event Viewer  (Ctrl+F12)</sys:String>
     <sys:String x:Key="Str_TabTitle_EventViewer">Event Viewer</sys:String>
     <sys:String x:Key="Str_TT_EvtFilter">Filter by source, message, category or event ID</sys:String>
@@ -650,7 +650,7 @@
     <sys:String x:Key="Str_Evt_DetailsCategory">Task category</sys:String>
     <sys:String x:Key="Str_Evt_DetailsMessage">Message</sys:String>
 
-    <!-- Performance Monitor tab (Shell/PerformanceTabs.cs, Shell/PerformanceMonitorControl.cs) -->
+    <!-- Performance Monitor tab (Shell/PerformanceTabs.cs, Tools/PerformanceMonitorControl.cs) -->
     <sys:String x:Key="Str_TT_Performance">Performance  (F11)</sys:String>
     <sys:String x:Key="Str_TabTitle_Performance">Performance</sys:String>
     <sys:String x:Key="Str_Perf_Gathering">Reading hardware info...</sys:String>
@@ -680,7 +680,7 @@
     <sys:String x:Key="Str_Perf_BaseSpeed">Base speed</sys:String>
     <sys:String x:Key="Str_Perf_ToggleWidth">Toggle full-width  -  drag the header to reorder cells</sys:String>
 
-    <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Shell/StorageAnalyzerControl.cs) -->
+    <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Tools/StorageAnalyzerControl.cs) -->
     <sys:String x:Key="Str_TT_Storage">Storage Analyzer  (F4)</sys:String>
     <sys:String x:Key="Str_TabTitle_Storage">Storage Analyzer</sys:String>
     <sys:String x:Key="Str_Rail_StorageOpen">Storage Analyzer</sys:String>
@@ -749,7 +749,7 @@
 
     <sys:String x:Key="Str_Storage_Free">free</sys:String>
 
-    <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Shell/RegistryEditorControl.cs) -->
+    <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Tools/RegistryEditorControl.cs) -->
     <sys:String x:Key="Str_TT_RegistryEditor">Registry Editor  (Ctrl+F11)</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">Registry Editor</sys:String>
     <sys:String x:Key="Str_TT_RegFind">Find a key or value name  (Ctrl+F)</sys:String>

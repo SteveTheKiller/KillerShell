@@ -1,7 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
+using KillerShell.Shell;
 
-namespace KillerShell.Shell
+namespace KillerShell.Tools
 {
     /// <summary>
     /// The 98SE tier treatment for the code-built tool tabs (Event Viewer, Processes/Services,

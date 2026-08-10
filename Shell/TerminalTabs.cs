@@ -343,11 +343,11 @@ namespace KillerShell.Shell
         // open/closed/height state is corrected right after by ApplyDetailsPane (DetailsPane.cs),
         // same as ApplyResultsView/UpdateLocationColumn correct their own entries in this list.
         private static readonly string[] ListingOnlyTools =
-        {
+        [
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "SortBtn", "SortDirButton",
             "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "PipeBtn", "ExportBtn",
             "DetailsHeader", "DetailsPaneBtn", "DetailsPane",
-        };
+        ];
 
         /// <summary>
         /// Hide the listing controls on a shell tab, and hand them back to their own logic on
@@ -426,36 +426,22 @@ namespace KillerShell.Shell
 
             if (!ctrl) return false;   // a bare key is always the shell's
 
-            switch (key)
+            return key switch
             {
-                case System.Windows.Input.Key.Tab:          // cycle tabs
-                case System.Windows.Input.Key.W:            // close tab
-                case System.Windows.Input.Key.T:            // new tab
-                case System.Windows.Input.Key.OemTilde:     // open another shell
-                    return true;
-
+                // cycle tabs
+                System.Windows.Input.Key.Tab or System.Windows.Input.Key.W or System.Windows.Input.Key.T or System.Windows.Input.Key.OemTilde => true,
                 // Ctrl+comma edits $PROFILE (ProfileMenu.cs). The window's, even from inside a
                 // shell - editing your profile is the one thing you are most likely to want
                 // WHILE looking at a prompt, and PSReadLine does not bind it.
-                case System.Windows.Input.Key.OemComma:
-                    return !shift;
-
+                System.Windows.Input.Key.OemComma => !shift,
                 // Ctrl+PageUp/Down moves between tabs, but adding SHIFT makes it the
                 // terminal's own scrollback paging (Windows Terminal's binding), so the shift
                 // variant has to be let through rather than swallowed here.
-                case System.Windows.Input.Key.PageUp:
-                case System.Windows.Input.Key.PageDown:
-                    return !shift;
-
+                System.Windows.Input.Key.PageUp or System.Windows.Input.Key.PageDown => !shift,
                 // Ctrl+1-9 jumps to a tab by number.
-                case System.Windows.Input.Key.D1: case System.Windows.Input.Key.D2:
-                case System.Windows.Input.Key.D3: case System.Windows.Input.Key.D4:
-                case System.Windows.Input.Key.D5: case System.Windows.Input.Key.D6:
-                case System.Windows.Input.Key.D7: case System.Windows.Input.Key.D8:
-                case System.Windows.Input.Key.D9:
-                    return !shift;
-            }
-            return false;
+                System.Windows.Input.Key.D1 or System.Windows.Input.Key.D2 or System.Windows.Input.Key.D3 or System.Windows.Input.Key.D4 or System.Windows.Input.Key.D5 or System.Windows.Input.Key.D6 or System.Windows.Input.Key.D7 or System.Windows.Input.Key.D8 or System.Windows.Input.Key.D9 => !shift,
+                _ => false,
+            };
         }
 
         /// <summary>

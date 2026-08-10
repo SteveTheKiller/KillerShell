@@ -30,7 +30,7 @@ namespace KillerShell.Shell
         private DispatcherTimer?   _watchDebounce;
 
         private readonly HashSet<string> _touched = new(StringComparer.OrdinalIgnoreCase);
-        private readonly List<(string OldPath, string NewPath)> _renamedPairs = new();
+        private readonly List<(string OldPath, string NewPath)> _renamedPairs = [];
         private bool _watchOverflow;
 
         // Past this many distinct paths in one burst, relist instead of patching entry by entry.
