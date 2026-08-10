@@ -179,6 +179,19 @@ namespace KillerShell.Services
             if (string.IsNullOrEmpty(path)) return null;
             if (MainWindow.IsThisPc(path)) return ThisPcArt;      // Browse.cs sentinel
             if (path.Length <= 3) return DriveArt;                 // "C:\" and shorter is a root
+
+            // --demo answers from the fabricated machine's own table instead (DemoFileSystem.cs
+            // ArtFor). FolderArt below was built from Environment.GetFolderPath, which describes
+            // the machine the capture is being taken ON - so on any profile not named the same as
+            // the fabricated one, every fabricated special folder would miss and draw the plain
+            // folder glyph. A demo path that is not one of the fabricated special folders falls
+            // through to the generic folder below, exactly as an ordinary folder does.
+            if (MainWindow.DemoMode)
+            {
+                string? demoName = DemoFs.ArtFor(path);
+                return demoName != null ? Art(demoName) ?? GenericFolder : GenericFolder;
+            }
+
             return FolderArt.TryGetValue(path.TrimEnd('\\'), out var name)
                  ? Art(name) ?? GenericFolder
                  : GenericFolder;
@@ -217,14 +230,27 @@ namespace KillerShell.Services
 
             int shil = ShilFor(px);
 
-            // Real thumbnail rather than a shared icon, for the formats WIC can decode. Demo mode
-            // is excluded the same way the perFile shell lookup below is - a fabricated path is
-            // not on disk, so there is no pixel data to thumbnail. Keyed on the write time so an
-            // edited image's thumbnail refreshes instead of showing a stale cached decode.
-            if (!isDirectory && !MainWindow.DemoMode && ImageExtensions.Contains(ext))
+            // Real thumbnail rather than a shared icon, for the formats WIC can decode. Keyed on
+            // the write time so an edited image's thumbnail refreshes instead of showing a stale
+            // cached decode.
+            //
+            // A fabricated demo path has no pixel data behind it, so there is nothing at the path
+            // to decode: the tile is DRAWN from the path instead (Services\DemoImages.cs), which
+            // is what lets the icon view show a grid of actual pictures in a capture without
+            // reading, or shipping, a single real photograph. A path that is not one of the
+            // fabricated pictures answers null and falls through to the generic icon below.
+            if (!isDirectory && ImageExtensions.Contains(ext))
             {
-                var thumb = ImageThumbnail(filePath, px, shil);
-                if (thumb != null) return thumb;
+                if (MainWindow.DemoMode)
+                {
+                    var drawn = DemoImages.Render(filePath, px);
+                    if (drawn != null) return drawn;
+                }
+                else
+                {
+                    var thumb = ImageThumbnail(filePath, px, shil);
+                    if (thumb != null) return thumb;
+                }
                 // Falls through to the generic icon below on any failure (corrupt file, unsupported
                 // variant of the format, file gone by the time it is read, etc.) rather than a
                 // blank tile.

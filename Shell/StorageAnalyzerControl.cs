@@ -78,8 +78,8 @@ namespace KillerShell.Shell
         // Color mode, persisted app-wide: "cat" = by extension category, "folder" = by
         // top-level folder hue. Toggled from the toolbar pair or the map's context menu.
         private bool _colorByFolder;
-        private Border _colorTypeBtn = null!;
-        private Border _colorFolderBtn = null!;
+        private readonly Border _colorTypeBtn = null!;
+        private readonly Border _colorFolderBtn = null!;
 
         // ── View controls (toolbar, right of Scan) ───────────────
         // Both are VIEW filters over the existing tree, never rescans: changing either just
@@ -92,16 +92,16 @@ namespace KillerShell.Shell
         // bytes, so no space ever goes missing from the picture, it is only summarised.
         private int _depthLimit;
         private static readonly int[] DepthChoices = [0, 1, 2, 3, 4];
-        private Border _depthBtn = null!;
-        private TextBlock _depthBadge = null!;
+        private readonly Border _depthBtn = null!;
+        private readonly TextBlock _depthBadge = null!;
 
         // MIN SIZE: anything smaller is folded away rather than drawn. The bytes are NOT lost -
         // a hidden child still counts inside its parent's rectangle - so the map stays honest
         // while the thousands of sub-pixel rects that cost the most to draw disappear.
         private long _minSize;
         private static readonly long[] MinSizeChoices = [0, 1L << 20, 10L << 20, 100L << 20];
-        private Border _minSizeBtn = null!;
-        private TextBlock _minBadge = null!;
+        private readonly Border _minSizeBtn = null!;
+        private readonly TextBlock _minBadge = null!;
 
         internal StorageAnalyzerControl(string? initialPath)
         {
@@ -111,14 +111,25 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // storage-info footer
 
             this.SetResourceReference(BackgroundProperty, "PaneBrush");
+            // Grain over the opaque root, all four rows - same as the other tool tabs: an
+            // opaque face hides the pane's own grain layer, so it repaints its own. The map
+            // and its well are opaque surfaces above this; the bar and footer rows show it.
+            var rootGrain = ToolTabChrome.Grain();
+            SetRowSpan(rootGrain, 4);
+            Children.Add(rootGrain);
 
             // Focusable so the tab can actually OWN the keyboard: StorageAnalyzerHasFocus walks
             // up from the focused element, and the local single-key shortcuts below need
             // something inside this control to be focused for that walk to succeed. A click
             // anywhere that is not an input lands here.
+            // No Background assignment here: a local `Background = Brushes.Transparent` beats a
+            // SetResourceReference in the dependency-property system, so the line that lived
+            // here silently CANCELLED the PaneBrush above - the tab showed the darker
+            // MenuBackgroundBrush through on every theme where the two differ, which is twelve
+            // of the thirteen. The opaque PaneBrush is every bit as hit-testable, so the
+            // click-to-focus below lost nothing.
             Focusable = true;
             FocusVisualStyle = null;
-            Background = Brushes.Transparent;   // hit-testable, so a click on the tab's own gaps focuses it
             PreviewMouseLeftButtonDown += (_, e) =>
             {
                 if (e.OriginalSource is not TextBox) Focus();
@@ -158,7 +169,11 @@ namespace KillerShell.Shell
             SetColumn(browse, 1);
 
             _scanBtn = new Button { MinWidth = 64, Height = 24, Margin = new Thickness(6, 0, 0, 0), Padding = new Thickness(10, 0, 10, 0) };
-            _scanBtn.SetResourceReference(FrameworkElement.StyleProperty, "SurfaceButton");
+            // OutlineButton, not SurfaceButton: Scan/Stop is the MAIN action of this tab, and the
+            // family's main button is an accent outline at rest that fills solid on hover.
+            // SurfaceButton is the secondary tier - a filled chip face - which put a flat grey
+            // slab on the one control the tab exists to be driven by.
+            _scanBtn.SetResourceReference(FrameworkElement.StyleProperty, "OutlineButton");
             _scanBtn.SetResourceReference(ContentControl.ContentProperty, "Str_Storage_Scan");
             _scanBtn.Click += (_, _) => { if (_scanning) CancelScan(); else StartScan(); };
             SetColumn(_scanBtn, 2);
@@ -250,9 +265,14 @@ namespace KillerShell.Shell
             var footer = new Grid { Margin = new Thickness(10, 4, 10, 6) };
             footer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            _footerLeft = new TextBlock { FontSize = 11, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center };
+            // NO TextTrimming: that ellipsizes the TAIL, which on this line is the file name,
+            // the size and the percentage - everything worth reading. ElideFooterLeft trims from
+            // the FRONT instead and SizeChanged re-cuts it, so a resize re-measures against the
+            // untrimmed original. Same treatment as the window footer's status line.
+            _footerLeft = new TextBlock { FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
             _footerLeft.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             _footerLeft.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+            _footerLeft.SizeChanged += (_, _) => ElideFooterLeft();
             _footerRight = new TextBlock { FontSize = 11, Margin = new Thickness(16, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center };
             _footerRight.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             _footerRight.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
@@ -563,6 +583,15 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  SCAN - parallel directory walk
         // ═══════════════════════════════════════════════════════════
+        /// <summary>Point the tab at a folder and scan it now. The "Analyze storage" entry
+        /// point from the listing, the tree and the saved places (StorageTabs.cs).</summary>
+        internal void ScanFolder(string folder)
+        {
+            if (_scanning) CancelScan();
+            _targetBox.Text = folder;
+            StartScan();
+        }
+
         private void StartScan()
         {
             string target = _targetBox.Text.Trim();
@@ -847,7 +876,7 @@ namespace KillerShell.Shell
                 {
                     // A folder is an outline whose interior the children fill; the 1px inset is
                     // what makes nesting readable at a glance.
-                    dc.DrawRectangle(DirFill(child), BorderPen(), r);
+                    dc.DrawRectangle(DirFill(), BorderPen(), r);
                     var inner = new Rect(r.X + 1, r.Y + 1, Math.Max(0, r.Width - 2), Math.Max(0, r.Height - 2));
                     LayoutAndDraw(dc, child, inner, depth + 1);
                 }
@@ -933,9 +962,9 @@ namespace KillerShell.Shell
         }
 
         // ── Colors ───────────────────────────────────────────────
-        private SolidColorBrush DirFill(FsNode dir)
+        private SolidColorBrush DirFill()
             // Folders stay near-invisible so the FILES carry the color; the outline pen and the
-            // 1px inset are what say "folder".
+            // 1px inset are what say "folder". One fill for every folder, so it takes no node.
             => CachedBrush("dir", Color.FromArgb(26, 255, 255, 255));
 
         /// <summary>A folder drawn as ONE block because the depth cap stopped the recursion:
@@ -1004,7 +1033,7 @@ namespace KillerShell.Shell
         {
             string ext = "";
             int dot = fileName.LastIndexOf('.');
-            if (dot >= 0 && dot < fileName.Length - 1) ext = fileName.Substring(dot + 1);
+            if (dot >= 0 && dot < fileName.Length - 1) ext = fileName[(dot + 1)..];
             ExtCategory.TryGetValue(ext, out string? cat);
             return cat switch
             {
@@ -1068,7 +1097,48 @@ namespace KillerShell.Shell
             }
             _selected = n;
             UpdateFooterLeft();
+            PinSelectionToWindowStatus(n);
             _map.InvalidateOverlay();
+        }
+
+        // How long a clicked path stays in the window's status bar before the scan summary
+        // takes it back. Long enough to read a long path, short enough not to look stuck.
+        private static readonly TimeSpan PinnedPathHold = TimeSpan.FromSeconds(5);
+        private DispatcherTimer? _pinnedPathTimer;
+
+        /// <summary>
+        /// Put the clicked node's full path in the WINDOW status bar for a few seconds.
+        /// The pane footer already shows it, but that follows the CURSOR - so the moment you
+        /// move the mouse to read a long path it has already changed to whatever you passed
+        /// over. Clicking pins it somewhere that does not move.
+        /// The window status line trims from the FRONT (ElideFooterStatus), so a path too long
+        /// for the bar keeps its file name rather than losing it.
+        /// </summary>
+        private void PinSelectionToWindowStatus(FsNode? n)
+        {
+            _pinnedPathTimer?.Stop();
+
+            // Nothing clicked - a click on empty map space deselects, and pinning the last
+            // path there would report something that is no longer selected.
+            if (n == null) { ReportStatus?.Invoke(ProgressSummary()); return; }
+
+            ReportStatus?.Invoke(FullPath(n));
+
+            // Not restarted from scratch each click: one timer, stopped and re-started, so
+            // clicking five squares in a row does not leave five pending reverts racing.
+            _pinnedPathTimer ??= new DispatcherTimer();
+            _pinnedPathTimer.Interval = PinnedPathHold;
+            _pinnedPathTimer.Tick -= PinnedPathExpired;
+            _pinnedPathTimer.Tick += PinnedPathExpired;
+            _pinnedPathTimer.Start();
+        }
+
+        private void PinnedPathExpired(object? sender, EventArgs e)
+        {
+            _pinnedPathTimer?.Stop();
+            // Back to whatever the tab would otherwise be saying - the scan summary, or the
+            // progress line if a scan is running.
+            ReportStatus?.Invoke(ProgressSummary());
         }
 
         private void ZoomTo(FsNode dir)
@@ -1255,11 +1325,68 @@ namespace KillerShell.Shell
         private void UpdateFooterLeft()
         {
             var n = _hover ?? _selected;
-            if (n == null || _zoomRoot == null || _zoomRoot.Size <= 0) { _footerLeft.Text = ""; return; }
+            if (n == null || _zoomRoot == null || _zoomRoot.Size <= 0)
+            {
+                _footerFull = "";
+                _footerLeft.Text = "";
+                return;
+            }
 
             double pct = 100.0 * n.Size / _zoomRoot.Size;
-            _footerLeft.Text = FullPath(n) + "  -  " + FormatSize(n.Size)
+            _footerFull = FullPath(n) + "  -  " + FormatSize(n.Size)
                 + "  -  " + pct.ToString("0.0", CultureInfo.InvariantCulture) + "%";
+            ElideFooterLeft();
+        }
+
+        // The untrimmed line. Kept whole so a resize can re-cut it from the original rather than
+        // from an already-trimmed copy, which would eat more of it every time the window moved.
+        private string _footerFull = "";
+        private TextBlock? _footerMeasure;
+
+        // Ellipsis from its codepoint - these sources stay 0 non-ASCII bytes.
+        private static readonly string FooterEllipsis = ((char)0x2026).ToString();
+
+        /// <summary>
+        /// Trim the footer line from the FRONT, pinning its END to the right. The line is
+        /// "path - size - percent", so a tail trim (TextTrimming.CharacterEllipsis, what this
+        /// used to be) threw away the file name, the size AND the percentage and left nothing
+        /// but the directories you already knew you were in. The tail is the whole point.
+        /// Same binary search over measured widths as MainWindow's ElideFooterStatus.
+        /// </summary>
+        private void ElideFooterLeft()
+        {
+            if (_footerFull.Length == 0) { _footerLeft.Text = ""; return; }
+
+            double avail = _footerLeft.ActualWidth;
+            if (avail <= 0) { _footerLeft.Text = _footerFull; return; }   // pre-layout
+            if (Measure(_footerFull) <= avail) { _footerLeft.Text = _footerFull; return; }
+
+            // Longest SUFFIX that still fits behind a leading ellipsis.
+            int lo = 0, hi = _footerFull.Length;
+            while (lo < hi)
+            {
+                int mid = (lo + hi) / 2;   // drop `mid` characters off the front
+                if (Measure(FooterEllipsis + _footerFull[mid..]) <= avail) hi = mid;
+                else lo = mid + 1;
+            }
+            _footerLeft.Text = FooterEllipsis + _footerFull[Math.Min(lo, _footerFull.Length)..];
+
+            double Measure(string s)
+            {
+                // Font properties are re-copied each call: both ride DynamicResources that a
+                // theme or locale switch can change underneath us.
+                _footerMeasure ??= new TextBlock();
+                _footerMeasure.FontFamily  = _footerLeft.FontFamily;
+                _footerMeasure.FontSize    = _footerLeft.FontSize;
+                _footerMeasure.FontStyle   = _footerLeft.FontStyle;
+                _footerMeasure.FontWeight  = _footerLeft.FontWeight;
+                _footerMeasure.FontStretch = _footerLeft.FontStretch;
+                TextOptions.SetTextFormattingMode(
+                    _footerMeasure, TextOptions.GetTextFormattingMode(_footerLeft));
+                _footerMeasure.Text = s;
+                _footerMeasure.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                return _footerMeasure.DesiredSize.Width;
+            }
         }
 
         private void UpdateFooterRight()

@@ -1685,9 +1685,11 @@
                      there is nothing here for a location-style bar to say. -->
                 <Grid x:Name="ProcessListHost" Visibility="Collapsed">
                     <ContentControl x:Name="ProcessListSlot" Focusable="False"/>
-                    <Border IsHitTestVisible="False"
-                            Background="{DynamicResource GrainTileBrush}"
-                            Opacity="{DynamicResource GrainOpacity}"/>
+                    <!-- NO grain layer. PaneContent above already paints grain across the whole
+                         content pane, so a second tile inside a tool host DOUBLED it - which is
+                         why every tool tab looked heavily textured next to the file listing,
+                         which never had the extra layer (2026-08-09). Same mistake the bookmarks
+                         drawer had against the sidebar's continuous grain. -->
                     <!-- No host-level well here: a ring at this scope boxed in the control's own
                          filter bar too. The 98SE tiers live INSIDE ProcessListControl now
                          (ToolTabChrome: raised bar, sunken grid well). -->
@@ -1699,9 +1701,11 @@
                      in one surface, so there is nothing here for a location-style bar to say. -->
                 <Grid x:Name="EventViewerHost" Visibility="Collapsed">
                     <ContentControl x:Name="EventViewerSlot" Focusable="False"/>
-                    <Border IsHitTestVisible="False"
-                            Background="{DynamicResource GrainTileBrush}"
-                            Opacity="{DynamicResource GrainOpacity}"/>
+                    <!-- NO grain layer. PaneContent above already paints grain across the whole
+                         content pane, so a second tile inside a tool host DOUBLED it - which is
+                         why every tool tab looked heavily textured next to the file listing,
+                         which never had the extra layer (2026-08-09). Same mistake the bookmarks
+                         drawer had against the sidebar's continuous grain. -->
                     <!-- No host-level well - same reasoning as ProcessListHost above; the 98SE
                          tiers live inside EventViewerControl now (ToolTabChrome). -->
                 </Grid>
@@ -1713,9 +1717,11 @@
                      bar to say. -->
                 <Grid x:Name="PerformanceHost" Visibility="Collapsed">
                     <ContentControl x:Name="PerformanceSlot" Focusable="False"/>
-                    <Border IsHitTestVisible="False"
-                            Background="{DynamicResource GrainTileBrush}"
-                            Opacity="{DynamicResource GrainOpacity}"/>
+                    <!-- NO grain layer. PaneContent above already paints grain across the whole
+                         content pane, so a second tile inside a tool host DOUBLED it - which is
+                         why every tool tab looked heavily textured next to the file listing,
+                         which never had the extra layer (2026-08-09). Same mistake the bookmarks
+                         drawer had against the sidebar's continuous grain. -->
                     <!-- Sunken well, same as the two hosts above - the performance tab needs the
                          bevel lines around it to separate it from the rest. Inert off 98SE. -->
                     <Border IsHitTestVisible="False" Panel.ZIndex="5"
@@ -1737,9 +1743,11 @@
                      say. Admin-only tab - see Shell/RegistryEditorTabs.cs. -->
                 <Grid x:Name="RegistryEditorHost" Visibility="Collapsed">
                     <ContentControl x:Name="RegistryEditorSlot" Focusable="False"/>
-                    <Border IsHitTestVisible="False"
-                            Background="{DynamicResource GrainTileBrush}"
-                            Opacity="{DynamicResource GrainOpacity}"/>
+                    <!-- NO grain layer. PaneContent above already paints grain across the whole
+                         content pane, so a second tile inside a tool host DOUBLED it - which is
+                         why every tool tab looked heavily textured next to the file listing,
+                         which never had the extra layer (2026-08-09). Same mistake the bookmarks
+                         drawer had against the sidebar's continuous grain. -->
                 </Grid>
                 <!-- A Storage Analyzer tab draws here, on the same terms as the other tool
                      hosts above: declared before the list, only ever one visible, grain-wrapped.
@@ -1748,9 +1756,11 @@
                      as PerformanceHost, inert off 98SE. -->
                 <Grid x:Name="StorageHost" Visibility="Collapsed">
                     <ContentControl x:Name="StorageSlot" Focusable="False"/>
-                    <Border IsHitTestVisible="False"
-                            Background="{DynamicResource GrainTileBrush}"
-                            Opacity="{DynamicResource GrainOpacity}"/>
+                    <!-- NO grain layer. PaneContent above already paints grain across the whole
+                         content pane, so a second tile inside a tool host DOUBLED it - which is
+                         why every tool tab looked heavily textured next to the file listing,
+                         which never had the extra layer (2026-08-09). Same mistake the bookmarks
+                         drawer had against the sidebar's continuous grain. -->
                     <!-- No host-level well - same reasoning as ProcessListHost/EventViewerHost:
                          a well around the WHOLE host wrapped the control's own target bar in
                          the sunken frame, so on 98SE the dark bevel ran ABOVE the bar and the
@@ -1875,6 +1885,13 @@
                             <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="MenuTerminalAdmin_Click" InputGestureText="Ctrl+F8">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                             </MenuItem>
+                            <!-- Another "act on this folder" verb, so it sits with the shells
+                                 rather than with the file commands. The same row appears on a
+                                 tree node and a saved place - a folder offers the same verbs
+                                 wherever it is drawn. -->
+                            <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="MenuAnalyze_Click">
+                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_ExcludeFolder}" Click="MenuExcludeFolder_Click"  InputGestureText="Ctrl+Shift+E">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                             </MenuItem>
@@ -1885,8 +1902,12 @@
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
                             </MenuItem>
                             <Separator/>
+                            <!-- E8C8 is MDL2's Copy (two stacked documents). This was E71B, which
+                                 is LINK - a chain - and read as "make a shortcut" rather than
+                                 "copy". E8C8 is what Copy below already uses, and the editor,
+                                 terminal, Registry Editor and Storage Analyzer menus too. -->
                             <MenuItem Header="{DynamicResource Str_Menu_CopyPath}"      Click="MenuCopyPath_Click"   InputGestureText="Ctrl+Shift+C">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE71B;"/></MenuItem.Icon>
+                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_CopyName}"      Click="MenuCopyName_Click"   InputGestureText="Ctrl+Shift+M">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>

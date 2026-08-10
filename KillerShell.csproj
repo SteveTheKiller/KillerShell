@@ -59,7 +59,8 @@
        Content: KillerShell is a single portable exe with no loose files beside it, and dropping
        two module folders next to it would end that. They are unpacked to LocalAppData the first
        time a shell opens and put on PSModulePath there.
-       Sources live in C:\Users\steve\modules - refresh these copies when either module ships. -->
+       These are copies: the modules have their own repositories (see each module's ProjectUri),
+       and the copies here need refreshing whenever either module ships. -->
   <ItemGroup>
     <EmbeddedResource Include="Modules\**\*" />
   </ItemGroup>
@@ -174,7 +175,7 @@
        build, the GPL source zip was incomplete, and KillerShell silently rode whatever state the
        kit happened to be in. It had drifted badly: eight of the thirteen palettes differed from
        the ones actually in use, Blood worst of all, still on the old white accent months after it
-       moved to the warm peach (Steve, 2026-08-08 - "obviously using killerUI hasnt been working").
+       moved to the warm peach.
        KillerNotes is the reference now; its vendored copies are the ones here. SDK-style globbing
        picks the .xaml up as Page items with no entries needed. -->
 </Project>

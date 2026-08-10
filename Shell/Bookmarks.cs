@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using KillerShell.Models;   // SearchTab - CanShowListing tests what kind of tab is active
 
 namespace KillerShell.Shell
 {
@@ -55,7 +56,12 @@ namespace KillerShell.Shell
 
         private const double BookmarksHeightDefault = 168;
         private const double BookmarksHeightMin     = 90;
-        private const double BookmarksHeightMax     = 420;
+        // 420 was a hard stop the drawer hit long before it ran out of places to show, so a
+        // longer list could never be opened far enough to see and the grip refused to drag any
+        // higher (2026-08-09). The REAL limit is the one below it - the sidebar has to keep
+        // TreeMinVisible pixels of tree - so this only needs to be high enough to stay out of
+        // the way on a tall window; the tree's own floor is what actually protects the layout.
+        private const double BookmarksHeightMax     = 2000;
 
         // Exact row height from the item template: Border Padding="4,3" (6 total) around a
         // 16px icon, which is taller than the 11px text line beside it. Fixed rather than
@@ -64,7 +70,11 @@ namespace KillerShell.Shell
         // right after a reorder), which is what left a sliver of extra scrollable space under
         // the last row no matter how the measurement was taken. A constant sidesteps the timing
         // question entirely; it only needs revisiting if the row template's own metrics change.
-        private const double BookmarksRowHeight = 22;
+        // 18 = a 16px icon inside the row template's 4,1 padding. It was 22 for a 4,3 padding;
+        // the two MUST agree, because this is what the open animation and the ceiling are
+        // computed from - a stale value here means the drawer opens at the wrong height and
+        // only converges once CorrectBookmarksOverflow measures the real rows.
+        private const double BookmarksRowHeight = 18;
 
         // What the tree above is never allowed to shrink below, whatever the drawer is dragged
         // to. Without this the drawer could swallow the sidebar on a short window.
@@ -96,6 +106,24 @@ namespace KillerShell.Shell
             BookmarksList.SizeChanged  += (_, _) =>
                 { SyncBookmarksEdgeFades(); CorrectBookmarksOverflow(); SyncBookmarksScrollbar(); };
             BookmarksPanel.SizeChanged += (_, _) => { SyncBookmarksEdgeFades(); SyncBookmarksScrollbar(); };
+
+            // --demo gets its own fixed set of places and never reads or writes the real one
+            // (Shell/DemoMode.cs). Two separate reasons, both of which the saved-list path below
+            // would break: the fabricated places are not on disk, so the Directory.Exists check
+            // below would drop every one of them, and loading the real list would put the actual
+            // machine's folder names in a marketing screenshot - which is the whole thing demo
+            // mode exists to prevent. The drawer is opened too, because a shut drawer shows none
+            // of it. Returns here rather than falling through: the remembered height and
+            // user-sized flag belong to the real list, and a height dragged small for a two-row
+            // list would hide most of a fifteen-row one.
+            if (DemoMode)
+            {
+                SeedDemoBookmarks();
+                _bookmarksOpen = true;
+                ApplyBookmarksPanel(animate: false);
+                UpdateFavoriteStar();
+                return;
+            }
 
             string? saved = Services.ThemeManager.GetSetting("Bookmarks");
 
@@ -355,8 +383,16 @@ namespace KillerShell.Shell
             // rounded corners were the only thing making a sub-pixel gap visible. Overshoot
             // keeps its old tolerance so this does not fight the sub-pixel jitter a
             // DoubleAnimation leaves behind once it lands on its target.
+            // The same rule ApplyBookmarksPanel opens by: while the content FITS the ceiling,
+            // converge on it in both directions even if the grip has been used, so the drawer
+            // ends up showing every place. Only once the content is taller than the sidebar can
+            // spare does a user-chosen height mean anything, and there this still only shrinks
+            // an over-tall drawer, never grows one the user deliberately made small.
+            bool fitsCeiling = panelNeeds <= BookmarksCeiling() + 0.5;
             double diff = BookmarksPanel.ActualHeight - panelNeeds;
-            bool needsCorrection = _bookmarksUserSized ? diff > 0.5 : (diff > 0.5 || diff < 0);
+            bool needsCorrection = (_bookmarksUserSized && !fitsCeiling)
+                ? diff > 0.5
+                : (diff > 0.5 || diff < 0);
             if (!needsCorrection) return;
 
             _bookmarksHeight = panelNeeds;
@@ -368,9 +404,19 @@ namespace KillerShell.Shell
                     _bookmarksHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        /// Persists the list. A no-op in --demo: the drawer is holding fabricated places there,
+        /// and writing them would overwrite the real saved list with paths that do not exist, so
+        /// the next ordinary launch would come up with an empty drawer. Guarded here rather than
+        /// at each call site so adding, removing and reordering a demo place are all covered by
+        /// one check - the rows still respond, the change just does not outlive the process.
+        /// </summary>
         private void SaveBookmarks()
-            => Services.ThemeManager.SetSetting("Bookmarks",
-                   string.Join(BookmarkSep.ToString(), _bookmarks.Select(b => b.Path)));
+        {
+            if (DemoMode) return;
+            Services.ThemeManager.SetSetting("Bookmarks",
+                string.Join(BookmarkSep.ToString(), _bookmarks.Select(b => b.Path)));
+        }
 
         /// <summary>
         /// First run: This PC, then Home. Two entries rather than none, because an empty
@@ -391,6 +437,47 @@ namespace KillerShell.Shell
             SaveBookmarks();
         }
 
+        /// <summary>
+        /// --demo's places: one per icon in the brand pack, so a capture of the drawer shows the
+        /// whole set of folder art at once.
+        /// </summary>
+        /// <remarks>
+        /// The drawer is the only surface in the app that shows fifteen folder icons stacked in a
+        /// column, which makes it the one place the icon pack can actually be photographed. Every
+        /// name below is a real Windows shell folder and every path exists on the fabricated
+        /// machine (Services/DemoFileSystem.cs), which is what makes them resolve to their own art
+        /// rather than the generic folder - see DemoFs.ArtFor. Clicking any of them browses to a
+        /// listing that is really there, so the drawer is not a row of dead rows either.
+        ///
+        /// No Directory.Exists filter, unlike the saved-list path: none of these are on disk, and
+        /// that check is exactly what would empty the drawer. No SaveBookmarks either - see the
+        /// guard on it.
+        ///
+        /// Ordered the way a person would keep them rather than by icon: This PC and Home first,
+        /// then the profile's own folders, then the machine-wide ones, the field drive, and one
+        /// ordinary working folder last to show what a plain folder looks like beside the rest.
+        /// </remarks>
+        private void SeedDemoBookmarks()
+        {
+            void Place(string path) => _bookmarks.Add(new Bookmark { Path = path });
+
+            Place(ThisPc);                                 // my_pc_icon
+            Place(@"C:\Users\Demo");                       // home_folder_icon
+            Place(@"C:\Users\Demo\Desktop");               // desktop_folder_icon
+            Place(@"C:\Users\Demo\Documents");             // documents_folder_icon
+            Place(@"C:\Users\Demo\Downloads");             // downloads_folder_icon
+            Place(@"C:\Users\Demo\Pictures");              // pictures_folder_icon
+            Place(@"C:\Users\Demo\Music");                 // music_folder_icon
+            Place(@"C:\Users\Demo\Videos");                // videos_folder_icon
+            Place(@"C:\Users\Demo\Favorites");             // favorites_folder_icon
+            Place(@"C:\Users\Demo\Searches");              // search_results_icon
+            Place(@"C:\Users\Demo\Recent");                // recents_icon
+            Place(@"C:\Program Files");                    // program_files_icon
+            Place(@"C:\Windows");                          // windows_folder_icon
+            Place(@"D:\");                                 // drive_icon
+            Place(@"C:\Users\Demo\code\killer-scripts");   // folder_icon, the generic one
+        }
+
         // ── Membership ───────────────────────────────────────────
         private bool IsBookmarked(string? path)
             => !string.IsNullOrEmpty(path)
@@ -401,8 +488,13 @@ namespace KillerShell.Shell
             // This PC passes the existence check by exemption: it is a place you can navigate
             // to but not a directory on disk, so Directory.Exists says no and the star did
             // nothing at all when you clicked it there.
+            // A fabricated folder is exempt for the same reason This PC is: it is somewhere you
+            // can navigate to that Directory.Exists says no about, so without this the star was a
+            // dead control everywhere in --demo, on the one screen whose saved places are the
+            // thing being demonstrated.
             if (string.IsNullOrEmpty(path)) return;
-            if (!IsThisPc(path) && !Directory.Exists(path)) return;   // Browse.cs
+            if (!IsThisPc(path) && !Directory.Exists(path)
+                && !(DemoMode && Services.DemoFs.Has(path!))) return; // Browse.cs, DemoFileSystem.cs
             if (IsBookmarked(path)) return;
 
             _bookmarks.Add(new Bookmark { Path = path! });
@@ -513,9 +605,16 @@ namespace KillerShell.Shell
             // layout pass this animation produces, not just once the animation's own Completed
             // event happens to fire) is what turns this into an exact number afterward - it
             // does not depend on this guess being right, only close enough to animate toward.
+            // OPENING SHOWS EVERYTHING when everything fits, whether or not the grip has been
+            // dragged before. A saved height is only meaningful while the list is too long for
+            // the space it has - that is the case the grip exists for, letting a long list
+            // scroll inside a chosen height. When the places DO fit, restoring an old dragged
+            // height just hides rows for no reason and puts a scrollbar on a list that does not
+            // need one (2026-08-09).
+            double fit = BookmarksContentHeight() + BookmarksBorderExtra;
             double target = !_bookmarksOpen ? 0
-                           : _bookmarksUserSized ? _bookmarksHeight
-                           : Math.Min(BookmarksContentHeight() + BookmarksBorderExtra, BookmarksPanel.MaxHeight);
+                           : (_bookmarksUserSized && fit > BookmarksPanel.MaxHeight) ? _bookmarksHeight
+                           : Math.Min(fit, BookmarksPanel.MaxHeight);
 
             if (_bookmarksOpen) BookmarksPanel.Visibility = Visibility.Visible;
 
@@ -554,12 +653,38 @@ namespace KillerShell.Shell
         /// the style of tab that was focused" instead of the file browser). So when the focused
         /// tab is either one, a bookmark opens a new browse tab instead of hijacking it.
         /// </remarks>
-        private void OpenBookmark(Bookmark b)
+        private void OpenBookmark(Bookmark b) => GoToFolder(b.Path);
+
+        /// <summary>
+        /// Show a folder, making somewhere to show it if the current tab cannot. The one route
+        /// every sidebar surface uses - a saved place, a tree node - so they can never disagree
+        /// about what a click does.
+        /// </summary>
+        /// <remarks>
+        /// The test is "can this tab browse", NOT a list of tab kinds. It used to name Terminal
+        /// and Editor explicitly, so the four TOOL tabs added since (Processes, Event Viewer,
+        /// Performance, Registry Editor - and now Storage Analyzer) fell through it: with one of
+        /// those open, clicking a saved place or a tree node navigated a tab that shows no
+        /// listing, and nothing appeared to happen at all (2026-08-09). Anything that is not an
+        /// ordinary browse or search tab gets a NEW tab, which is also what the user meant -
+        /// they asked to see a folder, not to close what they were looking at.
+        /// </remarks>
+        internal void GoToFolder(string path)
         {
-            if (_active != null && (_active.IsTerminal || _active.IsEditor))
-                ActivateTab(CreateTab());   // Tabs.cs
-            _ = NavigateTo(b.Path);   // Browse.cs
+            if (string.IsNullOrEmpty(path)) return;
+            if (_active == null || !CanShowListing(_active))
+            {
+                CaptureTab(_active);        // Tabs.cs - the outgoing tab keeps its state
+                ActivateTab(CreateTab());
+            }
+            _ = NavigateTo(path);           // Browse.cs
         }
+
+        /// <summary>True when a tab is an ordinary browse/search tab, so a folder can be shown
+        /// IN it rather than needing a new one.</summary>
+        private static bool CanShowListing(SearchTab t)
+            => !t.IsTerminal && !t.IsEditor && !t.IsProcessList && !t.IsEventViewer
+            && !t.IsPerformanceMonitor && !t.IsRegistryEditor && !t.IsStorageAnalyzer;
 
         private void BookmarkTerminal_Click(object sender, RoutedEventArgs e)
         {
@@ -571,6 +696,27 @@ namespace KillerShell.Shell
         {
             if (sender is FrameworkElement fe && fe.DataContext is Bookmark b)
                 OpenShell(Terminal.TerminalProfile.PowerShell(elevated: true), b.Path);   // TerminalTabs.cs
+        }
+
+        private void BookmarkAnalyze_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement fe && fe.DataContext is Bookmark b)
+                AnalyzeFolder(b.Path);   // StorageTabs.cs
+        }
+
+        private void BookmarkProperties_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not FrameworkElement fe || fe.DataContext is not Bookmark b) return;
+            if (!Directory.Exists(b.Path)) return;   // This PC is a sentinel, not a folder
+
+            // Deferred until the menu has closed, the same as the tree's own Properties row -
+            // the shell dialog is modal and opening it under a menu that is still dismissing
+            // leaves the menu painted on top of it (ResultsMenu.cs).
+            AfterMenuCloses(() =>
+            {
+                if (!Services.ShellContextMenu.ShowProperties(b.Path))
+                    SetTabStatusKey(_active, "Str_Status_ShellFailed");
+            });
         }
 
         // Remove. The panel carries no buttons of its own, so the row's context menu is the

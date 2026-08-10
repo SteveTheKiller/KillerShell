@@ -117,6 +117,16 @@ namespace KillerShell.Shell
             // one rule for every tab: the tab's own surface is PaneBrush, its content is
             // MenuBackgroundBrush.
             this.SetResourceReference(Grid.BackgroundProperty, "PaneBrush");
+            // Grain over that opaque face, spanning all three rows. PaneContent's own grain layer
+            // is the FIRST child of its Grid, so it paints UNDER everything - an opaque root here
+            // hides it and the tab comes up as the one flat, textureless surface in the window.
+            // Same treatment as the other four tool tabs (Shell/ToolTabChrome.cs Grain), and the
+            // same reason the folder location row carries its own grain over its own PaneBrush.
+            // Added before the row content so the panel, tiles and status line all paint above it;
+            // 0 opacity on 98SE, which draws no grain anywhere.
+            var rootGrain = ToolTabChrome.Grain();
+            SetRowSpan(rootGrain, 3);
+            Children.Add(rootGrain);
 
             var staticPanel = BuildStaticInfoPanel(out _staticInfoText);
             SetRow(staticPanel, 0);
@@ -518,12 +528,34 @@ namespace KillerShell.Shell
             // phosphor greens instead.
             text.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
+            var infoRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4));
+
+            // The panel's own grain layer, under the readout text and over its own opaque face.
+            // The control's ROOT paints its grain first (see the ctor), so any opaque surface
+            // stacked on top of it covers that grain and comes out as a flat, textureless card
+            // on an otherwise textured tab. Every opaque face in this app repaints grain over
+            // itself for exactly this reason - the folder LocationRow (Controls/FilePane.xaml)
+            // over its own PaneBrush, and ToolTabChrome.WrapBar over its bar face.
+            // GrainOpacity is 0 on 98SE, so this paints nothing there and that theme is
+            // unaffected.
+            var infoGrain = ToolTabChrome.Grain();
+            // Match the card's rounding: a Border does not clip its child, so a square grain
+            // rectangle would paint noise into the four rounded corners the face leaves empty.
+            infoGrain.CornerRadius = infoRadius;
+
+            // The padding moves off the Border and onto the text, because a Border's Padding
+            // insets its WHOLE child - grain included - which would leave an untextured ring
+            // inside the panel's edge.
+            text.Margin = new Thickness(12, 10, 12, 10);
+            var infoHost = new Grid();
+            infoHost.Children.Add(infoGrain);
+            infoHost.Children.Add(text);
+
             var panel = new Border
             {
-                Padding = new Thickness(12, 10, 12, 10),
-                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
+                CornerRadius = infoRadius,
                 BorderThickness = new Thickness(1),
-                Child = text,
+                Child = infoHost,
             };
             // PaneBrush, not BackgroundBrush: an info panel is CONTENT sitting on the tab's
             // chrome, so it takes the same pane color as a terminal or a file listing. On the
@@ -1065,17 +1097,39 @@ namespace KillerShell.Shell
             }
             body.Children.Add(fields);
 
+            var cellRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4));
+
+            // The cell's own grain layer, under its content and over its own opaque face.
+            // The control's ROOT paints grain across all three rows (see the ctor), but an
+            // opaque MonitorCellBrush card sits ON TOP of that and covers it, so without this
+            // the cards were the flat, textureless surfaces on an otherwise textured tab.
+            // Every opaque face in this app repaints grain over itself for the same reason -
+            // the folder LocationRow (Controls/FilePane.xaml) over its own PaneBrush, and
+            // ToolTabChrome.WrapBar over its bar face. GrainOpacity is 0 on 98SE, so this
+            // paints nothing there and that theme is unaffected.
+            var cellGrain = ToolTabChrome.Grain();
+            // Match the card's rounding: a Border does not clip its child, so a square grain
+            // rectangle would paint noise into the four rounded corners the face leaves empty.
+            cellGrain.CornerRadius = cellRadius;
+
+            // The padding moves off the Border and onto the body, because a Border's Padding
+            // insets its WHOLE child - grain included - which would leave an untextured ring
+            // inside the card's edge. Same on-screen inset either way.
+            body.Margin = new Thickness(14, 12, 14, 12);
+            var cellHost = new Grid();
+            cellHost.Children.Add(cellGrain);
+            cellHost.Children.Add(body);
+
             var cell = new Border
             {
-                Padding = new Thickness(14, 12, 14, 12),
-                CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4)),
+                CornerRadius = cellRadius,
                 BorderThickness = new Thickness(1),
                 // Top, not the default Stretch: a grid row is as tall as its tallest cell, and
                 // a stretched shorter neighbor pads its own inside out to match - the "cells
                 // are too tall" complaint. Hugging the content leaves the gap OUTSIDE the
                 // card, where it reads as layout instead of dead space.
                 VerticalAlignment = VerticalAlignment.Top,
-                Child = body,
+                Child = cellHost,
             };
             cell.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
             cell.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");

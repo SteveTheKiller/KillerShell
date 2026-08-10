@@ -28,6 +28,12 @@ namespace KillerShell.Editing
         // overwrite each other's original.
         private static readonly Dictionary<string, Color> Shipped = new();
 
+        // Definition name -> the background its colors were last lifted against. Keyed by NAME for
+        // the same reason Shipped is: the vendored AvalonEdit makes no promise about reference
+        // identity or value equality for a definition object, and two definitions sharing a name
+        // are the same language. See the early return in MakeReadable.
+        private static readonly Dictionary<string, Color> LastBackground = new();
+
         /// <summary>
         /// Lift every color in <paramref name="definition"/> clear of <paramref name="background"/>.
         /// Safe to call repeatedly, and on every theme switch.
@@ -41,6 +47,26 @@ namespace KillerShell.Editing
         {
             if (definition == null) return;
 
+            // ONE pass per definition per background, not one per open document.
+            //
+            // The remarks above are the whole reason this guard is safe AND the reason it is
+            // needed: a definition is a HighlightingManager singleton shared by every editor, so
+            // recoloring it once recolors every document using it. But RefreshEditorThemes
+            // (EditorTabs.cs) still calls ApplyTheme on every tab in BOTH panes, and each of those
+            // calls came back through here and walked the entire NamedHighlightingColors list
+            // again to write the values that were already sitting there. Several documents open on
+            // one language meant that walk N times over, plus a TerminalPalette built N times to
+            // ask it the same question - all of it inside the pause between the theme swap and the
+            // crossfade, where it is time the user is watching (ThemeFlyout.cs CrossfadeSwap).
+            //
+            // An UNNAMED definition opts out rather than sharing the empty-string bucket with
+            // every other unnamed one: colliding there would silently skip a definition that had
+            // never been lifted at all, which is worse than repeating the work.
+            string defKey = definition.Name ?? string.Empty;
+            bool memoizable = defKey.Length > 0;
+            if (memoizable && LastBackground.TryGetValue(defKey, out Color already) && already == background)
+                return;
+
             // The contrast guard lives on the terminal palette because that is where it was
             // needed first. Reused rather than copied: one implementation means the two surfaces
             // cannot start disagreeing about what counts as readable.
@@ -53,6 +79,11 @@ namespace KillerShell.Editing
 
                 color.Foreground = new SimpleHighlightingBrush(guard.Readable(shipped.Value, background));
             }
+
+            // Recorded only after the pass completes, so a throw part-way leaves the definition
+            // marked as un-lifted and the next theme switch redoes it rather than trusting a
+            // half-applied result.
+            if (memoizable) LastBackground[defKey] = background;
         }
 
         /// <summary>

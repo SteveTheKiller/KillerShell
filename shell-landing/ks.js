@@ -168,9 +168,8 @@
   }
 
   // ---- Easter egg: click the version number ----
-  // A small rotating set instead of one static line (Steve, 2026-08-03: "update the easter
-  // egg message"), so clicking it more than once is still worth doing. Picked without
-  // immediately repeating the line just shown.
+  // A small rotating set instead of one static line (2026-08-03), so clicking it more than
+  // once is still worth doing. Picked without immediately repeating the line just shown.
   var eggLines = [
     'Explorer, cmd and Notepad walk into one window. Only one walks out.',
     "Task Manager called. It wants its process list back.",

@@ -46,6 +46,25 @@ namespace KillerShell.Shell
 
         private void StorageRail_Click(object sender, RoutedEventArgs e) => OpenStorageAnalyzer();
 
+        /// <summary>
+        /// Open the Storage Analyzer aimed at one folder and start scanning it. The
+        /// "Analyze storage" verb every folder surface offers - the listing, the tree and the
+        /// saved places.
+        /// </summary>
+        /// <remarks>
+        /// Reuses the singleton rather than opening a second tab: two analyzers would each hold
+        /// a full scan tree, and the tab is a place you go rather than a document you keep. The
+        /// scan starts immediately, because picking "analyze this folder" has already said
+        /// which folder and waiting for a second click on Scan would be asking twice.
+        /// </remarks>
+        internal void AnalyzeFolder(string folder)
+        {
+            if (string.IsNullOrEmpty(folder) || !System.IO.Directory.Exists(folder)) return;
+
+            OpenStorageAnalyzer();
+            _active?.Storage?.ScanFolder(folder);
+        }
+
         // The rail button's right-click pair, mirroring RailProcessesOpen/Admin: plain open and
         // the elevated relaunch, same two actions F4 / Ctrl+F4 drive.
         private void RailStorageOpen_Click(object sender, RoutedEventArgs e)  => OpenStorageAnalyzer();

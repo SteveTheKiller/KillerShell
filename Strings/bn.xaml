@@ -122,6 +122,9 @@
     <sys:String x:Key="Str_Menu_OpenFile">ফাইল খুলুন</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">এর মাধ্যমে খুলুন...</sys:String>
     <sys:String x:Key="Str_Menu_ShowExplorer">Explorer-এ দেখান</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">লুকানো ও ডট ফোল্ডার দেখান</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">ট্রি: লুকানো ও ডট ফোল্ডার দেখানো হচ্ছে</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">ট্রি: লুকানো ও ডট ফোল্ডার লুকানো হচ্ছে</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">মিনিমাইজ</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">ম্যাক্সিমাইজ</sys:String>
     <sys:String x:Key="Str_Menu_Restore">পুনরুদ্ধার</sys:String>
@@ -328,6 +331,13 @@
     <sys:String x:Key="Str_Ks_ViewList">তালিকা</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">কীবোর্ড</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">সেই স্তরটি দেখতে Ctrl, Shift বা Alt চেপে ধরে রাখুন</sys:String>
+    <!-- Shortcuts card: SCOPE section headings (see en-US.xaml for the full note). The other
+         four sections reuse the Str_TabTitle_* strings of the tabs they name. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">সর্বত্র</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">ফাইল ব্রাউজার</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">টার্মিনাল</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">সম্পাদক</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">যে কীগুলি দেখানো হচ্ছে:</sys:String>
 
     <!-- এক্সপ্লোরার-প্রচলিত শর্টকাট -->
     <sys:String x:Key="Str_Ks_BackForward">পিছনে / সামনে</sys:String>
@@ -614,6 +624,31 @@
     <sys:String x:Key="Str_RegEd_AccessDenied">অ্যাক্সেস অস্বীকৃত - এই Key-এর জন্য এই উন্নীত উইন্ডোর চেয়েও উচ্চ স্তরের অ্যাক্সেস প্রয়োজন</sys:String>
     <sys:String x:Key="Str_RegEd_Base">ভিত্তি:</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">হেক্স বাইট জোড়া, স্পেস দিয়ে আলাদা করা (যেমন 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_Status_Extracting">{0} বের করা হচ্ছে...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">{0} বের করা যায়নি</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">আর্কাইভটি পড়া যায়নি - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">শুধু .zip আর্কাইভ বদলানো যায় - এটি শুধু পড়ার জন্য খোলে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">আর্কাইভ থেকে শুধু ফাইল টেনে বের করা যায় - ফোল্ডারটি খুলে ভিতরের জিনিস টানুন</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriting">আর্কাইভ নতুন করে লেখা হচ্ছে - {0}%</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">আর্কাইভে {0}টি যোগ করা হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">আর্কাইভ থেকে {0}টি সরানো হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">{0} নামে বদলানো হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0}টি যোগ হয়েছে - বৈধ নাম না থাকায় {1}টি বাদ পড়েছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">আর্কাইভ হালনাগাদ করা যায়নি - {0}। মূল ফাইলটি অপরিবর্তিত আছে।</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">এই আর্কাইভ ফাইলটি শুধু পড়ার জন্য চিহ্নিত - সেটি সরিয়ে আবার চেষ্টা করুন</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">এই আর্কাইভটি অন্য প্রোগ্রামে খোলা আছে - সেটি বন্ধ করে আবার চেষ্টা করুন</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">এই আর্কাইভে লেখার অনুমতি নেই</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">ওই নামের কিছু আর্কাইভে আগে থেকেই আছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">ওই এন্ট্রিটি আর আর্কাইভে নেই</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">ওই নাম আর্কাইভের ভিতরে ব্যবহার করা যায় না</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">যোগ করার মতো কিছু নেই</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">আর্কাইভ অপরিবর্তিত রাখা হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">এর কয়েকটি আগে থেকেই আর্কাইভে আছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">আর্কাইভ থেকে কপি করা হয়েছে - এন্ট্রিটি ভিতরেই আছে</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">এর মধ্যে {0}টি আগে থেকেই আর্কাইভে আছে।</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">আর্কাইভ থেকে {0}টি জিনিস সরাবেন? পুরো আর্কাইভ নতুন করে লেখা হবে এবং এটি ফেরানো যাবে না।</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">দুটোই না রেখে বদলে দিন</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">যোগ করুন</sys:String>
     <sys:String x:Key="Str_RegEd_ComputerRoot">কম্পিউটার</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">ক্লিপবোর্ডে কপি করা যায়নি - {0}</sys:String>
     <sys:String x:Key="Str_RegEd_CreateFailed">এটি তৈরি করা যায়নি - {0}</sys:String>
@@ -693,6 +728,8 @@
     <sys:String x:Key="Str_TabTitle_Performance">Performance</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">Registry Editor</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">Processes/Services</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">Processes</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Services</sys:String>
     <sys:String x:Key="Str_Theme_Black">কালো</sys:String>
     <sys:String x:Key="Str_Theme_Blood">রক্ত</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">নীলাভ</sys:String>

@@ -63,7 +63,7 @@ Notes on the ones that are not a straight name match:
   brand pack's own dead shell is likewise a terminal variant.
 - **`perf_icon`** is the CPU chip, not the monitor-with-a-graph. `utilities-system-monitor` is
   already `task_manager`, and the two sat side by side looking identical. The chart mime icon was
-  tried first and reads as Excel (Steve, 2026-08-08).
+  tried first and reads as Excel (2026-08-08).
 - **`windows_folder_icon`** is the four-colour flag, which is what the Windows directory ought to
   wear.
 - **`registry_editor_icon`** is dconf-editor, the Linux set's registry editor. There is no regedit.

@@ -122,6 +122,9 @@
     <sys:String x:Key="Str_Menu_OpenFile">打开文件</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">打开方式...</sys:String>
     <sys:String x:Key="Str_Menu_ShowExplorer">在 Explorer 中显示</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">显示隐藏文件夹和点文件夹</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">目录树：正在显示隐藏文件夹和点文件夹</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">目录树：正在隐藏隐藏文件夹和点文件夹</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">最小化</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">最大化</sys:String>
     <sys:String x:Key="Str_Menu_Restore">还原</sys:String>
@@ -328,6 +331,13 @@
     <sys:String x:Key="Str_Ks_ViewList">列表</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">键盘</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">按住 Ctrl、Shift 或 Alt 可预览该层</sys:String>
+    <!-- Shortcuts card: SCOPE section headings (see en-US.xaml for the full note). The other
+         four sections reuse the Str_TabTitle_* strings of the tabs they name. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">全局</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">文件浏览器</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">终端</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">编辑器</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">正在显示以下范围的按键：</sys:String>
 
     <!-- 资源管理器惯用快捷键 -->
     <sys:String x:Key="Str_Ks_BackForward">后退 / 前进</sys:String>
@@ -614,6 +624,31 @@
     <sys:String x:Key="Str_RegEd_AccessDenied">拒绝访问 - 该项所需的访问级别甚至超出了此已提升权限窗口所拥有的权限</sys:String>
     <sys:String x:Key="Str_RegEd_Base">基数：</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">用空格分隔的十六进制字节对（例如 01 A4 FF 00）</sys:String>
+    <sys:String x:Key="Str_Status_Extracting">正在解压 {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">无法解压 {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">无法读取压缩包 - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">只有 .zip 压缩包可以修改 - 这个以只读方式打开</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">只能从压缩包中拖出文件 - 请打开文件夹并拖动其中的内容</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriting">正在重写压缩包 - {0}%</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">已向压缩包添加 {0} 项</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">已从压缩包移除 {0} 项</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">已重命名为 {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">已添加 {0} 项 - {1} 项无法取得合法名称，已跳过</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">无法更新压缩包 - {0}。原文件未改动。</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">该压缩包文件被标记为只读 - 请清除该属性后重试</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">该压缩包正在其他程序中打开 - 请关闭后重试</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">没有写入该压缩包的权限</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">压缩包中已有同名项目</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">该项目已不在压缩包中</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">该名称不能用于压缩包内</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">没有可添加的内容</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">压缩包未作改动</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">其中一些已在压缩包中</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">已从压缩包复制出来 - 该项目仍留在包内</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">其中 {0} 项已在压缩包中。</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">要从压缩包中移除 {0} 个项目吗？整个压缩包会被重写，且无法撤销。</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">替换它们，而不是两者都保留</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">添加</sys:String>
     <sys:String x:Key="Str_RegEd_ComputerRoot">计算机</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">无法复制到剪贴板 - {0}</sys:String>
     <sys:String x:Key="Str_RegEd_CreateFailed">无法创建 - {0}</sys:String>
@@ -693,6 +728,8 @@
     <sys:String x:Key="Str_TabTitle_Performance">性能</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">注册表编辑器</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">进程/服务</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">进程</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">服务</sys:String>
     <sys:String x:Key="Str_Theme_Black">黑色</sys:String>
     <sys:String x:Key="Str_Theme_Blood">血色</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">发绀</sys:String>

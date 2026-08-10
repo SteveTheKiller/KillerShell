@@ -109,7 +109,10 @@
                 <ScrollViewer x:Name="FormattedScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <Border Background="{DynamicResource PaneBrush}" CornerRadius="4" Padding="14,12,14,6">
                         <Grid>
-                            <Border IsHitTestVisible="False" CornerRadius="4"
+                            <!-- Margin cancels the parent Border's Padding - see the same line
+                                 in ProcessDetailsDialog. Without it the grain stops short of the
+                                 card edges and a bare PaneBrush ring frames the panel. -->
+                            <Border IsHitTestVisible="False" CornerRadius="4" Margin="-14,-12,-14,-6"
                                     Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                             <StackPanel x:Name="FieldsPanel"/>
                         </Grid>
@@ -149,10 +152,13 @@
                             ToolTip="{DynamicResource Str_TT_EvtSearchOnline}" Click="SearchOnline_Click"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <!-- E71B: the same "copy" glyph the folder tree's own Copy full path row uses
-                         (MainWindow.xaml TreeCopyPath_Click) and this dialog's own right-click menu
-                         (EventViewerControl.cs Grid_ContextMenuOpening) - one glyph, one action. -->
-                    <Button Content="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                    <!-- E8C8, MDL2's Copy: two stacked documents. The whole family of copy
+                         actions is on this one glyph - the folder tree's Copy full path
+                         (MainWindow.xaml TreeCopyPath_Click), this dialog's own right-click menu
+                         (EventViewerControl.cs Grid_ContextMenuOpening), the editor, the
+                         terminal, the Registry Editor and the Storage Analyzer.
+                         It was E71B, which is LINK - a chain - and read as "make a shortcut". -->
+                    <Button Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                             Width="26" Height="26" Padding="0" Style="{StaticResource SurfaceButton}"
                             ToolTip="{DynamicResource Str_TT_EvtCopyDetails}" Margin="0,0,8,0" Click="CopyDetails_Click"/>
                     <!-- E8BB: the same glyph this dialog's own title-bar close-X already uses. -->

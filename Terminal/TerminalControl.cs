@@ -257,9 +257,21 @@ namespace KillerShell.Terminal
                     if (!gt.CharacterToGlyphMap.ContainsKey('M')) continue;
 
                     _glyphs = gt;
-                    _cellW = Math.Round(gt.AdvanceWidths[gt.CharacterToGlyphMap['M']] * _fontSize, 2);
-                    _cellH = Math.Ceiling(gt.Height * _fontSize);
-                    _baseline = Math.Round(gt.Baseline * _fontSize, 2);
+
+                    // SNAPPED TO WHOLE DEVICE PIXELS, not rounded to two decimals. Every glyph
+                    // origin in the grid is a multiple of these three numbers (x = col * _cellW,
+                    // y = row * _cellH + _baseline), so a fractional cell size puts most of the
+                    // screen's text at subpixel offsets - and DrawGlyphRun rasterizes exactly
+                    // where it is told, with none of the grid-fitting a TextBlock would get.
+                    // That is why the terminal always looked soft while the rest of the app was
+                    // crisp (2026-08-09). A cell width of 6.62 DIPs means column 3 starts at
+                    // 19.86: blurry on every column that is not a whole pixel.
+                    // Divided back out of ppd so these stay DIPs, which is what the drawing code
+                    // and the row/column arithmetic both work in.
+                    double ppd = _pixelsPerDip > 0 ? _pixelsPerDip : 1.0;
+                    _cellW = Math.Max(1.0, Math.Round(gt.AdvanceWidths[gt.CharacterToGlyphMap['M']] * _fontSize * ppd)) / ppd;
+                    _cellH = Math.Max(1.0, Math.Ceiling(gt.Height * _fontSize * ppd)) / ppd;
+                    _baseline = Math.Round(gt.Baseline * _fontSize * ppd) / ppd;
 
                     // Measured against the fallback's OWN advance rather than assumed to be half
                     // an em, so re-subsetting the font from a different source cannot quietly put
@@ -453,7 +465,19 @@ namespace KillerShell.Terminal
         protected override void OnRenderSizeChanged(SizeChangedInfo info)
         {
             base.OnRenderSizeChanged(info);
-            _pixelsPerDip = (float)VisualTreeHelper.GetDpi(this).PixelsPerDip;
+
+            // The cell metrics are snapped to whole DEVICE pixels (LoadFont), so they are only
+            // correct for the DPI they were computed at - and the first LoadFont runs from the
+            // constructor, before this control has ever been measured and while pixelsPerDip is
+            // still its 1.0 default. Re-snapping whenever the DPI actually changes is what makes
+            // the text crisp on a high-DPI monitor and after a drag to a monitor with different
+            // scaling, rather than only on a 96 DPI display.
+            float ppd = (float)VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            if (Math.Abs(ppd - _pixelsPerDip) > 0.0001f)
+            {
+                _pixelsPerDip = ppd;
+                LoadFont();
+            }
             ApplySize();
         }
 
@@ -990,11 +1014,19 @@ namespace KillerShell.Terminal
                 case Key.Tab:    return shift ? Csi + "Z" : "\t";
                 case Key.Escape: return Esc;
 
-                // BS for Backspace, DEL for Ctrl+Backspace. This is the WINDOWS mapping and it
-                // is the opposite of the Unix convention: conpty turns the incoming byte into a
-                // console key record, and 0x08 is what VK_BACK produces there, so a terminal
-                // that sends DEL for a plain Backspace leaves you unable to delete anything.
-                case Key.Back:   return ctrl ? Del : Bs;
+                // DEL (0x7F) for Backspace, BS (0x08) for Ctrl+Backspace. This is what xterm and
+                // Windows Terminal both send, and the mapping here was the other way round,
+                // which is what made a plain Backspace delete a whole WORD (2026-08-09).
+                //
+                // Why that happens: 0x08 IS Ctrl+H, and conpty translates an incoming 0x08 into
+                // a VK_BACK key record with the CONTROL flag set. PSReadLine binds
+                // Ctrl+Backspace to BackwardKillWord, so every plain Backspace arrived at the
+                // prompt as "delete the previous word". 0x7F arrives as VK_BACK with no
+                // modifiers, which is the ordinary delete-one-character binding.
+                // If some future shell cannot delete at all with this, that shell wants the BS
+                // convention and the fix is a per-profile option, NOT flipping this back - the
+                // word-delete is the more damaging failure and PowerShell is the default here.
+                case Key.Back:   return ctrl ? Bs : Del;
 
                 case Key.Delete:   return Csi + "3" + mTilde + "~";
                 case Key.Insert:   return Csi + "2" + mTilde + "~";

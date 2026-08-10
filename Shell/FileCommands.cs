@@ -100,7 +100,13 @@ namespace KillerShell.Shell
         internal void PasteIntoCurrentFolder()
         {
             string? target = TargetFolder();
-            if (target == null) { SetTabStatusKey(_active, "Str_Status_PasteNeedsFolder"); return; }
+
+            // Inside an archive TargetFolder() is null - nothing in there passes Directory.Exists
+            // - so the keyboard route to adding is picked up here instead (ArchiveEdit.cs).
+            string archivePath = "", archiveFolder = "";
+            bool intoArchive = target == null && ArchiveTarget(out archivePath, out archiveFolder);
+
+            if (target == null && !intoArchive) { SetTabStatusKey(_active, "Str_Status_PasteNeedsFolder"); return; }
 
             string[] files;
             bool move = false;
@@ -124,7 +130,12 @@ namespace KillerShell.Shell
             }
             catch { SetTabStatusKey(_active, "Str_Status_ClipboardBusy"); return; }
 
-            _ = RunCopyMove(files, target, move);
+            // Adding to an archive is always a COPY, even from a Cut. The move half would be a
+            // delete of the user's originals on the strength of a rewrite that has only just
+            // finished, and the archive is not a safer place to have put them.
+            if (intoArchive) { _ = ArchiveAdd(files, archivePath, archiveFolder); return; }
+
+            _ = RunCopyMove(files, target!, move);
         }
 
         // ── Drop ─────────────────────────────────────────────────
@@ -196,6 +207,12 @@ namespace KillerShell.Shell
         /// </summary>
         internal void DeleteSelection(bool permanent)
         {
+            // Inside an archive there is no Recycle Bin to send anything to and nothing on disk
+            // for SelectedPaths() to find, so both routes land in the archive's own delete -
+            // which rewrites the file and always asks first, whether or not Shift was held
+            // (ArchiveEdit.cs).
+            if (ArchiveSelection() is { Count: > 0 } inArchive) { _ = ArchiveDelete(inArchive); return; }
+
             var paths = SelectedPaths();
             if (paths.Count == 0) return;
 
@@ -264,6 +281,10 @@ namespace KillerShell.Shell
 
         internal void RenameSelection()
         {
+            // Same reason as DeleteSelection: an archive entry is not on disk, so it has to be
+            // routed before SelectedPaths() filters it away (ArchiveEdit.cs).
+            if (ArchiveSelection() is { Count: > 0 } inArchive) { _ = ArchiveRename(inArchive[0]); return; }
+
             string? p = SelectedPaths().FirstOrDefault();
             if (p == null) return;
             RenamePath(p);

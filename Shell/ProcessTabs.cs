@@ -68,7 +68,11 @@ namespace KillerShell.Shell
             var procs = new ProcessListControl();
             tab.Procs      = procs;
             tab.TabGlyph   = ProcessesGlyph;
-            tab.Title      = Loc("Str_TabTitle_TaskManager");
+            // The title names the view that is actually showing - "Processes" or "Services" -
+            // rather than the combined "Processes/Services", which named both at once and left
+            // nothing on the tab saying which one you were looking at. Read off the control so
+            // the starting title cannot disagree with the starting mode.
+            tab.Title      = ProcessTabTitle(procs.IsProcessesMode);
             tab.IsBrowsing = false;
 
             // "Open file location" has to become a browse tab, and only the window can create
@@ -76,8 +80,18 @@ namespace KillerShell.Shell
             // (ProcessListControl.cs).
             procs.OpenFileLocationRequested += folder => ProcessOpenFileLocation(folder);
 
+            // Title follows the toggle. SearchTab.Title notifies, so the strip repaints itself
+            // and nothing has to rebuild the tab bar by hand.
+            procs.ModeChanged += isProcesses => tab.Title = ProcessTabTitle(isProcesses);
+
             return tab;
         }
+
+        /// <summary>The tab title for one of the two views. Its own method because the title is
+        /// set from two places - when the tab is built and whenever the mode toggles - and a
+        /// language change has to be able to re-derive it.</summary>
+        private string ProcessTabTitle(bool isProcesses)
+            => Loc(isProcesses ? "Str_TabTitle_Processes" : "Str_TabTitle_Services");
 
         /// <summary>
         /// Where a right-click's "Open file location" actually goes. Mirrors

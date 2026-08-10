@@ -29,7 +29,14 @@ namespace KillerShell.Shell
         /// Show <paramref name="folder"/>. Records history unless this IS a history move, which
         /// is what stops Back from pushing the place you just came from and trapping you.
         /// </summary>
-        private async Task NavigateTo(string folder, bool record = true)
+        /// <param name="keepSelection">
+        /// Carry whatever rows are selected when the listing lands across the refill, matched by
+        /// path. Opt-in, and set by exactly one caller: the silent refresh a browsing tab gets on
+        /// activation (Tabs.cs RefreshBrowsingTab). A move to a DIFFERENT folder has no use for
+        /// it - none of the new rows can share a path with the old selection - and every other
+        /// caller is a move.
+        /// </param>
+        private async Task NavigateTo(string folder, bool record = true, bool keepSelection = false)
         {
             if (string.IsNullOrWhiteSpace(folder)) return;
 
@@ -124,11 +131,50 @@ namespace KillerShell.Shell
 
             if (ct.IsCancellationRequested || tab != _active) return;
 
-            tab.Results.Clear();
-            foreach (var e in entries) tab.Results.Add(e);
+            // The rows selected RIGHT NOW, read one statement before they are destroyed.
+            //
+            // The refill below is what breaks a selection: Clear() drops every SearchResult the
+            // list is holding and the folder is re-listed into brand new instances, so the objects
+            // the ListBox had selected are not in the collection any more. That is why the silent
+            // refresh a browsing tab gets on activation emptied the selection of a tab that was
+            // ALREADY on screen - clicking the other pane and clicking back re-activates the same
+            // tab, which refreshes it, which wiped the row that was selected and blanked the
+            // details strip with it.
+            //
+            // Captured HERE, and NOT before the listing task was awaited, which is the trap. A
+            // pane takes focus on PreviewMouseDown (FilePane's ctor), so the whole activation -
+            // and this navigation with it - starts BEFORE the click reaches the row underneath and
+            // changes the selection. A snapshot taken back there is the selection the user just
+            // clicked AWAY from, and re-applying it after the refill would undo their click. Read
+            // at the last possible instant it is whatever is genuinely selected when the listing
+            // lands: a plain refocus keeps the rows it had, a click on a row keeps that row.
+            var keptPaths = keepSelection ? LiveSelectedPaths(Pane, tab) : null;   // Tabs.cs
 
-            ApplySort(tab);       // Results.cs - folders-first is added there while browsing
-            ApplyFilter(tab);
+            // The strip must not blink through the refill either. Clearing the collection raises
+            // SelectionChanged with nothing selected, and the details pane keys off exactly that
+            // (DetailsPane.cs, forwarded by FilePane.xaml.cs) - so without the flag it would
+            // collapse to its empty state and grow straight back a moment later, for a selection
+            // that never actually went away. Same flag and the same reason as RestoreTabSelection
+            // (Tabs.cs); ApplySelectionByPath below repaints the strip ONCE at the end.
+            //
+            // Only while a selection is being carried. Every other navigation goes through
+            // untouched, selection changes and all - a move to a new folder SHOULD blank the strip.
+            bool keeping = keptPaths != null;
+            if (keeping) _restoringSelection = true;
+            try
+            {
+                tab.Results.Clear();
+                foreach (var e in entries) tab.Results.Add(e);
+
+                ApplySort(tab);       // Results.cs - folders-first is added there while browsing
+                ApplyFilter(tab);
+            }
+            finally { if (keeping) _restoringSelection = false; }
+
+            // ...and the carried rows go back on, matched by path (Tabs.cs). AFTER the sort and
+            // the filter, never between them and the refill: both re-shape the collection view the
+            // list is bound to, and a selection applied first would be re-evaluated underneath it.
+            if (keptPaths != null && keptPaths.Count > 0) ApplySelectionByPath(Pane, tab, keptPaths);
 
             // Watch AFTER the listing lands, so the first events cannot arrive against a
             // collection that is still being filled (BrowseWatcher.cs). There is no directory
@@ -233,11 +279,11 @@ namespace KillerShell.Shell
             // The fabricated volumes, so This PC agrees with the tree's roots (DemoFileSystem.cs).
             if (DemoMode)
             {
-                foreach (var root in DemoFs.Drives)
+                foreach (var root in Services.DemoFs.Drives)
                     list.Add(new SearchResult
                     {
                         FilePath    = root,
-                        FileName    = DemoFs.DriveLabel(root),
+                        FileName    = Services.DemoFs.DriveLabel(root),
                         Directory   = string.Empty,
                         IsDirectory = true,
                         SizeBytes   = 0,
@@ -292,7 +338,7 @@ namespace KillerShell.Shell
             // Seq would sort and draw differently from its neighbours for no visible reason.
             if (DemoMode)
             {
-                foreach (var e in DemoFs.Children(folder))
+                foreach (var e in Services.DemoFs.Children(folder))
                     list.Add(new SearchResult
                     {
                         FilePath    = Path.Combine(folder, e.Name),

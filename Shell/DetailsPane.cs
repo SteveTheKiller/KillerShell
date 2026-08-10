@@ -369,6 +369,18 @@ namespace KillerShell.Shell
         /// </summary>
         internal void UpdateDetailsPaneForSelection(FilePane pane, bool animate = true)
         {
+            // Stands down while a selection is being put back rather than made (Tabs.cs
+            // ApplySelectionByPath). The rows go in one at a time, so this would repaint the strip
+            // - bumping DetailsGen and starting a stat and an image decode - once per row, every
+            // time on a part-built selection. That method calls this itself once the whole
+            // selection is in, so the strip still ends up describing all of it.
+            //
+            // The same flag also covers the clear-and-refill of a browsing tab's silent refresh
+            // (Browse.cs), where the selection is carried across and lands again a moment later.
+            // Without it the empty middle of that refill would reach here and collapse the strip
+            // to its empty state, so a selection that never actually went away would blink.
+            if (_restoringSelection) return;
+
             if (!pane.DetailsPaneOpen) return;
             // ...and no-ops on a non-listing tab too, for the same reason ApplyDetailsPane does:
             // this is reachable straight from a selection change, and without the guard it would
@@ -387,7 +399,7 @@ namespace KillerShell.Shell
             if (count == 1 && list!.SelectedItem is SearchResult one && !one.IsDirectory)
                 ShowDetailsSingle(pane, one, gen);
             else if (count > 1)
-                ShowDetailsMulti(pane, list!.SelectedItems.Cast<SearchResult>().ToList());
+                ShowDetailsMulti(pane, [.. list!.SelectedItems.Cast<SearchResult>()]);
             else
                 ShowDetailsEmpty(pane);   // nothing selected, or a single folder - nothing meaningful to show
 
@@ -480,11 +492,18 @@ namespace KillerShell.Shell
             pane.DetailsPreviewIcon.Source = Services.IconCache.For(path, 128, isDir);
             pane.DetailsPreviewIcon.Visibility = Visibility.Visible;
 
+            // --demo has no file behind the selected row, so there is nothing at this path to
+            // decode: the preview is DRAWN from the path instead (Services/DemoImages.cs), which
+            // is the only way this strip can show an actual picture in a capture without reading a
+            // real one off the machine. Null for a path that is not one of the fabricated
+            // pictures, and the strip then keeps the generic icon it already painted above.
             if (!isDir && IsDetailsImageFile(path))
             {
                 _ = Task.Run(() =>
                 {
-                    BitmapImage? bmp = DecodeDetailsPreview(path, DetailsPreviewPx);
+                    BitmapSource? bmp = DemoMode
+                        ? Services.DemoImages.Render(path, DetailsPreviewPx)
+                        : DecodeDetailsPreview(path, DetailsPreviewPx);
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         if (gen != pane.DetailsGen || bmp == null) return;

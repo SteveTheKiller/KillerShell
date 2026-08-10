@@ -122,6 +122,9 @@
     <sys:String x:Key="Str_Menu_OpenFile">Dosyayı aç</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">Birlikte aç...</sys:String>
     <sys:String x:Key="Str_Menu_ShowExplorer">Explorer'da göster</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">Gizli ve nokta klasörlerini göster</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">Ağaç: gizli ve nokta klasörleri gösteriliyor</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">Ağaç: gizli ve nokta klasörleri gizleniyor</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Simge durumuna küçült</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Ekranı kapla</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Geri yükle</sys:String>
@@ -328,6 +331,13 @@
     <sys:String x:Key="Str_Ks_ViewList">LİSTE</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">KLAVYE</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">bu katmanı önizlemek için Ctrl, Shift veya Alt tuşunu basılı tutun</sys:String>
+    <!-- Shortcuts card: SCOPE section headings (see en-US.xaml for the full note). The other
+         four sections reuse the Str_TabTitle_* strings of the tabs they name. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">Her yerde</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">Dosya tarayıcısı</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">Düzenleyici</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">gösterilen tuşlar:</sys:String>
 
     <!-- Gezgin kisayol gelenekleri -->
     <sys:String x:Key="Str_Ks_BackForward">geri / ileri</sys:String>
@@ -617,6 +627,31 @@
     <sys:String x:Key="Str_RegEd_AccessDenied">Erişim reddedildi - bu anahtar, bu yükseltilmiş pencerenin bile sahip olduğundan daha yüksek bir erişim düzeyi gerektiriyor</sys:String>
     <sys:String x:Key="Str_RegEd_Base">Taban:</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">Boşluklarla ayrılmış onaltılık bayt çiftleri (örn. 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_Status_Extracting">{0} ayıklanıyor...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">{0} ayıklanamadı</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">Arşiv okunamadı - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Yalnızca .zip arşivleri değiştirilebilir - bu salt okunur açılır</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Bir arşivden yalnızca dosyalar sürüklenebilir - klasörü açıp içindekileri sürükleyin</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriting">Arşiv yeniden yazılıyor - %{0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">Arşive {0} eklendi</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">Arşivden {0} kaldırıldı</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">{0} olarak yeniden adlandırıldı</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} eklendi - geçerli ad verilemeyen {1} atlandı</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">Arşiv güncellenemedi - {0}. Özgün dosya değişmedi.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Bu arşiv dosyası salt okunur olarak işaretli - bunu kaldırıp yeniden deneyin</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">Bu arşiv başka bir programda açık - kapatıp yeniden deneyin</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">Bu arşive yazma izni yok</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">Arşivde bu adda bir şey zaten var</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">Bu öğe artık arşivde değil</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">Bu ad bir arşiv içinde kullanılamaz</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">Eklenecek bir şey yok</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">Arşiv değiştirilmedi</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">Bunlardan bazıları arşivde zaten var</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">Arşivden kopyalandı - öğe arşivde kalmaya devam ediyor</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">Bunlardan {0} tanesi arşivde zaten var.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">{0} öğe arşivden kaldırılsın mı? Arşivin tamamı yeniden yazılır ve bu geri alınamaz.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">İkisini de tutmak yerine değiştir</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">Ekle</sys:String>
     <sys:String x:Key="Str_RegEd_ComputerRoot">Bilgisayar</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Panoya kopyalanamadı - {0}</sys:String>
     <sys:String x:Key="Str_RegEd_CreateFailed">Oluşturulamadı - {0}</sys:String>
@@ -696,6 +731,8 @@
     <sys:String x:Key="Str_TabTitle_Performance">Performans</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">Kayıt Defteri Düzenleyicisi</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">İşlemler/Hizmetler</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">İşlemler</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Hizmetler</sys:String>
     <sys:String x:Key="Str_Theme_Black">Siyah</sys:String>
     <sys:String x:Key="Str_Theme_Blood">Kan</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">Siyanotik</sys:String>

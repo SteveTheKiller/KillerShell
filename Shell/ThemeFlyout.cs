@@ -39,8 +39,32 @@ namespace KillerShell.Shell
         /// ghost, and the fade only starts once it has run AND painted (the fade was
         /// starting at Loaded priority while the heavy refreshes sat queued at Background,
         /// which runs LATER, so they snapped in mid-fade).
+        /// The optional FRAME work is anything that repaints the window's OUTER edge. It is
+        /// held back and run on the fade's own clock rather than inline with the swap - see
+        /// the comment on the parameter below for why a ghost cannot solve this one.
         /// </summary>
-        private void CrossfadeSwap(Action swap, Action? heavy = null)
+        /// <param name="frame">
+        /// Work that recolors the window FRAME, run at the instant the fade starts.
+        ///
+        /// The window ghost covers RootGrid, and the theme flyout gets a second ghost of its own
+        /// (below) because a ContextMenu is a separate top-level HWND that the window snapshot can
+        /// neither include nor cover. The frame is a THIRD surface with the same problem and no
+        /// ghost can fix it: on the twelve rounded themes the only frame the user sees is the 1px
+        /// DWM window border, painted by the compositor in the NON-CLIENT area from
+        /// DWMWA_BORDER_COLOR (Chrome.cs ApplyThemeBorder). Nothing added to the WPF visual tree
+        /// is over it, because it is not inside the window's client area at all. (The in-tree
+        /// frame borders in MainWindow.xaml - WindowFrame, FrameOuter*, FrameInner* - are
+        /// zero-thickness on every theme but 98SE, where WindowFramePadding is 0 as well, so on
+        /// those twelve there is nothing of them to cover either way.)
+        ///
+        /// So the frame is held to the OLD color instead of being covered, and switched on the
+        /// same clock as the fade. Before this, ApplyThemeBorder was called inline right after
+        /// CrossfadeSwap returned - which is immediately, since all CrossfadeSwap does is queue -
+        /// so the border snapped to the new accent while every pixel inside it sat frozen on the
+        /// stale snapshot. That mismatch is what made the wait before the fade read as a hang
+        /// rather than as a transition: the window had visibly already changed, and then stopped.
+        /// </param>
+        private void CrossfadeSwap(Action swap, Action? heavy = null, Action? frame = null)
         {
             System.Windows.Controls.Image? ghost = null;
             try
@@ -103,7 +127,11 @@ namespace KillerShell.Shell
             if (ghost == null)
             {
                 if (menuRoot != null && menuGhost != null) menuRoot.Children.Remove(menuGhost);
-                heavy?.Invoke();
+                TimedStep("heavy", heavy);
+                // No ghost means no fade and so no clock to hold the frame back to: the swap is
+                // already visible, and delaying the border by a dispatcher turn here would create
+                // the very mismatch the deferral exists to remove.
+                frame?.Invoke();
                 return;
             }
             var fade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(220))
@@ -121,10 +149,17 @@ namespace KillerShell.Shell
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
                 (Action)(() =>
                 {
-                    heavy?.Invoke();
+                    TimedStep("heavy", heavy);
                     Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
                         (Action)(() =>
                         {
+                            // The frame goes FIRST and in this same dispatcher slot, so the
+                            // window's edge and its interior start changing on one clock. Fade
+                            // START rather than fade completion: the start is the instant the
+                            // whole window visibly begins to turn over, so the border joining it
+                            // there reads as part of the same transition. Held to the end it
+                            // would just move the mismatch to the other side of the fade.
+                            frame?.Invoke();
                             g.BeginAnimation(OpacityProperty, fade);
                             if (mg != null && mr != null)
                             {
@@ -139,6 +174,46 @@ namespace KillerShell.Shell
                 }));
         }
 
+        /// <summary>
+        /// Run <paramref name="work"/>, and in a DEBUG build print how long it took as
+        /// "[theme] &lt;label&gt;: N.N ms" in the debug output. Null work is a no-op and prints
+        /// nothing.
+        /// </summary>
+        /// <remarks>
+        /// A theme switch shows the ghost, pauses, then fades. The pause is whatever runs between
+        /// the swap and the fade, and there are two candidates sitting in that gap: the
+        /// terminal/editor recolor handed to CrossfadeSwap as its heavy work, and the RepaintIcons
+        /// the ThemeChanged handler defers to Background priority (MainWindow.xaml.cs). Which of
+        /// them dominates is not obvious from reading either one, and guessing is how the wrong
+        /// half gets optimized - so both are timed through here and a single theme click prints
+        /// the two numbers next to each other.
+        ///
+        /// Note that neither number accounts for the whole pause. Swapping the palette invalidates
+        /// ~150 resource keys across the entire visual tree, and the measure/arrange/render pass
+        /// that follows runs at Render priority, ABOVE the Background slot these two occupy, so it
+        /// is already spent before either stopwatch starts. If both print near zero, that layout
+        /// pass is the remainder and nothing in this file can shorten it.
+        ///
+        /// The Stopwatch is unconditional while the REPORT is [Conditional("DEBUG")], not the
+        /// other way round: a conditional call has its argument expressions compiled out along
+        /// with it, so a release build carries no string formatting and no Debug.WriteLine - only
+        /// one Stopwatch whose result is never read, which is cheaper than maintaining two code
+        /// paths for the same call site.
+        /// </remarks>
+        private static void TimedStep(string label, Action? work)
+        {
+            if (work == null) return;
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            work();
+            sw.Stop();
+            ReportStep(label, sw.Elapsed.TotalMilliseconds);
+        }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        private static void ReportStep(string label, double ms)
+            => System.Diagnostics.Debug.WriteLine("[theme] " + label + ": "
+                + ms.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " ms");
+
         private void SelectTheme(Theme theme)
         {
             bool wasOpen = ThemeFlyout is not null && ThemeFlyout.IsOpen;
@@ -149,12 +224,24 @@ namespace KillerShell.Shell
             // CrossfadeSwap's HEAVY work so it runs under the opaque ghost and the fade only
             // starts after it has painted - deferring it at Background priority on its own
             // put it AFTER the fade's start and it snapped in mid-fade.
+            //
+            // ApplyThemeBorder retints the DWM frame border to the new palette. It is passed as
+            // CrossfadeSwap's FRAME work rather than called here, because "here" is the moment
+            // CrossfadeSwap returns and CrossfadeSwap only QUEUES - so calling it inline flipped
+            // the window's outline to the new accent while the whole interior was still frozen on
+            // the ghost, a second before the fade started. The border is non-client, painted by
+            // DWM outside the WPF tree, so no ghost can cover it; holding it to the fade's clock
+            // is the only way it changes with everything else.
             CrossfadeSwap(() => ThemeManager.Apply(theme),
-                          () => { RefreshTerminalThemes(); RefreshEditorThemes(); });
-            ApplyThemeBorder(this);   // retint the DWM frame border to the new palette
+                          () => { RefreshTerminalThemes(); RefreshEditorThemes(); },
+                          () => ApplyThemeBorder(this));
             // Corner preference is owned here too: 98SE squares even a floating window, so
             // switching INTO or OUT OF a flat theme has to re-evaluate it, not just a state
             // change. Same call KillerNotes makes from its own theme switch.
+            // Deliberately NOT deferred alongside the border above: this changes the window's
+            // SHAPE, not a color, and only ever moves on a switch into or out of a flat theme -
+            // and the shape has to be settled before the ghost is faded over it, or the corner
+            // the DWM clips away changes underneath a picture that already has it drawn in.
             ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
             // Radios are already synced - the user's own click just set this one and WPF's
             // GroupName handles unchecking the rest. Dot rings + the pop-out slide still need

@@ -467,7 +467,11 @@
                             BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource PanelCornerRadius}" Margin="6" Padding="8,6">
                         <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.55"/></Border.Effect>
                         <Grid>
-                            <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                            <!-- Margin cancels PART_Root's Padding above. The grain is a child of
+                                 the padded content, so without it the texture stops 8px short of
+                                 the card's edges and a flat ring frames the month grid - the
+                                 same defect the details dialogs had. -->
+                            <Border IsHitTestVisible="False" Margin="-8,-6" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                             <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -787,6 +791,28 @@
          text renders inside: a DropShadowEffect rasterizes its whole subtree through a bitmap
          pass and the text loses ClearType. KillerPDF splits it the same way. -->
     <Style TargetType="ContextMenu">
+        <!-- IDEAL text here, not the window's Display. A menu is a Popup with
+             AllowsTransparency, and WPF cannot render ClearType onto a layered surface - it
+             silently drops to grayscale antialiasing. Display mode then snaps every stem to the
+             pixel grid, and grid-snapped stems with grayscale edges is exactly the "pixelated,
+             letters bleeding into each other" look (2026-08-09). Ideal positions glyphs at
+             subpixel offsets, which is what grayscale AA needs to read cleanly. The window keeps
+             Display, because on its own opaque surface ClearType works and Display is crisper.
+             SnapsToDevicePixels stays for the BORDERS - it does not affect glyph rasterization. -->
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
+        <!-- GRAYSCALE, stated explicitly. TextRenderingMode is an INHERITED property and the
+             window sets ClearType (MainWindow.xaml), which flows down into the menu through the
+             logical tree - a popup is not a visual child of the window but it inherits like
+             one. ClearType asks for subpixel (RGB-stripe) coverage, and on a layered
+             AllowsTransparency popup there is no opaque backdrop for those stripes to be
+             correct against, so the edges come out fringed and chunky. Naming Grayscale stops
+             the inheritance at the menu and gives smooth, neutral edges.
+             Formatting mode above and rendering mode here are two different things and BOTH
+             were wrong: Ideal fixes WHERE the glyph sits, Grayscale fixes HOW it is filled. -->
+        <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale"/>
+        <!-- The menu can be positioned at a fractional offset, which puts every glyph in it at a
+             subpixel origin however well the text options are set. -->
+        <Setter Property="UseLayoutRounding" Value="True"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="HasDropShadow" Value="False"/>
         <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
@@ -801,7 +827,16 @@
                          with an EventTrigger on Loaded. Submenus already faded, so a menu appeared
                          instantly while its own children faded in, which is backwards. 150ms
                          ease-out, the curve Anim.FadeIn uses. -->
-                    <Grid x:Name="MenuRoot" Opacity="0" Margin="5">
+                    <!-- Opacity 1 as the BASE value, with the fade below set to FillBehavior=Stop.
+                         This was Opacity="0" plus a HoldEnd animation to 1, and a held animation
+                         leaves the property permanently "animated" even sitting at 1.0 - WPF then
+                         keeps compositing this subtree through an intermediate surface, which
+                         disables ClearType and softens every glyph in the menu for as long as it
+                         is open. That is the pixelated, bleeding text, and it is why setting the
+                         text options alone changed nothing (2026-08-09). Stopping the animation
+                         hands the property back to this base value and the menu renders on the
+                         ordinary path. -->
+                    <Grid x:Name="MenuRoot" Opacity="1" Margin="5">
                         <!-- MenuShadow*: the same values as before on every ordinary theme
                              (opacity follows FlyoutShadowOpacity, soft 12px blur), and a HARD
                              offset shadow at full opacity on 98SE - Win98 context menus cast a
@@ -833,8 +868,12 @@
                         <EventTrigger RoutedEvent="ContextMenu.Loaded">
                             <BeginStoryboard>
                                 <Storyboard>
+                                    <!-- FillBehavior=Stop: the fade releases the property when it
+                                         finishes instead of holding it, so the menu stops being
+                                         composited and its text goes back to being crisp. See the
+                                         note on MenuRoot's base Opacity above. -->
                                     <DoubleAnimation Storyboard.TargetName="MenuRoot" Storyboard.TargetProperty="Opacity"
-                                                     From="0" To="1" Duration="0:0:0.15">
+                                                     From="0" To="1" Duration="0:0:0.15" FillBehavior="Stop">
                                         <DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
                                 </Storyboard>
@@ -879,6 +918,12 @@
              the one fade KillerPDF had that KillerShell could not match for want of submenus. -->
     <Style TargetType="MenuItem">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <!-- Restated on the ITEM as well as on the ContextMenu that holds it: a MenuItem in a
+             submenu lives in its OWN popup, which is not inside the parent menu's visual tree,
+             so the parent's text options do not reach it. Same reasoning as the ContextMenu
+             style above. -->
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
+        <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale"/>
         <Setter Property="Background" Value="Transparent"/>
         <!-- TextBrush, not MenuTextBrush: menu items are body text, not secondary labels.
              Family standard, see KillerUI/README.md surface rules. -->
@@ -1607,8 +1652,19 @@
                                  arms. The fill path reaches back to x=7 - past the line's left
                                  edge at 7.5 - so the whole 1px is covered. It has no stroke, so
                                  all it ever does is paint background. -->
+                            <!-- TreeChevronMaskBrush, which defaults to SolidBackgroundBrush -
+                                 this fill exists to vanish into whatever is behind the chevron,
+                                 and BackgroundBrush itself cannot be used because it is a
+                                 gradient on five themes and re-ramps inside this 16px box
+                                 (ThemeManager has the full note).
+                                 It is its own key rather than SolidBackgroundBrush directly
+                                 because "whatever is behind" is not the same surface in every
+                                 tree: the folder tree shows the window, the Registry Editor's
+                                 tree shows its control's PaneBrush. That tree overrides this key
+                                 on its own Resources, and a DynamicResource resolves up the tree
+                                 from the element, so it wins there and nowhere else. -->
                             <Path x:Name="arrowFill" Data="M 7,3.5 L 13,7.5 L 7,11.5"
-                                  Fill="{DynamicResource BackgroundBrush}" SnapsToDevicePixels="False"/>
+                                  Fill="{DynamicResource TreeChevronMaskBrush}" SnapsToDevicePixels="False"/>
                             <Path x:Name="arrow" Data="M 8.5,3.5 L 13,7.5 L 8.5,11.5"
                                   StrokeThickness="1.4" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                                   Stroke="{DynamicResource DimTextBrush}" SnapsToDevicePixels="False"/>
@@ -1639,7 +1695,10 @@
 
     <Style x:Key="FolderTreeItem" TargetType="TreeViewItem">
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-        <Setter Property="Padding" Value="2,1"/>
+        <!-- 2,0 (was 2,1), matching the saved places' own compaction: the tree is a dense index
+             you scan down, and with the row's StackPanel margin also dropped a row is the same
+             height in both halves of the sidebar. -->
+        <Setter Property="Padding" Value="2,0"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>

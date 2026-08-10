@@ -23,31 +23,31 @@ namespace KillerShell.Shell
             // ── Tab 1: classic name search - a year of invoices ──────────────────
             var t1 = CreateTab();
             t1.Title    = "~\\Documents";
-            t1.RootPath = @"C:\Users\steve\Documents";
+            t1.RootPath = @"C:\Users\Demo\Documents";
             t1.Groups[0].Terms[0].Pattern = "invoice";
             t1.QueryLabel = "name: invoice";
-            string inv = @"C:\Users\steve\Documents\Invoices";
+            string inv = @"C:\Users\Demo\Documents\Invoices";
             for (int m = 0; m < 12; m++)
             {
                 var date = new DateTime(2025, 7, 1).AddMonths(m).AddDays(DemoRng.Next(3, 25));
                 AddDemoResult(t1, inv, $"invoice_{date:yyyy-MM}.pdf", 40 + DemoRng.Next(220), date);
             }
-            AddDemoResult(t1, @"C:\Users\steve\Documents", "invoice_template.docx", 28, new DateTime(2025, 9, 3));
-            AddDemoResult(t1, @"C:\Users\steve\Documents\Archive", "old invoices.zip", 4096 + DemoRng.Next(2048), new DateTime(2024, 12, 30));
+            AddDemoResult(t1, @"C:\Users\Demo\Documents", "invoice_template.docx", 28, new DateTime(2025, 9, 3));
+            AddDemoResult(t1, @"C:\Users\Demo\Documents\Archive", "old invoices.zip", 4096 + DemoRng.Next(2048), new DateTime(2024, 12, 30));
             FinishDemoTab(t1, 8412, 1.87);
 
             // ── Tab 2: content search with a filter row showing ──────────────────
             var t2 = CreateTab();
             t2.Title    = "~\\code";
-            t2.RootPath = @"C:\Users\steve\code";
+            t2.RootPath = @"C:\Users\Demo\code";
             t2.Groups[0].Terms[0].Mode    = SearchTerm.SearchMode.Content;
             t2.Groups[0].Terms[0].Pattern = "TODO";
             t2.Filters.Add(new SearchFilter { FieldIndex = SearchFilter.FieldExt, Text = "ps1" });
             t2.QueryLabel = "content: TODO  |  extension is ps1";
-            string scripts = @"C:\Users\steve\code\killer-scripts";
+            string scripts = @"C:\Users\Demo\code\killer-scripts";
             AddDemoResult(t2, scripts, "Backup-Nightly.ps1", 12, new DateTime(2026, 5, 14), new List<LineMatch>
             {
-                // These two line numbers are not arbitrary: tab 6 opens this same file in the
+                // These two line numbers are not arbitrary: tab 7 opens this same file in the
                 // editor, and DemoScript() puts those comments on exactly these lines. A capture
                 // with the search results and the open document side by side would otherwise
                 // show them disagreeing about where the hits are.
@@ -63,7 +63,7 @@ namespace KillerShell.Shell
                 new() { LineNumber = 14, LineText = "# TODO: exclude service accounts" },
                 new() { LineNumber = 31, LineText = "# TODO: make the age threshold a parameter" },
             });
-            AddDemoResult(t2, @"C:\Users\steve\code\homelab", "Rotate-Certs.ps1", 8, new DateTime(2026, 1, 9), new List<LineMatch>
+            AddDemoResult(t2, @"C:\Users\Demo\code\homelab", "Rotate-Certs.ps1", 8, new DateTime(2026, 1, 9), new List<LineMatch>
             {
                 new() { LineNumber = 5, LineText = "# TODO: wire up the renewal webhook" },
             });
@@ -84,54 +84,40 @@ namespace KillerShell.Shell
             FinishDemoTab(t3, t1.Results.Count, 0.02);
 
             // ── Tab 4: a browsed folder, for the icon view ───────────────────────
-            // The rows come from the same fabricated machine the tree and This PC are reading
-            // (DemoFileSystem.cs), so a capture with the sidebar open agrees with the listing.
             // Documents is the folder chosen for it: four subfolders and a dozen different
             // extensions, so no two tiles in the icon view draw the same glyph.
-            //
-            // No NavigateTo call - that would record history, retitle the pane, repoint the tree
-            // and fire the watcher against a tab that is not even active yet. The listing is
-            // built straight onto the tab instead, mirroring what NavigateTo does to one.
-            var t4 = CreateTab();
-            string docs = @"C:\Users\steve\Documents";
-            t4.Title         = "Documents";
-            t4.IsBrowsing    = true;
-            t4.CurrentFolder = docs;
-            t4.RootPath      = docs;
-            t4.History.Add(docs);
-            t4.HistoryIndex  = 0;
-            foreach (var e in DemoFs.Children(docs))
-                t4.Results.Add(new SearchResult
-                {
-                    FilePath    = System.IO.Path.Combine(docs, e.Name),
-                    FileName    = e.Name,
-                    Directory   = docs,
-                    IsDirectory = e.IsDir,
-                    SizeBytes   = e.IsDir ? 0 : e.Size,
-                    Modified    = e.Modified,
-                    Seq         = t4.Results.Count,
-                });
-            ApplySort(t4);     // Results.cs - folders-first is added there while browsing
-            ApplyFilter(t4);
-            SetTabStatusKey(t4, "Str_Status_Listed", t4.Results.Count.ToString("N0"));
+            AddDemoBrowseTab(@"C:\Users\Demo\Documents", "Documents");
 
-            // ── Tab 5: a shell, canned ───────────────────────────────────────────
-            CreateDemoTerminalTab(@"C:\Users\steve\code\killer-scripts",   // TerminalTabs.cs
+            // ── Tab 5: the picture folder, for the THUMBNAILS ────────────────────
+            // A second browsed folder rather than a repeat of the one above: Documents shows the
+            // icon view drawing a different glyph per file type, and this shows the other half of
+            // what that view does, which is not drawing a glyph at all. Every file here is an
+            // image, so every tile is a picture drawn from its own path (Services\DemoImages.cs),
+            // and selecting one puts the same picture in the details strip's preview.
+            //
+            // It has to be its own tab because the icon/list choice belongs to the PANE, not to a
+            // tab - there is no way to open one tab already in the icon view - so the set instead
+            // makes sure that whichever view a reader switches to, there is a tab where it has
+            // something worth showing.
+            AddDemoBrowseTab(@"C:\Users\Demo\Pictures", "Pictures");
+
+            // ── Tab 6: a shell, canned ───────────────────────────────────────────
+            CreateDemoTerminalTab(@"C:\Users\Demo\code\killer-scripts",   // TerminalTabs.cs
                                   DemoTerminalSession());
 
-            // ── Tab 6: a document, so the highlighting is in the set ─────────────
+            // ── Tab 7: a document, so the highlighting is in the set ─────────────
             // Backup-Nightly.ps1 rather than any other file: the content search on tab 2 already
-            // shows two TODO hits inside it and the shell on tab 5 has it modified in git status,
+            // shows two TODO hits inside it and the shell on tab 6 has it modified in git status,
             // so opening THAT file is what a reader would do next. A .ps1 also earns its place -
             // PowerShell is the language a field tech reads, and its highlighting is the one
             // worth photographing.
-            CreateEditorTab(@"C:\Users\steve\code\killer-scripts\Backup-Nightly.ps1",
+            CreateEditorTab(@"C:\Users\Demo\code\killer-scripts\Backup-Nightly.ps1",
                             DemoScript());                                 // EditorTabs.cs
 
-            // ── Tab 7: a second shell, canned - network triage rather than a repo ─
-            CreateDemoTerminalTab(@"C:\Users\steve", DemoTerminalSessionNetwork());  // TerminalTabs.cs
+            // ── Tab 8: a second shell, canned - network triage rather than a repo ─
+            CreateDemoTerminalTab(@"C:\Users\Demo", DemoTerminalSessionNetwork());  // TerminalTabs.cs
 
-            // ── Tabs 8-10: the admin tools, each backed by its own fabricated data
+            // ── Tabs 9-11: the admin tools, each backed by its own fabricated data
             // (RegistryEditorControl/EventViewerControl/ProcessListControl all branch on
             // MainWindow.DemoMode internally - Shell/RegistryEditorControl.cs, .../EventViewerControl.cs,
             // .../ProcessListControl.cs - and populate themselves from Services/DemoRegistry.cs and
@@ -145,6 +131,43 @@ namespace KillerShell.Shell
             foreach (var old in placeholders) _tabs.Remove(old);
             UpdateTabBar();
             ActivateTab(t1);
+        }
+
+        /// <summary>One fabricated folder, listed straight onto a browse tab of its own.</summary>
+        /// <remarks>
+        /// The rows come from the same fabricated machine the tree and This PC are reading
+        /// (DemoFileSystem.cs), so a capture with the sidebar open agrees with the listing.
+        ///
+        /// No NavigateTo call - that would record history, retitle the pane, repoint the tree and
+        /// fire the watcher against a tab that is not even active yet. The listing is built
+        /// straight onto the tab instead, mirroring what NavigateTo does to one.
+        /// </remarks>
+        private SearchTab AddDemoBrowseTab(string folder, string title)
+        {
+            var t = CreateTab();
+            t.Title         = title;
+            t.IsBrowsing    = true;
+            t.CurrentFolder = folder;
+            t.RootPath      = folder;
+            t.History.Add(folder);
+            t.HistoryIndex  = 0;
+
+            foreach (var e in Services.DemoFs.Children(folder))
+                t.Results.Add(new SearchResult
+                {
+                    FilePath    = System.IO.Path.Combine(folder, e.Name),
+                    FileName    = e.Name,
+                    Directory   = folder,
+                    IsDirectory = e.IsDir,
+                    SizeBytes   = e.IsDir ? 0 : e.Size,
+                    Modified    = e.Modified,
+                    Seq         = t.Results.Count,
+                });
+
+            ApplySort(t);     // Results.cs - folders-first is added there while browsing
+            ApplyFilter(t);
+            SetTabStatusKey(t, "Str_Status_Listed", t.Results.Count.ToString("N0"));
+            return t;
         }
 
         private void AddDemoResult(SearchTab t, string folder, string name, int sizeKb,
@@ -266,7 +289,7 @@ namespace KillerShell.Shell
             return s.ToString();
         }
 
-        // A second canned session for a second demo shell tab (GenerateDemoData tab 7) - network
+        // A second canned session for a second demo shell tab (GenerateDemoData tab 8) - network
         // triage at a client site rather than a repo, so the two shell tabs do not look like the
         // same screenshot twice. Same escape/glyph/color construction as DemoTerminalSession
         // above, and the same "exactly 25 rows" reasoning: nothing has scrolled off the top by

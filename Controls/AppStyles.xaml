@@ -29,11 +29,19 @@
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+        <!-- TRANSPARENT at rest, so the button shows whatever card or panel is behind it and
+             reads as an accent outline rather than a filled chip. The template hardcoded
+             RowSelectedBrush here - an accent-tinted fill - which put a solid slab behind ANY,
+             the per-term mode name and the filters' condition toggle. Only the hover state
+             fills now, which is the family's outline-button language (OutlineButton, and the
+             ConfirmDialog OK rule in CLAUDE.md: accent outline at rest, solid on hover).
+             TemplateBinding rather than a literal, so a single instance can still opt in. -->
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="b"
-                            Background="{DynamicResource RowSelectedBrush}"
+                            Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource OutlineBtnBrush}"
                             BorderThickness="1" CornerRadius="4">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Effect="{DynamicResource TextStrokeSoft}"/>

@@ -104,7 +104,7 @@ function script:KFRole([string]$role, [string]$fallback, [switch]$Background) {
 # Home becomes ~, and anything deeper than KFPathKeep segments loses its middle
 # to single letters: C:\U\s\code\KillerShell\shell-landing. The tail is what you
 # are actually looking at, and a full path long enough to wrap costs you the
-# whole line. 3, not 2 (Steve, 2026-08-03): 2 abbreviated "code" down to "c" in
+# whole line. 3, not 2 (2026-08-03): 2 abbreviated "code" down to "c" in
 # ~\code\KillerShell\shell-landing, which read as one segment too aggressive.
 $script:KFPathKeep = 3
 

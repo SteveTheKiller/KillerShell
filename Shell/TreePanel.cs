@@ -227,10 +227,20 @@ namespace KillerShell.Shell
 
             TreeGapCol.Width = new GridLength(_treeOpen ? 6 : 0);
 
-            // Left-hand panel, so its contents stay pinned to the LEFT edge during the tween.
+            // RIGHT, not Left - and that is not a typo for a left-hand panel.
+            //
+            // The frozen edge is the one the contents stay glued to while the column narrows,
+            // so it decides which way the panel appears to travel. Pinned LEFT, the tree stood
+            // still at the window's left edge and overflowed to the right; the results pane is
+            // declared after it and so paints over it, which made the collapse read as the
+            // window sliding IN over the top of the sidebar. Pinned RIGHT, the tree is glued to
+            // the column's inner edge, so it travels LEFT with that edge and slides OUT under
+            // the window's own frame - the direction the panel is actually going, and the
+            // direction the chevron points. The overflow now runs off the left of the window,
+            // where it is clipped for free instead of landing on the rail and the pane.
             SlideColumn(TreeCol, TreePanel, _treeOpen,
                         _treeWidth, minOpen: TreeWidthMin, maxOpen: TreeWidthMax,
-                        freezeAlign: HorizontalAlignment.Left, animate: animate);
+                        freezeAlign: HorizontalAlignment.Right, animate: animate);
         }
     }
 }

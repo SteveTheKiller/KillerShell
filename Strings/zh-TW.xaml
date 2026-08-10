@@ -122,6 +122,9 @@
     <sys:String x:Key="Str_Menu_OpenFile">開啟檔案</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">開啟方式...</sys:String>
     <sys:String x:Key="Str_Menu_ShowExplorer">在檔案總管中顯示</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">顯示隱藏資料夾和點資料夾</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">目錄樹：正在顯示隱藏資料夾和點資料夾</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">目錄樹：正在隱藏隱藏資料夾和點資料夾</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">最小化</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">最大化</sys:String>
     <sys:String x:Key="Str_Menu_Restore">還原</sys:String>
@@ -328,6 +331,13 @@
     <sys:String x:Key="Str_Ks_ViewList">清單</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">鍵盤</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">按住 Ctrl、Shift 或 Alt 可預覽該層</sys:String>
+    <!-- Shortcuts card: SCOPE section headings (see en-US.xaml for the full note). The other
+         four sections reuse the Str_TabTitle_* strings of the tabs they name. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">全域</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">檔案瀏覽器</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">終端機</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">編輯器</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">正在顯示以下範圍的按鍵：</sys:String>
 
     <!-- 檔案總管慣用快速鍵 -->
     <sys:String x:Key="Str_Ks_BackForward">上一頁 / 下一頁</sys:String>
@@ -614,6 +624,31 @@
     <sys:String x:Key="Str_RegEd_AccessDenied">存取遭拒 - 此機碼需要比目前這個已提升權限視窗還要更高的存取層級</sys:String>
     <sys:String x:Key="Str_RegEd_Base">基底：</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">十六進位位元組，以空格分隔（例如 01 A4 FF 00）</sys:String>
+    <sys:String x:Key="Str_Status_Extracting">正在解壓縮 {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">無法解壓縮 {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">無法讀取壓縮檔 - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">只有 .zip 壓縮檔可以修改 - 這個以唯讀方式開啟</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">只能從壓縮檔拖出檔案 - 請開啟資料夾並拖曳其中的內容</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriting">正在重寫壓縮檔 - {0}%</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">已將 {0} 個項目加入壓縮檔</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">已從壓縮檔移除 {0} 個項目</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">已重新命名為 {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">已加入 {0} 個 - {1} 個無法取得合法名稱，已略過</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">無法更新壓縮檔 - {0}。原始檔案未變動。</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">此壓縮檔標示為唯讀 - 請清除該屬性後再試一次</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">此壓縮檔正在其他程式中開啟 - 請關閉後再試一次</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">沒有寫入此壓縮檔的權限</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">壓縮檔中已有同名項目</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">該項目已不在壓縮檔中</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">此名稱不能用在壓縮檔內</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">沒有可加入的內容</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">壓縮檔未變動</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">其中一些已在壓縮檔中</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">已從壓縮檔複製出來 - 該項目仍留在檔內</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">其中 {0} 個已在壓縮檔中。</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">要從壓縮檔移除 {0} 個項目嗎？整個壓縮檔會被重寫，且無法復原。</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">取代它們，而不是兩者都保留</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">加入</sys:String>
     <sys:String x:Key="Str_RegEd_ComputerRoot">電腦</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">無法複製到剪貼簿 - {0}</sys:String>
     <sys:String x:Key="Str_RegEd_CreateFailed">無法建立 - {0}</sys:String>
@@ -693,6 +728,8 @@
     <sys:String x:Key="Str_TabTitle_Performance">效能</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">登錄編輯程式</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">處理程序/服務</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">處理程序</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">服務</sys:String>
     <sys:String x:Key="Str_Theme_Black">黑色</sys:String>
     <sys:String x:Key="Str_Theme_Blood">血紅</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">藍紫</sys:String>

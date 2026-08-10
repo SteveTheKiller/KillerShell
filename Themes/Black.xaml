@@ -3,7 +3,12 @@
                     xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-    <sys:Double x:Key="GrainOpacity">0.12</sys:Double>
+    <!-- 0.24, matching KillerNotes' Black exactly - it is the family reference for the theme
+         contract and both themes sit on the same #000000. This was 0.12, half the strength,
+         which read as NO texture at all beside KillerNotes (2026-08-09). Grain on a pure black
+         surface is the one place the difference between 0.12 and 0.24 is the difference
+         between a texture and a flat panel. -->
+    <sys:Double x:Key="GrainOpacity">0.24</sys:Double>
     <sys:Double x:Key="IconShadowOpacity">0.9</sys:Double>
 
     <!-- Text-stroke shadows behind button labels (nulled on Light). -->

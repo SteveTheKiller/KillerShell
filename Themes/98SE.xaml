@@ -44,6 +44,18 @@
          Explorer's own panes. -->
     <SolidColorBrush x:Key="ToolContentBrush" Color="#ffffff" po:Freeze="True"/>
     <SolidColorBrush x:Key="ToolTreeBrush"    Color="#ffffff" po:Freeze="True"/>
+    <!-- The fill that masks the tree's connecting line where the chevron crosses it
+         (arrowFill, Controls/Controls.xaml). Its only job is to vanish into the surface behind
+         the chevron, so it has to BE that surface. ThemeManager mirrors it onto
+         SolidBackgroundBrush, which is right for every other theme - there the tree is
+         transparent and the window really does show through it. Here it is wrong twice over:
+         the folder tree sits in the sunken WHITE list well (SidebarPaneBrush) and the Registry
+         tree in its own white well (ToolTreeBrush), while SolidBackgroundBrush is the #c0c0c0
+         window face - so the mask painted a grey wedge through the middle of every chevron.
+         Stated here so only this theme differs; the Mirror is skipped whenever the key already
+         exists. WHITE, tracking SidebarPaneBrush and ToolTreeBrush above - if either of those
+         stops being #ffffff, this has to follow. -->
+    <SolidColorBrush x:Key="TreeChevronMaskBrush" Color="#ffffff" po:Freeze="True"/>
     <!-- The Performance tab's black cells sit together with thin 2px seams instead of floating
          in grey gutters, and the info panel and detail card run flush to the pane edges - the
          padding between all the black cells goes away, and the right edge lines up with

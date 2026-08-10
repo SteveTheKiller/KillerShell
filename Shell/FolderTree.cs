@@ -168,7 +168,7 @@ namespace KillerShell.Shell
             // repeated rather than shared so the disk path underneath is left exactly as it was.
             if (MainWindow.DemoMode)
             {
-                foreach (var e in DemoFs.Children(path))
+                foreach (var e in Services.DemoFs.Children(path))
                     if (e.IsDir)
                         list.Add(new FolderNode(System.IO.Path.Combine(path, e.Name), e.Name,
                                                 mayHaveChildren: true));
@@ -181,14 +181,26 @@ namespace KillerShell.Shell
             {
                 foreach (var d in new DirectoryInfo(path).EnumerateDirectories())
                 {
-                    // Hidden and system folders follow the same toggle the results list uses
-                    // (ViewOptions.cs), so the two never disagree about what exists. System is
-                    // grouped with hidden here rather than given its own switch: Explorer's
-                    // separate "protected operating system files" option guards a handful of
-                    // roots that nobody browses to on purpose.
-                    var a = d.Attributes;
-                    if (!MainWindow.ShowHidden &&
-                        ((a & FileAttributes.Hidden) != 0 || (a & FileAttributes.System) != 0)) continue;
+                    // The TREE has its own switch (Ctrl+Shift+H), not the listing's Ctrl+H: a
+                    // clean tree over a listing that shows everything is the combination that is
+                    // actually wanted, and the two lists answer different questions. System is
+                    // grouped with hidden rather than given a third switch - Explorer's separate
+                    // "protected operating system files" option guards a handful of roots nobody
+                    // browses to on purpose.
+                    //
+                    // DOTFOLDERS are hidden by the SAME switch and are a genuinely separate test:
+                    // .git, .vscode and .cache carry no Hidden attribute on Windows, so the
+                    // attribute check alone never touched them, and they are exactly the noise
+                    // this is for.
+                    // MainWindow-qualified: this runs inside FolderNode, which is its own class
+                    // rather than a MainWindow partial, so the switch is not in scope unqualified
+                    // - the same way the ShowHidden test it replaced was written.
+                    if (!MainWindow.TreeShowHidden)
+                    {
+                        var a = d.Attributes;
+                        if ((a & FileAttributes.Hidden) != 0 || (a & FileAttributes.System) != 0) continue;
+                        if (d.Name.StartsWith(".", StringComparison.Ordinal)) continue;
+                    }
 
                     list.Add(new FolderNode(d.FullName, d.Name, mayHaveChildren: true));
                 }
@@ -213,11 +225,60 @@ namespace KillerShell.Shell
         // navigating selects a node; without this they ping-pong.
         private bool _treeSyncing;
 
+        /// <summary>
+        /// Whether the TREE shows hidden, system and dot-prefixed folders. Its own switch
+        /// (Ctrl+Shift+H), separate from the listing's Ctrl+H - see the filter in
+        /// LoadChildrenAsync for why the two are deliberately independent. Static because
+        /// FolderNode does the filtering and is not a window member.
+        /// </summary>
+        internal static bool TreeShowHidden { get; private set; }
+
         private void InitFolderTree()
         {
+            TreeShowHidden = Services.ThemeManager.GetSetting("TreeShowHidden") == "1";
             FolderTree.ItemsSource = _treeRoots;
             LoadDriveRoots();
         }
+
+        /// <summary>
+        /// The tree's own context-menu row. No keyboard chord: Ctrl+Shift+H, the obvious pick,
+        /// is Copy SHA-256, and nothing else has been claimed for this yet - the comment here
+        /// used to name Ctrl+Shift+H as though it were bound, which it never was.
+        /// Children are filtered as they are LOADED, so every already-expanded node has to be
+        /// re-read - a repaint would not change what is in them.
+        /// </summary>
+        internal async void ToggleTreeHidden()
+        {
+            TreeShowHidden = !TreeShowHidden;
+            Services.ThemeManager.SetSetting("TreeShowHidden", TreeShowHidden ? "1" : "0");
+
+            SetTabStatusKey(_active, TreeShowHidden ? "Str_Status_TreeHiddenOn" : "Str_Status_TreeHiddenOff");
+
+            // RefreshAsync on each root walks what is expanded and reloads it, which is exactly
+            // the set of nodes whose contents the filter change affects. Whatever was selected
+            // is re-revealed afterward so the tree does not lose your place.
+            //
+            // GUARDED, all of it. Reloading a node REBUILDS its Children collection, and if the
+            // selected node is not in the new one - which is precisely what happens when you
+            // switch hidden/dotfolders OFF while standing in .git or a hidden folder - the
+            // TreeView drops its selection. That raises SelectedItemChanged, which calls
+            // GoToFolder and NAVIGATES THE LISTING. So a tree-only toggle moved the content
+            // pane, which is exactly the "it hides in the folder view too" symptom: the listing
+            // was not filtered, it was navigated somewhere else.
+            // _treeSyncing is the existing guard for "the tree is being driven, do not echo it
+            // back into the listing" - RevealInTree already uses it for its own selection.
+            bool wasSyncing = _treeSyncing;
+            _treeSyncing = true;
+            try
+            {
+                foreach (var r in _treeRoots.ToList()) await r.RefreshAsync();
+                if (_active?.IsBrowsing == true && !string.IsNullOrEmpty(_active.CurrentFolder))
+                    await RevealInTree(_active.CurrentFolder!);
+            }
+            finally { _treeSyncing = wasSyncing; }
+        }
+
+        private void TreeHidden_Click(object sender, RoutedEventArgs e) => ToggleTreeHidden();
 
         // Ready drives only. An empty optical drive or a dropped mapping would otherwise sit
         // there as a node that throws the moment anyone touches it.
@@ -232,8 +293,8 @@ namespace KillerShell.Shell
             // filling would leave them working from whichever version won.
             if (DemoMode)
             {
-                foreach (var root in DemoFs.Drives)
-                    _treeRoots.Add(new FolderNode(root, DemoFs.DriveLabel(root), mayHaveChildren: true));
+                foreach (var root in Services.DemoFs.Drives)
+                    _treeRoots.Add(new FolderNode(root, Services.DemoFs.DriveLabel(root), mayHaveChildren: true));
                 return;
             }
 
@@ -287,6 +348,11 @@ namespace KillerShell.Shell
                 _treeMenuItem.Header = Loc(IsBookmarked(_treeMenuNode.Path)
                     ? "Str_Menu_RemoveFavorite"
                     : "Str_Menu_AddFavorite");
+
+            // Read fresh on every open rather than bound once - the same convention
+            // ColumnVisibilityMenu and the CPU tile's per-core toggle follow, and it keeps the
+            // tick right when Ctrl+Shift+H flipped it from the keyboard.
+            TreeHiddenItem.IsChecked = TreeShowHidden;
         }
 
         private MenuItem? _treeMenuItem;
@@ -309,7 +375,7 @@ namespace KillerShell.Shell
         {
             string? p = TreeMenuPath();
             if (p == null) return;
-            CaptureTab(_active);              // Tabs.cs
+            CaptureTab(_active);              // Tabs.cs - always a NEW tab, that is what was asked
             ActivateTab(CreateTab());
             _ = NavigateTo(p);
         }
@@ -319,6 +385,23 @@ namespace KillerShell.Shell
             string? p = TreeMenuPath();
             if (p != null && Directory.Exists(p))
                 System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{p.TrimEnd('\\')}\"");
+        }
+
+        private void TreeTerminal_Click(object sender, RoutedEventArgs e)
+        {
+            if (TreeMenuPath() is { } p)
+                OpenShell(Terminal.TerminalProfile.PowerShell(elevated: false), p);   // TerminalTabs.cs
+        }
+
+        private void TreeTerminalAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            if (TreeMenuPath() is { } p)
+                OpenShell(Terminal.TerminalProfile.PowerShell(elevated: true), p);    // TerminalTabs.cs
+        }
+
+        private void TreeAnalyze_Click(object sender, RoutedEventArgs e)
+        {
+            if (TreeMenuPath() is { } p) AnalyzeFolder(p);   // StorageTabs.cs
         }
 
         private void TreeSearchHere_Click(object sender, RoutedEventArgs e)
@@ -491,7 +574,10 @@ namespace KillerShell.Shell
             if (e.NewValue is not FolderNode node) return;
             if (string.IsNullOrEmpty(node.Path)) return;   // the placeholder, mid-load
 
-            _ = NavigateTo(node.Path);   // Browse.cs
+            // GoToFolder, not NavigateTo: with a tool tab open there is no listing to navigate
+            // and clicking a node did nothing at all. It opens a tab when the current one
+            // cannot show a folder (Bookmarks.cs).
+            GoToFolder(node.Path);
         }
 
         /// <summary>

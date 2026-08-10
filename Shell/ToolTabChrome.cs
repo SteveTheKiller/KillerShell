@@ -20,10 +20,26 @@ namespace KillerShell.Shell
             var face = new Border();
             face.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
             host.Children.Add(face);
+            // Grain over the opaque face, under the bar's controls - the same layering the
+            // folder LocationRow uses (FilePane.xaml): an opaque face covers whatever grain is
+            // painted below it, so the bar has to carry its own or it is the one flat,
+            // textureless strip on the tab. GrainOpacity is 0 on 98SE, so this paints nothing
+            // there.
+            host.Children.Add(Grain());
             host.Children.Add(bar);
             host.Children.Add(Edge("BarEdgeBrush", "BarEdgeThickness", 3));
             host.Children.Add(Edge("BarEdgeDarkBrush", "BarEdgeDarkThickness", 3));
             return host;
+        }
+
+        /// <summary>Film grain overlay for an opaque tool-tab surface. Non-hit-testable, sized
+        /// by its host; the caller sets Grid.SetRowSpan when it must cover multiple rows.</summary>
+        internal static Border Grain()
+        {
+            var g = new Border { IsHitTestVisible = false };
+            g.SetResourceReference(Border.BackgroundProperty, "GrainTileBrush");
+            g.SetResourceReference(UIElement.OpacityProperty, "GrainOpacity");
+            return g;
         }
 
         /// <summary>Sunken well host: an optional face (Transparent off 98SE) under the content,

@@ -82,6 +82,19 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
+            // PaneBrush on the root, exactly like RegistryEditorControl: this control sits on
+            // ResultsSurface's MenuBackgroundBrush, a full step darker than the pane, so with no
+            // background of its own the whole tab read as a darker slab that did not match the
+            // active tab above it - gray on a teal theme. The grid and its host are transparent
+            // by design, so what shows through them is THIS brush.
+            SetResourceReference(BackgroundProperty, "PaneBrush");
+            // Grain over that opaque face, spanning all three rows - an opaque root hides the
+            // pane's own grain layer, so the surface has to repaint it or the tab is flat.
+            // The toolbar's WrapBar face is opaque above this and carries its own grain.
+            var grain = ToolTabChrome.Grain();
+            SetRowSpan(grain, 3);
+            Children.Add(grain);
+
             // ToolTabChrome: on 98SE the filter row rides the RAISED menu-bar tier and the grid
             // sits in a sunken white well, matching every other tab kind; both wrappers are
             // inert on the ordinary themes.
@@ -450,34 +463,131 @@ namespace KillerShell.Shell
             {
                 new("System", "Error", DemoNow.AddHours(-9), "Microsoft-Windows-WMI", 10,
                     "None", "Event filter with query \"SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_Processor'\" could not be reactivated in namespace \"//./root/CIMV2\" because of error 0x80041003. Events cannot be delivered through this filter until the problem is corrected.",
-                    "Classic", "WKS-STEVE01", "SYSTEM", "1220", "3164", "-", "184213", "Info", DemoEventXml("System", 10, "Microsoft-Windows-WMI")),
+                    "Classic", "WKS-DEMO01", "SYSTEM", "1220", "3164", "-", "184213", "Info", DemoEventXml("System", 10, "Microsoft-Windows-WMI")),
                 new("System", "Warning", DemoNow.AddHours(-8).AddMinutes(-40), "Disk", 153,
                     "None", "The IO operation at logical block address 0x2a41f0 for Disk 0 (PDO name: \\Device\\00000047) was retried.",
-                    "Classic", "WKS-STEVE01", "SYSTEM", "4", "8", "-", "184198", "Info", DemoEventXml("System", 153, "Disk")),
+                    "Classic", "WKS-DEMO01", "SYSTEM", "4", "8", "-", "184198", "Info", DemoEventXml("System", 153, "Disk")),
                 new("System", "Information", DemoNow.AddHours(-8).AddMinutes(-1), "Service Control Manager", 7036,
                     "None", "The Background Intelligent Transfer Service service entered the running state.",
-                    "Classic", "WKS-STEVE01", "SYSTEM", "812", "-", "-", "184190", "Info", DemoEventXml("System", 7036, "Service Control Manager")),
+                    "Classic", "WKS-DEMO01", "SYSTEM", "812", "-", "-", "184190", "Info", DemoEventXml("System", 7036, "Service Control Manager")),
+
+                // The unclean-shutdown pair, which is the one thing every level filter in the
+                // picker should be able to demonstrate: Critical is the level the grid's dot turns
+                // red for and nothing else in the set produces one.
+                new("System", "Critical", DemoNow.AddHours(-14).AddMinutes(-3), "Microsoft-Windows-Kernel-Power", 41,
+                    "(63)", "The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly.",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "4", "8", "-", "184102", "Info", DemoEventXml("System", 41, "Microsoft-Windows-Kernel-Power")),
+                new("System", "Information", DemoNow.AddHours(-13).AddMinutes(-58), "Microsoft-Windows-Kernel-General", 12,
+                    "None", "The operating system started at system time 2026-07-02T18:14:31.500000000Z.",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "4", "8", "-", "184104", "Info", DemoEventXml("System", 12, "Microsoft-Windows-Kernel-General")),
+
+                new("System", "Error", DemoNow.AddHours(-13).AddMinutes(-51), "Service Control Manager", 7000,
+                    "None", "The Veeam Agent for Microsoft Windows service failed to start due to the following error:\r\nThe service did not respond to the start or control request in a timely fashion.",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "812", "-", "-", "184117", "Info", DemoEventXml("System", 7000, "Service Control Manager")),
+                new("System", "Error", DemoNow.AddHours(-11).AddMinutes(-27), "Microsoft-Windows-DistributedCOM", 10016,
+                    "None", "The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID {2593f8b9-4eaf-457c-b68a-50f6b8ea6b54} to the user WKS-DEMO01\\Demo. This security permission can be modified using the Component Services administrative tool.",
+                    "Classic", "WKS-DEMO01", "Demo", "1044", "2160", "-", "184141", "Info", DemoEventXml("System", 10016, "Microsoft-Windows-DistributedCOM")),
+
+                new("System", "Warning", DemoNow.AddHours(-10).AddMinutes(-44), "Microsoft-Windows-DNS-Client", 1014,
+                    "(1014)", "Name resolution for the name fairview-fs01.fairview.local timed out after none of the configured DNS servers responded.",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "1188", "-", "-", "184155", "Info", DemoEventXml("System", 1014, "Microsoft-Windows-DNS-Client")),
+                new("System", "Warning", DemoNow.AddHours(-9).AddMinutes(-52), "Microsoft-Windows-Time-Service", 134,
+                    "None", "NtpClient was unable to set a domain peer to use as a time source because of DNS resolution error on 'fairview-dc01.fairview.local'. NtpClient will try again in 15 minutes.",
+                    "Classic", "WKS-DEMO01", "LOCAL SERVICE", "1188", "-", "-", "184161", "Info", DemoEventXml("System", 134, "Microsoft-Windows-Time-Service")),
+
+                // Group Policy is the one classic provider that genuinely writes at Verbose, so
+                // this is what stops the level column from only ever showing four of its five
+                // possible values.
+                new("System", "Verbose", DemoNow.AddHours(-13).AddMinutes(-49), "Microsoft-Windows-GroupPolicy", 5312,
+                    "None", "List of applicable Group Policy objects:\r\n\r\n\tLocal Group Policy\r\n\tWorkstation Baseline\r\n\tBitLocker Enforcement",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "1076", "1080", "{c9d1a2f0-3b6e-4d51-8a77-2e4f9b0c1d63}", "184121", "Info", DemoEventXml("System", 5312, "Microsoft-Windows-GroupPolicy")),
+
+                new("System", "Information", DemoNow.AddHours(-5).AddMinutes(-8), "Microsoft-Windows-WindowsUpdateClient", 19,
+                    "Windows Update Agent", "Installation Successful: Windows successfully installed the following update: 2026-06 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5041299).",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "1188", "-", "-", "184226", "Info", DemoEventXml("System", 19, "Microsoft-Windows-WindowsUpdateClient")),
+                new("System", "Information", DemoNow.AddMinutes(-34), "Microsoft-Windows-Kernel-General", 16,
+                    "None", "The access history in hive \\??\\C:\\Users\\Demo\\ntuser.dat was cleared updating 128 keys and creating 4 modified pages.",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "4", "8", "-", "184270", "Info", DemoEventXml("System", 16, "Microsoft-Windows-Kernel-General")),
                 new("Application", "Error", DemoNow.AddHours(-2).AddMinutes(-6), "Application Error", 1000,
                     "(100)", "Faulting application name: SentinelServiceHost.exe, version 23.4.6.1, time stamp 0x6620a1b0\r\nFaulting module name: ntdll.dll, version 10.0.22621.3155, time stamp 0x1c93a2e4\r\nException code: 0xc0000005\r\nFault offset: 0x0000000000058a10\r\nFaulting process id: 0x7c4\r\nFaulting application start time: 0x1dbb2c4e0a1f2b3\r\nReport Id: 6b2e9e13-1c4a-4a2e-9e1e-7f0a2d3c4b5e",
-                    "Classic", "WKS-STEVE01", "-", "1988", "5544", "-", "184240", "Info", DemoEventXml("Application", 1000, "Application Error")),
+                    "Classic", "WKS-DEMO01", "-", "1988", "5544", "-", "184240", "Info", DemoEventXml("Application", 1000, "Application Error")),
                 new("Application", "Warning", DemoNow.AddHours(-1).AddMinutes(-30), "MsiInstaller", 1015,
                     "None", "Windows Installer reconfigured the product. Product Name: Microsoft Edge WebView2 Runtime. Product Version: 126.0.2592.68. Reconfiguration success or error status: 0.",
-                    "Classic", "WKS-STEVE01", "SYSTEM", "2988", "-", "-", "184255", "Info", DemoEventXml("Application", 1015, "MsiInstaller")),
+                    "Classic", "WKS-DEMO01", "SYSTEM", "2988", "-", "-", "184255", "Info", DemoEventXml("Application", 1015, "MsiInstaller")),
                 new("Application", "Information", DemoNow.AddMinutes(-52), "ESENT", 326,
                     "General", "svchost (812,S,0) SRUJet: The database engine started a new instance (0).",
-                    "Classic", "WKS-STEVE01", "SYSTEM", "812", "-", "-", "184261", "Info", DemoEventXml("Application", 326, "ESENT")),
+                    "Classic", "WKS-DEMO01", "SYSTEM", "812", "-", "-", "184261", "Info", DemoEventXml("Application", 326, "ESENT")),
                 new("Application", "Information", DemoNow.AddMinutes(-18), "KillerShell", 1,
-                    "None", "KillerShell 1.1.0 started for user steve.",
-                    "Classic", "WKS-STEVE01", "steve", "5116", "-", "-", "184268", "Info", DemoEventXml("Application", 1, "KillerShell")),
+                    "None", "KillerShell 1.1.0 started for user Demo.",
+                    "Classic", "WKS-DEMO01", "Demo", "5116", "-", "-", "184268", "Info", DemoEventXml("Application", 1, "KillerShell")),
+
+                new("Application", "Error", DemoNow.AddHours(-12).AddMinutes(-22), ".NET Runtime", 1026,
+                    "None", "Application: LegacyAssetSync.exe\r\nCoreCLR Version: 4.8.9282.0\r\nDescription: The process was terminated due to an unhandled exception.\r\nException Info: System.Net.WebException: The remote server returned an error: (401) Unauthorized.\r\n   at LegacyAssetSync.Api.Fetch(String tenant)",
+                    "Classic", "WKS-DEMO01", "Demo", "3372", "4108", "-", "184133", "Info", DemoEventXml("Application", 1026, ".NET Runtime")),
+                new("Application", "Error", DemoNow.AddHours(-7).AddMinutes(-15), "MsiInstaller", 11708,
+                    "None", "Product: Legacy Asset Sync - Installation failed. Installation success or error status: 1603.",
+                    "Classic", "WKS-DEMO01", "Demo", "2988", "-", "-", "184186", "Info", DemoEventXml("Application", 11708, "MsiInstaller")),
+                new("Application", "Error", DemoNow.AddHours(-4).AddMinutes(-41), "Application Hang", 1002,
+                    "(101)", "The program OUTLOOK.EXE version 16.0.17928.20114 stopped interacting with Windows and was closed. A problem caused this program to stop interacting with Windows.\r\nProcess ID: 1c24\r\nStart Time: 01dbb2c40f1e9a7",
+                    "Classic", "WKS-DEMO01", "Demo", "7204", "7208", "-", "184219", "Info", DemoEventXml("Application", 1002, "Application Hang")),
+
+                new("Application", "Warning", DemoNow.AddHours(-4).AddMinutes(-40), "Windows Error Reporting", 1001,
+                    "None", "Fault bucket 1274118253458122611, type 5\r\nEvent Name: AppHangB1\r\nResponse: Not available\r\nCab Id: 0\r\n\r\nProblem signature:\r\nP1: OUTLOOK.EXE\r\nP2: 16.0.17928.20114\r\nP3: 6620a1b0",
+                    "Classic", "WKS-DEMO01", "Demo", "7208", "-", "-", "184220", "Info", DemoEventXml("Application", 1001, "Windows Error Reporting")),
+                new("Application", "Warning", DemoNow.AddHours(-3).AddMinutes(-12), "Microsoft-Windows-Search", 3036,
+                    "(3)", "The content source <csc://{S-1-5-21-111111111-222222222-333333333-1001}/> cannot be accessed. Context: Application, SystemIndex Catalog. Details: The device is not ready.",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "3856", "-", "-", "184231", "Info", DemoEventXml("Application", 3036, "Microsoft-Windows-Search")),
+
+                new("Application", "Information", DemoNow.AddHours(-13).AddMinutes(-44), "Microsoft-Windows-Security-SPP", 1003,
+                    "None", "The Software Protection service has completed licensing status check.\r\nApplication Id=55c92734-d682-4d71-983e-d6ec3f16059f\r\nLicensing Status=Licensed",
+                    "Classic", "WKS-DEMO01", "NETWORK SERVICE", "3120", "-", "-", "184126", "Info", DemoEventXml("Application", 1003, "Microsoft-Windows-Security-SPP")),
+                new("Application", "Information", DemoNow.AddHours(-9).AddMinutes(-11), "Veeam Agent", 190,
+                    "None", "Backup job 'Workstation daily' finished with Success. Processed 96.4 GB in 41 minutes, transferred 3.2 GB to D:\\Backups.",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "4472", "-", "-", "184168", "Info", DemoEventXml("Application", 190, "Veeam Agent")),
+                new("Application", "Information", DemoNow.AddHours(-2).AddMinutes(-58), "SecurityCenter", 15,
+                    "None", "Updated Antivirus status successfully to SECURITY_PRODUCT_STATE_ON.",
+                    "Classic", "WKS-DEMO01", "SYSTEM", "3120", "-", "-", "184236", "Info", DemoEventXml("Application", 15, "SecurityCenter")),
+                new("Application", "Information", DemoNow.AddMinutes(-6), "KillerShell", 2,
+                    "None", "Export written: C:\\Users\\Demo\\Documents\\Exports\\killershell-report.html (780 KB, 2,418 rows).",
+                    "Classic", "WKS-DEMO01", "Demo", "5116", "-", "-", "184272", "Info", DemoEventXml("Application", 2, "KillerShell")),
                 new("Security", "Information", DemoNow.AddHours(-13).AddMinutes(-2), "Microsoft-Windows-Security-Auditing", 4624,
-                    "Logon", "An account was successfully logged on.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-5-18\r\n\tAccount Name:\t\tWKS-STEVE01$\r\n\r\nLogon Type:\t\t\t2\r\n\r\nNew Logon:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1001\r\n\tAccount Name:\t\tsteve\r\n\tAccount Domain:\t\tWKS-STEVE01",
-                    "Audit Success", "WKS-STEVE01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "{5b1e2a0c-1f4d-4b3e-9c2a-8e7f6d5c4b3a}", "51204", "Info", DemoEventXml("Security", 4624, "Microsoft-Windows-Security-Auditing")),
+                    "Logon", "An account was successfully logged on.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-5-18\r\n\tAccount Name:\t\tWKS-DEMO01$\r\n\r\nLogon Type:\t\t\t2\r\n\r\nNew Logon:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1001\r\n\tAccount Name:\t\tDemo\r\n\tAccount Domain:\t\tWKS-DEMO01",
+                    "Audit Success", "WKS-DEMO01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "{5b1e2a0c-1f4d-4b3e-9c2a-8e7f6d5c4b3a}", "51204", "Info", DemoEventXml("Security", 4624, "Microsoft-Windows-Security-Auditing")),
                 new("Security", "Information", DemoNow.AddHours(-13).AddMinutes(-2), "Microsoft-Windows-Security-Auditing", 4672,
-                    "Special Logon", "Special privileges assigned to new logon.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1001\r\n\tAccount Name:\t\tsteve\r\n\tAccount Domain:\t\tWKS-STEVE01",
-                    "Audit Success", "WKS-STEVE01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "-", "51205", "Info", DemoEventXml("Security", 4672, "Microsoft-Windows-Security-Auditing")),
+                    "Special Logon", "Special privileges assigned to new logon.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1001\r\n\tAccount Name:\t\tDemo\r\n\tAccount Domain:\t\tWKS-DEMO01",
+                    "Audit Success", "WKS-DEMO01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "-", "51205", "Info", DemoEventXml("Security", 4672, "Microsoft-Windows-Security-Auditing")),
                 new("Security", "Warning", DemoNow.AddHours(-6).AddMinutes(-11), "Microsoft-Windows-Security-Auditing", 4625,
                     "Logon", "An account failed to log on.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-0-0\r\n\tAccount Name:\t\t-\r\n\r\nLogon Type:\t\t\t3\r\n\r\nAccount For Which Logon Failed:\r\n\tAccount Name:\t\tadministrator\r\n\r\nFailure Reason:\t\tUnknown user name or bad password.",
-                    "Audit Failure", "WKS-STEVE01", "S-1-0-0", "-", "-", "-", "51260", "Info", DemoEventXml("Security", 4625, "Microsoft-Windows-Security-Auditing")),
+                    "Audit Failure", "WKS-DEMO01", "S-1-0-0", "-", "-", "-", "51260", "Info", DemoEventXml("Security", 4625, "Microsoft-Windows-Security-Auditing")),
+
+                // A second failed logon from the same source a few seconds later, because a lone
+                // 4625 reads as a typo and a run of them reads as the thing an admin opens this
+                // tab to find. Same workstation name in both, deliberately.
+                new("Security", "Warning", DemoNow.AddHours(-6).AddMinutes(-10), "Microsoft-Windows-Security-Auditing", 4625,
+                    "Logon", "An account failed to log on.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-0-0\r\n\tAccount Name:\t\t-\r\n\r\nLogon Type:\t\t\t3\r\n\r\nAccount For Which Logon Failed:\r\n\tAccount Name:\t\tadmin\r\n\r\nFailure Reason:\t\tUnknown user name or bad password.\r\n\r\nNetwork Information:\r\n\tWorkstation Name:\tWKS-0421\r\n\tSource Network Address:\t10.20.4.121",
+                    "Audit Failure", "WKS-DEMO01", "S-1-0-0", "-", "-", "-", "51261", "Info", DemoEventXml("Security", 4625, "Microsoft-Windows-Security-Auditing")),
+
+                new("Security", "Information", DemoNow.AddHours(-13).AddMinutes(-2), "Microsoft-Windows-Security-Auditing", 4776,
+                    "Credential Validation", "The computer attempted to validate the credentials for an account.\r\n\r\nAuthentication Package:\tMICROSOFT_AUTHENTICATION_PACKAGE_V1_0\r\nLogon Account:\tDemo\r\nSource Workstation:\tWKS-DEMO01\r\nError Code:\t0x0",
+                    "Audit Success", "WKS-DEMO01", "SYSTEM", "824", "1288", "-", "51203", "Info", DemoEventXml("Security", 4776, "Microsoft-Windows-Security-Auditing")),
+                new("Security", "Information", DemoNow.AddHours(-12).AddMinutes(-51), "Microsoft-Windows-Security-Auditing", 4688,
+                    "Process Creation", "A new process has been created.\r\n\r\nCreator Subject:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1001\r\n\tAccount Name:\t\tDemo\r\n\r\nProcess Information:\r\n\tNew Process ID:\t\t0x13f8\r\n\tNew Process Name:\tC:\\Program Files\\PowerShell\\7\\pwsh.exe\r\n\tToken Elevation Type:\tTokenElevationTypeFull (2)",
+                    "Audit Success", "WKS-DEMO01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "-", "51218", "Info", DemoEventXml("Security", 4688, "Microsoft-Windows-Security-Auditing")),
+                new("Security", "Information", DemoNow.AddHours(-11).AddMinutes(-6), "Microsoft-Windows-Security-Auditing", 4720,
+                    "User Account Management", "A user account was created.\r\n\r\nSubject:\r\n\tAccount Name:\t\tDemo\r\n\r\nNew Account:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1042\r\n\tAccount Name:\t\tsvc-backup\r\n\tAccount Domain:\t\tWKS-DEMO01",
+                    "Audit Success", "WKS-DEMO01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "-", "51229", "Info", DemoEventXml("Security", 4720, "Microsoft-Windows-Security-Auditing")),
+                new("Security", "Information", DemoNow.AddHours(-11).AddMinutes(-5), "Microsoft-Windows-Security-Auditing", 4732,
+                    "Security Group Management", "A member was added to a security-enabled local group.\r\n\r\nSubject:\r\n\tAccount Name:\t\tDemo\r\n\r\nMember:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1042\r\n\r\nGroup:\r\n\tGroup Name:\t\tBackup Operators",
+                    "Audit Success", "WKS-DEMO01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "-", "51230", "Info", DemoEventXml("Security", 4732, "Microsoft-Windows-Security-Auditing")),
+                new("Security", "Information", DemoNow.AddHours(-9).AddMinutes(-40), "Microsoft-Windows-Security-Auditing", 1102,
+                    "Log clear", "The audit log was cleared.\r\n\r\nSubject:\r\n\tSecurity ID:\tS-1-5-21-111111111-222222222-333333333-1001\r\n\tAccount Name:\tDemo\r\n\tDomain Name:\tWKS-DEMO01\r\n\tLogon ID:\t0x1e4a2",
+                    "Audit Success", "WKS-DEMO01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "-", "51240", "Info", DemoEventXml("Security", 1102, "Microsoft-Windows-Security-Auditing")),
+                new("Security", "Information", DemoNow.AddHours(-1).AddMinutes(-4), "Microsoft-Windows-Security-Auditing", 5379,
+                    "User Account Management", "Credential Manager credentials were read.\r\n\r\nSubject:\r\n\tAccount Name:\t\tDemo\r\n\r\nRead Operation:\t\tEnumerate Credentials\r\n\r\nThis event occurs when a user performs a read operation on stored credentials.",
+                    "Audit Success", "WKS-DEMO01", "S-1-5-21-111111111-222222222-333333333-1001", "824", "1288", "-", "51288", "Info", DemoEventXml("Security", 5379, "Microsoft-Windows-Security-Auditing")),
+                new("Security", "Information", DemoNow.AddMinutes(-41), "Microsoft-Windows-Security-Auditing", 4634,
+                    "Logoff", "An account was logged off.\r\n\r\nSubject:\r\n\tSecurity ID:\t\tS-1-5-21-111111111-222222222-333333333-1042\r\n\tAccount Name:\t\tsvc-backup\r\n\tAccount Domain:\t\tWKS-DEMO01\r\n\tLogon ID:\t\t0x2c9f1\r\n\r\nLogon Type:\t\t\t5",
+                    "Audit Success", "WKS-DEMO01", "S-1-5-21-111111111-222222222-333333333-1042", "824", "1288", "-", "51301", "Info", DemoEventXml("Security", 4634, "Microsoft-Windows-Security-Auditing")),
             };
 
             IEnumerable<EventLogEntryInfo> filtered = source == LogSource.All
@@ -496,7 +606,7 @@ namespace KillerShell.Shell
         private static string DemoEventXml(string logName, int eventId, string provider)
             => "<Event xmlns=\"http://schemas.microsoft.com/win/2004/08/events/event\">"
              + "<System><Provider Name=\"" + provider + "\"/><EventID>" + eventId + "</EventID>"
-             + "<Channel>" + logName + "</Channel><Computer>WKS-STEVE01</Computer></System>"
+             + "<Channel>" + logName + "</Channel><Computer>WKS-DEMO01</Computer></System>"
              + "<EventData/></Event>";
 
         private LogSource SelectedSource()
@@ -775,11 +885,12 @@ namespace KillerShell.Shell
                 return item;
             }
 
-            // E71B: the same "copy" glyph the folder tree's own Copy full path row uses
-            // (MainWindow.xaml TreeCopyPath_Click) - one glyph means one action everywhere.
-            Item("Str_Menu_EvtCopyMessage", ((char)0xE71B).ToString(),
+            // E8C8: MDL2's Copy, two stacked documents - the glyph every copy action in the app
+            // uses (the folder tree's Copy full path, the editor, the terminal, the Registry
+            // Editor, the Storage Analyzer). It was E71B, which is LINK - a chain.
+            Item("Str_Menu_EvtCopyMessage", ((char)0xE8C8).ToString(),
                  (_, _) => CopyToClipboard(entry.Message, "Str_Evt_MessageCopied"));
-            Item("Str_Menu_EvtCopyDetails", ((char)0xE71B).ToString(),
+            Item("Str_Menu_EvtCopyDetails", ((char)0xE8C8).ToString(),
                  (_, _) => CopyToClipboard(FormatDetails(entry), "Str_Evt_DetailsCopied"));
 
             menu.IsOpen = true;

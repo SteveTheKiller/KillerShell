@@ -32,111 +32,67 @@ namespace KillerShell.Shell
         private TextBlock? _kbDetail;
         private TextBlock? _kbHoverAct;   // caption of the key under the mouse (marquee restart on layer switch)
         private string? _kbHoverId;
+        private TextBlock? _kbScopeName;  // the applet name in the board's scope caption
         private readonly Dictionary<string, (Border Cap, TextBlock Act, Rectangle Bar)> _kbKeys = new();
         private readonly Dictionary<KbLayer, Button> _kbLayerBtns = new();
 
         private const string KsViewSetting = "ShortcutView";   // "list" (default) | "keyboard"
 
         // ── Bindings ───────────────────────────────────────────────────────────────────────────
-        // key id -> (category, localized label resource key). Categories match ShortcutsOverlay's
-        // KsRows, so the two views group the same bindings the same way.
-        private static readonly Dictionary<KbLayer, Dictionary<string, (string Cat, string Label)>> KbMap = new()
+        // There is no table here any more. The board used to carry its own KbMap - key id ->
+        // (category, label) per layer - beside ShortcutsOverlay's KsRows, and two tables meant
+        // two versions of the truth. They had drifted: the map lit bare F7 as "add a filter"
+        // after the handler moved that to Shift+F7, lit Ctrl+Shift+C as case-sensitive matching
+        // after that moved to Alt+C, and carried Ctrl+Shift+F8 which the list did not have at
+        // all. Everything now comes from KsAll (ShortcutsOverlay.cs), which also carries the
+        // SCOPE each binding belongs to.
+        //
+        // The scope is what lets a keycap mean two things. Ctrl+Shift+A had to be left off the
+        // board entirely because it is "add a search term" globally and "Run as administrator"
+        // on a process row, and one cap cannot say both; the board now shows whichever of them
+        // belongs to the tab you are actually on.
+
+        /// <summary>The scope the board is drawn for - the ACTIVE TAB's, resolved on every
+        /// open rather than held, since the tab can change while the card is closed.</summary>
+        private KsScope _kbScope = KsScope.Global;
+
+        /// <summary>What each keycap shows on the layer now displayed. Rebuilt by
+        /// <see cref="SetKbLayer"/>; read by the hover handlers and the detail line, so all
+        /// three agree on what a cap currently means.</summary>
+        private Dictionary<string, KsBinding> _kbLit = new();
+
+        /// <summary>
+        /// Which binding lights which keycap, for one layer in the scope now active.
+        /// </summary>
+        /// <remarks>
+        /// The ACTIVE SCOPE is laid down first and Global only fills the caps it left empty, so
+        /// a scoped binding wins its key outright - that is the whole point of the scope column,
+        /// and it is why the Storage Analyzer's D / M / C stop claiming to be global keys and
+        /// why Enter reads as "zoom in" on that tab. Within one scope the FIRST binding for a cap
+        /// wins, which matters for the Processes grid: Delete is End task in Processes mode and
+        /// Stop in Services mode, and the cap shows the mode the tab opens in.
+        /// </remarks>
+        private Dictionary<string, KsBinding> KbLit(KbLayer layer)
         {
-            [KbLayer.Base] = new()
+            var lit = new Dictionary<string, KsBinding>();
+
+            foreach (var b in KsAll)
             {
-                ["F1"]    = ("Help",   "Str_Ks_Help"),
-                ["F4"]    = ("Tabs",   "Str_Ks_Storage"),
-                // Storage Analyzer locals - only live while that tab has focus, the same as the
-                // map's other tab-local caps. D/M/C sit on the home row under the fingers.
-                ["D"]     = ("View",   "Str_Ks_StorageDepth"),
-                ["M"]     = ("View",   "Str_Ks_StorageMin"),
-                ["C"]     = ("View",   "Str_Ks_StorageColor"),
-                ["Home"]  = ("Nav",    "Str_Ks_StorageHome"),
-                ["F5"]    = ("View",   "Str_Ks_Refresh"),
-                ["F8"]    = ("Tabs",   "Str_Ks_Shell"),
-                ["F9"]    = ("Tabs",   "Str_Ks_TaskManager"),
-                ["F11"]   = ("Tabs",   "Str_Ks_Performance"),
-                ["F2"]    = ("Edit",   "Str_Ks_Rename"),
-                ["F7"]    = ("Search", "Str_Ks_AddFilter"),
-                ["Del"]   = ("Edit",   "Str_Ks_Recycle"),
-                ["F10"]   = ("View",   "Str_TT_DualPane"),
-                ["F12"]   = ("Help",   "Str_Ks_About"),
-                // Enter and Backspace keep their GLOBAL meaning on the cap - run the search, go
-                // back. In the Storage tab they zoom in and out, which is the same shape of
-                // action, so the cap is not relabelled for a tab-local variation.
-                ["Enter"] = ("Search", "Str_Ks_Run"),
-                ["Esc"]   = ("Edit",   "Str_Ks_Esc"),
-                ["Back"]  = ("Nav",    "Str_Ks_Back"),
-            },
-            [KbLayer.Ctrl] = new()
-            {
-                ["N"]     = ("Tabs",   "Str_Ks_NewWindow"),
-                ["F"]     = ("Search", "Str_Ks_FilterResults"),
-                ["L"]     = ("Nav",    "Str_Ks_Address"),
-                ["O"]     = ("Nav",    "Str_Ks_Folder"),
-                ["B"]     = ("Nav",    "Str_Ks_Bookmarks"),
-                ["H"]     = ("View",   "Str_TT_ShowHidden"),
-                ["T"]     = ("Tabs",   "Str_Ks_NewTab"),
-                ["W"]     = ("Tabs",   "Str_Ks_CloseTab"),
-                ["Tab"]   = ("Tabs",   "Str_Ks_NextTab"),
-                ["Enter"] = ("Search", "Str_Ks_StorageScan"),
-                ["E"]     = ("Search", "Str_Ks_FocusSearch"),
-                ["A"]     = ("Edit",   "Str_Ks_SelectAll"),
-                ["C"]     = ("Edit",   "Str_Ks_CutCopyPaste"),
-                ["X"]     = ("Edit",   "Str_Ks_CutCopyPaste"),
-                ["V"]     = ("Edit",   "Str_Ks_CutCopyPaste"),
-                ["Right"] = ("View",   "Str_Ks_ExpandAll"),
-                ["Left"]  = ("View",   "Str_Ks_CollapseAll"),
-                ["D1"]    = ("Tabs",   "Str_Ks_JumpTab"), ["D2"] = ("Tabs", "Str_Ks_JumpTab"),
-                ["D3"]    = ("Tabs",   "Str_Ks_JumpTab"), ["D4"] = ("Tabs", "Str_Ks_JumpTab"),
-                ["D5"]    = ("Tabs",   "Str_Ks_JumpTab"), ["D6"] = ("Tabs", "Str_Ks_JumpTab"),
-                ["D7"]    = ("Tabs",   "Str_Ks_JumpTab"), ["D8"] = ("Tabs", "Str_Ks_JumpTab"),
-                ["D9"]    = ("Tabs",   "Str_Ks_JumpTab"),
-                ["F8"]    = ("Tabs",   "Str_Ks_ShellAdmin"),
-                ["F4"]    = ("Tabs",   "Str_Ks_StorageAdmin"),
-                ["F9"]    = ("Tabs",   "Str_Ks_TaskManagerAdmin"),
-                ["Grave"] = ("Tabs",   "Str_Ks_Shell"),
-                ["F10"]   = ("View",   "Str_Ks_MenuBar"),
-                // F12 is lit here, in the Ctrl layer ONLY - the Base layer's F12 (above) stays
-                // About and is unaffected. There is no unelevated Event Viewer to show anywhere
-                // else on the board.
-                ["F12"]   = ("Tabs",   "Str_Ks_EventViewer"),
-                // Same shape for F11: the Base layer's F11 (above) stays Performance, and this
-                // Ctrl layer entry is the ONLY place Registry Editor is lit - there is no
-                // unelevated variant to show anywhere else on the board.
-                ["F11"]   = ("Tabs",   "Str_Ks_RegistryEditor"),
-            },
-            [KbLayer.CtrlShift] = new()
-            {
-                ["N"]   = ("Edit",   "Str_Ks_NewFolder"),
-                ["A"]   = ("Search", "Str_Ks_AddTerm"),
-                ["C"]   = ("Search", "Str_Ks_CaseSensitive"),
-                ["F"]   = ("Search", "Str_Ks_Pipe"),
-                ["S"]   = ("View",   "Str_Ks_SearchPanel"),
-                ["L"]   = ("Edit",   "Str_Ks_Clear"),
-                ["Tab"] = ("Tabs",   "Str_Ks_NextTab"),
-                ["F8"]  = ("Tabs",   "Str_Ks_ShellCmdAdmin"),
-            },
-            [KbLayer.Shift] = new()
-            {
-                ["Del"] = ("Edit", "Str_Ks_DeleteForever"),
-                ["F8"]  = ("Tabs", "Str_Ks_ShellCmd"),
-                ["F10"] = ("File", "Str_Menu_ShellMenu"),
-            },
-            [KbLayer.Alt] = new()
-            {
-                ["D"]     = ("Nav", "Str_Ks_Address"),
-                ["Left"]  = ("Nav", "Str_Ks_BackForward"),
-                ["Right"] = ("Nav", "Str_Ks_BackForward"),
-                ["Up"]    = ("Nav", "Str_Ks_Up"),
-                ["D1"] = ("Nav", "Str_Ks_JumpBookmark"), ["D2"] = ("Nav", "Str_Ks_JumpBookmark"),
-                ["D3"] = ("Nav", "Str_Ks_JumpBookmark"), ["D4"] = ("Nav", "Str_Ks_JumpBookmark"),
-                ["D5"] = ("Nav", "Str_Ks_JumpBookmark"), ["D6"] = ("Nav", "Str_Ks_JumpBookmark"),
-                ["D7"] = ("Nav", "Str_Ks_JumpBookmark"), ["D8"] = ("Nav", "Str_Ks_JumpBookmark"),
-                ["D9"] = ("Nav", "Str_Ks_JumpBookmark"), ["D0"] = ("Nav", "Str_Ks_JumpBookmark"),
-                ["P"]  = ("View", "Str_TT_DetailsPane"),
-            },
-        };
+                if (b.Layer != layer || b.Scope != _kbScope) continue;
+                foreach (string cap in b.Caps)
+                    if (!lit.ContainsKey(cap)) lit[cap] = b;
+            }
+
+            if (_kbScope != KsScope.Global)
+                foreach (var b in KsAll)
+                {
+                    if (b.Layer != layer || b.Scope != KsScope.Global) continue;
+                    foreach (string cap in b.Caps)
+                        if (!lit.ContainsKey(cap)) lit[cap] = b;
+                }
+
+            return lit;
+        }
 
         // ── Physical layout ────────────────────────────────────────────────────────────────────
         // (id, cap text, width units). id "" = spacer. Numpad omitted - the digits mirror the
@@ -187,6 +143,11 @@ namespace KillerShell.Shell
         /// </summary>
         private void ApplyShortcutView(bool keyboard, bool persist = false)
         {
+            // Re-read the active tab's scope on every open, BEFORE anything paints. The board is
+            // built once and then only repainted, so a scope captured at build time would still
+            // be showing the tab you happened to be on the first time the card was opened.
+            _kbScope = KsActiveScope;                   // ShortcutsOverlay.cs
+
             BuildShortcutsList();                       // ShortcutsOverlay.cs - no-op after the first
             if (keyboard && !_kbBuilt) BuildKeyboardView();
 
@@ -206,7 +167,13 @@ namespace KillerShell.Shell
             KsViewListBtn.SetResourceReference(ForegroundProperty,     keyboard ? "MutedTextBrush" : "PrimaryBrush");
             KsViewKeyboardBtn.SetResourceReference(ForegroundProperty, keyboard ? "PrimaryBrush" : "MutedTextBrush");
 
-            if (keyboard) SetKbLayer(KbLayer.Base);
+            if (keyboard)
+            {
+                // Re-point the scope caption before the layer paints, so the board never shows
+                // one scope's keys under another scope's name.
+                _kbScopeName?.SetResourceReference(TextBlock.TextProperty, KsScopeLabelKey(_kbScope));
+                SetKbLayer(KbLayer.Base);
+            }
             if (persist) Services.ThemeManager.SetSetting(KsViewSetting, keyboard ? "keyboard" : "list");
         }
 
@@ -252,6 +219,33 @@ namespace KillerShell.Shell
             hint.SetResourceReference(TextBlock.ForegroundProperty, "DimTextBrush");
             layerRow.Children.Add(hint);
             host.Children.Add(layerRow);
+
+            // Scope caption, on its own row under the layer buttons rather than squeezed in
+            // beside them - that row is already five buttons and a sentence wide, and a
+            // translated applet name on the end of it clips before it wraps.
+            //
+            // The board can only draw ONE meaning per keycap, so it has to say out loud which
+            // one it is drawing. Without this line a user on a Processes tab would read
+            // Ctrl+Shift+A as "Run as administrator" and have no way to tell that the same cap
+            // says something else on a folder tab. Two TextBlocks rather than one formatted
+            // string, so both halves stay on SetResourceReference and follow a language switch
+            // live the way every other label on this card does.
+            var scopeRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 10) };
+            var scopeLead = new TextBlock { FontFamily = new FontFamily("Consolas"), FontSize = 11 };
+            scopeLead.SetResourceReference(TextBlock.TextProperty, "Str_Ks_ScopeShown");
+            scopeLead.SetResourceReference(TextBlock.ForegroundProperty, "DimTextBrush");
+            scopeRow.Children.Add(scopeLead);
+
+            _kbScopeName = new TextBlock
+            {
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 11,
+                Margin = new Thickness(6, 0, 0, 0),
+            };
+            _kbScopeName.SetResourceReference(TextBlock.TextProperty, KsScopeLabelKey(_kbScope));
+            _kbScopeName.SetResourceReference(TextBlock.ForegroundProperty, "PrimaryBrush");
+            scopeRow.Children.Add(_kbScopeName);
+            host.Children.Add(scopeRow);
 
             // The board itself. A DownOnly Viewbox keeps it fitting a small window without
             // introducing a scrollbar across a picture of a keyboard.
@@ -323,7 +317,7 @@ namespace KillerShell.Shell
                     {
                         _kbHoverAct = act; _kbHoverId = keyId;
                         KbShowDetail(keyId);
-                        if (KbMap[_kbLayer].ContainsKey(keyId))   // only bound keys lift; the rest stay put
+                        if (_kbLit.ContainsKey(keyId))   // only bound keys lift; the rest stay put
                         {
                             lift.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(-3, TimeSpan.FromMilliseconds(90)));
                             KbMarqueeStart(act);
@@ -385,11 +379,21 @@ namespace KillerShell.Shell
         private void KbShowDetail(string id)
         {
             if (_kbDetail is null) return;
-            if (KbMap[_kbLayer].TryGetValue(id, out var b))
+            if (_kbLit.TryGetValue(id, out var b))
             {
                 string section = TryFindResource(KsCatLabelKey(b.Cat)) as string ?? b.Cat;
                 string label   = TryFindResource(b.Label) as string ?? b.Label;
-                _kbDetail.Text = section + " :: " + label;
+
+                // A scoped binding names its applet here as well as in the caption above the
+                // board. The caption says what the board as a whole is showing; this says which
+                // of the keys under the pointer is the one that only exists on that tab, which
+                // is the thing a flat table could never express.
+                if (b.Scope != KsScope.Global)
+                {
+                    string scope = TryFindResource(KsScopeLabelKey(b.Scope)) as string ?? b.Scope.ToString();
+                    _kbDetail.Text = scope + " :: " + section + " :: " + label;
+                }
+                else _kbDetail.Text = section + " :: " + label;
             }
             else _kbDetail.Text = " ";
         }
@@ -456,11 +460,14 @@ namespace KillerShell.Shell
             _kbLayer = layer;
             if (!_kbBuilt) return;
 
-            var map = KbMap[layer];
+            // Resolve the layer against the ACTIVE SCOPE and keep the result: the hover handlers
+            // and the detail line read the same dictionary, so a cap cannot lift as bound and
+            // then read out as nothing.
+            _kbLit = KbLit(layer);
             foreach (var kv in _kbKeys)   // no KeyValuePair deconstruction on net48
             {
                 var vis = kv.Value;
-                if (map.TryGetValue(kv.Key, out var b))
+                if (_kbLit.TryGetValue(kv.Key, out var b))
                 {
                     vis.Cap.SetResourceReference(Border.BorderBrushProperty, "KsCat" + b.Cat);
                     vis.Bar.SetResourceReference(Shape.FillProperty, "KsCat" + b.Cat);

@@ -406,9 +406,16 @@ namespace KillerShell.Services
             // Transparent everywhere, so nothing changes on the ordinary themes; 98SE states
             // WHITE - a sunken client area.
             SetIfAbsent("ToolContentBrush", Transparent);
-            // The Registry tree's fill: BackgroundBrush everywhere (the exact brush the tree
-            // used before this key existed); 98SE states WHITE.
-            Mirror("ToolTreeBrush", "BackgroundBrush");
+            // The Registry tree's fill. Transparent, so the tree shows the control's own
+            // PaneBrush root (and its grain) and matches the value grid beside it, whose
+            // ToolContentBrush face is Transparent the same way. 98SE states WHITE for both in
+            // its own layer and is untouched.
+            // This mirrored BackgroundBrush, which is a full-window LinearGradientBrush on five
+            // themes - and a gradient painted into a narrow column re-ramps its ENTIRE sweep
+            // inside that column, so the tree rendered the ramp's near end instead of the color
+            // actually behind it: pink against Delirium's purple. Same recurring bug as the
+            // picker side columns, the text fields and the tree chevron (BACKLOG.md).
+            SetIfAbsent("ToolTreeBrush", Transparent);
             // The details pane's big filename: the family wordmark face everywhere, Courier New
             // on 98SE. NOT Mirror(): WordmarkFont lives in App.xaml, not in the theme
             // dictionaries, so Mirror's missing-source fallback handed every ordinary theme a
@@ -543,7 +550,8 @@ namespace KillerShell.Services
             // ComboBox chrome - all defaults are exactly what the template hardcoded, so the
             // ordinary themes render untouched; 98SE turns the field white, the drop arrow into
             // a raised grey Marlett-triangle button, and the list into a white well.
-            Mirror("ComboFieldBrush", "BackgroundBrush");
+            // ComboFieldBrush is NOT set here - it mirrors TextFieldBrush, which is computed
+            // further down, and a mirror reads its source at the line it runs on. See there.
             Mirror("ComboPopupBrush", "MenuBackgroundBrush");
             SetIfAbsent("ComboButtonBrush", Transparent);
             SetIfAbsent("ComboButtonMinWidth", 0.0);
@@ -581,6 +589,42 @@ namespace KillerShell.Services
             }
             else Mirror("TextFieldBrush", "BackgroundBrush");
             Mirror("SearchFieldBrush", "TextFieldBrush");
+            // A ComboBox closed face is a FIELD, so it takes the field brush - not
+            // BackgroundBrush, which it mirrored until 2026-08-09. That put the full-window
+            // gradient inside a 130px dropdown, where it re-ramped its entire sweep and painted
+            // the box a colour from the middle of the ramp: the Event Viewer's two pickers came
+            // up as purple-to-magenta bars against the tab. Same bug as the text fields
+            // directly above, and it has to be mirrored HERE, after TextFieldBrush exists.
+            // Solid themes are unaffected - TextFieldBrush is BackgroundBrush there, the exact
+            // value this key already had. 98SE states its own #ffffff and is untouched.
+            Mirror("ComboFieldBrush", "TextFieldBrush");
+
+            // A SOLID stand-in for the window background, for anything small that needs to read
+            // as "the same colour as what is behind me". BackgroundBrush itself cannot be used
+            // there: it is a full-window LinearGradientBrush on five themes, and a gradient
+            // painted into a 16px box re-ramps its ENTIRE sweep inside those 16 pixels, so the
+            // shape comes out some arbitrary colour from the middle of the ramp instead of
+            // matching its surroundings. That is what made the tree's expanded chevron a grey
+            // wedge instead of disappearing into the sidebar (2026-08-09), and it is the same
+            // trap the picker panes and the text fields both hit.
+            if (!combined.Contains("SolidBackgroundBrush"))
+            {
+                if (combined["BackgroundBrush"] is LinearGradientBrush wg && wg.GradientStops.Count > 0)
+                {
+                    var solid = new SolidColorBrush(wg.GradientStops[0].Color);
+                    solid.Freeze();
+                    combined["SolidBackgroundBrush"] = solid;
+                }
+                else Mirror("SolidBackgroundBrush", "BackgroundBrush");
+            }
+            // The fill behind a tree chevron, whose only job is to mask the connecting line, so
+            // it must be whatever surface that particular tree sits on. SolidBackgroundBrush is
+            // right for the FOLDER tree, which shows the window through it - but the Registry
+            // Editor's tree sits on its control's PaneBrush, so the same fill painted a wedge of
+            // window colour there (pink on the gradient themes, whose first stop is nothing like
+            // the pane). RegistryEditorControl overrides this key on its own TreeView's
+            // Resources, which is where the template's DynamicResource lookup finds it first.
+            Mirror("TreeChevronMaskBrush", "SolidBackgroundBrush");
             // TRANSPARENT, not PaneBrush: the sidebar well is a 98SE idea (a sunken white list
             // box). Every other theme lets the window show through the tree exactly as before, so
             // wiring this must not hand them an opaque fill they never had.

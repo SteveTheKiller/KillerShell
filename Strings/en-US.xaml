@@ -181,6 +181,12 @@
     <!-- Results context menu (ResultsMenu.cs). Copy commands act on the whole selection. -->
     <sys:String x:Key="Str_Menu_OpenAdmin">Open as administrator</sys:String>
     <sys:String x:Key="Str_Menu_SearchHere">Search inside this folder</sys:String>
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyze storage</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">Show hidden and dotfolders</sys:String>
+    <sys:String x:Key="Str_Menu_OpenInNewTab">Open in new tab</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">Tree: showing hidden and dotfolders</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">Tree: hiding hidden and dotfolders</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">show or hide hidden and dotfolders in the tree</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Open terminal here</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Open terminal here as administrator</sys:String>
     <sys:String x:Key="Str_Menu_ExcludeFolder">Exclude this folder</sys:String>
@@ -228,7 +234,7 @@
          GPLv3 and the product name stay out of the translatable text (family standard). -->
     <sys:String x:Key="Str_About_Title">About KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Text Size: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">One portable app to manage a computer and its files. A file browser, terminal, text editor and admin tools share one window and one set of keys. Installer optional, no runtime, no account. A </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">One portable app to manage a computer and its files. A file browser, terminal, text editor, storage analyzer and admin tools all share one window. A </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> utility.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSION</sys:String>
     <sys:String x:Key="Str_About_Publisher">PUBLISHER</sys:String>
@@ -453,6 +459,17 @@
     <sys:String x:Key="Str_Ks_ViewList">LIST</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">KEYBOARD</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">hold Ctrl, Shift or Alt to preview that layer</sys:String>
+    <!-- Shortcuts card: SCOPE section headings. A binding belongs to one applet or to the whole
+         window, which is a separate question from its category (SEARCH/NAVIGATION/...) and gets
+         its own headings. Only four are here: the Processes, Event Viewer, Registry Editor and
+         Storage Analyzer sections reuse those tabs' own Str_TabTitle_* strings rather than
+         translating the same nouns a second time. Str_Ks_ScopeShown labels the applet name above
+         the keyboard map, which can only draw one meaning per keycap and so has to say which. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">Everywhere</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">File browser</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">Editor</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">showing keys for:</sys:String>
 
     <!-- Explorer-convention bindings -->
     <sys:String x:Key="Str_Ks_BackForward">go back / forward</sys:String>
@@ -527,6 +544,11 @@
          names, unchanged. -->
     <sys:String x:Key="Str_TT_TaskManager">Processes/Services  (F9)  -  right-click to choose</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">Processes/Services</sys:String>
+    <!-- The tab shows ONE of the two views at a time, so its title names that one. The combined
+         key above is still used for the rail button and its tooltips, where it describes the
+         tool rather than the current view. -->
+    <sys:String x:Key="Str_TabTitle_Processes">Processes</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Services</sys:String>
     <sys:String x:Key="Str_Rail_ProcessesOpen">Processes/Services</sys:String>
     <sys:String x:Key="Str_Rail_ProcessesAdmin">Processes/Services as administrator</sys:String>
     <sys:String x:Key="Str_TT_ProcFilter">Filter by name, path or user</sys:String>
@@ -700,8 +722,31 @@
     <sys:String x:Key="Str_Status_Extracting">Extracting {0}...</sys:String>
     <sys:String x:Key="Str_Status_ExtractFailed">Could not extract {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFailed">Could not read the archive - {0}</sys:String>
-    <sys:String x:Key="Str_Status_ArchiveReadOnly">Archives open read-only - nothing can be added to one yet</sys:String>
-    <sys:String x:Key="Str_Status_ArchiveNoDrag">Dragging out of an archive isn't supported yet - open the file to extract a copy</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Only .zip archives can be changed - this one opens read-only</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Only files can be dragged out of an archive - open the folder and drag what's inside</sys:String>
+
+    <!-- Writing inside an archive (Services/ArchiveWriter.cs, Shell/ArchiveEdit.cs) -->
+    <sys:String x:Key="Str_Status_ArchiveWriting">Rewriting the archive - {0}%</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">Added {0} to the archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">Removed {0} from the archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">Renamed to {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">Added {0} - {1} could not be given a legal name and were skipped</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">Could not update the archive - {0}. The original is unchanged.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">That archive file is marked read-only - clear that and try again</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">That archive is open in another program - close it and try again</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">No permission to write to that archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">The archive already holds something with that name</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">That entry is no longer in the archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">That name can't be used inside an archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">Nothing there to add</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">Archive left unchanged</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">Some of those are already in the archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">Copied out of the archive - the entry is still in there</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">{0} of these are already in the archive.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">Remove {0} item(s) from the archive? The whole archive is rewritten and this can't be undone.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">Replace them instead of keeping both</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">Add</sys:String>
+
     <sys:String x:Key="Str_Storage_Free">free</sys:String>
 
     <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Shell/RegistryEditorControl.cs) -->

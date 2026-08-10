@@ -190,7 +190,7 @@ namespace KillerShell
             // callback cannot be interrupted once it has started - DispatcherPriority only orders
             // work that is still queued. So draining the whole queue into a single batch froze the
             // window for as long as it took to add every result, and no priority could help: a
-            // broad match like "steve" can put tens of thousands of hits in one 150ms window.
+            // broad match like "log" can put tens of thousands of hits in one 150ms window.
             // Slices are capped instead. A backlog is drained by posting slices back to back
             // rather than waiting out another tick, so throughput is unchanged - only the size of
             // any one UI callback is bounded, which is what lets input interleave.

@@ -122,6 +122,9 @@
     <sys:String x:Key="Str_Menu_OpenFile">Abrir archivo</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">Abrir con...</sys:String>
     <sys:String x:Key="Str_Menu_ShowExplorer">Mostrar en Explorer</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">Mostrar carpetas ocultas y con punto</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">Árbol: mostrando carpetas ocultas y con punto</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">Árbol: ocultando carpetas ocultas y con punto</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimizar</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Maximizar</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Restaurar</sys:String>
@@ -328,6 +331,13 @@
     <sys:String x:Key="Str_Ks_ViewList">LISTA</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">TECLADO</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">mantén pulsado Ctrl, Mayús o Alt para ver esa capa</sys:String>
+    <!-- Shortcuts card: SCOPE section headings (see en-US.xaml for the full note). The other
+         four sections reuse the Str_TabTitle_* strings of the tabs they name. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">En todas partes</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">Explorador de archivos</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">Editor</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">mostrando teclas de:</sys:String>
 
     <!-- Atajos de convencion del Explorador -->
     <sys:String x:Key="Str_Ks_BackForward">atrás / adelante</sys:String>
@@ -617,6 +627,31 @@
     <sys:String x:Key="Str_RegEd_AccessDenied">Acceso denegado - esta clave necesita un nivel de acceso mayor del que tiene incluso esta ventana con privilegios elevados</sys:String>
     <sys:String x:Key="Str_RegEd_Base">Base:</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">Pares de bytes hexadecimales, separados por espacios (p. ej. 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_Status_Extracting">Extrayendo {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">No se pudo extraer {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">No se pudo leer el archivo comprimido - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Solo se pueden modificar los archivos .zip - este se abre en solo lectura</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Solo se pueden arrastrar archivos fuera de un archivo comprimido - abre la carpeta y arrastra su contenido</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriting">Reescribiendo el archivo comprimido - {0} %</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">Se añadió {0} al archivo comprimido</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">Se quitó {0} del archivo comprimido</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">Renombrado a {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">Se añadieron {0} - se omitieron {1} sin un nombre válido</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">No se pudo actualizar el archivo comprimido - {0}. El original no ha cambiado.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Ese archivo comprimido es de solo lectura - quita ese atributo e inténtalo de nuevo</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">Ese archivo comprimido está abierto en otro programa - ciérralo e inténtalo de nuevo</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">Sin permiso para escribir en ese archivo comprimido</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">El archivo comprimido ya contiene algo con ese nombre</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">Esa entrada ya no está en el archivo comprimido</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">Ese nombre no se puede usar dentro de un archivo comprimido</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">No hay nada que añadir</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">El archivo comprimido no se ha modificado</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">Algunos de esos ya están en el archivo comprimido</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">Copiado fuera del archivo comprimido - la entrada sigue dentro</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">{0} de estos ya están en el archivo comprimido.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">¿Quitar {0} elemento(s) del archivo comprimido? Se reescribe todo el archivo y no se puede deshacer.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">Reemplazarlos en lugar de conservar ambos</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">Añadir</sys:String>
     <sys:String x:Key="Str_RegEd_ComputerRoot">Equipo</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">No se pudo copiar al portapapeles - {0}</sys:String>
     <sys:String x:Key="Str_RegEd_CreateFailed">No se pudo crear - {0}</sys:String>
@@ -696,6 +731,8 @@
     <sys:String x:Key="Str_TabTitle_Performance">Rendimiento</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">Editor del Registro</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">Procesos/Servicios</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">Procesos</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Servicios</sys:String>
     <sys:String x:Key="Str_Theme_Black">Negro</sys:String>
     <sys:String x:Key="Str_Theme_Blood">Sangre</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">Cianótico</sys:String>

@@ -140,6 +140,9 @@
     <sys:String x:Key="Str_Menu_OpenFile">Otevřít soubor</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">Otevřít v programu...</sys:String>
     <sys:String x:Key="Str_Menu_ShowExplorer">Zobrazit v Průzkumníku</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">Zobrazit skryté složky a složky s tečkou</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">Strom: zobrazuji skryté složky a složky s tečkou</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">Strom: skrývám skryté složky a složky s tečkou</sys:String>
     <sys:String x:Key="Str_Menu_OpenAdmin">Otevřít jako správce</sys:String>
     <sys:String x:Key="Str_Menu_SearchHere">Hledat v této složce</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Otevřít zde terminál</sys:String>
@@ -326,6 +329,13 @@
     <sys:String x:Key="Str_Ks_ViewList">SEZNAM</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">KLÁVESNICE</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">podržte Ctrl, Shift nebo Alt pro náhled této vrstvy</sys:String>
+    <!-- Shortcuts card: SCOPE section headings (see en-US.xaml for the full note). The other
+         four sections reuse the Str_TabTitle_* strings of the tabs they name. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">Všude</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">Prohlížeč souborů</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">Terminál</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">Editor</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">zobrazené klávesy pro:</sys:String>
 
     <!-- Zkratky podle Pruzkumnika -->
     <sys:String x:Key="Str_Ks_BackForward">zpět / vpřed</sys:String>
@@ -615,6 +625,31 @@
     <sys:String x:Key="Str_RegEd_AccessDenied">Přístup odepřen - tento klíč vyžaduje vyšší úroveň oprávnění, než má i toto okno se zvýšenými oprávněními</sys:String>
     <sys:String x:Key="Str_RegEd_Base">Soustava:</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">Dvojice hexadecimálních bajtů oddělené mezerami (např. 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_Status_Extracting">Rozbaluje se {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">Nepodařilo se rozbalit {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">Nepodařilo se přečíst archiv - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Měnit lze jen archivy .zip - tento se otevírá jen pro čtení</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Z archivu lze přetáhnout jen soubory - otevřete složku a přetáhněte její obsah</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriting">Přepisuje se archiv - {0} %</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">Do archivu přidáno: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">Z archivu odebráno: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">Přejmenováno na {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">Přidáno {0} - {1} bez platného názvu přeskočeno</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">Nepodařilo se aktualizovat archiv - {0}. Původní soubor je beze změny.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Tento soubor archivu je jen pro čtení - zrušte tento atribut a zkuste to znovu</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">Tento archiv je otevřený v jiném programu - zavřete ho a zkuste to znovu</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">Chybí oprávnění k zápisu do tohoto archivu</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">Archiv už něco s tímto názvem obsahuje</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">Tato položka už v archivu není</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">Tento název nelze v archivu použít</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">Není co přidat</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">Archiv zůstal beze změny</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">Některé z nich už v archivu jsou</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">Zkopírováno z archivu - položka v něm zůstává</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">{0} z nich už v archivu je.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">Odebrat {0} položek z archivu? Přepíše se celý archiv a nelze to vzít zpět.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">Nahradit je místo zachování obou</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">Přidat</sys:String>
     <sys:String x:Key="Str_RegEd_ComputerRoot">Počítač</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Nepodařilo se kopírovat do schránky - {0}</sys:String>
     <sys:String x:Key="Str_RegEd_CreateFailed">Nepodařilo se to vytvořit - {0}</sys:String>
@@ -694,6 +729,8 @@
     <sys:String x:Key="Str_TabTitle_Performance">Výkon</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">Editor registru</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">Procesy/Služby</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">Procesy</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Služby</sys:String>
     <sys:String x:Key="Str_Theme_Black">Černý</sys:String>
     <sys:String x:Key="Str_Theme_Blood">Krvavý</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">Cyanotický</sys:String>

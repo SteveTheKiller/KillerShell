@@ -10,8 +10,12 @@ namespace KillerShell.Shell
     // untouched - nothing here reads _active except to re-list what is currently on screen.
     public partial class MainWindow
     {
-        // Read by ListFolder (Browse.cs) and by the tree's child enumeration (FolderTree.cs),
-        // both of which run off the UI thread, so these stay plain fields with no UI coupling.
+        // Read by ListFolder (Browse.cs), which runs off the UI thread, so these stay plain
+        // fields with no UI coupling.
+        // NOT read by the tree. The tree has its own switch, MainWindow.TreeShowHidden
+        // (FolderTree.cs), which also covers System and dot-prefixed folders. The two are
+        // deliberately independent: a clean tree over a listing that shows everything is the
+        // combination that is actually wanted.
         internal static bool ShowHidden   { get; private set; }
         internal static bool FoldersOnTop { get; private set; } = true;
 
@@ -80,11 +84,12 @@ namespace KillerShell.Shell
             Services.ThemeManager.SetSetting("ShowHidden", ShowHidden ? "1" : "0");
             UpdateViewOptionButtons();
 
-            // Both the listing and the tree were built with the old filter, so both are stale.
-            // The tree refreshes IN PLACE (FolderTree.cs) rather than rebuilding from its drive
-            // roots: rebuilding threw away every expansion, so the sidebar collapsed and
-            // reflowed on a toggle that has nothing to do with what is open.
-            _ = RefreshTreeAsync();                 // FolderTree.cs
+            // ONLY the listing is re-read. This used to refresh the tree as well, on the
+            // reasoning that both were built with the old filter - true when they shared one
+            // switch, and false since the tree got its own (MainWindow.TreeShowHidden,
+            // FolderTree.cs). The tree does not read ShowHidden at all now, so refreshing it
+            // here changed nothing about what it contained and only made the sidebar visibly
+            // reflow on a toggle that is none of its business.
             if (_active.IsBrowsing && !string.IsNullOrEmpty(_active.CurrentFolder))
                 _ = NavigateTo(_active.CurrentFolder!, record: false);   // Browse.cs
         }

@@ -77,6 +77,22 @@ namespace KillerShell.Shell
         private readonly Dictionary<int, TimeSpan> _lastCpuTime  = new();
         private readonly Dictionary<int, DateTime> _lastSampleAt = new();
 
+        // PIDs this process cannot open - protected or elevated processes, where
+        // TotalProcessorTime and StartTime both throw Win32Exception. Remembered so the reads
+        // are not RETRIED on every tick.
+        //
+        // The catch blocks were already correct; the cost was that they ran again every refresh.
+        // On an ordinary machine that is ~20 unreadable processes x 2 reads = ~40 thrown and
+        // caught exceptions PER TICK, forever. Cheap when running normally, and very expensive
+        // under a debugger, which breaks in and walks a stack for every first-chance throw -
+        // which is exactly what the "everything is sluggish" trace showed, 40 identical
+        // Win32Exception lines in a burst.
+        //
+        // Permission does not change while a process lives, so one failure is conclusive for
+        // that PID. Pruned with the other per-PID bookkeeping when a process exits, so a reused
+        // PID starts clean rather than inheriting the old one's verdict.
+        private readonly HashSet<int> _unreadablePids = new();
+
         // Owner lookups are a per-instance WMI method INVOKE (GetOwner), which costs far more
         // than the one bulk SELECT the rest of a row comes from. A process's owner cannot change
         // for its lifetime, so once a PID has answered - even with "-" for "could not tell" - it
@@ -129,6 +145,15 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            // PaneBrush on the root plus a grain overlay, exactly like EventViewerControl and
+            // for the same reason: with no background the tab showed ResultsSurface's darker
+            // MenuBackgroundBrush through its transparent grid and read gray instead of the
+            // pane color, and an opaque root then needs its own grain or it comes up flat.
+            SetResourceReference(BackgroundProperty, "PaneBrush");
+            var grain = ToolTabChrome.Grain();
+            SetRowSpan(grain, 3);
+            Children.Add(grain);
 
             // ToolTabChrome: raised menu-bar tier for the filter row, sunken white well for the
             // grid on 98SE; inert on the ordinary themes.
@@ -388,6 +413,11 @@ namespace KillerShell.Shell
             _mode = mode;
 
             UpdateModeToggle();
+            // The tab title is the only place that says which of the two views you are looking
+            // at - the grid's own columns are the tell otherwise, and "Processes/Services" on
+            // the tab named both at once. The window owns tab titles, so this is raised rather
+            // than set here (ProcessTabs.cs), the same shape as OpenFileLocationRequested.
+            ModeChanged?.Invoke(mode == ViewMode.Processes);
 
             _grid.Columns.Clear();
             foreach (var c in mode == ViewMode.Processes ? _processColumns : _serviceColumns)
@@ -605,34 +635,53 @@ namespace KillerShell.Shell
                     try { mem = proc.WorkingSet64; }
                     catch { mem = 0; }
 
+                    // Both reads below are skipped entirely for a PID already known to be
+                    // unopenable - see _unreadablePids. The catches stay: the FIRST read of a
+                    // given process still has to discover it, and a process can exit between
+                    // GetProcesses and here.
+                    bool readable = !_unreadablePids.Contains(pid);
+
                     // CPU%: swallowed per-process, not per-refresh - a system process we cannot
                     // query for its processor time must not blank out every OTHER row's number.
                     double cpuPercent = 0;
-                    try
+                    if (readable)
                     {
-                        var cpuTime = proc.TotalProcessorTime;
-                        if (_lastCpuTime.TryGetValue(pid, out var prevCpu) &&
-                            _lastSampleAt.TryGetValue(pid, out var prevAt))
+                        try
                         {
-                            double elapsedMs = (now - prevAt).TotalMilliseconds;
-                            if (elapsedMs > 0)
+                            var cpuTime = proc.TotalProcessorTime;
+                            if (_lastCpuTime.TryGetValue(pid, out var prevCpu) &&
+                                _lastSampleAt.TryGetValue(pid, out var prevAt))
                             {
-                                double deltaMs = (cpuTime - prevCpu).TotalMilliseconds;
-                                cpuPercent = Math.Max(0, Math.Round(
-                                    deltaMs / elapsedMs / Environment.ProcessorCount * 100.0, 1));
+                                double elapsedMs = (now - prevAt).TotalMilliseconds;
+                                if (elapsedMs > 0)
+                                {
+                                    double deltaMs = (cpuTime - prevCpu).TotalMilliseconds;
+                                    cpuPercent = Math.Max(0, Math.Round(
+                                        deltaMs / elapsedMs / Environment.ProcessorCount * 100.0, 1));
+                                }
                             }
+                            _lastCpuTime[pid]  = cpuTime;
+                            _lastSampleAt[pid] = now;
                         }
-                        _lastCpuTime[pid]  = cpuTime;
-                        _lastSampleAt[pid] = now;
+                        catch
+                        {
+                            // Conclusive for this PID: it is protected or elevated, and it will
+                            // still be at the next tick. StartTime below would throw too, so it
+                            // is skipped in the same breath.
+                            _unreadablePids.Add(pid);
+                            readable = false;
+                        }
                     }
-                    catch { /* cpuPercent stays 0 */ }
 
                     // Process.StartTime throws for a protected/elevated process this app is not
                     // running as - read defensively, per-process, no WMI round trip needed since
                     // Process already exposes it directly (unlike ParentProcessId).
                     string startTime = "-";
-                    try { startTime = proc.StartTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                    catch { /* startTime stays "-" */ }
+                    if (readable)
+                    {
+                        try { startTime = proc.StartTime.ToString("yyyy-MM-dd HH:mm:ss"); }
+                        catch { _unreadablePids.Add(pid); }
+                    }
 
                     string cmd = string.Empty, path = string.Empty, parentPid = "-";
                     if (wmi.TryGetValue(pid, out var info))
@@ -731,6 +780,7 @@ namespace KillerShell.Shell
                 _byPid.Remove(gone);
                 _lastCpuTime.Remove(gone);
                 _lastSampleAt.Remove(gone);
+                _unreadablePids.Remove(gone);   // a reused PID must not inherit this verdict
                 _ownerCache.TryRemove(gone, out _);
                 _ownerPending.TryRemove(gone, out _);
             }
@@ -941,20 +991,54 @@ namespace KillerShell.Shell
                 _byPid[pid] = p;
             }
 
-            Row(4,     "System",                 "SYSTEM",        0.0, 0,   "",                                                              "",                                                       "0",    "-");
+            // In ascending PID order, which is also roughly boot order: the kernel and session
+            // processes first, then the services a managed endpoint runs, then the user's own
+            // session. A Task Manager capture is judged on whether the list looks like a real
+            // machine's, and a real one is mostly system processes sitting at 0.0 with a handful
+            // of user applications carrying all the CPU - a dozen curated rows all doing something
+            // interesting reads as invented immediately.
+            //
+            // The PIDs are not free either. Several of them are named by the fabricated event log
+            // (Shell\EventViewerControl.cs): 812 raises the BITS service event, 1188 the DNS and
+            // time-service warnings, 2988 the installer rows, 7204 hangs Outlook, and 5116 is the
+            // app writing its own start-up entry. Changing one here means changing it there.
+            Row(4,     "System",                  "SYSTEM",        0.1, 0,   "",                                                               "",                                                       "0",    "-");
+            Row(88,    "Registry",                "SYSTEM",        0.0, 32,  "",                                                               "",                                                       "4",    "-");
+            Row(396,   "smss.exe",                "SYSTEM",        0.0, 1,   @"\SystemRoot\System32\smss.exe",                                 @"C:\Windows\System32\smss.exe",                          "4",    "07:40:51");
+            Row(544,   "csrss.exe",               "SYSTEM",        0.0, 5,   @"%SystemRoot%\system32\csrss.exe",                               @"C:\Windows\System32\csrss.exe",                         "536",  "07:40:53");
+            Row(620,   "wininit.exe",             "SYSTEM",        0.0, 6,   "wininit.exe",                                                    @"C:\Windows\System32\wininit.exe",                       "536",  "07:40:54");
+            Row(660,   "csrss.exe",               "SYSTEM",        0.3, 7,   @"%SystemRoot%\system32\csrss.exe",                               @"C:\Windows\System32\csrss.exe",                         "652",  "07:40:54");
+            Row(728,   "winlogon.exe",            "SYSTEM",        0.0, 9,   "winlogon.exe",                                                   @"C:\Windows\System32\winlogon.exe",                      "652",  "07:40:55");
+            Row(780,   "services.exe",            "SYSTEM",        0.1, 12,  @"C:\Windows\system32\services.exe",                              @"C:\Windows\System32\services.exe",                      "620",  "07:40:56");
+            Row(796,   "lsass.exe",               "SYSTEM",        0.2, 21,  @"C:\Windows\system32\lsass.exe",                                 @"C:\Windows\System32\lsass.exe",                         "620",  "07:40:56");
             Row(812,   "svchost.exe",             "SYSTEM",        0.4, 18,  @"C:\Windows\system32\svchost.exe -k DcomLaunch -p",             @"C:\Windows\System32\svchost.exe",                       "812",  "07:41:02");
+            Row(900,   "fontdrvhost.exe",         "SYSTEM",        0.0, 4,   @"""fontdrvhost.exe""",                                           @"C:\Windows\System32\fontdrvhost.exe",                   "620",  "07:41:03");
+            Row(1044,  "svchost.exe",             "SYSTEM",        0.3, 44,  @"C:\Windows\system32\svchost.exe -k netsvcs -p",                @"C:\Windows\System32\svchost.exe",                       "780",  "07:41:08");
             Row(1144,  "MsMpEng.exe",             "SYSTEM",        3.8, 210, @"""C:\Program Files\Windows Defender\MsMpEng.exe""",             @"C:\Program Files\Windows Defender\MsMpEng.exe",        "812",  "07:41:19");
+            Row(1188,  "svchost.exe",             "LOCAL SERVICE", 0.2, 27,  @"C:\Windows\system32\svchost.exe -k NetworkService -p",         @"C:\Windows\System32\svchost.exe",                       "780",  "07:41:20");
+            Row(1320,  "dwm.exe",                 "DWM-1",         2.4, 118, @"""dwm.exe""",                                                   @"C:\Windows\System32\dwm.exe",                           "728",  "07:41:22");
             Row(1988,  "SentinelAgent.exe",       "SYSTEM",        2.1, 156, @"""C:\Program Files\SentinelOne\Sentinel Agent\SentinelAgent.exe""", @"C:\Program Files\SentinelOne\Sentinel Agent\SentinelAgent.exe", "812", "07:41:24");
             Row(2240,  "AEMAgent.exe",            "SYSTEM",        0.9, 88,  @"""C:\Program Files (x86)\CentraStage\AEMAgent\AEMAgent.exe""",  @"C:\Program Files (x86)\CentraStage\AEMAgent\AEMAgent.exe", "812", "07:41:31");
+            Row(2416,  "spoolsv.exe",             "SYSTEM",        0.0, 19,  @"C:\Windows\System32\spoolsv.exe",                               @"C:\Windows\System32\spoolsv.exe",                       "780",  "07:41:32");
+            Row(2988,  "msiexec.exe",             "SYSTEM",        0.0, 14,  @"C:\Windows\system32\msiexec.exe /V",                            @"C:\Windows\System32\msiexec.exe",                       "780",  "07:41:33");
+            Row(3120,  "svchost.exe",             "NETWORK SERVICE", 0.1, 22, @"C:\Windows\system32\svchost.exe -k LocalServiceNetworkRestricted -p", @"C:\Windows\System32\svchost.exe",                "780",  "07:41:33");
             Row(3312,  "ScreenConnect.ClientService.exe", "SYSTEM", 0.1, 24, @"""C:\Program Files (x86)\ScreenConnect Client\ScreenConnect.ClientService.exe""", @"C:\Program Files (x86)\ScreenConnect Client\ScreenConnect.ClientService.exe", "812", "07:41:33");
-            Row(4028,  "explorer.exe",            "steve",         1.2, 142, @"C:\Windows\Explorer.EXE",                                       @"C:\Windows\explorer.exe",                               "3844", "07:42:10");
-            Row(5116,  "KillerShell.exe",          "steve",         4.6, 198, @"""C:\Program Files\KillerShell\KillerShell.exe""",                @"C:\Program Files\KillerShell\KillerShell.exe",            "4028", "07:58:03");
-            Row(5544,  "pwsh.exe",                 "steve",         0.6, 76,  @"""C:\Program Files\PowerShell\7\pwsh.exe"" -NoLogo",            @"C:\Program Files\PowerShell\7\pwsh.exe",                "5116", "08:01:47");
-            Row(6002,  "Code.exe",                 "steve",        11.4, 612, @"""C:\Users\steve\AppData\Local\Programs\Microsoft VS Code\Code.exe""", @"C:\Users\steve\AppData\Local\Programs\Microsoft VS Code\Code.exe", "4028", "08:05:12");
-            Row(6188,  "chrome.exe",               "steve",         6.9, 890, @"""C:\Program Files\Google\Chrome\Application\chrome.exe""",     @"C:\Program Files\Google\Chrome\Application\chrome.exe", "4028", "08:06:40");
-            Row(6910,  "Teams.exe",                "steve",         2.8, 340, @"""C:\Program Files\WindowsApps\MSTeams\Teams.exe""",            @"C:\Program Files\WindowsApps\MSTeams\Teams.exe",        "4028", "08:07:02");
-            Row(7204,  "OUTLOOK.EXE",              "steve",         1.5, 265, @"""C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE""", @"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE", "4028", "08:07:19");
+            Row(3856,  "SearchIndexer.exe",       "SYSTEM",        1.7, 164, @"C:\Windows\system32\SearchIndexer.exe /Embedding",              @"C:\Windows\System32\SearchIndexer.exe",                 "780",  "07:41:40");
+            Row(4028,  "explorer.exe",            "Demo",          1.2, 142, @"C:\Windows\Explorer.EXE",                                       @"C:\Windows\explorer.exe",                               "3844", "07:42:10");
+            Row(4472,  "SenseIR.exe",             "SYSTEM",        0.4, 61,  @"""C:\Windows\System32\SenseIR\SenseIR.exe""",                    @"C:\Windows\System32\SenseIR\SenseIR.exe",               "780",  "07:42:14");
+            Row(4816,  "sihost.exe",              "Demo",          0.1, 34,  "sihost.exe",                                                     @"C:\Windows\System32\sihost.exe",                        "1044", "07:42:16");
+            Row(4920,  "ctfmon.exe",              "Demo",          0.0, 17,  @"""ctfmon.exe""",                                                @"C:\Windows\System32\ctfmon.exe",                        "1044", "07:42:16");
+            Row(5116,  "KillerShell.exe",          "Demo",          4.6, 198, @"""C:\Program Files\KillerShell\KillerShell.exe""",                @"C:\Program Files\KillerShell\KillerShell.exe",            "4028", "07:58:03");
+            Row(5544,  "pwsh.exe",                 "Demo",          0.6, 76,  @"""C:\Program Files\PowerShell\7\pwsh.exe"" -NoLogo",            @"C:\Program Files\PowerShell\7\pwsh.exe",                "5116", "08:01:47");
+            Row(6002,  "Code.exe",                 "Demo",         11.4, 612, @"""C:\Users\Demo\AppData\Local\Programs\Microsoft VS Code\Code.exe""", @"C:\Users\Demo\AppData\Local\Programs\Microsoft VS Code\Code.exe", "4028", "08:05:12");
+            Row(6188,  "chrome.exe",               "Demo",          6.9, 890, @"""C:\Program Files\Google\Chrome\Application\chrome.exe""",     @"C:\Program Files\Google\Chrome\Application\chrome.exe", "4028", "08:06:40");
+            Row(6404,  "msedgewebview2.exe",       "Demo",          0.8, 214, @"""C:\Program Files (x86)\Microsoft\EdgeWebView\Application\msedgewebview2.exe"" /embedding", @"C:\Program Files (x86)\Microsoft\EdgeWebView\Application\msedgewebview2.exe", "6910", "08:07:03");
+            Row(6910,  "Teams.exe",                "Demo",          2.8, 340, @"""C:\Program Files\WindowsApps\MSTeams\Teams.exe""",            @"C:\Program Files\WindowsApps\MSTeams\Teams.exe",        "4028", "08:07:02");
+            Row(7204,  "OUTLOOK.EXE",              "Demo",          1.5, 265, @"""C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE""", @"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE", "4028", "08:07:19");
+            Row(7488,  "ScreenConnect.WindowsClient.exe", "Demo",   0.0, 41, @"""C:\Program Files (x86)\ScreenConnect Client\ScreenConnect.WindowsClient.exe"" -e Access", @"C:\Program Files (x86)\ScreenConnect Client\ScreenConnect.WindowsClient.exe", "3312", "07:42:20");
             Row(7860,  "robocopy.exe",             "SYSTEM",        0.2, 6,   @"robocopy.exe D:\Shares\Accounts \\nas01\Accounts /MIR /FFT /Z /NP", @"C:\Windows\System32\robocopy.exe",                  "812",  "23:00:01");
+            Row(8112,  "procexp64.exe",            "Demo",          0.5, 58,  @"""C:\Tools\Sysinternals\procexp64.exe""",                       @"C:\Tools\Sysinternals\procexp64.exe",                   "5116", "08:09:31");
+            Row(8340,  "notepad++.exe",            "Demo",          0.0, 72,  @"""C:\Program Files (x86)\Notepad++\notepad++.exe"" C:\Users\Demo\Logs\patch-window.err", @"C:\Program Files (x86)\Notepad++\notepad++.exe", "4028", "08:10:04");
 
             ShowStatus(string.Empty, error: false);
         }
@@ -997,6 +1081,41 @@ namespace KillerShell.Shell
                 @"C:\Windows\System32\svchost.exe -k netsvcs -p", "Enables the detection, download and installation of updates.", false);
             Row("RemoteRegistry", "Remote Registry",                                  "Stopped", "Disabled",   "NT AUTHORITY\\LocalService",
                 @"C:\Windows\System32\svchost.exe -k LocalService", "Enables remote users to modify registry settings on this computer.", false);
+
+            // Every startup type the column can show is represented above and below - Automatic,
+            // Automatic (Delayed Start), Manual, Manual (Trigger Start) and Disabled - and both
+            // statuses, with the Stopped ones being the services that are genuinely stopped on a
+            // healthy endpoint rather than a token one thrown in for contrast. The log-on accounts
+            // vary for the same reason: a services list where every row says LocalSystem does not
+            // demonstrate that the column is doing anything.
+            Row("Dnscache",    "DNS Client",                                         "Running", "Automatic (Trigger Start)", "NT AUTHORITY\\NetworkService",
+                @"C:\Windows\System32\svchost.exe -k NetworkService -p", "Caches Domain Name System names and registers this computer's full name.", false);
+            Row("Dhcp",        "DHCP Client",                                        "Running", "Automatic",  "NT AUTHORITY\\LocalService",
+                @"C:\Windows\System32\svchost.exe -k LocalServiceNetworkRestricted -p", "Registers and updates IP addresses and DNS records for this computer.", false);
+            Row("LanmanWorkstation", "Workstation",                                  "Running", "Automatic",  "NT AUTHORITY\\NetworkService",
+                @"C:\Windows\System32\svchost.exe -k NetworkService -p", "Creates and maintains client network connections to remote servers using the SMB protocol.", true);
+            Row("EventLog",    "Windows Event Log",                                  "Running", "Automatic",  "NT AUTHORITY\\LocalService",
+                @"C:\Windows\System32\svchost.exe -k LocalServiceNetworkRestricted -p", "Manages events and event logs.", false);
+            Row("Schedule",    "Task Scheduler",                                     "Running", "Automatic",  "LocalSystem",
+                @"C:\Windows\system32\svchost.exe -k netsvcs -p", "Enables a user to configure and schedule automated tasks on this computer.", false);
+            Row("W32Time",     "Windows Time",                                       "Running", "Manual (Trigger Start)", "NT AUTHORITY\\LocalService",
+                @"C:\Windows\system32\svchost.exe -k LocalService", "Maintains date and time synchronization on all clients and servers in the network.", true);
+            Row("BFE",         "Base Filtering Engine",                              "Running", "Automatic",  "NT AUTHORITY\\LocalService",
+                @"C:\Windows\system32\svchost.exe -k LocalServiceNoNetwork -p", "Manages firewall and Internet Protocol security policies.", false);
+            Row("mpssvc",      "Windows Defender Firewall",                          "Running", "Automatic",  "LocalSystem",
+                @"C:\Windows\system32\svchost.exe -k LocalServiceNoNetwork -p", "Helps protect the computer by preventing unauthorized access through the Internet or a network.", false);
+            Row("SecurityHealthService", "Windows Security Service",                 "Running", "Manual",     "LocalSystem",
+                @"C:\Windows\system32\SecurityHealthService.exe", "Handles unified device protection and health information.", true);
+            Row("SenseIR",     "Windows Defender Advanced Threat Protection Sensor", "Running", "Manual",     "LocalSystem",
+                @"""C:\Windows\System32\SenseIR\SenseIR.exe""", "Automated investigation and response for endpoint detection.", true);
+            Row("KillerShellUpdate", "KillerShell Update Check",                      "Stopped", "Manual",     "LocalSystem",
+                @"""C:\Program Files\KillerShell\KillerShell.exe"" /updatecheck", "Checks for a newer KillerShell release when asked to.", false);
+            Row("sshd",        "OpenSSH SSH Server",                                 "Stopped", "Disabled",   "LocalSystem",
+                @"C:\Windows\System32\OpenSSH\sshd.exe", "SSH protocol based secure remote login and file transfer.", false);
+            Row("TermService", "Remote Desktop Services",                            "Running", "Manual",     "NT AUTHORITY\\NetworkService",
+                @"C:\Windows\System32\svchost.exe -k NetworkService", "Allows users to connect interactively to a remote computer.", true);
+            Row("Fax",         "Fax",                                                "Stopped", "Manual",     "NT AUTHORITY\\NetworkService",
+                @"C:\Windows\system32\fxssvc.exe", "Enables you to send and receive faxes, utilizing fax resources available on this computer.", false);
 
             ShowStatus(string.Empty, error: false);
         }
@@ -1141,6 +1260,17 @@ namespace KillerShell.Shell
         /// </summary>
         internal event Action<string>? OpenFileLocationRequested;
 
+        /// <summary>
+        /// Fired when the grid swaps between the Processes and Services views. True means
+        /// Processes. Handled in Shell/ProcessTabs.cs, which owns the tab's title - the control
+        /// cannot set it, for the same reason it cannot open a browse tab.
+        /// </summary>
+        internal event Action<bool>? ModeChanged;
+
+        /// <summary>True while the Processes view is showing, false for Services. Read once when
+        /// the tab is built so its title starts out agreeing with the grid.</summary>
+        internal bool IsProcessesMode => _mode == ViewMode.Processes;
+
         private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             if (_mode == ViewMode.Processes)
@@ -1280,6 +1410,13 @@ namespace KillerShell.Shell
         /// Delete/Ctrl+R/Ctrl+Shift+A/Ctrl+O/Ctrl+S/Ctrl+. ever reach the window's own handler
         /// first - verified against MainWindow's IsWindowChord list, none of these six chords
         /// are in it.
+        ///
+        /// That last sentence is the whole guarantee, and it is a side effect of a list written
+        /// to answer a different question: put Ctrl+Shift+A into IsWindowChord for some unrelated
+        /// reason and Run as administrator below silently stops firing. Ctrl+Shift+A is now also
+        /// gated at the window's own branch for that chord (MainWindow.xaml.cs
+        /// ChordOwnedByFocus), which states the rule where the collision actually is. The other
+        /// five still rely on the blanket handover alone - they collide with nothing.
         /// </summary>
         private void Grid_PreviewKeyDown(object sender, KeyEventArgs e)
         {

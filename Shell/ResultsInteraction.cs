@@ -20,6 +20,29 @@ namespace KillerShell.Shell
     // time means neither gesture has to guess later.
     public partial class MainWindow
     {
+        // ── Drag diagnostics ─────────────────────────────────────
+        /// <summary>
+        /// Turn on to get the [DragDiag] trace back. OFF by default.
+        ///
+        /// These are Debug.WriteLine, so they compile out of Release entirely - but in a Debug
+        /// build under a debugger each one is a synchronous write the debugger has to receive,
+        /// and two of these sat on the hottest paths in the app: every mouse-move while a drag
+        /// is armed, and every DragOver, which fire dozens of times a second. That is a real
+        /// part of "everything is sluggish" while debugging.
+        /// Kept rather than deleted because the drag-out investigation still needs them
+        /// (BACKLOG.md) - flip this to true, reproduce, flip it back.
+        /// </summary>
+        // Explicitly initialized, not just declared: nothing assigns it in normal operation - you
+        // set it in the debugger or edit this line - and a bare declaration is CS0649,
+        // "never assigned to, and will always have its default value false".
+        internal static bool DragDiagEnabled = false;
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        private static void DragTrace(string msg)
+        {
+            if (DragDiagEnabled) System.Diagnostics.Debug.WriteLine("[DragDiag] " + msg);
+        }
+
         // ── Gesture state ────────────────────────────────────────
         private Point       _pressAt;
         private bool        _marqueeOn;
@@ -53,7 +76,7 @@ namespace KillerShell.Shell
             if (InScrollBar(e.OriginalSource as DependencyObject)) return;
 
             var item = ItemUnder(e.OriginalSource as DependencyObject);
-            System.Diagnostics.Debug.WriteLine($"[DragDiag] PressDown: OriginalSource={e.OriginalSource?.GetType().Name}, item={(item == null ? "NULL (marquee branch)" : "found (drag-armed)")}");
+            DragTrace($"PressDown: OriginalSource={e.OriginalSource?.GetType().Name}, item={(item == null ? "NULL (marquee branch)" : "found (drag-armed)")}");
             if (item != null)
             {
                 // On an item: arm a possible drag-out. Selection itself is left to the ListBox,
@@ -61,7 +84,7 @@ namespace KillerShell.Shell
                 _dragArmed    = true;
                 _dragSeedItem = item;
                 _dragSeed     = DataFor(item);
-                System.Diagnostics.Debug.WriteLine($"[DragDiag] PressDown: seed={(_dragSeed == null ? "NULL (would have failed the old DataContext read too)" : _dragSeed.FilePath)}");
+                DragTrace($"PressDown: seed={(_dragSeed == null ? "NULL (would have failed the old DataContext read too)" : _dragSeed.FilePath)}");
                 return;
             }
 
@@ -90,7 +113,7 @@ namespace KillerShell.Shell
             if (!_dragArmed) return;
 
             double dx = Math.Abs(now.X - _pressAt.X), dy = Math.Abs(now.Y - _pressAt.Y);
-            System.Diagnostics.Debug.WriteLine($"[DragDiag] MouseMove while armed: dx={dx:0.0}, dy={dy:0.0}, thresholdX={SystemParameters.MinimumHorizontalDragDistance}, thresholdY={SystemParameters.MinimumVerticalDragDistance}");
+            DragTrace($"MouseMove while armed: dx={dx:0.0}, dy={dy:0.0}, thresholdX={SystemParameters.MinimumHorizontalDragDistance}, thresholdY={SystemParameters.MinimumVerticalDragDistance}");
 
             // Not every wobble is a drag. Wait for the system's own threshold so a click that
             // moves a pixel still reads as a click.
@@ -242,16 +265,14 @@ namespace KillerShell.Shell
             if (_dragSeed == null) _dragSeed = DataFor(_dragSeedItem);
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: late-resolved seed={_dragSeed?.FilePath ?? "still null"}");
 
-            // Nothing inside an archive exists on disk, so File.Exists below filters every row
-            // out and the drag would just do nothing at all. Say why instead: dragging OUT of
-            // an archive means extracting first, which is the write half and is not built yet.
-            if (InArchive(Pane))
-            {
-                SetTabStatusKey(_active, "Str_Status_ArchiveNoDrag");
-                return;
-            }
+            // Nothing inside an archive exists on disk, so the File.Exists filter would remove
+            // every row and the drag would do nothing at all. Dragging out extracts temp copies
+            // first and drags those instead (ArchiveEdit.cs).
+            bool fromArchive = InArchive(Pane);
 
-            var paths = FilesForCommand(_dragSeed).Where(File.Exists).ToArray();
+            var paths = fromArchive
+                ? ExtractForDragOut(FilesForCommand(_dragSeed))
+                : FilesForCommand(_dragSeed).Where(File.Exists).ToArray();
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: seed={_dragSeed?.FilePath ?? "null"}, resolvedPaths={paths.Length}");
             if (paths.Length == 0) return;
 
@@ -290,12 +311,25 @@ namespace KillerShell.Shell
             // uses. Copy AND Move offered: the drop target decides, so holding Shift while
             // dropping into Explorer moves the files instead of copying them. Offering Copy alone
             // made KillerShell the one place a Shift-drag silently did the wrong thing.
+            //
+            // OUT OF AN ARCHIVE IS THE ONE EXCEPTION: Copy only, never Move. What is being
+            // dragged there is already a temp extract, so a target that took it as a move would
+            // delete the temp copy and leave the archive untouched - the file would look moved
+            // and not be. A real move out means extract plus delete-from-archive, two steps that
+            // cannot be made one, and a failure between them either loses the file or silently
+            // leaves it behind. Explorer treats zip drag-out as a copy for the same reason.
             try
             {
                 const int DROPEFFECT_COPY = 1, DROPEFFECT_MOVE = 2;
+                int allowed = fromArchive ? DROPEFFECT_COPY : DROPEFFECT_COPY | DROPEFFECT_MOVE;
                 int hr = Services.NativeDragDrop.DoDragDrop(data, new Services.SimpleDropSource(),
-                    DROPEFFECT_COPY | DROPEFFECT_MOVE, out int finalEffect);
+                    allowed, out int finalEffect);
                 System.Diagnostics.Debug.WriteLine($"[DragDiag] DoDragDrop returned: hr=0x{hr:X8}, effect={finalEffect}");
+
+                // Said out loud rather than left to be inferred: what landed is a copy, and the
+                // archive still holds the entry.
+                if (fromArchive && finalEffect != 0)
+                    SetTabStatusKey(_active, "Str_Status_ArchiveDragCopy");
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[DragDiag] DoDragDrop THREW: {ex}"); }
             finally
@@ -375,7 +409,7 @@ namespace KillerShell.Shell
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                System.Diagnostics.Debug.WriteLine("[DragDiag] Window_DragOver: no FileDrop data present - Effects=None");
+                DragTrace("Window_DragOver: no FileDrop data present - Effects=None");
                 e.Effects = DragDropEffects.None;
                 e.Handled = true;
                 _dropImageHelper?.Over(PointToScreen(e.GetPosition(this)), EffectsToNative(e.Effects));
@@ -395,15 +429,21 @@ namespace KillerShell.Shell
                           : ctrl  ? DragDropEffects.Copy
                           : DragDropEffects.Copy | DragDropEffects.Move;
             }
-            // Inside an archive there is nowhere to put anything: this build reads archives and
-            // does not write them. Without this the drop fell through to the SEARCH gesture
-            // below and quietly piped the files into a search, which looks like the app doing
-            // something random rather than refusing.
+            // Inside a WRITABLE archive a drop is a real add (ArchiveEdit.cs). Copy only: what
+            // goes into an archive is always a copy of what is on disk, and offering Move would
+            // promise to delete the source, which adding to an archive does not do.
+            else if (ArchiveDropTarget(PaneUnder(e.OriginalSource as DependencyObject) ?? Pane,
+                                       e.OriginalSource as DependencyObject, out _, out _))
+                e.Effects = DragDropEffects.Copy;
+            // Inside a read-only one - a tar, a tgz, a lone gzip - there is nowhere to put
+            // anything. Without this the drop fell through to the SEARCH gesture below and
+            // quietly piped the files into a search, which looks like the app doing something
+            // random rather than refusing.
             else if (InArchive(PaneUnder(e.OriginalSource as DependencyObject) ?? Pane))
                 e.Effects = DragDropEffects.None;
             else e.Effects = DragDropEffects.Link;            // search tab: scope or pipe, as before
 
-            System.Diagnostics.Debug.WriteLine($"[DragDiag] Window_DragOver: OriginalSource={e.OriginalSource?.GetType().Name}, target={overTarget ?? "null"}, Effects={e.Effects}");
+            DragTrace($"Window_DragOver: OriginalSource={e.OriginalSource?.GetType().Name}, target={overTarget ?? "null"}, Effects={e.Effects}");
             e.Handled = true;
             _dropImageHelper?.Over(PointToScreen(e.GetPosition(this)), EffectsToNative(e.Effects));
         }
@@ -479,8 +519,10 @@ namespace KillerShell.Shell
         internal static bool OverSidebarFolder(DependencyObject? d)
             => FolderNodeUnder(d) != null || BookmarkUnder(d) != null;
 
-        /// <summary>True when a pane is browsing INSIDE an archive, where writing is not
-        /// supported (Services/ArchiveProvider.cs).</summary>
+        /// <summary>True when a pane is browsing INSIDE an archive of any kind. Whether that
+        /// archive can also be WRITTEN is a separate question, and ArchiveDropTarget asks it
+        /// (Services/ArchiveWriter.cs) - so the two callers below fall back to this only for the
+        /// read-only formats.</summary>
         private static bool InArchive(FilePane pane)
             => pane.Active is { IsBrowsing: true } t
                && Services.ArchiveProvider.TrySplit(t.CurrentFolder, out _, out _);
@@ -555,9 +597,23 @@ namespace KillerShell.Shell
                 return;
             }
 
-            // See Window_DragOver: an archive is read-only here, so say so rather than falling
-            // into the search gesture below.
-            if (InArchive(PaneUnder(e.OriginalSource as DependencyObject) ?? Pane))
+            // A drop INTO a writable archive is a real add (ArchiveEdit.cs). Same pane rule as
+            // the folder drop above: focus never moves during a drag, so the pane that was
+            // dropped into has to be focused before anything reports a status or re-lists.
+            var archivePane = PaneUnder(e.OriginalSource as DependencyObject) ?? Pane;
+            if (ArchiveDropTarget(archivePane, e.OriginalSource as DependencyObject,
+                                  out string dropArchive, out string dropFolder))
+            {
+                // No source-pane refresh: adding to an archive copies, so nothing left the
+                // folder the files were dragged from and its listing is still correct.
+                if (archivePane != Pane) FocusPane(archivePane);   // Panes.cs
+                await ArchiveAdd(dropped, dropArchive, dropFolder);
+                return;
+            }
+
+            // See Window_DragOver: a tar, a tgz or a lone gzip cannot be written by this build,
+            // so say so rather than falling into the search gesture below.
+            if (InArchive(archivePane))
             {
                 SetTabStatusKey(_active, "Str_Status_ArchiveReadOnly");
                 return;

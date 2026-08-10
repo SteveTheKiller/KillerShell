@@ -286,6 +286,7 @@ namespace KillerShell
         private void MenuShowInExplorer_Click(object s, RoutedEventArgs e) => Owner.MenuShowInExplorer_Click(s, e);
         private void MenuFavorite_Click(object s, RoutedEventArgs e)       => Owner.MenuFavorite_Click(s, e);
         private void MenuSearchHere_Click(object s, RoutedEventArgs e)     => Owner.MenuSearchHere_Click(s, e);
+        private void MenuAnalyze_Click(object s, RoutedEventArgs e)        => Owner.MenuAnalyze_Click(s, e);
         private void MenuExcludeFolder_Click(object s, RoutedEventArgs e)  => Owner.MenuExcludeFolder_Click(s, e);
         private void MenuCopyPath_Click(object s, RoutedEventArgs e)       => Owner.MenuCopyPath_Click(s, e);
         private void MenuCopyName_Click(object s, RoutedEventArgs e)       => Owner.MenuCopyName_Click(s, e);

@@ -20,9 +20,14 @@ namespace KillerShell.Shell
         /// out from the window edge rather than reflowing its contents on every frame.
         /// </summary>
         /// <param name="freezeAlign">
-        /// Which edge the panel's contents stay glued to while the column moves. Left for a
-        /// left-hand panel, Right for a right-hand one - get this backwards and the contents
-        /// crawl across the panel as it opens instead of being revealed by a moving edge.
+        /// Which edge the panel's contents stay glued to while the column moves, and so which
+        /// way the panel appears to travel. A column always gives up its width at its INNER
+        /// edge, the one facing the content. Freeze on that inner edge and the panel travels
+        /// with it, sliding OUT under the window's own frame. Freeze on the outer edge and the
+        /// panel stands still while the content beside it wipes across the top of it, which
+        /// reads as the window sliding IN over the panel.
+        /// The tree is a left-hand panel and freezes Right, its inner edge, so it slides out to
+        /// the left (TreePanel.cs). Read the note at each call site before changing one.
         /// </param>
         private void SlideColumn(ColumnDefinition col, FrameworkElement panel, bool open,
                                  double width, double minOpen, double maxOpen,

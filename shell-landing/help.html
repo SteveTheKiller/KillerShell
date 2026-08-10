@@ -11,7 +11,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <meta name="darkreader-lock">
 <title>KillerShell - Help</title>
 <link rel="canonical" href="https://killershell.net/help.html">
-<meta name="description" content="How to use KillerShell: browsing, searching, wildcard patterns, filters, file operations, tabs and panes, the terminal, the text editor, Processes/Performance/Registry, and every keyboard shortcut.">
+<meta name="description" content="How to use KillerShell: browsing, archives, searching, wildcard patterns, filters, file operations, tabs and panes, the terminal, the text editor, Processes, Performance, Storage Analyzer, Event Viewer, Registry Editor, and every keyboard shortcut.">
 <link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
 <script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
 <link rel="stylesheet" href="ks.css?v=8">
@@ -39,6 +39,11 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 .kbd-col { min-width: 0; }
 .kbd-group { display: grid; grid-template-columns: max-content 1fr; column-gap: 18px; row-gap: 6px; align-items: baseline; margin-bottom: 22px; }
 .kbd-group h4 { grid-column: 1 / -1; font-family: 'KillerShell', 'Courier New', monospace; font-size: 15px; letter-spacing: .5px; color: var(--accent); font-weight: normal; margin-bottom: 4px; text-shadow: 0 2px 5px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.5); }
+/* Scope heading - the applet a group of bindings belongs to. Plain text color with a rule under
+   it, never a category color: in the app the category colors mean "kind of action" in both views,
+   so a scope heading borrowing one would read as an eighth category. */
+.kbd-scope { font-family: 'KillerShell', 'Courier New', monospace; font-size: 14px; letter-spacing: .5px; color: var(--text); font-weight: normal; margin: 26px 2px 0; padding-bottom: 4px; border-bottom: 1px solid var(--dragline); }
+.kbd-scope:first-of-type { margin-top: 8px; }
 html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { text-shadow: none; }
 .kbd-row { display: contents; }
 .kbd-row .k { font-family: Consolas, monospace; font-size: 12px; color: var(--text2); }
@@ -139,6 +144,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <a href="#windows" data-i18n="h_nav_windows">Windows integration</a>
 <a href="#start" data-i18n="h_nav_start">Getting started</a>
 <a href="#browse" data-i18n="h_nav_browse">Browsing folders</a>
+<a href="#archives">Archives</a>
 <a href="#search" data-i18n="h_nav_search">Searching</a>
 <a href="#patterns" data-i18n="h_nav_patterns">Patterns &amp; filters</a>
 <a href="#results" data-i18n="h_nav_results">Working with results</a>
@@ -147,7 +153,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <a href="#details">File details pane</a>
 <a href="#terminal" data-i18n="h_nav_terminal">The terminal</a>
 <a href="#editor" data-i18n="h_nav_editor">The editor</a>
-<a href="#admin">Processes, Performance &amp; Registry</a>
+<a href="#admin">The tool tabs</a>
 <a href="#shortcuts" data-i18n="h_nav_shortcuts">Every shortcut</a>
 <a href="#looks" data-i18n="h_nav_looks">Themes &amp; fonts</a>
 </nav>
@@ -188,7 +194,17 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="acc-item"><button class="acc-head">Navigation keys<span class="kbd">Alt+Left/Right, Backspace, Alt+Up, Ctrl+L/Alt+D</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p2">Navigation follows Explorer exactly. <b>Alt+Left</b> and <b>Alt+Right</b> go back and forward, <b>Backspace</b> also goes back, <b>Alt+Up</b> goes up a folder, and <b>Ctrl+L</b> or <b>Alt+D</b> puts the caret in the address bar so you can type a path. <b>F5</b> refreshes. The chevron at the end of the address bar lists the folders you have visited recently.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">List, icons &amp; details views<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p3">Three views, on the toolbar: list (expandable cards), icons (32 to 256 pixel tiles) and details (sortable columns). Icons run on a virtualizing panel, so a hundred thousand items in tile view stays usable. Two toolbar toggles are remembered between sessions: show hidden and system items (<code>Ctrl+H</code>), and keep folders above files.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Resizing columns<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p5">In details view, drag any divider to resize the column on its left; the columns to its right keep their widths and slide over. Double-click a divider to put its column back to the width it shipped with. The widths are remembered between sessions. Ctrl+wheel over the list resizes the icons in every view, not just tiles.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Bookmarks<span class="kbd">Ctrl+B</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p4"><b>Ctrl+B</b> opens the bookmarks drawer under the tree. Drop a folder on it to save it, or use the star on the rail for the folder you are in, then jump to the first ten with <b>Alt+1</b> through <b>Alt+0</b>.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Showing and hiding columns<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>Right-click the column headings in details view to pick which columns you want. The same menu is on the Event Viewer grid and the Processes grid, and each one remembers its own choice.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Thumbnails<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>Image files draw a real thumbnail instead of the shared type icon: <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.gif</code>, <code>.bmp</code>, <code>.tif</code>, <code>.tiff</code> and <code>.webp</code>. Each one is decoded once and cached against the file's last-write time, so editing the image refreshes its thumbnail rather than leaving a stale one.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Recently visited folders<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>The chevron at the end of the address bar drops down the last fifteen folders you were in, each with its own icon and an X to take it off the list, plus a row that clears the lot. It records folders only, so a search tab or an archive never lands in it.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Bookmarks<span class="kbd">Ctrl+B</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_browse_p4"><b>Ctrl+B</b> opens the bookmarks drawer under the tree. Drop a folder on it to save it, or use the star on the rail for the folder you are in, then jump to the first ten with <b>Alt+1</b> through <b>Alt+0</b>.</p><p>Bookmarks drag to reorder, and right-clicking one opens a terminal there (elevated if you ask for it) or points the Storage Analyzer at it. Files can be dropped onto a bookmark, and onto a folder in the tree, which means exactly what dropping them on that folder in the listing means.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">What stays put when you switch tabs<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>Each tab remembers which rows you had selected, multi-row selections included, and puts them back when you come back to it, with the details strip still showing the same item.</p></div></div></div>
+
+<h2 class="help-cat" id="archives">Archives</h2>
+<div class="acc-item"><button class="acc-head">Opening an archive<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>Double-click a <code>.zip</code>, <code>.tar</code>, <code>.tar.gz</code>, <code>.tgz</code> or <code>.gz</code> and you are inside it, browsing with the same rows, sorting, views and keys as anywhere else. The address bar shows the archive and the folder within it, and you can type that path back in to return to it. <b>Alt+Up</b> climbs out of a folder inside the archive and then out of the archive itself, into the folder holding it, so it never dead-ends. Back and forward work the way they do anywhere else.</p><p>Nothing was added to KillerShell to read these: zip goes through the framework's own reader and tar is read block by block, so the exe is no bigger for it. <code>.rar</code>, <code>.7z</code>, <code>.bz2</code>, <code>.xz</code>, <code>.cab</code> and <code>.iso</code> are deliberately left alone and still open in whatever you already use for them.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Opening a file inside one<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>Opening a file inside an archive extracts a copy to a temporary folder and hands it to whatever normally opens that type. It is a copy: edits to it do not travel back into the archive. Entry paths are normalized on the way out, so a crafted archive cannot write outside the folder it is extracted into.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Adding, renaming and deleting<span class="kbd">F2, Delete</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>A <code>.zip</code> can be changed from inside KillerShell. Drop files or folders onto it, or paste them in, and they are added where you are; <b>F2</b> renames an entry and <b>Delete</b> removes one, asking first, because there is no Recycle Bin inside an archive. Anything already in there is never quietly overwritten: the write stops and shows you the clashing names, with Replace or Keep both.</p><p><code>.tar</code>, <code>.tar.gz</code>, <code>.tgz</code> and <code>.gz</code> open read-only on purpose, and a write into one is refused with the reason on the status bar rather than a silent no-op. Adding a single file rewrites the whole archive, so the status bar counts it out as a percentage, and the rebuilt copy is swapped in only once it has been checked - a crash, a full disk or a cancel leaves your archive exactly as it was.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Dragging out, and what is missing<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>Dragging a file out of an archive copies it out and leaves the entry where it is. A move out would be an extract plus a delete with no way to make them one step, and a failure in between either loses the file or quietly leaves it behind; Explorer treats zip drag-out the same way. Dragging a <b>folder</b> out is not there yet, and neither is New Folder inside an archive.</p><p>Two more things do not reach inside: search walks folders on disk, so pressing Search from inside an archive asks you for a folder instead, and the details pane shows a file's name, size and date but its type icon rather than an image preview.</p></div></div></div>
 
 <h2 class="help-cat" id="search" data-i18n="h_nav_search">Searching</h2>
 <div class="acc-item"><button class="acc-head">Running a search<span class="kbd">Ctrl+Shift+S</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_search_p1"><b>Ctrl+Shift+S</b> opens the search panel on the right edge. The folder you are browsing is already filled in as the scope. Type a term and press <b>Enter</b>. Results stream in as they are found, so you can start reading before the walk finishes, and <b>Esc</b> stops it.</p></div></div></div>
@@ -215,44 +231,56 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 
 <h2 class="help-cat" id="tabs" data-i18n="h_nav_tabs">Tabs &amp; panes</h2>
 <div class="acc-item"><button class="acc-head">Opening, closing &amp; jumping tabs<span class="kbd">Ctrl+T/W/Tab, Ctrl+1-9</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_tabs_p1"><b>Ctrl+T</b> opens a tab, <b>Ctrl+W</b> closes one, <b>Ctrl+Tab</b> cycles (add Shift to go backwards), and <b>Ctrl+1</b> to <b>Ctrl+9</b> jump straight to one, with 9 meaning the last. Drag tabs to reorder them. On quit you are asked whether to remember the open tabs, and that answer can be remembered too.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Dual pane<span class="kbd">F10</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F10</b> gives you a second pane. Right-click the button to flip between side by side and stacked. Each pane has its own tabs, its own toolbar and its own folder, so you can drag files from one to the other, or keep a search on the left and a shell on the right.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Dual pane<span class="kbd">F10</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F10</b> gives you a second pane. Right-click the rail button to flip between side by side and stacked. Each pane has its own tabs, its own toolbar and its own folder, so you can drag files from one to the other, or keep a search on the left and a shell on the right.</p><p>The two panes share nothing they should not. View mode, icon zoom, row density, the details-view column widths and which columns are showing, and the details strip's open state and height are all per pane, and each pane remembers its own across restarts. On a floating window F10 grows the window and leaves the first pane exactly as it was; on a maximized or snapped window there is nowhere to grow, so the panes split the room they already have.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Per-tab toolbars &amp; the menubar<span class="kbd">Ctrl+F10</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_tabs_p3">Each kind of tab gets its own toolbar, because the buttons that make sense over a folder listing do not make sense over a document. A folder tab keeps the location row with back, forward, up, the star and the sort and view buttons. A shell tab swaps it for the live working directory plus new shell, elevate, open folder here, clear and fonts. A document tab gets save, undo, redo, find, go to line, wrap, a settings gear, and readouts for the path, encoding and line ending. <b>Ctrl+F10</b> hides the pane menubar entirely on whichever pane you are in.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Tab overflow<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_tabs_p5">Tabs divide the bar between them, but only down to a point: once they would get too narrow to read, the strip keeps as many as fit and a chevron at the right end lists every open tab so you can jump to one. The tab you are on is always in the strip.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">New window<span class="kbd">Ctrl+N</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_tabs_p4"><b>Ctrl+N</b> opens a whole second window if you would rather have two.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Dragging a tab out<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>Drag a tab off the strip and it becomes its own window, or drop it on another KillerShell window to move it there, with a caret showing where it will land. Every window is its own process, so the tab is rebuilt on the other side rather than moved live, and it comes back as what it was: a folder, a shell in the same directory, an open document, or any of the tool tabs. A document with unsaved changes refuses the drag and says to save it first, rather than dropping the edit on the floor.</p></div></div></div>
 
 <h2 class="help-cat" id="details">File details pane</h2>
-<div class="acc-item"><button class="acc-head">Details &amp; preview<span class="kbd">Alt+P</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Alt+P</b> shows or hides a bottom-anchored file details pane for the item you have selected: size, dates, and a preview for the types KillerShell can render inline. It stays out of the way until you ask for it, and its open/closed state is remembered per session.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Details &amp; preview<span class="kbd">Alt+P</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Alt+P</b> shows or hides a bottom-anchored file details pane for the item you have selected: type, size, dates, attributes, the full path, and a thumbnail for images or the type icon for everything else. It tracks the selection live and collapses to a thin line when there is nothing to show. Drag its top edge to make it taller. Each pane has its own strip, and each remembers whether it was open and how tall you made it.</p></div></div></div>
 
 <h2 class="help-cat" id="terminal" data-i18n="h_nav_terminal">The terminal</h2>
-<div class="acc-item"><button class="acc-head">Opening a shell<span class="kbd">F8 / Shift+F8 / Ctrl+F8</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p1"><b>F8</b> opens PowerShell in the folder you are looking at, <b>Shift+F8</b> opens CMD, and <b>Ctrl+F8</b> opens PowerShell elevated. The terminal button on the rail does the same on a left click, and right-clicking it lets you pick the host. A shell opened from a result's right-click menu starts in that file's folder.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Opening a shell<span class="kbd">F8 / Shift+F8 / Ctrl+F8 / Ctrl+Shift+F8</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p1"><b>F8</b> opens PowerShell in the folder you are looking at, <b>Shift+F8</b> opens CMD, and <b>Ctrl+F8</b> opens PowerShell elevated. The terminal button on the rail does the same on a left click, and right-clicking it lets you pick the host. A shell opened from a result's right-click menu starts in that file's folder.</p><p><b>Ctrl+Shift+F8</b> is the fourth of the set: CMD, elevated. <b>Ctrl+backtick</b> and <b>Ctrl+Alt+backtick</b> are aliases for the two PowerShell ones, because VS Code and Windows Terminal both train that chord. PowerShell means pwsh where PowerShell 7 is installed and Windows PowerShell where it is not, decided when the tab opens rather than when the app starts, so installing 7 mid-session is picked up on the next shell.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Editable working directory<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p2">The working directory is tracked live and shown on the shell's toolbar. <b>Click it</b> to edit it in place - type a folder and press Enter to <code>cd</code> the running shell straight there, or press Escape to cancel without changing anything. The right-click menu has copy, paste, select all, clear, a new terminal, open folder here, fonts, and edit or reset the prompt.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">PowerShell profile<span class="kbd">Ctrl+,</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p3">KillerShell ships a prompt script you can edit or put back. Your own PowerShell <b>$PROFILE</b> is reachable from the rail menu, the shell's right-click menu or <b>Ctrl+comma</b>. The submenu lists the PowerShell hosts actually installed on the machine, because PowerShell 7 and Windows PowerShell do not share a profile and editing the wrong one is most of the "why is my profile not loading" in the world. It asks each host where its profile is rather than assuming a path, which matters on any machine where OneDrive has redirected Documents. A profile that does not exist yet is created.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">The prompt &amp; fallback font<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p4">The prompt draws powerline separators, a git branch mark and its own chevron, none of which any monospaced font Windows ships actually has. Rather than making you install a Nerd Font, KillerShell carries a 26-glyph, 2.9 KB fallback face and uses it only for the characters your chosen font is missing. Pick any font you like; the prompt still renders.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Copy, paste &amp; scrolling<span class="kbd">Ctrl+Shift+C / V / A</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Ctrl+Shift+C</b> copies the selection, <b>Ctrl+Shift+V</b> pastes, <b>Ctrl+Shift+A</b> selects everything, and <b>Shift+Insert</b> and a plain <b>Ctrl+V</b> paste too. <b>Ctrl+C</b> copies when something is selected and otherwise goes through as the interrupt, which is what it means in a shell. <b>Middle-click</b> pastes.</p><p>Right-click opens the menu rather than pasting, on purpose: a stray right-click that dumps a clipboard full of commands into a live admin shell is a bad afternoon. <b>Ctrl+Shift</b> with the arrows or Page Up and Page Down scrolls the view without disturbing the line you are typing, and <b>Ctrl+plus</b>, <b>Ctrl+minus</b> and <b>Ctrl+0</b> change and reset the font size.</p></div></div></div>
 
 <h2 class="help-cat" id="editor" data-i18n="h_nav_editor">The editor</h2>
-<div class="acc-item"><button class="acc-head">Opening &amp; editing a file<span class="kbd">F7</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ed_p1"><b>F7</b> on a result, or the Edit row on its right-click menu, opens that file in a tab. You get syntax highlighting, line numbers, undo and redo, find with <b>Ctrl+F</b>, go to line with <b>Ctrl+G</b>, save with <b>Ctrl+S</b>, and a full right-click menu. Word wrap is on by default.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Opening &amp; editing a file<span class="kbd">F7</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ed_p1"><b>F7</b> on a result, or the Edit row on its right-click menu, opens that file in a tab. You get syntax highlighting, line numbers, undo and redo, find with <b>Ctrl+F</b>, go to line with <b>Ctrl+G</b>, save with <b>Ctrl+S</b>, and a full right-click menu. Word wrap is on by default.</p><p><b>F7</b> with nothing selected opens an untitled document instead, the same one the pencil on the rail gives you. Find has match case, whole word and regular expression options behind its own chevron; it finds rather than replaces. Save As uses KillerShell's own file dialog, not the Windows one.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Syntax highlighting<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ed_p2">Highlighting covers the formats a field tech actually opens: <code>.bat</code> and <code>.cmd</code>, <code>.reg</code>, <code>.ini</code> and its relatives, <code>.yml</code>, <code>.log</code> and <code>.csv</code>, on top of the programming languages the editor already knows. The registry one colors a key deletion and a value deletion in the danger color, because both are one character away from the line that merely sets something. The log one lights severity words, timestamps, GUIDs, error codes and paths, and deliberately leaves everything else as body text.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Encoding &amp; line endings<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ed_p3">Your encoding is preserved, never invented. A byte-order mark that was there stays there, a file without one stays without one, and bytes that are not valid UTF-8 fall back to the system codepage rather than being replaced with question marks. The bar under the document shows the encoding and the line ending, because whether PowerShell 5.1 will read your script depends on both and neither is visible in the text.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Encoding &amp; line endings<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ed_p3">Your encoding is preserved, never invented. A byte-order mark that was there stays there, a file without one stays without one, and bytes that are not valid UTF-8 fall back to the system codepage rather than being replaced with question marks. The bar under the document shows the encoding and the line ending, because whether PowerShell 5.1 will read your script depends on both and neither is visible in the text.</p><p>The encoding readout is also a picker: click it to choose what the next save writes - UTF-8, UTF-8 with BOM, UTF-16 LE, UTF-16 BE or ANSI. Nothing is rewritten until you save.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Editor settings &amp; zoom<span class="kbd">Ctrl+wheel</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ed_p4">The gear holds the settings that describe how you read code rather than what one file is, so they apply to every open document at once: line numbers, highlight the current line, show spaces and tabs, insert spaces instead of tabs, and indent width. The editor has its own slot in the Fonts dialog, filtered to fixed-width faces, and <b>Ctrl+wheel</b> over the text changes the same size.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Unsaved changes<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ed_p5">Closing a tab with unsaved changes asks before it discards anything, and a document with unsaved changes shows a dot in front of its tab title. Very large files are refused rather than opened slowly.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Unsaved changes<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ed_p5">Closing a tab with unsaved changes asks before it discards anything, and a document with unsaved changes shows a dot in front of its tab title. Anything over 32 MB is refused rather than opened slowly: the editor holds a document in memory and builds its indexes over the whole of it, so a file that size would not open slowly, it would lock the window.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Editable path &amp; elevated save<span class="kbd">Ctrl+F7</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Click the document's path</b> on the editor toolbar to edit it in place - type a new path and press Enter to rename or relocate the file the tab points at. If a save fails because the file needs administrator rights, <b>Ctrl+F7</b> opens a new document with an admin-save retry, so a permission error does not cost you the text you just wrote.</p></div></div></div>
 
-<h2 class="help-cat" id="admin">Processes, Performance &amp; Registry</h2>
-<div class="acc-item"><button class="acc-head">Processes &amp; Services<span class="kbd">F9 / Ctrl+F9</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F9</b> opens the Processes/Services tab, a singleton the same way the rail's task-manager icon is - opening it twice just switches to the one already open. <b>Ctrl+F9</b> opens it elevated. <b>Ctrl+period</b> switches between the Processes and Services views.</p><p>With a row selected and the grid focused: <b>Delete</b> ends the process (or stops the service), <b>Ctrl+R</b> restarts a process, <b>Ctrl+O</b> opens its file location, <b>Ctrl+Shift+A</b> restarts a process as administrator, and <b>Ctrl+S</b> starts a stopped service.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Performance Monitor<span class="kbd">F11</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F11</b> opens the Performance tab, another singleton, tile-based like Task Manager's own Performance page: CPU, RAM, network, disk and GPU each get a live tile with a running graph. No elevation is needed - every counter it reads is available to an ordinary user account.</p><p>Press <b>L</b> on the CPU tile to toggle between one overall graph and a per-core view, so you can see whether load is spread across cores or pinned to one.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Storage Analyzer<span class="kbd">F4 / Ctrl+F4</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F4</b> opens the Storage Analyzer tab and <b>Ctrl+F4</b> opens it elevated, which is what you want on a system drive, since an ordinary account gets Access Denied on a good deal of it. The hard-drive icon on the rail does the same on a left click, and right-clicking it offers both. Put a folder or a drive in the target box, or pick one with Browse, and press Scan. The walk runs one worker per logical processor and never follows a junction or a symlink, so nothing is counted twice, and the status bar shows directories, files, bytes and skipped folders as it goes.</p><p>What you get is a treemap of the WizTree and WinDirStat kind: one rectangle per file, its area proportional to its size, with folders drawn as nested outlines around their contents. Double-click a folder to zoom into it, and use the breadcrumb above the map to climb back out. Right of Scan, <b>Depth</b> cycles All, 1, 2, 3 and 4 to limit how many folder levels get their own rectangles; at 1 each top-level folder is a single solid block, which is the quickest way to see where the space went. <b>Min size</b> hides anything under 1 MB, 10 MB or 100 MB. Both are view filters applied while drawing rather than rescans, so they are instant, and neither loses a byte: a capped folder is drawn as one rectangle carrying its whole subtree, and a hidden small file still counts inside the folder holding it. Coloring switches between file type and top-level folder. Depth, minimum size and coloring are all remembered between sessions.</p><p>With the tab focused, <b>Ctrl+Enter</b> starts the scan, <b>D</b> cycles depth, <b>M</b> cycles the minimum size, <b>C</b> switches coloring, <b>Enter</b> zooms into the selected folder, <b>Backspace</b> zooms out a level, <b>Home</b> goes back to the scan root, <b>Delete</b> sends the selected item to the Recycle Bin, <b>F5</b> rescans and <b>Esc</b> stops a running scan. Right-click a rectangle to open it in a new tab, show it in Explorer, copy its path or delete it. Delete is the only destructive thing in the tab and it always goes to the Recycle Bin through the shell's own confirmation, so nothing here can destroy a file; the map updates in place afterwards with no rescan. The footer shows the hovered or selected item's full path, its size and its share of what is on screen, alongside the drive's total and free space.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Event Viewer<span class="kbd">Ctrl+F12</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Ctrl+F12</b> opens the Event Viewer tab. There is no unelevated way in - it always opens elevated, because the Security log it reads refuses to open for a process that is not already administrator.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Registry Editor<span class="kbd">Ctrl+F11</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Ctrl+F11</b> opens the Registry Editor tab, also always elevated, for the same reason as Event Viewer - there is no unelevated way in.</p><p>With the tree or grid focused: <b>F2</b> renames a key or value, <b>Delete</b> removes one, <b>Ctrl+F</b> finds a key or value name, <b>Ctrl+C</b> copies the full path, <b>Enter</b> opens Modify on a value, and <b>F5</b> reloads the selected key from disk.</p></div></div></div>
+<h2 class="help-cat" id="admin">The tool tabs</h2>
+<div class="acc-item"><button class="acc-head">Processes &amp; Services<span class="kbd">F9 / Ctrl+F9</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F9</b> opens the Processes/Services tab, a singleton the same way the rail's task-manager icon is - opening it twice just switches to the one already open. <b>Ctrl+F9</b> opens it elevated. <b>Ctrl+period</b> switches between the Processes and Services views, and the tab's own title follows: it reads <b>Processes</b> or <b>Services</b> depending on which one is showing, so a glance at the strip tells you which grid you left it on.</p><p>Processes is a live grid of everything running, with real CPU percentages and the command line, path and owner filled in from one bulk query rather than one call per row. Services is the same grid pointed at Windows services, with startup type, path and account. The filter box matches the path and the user or account too, not just the name, and the column headings right-click to show and hide columns. Double-click a row for a details card with Previous and Next paging through the grid.</p><p>With a row selected and the grid focused: <b>Delete</b> ends the process (or stops the service), <b>Ctrl+R</b> restarts a process, <b>Ctrl+O</b> opens its file location, <b>Ctrl+Shift+A</b> restarts a process as administrator, and <b>Ctrl+S</b> starts a stopped service. Every one of those asks first, in KillerShell's own dialog rather than a Windows message box.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Performance Monitor<span class="kbd">F11</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F11</b> opens the Performance tab, another singleton. It is a scrolling two-column grid of full-size cells rather than a list of thumbnails beside one big graph, so every metric is live at once and nothing has to be selected to be readable: CPU, RAM, then one cell per physical disk, one per network adapter and one per GPU, all enumerated from the machine rather than assumed to be one of each. There is no elevated variant and none is needed - every counter it reads is available to an ordinary user account.</p><p>Each cell has a header carrying its name, a one-line live summary and the hardware it is reading, a full-width graph or two, and its numeric fields underneath. The button on the right of a header makes that cell full width or half width again, and <b>dragging a header</b> moves the cell: the cells shuffle live as you drag, so the reorder is its own preview. The arrangement is remembered, and new hardware appears without disturbing what you have already laid out.</p><p>Click the CPU graph and press <b>L</b> to toggle between one overall trace and a grid of per-logical-processor traces, so you can see whether load is spread across cores or pinned to one. The same toggle is on that graph's right-click menu as <b>Show logical processors</b>, if it is easier to find than to remember.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Storage Analyzer<span class="kbd">F4 / Ctrl+F4</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>F4</b> opens the Storage Analyzer tab and <b>Ctrl+F4</b> opens it elevated, which is what you want on a system drive, since an ordinary account gets Access Denied on a good deal of it. The hard-drive icon on the rail does the same on a left click, and right-clicking it offers both. Put a folder or a drive in the target box, or pick one with Browse, and press Scan. The walk runs one worker per logical processor and never follows a junction or a symlink, so nothing is counted twice, and the status bar shows directories, files, bytes and skipped folders as it goes.</p><p>What you get is a treemap of the WizTree and WinDirStat kind: one rectangle per file, its area proportional to its size, with folders drawn as nested outlines around their contents. Double-click a folder to zoom into it, and use the breadcrumb above the map to climb back out. Right of Scan, <b>Depth</b> drops down All, 1, 2, 3 and 4 to limit how many folder levels get their own rectangles; at 1 each top-level folder is a single solid block, which is the quickest way to see where the space went. <b>Min size</b> drops down All, 1 MB, 10 MB and 100 MB. Both are view filters applied while drawing rather than rescans, so they are instant, and neither loses a byte: a capped folder is drawn as one rectangle carrying its whole subtree, and a hidden small file still counts inside the folder holding it. Either one carries a small badge showing its value while it is set to anything other than All. The last pair of buttons colors the map by file type or by top-level folder. Depth, minimum size and coloring are all remembered between sessions.</p><p>With the tab focused, <b>Ctrl+Enter</b> starts the scan, <b>D</b> cycles depth, <b>M</b> cycles the minimum size, <b>C</b> switches coloring, <b>Enter</b> zooms into the selected folder, <b>Backspace</b> zooms out a level, <b>Home</b> goes back to the scan root, <b>Delete</b> sends the selected item to the Recycle Bin, <b>F5</b> rescans and <b>Esc</b> stops a running scan. The single letters are single letters on purpose, so they only apply while the caret is not in the target box - typing a path there types a path.</p><p>Right-click a rectangle to open it in a new tab, show it in Explorer, copy its path or delete it; the same menu carries the two coloring choices and Rescan, and those are there on empty space too. Delete is the only destructive thing in the tab and it always goes to the Recycle Bin through the shell's own confirmation, so nothing here can destroy a file; the map updates in place afterwards with no rescan. The footer shows the hovered or selected item's full path, its size and its share of what is on screen, alongside the drive's total and free space. There is also an <b>Analyze storage</b> row on the file listing's right-click menu and on a bookmark's, which points the tab at that folder and starts scanning straight away.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Event Viewer<span class="kbd">Ctrl+F12</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Ctrl+F12</b> opens the Event Viewer tab. There is no unelevated way in - it always opens elevated, because the Security log it reads refuses to open for a process that is not already administrator.</p><p>Pick a log - Application, System, Security, or all of them at once - and a level, All, Error, Warning or Information. The filter box narrows what is already loaded by source, message, category or event ID without going back to the log, and the grid sorts newest first with a colored severity dot per row. It reads up to two thousand records per log and streams them in rather than making you wait for the lot. Right-click a row to copy its message, or to copy the full details as a block you can paste straight into a ticket.</p><p>Double-click a row for the details card: every field the event carries, the raw XML with syntax highlighting behind <b>Alt+X</b>, a one-click web search for the event ID on <b>Alt+S</b>, and the arrow keys to page through the grid without closing it. This tab has no keys of its own beyond that card - everything that works on it is the window's.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Registry Editor<span class="kbd">Ctrl+F11</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p><b>Ctrl+F11</b> opens the Registry Editor tab, also always elevated, for the same reason as Event Viewer - there is no unelevated way in.</p><p>All five hives are there, loaded lazily: a key's children are read when you expand it, never walked ahead of time. Values are formatted for their type - DWORD and QWORD in hex and decimal, binary as hex byte pairs, multi-string entries visibly separated - and a pathologically large value is capped in the grid with a note saying how much was cut, while Modify still reads and writes the whole of it. The path readout above the tree is editable: type a key path and press Enter to go there.</p><p>The right-click menus carry New (a key, or any of the six value types), Rename, Delete, and copy the name or the full path. Every value edit goes through one dialog that adapts its input to the value's type and needs an explicit Save - nothing here commits because focus moved. Deleting a key says out loud that it takes every subkey and value nested underneath it, in KillerShell's own confirm dialog rather than a stock message box.</p><p>With the tree or grid focused: <b>F2</b> renames a key or value, <b>Delete</b> removes one, <b>Ctrl+F</b> finds a key or value name, <b>Ctrl+C</b> copies the full path, <b>Enter</b> opens Modify on a value, and <b>F5</b> reloads the selected key from disk. Find searches the part of the tree that is loaded, which is what keeps it instant instead of walking the whole registry, and says so when it comes up empty.</p></div></div></div>
+
+<div class="acc-item"><button class="acc-head">The rail tells you what is open<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>Each tool has its own icon on the rail, and that icon lights in the accent while a tab of that kind is open anywhere in the window - Processes, Performance, Storage Analyzer, Registry Editor and Event Viewer. Background tabs and the second pane count, so only closing the last one of a kind puts the icon out. Each of these tabs is a singleton: pressing its key again brings you back to the one you already have rather than opening a second.</p></div></div></div>
 
 <h2 class="help-cat" id="shortcuts" data-i18n="h_nav_shortcuts">Every shortcut</h2>
 <div class="acc-item"><button class="acc-head" data-i18n="h_ks_h">The same table the app shows on F1<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_ks_p">Shortcuts work anywhere in the window; open dropdowns, the date box and the results filter keep Enter for themselves. This is the full reference, grouped exactly as the in-app card groups it.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Where a key applies<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>The window is eight applets sharing one frame, so a key needs two answers, not one: what kind of thing it does, and where it does it. The colored headings are the first - search, navigation, tabs, view, file, editing, help. The plain headings above them are the second: <b>Everywhere</b> is what the window itself runs whatever tab is showing, and the rest belong to one tab each.</p><p>That is what lets a key mean two things honestly. <b>Ctrl+Shift+C</b> is Copy full path in the listing and Copy in a terminal. <b>Ctrl+Shift+A</b> adds a search term, restarts a process as administrator, or selects all in a terminal, depending on where you are. Neither was renamed to avoid the clash; they are simply different scopes.</p><p>The Event Viewer has no keys of its own, so it has no section here - everything that works on it is in <b>Everywhere</b>, and so is the Performance tab.</p></div></div></div>
 
 <div class="ks-viewtoggle" role="group" aria-label="Shortcut view">
 <button id="ksListBtn" class="on" type="button">LIST</button>
 <button id="ksKbBtn" type="button">KEYBOARD</button>
 </div>
 
+<!-- This table is KsAll, from KillerShell/Shell/ShortcutsOverlay.cs - the app's single source of
+     truth for both views on the F1 card. Every binding carries a SCOPE (where it applies) as well
+     as a category (what kind of action it is), so a key that only exists inside one tab no longer
+     reads as though it worked everywhere. Scope headings are plain text on a rule; the category
+     colors are the app's own KsCat* theme brushes (the --kc-* variables above). -->
 <div id="ksListView">
+
+<h3 class="kbd-scope">Everywhere</h3>
 <div class="kbd-cols">
 <div class="kbd-col">
 
@@ -262,7 +290,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="kbd-row"><span class="k">Ctrl+Shift+A</span><span class="d">add a search term</span></div>
 <div class="kbd-row"><span class="k">Shift+F7</span><span class="d">add a filter</span></div>
 <div class="kbd-row"><span class="k">Alt+C</span><span class="d">toggle case-sensitive matching</span></div>
-<div class="kbd-row"><span class="k">Ctrl+F</span><span class="d">filter the results (or find a key/value name in Registry Editor)</span></div>
+<div class="kbd-row"><span class="k">Ctrl+F</span><span class="d">filter the results</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+F</span><span class="d">search within these results, in a new tab</span></div>
 </div>
 
@@ -271,9 +299,9 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="kbd-row"><span class="k">Backspace</span><span class="d">go back</span></div>
 <div class="kbd-row"><span class="k">Alt+Up</span><span class="d">go up one folder</span></div>
 <div class="kbd-row"><span class="k">Ctrl+L / Alt+D</span><span class="d">edit the location - type a path and press Enter</span></div>
-<div class="kbd-row"><span class="k">Ctrl+O</span><span class="d">choose the folder (or open a process's file location)</span></div>
+<div class="kbd-row"><span class="k">Ctrl+O</span><span class="d">choose the folder</span></div>
 <div class="kbd-row"><span class="k">Ctrl+B</span><span class="d">show or hide bookmarks</span></div>
-<div class="kbd-row"><span class="k">Alt+1-0</span><span class="d">go to bookmark 1 to 10 (0 = tenth)</span></div>
+<div class="kbd-row"><span class="k">Alt+1-0</span><span class="d">go to bookmark 1-10 (0 = tenth)</span></div>
 </div>
 
 <div class="kbd-group"><h4>TABS</h4>
@@ -281,15 +309,16 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="kbd-row"><span class="k">Ctrl+T</span><span class="d">new search tab</span></div>
 <div class="kbd-row"><span class="k">Ctrl+W</span><span class="d">close the current tab</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Tab</span><span class="d">next tab (Shift: previous)</span></div>
-<div class="kbd-row"><span class="k">Ctrl+1-9</span><span class="d">jump to tab 1 to 9 (9 = last)</span></div>
-<div class="kbd-row"><span class="k">F4</span><span class="d">open the Storage Analyzer tab</span></div>
-<div class="kbd-row"><span class="k">Ctrl+F4</span><span class="d">open the Storage Analyzer tab as administrator</span></div>
+<div class="kbd-row"><span class="k">Ctrl+1-9</span><span class="d">jump to tab 1-9 (9 = last)</span></div>
 <div class="kbd-row"><span class="k">F8 / Ctrl+`</span><span class="d">open a PowerShell tab in this folder</span></div>
 <div class="kbd-row"><span class="k">Shift+F8</span><span class="d">open a CMD tab in this folder</span></div>
 <div class="kbd-row"><span class="k">Ctrl+F8 / Ctrl+Alt+`</span><span class="d">open PowerShell as administrator</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+F8</span><span class="d">open CMD as administrator</span></div>
 <div class="kbd-row"><span class="k">F9</span><span class="d">open the Processes/Services tab</span></div>
 <div class="kbd-row"><span class="k">Ctrl+F9</span><span class="d">open the Processes/Services tab as administrator</span></div>
 <div class="kbd-row"><span class="k">F11</span><span class="d">open the Performance tab</span></div>
+<div class="kbd-row"><span class="k">F4</span><span class="d">Storage Analyzer</span></div>
+<div class="kbd-row"><span class="k">Ctrl+F4</span><span class="d">Storage Analyzer, elevated scan</span></div>
 <div class="kbd-row"><span class="k">Ctrl+F12</span><span class="d">open the Event Viewer tab (always elevated)</span></div>
 <div class="kbd-row"><span class="k">Ctrl+F11</span><span class="d">open the Registry Editor tab (always elevated)</span></div>
 </div>
@@ -298,22 +327,42 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="kbd-col">
 
 <div class="kbd-group"><h4>VIEW</h4>
-<div class="kbd-row"><span class="k">F5</span><span class="d">refresh - re-list the folder, re-run the search, or reload a registry key</span></div>
+<div class="kbd-row"><span class="k">F5</span><span class="d">refresh - re-list the folder, or re-run the search</span></div>
 <div class="kbd-row"><span class="k">Ctrl+F10</span><span class="d">hide or show the pane menubar</span></div>
-<div class="kbd-row"><span class="k">F10</span><span class="d">second pane - right-click to flip side by side / stacked</span></div>
+<div class="kbd-row"><span class="k">F10 / Ctrl+Shift+P</span><span class="d">second pane - right-click to flip side-by-side / stacked</span></div>
 <div class="kbd-row"><span class="k">Ctrl+H</span><span class="d">show hidden and system items</span></div>
-<div class="kbd-row"><span class="k">Alt+P</span><span class="d">show or hide the file details pane</span></div>
+<div class="kbd-row"><span class="k">Alt+P</span><span class="d">show file details</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+S</span><span class="d">show or hide the search panel</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Right</span><span class="d">expand every result</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Left</span><span class="d">collapse every result</span></div>
-<div class="kbd-row"><span class="k">L</span><span class="d">toggle per-core CPU view (Performance tab)</span></div>
 </div>
 
 <div class="kbd-group"><h4>FILE</h4>
-<div class="kbd-row"><span class="k">Enter</span><span class="d">open file (or modify a registry value)</span></div>
-<div class="kbd-row"><span class="k">F7</span><span class="d">edit the file in a tab</span></div>
-<div class="kbd-row"><span class="k">Ctrl+F7</span><span class="d">new document, admin-save retry</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Alt+E</span><span class="d">export the results as HTML</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Alt+Shift+E</span><span class="d">export the results as CSV</span></div>
 <div class="kbd-row"><span class="k">Ctrl+,</span><span class="d">edit PowerShell profile</span></div>
+</div>
+
+<div class="kbd-group"><h4>EDITING</h4>
+<div class="kbd-row"><span class="k">Esc</span><span class="d">close popups, stop the search, then offer to quit</span></div>
+</div>
+
+<div class="kbd-group"><h4>HELP</h4>
+<div class="kbd-row"><span class="k">F1</span><span class="d">show this card</span></div>
+<div class="kbd-row"><span class="k">F12</span><span class="d">show the about card</span></div>
+</div>
+
+</div>
+</div>
+
+<h3 class="kbd-scope">File browser</h3>
+<div class="kbd-cols">
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>FILE</h4>
+<div class="kbd-row"><span class="k">Enter</span><span class="d">open file</span></div>
+<div class="kbd-row"><span class="k">F7</span><span class="d">edit the selected file</span></div>
+<div class="kbd-row"><span class="k">Ctrl+F7</span><span class="d">new document, admin-save retry</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+O</span><span class="d">open with...</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+Enter</span><span class="d">open as administrator</span></div>
 <div class="kbd-row"><span class="k">F6</span><span class="d">show in Explorer</span></div>
@@ -322,38 +371,126 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="kbd-row"><span class="k">Ctrl+D</span><span class="d">add to bookmarks</span></div>
 <div class="kbd-row"><span class="k">Alt+Enter</span><span class="d">properties</span></div>
 <div class="kbd-row"><span class="k">Shift+F10</span><span class="d">more Windows options</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Alt+E</span><span class="d">export the results as HTML</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Alt+Shift+E</span><span class="d">export the results as CSV</span></div>
 </div>
+
+</div>
+<div class="kbd-col">
 
 <div class="kbd-group"><h4>EDITING</h4>
 <div class="kbd-row"><span class="k">Ctrl+A</span><span class="d">select every result</span></div>
 <div class="kbd-row"><span class="k">Ctrl+X / C / V</span><span class="d">cut / copy / paste files</span></div>
-<div class="kbd-row"><span class="k">F2</span><span class="d">rename (file, or registry key/value)</span></div>
-<div class="kbd-row"><span class="k">Delete</span><span class="d">send to the Recycle Bin (or end a process / stop a service / delete a registry entry)</span></div>
+<div class="kbd-row"><span class="k">F2</span><span class="d">rename</span></div>
+<div class="kbd-row"><span class="k">Delete</span><span class="d">send to the Recycle Bin</span></div>
 <div class="kbd-row"><span class="k">Shift+Delete</span><span class="d">delete permanently</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+N</span><span class="d">new folder</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+L</span><span class="d">clear the results</span></div>
-<div class="kbd-row"><span class="k">Esc</span><span class="d">close popups, stop the search, then offer to quit</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+C</span><span class="d">copy full path</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+M</span><span class="d">copy file name</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+D</span><span class="d">copy folder path</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+Y</span><span class="d">copy matched lines</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+H</span><span class="d">copy SHA-256</span></div>
-<div class="kbd-row"><span class="k">Ctrl+R</span><span class="d">restart a process (Processes tab)</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+A</span><span class="d">restart a process as administrator</span></div>
-<div class="kbd-row"><span class="k">Ctrl+S</span><span class="d">start a service (or save a document)</span></div>
+</div>
+
+</div>
+</div>
+
+<h3 class="kbd-scope">Terminal</h3>
+<div class="kbd-cols">
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>EDITING</h4>
+<div class="kbd-row"><span class="k">Ctrl+Shift+C</span><span class="d">copy</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+A</span><span class="d">select all</span></div>
+</div>
+
+</div>
+<div class="kbd-col"></div>
+</div>
+
+<h3 class="kbd-scope">Editor</h3>
+<div class="kbd-cols">
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>EDITING</h4>
+<div class="kbd-row"><span class="k">Ctrl+G</span><span class="d">go to line</span></div>
+<div class="kbd-row"><span class="k">Ctrl+S</span><span class="d">save</span></div>
+</div>
+
+</div>
+<div class="kbd-col"></div>
+</div>
+
+<h3 class="kbd-scope">Processes/Services</h3>
+<div class="kbd-cols">
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>EDITING</h4>
+<div class="kbd-row"><span class="k">Del</span><span class="d">end process</span></div>
+<div class="kbd-row"><span class="k">Del</span><span class="d">stop (in Services mode)</span></div>
+<div class="kbd-row"><span class="k">Ctrl+R</span><span class="d">restart</span></div>
+<div class="kbd-row"><span class="k">Ctrl+O</span><span class="d">open file location</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+A</span><span class="d">restart as administrator</span></div>
+<div class="kbd-row"><span class="k">Ctrl+S</span><span class="d">start</span></div>
 <div class="kbd-row"><span class="k">Ctrl+.</span><span class="d">switch between Processes and Services</span></div>
-<div class="kbd-row"><span class="k">Ctrl+G</span><span class="d">go to line (in a document)</span></div>
-</div>
-
-<div class="kbd-group"><h4>HELP</h4>
-<div class="kbd-row"><span class="k">F1</span><span class="d">show the shortcuts card</span></div>
-<div class="kbd-row"><span class="k">F12</span><span class="d">show the about card</span></div>
 </div>
 
 </div>
+<div class="kbd-col"></div>
 </div>
+
+<h3 class="kbd-scope">Registry Editor</h3>
+<div class="kbd-cols">
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>SEARCH</h4>
+<div class="kbd-row"><span class="k">Ctrl+F</span><span class="d">find a key or value name</span></div>
+</div>
+
+<div class="kbd-group"><h4>VIEW</h4>
+<div class="kbd-row"><span class="k">F5</span><span class="d">reload the selected key from disk</span></div>
+</div>
+
+</div>
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>EDITING</h4>
+<div class="kbd-row"><span class="k">Ctrl+C</span><span class="d">copy full path</span></div>
+<div class="kbd-row"><span class="k">Enter</span><span class="d">modify a value</span></div>
+</div>
+
+</div>
+</div>
+
+<h3 class="kbd-scope">Storage Analyzer</h3>
+<div class="kbd-cols">
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>SEARCH</h4>
+<div class="kbd-row"><span class="k">Ctrl+Enter</span><span class="d">start the scan</span></div>
+</div>
+
+<div class="kbd-group"><h4>NAVIGATION</h4>
+<div class="kbd-row"><span class="k">Enter</span><span class="d">zoom into the selected folder</span></div>
+<div class="kbd-row"><span class="k">Backspace</span><span class="d">zoom out one level</span></div>
+<div class="kbd-row"><span class="k">Home</span><span class="d">back to the scan root</span></div>
+</div>
+
+</div>
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>VIEW</h4>
+<div class="kbd-row"><span class="k">D</span><span class="d">cycle treemap depth</span></div>
+<div class="kbd-row"><span class="k">M</span><span class="d">cycle the minimum size shown</span></div>
+<div class="kbd-row"><span class="k">C</span><span class="d">switch coloring by type or folder</span></div>
+</div>
+
+<div class="kbd-group"><h4>EDITING</h4>
+<div class="kbd-row"><span class="k">Del</span><span class="d">send the selected item to the Recycle Bin</span></div>
+</div>
+
+</div>
+</div>
+
 </div>
 
 <div id="ksKbView" style="display:none">
@@ -366,16 +503,18 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <span><i style="background:var(--kc-edit)"></i>Editing</span>
 <span><i style="background:var(--kc-help)"></i>Help</span>
 </div>
+<div class="kb-layers" id="kbScopes"></div>
 <div class="kb-layers" id="kbLayers"></div>
 <div class="kb-scroll"><div class="kb-board" id="kbBoard"></div></div>
 <div class="kb-detail" id="kbDetail">Click or hover a lit key to see what it does.</div>
 </div>
 
 <h2 class="help-cat" id="looks" data-i18n="h_nav_looks">Themes &amp; fonts</h2>
-<div class="acc-item"><button class="acc-head">Themes &amp; accents<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p1">Six themes: Dark, Light, Black, Blood, Greed and Cyanotic, each with its own set of accent colors, all switchable live from the title bar. Nothing restarts.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Themes &amp; accents<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p1">Thirteen themes: Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium and Mourning. Dark, Light, Black and 98SE each carry six accent colors; the other nine are a palette on their own. The paint roller at the bottom of the rail switches them live, and nothing restarts.</p><p>The flyout stays open while you try them, and the switch is a crossfade rather than the window changing in pieces. Two more rows live under the themes: the Fonts dialog, and the File associations card.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">Fonts dialog<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p2">The Fonts dialog has three slots: the app, the terminal and the editor. The terminal and editor lists are filtered to fixed-width faces. Roll the wheel over a list to browse faces and each one applies as you land on it, so you see it before you commit to it.</p></div></div></div>
 <div class="acc-item"><button class="acc-head">App size &amp; density<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p3">Roll the wheel over the wordmark in the title bar to resize the whole app, about 2% a notch between 70% and 250%. It reflows rather than stretching a bitmap, so text stays sharp, and the setting is remembered. The density button on the rail separately controls how tightly the result rows are packed.</p></div></div></div>
-<div class="acc-item"><button class="acc-head">Language<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p4">The language menu is the globe in the title bar. Ten languages, switched live: English, Spanish, German, French, Turkish, Czech, Japanese, Chinese in both Traditional and Simplified, and Bengali.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">Language<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p4">The language menu is the globe on the rail, above the theme button. Ten languages, switched live: English, Spanish, German, French, Turkish, Czech, Japanese, Chinese in both Traditional and Simplified, and Bengali.</p></div></div></div>
+<div class="acc-item"><button class="acc-head">The icon set<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p>KillerShell draws its own icons rather than borrowing the Windows shell ones. Folders have their own art, and the ones that mean something get drawn as themselves rather than as a generic folder: Home, Desktop, Documents, Downloads, Pictures, Music, Videos, Favorites, Program Files and Windows, plus drives and This PC. Every kind of tab has one too - shell, admin shell, a shell that has exited, document, Processes, Event Viewer, Performance and Registry Editor - and the tree, the bookmarks, the listing, the tab strip, the overflow list and the recents menu all resolve through the same place, so nothing ends up with a different icon from its neighbor.</p><p>The 98SE theme swaps the whole set live for period art rather than leaving the brand icons sitting on it. That art is Chicago95, upscaled with nearest-neighbor so the pixels stay pixels, and every icon is credited to its source in the repo.</p></div></div></div>
 
 </div>
 </div>
@@ -407,10 +546,12 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 })();
 </script>
 <script>
-/* Visual keyboard map, ported from KillerShell/Shell/KeyboardMapOverlay.cs. The row/key layout
-   and the per-layer bindings below are copied straight from KbRows and KbMap in that file so the
-   site's board matches the in-app F1 overlay key for key. Category colors are the KsCat* hex
-   values from Themes/Dark.xaml (see the --kc-* variables above), not re-picked for the web. */
+/* Visual keyboard map, ported from KillerShell/Shell/KeyboardMapOverlay.cs. The row/key layout is
+   KbRows from that file; the bindings are KsAll from Shell/ShortcutsOverlay.cs, which is the one
+   table both of the app's own views read. The board draws one SCOPE at a time, the way the app
+   draws the scope of the tab you are on, and resolves it the same way KbLit does: the scope's own
+   bindings take their keycaps first and Everywhere fills whatever is left. Category colors are the
+   KsCat* hex values from Themes/Dark.xaml (see the --kc-* variables above), not re-picked. */
 (function(){
   var U = 42; // px per key unit (KeyboardMapOverlay.cs uses 46 in-app; 42 fits the page width)
 
@@ -433,96 +574,212 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
      ["","",0.6],["Left","←",1],["Down","↓",1],["Right","→",1]]
   ];
 
-  // key id -> [category, short keycap label, full description]. Categories and gestures match
-  // ShortcutsOverlay.cs's KsRows / KeyboardMapOverlay.cs's KbMap; labels are shortened for the
-  // fixed-size keycap the way the app's marquee shortens them on hover instead.
-  var KB_MAP = {
-    base: {
-      F1:["help","Help","show the shortcuts card"],
-      F4:["tabs","Storage","open the Storage Analyzer tab"],
-      F5:["view","Refresh","refresh - re-list the folder, re-run the search, or reload a registry key"],
-      F8:["tabs","Shell","open a PowerShell tab in this folder"],
-      F9:["tabs","Task Mgr","open the Processes/Services tab"],
-      F11:["tabs","Perf","open the Performance tab"],
-      F2:["edit","Rename","rename (file, or registry key/value)"],
-      F7:["search","Filter","add a filter"],
-      Del:["edit","Recycle","send to the Recycle Bin"],
-      F10:["view","Dual pane","second pane - right-click to flip side by side / stacked"],
-      F12:["help","About","show the about card"],
-      Enter:["search","Run","run the search"],
-      Esc:["edit","Esc","close popups, stop the search, then offer to quit"],
-      Back:["nav","Back","go back"],
-      D:["view","Depth","cycle treemap depth (Storage Analyzer)"],
-      M:["view","Min size","cycle the minimum size shown (Storage Analyzer)"],
-      C:["view","Color","switch coloring by type or folder (Storage Analyzer)"],
-      Home:["nav","Scan root","back to the scan root (Storage Analyzer)"]
+  // scope -> layer -> keycap id -> [category, short keycap label, full description]. Every entry
+  // is a row of KsAll; labels are shortened for the fixed-size keycap the way the app's marquee
+  // shortens them on hover instead. Where one binding owns several caps (Ctrl+1-9, Alt+1-0,
+  // Ctrl+X / C / V) each cap carries its own short label and they share the description.
+  var KB_SCOPES = {
+    global: {
+      base: {
+        Enter:["search","Run","run the search"],
+        Back:["nav","Back","go back"],
+        F8:["tabs","Shell","open a PowerShell tab in this folder"],
+        F9:["tabs","Task Mgr","open the Processes/Services tab"],
+        F11:["tabs","Perf","open the Performance tab"],
+        F4:["tabs","Storage","Storage Analyzer"],
+        F5:["view","Refresh","refresh - re-list the folder, or re-run the search"],
+        F10:["view","Dual pane","second pane - right-click to flip side-by-side / stacked"],
+        Esc:["edit","Esc","close popups, stop the search, then offer to quit"],
+        F1:["help","Help","show this card"],
+        F12:["help","About","show the about card"]
+      },
+      ctrl: {
+        E:["search","Focus","put the caret in the search box"],
+        F:["search","Filter","filter the results"],
+        L:["nav","Address","edit the location - type a path and press Enter"],
+        O:["nav","Folder","choose the folder"],
+        B:["nav","Bookmarks","show or hide bookmarks"],
+        N:["tabs","New win","open a new window"],
+        T:["tabs","New tab","new search tab"],
+        W:["tabs","Close tab","close the current tab"],
+        Tab:["tabs","Next tab","next tab (Shift: previous)"],
+        D1:["tabs","Tab 1","jump to tab 1-9 (9 = last)"], D2:["tabs","Tab 2","jump to tab 1-9 (9 = last)"],
+        D3:["tabs","Tab 3","jump to tab 1-9 (9 = last)"], D4:["tabs","Tab 4","jump to tab 1-9 (9 = last)"],
+        D5:["tabs","Tab 5","jump to tab 1-9 (9 = last)"], D6:["tabs","Tab 6","jump to tab 1-9 (9 = last)"],
+        D7:["tabs","Tab 7","jump to tab 1-9 (9 = last)"], D8:["tabs","Tab 8","jump to tab 1-9 (9 = last)"],
+        D9:["tabs","Tab 9","jump to tab 1-9 (9 = last)"],
+        Grave:["tabs","Shell","open a PowerShell tab in this folder"],
+        F8:["tabs","Shell admin","open PowerShell as administrator"],
+        F9:["tabs","Task Mgr admin","open the Processes/Services tab as administrator"],
+        F4:["tabs","Storage admin","Storage Analyzer, elevated scan"],
+        F12:["tabs","Event Viewer","open the Event Viewer tab (always elevated)"],
+        F11:["tabs","Reg Editor","open the Registry Editor tab (always elevated)"],
+        F10:["view","Menu bar","hide or show the pane menubar"],
+        H:["view","Hidden","show hidden and system items"],
+        Right:["view","Expand","expand every result"],
+        Left:["view","Collapse","collapse every result"],
+        Comma:["file","PS profile","edit PowerShell profile"]
+      },
+      ctrlshift: {
+        A:["search","Add term","add a search term"],
+        F:["search","Pipe","search within these results, in a new tab"],
+        Tab:["tabs","Prev tab","next tab (Shift: previous)"],
+        F8:["tabs","CMD admin","open CMD as administrator"],
+        P:["view","Dual pane","second pane - right-click to flip side-by-side / stacked"],
+        S:["view","Search panel","show or hide the search panel"]
+      },
+      shift: {
+        F7:["search","Filter","add a filter"],
+        F8:["tabs","CMD","open a CMD tab in this folder"]
+      },
+      alt: {
+        C:["search","Case","toggle case-sensitive matching"],
+        D:["nav","Address","edit the location - type a path and press Enter"],
+        Left:["nav","Back","go back / forward"],
+        Right:["nav","Forward","go back / forward"],
+        Up:["nav","Up","go up one folder"],
+        D1:["nav","Bmk 1","go to bookmark 1-10 (0 = tenth)"], D2:["nav","Bmk 2","go to bookmark 1-10 (0 = tenth)"],
+        D3:["nav","Bmk 3","go to bookmark 1-10 (0 = tenth)"], D4:["nav","Bmk 4","go to bookmark 1-10 (0 = tenth)"],
+        D5:["nav","Bmk 5","go to bookmark 1-10 (0 = tenth)"], D6:["nav","Bmk 6","go to bookmark 1-10 (0 = tenth)"],
+        D7:["nav","Bmk 7","go to bookmark 1-10 (0 = tenth)"], D8:["nav","Bmk 8","go to bookmark 1-10 (0 = tenth)"],
+        D9:["nav","Bmk 9","go to bookmark 1-10 (0 = tenth)"], D0:["nav","Bmk 10","go to bookmark 1-10 (0 = tenth)"],
+        P:["view","Details","show file details"]
+      }
     },
-    ctrl: {
-      N:["tabs","New win","open a new window"],
-      F:["search","Filter","filter the results (or find a key/value name in Registry Editor)"],
-      L:["nav","Address","edit the location - type a path and press Enter"],
-      O:["nav","Folder","choose the folder (or open a process's file location)"],
-      B:["nav","Bookmarks","show or hide bookmarks"],
-      H:["view","Hidden","show hidden and system items"],
-      T:["tabs","New tab","new search tab"],
-      W:["tabs","Close tab","close the current tab"],
-      Tab:["tabs","Next tab","next tab (Shift: previous)"],
-      E:["search","Focus","put the caret in the search box"],
-      A:["edit","Select all","select every result"],
-      C:["edit","Copy","cut / copy / paste files"],
-      X:["edit","Cut","cut / copy / paste files"],
-      V:["edit","Paste","cut / copy / paste files"],
-      Right:["view","Expand","expand every result"],
-      Left:["view","Collapse","collapse every result"],
-      D1:["tabs","Tab 1","jump to tab 1"], D2:["tabs","Tab 2","jump to tab 2"],
-      D3:["tabs","Tab 3","jump to tab 3"], D4:["tabs","Tab 4","jump to tab 4"],
-      D5:["tabs","Tab 5","jump to tab 5"], D6:["tabs","Tab 6","jump to tab 6"],
-      D7:["tabs","Tab 7","jump to tab 7"], D8:["tabs","Tab 8","jump to tab 8"],
-      D9:["tabs","Tab 9","jump to tab 9 (9 = last)"],
-      F4:["tabs","Storage admin","open the Storage Analyzer tab as administrator"],
-      F8:["tabs","Shell admin","open PowerShell as administrator"],
-      F9:["tabs","Task Mgr admin","open the Processes/Services tab as administrator"],
-      Enter:["search","Scan","start the scan (Storage Analyzer)"],
-      Grave:["tabs","Shell","open a PowerShell tab in this folder"],
-      F10:["view","Menu bar","hide or show the pane menubar"],
-      F12:["tabs","Event Viewer","open the Event Viewer tab (always elevated)"],
-      F11:["tabs","Reg Editor","open the Registry Editor tab (always elevated)"]
+    // Enter takes no cap here on purpose: on a file tab it both opens the selection and runs the
+    // search, and a cap can only say one thing, so the always-true global meaning keeps it.
+    files: {
+      base: {
+        F7:["file","Edit","edit the selected file"],
+        F6:["file","Explorer","show in Explorer"],
+        F3:["file","Search here","search inside this folder"],
+        F2:["edit","Rename","rename"],
+        Del:["edit","Recycle","send to the Recycle Bin"]
+      },
+      ctrl: {
+        F7:["file","New doc admin","new document, admin-save retry"],
+        D:["file","Bookmark","add to bookmarks"],
+        A:["edit","Select all","select every result"],
+        X:["edit","Cut","cut / copy / paste files"],
+        C:["edit","Copy","cut / copy / paste files"],
+        V:["edit","Paste","cut / copy / paste files"]
+      },
+      ctrlshift: {
+        O:["file","Open with","open with..."],
+        Enter:["file","Open admin","open as administrator"],
+        E:["file","Exclude","exclude this folder"],
+        N:["edit","New folder","new folder"],
+        L:["edit","Clear","clear the results"],
+        C:["edit","Copy path","copy full path"],
+        M:["edit","Copy name","copy file name"],
+        D:["edit","Copy folder","copy folder path"],
+        Y:["edit","Copy lines","copy matched lines"],
+        H:["edit","Copy hash","copy SHA-256"]
+      },
+      shift: {
+        F10:["file","More opts","more Windows options"],
+        Del:["edit","Delete","delete permanently"]
+      },
+      alt: {
+        Enter:["file","Properties","properties"]
+      }
     },
-    ctrlshift: {
-      N:["edit","New folder","new folder"],
-      A:["search","Add term","add a search term"],
-      C:["search","Case","toggle case-sensitive matching"],
-      F:["search","Pipe","search within these results, in a new tab"],
-      S:["view","Search panel","show or hide the search panel"],
-      L:["edit","Clear","clear the results"],
-      Tab:["tabs","Prev tab","previous tab"],
-      F8:["tabs","CMD admin","open CMD as administrator"]
+    terminal: {
+      ctrlshift: {
+        C:["edit","Copy","copy"],
+        A:["edit","Select all","select all"]
+      }
     },
-    shift: {
-      Del:["edit","Delete","delete permanently"],
-      F8:["tabs","CMD","open a CMD tab in this folder"],
-      F10:["file","More opts","more Windows options"]
+    editor: {
+      ctrl: {
+        G:["edit","Go to line","go to line"],
+        S:["edit","Save","save"]
+      }
     },
-    alt: {
-      D:["nav","Address","edit the location - type a path and press Enter"],
-      Left:["nav","Back","go back / forward"],
-      Right:["nav","Forward","go back / forward"],
-      Up:["nav","Up","go up one folder"],
-      D1:["nav","Bmk 1","go to bookmark 1"], D2:["nav","Bmk 2","go to bookmark 2"],
-      D3:["nav","Bmk 3","go to bookmark 3"], D4:["nav","Bmk 4","go to bookmark 4"],
-      D5:["nav","Bmk 5","go to bookmark 5"], D6:["nav","Bmk 6","go to bookmark 6"],
-      D7:["nav","Bmk 7","go to bookmark 7"], D8:["nav","Bmk 8","go to bookmark 8"],
-      D9:["nav","Bmk 9","go to bookmark 9"], D0:["nav","Bmk 10","go to bookmark 10 (0 = tenth)"],
-      P:["view","Details","show or hide the file details pane"]
+    // Delete is End process in Processes mode and Stop in Services mode; the cap shows the mode
+    // the tab opens in, as the app's does.
+    processes: {
+      base: {
+        Del:["edit","End process","end process"]
+      },
+      ctrl: {
+        R:["edit","Restart","restart"],
+        O:["edit","File location","open file location"],
+        S:["edit","Start","start"],
+        Period:["edit","Proc/Svc","switch between Processes and Services"]
+      },
+      ctrlshift: {
+        A:["edit","Run as admin","restart as administrator"]
+      }
+    },
+    registry: {
+      base: {
+        Enter:["edit","Modify","modify a value"],
+        F5:["view","Reload","reload the selected key from disk"]
+      },
+      ctrl: {
+        F:["search","Find","find a key or value name"],
+        C:["edit","Copy path","copy full path"]
+      }
+    },
+    storage: {
+      base: {
+        D:["view","Depth","cycle treemap depth"],
+        M:["view","Min size","cycle the minimum size shown"],
+        C:["view","Color","switch coloring by type or folder"],
+        Enter:["nav","Zoom in","zoom into the selected folder"],
+        Back:["nav","Zoom out","zoom out one level"],
+        Home:["nav","Scan root","back to the scan root"],
+        Del:["edit","Recycle","send the selected item to the Recycle Bin"]
+      },
+      ctrl: {
+        Enter:["search","Scan","start the scan"]
+      }
     }
   };
+
+  // The Event Viewer and the Performance tab are absent on purpose: neither has a key of its own,
+  // so both read as Everywhere, and offering them would draw the same board under another name.
+  var SCOPES = [["global","EVERYWHERE"],["files","FILE BROWSER"],["terminal","TERMINAL"],
+                ["editor","EDITOR"],["processes","PROCESSES/SERVICES"],
+                ["registry","REGISTRY EDITOR"],["storage","STORAGE ANALYZER"]];
+  var SCOPE_LABEL = {};
+  SCOPES.forEach(function(s){ SCOPE_LABEL[s[0]] = s[1]; });
 
   var LAYERS = [["base","BASE"],["ctrl","CTRL"],["ctrlshift","CTRL+SHIFT"],["shift","SHIFT"],["alt","ALT"]];
   var LAYER_MODS = { base:[], ctrl:["Ctrl","RCtrl"], ctrlshift:["Ctrl","RCtrl","Shift","RShift"],
                       shift:["Shift","RShift"], alt:["Alt","RAlt"] };
   var CAT_LABEL = { search:"SEARCH", nav:"NAVIGATION", tabs:"TABS", view:"VIEW", file:"FILE", edit:"EDITING", help:"HELP" };
 
-  var kbBuilt = false, curLayer = "base", keyEls = {}, detailEl, layerBtns = {};
+  var kbBuilt = false, curLayer = "base", curScope = "global", curLit = {};
+  var keyEls = {}, detailEl, layerBtns = {}, scopeBtns = {};
+
+  // The scope's own bindings are laid down first and Everywhere fills only the caps they left, so
+  // a scoped binding wins its key outright. Same resolution as KbLit in KeyboardMapOverlay.cs.
+  function litMap(scope, layer){
+    var lit = {}, own = (KB_SCOPES[scope] || {})[layer] || {}, k;
+    for (k in own) lit[k] = { b: own[k], scoped: scope !== "global" };
+    if (scope !== "global") {
+      var g = KB_SCOPES.global[layer] || {};
+      for (k in g) if (!(k in lit)) lit[k] = { b: g[k], scoped: false };
+    }
+    return lit;
+  }
+
+  function buildScopeButtons(){
+    var host = document.getElementById('kbScopes');
+    SCOPES.forEach(function(s){
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = s[1];
+      b.addEventListener('click', function(){ setScope(s[0]); });
+      scopeBtns[s[0]] = b;
+      host.appendChild(b);
+    });
+    var hint = document.createElement('span');
+    hint.className = 'kb-hint';
+    hint.textContent = 'the board draws one tab at a time';
+    host.appendChild(hint);
+  }
 
   function buildLayerButtons(){
     var host = document.getElementById('kbLayers');
@@ -570,15 +827,18 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
   }
 
   function showDetail(id){
-    var b = KB_MAP[curLayer][id];
-    detailEl.textContent = b ? (CAT_LABEL[b[0]] + ' :: ' + b[2]) : 'Click or hover a lit key to see what it does.';
+    var e = curLit[id];
+    if (!e) { detailEl.textContent = 'Click or hover a lit key to see what it does.'; return; }
+    // A scoped binding names its tab here as well as on the button row above the board: the row
+    // says what the board as a whole is showing, this says which key under the pointer is the one
+    // that only exists on that tab.
+    detailEl.textContent = (e.scoped ? SCOPE_LABEL[curScope] + ' :: ' : '') + CAT_LABEL[e.b[0]] + ' :: ' + e.b[2];
   }
 
-  function setLayer(layer){
-    curLayer = layer;
-    var map = KB_MAP[layer];
+  function paintBoard(){
+    curLit = litMap(curScope, curLayer);
     Object.keys(keyEls).forEach(function(id){
-      var k = keyEls[id], b = map[id];
+      var k = keyEls[id], e = curLit[id], b = e && e.b;
       if (b) {
         var color = 'var(--kc-' + b[0] + ')';
         k.el.classList.add('bound');
@@ -593,21 +853,26 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
         k.bar.style.background = '';
       }
     });
-    var mods = LAYER_MODS[layer];
+    var mods = LAYER_MODS[curLayer];
     ["Ctrl","RCtrl","Shift","RShift","Alt","RAlt"].forEach(function(m){
       if (keyEls[m]) keyEls[m].el.classList.toggle('mod-on', mods.indexOf(m) >= 0);
     });
-    Object.keys(layerBtns).forEach(function(l){ layerBtns[l].classList.toggle('on', l === layer); });
+    Object.keys(layerBtns).forEach(function(l){ layerBtns[l].classList.toggle('on', l === curLayer); });
+    Object.keys(scopeBtns).forEach(function(s){ scopeBtns[s].classList.toggle('on', s === curScope); });
     detailEl.textContent = 'Click or hover a lit key to see what it does.';
   }
+
+  function setLayer(layer){ curLayer = layer; paintBoard(); }
+  function setScope(scope){ curScope = scope; paintBoard(); }
 
   function buildKeyboard(){
     if (kbBuilt) return;
     kbBuilt = true;
     detailEl = document.getElementById('kbDetail');
+    buildScopeButtons();
     buildLayerButtons();
     buildBoard();
-    setLayer('base');
+    paintBoard();
   }
 
   var listBtn = document.getElementById('ksListBtn'), kbBtn = document.getElementById('ksKbBtn');

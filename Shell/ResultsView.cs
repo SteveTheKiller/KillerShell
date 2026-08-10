@@ -489,6 +489,13 @@ namespace KillerShell.Shell
         {
             if (sender is not ListBox list) return;
 
+            // Stands down while a selection is being put back rather than made (Tabs.cs
+            // ApplySelectionByPath, and the refill it carries a selection across in Browse.cs).
+            // The rows go in one at a time, so this would fire once per row and the last one would
+            // leave a file path in the footer on top of the tab status line ActivateTab, or the
+            // listing itself, has just restored.
+            if (_restoringSelection) return;
+
             int count = list.SelectedItems.Count;
             if (count == 0) return;
 

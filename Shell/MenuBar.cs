@@ -89,6 +89,14 @@ namespace KillerShell.Shell
             var row = pane.LocationRow;
             if (row == null) return;
 
+            // The row only ever belongs to a LISTING tab (PaneBars.cs WearsLocationRow). Every
+            // other kind of tab wears its own bar, and handing this one back on top of that bar
+            // is what put TWO identical stacked bars on a shell or document tab: Ctrl+F10 calls
+            // straight through SetMenuBar without going near a tab switch, so it never consulted
+            // the tab kind at all. Forced hidden here rather than in each caller, so the rule
+            // holds for every path that reaches the row.
+            if (!WearsLocationRow(pane.Active)) hidden = true;
+
             if (!animate)
             {
                 row.BeginAnimation(FrameworkElement.HeightProperty, null);

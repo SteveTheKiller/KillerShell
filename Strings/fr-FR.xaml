@@ -122,6 +122,9 @@
     <sys:String x:Key="Str_Menu_OpenFile">Ouvrir le fichier</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">Ouvrir avec...</sys:String>
     <sys:String x:Key="Str_Menu_ShowExplorer">Afficher dans l'Explorateur</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">Afficher les dossiers masqués et à point</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">Arborescence : dossiers masqués et à point affichés</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">Arborescence : dossiers masqués et à point cachés</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Réduire</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Agrandir</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Restaurer</sys:String>
@@ -328,6 +331,13 @@
     <sys:String x:Key="Str_Ks_ViewList">LISTE</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">CLAVIER</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">maintenez Ctrl, Maj ou Alt pour afficher cette couche</sys:String>
+    <!-- Shortcuts card: SCOPE section headings (see en-US.xaml for the full note). The other
+         four sections reuse the Str_TabTitle_* strings of the tabs they name. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">Partout</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">Explorateur de fichiers</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">Éditeur</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">touches affichées pour :</sys:String>
 
     <!-- Conventions de l'Explorateur -->
     <sys:String x:Key="Str_Ks_BackForward">précédent / suivant</sys:String>
@@ -617,6 +627,31 @@
     <sys:String x:Key="Str_RegEd_AccessDenied">Accès refusé - cette clé nécessite un niveau d'accès supérieur à celui de cette fenêtre pourtant élevée</sys:String>
     <sys:String x:Key="Str_RegEd_Base">Base :</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">Paires d'octets hexadécimaux, séparées par des espaces (ex. 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_Status_Extracting">Extraction de {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">Impossible d'extraire {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">Impossible de lire l'archive - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Seules les archives .zip peuvent être modifiées - celle-ci s'ouvre en lecture seule</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Seuls des fichiers peuvent être glissés hors d'une archive - ouvrez le dossier et glissez son contenu</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriting">Réécriture de l'archive - {0} %</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">{0} ajouté(s) à l'archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">{0} retiré(s) de l'archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">Renommé en {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} ajouté(s) - {1} ignoré(s) faute de nom valide</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">Impossible de mettre à jour l'archive - {0}. L'original est inchangé.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Ce fichier d'archive est en lecture seule - retirez cet attribut et réessayez</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">Cette archive est ouverte dans un autre programme - fermez-le et réessayez</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">Pas d'autorisation d'écriture sur cette archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">L'archive contient déjà quelque chose portant ce nom</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">Cette entrée n'est plus dans l'archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">Ce nom ne peut pas être utilisé dans une archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">Rien à ajouter</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">Archive laissée inchangée</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">Certains sont déjà dans l'archive</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">Copié hors de l'archive - l'entrée y reste</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">{0} d'entre eux sont déjà dans l'archive.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">Retirer {0} élément(s) de l'archive ? Toute l'archive est réécrite et l'opération est irréversible.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">Les remplacer au lieu de garder les deux</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">Ajouter</sys:String>
     <sys:String x:Key="Str_RegEd_ComputerRoot">Ordinateur</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Impossible de copier dans le presse-papiers - {0}</sys:String>
     <sys:String x:Key="Str_RegEd_CreateFailed">Impossible de la créer - {0}</sys:String>
@@ -696,6 +731,8 @@
     <sys:String x:Key="Str_TabTitle_Performance">Performances</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">Éditeur du Registre</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">Processus/Services</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">Processus</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Services</sys:String>
     <sys:String x:Key="Str_Theme_Black">Noir</sys:String>
     <sys:String x:Key="Str_Theme_Blood">Sang</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">Cyanotique</sys:String>

@@ -46,9 +46,30 @@ namespace KillerShell.Shell
         /// </remarks>
         private void ApplyPaneBars(SearchTab t)
         {
-            bool listing = !t.IsTerminal && !t.IsEditor && !t.IsProcessList && !t.IsEventViewer
-                        && !t.IsPerformanceMonitor && !t.IsRegistryEditor && !t.IsStorageAnalyzer;
-            SetLocationRow(Pane, hidden: !listing || Pane.MenuBarHidden, animate: false);
+            SetLocationRow(Pane, hidden: !WearsLocationRow(t) || Pane.MenuBarHidden, animate: false);
         }
+
+        /// <summary>
+        /// True only for a LISTING tab - the one kind the location row has anything to say
+        /// about. Every other kind wears its own bar instead (shell, document) or carries its
+        /// controls inside its own control (Task Manager, Event Viewer, Performance, Registry,
+        /// Storage).
+        /// </summary>
+        /// <remarks>
+        /// The rule lives here, in one predicate, because it has to be enforced in TWO places
+        /// and used to be spelled out in only one. ApplyPaneBars runs on a tab switch; the
+        /// Ctrl+F10 menubar toggle (MenuBar.cs) reaches the same row without going through a
+        /// tab switch at all, and it had no tab-kind test. Toggling it on a shell tab therefore
+        /// slid the folder location row open directly ABOVE the shell's own bar and the tab came
+        /// up wearing two identical stacked bars until the next tab switch tidied it away. It
+        /// was reachable in one keystroke on any pane whose row was already hidden - which
+        /// includes every elevated / --shell startup window, since that path hides the row up
+        /// front (TerminalTabs.cs). SetLocationRow now consults this on every call, so no caller
+        /// can hand the row to a tab that does not wear one.
+        /// </remarks>
+        private static bool WearsLocationRow(SearchTab? t)
+            => t != null
+               && !t.IsTerminal && !t.IsEditor && !t.IsProcessList && !t.IsEventViewer
+               && !t.IsPerformanceMonitor && !t.IsRegistryEditor && !t.IsStorageAnalyzer;
     }
 }

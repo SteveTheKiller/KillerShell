@@ -341,6 +341,15 @@ namespace KillerShell.Shell
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
 
+            // Grain over the opaque PaneBrush root, spanning all four rows. The opaque root is
+            // what hides PaneContent's own grain layer, so this tab was the flat, textureless
+            // surface in the window - it has to repaint the texture itself, the way the folder
+            // LocationRow does over its own opaque face. Added before the row content, so the
+            // toolbar, tree, grid and status line all paint above it. 0 opacity on 98SE.
+            var grain = ToolTabChrome.Grain();
+            SetRowSpan(grain, 4);
+            Children.Add(grain);
+
             // ToolTabChrome: the address row rides the RAISED menu-bar tier on 98SE, and the
             // tree and value grid below sit in their own sunken WHITE wells (BuildSplit) -
             // content sunken, menu bar raised, with the reg tree sidebar and the right side
@@ -372,11 +381,57 @@ namespace KillerShell.Shell
             _tree.ItemsSource = _roots;
 
             PreviewKeyDown += Control_PreviewKeyDown;
+
+            Services.ThemeManager.ThemeChanged += OnThemeChanged;
         }
 
         /// <summary>Torn down when the tab closes, and when the whole window closes with this tab
         /// still open (Session.cs OnClosing, via ShutdownAllRegistryEditors).</summary>
-        internal void Shutdown() => _statusClearTimer.Stop();
+        internal void Shutdown()
+        {
+            _statusClearTimer.Stop();
+            Services.ThemeManager.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged() => ApplyTreeChevronMask(_tree);
+
+        /// <summary>
+        /// Point this tree's chevron mask at the surface it actually sits on.
+        /// A local Resources entry, because the chevron template resolves the key with a
+        /// DynamicResource and that walks up from the element - so this wins inside this tree
+        /// and changes nothing in the folder sidebar.
+        /// Re-applied on ThemeChanged: a ResourceDictionary entry holds a brush, not a live
+        /// reference to one, so it would otherwise keep the outgoing theme's colour.
+        /// </summary>
+        /// <remarks>
+        /// The mask's whole job is to vanish into what is behind the chevron, so it has to be
+        /// that exact colour. The tree sits inside ToolTabChrome.WrapContent's well, whose face
+        /// is ToolTreeBrush painted over this control's own PaneBrush root. Those are two
+        /// different answers depending on the theme:
+        ///   - on the twelve rounded themes ToolTreeBrush is TRANSPARENT, so the colour behind
+        ///     the chevron really is PaneBrush, which is what this always used;
+        ///   - on the flat theme the well is an opaque WHITE client area, while PaneBrush there
+        ///     is the #c0c0c0 window face - so a PaneBrush mask drew a grey wedge straight
+        ///     through the middle of every chevron in a white tree.
+        /// Take the well's own face whenever it is opaque, and the pane underneath it when it
+        /// is not, so both cases resolve to the pixels actually being covered.
+        /// </remarks>
+        private static void ApplyTreeChevronMask(TreeView tree)
+        {
+            if (tree == null) return;
+            var app = Application.Current;
+            if (app == null) return;
+
+            var surface = app.TryFindResource("ToolTreeBrush") as Brush;
+            // A transparent well is not a surface - the pane shows through it, so read the pane.
+            // Tested on the brush rather than on the theme name: nothing else in this file
+            // branches on which theme is loaded, and a future theme that fills the well gets the
+            // right answer without being added to a list.
+            if (surface == null || (surface is SolidColorBrush s && s.Color.A == 0))
+                surface = app.TryFindResource("PaneBrush") as Brush;
+
+            if (surface != null) tree.Resources["TreeChevronMaskBrush"] = surface;
+        }
 
         // ═══════════════════════════════════════════════════════════
         //  BUILD - toolbar / find bar / split / status line
@@ -384,12 +439,11 @@ namespace KillerShell.Shell
         private Grid BuildToolbar(out Border pathHost, out TextBlock pathDisplay, out TextBox pathEdit)
         {
             var bar = new Grid { Margin = new Thickness(8, 8, 8, 6) };
-            // PaneBrush, matching the terminal bar / document editor toolbar fix:
-            // this control sits inside ResultsSurface/PaneContent on
-            // MenuBackgroundBrush, a step darker than the pane, the same as those two - without an
-            // explicit override the toolbar row reads as a visibly darker band instead of a
-            // continuation of the active tab above it.
-            bar.SetResourceReference(Grid.BackgroundProperty, "PaneBrush");
+            // No background of its own. It carried an opaque PaneBrush to cover the darker
+            // MenuBackgroundBrush that used to show in its margins, but the control's root Grid
+            // paints PaneBrush behind everything already, and WrapBar's face is PaneBrush too -
+            // so the only thing this opaque layer still did was sit on top of WrapBar's grain
+            // and leave the address bar as the one textureless strip on the tab.
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -403,8 +457,13 @@ namespace KillerShell.Shell
                 Padding = new Thickness(8, 4, 8, 4),
                 Cursor = Cursors.IBeam,
             };
-            pathHost.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
-            pathHost.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
+            // TextFieldBrush + InputEdgeBrush - the theme's own text-field rule (DarkTextBox,
+            // Controls.xaml), not PaneBrush + CardBorderBrush: this IS a text input, it just
+            // happens to be built as a click-to-edit Border, and painting it as a card left it
+            // the one field in the app not dressed like one. TextFieldBrush is derived SOLID on
+            // the gradient themes (ThemeManager), so no gradient re-ramp inside the box.
+            pathHost.SetResourceReference(Border.BackgroundProperty, "TextFieldBrush");
+            pathHost.SetResourceReference(Border.BorderBrushProperty, "InputEdgeBrush");
             pathHost.BorderThickness = new Thickness(1);
             pathHost.CornerRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 3));
 
@@ -565,18 +624,21 @@ namespace KillerShell.Shell
                 Style = (Style)FindResourceStatic("FolderTreeView"),
                 Focusable = true,
             };
-            // BackgroundBrush, matching the folder browser's own tree sidebar so the reg
-            // sidebar shares the main window background: TreePanel.cs
-            // never sets a Background on the folder TreeView at all, so it inherits the
-            // FolderTreeView style's Transparent default all the way up to the Window's own
-            // Background="{DynamicResource BackgroundBrush}" (MainWindow.xaml). This control's own
-            // root Grid paints PaneBrush behind everything, so a plain Transparent override here
-            // would show PaneBrush instead - setting BackgroundBrush explicitly reproduces the
-            // exact color the folder tree shows rather than the one this tab's own pane uses.
-            // ToolTreeBrush, not BackgroundBrush directly: it mirrors BackgroundBrush on every
-            // ordinary theme (identical rendering), but 98SE states WHITE - the reg tree is a
-            // sunken white list well there, like Explorer's.
+            // ToolTreeBrush: Transparent on the ordinary themes (ThemeManager), so the tree
+            // shows this control's own PaneBrush root and grain and matches the value grid
+            // beside it; 98SE states WHITE - the reg tree is a sunken white list well there,
+            // like Explorer's. It used to mirror BackgroundBrush to copy the folder tree's
+            // window-background look, but that brush is a gradient on five themes and re-ramped
+            // inside this narrow column - the pink sidebar on Delirium.
             tree.SetResourceReference(TreeView.BackgroundProperty, "ToolTreeBrush");
+
+            // The chevron's mask fill (Controls.xaml FolderTreeItem) exists to hide the
+            // connecting line, so it has to be the surface the tree actually sits on. The app
+            // default is SolidBackgroundBrush - right for the folder sidebar, which shows the
+            // window - but this tree sits on the control's PaneBrush, so the default painted a
+            // wedge of window colour into every chevron. On the gradient themes that is the
+            // ramp's first stop, which is nothing like the pane: the pink arrows.
+            ApplyTreeChevronMask(tree);
 
             // Same visual chrome the folder sidebar uses (expander arrows, connecting lines), with
             // IsExpanded/IsSelected two-way bound to RegistryNode so the tree and the model agree

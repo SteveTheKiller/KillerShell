@@ -358,6 +358,16 @@ namespace KillerShell.Shell
             return Directory.Exists(parent) ? parent : null;
         }
 
+        /// <summary>Analyze storage for the folder the menu was opened on - the row itself when
+        /// it is a folder, otherwise the folder being browsed.</summary>
+        internal void MenuAnalyze_Click(object sender, RoutedEventArgs e)
+        {
+            // MenuFolder() is the same "the row if it is a folder, otherwise the folder being
+            // browsed" resolution Search here and Exclude folder already use, so all three rows
+            // in this group act on the same target.
+            if (MenuFolder() is { } folder) AnalyzeFolder(folder);   // StorageTabs.cs
+        }
+
         internal void MenuSearchHere_Click(object sender, RoutedEventArgs e)
         {
             string? folder = MenuFolder();

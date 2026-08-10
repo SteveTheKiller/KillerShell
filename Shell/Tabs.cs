@@ -427,6 +427,22 @@ namespace KillerShell.Shell
             t.IncludePatterns = IncludePatternsBox.Text;
             t.ExcludePatterns = ExcludePatternsBox.Text;
             t.CaseSensitive   = CaseSensitiveCheck.IsChecked == true;
+
+            // ...and which rows were selected, as PATHS (SearchTab.SelectedPaths). Nothing else
+            // remembers a tab's selection, so without this, switching to another tab and coming
+            // back leaves the list - and the details strip with it - blank: the return trip
+            // re-binds ResultsList.ItemsSource, and assigning ItemsSource empties the ListBox's
+            // selection. Paths rather than the SearchResult rows themselves because a browsing
+            // tab re-lists its folder on activation, so the objects that were selected do not
+            // survive either.
+            //
+            // Guarded on the list actually showing THIS tab's results. CaptureTab is always
+            // called for the focused pane's active tab, so it normally is; reading the selection
+            // off a list bound to something else would store another tab's rows here, and
+            // storing an empty list instead would throw away what this tab had.
+            if (ReferenceEquals(Pane.ResultsList.ItemsSource, t.Results))
+                t.SelectedPaths = Pane.ResultsList.SelectedItems
+                    .OfType<SearchResult>().Select(r => r.FilePath).ToList();
         }
 
         // Point the whole UI at a tab: collections, config boxes, status, counters, button label.
@@ -453,7 +469,44 @@ namespace KillerShell.Shell
 
             TermsList.ItemsSource   = t.Groups;
             FiltersList.ItemsSource = t.Filters;
-            Pane.ResultsList.ItemsSource = t.Results;
+
+            // Only re-bind when the collection actually CHANGES. Assigning ItemsSource resets
+            // the ListBox's selection even when handed the very same collection back, so
+            // re-activating a tab that this pane is already showing threw away whatever row was
+            // selected - which is what happened clicking pane 2 and then clicking pane 1's tab
+            // again: the file you had selected, and the details pane with it, went blank
+            // (2026-08-09). Nothing else here depends on the assignment happening every time.
+            bool rebound = !ReferenceEquals(Pane.ResultsList.ItemsSource, t.Results);
+            if (rebound)
+            {
+                Pane.ResultsList.ItemsSource = t.Results;
+
+                // Switching to a DIFFERENT tab and back genuinely re-binds, and the guard above
+                // cannot help there - that assignment really does empty the selection. So put the
+                // rows CaptureTab stashed on the tab back on the list.
+                //
+                // DISPATCHED, never inline. Two reasons, either one enough on its own:
+                //   - the ListBox has only just been handed the collection, so no layout pass has
+                //     run and its item containers do not exist yet; a selection applied here
+                //     selects nothing.
+                //   - the rest of ActivateTab still has to run, and ApplySort/ApplyFilter both
+                //     re-shape the collection view underneath the list, so even a selection that
+                //     did stick would not survive the same call.
+                // Background priority sits below Render and Loaded, so layout has happened by the
+                // time this runs.
+                //
+                // Restored only on a real re-bind, never on a plain re-activation of the tab this
+                // pane is already showing: there the LIVE selection is still on the list, and
+                // re-applying the stored paths would overwrite it with whatever was selected the
+                // last time the tab was switched away from.
+                //
+                // The pane is captured into a local rather than read off `Pane` inside the
+                // closure - focus can move again before this runs, and the restore belongs to the
+                // pane that just re-bound, not to whichever one happens to be focused then.
+                var reboundPane = Pane;
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                    new Action(() => RestoreTabSelection(reboundPane, t)));
+            }
 
             ApplyTerminalView(t);     // TerminalTabs.cs     - a shell tab shows a pty, not a listing
             ApplyEditorView(t);       // EditorTabs.cs       - and a document tab shows a document
@@ -497,9 +550,198 @@ namespace KillerShell.Shell
             // it sat in the background.
             StopWatching();
             if (t.IsBrowsing && System.IO.Directory.Exists(t.CurrentFolder))
-                _ = NavigateTo(t.CurrentFolder, record: false);
+                _ = RefreshBrowsingTab(Pane, t, restoreSelection: rebound);
 
             UpdateTabBar();       // corner rounding follows which tab is active
+
+            // Every path that OPENS a tool tab ends here (each tool's CreateXTab finishes with
+            // ActivateTab), so this is where a newly-opened Event Viewer / Processes /
+            // Performance / Registry / Storage tab first lights its rail icon.
+            UpdateToolRailLights();
+        }
+
+        /// <summary>
+        /// The silent refresh an incoming BROWSING tab gets, with the selection restore that has
+        /// to wait for it.
+        /// </summary>
+        /// <remarks>
+        /// NavigateTo clears tab.Results and refills it with brand new SearchResult instances, so
+        /// on a browsing tab it wipes any selection already sitting on the list. The dispatched
+        /// restore in ActivateTab is therefore racing the listing task: the task's continuation
+        /// comes back at Normal priority and the restore is queued at Background, so the listing
+        /// usually lands first, but "usually" is not the same as always - a network share or a
+        /// drive spinning up loses the race and the selection goes with it. Awaiting the refresh
+        /// and restoring again makes the order certain.
+        ///
+        /// Restoring twice for one activation costs nothing: RestoreTabSelection matches on path
+        /// and leaves the tab's stored paths alone, so the second pass re-applies the same rows.
+        ///
+        /// restoreSelection is false when the pane did NOT re-bind - see ActivateTab for why a
+        /// plain re-activation must keep the live selection rather than the stored one. That case
+        /// is what keepSelection covers, and it is the ONLY thing that covers it: the stored paths
+        /// are written by CaptureTab on a real tab SWITCH, so on a mere focus change between panes
+        /// they are stale or empty and there is nothing to restore from. keepSelection has
+        /// NavigateTo carry the LIVE selection across its own refill instead (Browse.cs).
+        ///
+        /// The refresh itself stays. It is not decoration: only the focused pane's active tab is
+        /// watched (BrowseWatcher.cs), so the pane being returned to is precisely the one that has
+        /// been running unwatched and may be showing a folder that has changed since. ActivateTab
+        /// also drops the watcher unconditionally right before this, and NavigateTo's StartWatching
+        /// is what arms it again - skip the refresh and that pane would not only be stale, it would
+        /// stay stale until the next real navigation.
+        /// </remarks>
+        private async System.Threading.Tasks.Task RefreshBrowsingTab(FilePane pane, SearchTab t, bool restoreSelection)
+        {
+            await NavigateTo(t.CurrentFolder, record: false, keepSelection: true);   // Browse.cs
+            if (restoreSelection) RestoreTabSelection(pane, t);
+        }
+
+        /// <summary>
+        /// The paths of the rows selected in <paramref name="pane"/> at this instant, or null when
+        /// its list is not showing <paramref name="t"/>'s results.
+        /// </summary>
+        /// <remarks>
+        /// Paths rather than the rows themselves for the same reason RestoreTabSelection matches on
+        /// them: the caller is about to destroy every SearchResult in the collection, so holding
+        /// the objects would hold exactly the instances that are on their way out.
+        ///
+        /// The guard is the same one RestoreTabSelection uses - reading a selection off a list that
+        /// is bound to some other tab's results would carry the wrong rows entirely.
+        /// </remarks>
+        private static System.Collections.Generic.List<string>? LiveSelectedPaths(FilePane pane, SearchTab t)
+        {
+            var list = pane.ResultsList;
+            if (!ReferenceEquals(list.ItemsSource, t.Results)) return null;
+            return list.SelectedItems.OfType<SearchResult>().Select(r => r.FilePath).ToList();
+        }
+
+        /// <summary>
+        /// Put a tab's remembered selection back on <paramref name="pane"/>'s results list,
+        /// matching the rebuilt rows by PATH.
+        /// </summary>
+        /// <remarks>
+        /// Paths rather than the SearchResult objects themselves because by the time this runs
+        /// the rows are different instances - the list was re-bound, and a browsing tab re-listed
+        /// its folder from disk - so the object that was selected is not in the list to hand back.
+        ///
+        /// Idempotent and non-destructive: the tab's stored paths stay put, so this can run twice
+        /// for one activation (once dispatched from ActivateTab, once after the browsing refresh)
+        /// and the second pass simply re-applies the same rows.
+        ///
+        /// _restoringSelection holds off the two things a live selection change drives, because
+        /// the rows go in ONE AT A TIME and SelectedItems.Add raises SelectionChanged on every
+        /// one of them: the footer path line (ResultsView.cs), which would otherwise end up
+        /// showing a file path over the tab status ActivateTab has just restored, and the details
+        /// strip (DetailsPane.cs), which would otherwise repaint - bumping its generation counter
+        /// and starting a stat and an image decode - once per row, on part-built selections. The
+        /// strip is then repainted in ApplySelectionByPath ONCE, after the flag drops, so it
+        /// describes the WHOLE restored selection instead of being left blank or showing only the
+        /// first row.
+        /// </remarks>
+        private void RestoreTabSelection(FilePane pane, SearchTab t)
+            => ApplySelectionByPath(pane, t, t.SelectedPaths);
+
+        /// <summary>
+        /// Select the rows of <paramref name="t"/> whose paths are in <paramref name="paths"/>, on
+        /// <paramref name="pane"/>'s results list, and repaint that pane's details strip once.
+        /// </summary>
+        /// <remarks>
+        /// Split out of RestoreTabSelection so the two callers cannot drift: the tab-activation
+        /// restore above, which feeds it the paths CaptureTab stored on the tab, and NavigateTo's
+        /// silent-refresh path (Browse.cs), which feeds it the LIVE selection it read one statement
+        /// before the refill destroyed it. The stored paths are no use to the second of those - see
+        /// RefreshBrowsingTab - but putting rows back by path is identical work either way.
+        /// </remarks>
+        private void ApplySelectionByPath(FilePane pane, SearchTab t,
+                                          System.Collections.Generic.ICollection<string> paths)
+        {
+            if (paths.Count == 0) return;
+
+            var list = pane.ResultsList;
+
+            // The pane moved on between the dispatch and now - another tab was activated in it,
+            // or this tab was dragged into the other pane. Its selection is no longer this tab's
+            // business, and forcing it would fight whatever is showing.
+            if (!ReferenceEquals(list.ItemsSource, t.Results)) return;
+
+            // OrdinalIgnoreCase because these are Windows paths, and a row can come back from a
+            // re-listing cased differently than the string that was stored.
+            var wanted = new System.Collections.Generic.HashSet<string>(
+                paths, StringComparer.OrdinalIgnoreCase);
+
+            _restoringSelection = true;
+            try
+            {
+                list.SelectedItems.Clear();
+                // Every match, not just the first: ResultsList is SelectionMode="Extended", so a
+                // multi-row selection has to come back as a multi-row selection.
+                foreach (var r in t.Results)
+                    if (wanted.Contains(r.FilePath)) list.SelectedItems.Add(r);
+            }
+            finally { _restoringSelection = false; }
+
+            // Repainted explicitly rather than left to the SelectionChanged that was just
+            // suppressed, so the strip ends up describing what is now selected instead of the
+            // empty list the re-bind - or the refill - left behind. Animated like any other
+            // selection change - by
+            // the time this runs the re-bind's own collapse has already played, and snapping the
+            // strip open on top of it reads worse than letting it grow.
+            UpdateDetailsPaneForSelection(pane);   // DetailsPane.cs - no-ops while the strip is closed
+        }
+
+        /// <summary>
+        /// True only while a selection is being put back on a results list rather than made by the
+        /// user: ApplySelectionByPath adding the rows one at a time, and the clear-and-refill in
+        /// NavigateTo that a carried selection is about to survive (Browse.cs). Read by
+        /// ResultsList_SelectionChanged (ResultsView.cs) and UpdateDetailsPaneForSelection
+        /// (DetailsPane.cs) - see the remark on RestoreTabSelection for why both stand down.
+        /// </summary>
+        private bool _restoringSelection;
+
+        /// <summary>
+        /// Light the rail icon of every tool that has a tab open in a live pane, and unlight the
+        /// ones that do not, through the same Tag="on" accent the search, bookmarks and dual-pane
+        /// toggles use (RailButton, Controls.xaml).
+        /// </summary>
+        // Recomputed from the tabs themselves on every activation and every close, rather than
+        // switched on in each tool's Open... and off in its Close...: per-open/per-close
+        // bookkeeping has to be right at a dozen call sites AND in every path that moves a tab
+        // between panes or windows (PaneDrag.cs, TabTearOut.cs, TabHandoff.cs, session restore),
+        // and one missed path leaves an icon lit with nothing behind it or dark with a tab still
+        // open. Asking the panes what they hold cannot drift, and the walk is a couple of
+        // collections of a handful of items.
+        //
+        // The question is only "does a tab of this kind exist anywhere in the window" - NOT
+        // whether it is the active tab, and not whether it is in the focused pane. A Task Manager
+        // sitting behind another tab, or in the other pane, is still open; an icon that went dark
+        // every time you clicked a different tab would read as the tool having closed.
+        //
+        // LivePanes() (Panes.cs) is what makes "in the window" mean on screen: while the split is
+        // shut RightPane keeps its tabs but shows none of them, so it yields only LeftPane.
+        // Reopening the split runs FocusPane -> ActivateTab, which lands back here.
+        private void UpdateToolRailLights()
+        {
+            bool procs = false, events = false, perf = false, registry = false, storage = false;
+
+            foreach (var pane in LivePanes())
+                foreach (var t in pane.Tabs)
+                {
+                    // Each Is* is "this tab's control is not null" (Models/SearchTab.cs) - the
+                    // same tell ActivateTab's ApplyXView calls and the tab-strip dot read.
+                    procs    |= t.IsProcessList;
+                    events   |= t.IsEventViewer;
+                    perf     |= t.IsPerformanceMonitor;
+                    registry |= t.IsRegistryEditor;
+                    storage  |= t.IsStorageAnalyzer;
+                }
+
+            // null, not "off": the trigger fires on the literal string "on" and treats everything
+            // else as the unlit default, and null is what the other rail toggles clear to.
+            TaskManagerRailBtn.Tag    = procs    ? "on" : null;
+            EventViewerRailBtn.Tag    = events   ? "on" : null;
+            PerformanceRailBtn.Tag    = perf     ? "on" : null;
+            RegistryEditorRailBtn.Tag = registry ? "on" : null;
+            StorageRailBtn.Tag        = storage  ? "on" : null;
         }
 
         private void SwitchToTab(SearchTab t)
@@ -621,6 +863,13 @@ namespace KillerShell.Shell
 
             int idx = _tabs.IndexOf(t);
             _tabs.Remove(t);
+
+            // Here, not at the tail: closing a tab that was NOT the active one falls straight
+            // through to UpdateTabBar without ever reaching ActivateTab, and two of the branches
+            // below return early. This is the first point where the tab is out of the pane's
+            // collection, which is what the walk asks about, so it is correct wherever the close
+            // goes next. The branches that do re-activate simply run it a second time.
+            UpdateToolRailLights();
 
             if (_tabs.Count == 0)
             {

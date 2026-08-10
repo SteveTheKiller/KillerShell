@@ -33,8 +33,23 @@
             <Border Grid.RowSpan="5" IsHitTestVisible="False"
                     Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
 
+            <!-- Raised dialog bevel, the same pair ConfirmDialog and ProcessDetailsDialog carry.
+                 Both brushes are Transparent and both thicknesses 0 on every ordinary theme, so
+                 this is inert on the twelve rounded ones and draws the full Win98 raised frame on
+                 98SE. This picker was the last window in the app still missing it, so it came up
+                 as a modern card while everything behind it was flat. -->
+            <Border Grid.RowSpan="5" IsHitTestVisible="False" Panel.ZIndex="6"
+                    BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+            <Border Grid.RowSpan="5" IsHitTestVisible="False" Panel.ZIndex="6"
+                    BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+
             <!-- Title bar -->
-            <Border Grid.Row="0" Background="Transparent" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <!-- DialogTitleBarBrush, not a literal Transparent: the token RESOLVES to Transparent
+                 on every theme that does not ask for a caption band, so the twelve rounded themes
+                 keep showing the card's own face here exactly as before. 98SE sets
+                 UseDialogCaption, and ThemeManager then points this key at the accent's
+                 TitleBarBrush, which is what gives the dialog a real Win98 caption. -->
+            <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid Margin="16,0">
                     <!-- KillerScan-style wordmark: a blurred dark copy behind the crisp text,
                          faded by IconShadowOpacity (0 in light mode = no shadow). -->
@@ -56,7 +71,10 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
-                                            <Border x:Name="xb" Background="Transparent" CornerRadius="3">
+                                            <!-- SmallCornerRadius is 3 on all twelve rounded
+                                                 themes, the literal this replaces, and 0 on
+                                                 98SE where nothing is rounded. -->
+                                            <Border x:Name="xb" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}">
                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
@@ -92,8 +110,10 @@
                         Foreground="{DynamicResource TextBrush}" Cursor="Hand">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
+                            <!-- ControlCornerRadius is 4 on all twelve rounded themes, the
+                                 literal this replaces, and 0 on 98SE. -->
                             <Border x:Name="ub" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource InputBorderBrush}"
-                                    BorderThickness="1" CornerRadius="4">
+                                    BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <ControlTemplate.Triggers>
@@ -126,10 +146,13 @@
                      These are the tokens the contract already carries for exactly these two
                      surfaces: transparent sidebar / menu-tier list on the ordinary themes,
                      white client wells on 98SE. -->
+                <!-- PanelCornerRadius is 6 on all twelve rounded themes, the literal it replaces
+                     here and on the results pane below, and 0 on 98SE - where a client area is a
+                     square white well, never a rounded card. -->
                 <Border Grid.Column="0" Background="{DynamicResource SidebarPaneBrush}"
-                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="6">
+                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
                   <Grid>
-                    <Border IsHitTestVisible="False" CornerRadius="6"
+                    <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
                             Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                     <ListBox x:Name="PlacesList" Background="Transparent" BorderThickness="0" Padding="2,4"
                              ItemContainerStyle="{StaticResource PickerPlaceRow}" SelectionChanged="Places_SelectionChanged"
@@ -160,9 +183,9 @@
                 </Border>
 
                 <Border Grid.Column="2" Background="{DynamicResource ListPaneBrush}"
-                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="6">
+                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
                   <Grid>
-                    <Border IsHitTestVisible="False" CornerRadius="6"
+                    <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
                             Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                     <DockPanel>
                         <!-- Sortable column headers - details view only -->

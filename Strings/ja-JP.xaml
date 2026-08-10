@@ -140,6 +140,9 @@
     <sys:String x:Key="Str_Menu_OpenFile">ファイルを開く</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">プログラムから開く...</sys:String>
     <sys:String x:Key="Str_Menu_ShowExplorer">エクスプローラーで表示</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">隠しフォルダーとドットフォルダーを表示</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">ツリー: 隠しフォルダーとドットフォルダーを表示中</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">ツリー: 隠しフォルダーとドットフォルダーを非表示</sys:String>
     <sys:String x:Key="Str_Menu_OpenAdmin">管理者として開く</sys:String>
     <sys:String x:Key="Str_Menu_SearchHere">このフォルダー内を検索</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">ここでターミナルを開く</sys:String>
@@ -326,6 +329,13 @@
     <sys:String x:Key="Str_Ks_ViewList">リスト</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">キーボード</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">Ctrl、Shift、Alt を押している間、そのレイヤーを表示します</sys:String>
+    <!-- Shortcuts card: SCOPE section headings (see en-US.xaml for the full note). The other
+         four sections reuse the Str_TabTitle_* strings of the tabs they name. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">すべての場所</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">ファイル ブラウザー</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">ターミナル</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">エディター</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">表示中のキー:</sys:String>
 
     <!-- エクスプローラー準拠のショートカット -->
     <sys:String x:Key="Str_Ks_BackForward">戻る / 進む</sys:String>
@@ -612,6 +622,31 @@
     <sys:String x:Key="Str_RegEd_AccessDenied">アクセスが拒否されました - このキーには、この昇格されたウィンドウよりもさらに高いアクセス権が必要です</sys:String>
     <sys:String x:Key="Str_RegEd_Base">基数:</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">16 進数のバイト値をスペースで区切って入力 (例: 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_Status_Extracting">{0} を展開しています...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">{0} を展開できませんでした</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">アーカイブを読み取れませんでした - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">変更できるのは .zip アーカイブだけです。これは読み取り専用で開きます</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">アーカイブからドラッグできるのはファイルだけです。フォルダーを開いて中身をドラッグしてください</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriting">アーカイブを書き換えています - {0}%</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">{0} 件をアーカイブに追加しました</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">{0} 件をアーカイブから削除しました</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">{0} に名前を変更しました</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} 件を追加しました。正しい名前を付けられない {1} 件はスキップしました</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">アーカイブを更新できませんでした - {0}。元のファイルは変更されていません。</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">このアーカイブ ファイルは読み取り専用です。属性を解除してからやり直してください</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">このアーカイブは別のプログラムで開かれています。閉じてからやり直してください</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">このアーカイブに書き込む権限がありません</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">その名前のものは既にアーカイブにあります</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">その項目はアーカイブにありません</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">その名前はアーカイブ内では使えません</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">追加するものがありません</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">アーカイブは変更されていません</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">その一部は既にアーカイブにあります</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">アーカイブからコピーしました。項目はアーカイブに残っています</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">このうち {0} 件は既にアーカイブにあります。</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">{0} 件をアーカイブから削除しますか? アーカイブ全体が書き換えられ、元に戻せません。</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">両方残さずに置き換える</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">追加</sys:String>
     <sys:String x:Key="Str_RegEd_ComputerRoot">コンピューター</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">クリップボードにコピーできませんでした - {0}</sys:String>
     <sys:String x:Key="Str_RegEd_CreateFailed">作成できませんでした - {0}</sys:String>
@@ -691,6 +726,8 @@
     <sys:String x:Key="Str_TabTitle_Performance">パフォーマンス</sys:String>
     <sys:String x:Key="Str_TabTitle_RegistryEditor">レジストリ エディター</sys:String>
     <sys:String x:Key="Str_TabTitle_TaskManager">プロセス/サービス</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">プロセス</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">サービス</sys:String>
     <sys:String x:Key="Str_Theme_Black">ブラック</sys:String>
     <sys:String x:Key="Str_Theme_Blood">ブラッド</sys:String>
     <sys:String x:Key="Str_Theme_Cyanotic">シアノティック</sys:String>

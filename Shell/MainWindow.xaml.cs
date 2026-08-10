@@ -46,12 +46,22 @@ namespace KillerShell.Shell
             // repainting a beat later are never seen; without a ghost (startup, code-driven
             // switches) a one-pass delay on icon art is imperceptible anyway. The cheap,
             // layout-critical calls stay synchronous.
+            //
+            // The pack the icons currently come from, so RepaintIcons can tell a switch that
+            // actually changed the art from the twelve-out-of-thirteen that did not. Seeded here
+            // rather than at the field, because the field initializer runs before
+            // InitializeComponent and this has to read the palette App already loaded
+            // (App.xaml.cs calls ThemeManager.Initialize before the window is constructed).
+            _iconPackFlat = FlatChrome;   // Chrome.cs
             Services.ThemeManager.ThemeChanged += () =>
             {
                 UpdateThemeSwatchSelection(); UpdateAccentSwatches(); SyncTitleBarMetrics();
                 ApplyPaneMargins(); LeftPane?.RefreshPaneClip(); RightPane?.RefreshPaneClip();
+                // Timed so one theme click prints this next to CrossfadeSwap's heavy work and the
+                // slow half of the pause before the fade can be identified instead of guessed at
+                // (ThemeFlyout.cs TimedStep). DEBUG only; a release build prints nothing.
                 Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
-                    (Action)RepaintIcons);
+                    (Action)(() => TimedStep("RepaintIcons", RepaintIcons)));
             };
 
             var ver = Assembly.GetExecutingAssembly()
@@ -241,6 +251,10 @@ namespace KillerShell.Shell
             // needed is gone along with the Popup.
         }
 
+        /// <summary>Whether the icon art on screen came from the flat theme's pack. Seeded in the
+        /// constructor and only ever written by RepaintIcons below.</summary>
+        private bool _iconPackFlat;
+
         /// <summary>
         /// Redraw every surface that gets its art from IconCache, after a theme change has moved
         /// the app between the brand pack and the period 98 pack (IconCache.Pack).
@@ -251,9 +265,30 @@ namespace KillerShell.Shell
         /// the outgoing theme's art until the list is rebuilt for some unrelated reason. Refresh is
         /// the cheap forced re-run: the bitmaps themselves are already decoded and cached per pack,
         /// so this is a repaint and not a reload.
+        ///
+        /// A NO-OP unless the pack really moved. IconCache has exactly one theme input -
+        /// IconCache.Pack, which is "98/" on a flat theme and "" on every other, read straight off
+        /// MainWindow.FlatChrome - so only a switch INTO or OUT OF 98SE can change a single pixel
+        /// of this art. Every accent dot and eleven of the twelve remaining themes leave the pack
+        /// identical, and this used to run for all of them: four Items.Refresh calls that tore
+        /// down and regenerated every realized container in the file listing, both tab strips, the
+        /// folder tree and the saved locations, forcing a SECOND full measure/arrange/render pass
+        /// over them, in order to end up drawing byte-identical bitmaps. That whole pass ran
+        /// inside the gap between the theme swap and the crossfade, which is the gap the user sees
+        /// as a stall.
+        ///
+        /// Nothing else in the row templates needs the Refresh. The two converters the strip uses
+        /// are TabFolderIconConverter, which asks IconCache and nothing else, and
+        /// TabChamferConverter, which takes the TabChamfer theme scalar as a BOUND value and so
+        /// re-evaluates itself when the resource changes. Every other theme-reactive part of a row
+        /// is a DynamicResource brush, which repaints on its own.
         /// </summary>
         private void RepaintIcons()
         {
+            bool flat = FlatChrome;              // Chrome.cs - the only thing IconCache.Pack reads
+            if (flat == _iconPackFlat) return;   // same art either side of the switch
+            _iconPackFlat = flat;
+
             // Per pane: the listing and the tab strip both live on FilePane, and dual pane means
             // both of them exist twice. RightPane is declared in the XAML so it is never null, only
             // collapsed while the split is closed - refreshing it costs nothing and means the icons
@@ -312,7 +347,7 @@ namespace KillerShell.Shell
             _ = NavigateTo(picked);   // Browse.cs
         }
 
-        // Tab title = the search location, home-relative: C:\Users\steve\code -> ~\code.
+        // Tab title = the search location, home-relative: C:\Users\Demo\code -> ~\code.
         // Distinct folders under home stay distinct instead of all collapsing to a leaf name.
         private static string ToTabTitle(string path)
         {
@@ -589,7 +624,7 @@ namespace KillerShell.Shell
             SetTabStatusKey(tab, "Str_Status_Cleared");
         }
 
-        // "name: steve  OR  content: foo  |  extension is pdf, over 100 MB" - built from
+        // "name: invoice  OR  content: foo  |  extension is pdf, over 100 MB" - built from
         // the same localized words the dropdowns show.
         private string BuildQueryLabel(List<TermGroup> groups, List<SearchFilter> filters)
         {
@@ -662,6 +697,42 @@ namespace KillerShell.Shell
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
+        /// <summary>
+        /// True when the chord being handled belongs to whichever applet currently owns the
+        /// keyboard rather than to the window, so the window's own branch must stand down.
+        /// </summary>
+        /// <remarks>
+        /// This is a PREVIEW handler on the window: it tunnels root-to-leaf and therefore sees
+        /// every key BEFORE the focused tab's own grid, editor or terminal does. A chord bound
+        /// in both places is decided here by default, and the applet's meaning can never fire.
+        /// Two chords are in that position:
+        ///
+        ///   Ctrl+Shift+A - add a search term here; Run as administrator on a Processes row
+        ///                  (ProcessListControl.cs Grid_PreviewKeyDown); Select all in a shell
+        ///                  (Terminal/TerminalControl.cs HandleTerminalChord).
+        ///   Ctrl+Shift+C - Copy as path here; Copy in a shell (same handler).
+        ///
+        /// The blanket handover guards at the top of Window_PreviewKeyDown do already bow out
+        /// for a focused shell or Processes grid, because neither letter is in IsWindowChord
+        /// (TerminalTabs.cs) - so in practice the applet does receive both today. That is a
+        /// load-bearing side effect of a list written to answer a different question: adding
+        /// either letter to IsWindowChord for some unrelated reason would silently take
+        /// "Run as administrator" and the terminal's Copy away again, from a file two folders
+        /// over. These gates state the rule at the chord itself so it cannot be broken at a
+        /// distance.
+        ///
+        /// Nothing is renamed to resolve the overlap: the meanings live in different SCOPES now
+        /// (KsScope / KsAll, ShortcutsOverlay.cs), which is also how the shortcuts card and the
+        /// keyboard map are able to show both.
+        /// </remarks>
+        private bool ChordOwnedByFocus(params KsScope[] owners)
+        {
+            var scope = KsFocusScope;   // ShortcutsOverlay.cs
+            foreach (var s in owners)
+                if (s == scope) return true;
+            return false;
+        }
 
         // Global keys: Enter runs the search, Esc closes the filter bar or stops a
         // running search, Ctrl+F opens the results quick-filter.
@@ -962,8 +1033,11 @@ namespace KillerShell.Shell
             }
             else if (IsF10(e) && ctrl && !shift && !alt)
             {
-                // Ctrl+F10: hide the pane menubar, in both panes and on both kinds of tab
-                // (MenuBar.cs). Moved off plain F10 so F10 could become Dual
+                // Ctrl+F10: hide the pane menubar, in either pane (MenuBar.cs). It acts on the
+                // folder LOCATION ROW, so it is a no-op on a tab kind that wears its own bar
+                // instead - see SetLocationRow, which enforces that. It used to hand the row
+                // back on top of a shell's or document's own bar, giving that tab two stacked
+                // bars. Moved off plain F10 so F10 could become Dual
                 // Pane; Shift+F10 (below) keeps meaning Windows' own context-menu key regardless.
                 ToggleMenuBar();
                 e.Handled = true;
@@ -1085,10 +1159,16 @@ namespace KillerShell.Shell
                 OpenNewWindow();   // NewWindow.cs
                 e.Handled = true;
             }
-            else if (ctrl && shift && e.Key == System.Windows.Input.Key.A)
+            else if (ctrl && shift && e.Key == System.Windows.Input.Key.A
+                     && !ChordOwnedByFocus(KsScope.Processes, KsScope.Terminal))
             {
                 // Add a search term. A for "add", and Ctrl+Shift because the panel it acts on is
                 // optional now - this is not a chord you reach for while browsing.
+                //
+                // SCOPE-GATED: the same chord is "Run as administrator" on a focused Processes
+                // row and Select all in a focused shell. This handler previews from the window
+                // root, so without the gate its meaning would be decided here every time and
+                // neither of those could ever fire. See ChordOwnedByFocus above.
                 _active.Groups[_active.Groups.Count - 1].Terms.Add(new SearchTerm());
                 e.Handled = true;
             }
@@ -1166,9 +1246,11 @@ namespace KillerShell.Shell
             {
                 // Second pane. This was the PROVISIONAL chord before bare F10 took over dual
                 // pane; kept as a legacy alias now that F10 is primary, for
-                // anyone whose hand already learned it, and listed on the F10 row in KsRows
-                // rather than as a row of its own. Right-clicking the toolbar button flips the
-                // orientation; that has no key yet on purpose.
+                // anyone whose hand already learned it, and listed on the F10 row in KsAll
+                // (ShortcutsOverlay.cs) rather than as a row of its own - it does light its own
+                // keycap on the Ctrl+Shift layer, through that row's empty-Keys alias entry.
+                // Right-clicking the toolbar button flips the orientation; that has no key yet
+                // on purpose.
                 ToggleDualPane();   // DualPane.cs
                 e.Handled = true;
             }
@@ -1216,10 +1298,16 @@ namespace KillerShell.Shell
                 FromKeyboard(MenuFavorite_Click);      // the browser bookmark chord
                 e.Handled = true;
             }
-            else if (ctrl && shift && e.Key == System.Windows.Input.Key.C)
+            else if (ctrl && shift && e.Key == System.Windows.Input.Key.C
+                     && !ChordOwnedByFocus(KsScope.Terminal))
             {
                 // Windows 11's "Copy as path". This chord used to toggle case-sensitivity,
                 // which moved to Alt+C - the convention has the stronger claim on it.
+                //
+                // SCOPE-GATED: a focused shell binds the same chord to Copy, which is the
+                // Windows Terminal convention and the only way to copy a selection out of a pty
+                // without stealing Ctrl+C (interrupt). Copying a file's path means nothing over
+                // a terminal, so the window stands down there. See ChordOwnedByFocus above.
                 FromKeyboard(MenuCopyPath_Click);
                 e.Handled = true;
             }

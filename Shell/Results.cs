@@ -303,14 +303,14 @@ namespace KillerShell.Shell
 
             t.PipeFiles = files;
             t.RootPath  = src.RootPath;
-            // "375 results from ~\code  |  name: steve" - the query that produced
+            // "375 results from ~\code  |  name: invoice" - the query that produced
             // them makes the breadcrumb self-explanatory. Args stored raw so a
             // language switch can re-render the breadcrumb.
             t.PipeArgs  = [files.Count.ToString("N0"),
                 string.IsNullOrEmpty(src.Title) ? src.RootPath : src.Title, query];
             t.PipeLabel = string.Format(Loc("Str_Pipe_Scope"), t.PipeArgs);
 
-            // Tab title keeps the lineage readable: "~\code > steve".
+            // Tab title keeps the lineage readable: "~\code > invoice".
             t.Title = $"{src.Title} > {(string.IsNullOrEmpty(firstTerm) ? files.Count.ToString("N0") : firstTerm)}";
             ActivateTab(t);
         }

@@ -165,6 +165,16 @@ namespace KillerShell.Models
         // Quick filter (Ctrl+F) narrowing the visible results by name/path.
         public string FilterText = string.Empty;
 
+        // Which rows were selected when this tab was last switched away from, so activating it
+        // again can put the selection back (Tabs.cs CaptureTab / RestoreTabSelection).
+        //
+        // PATHS, not SearchResult objects, because the rows are REBUILT: activating a tab re-binds
+        // ResultsList.ItemsSource to this collection, and a browsing tab additionally re-lists its
+        // folder from disk into a fresh set of SearchResult instances. Holding the old objects
+        // would restore a selection of rows that are no longer in the list, which selects nothing.
+        // A path still identifies the same file across both rebuilds.
+        public List<string> SelectedPaths = [];
+
         // Piped scope: when set, this tab searches THIS file list (a snapshot of another
         // tab's results) instead of walking RootPath. Picking a folder clears it.
         public List<string>? PipeFiles;

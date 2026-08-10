@@ -102,7 +102,13 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <Border Background="{DynamicResource PaneBrush}" CornerRadius="4" Padding="14,12,14,6">
                         <Grid>
-                            <Border IsHitTestVisible="False" CornerRadius="4"
+                            <!-- Margin cancels the parent Border's Padding exactly. The grain is
+                                 a child of the padded content, so without this it stops 14px
+                                 short of the card's edges and leaves a bare PaneBrush ring
+                                 framing the textured middle - a flat border around the panel.
+                                 Same trick, same reason, as the ContextMenu template's
+                                 Margin="-4" against its Padding="4" (Controls.xaml). -->
+                            <Border IsHitTestVisible="False" CornerRadius="4" Margin="-14,-12,-14,-6"
                                     Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                             <StackPanel x:Name="FieldsPanel"/>
                         </Grid>
@@ -119,7 +125,8 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                    <!-- E8C8 (Copy, two documents), not E71B (Link, a chain). -->
+                    <Button Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                             Width="26" Height="26" Padding="0" Style="{StaticResource SurfaceButton}"
                             ToolTip="{DynamicResource Str_TT_ProcCopyDetails}" Margin="0,0,8,0" Click="CopyDetails_Click"/>
                     <Button Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"

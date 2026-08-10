@@ -7,7 +7,7 @@
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="KillerShell"
         Icon="pack://application:,,,/Resources/ksh-icon.ico"
-        Height="710" Width="1140" MinHeight="500" MinWidth="600"
+        Height="710" Width="1140" MinHeight="520" MinWidth="600"
         WindowStyle="None"
         AllowDrop="True" DragEnter="Window_DragEnter" DragOver="Window_DragOver" DragLeave="Window_DragLeave" Drop="Window_Drop"
         Background="{DynamicResource BackgroundBrush}"
@@ -261,7 +261,11 @@
                              not the item template - see the results list for why. -->
                         <TreeView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="{DynamicResource Str_Tab_New}" Click="TreeOpenNewTab_Click">
+                                <!-- "Open in new tab", not Str_Tab_New ("new search") - this row
+                                     opens the node in a NEW TAB and has done for a long time; the
+                                     label was left over from when every tab was a search, and it
+                                     described the old app rather than what the row does. -->
+                                <MenuItem Header="{DynamicResource Str_Menu_OpenInNewTab}" Click="TreeOpenNewTab_Click">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE710;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Menu_ShowExplorer}" Click="TreeShowInExplorer_Click">
@@ -271,11 +275,38 @@
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
+                                <!-- The same two terminal rows the saved places carry, and the
+                                     Storage Analyzer aimed at this folder. A folder is a folder
+                                     wherever it is shown, so the tree, the places and the
+                                     listing all offer the same verbs. -->
+                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}" Click="TreeTerminal_Click">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="TreeTerminalAdmin_Click">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="TreeAnalyze_Click">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <Separator/>
+                                <!-- The tree's OWN hidden switch, not the listing's Ctrl+H. Checked
+                                     state is set as the menu opens (FolderTree.cs
+                                     FolderTree_ContextMenuOpening) rather than bound, matching how
+                                     the favorite row above flips its own header. -->
+                                <!-- NO InputGestureText yet: Ctrl+Shift+H, the obvious pick, is
+                                     already Copy SHA-256 (MainWindow.xaml.cs, and it is printed
+                                     on that row in the results menu). Awaiting a free key rather
+                                     than quietly taking a bound one. -->
+                                <MenuItem x:Name="TreeHiddenItem" IsCheckable="True"
+                                          Header="{DynamicResource Str_Menu_TreeShowHidden}"
+                                          Click="TreeHidden_Click"/>
+                                <Separator/>
                                 <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}" Click="TreeFavorite_Click">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
                                 </MenuItem>
+                                <!-- E8C8 (Copy, two documents), not E71B (Link, a chain). -->
                                 <MenuItem Header="{DynamicResource Str_Menu_CopyPath}" Click="TreeCopyPath_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE71B;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
                                 <MenuItem Header="{DynamicResource Str_Menu_Properties}" Click="TreeProperties_Click">
@@ -298,9 +329,19 @@
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type shellns:FolderNode}"
                                                       ItemsSource="{Binding Children}">
-                                <StackPanel Orientation="Horizontal" Margin="0,1">
-                                    <Image Source="{Binding Icon}" Width="16" Height="16"
-                                           VerticalAlignment="Center" Margin="0,0,6,0"
+                                <!-- Margin 0 (was 0,1): the same compaction the saved places got.
+                                     The tree and the places sit in one column and have to read as
+                                     one list, so a row of each has to be the same height. -->
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- Drawn at 20 but MEASURED at 16: the negative side margins
+                                         take the desired width back down, so the icon reads bigger
+                                         without widening the row, moving the label or changing the
+                                         vertical rhythm. Top and bottom stay 0 - a negative there
+                                         would let a tall icon overlap its neighbours. Same trick
+                                         the recents menu uses to fit a 20px icon in a fixed 16px
+                                         gutter. -->
+                                    <Image Source="{Binding Icon}" Width="20" Height="20"
+                                           VerticalAlignment="Center" Margin="-2,-2,4,-2"
                                            RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <!-- No pinned Foreground: it inherits from the TreeViewItem so
                                          FolderTreeItem's selected trigger can turn it white on a
@@ -360,7 +401,12 @@
                              rather than nothing: Transparent keeps it hit-testable, which the
                              panel's drag-and-drop needs. -->
                         <Border Background="Transparent"/>
-                        <Border Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                        <!-- NO grain layer here. The row-wide Border at the top of this Grid
+                             already paints grain across both sidebars, the gaps and the margins,
+                             and a second tile inside the drawer doubled it - which is why the
+                             drawer read as a different shade from the rail right beside it
+                             (2026-08-09). The drawer is transparent, so the continuous grain
+                             shows through and the two surfaces match by construction. -->
                         <ListBox x:Name="BookmarksList" Background="Transparent" BorderThickness="0"
                                  Padding="4,4,2,4" Focusable="False" FocusVisualStyle="{x:Null}"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -417,7 +463,12 @@
                             </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type shellns:Bookmark}">
-                                    <Border Padding="4,3" CornerRadius="{DynamicResource SmallCornerRadius}" Cursor="Hand"
+                                    <!-- Padding 4,1 (was 4,3): the places list is a dense index you
+                                         scan, not a set of buttons, and two pixels a row is four
+                                         more places visible before anything has to scroll. Keep
+                                         BookmarksRowHeight in Bookmarks.cs in step with this -
+                                         the drawer sizes itself from that constant. -->
+                                    <Border Padding="4,1" CornerRadius="{DynamicResource SmallCornerRadius}" Cursor="Hand"
                                             ToolTip="{Binding Path}"
                                             PreviewMouseLeftButtonDown="Bookmark_DragDown"
                                             PreviewMouseMove="Bookmark_DragMove"
@@ -453,9 +504,21 @@
                                                 </MenuItem>
                                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}"
                                                           Click="BookmarkTerminalAdmin_Click">
-                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
+                                                    <!-- E7EF (admin shield), not the plain E756 both
+                                                         rows used to carry - two identical icons on
+                                                         two different actions is a menu that reads
+                                                         as one repeated item. -->
+                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}"
+                                                          Click="BookmarkAnalyze_Click">
+                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                                                 </MenuItem>
                                                 <Separator/>
+                                                <MenuItem Header="{DynamicResource Str_Menu_Properties}"
+                                                          Click="BookmarkProperties_Click">
+                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
+                                                </MenuItem>
                                                 <MenuItem Header="{DynamicResource Str_Menu_RemoveFavorite}"
                                                           Click="BookmarkRemove_Click">
                                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
@@ -463,8 +526,19 @@
                                             </ContextMenu>
                                         </Border.ContextMenu>
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Source="{Binding Icon}" Width="16" Height="16"
-                                                   VerticalAlignment="Center" Margin="0,0,6,0"
+                                            <!-- 20 drawn, 16 measured - see the tree's own icon
+                                                 above. The saved places and the tree rows have to
+                                                 move together or the sidebar reads as two
+                                                 different lists.
+                                                 The VERTICAL negatives matter as much as the
+                                                 horizontal ones: with only the sides cancelled the
+                                                 row measured 20 tall instead of 16, every place
+                                                 grew 4px, and the drawer could no longer fit its
+                                                 own contents - a permanent scrollbar (2026-08-09).
+                                                 2px of bleed each way sits inside the row's own
+                                                 padding, so nothing overlaps its neighbour. -->
+                                            <Image Source="{Binding Icon}" Width="20" Height="20"
+                                                   VerticalAlignment="Center" Margin="-2,-2,4,-2"
                                                    RenderOptions.BitmapScalingMode="HighQuality"/>
                                             <!-- No Foreground here: it inherits TextElement.Foreground
                                                  from the row Border, which flips to SelectionFg when
@@ -960,11 +1034,26 @@
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" x:Name="SearchButton" Content="{DynamicResource Str_Btn_Search}" Style="{StaticResource OutlineButton}" Height="32" FontSize="13" Click="Search_Click"/>
                             <!-- New search: opens a fresh tab -->
+                            <!-- Background Transparent, overriding SurfaceButton's ChipFaceBrush
+                                 face. These three buttons are one group, and SEARCH beside them
+                                 is an OutlineButton with no fill - so a filled + and CLEAR put a
+                                 slab of pane color behind their labels while the button they sit
+                                 with had none. This panel is not on a pane either: the search
+                                 column shows the window's own background, which is a gradient on
+                                 five themes, so the flat fill read as a gray block on it.
+                                 Set locally, NOT on the SurfaceButton style - that style is the
+                                 app's secondary button everywhere (tool tab toolbars, dialog
+                                 footers, the details strip) and those all DO sit on a pane, where
+                                 the face is doing its job.
+                                 Hover and press still fill: the template's triggers set the
+                                 Border's own Background, which beats this. -->
                             <Button Grid.Column="1" Content="+" Width="32" Height="32" Margin="6,0,0,0" Padding="0"
                                     FontFamily="Consolas" FontSize="15" Style="{StaticResource SurfaceButton}"
+                                    Background="Transparent"
                                     ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click"/>
                         </Grid>
-                        <Button Content="{DynamicResource Str_Btn_Clear}" Style="{StaticResource SurfaceButton}" Height="28" Margin="0,6,0,0" Click="Clear_Click"/>
+                        <Button Content="{DynamicResource Str_Btn_Clear}" Style="{StaticResource SurfaceButton}"
+                                Background="Transparent" Height="28" Margin="0,6,0,0" Click="Clear_Click"/>
                     </StackPanel>
                 </Border>
 
@@ -1093,7 +1182,9 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                        <!-- Transparent face, like every other button in this panel. -->
                         <Button HorizontalAlignment="Left" Content="{DynamicResource Str_Btn_AddFilter}" Style="{StaticResource SurfaceButton}"
+                                Background="Transparent"
                                 Padding="8,3" FontSize="10" Margin="0,2,0,0" Click="AddFilter_Click"/>
 
                         <!-- "advanced" accordion: include/exclude/case collapse out of the way -->
@@ -1199,7 +1290,11 @@
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
+                                                <!-- Transparent face, like every other button in
+                                                     this panel - see the note on the search
+                                                     buttons below. -->
                                                 <Button HorizontalAlignment="Left" Content="{DynamicResource Str_Btn_AddTerm}" Style="{StaticResource SurfaceButton}"
+                                                        Background="Transparent"
                                                         Padding="8,3" FontSize="10" Margin="0,2,0,0" Tag="{Binding}" Click="AddTerm_Click"/>
                                             </StackPanel>
                                             </Grid>
@@ -1478,7 +1573,12 @@
                     <Border.Effect><DropShadowEffect Color="Black" BlurRadius="26" ShadowDepth="5" Direction="270"
                                                      Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 </Border>
-                <Border Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
+                <!-- AppBorderBrush, not CardBorderBrush: the card is a floating SURFACE, so its
+                     edge is the app's own frame colour - the same line that rings the window -
+                     rather than the flatter card edge used for panels sitting inside one. On
+                     several palettes the two differ sharply (Ectoplasm's frame is the pink), and
+                     the card was reading as unrelated to the app around it (2026-08-09). -->
+                <Border Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource AppBorderBrush}"
                         BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
                     <Grid>
                         <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
@@ -1564,7 +1664,19 @@
                                     <Border.Effect><DropShadowEffect Color="Black" BlurRadius="14" ShadowDepth="2" Direction="270"
                                                                      Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                                 </Border>
-                                <Border Background="{DynamicResource AboutPanelBrush}" CornerRadius="{DynamicResource ControlCornerRadius}"
+                                <!-- Grain on the info panel too. The card behind it is grainy, but
+                                     this panel painted an OPAQUE fill straight over that texture,
+                                     so the one surface carrying the card's actual content was the
+                                     only flat thing on it (2026-08-09). Its own layer, between the
+                                     fill and the fields: text renders ABOVE it and stays crisp,
+                                     which is the same order the card itself uses. 98SE needs no
+                                     special case - its GrainOpacity is 0, so this draws nothing
+                                     there. -->
+                                <Border IsHitTestVisible="False" CornerRadius="{DynamicResource ControlCornerRadius}"
+                                        Opacity="{DynamicResource GrainOpacity}" Background="{DynamicResource GrainTileBrush}"/>
+                                <!-- Transparent, so the fill and the grain below both show: the
+                                     opaque fill lives on the shadow border above. -->
+                                <Border Background="Transparent" CornerRadius="{DynamicResource ControlCornerRadius}"
                                         Padding="14,12,14,4"
                                         BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1">
                                     <StackPanel>
@@ -1900,8 +2012,12 @@
                     </Grid>
 
                     <!-- LIST / KEYBOARD. Both views are generated from ONE table
-                         (ShortcutsOverlay.cs KsRows + KeyboardMapOverlay.cs KbMap), so a new
-                         binding shows up in both instead of being hand-copied into the card. -->
+                         (ShortcutsOverlay.cs KsAll), so a new binding shows up in both instead
+                         of being hand-copied into the card. It really is one table now: the
+                         board used to keep a second copy in KeyboardMapOverlay.cs and the two
+                         had drifted apart. Each row carries a SCOPE as well as a category, so
+                         the list groups by applet and the board can show a keycap's meaning on
+                         the tab you are actually on. -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                         <StackPanel.Resources>
                             <!-- Bare template: a text toggle, no panel chrome. The code-behind
