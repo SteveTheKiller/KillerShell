@@ -7,7 +7,7 @@ using KillerShell.Terminal;
 //
 // AvalonEdit's .xshd files were written for a WHITE editor: Blue strings, Maroon variables,
 // MidnightBlue commands, DarkBlue numbers, Navy keywords. On a #3a3a3a pane half of them are
-// barely there and on Black they are a rumour. The definitions are not wrong - they were written
+// barely there and on Black they are a rumor. The definitions are not wrong - they were written
 // against a background this app does not have.
 //
 // So the HUE is kept and only the lightness moves, and only as far as it has to. That is the

@@ -195,6 +195,10 @@
     <sys:String x:Key="Str_About_Publisher">発行元</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">拇印</sys:String>
     <sys:String x:Key="Str_About_Sha">EXE の SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">フォルダーをごみ箱に移動する前に確認する</sys:String>
+    <sys:String x:Key="Str_About_ClearData">すべてのデータを消去</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">保存されたすべての設定 (テーマ、言語、フォント、保存した場所、最近使った項目、セッション) と、アーカイブから展開した一時ファイルを削除します。あなた自身のファイルには影響しません。続行しますか?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">データを消去しました - 使用中のファイルを消し切るには KillerShell を再起動してください</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  現場の技術者が作りました</sys:String>
 
     <!-- HTML report -->
@@ -362,6 +366,8 @@
     <sys:String x:Key="Str_Fo_RenameTitle">新しい名前</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">新しいフォルダー</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">{0} 件を完全に削除しますか? 元に戻せません。ごみ箱には入りません。</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">{0} 件をごみ箱に移動しますか? 選択にフォルダーが含まれており、その中身もすべて移動します。</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">今後は確認しない</sys:String>
 
     <!-- ファイル操作のショートカットと結果 -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">ファイルを切り取り / コピー / 貼り付け</sys:String>

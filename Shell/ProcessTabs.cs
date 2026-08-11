@@ -166,7 +166,7 @@ namespace KillerShell.Shell
         /// (there is no per-tab FinishCloseTab pass on a plain window close, only when a tab is
         /// closed individually). A Processes tab left open at quit used to crash the app with
         /// RaceOnRCWCleanup: its background owner-lookup thread (ProcessListControl.EnrichOwners)
-        /// could still be mid-WMI-call when the process started tearing down. Cancelling here
+        /// could still be mid-WMI-call when the process started tearing down. Canceling here
         /// gives that thread a chance to notice and stop cleanly before the window is gone.
         /// </summary>
         internal void ShutdownAllProcessLists()

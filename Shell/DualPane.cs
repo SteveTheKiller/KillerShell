@@ -755,7 +755,7 @@ namespace KillerShell.Shell
                 // TabRingIdleBrush, NOT PaneBorderBrush: it mirrors PaneBorderBrush on the twelve
                 // rounded themes, but a flat theme states it transparent. Hardcoding the brush here
                 // overrode the transparent PaneEdgeBrush the markup binds, which is what drew the
-                // grey rule under the active tab and the grey stub at the left of the menu bar on
+                // gray rule under the active tab and the gray stub at the left of the menu bar on
                 // 98SE.
                 // TabActiveRingBrush, not PrimaryBrush: it IS PrimaryBrush on every ordinary
                 // theme, but 98SE states it Transparent - the lit ring was drawing the accent

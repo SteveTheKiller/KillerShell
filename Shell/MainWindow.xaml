@@ -65,7 +65,7 @@
             <!-- 0: title bar. Height is set from code (Chrome.cs SyncTitleBarMetrics) to whatever
                  the theme's TitleBarHeight is, NOT hardcoded. It WAS hardcoded to 36 while the
                  caption Grid inside it is TitleBarHeight - 22 on 98SE - and a child with an
-                 explicit Height CENTERS in its row, so 7px of bare frame grey landed above the
+                 explicit Height CENTERS in its row, so 7px of bare frame gray landed above the
                  caption and another 7 below it. That is the "bar above the titlebar" and the
                  matching one under it; trimming WindowFramePadding could
                  never reach it, because the gap was inside the row rather than outside it.
@@ -210,9 +210,9 @@
                 <!-- The edge fades are an OpacityMask on the TREE ITSELF, so its rows dissolve to
                      transparent and the real window shows through. They used to be two Borders
                      painted with BackgroundBrush sitting OVER the tree - which works only while
-                     that key is a flat colour. On Sepulchre, Decay, Delirium, Ectoplasm and
+                     that key is a flat color. On Sepulchre, Decay, Delirium, Ectoplasm and
                      Malaise it is a full-window LinearGradientBrush, so each 30px strip re-ramped
-                     the entire window gradient and showed up as a coloured band across the
+                     the entire window gradient and showed up as a colored band across the
                      sidebar. Stop alphas and offsets are driven from
                      TreePanel.cs SyncTreeEdgeFades. -->
                 <!-- SidebarPaneBrush is Transparent on every ordinary theme, so the tree keeps
@@ -245,7 +245,7 @@
                             <GradientStop x:Name="TreeFadeBotOuter" Color="#FF000000" Offset="0.995"/>
                             <!-- Full opacity again below the ramp. The horizontal scrollbar lives
                                  INSIDE this masked host, so without restoring alpha here the fade
-                                 dissolved the scrollbar along with the last row - a stop's colour
+                                 dissolved the scrollbar along with the last row - a stop's color
                                  carries on past it to the end of the brush. -->
                             <GradientStop x:Name="TreeFadeBotRestore" Color="#FF000000" Offset="0.996"/>
                             <GradientStop Color="#FF000000" Offset="1"/>
@@ -337,7 +337,7 @@
                                          take the desired width back down, so the icon reads bigger
                                          without widening the row, moving the label or changing the
                                          vertical rhythm. Top and bottom stay 0 - a negative there
-                                         would let a tall icon overlap its neighbours. Same trick
+                                         would let a tall icon overlap its neighbors. Same trick
                                          the recents menu uses to fit a 20px icon in a fixed 16px
                                          gutter. -->
                                     <Image Source="{Binding Icon}" Width="20" Height="20"
@@ -485,7 +485,7 @@
                                                          still reads on top of a selected row rather than being hidden by it. -->
                                                     <Trigger Property="Tag" Value="on">
                                                         <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
-                                                        <!-- SelectionFg, the colour that PAIRS with that fill. The label used to
+                                                        <!-- SelectionFg, the color that PAIRS with that fill. The label used to
                                                              be hardcoded to TextBrush, which is black on 98SE - black text on a
                                                              navy selection bar. -->
                                                         <Setter Property="TextElement.Foreground" Value="{DynamicResource SelectionFg}"/>
@@ -531,12 +531,12 @@
                                                  move together or the sidebar reads as two
                                                  different lists.
                                                  The VERTICAL negatives matter as much as the
-                                                 horizontal ones: with only the sides cancelled the
+                                                 horizontal ones: with only the sides canceled the
                                                  row measured 20 tall instead of 16, every place
                                                  grew 4px, and the drawer could no longer fit its
                                                  own contents - a permanent scrollbar (2026-08-09).
                                                  2px of bleed each way sits inside the row's own
-                                                 padding, so nothing overlaps its neighbour. -->
+                                                 padding, so nothing overlaps its neighbor. -->
                                             <Image Source="{Binding Icon}" Width="20" Height="20"
                                                    VerticalAlignment="Center" Margin="-2,-2,4,-2"
                                                    RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -1394,9 +1394,9 @@
           <Grid>
           <!-- NO strip-wide bevel here. There was one, and crossing its brushes to make it sunken
                only turned one wrong footer into a different wrong footer.
-               A Win98 status bar is not a bevelled strip with things on it - it is a row of sunken
+               A Win98 status bar is not a beveled strip with things on it - it is a row of sunken
                CELLS sitting on the plain window face, and what looks like a divider between them
-               is simply the gap. Bevelling the whole strip AND the version block put a box inside
+               is simply the gap. Beveling the whole strip AND the version block put a box inside
                a box, which is what read as "weird". KillerNotes is the reference (its footer is
                the family's, ported from KillerScan) and it has no strip bevel at all: just the
                cells. The status line gets its own cell below, the way it does there. -->
@@ -1504,7 +1504,7 @@
                  stretches. No amount of tuning FooterCellMargin, FooterCellPadding or the row
                  height could fix that - the cell was not short because of its own numbers, it was
                  short because its PARENT refused to give it the row's height. The inner content
-                 keeps its own VerticalAlignment="Center" below, so the text still centres. -->
+                 keeps its own VerticalAlignment="Center" below, so the text still centers. -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0,0,16,0">
                 <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
                      bottom and right. Only the dark half was here, which drew half a box round
@@ -1544,8 +1544,8 @@
                 <Rectangle Canvas.Left="6"  Canvas.Top="10" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
                 <Rectangle Canvas.Left="10" Canvas.Top="10" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
             </Canvas>
-            <!-- The 98SE grip: three bevelled DIAGONAL lines, bottom-left to top-right, each a
-                 white highlight with a grey shadow one pixel down-right of it - the standard Win98
+            <!-- The 98SE grip: three beveled DIAGONAL lines, bottom-left to top-right, each a
+                 white highlight with a gray shadow one pixel down-right of it - the standard Win98
                  sizing gripper. Collapsed on every other theme, which keeps
                  the dots above.
 
@@ -1586,7 +1586,7 @@
                                                      Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 </Border>
                 <!-- AppBorderBrush, not CardBorderBrush: the card is a floating SURFACE, so its
-                     edge is the app's own frame colour - the same line that rings the window -
+                     edge is the app's own frame color - the same line that rings the window -
                      rather than the flatter card edge used for panels sitting inside one. On
                      several palettes the two differ sharply (Ectoplasm's frame is the pink), and
                      the card was reading as unrelated to the app around it (2026-08-09). -->
@@ -1603,7 +1603,7 @@
 
                         <!-- Close X: ChromeCloseButton, the SAME style as the title bar's close, so
                              every X in the app is the same X (the KillerNotes
-                             rule). On 98SE that makes it a real bevelled caption button
+                             rule). On 98SE that makes it a real beveled caption button
                              that sinks on press; elsewhere it is the bare glyph with the red
                              hover fill the main window has. Size and margin come from the
                              AboutClose* tokens (ThemeManager): a small Win98 button inside the
@@ -1746,6 +1746,59 @@
                                     Click="AboutUpdateButton_Click">
                                 <TextBlock x:Name="AboutUpdateText" FontSize="12"/>
                             </Button>
+
+                            <!-- Settings footer. KillerPDF's About card carries the same kind of
+                                 row (its recent-files toggle and Clear all Data), so this is the
+                                 family precedent rather than a new idea. It does not break the
+                                 locked About standard: the rule there is no COPYRIGHT footer,
+                                 because GPLv3 is already in the tagline.
+                                 It is here because About is already the app's "what is this thing
+                                 actually doing" screen - the signature, the thumbprint and the exe
+                                 hash live on it - and because the delete prompt's don't-ask-again
+                                 box needs somewhere to be undone from.
+                                 Sized and spaced off KillerPDF's equivalent row: 12px above it and
+                                 no rule, no padding. It carried a hairline and 26px of vertical
+                                 space at first, which made one checkbox read as a whole section.
+                                 NO FontSize HERE. The implicit CheckBox style is Consolas 11
+                                 (Controls.xaml) and every other checkbox in the app takes it; the
+                                 12 that was set on this TextBlock made this the largest one in the
+                                 app and the only one off the app's own scale.
+                                 WIDTH IS PINNED to AboutInfoGrid, exactly like the header above:
+                                 the SHA-256 line is the only thing allowed to set the card width,
+                                 so the label wraps inside this instead of widening the card. A
+                                 bare Content string, which is what KillerPDF uses, cannot wrap and
+                                 would be clipped by that pin once a locale runs long. -->
+                            <Border Margin="0,12,0,0"
+                                    Width="{Binding ActualWidth, ElementName=AboutInfoGrid}">
+                                <!-- Toggle left, the destructive link hard right, the way
+                                     KillerPDF's footer is laid out. LastChildFill off so the
+                                     checkbox keeps its own width and the link stays pinned to the
+                                     edge rather than being centered in whatever is left. -->
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock DockPanel.Dock="Right" FontFamily="Consolas" FontSize="10"
+                                               VerticalAlignment="Center">
+                                        <Hyperlink TextDecorations="None" Cursor="Hand" Click="AboutClearData_Click">
+                                            <Hyperlink.Style>
+                                                <Style TargetType="Hyperlink">
+                                                    <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Hyperlink.Style>
+                                            <Run Text="{DynamicResource Str_About_ClearData}"/>
+                                        </Hyperlink>
+                                    </TextBlock>
+                                    <CheckBox x:Name="AboutConfirmFolderDelete" DockPanel.Dock="Left"
+                                              Checked="AboutConfirmFolderDelete_Changed"
+                                              Unchecked="AboutConfirmFolderDelete_Changed">
+                                        <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
+                                                   TextWrapping="Wrap"/>
+                                    </CheckBox>
+                                </DockPanel>
+                            </Border>
                         </StackPanel>
                         </StackPanel>
                     </Grid>

@@ -324,13 +324,23 @@ function Test-CountClaim {
         $text = [System.IO.File]::ReadAllText($p)
         $name = Split-Path $p -Leaf
 
-        # Every "<number> <noun>" in the file, digits or the English word, and flag any that
-        # disagrees with what actually ships.
-        foreach ($m in [regex]::Matches($text, "(?i)\b([0-9]+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen)\s+(?:killer\s+)?$Noun\b")) {
-            $said = $m.Groups[1].Value
-            $ok = if ($said -match '^[0-9]+$') { [int]$said -eq $Actual } else { $said.ToLower() -eq $word }
-            if (-not $ok) {
-                Write-Warning "$name claims '$said $Noun' but the repo ships $Actual ($Label). Fix it before releasing."
+        # BOTH word orders. "<number> <noun>" is the obvious one, but the hero feature list writes
+        # it the other way round - "<b>Themes</b> - six, with live accent colors" - and a check
+        # that only looked forwards sailed straight past a stale six on the front page through a
+        # whole release (2026-08-10). The reverse form allows a little punctuation between the two,
+        # since the list uses a dash and the CJK locales use a full-width colon.
+        $num = '([0-9]+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen)'
+        $patterns = @(
+            "(?i)\b$num\s+(?:killer\s+)?$Noun\b",           # six themes
+            "(?i)\b$Noun\b\s*(?:</b>)?\s*[-:,：]\s*$num\b"   # Themes - six
+        )
+        foreach ($pat in $patterns) {
+            foreach ($m in [regex]::Matches($text, $pat)) {
+                $said = $m.Groups[1].Value
+                $ok = if ($said -match '^[0-9]+$') { [int]$said -eq $Actual } else { $said.ToLower() -eq $word }
+                if (-not $ok) {
+                    Write-Warning "$name claims '$($m.Value.Trim())' but the repo ships $Actual ($Label). Fix it before releasing."
+                }
             }
         }
     }

@@ -860,7 +860,7 @@ namespace KillerShell.Shell
             if (_colDrag < 0 || sender is not FrameworkElement grip || !grip.IsMouseCaptured) return;
 
             // Against the drag's own start, never the previous move. Accumulating deltas drifts
-            // once the width clamps: the pointer keeps travelling past the limit and the column
+            // once the width clamps: the pointer keeps traveling past the limit and the column
             // then has to be dragged all the way back before it moves at all.
             double dx = e.GetPosition(this).X - _colDragX;
 

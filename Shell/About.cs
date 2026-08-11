@@ -86,6 +86,15 @@ namespace KillerShell.Shell
             AboutSha256Block.Text     = "computing...";
             AboutUpdateButton.Visibility = Visibility.Collapsed;
 
+            // Read every time the card opens, not once at startup: the delete prompt's
+            // don't-ask-again box can turn this off while the window is up, and a stale tick here
+            // would tell the user the prompt is still on when it is not.
+            //
+            // Assigned before the card is shown so the Checked/Unchecked handler firing on this
+            // assignment writes back the value it just read. Harmless, and cheaper than a guard
+            // flag that would have to be threaded through both handlers.
+            AboutConfirmFolderDelete.IsChecked = ConfirmFolderDelete;   // FileCommands.cs
+
             FadeOverlayIn(AboutOverlay);
 
             Task.Run(() =>
@@ -94,6 +103,37 @@ namespace KillerShell.Shell
                 Dispatcher.BeginInvoke((Action)(() => AboutSha256Block.Text = h));
             });
             CheckForUpdateAsync(Assembly.GetExecutingAssembly().GetName().Version);
+        }
+
+        /// <summary>
+        /// The About card's one setting: ask before recycling a folder. It lives here rather than
+        /// in a preferences screen because this is the only way back after the delete prompt's
+        /// don't-ask-again box has been ticked.
+        /// </summary>
+        private void AboutConfirmFolderDelete_Changed(object sender, RoutedEventArgs e)
+            => ConfirmFolderDelete = AboutConfirmFolderDelete.IsChecked == true;   // FileCommands.cs
+
+        /// <summary>
+        /// Clear all Data, the footer's destructive link. Wipes every saved preference and the
+        /// temp files extracted from archives; the user's own files are not touched. Always asks.
+        /// </summary>
+        private void AboutClearData_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ConfirmDialog(Loc("Str_Dlg_ClearDataMsg"), null,
+                                        Loc("Str_About_ClearData")) { Owner = this };
+            dlg.ShowDialog();
+            if (!dlg.Confirmed) return;
+
+            App.ClearAllData();
+
+            // The card is showing the old value of a setting that has just been deleted, so put it
+            // back in step rather than leaving a tick over a preference that no longer exists.
+            AboutConfirmFolderDelete.IsChecked = ConfirmFolderDelete;
+
+            // A status line rather than a second dialog. KillerPDF puts up an OK box here, but it
+            // has no status bar to say it in; this app does, and the restart note belongs with the
+            // rest of what the window reports rather than in a box to dismiss.
+            SetTabStatusKey(_active, "Str_Status_DataCleared");
         }
 
         private static void FadeOverlayIn(UIElement o)
@@ -134,7 +174,7 @@ namespace KillerShell.Shell
 
             // The themed dialog, not MessageBox. This was the last stock Windows box left in the
             // app, and it appeared at the one moment the About card is on screen - so the theme
-            // was on display right behind a grey Win32 prompt. KillerScan made the same swap.
+            // was on display right behind a gray Win32 prompt. KillerScan made the same swap.
             var dlg = new ConfirmDialog(string.Format(Loc("Str_Dlg_UpdateMsg"), tag),
                                         Loc("Str_Dlg_UpdateBullets"),
                                         Loc("Str_Btn_Update")) { Owner = this };

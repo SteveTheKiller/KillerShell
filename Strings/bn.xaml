@@ -152,6 +152,10 @@
     <sys:String x:Key="Str_About_Publisher">প্রকাশক</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">থাম্বপ্রিন্ট</sys:String>
     <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">ফোল্ডার রিসাইকেল বিনে পাঠানোর আগে জিজ্ঞাসা করুন</sys:String>
+    <sys:String x:Key="Str_About_ClearData">সমস্ত ডেটা মুছুন</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">এটি সমস্ত সংরক্ষিত সেটিং - থিম, ভাষা, ফন্ট, সংরক্ষিত স্থান, সাম্প্রতিক ও সেশন - এবং আর্কাইভ থেকে বের করা অস্থায়ী ফাইল মুছে ফেলবে। আপনার নিজের ফাইল স্পর্শ করা হবে না। চালিয়ে যাবেন?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">ডেটা মুছে ফেলা হয়েছে - এখনও ব্যবহৃত ফাইলগুলি মুছতে KillerShell পুনরায় চালু করুন</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  একজন ফিল্ড টেক দ্বারা নির্মিত</sys:String>
 
     <!-- HTML report -->
@@ -364,6 +368,8 @@
     <sys:String x:Key="Str_Fo_RenameTitle">নতুন নাম</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">নতুন ফোল্ডার</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">{0} টি আইটেম স্থায়ীভাবে মুছবেন? এটি ফেরানো যাবে না - এগুলো রিসাইকেল বিনে যাবে না।</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">{0} টি আইটেম রিসাইকেল বিনে পাঠাবেন? নির্বাচনে একটি ফোল্ডার রয়েছে, এবং তার ভেতরের সবকিছুও যাবে।</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">আর জিজ্ঞাসা করবেন না</sys:String>
 
     <!-- ফাইল অপারেশনের শর্টকাট ও ফলাফল -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">ফাইল কাট / কপি / পেস্ট করুন</sys:String>

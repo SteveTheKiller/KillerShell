@@ -195,6 +195,10 @@
     <sys:String x:Key="Str_About_Publisher">VYDAVATEL</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">OTISK</sys:String>
     <sys:String x:Key="Str_About_Sha">SHA-256 SOUBORU EXE</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Zeptat se před přesunutím složky do koše</sys:String>
+    <sys:String x:Key="Str_About_ClearData">Vymazat všechna data</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Tímto se smažou všechna uložená nastavení - motiv, jazyk, písma, uložená místa, poslední položky a relace - a dočasné soubory rozbalené z archivů. Vaše vlastní soubory zůstanou nedotčeny. Pokračovat?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Data vymazána - restartujte KillerShell, aby se dokončilo mazání souborů, které se stále používají</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  vytvořil terénní technik</sys:String>
 
     <!-- HTML report -->
@@ -362,6 +366,8 @@
     <sys:String x:Key="Str_Fo_RenameTitle">Nový název</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Nová složka</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Smazat {0} položek trvale? Nelze vrátit zpět - nepůjdou do koše.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Přesunout {0} položek do koše? Výběr obsahuje složku a půjde i vše, co je v ní.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">Příště se neptat</sys:String>
 
     <!-- Zkratky souborovych operaci a jejich vysledky -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">vyjmout / kopírovat / vložit soubory</sys:String>

@@ -217,7 +217,7 @@ namespace KillerShell.Shell
             {
                 // No fade here: Session.cs's OnClosing override already does it (stage 2), and
                 // it runs BEFORE this handler because raising Closing is the last thing that
-                // override does. A second fade started from here re-cancelled a close the
+                // override does. A second fade started from here re-canceled a close the
                 // override had already taken charge of.
                 StopWatching();                            // BrowseWatcher.cs
                 DisposeShellEnv();                         // Terminal/ShellEnv.cs
@@ -989,16 +989,23 @@ namespace KillerShell.Shell
                 e.Handled = true;
             }
             // ── File operations (FileCommands.cs) ────────────────
-            else if (e.Key == System.Windows.Input.Key.F2 && !ctrl && !alt)
+            // Same two rules as the clipboard keys below, and for the same reason: these act on
+            // the results list, so they are gated on it holding the keyboard, and they go through
+            // FromKeyboard so the stale right-click seed cannot stand in for an empty selection.
+            // Delete is the worst case of that pair - it recycled a row from another tab that
+            // nothing on screen was pointing at.
+            else if (e.Key == System.Windows.Input.Key.F2 && !ctrl && !alt && ResultsListHasFocus())
             {
-                RenameSelection();
+                FromKeyboard(MenuRename_Click);
                 e.Handled = true;
             }
             else if (e.Key == System.Windows.Input.Key.Delete && !ctrl && !alt
-                     && e.OriginalSource is not TextBox && e.OriginalSource is not ComboBox)
+                     && e.OriginalSource is not TextBox && e.OriginalSource is not ComboBox
+                     && ResultsListHasFocus())
             {
                 // Shift makes it permanent, exactly as in Explorer. Plain Delete recycles.
-                DeleteSelection(permanent: shift);
+                // MenuDelete_Click reads the Shift state itself, so both routes agree.
+                FromKeyboard(MenuDelete_Click);
                 e.Handled = true;
             }
             else if (ctrl && shift && e.Key == System.Windows.Input.Key.N)
@@ -1006,26 +1013,37 @@ namespace KillerShell.Shell
                 NewFolderHere();
                 e.Handled = true;
             }
+            // The clipboard trio and Select all belong to the RESULTS LIST, so they are gated on
+            // it actually holding the keyboard - the rule ResultsListHasFocus (ResultsMenu.cs) was
+            // written for and, until now, was only applied to Enter. Testing only for a TextBox
+            // meant the sidebar tree, the tab strip or a rail button could hold focus and the
+            // window would still run the listing's copy underneath.
+            //
+            // FromKeyboard, not the command direct: it nulls _menuSeed first. The seed holds the
+            // last row RIGHT-CLICKED, it is window-wide rather than per tab or per pane, and
+            // FilesForCommand falls back to it whenever the selection is empty - so a Ctrl+C in a
+            // tab with nothing selected could put a row from another tab, right-clicked much
+            // earlier, on the clipboard.
             else if (ctrl && !shift && e.Key == System.Windows.Input.Key.C
-                     && e.OriginalSource is not TextBox)
+                     && e.OriginalSource is not TextBox && ResultsListHasFocus())
             {
-                CopySelection();
+                FromKeyboard(MenuCopy_Click);
                 e.Handled = true;
             }
             else if (ctrl && !shift && e.Key == System.Windows.Input.Key.X
-                     && e.OriginalSource is not TextBox)
+                     && e.OriginalSource is not TextBox && ResultsListHasFocus())
             {
-                CutSelection();
+                FromKeyboard(MenuCut_Click);
                 e.Handled = true;
             }
             else if (ctrl && !shift && e.Key == System.Windows.Input.Key.V
-                     && e.OriginalSource is not TextBox)
+                     && e.OriginalSource is not TextBox && ResultsListHasFocus())
             {
-                PasteIntoCurrentFolder();
+                FromKeyboard(MenuPaste_Click);
                 e.Handled = true;
             }
             else if (ctrl && !shift && e.Key == System.Windows.Input.Key.A
-                     && e.OriginalSource is not TextBox)
+                     && e.OriginalSource is not TextBox && ResultsListHasFocus())
             {
                 // Select every row. Skipped inside a text box, where Ctrl+A has to keep meaning
                 // "select this text".

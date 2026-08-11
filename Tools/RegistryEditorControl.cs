@@ -402,17 +402,17 @@ namespace KillerShell.Tools
         /// DynamicResource and that walks up from the element - so this wins inside this tree
         /// and changes nothing in the folder sidebar.
         /// Re-applied on ThemeChanged: a ResourceDictionary entry holds a brush, not a live
-        /// reference to one, so it would otherwise keep the outgoing theme's colour.
+        /// reference to one, so it would otherwise keep the outgoing theme's color.
         /// </summary>
         /// <remarks>
         /// The mask's whole job is to vanish into what is behind the chevron, so it has to be
-        /// that exact colour. The tree sits inside ToolTabChrome.WrapContent's well, whose face
+        /// that exact color. The tree sits inside ToolTabChrome.WrapContent's well, whose face
         /// is ToolTreeBrush painted over this control's own PaneBrush root. Those are two
         /// different answers depending on the theme:
-        ///   - on the twelve rounded themes ToolTreeBrush is TRANSPARENT, so the colour behind
+        ///   - on the twelve rounded themes ToolTreeBrush is TRANSPARENT, so the color behind
         ///     the chevron really is PaneBrush, which is what this always used;
         ///   - on the flat theme the well is an opaque WHITE client area, while PaneBrush there
-        ///     is the #c0c0c0 window face - so a PaneBrush mask drew a grey wedge straight
+        ///     is the #c0c0c0 window face - so a PaneBrush mask drew a gray wedge straight
         ///     through the middle of every chevron in a white tree.
         /// Take the well's own face whenever it is opaque, and the pane underneath it when it
         /// is not, so both cases resolve to the pixels actually being covered.
@@ -637,7 +637,7 @@ namespace KillerShell.Tools
             // connecting line, so it has to be the surface the tree actually sits on. The app
             // default is SolidBackgroundBrush - right for the folder sidebar, which shows the
             // window - but this tree sits on the control's PaneBrush, so the default painted a
-            // wedge of window colour into every chevron. On the gradient themes that is the
+            // wedge of window color into every chevron. On the gradient themes that is the
             // ramp's first stop, which is nothing like the pane: the pink arrows.
             ApplyTreeChevronMask(tree);
 

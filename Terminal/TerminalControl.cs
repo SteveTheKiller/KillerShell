@@ -161,7 +161,7 @@ namespace KillerShell.Terminal
         /// </summary>
         /// <remarks>
         /// THREE URI forms, tried in order, because there is no way to test this from a headless
-        /// session - WPF's font cache refuses to initialise outside an interactive one, so every
+        /// session - WPF's font cache refuses to initialize outside an interactive one, so every
         /// form throws there whether it is right or wrong. Rather than ship one guess, all three
         /// spellings that reach a Resource in this assembly are tried:
         ///
@@ -298,7 +298,7 @@ namespace KillerShell.Terminal
         /// </summary>
         /// <remarks>
         /// Set KS_GLYPHS=1 to get it on every shell. It exists because the fallback cannot be
-        /// tested anywhere except in a running window - WPF will not initialise a font cache in
+        /// tested anywhere except in a running window - WPF will not initialize a font cache in
         /// a headless session - and "those are boxes" otherwise gives no way to tell a fallback
         /// that failed to load from a font that simply has no glyphs.
         /// </remarks>

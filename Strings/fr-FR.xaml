@@ -152,6 +152,10 @@
     <sys:String x:Key="Str_About_Publisher">ÉDITEUR</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">EMPREINTE</sys:String>
     <sys:String x:Key="Str_About_Sha">SHA-256 DE L'EXE</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Demander avant d'envoyer un dossier à la Corbeille</sys:String>
+    <sys:String x:Key="Str_About_ClearData">Effacer toutes les données</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Ceci supprime tous les réglages enregistrés - thème, langue, polices, dossiers enregistrés, éléments récents et session - ainsi que les fichiers temporaires extraits des archives. Vos propres fichiers ne sont pas touchés. Continuer ?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Données effacées - redémarrez KillerShell pour terminer la suppression de ce qui est encore utilisé</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  créé par un technicien de terrain</sys:String>
 
     <!-- HTML report -->
@@ -364,6 +368,8 @@
     <sys:String x:Key="Str_Fo_RenameTitle">Nouveau nom</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Nouveau dossier</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Supprimer définitivement {0} élément(s) ? C'est irréversible : ils ne vont pas à la Corbeille.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Envoyer {0} élément(s) à la Corbeille ? La sélection contient un dossier, et tout son contenu part avec.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">Ne plus demander</sys:String>
 
     <!-- Raccourcis des operations sur les fichiers et leurs resultats -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">couper / copier / coller des fichiers</sys:String>

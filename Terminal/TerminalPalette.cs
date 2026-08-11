@@ -211,7 +211,7 @@ namespace KillerShell.Terminal
         // prints red means red, and it has no idea what theme it is being drawn into.
         //
         // So the pairing is corrected at draw time instead. HUE IS PRESERVED - only lightness
-        // moves, and only far enough to clear the threshold - so red stays recognisably red and
+        // moves, and only far enough to clear the threshold - so red stays recognizably red and
         // a prompt's colors still mean what the script intended.
         private const double MinContrast = 4.0;   // WCAG AA is 4.5 for body text; a terminal is
                                                   // dense mono at a size where 4 is comfortable,

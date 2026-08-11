@@ -69,7 +69,7 @@ namespace KillerShell.Tools
         private readonly TextBlock _statusLine;
         private readonly DispatcherTimer _statusClearTimer;
 
-        // Cancelled and replaced on every Reload (log/level change, manual refresh) and cancelled
+        // Canceled and replaced on every Reload (log/level change, manual refresh) and canceled
         // for good on Shutdown - the same "let the background thread notice and stop between
         // records rather than being torn down mid-read" reasoning ProcessListControl's
         // _ownerCts carries, for the same reason: an EventLogReader is a native handle, not

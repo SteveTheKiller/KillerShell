@@ -152,6 +152,10 @@
     <sys:String x:Key="Str_About_Publisher">EDITOR</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">HUELLA DIGITAL</sys:String>
     <sys:String x:Key="Str_About_Sha">SHA-256 DEL EXE</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Preguntar antes de enviar una carpeta a la Papelera de reciclaje</sys:String>
+    <sys:String x:Key="Str_About_ClearData">Borrar todos los datos</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Esto elimina todos los ajustes guardados - tema, idioma, fuentes, lugares guardados, recientes y la sesión - además de los archivos temporales extraídos de archivos comprimidos. Tus propios archivos no se tocan. ¿Continuar?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Datos borrados - reinicia KillerShell para terminar de borrar lo que siga en uso</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  creado por un técnico de campo</sys:String>
 
     <!-- HTML report -->
@@ -364,6 +368,8 @@
     <sys:String x:Key="Str_Fo_RenameTitle">Nombre nuevo</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Nueva carpeta</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">¿Eliminar {0} elemento(s) de forma permanente? No se puede deshacer: no van a la Papelera de reciclaje.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">¿Enviar {0} elemento(s) a la Papelera de reciclaje? La selección incluye una carpeta, y todo su contenido va también.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">No volver a preguntar</sys:String>
 
     <!-- Atajos de operaciones de archivo y sus resultados -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">cortar / copiar / pegar archivos</sys:String>

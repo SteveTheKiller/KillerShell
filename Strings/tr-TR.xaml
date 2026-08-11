@@ -152,6 +152,10 @@
     <sys:String x:Key="Str_About_Publisher">YAYINCI</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">PARMAK İZİ</sys:String>
     <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Bir klasörü Geri Dönüşüm Kutusu'na göndermeden önce sor</sys:String>
+    <sys:String x:Key="Str_About_ClearData">Tüm verileri temizle</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Bu işlem kaydedilmiş tüm ayarları - tema, dil, yazı tipleri, kayıtlı yerler, son kullanılanlar ve oturum - ve arşivlerden çıkarılan geçici dosyaları siler. Kendi dosyalarınıza dokunulmaz. Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Veriler temizlendi - hâlâ kullanımda olanların temizliğini bitirmek için KillerShell'i yeniden başlatın</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  bir saha teknisyeni tarafından yapıldı</sys:String>
 
     <!-- HTML report -->
@@ -364,6 +368,8 @@
     <sys:String x:Key="Str_Fo_RenameTitle">Yeni ad</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Yeni klasör</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">{0} öğe kalıcı olarak silinsin mi? Bu geri alınamaz - Geri Dönüşüm Kutusu'na gitmezler.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">{0} öğe Geri Dönüşüm Kutusu'na gönderilsin mi? Seçim bir klasör içeriyor ve içindeki her şey de gidecek.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">Bir daha sorma</sys:String>
 
     <!-- Dosya islemi kisayollari ve sonuclari -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">dosyaları kes / kopyala / yapıştır</sys:String>

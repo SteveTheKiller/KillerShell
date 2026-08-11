@@ -152,6 +152,10 @@
     <sys:String x:Key="Str_About_Publisher">HERAUSGEBER</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">FINGERABDRUCK</sys:String>
     <sys:String x:Key="Str_About_Sha">EXE-SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Fragen, bevor ein Ordner in den Papierkorb verschoben wird</sys:String>
+    <sys:String x:Key="Str_About_ClearData">Alle Daten löschen</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Damit werden alle gespeicherten Einstellungen gelöscht - Design, Sprache, Schriftarten, gespeicherte Orte, zuletzt verwendete Elemente und die Sitzung - sowie die aus Archiven entpackten temporären Dateien. Ihre eigenen Dateien bleiben unberührt. Fortfahren?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Daten gelöscht - starten Sie KillerShell neu, um noch verwendete Dateien vollständig zu entfernen</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  entwickelt von einem Field-Techniker</sys:String>
 
     <!-- HTML report -->
@@ -364,6 +368,8 @@
     <sys:String x:Key="Str_Fo_RenameTitle">Neuer Name</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Neuer Ordner</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">{0} Element(e) endgültig löschen? Das lässt sich nicht rückgängig machen - sie landen nicht im Papierkorb.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">{0} Element(e) in den Papierkorb verschieben? Die Auswahl enthält einen Ordner, und alles darin geht mit.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">Nicht mehr fragen</sys:String>
 
     <!-- Tastenkuerzel fuer Dateioperationen und deren Ergebnisse -->
     <sys:String x:Key="Str_Ks_CutCopyPaste">Dateien ausschneiden / kopieren / einfügen</sys:String>

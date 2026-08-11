@@ -14,15 +14,15 @@
          palette rather than picked by eye, so it tracks the shared file.
          ================================================================ -->
 
-    <!-- BLACK, even though 98SE's palette is otherwise light grey. A Win98-era console is a black
+    <!-- BLACK, even though 98SE's palette is otherwise light gray. A Win98-era console is a black
          box, and the metric tiles read as little CRT readouts. These are
          KillerShell-only keys, so they live in the app layer where the shared KillerUI half
          cannot overwrite them. -->
     <SolidColorBrush x:Key="TerminalBackgroundBrush" Color="#000000" po:Freeze="True"/>
     <SolidColorBrush x:Key="MonitorCellBrush"        Color="#000000" po:Freeze="True"/>
     <!-- ...and the text ON that black. 98SE's TextBrush is #000000 and its PrimaryBrush #004f00,
-         both picked against a light grey app - on a black console they are invisible and nearly
-         invisible. The console's own light grey and bright green, as CMD had. -->
+         both picked against a light gray app - on a black console they are invisible and nearly
+         invisible. The console's own light gray and bright green, as CMD had. -->
     <SolidColorBrush x:Key="TerminalForegroundBrush" Color="#c0c0c0" po:Freeze="True"/>
     <SolidColorBrush x:Key="TerminalAccentBrush"     Color="#00c000" po:Freeze="True"/>
     <!-- Text ON the black monitor cells (Performance tab). TextBrush is black here and MutedText
@@ -31,13 +31,13 @@
          a retro green for the text in the black squares. -->
     <SolidColorBrush x:Key="MonitorTextBrush"  Color="#00c000" po:Freeze="True"/>
     <SolidColorBrush x:Key="MonitorMutedBrush" Color="#008000" po:Freeze="True"/>
-    <!-- The Events/Processes/Registry tables' alternate-row stripe: a SOLID light grey on the
+    <!-- The Events/Processes/Registry tables' alternate-row stripe: a SOLID light gray on the
          white rows, deliberately NOT the #c0c0c0 window face - white and gray striped, but not
          the same gray as the main window color. #dfdfdf is the era's scrollbar
-         channel grey, already in the palette. -->
+         channel gray, already in the palette. -->
     <SolidColorBrush x:Key="GridRowAltBrush" Color="#dfdfdf" po:Freeze="True"/>
     <!-- A hovered monitor tile: a slightly lifted black, NOT RowHoverBrush - that is the window
-         face grey here and made the tile vanish into the window. -->
+         face gray here and made the tile vanish into the window. -->
     <SolidColorBrush x:Key="MonitorHoverBrush" Color="#1c1c1c" po:Freeze="True"/>
     <!-- The tool tabs' sunken wells are WHITE client areas: the Events/Processes tables, the
          Registry value grid (ToolContentBrush) and the Registry tree (ToolTreeBrush), like
@@ -51,13 +51,13 @@
          transparent and the window really does show through it. Here it is wrong twice over:
          the folder tree sits in the sunken WHITE list well (SidebarPaneBrush) and the Registry
          tree in its own white well (ToolTreeBrush), while SolidBackgroundBrush is the #c0c0c0
-         window face - so the mask painted a grey wedge through the middle of every chevron.
+         window face - so the mask painted a gray wedge through the middle of every chevron.
          Stated here so only this theme differs; the Mirror is skipped whenever the key already
          exists. WHITE, tracking SidebarPaneBrush and ToolTreeBrush above - if either of those
          stops being #ffffff, this has to follow. -->
     <SolidColorBrush x:Key="TreeChevronMaskBrush" Color="#ffffff" po:Freeze="True"/>
     <!-- The Performance tab's black cells sit together with thin 2px seams instead of floating
-         in grey gutters, and the info panel and detail card run flush to the pane edges - the
+         in gray gutters, and the info panel and detail card run flush to the pane edges - the
          padding between all the black cells goes away, and the right edge lines up with
          the tab strip. -->
     <Thickness x:Key="MonitorDetailMargin">0,0,0,2</Thickness>
@@ -65,7 +65,7 @@
     <Thickness x:Key="MonitorTileListMargin">0,0,2,2</Thickness>
     <Thickness x:Key="MonitorTileMargin">0,0,0,2</Thickness>
     <!-- The cell grid runs flush to the pane edges; the cells' own 1px PaneBorderBrush frames
-         are the seams between neighbours. -->
+         are the seams between neighbors. -->
     <Thickness x:Key="MonitorGridMargin">0</Thickness>
     <!-- The tool-tab wells are filled edge to edge: no gutters around the Events/Processes
          grids, and the Registry split runs flush left and right with only the skinny splitter

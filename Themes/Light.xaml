@@ -39,7 +39,7 @@
 
     <SolidColorBrush x:Key="RowAltBrush"         Color="#14000000" po:Freeze="True"/>
     <SolidColorBrush x:Key="RowHoverBrush"       Color="#b2b2b2" po:Freeze="True"/>
-    <!-- SelectionBg's colour. This was #c8f5d8, the pale mint that belongs on a focused button
+    <!-- SelectionBg's color. This was #c8f5d8, the pale mint that belongs on a focused button
          (OutlinePressedBrush, below) - as a selected-row fill it read as a highlighter stripe.
          Light's selection is DARK on light. -->
     <SolidColorBrush x:Key="RowSelectedBrush"    Color="#1b5e20" po:Freeze="True"/>

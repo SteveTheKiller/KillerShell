@@ -29,7 +29,7 @@ namespace KillerShell
         /// fill covered the glyphs completely and a selected address bar came up as a plain navy
         /// rectangle with nothing legible in it (2026-08-08).
         ///
-        /// The non-adorner renderer draws the fill BEHIND the run and honours SelectionTextBrush,
+        /// The non-adorner renderer draws the fill BEHIND the run and honors SelectionTextBrush,
         /// so TextSelectionTextBrush (#ffffff on 98SE) actually reaches the glyphs.
         ///
         /// A STATIC ctor, not OnStartup: the switch is read once, the first time the framework
@@ -236,6 +236,68 @@ namespace KillerShell
                 k?.SetValue(name, value);
             }
             catch { /* best-effort */ }
+        }
+
+        /// <summary>
+        /// Values under RegKey that are NOT preferences. Written by the installer, read to decide
+        /// whether this copy is portable, and so never cleared with the settings.
+        /// </summary>
+        private static readonly string[] InstallMarkers = { "Installed", "InstallPath", "Version" };
+
+        /// <summary>
+        /// Clear all Data: every saved preference, plus the temp files KillerShell extracted while
+        /// browsing archives. The user's own files are never touched, and neither is the install.
+        /// </summary>
+        /// <remarks>
+        /// Deletes VALUES one at a time rather than the key. KillerPDF's equivalent can afford a
+        /// single DeleteSubKeyTree because its preferences live in their own Settings subkey; this
+        /// app writes them straight into the app key, next to the install markers, so deleting the
+        /// tree would take Installed/InstallPath/Version with it and the installed copy would come
+        /// back up believing it is portable - Install badge in the footer, offering to install
+        /// itself over itself.
+        /// </remarks>
+        internal static void ClearAllData()
+        {
+            try
+            {
+                using var k = Registry.CurrentUser.OpenSubKey(RegKey, writable: true);
+                if (k != null)
+                {
+                    foreach (var name in k.GetValueNames())
+                    {
+                        if (Array.IndexOf(InstallMarkers, name) >= 0) continue;
+                        try { k.DeleteValue(name, throwOnMissingValue: false); } catch { }
+                    }
+                    // Nothing writes subkeys under here today, but a future feature might, and a
+                    // preference hiding in one would survive a clear that only walked values.
+                    foreach (var sub in k.GetSubKeyNames())
+                        try { k.DeleteSubKeyTree(sub, throwOnMissingSubKey: false); } catch { }
+                }
+            }
+            catch { }
+
+            // Archive entries extracted for opening or dragging out (ArchiveProvider.cs).
+            TryDeleteDir(Path.Combine(Path.GetTempPath(), AppName));
+        }
+
+        private static void TryDeleteDir(string dir)
+        {
+            try
+            {
+                if (Directory.Exists(dir)) Directory.Delete(dir, recursive: true);
+            }
+            catch
+            {
+                // A whole-folder delete fails if any one file is locked - an archive entry still
+                // open in another app is the normal case here. Remove what can be removed so the
+                // rest clears now rather than nothing clearing at all.
+                try
+                {
+                    foreach (var f in Directory.GetFiles(dir, "*", SearchOption.AllDirectories))
+                        try { File.Delete(f); } catch { }
+                }
+                catch { }
+            }
         }
 
         // ============================================================

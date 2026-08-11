@@ -1,7 +1,7 @@
 <!-- Themed replacement for Microsoft.Win32.OpenFileDialog / SaveFileDialog.
      Same chrome, places rail, view modes and sortable columns as FolderPickerDialog - the row
      styles and templates are shared from Controls.xaml - plus a file name box, a filter combo
-     and Open/Save behaviour. The property surface deliberately mirrors the Win32 dialogs
+     and Open/Save behavior. The property surface deliberately mirrors the Win32 dialogs
      (Title, Filter, FilterIndex, FileName, InitialDirectory, DefaultExt, ...) so a call site
      changes by one word. -->
 <Window x:Class="KillerShell.FileDialog"

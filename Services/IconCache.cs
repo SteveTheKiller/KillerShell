@@ -36,7 +36,7 @@ namespace KillerShell.Services
             ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp"
         };
 
-        // ── Brand icon pack (brand\icons, normalised into Resources\icons) ───────────────
+        // ── Brand icon pack (brand\icons, normalized into Resources\icons) ───────────────
         //
         // Every directory in the app is drawn from here rather than from the shell, so the tree,
         // the bookmarks, the listing, the tab strip, recents and the overflow list all agree.
@@ -114,7 +114,7 @@ namespace KillerShell.Services
         public static ImageSource? RecentsArt => Art("recents_icon");
 
         // Properties, NOT static readonly fields. A field would resolve the pack once at type
-        // initialisation and pin every folder in the app to whichever theme happened to be active
+        // initialization and pin every folder in the app to whichever theme happened to be active
         // at startup; Art() is cached, so asking per call costs a dictionary hit.
         private static ImageSource? GenericFolder => Art("folder_icon");
         private static ImageSource? DriveArt      => Art("drive_icon");
@@ -125,7 +125,7 @@ namespace KillerShell.Services
         /// GetFolderPath is a registry read and this is asked per row.
         ///
         /// It holds names rather than resolved ImageSources on purpose: a map of bitmaps is built
-        /// at type initialisation and would pin every special folder to the icon pack that was
+        /// at type initialization and would pin every special folder to the icon pack that was
         /// active at startup, so switching to or from the flat theme would leave Documents,
         /// Downloads and the rest drawing the other theme's art. The name is resolved through the
         /// cached Art() at draw time instead.
@@ -257,6 +257,29 @@ namespace KillerShell.Services
                 // blank tile.
             }
 
+            // A document is never drawn with THIS app's own logo. When KillerShell is the handler
+            // for a type, the shell answers a request for that type's icon with the handler's exe
+            // icon, so every .ps1 in a listing came back as the KillerShell shell - one icon
+            // repeated down the whole window, telling you nothing about any of the files.
+            //
+            // This is NOT fixed by unregistering. The association the shell reads can also be a
+            // UserChoice the user set in Windows Settings, which Associations.cs deliberately never
+            // writes and therefore cannot remove either - which is why .html and .ps1 kept the app
+            // icon after a clean unregister while .txt went back to normal.
+            //
+            // Asking the shell WHICH EXE handles the type catches every route into that state (our
+            // ProgID, an Open With default, a UserChoice) and no type we do not handle. The brand
+            // pack's document art stands in, the same rule directories already follow: our own art
+            // wherever the shell would otherwise show us our own reflection.
+            //
+            // Deliberately AFTER the thumbnail branch: if this app is ever made the default for a
+            // picture format, a real thumbnail still beats a generic document.
+            if (!isDirectory && HandledByThisApp(ext))
+            {
+                var doc = Art("text_document_icon");
+                if (doc != null) return doc;
+            }
+
             string key = (perFile ? filePath : ext) + "|" + shil + (isDirectory ? "|d" : string.Empty);
 
             lock (Cache)
@@ -367,6 +390,55 @@ namespace KillerShell.Services
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         private static extern int ExtractIconEx(string file, int index,
                                                 out IntPtr large, out IntPtr small, int count);
+
+        // ── "does this app handle that type?" ────────────────────
+        //
+        // One shell query per extension, cached, so a folder of ten thousand .ps1 files costs one.
+        // The answer only changes when the user changes a default, which cannot happen while a
+        // listing is being drawn.
+
+        private static readonly Dictionary<string, bool> HandledCache =
+            new(StringComparer.OrdinalIgnoreCase);
+
+        private const int ASSOCF_NONE       = 0x0000;
+        private const int ASSOCSTR_EXECUTABLE = 2;
+
+        [DllImport("shlwapi.dll", CharSet = CharSet.Unicode, SetLastError = false)]
+        private static extern int AssocQueryString(int flags, int str, string pszAssoc,
+                                                   string? pszExtra, System.Text.StringBuilder? pszOut,
+                                                   ref uint pcchOut);
+
+        /// <summary>
+        /// True when the executable Windows would launch for <paramref name="ext"/> is this one.
+        /// False for everything else, including on any failure: a wrong answer here would replace
+        /// a perfectly good shell icon with the generic document, so the safe direction is to
+        /// leave the shell's answer alone.
+        /// </summary>
+        private static bool HandledByThisApp(string ext)
+        {
+            if (ext.Length < 2 || ext[0] != '.') return false;
+
+            lock (HandledCache)
+                if (HandledCache.TryGetValue(ext, out var hit)) return hit;
+
+            bool mine = false;
+            try
+            {
+                uint len = 1024;
+                var sb = new System.Text.StringBuilder((int)len);
+                if (AssocQueryString(ASSOCF_NONE, ASSOCSTR_EXECUTABLE, ext, null, sb, ref len) == 0)
+                {
+                    string handler = sb.ToString();
+                    string self = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? "";
+                    mine = handler.Length > 0 && self.Length > 0
+                        && string.Equals(handler, self, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            catch { /* unusual shell, or no association at all - leave it to the shell */ }
+
+            lock (HandledCache) HandledCache[ext] = mine;
+            return mine;
+        }
 
         private static ImageSource? LoadSmallPath(string pathOrName, bool real)
         {

@@ -38,7 +38,7 @@ namespace KillerShell.Shell
     //           were filed under whichever global category happened to fit, bare D / M / C read
     //           as global when they only exist in the Storage Analyzer, and a keycap that meant
     //           two different things in two applets had to be left OFF the map rather than
-    //           mislabelled. Scope carries no color of its own: it is the section a group of
+    //           mislabeled. Scope carries no color of its own: it is the section a group of
     //           categories sits in, not a seventh category.
     //
     // Scope is what settles the two collisions that were previously unrepresentable, and it

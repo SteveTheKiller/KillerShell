@@ -240,6 +240,12 @@
     <sys:String x:Key="Str_About_Publisher">PUBLISHER</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">THUMBPRINT</sys:String>
     <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Ask before sending a folder to the Recycle Bin</sys:String>
+    <!-- Clear all Data: the link, its confirm and its result. Kept with the About keys rather than
+         split across three sections - one feature, and a translator needs to see them together. -->
+    <sys:String x:Key="Str_About_ClearData">Clear all Data</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">This deletes every saved setting - theme, language, fonts, saved places, recents and the session - and the temporary files extracted from archives. Your own files are not touched. Continue?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Data cleared - restart KillerShell to finish clearing anything still in use</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  built by a field tech</sys:String>
 
     <!-- HTML report (exported in the app's current language) -->
@@ -496,6 +502,8 @@
     <sys:String x:Key="Str_Fo_RenameTitle">New name</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">New folder</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Delete {0} item(s) permanently? This cannot be undone - they do not go to the Recycle Bin.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Send {0} item(s) to the Recycle Bin? The selection includes a folder, and everything inside it goes too.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">Don't ask again</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows refused to delete this. If Controlled Folder Access is on, retrying as administrator will NOT help - it blocks by app, not by permission level, and KillerShell has to be added to its allowed apps list in Windows Security. Retry as administrator anyway?</sys:String>
     <sys:String x:Key="Str_Btn_RetryAdmin">Retry as admin</sys:String>
     <sys:String x:Key="Str_Status_DeleteDenied">Delete refused - permission denied</sys:String>

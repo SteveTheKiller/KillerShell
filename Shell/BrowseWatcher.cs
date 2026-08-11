@@ -177,6 +177,7 @@ namespace KillerShell.Shell
             int nextSeq = tab.Results.Count == 0 ? 0 : tab.Results.Max(r => r.Seq) + 1;
             bool changed = false;
             bool selectionRenamed = false;
+            bool renamedInPlace = false;
 
             // Renames first, and IN PLACE: the generic create/delete loop below would otherwise
             // see the old path vanish and the new path appear and treat that as an unrelated
@@ -196,6 +197,7 @@ namespace KillerShell.Shell
 
                 existing.ApplyRename(newPath, Path.GetFileName(newPath));
                 changed = true;
+                renamedInPlace = true;
                 if (wasSelected) selectionRenamed = true;
 
                 paths.Remove(oldPath);
@@ -253,6 +255,19 @@ namespace KillerShell.Shell
 
             if (changed)
                 Pane.ResultsHeader.Text = string.Format(Loc("Str_Lbl_ResultsCount"), tab.Results.Count);
+
+            // A rename has to re-sort; nothing else here does. The view carries SortDescriptions
+            // (ApplySort, Results.cs), so an item ADDED or REPLACED is inserted in the right place
+            // on its own - but a rename deliberately mutates the existing row in place to keep its
+            // object identity, and a collection view does not reorder for a property change. The
+            // row therefore sat wherever its OLD name put it until the folder was navigated,
+            // re-sorted or refreshed with F5.
+            //
+            // Gated on a rename actually happening rather than on `changed`: re-applying the sort
+            // rebuilds the view's SortDescriptions, which refreshes the whole view, and doing that
+            // on every watcher tick would move the scroll position out from under anyone watching
+            // a folder that is being written to.
+            if (renamedInPlace) ApplySort(tab);   // Results.cs
 
             // The renamed row's own object survived, so the name/path fields shown in the
             // details strip still read the OLD name until this refreshes them - the file's bytes

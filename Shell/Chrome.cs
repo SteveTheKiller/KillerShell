@@ -22,8 +22,8 @@ namespace KillerShell.Shell
         /// flat/non-flat captions are different heights (22 vs 36).
         ///
         /// Both halves are needed and neither works alone:
-        ///   - The ROW: a hardcoded 36 with a 22px caption Grid inside it centres the caption and
-        ///     leaves 7px of frame grey above and below it. That gap is INSIDE the row, so no
+        ///   - The ROW: a hardcoded 36 with a 22px caption Grid inside it centers the caption and
+        ///     leaves 7px of frame gray above and below it. That gap is INSIDE the row, so no
         ///     amount of trimming the window's padding could reach it.
         ///   - CaptionHeight: WindowChrome's drag band is measured from the top of the WINDOW and
         ///     is a plain constant. Left at 36 over a 22px caption it would keep claiming 14px of

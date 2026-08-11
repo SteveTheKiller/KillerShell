@@ -90,7 +90,7 @@ namespace KillerShell.Tools
         // unlimited (every file individually). At 1, each immediate child folder is ONE solid
         // block - which is the "where did my space actually go" read, and the fastest possible
         // paint. A depth-capped folder is drawn as a single rect carrying its whole subtree's
-        // bytes, so no space ever goes missing from the picture, it is only summarised.
+        // bytes, so no space ever goes missing from the picture, it is only summarized.
         private int _depthLimit;
         private static readonly int[] DepthChoices = [0, 1, 2, 3, 4];
         private readonly Border _depthBtn = null!;
@@ -125,7 +125,7 @@ namespace KillerShell.Tools
             // anywhere that is not an input lands here.
             // No Background assignment here: a local `Background = Brushes.Transparent` beats a
             // SetResourceReference in the dependency-property system, so the line that lived
-            // here silently CANCELLED the PaneBrush above - the tab showed the darker
+            // here silently CANCELED the PaneBrush above - the tab showed the darker
             // MenuBackgroundBrush through on every theme where the two differ, which is twelve
             // of the thirteen. The opaque PaneBrush is every bit as hit-testable, so the
             // click-to-focus below lost nothing.
@@ -172,7 +172,7 @@ namespace KillerShell.Tools
             _scanBtn = new Button { MinWidth = 64, Height = 24, Margin = new Thickness(6, 0, 0, 0), Padding = new Thickness(10, 0, 10, 0) };
             // OutlineButton, not SurfaceButton: Scan/Stop is the MAIN action of this tab, and the
             // family's main button is an accent outline at rest that fills solid on hover.
-            // SurfaceButton is the secondary tier - a filled chip face - which put a flat grey
+            // SurfaceButton is the secondary tier - a filled chip face - which put a flat gray
             // slab on the one control the tab exists to be driven by.
             _scanBtn.SetResourceReference(FrameworkElement.StyleProperty, "OutlineButton");
             _scanBtn.SetResourceReference(ContentControl.ContentProperty, "Str_Storage_Scan");

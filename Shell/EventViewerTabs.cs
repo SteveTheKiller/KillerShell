@@ -130,7 +130,7 @@ namespace KillerShell.Shell
         /// Shutdown() every open Event Viewer tab's control without closing the tabs themselves -
         /// called once from Session.cs OnClosing, right as the window really is going away, same
         /// reasoning as ProcessTabs.ShutdownAllProcessLists(): a background log read can still be
-        /// mid-call when the process starts tearing down, and cancelling here gives it a chance
+        /// mid-call when the process starts tearing down, and canceling here gives it a chance
         /// to notice and stop cleanly first.
         /// </summary>
         internal void ShutdownAllEventViewers()

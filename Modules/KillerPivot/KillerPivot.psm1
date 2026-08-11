@@ -299,7 +299,7 @@ function Add-PivotTenant {
         if ($interactive) {
             $ow = (Read-Host " > Key '$Key' already exists. Overwrite? (y/N)").Trim()
             if ($ow -notmatch '^[Yy]') {
-                Write-Host "[!] Cancelled. Nothing written." -ForegroundColor Yellow
+                Write-Host "[!] Canceled. Nothing written." -ForegroundColor Yellow
                 return
             }
         } else {
@@ -318,7 +318,7 @@ function Add-PivotTenant {
 
         $confirm = (Read-Host " > Save? (Y/n)").Trim()
         if ($confirm -match '^[Nn]') {
-            Write-Host "[!] Cancelled. Nothing written." -ForegroundColor Yellow
+            Write-Host "[!] Canceled. Nothing written." -ForegroundColor Yellow
             return
         }
     }

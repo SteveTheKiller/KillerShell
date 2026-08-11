@@ -40,7 +40,7 @@
                    simply disappears into the app behind it and only the active tab reads as a
                    surface. Briefly moved to MenuBackgroundBrush; that lifted the band a step
                    above the tabs sitting on it, and the tabs' 3px top margin turned into a
-                   visible grey line above every one of them. -->
+                   visible gray line above every one of them. -->
               <!-- TRANSPARENT, never BackgroundBrush. On Sepulchre, Decay, Delirium, Ectoplasm
                    and Malaise that key is a full-window LinearGradientBrush, so painting it here
                    re-ramped the ENTIRE window gradient inside the band's own width - a visible
@@ -107,7 +107,7 @@
                      the radii in step with the pane's. -->
                 <!-- PaneEdgeBrush, which a flat theme sets TRANSPARENT: on 98SE the tab's own
                      bevel and the pane's bevel already describe the join, and this extra 1px rule
-                     drew as a grey line between the active tab and the content below it. Every
+                     drew as a gray line between the active tab and the content below it. Every
                      other theme keeps the ring exactly as before. -->
                 <Border x:Name="TabBarRing" Height="7" VerticalAlignment="Bottom" Margin="0,0,0,-6"
                         BorderThickness="1,1,1,0" CornerRadius="{DynamicResource TabCornerRadius}" IsHitTestVisible="False"
@@ -331,14 +331,14 @@
                                         <!-- The accent stripe is theme-driven now: 3px on top by
                                              default, 0 on a flat theme. A Win98 tab is identified
                                              by its bevel and by being joined to the pane, not by
-                                             a coloured bar across the top. -->
+                                             a colored bar across the top. -->
                                         <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabStripeThickness}"/>
                                         <!-- Reaches the foot of the band so its own fill breaks
                                              the ring line where the tab is - that break is what
                                              joins the tab to the content below it. -->
                                         <Setter TargetName="tabBd" Property="Margin" Value="0,3,0,0"/>
                                         <!-- OPEN BOTTOM. The tab's dark bevel is 0,0,2,2 - right AND
-                                             bottom - so the active tab was drawing a 2px grey rule
+                                             bottom - so the active tab was drawing a 2px gray rule
                                              along its own foot, directly between itself and the
                                              content. That rule is the line that kept showing under
                                              the active tab, and no amount of work on the ring above
@@ -537,7 +537,7 @@
                 <!-- Same treatment as KillerPDF's document pane: the whole content pane is grain-wrapped. -->
                 <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <!-- THE TAB PAGE BEVEL. A Win98 tab control's page is a RAISED panel - white down
-                     the top and left, grey along the bottom and right - and the selected tab's own
+                     the top and left, gray along the bottom and right - and the selected tab's own
                      white left edge is the SAME line continuing upward. That continuity is what
                      makes a tab and its page read as one object rather than a card sitting on a
                      box - the light gray edge of the active tab extends all the way down the
@@ -926,7 +926,7 @@
                                 <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                         BorderThickness="1" CornerRadius="4" Padding="6">
                                     <!-- Horizontal: the shed items are icon buttons, and stacking
-                                         them would make a tall thin column of unlabelled glyphs. -->
+                                         them would make a tall thin column of unlabeled glyphs. -->
                                     <StackPanel x:Name="OverflowPanel" Orientation="Horizontal"/>
                                 </Border>
                             </Grid>
@@ -970,7 +970,7 @@
                        ScrollViewer, which absorbs its content's desired width; the header had
                        nothing above it to do the same job.
                        Disabled, not Hidden: hidden still measures the child at infinite width,
-                       which is exactly the behaviour being prevented. This is the same reason
+                       which is exactly the behavior being prevented. This is the same reason
                        the tab strip is wrapped the same way. -->
                   <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                 VerticalScrollBarVisibility="Disabled"
@@ -1795,7 +1795,7 @@
                      window. -->
                 <!-- ListPaneBrush: the menu tier on every ordinary theme (matching the terminal
                      screen), and the sunken WHITE list well on 98SE, whose menu tier is #c0c0c0
-                     and would otherwise leave the file listing grey. -->
+                     and would otherwise leave the file listing gray. -->
                 <Border IsHitTestVisible="False" Background="{DynamicResource ListPaneBrush}"
                         Visibility="{Binding Visibility, ElementName=ResultsList}"/>
                 <!-- Recessed list bevel - brushes CROSSED against the thicknesses so it reads as

@@ -335,7 +335,7 @@ namespace KillerShell.Shell
             // Demo mode lists the fabricated machine (DemoFileSystem.cs). Every field the real
             // pass below sets is set here too, and set the same way, because the sort keys, the
             // details columns and the icon view all read them - a row that skipped SizeBytes or
-            // Seq would sort and draw differently from its neighbours for no visible reason.
+            // Seq would sort and draw differently from its neighbors for no visible reason.
             if (DemoMode)
             {
                 foreach (var e in Services.DemoFs.Children(folder))

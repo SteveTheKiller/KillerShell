@@ -68,7 +68,7 @@ namespace KillerShell.Shell
             pane.EditorSaveBtn.Tag = editor.Dirty ? "on" : null;
             pane.EditorWrapBtn.Tag = EditorOptions.WordWrap ? "on" : null;
 
-            // Dim rather than hidden: a greyed Undo says "nothing to undo yet", where a button
+            // Dim rather than hidden: a grayed Undo says "nothing to undo yet", where a button
             // that comes and goes makes the two beside it move under the pointer.
             pane.EditorUndoBtn.IsEnabled = editor.CanUndo;
             pane.EditorRedoBtn.IsEnabled = editor.CanRedo;

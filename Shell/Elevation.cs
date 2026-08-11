@@ -482,7 +482,7 @@ namespace KillerShell.Shell
             ElevationHalo.SetResourceReference(UIElement.VisibilityProperty, "ElevationHaloVisibility");
 
             // The flat theme's admin signal instead: a 2px accent band AROUND the window's own
-            // grey bevel frame, drawn by the root Border's edge - NOT painted over the frame
+            // gray bevel frame, drawn by the root Border's edge - NOT painted over the frame
             // rings, which swallowed the gray border when tried that way - the regular gray
             // border stays, with the colored ring AROUND it. ElevationEdge* resolve to the
             // accent at 2px on a flat theme and to the window's ordinary WindowEdge values

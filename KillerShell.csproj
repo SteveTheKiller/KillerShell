@@ -11,11 +11,11 @@
     <Product>KillerShell</Product>
     <Company>killertools.net</Company>
     <RootNamespace>KillerShell</RootNamespace>
-    <Version>1.2.1</Version>
-    <FileVersion>1.2.1.0</FileVersion>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <!-- Displayed version string (semver, matches the release tag: v1.2.1). -->
-    <InformationalVersion>1.2.1</InformationalVersion>
+    <Version>1.2.2</Version>
+    <FileVersion>1.2.2.0</FileVersion>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
+    <!-- Displayed version string (semver, matches the release tag: v1.2.2). -->
+    <InformationalVersion>1.2.2</InformationalVersion>
     <!-- Shown in the About card next to the version so a user can tell how old their build
          is. Must match the date on this version's CHANGELOG section - release.ps1 preflight
          fails the release if it does not. Bump it with the version. -->
@@ -36,9 +36,9 @@
     <Resource Include="Resources\icons\*.png"/>
     <!-- The period icon pack the 98SE theme draws from, same 24 filenames as the brand pack above
          so IconCache only has to swap a path prefix. Chicago95 art (GPL-3.0+/MIT), upscaled 5x
-         nearest-neighbour from its 32px originals to the same 160px canvas - integer scaling with
+         nearest-neighbor from its 32px originals to the same 160px canvas - integer scaling with
          no interpolation, or the pixels stop being pixels. See Resources\icons\98\ATTRIBUTION.md
-         for the per-icon source map and the licence. NOT covered by the glob above: MSBuild's
+         for the per-icon source map and the license. NOT covered by the glob above: MSBuild's
          Include is not recursive, so this needs its own line. -->
     <Resource Include="Resources\icons\98\*.png"/>
     <!-- The icon Explorer shows for the text types KillerShell associates. EmbeddedResource,
@@ -117,7 +117,7 @@
     <!-- LogicalName is not decoration here. Highlighting\Resources\Resources.cs resolves the
          built-in definitions by typeof(Resources).FullName + "." + filename, and the name MSBuild
          would infer from this path begins with KillerShell.third_party, so PowerShell.xshd and
-         every one of its neighbours would come back null at runtime. -->
+         every one of its neighbors would come back null at runtime. -->
     <EmbeddedResource Include="third_party\AvalonEdit\Highlighting\Resources\*.xshd"
                       LogicalName="ICSharpCode.AvalonEdit.Highlighting.Resources.%(Filename)%(Extension)" />
     <EmbeddedResource Include="third_party\AvalonEdit\Highlighting\Resources\*.xsd"

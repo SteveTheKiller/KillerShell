@@ -6,7 +6,7 @@ between the two by changing a path prefix and nothing else. Keep the two directo
 adding a brand icon without adding its 98 counterpart is safe (the flat theme falls back to the
 brand art) but it will look out of place.
 
-## Source and licence
+## Source and license
 
 Art from **Chicago95**, licensed **GPL-3.0+/MIT**.
 
@@ -20,9 +20,9 @@ Microsoft's, and a GPLv3 work has to be distributable in full under GPLv3.
 
 ## Processing
 
-Each icon is the **32px** original, upscaled **5x with nearest-neighbour** to the 160px canvas
+Each icon is the **32px** original, upscaled **5x with nearest-neighbor** to the 160px canvas
 the brand pack uses. Integer scale, no interpolation - anything else turns hard pixel edges into
-mush, and the whole point of the set is that the pixels stay pixels. Nothing was recoloured or
+mush, and the whole point of the set is that the pixels stay pixels. Nothing was recolored or
 redrawn.
 
 Regenerate rather than hand-editing anything in this folder.
@@ -64,7 +64,7 @@ Notes on the ones that are not a straight name match:
 - **`perf_icon`** is the CPU chip, not the monitor-with-a-graph. `utilities-system-monitor` is
   already `task_manager`, and the two sat side by side looking identical. The chart mime icon was
   tried first and reads as Excel (2026-08-08).
-- **`windows_folder_icon`** is the four-colour flag, which is what the Windows directory ought to
+- **`windows_folder_icon`** is the four-color flag, which is what the Windows directory ought to
   wear.
 - **`registry_editor_icon`** is dconf-editor, the Linux set's registry editor. There is no regedit.
 - **`documents_folder_icon`** is the briefcase, which is what Chicago95 ships as its documents

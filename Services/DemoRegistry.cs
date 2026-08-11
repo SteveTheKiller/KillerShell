@@ -300,7 +300,7 @@ namespace KillerShell.Services
                                       0x30, 0x30, 0x30, 0x2D, 0x30, 0x30, 0x30, 0x30));
 
             // A policy branch, because a locked-down endpoint is what a field tech spends the day
-            // in and "why is this greyed out" is the question this tab gets opened for.
+            // in and "why is this grayed out" is the question this tab gets opened for.
             Key(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies", "Microsoft");
             Key(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft", "Windows");
             Key(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows", "WindowsUpdate");

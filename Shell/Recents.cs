@@ -61,7 +61,7 @@ namespace KillerShell.Shell
             menu.Items.Clear();
 
             // Folders that have since been deleted or unplugged are dropped rather than shown
-            // greyed: a recents list is a shortcut, and a shortcut that cannot be taken is
+            // grayed: a recents list is a shortcut, and a shortcut that cannot be taken is
             // just a row you have to read past every time.
             var live = _recents.Where(Directory.Exists).ToList();
 

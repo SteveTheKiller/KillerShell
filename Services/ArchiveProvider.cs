@@ -15,7 +15,7 @@ using System.Text;
 //   .gz            a single gzip-wrapped file, so it lists as one entry.
 // KillerShell ships as a single exe with zero runtime dependencies, and that stays true:
 // nothing here needs a package. RAR and 7z are deliberately NOT supported - RAR is
-// proprietary and unrar's licence forbids reimplementing it, so both would mean taking a
+// proprietary and unrar's license forbids reimplementing it, so both would mean taking a
 // dependency (and then embedding it to keep the one-file promise). They report
 // ArchiveSupport.Unsupported rather than pretending.
 //

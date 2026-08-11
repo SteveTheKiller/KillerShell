@@ -20,6 +20,18 @@ namespace KillerShell.Shell
     // act on the selection rather than on a folder (copy, cut, delete, rename) work in both.
     public partial class MainWindow
     {
+        /// <summary>
+        /// Ask before recycling a folder. On by default, and persisted like every other
+        /// preference. The delete prompt's own tick box turns it off; the About card is where it
+        /// can be turned back on, because a switch that can only be thrown one way, from a dialog
+        /// you are trying to get past, is a trap rather than a preference.
+        /// </summary>
+        internal static bool ConfirmFolderDelete
+        {
+            get => Services.ThemeManager.GetSetting("ConfirmFolderDelete") != "0";
+            set => Services.ThemeManager.SetSetting("ConfirmFolderDelete", value ? "1" : "0");
+        }
+
         /// <summary>The folder a paste or a new folder would land in, or null on a search tab.</summary>
         private string? TargetFolder() => TargetFolder(Pane);
 
@@ -215,6 +227,29 @@ namespace KillerShell.Shell
 
             var paths = SelectedPaths();
             if (paths.Count == 0) return;
+
+            // A recycled FOLDER asks first, unless that has been turned off. Windows does not,
+            // and for a single file that is right - it is one undo away in the bin. A folder is
+            // different in kind: the count is unknown until it is gone, one keystroke can take a
+            // tree, and the row that goes need not be the row you thought you were on. Files on
+            // their own still recycle silently, so the common case keeps its speed.
+            //
+            // Permanent delete below asks unconditionally and always has. This switch does not
+            // reach it: turning off a prompt for something recoverable must not quietly turn off
+            // the prompt for something that is not.
+            if (!permanent && ConfirmFolderDelete && paths.Any(Directory.Exists))
+            {
+                string fmsg = string.Format(Loc("Str_Dlg_RecycleFolderMsg"), paths.Count.ToString("N0"));
+                var fdlg = new ConfirmDialog(fmsg, string.Join(Environment.NewLine, paths.Take(8)),
+                                             Loc("Str_Btn_Delete"),
+                                             Loc("Str_Chk_DontAskAgain")) { Owner = this };
+                fdlg.ShowDialog();
+                if (!fdlg.Confirmed) return;
+
+                // Only honored on a CONFIRMED delete. Ticking the box and then canceling means
+                // "not this one", not "never ask me again".
+                if (fdlg.Check1Checked) ConfirmFolderDelete = false;
+            }
 
             if (permanent)
             {

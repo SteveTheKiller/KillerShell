@@ -135,7 +135,7 @@ namespace KillerShell.Tools
         private Services.ColumnVisibilityMenu.Entry[] _processColEntries = [];
         private Services.ColumnVisibilityMenu.Entry[] _serviceColEntries = [];
 
-        // Cancelled from Shutdown() - see the remark there. New one per control instance, not
+        // Canceled from Shutdown() - see the remark there. New one per control instance, not
         // reset between refreshes: EnrichOwners passes overlap fine (each is its own list of
         // PIDs, guarded from double-chasing the same PID by _ownerPending), so there is never a
         // reason to cancel one early except the whole control going away.
@@ -221,7 +221,7 @@ namespace KillerShell.Tools
         /// error the first-load freeze fix already hit once: EnrichOwners'
         /// background thread can still be mid-WMI-call when the process starts tearing down, and
         /// a COM RCW finalized while another thread still has it live is exactly what that MDA
-        /// exists to catch. Cancelling here stops EnrichOwners between PIDs rather than mid-call,
+        /// exists to catch. Canceling here stops EnrichOwners between PIDs rather than mid-call,
         /// so its thread runs out naturally instead of being torn down with a live WMI wrapper on
         /// it.
         /// </summary>

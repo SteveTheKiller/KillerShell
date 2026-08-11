@@ -138,7 +138,7 @@ namespace KillerShell.Shell
         /// <summary>
         /// Shutdown() every open Storage Analyzer's control without closing the tabs
         /// themselves - called once from Session.cs OnClosing, same as the other tool tabs: a
-        /// scan's worker threads are background threads, but cancelling them here lets a
+        /// scan's worker threads are background threads, but canceling them here lets a
         /// mid-walk FindFirstFile handle close cleanly instead of being torn down.
         /// </summary>
         internal void ShutdownAllStorageAnalyzers()

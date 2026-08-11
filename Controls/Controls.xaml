@@ -87,7 +87,7 @@
         <!-- TRANSPARENT at rest. This is the family's outline button: an accent OUTLINE at rest
              that fills solid on hover. It was filled with RowSelectedBrush, which on the newer
              themes is a 27% white wash - so the Install button in the portable badge came up as
-             a milky lozenge in a colour belonging to no tier, with the accent text fighting it.
+             a milky lozenge in a color belonging to no tier, with the accent text fighting it.
              A filled rest state also leaves nowhere for hover to go. -->
         <Setter Property="Background" Value="{DynamicResource OutlineFaceBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource OutlineTextBrush}"/>
@@ -135,7 +135,7 @@
     </Style>
 
     <!-- Surface Button (secondary): fill one tier lighter than what it sits on, a dim border, and a
-         hover that dims rather than colours. Accent on hover belongs to OutlineButton and
+         hover that dims rather than colors. Accent on hover belongs to OutlineButton and
          PrimaryButton; a secondary button that lights up accent reads as the primary action. -->
     <!-- ChipFaceBrush: the pane tier on every ordinary theme, a raised #c0c0c0 Win98 button face
          on a flat one. Its hover follows ChipHoverBrush for the same reason. -->
@@ -146,7 +146,7 @@
         <Setter Property="Padding" Value="12,6"/>
         <Setter Property="BorderThickness" Value="1"/>
         <!-- ChipEdgeBrush, defaulting to PaneBorderBrush: a button sitting ON a pane takes the
-             pane's own edge colour (CardBorderBrush is #787878 on Black, which drew a bright grey
+             pane's own edge color (CardBorderBrush is #787878 on Black, which drew a bright gray
              box round every button). 98SE sets it transparent - its bevel is the edge. -->
         <Setter Property="BorderBrush" Value="{DynamicResource ChipEdgeBrush}"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -309,7 +309,7 @@
                             </ContentPresenter>
                             <!-- The drop arrow. On every ordinary theme this renders exactly the
                                  bare chevron it always was (transparent face, zero bevels, same
-                                 margin); on 98SE it becomes the era's raised grey button filling
+                                 margin); on 98SE it becomes the era's raised gray button filling
                                  the field's right edge, with Marlett's solid triangle - the
                                  dropdown button takes the gray button style. -->
                             <Grid Grid.Column="1" Margin="{DynamicResource ComboChevMargin}" MinWidth="{DynamicResource ComboButtonMinWidth}">
@@ -815,6 +815,11 @@
         <Setter Property="UseLayoutRounding" Value="True"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="HasDropShadow" Value="False"/>
+        <!-- Compensates the shadow halo so a menu lands where it did when that halo was 5 (this
+             template) or 6 (FlyoutCard). Those two differ by a pixel, so the rail flyouts sit 1px
+             off their old spot; the menus are exact. -->
+        <Setter Property="HorizontalOffset" Value="-17"/>
+        <Setter Property="VerticalOffset" Value="-13"/>
         <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -836,11 +841,13 @@
                          text options alone changed nothing (2026-08-09). Stopping the animation
                          hands the property back to this base value and the menu renders on the
                          ordinary path. -->
-                    <Grid x:Name="MenuRoot" Opacity="1" Margin="5">
-                        <!-- MenuShadow*: the same values as before on every ordinary theme
-                             (opacity follows FlyoutShadowOpacity, soft 12px blur), and a HARD
-                             offset shadow at full opacity on 98SE - Win98 context menus cast a
-                             solid drop shadow. -->
+                    <!-- Halo sized to MenuShadowEffect's 22/4: WPF expands render bounds by the FULL
+                         BlurRadius, so 22 each way, less the 4px lift off the top and plus it on the
+                         bottom. The offsets on the style above hold the card in place. -->
+                    <Grid x:Name="MenuRoot" Opacity="1" Margin="22,18,22,26">
+                        <!-- MenuShadow*: the family flyout shadow on every ordinary theme (opacity
+                             follows FlyoutShadowOpacity, 22/4 soft), and a HARD offset shadow at
+                             full opacity on 98SE - Win98 context menus cast a solid drop shadow. -->
                         <Border CornerRadius="{DynamicResource ControlCornerRadius}" Background="{TemplateBinding Background}" IsHitTestVisible="False"
                                 Opacity="{DynamicResource MenuShadowOpacity}"
                                 Effect="{DynamicResource MenuShadowEffect}">
@@ -962,13 +969,15 @@
                                        VerticalAlignment="Center" Margin="12,0,0,0"
                                        Visibility="Collapsed"/>
                             <Popup x:Name="SubPopup" AllowsTransparency="True" Placement="Right"
-                                   HorizontalOffset="-4" Focusable="False" PopupAnimation="Fade"
+                                   HorizontalOffset="-21" VerticalOffset="-13" Focusable="False" PopupAnimation="Fade"
                                    IsOpen="{TemplateBinding IsSubmenuOpen}">
-                                <!-- Mirrors the ContextMenu surface so submenus match the parent. -->
-                                <Grid Margin="5">
+                                <!-- Mirrors the ContextMenu surface so submenus match the parent.
+                                     Halo sized to the 22/4 shadow; the offsets above carry the
+                                     -17,-13 compensation (this halo grew from 5) on top of the -4 gap. -->
+                                <Grid Margin="22,18,22,26">
                                     <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource ControlCornerRadius}" IsHitTestVisible="False">
                                         <Border.Effect>
-                                            <DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="2" Direction="270" Opacity="0.5"/>
+                                            <DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.5"/>
                                         </Border.Effect>
                                     </Border>
                                     <Border Background="{DynamicResource MenuBackgroundBrush}"
@@ -1091,9 +1100,12 @@
         <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{DynamicResource PanelCornerRadius}"/>
-        <!-- Margin is the room the drop shadow renders into: a Popup clips to its own bounds,
-             so without it the shadow is cut off square. -->
-        <Setter Property="Margin" Value="6"/>
+        <!-- Margin is the room the drop shadow renders into: a Popup clips to its own bounds, so
+             anything the shadow throws past it is cut off square. Sized to FlyoutCardEffect's 22/4:
+             WPF expands render bounds by the FULL BlurRadius, so 22 each way, less the 4px lift off
+             the top and plus it on the bottom. CONSUMERS MUST COMPENSATE with
+             HorizontalOffset/VerticalOffset - see the ContextMenu style. -->
+        <Setter Property="Margin" Value="22,18,22,26"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <!-- FlyoutCardEffect: CardShadowEffect on every ordinary theme exactly as before, and a
              HARD offset shadow on 98SE - Win98 drew its menus with a solid drop shadow, so the
@@ -1314,7 +1326,7 @@
 
     <!-- Geometry and face come from the theme (ThemeManager's 98SE chrome contract), not from
          literals: 44x36 with a transparent face and a row-hover wash on every ordinary theme, and
-         a short bevelled Win98 button with a real face and no hover on a flat one. Bound, so
+         a short beveled Win98 button with a real face and no hover on a flat one. Bound, so
          98SE needs no branch and no second style. -->
     <Style x:Key="ChromeButton" TargetType="Button">
         <Setter Property="Background" Value="{DynamicResource CaptionButtonBrush}"/>
@@ -1350,7 +1362,7 @@
     <!-- Main-window close button: the WHOLE button fills danger red with a white glyph on
          hover, like KillerPDF's. The dialog close X's keep the glyph-only treatment. -->
     <!-- Inherits geometry and the bevel from ChromeButton; only the corner and the hover differ.
-         On a flat theme it is a bevelled grey button with a black glyph and NO hover fill, which
+         On a flat theme it is a beveled gray button with a black glyph and NO hover fill, which
          is how Win98 drew it - it reacted to being pressed, not hovered. -->
     <Style x:Key="ChromeCloseButton" TargetType="Button" BasedOn="{StaticResource ChromeButton}">
         <Setter Property="Foreground" Value="{DynamicResource CaptionCloseBrush}"/>
@@ -1428,7 +1440,7 @@
     <!-- Close X for the About card and the Shortcuts card. Theme-split entirely through tokens
          (AboutClose* in ThemeManager): on every ordinary theme it renders the ORIGINAL treatment
          - a bare muted U+2715 that reddens on hover, no fill - and on 98SE it is a real Win98
-         caption button: grey bevelled face, black bold E8BB, sinks on press, no hover state.
+         caption button: gray beveled face, black bold E8BB, sinks on press, no hover state.
          ChromeCloseButton was tried here first and dragged the main window's red hover fill and
          glyph onto the cards, which read wrong on the ordinary themes. -->
     <Style x:Key="OverlayCloseButton" TargetType="Button">
@@ -1763,7 +1775,7 @@
                         </Trigger>
                         <!-- SelectionBg + SelectionFg, the SAME pair the places/bookmarks rows
                              use - the tree used RowSelectedBrush, which on Delirium, Sepulchre,
-                             Malaise, Decay and Ectoplasm is a grey wash while the bookmarks
+                             Malaise, Decay and Ectoplasm is a gray wash while the bookmarks
                              below glow the accent, and the mismatch read as a bug - the tree
                              should light the accent too. One selection treatment
                              everywhere; the trees' item templates must NOT pin their own
@@ -1865,7 +1877,7 @@
     <!-- File and folder picker internals: row container, text tiers, view-toggle and
      column-header buttons, and the view templates with their panels. -->
 
-    <!-- The places / bookmarks rail. Same behaviour as PickerRow but tight: PickerRow's 8,5 padding
+    <!-- The places / bookmarks rail. Same behavior as PickerRow but tight: PickerRow's 8,5 padding
          plus 2,1 margin made each place about 28px tall around a 16px icon, so the rail showed far
          fewer entries than it had room for. Its own style, because the file list uses PickerRow for
          rows carrying three columns of detail that need the breathing room. -->
@@ -2050,7 +2062,7 @@
         </StackPanel>
     </DataTemplate>
 
-    <!-- ICONS view: 32px icon above a centred, wrapping name. Genuinely different from the
+    <!-- ICONS view: 32px icon above a centered, wrapping name. Genuinely different from the
          list view - previously both used RowTemplate and only the panel differed, which read
          as two list modes. -->
     <DataTemplate x:Key="IconTemplate">
@@ -2115,7 +2127,7 @@
         <Style.Triggers>
             <!-- GridRowAltBrush, not RowAltBrush: identical on every ordinary theme (the token
                  mirrors it), but 98SE states its own solid stripe so the Events/Processes/
-                 Registry tables read white-and-grey striped. -->
+                 Registry tables read white-and-gray striped. -->
             <Trigger Property="AlternationIndex" Value="1">
                 <Setter Property="Background" Value="{DynamicResource GridRowAltBrush}"/>
             </Trigger>
