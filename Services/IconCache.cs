@@ -36,6 +36,11 @@ namespace KillerShell.Services
             ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp"
         };
 
+        /// <summary>True when For() answers this path with a real picture thumbnail rather than a
+        /// shared file-type icon - the tiles use it to decide which art casts a drop shadow.</summary>
+        public static bool IsPhoto(string filePath, bool isDirectory)
+            => !isDirectory && ImageExtensions.Contains(System.IO.Path.GetExtension(filePath));
+
         // ── Brand icon pack (brand\icons, normalized into Resources\icons) ───────────────
         //
         // Every directory in the app is drawn from here rather than from the shell, so the tree,

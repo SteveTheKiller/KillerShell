@@ -105,7 +105,7 @@ namespace KillerShell.Shell
 
         /// <summary>
         /// The horizontal grip at the top of the strip (FilePane.xaml DetailsPaneGrip) is being
-        /// dragged. Same Thumb approach as BookmarksGrip (Bookmarks.cs) rather than a GridSplitter
+        /// dragged. Same Thumb approach as TreeResizeGrip (Shell/MainWindow.xaml) rather than a GridSplitter
         /// - the strip's Height is also the property the open/close animation drives, and a
         /// splitter would be fighting that. Dragging UP grows the strip, so the delta is
         /// subtracted: a Thumb reports downward movement as positive.
@@ -180,7 +180,7 @@ namespace KillerShell.Shell
 
         /// <summary>
         /// Clamps a strip height to the results-pane-derived ceiling and the MEASURED content
-        /// floor - the same shape as Bookmarks.ClampBookmarks, letting the floor come down to
+        /// floor - the floor bends to the ceiling, letting the floor come down to
         /// meet the ceiling on a very short window rather than forcing a height that cannot fit.
         /// </summary>
         private double ClampDetailsPaneHeight(FilePane pane, double h)

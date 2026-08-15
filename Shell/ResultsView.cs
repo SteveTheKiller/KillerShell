@@ -461,11 +461,19 @@ namespace KillerShell.Shell
             string? path = GetPath(img);
             int     size = GetSize(img);
 
-            if (string.IsNullOrEmpty(path) || size <= 0) { img.Source = null; return; }
+            if (string.IsNullOrEmpty(path) || size <= 0) { img.Source = null; img.Effect = null; return; }
 
             // Synchronous and cheap: the shell icon is cached per extension and per size, so a
             // screen of tiles costs a handful of shell calls no matter how many results there are.
             img.Source = Services.IconCache.For(path!, size, GetIsDirectory(img));
+
+            // Picture thumbnails cast a small drop shadow (prints on the surface); file-type
+            // icons stay flat. ThumbShadowEffect is built per theme (null on 98SE), so this
+            // follows a theme switch on its own - a hard-coded effect here would not.
+            if (Services.IconCache.IsPhoto(path!, GetIsDirectory(img)))
+                img.SetResourceReference(UIElement.EffectProperty, "ThumbShadowEffect");
+            else
+                img.ClearValue(UIElement.EffectProperty);
         }
     }
 

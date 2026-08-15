@@ -821,6 +821,18 @@ namespace KillerShell.Services
                     combined["DetailsNameEffect"] = nameShadow;
                 }
 
+                // Photo thumbnails in the icon views (TileArt): a small lift so pictures read as
+                // prints sitting on the surface, distinct from the flat file-type icons around
+                // them. NULL on a flat theme, same rule as every other shadow here.
+                if (flat) combined["ThumbShadowEffect"] = null;
+                else
+                {
+                    var thumbShadow = new DropShadowEffect
+                    { Color = Colors.Black, BlurRadius = 8, ShadowDepth = 3, Direction = 270, Opacity = 0.55 };
+                    thumbShadow.Freeze();
+                    combined["ThumbShadowEffect"] = thumbShadow;
+                }
+
                 // A ready-made pane shadow at this theme's opacity, or NULL on a flat theme.
                 // Built per load and FROZEN: a DynamicResource inside a shared keyed Freezable's
                 // Opacity does not reliably resolve, which is how a flat theme ended up casting a

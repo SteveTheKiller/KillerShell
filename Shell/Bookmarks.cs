@@ -43,24 +43,16 @@ namespace KillerShell.Shell
 
         private bool _bookmarksOpen;
 
-        // Whether the user has ever dragged the grip. Until they do, the drawer sizes itself to
-        // its content (Height="Auto" / NaN, ApplyBookmarksPanel) and there is nothing to
-        // compute: WPF's own layout, not a C# estimate of row heights, decides the exact pixel.
-        // Touching the grip switches it to an explicit, remembered height from then on - see
-        // BookmarksGrip_DragDelta.
-        private bool _bookmarksUserSized;
-
-        // Where the drawer opens to once the user HAS sized it. Dragged and kept, but never
-        // allowed past the content's own height - see ClampBookmarks.
-        private double _bookmarksHeight = BookmarksHeightDefault;
-
-        private const double BookmarksHeightDefault = 168;
+        // The drawer ALWAYS sizes itself to its content (up to BookmarksCeiling): the resize
+        // grip and its remembered user height were removed 2026-08-15 - the clamp made the grip
+        // undraggable in practice, and a drawer that just fits its places (returning the rest of
+        // the sidebar to the tree) is the behavior the grip's auto-fit default already had.
         private const double BookmarksHeightMin     = 90;
         // 420 was a hard stop the drawer hit long before it ran out of places to show, so a
-        // longer list could never be opened far enough to see and the grip refused to drag any
-        // higher (2026-08-09). The REAL limit is the one below it - the sidebar has to keep
-        // TreeMinVisible pixels of tree - so this only needs to be high enough to stay out of
-        // the way on a tall window; the tree's own floor is what actually protects the layout.
+        // longer list could never be opened far enough to see (2026-08-09). The REAL limit is
+        // the one below it - the sidebar has to keep TreeMinVisible pixels of tree - so this
+        // only needs to be high enough to stay out of the way on a tall window; the tree's own
+        // floor is what actually protects the layout.
         private const double BookmarksHeightMax     = 2000;
 
         // Exact row height from the item template: Border Padding="4,3" (6 total) around a
@@ -145,44 +137,12 @@ namespace KillerShell.Shell
             // instead of always coming back shut.
             _bookmarksOpen = Services.ThemeManager.GetSetting("BookmarksOpen") == "1";
 
-            _bookmarksUserSized = Services.ThemeManager.GetSetting("BookmarksUserSized") == "1";
-
-            // Invariant culture on the round trip, as with the tree width - a stored "168.5"
-            // must not become unparseable under a comma decimal separator.
-            string h = Services.ThemeManager.GetSetting("BookmarksHeight") ?? string.Empty;
-            if (double.TryParse(h, System.Globalization.NumberStyles.Float,
-                                System.Globalization.CultureInfo.InvariantCulture, out double parsed))
-                _bookmarksHeight = ClampBookmarks(parsed);
+            // BookmarksHeight / BookmarksUserSized are deliberately no longer read: the drawer
+            // auto-fits its content now (see the note at BookmarksHeightMin). Stale values a
+            // pre-grip-removal build saved are simply ignored.
 
             ApplyBookmarksPanel(animate: false);
             UpdateFavoriteStar();
-        }
-
-        // ── Resize ───────────────────────────────────────────────
-        // Dragging UP grows the drawer, so the delta is subtracted: a Thumb reports downward
-        // movement as positive.
-        private void BookmarksGrip_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
-        {
-            if (!_bookmarksOpen) return;
-
-            // Touching the grip is what turns off auto-fit - from here on the drawer keeps
-            // whatever explicit height the user leaves it at, same as before this existed.
-            _bookmarksUserSized = true;
-
-            _bookmarksHeight = ClampBookmarks(BookmarksPanel.ActualHeight - e.VerticalChange);
-
-            // Straight to the height, no tween: an animation would lag the pointer, and the
-            // open/close animation writes this same property. This also replaces whatever
-            // Height="Auto" the panel was sitting at a moment ago with a real number.
-            BookmarksPanel.BeginAnimation(FrameworkElement.HeightProperty, null);
-            BookmarksPanel.Height = _bookmarksHeight;
-        }
-
-        private void BookmarksGrip_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
-        {
-            Services.ThemeManager.SetSetting("BookmarksHeight",
-                _bookmarksHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
-            Services.ThemeManager.SetSetting("BookmarksUserSized", "1");
         }
 
         // How much room the sidebar can spare for the drawer, whatever its content needs -
@@ -199,26 +159,6 @@ namespace KillerShell.Shell
                 ceiling = Math.Min(ceiling, TreePanel.ActualHeight - TreeMinVisible);
 
             return ceiling;
-        }
-
-        /// <summary>
-        /// Clamps a USER-CHOSEN drawer height to the sidebar's ceiling and to the space the
-        /// current bookmarks actually need - the drawer can be dragged SMALLER than its
-        /// content (leaving the rest to scroll), never bigger.
-        /// </summary>
-        private double ClampBookmarks(double h)
-        {
-            double ceiling = BookmarksCeiling();
-
-            // +BookmarksBorderExtra: content is "what the list needs", h/ceiling are panel-space.
-            double content = BookmarksContentHeight();
-            if (content > 0) ceiling = Math.Min(ceiling, content + BookmarksBorderExtra);
-
-            // A handful of bookmarks can need less than the usual minimum - let the floor come
-            // down to meet the ceiling rather than forcing empty space below the last row.
-            double floor = Math.Min(BookmarksHeightMin, ceiling);
-
-            return Math.Max(floor, Math.Min(ceiling, h));
         }
 
         /// <summary>
@@ -368,40 +308,21 @@ namespace KillerShell.Shell
             // artifact that a tolerance should be swallowing.
             double panelNeeds = listNeeds + BookmarksBorderExtra;
 
-            // Once the user has sized it themselves, this only ever SHRINKS a still-too-tall
-            // drawer, never grows one they deliberately made smaller than content (the whole
-            // point of the resize grip, so a long list can scroll in a fixed space). Before
-            // that, it has to be free to move either way - the estimate ApplyBookmarksPanel
-            // animates toward can land short as easily as long, and a drawer that settled too
-            // SHORT would clip the last row rather than show extra space, which is just as
-            // wrong. A small tolerance either way so this does not fight the sub-pixel jitter a
-            // DoubleAnimation leaves behind once it lands on its target.
+            // Free to move either way - the estimate ApplyBookmarksPanel animates toward can
+            // land short as easily as long, and a drawer that settled too SHORT would clip the
+            // last row rather than show extra space, which is just as wrong.
             // Undershoot is never tolerated, even by a fraction of a pixel: a panel a hair
             // SHORT of its content clips the bottom sliver of the last row against the
             // ScrollViewer's own extent, which is exactly what read as the bottom bookmark
             // being cut off (2026-08-02) - the hover highlight's bottom edge and
             // rounded corners were the only thing making a sub-pixel gap visible. Overshoot
-            // keeps its old tolerance so this does not fight the sub-pixel jitter a
+            // keeps a small tolerance so this does not fight the sub-pixel jitter a
             // DoubleAnimation leaves behind once it lands on its target.
-            // The same rule ApplyBookmarksPanel opens by: while the content FITS the ceiling,
-            // converge on it in both directions even if the grip has been used, so the drawer
-            // ends up showing every place. Only once the content is taller than the sidebar can
-            // spare does a user-chosen height mean anything, and there this still only shrinks
-            // an over-tall drawer, never grows one the user deliberately made small.
-            bool fitsCeiling = panelNeeds <= BookmarksCeiling() + 0.5;
             double diff = BookmarksPanel.ActualHeight - panelNeeds;
-            bool needsCorrection = (_bookmarksUserSized && !fitsCeiling)
-                ? diff > 0.5
-                : (diff > 0.5 || diff < 0);
-            if (!needsCorrection) return;
+            if (diff <= 0.5 && diff >= 0) return;
 
-            _bookmarksHeight = panelNeeds;
             BookmarksPanel.BeginAnimation(FrameworkElement.HeightProperty, null);
             BookmarksPanel.Height = panelNeeds;
-
-            if (_bookmarksUserSized)
-                Services.ThemeManager.SetSetting("BookmarksHeight",
-                    _bookmarksHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -592,29 +513,18 @@ namespace KillerShell.Shell
         {
             BookmarksBtn.Tag = _bookmarksOpen ? "on" : null;
 
-            // The ceiling (sidebar space, fixed max) applies whether or not the user has sized
-            // the drawer themselves - it is what stops the drawer from growing past what the
-            // tree can spare, and stops a dragged height from exceeding it too.
+            // The ceiling (sidebar space, fixed max) is what stops the drawer from growing past
+            // what the tree can spare.
             BookmarksPanel.MaxHeight = _bookmarksOpen ? BookmarksCeiling() : double.PositiveInfinity;
-
-            // Re-clamped on every open: the window may have been resized while it was shut.
-            // Only meaningful once the user has actually dragged the grip - see _bookmarksUserSized.
-            if (_bookmarksOpen && _bookmarksUserSized) _bookmarksHeight = ClampBookmarks(_bookmarksHeight);
 
             // The estimate. CorrectBookmarksOverflow (SizeChanged-driven, so it fires on every
             // layout pass this animation produces, not just once the animation's own Completed
             // event happens to fire) is what turns this into an exact number afterward - it
             // does not depend on this guess being right, only close enough to animate toward.
-            // OPENING SHOWS EVERYTHING when everything fits, whether or not the grip has been
-            // dragged before. A saved height is only meaningful while the list is too long for
-            // the space it has - that is the case the grip exists for, letting a long list
-            // scroll inside a chosen height. When the places DO fit, restoring an old dragged
-            // height just hides rows for no reason and puts a scrollbar on a list that does not
-            // need one (2026-08-09).
+            // Opening always shows everything that fits the ceiling; a list too long for the
+            // sidebar scrolls inside it.
             double fit = BookmarksContentHeight() + BookmarksBorderExtra;
-            double target = !_bookmarksOpen ? 0
-                           : (_bookmarksUserSized && fit > BookmarksPanel.MaxHeight) ? _bookmarksHeight
-                           : Math.Min(fit, BookmarksPanel.MaxHeight);
+            double target = !_bookmarksOpen ? 0 : Math.Min(fit, BookmarksPanel.MaxHeight);
 
             if (_bookmarksOpen) BookmarksPanel.Visibility = Visibility.Visible;
 

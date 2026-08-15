@@ -123,7 +123,24 @@ namespace KillerShell.Shell
             // space needs no further escaping. A literal single quote in the path is doubled,
             // which is how PowerShell escapes one inside a single-quoted string.
             string safe = PromptScriptPath.Replace("'", "''");
-            return " -NoExit -Command \". '" + safe + "'\"";
+
+            // AFTER the script (and the $PROFILE before it) has settled on a prompt, wrap
+            // whichever function won with a cwd reporter: an OSC 9;9 per render is what lets the
+            // tab title and the shell bar follow a cd (TerminalBuffer.OscDispatch case 9 ->
+            // DirectoryChanged -> TerminalTabs). Wrapped HERE rather than inside KillerPrompt.ps1
+            // because the user's unpacked copy is never overwritten - a fix in the .ps1 would
+            // reach no existing install - and because it has to survive a fully custom prompt
+            // too. FileSystem-only: a registry or cert location must not become the tab's
+            // RootPath. No double quotes anywhere in the wrapper - it lives inside the
+            // double-quoted -Command - and [string][char]27 rather than [char]27 first, because
+            // char + multi-char string throws under PowerShell's char arithmetic.
+            const string wrap =
+                "$script:KSCwdInner = $function:prompt; " +
+                "function prompt { $q = & $script:KSCwdInner; $l = Get-Location; " +
+                "if ($l.Provider.Name -eq 'FileSystem') " +
+                "{ $q = [string][char]27 + ']9;9;' + $l.ProviderPath + [char]7 + $q }; $q }";
+
+            return " -NoExit -Command \". '" + safe + "'; " + wrap + "\"";
         }
 
         // ═══════════════════════════════════════════════════════════

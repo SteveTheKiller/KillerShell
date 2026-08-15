@@ -1237,7 +1237,7 @@
                         </Grid>
 
                         <!-- Horizontal resize grip: the STRIP's own height, not a column width.
-                             Same Thumb approach as BookmarksGrip (Shell/MainWindow.xaml) rather
+                             Same Thumb approach as TreeResizeGrip (Shell/MainWindow.xaml) rather
                              than a GridSplitter - DetailsPane.Height is also the property the
                              open/close animation drives, and a splitter would fight that. Sits on
                              the strip's TOP edge (VerticalAlignment="Top"), so dragging it resizes
