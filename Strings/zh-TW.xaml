@@ -290,6 +290,7 @@
     <sys:String x:Key="Str_TT_FoldersTop">資料夾置於檔案之上</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">加入我的最愛</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">從我的最愛移除</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">隱藏功能表列</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">顯示或隱藏已儲存的位置</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">前往已儲存的位置 1-10（0 = 第十個）</sys:String>
     <sys:String x:Key="Str_TT_Back">上一頁</sys:String>

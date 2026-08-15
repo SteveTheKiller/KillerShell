@@ -50,6 +50,7 @@
     <sys:String x:Key="Str_TT_FoldersTop">Keep folders above files</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Add to Bookmarks</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Remove from Bookmarks</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">Hide menu bar</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">show or hide bookmarks</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">go to bookmark 1-10 (0 = tenth)</sys:String>
     <sys:String x:Key="Str_TT_Back">Back</sys:String>

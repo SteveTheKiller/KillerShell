@@ -290,6 +290,7 @@
     <sys:String x:Key="Str_TT_FoldersTop">ফোল্ডার ফাইলের উপরে রাখুন</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">প্রিয় তালিকায় যোগ করুন</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">প্রিয় তালিকা থেকে সরান</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">মেনু বার লুকান</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">সংরক্ষিত অবস্থান দেখান বা লুকান</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">সংরক্ষিত অবস্থান 1-10 এ যান (0 = দশম)</sys:String>
     <sys:String x:Key="Str_TT_Back">পেছনে</sys:String>

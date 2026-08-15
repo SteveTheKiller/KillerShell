@@ -290,6 +290,7 @@
     <sys:String x:Key="Str_TT_FoldersTop">Garder les dossiers au-dessus des fichiers</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Ajouter aux favoris</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Retirer des favoris</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">Masquer la barre de menus</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">afficher ou masquer les emplacements enregistrés</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">aller à l'emplacement enregistré 1-10 (0 = dixième)</sys:String>
     <sys:String x:Key="Str_TT_Back">Précédent</sys:String>

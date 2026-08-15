@@ -31,6 +31,7 @@
     <sys:String x:Key="Str_TT_FoldersTop">Držet složky nad soubory</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Přidat k oblíbeným</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Odebrat z oblíbených</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">Skrýt panel nabídek</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">zobrazit nebo skrýt uložená místa</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">přejít na uložené místo 1-10 (0 = desáté)</sys:String>
     <sys:String x:Key="Str_TT_Back">Zpět</sys:String>

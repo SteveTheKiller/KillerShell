@@ -31,6 +31,7 @@
     <sys:String x:Key="Str_TT_FoldersTop">フォルダーをファイルより上に表示</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">お気に入りに追加</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">お気に入りから削除</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">メニューバーを非表示</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">保存した場所の表示を切り替え</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">保存した場所 1-10 へ移動 (0 = 10 番目)</sys:String>
     <sys:String x:Key="Str_TT_Back">戻る</sys:String>

@@ -290,6 +290,7 @@
     <sys:String x:Key="Str_TT_FoldersTop">Klasörleri dosyaların üstünde tut</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Favorilere ekle</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Favorilerden kaldır</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">Menü çubuğunu gizle</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">kayıtlı konumları göster veya gizle</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">kayıtlı konum 1-10'a git (0 = onuncu)</sys:String>
     <sys:String x:Key="Str_TT_Back">Geri</sys:String>

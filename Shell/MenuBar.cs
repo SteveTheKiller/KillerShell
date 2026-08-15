@@ -51,12 +51,16 @@ namespace KillerShell.Shell
             {
                 if (Services.ThemeManager.GetSetting(MenuBarKey(p)) != "1") continue;
                 p.MenuBarHidden = true;
-                SetLocationRow(p, hidden: true, animate: false);
+                ApplyMenuBar(p, animate: false);
             }
         }
 
-        /// <summary>Toggle the FOCUSED pane's menubar. Bound to F10.</summary>
+        /// <summary>Toggle the FOCUSED pane's menubar. Bound to Ctrl+F10.</summary>
         internal void ToggleMenuBar() => SetMenuBar(Pane, !Pane.MenuBarHidden, animate: true);
+
+        /// <summary>The bars' right-click "Hide menu bar" row (FilePane.xaml BarMenu). Acts on
+        /// the pane whose bar was clicked, which is not necessarily the focused one.</summary>
+        internal void HideMenuBarFor(FilePane pane) => SetMenuBar(pane, hidden: true, animate: true);
 
         /// <summary>
         /// Set one pane's menubar state. Reachable from the window so the elevated startup shell
@@ -72,11 +76,27 @@ namespace KillerShell.Shell
             // the menubar in their ordinary window the next time they started it too.
             if (persist) Services.ThemeManager.SetSetting(MenuBarKey(pane), hidden ? "1" : "0");
 
-            SetLocationRow(pane, hidden, animate);
+            ApplyMenuBar(pane, animate);
 
             // A collapsed row cannot hold keyboard focus, and leaving it there would strand the
             // caret on an invisible address box. Hand it to whatever the tab is actually showing.
             if (hidden && ReferenceEquals(pane, Pane)) FocusPaneContent();
+        }
+
+        /// <summary>
+        /// One flag, every bar: the pane's hidden state reaches whichever bar its tabs wear -
+        /// the folder location row, the shell bar, the editor bar. The rows for tab kinds that
+        /// are not currently showing sit inside collapsed hosts, so setting them too is free and
+        /// means a later tab switch comes up already matching the flag.
+        /// </summary>
+        private static void ApplyMenuBar(FilePane pane, bool animate)
+        {
+            bool hidden = pane.MenuBarHidden;
+            SetLocationRow(pane, hidden, animate);   // keeps its own listing-only guard
+            // 32 is these bars' fixed height in FilePane.xaml (matched to the location row's
+            // natural height) - the slide has to hand back exactly that, not NaN.
+            if (pane.TerminalBarRow != null) SetBarRow(pane.TerminalBarRow, hidden, animate, 32);
+            if (pane.EditorBarRow   != null) SetBarRow(pane.EditorBarRow,   hidden, animate, 32);
         }
 
         /// <summary>
@@ -97,18 +117,32 @@ namespace KillerShell.Shell
             // holds for every path that reaches the row.
             if (!WearsLocationRow(pane.Active)) hidden = true;
 
+            SetBarRow(row, hidden, animate, double.NaN);
+        }
+
+        /// <summary>
+        /// Slide any bar row shut or open. <paramref name="openHeight"/> is what the row gets
+        /// back once fully open: NaN (auto) for the location row, whose height the toolbar mode
+        /// and app scale decide, or the fixed height a bar was authored at (the shell and editor
+        /// bars' 32) - handing those NaN would let them shrink to their content and misalign the
+        /// pane's content start across tab kinds.
+        /// </summary>
+        private static void SetBarRow(FrameworkElement row, bool hidden, bool animate, double openHeight)
+        {
             if (!animate)
             {
                 row.BeginAnimation(FrameworkElement.HeightProperty, null);
-                row.Height = hidden ? 0 : double.NaN;
+                row.Height = hidden ? 0 : openHeight;
                 row.Visibility = hidden ? Visibility.Collapsed : Visibility.Visible;
                 return;
             }
 
-            // Measured, not assumed: the row's height depends on the toolbar's display mode and
-            // on the app scale, so a hard-coded number would animate to the wrong place the
-            // moment either changed.
-            double open = row.ActualHeight > 0 ? row.ActualHeight : Measured(row);
+            // A fixed-height bar animates to its authored height; the auto-sized location row is
+            // measured, not assumed - its height depends on the toolbar's display mode and on
+            // the app scale, so a hard-coded number would animate to the wrong place the moment
+            // either changed.
+            double open = !double.IsNaN(openHeight) ? openHeight
+                        : row.ActualHeight > 0 ? row.ActualHeight : Measured(row);
             var ease = new QuadraticEase { EasingMode = EasingMode.EaseOut };
             var dur  = new Duration(TimeSpan.FromMilliseconds(MenuSlideMs));
 
@@ -131,13 +165,13 @@ namespace KillerShell.Shell
 
             var openAnim = new DoubleAnimation(0, open, dur) { EasingFunction = ease };
 
-            // Hand the height back to layout at the end. Leaving the animation holding it would
-            // freeze the row at today's height, so a later toolbar reflow or scale change could
-            // not grow it.
+            // Hand the height back at the end - auto (NaN) for the location row so a later
+            // toolbar reflow or scale change can still grow it, the authored height for a fixed
+            // bar. Leaving the animation holding it would freeze the row either way.
             openAnim.Completed += (_, _) =>
             {
                 row.BeginAnimation(FrameworkElement.HeightProperty, null);
-                row.Height = double.NaN;
+                row.Height = openHeight;
             };
             row.BeginAnimation(FrameworkElement.HeightProperty, openAnim);
         }

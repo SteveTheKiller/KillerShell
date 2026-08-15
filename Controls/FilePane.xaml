@@ -22,6 +22,18 @@
                      their top corners at 45 degrees, which a CornerRadius cannot express at all.
                      Returns null when the scalar is 0, so no other theme is clipped. -->
                 <local:TabChamferConverter x:Key="TabChamferConv"/>
+
+                <!-- Right-click on any of the pane's menu bars - the folder location row, the
+                     shell bar, the editor bar. One shared instance; PlacementTarget follows
+                     whichever bar opened it. This is how the hide is DISCOVERED: Ctrl+F10 is the
+                     only way back once the bar is gone, so the gesture text here is the menu
+                     item's real payload. -->
+                <ContextMenu x:Key="BarMenu">
+                    <MenuItem Header="{DynamicResource Str_Menu_HideMenuBar}" InputGestureText="Ctrl+F10"
+                              Click="BarHideMenu_Click">
+                        <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7B3;"/></MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
             </UserControl.Resources>
 
             <Grid>
@@ -567,6 +579,7 @@
                      Square top corners are fine: PaneClip.cs clips this to the pane's radius. -->
                 <Grid x:Name="LocationRow" DockPanel.Dock="Top" SizeChanged="ToolStrip_SizeChanged"
                       Background="{DynamicResource PaneBrush}"
+                      ContextMenu="{StaticResource BarMenu}"
                       Margin="{DynamicResource BarPadding}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -1314,8 +1327,9 @@
                          tab than on a folder tab - jarring on every tab switch.
                          If ScopeBar's padding or button size ever changes, keep this
                          and the editor bar below in step. -->
-                    <Border Grid.Row="0" Height="32" Background="{DynamicResource PaneBrush}"
+                    <Border x:Name="TerminalBarRow" Grid.Row="0" Height="32" Background="{DynamicResource PaneBrush}"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
+                            ContextMenu="{StaticResource BarMenu}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}">
                         <Grid>
                             <Border IsHitTestVisible="False"
@@ -1438,8 +1452,9 @@
                          to exactly the literal it replaced, so the twelve rounded themes keep it. -->
                     <!-- Height 32 = the folder LocationRow's natural height, same as the shell bar
                          above, so the content starts at one height whatever kind of tab is up. -->
-                    <Border Grid.Row="0" Height="32" Background="{DynamicResource PaneBrush}"
+                    <Border x:Name="EditorBarRow" Grid.Row="0" Height="32" Background="{DynamicResource PaneBrush}"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
+                            ContextMenu="{StaticResource BarMenu}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}">
                         <Grid>
                             <Border IsHitTestVisible="False"
@@ -1578,6 +1593,10 @@
                                                             Padding="10,3" FontSize="11" Click="EdOptFonts_Click"/>
                                                 </StackPanel>
                                             </Border>
+                                            <!-- The grain, OVER the rows like every menu - a
+                                                 checked row's solid fill painted over it when it
+                                                 sat below the items. -->
+                                            <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
                                         </Grid>
                                     </Popup>
                                 </StackPanel>
@@ -1645,6 +1664,9 @@
                                                             Style="{StaticResource CheckRow}" Click="EdEncoding_Click"/>
                                                 </StackPanel>
                                             </Border>
+                                            <!-- The grain, OVER the rows like every menu - same
+                                                 gap as the gear popup above. -->
+                                            <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
                                         </Grid>
                                     </Popup>
                                     <TextBlock x:Name="EditorEolText" Margin="10,0,0,0"

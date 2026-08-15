@@ -290,6 +290,7 @@
     <sys:String x:Key="Str_TT_FoldersTop">Ordner über Dateien halten</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Zu Favoriten hinzufügen</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Aus Favoriten entfernen</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">Menüleiste ausblenden</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">gespeicherte Orte ein- oder ausblenden</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">zu gespeichertem Ort 1-10 springen (0 = zehnter)</sys:String>
     <sys:String x:Key="Str_TT_Back">Zurück</sys:String>

@@ -325,6 +325,12 @@ namespace KillerShell
         private void EditorEncoding_Click(object s, RoutedEventArgs e)     => Owner.EditorEncoding_Click(s, e);
         private void EdEncoding_Click(object s, RoutedEventArgs e)         => Owner.EdEncoding_Click(s, e);
 
+        // ── Menu bars (MenuBar.cs) ───────────────────────────────
+        // THIS pane, not the focused one: the right-click can land on the unfocused pane's bar,
+        // and hiding the other pane's bar in response would be exactly the cross-pane bug class
+        // the zoom box already had.
+        private void BarHideMenu_Click(object s, RoutedEventArgs e)        => Owner.HideMenuBarFor(this);
+
         // ── Shell bar (TerminalBar.cs) ───────────────────────────
         private void TermCwd_Click(object s, MouseButtonEventArgs e)       => Owner.TermCwd_Click(s, e);
         private void TermCwdBox_KeyDown(object s, KeyEventArgs e)          => Owner.TermCwdBox_KeyDown(s, e);
