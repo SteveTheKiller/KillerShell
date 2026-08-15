@@ -648,13 +648,20 @@ namespace KillerShell.Tools
             if (saved.Length == 0) return;
 
             var order = new List<MetricTile>();
-            foreach (string entry in saved.Split(['|'], StringSplitOptions.RemoveEmptyEntries))
+            foreach (string raw in saved.Split(['|'], StringSplitOptions.RemoveEmptyEntries))
             {
+                // Trailing ":s" = short graphs, parsed (and appended in SaveLayout) from the
+                // right so layouts saved before the height toggle existed still load unchanged.
+                string entry = raw;
+                bool shortGraphs = entry.EndsWith(":s", StringComparison.Ordinal);
+                if (shortGraphs) entry = entry[..^2];
+
                 int colon = entry.LastIndexOf(':');
                 string id = colon > 0 ? entry[..colon] : entry;
                 var tile = _tiles.FirstOrDefault(t => t.Id == id);
                 if (tile == null || order.Contains(tile)) continue;
 
+                tile.ShortGraphs = shortGraphs;
                 if (colon > 0 && int.TryParse(entry[(colon + 1)..], out int span))
                     tile.ColSpan = span == 2 ? 2 : 1;
                 order.Add(tile);
@@ -667,7 +674,7 @@ namespace KillerShell.Tools
 
         private void SaveLayout()
             => Services.ThemeManager.SetSetting(SetPerfLayout,
-                   string.Join("|", _tiles.Select(t => t.Id + ":" + t.ColSpan)));
+                   string.Join("|", _tiles.Select(t => t.Id + ":" + t.ColSpan + (t.ShortGraphs ? ":s" : ""))));
 
         private static TextBlock BuildGraphCaption(string key)
         {
@@ -718,7 +725,9 @@ namespace KillerShell.Tools
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             value.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
-            var stack = new StackPanel { Margin = new Thickness(0, 0, 22, 10), MinWidth = 130 };
+            // No MinWidth (the UniformGrid's equal thirds size the cells) and only a whisker of
+            // bottom margin - the strip is the last thing in the card and rides the body inset.
+            var stack = new StackPanel { Margin = new Thickness(0, 0, 12, 2) };
             stack.Children.Add(label);
             stack.Children.Add(value);
             valueBlock = value;
@@ -735,6 +744,7 @@ namespace KillerShell.Tools
             internal MetricKind Kind;
             internal string Id = "";           // stable per metric ("cpu", "disk0", ...) - the layout setting's key
             internal int ColSpan = 1;          // 1 = half row, 2 = full row; the header toggle flips it
+            internal bool ShortGraphs;         // half-height graphs; the header toggle flips it, saved per tile
             internal string Label = "";
             internal string Description = "-";
             internal Border CellBorder = null!;
@@ -886,12 +896,16 @@ namespace KillerShell.Tools
             cs.GraphArea.MouseLeftButtonDown += (_, _) => cs.GraphArea.Focus();
 
             tile.State = cs;
-            tile.FieldLabelKeys = ["Str_Perf_Utilization", "Str_Perf_LogicalProcessors", "Str_Perf_Cores", "Str_Perf_BaseSpeed"];
+            // Cores and logical processors share one field ("6C / 12T", the header's own notation),
+            // so the strip is exactly one three-across row: Utilization, Cores, Base speed.
+            tile.FieldLabelKeys = ["Str_Perf_Utilization", "Str_Perf_Cores", "Str_Perf_BaseSpeed"];
             tile.FieldValues =
             [
                 "-",
-                info.CpuThreads > 0 ? info.CpuThreads.ToString(CultureInfo.InvariantCulture) : "-",
-                info.CpuCores > 0 ? info.CpuCores.ToString(CultureInfo.InvariantCulture) : "-",
+                info.CpuCores > 0 && info.CpuThreads > 0
+                    ? info.CpuCores.ToString(CultureInfo.InvariantCulture) + "C / "
+                      + info.CpuThreads.ToString(CultureInfo.InvariantCulture) + "T"
+                    : info.CpuCores > 0 ? info.CpuCores.ToString(CultureInfo.InvariantCulture) : "-",
                 info.CpuBaseMhz > 0 ? (info.CpuBaseMhz / 1000.0).ToString("0.00", CultureInfo.InvariantCulture) + " GHz" : "-",
             ];
 
@@ -1037,6 +1051,7 @@ namespace KillerShell.Tools
             description.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             description.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
 
+            var heightBtn = BuildHeightToggle(tile);
             var widthBtn = BuildWidthToggle(tile);
 
             // Transparent Background is load-bearing: without it the Grid's empty stretches are
@@ -1046,13 +1061,16 @@ namespace KillerShell.Tools
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             SetColumn(title, 0);
             SetColumn(summary, 1);
             SetColumn(description, 2);
-            SetColumn(widthBtn, 3);
+            SetColumn(heightBtn, 3);
+            SetColumn(widthBtn, 4);
             header.Children.Add(title);
             header.Children.Add(summary);
             header.Children.Add(description);
+            header.Children.Add(heightBtn);
             header.Children.Add(widthBtn);
             WireCellDrag(header, tile);
 
@@ -1063,12 +1081,6 @@ namespace KillerShell.Tools
             {
                 var cs = (CpuState)tile.State!;
                 body.Children.Add(BuildGraphCaption("Str_Perf_Utilization"));
-                // BOTH heights, not just the area's: the Host keeps its constructed 52 unless
-                // set, and a 52px well centered in a 160px Border reads as a band of dead
-                // space above and below the graph. The area stays fixed at 160 so the
-                // per-core toggle cannot change the cell's height.
-                cs.GraphArea.Height = 160;
-                cs.AggregateGraph.Host.Height = 160;
                 body.Children.Add(cs.GraphArea);
             }
             else
@@ -1077,10 +1089,15 @@ namespace KillerShell.Tools
                 {
                     if (i < tile.GraphCaptionKeys.Length)
                         body.Children.Add(BuildGraphCaption(tile.GraphCaptionKeys[i]));
-                    tile.BigGraphs[i].Host.Height = tile.BigGraphs.Length > 1 ? 90 : 160;
                     body.Children.Add(tile.BigGraphs[i].Host);
                 }
             }
+            // One funnel for every graph height (build + the header's height toggle). BOTH CPU
+            // heights, not just the area's: the Host keeps its constructed 52 unless set, and a
+            // 52px well centered in the area's Border reads as a band of dead space above and
+            // below the graph. The area is fixed so the per-core toggle cannot change the cell's
+            // height.
+            ApplyGraphHeights(tile);
 
             if (tile.Kind == MetricKind.Network)
                 body.Children.Add(BuildLegend(("TypeWindows", "Str_Perf_Send"), ("PrimaryBrush", "Str_Perf_Receive")));
@@ -1089,7 +1106,10 @@ namespace KillerShell.Tools
             else if (tile.Kind == MetricKind.Gpu && tile.BigGraphs.Length >= 3)
                 body.Children.Add(BuildLegend(("PrimaryBrush", "Str_Perf_DedicatedMemory"), ("TypeWindows", "Str_Perf_SharedMemory")));
 
-            var fields = new WrapPanel { Margin = new Thickness(0, 10, 0, 0) };
+            // A fixed three-across strip, not a WrapPanel: equal thirds always fit one row per
+            // three fields whatever the cell width, so the strip stays one line high on every
+            // standard card instead of wrapping into a second row at half width.
+            var fields = new UniformGrid { Columns = 3, Margin = new Thickness(0, 6, 0, 0) };
             tile.FieldValueBlocks = new TextBlock[tile.FieldLabelKeys.Length];
             for (int i = 0; i < tile.FieldLabelKeys.Length; i++)
             {
@@ -1116,7 +1136,7 @@ namespace KillerShell.Tools
             // The padding moves off the Border and onto the body, because a Border's Padding
             // insets its WHOLE child - grain included - which would leave an untextured ring
             // inside the card's edge. Same on-screen inset either way.
-            body.Margin = new Thickness(14, 12, 14, 12);
+            body.Margin = new Thickness(14, 10, 14, 8);   // bottom rides on the fields' own 6px
             var cellHost = new Grid();
             cellHost.Children.Add(cellGrain);
             cellHost.Children.Add(body);
@@ -1138,6 +1158,65 @@ namespace KillerShell.Tools
             tile.CellBorder = cell;
 
             RefreshDetailFieldValues(tile);
+        }
+
+        /// <summary>Every graph height in one place, called at build and by the header's height
+        /// toggle: full graphs are 120px (70 when a tile stacks several), short ones half that.
+        /// The CPU tile sets BOTH the area and the aggregate host (see the comment at the
+        /// BuildCell call site); the per-core grid needs nothing - its hosts stretch.</summary>
+        private static void ApplyGraphHeights(MetricTile tile)
+        {
+            double single = tile.ShortGraphs ? 60 : 120;
+            double multi  = tile.ShortGraphs ? 35 : 70;
+            if (tile.Kind == MetricKind.Cpu && tile.State is CpuState cs)
+            {
+                cs.GraphArea.Height = single;
+                cs.AggregateGraph.Host.Height = single;
+                return;
+            }
+            foreach (var g in tile.BigGraphs)
+                g.Host.Height = tile.BigGraphs.Length > 1 ? multi : single;
+        }
+
+        /// <summary>
+        /// The header's graph-height toggle, the vertical sibling of BuildWidthToggle below:
+        /// E70D (shrink to half-height graphs) on a full-height cell, E70E (back to full) on a
+        /// short one. Same bare Border + glyph pattern, same hover language, saved per tile.
+        /// </summary>
+        private Border BuildHeightToggle(MetricTile tile)
+        {
+            var glyph = new TextBlock
+            {
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize = 12,
+                Text = ((char)(tile.ShortGraphs ? 0xE70E : 0xE70D)).ToString(),
+            };
+            glyph.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
+
+            var btn = new Border
+            {
+                Background = Brushes.Transparent,   // hit-testable; hover recolors the GLYPH only
+                Padding = new Thickness(5, 3, 5, 3),
+                Cursor = Cursors.Hand,
+                VerticalAlignment = VerticalAlignment.Center,
+                Child = glyph,
+            };
+            btn.SetResourceReference(FrameworkElement.ToolTipProperty, "Str_Perf_ToggleGraphHeight");
+
+            btn.MouseEnter += (_, _) => glyph.SetResourceReference(TextBlock.ForegroundProperty, "PrimaryBrush");
+            btn.MouseLeave += (_, _) => glyph.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
+
+            // Handled DOWN keeps the header's drag handler out of a toggle click.
+            btn.MouseLeftButtonDown += (_, e) => e.Handled = true;
+            btn.MouseLeftButtonUp += (_, e) =>
+            {
+                e.Handled = true;
+                tile.ShortGraphs = !tile.ShortGraphs;
+                glyph.Text = ((char)(tile.ShortGraphs ? 0xE70E : 0xE70D)).ToString();
+                ApplyGraphHeights(tile);   // row heights are Auto, so the grid reflows on its own
+                SaveLayout();
+            };
+            return btn;
         }
 
         /// <summary>
@@ -1285,8 +1364,12 @@ namespace KillerShell.Tools
             var grid = new UniformGrid();
             foreach (var g in cs.CoreGraphs)
             {
-                g.Host.Height = 50;
-                g.Host.Margin = new Thickness(2);
+                // Fill the uniform cell instead of a fixed 50px host: 12 threads at 50px + margins
+                // (3 rows of 54) overran the fixed graph area (160px at the time), so every row
+                // lost its bottom edge. Stretching lets the UniformGrid divide the area exactly,
+                // whatever the core count, and the 1px margin packs the grid tighter than the old 2px.
+                g.Host.Height = double.NaN;
+                g.Host.Margin = new Thickness(1);
                 grid.Children.Add(g.Host);
             }
             cs.CoreGrid = grid;

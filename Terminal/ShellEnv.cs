@@ -164,6 +164,48 @@ namespace KillerShell.Shell
         }
 
         // ═══════════════════════════════════════════════════════════
+        //  ENVIRONMENT REFRESH
+        // ═══════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Rebuilds this process's PATH from the Machine and User values in the registry, so a
+        /// shell spawned from here sees what a freshly launched process would.
+        ///
+        /// Called from Chrome.cs's WndProc on WM_SETTINGCHANGE("Environment"). ConPty.Launch
+        /// passes lpEnvironment as IntPtr.Zero, so a child inherits a copy of THIS process's
+        /// block; refreshing it here is what makes a new tab pick up an install without
+        /// restarting KillerShell. Shells that are already open keep the values they were born
+        /// with, which cannot be changed from out here.
+        ///
+        /// PATH is rebuilt rather than merged into: Machine then User is exactly the order
+        /// Windows composes for a new process, and reproducing it avoids accumulating stale
+        /// duplicates every time the broadcast arrives. Any process-scope entry that is in
+        /// neither registry value is therefore dropped, which is correct - nothing in
+        /// KillerShell adds one, and a leftover from an uninstalled tool should not survive.
+        /// </summary>
+        private static void RefreshEnvironmentPath()
+        {
+            try
+            {
+                string machine = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Machine) ?? "";
+                string user    = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.User) ?? "";
+
+                var seen  = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var parts = new System.Collections.Generic.List<string>();
+                foreach (string entry in (machine + ";" + user).Split(';'))
+                {
+                    string trimmed = entry.Trim();
+                    if (trimmed.Length == 0) continue;
+                    if (seen.Add(trimmed.TrimEnd('\\'))) parts.Add(trimmed);
+                }
+                if (parts.Count == 0) return;
+
+                Environment.SetEnvironmentVariable("Path", string.Join(";", parts), EnvironmentVariableTarget.Process);
+            }
+            catch { }
+        }
+
+        // ═══════════════════════════════════════════════════════════
         //  HELPERS
         // ═══════════════════════════════════════════════════════════
         // Process scope, not User or Machine: these describe THIS window and must not outlive

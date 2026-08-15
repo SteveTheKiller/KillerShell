@@ -153,8 +153,26 @@ namespace KillerShell.Shell
         // being the one other message this WndProc has to answer.
         private const int WM_COPYDATA = 0x004A;
 
+        // Broadcast by Windows when an environment variable changes at User or Machine scope,
+        // with lParam pointing at the string "Environment". A process only ever gets a COPY of
+        // the environment at launch, so without this a PATH change made after KillerShell
+        // started is invisible to it and to every shell it spawns until the app is restarted.
+        // Installing a CLI tool and finding the terminal still cannot see it is the case that
+        // matters (ShellEnv.cs, RefreshEnvironmentPath).
+        private const int WM_SETTINGCHANGE = 0x001A;
+
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            if (msg == WM_SETTINGCHANGE)
+            {
+                string? area = null;
+                try { if (lParam != IntPtr.Zero) area = Marshal.PtrToStringAuto(lParam); }
+                catch { }
+                if (string.Equals(area, "Environment", StringComparison.OrdinalIgnoreCase))
+                    RefreshEnvironmentPath();   // ShellEnv.cs
+                // Deliberately not marked handled: this is an observation, and WPF and any other
+                // hook on this window are entitled to see the broadcast too.
+            }
             if (msg == WM_ERASEBKGND)
             {
                 // KillerPDF's anti-flash trick: WPF paints the whole client area itself, so

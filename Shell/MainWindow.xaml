@@ -876,69 +876,32 @@
                                 <ContextMenu.ItemContainerStyle>
                                     <Style TargetType="MenuItem" BasedOn="{StaticResource PanelMenuItem}"/>
                                 </ContextMenu.ItemContainerStyle>
-                                <StackPanel x:Name="ThemeSubmenu" Margin="12,10,14,10">
+                                <Grid Margin="12,10,14,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                <StackPanel x:Name="ThemeSubmenu" Width="120" Grid.Column="0">
                                     <RadioButton x:Name="ThemeDarkRadio"
                                                  Content="{DynamicResource Str_Theme_Dark}"
                                                  GroupName="ThemeGroup"
                                                  Style="{StaticResource ThemeRadio}"
                                                  Checked="ThemeDarkRadio_Checked"/>
-                                    <!-- Each family's picker sits under its own theme, matching
-                                         PDF (ROYGBIV order). Height="0" + ClipToBounds so the row
-                                         can be height-animated open/closed (SlideRow,
-                                         ThemeFlyout.cs) rather than just Visibility-toggled - the
-                                         outgoing row shrinks by the same amount the incoming one
-                                         grows, so the picker slides to the selected theme and the
-                                         total menu height never jumps mid-animation. -->
-                                    <StackPanel x:Name="DarkAccentRow" Orientation="Horizontal" Margin="10,-5,0,5" Height="0" ClipToBounds="True" Visibility="Collapsed">
-                                        <Border x:Name="AccentDotRed"    Style="{StaticResource AccentDot}" Background="#DD504B" Tag="Red"    MouseLeftButtonUp="AccentDot_Click"/>
-                                        <Border x:Name="AccentDotOrange" Style="{StaticResource AccentDot}" Background="#E8962C" Tag="Orange" MouseLeftButtonUp="AccentDot_Click"/>
-                                        <Border x:Name="AccentDotGreen"  Style="{StaticResource AccentDot}" Background="#1ea54c" Tag="Green"  MouseLeftButtonUp="AccentDot_Click"/>
-                                        <Border x:Name="AccentDotTeal"   Style="{StaticResource AccentDot}" Background="#1FB8A8" Tag="Teal"   MouseLeftButtonUp="AccentDot_Click"/>
-                                        <Border x:Name="AccentDotBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDot_Click"/>
-                                        <Border x:Name="AccentDotPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDot_Click"/>
-                                    </StackPanel>
                                     <RadioButton x:Name="ThemeLightRadio"
                                                  Content="{DynamicResource Str_Theme_Light}"
                                                  GroupName="ThemeGroup"
                                                  Style="{StaticResource ThemeRadio}"
                                                  Checked="ThemeLightRadio_Checked"/>
-                                    <StackPanel x:Name="LightAccentRow" Orientation="Horizontal" Margin="10,-5,0,5" Height="0" ClipToBounds="True" Visibility="Collapsed">
-                                        <Border x:Name="AccentDotLightRed"    Style="{StaticResource AccentDot}" Background="#DD504B" Tag="Red"    MouseLeftButtonUp="AccentDotLight_Click"/>
-                                        <Border x:Name="AccentDotLightOrange" Style="{StaticResource AccentDot}" Background="#E8962C" Tag="Orange" MouseLeftButtonUp="AccentDotLight_Click"/>
-                                        <Border x:Name="AccentDotLightGreen"  Style="{StaticResource AccentDot}" Background="#1ea54c" Tag="Green"  MouseLeftButtonUp="AccentDotLight_Click"/>
-                                        <Border x:Name="AccentDotLightTeal"   Style="{StaticResource AccentDot}" Background="#1FB8A8" Tag="Teal"   MouseLeftButtonUp="AccentDotLight_Click"/>
-                                        <Border x:Name="AccentDotLightBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDotLight_Click"/>
-                                        <Border x:Name="AccentDotLightPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDotLight_Click"/>
-                                    </StackPanel>
                                     <RadioButton x:Name="ThemeHCRadio"
                                                  Content="{DynamicResource Str_Theme_Black}"
                                                  GroupName="ThemeGroup"
                                                  Style="{StaticResource ThemeRadio}"
                                                  Checked="ThemeHCRadio_Checked"/>
-                                    <StackPanel x:Name="BlackAccentRow" Orientation="Horizontal" Margin="10,-5,0,5" Height="0" ClipToBounds="True" Visibility="Collapsed">
-                                        <Border x:Name="AccentDotBlackRed"    Style="{StaticResource AccentDot}" Background="#DD504B" Tag="Red"    MouseLeftButtonUp="AccentDotBlack_Click"/>
-                                        <Border x:Name="AccentDotBlackOrange" Style="{StaticResource AccentDot}" Background="#E8962C" Tag="Orange" MouseLeftButtonUp="AccentDotBlack_Click"/>
-                                        <Border x:Name="AccentDotBlackGreen"  Style="{StaticResource AccentDot}" Background="#1ea54c" Tag="Green"  MouseLeftButtonUp="AccentDotBlack_Click"/>
-                                        <Border x:Name="AccentDotBlackTeal"   Style="{StaticResource AccentDot}" Background="#1FB8A8" Tag="Teal"   MouseLeftButtonUp="AccentDotBlack_Click"/>
-                                        <Border x:Name="AccentDotBlackBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDotBlack_Click"/>
-                                        <Border x:Name="AccentDotBlackPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDotBlack_Click"/>
-                                    </StackPanel>
-                                    <!-- 98SE is the fourth ACCENT family, so its picker row sits
-                                         under it exactly as Dark/Light/Black's do. The remaining
-                                         palettes below are single-accent and have no row. -->
                                     <RadioButton x:Name="Theme98SERadio"
                                                  Content="{DynamicResource Str_Theme_SE98}"
                                                  GroupName="ThemeGroup"
                                                  Style="{StaticResource ThemeRadio}"
                                                  Checked="Theme98SERadio_Checked"/>
-                                    <StackPanel x:Name="SE98AccentRow" Orientation="Horizontal" Margin="10,-5,0,5" Height="0" ClipToBounds="True" Visibility="Collapsed">
-                                        <Border x:Name="AccentDot98SERed"    Style="{StaticResource AccentDot}" Background="#DD504B" Tag="Red"    MouseLeftButtonUp="AccentDot98SE_Click"/>
-                                        <Border x:Name="AccentDot98SEOrange" Style="{StaticResource AccentDot}" Background="#E8962C" Tag="Orange" MouseLeftButtonUp="AccentDot98SE_Click"/>
-                                        <Border x:Name="AccentDot98SEGreen"  Style="{StaticResource AccentDot}" Background="#1ea54c" Tag="Green"  MouseLeftButtonUp="AccentDot98SE_Click"/>
-                                        <Border x:Name="AccentDot98SETeal"   Style="{StaticResource AccentDot}" Background="#1FB8A8" Tag="Teal"   MouseLeftButtonUp="AccentDot98SE_Click"/>
-                                        <Border x:Name="AccentDot98SEBlue"   Style="{StaticResource AccentDot}" Background="#50AEE8" Tag="Blue"   MouseLeftButtonUp="AccentDot98SE_Click"/>
-                                        <Border x:Name="AccentDot98SEPurple" Style="{StaticResource AccentDot}" Background="#B982E3" Tag="Purple" MouseLeftButtonUp="AccentDot98SE_Click"/>
-                                    </StackPanel>
                                     <RadioButton x:Name="ThemeBloodRadio"
                                                  Content="{DynamicResource Str_Theme_Blood}"
                                                  GroupName="ThemeGroup"
@@ -1015,6 +978,24 @@
                                         </StackPanel>
                                     </Button>
                                 </StackPanel>
+                                    <Grid x:Name="AccentStripHost" Grid.Column="1" Width="0" ClipToBounds="True">
+                                        <Border Width="1" HorizontalAlignment="Left" Margin="0,6"
+                                                Background="{DynamicResource MenuBorderBrush}"/>
+                                        <Grid x:Name="AccentStrip" Margin="10,6,2,6">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/><RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/><RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/><RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Border x:Name="AccentStripDot0" Grid.Row="0" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot1" Grid.Row="1" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot2" Grid.Row="2" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot3" Grid.Row="3" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot4" Grid.Row="4" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot5" Grid.Row="5" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
@@ -1481,18 +1462,20 @@
                            SizeChanged="StatusText_SizeChanged"/>
             </Grid>
             </Grid>
-            <!-- Portable mode indicator (hidden when installed), same as KillerScan. Centered
+            <!-- Compact portable install action (hidden when installed), matching KillerPDF. Centered
                  across the whole footer, NOT parked in a column - a column pins it next to the
                  version text. IsVisibleChanged re-runs the status elision, because the line's
                  usable width changes the moment this appears or goes away. -->
             <StackPanel x:Name="PortableBadge" Grid.ColumnSpan="2" Orientation="Horizontal"
                         HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
                         IsVisibleChanged="PortableBadge_IsVisibleChanged">
-                <TextBlock Text="{DynamicResource Str_Portable}" Foreground="{DynamicResource TextFooter}"
-                           FontFamily="Consolas" FontSize="9" VerticalAlignment="Center" Margin="0,0,8,0"/>
                 <Button x:Name="InstallBtn" Content="{DynamicResource Str_Btn_Install}" Click="Install_Click"
-                        Style="{StaticResource OutlineButton}" FontFamily="Segoe UI" FontSize="10" Padding="8,1"
-                        VerticalAlignment="Center"/>
+                        Style="{StaticResource OutlineButton}" FontFamily="{DynamicResource ChromeFontFamily}"
+                        FontSize="10" Padding="8,1" VerticalAlignment="Center">
+                    <Button.Resources>
+                        <CornerRadius x:Key="ControlCornerRadius">0</CornerRadius>
+                    </Button.Resources>
+                </Button>
             </StackPanel>
             <!-- On 98SE a status bar is a row of sunken CELLS rather than plain text on a strip,
                  so the version block gets a margin and padding of its own there. Both are 0
@@ -1581,7 +1564,7 @@
                  renders through a bitmap effect (stays ClearType-crisp), and the whole surface
                  is grain-wrapped. -->
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AboutCard_Click">
-                <Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
+                <Border Background="{DynamicResource OverlayWindowBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
                     <Border.Effect><DropShadowEffect Color="Black" BlurRadius="26" ShadowDepth="5" Direction="270"
                                                      Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 </Border>
@@ -1590,7 +1573,7 @@
                      rather than the flatter card edge used for panels sitting inside one. On
                      several palettes the two differ sharply (Ectoplasm's frame is the pink), and
                      the card was reading as unrelated to the app around it (2026-08-09). -->
-                <Border Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource AppBorderBrush}"
+                <Border Background="{DynamicResource OverlayWindowBrush}" BorderBrush="{DynamicResource AppBorderBrush}"
                         BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
                     <Grid>
                         <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
@@ -1672,7 +1655,7 @@
                                  its own border so the field text never renders through a bitmap effect
                                  (stays ClearType-crisp). Field spacing and sizes match KillerScan. -->
                             <Grid x:Name="AboutInfoGrid">
-                                <Border Background="{DynamicResource AboutPanelBrush}" CornerRadius="{DynamicResource ControlCornerRadius}" IsHitTestVisible="False">
+                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource ControlCornerRadius}" IsHitTestVisible="False">
                                     <Border.Effect><DropShadowEffect Color="Black" BlurRadius="14" ShadowDepth="2" Direction="270"
                                                                      Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                                 </Border>
@@ -2036,15 +2019,16 @@
         <!-- ══════════ SHORTCUTS OVERLAY (F1) - family standard, same chrome as the card above ══════════ -->
         <Grid x:Name="ShortcutsOverlay" Grid.RowSpan="3" Panel.ZIndex="9000" Visibility="Collapsed"
               Background="#88000000" MouseLeftButtonDown="ShortcutsOverlay_Click">
-            <!-- Width is set in code (KeyboardMapOverlay.cs ApplyShortcutView): the keyboard
-                 view needs a board's worth of room, the list does not. -->
-            <Border x:Name="ShortcutCard" Width="460" VerticalAlignment="Center" HorizontalAlignment="Center"
-                    Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                    BorderThickness="1" CornerRadius="{DynamicResource WindowCornerRadius}" MouseLeftButtonDown="ShortcutsCard_Click">
+            <!-- A large shortcuts surface is still bounded by the app window. MaxWidth is selected
+                 per view in KeyboardMapOverlay.cs; Stretch plus this inset means a narrow window
+                 shrinks the card instead of allowing a fixed 1000px board to escape its edge. -->
+            <Border x:Name="ShortcutCard" Margin="32" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                    Background="{DynamicResource OverlayWindowBrush}" BorderBrush="{DynamicResource AppBorderBrush}"
+                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" MouseLeftButtonDown="ShortcutsCard_Click">
                 <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270"
                                                  Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
-                <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <!-- Raised card bevel, the same EDGE_RAISED pair the About card carries. Nothing
                      on any theme but 98SE, where the shortcuts card becomes a hard Win98 dialog
                      box instead of a flat sheet - the shortcuts window is themed like the
@@ -2068,8 +2052,14 @@
                         HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="7"
                         Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
                         Margin="{DynamicResource AboutCloseMargin}"/>
-                <StackPanel Margin="{DynamicResource ShortcutsContentMargin}">
-                    <Grid Margin="0,0,0,12">
+                <Grid Margin="{DynamicResource ShortcutsContentMargin}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
                         <!-- Hidden on a flat theme - the caption band above carries the title
                              there, and this in-card copy would duplicate it. -->
                         <TextBlock Text="{DynamicResource Str_Help_Shortcuts}" Style="{StaticResource SectionHeader}" FontSize="13" Margin="0" VerticalAlignment="Center"
@@ -2083,7 +2073,7 @@
                          had drifted apart. Each row carries a SCOPE as well as a category, so
                          the list groups by applet and the board can show a keycap's meaning on
                          the tab you are actually on. -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,4">
                         <StackPanel.Resources>
                             <!-- Bare template: a text toggle, no panel chrome. The code-behind
                                  sets Foreground per selection, so nothing here may pin it. -->
@@ -2113,24 +2103,21 @@
                                 Style="{StaticResource KsViewToggle}" Click="KsViewKeyboard_Click"/>
                     </StackPanel>
 
-                    <!-- Scrolls, and its MaxHeight is set in code against the window's own height
-                         (ApplyShortcutView). The card is centered with no height of its own, so
-                         once the list outgrew the window the overflow was simply clipped and the
-                         last group silently lost rows - which is exactly how the VIEW group came
-                         to show only its first line.
+                    <!-- The star row is the viewport. It takes whatever height remains inside the
+                         window-bounded card, and this viewer owns every excess row.
                          Both hosts filled in code: BuildShortcutsList (ShortcutsOverlay.cs) and
                          BuildKeyboardView (KeyboardMapOverlay.cs), each once and lazily. -->
-                    <ScrollViewer x:Name="ShortcutScroll" VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled" Focusable="False">
+                    <ScrollViewer x:Name="ShortcutScroll" Grid.Row="2" VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly" Focusable="False">
                     <StackPanel>
                         <StackPanel x:Name="ShortcutListHost"/>
                         <StackPanel x:Name="ShortcutKeyboardHost" Visibility="Collapsed"/>
                     </StackPanel>
                     </ScrollViewer>
 
-                    <TextBlock Text="{DynamicResource Str_Ks_Hint}" Foreground="{DynamicResource DimTextBrush}"
+                    <TextBlock Grid.Row="3" Text="{DynamicResource Str_Ks_Hint}" Foreground="{DynamicResource DimTextBrush}"
                                FontSize="10.5" TextWrapping="Wrap" Margin="0,10,0,0"/>
-                </StackPanel>
+                </Grid>
                 </Grid>
             </Border>
         </Grid>

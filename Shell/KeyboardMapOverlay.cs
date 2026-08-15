@@ -154,15 +154,10 @@ namespace KillerShell.Shell
             ShortcutListHost.Visibility     = keyboard ? Visibility.Collapsed : Visibility.Visible;
             ShortcutKeyboardHost.Visibility = keyboard ? Visibility.Visible : Visibility.Collapsed;
 
-            // Each view sets its own width: a board's worth for the keyboard, two columns' worth
-            // for the list. Neither is the other's size.
-            ShortcutCard.Width = keyboard ? 1000 : 780;
-
-            // Height comes from the WINDOW, not from the content. The card is centered and has
-            // no height of its own, so a list taller than the window was simply clipped and the
-            // last group lost rows with nothing to say so. 150 covers the card's own chrome:
-            // title row, the LIST / KEYBOARD toggle, the hint line and the margins.
-            ShortcutScroll.MaxHeight = Math.Max(200, ActualHeight - 150);
+            // This is a preferred maximum, never a rendered fixed width. MainWindow.xaml stretches
+            // the card inside a 32px window inset, so a narrow app makes the board scale down rather
+            // than positioning part of the card outside the window.
+            ShortcutCard.MaxWidth = keyboard ? 1000 : 780;
 
             KsViewListBtn.SetResourceReference(ForegroundProperty,     keyboard ? "MutedTextBrush" : "PrimaryBrush");
             KsViewKeyboardBtn.SetResourceReference(ForegroundProperty, keyboard ? "PrimaryBrush" : "MutedTextBrush");

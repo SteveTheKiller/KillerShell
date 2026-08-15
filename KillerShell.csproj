@@ -168,14 +168,6 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- Everything this project compiles lives INSIDE this repo. KillerUI is a reference for the
-       design language, not a build input: its palettes were copied into Themes\KillerUI and its
-       theme contract into Services. This used to Import ..\KillerUI\KillerUI.ThemeAssets.props,
-       which linked the palettes in from a sibling folder outside the repo - so a clone did not
-       build, the GPL source zip was incomplete, and KillerShell silently rode whatever state the
-       kit happened to be in. It had drifted badly: eight of the thirteen palettes differed from
-       the ones actually in use, Blood worst of all, still on the old white accent months after it
-       moved to the warm peach.
-       KillerNotes is the reference now; its vendored copies are the ones here. SDK-style globbing
-       picks the .xaml up as Page items with no entries needed. -->
+  <!-- Every build input, including each complete theme dictionary, lives in this repository.
+       SDK-style globbing picks the XAML up as Page items without explicit entries. -->
 </Project>

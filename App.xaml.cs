@@ -37,7 +37,7 @@ namespace KillerShell
         /// than per-theme - there is no way to flip it at runtime - but the other twelve themes
         /// pass SelectionTextBrush as TextBrush, so the non-adorner path renders them identically.
         ///
-        /// Themes/KillerUI/98SE.xaml has documented this switch since the theme landed; the code
+        /// Themes/98SE.xaml has documented this switch since the theme landed; the code
         /// to set it was never written, which is the whole bug.
         /// </summary>
         static App()

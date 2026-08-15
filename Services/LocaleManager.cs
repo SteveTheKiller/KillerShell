@@ -9,7 +9,7 @@ namespace KillerShell.Services
     //
     // Append new members at the END: the value is persisted by NAME, not by ordinal, but keeping
     // the order stable also keeps the language menu's order stable.
-    public enum Locale { EnUS, Es, ZhTW, ZhCN, Bn, TrTR, De, Fr, Ja, Cs }
+    public enum Locale { EnUS, Es, ZhTW, ZhCN, Bn, TrTR, De, Fr, Ja, Cs, PlPL }
 
     public static class LocaleManager
     {
@@ -61,6 +61,7 @@ namespace KillerShell.Services
                 Locale.De   => new Uri("pack://application:,,,/Strings/de-DE.xaml"),
                 Locale.Ja   => new Uri("pack://application:,,,/Strings/ja-JP.xaml"),
                 Locale.Cs   => new Uri("pack://application:,,,/Strings/cs-CZ.xaml"),
+                Locale.PlPL => new Uri("pack://application:,,,/Strings/pl-PL.xaml"),
                 _           => null,   // English: base only
             };
 

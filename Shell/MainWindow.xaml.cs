@@ -35,7 +35,7 @@ namespace KillerShell.Shell
             ApplyGrainTexture();                                 // Chrome.cs
             Loaded += (_, _) => FadeInContent();                 // Chrome.cs
             UpdateThemeSwatchSelection();                        // ThemeFlyout.cs
-            UpdateAccentSwatches();
+            UpdateAccentStrip(animate: false);
             SyncTitleBarMetrics();                               // Chrome.cs
             // ApplyPaneMargins rides along: the pane's window-edge inset is PaneOuterMargin's RIGHT
             // now (8 by default, 0 on 98SE), so without re-running it a theme switch left the old
@@ -56,7 +56,7 @@ namespace KillerShell.Shell
             _iconPackFlat = FlatChrome;   // Chrome.cs
             Services.ThemeManager.ThemeChanged += () =>
             {
-                UpdateThemeSwatchSelection(); UpdateAccentSwatches(); SyncTitleBarMetrics();
+                UpdateThemeSwatchSelection(); UpdateAccentStrip(animate: false); SyncTitleBarMetrics();
                 ApplyPaneMargins(); LeftPane?.RefreshPaneClip(); RightPane?.RefreshPaneClip();
                 // Timed so one theme click prints this next to CrossfadeSwap's heavy work and the
                 // slow half of the pause before the fade can be identified instead of guessed at

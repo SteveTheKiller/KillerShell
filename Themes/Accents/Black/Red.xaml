@@ -9,9 +9,6 @@
     <SolidColorBrush x:Key="OutlineBtnBrush"     Color="#FF2929" po:Freeze="True"/>
     <SolidColorBrush x:Key="ScrollThumbHoverBrush" Color="#FF2929" po:Freeze="True"/>
     <SolidColorBrush x:Key="RowSelectedBrush"    Color="#330909" po:Freeze="True"/>
-    <!-- Selection fill + its text. Split from RowSelectedBrush so the light family can
-         use the darker shared KillerUI accent fill with white text without
-         dragging the button pressed-states dark with it. -->
     <SolidColorBrush x:Key="SelectionBg"        Color="#330909" po:Freeze="True"/>
     <SolidColorBrush x:Key="SelectionFg"        Color="#ffffff" po:Freeze="True"/>
     <SolidColorBrush x:Key="OutlinePressedBrush" Color="#330909" po:Freeze="True"/>

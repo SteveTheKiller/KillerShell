@@ -16,11 +16,10 @@ namespace KillerShell.Services
     public enum Accent { Green, Red, Blue, Purple, Orange, Teal }
 
     /// <summary>
-    /// KillerUI / Grunge theme engine. Swaps the palette dictionary (MergedDictionaries[0]) in
+    /// Swaps the app-owned palette dictionary (MergedDictionaries[0]) in
     /// place at runtime; control styles bind brushes via DynamicResource so an in-place per-key
     /// update repaints everything. Persistence is pluggable (wire GetSetting/SetSetting at startup).
-    /// Requires Themes/{Theme}.xaml at [0]. Shared trademark tokens are overlaid from
-    /// the linked KillerUI contract; local dictionaries hold product-specific resources.
+    /// Requires a complete Themes/{Theme}.xaml dictionary at [0].
     /// </summary>
     public static class ThemeManager
     {
@@ -170,15 +169,14 @@ namespace KillerShell.Services
             // huge lag on theme switch, nowhere near KillerPDF's instant swap. Confirmed as
             // reproducing even with zero terminal/editor tabs open, which ruled out
             // RefreshTerminalThemes/RefreshEditorThemes and pointed straight at this loop.
-            // ThemeFileName, never theme.ToString(): the 98SE palette, its KillerUI half and its
-            // accent folder are all named for the digits, which the enum member cannot be.
+            // ThemeFileName, never theme.ToString(): the 98SE palette and accent folder are both
+            // named for the digits, which the enum member cannot be.
             string name = ThemeFileName(theme);
 
             var combined = new ResourceDictionary();
             var newDict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/Themes/{name}.xaml") };
             foreach (object key in newDict.Keys)
                 combined[key] = newDict[key];
-            KillerThemeContract.Apply(combined, name);
 
             var accent = AccentFor(theme);
             if (HasAccents(theme) && accent != Accent.Green)
@@ -226,7 +224,6 @@ namespace KillerShell.Services
                 }
 
             SetIfAbsent("AboutCaptionMargin", new Thickness(0));
-            Mirror("AboutPanelBrush", "PaneBrush");
             // TRANSPARENT with zero thickness: no ordinary theme draws a lifted edge on its bars.
             // Mirroring PaneBorderBrush would have been harmless only because the thickness is 0,
             // which is the kind of accident that breaks the moment someone changes the thickness.
@@ -808,10 +805,10 @@ namespace KillerShell.Services
                 combined["ElevationEdgeBrush"] = flat ? combined["PrimaryBrush"] : combined["WindowEdgeBrush"];
                 combined["ElevationEdgeThickness"] = flat ? new Thickness(2) : combined["WindowEdgeThickness"];
 
-                // The Shortcuts card's content inset: the 24,20 it always had, plus top room for
-                // the caption band on a flat theme.
-                combined["ShortcutsContentMargin"] = flat ? new Thickness(24, 28, 24, 20)
-                                                          : new Thickness(24, 20, 24, 20);
+                // KillerScan is the family reference for overlay-card padding. The flat theme's
+                // extra 12px clears its 20px caption band; ordinary themes use the bare-card inset.
+                combined["ShortcutsContentMargin"] = flat ? new Thickness(24, 30, 24, 20)
+                                                          : new Thickness(24, 18, 24, 18);
 
                 // The details filename's family drop shadow - null on a flat theme, which casts
                 // nothing (its 98SE depth comes from the hard white emboss copy instead).
@@ -962,6 +959,10 @@ namespace KillerShell.Services
             // black) still wins, since this only fills a gap.
             if (!combined.Contains("OutlineHoverTextBrush"))
                 combined["OutlineHoverTextBrush"] = combined["OnOutlineBtnBrush"];
+
+            // About and Keyboard Shortcuts use the app's outer window surface verbatim. Assign
+            // after every palette/accent merge so gradient brushes remain gradients.
+            combined["OverlayWindowBrush"] = combined["BackgroundBrush"];
 
             // Null-guarded (CS8602): Application.Current is null during design time and unit
             // hosting, and the nullable analysis flags the bare dereference. Nothing to merge

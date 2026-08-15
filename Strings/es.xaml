@@ -85,7 +85,7 @@
 
     <!-- Portable install + quit dialog -->
     <sys:String x:Key="Str_Portable">PORTÁTIL</sys:String>
-    <sys:String x:Key="Str_Btn_Install">Instalar KillerShell...</sys:String>
+    <sys:String x:Key="Str_Btn_Install">Instalar KillerShell</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Instalar</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">¿Instalar KillerShell en tu perfil de usuario?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">- Acceso directo en el menú Inicio&#x0A;- Aparece en Agregar o quitar programas</sys:String>

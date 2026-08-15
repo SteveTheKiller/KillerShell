@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Win32;
 
 namespace KillerShell.Shell
 {
@@ -38,16 +39,19 @@ namespace KillerShell.Shell
 
         public ObservableCollection<FolderNode> Children { get; } = [];
 
-        public FolderNode(string path, string name, bool mayHaveChildren)
+        public FolderNode(string path, string name, bool mayHaveChildren, bool isDrive = false)
         {
             Path = path;
             Name = name;
+            IsDrive = isDrive;
             if (mayHaveChildren) Children.Add(Placeholder);
         }
 
         public FolderNode(DriveInfo d)
         {
-            Path    = d.RootDirectory.FullName;
+            // DriveInfo.RootDirectory can touch an unavailable volume. Name is already the
+            // normalized root ("D:\\") and stays readable for sleeping disks and mapped drives.
+            Path    = d.Name;
             IsDrive = true;
             Name    = DriveLabel(d);
             Children.Add(Placeholder);
@@ -70,6 +74,7 @@ namespace KillerShell.Shell
             }
             catch (IOException) { }
             catch (UnauthorizedAccessException) { }
+            catch (System.Security.SecurityException) { }
             return letter;
         }
 
@@ -280,12 +285,11 @@ namespace KillerShell.Shell
 
         private void TreeHidden_Click(object sender, RoutedEventArgs e) => ToggleTreeHidden();
 
-        // Ready drives only. An empty optical drive or a dropped mapping would otherwise sit
-        // there as a node that throws the moment anyone touches it.
+        // C: first, then every other Windows volume, then mapped/network roots. The collection is
+        // reconciled in place so reopening the sidebar can discover a newly attached drive
+        // without collapsing every branch the user already had open.
         private void LoadDriveRoots()
         {
-            _treeRoots.Clear();
-
             // Demo mode roots the tree at the fabricated machine (DemoFileSystem.cs) so a capture
             // never shows the real volumes, and so the tree, the browse listings and the search
             // results all describe one place. Branched HERE rather than refilled after the fact:
@@ -293,28 +297,96 @@ namespace KillerShell.Shell
             // filling would leave them working from whichever version won.
             if (DemoMode)
             {
+                _treeRoots.Clear();
                 foreach (var root in Services.DemoFs.Drives)
-                    _treeRoots.Add(new FolderNode(root, Services.DemoFs.DriveLabel(root), mayHaveChildren: true));
+                    _treeRoots.Add(new FolderNode(root, Services.DemoFs.DriveLabel(root),
+                                                  mayHaveChildren: true, isDrive: true));
                 return;
             }
 
-            DriveInfo[] drives;
-            try { drives = DriveInfo.GetDrives(); }
-            catch (IOException) { return; }
+            var wanted = new List<FolderNode>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var d in drives)
+            try
             {
-                bool ready;
-                try { ready = d.IsReady; }
-                catch (IOException) { continue; }
-                catch (UnauthorizedAccessException) { continue; }
-                if (ready) _treeRoots.Add(new FolderNode(d));
+                // Do not gate this on IsReady. Windows already decided these are logical drives;
+                // probing the volume here is what made secondary and network roots disappear.
+                foreach (var d in DriveInfo.GetDrives())
+                {
+                    try
+                    {
+                        var node = new FolderNode(d);
+                        if (seen.Add(node.Path)) wanted.Add(node);
+                    }
+                    catch (IOException) { }
+                    catch (UnauthorizedAccessException) { }
+                }
+            }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+
+            // Elevated Windows processes can lose the ordinary user's mapped drive letters
+            // because the two tokens have separate device maps. Explorer records persistent
+            // mappings under HKCU\Network, so fall back to their UNC target when a letter did
+            // not appear above. This keeps a connected share reachable instead of merely naming
+            // a drive letter that does not exist in this token.
+            try
+            {
+                using var network = Registry.CurrentUser.OpenSubKey("Network");
+                foreach (string letter in network?.GetSubKeyNames() ?? Array.Empty<string>())
+                {
+                    using var mapping = network!.OpenSubKey(letter);
+                    string remote = mapping?.GetValue("RemotePath") as string ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(remote)) continue;
+
+                    string local = letter.TrimEnd(':') + @":\";
+                    if (seen.Contains(local)) continue;
+
+                    string path = Directory.Exists(local) ? local : remote.TrimEnd('\\');
+                    if (!seen.Add(path)) continue;
+
+                    string share = path.TrimEnd('\\');
+                    int slash = share.LastIndexOf('\\');
+                    if (slash >= 0 && slash + 1 < share.Length) share = share[(slash + 1)..];
+                    if (share.Length == 0) share = remote;
+
+                    wanted.Add(new FolderNode(path, $"{share} ({letter.TrimEnd(':')}:)",
+                                              mayHaveChildren: true, isDrive: true));
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+            catch (IOException) { }
+            catch (System.Security.SecurityException) { }
+
+            string systemRoot = Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\";
+            wanted = wanted
+                .OrderBy(n => string.Equals(n.Path, systemRoot, StringComparison.OrdinalIgnoreCase) ? 0
+                            : n.Path.StartsWith(@"\\", StringComparison.Ordinal) ? 2 : 1)
+                .ThenBy(n => n.Path, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var wantedPaths = new HashSet<string>(wanted.Select(n => n.Path),
+                                                  StringComparer.OrdinalIgnoreCase);
+            for (int i = _treeRoots.Count - 1; i >= 0; i--)
+                if (!wantedPaths.Contains(_treeRoots[i].Path)) _treeRoots.RemoveAt(i);
+
+            for (int i = 0; i < wanted.Count; i++)
+            {
+                var existing = _treeRoots.FirstOrDefault(
+                    n => string.Equals(n.Path, wanted[i].Path, StringComparison.OrdinalIgnoreCase));
+                if (existing == null) _treeRoots.Insert(i, wanted[i]);
+                else
+                {
+                    int at = _treeRoots.IndexOf(existing);
+                    if (at != i) _treeRoots.Move(at, i);
+                }
             }
         }
 
         /// <summary>Re-enumerates every already-loaded node, keeping expansion state.</summary>
         internal async Task RefreshTreeAsync()
         {
+            LoadDriveRoots();
             foreach (var r in _treeRoots.ToList()) await r.RefreshAsync();
         }
 

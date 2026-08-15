@@ -9,49 +9,42 @@
     <!-- Text-stroke shadows behind button labels (nulled on Light). -->
     <DropShadowEffect x:Key="TextStroke"     Color="Black" BlurRadius="3" ShadowDepth="0.8" Direction="270" Opacity="0.7"/>
     <DropShadowEffect x:Key="TextStrokeSoft" Color="Black" BlurRadius="2" ShadowDepth="0.6" Direction="270" Opacity="0.45"/>
-
-    <!-- KillerShell additions for the shared KillerUI BLOOD theme.
-         Primary = HeaderAccent so the accent reads as color, not the white base Accent. -->
-    <SolidColorBrush x:Key="PrimaryBrush"        Color="#e8485a" po:Freeze="True"/>
-    <SolidColorBrush x:Key="PrimaryHoverBrush"   Color="#e8485a" po:Freeze="True"/>
-    <SolidColorBrush x:Key="PrimaryPressedBrush" Color="#e8485a" po:Freeze="True"/>
-    <SolidColorBrush x:Key="HeaderLineBrush"     Color="#8f3640" po:Freeze="True"/>
-    <SolidColorBrush x:Key="OnPrimaryBrush"      Color="#2a1012" po:Freeze="True"/>
-    <SolidColorBrush x:Key="OutlineBtnBrush"     Color="#f8c99e" po:Freeze="True"/>
-    <SolidColorBrush x:Key="InputHoverBrush"     Color="#8a6e6a" po:Freeze="True"/>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="#f8c99e" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#f8c99e" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="PrimaryPressedBrush" Color="#f8c99e" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="HeaderLineBrush" Color="#e8485a" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="OnPrimaryBrush" Color="#2c1012" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="OutlineBtnBrush" Color="#f8c99e" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="InputHoverBrush" Color="#a8434f" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
     <SolidColorBrush x:Key="TextFooter"          Color="#a85a5a" po:Freeze="True"/>
 
-    <SolidColorBrush x:Key="BackgroundBrush"     Color="#240c0d" po:Freeze="True"/>
-    <SolidColorBrush x:Key="SurfaceBrush"        Color="#2c1012" po:Freeze="True"/>
-    <SolidColorBrush x:Key="PaneBrush"           Color="#321416" po:Freeze="True"/>
-    <SolidColorBrush x:Key="TableHeaderBrush"    Color="#2c1012" po:Freeze="True"/>
-    <SolidColorBrush x:Key="CardBorderBrush"     Color="#401d1d" po:Freeze="True"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#240c0d" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#2c1012" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="PaneBrush" Color="#401d21" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="TableHeaderBrush" Color="#2c1012" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="CardBorderBrush" Color="#401d1d" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
     <SolidColorBrush x:Key="TreeLineBrush"       Color="#552626" po:Freeze="True"/>
     <SolidColorBrush x:Key="WarnBrush"           Color="#e8b45c" po:Freeze="True"/>
     <!-- Status dot "all fine" - see Dark.xaml. Warmed slightly to sit with this palette. -->
     <SolidColorBrush x:Key="OkBrush"             Color="#5cb85c" po:Freeze="True"/>
-    <SolidColorBrush x:Key="PaneBorderBrush"     Color="#401d1d" po:Freeze="True"/>
+    <SolidColorBrush x:Key="PaneBorderBrush" Color="#633030" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
-    <SolidColorBrush x:Key="TextBrush"           Color="#fffde8" po:Freeze="True"/>
-    <SolidColorBrush x:Key="MutedTextBrush"      Color="#f8c99e" po:Freeze="True"/>
-    <SolidColorBrush x:Key="ChromeTextBrush"     Color="#fbdcbc" po:Freeze="True"/>
-    <SolidColorBrush x:Key="DimTextBrush"        Color="#e2b58a" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TextBrush" Color="#fffde8" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="MutedTextBrush" Color="#f8c99e" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="ChromeTextBrush" Color="#e8cfc2" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="DimTextBrush" Color="#e2b58a" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
-    <SolidColorBrush x:Key="RowAltBrush"         Color="#18FFFFFF" po:Freeze="True"/>
-    <SolidColorBrush x:Key="RowHoverBrush"       Color="#54201f" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RowAltBrush" Color="#18FFFFFF" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="RowHoverBrush" Color="#54201f" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
     <SolidColorBrush x:Key="RowSelectedBrush"    Color="#44ffffff" po:Freeze="True"/>
-    <!-- Selection fill + its text. Split from RowSelectedBrush so the light family can
-         use the darker shared KillerUI accent fill with white text without
-         dragging the button pressed-states dark with it. -->
-    <SolidColorBrush x:Key="SelectionBg"        Color="#44ffffff" po:Freeze="True"/>
-    <SolidColorBrush x:Key="SelectionFg"        Color="#e8485a" po:Freeze="True"/>
+    <SolidColorBrush x:Key="SelectionBg" Color="#44f8c99e" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="SelectionFg" Color="#ffffff" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
-    <SolidColorBrush x:Key="InputBorderBrush"    Color="#401d1d" po:Freeze="True"/>
-    <!-- Menu surface compatibility defaults; KillerUI overlays the authoritative values. -->
-    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#1e0a0b" po:Freeze="True"/>
-    <SolidColorBrush x:Key="MenuBorderBrush"     Color="#4a2429" po:Freeze="True"/>
+    <SolidColorBrush x:Key="InputBorderBrush" Color="#633030" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#1e0a0b" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="MenuBorderBrush" Color="#633030" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
     <SolidColorBrush x:Key="MenuTextBrush"       Color="#f8c99e" po:Freeze="True"/>
-    <SolidColorBrush x:Key="MenuHoverBrush"      Color="#54201f" po:Freeze="True"/>
+    <SolidColorBrush x:Key="MenuHoverBrush" Color="#54201f" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
     <SolidColorBrush x:Key="OutlinePressedBrush" Color="#44ffffff" po:Freeze="True"/>
     <SolidColorBrush x:Key="ScrollThumbBrush"    Color="#aaf8c99e" po:Freeze="True"/>
     <!-- Resting accent edge - see Dark.xaml. -->
@@ -83,5 +76,21 @@
     <SolidColorBrush x:Key="KsCatEdit"      Color="#ff2975" po:Freeze="True"/>
     <SolidColorBrush x:Key="KsCatTabs"      Color="#ffd319" po:Freeze="True"/>
     <SolidColorBrush x:Key="KsCatHelp"      Color="#39ff14" po:Freeze="True"/>
+
+    <CornerRadius x:Key="WindowCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">7</CornerRadius>
+
+    <CornerRadius x:Key="PanelCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">6</CornerRadius>
+
+    <CornerRadius x:Key="ControlCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">4</CornerRadius>
+
+    <CornerRadius x:Key="SmallCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">3</CornerRadius>
+
+    <CornerRadius x:Key="FlyoutCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,0,4,4</CornerRadius>
+
+    <CornerRadius x:Key="AccentSwatchCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">9</CornerRadius>
+
+    <SolidColorBrush x:Key="TitleBarBrush" Color="#240c0d" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+
+    <SolidColorBrush x:Key="AppBorderBrush" Color="#401d1d" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
 </ResourceDictionary>

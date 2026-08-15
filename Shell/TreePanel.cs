@@ -180,6 +180,7 @@ namespace KillerShell.Shell
         internal void ToggleTreePanel()
         {
             _treeOpen = !_treeOpen;
+            if (_treeOpen) LoadDriveRoots();
             ApplyTreePanel(animate: true);
             Services.ThemeManager.SetSetting("TreePanelOpen", _treeOpen ? "1" : "0");
 

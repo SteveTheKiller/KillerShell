@@ -1829,7 +1829,7 @@
                         BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
                 <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"
                         Visibility="{Binding Visibility, ElementName=ResultsList}"/>
-                <ListBox x:Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="8,4,8,0" Focusable="False"
+                <ListBox x:Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="8,4,8,0" Focusable="True"
                          FocusVisualStyle="{x:Null}" SelectionMode="Extended"
                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                          VirtualizingPanel.ScrollUnit="Pixel"

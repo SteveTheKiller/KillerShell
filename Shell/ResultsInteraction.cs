@@ -51,6 +51,16 @@ namespace KillerShell.Shell
         private ListBoxItem?  _dragSeedItem; // its container, kept for a late re-resolve - see StartFileDrag
         private bool        _marqueeAdditive;
 
+        // The selection as it stood at press-down, before the ListBox got the click.
+        //
+        // A ListBox collapses a multi-selection to the single clicked row on mouse-DOWN, so by
+        // the time the move threshold is cleared and StartFileDrag runs, SelectedItems holds one
+        // item and the other rows in the selection are gone. Reading the selection at drag time
+        // therefore dragged exactly one file however many were highlighted. This runs in
+        // PreviewMouseLeftButtonDown, ahead of that collapse, which is the only moment the full
+        // selection is still there. See FilesForDrag.
+        private List<SearchResult>? _dragSelection;
+
         // Which pane a drag-out started from, captured in StartFileDrag while that pane still
         // has real focus. Only the ACTIVE tab is watched for filesystem changes
         // (BrowseWatcher.cs), and Window_Drop switches focus to the DROP pane before the move
@@ -63,17 +73,26 @@ namespace KillerShell.Shell
 
         internal void ResultsList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _pressAt      = e.GetPosition(Pane.ResultsList);
-            _marqueeOn    = false;
-            _dragArmed    = false;
-            _dragSeed     = null;
-            _dragSeedItem = null;
+            _pressAt       = e.GetPosition(Pane.ResultsList);
+            _marqueeOn     = false;
+            _dragArmed     = false;
+            _dragSeed      = null;
+            _dragSeedItem  = null;
+            _dragSelection = null;
 
             // The scrollbar is not a row, so it used to fall through to the marquee branch
             // below - which captures the mouse and leaves the scrollbar with nothing to drag.
             // Clicking or dragging it did nothing at all. It is not "empty space" either; it is
             // the one piece of chrome inside this control that owns its own clicks.
             if (InScrollBar(e.OriginalSource as DependencyObject)) return;
+
+            // File shortcuts are deliberately gated on the listing owning keyboard focus, so
+            // Delete/F2/Ctrl+C cannot act on a stale selection while the address bar, tree, or a
+            // tool tab has the keyboard. The list used to be Focusable=False, which made that
+            // safety gate impossible to satisfy: a mouse-selected row looked active but Delete
+            // silently did nothing. Put focus where the click says it belongs before resolving
+            // the row or starting a marquee.
+            Pane.ResultsList.Focus();
 
             var item = ItemUnder(e.OriginalSource as DependencyObject);
             DragTrace($"PressDown: OriginalSource={e.OriginalSource?.GetType().Name}, item={(item == null ? "NULL (marquee branch)" : "found (drag-armed)")}");
@@ -84,6 +103,8 @@ namespace KillerShell.Shell
                 _dragArmed    = true;
                 _dragSeedItem = item;
                 _dragSeed     = DataFor(item);
+                // Before the ListBox collapses it - see the field comment.
+                _dragSelection = [.. Pane.ResultsList.SelectedItems.OfType<SearchResult>()];
                 DragTrace($"PressDown: seed={(_dragSeed == null ? "NULL (would have failed the old DataContext read too)" : _dragSeed.FilePath)}");
                 return;
             }
@@ -253,6 +274,25 @@ namespace KillerShell.Shell
             return seed != null ? [seed.FilePath] : [];
         }
 
+        /// <summary>
+        /// What a drag-out should carry. Uses the selection captured at press-down rather than
+        /// the live one, which by drag time has collapsed to the single pressed row.
+        ///
+        /// Explorer's rule, and the one reproduced here: dragging a row that was part of the
+        /// selection drags the whole selection; dragging a row that was not drags only that row.
+        /// </summary>
+        private List<string> FilesForDrag()
+        {
+            var snapshot = _dragSelection;
+
+            if (_dragSeed != null && snapshot != null && snapshot.Contains(_dragSeed))
+                return [.. snapshot.Select(r => r.FilePath)];
+
+            if (_dragSeed != null) return [_dragSeed.FilePath];
+
+            return snapshot != null ? [.. snapshot.Select(r => r.FilePath)] : [];
+        }
+
         private void StartFileDrag()
         {
             // Captured before anything about focus can change - see the field comment.
@@ -271,8 +311,8 @@ namespace KillerShell.Shell
             bool fromArchive = InArchive(Pane);
 
             var paths = fromArchive
-                ? ExtractForDragOut(FilesForCommand(_dragSeed))
-                : [.. FilesForCommand(_dragSeed).Where(File.Exists)];
+                ? ExtractForDragOut(FilesForDrag())
+                : [.. FilesForDrag().Where(File.Exists)];
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: seed={_dragSeed?.FilePath ?? "null"}, resolvedPaths={paths.Length}");
             if (paths.Length == 0) return;
 
