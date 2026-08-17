@@ -67,7 +67,7 @@ It is one portable exe. No runtime, no agent, no account. Drop it on a machine t
 - F1 opens a shortcuts card that lists every gesture as both a grouped list and a visual keyboard, with layer buttons for the Ctrl / Shift / Alt maps and a live preview when you hold a real modifier
 - Tabs: each tab is an independent search, a folder, a terminal or a document; drag to reorder, optionally restored on the next launch. New tabs open in the pane you are looking at, and once they would get too narrow to read the strip keeps as many as fit and a chevron lists the rest
 - Three toolbars, one per kind of tab, so a document is not carrying a folder listing's sort and view buttons
-- Thirteen killer themes with live accent colors, including a full Windows 98 recreation with its own icon set; UI localized in 10 languages
+- Thirteen killer themes, four of them (Dark, Light, Black and 98SE) with six live accent colors each for 33 looks in all, including a full Windows 98 recreation with its own icon set; UI localized in 10 languages
 - App-wide accessibility zoom: roll the wheel over the wordmark to resize everything between 70% and 250%
 - Run portable, or install for just you or for every user on the PC (`/silent` installs machine-wide for winget/RMM)
 
