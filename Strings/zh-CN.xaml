@@ -92,7 +92,7 @@
     <sys:String x:Key="Str_Chk_Desktop">桌面快捷方式</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">为所有用户安装（需要管理员权限）</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell 已为本电脑上的所有用户安装，因此将更新该副本。Windows 将请求授权。</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">安装已取消</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">安装已取消</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">退出 KillerShell？</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">记住我打开的标签页</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">记住我的选择</sys:String>
@@ -752,4 +752,46 @@
     <sys:String x:Key="Str_Theme_Delirium">谵妄</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">倦怠</sys:String>
 
+    <sys:String x:Key="Str_Menu_OpenInNewTab">在新标签页中打开</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">在树中显示或隐藏隐藏项目和点文件夹</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">切换全宽 — 拖动标题可重新排列单元格</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">切换图表高度</sys:String>
+    <!-- 存储分析器 -->
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">分析存储空间</sys:String>
+    <sys:String x:Key="Str_TT_Storage">存储分析器  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">存储分析器</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">存储分析器</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">存储分析器（管理员扫描）</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">存储分析器</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">存储分析器，管理员扫描</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">开始扫描（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">切换树状图深度（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">切换显示的最小大小（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">切换按类型或文件夹着色（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">放大所选文件夹（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">缩小一级（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">返回扫描根目录（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">将所选项目移到回收站（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">扫描</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">停止</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">选择要扫描的文件夹或驱动器</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">选择文件夹或驱动器，然后开始扫描</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">该文件夹不存在</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">扫描已停止 — 正在显示已读取的内容</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">已跳过</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">在新标签页中打开</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">在文件资源管理器中打开</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">复制路径</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">删除（回收站）</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">重新扫描</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">按文件类型着色</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">按顶层文件夹着色</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">深度</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">全部</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">拥有独立矩形的文件夹层数 — 数值越小，图中越集中显示大文件夹</sys:String>
+    <sys:String x:Key="Str_Storage_Min">最小</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">全部</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">隐藏小于此大小的项目 — 其字节仍计入所在文件夹</sys:String>
+    <sys:String x:Key="Str_Storage_Total">总计</sys:String>
+    <sys:String x:Key="Str_Storage_Free">可用</sys:String>
 </ResourceDictionary>

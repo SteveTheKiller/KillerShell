@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading;
 
 // Writing INSIDE an archive: add, delete and rename entries. Pure, the same way
@@ -308,6 +309,60 @@ namespace KillerShell.Services
                            adds, result, ct);
         }
 
+        // ── New folder ──────────────────────────────────────────
+        /// <summary>Creates an explicit empty-directory entry in a ZIP. A stored entry is
+        /// required even when neighboring folders are merely implied by their child paths.</summary>
+        internal static ArchiveWriteResult CreateFolder(string archivePath, string entryFolder,
+                                                        string newName,
+                                                        Action<int, int, string>? progress,
+                                                        CancellationToken ct)
+        {
+            var result = new ArchiveWriteResult();
+            if (!Precheck(archivePath, result)) return result;
+            if (!IsLegalLeafName(newName))
+            {
+                result.ErrorKey = "Str_Status_ArchiveBadName";
+                return result;
+            }
+
+            string? parent = SafeEntryName(entryFolder);
+            string? full = SafeEntryName((string.IsNullOrEmpty(parent) ? "" : parent + "/")
+                                         + newName.Trim());
+            if (full == null)
+            {
+                result.ErrorKey = "Str_Status_ArchiveBadName";
+                return result;
+            }
+
+            try
+            {
+                var existing = ExistingNames(archivePath);
+                if (existing.Contains(full)
+                    || existing.Any(n => n.StartsWith(full + "/", StringComparison.OrdinalIgnoreCase)))
+                {
+                    result.ErrorKey = "Str_Status_ArchiveNameTaken";
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.ErrorKey = "Str_Status_ArchiveWriteFailed";
+                result.ErrorDetail = ex.Message;
+                return result;
+            }
+
+            var adds = new List<ArchiveAddItem>
+            {
+                new ArchiveAddItem { EntryName = full + "/" },
+            };
+            if (Rebuild(archivePath, raw => raw, adds, progress, ct, result))
+            {
+                result.Ok = true;
+                result.Changed = 1;
+            }
+            return result;
+        }
+
         // ── Delete ───────────────────────────────────────────────
         /// <summary>
         /// Removes entries. A folder path removes everything beneath it, because a folder inside
@@ -499,7 +554,7 @@ namespace KillerShell.Services
 
                         using (var input  = e.Open())
                         using (var output = ne.Open())
-                            input.CopyTo(output, CopyBuffer);
+                            CopyStream(input, output, ct);
                         written++;
                     }
 
@@ -525,7 +580,7 @@ namespace KillerShell.Services
                         using (var input = new FileStream(a.SourcePath, FileMode.Open, FileAccess.Read,
                                                           FileShare.ReadWrite, CopyBuffer))
                         using (var output = ne.Open())
-                            input.CopyTo(output, CopyBuffer);
+                            CopyStream(input, output, ct);
                         written++;
                     }
                 }
@@ -595,6 +650,21 @@ namespace KillerShell.Services
         private static void TryDelete(string path)
         {
             try { if (File.Exists(path)) File.Delete(path); } catch { }
+        }
+
+        /// <summary>CopyTo cannot observe cancellation while one multi-gigabyte entry is being
+        /// recompressed. Check between every buffer so Cancel has bounded response time even
+        /// when an archive contains only one enormous file.</summary>
+        private static void CopyStream(Stream input, Stream output, CancellationToken ct)
+        {
+            var buffer = new byte[CopyBuffer];
+            while (true)
+            {
+                ct.ThrowIfCancellationRequested();
+                int read = input.Read(buffer, 0, buffer.Length);
+                if (read == 0) return;
+                output.Write(buffer, 0, read);
+            }
         }
 
         private static void CopyTime(ZipArchiveEntry dst, ZipArchiveEntry src)

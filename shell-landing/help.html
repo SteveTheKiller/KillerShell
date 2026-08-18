@@ -15,6 +15,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
 <script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
 <link rel="stylesheet" href="ks.css?v=8">
+<link rel="stylesheet" href="palettes.generated.css?v=1">
 <style>
 .content-inner { max-width: 880px; margin: 0 auto; padding: 0 28px 56px; }
 .help-hero { text-align: center; padding: 44px 16px 6px; }
@@ -135,6 +136,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <button class="lang-item" data-lang="es">Espanol</button>
 <button class="lang-item" data-lang="fr">Francais</button>
 <button class="lang-item" data-lang="ja">&#26085;&#26412;&#35486;</button>
+<button class="lang-item" data-lang="pl">Polski</button>
 <button class="lang-item" data-lang="tr">Turkce</button>
 <button class="lang-item" data-lang="zh-cn">&#20013;&#25991; (&#31616;&#20307;)</button>
 <button class="lang-item" data-lang="zh">&#20013;&#25991; (&#32321;&#39636;)</button>
@@ -532,7 +534,44 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <script src="ks-i18n.js?v=2"></script>
+<script src="shortcuts.generated.js?v=1"></script>
 <script src="ks.js?v=2"></script>
+<script>
+/* Replace the checked-in fallback with the table generated from the app's KsAll source. */
+(function () {
+  var host = document.getElementById('ksListView'), rows = window.KS_SHORTCUTS;
+  if (!host || !Array.isArray(rows)) return;
+  var scopeNames = { Global:'Everywhere', Files:'File browser', Terminal:'Terminal',
+    Editor:'Editor', Processes:'Processes / Services', Events:'Event Viewer',
+    Registry:'Registry Editor', Storage:'Storage Analyzer' };
+  var scopeOrder = ['Global','Files','Terminal','Editor','Processes','Events','Registry','Storage'];
+  var catOrder = ['Search','Nav','Tabs','View','File','Edit','Help'];
+  host.textContent = '';
+  scopeOrder.forEach(function (scope) {
+    var scoped = rows.filter(function (r) { return r.scope === scope; });
+    if (!scoped.length) return;
+    var heading = document.createElement('h3'); heading.className = 'kbd-scope';
+    heading.textContent = scopeNames[scope] || scope; host.appendChild(heading);
+    var cols = document.createElement('div'); cols.className = 'kbd-cols';
+    var col = document.createElement('div'); col.className = 'kbd-col'; cols.appendChild(col);
+    catOrder.forEach(function (cat) {
+      var grouped = scoped.filter(function (r) { return r.category === cat; });
+      if (!grouped.length) return;
+      var group = document.createElement('div'); group.className = 'kbd-group';
+      var title = document.createElement('h4'); title.textContent = cat === 'Nav' ? 'NAVIGATION' : cat === 'Edit' ? 'EDITING' : cat.toUpperCase();
+      group.appendChild(title);
+      grouped.forEach(function (binding) {
+        var row = document.createElement('div'); row.className = 'kbd-row';
+        var key = document.createElement('span'); key.className = 'k'; key.textContent = binding.keys;
+        var desc = document.createElement('span'); desc.className = 'd'; desc.textContent = binding.label;
+        row.appendChild(key); row.appendChild(desc); group.appendChild(row);
+      });
+      col.appendChild(group);
+    });
+    host.appendChild(cols);
+  });
+})();
+</script>
 <script>
 (function(){
   var items=[].slice.call(document.querySelectorAll('.acc-item'));

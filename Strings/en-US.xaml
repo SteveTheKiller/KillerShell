@@ -135,7 +135,7 @@
     <sys:String x:Key="Str_Chk_Desktop">Desktop shortcut</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Install for all users (Admin required)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell is already installed for all users on this PC, so this will update that copy. Windows will ask for permission.</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">Install canceled</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Install canceled</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateMsg">Download and install KillerShell {0}?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateBullets">The app will close and reopen automatically.</sys:String>
     <sys:String x:Key="Str_Btn_Update">Update</sys:String>

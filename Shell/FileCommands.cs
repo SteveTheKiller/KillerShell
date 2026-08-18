@@ -301,6 +301,8 @@ namespace KillerShell.Shell
 
         internal void NewFolderHere()
         {
+            if (ArchiveTarget(out _, out _)) { _ = ArchiveNewFolder(); return; }
+
             string? target = TargetFolder();
             if (target == null) { SetTabStatusKey(_active, "Str_Status_PasteNeedsFolder"); return; }
 

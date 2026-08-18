@@ -518,8 +518,41 @@ namespace KillerShell
         // Uninstall
         // ============================================================
 
+        private static bool RelaunchMachineUninstallElevatedIfNeeded(bool machine)
+        {
+            if (!machine) return false;
+            try
+            {
+                using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+                var principal = new System.Security.Principal.WindowsPrincipal(identity);
+                if (principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator))
+                    return false;
+
+                Process.Start(new ProcessStartInfo(
+                    Process.GetCurrentProcess().MainModule!.FileName, "/uninstall")
+                {
+                    UseShellExecute = true,
+                    Verb = "runas",
+                });
+            }
+            catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223)
+            {
+                // UAC was declined. Leave the installation untouched.
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Uninstall could not request administrator access:\n{ex.Message}",
+                    AppName, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return true;
+        }
+
         private static void Uninstall()
         {
+            bool machine = string.Equals(Process.GetCurrentProcess().MainModule?.FileName,
+                                         MachineInstallExe, StringComparison.OrdinalIgnoreCase);
+            if (RelaunchMachineUninstallElevatedIfNeeded(machine)) return;
+
             var res = MessageBox.Show(
                 "Uninstall KillerShell from this computer?",
                 $"{AppName} Uninstall",
@@ -527,9 +560,13 @@ namespace KillerShell
                 MessageBoxImage.Question);
             if (res != MessageBoxResult.Yes) return;
 
-            try { File.Delete(StartMenuLnk); } catch { }
-            try { Directory.Delete(StartMenuDir, recursive: false); } catch { }
-            try { File.Delete(DesktopLnk); } catch { }
+            string startMenuDir = machine
+                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), AppName)
+                : StartMenuDir;
+            string targetDir = machine ? MachineInstallDir : InstallDir;
+            try { File.Delete(Path.Combine(startMenuDir, $"{AppName}.lnk")); } catch { }
+            try { Directory.Delete(startMenuDir, recursive: false); } catch { }
+            if (!machine) try { File.Delete(DesktopLnk); } catch { }
 
             // Associations first, while the keys they hang off still exist. Both scopes are
             // attempted: the HKLM half is a no-op unless this uninstall was launched elevated
@@ -538,9 +575,11 @@ namespace KillerShell
             UnregisterAssociations(machine: false);
             UnregisterAssociations(machine: true);
 
-            try { Registry.CurrentUser.DeleteSubKeyTree(RegKey); } catch { }
-            try { Registry.CurrentUser.DeleteSubKeyTree(
-                @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell"); } catch { }
+            var hive = machine ? Registry.LocalMachine : Registry.CurrentUser;
+            try { hive.DeleteSubKeyTree(RegKey, throwOnMissingSubKey: false); } catch { }
+            try { hive.DeleteSubKeyTree(
+                @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell",
+                throwOnMissingSubKey: false); } catch { }
 
             SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
 
@@ -549,7 +588,7 @@ namespace KillerShell
             File.WriteAllText(bat,
                 "@echo off\r\n" +
                 "ping -n 3 127.0.0.1 >nul\r\n" +
-                $"rmdir /s /q \"{InstallDir}\"\r\n" +
+                $"rmdir /s /q \"{targetDir}\"\r\n" +
                 "del \"%~f0\"\r\n");
             Process.Start(new ProcessStartInfo("cmd.exe", $"/c \"{bat}\"")
             {

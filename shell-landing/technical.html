@@ -15,6 +15,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
 <script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
 <link rel="stylesheet" href="ks.css?v=8">
+<link rel="stylesheet" href="palettes.generated.css?v=1">
 <style>
 .page-hero { text-align: center; padding: 44px 16px 8px; }
 .page-hero .wm-logo { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
@@ -81,6 +82,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <button class="lang-item" data-lang="es">Espanol</button>
 <button class="lang-item" data-lang="fr">Francais</button>
 <button class="lang-item" data-lang="ja">&#26085;&#26412;&#35486;</button>
+<button class="lang-item" data-lang="pl">Polski</button>
 <button class="lang-item" data-lang="tr">Turkce</button>
 <button class="lang-item" data-lang="zh-cn">&#20013;&#25991; (&#31616;&#20307;)</button>
 <button class="lang-item" data-lang="zh">&#20013;&#25991; (&#32321;&#39636;)</button>
@@ -245,6 +247,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <h3 id="archives-paths">Why the separator is a question mark</h3>
 <p>A location inside an archive is one string: the archive's own path, a separator, then the path within it, so a tab, a bookmark and the address bar go on treating a location as a single string. The question mark is the only character that satisfies both rules. It has to be illegal in a Windows <i>filename</i>, or a virtual path could collide with a real file; and it has to be legal to <code>System.IO.Path</code>, because these paths flow through <code>Path.GetExtension</code> all over the app. <code>&gt;</code> and <code>|</code> pass the first and fail the second, so <code>GetExtension</code> throws - which killed every icon inside an archive the first time this was built.</p>
+<p>Extraction treats every entry path as hostile. Archive paths are normalized to forward slashes with <code>.</code> and <code>..</code> segments removed before they reach the browser, and opening an entry deliberately keeps only its leaf filename. That leaf is written inside a new randomly named temporary folder rather than combining the archive's directory path with a destination. A crafted entry such as <code>..\..\Startup\payload.exe</code> therefore becomes an ordinary <code>payload.exe</code> in KillerShell's temporary extraction area instead of escaping it and overwriting something elsewhere on the machine - the Zip Slip attack.</p>
 
 <h3 id="archives-writing">Writing: zip only, never in place</h3>
 <p>A .zip is writable: add by drag or paste, rename, delete. Tar, .tar.gz, .tgz and .gz are read-only deliberately - the tar reader models regular files and directories only, so a rebuild would silently drop links, devices, FIFOs and sparse members, and a lone .gz holds one unnamed member, so "add a second file" has no representation in the format. A refused write says which refusal it was on the status bar; it never no-ops and never half-writes.</p>

@@ -90,6 +90,9 @@ namespace KillerShell.Editing
         {
             FilePath = path;
 
+            // Keep the first glyph off the pane edge. This is intentionally tighter than the
+            // padding on form fields; the editor should still read as a working surface.
+            Padding = new Thickness(4, 0, 0, 0);
             Options.AllowScrollBelowDocument = true;
 
             // Font, wrap, line numbers, indent and whitespace all come from one place, so the

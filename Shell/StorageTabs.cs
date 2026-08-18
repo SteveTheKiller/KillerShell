@@ -88,6 +88,7 @@ namespace KillerShell.Shell
                 // Storage tab never can be.
                 OpenFolderInNewTab = path => { ActivateTab(CreateTab()); _ = NavigateTo(path); },
             };
+            storage.ExportRequested = () => ExportStorageAnalyzer(tab, storage);
             tab.Storage    = storage;
             tab.TabGlyph   = StorageGlyph;
             tab.Title      = Loc("Str_TabTitle_Storage");

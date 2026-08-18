@@ -25,6 +25,7 @@ namespace KillerShell.Terminal
 {
     internal sealed partial class TerminalControl : FrameworkElement
     {
+        private const double LeftInset = 4;
         // Control characters are built from CODEPOINTS, the same convention the MDL2 glyphs
         // elsewhere in this project use. A literal escape byte in a string is invisible in an
         // editor, cannot be grepped, and does not survive an encoding round trip.
@@ -91,7 +92,7 @@ namespace KillerShell.Terminal
         /// Pixel width <paramref name="cols"/> columns need at the current font. Zero until the
         /// typeface has resolved, so callers must treat 0 as "not ready".
         /// </summary>
-        public double WidthForColumns(int cols) => cols * _cellW;
+        public double WidthForColumns(int cols) => LeftInset + cols * _cellW;
 
         public void SetFontSize(double size)
         {
@@ -484,7 +485,7 @@ namespace KillerShell.Terminal
         private void ApplySize()
         {
             if (_cellW <= 0 || _cellH <= 0) return;
-            int cols = Math.Max(1, (int)(ActualWidth / _cellW));
+            int cols = Math.Max(1, (int)(Math.Max(0, ActualWidth - LeftInset) / _cellW));
             int rows = Math.Max(1, (int)(ActualHeight / _cellH));
 
             if (cols != _buf.Cols || rows != _buf.Rows)
@@ -545,6 +546,7 @@ namespace KillerShell.Terminal
             if (_glyphs == null) return;
 
             int first = Math.Max(0, _buf.ScrollbackCount - _scroll);
+            dc.PushTransform(new TranslateTransform(LeftInset, 0));
 
             for (int r = 0; r < _buf.Rows; r++)
             {
@@ -556,6 +558,7 @@ namespace KillerShell.Terminal
 
             DrawSelection(dc, first);   // TerminalSelection.cs
             DrawCursor(dc);
+            dc.Pop();
 
             if (_palette.Scanlines) DrawScanlines(dc);
         }

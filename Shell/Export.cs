@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using KillerShell.Tools;
 
 // Export: CSV for spreadsheets, HTML for the styled report (HtmlExporter.cs builds
 // the report itself). Partial of MainWindow. Column headers stay English
@@ -96,6 +97,35 @@ namespace KillerShell.Shell
                 {
                     SetTabStatusKey(tab, "Str_Status_ExportFailed", ex.Message);
                 }
+            }
+        }
+
+        private void ExportStorageAnalyzer(Models.SearchTab tab, StorageAnalyzerControl storage)
+        {
+            var report = storage.CreateReport();
+            if (report == null)
+            {
+                SetTabStatusKey(tab, "Str_Status_NothingExport");
+                return;
+            }
+
+            var dlg = new FileDialog(FileDialogMode.Save)
+            {
+                Filter = "HTML Files|*.html",
+                FileName = $"KillerShell-Storage-{DateTime.Now:yyyyMMdd-HHmmss}.html",
+                Title = "Save storage report as HTML"
+            };
+            if (dlg.ShowDialog(this) != true) return;
+
+            try
+            {
+                new Services.StorageHtmlExporter().Export(dlg.FileName, report);
+                SetTabStatusKey(tab, "Str_Status_Exported", dlg.FileName);
+                System.Diagnostics.Process.Start(dlg.FileName);
+            }
+            catch (Exception ex)
+            {
+                SetTabStatusKey(tab, "Str_Status_ExportFailed", ex.Message);
             }
         }
     }

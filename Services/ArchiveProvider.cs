@@ -538,6 +538,68 @@ namespace KillerShell.Services
             }
         }
 
+        /// <summary>Recreates one archive subtree under a private temp directory for CF_HDROP
+        /// drag-out. Listing supplies only normalized child paths, and every destination is
+        /// containment-checked before it is created.</summary>
+        internal static string? ExtractFolderToTemp(string archivePath, string entryPath,
+                                                    out string? error)
+        {
+            error = null;
+            string rootEntry = Normalize(entryPath);
+            string leaf = Path.GetFileName(rootEntry.Replace('/', Path.DirectorySeparatorChar));
+            if (rootEntry.Length == 0 || leaf.Length == 0) { error = "no folder name"; return null; }
+
+            string stage = Path.Combine(Path.GetTempPath(), "KillerShell", "archive",
+                                        Guid.NewGuid().ToString("N")[..8]);
+            string root = Path.Combine(stage, leaf);
+            try
+            {
+                Directory.CreateDirectory(root);
+                if (!ExtractFolderChildren(archivePath, rootEntry, root, out error))
+                    throw new IOException(error ?? "could not extract folder");
+                return root;
+            }
+            catch (Exception ex)
+            {
+                error ??= ex.Message;
+                try { if (Directory.Exists(stage)) Directory.Delete(stage, recursive: true); } catch { }
+                return null;
+            }
+        }
+
+        private static bool ExtractFolderChildren(string archivePath, string entryPath,
+                                                  string destination, out string? error)
+        {
+            var children = List(archivePath, entryPath, out error);
+            if (error != null) return false;
+
+            string root = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar)
+                          + Path.DirectorySeparatorChar;
+            foreach (var child in children)
+            {
+                string target = Path.GetFullPath(Path.Combine(destination, child.Name));
+                if (!target.StartsWith(root, StringComparison.OrdinalIgnoreCase))
+                {
+                    error = "entry escaped extraction folder";
+                    return false;
+                }
+
+                if (child.IsDirectory)
+                {
+                    Directory.CreateDirectory(target);
+                    if (!ExtractFolderChildren(archivePath, child.EntryPath, target, out error))
+                        return false;
+                }
+                else
+                {
+                    string? temp = ExtractToTemp(archivePath, child.EntryPath, out error);
+                    if (temp == null) return false;
+                    File.Copy(temp, target, overwrite: true);
+                }
+            }
+            return true;
+        }
+
         private static bool ExtractFromTar(string archivePath, string entryPath, string dest)
         {
             string want = entryPath.Trim('/');

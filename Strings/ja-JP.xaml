@@ -111,7 +111,7 @@
     <sys:String x:Key="Str_Chk_Desktop">デスクトップにショートカット</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">すべてのユーザーにインストール (管理者権限が必要)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell はこの PC にすべてのユーザー向けでインストール済みのため、そのコピーが更新されます。Windows が許可を求めます。</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">インストールを中止しました</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">インストールを中止しました</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell を終了しますか?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">開いているタブを記憶する</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">この選択を記憶する</sys:String>
@@ -751,4 +751,46 @@
     <sys:String x:Key="Str_Theme_Delirium">デリリウム</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">マレーズ</sys:String>
 
+    <sys:String x:Key="Str_Menu_OpenInNewTab">新しいタブで開く</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">ツリーの隠し項目とドットフォルダーの表示を切り替える</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">全幅表示を切り替え — ヘッダーをドラッグしてセルを並べ替え</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">グラフの高さを切り替え</sys:String>
+    <!-- ストレージ分析 -->
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">ストレージを分析</sys:String>
+    <sys:String x:Key="Str_TT_Storage">ストレージ分析  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">ストレージ分析</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">ストレージ分析</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">ストレージ分析（管理者スキャン）</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">ストレージ分析</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">ストレージ分析、管理者スキャン</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">スキャンを開始（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">ツリーマップの深さを切り替え（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">表示する最小サイズを切り替え（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">種類別／フォルダー別の色分けを切り替え（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">選択したフォルダーにズーム（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">1 階層戻る（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">スキャンのルートに戻る（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">選択項目をごみ箱へ移動（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">スキャン</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">停止</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">スキャンするフォルダーまたはドライブを選択</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">フォルダーまたはドライブを選択して、スキャンを開始してください</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">そのフォルダーは存在しません</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">スキャンを停止しました — 読み取った内容を表示しています</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">スキップ</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">新しいタブで開く</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">エクスプローラーで開く</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">パスをコピー</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">削除（ごみ箱）</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">再スキャン</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">ファイルの種類で色分け</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">最上位フォルダーで色分け</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">深さ</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">すべて</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">個別の長方形を表示するフォルダー階層数 — 小さい値ほど大きなフォルダーだけの表示になります</sys:String>
+    <sys:String x:Key="Str_Storage_Min">最小</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">すべて</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">これより小さい項目を非表示 — 容量は親フォルダーの合計に含まれます</sys:String>
+    <sys:String x:Key="Str_Storage_Total">合計</sys:String>
+    <sys:String x:Key="Str_Storage_Free">空き</sys:String>
 </ResourceDictionary>

@@ -72,9 +72,11 @@ namespace KillerShell.Tools
         /// resized the target box beside it - status text belongs in the status bar.
         /// </summary>
         internal Action<string>? ReportStatus;
+        internal Action? ExportRequested;
         private readonly TreemapSurface _map;
         private readonly TextBlock _footerLeft;
         private readonly TextBlock _footerRight;
+        private readonly Border _categoryLegend;
 
         // Color mode, persisted app-wide: "cat" = by extension category, "folder" = by
         // top-level folder hue. Toggled from the toolbar pair or the map's context menu.
@@ -147,6 +149,7 @@ namespace KillerShell.Tools
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            bar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             _targetBox = new TextBox
             {
@@ -209,10 +212,21 @@ namespace KillerShell.Tools
 
             SetColumn(viewGroup, 3);
 
+            var export = new Button
+            {
+                Width = 26, Height = 24, Margin = new Thickness(6, 0, 0, 0),
+                Content = ((char)0xEDE1).ToString()
+            };
+            export.SetResourceReference(FrameworkElement.StyleProperty, "ViewToggleBtn");
+            export.SetResourceReference(ToolTipProperty, "Str_Btn_Export");
+            export.Click += (_, _) => ExportRequested?.Invoke();
+            SetColumn(export, 4);
+
             bar.Children.Add(_targetBox);
             bar.Children.Add(browse);
             bar.Children.Add(_scanBtn);
             bar.Children.Add(viewGroup);
+            bar.Children.Add(export);
             SetRow(bar, 0);
             Children.Add(bar);
 
@@ -241,6 +255,9 @@ namespace KillerShell.Tools
             var mapArea = new Grid();
             mapArea.SetResourceReference(MarginProperty, "MonitorGridMargin");
             mapArea.Children.Add(mapWell);
+            _categoryLegend = BuildCategoryLegend();
+            Panel.SetZIndex(_categoryLegend, 4);
+            mapArea.Children.Add(_categoryLegend);
             void AddBevel(string brushKey, string thickKey, bool inner)
             {
                 var b = new Border { IsHitTestVisible = false };
@@ -537,6 +554,7 @@ namespace KillerShell.Tools
 
             SyncToggle(_colorTypeBtn, !_colorByFolder);
             SyncToggle(_colorFolderBtn, _colorByFolder);
+            _categoryLegend.Visibility = _colorByFolder ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private static void SyncFilter(Border b, TextBlock badge, bool active, string value)
@@ -1036,17 +1054,48 @@ namespace KillerShell.Tools
             int dot = fileName.LastIndexOf('.');
             if (dot >= 0 && dot < fileName.Length - 1) ext = fileName[(dot + 1)..];
             ExtCategory.TryGetValue(ext, out string? cat);
-            return cat switch
+            string key = cat ?? "oth";
+            return CachedBrush(key, CategoryColor(key));
+        }
+
+        private static Color CategoryColor(string key) => key switch
+        {
+            "img"  => Color.FromRgb(0xF2, 0x22, 0xFF),
+            "vid"  => Color.FromRgb(0x8C, 0x1E, 0xFF),
+            "aud"  => Color.FromRgb(0x00, 0xC8, 0xC3),
+            "doc"  => Color.FromRgb(0xFF, 0xD3, 0x19),
+            "arc"  => Color.FromRgb(0xFF, 0x8C, 0x00),
+            "code" => Color.FromRgb(0x39, 0xC8, 0x14),
+            "sys"  => Color.FromRgb(0xC8, 0x3C, 0x38),
+            _      => Color.FromRgb(0x6E, 0x6E, 0x6E),
+        };
+
+        private static Border BuildCategoryLegend()
+        {
+            var row = new WrapPanel { Margin = new Thickness(7, 4, 7, 4) };
+            foreach (var item in new[] { ("img", ".jpg"), ("vid", ".mp4"), ("aud", ".mp3"),
+                         ("doc", ".pdf"), ("arc", ".zip"), ("code", ".cs"),
+                         ("sys", ".exe"), ("oth", "...") })
             {
-                "img"  => CachedBrush("img",  Color.FromRgb(0xF2, 0x22, 0xFF)),
-                "vid"  => CachedBrush("vid",  Color.FromRgb(0x8C, 0x1E, 0xFF)),
-                "aud"  => CachedBrush("aud",  Color.FromRgb(0x00, 0xC8, 0xC3)),
-                "doc"  => CachedBrush("doc",  Color.FromRgb(0xFF, 0xD3, 0x19)),
-                "arc"  => CachedBrush("arc",  Color.FromRgb(0xFF, 0x8C, 0x00)),
-                "code" => CachedBrush("code", Color.FromRgb(0x39, 0xC8, 0x14)),
-                "sys"  => CachedBrush("sys",  Color.FromRgb(0xC8, 0x3C, 0x38)),
-                _      => CachedBrush("oth",  Color.FromRgb(0x6E, 0x6E, 0x6E)),
+                var entry = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 10, 0) };
+                entry.Children.Add(new Border { Width = 9, Height = 9, Margin = new Thickness(0, 3, 4, 0), Background = new SolidColorBrush(CategoryColor(item.Item1)) });
+                var label = new TextBlock { Text = item.Item2, FontSize = 10 };
+                label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+                label.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+                entry.Children.Add(label);
+                row.Children.Add(entry);
+            }
+            var legend = new Border
+            {
+                Child = row, HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(7),
+                IsHitTestVisible = false, Opacity = 0.92
             };
+            legend.SetResourceReference(Border.BackgroundProperty, "SurfaceBrush");
+            legend.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
+            legend.BorderThickness = new Thickness(1);
+            legend.SetResourceReference(Border.CornerRadiusProperty, "ControlCornerRadius");
+            return legend;
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1321,6 +1370,25 @@ namespace KillerShell.Tools
             string joined = parts[0].TrimEnd('\\');
             for (int i = 1; i < parts.Count; i++) joined += "\\" + parts[i];
             return joined;
+        }
+
+        internal StorageReport? CreateReport()
+        {
+            if (_zoomRoot == null || _zoomRoot.Size <= 0) return null;
+
+            StorageReportNode Copy(FsNode source)
+            {
+                var result = new StorageReportNode(source.Name, FullPath(source), source.Size, source.IsDir);
+                if (source.Children != null)
+                    foreach (var child in source.Children)
+                        if (_minSize == 0 || child.Size >= _minSize)
+                            result.Children.Add(Copy(child));
+                return result;
+            }
+
+            return new StorageReport(
+                _rootPath, FullPath(_zoomRoot), _zoomRoot.Size, _depthLimit, _minSize,
+                _colorByFolder, Copy(_zoomRoot));
         }
 
         private void UpdateFooterLeft()

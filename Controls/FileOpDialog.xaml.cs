@@ -37,6 +37,7 @@ namespace KillerShell
         private bool _finished;
 
         public FileOpResult Result { get; private set; } = new FileOpResult();
+        internal ArchiveWriteResult ArchiveResult { get; private set; } = new ArchiveWriteResult();
 
         private FileOpDialog(string opLabelKey)
         {
@@ -70,6 +71,21 @@ namespace KillerShell
 
             dlg.Start(() => FileOps.Delete(list, dlg.ReportProgress, dlg._cts.Token));
             return dlg.Result;
+        }
+
+        /// <summary>Runs one whole-archive rewrite behind the same cancellable progress UI used
+        /// by ordinary file operations. Closing or canceling the dialog reaches the writer's
+        /// token; ArchiveWriter then deletes its temporary file and leaves the original intact.</summary>
+        internal static ArchiveWriteResult RewriteArchive(
+            Window owner,
+            Func<Action<int, int, string>, CancellationToken, ArchiveWriteResult> work)
+        {
+            var dlg = new FileOpDialog("Str_Status_ArchiveWriting") { Owner = owner };
+            // The status resource contains the live percentage. The progress bar carries that
+            // value here, so use a neutral initial value instead of showing a raw {0} token.
+            dlg.OpLabel.Text = string.Format(dlg.OpLabel.Text, "0");
+            dlg.StartArchive(() => work(dlg.ReportArchiveProgress, dlg._cts.Token));
+            return dlg.ArchiveResult;
         }
 
         /// <summary>
@@ -106,6 +122,35 @@ namespace KillerShell
             });
         }
 
+        private void StartArchive(Func<ArchiveWriteResult> work)
+        {
+            Loaded += (_, _) => Task.Run(() =>
+            {
+                ArchiveWriteResult r;
+                try { r = work(); }
+                catch (OperationCanceledException)
+                {
+                    r = new ArchiveWriteResult { ErrorKey = "Str_Status_ArchiveCanceled" };
+                }
+                catch (Exception ex)
+                {
+                    r = new ArchiveWriteResult
+                    {
+                        ErrorKey = "Str_Status_ArchiveWriteFailed",
+                        ErrorDetail = ex.Message,
+                    };
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    ArchiveResult = r;
+                    _finished = true;
+                    Close();
+                });
+            });
+            ShowDialog();
+        }
+
         // ── Progress (worker thread) ─────────────────────────────
 
         private void ReportProgress(FileOpProgress p)
@@ -134,6 +179,20 @@ namespace KillerShell
                 string fmt = TryFindResource("Str_Fo_OfCount") as string ?? "{0} of {1}";
                 CountLabel.Text = string.Format(fmt, done.ToString("N0"), total.ToString("N0"))
                                 + (bTotal > 0 ? "   " + Human(bDone) + " / " + Human(bTotal) : string.Empty);
+            }));
+        }
+
+        private void ReportArchiveProgress(int done, int total, string current)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                CurrentFile.Text = current;
+                double ratio = total > 0 ? (double)done / total : 0;
+                ratio = Math.Max(0, Math.Min(1, ratio));
+                BarFill.Width = new GridLength(ratio, GridUnitType.Star);
+                BarRest.Width = new GridLength(1 - ratio, GridUnitType.Star);
+                string fmt = TryFindResource("Str_Fo_OfCount") as string ?? "{0} of {1}";
+                CountLabel.Text = string.Format(fmt, done.ToString("N0"), total.ToString("N0"));
             }));
         }
 

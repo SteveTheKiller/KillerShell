@@ -312,7 +312,7 @@ namespace KillerShell.Shell
 
             var paths = fromArchive
                 ? ExtractForDragOut(FilesForDrag())
-                : [.. FilesForDrag().Where(File.Exists)];
+                : [.. FilesForDrag().Where(p => File.Exists(p) || Directory.Exists(p))];
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: seed={_dragSeed?.FilePath ?? "null"}, resolvedPaths={paths.Length}");
             if (paths.Length == 0) return;
 

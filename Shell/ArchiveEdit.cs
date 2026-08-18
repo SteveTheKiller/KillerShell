@@ -99,10 +99,8 @@ namespace KillerShell.Shell
             {
                 string arc = archivePath, folder = entryFolder;
                 var mode = policy;
-                var progress = ArchiveProgress(tab);
-
-                var r = await Task.Run(() => ArchiveWriter.Add(arc, folder, sources, mode,
-                                                               progress, CancellationToken.None));
+                var r = FileOpDialog.RewriteArchive(this,
+                    (progress, ct) => ArchiveWriter.Add(arc, folder, sources, mode, progress, ct));
 
                 if (r.Collisions.Count > 0 && policy == ArchiveCollision.Report)
                 {
@@ -154,9 +152,8 @@ namespace KillerShell.Shell
             if (!dlg.Confirmed) return;
 
             var tab = _active;
-            var progress = ArchiveProgress(tab);
-            var r = await Task.Run(() => ArchiveWriter.Delete(archivePath, entries,
-                                                              progress, CancellationToken.None));
+            var r = FileOpDialog.RewriteArchive(this,
+                (progress, ct) => ArchiveWriter.Delete(archivePath, entries, progress, ct));
 
             ReportArchive(tab, r, "Str_Status_ArchiveDeleted", r.Changed.ToString("N0"));
             if (r.Ok) await RelistArchive(tab);
@@ -184,11 +181,33 @@ namespace KillerShell.Shell
 
             var tab = _active;
             string newName = dlg.NewName;
-            var progress = ArchiveProgress(tab);
-            var r = await Task.Run(() => ArchiveWriter.Rename(archivePath, entry, newName,
-                                                               progress, CancellationToken.None));
+            var r = FileOpDialog.RewriteArchive(this,
+                (progress, ct) => ArchiveWriter.Rename(archivePath, entry, newName, progress, ct));
 
             ReportArchive(tab, r, "Str_Status_ArchiveRenamed", newName);
+            if (r.Ok) await RelistArchive(tab);
+        }
+
+        /// <summary>Creates a real empty-folder entry in the ZIP currently being browsed.</summary>
+        internal async Task ArchiveNewFolder()
+        {
+            if (!ArchiveTarget(out string archivePath, out string entryFolder)) return;
+            if (!ArchiveWriter.CanWrite(archivePath))
+            {
+                SetTabStatusKey(_active, "Str_Status_ArchiveReadOnly");
+                return;
+            }
+
+            var dlg = new RenameDialog(Loc("Str_Fo_NewFolderName")) { Owner = this };
+            dlg.ShowDialog();
+            if (!dlg.Confirmed) return;
+
+            var tab = _active;
+            string name = dlg.NewName;
+            var r = FileOpDialog.RewriteArchive(this,
+                (progress, ct) => ArchiveWriter.CreateFolder(
+                    archivePath, entryFolder, name, progress, ct));
+            ReportArchive(tab, r, "Str_Status_ArchiveAdded", "1");
             if (r.Ok) await RelistArchive(tab);
         }
 
@@ -202,14 +221,14 @@ namespace KillerShell.Shell
         /// from inside the mouse gesture that began it, so there is nowhere to await. Entries are
         /// normally small; a very large one will hold the window for the length of the inflate.
         ///
-        /// Folder rows are skipped rather than extracted. Rebuilding a whole subtree under temp
-        /// is a different job from extracting one entry, and dragging a folder that silently
-        /// produced nothing would be worse than saying so.
+        /// Folder rows are recreated recursively under one private temp root. The drag still
+        /// advertises Copy only: extracting a subtree and deleting it from the archive cannot be
+        /// made atomic.
         /// </remarks>
         private string[] ExtractForDragOut(List<string> virtualPaths)
         {
             var extracted = new List<string>();
-            bool skippedFolder = false;
+            bool failed = false;
 
             foreach (string v in virtualPaths)
             {
@@ -218,7 +237,8 @@ namespace KillerShell.Shell
 
                 if (_active.Results.FirstOrDefaultPath(v) is { IsDirectory: true })
                 {
-                    skippedFolder = true;
+                    string? folder = ArchiveProvider.ExtractFolderToTemp(archivePath, entry, out _);
+                    if (folder != null) extracted.Add(folder); else failed = true;
                     continue;
                 }
 
@@ -226,36 +246,13 @@ namespace KillerShell.Shell
                 if (temp != null) extracted.Add(temp);
             }
 
-            if (extracted.Count == 0 && skippedFolder)
+            if (extracted.Count == 0 && failed)
                 SetTabStatusKey(_active, "Str_Status_ArchiveNoDrag");
 
             return [.. extracted];
         }
 
         // ── Shared plumbing ──────────────────────────────────────
-        /// <summary>
-        /// A progress callback for the writer, throttled to one status update per whole percent.
-        /// </summary>
-        /// <remarks>
-        /// The writer calls this once per entry, from a worker thread. A 50,000-entry archive
-        /// would queue 50,000 dispatcher hops, and the reporting would then cost more than the
-        /// rewrite - so the hop only happens when the number on screen would actually change.
-        /// </remarks>
-        private Action<int, int, string> ArchiveProgress(SearchTab tab)
-        {
-            int lastPercent = -1;
-            return (done, total, _) =>
-            {
-                int percent = total > 0 ? (int)(done * 100L / total) : 0;
-                if (percent == lastPercent) return;
-                lastPercent = percent;
-
-                Dispatcher.InvokeAsync(
-                    () => SetTabStatusKey(tab, "Str_Status_ArchiveWriting", percent.ToString()),
-                    System.Windows.Threading.DispatcherPriority.Background);
-            };
-        }
-
         /// <summary>
         /// One place that turns a write result into a status line. Every refusal the writer can
         /// produce carries its own key, so a failure always says which failure it was - a write

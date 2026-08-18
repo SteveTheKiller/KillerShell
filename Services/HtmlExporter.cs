@@ -10,7 +10,7 @@ using KillerShell.Models;
 namespace KillerShell.Services
 {
     // Styled, interactive HTML report - mirrors the KillerScan exporter: an embedded
-    // six-theme switcher + accent picker and click-to-sort columns. One compact table
+    // thirteen-theme switcher + accent picker and click-to-sort columns. One compact table
     // row per file; content hits expand inline.
     //
     // The report opens in the theme, accent, and LANGUAGE the app was in at export
@@ -35,7 +35,8 @@ namespace KillerShell.Services
                            string              rootPath,
                            bool                browsing = false)
         {
-            string current = Services.ThemeManager.Current.ToString().ToLowerInvariant();
+            string current = Services.ThemeManager.Current == Theme.SE98
+                ? "98se" : Services.ThemeManager.Current.ToString().ToLowerInvariant();
             string ts = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 
             // The live PrimaryBrush IS the current accent (family overlay included),
@@ -65,7 +66,8 @@ namespace KillerShell.Services
             sb.AppendLine("<style>");
 
             // Per-theme variable blocks (KillerShell's brand accent is blue on the neutrals).
-            foreach (var t in ReportThemes)
+            var reportThemes = StorageHtmlExporter.LoadPalettes();
+            foreach (var t in reportThemes)
             {
                 var b = new StringBuilder();
                 b.Append("html.theme-").Append(t.Key).Append('{')
@@ -191,7 +193,8 @@ namespace KillerShell.Services
             // Interactivity: theme + accent switchers and click-to-sort columns. The report
             // always opens in the theme/accent it was EXPORTED in (no persisted override).
             sb.AppendLine("<script>");
-            sb.AppendLine("var THEMES=[['dark','Dark','#3a3a3a'],['light','Light','#e8e8e8'],['black','Black','#000000'],['blood','Blood','#4a1f20'],['greed','Greed','#0a5234'],['cyanotic','Cyanotic','#0a4a6e']];");
+            sb.AppendLine("var THEMES=[" + string.Join(",", reportThemes.Select(t =>
+                "['" + t.Key + "','" + t.Label + "','" + t.Pane + "']")) + "];");
             sb.AppendLine("var sw=document.getElementById('themesw');");
             sb.AppendLine("function setTheme(t){document.documentElement.className='theme-'+t;var k=sw.children;for(var i=0;i<k.length;i++)k[i].className=(k[i].getAttribute('data-t')===t)?'active':'';}");
             sb.AppendLine("THEMES.forEach(function(a){var b=document.createElement('button');b.title=a[1];b.setAttribute('data-t',a[0]);b.style.background=a[2];b.onclick=function(){setTheme(a[0])};sw.appendChild(b);});");
@@ -250,24 +253,6 @@ namespace KillerShell.Services
             if (mb < 1024) return mb.ToString("0.0") + " MB";
             return (mb / 1024.0).ToString("0.00") + " GB";
         }
-
-        // ---- Report palette data (the in-report switcher embeds all six themes) ----
-        private readonly struct ReportTheme(string key, string bg, string surface, string pane, string accent,
-                                            string text, string muted, string border, string hover)
-        {
-            public readonly string Key = key, Bg = bg, Surface = surface, Pane = pane, Accent = accent,
-                                   Text = text, Muted = muted, Border = border, Hover = hover;
-        }
-
-        private static readonly ReportTheme[] ReportThemes =
-        [
-            new("dark",     "#1c1c1c", "#333333", "#3a3a3a", "#50AEE8", "#e0e0e0", "#a0a0a0", "#2e2e2e", "#404040"),
-            new("light",    "#dcdcdc", "#f0f0f0", "#c8c8c8", "#18608E", "#1a1a1a", "#555555", "#b0b0b0", "#b2b2b2"),
-            new("black",    "#000000", "#0d0d0d", "#161616", "#298DFF", "#ffffff", "#cccccc", "#2a2a2a", "#242424"),
-            new("blood",    "#240c0d", "#2c1012", "#321416", "#e8485a", "#fffde8", "#f8c99e", "#401d1d", "#54201f"),
-            new("greed",    "#002115", "#002e1c", "#003824", "#3fbf6f", "#fffde8", "#e0d49a", "#0f4a30", "#00593a"),
-            new("cyanotic", "#001a28", "#00263a", "#002e48", "#3aa0d8", "#fffde8", "#e0d49a", "#183450", "#0a5478"),
-        ];
 
         private static string Esc(string? s) => System.Net.WebUtility.HtmlEncode(s ?? "");
     }

@@ -560,7 +560,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DatePicker">
-                    <Border x:Name="border" Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource InputBorderBrush}"
+                    <Border x:Name="border" Background="{DynamicResource TextFieldBrush}" BorderBrush="{DynamicResource InputBorderBrush}"
                             BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}">
                         <Grid Margin="7,0,4,0">
                             <Grid.ColumnDefinitions>

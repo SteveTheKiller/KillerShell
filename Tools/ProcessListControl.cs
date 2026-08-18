@@ -785,6 +785,17 @@ namespace KillerShell.Tools
                 _ownerCache.TryRemove(gone, out _);
                 _ownerPending.TryRemove(gone, out _);
             }
+
+            // WPF's ordinary SortDescriptions are not live: property-change notifications
+            // repaint CpuPercent/MemoryBytes in place, but they do not move an existing row.
+            // Reapply only the two sorts whose values change on every sample, once after the
+            // whole batch rather than once per row. The ProcessInfo objects themselves remain
+            // in the collection, so DataGrid selection and the scroll viewport survive while
+            // the rows settle into the newly correct CPU/memory order.
+            bool dynamicSort = _procView.SortDescriptions.Any(s =>
+                s.PropertyName == nameof(ProcessInfo.CpuPercent) ||
+                s.PropertyName == nameof(ProcessInfo.MemoryBytes));
+            if (dynamicSort) _procView.Refresh();
         }
 
         /// <summary>

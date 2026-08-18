@@ -92,7 +92,7 @@
     <sys:String x:Key="Str_Chk_Desktop">Masaüstü kısayolu</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Tüm kullanıcılar için kur (Yönetici gerekir)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell bu bilgisayarda zaten tüm kullanıcılar için kurulu, bu nedenle o kopya güncellenecek. Windows izin isteyecek.</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">Kurulum iptal edildi</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Kurulum iptal edildi</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell kapatılsın mı?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Açık sekmelerimi hatırla</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Seçimimi hatırla</sys:String>
@@ -755,4 +755,46 @@
     <sys:String x:Key="Str_Theme_Delirium">Hezeyan</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Halsizlik</sys:String>
 
+    <sys:String x:Key="Str_Menu_OpenInNewTab">Yeni sekmede aç</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">ağaçta gizli öğeleri ve nokta klasörlerini göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Tam genişliği değiştir — hücreleri sıralamak için başlığı sürükleyin</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Grafik yüksekliğini değiştir</sys:String>
+    <!-- Depolama Çözümleyicisi -->
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Depolamayı çözümle</sys:String>
+    <sys:String x:Key="Str_TT_Storage">Depolama Çözümleyicisi  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Depolama Çözümleyicisi</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Depolama Çözümleyicisi</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Depolama Çözümleyicisi (yükseltilmiş tarama)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Depolama Çözümleyicisi</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Depolama Çözümleyicisi, yükseltilmiş tarama</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">taramayı başlat (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">ağaç haritası derinliğini değiştir (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">gösterilen en küçük boyutu değiştir (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">türe veya klasöre göre renklendirmeyi değiştir (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">seçili klasöre yakınlaştır (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">bir düzey uzaklaştır (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">tarama köküne dön (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">seçili öğeyi Geri Dönüşüm Kutusu'na gönder (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Tara</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Durdur</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Taranacak klasör veya sürücüyü seçin</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Bir klasör veya sürücü seçip Tara'ya basın</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">Bu klasör mevcut değil</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Tarama durduruldu — okunanlar gösteriliyor</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">atlandı</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">Yeni sekmede aç</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Explorer'da aç</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Yolu kopyala</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Sil (Geri Dönüşüm Kutusu)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Yeniden tara</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Dosya türüne göre renklendir</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Üst klasöre göre renklendir</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Derinlik</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">Tümü</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Kendi dikdörtgeni olan klasör düzeyi sayısı — daha düşük değer haritayı büyük klasörlere indirger</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Min.</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">Tümü</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Bundan küçük öğeleri gizler — baytları üst klasörün toplamına katılmaya devam eder</sys:String>
+    <sys:String x:Key="Str_Storage_Total">toplam</sys:String>
+    <sys:String x:Key="Str_Storage_Free">boş</sys:String>
 </ResourceDictionary>

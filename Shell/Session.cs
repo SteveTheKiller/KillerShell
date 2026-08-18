@@ -47,7 +47,7 @@ namespace KillerShell.Shell
             {
                 _closeConfirmed = false;   // still running: the quit prompt must come back
                 PortableBadge.Visibility = Visibility.Visible;
-                SetStatus(Loc("Str_St_InstallCancelled"));
+                SetStatus(Loc("Str_St_InstallCanceled"));
             }
         }
 

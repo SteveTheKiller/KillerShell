@@ -31,7 +31,7 @@ namespace KillerShell.Terminal
 
             // Rounded, not truncated: a click past the middle of a cell belongs to the NEXT
             // boundary, which is what makes dragging feel like it selects what you crossed.
-            col = _cellW > 0 ? (int)Math.Round(p.X / _cellW) : 0;
+            col = _cellW > 0 ? (int)Math.Round((p.X - LeftInset) / _cellW) : 0;
             col = Math.Max(0, Math.Min(_buf.Cols, col));
         }
 

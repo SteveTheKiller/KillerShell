@@ -111,7 +111,7 @@
     <sys:String x:Key="Str_Chk_Desktop">Zástupce na ploše</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Nainstalovat pro všechny uživatele (vyžaduje správce)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell je na tomto PC už nainstalovaný pro všechny uživatele, takže se aktualizuje tato kopie. Windows si vyžádají oprávnění.</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">Instalace zrušena</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Instalace zrušena</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">Ukončit KillerShell?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Zapamatovat otevřené karty</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Zapamatovat moji volbu</sys:String>
@@ -753,4 +753,46 @@
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Malátnost</sys:String>
 
+    <sys:String x:Key="Str_Menu_OpenInNewTab">Otevřít na nové kartě</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">zobrazit nebo skrýt skryté položky a tečkové složky ve stromu</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Přepnout plnou šířku — přetažením záhlaví změníte pořadí buněk</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Přepnout výšku grafu</sys:String>
+    <!-- Analýza úložiště -->
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyzovat úložiště</sys:String>
+    <sys:String x:Key="Str_TT_Storage">Analýza úložiště  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Analýza úložiště</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Analýza úložiště</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Analýza úložiště (zvýšené oprávnění)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Analýza úložiště</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Analýza úložiště, zvýšené oprávnění</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">spustit analýzu (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">změnit hloubku stromové mapy (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">změnit minimální zobrazenou velikost (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">přepnout barvy podle typu nebo složky (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">přiblížit vybranou složku (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">oddálit o jednu úroveň (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">zpět ke kořeni analýzy (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">přesunout vybranou položku do Koše (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Analyzovat</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Zastavit</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Vyberte složku nebo jednotku k analýze</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Vyberte složku nebo jednotku a spusťte analýzu</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">Tato složka neexistuje</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Analýza zastavena — zobrazuji načtená data</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">přeskočeno</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">Otevřít na nové kartě</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Otevřít v Průzkumníku</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Kopírovat cestu</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Odstranit (Koš)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Analyzovat znovu</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Barva podle typu souboru</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Barva podle hlavní složky</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Hloubka</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">Vše</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Počet úrovní složek s vlastními obdélníky — nižší hodnota zjednoduší mapu na velké složky</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Min.</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">Vše</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Skryje menší položky — jejich bajty se stále započítají do nadřazené složky</sys:String>
+    <sys:String x:Key="Str_Storage_Total">celkem</sys:String>
+    <sys:String x:Key="Str_Storage_Free">volné</sys:String>
 </ResourceDictionary>

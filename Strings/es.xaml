@@ -92,7 +92,7 @@
     <sys:String x:Key="Str_Chk_Desktop">Acceso directo en el escritorio</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Instalar para todos los usuarios (requiere administrador)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell ya está instalado para todos los usuarios de este PC, así que se actualizará esa copia. Windows pedirá permiso.</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">Instalación cancelada</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Instalación cancelada</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">¿Salir de KillerShell?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Recordar mis pestañas abiertas</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Recordar mi elección</sys:String>
@@ -755,4 +755,46 @@
     <sys:String x:Key="Str_Theme_Delirium">Delirio</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Malestar</sys:String>
 
+    <sys:String x:Key="Str_Menu_OpenInNewTab">Abrir en una pestaña nueva</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">mostrar u ocultar elementos ocultos y carpetas con punto en el árbol</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Alternar ancho completo — arrastra el encabezado para reordenar las celdas</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Alternar altura del gráfico</sys:String>
+    <!-- Analizador de almacenamiento -->
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Analizar almacenamiento</sys:String>
+    <sys:String x:Key="Str_TT_Storage">Analizador de almacenamiento  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Analizador de almacenamiento</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Analizador de almacenamiento</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Analizador de almacenamiento (análisis elevado)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Analizador de almacenamiento</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Analizador de almacenamiento, análisis elevado</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">iniciar el análisis (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">cambiar la profundidad del mapa de árbol (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">cambiar el tamaño mínimo mostrado (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">alternar color por tipo o carpeta (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">acercar a la carpeta seleccionada (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">alejar un nivel (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">volver a la raíz del análisis (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">enviar el elemento seleccionado a la Papelera (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Analizar</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Detener</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Elige una carpeta o unidad para analizar</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Elige una carpeta o unidad y pulsa Analizar</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">Esa carpeta no existe</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Análisis detenido; se muestra lo leído</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">omitidos</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">Abrir en una pestaña nueva</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Abrir en el Explorador</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Copiar ruta</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Eliminar (Papelera)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Volver a analizar</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Color por tipo de archivo</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Color por carpeta superior</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Profundidad</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">Todo</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Cuántos niveles de carpetas tienen rectángulos propios; un valor menor muestra solo las carpetas grandes</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Mín.</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">Todo</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Oculta lo que sea menor; sus bytes siguen contando en la carpeta que lo contiene</sys:String>
+    <sys:String x:Key="Str_Storage_Total">total</sys:String>
+    <sys:String x:Key="Str_Storage_Free">libre</sys:String>
 </ResourceDictionary>

@@ -92,7 +92,7 @@
     <sys:String x:Key="Str_Chk_Desktop">Desktop-Verknüpfung</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Für alle Benutzer installieren (Administrator erforderlich)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell ist auf diesem PC bereits für alle Benutzer installiert, daher wird diese Kopie aktualisiert. Windows fragt nach der Berechtigung.</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">Installation abgebrochen</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Installation abgebrochen</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell beenden?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Offene Tabs merken</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Auswahl merken</sys:String>
@@ -755,4 +755,46 @@
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Unwohlsein</sys:String>
 
+    <sys:String x:Key="Str_Menu_OpenInNewTab">In neuem Tab öffnen</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">ausgeblendete Elemente und Punktordner im Baum ein- oder ausblenden</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Volle Breite umschalten — Kopfzeile ziehen, um Zellen neu anzuordnen</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Diagrammhöhe umschalten</sys:String>
+    <!-- Speicheranalyse -->
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Speicher analysieren</sys:String>
+    <sys:String x:Key="Str_TT_Storage">Speicheranalyse  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Speicheranalyse</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Speicheranalyse</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Speicheranalyse (erhöhter Scan)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Speicheranalyse</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Speicheranalyse, erhöhter Scan</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">Scan starten (Speicheranalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">Treemap-Tiefe wechseln (Speicheranalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">angezeigte Mindestgröße wechseln (Speicheranalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">Färbung nach Typ oder Ordner wechseln (Speicheranalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">in den ausgewählten Ordner zoomen (Speicheranalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">eine Ebene herauszoomen (Speicheranalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">zurück zum Scan-Stamm (Speicheranalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">ausgewähltes Element in den Papierkorb verschieben (Speicheranalyse)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Scannen</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Stopp</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Ordner oder Laufwerk zum Scannen auswählen</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Ordner oder Laufwerk auswählen, dann Scannen</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">Dieser Ordner ist nicht vorhanden</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Scan gestoppt – gelesene Daten werden angezeigt</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">übersprungen</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">In neuem Tab öffnen</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Im Explorer öffnen</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Pfad kopieren</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Löschen (Papierkorb)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Erneut scannen</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Nach Dateityp färben</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Nach oberstem Ordner färben</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Tiefe</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">Alle</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Anzahl der Ordnerebenen mit eigenen Rechtecken – niedrigere Werte reduzieren die Karte auf große Ordner</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Min.</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">Alle</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Kleinere Elemente ausblenden – ihre Bytes zählen weiterhin im übergeordneten Ordner</sys:String>
+    <sys:String x:Key="Str_Storage_Total">gesamt</sys:String>
+    <sys:String x:Key="Str_Storage_Free">frei</sys:String>
 </ResourceDictionary>

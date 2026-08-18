@@ -7,25 +7,36 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.2.2] - Unreleased
 
 ### Added
-- The folder tree lists every Windows drive instead of stopping at C:. The system drive stays first, other local disks follow it, and mapped or connected network drives appear after the local volumes. Reopening the sidebar discovers drives attached since startup without collapsing branches that are already open, and an elevated window can recover persistent network mappings through their UNC paths when Windows hides the ordinary user's mapped letters from the elevated device map.
-- Sending a folder to the Recycle Bin asks first. Windows does not, and for a single file that is right: it is one undo away in the bin. A folder is not the same thing - the count is unknown until it is gone, one keystroke can take a whole tree, and until the fixes below the row that went was not always the row you thought you were on. Files on their own still recycle silently, so the common case keeps its speed. The prompt carries a Don't ask again box, honored only if you go through with that delete, and the switch has a permanent home on the About card so it can be turned back on. Permanent delete, which has always asked, is not affected either way: turning off a prompt for something recoverable must not turn off the prompt for something that is not.
-- Clear all Data, on the About card, next to the switch above. It deletes every saved preference - theme, accent, language, fonts, saved places, recents, the session and the tab layout - plus the temporary copies extracted while browsing archives. Your own files are never touched, and neither is the installation: the install markers are kept, so an installed copy does not come back believing it is portable. It asks first, and the status line says what to expect afterwards, since anything still open this session can only finish clearing on restart.
+- The folder tree has its own Show hidden folders menu option, independent of the file listing; it covers Hidden/System attributes and dot-prefixed folders and refreshes expanded branches in place.
+- Storage Analyzer scans can now be exported as self-contained HTML reports with the current filters, an SVG treemap, and ranked folder and file tables. Its file-type view also carries a compact color legend.
+- ZIP archives now support creating empty folders, dragging complete folder trees out, and canceling any rewrite without changing the original archive.
+- The folder tree now lists every Windows drive, including mapped network drives. Reopening the sidebar discovers newly attached drives, and elevated windows can recover mappings Windows normally hides from them.
+- Recycling a folder now asks for confirmation. The prompt can be disabled from the About card; individual files still recycle without interruption, and permanent deletion always asks.
+- The About card now has Clear all Data, which removes saved preferences and temporary archive extractions without touching user files or the installation.
 
 ### Changed
-- Keyboard Shortcuts now uses the app window as its hard boundary. List and keyboard views retain their preferred maximum widths, but the card shrinks inside a fixed inset on smaller windows and all excess height scrolls inside the card instead of positioning the overlay beyond the window edge.
-- About and Keyboard Shortcuts now use KillerScan's exact overlay-card padding and compact transparent close geometry, including the glyph-only red hover treatment.
+- The technical website now translates its administration navigation, heading, and Performance Monitor explanation in all ten supported locales instead of falling back to English.
+- Spanish, French, and Turkish website copy now restores its native diacritics from language dictionaries and the apps' reviewed locale corpus instead of shipping as ASCII-only text.
+- The website shortcut reference is now generated from the app's `KsAll` binding table and English resources, preventing the F1 card and help page from drifting apart.
+- The website's twelve current theme palettes are generated from the app's XAML resources and neutral-theme blue accent overlays; 98SE web geometry remains deliberately deferred.
+- Internal cancellation resource keys now use the same American spelling as their displayed text.
+- HTML reports now offer all thirteen app themes, loaded directly from the app's theme resources instead of a separate six-theme color table.
 - Themes are now complete, app-owned resources with no private template overlay or external build dependency.
-- The About card now takes its outer edge from the app-frame color and its information panel directly from the context-menu surface, with the pane-border color around that panel. The old About-only color override is gone, so every theme uses the same semantic keys as the rest of its interface.
-- Various UI and theme consistency tweaks, including legible accent buttons across the theme families.
+- Polish is now fully translated, and all ten non-English interfaces have complete string coverage, including Storage Analyzer and the latest file, tree, and performance commands.
+- Keyboard Shortcuts now stays inside the app window and scrolls when space is tight. It and the About card also share the family overlay spacing and close-button treatment.
+- UI polish across themes: clearer accent-button text, corrected Ectoplasm selection colors, thumbnail-only image shadows, small editor and terminal text insets, consistent About-card borders, and solid input surfaces that no longer re-ramp window gradients. Shadows remain disabled under 98SE.
+- 98SE toolbars now finish with a complete two-pixel dark right and bottom bevel instead of a mismatched one-pixel right edge.
+- The technical guide now explains the archive path handling that prevents Zip Slip extraction outside KillerShell's temporary folder.
 
 ### Fixed
-- Ectoplasm now uses its signature yellow with near-black text for selected rows instead of a translucent white wash.
-- Delete, Shift+Delete, F2, and the listing clipboard shortcuts work again after clicking a file. The file list had been made non-focusable while those commands were later restricted to run only when that same list owned keyboard focus, making their safety check impossible to pass.
-- Documents no longer draw the KillerShell logo as their icon. Any file type the app handles came back with the app's own icon; the bundled document icon is used instead.
-- Ctrl+C, Ctrl+X, Ctrl+V and Ctrl+A act on the file listing only while the file listing has the keyboard. They were taken by the window wherever focus happened to be, so clicking a folder in the sidebar tree and then pressing Ctrl+C ran the listing's copy underneath, with nothing in the listing selected and nothing on screen to say what was being copied.
-- Copying or cutting from the keyboard can no longer act on a row you right-clicked earlier. A right-click records the row it happened on so a menu command can act on what you pointed at rather than on the selection, and that record was kept for the life of the window - not per tab, not per pane - while the keyboard route, unlike every menu route, never cleared it. With nothing selected, Ctrl+C fell back to it and put a file or folder from another tab on the clipboard.
-- Delete and F2 follow the same two rules. Delete was the worst case of the pair: with focus anywhere but the listing and nothing selected, it recycled whichever row had last been right-clicked, in any tab, in either pane.
-- A renamed file sorts into its new position instead of holding the place its old name gave it. A rename updates the existing row rather than replacing it, so that selection and the details preview stay pointed at the same file, and a list sorted by name does not reorder for a change made that way. The sort is re-applied after a rename now; it is left alone for every other change, so a folder being written to does not jump under you.
+- Dragging a real folder out of the listing no longer produces an empty drag payload; validation now accepts existing directories as well as files.
+- The places drawer sizes itself from its real row and padding geometry, so the final selected row keeps its rounded bottom corners instead of being clipped by hidden list chrome.
+- Process rows now stay in the correct order as live CPU or memory values change after sorting by either column.
+- File-list shortcuts now act only on the focused list and its current selection. Copy, cut, paste, select all, rename and both delete commands no longer target a stale right-clicked row or run while focus is in the tree or another pane.
+- Machine-wide uninstall now requests administrator access and removes the Program Files copy, shared Start Menu shortcut and HKLM registration.
+- Browsing tabs preserve live multi-row selections when switching tabs, changing panes or silently refreshing a folder.
+- Renamed files move to their correct sorted position while keeping their selection and details preview.
+- Supported documents now use the bundled document icon instead of the KillerShell app logo.
 
 ## [1.2.1] - 2026-08-10
 

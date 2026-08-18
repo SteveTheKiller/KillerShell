@@ -27,6 +27,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <meta name="twitter:image" content="https://killershell.net/og-image.png">
 <script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
 <link rel="stylesheet" href="ks.css?v=8">
+<link rel="stylesheet" href="palettes.generated.css?v=1">
 <style>
 /* ---- Page-specific (landing) ---- */
 .content-inner { max-width: 1100px; margin: 0 auto; padding: 0 28px 50px; }
@@ -84,8 +85,8 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 .sb-fade-top { top: 0; -webkit-mask-image: linear-gradient(to bottom, #000, transparent); mask-image: linear-gradient(to bottom, #000, transparent); }
 .sb-fade-bottom { bottom: 0; -webkit-mask-image: linear-gradient(to top, #000, transparent); mask-image: linear-gradient(to top, #000, transparent); }
 .sb-fade.on { opacity: 1; }
-.sb-thumb { flex-shrink: 0; border: 2px solid transparent; border-radius: 5px; overflow: hidden; cursor: pointer; background: var(--panel); transition: border-color 0.15s, transform 0.12s; position: relative; }
-.sb-thumb:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); }
+.sb-thumb { flex-shrink: 0; border: 2px solid transparent; border-radius: 5px; overflow: hidden; cursor: pointer; background: var(--panel); transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s; position: relative; }
+.sb-thumb:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); box-shadow: 0 12px 24px rgba(0,0,0,0.62); z-index: 2; }
 .sb-thumb img { display: block; width: 100%; height: auto; }
 .sb-empty { padding: 22px 16px; font-family: Consolas, monospace; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.6; }
 
@@ -155,6 +156,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <button class="lang-item" data-lang="es">Espanol</button>
 <button class="lang-item" data-lang="fr">Francais</button>
 <button class="lang-item" data-lang="ja">&#26085;&#26412;&#35486;</button>
+<button class="lang-item" data-lang="pl">Polski</button>
 <button class="lang-item" data-lang="tr">Turkce</button>
 <button class="lang-item" data-lang="zh-cn">&#20013;&#25991; (&#31616;&#20307;)</button>
 <button class="lang-item" data-lang="zh">&#20013;&#25991; (&#32321;&#39636;)</button>
@@ -185,7 +187,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <li><b>Processes</b> - F9, with services and live CPU/RAM</li>
 <li><b>Registry</b> - Ctrl+F11, lazy-loaded tree with search</li>
 <li><b>Storage</b> - F4, a treemap of where the space went</li>
-<li><b>Themes</b> - thirteen, with live accent colors</li>
+<li><b>Themes</b> - thirteen, four of them with six live accent colors each (33 looks)</li>
 </ul></div>
 <div class="blurb"><h3 data-i18n="b2_t">Built from scratch</h3><p data-i18n="b2_d">KillerShell is written in C# and WPF on .NET Framework 4.8, so it runs as one self-contained native .exe with no runtime to install. The browser, the terminal and the editor are not three programs bolted together: they are one process sharing one tab strip, which is why moving between them costs nothing. No index, no background agent, nothing left running when you close the window. It also carries a full admin toolkit - process and service management, a live performance monitor, Event Viewer and a registry editor, each one key away.<br><br>The <a href="technical.html">Technical</a> page breaks down how it works, and <a href="help.html">Help</a> covers every key and gesture.</p></div>
 <div class="blurb"><h3 data-i18n="b3_t">By a field tech, for field techs</h3><p data-i18n="b3_d">Created during everyday systems administration work at a large MSP, where the same loop ran all day: find the file, open a terminal in that folder, edit something. Three applications, three tab strips, and a lot of alt-tabbing between them to do one job.</p><p data-i18n="b3_d2">It was built to collapse that loop into one window: find what you need, drop into a shell already in the right folder, edit the file, close the ticket, move on.</p><br><p data-i18n="b3_d4">Read the story behind it on the <a href="about.html">About</a> page.</p></div>
@@ -265,7 +267,19 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 (function () {
   // Screenshot strip: tries screenshots/01.png .. NN.png, drops any that 404, and shows a
   // placeholder until at least one loads. Drop real screenshots into screenshots/ to populate it.
-  var MAX = 14;
+  var descriptions = [
+    '98SE theme with PowerShell and Pictures side by side',
+    'Event Viewer and Pictures open in a split workspace',
+    'Script editor and Storage Analyzer across local and network drives',
+    'Performance, Registry Editor, and Event Viewer details',
+    'PowerShell editor and icon view in the Malaise theme',
+    'Photo browser and Downloads context menu',
+    'Service Manager with service details',
+    'Photo browser with image preview in the Black theme',
+    'Photo browser with image preview in the Light theme',
+    'Process Manager and Registry Editor with the value editor open'
+  ];
+  var MAX = descriptions.length;
   var sbThumbs = document.getElementById('sbThumbs');
   var empty = sbThumbs.querySelector('.sb-empty');
   var lightbox = document.getElementById('lightbox');
@@ -283,7 +297,8 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
       img.onload = function () {
         if (empty) { empty.remove(); empty = null; }
         var b = document.createElement('button');
-        b.className = 'sb-thumb'; b.title = 'Screenshot ' + n; b.dataset.idx = n;
+        var description = descriptions[n - 1];
+        b.className = 'sb-thumb'; b.title = description; b.dataset.idx = n;
         b.appendChild(img);
         b.addEventListener('click', function () { openLightbox(src); });
         // Insert in numeric order regardless of which image finishes loading first.
@@ -295,7 +310,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
         loaded++;
         updateFade();
       };
-      img.alt = 'KillerShell screenshot ' + n;
+      img.alt = descriptions[n - 1];
       img.src = src;
     })(i);
   }

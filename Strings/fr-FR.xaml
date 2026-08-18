@@ -92,7 +92,7 @@
     <sys:String x:Key="Str_Chk_Desktop">Raccourci sur le bureau</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Installer pour tous les utilisateurs (administrateur requis)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell est déjà installé pour tous les utilisateurs de ce PC ; cette copie sera donc mise à jour. Windows demandera l'autorisation.</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">Installation annulée</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Installation annulée</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">Quitter KillerShell ?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Se souvenir de mes onglets ouverts</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Se souvenir de mon choix</sys:String>
@@ -755,4 +755,46 @@
     <sys:String x:Key="Str_Theme_Delirium">Délire</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Malaise</sys:String>
 
+    <sys:String x:Key="Str_Menu_OpenInNewTab">Ouvrir dans un nouvel onglet</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">afficher ou masquer les éléments cachés et les dossiers à point dans l'arborescence</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Basculer en pleine largeur — faites glisser l'en-tête pour réorganiser les cellules</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Basculer la hauteur du graphique</sys:String>
+    <!-- Analyseur de stockage -->
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyser le stockage</sys:String>
+    <sys:String x:Key="Str_TT_Storage">Analyseur de stockage  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Analyseur de stockage</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Analyseur de stockage</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Analyseur de stockage (analyse élevée)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Analyseur de stockage</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Analyseur de stockage, analyse élevée</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">lancer l'analyse (Analyseur de stockage)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">changer la profondeur de la carte (Analyseur de stockage)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">changer la taille minimale affichée (Analyseur de stockage)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">basculer la couleur par type ou dossier (Analyseur de stockage)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">zoomer sur le dossier sélectionné (Analyseur de stockage)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">reculer d'un niveau (Analyseur de stockage)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">revenir à la racine de l'analyse (Analyseur de stockage)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">envoyer l'élément sélectionné à la Corbeille (Analyseur de stockage)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Analyser</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Arrêter</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Choisissez un dossier ou un lecteur à analyser</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Choisissez un dossier ou un lecteur, puis lancez l'analyse</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">Ce dossier n'existe pas</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Analyse arrêtée — affichage des données lues</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">ignorés</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">Ouvrir dans un nouvel onglet</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Ouvrir dans l'Explorateur</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Copier le chemin</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Supprimer (Corbeille)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Analyser à nouveau</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Couleur par type de fichier</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Couleur par dossier racine</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Profondeur</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">Tout</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Nombre de niveaux de dossiers ayant leur propre rectangle — une valeur basse limite la carte aux gros dossiers</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Min.</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">Tout</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Masque les éléments plus petits — leurs octets restent comptés dans le dossier qui les contient</sys:String>
+    <sys:String x:Key="Str_Storage_Total">total</sys:String>
+    <sys:String x:Key="Str_Storage_Free">libre</sys:String>
 </ResourceDictionary>

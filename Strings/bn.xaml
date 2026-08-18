@@ -92,7 +92,7 @@
     <sys:String x:Key="Str_Chk_Desktop">ডেস্কটপ শর্টকাট</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">সব ব্যবহারকারীর জন্য ইনস্টল করুন (অ্যাডমিন প্রয়োজন)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell ইতিমধ্যেই এই পিসির সব ব্যবহারকারীর জন্য ইনস্টল করা আছে, তাই সেই কপিটিই হালনাগাদ হবে। Windows অনুমতি চাইবে।</sys:String>
-    <sys:String x:Key="Str_St_InstallCancelled">ইনস্টল বাতিল হয়েছে</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">ইনস্টল বাতিল হয়েছে</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell বন্ধ করবেন?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">আমার খোলা ট্যাবগুলি মনে রাখুন</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">আমার পছন্দ মনে রাখুন</sys:String>
@@ -752,4 +752,46 @@
     <sys:String x:Key="Str_Theme_Delirium">প্রলাপ</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">অস্বস্তি</sys:String>
 
+    <sys:String x:Key="Str_Menu_OpenInNewTab">নতুন ট্যাবে খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">ট্রিতে লুকানো আইটেম ও ডটফোল্ডার দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">পূর্ণ প্রস্থ টগল করুন — ঘর সাজাতে শিরোনাম টানুন</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">গ্রাফের উচ্চতা টগল করুন</sys:String>
+    <!-- স্টোরেজ বিশ্লেষক -->
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">স্টোরেজ বিশ্লেষণ করুন</sys:String>
+    <sys:String x:Key="Str_TT_Storage">স্টোরেজ বিশ্লেষক  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">স্টোরেজ বিশ্লেষক</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">স্টোরেজ বিশ্লেষক</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">স্টোরেজ বিশ্লেষক (উন্নীত স্ক্যান)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">স্টোরেজ বিশ্লেষক</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">স্টোরেজ বিশ্লেষক, উন্নীত স্ক্যান</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">স্ক্যান শুরু করুন (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">ট্রিম্যাপের গভীরতা বদলান (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">দেখানো সর্বনিম্ন আকার বদলান (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">ধরন বা ফোল্ডার অনুযায়ী রং বদলান (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">নির্বাচিত ফোল্ডারে জুম করুন (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">এক স্তর জুম আউট করুন (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">স্ক্যানের মূলে ফিরুন (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">নির্বাচিত আইটেম রিসাইকেল বিনে পাঠান (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">স্ক্যান</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">থামান</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">স্ক্যানের জন্য ফোল্ডার বা ড্রাইভ বেছে নিন</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">ফোল্ডার বা ড্রাইভ বেছে নিয়ে স্ক্যান করুন</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">ফোল্ডারটি নেই</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">স্ক্যান থামানো হয়েছে — যতটুকু পড়া হয়েছে তা দেখানো হচ্ছে</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">এড়ানো হয়েছে</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">নতুন ট্যাবে খুলুন</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Explorer-এ খুলুন</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">পাথ কপি করুন</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">মুছুন (রিসাইকেল বিন)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">আবার স্ক্যান করুন</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">ফাইলের ধরন অনুযায়ী রং</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">শীর্ষ ফোল্ডার অনুযায়ী রং</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">গভীরতা</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">সব</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">কত স্তরের ফোল্ডার নিজস্ব আয়তক্ষেত্র পাবে — কম মানে বড় ফোল্ডারগুলোই বেশি দেখা যাবে</sys:String>
+    <sys:String x:Key="Str_Storage_Min">সর্বনিম্ন</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">সব</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">এর চেয়ে ছোট আইটেম লুকান — বাইটগুলো মূল ফোল্ডারের মোটে গণনা হবে</sys:String>
+    <sys:String x:Key="Str_Storage_Total">মোট</sys:String>
+    <sys:String x:Key="Str_Storage_Free">খালি</sys:String>
 </ResourceDictionary>
