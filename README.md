@@ -52,7 +52,7 @@ winget install SteveTheKiller.KillerShell
 ```
 
 - Prebuilt binary: <https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe>
-- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.2.1/KillerShell-1.2.1-src.zip>
+- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.2.2/KillerShell-1.2.2-src.zip>
 
 ## Build from source
 
