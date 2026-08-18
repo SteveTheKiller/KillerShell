@@ -44,12 +44,15 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource OutlineBtnBrush}"
                             BorderThickness="1" CornerRadius="4">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Effect="{DynamicResource TextStrokeSoft}"/>
+                        <ContentPresenter x:Name="label" HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Effect="{DynamicResource TextStrokeSoft}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="b" Property="Background" Value="{DynamicResource OutlineBtnBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
+                            <Setter TargetName="label" Property="Effect" Value="{x:Null}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

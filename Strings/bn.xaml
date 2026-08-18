@@ -87,8 +87,13 @@
     <sys:String x:Key="Str_Portable">পোর্টেবল</sys:String>
     <sys:String x:Key="Str_Btn_Install">KillerShell ইনস্টল করুন</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">ইনস্টল</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">আপডেট</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">আপনার ইউজার প্রোফাইলে KillerShell ইনস্টল করবেন?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">- স্টার্ট মেনু শর্টকাট&#x0A;- Add/Remove Programs-এ দেখা যাবে</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">আপনার বিদ্যমান KillerShell ইনস্টলেশন আপডেট করবেন?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">এটি আপনার অ্যাকাউন্টের ইনস্টল করা কপিটি প্রতিস্থাপন করবে। আপনার সেটিংস ও সংরক্ষিত সেশন রাখা হবে। এরপর এই পোর্টেবল ফাইলটি রাখতে বা মুছে ফেলতে পারেন।</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">সব ব্যবহারকারীর জন্য বিদ্যমান KillerShell ইনস্টলেশন আপডেট করবেন?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">এটি Program Files-এর কপিটি প্রতিস্থাপন করবে। KillerShell যেন একবারই দেখা যায়, তাই এই অ্যাকাউন্টের আলাদা ব্যবহারকারী কপি সরানো হবে। আপনার সেটিংস ও সংরক্ষিত সেশন রাখা হবে।</sys:String>
     <sys:String x:Key="Str_Chk_Desktop">ডেস্কটপ শর্টকাট</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">সব ব্যবহারকারীর জন্য ইনস্টল করুন (অ্যাডমিন প্রয়োজন)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell ইতিমধ্যেই এই পিসির সব ব্যবহারকারীর জন্য ইনস্টল করা আছে, তাই সেই কপিটিই হালনাগাদ হবে। Windows অনুমতি চাইবে।</sys:String>

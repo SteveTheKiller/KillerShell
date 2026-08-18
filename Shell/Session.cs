@@ -20,9 +20,15 @@ namespace KillerShell.Shell
             // all-users box is pre-ticked and locked: installing per-user alongside it would
             // leave two copies and two uninstall entries.
             bool machineWide = App.MachineInstallExists();
+            bool userInstall = App.UserInstallExists();
+            string messageKey = machineWide ? "Str_Dlg_UpdateMachineMsg"
+                : userInstall ? "Str_Dlg_UpdateUserMsg" : "Str_Dlg_InstallMsg";
+            string detailKey = machineWide ? "Str_Dlg_UpdateMachineBullets"
+                : userInstall ? "Str_Dlg_UpdateUserBullets" : "Str_Dlg_InstallBullets";
+            string actionKey = (machineWide || userInstall) ? "Str_Btn_DoUpdate" : "Str_Btn_DoInstall";
 
             var dlg = new ConfirmDialog(
-                Loc("Str_Dlg_InstallMsg"), Loc("Str_Dlg_InstallBullets"), Loc("Str_Btn_DoInstall"),
+                Loc(messageKey), Loc(detailKey), Loc(actionKey),
                 Loc("Str_Chk_Desktop"), check1Initial: true,
                 Loc("Str_Chk_AllUsers"), check2Initial: machineWide) { Owner = this };
             if (machineWide) dlg.LockCheck2(Loc("Str_Dlg_AlreadyAllUsers"));

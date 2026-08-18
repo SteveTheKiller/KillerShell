@@ -68,6 +68,10 @@ namespace KillerShell.Shell
         /// </summary>
         private static CustomPopupPlacement[] BottomLeftOfPane(Size popupSize, Size targetSize)
         {
+            // Use the popup's complete bounds, including its transparent shadow room. The shared
+            // ContextMenu offset and FlyoutCard margin intentionally leave the visible card above
+            // the pane's bottom edge and beside the rail buttons. Adding their 39px difference
+            // here pushed both rail menus down against the footer in every theme.
             double y = targetSize.Height - popupSize.Height;
 
             // A flyout taller than the pane would otherwise start above it and run over the

@@ -616,7 +616,7 @@ namespace KillerShell.Tools
             // hex string, a long REG_SZ path) is what actually needs the space. Same MinWidth as
             // the folder tree so it never collapses unreadably; still a normal splitter drag from
             // here, same as every other split in this app.
-            split.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(180), MinWidth = 160, MaxWidth = 420 });
+            split.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(174), MinWidth = 160, MaxWidth = 420 });
             split.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             split.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 260 });
 
@@ -664,6 +664,9 @@ namespace KillerShell.Tools
             tree.SelectedItemChanged += Tree_SelectedItemChanged;
             tree.ContextMenuOpening += Tree_ContextMenuOpening;
             tree.PreviewKeyDown += Tree_PreviewKeyDown;
+            // Match the main folder tree: long key names dissolve just before the right edge or
+            // scrollbar instead of ending in an unexplained hard crop.
+            KillerShell.Controls.TreeSideFade.Attach(tree);
             // Sunken well around the tree - see the note on the toolbar in the constructor.
             var treeHost = ToolTabChrome.WrapContent(tree, "ToolTreeBrush");
             SetColumn(treeHost, 0);
@@ -675,6 +678,7 @@ namespace KillerShell.Tools
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Background = Brushes.Transparent,
                 FocusVisualStyle = null,   // same dotted-focus-rectangle fix as the pane splitters
+                Template = BuildRegistrySplitterTemplate(),
             };
             // RegSplitterWidth: the 5 it always was, 3 on 98SE - the regedit divider reads
             // better skinnier there.
@@ -690,6 +694,28 @@ namespace KillerShell.Tools
             split.Children.Add(gridHost);
 
             return split;
+        }
+
+        private static ControlTemplate BuildRegistrySplitterTemplate()
+        {
+            var root = new FrameworkElementFactory(typeof(Border));
+            root.SetValue(Border.BackgroundProperty, Brushes.Transparent);
+
+            var hint = new FrameworkElementFactory(typeof(Border), "hint");
+            hint.SetValue(FrameworkElement.WidthProperty, 1.0);
+            hint.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            hint.SetValue(UIElement.OpacityProperty, 0.0);
+            hint.SetResourceReference(Border.BackgroundProperty, "TreeLineBrush");
+            root.AppendChild(hint);
+
+            var template = new ControlTemplate(typeof(GridSplitter)) { VisualTree = root };
+            var hover = new Trigger { Property = UIElement.IsMouseOverProperty, Value = true };
+            hover.Setters.Add(new Setter(UIElement.OpacityProperty, 1.0, "hint"));
+            template.Triggers.Add(hover);
+            var drag = new Trigger { Property = Thumb.IsDraggingProperty, Value = true };
+            drag.Setters.Add(new Setter(UIElement.OpacityProperty, 1.0, "hint"));
+            template.Triggers.Add(drag);
+            return template;
         }
 
         private DataGrid BuildValueGrid()

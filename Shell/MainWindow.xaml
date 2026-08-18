@@ -793,8 +793,8 @@
                                  content pane's bottom-left corner, PDF's own mechanism. -->
                             <ContextMenu x:Name="LangMenu">
                                 <!-- The raised bevel pair around the card is KillerNotes' exact
-                                     treatment (its LangMenu template): two Borders at the card's
-                                     own 6px margin, zero-thickness on every theme but 98SE, where
+                                     treatment (its LangMenu template): two Borders aligned to the
+                                     FlyoutCard itself, zero-thickness on every theme but 98SE, where
                                      the flyout becomes a hard raised Win98 box - the locale and
                                      theme flyouts carry the same beveled edge as KillerNotes'. -->
                                 <ContextMenu.Template>
@@ -806,9 +806,9 @@
                                                     <Border Style="{StaticResource FlyoutGrain}"/>
                                                 </Grid>
                                             </Border>
-                                            <Border IsHitTestVisible="False" Margin="6"
+                                            <Border IsHitTestVisible="False" Margin="22,18,22,26"
                                                     BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                                            <Border IsHitTestVisible="False" Margin="6"
+                                            <Border IsHitTestVisible="False" Margin="22,18,22,26"
                                                     BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
                                         </Grid>
                                     </ControlTemplate>
@@ -841,9 +841,9 @@
                                                     <Border Style="{StaticResource FlyoutGrain}"/>
                                                 </Grid>
                                             </Border>
-                                            <Border IsHitTestVisible="False" Margin="6"
+                                            <Border IsHitTestVisible="False" Margin="22,18,22,26"
                                                     BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                                            <Border IsHitTestVisible="False" Margin="6"
+                                            <Border IsHitTestVisible="False" Margin="22,18,22,26"
                                                     BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
                                         </Grid>
                                     </ControlTemplate>
@@ -856,7 +856,10 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                <StackPanel x:Name="ThemeSubmenu" Width="120" Grid.Column="0">
+                                <!-- Content-sized for the two command rows below. The former
+                                     fixed 120px clipped even English "File associations..." and
+                                     could not accommodate the longer localized labels at all. -->
+                                <StackPanel x:Name="ThemeSubmenu" MinWidth="150" Grid.Column="0">
                                     <RadioButton x:Name="ThemeDarkRadio"
                                                  Content="{DynamicResource Str_Theme_Dark}"
                                                  GroupName="ThemeGroup"
@@ -1302,7 +1305,8 @@
                     <RowDefinition x:Name="PaneRowB" Height="0" MinHeight="0"/>
                 </Grid.RowDefinitions>
 
-                <local:FilePane x:Name="LeftPane" Grid.Column="0" Grid.Row="0"/>
+                <local:FilePane x:Name="LeftPane" Grid.Column="0" Grid.Row="0"
+                                LayoutUpdated="PaneLayout_LayoutUpdated"/>
 
                 <!-- Both splitters exist; DualPane.cs shows whichever the orientation needs.
                      PaneSplitV's ResizeBehavior is set in code (DualPane.cs PaneSplitV_DragStarted)
@@ -1347,7 +1351,7 @@
              inner bevel, which only a margin can do. -->
         <Border Grid.Row="2" Background="{DynamicResource BackgroundBrush}"
                 Margin="{DynamicResource FooterPadding}">
-          <Grid>
+          <Grid x:Name="FooterLayout">
           <!-- NO strip-wide bevel here. There was one, and crossing its brushes to make it sunken
                only turned one wrong footer into a different wrong footer.
                A Win98 status bar is not a beveled strip with things on it - it is a row of sunken
@@ -1437,10 +1441,12 @@
                            SizeChanged="StatusText_SizeChanged"/>
             </Grid>
             </Grid>
-            <!-- Compact portable install action (hidden when installed), matching KillerPDF. Centered
-                 across the whole footer, NOT parked in a column - a column pins it next to the
-                 version text. IsVisibleChanged re-runs the status elision, because the line's
-                 usable width changes the moment this appears or goes away. -->
+            <!-- Compact portable install action (hidden when installed), matching KillerPDF.
+                 In side-by-side dual-pane mode its center follows the pane divider; otherwise it
+                 follows the center of the content pane, accounting for the sidebar. It stays an
+                 overlay rather than a column so the version block keeps its natural width.
+                 IsVisibleChanged re-runs the status elision, because the line's usable width
+                 changes the moment this appears or goes away. -->
             <StackPanel x:Name="PortableBadge" Grid.ColumnSpan="2" Orientation="Horizontal"
                         HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
                         IsVisibleChanged="PortableBadge_IsVisibleChanged">
@@ -1549,7 +1555,7 @@
                      several palettes the two differ sharply (Ectoplasm's frame is the pink), and
                      the card was reading as unrelated to the app around it (2026-08-09). -->
                 <Border Background="{DynamicResource OverlayWindowBrush}" BorderBrush="{DynamicResource AppBorderBrush}"
-                        BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
+                        BorderThickness="{DynamicResource OverlayCardBorderThickness}" CornerRadius="{DynamicResource PanelCornerRadius}">
                     <Grid>
                         <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
                                 Opacity="{DynamicResource GrainOpacity}" Background="{DynamicResource GrainTileBrush}"/>
@@ -1558,6 +1564,16 @@
                                 BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
                         <Border IsHitTestVisible="False" Panel.ZIndex="6"
                                 BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+                        <!-- The inner half of the raised 98SE window frame. The outer pair alone
+                             leaves only a hairline; together these make the classic two-stage
+                             light top/left and dark bottom/right bevel. All four thicknesses are
+                             zero on the ordinary themes. -->
+                        <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                                Margin="{DynamicResource FrameInnerMargin}"
+                                BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameInnerLightThickness}"/>
+                        <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                                Margin="{DynamicResource FrameInnerMargin}"
+                                BorderBrush="{DynamicResource FrameInnerDarkBrush}" BorderThickness="{DynamicResource FrameInnerDarkThickness}"/>
 
                         <!-- Close X: ChromeCloseButton, the SAME style as the title bar's close, so
                              every X in the app is the same X (the KillerNotes

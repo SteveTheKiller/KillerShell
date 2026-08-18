@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Windows;
 
 namespace KillerShell.Shell
@@ -6,8 +8,8 @@ namespace KillerShell.Shell
     // system entries are shown, and whether folders are pinned above files. Partial of MainWindow.
     //
     // Window-wide on purpose. Explorer and Total Commander both treat these as view settings
-    // rather than per-location state, and it means they survive the coming dual-pane split
-    // untouched - nothing here reads _active except to re-list what is currently on screen.
+    // rather than per-location state. Both live panes are refreshed from the same setting, so
+    // the button cannot claim one state while a background pane still shows the other.
     public partial class MainWindow
     {
         // Read by ListFolder (Browse.cs), which runs off the UI thread, so these stay plain
@@ -18,6 +20,17 @@ namespace KillerShell.Shell
         // combination that is actually wanted.
         internal static bool ShowHidden   { get; private set; }
         internal static bool FoldersOnTop { get; private set; } = true;
+
+        /// <summary>
+        /// The listing's one definition of a hidden item. Windows has two attributes that mean
+        /// "keep this out of an ordinary folder view", while portable tools and developer
+        /// projects conventionally use a leading dot instead. The toolbar switch controls all
+        /// three together, for files and folders alike.
+        /// </summary>
+        internal static bool ShouldHideListingEntry(string name, FileAttributes attributes) =>
+            !ShowHidden &&
+            (((attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) ||
+             name.StartsWith(".", StringComparison.Ordinal));
 
         private void InitViewOptions()
         {
@@ -78,7 +91,7 @@ namespace KillerShell.Shell
             }
         }
 
-        internal void ShowHidden_Click(object sender, RoutedEventArgs e)
+        internal async void ShowHidden_Click(object sender, RoutedEventArgs e)
         {
             ShowHidden = !ShowHidden;
             Services.ThemeManager.SetSetting("ShowHidden", ShowHidden ? "1" : "0");
@@ -90,8 +103,34 @@ namespace KillerShell.Shell
             // FolderTree.cs). The tree does not read ShowHidden at all now, so refreshing it
             // here changed nothing about what it contained and only made the sidebar visibly
             // reflow on a toggle that is none of its business.
-            if (_active.IsBrowsing && !string.IsNullOrEmpty(_active.CurrentFolder))
-                _ = NavigateTo(_active.CurrentFolder!, record: false);   // Browse.cs
+            // The setting and both toolbar buttons are window-wide, so both visible listings
+            // must change with them. Refresh the other pane first and the focused pane last: a
+            // navigation writes through the Pane indirection, and finishing on the original pane
+            // leaves the shared window chrome describing the place the user is actually in.
+            var keep = Pane;
+            try
+            {
+                foreach (var pane in LivePanes())
+                {
+                    if (ReferenceEquals(pane, keep)) continue;
+                    FocusPaneQuiet(pane);
+                    var tab = pane.Active;
+                    if (tab?.IsBrowsing == true && !string.IsNullOrEmpty(tab.CurrentFolder))
+                        await NavigateTo(tab.CurrentFolder, record: false, keepSelection: true); // Browse.cs
+                }
+
+                FocusPaneQuiet(keep);
+                var active = keep.Active;
+                if (active?.IsBrowsing == true && !string.IsNullOrEmpty(active.CurrentFolder))
+                    await NavigateTo(active.CurrentFolder, record: false, keepSelection: true); // Browse.cs
+                else if (active != null)
+                    ActivateTab(active);   // restore shared chrome after refreshing the other pane
+            }
+            finally
+            {
+                FocusPaneQuiet(keep);
+                UpdatePaneFocusRing();
+            }
         }
 
         internal void FoldersTop_Click(object sender, RoutedEventArgs e)

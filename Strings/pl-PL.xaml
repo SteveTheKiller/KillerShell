@@ -3,7 +3,6 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <sys:String x:Key="Str_TT_Language">Język</sys:String>
     <sys:String x:Key="Str_TT_Theme">Motyw</sys:String>
-    <sys:String x:Key="Str_TT_Shortcuts">Skróty klawiaturowe</sys:String>
     <sys:String x:Key="Str_Btn_Search">SZUKAJ</sys:String>
     <sys:String x:Key="Str_Btn_Stop">ZATRZYMAJ</sys:String>
     <sys:String x:Key="Str_Btn_Clear">WYCZYŚĆ</sys:String>
@@ -26,6 +25,7 @@
     <sys:String x:Key="Str_Status_Ready">Gotowe</sys:String>
     <sys:String x:Key="Str_Btn_Install">Zainstaluj KillerShell</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Zainstaluj</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">Aktualizuj</sys:String>
     <sys:String x:Key="Str_Btn_Cancel">Anuluj</sys:String>
     <sys:String x:Key="Str_Btn_Update">Aktualizuj</sys:String>
     <sys:String x:Key="Str_Btn_Quit">Zakończ</sys:String>
@@ -42,12 +42,6 @@
     <sys:String x:Key="Str_Theme_Sepulchre">Grobowiec</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Żałoba</sys:String>
-    <sys:String x:Key="Str_Sys_Restore">Przywróć</sys:String>
-    <sys:String x:Key="Str_Sys_Move">Przenieś</sys:String>
-    <sys:String x:Key="Str_Sys_Size">Rozmiar</sys:String>
-    <sys:String x:Key="Str_Sys_Minimize">Minimalizuj</sys:String>
-    <sys:String x:Key="Str_Sys_Maximize">Maksymalizuj</sys:String>
-    <sys:String x:Key="Str_Sys_Close">Zamknij</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">pokaż lub ukryj elementy ukryte i foldery z kropką w drzewie</sys:String>
     <sys:String x:Key="Str_Perf_ToggleWidth">Przełącz pełną szerokość — przeciągnij nagłówek, aby zmienić kolejność komórek</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">Przełącz wysokość wykresu</sys:String>
@@ -135,6 +129,10 @@
     <sys:String x:Key="Str_Portable">PRZENOŚNY</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">Zainstalować KillerShell w Twoim profilu użytkownika?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">- Skrót w menu Start&#10;- Pozycja w Dodaj/usuń programy</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">Zaktualizować istniejącą instalację KillerShell?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">Zainstalowana kopia dla Twojego konta zostanie zastąpiona. Ustawienia i zapisana sesja zostaną zachowane. Ten plik przenośny możesz później zachować lub usunąć.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">Zaktualizować istniejącą instalację KillerShell dla wszystkich użytkowników?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Kopia w Program Files zostanie zastąpiona. Oddzielna kopia użytkownika dla tego konta zostanie usunięta, aby KillerShell pojawiał się tylko raz. Ustawienia i zapisana sesja zostaną zachowane.</sys:String>
     <sys:String x:Key="Str_Chk_Desktop">Skrót na pulpicie</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Zainstaluj dla wszystkich użytkowników (wymaga administratora)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell jest już zainstalowany dla wszystkich użytkowników tego komputera, więc ta kopia zostanie zaktualizowana. System Windows poprosi o pozwolenie.</sys:String>

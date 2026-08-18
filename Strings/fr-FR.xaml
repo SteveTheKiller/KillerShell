@@ -87,8 +87,13 @@
     <sys:String x:Key="Str_Portable">PORTABLE</sys:String>
     <sys:String x:Key="Str_Btn_Install">Installer KillerShell</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Installer</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">Mettre à jour</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">Installer KillerShell dans votre profil utilisateur ?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">- Raccourci du menu Démarrer&#x0A;- Apparaît dans Ajouter/Supprimer des programmes</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">Mettre à jour votre installation existante de KillerShell ?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">Cette opération remplace la copie installée pour votre compte. Vos paramètres et votre session enregistrée sont conservés. Vous pouvez ensuite garder ou supprimer ce fichier portable.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">Mettre à jour l’installation existante de KillerShell pour tous les utilisateurs ?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Cette opération remplace la copie dans Program Files. Toute copie utilisateur distincte de ce compte est supprimée afin que KillerShell n’apparaisse qu’une seule fois. Vos paramètres et votre session enregistrée sont conservés.</sys:String>
     <sys:String x:Key="Str_Chk_Desktop">Raccourci sur le bureau</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Installer pour tous les utilisateurs (administrateur requis)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell est déjà installé pour tous les utilisateurs de ce PC ; cette copie sera donc mise à jour. Windows demandera l'autorisation.</sys:String>

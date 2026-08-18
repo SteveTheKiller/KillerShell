@@ -247,11 +247,14 @@ namespace KillerShell.Services
             // panes kept three rounded corners on 98SE no matter what the markup said.
             SetIfAbsent("PaneCornerRadiusValue", 6.0);
             SetIfAbsent("BarCornerRadiusValue", 5.0);
-            // The pane card's outer inset and its 1px ring, and the tab strip's inset. Defaults are
-            // exactly what FilePane.xaml had hardcoded, so the twelve rounded themes are untouched.
+            // The pane card and tab-strip insets.
             SetIfAbsent("PaneOuterMargin", new Thickness(0, -1, 8, 0));
             SetIfAbsent("TabBarMargin", new Thickness(0, 6, 8, 0));
-            SetIfAbsent("PaneEdgeThickness", new Thickness(1));
+            // Keep the pane's top and side rails. Only the BOTTOM rule follows scroll position:
+            // a fixed bottom line reads as the end of content while a tab is still scrolling,
+            // whereas the top rail is the pane's real frame and must remain present.
+            SetIfAbsent("PaneEdgeSideThickness", new Thickness(1, 1, 1, 0));
+            SetIfAbsent("PaneEdgeBottomThickness", new Thickness(0, 0, 0, 1));
             // The ACTIVE tab's dark bevel: BevelDarkThickness with the BOTTOM dropped, so the tab
             // opens into the content below it instead of ruling a line across the join. 0 here
             // rather than a computed "BevelDarkThickness minus its bottom" - on the twelve
@@ -329,9 +332,13 @@ namespace KillerShell.Services
             Mirror("ChipFaceBrush", "PaneBrush");
             Mirror("ChipHoverBrush", "RowHoverBrush");
             SetIfAbsent("ChromeFontFamily", new FontFamily("Segoe UI"));
+            SetIfAbsent("DialogWordmarkVisibility", Visibility.Visible);
+            SetIfAbsent("DialogPlainTitleVisibility", Visibility.Collapsed);
             SetIfAbsent("ContentPaneMargin", new Thickness(0));
             SetIfAbsent("DialogButtonsMargin", new Thickness(0));
             SetIfAbsent("DialogContentMargin", new Thickness(0));
+            SetIfAbsent("DialogOuterBorderThickness", new Thickness(1));
+            SetIfAbsent("DialogTitleBarPadding", new Thickness(14, 0, 14, 0));
             SetIfAbsent("DialogFieldMargin", new Thickness(0));
             // 10, the halo every dialog already reserved for its drop shadow. 98SE sets 0: it
             // casts no shadow, and an invisible 10px gutter would put the resize grab outside
@@ -456,10 +463,29 @@ namespace KillerShell.Services
             // the cells' own 6px MonitorTileMargin lands their edges at 8, flush with the info
             // panel above; 0 on 98SE so the cells run to the pane edge like every other well.
             SetIfAbsent("MonitorGridMargin", new Thickness(2, 0, 2, 5));
-            // The tool-tab grids' margin (Events/Processes) and the Registry split's own: the
-            // literals they replaced everywhere, 0 on 98SE so each sunken well is filled edge to
-            // edge and runs flush to the pane.
-            SetIfAbsent("ToolGridMargin", new Thickness(8, 0, 8, 8));
+            SetIfAbsent("PerformanceTabFootThickness", new Thickness(0));
+            // Space reserved INSIDE the Performance tab host for its classic page bevel. The
+            // ordinary themes have no bevel and no inset; 98SE reserves two physical pixels.
+            SetIfAbsent("PerformanceContentInset", new Thickness(0));
+            SetIfAbsent("PerformancePageFrameBrush", Transparent);
+            SetIfAbsent("PerformancePageFrameDarkBrush", Transparent);
+            SetIfAbsent("PerformancePageFrameLightBrush", Transparent);
+            SetIfAbsent("PerformancePageFrameDarkThickness", new Thickness(0));
+            SetIfAbsent("PerformancePageFrameLightThickness", new Thickness(0));
+            SetIfAbsent("OverlayCardBorderThickness", new Thickness(1));
+            SetIfAbsent("CheckBoxBackgroundBrush", combined["SurfaceBrush"]);
+            SetIfAbsent("CheckBoxCheckedBackgroundBrush", combined["PrimaryBrush"]);
+            SetIfAbsent("CheckBoxBorderBrush", combined["InputBorderBrush"]);
+            SetIfAbsent("CheckBoxCheckedBorderBrush", combined["PrimaryBrush"]);
+            SetIfAbsent("CheckBoxCheckBrush", combined["OnPrimaryBrush"]);
+            SetIfAbsent("CheckBoxGlyphSize", 10.0);
+            SetIfAbsent("CheckBoxSunkenDarkThickness", new Thickness(0));
+            SetIfAbsent("CheckBoxSunkenLightThickness", new Thickness(0));
+            // Tool grids retain their side insets, but no bottom gutter: when a horizontal
+            // scrollbar appears it should sit against the content edge, not float 8px above it.
+            // Processes already runs flush on the right. 98SE overrides both to zero throughout.
+            SetIfAbsent("ToolGridMargin", new Thickness(8, 0, 8, 0));
+            SetIfAbsent("ProcessGridMargin", new Thickness(8, 0, 0, 0));
             SetIfAbsent("RegSplitMargin", new Thickness(8, 0, 8, 6));
             SetIfAbsent("RegGridMargin",  new Thickness(6, 0, 0, 0));
             SetIfAbsent("RegSplitterWidth", 5.0);
@@ -774,7 +800,9 @@ namespace KillerShell.Services
                     { Color = Colors.Black, BlurRadius = 5, ShadowDepth = 5, Direction = 315, Opacity = 0.35 };
                     hard.Freeze();
                     combined["MenuShadowEffect"] = hard;
-                    combined["FlyoutCardEffect"] = hard;
+                    // Rail flyouts follow KillerNotes/KillerPDF: the 98SE card is a raised,
+                    // shadowless menu. Context menus and combo dropdowns keep their hard shadow.
+                    combined["FlyoutCardEffect"] = null;
                     combined["ComboPopupShadow"] = hard;
                 }
                 else
@@ -933,6 +961,11 @@ namespace KillerShell.Services
             // after the accent overlay, so it follows the picked accent like OnOutlineBtnBrush.
             if (!combined.Contains("TabActiveRingBrush"))
                 combined["TabActiveRingBrush"] = combined["PrimaryBrush"];
+
+            // A flat-theme checkbox keeps its white sunken well when selected, so its mark uses
+            // the live accent rather than the ordinary themes' on-accent foreground.
+            if (combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool flatCheck && flatCheck)
+                combined["CheckBoxCheckBrush"] = combined["PrimaryBrush"];
 
             // Selected DataGrid CELL text - see DarkDataGridCell: the PrimaryBrush its selected
             // trigger always set, so nothing changes off 98SE, which states white. HERE, after

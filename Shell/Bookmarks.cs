@@ -586,7 +586,7 @@ namespace KillerShell.Shell
             {
                 // Only when there IS an outgoing tab. This branch is reached two ways - a tab that
                 // cannot show a listing, or no tab at all - and in the second case there is
-                // nothing to capture; CaptureTab takes a non-null SearchTab (CS8604).
+                // nothing to capture; CaptureTab treats that empty lifecycle state as a no-op.
                 if (_active != null) CaptureTab(_active);   // Tabs.cs - outgoing tab keeps its state
                 ActivateTab(CreateTab());
             }

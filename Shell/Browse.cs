@@ -339,6 +339,10 @@ namespace KillerShell.Shell
             if (DemoMode)
             {
                 foreach (var e in Services.DemoFs.Children(folder))
+                {
+                    // Demo entries have no Windows attributes, but dot-name behavior must be
+                    // identical to a real folder so screenshots exercise the actual switch.
+                    if (!ShowHidden && e.Name.StartsWith(".", StringComparison.Ordinal)) continue;
                     list.Add(new SearchResult
                     {
                         FilePath    = Path.Combine(folder, e.Name),
@@ -349,6 +353,7 @@ namespace KillerShell.Shell
                         Modified    = e.Modified,
                         Seq         = seq++,
                     });
+                }
                 return list;
             }
 
@@ -372,7 +377,7 @@ namespace KillerShell.Shell
                     FileAttributes a;
                     try { a = e.Attributes; } catch { continue; }   // vanished mid-enumeration
 
-                    if (!ShowHidden && (a & FileAttributes.Hidden) != 0) continue;   // ViewOptions.cs
+                    if (ShouldHideListingEntry(e.Name, a)) continue;   // ViewOptions.cs
 
                     bool isDir = (a & FileAttributes.Directory) != 0;
                     list.Add(new SearchResult

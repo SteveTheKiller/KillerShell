@@ -62,8 +62,11 @@
                             BorderBrush="{DynamicResource ButtonEdgeBrush}" BorderThickness="0">
                         <Grid>
                             <Border x:Name="tint" CornerRadius="{DynamicResource ControlCornerRadius}" Background="Transparent"/>
-                            <!-- Black stroke behind the white-on-accent label, per the family rule (null on Light) -->
-                            <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" Effect="{DynamicResource TextStroke}"/>
+                            <!-- The resting accent label may use the family stroke; hover removes
+                                 it below so a brightened button never grows fuzzy text. -->
+                            <ContentPresenter x:Name="label" Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Effect="{DynamicResource TextStroke}"/>
                         </Grid>
                     </Border>
                     <!-- Raised bevel. Nothing on any theme but 98SE, where a default button is a
@@ -74,8 +77,14 @@
                             BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="tint" Property="Background" Value="#2EFFFFFF"/></Trigger>
-                        <Trigger Property="IsPressed" Value="True"><Setter TargetName="tint" Property="Background" Value="#38000000"/></Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="tint" Property="Background" Value="#2EFFFFFF"/>
+                            <Setter TargetName="label" Property="Effect" Value="{x:Null}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="tint" Property="Background" Value="#38000000"/>
+                            <Setter TargetName="label" Property="Effect" Value="{x:Null}"/>
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -104,8 +113,9 @@
                     <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{DynamicResource ControlCornerRadius}" Padding="{TemplateBinding Padding}">
-                        <!-- Black stroke so the label stays legible when hover turns it white-on-accent (null on Light) -->
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Effect="{DynamicResource TextStroke}"/>
+                        <ContentPresenter x:Name="label" HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Effect="{DynamicResource TextStroke}"/>
                     </Border>
                     <!-- Raised button bevel. Nothing on any theme but 98SE. -->
                     <Border IsHitTestVisible="False"
@@ -122,10 +132,12 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource OutlineHoverBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OutlineHoverTextBrush}"/>
+                            <Setter TargetName="label" Property="Effect" Value="{x:Null}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource OutlinePressedBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OutlineTextBrush}"/>
+                            <Setter TargetName="label" Property="Effect" Value="{x:Null}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
                     </ControlTemplate.Triggers>
@@ -1096,7 +1108,7 @@
 
     <!-- The card: fill, frame, radius, shadow-room margin and the shadow itself. -->
     <Style x:Key="FlyoutCard" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource BgFlyout}"/>
+        <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{DynamicResource PanelCornerRadius}"/>
@@ -1146,7 +1158,7 @@
     <Style x:Key="AccentDot" TargetType="Border">
         <Setter Property="Width" Value="18"/>
         <Setter Property="Height" Value="18"/>
-        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="CornerRadius" Value="{DynamicResource AccentSwatchCornerRadius}"/>
         <Setter Property="Margin" Value="0,0,7,0"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="BorderThickness" Value="2"/>
@@ -1174,7 +1186,7 @@
                          ellipse below is where it actually belongs; both are transparent on every
                          ordinary theme, so nothing changes there. -->
                     <Border x:Name="bd" Background="Transparent"
-                            CornerRadius="{DynamicResource SmallCornerRadius}"
+                            CornerRadius="3"
                             Margin="-8,0,2,0" Padding="10,4,10,4">
                         <!-- DockPanel (not a horizontal StackPanel) so the content fills the row
                              width, letting a right-aligned column (e.g. language codes) reach the
@@ -1196,11 +1208,6 @@
                             <Setter TargetName="dot" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="ring" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
-                            <Setter TargetName="bd" Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect Color="Black" BlurRadius="3" ShadowDepth="1" Direction="270" Opacity="0.5"/>
-                                </Setter.Value>
-                            </Setter>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="ring" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
@@ -1495,21 +1502,28 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <StackPanel Orientation="Horizontal" Background="Transparent">
-                        <Border x:Name="box" Width="15" Height="15" CornerRadius="{DynamicResource SmallCornerRadius}" VerticalAlignment="Center"
-                                Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource InputBorderBrush}" BorderThickness="1">
-                            <TextBlock x:Name="check" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                                       Foreground="{DynamicResource OnPrimaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        <Grid x:Name="box" Width="15" Height="15" VerticalAlignment="Center">
+                            <Border x:Name="boxFace" CornerRadius="{DynamicResource SmallCornerRadius}"
+                                    Background="{DynamicResource CheckBoxBackgroundBrush}"
+                                    BorderBrush="{DynamicResource CheckBoxBorderBrush}" BorderThickness="1"/>
+                            <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelDarkBrush}"
+                                    BorderThickness="{DynamicResource CheckBoxSunkenDarkThickness}"/>
+                            <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelLightBrush}"
+                                    BorderThickness="{DynamicResource CheckBoxSunkenLightThickness}"/>
+                            <TextBlock x:Name="check" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="{DynamicResource CheckBoxGlyphSize}"
+                                       Foreground="{DynamicResource CheckBoxCheckBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
                                        Visibility="Collapsed" Effect="{DynamicResource TextStrokeSoft}"/>
-                        </Border>
+                        </Grid>
                         <ContentPresenter Margin="7,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="box" Property="BorderBrush" Value="{DynamicResource InputHoverBrush}"/>
+                            <Setter TargetName="boxFace" Property="BorderBrush" Value="{DynamicResource InputHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="box" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                            <Setter TargetName="box" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="boxFace" Property="Background" Value="{DynamicResource CheckBoxCheckedBackgroundBrush}"/>
+                            <Setter TargetName="boxFace" Property="BorderBrush" Value="{DynamicResource CheckBoxCheckedBorderBrush}"/>
                             <Setter TargetName="check" Property="Visibility" Value="Visible"/>
                             <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
                         </Trigger>

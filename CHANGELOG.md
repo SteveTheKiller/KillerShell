@@ -4,38 +4,38 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.2] - Unreleased
+## [1.2.2] - 2026-08-18
+
+This release makes portable installs and updates safer, expands Storage Analyzer and ZIP workflows, completes localization and theme coverage, and gives the 98SE interface a substantial polish pass.
 
 ### Added
-- The folder tree has its own Show hidden folders menu option, independent of the file listing; it covers Hidden/System attributes and dot-prefixed folders and refreshes expanded branches in place.
-- Storage Analyzer scans can now be exported as self-contained HTML reports with the current filters, an SVG treemap, and ranked folder and file tables. Its file-type view also carries a compact color legend.
+- Storage Analyzer scans can now be exported as self-contained HTML reports with the current filters, an SVG treemap, ranked folder and file tables, and a compact file-type color legend.
 - ZIP archives now support creating empty folders, dragging complete folder trees out, and canceling any rewrite without changing the original archive.
-- The folder tree now lists every Windows drive, including mapped network drives. Reopening the sidebar discovers newly attached drives, and elevated windows can recover mappings Windows normally hides from them.
+- The folder tree has an independent Show hidden folders option and now lists every Windows drive, including mapped network drives; reopening the sidebar discovers new drives, and elevated windows can recover hidden mappings.
 - Recycling a folder now asks for confirmation. The prompt can be disabled from the About card; individual files still recycle without interruption, and permanent deletion always asks.
 - The About card now has Clear all Data, which removes saved preferences and temporary archive extractions without touching user files or the installation.
 
 ### Changed
-- The technical website now translates its administration navigation, heading, and Performance Monitor explanation in all ten supported locales instead of falling back to English.
-- Spanish, French, and Turkish website copy now restores its native diacritics from language dictionaries and the apps' reviewed locale corpus instead of shipping as ASCII-only text.
-- The website shortcut reference is now generated from the app's `KsAll` binding table and English resources, preventing the F1 card and help page from drifting apart.
-- The website's twelve current theme palettes are generated from the app's XAML resources and neutral-theme blue accent overlays; 98SE web geometry remains deliberately deferred.
-- Internal cancellation resource keys now use the same American spelling as their displayed text.
-- HTML reports now offer all thirteen app themes, loaded directly from the app's theme resources instead of a separate six-theme color table.
-- Themes are now complete, app-owned resources with no private template overlay or external build dependency.
-- Polish is now fully translated, and all ten non-English interfaces have complete string coverage, including Storage Analyzer and the latest file, tree, and performance commands.
+- All thirteen app themes are complete app-owned resources and are available in HTML reports; website palettes are generated from those same XAML resources. 98SE web geometry remains deliberately deferred.
+- Polish is now fully translated, and all ten non-English interfaces have complete string coverage, including Storage Analyzer, install/update prompts, and the latest file, tree, and performance commands.
+- The technical website now localizes its administration and Performance Monitor content, restores native Spanish, French, and Turkish diacritics, and generates its shortcut reference from the app's bindings and English resources.
 - Keyboard Shortcuts now stays inside the app window and scrolls when space is tight. It and the About card also share the family overlay spacing and close-button treatment.
-- UI polish across themes: clearer accent-button text, corrected Ectoplasm selection colors, thumbnail-only image shadows, small editor and terminal text insets, consistent About-card borders, and solid input surfaces that no longer re-ramp window gradients. Shadows remain disabled under 98SE.
-- 98SE toolbars now finish with a complete two-pixel dark right and bottom bevel instead of a mismatched one-pixel right edge.
-- The technical guide now explains the archive path handling that prevents Zip Slip extraction outside KillerShell's temporary folder.
+- UI polish includes clearer accent-button text without hover shadows, corrected Ectoplasm selections, thumbnail-only image shadows, improved editor and terminal insets, consistent About-card borders, solid input surfaces, and corrected 98SE toolbar bevels. Shadows remain disabled under 98SE.
+- Theme and language menus now sit above the footer consistently instead of opening too low against it, and the theme menu expands to fit its localized Fonts and File Associations commands.
+- The technical guide now documents KillerShell's Zip Slip protections, and internal cancellation resource keys use the same spelling as their displayed text.
 
 ### Fixed
+- Storage Analyzer opens normally again; initializing its new file-type legend no longer crashes the tab. Its tab uses the same theme-aware hard-drive artwork as the folder tree, its map is textured before and after scanning, and common data, package/game, font, and configuration files now use distinct colors instead of falling into gray Other blocks.
+- Portable installs now distinguish fresh installs from per-user and all-users updates, honor the desktop-shortcut choice, verify the installed file before relaunch, and enforce one installed copy. Machine-wide installs and uninstalls correctly elevate, clean up the current account's older copy and registrations, and remove shared files and shortcuts.
+- Performance Monitor tiles now form independent, gap-free columns with half-height graphs, a compact 2x2 hardware summary, varied metric colors, and one authoritative readout per value. Multi-series values live beside their legend keys, repeated field rows are gone, and full device names wrap on their own line. GPU memory shares one two-series plot. The 98SE tab has a full-width sunken frame that connects the card dividers and separates the active tab from the black client area.
+- Scrolling file and Performance views now shadow clipped edges through the scrollbar gutter, while dense tables dissolve their content instead; Event Viewer and Processes/Services keep their header edges clear and fade only at the bottom. Folder and Registry trees fade long content before the side scrollbar; Registry also gains a visible resize handle and a slimmer default tree. Pane frames retain their top and side rails while the bottom rule stays hidden until the true end; tool scrollbars sit against that lower edge, and Processes uses the full table width.
 - Dragging a real folder out of the listing no longer produces an empty drag payload; validation now accepts existing directories as well as files.
 - The places drawer sizes itself from its real row and padding geometry, so the final selected row keeps its rounded bottom corners instead of being clipped by hidden list chrome.
 - Process rows now stay in the correct order as live CPU or memory values change after sorting by either column.
-- File-list shortcuts now act only on the focused list and its current selection. Copy, cut, paste, select all, rename and both delete commands no longer target a stale right-clicked row or run while focus is in the tree or another pane.
-- Machine-wide uninstall now requests administrator access and removes the Program Files copy, shared Start Menu shortcut and HKLM registration.
-- Browsing tabs preserve live multi-row selections when switching tabs, changing panes or silently refreshing a folder.
-- Renamed files move to their correct sorted position while keeping their selection and details preview.
+- File-list shortcuts now act only on the focused list and current selection instead of a stale right-clicked row or another pane, and browsing tabs preserve live multi-row selections through tab changes and silent refreshes.
+- Tab state capture now tolerates the brief no-active-tab state used while panes are opened, emptied, moved, or closed instead of crashing during the transition.
+- Renamed files move to their correct sorted position while retaining selection and preview.
+- Show hidden/system now consistently includes or filters Windows Hidden and System items plus dot-prefixed files and folders, across initial listings, live updates, renames, and both panes.
 - Supported documents now use the bundled document icon instead of the KillerShell app logo.
 
 ## [1.2.1] - 2026-08-10

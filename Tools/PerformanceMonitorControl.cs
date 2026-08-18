@@ -57,7 +57,7 @@ namespace KillerShell.Tools
 
         private readonly DispatcherTimer _timer;
 
-        private readonly TextBlock _staticInfoText;
+        private readonly TextBlock[] _staticInfoTexts;
         private readonly TextBlock _statusLine;
         private readonly DispatcherTimer _statusClearTimer;
 
@@ -129,7 +129,7 @@ namespace KillerShell.Tools
             SetRowSpan(rootGrain, 3);
             Children.Add(rootGrain);
 
-            var staticPanel = BuildStaticInfoPanel(out _staticInfoText);
+            var staticPanel = BuildStaticInfoPanel(out _staticInfoTexts);
             SetRow(staticPanel, 0);
             Children.Add(staticPanel);
 
@@ -501,11 +501,10 @@ namespace KillerShell.Tools
         private void ApplyStaticInfo(HardwareInfo info)
         {
             _totalRamGb = info.TotalRamGb;
-            _staticInfoText.Text =
-                "CPU   " + info.Cpu + "\n" +
-                "RAM   " + info.Ram + "\n" +
-                "GPU   " + info.Gpu + "\n" +
-                "NET   " + info.Network;
+            _staticInfoTexts[0].Text = "CPU   " + info.Cpu;
+            _staticInfoTexts[1].Text = "RAM   " + info.Ram;
+            _staticInfoTexts[2].Text = "GPU   " + info.Gpu;
+            _staticInfoTexts[3].Text = "NET   " + info.Network;
 
             BuildTiles(info);
         }
@@ -513,21 +512,35 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  BUILD - static info panel
         // ═══════════════════════════════════════════════════════════
-        private static Border BuildStaticInfoPanel(out TextBlock text)
+        private static Border BuildStaticInfoPanel(out TextBlock[] texts)
         {
-            text = new TextBlock
+            texts = new TextBlock[4];
+            var infoGrid = new Grid { Margin = new Thickness(12, 8, 12, 8) };
+            infoGrid.ColumnDefinitions.Add(new ColumnDefinition
+                { Width = new GridLength(1, GridUnitType.Star) });
+            infoGrid.ColumnDefinitions.Add(new ColumnDefinition
+                { Width = new GridLength(1, GridUnitType.Star) });
+            infoGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            infoGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            string[] initial = ["CPU   -", "RAM   -", "GPU   -", "NET   -"];
+            for (int i = 0; i < texts.Length; i++)
             {
-                FontSize = 12,
-                TextWrapping = TextWrapping.Wrap,
-                Text = "CPU   -\nRAM   -\nGPU   -\nNET   -",
-            };
-            text.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            // Monitor* text brushes, not TextBrush/MutedTextBrush: everything in this control
-            // that sits ON a MonitorCellBrush surface uses them. They mirror the plain text
-            // brushes on every ordinary theme, but 98SE paints its cells BLACK (little CRT
-            // readouts) while its TextBrush is black too - invisible. There they are the retro
-            // phosphor greens instead.
-            text.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+                var text = new TextBlock
+                {
+                    FontSize = 12,
+                    TextWrapping = TextWrapping.Wrap,
+                    Text = initial[i],
+                    Margin = new Thickness(i % 2 == 0 ? 0 : 12, 1, 0, 1),
+                };
+                text.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+                // Monitor* brushes keep the black 98SE phosphor panel readable too.
+                text.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+                SetColumn(text, i % 2);
+                SetRow(text, i / 2);
+                infoGrid.Children.Add(text);
+                texts[i] = text;
+            }
 
             var infoRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4));
 
@@ -544,13 +557,12 @@ namespace KillerShell.Tools
             // rectangle would paint noise into the four rounded corners the face leaves empty.
             infoGrain.CornerRadius = infoRadius;
 
-            // The padding moves off the Border and onto the text, because a Border's Padding
+            // The padding moves off the Border and onto the grid, because a Border's Padding
             // insets its WHOLE child - grain included - which would leave an untextured ring
             // inside the panel's edge.
-            text.Margin = new Thickness(12, 10, 12, 10);
             var infoHost = new Grid();
             infoHost.Children.Add(infoGrain);
-            infoHost.Children.Add(text);
+            infoHost.Children.Add(infoGrid);
 
             var panel = new Border
             {
@@ -606,32 +618,61 @@ namespace KillerShell.Tools
         }
 
         /// <summary>
-        /// Flows the cells into the two-column grid in _tiles order: a 1-wide cell takes the
-        /// next free half-row, a 2-wide cell takes a whole row (starting a fresh one if the
-        /// current row is half full). Rebuilds Grid.Row/Column/ColumnSpan only - the cell
-        /// elements themselves are built ONCE and keep their graph history across every
-        /// re-layout, which is the whole reason this tab survives reordering without wiping
-        /// a minute of samples.
+        /// Flows one-wide cells into two INDEPENDENT vertical stacks. A shared Grid row takes the
+        /// height of its taller child, which left a gray block under a shorter Network/CPU tile
+        /// whenever the disk opposite it was taller. Independent stacks let the divider positions
+        /// differ on the left and right and make each column butt together continuously.
+        ///
+        /// A two-wide tile closes the current two-column band, spans the complete width, then
+        /// starts a new independent band below it. Cell elements are moved, never rebuilt, so
+        /// graph history survives every reorder and width toggle.
         /// </summary>
         private void LayoutCells()
         {
+            // Detach the reusable cell Borders from the nested stack panels created by the last
+            // layout. Clearing only _cellsGrid would orphan that tree while leaving each Border's
+            // logical parent intact, and WPF refuses to add an element to a second parent.
+            foreach (var tile in _tiles)
+                if (tile.CellBorder.Parent is Panel oldParent)
+                    oldParent.Children.Remove(tile.CellBorder);
+
             _cellsGrid.Children.Clear();
             _cellsGrid.RowDefinitions.Clear();
+            var flow = new StackPanel { Orientation = Orientation.Vertical };
+            SetColumnSpan(flow, 2);
+            _cellsGrid.Children.Add(flow);
 
-            int row = 0, col = 0;
+            StackPanel? left = null, right = null;
+            int nextColumn = 0;
+
+            void StartBand()
+            {
+                var band = new Grid();
+                band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                left = new StackPanel { Orientation = Orientation.Vertical };
+                right = new StackPanel { Orientation = Orientation.Vertical };
+                SetColumn(left, 0);
+                SetColumn(right, 1);
+                band.Children.Add(left);
+                band.Children.Add(right);
+                flow.Children.Add(band);
+                nextColumn = 0;
+            }
+
             foreach (var tile in _tiles)
             {
-                int span = tile.ColSpan;
-                if (span == 2 && col == 1) { row++; col = 0; }   // full-width starts its own row
-                if (col == 0) _cellsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                if (tile.ColSpan == 2)
+                {
+                    flow.Children.Add(tile.CellBorder);
+                    left = right = null;       // next narrow tile begins a fresh band
+                    nextColumn = 0;
+                    continue;
+                }
 
-                SetRow(tile.CellBorder, row);
-                SetColumn(tile.CellBorder, col);
-                SetColumnSpan(tile.CellBorder, span);
-                _cellsGrid.Children.Add(tile.CellBorder);
-
-                col += span;
-                if (col >= 2) { row++; col = 0; }
+                if (left == null || right == null) StartBand();
+                (nextColumn == 0 ? left! : right!).Children.Add(tile.CellBorder);
+                nextColumn = 1 - nextColumn;
             }
         }
 
@@ -685,12 +726,13 @@ namespace KillerShell.Tools
             return tb;
         }
 
-        /// <summary>Small color-dot + label legend under a two-tone graph - the tile's own
-        /// one-line summary already spells out which number is which, so this is a quick visual
-        /// key, not the only place the mapping is written down.</summary>
-        private static UIElement BuildLegend(params (string BrushKey, string LabelKey)[] entries)
+        /// <summary>Small color-dot + label + live value under a multi-series graph. This is the
+        /// one authoritative readout for those series: no duplicate value strip below it.</summary>
+        private static UIElement BuildLegend(out TextBlock[] valueBlocks,
+            params (string BrushKey, string LabelKey)[] entries)
         {
-            var panel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 4) };
+            var panel = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 4) };
+            var values = new List<TextBlock>(entries.Length);
             foreach (var (brushKey, labelKey) in entries)
             {
                 var item = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 16, 0) };
@@ -707,14 +749,20 @@ namespace KillerShell.Tools
                 text.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
                 text.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
                 text.SetResourceReference(TextBlock.TextProperty, labelKey);
+                var value = new TextBlock { FontSize = 10.5, Text = "-", Margin = new Thickness(5, 0, 0, 0) };
+                value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+                value.SetResourceReference(TextBlock.ForegroundProperty, brushKey);
                 item.Children.Add(dot);
                 item.Children.Add(text);
+                item.Children.Add(value);
                 panel.Children.Add(item);
+                values.Add(value);
             }
+            valueBlocks = [.. values];
             return panel;
         }
 
-        private static UIElement BuildField(string labelKey, out TextBlock valueBlock)
+        private static UIElement BuildField(string labelKey, string valueBrushKey, out TextBlock valueBlock)
         {
             var label = new TextBlock { FontSize = 10 };
             label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
@@ -723,7 +771,7 @@ namespace KillerShell.Tools
 
             var value = new TextBlock { FontSize = 12, Margin = new Thickness(0, 2, 0, 0), Text = "-" };
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            value.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+            value.SetResourceReference(TextBlock.ForegroundProperty, valueBrushKey);
 
             // No MinWidth (the UniformGrid's equal thirds size the cells) and only a whisker of
             // bottom margin - the strip is the last thing in the card and rides the body inset.
@@ -749,10 +797,15 @@ namespace KillerShell.Tools
             internal string Description = "-";
             internal Border CellBorder = null!;
             internal TextBlock TileSummaryText = null!;   // the live one-liner beside the cell title
+            internal string SummaryBrushKey = "MonitorMutedBrush";
+            internal bool ShowSummary = true;
+            internal bool ShowDescription = true;
+            internal TextBlock[] LegendValueBlocks = [];
             internal TextBlock[] FieldValueBlocks = [];   // per-cell, built with the cell, always live
             internal Sparkline[] BigGraphs = [];
             internal string[] GraphCaptionKeys = [];
             internal string[] FieldLabelKeys = [];
+            internal string[] FieldBrushKeys = [];
             internal string[] FieldValues = [];
             internal object? State;
         }
@@ -896,12 +949,13 @@ namespace KillerShell.Tools
             cs.GraphArea.MouseLeftButtonDown += (_, _) => cs.GraphArea.Focus();
 
             tile.State = cs;
-            // Cores and logical processors share one field ("6C / 12T", the header's own notation),
-            // so the strip is exactly one three-across row: Utilization, Cores, Base speed.
-            tile.FieldLabelKeys = ["Str_Perf_Utilization", "Str_Perf_Cores", "Str_Perf_BaseSpeed"];
+            tile.SummaryBrushKey = "PrimaryBrush";
+            // Utilization already lives beside CPU in the header and labels the graph. The only
+            // non-repeated facts below it are the core count and base speed.
+            tile.FieldLabelKeys = ["Str_Perf_Cores", "Str_Perf_BaseSpeed"];
+            tile.FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush"];
             tile.FieldValues =
             [
-                "-",
                 info.CpuCores > 0 && info.CpuThreads > 0
                     ? info.CpuCores.ToString(CultureInfo.InvariantCulture) + "C / "
                       + info.CpuThreads.ToString(CultureInfo.InvariantCulture) + "T"
@@ -921,10 +975,14 @@ namespace KillerShell.Tools
                 Label = MainWindow.LocStatic("Str_Perf_Ram"),
                 Description = info.Ram,
                 State = new RamState(),
+                SummaryBrushKey = "TypeWindows",
+                ShowDescription = false, // total installed already appears in the headline
                 GraphCaptionKeys = ["Str_Perf_Utilization"],
-                BigGraphs = [new Sparkline(HistorySamples, 100, "PrimaryBrush")],
-                FieldLabelKeys = ["Str_Perf_InUse", "Str_Perf_Available", "Str_Perf_Committed"],
-                FieldValues = ["-", "-", "-"],
+                BigGraphs = [new Sparkline(HistorySamples, 100, "TypeWindows")],
+                // In use is already the complete headline (used / total and percentage).
+                FieldLabelKeys = ["Str_Perf_Available", "Str_Perf_Committed"],
+                FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush"],
+                FieldValues = ["-", "-"],
             };
 
             return tile;
@@ -946,17 +1004,20 @@ namespace KillerShell.Tools
                 Label = label,
                 Description = d.Model,
                 State = new DiskState { InstanceName = d.InstanceName },
-                GraphCaptionKeys = ["Str_Perf_ActiveTime", "Str_Perf_TransferRate"],
+                SummaryBrushKey = "WarnBrush",
+                // Transfer rate is already identified by the Read/Write legend below its graph.
+                GraphCaptionKeys = ["Str_Perf_ActiveTime"],
                 // Read = accent (the app's own "primary flow" color everywhere else), Write = the
                 // family's second bright, theme-stable color (TypeWindows, reused from KillerScan's
                 // device-type palette) - same two-color convention as the network graph below.
                 BigGraphs =
                 [
-                    new Sparkline(HistorySamples, 100, "PrimaryBrush"),
+                    new Sparkline(HistorySamples, 100, "WarnBrush"),
                     new Sparkline(HistorySamples, 0, "PrimaryBrush", "TypeWindows"),
                 ],
-                FieldLabelKeys = ["Str_Perf_ActiveTime", "Str_Perf_ReadSpeed", "Str_Perf_WriteSpeed"],
-                FieldValues = ["-", "-", "-"],
+                FieldLabelKeys = [],
+                FieldBrushKeys = [],
+                FieldValues = [],
             };
 
             return tile;
@@ -972,12 +1033,13 @@ namespace KillerShell.Tools
                 Label = label,
                 Description = instanceName,
                 State = new NetState { InstanceName = instanceName },
-                GraphCaptionKeys = ["Str_Perf_Throughput"],
-                // Send = TypeWindows (blue), Receive = PrimaryBrush (accent) - two clearly distinct
-                // shades, not two near-identical greens, matching the tile's own "S: x R: y" summary.
-                BigGraphs = [new Sparkline(HistorySamples, 0, "TypeWindows", "PrimaryBrush")],
-                FieldLabelKeys = ["Str_Perf_Send", "Str_Perf_Receive"],
-                FieldValues = ["-", "-"],
+                ShowSummary = false,
+                // The legend immediately under this graph names both series, so it needs no
+                // duplicate Throughput caption above it. Send = blue, Receive = theme-aware green.
+                BigGraphs = [new Sparkline(HistorySamples, 0, "TypeWindows", "OkBrush")],
+                FieldLabelKeys = [],
+                FieldBrushKeys = [],
+                FieldValues = [],
             };
 
             return tile;
@@ -993,24 +1055,30 @@ namespace KillerShell.Tools
                 Label = MainWindow.LocStatic("Str_Perf_Gpu") + " " + index,
                 Description = name,
                 State = gs,
+                SummaryBrushKey = "OkBrush",
             };
 
-            var utilGraph = new Sparkline(HistorySamples, 100, "PrimaryBrush");
+            var utilGraph = new Sparkline(HistorySamples, 100, "OkBrush");
             if (gs.MemoryAvailable)
             {
-                var dedicated = new Sparkline(HistorySamples, 0, "PrimaryBrush");
-                var shared = new Sparkline(HistorySamples, 0, "TypeWindows");
-                tile.BigGraphs = [utilGraph, dedicated, shared];
-                tile.GraphCaptionKeys = ["Str_Perf_Utilization", "Str_Perf_DedicatedMemory", "Str_Perf_SharedMemory"];
-                tile.FieldLabelKeys = ["Str_Perf_Utilization", "Str_Perf_DedicatedMemory", "Str_Perf_SharedMemory"];
-                tile.FieldValues = ["-", "-", "-"];
+                // Dedicated and shared memory use the same byte scale, so they belong in one
+                // two-series plot. The colored legend below identifies both lines; repeating
+                // those labels as graph captions only spends vertical space and separates data
+                // that is easier to compare when overlaid.
+                var memory = new Sparkline(HistorySamples, 0, "PrimaryBrush", "TypeWindows");
+                tile.BigGraphs = [utilGraph, memory];
+                tile.GraphCaptionKeys = ["Str_Perf_Utilization"];
+                tile.FieldLabelKeys = [];
+                tile.FieldBrushKeys = [];
+                tile.FieldValues = [];
             }
             else
             {
                 tile.BigGraphs = [utilGraph];
                 tile.GraphCaptionKeys = ["Str_Perf_Utilization"];
-                tile.FieldLabelKeys = ["Str_Perf_Utilization"];
-                tile.FieldValues = ["-"];
+                tile.FieldLabelKeys = [];
+                tile.FieldBrushKeys = [];
+                tile.FieldValues = [];
             }
 
             return tile;
@@ -1020,8 +1088,8 @@ namespace KillerShell.Tools
         //  CELLS  -  build, width toggle, drag-to-reorder
         // ═══════════════════════════════════════════════════════════
         /// <summary>
-        /// Builds the tile's CELL: header (title + live summary left, description right, width
-        /// toggle at the edge - and the header is the DRAG HANDLE), then the big graph(s),
+        /// Builds the tile's CELL: header (title + live summary + toggles), a full-width device
+        /// name when the metric has one, then the big graph(s),
         /// legend and numeric fields, all always live. Built ONCE per tile; LayoutCells only
         /// ever re-parents the finished Border, so graph history survives every reorder and
         /// width change.
@@ -1034,19 +1102,23 @@ namespace KillerShell.Tools
             title.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
             var summary = new TextBlock
-            { FontSize = 11, Text = "-", Margin = new Thickness(10, 0, 0, 2), VerticalAlignment = VerticalAlignment.Bottom };
+            {
+                FontSize = 11, Text = tile.ShowSummary ? "-" : string.Empty,
+                Visibility = tile.ShowSummary ? Visibility.Visible : Visibility.Collapsed,
+                Margin = new Thickness(10, 0, 0, 2), VerticalAlignment = VerticalAlignment.Bottom
+            };
             summary.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            summary.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
+            summary.SetResourceReference(TextBlock.ForegroundProperty, tile.SummaryBrushKey);
             tile.TileSummaryText = summary;
 
-            // Ellipsis, not wrap: a half-width cell cannot spare three lines for a chipset's
-            // full marketing name - the full string rides the tooltip.
+            // Hardware/adapter names get their own line. Sharing the header's leftover column
+            // truncated the information people use to tell two disks, GPUs or NICs apart.
             var description = new TextBlock
             {
                 FontSize = 11, Text = tile.Description, ToolTip = tile.Description,
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom,
-                Margin = new Thickness(10, 0, 8, 2),
+                TextWrapping = TextWrapping.Wrap,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(0, 3, 0, 0),
             };
             description.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             description.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
@@ -1064,18 +1136,17 @@ namespace KillerShell.Tools
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             SetColumn(title, 0);
             SetColumn(summary, 1);
-            SetColumn(description, 2);
             SetColumn(heightBtn, 3);
             SetColumn(widthBtn, 4);
             header.Children.Add(title);
             header.Children.Add(summary);
-            header.Children.Add(description);
             header.Children.Add(heightBtn);
             header.Children.Add(widthBtn);
             WireCellDrag(header, tile);
 
             var body = new StackPanel();
             body.Children.Add(header);
+            if (tile.ShowDescription) body.Children.Add(description);
 
             if (tile.Kind == MetricKind.Cpu)
             {
@@ -1089,6 +1160,8 @@ namespace KillerShell.Tools
                 {
                     if (i < tile.GraphCaptionKeys.Length)
                         body.Children.Add(BuildGraphCaption(tile.GraphCaptionKeys[i]));
+                    else
+                        tile.BigGraphs[i].Host.Margin = new Thickness(0, 6, 0, 0);
                     body.Children.Add(tile.BigGraphs[i].Host);
                 }
             }
@@ -1100,23 +1173,35 @@ namespace KillerShell.Tools
             ApplyGraphHeights(tile);
 
             if (tile.Kind == MetricKind.Network)
-                body.Children.Add(BuildLegend(("TypeWindows", "Str_Perf_Send"), ("PrimaryBrush", "Str_Perf_Receive")));
+                body.Children.Add(BuildLegend(out tile.LegendValueBlocks,
+                    ("TypeWindows", "Str_Perf_Send"), ("OkBrush", "Str_Perf_Receive")));
             else if (tile.Kind == MetricKind.Disk)
-                body.Children.Add(BuildLegend(("PrimaryBrush", "Str_Perf_ReadSpeed"), ("TypeWindows", "Str_Perf_WriteSpeed")));
-            else if (tile.Kind == MetricKind.Gpu && tile.BigGraphs.Length >= 3)
-                body.Children.Add(BuildLegend(("PrimaryBrush", "Str_Perf_DedicatedMemory"), ("TypeWindows", "Str_Perf_SharedMemory")));
+                body.Children.Add(BuildLegend(out tile.LegendValueBlocks,
+                    ("PrimaryBrush", "Str_Perf_ReadSpeed"), ("TypeWindows", "Str_Perf_WriteSpeed")));
+            else if (tile.Kind == MetricKind.Gpu && tile.BigGraphs.Length >= 2)
+                body.Children.Add(BuildLegend(out tile.LegendValueBlocks,
+                    ("PrimaryBrush", "Str_Perf_DedicatedMemory"), ("TypeWindows", "Str_Perf_SharedMemory")));
 
             // A fixed three-across strip, not a WrapPanel: equal thirds always fit one row per
             // three fields whatever the cell width, so the strip stays one line high on every
             // standard card instead of wrapping into a second row at half width.
-            var fields = new UniformGrid { Columns = 3, Margin = new Thickness(0, 6, 0, 0) };
-            tile.FieldValueBlocks = new TextBlock[tile.FieldLabelKeys.Length];
-            for (int i = 0; i < tile.FieldLabelKeys.Length; i++)
+            if (tile.FieldLabelKeys.Length > 0)
             {
-                fields.Children.Add(BuildField(tile.FieldLabelKeys[i], out var valueBlock));
-                tile.FieldValueBlocks[i] = valueBlock;
+                var fields = new UniformGrid
+                {
+                    Columns = Math.Min(3, tile.FieldLabelKeys.Length),
+                    Margin = new Thickness(0, 2, 0, 0)
+                };
+                tile.FieldValueBlocks = new TextBlock[tile.FieldLabelKeys.Length];
+                for (int i = 0; i < tile.FieldLabelKeys.Length; i++)
+                {
+                    string brushKey = i < tile.FieldBrushKeys.Length
+                        ? tile.FieldBrushKeys[i] : "MonitorTextBrush";
+                    fields.Children.Add(BuildField(tile.FieldLabelKeys[i], brushKey, out var valueBlock));
+                    tile.FieldValueBlocks[i] = valueBlock;
+                }
+                body.Children.Add(fields);
             }
-            body.Children.Add(fields);
 
             var cellRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4));
 
@@ -1161,13 +1246,14 @@ namespace KillerShell.Tools
         }
 
         /// <summary>Every graph height in one place, called at build and by the header's height
-        /// toggle: full graphs are 120px (70 when a tile stacks several), short ones half that.
+        /// toggle: normal graphs are a compact 60px (35 when a tile stacks several); the optional
+        /// short state trims them further without crushing the logical-CPU grid into slivers.
         /// The CPU tile sets BOTH the area and the aggregate host (see the comment at the
         /// BuildCell call site); the per-core grid needs nothing - its hosts stretch.</summary>
         private static void ApplyGraphHeights(MetricTile tile)
         {
-            double single = tile.ShortGraphs ? 60 : 120;
-            double multi  = tile.ShortGraphs ? 35 : 70;
+            double single = tile.ShortGraphs ? 42 : 60;
+            double multi  = tile.ShortGraphs ? 24 : 35;
             if (tile.Kind == MetricKind.Cpu && tile.State is CpuState cs)
             {
                 cs.GraphArea.Height = single;
@@ -1517,7 +1603,6 @@ namespace KillerShell.Tools
                 double pct = Math.Min(100, Math.Max(0, cs.Total.NextValue()));
                 tile.TileSummaryText.Text = pct.ToString("0.0", CultureInfo.InvariantCulture) + " %";
                 cs.AggregateGraph.Push(pct);
-                tile.FieldValues[0] = pct.ToString("0.0", CultureInfo.InvariantCulture) + " %";
 
                 if (cs.ShowCores)
                     for (int i = 0; i < cs.CoreCounters.Length; i++)
@@ -1548,8 +1633,7 @@ namespace KillerShell.Tools
                         pct.ToString("0", CultureInfo.InvariantCulture) + "%)";
                     double clamped = Math.Min(100, pct);
                     if (tile.BigGraphs.Length > 0) tile.BigGraphs[0].Push(clamped);
-                    tile.FieldValues[0] = usedGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
-                    tile.FieldValues[1] = availGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+                    tile.FieldValues[0] = availGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
                 }
                 else
                 {
@@ -1559,7 +1643,7 @@ namespace KillerShell.Tools
                 if (rs.Committed != null)
                 {
                     double committedMb = rs.Committed.NextValue() / 1024.0 / 1024.0;
-                    tile.FieldValues[2] = (committedMb / 1024.0).ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+                    tile.FieldValues[1] = (committedMb / 1024.0).ToString("0.0", CultureInfo.InvariantCulture) + " GB";
                 }
 
                 RefreshDetailFieldValues(tile);
@@ -1579,9 +1663,11 @@ namespace KillerShell.Tools
                 tile.TileSummaryText.Text = activePct.ToString("0", CultureInfo.InvariantCulture) + " %";
                 tile.BigGraphs[0].Push(activePct);
                 tile.BigGraphs[1].Push(readBps, writeBps);
-                tile.FieldValues[0] = activePct.ToString("0", CultureInfo.InvariantCulture) + " %";
-                tile.FieldValues[1] = FormatThroughput(readBps);
-                tile.FieldValues[2] = FormatThroughput(writeBps);
+                if (tile.LegendValueBlocks.Length >= 2)
+                {
+                    tile.LegendValueBlocks[0].Text = FormatThroughput(readBps);
+                    tile.LegendValueBlocks[1].Text = FormatThroughput(writeBps);
+                }
 
                 RefreshDetailFieldValues(tile);
             }
@@ -1596,10 +1682,12 @@ namespace KillerShell.Tools
                 double sent = ns.Sent?.NextValue() ?? 0;
                 double recv = ns.Recv?.NextValue() ?? 0;
 
-                tile.TileSummaryText.Text = "S: " + FormatThroughput(sent) + "  R: " + FormatThroughput(recv);
+                if (tile.LegendValueBlocks.Length >= 2)
+                {
+                    tile.LegendValueBlocks[0].Text = FormatThroughput(sent);
+                    tile.LegendValueBlocks[1].Text = FormatThroughput(recv);
+                }
                 tile.BigGraphs[0].Push(sent, recv);
-                tile.FieldValues[0] = FormatThroughput(sent);
-                tile.FieldValues[1] = FormatThroughput(recv);
 
                 RefreshDetailFieldValues(tile);
             }
@@ -1793,14 +1881,15 @@ namespace KillerShell.Tools
 
             tile.BigGraphs[0].Push(util);
             tile.TileSummaryText.Text = util.ToString("0", CultureInfo.InvariantCulture) + " %";
-            tile.FieldValues[0] = util.ToString("0", CultureInfo.InvariantCulture) + " %";
 
-            if (gs.MemoryAvailable && tile.BigGraphs.Length >= 3)
+            if (gs.MemoryAvailable && tile.BigGraphs.Length >= 2)
             {
-                tile.BigGraphs[1].Push(dedicatedBytes);
-                tile.BigGraphs[2].Push(sharedBytes);
-                tile.FieldValues[1] = FormatBytes(dedicatedBytes);
-                tile.FieldValues[2] = FormatBytes(sharedBytes);
+                tile.BigGraphs[1].Push(dedicatedBytes, sharedBytes);
+                if (tile.LegendValueBlocks.Length >= 2)
+                {
+                    tile.LegendValueBlocks[0].Text = FormatBytes(dedicatedBytes);
+                    tile.LegendValueBlocks[1].Text = FormatBytes(sharedBytes);
+                }
             }
 
             RefreshDetailFieldValues(tile);

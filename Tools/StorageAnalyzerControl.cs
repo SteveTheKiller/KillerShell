@@ -230,8 +230,6 @@ namespace KillerShell.Tools
             SetRow(bar, 0);
             Children.Add(bar);
 
-            SyncViewButtons();
-
             // ── Row 1: breadcrumb of the zoom root ───────────────
             _breadcrumb = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(10, 0, 10, 4), Visibility = Visibility.Collapsed };
             SetRow(_breadcrumb, 1);
@@ -300,6 +298,11 @@ namespace KillerShell.Tools
             footer.Children.Add(_footerRight);
             SetRow(footer, 3);
             Children.Add(footer);
+
+            // Every control touched by this method must exist first. In particular, the
+            // category legend was added after the toolbar and the old call above ran before its
+            // readonly field was assigned, crashing the tab during construction.
+            SyncViewButtons();
 
             _progressTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
             _progressTimer.Tick += (_, _) => UpdateProgressText();
@@ -793,6 +796,11 @@ namespace KillerShell.Tools
                 _mapLayer = new MapLayer(owner);
                 _overlayLayer = new OverlayLayer(owner) { IsHitTestVisible = false };
                 Children.Add(_mapLayer);
+                // The map well is its own opaque surface, so the root grain sits underneath it
+                // and disappears. Repaint grain here: it gives the empty pre-scan canvas the
+                // same texture as the rest of the tab and gently unifies the colored blocks once
+                // a map exists. The selection/hover overlay stays above it and remains crisp.
+                Children.Add(ToolTabChrome.Grain());
                 Children.Add(_overlayLayer);
             }
 
@@ -1032,19 +1040,24 @@ namespace KillerShell.Tools
         }
 
         // Extension -> category color, the family neon set so the map reads in the same voice
-        // as the shortcuts overlays. "Other" is deliberately gray: color means "identified".
+        // as the shortcuts overlays. Only genuinely unknown/extensionless files remain gray;
+        // common data, package/game, font and configuration files have their own families too.
         private static readonly Dictionary<string, string> ExtCategory = BuildExtCategories();
         private static Dictionary<string, string> BuildExtCategories()
         {
             var d = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             void Add(string cat, string exts) { foreach (var e in exts.Split(' ')) d[e] = cat; }
-            Add("img", "png jpg jpeg gif bmp webp ico svg tif tiff raw heic psd xcf");
-            Add("vid", "mp4 mkv avi mov wmv flv webm m4v mpg mpeg ts vob");
-            Add("aud", "mp3 wav flac ogg m4a wma aac opus mid");
-            Add("doc", "pdf doc docx xls xlsx ppt pptx odt ods odp txt md rtf csv epub one");
-            Add("arc", "zip rar 7z tar gz bz2 xz iso cab wim vhd vhdx img");
-            Add("code", "cs js ts py cpp c h hpp html css xaml json xml yml yaml sql ps1 psm1 sh bat cmd java rs go rb lua");
-            Add("sys", "exe dll sys msi ocx drv efi mui winmd pdb lib obj");
+            Add("img", "png jpg jpeg gif bmp webp ico svg tif tiff raw heic heif avif jxl psd xcf kra");
+            Add("vid", "mp4 mkv avi mov wmv flv webm m4v mpg mpeg ts mts m2ts vob 3gp ogv");
+            Add("aud", "mp3 wav flac ogg m4a wma aac opus mid midi aif aiff alac ape");
+            Add("doc", "pdf doc docx xls xlsx ppt pptx odt ods odp txt md rtf csv epub mobi azw azw3 one msg eml tex");
+            Add("arc", "zip rar 7z tar gz bz2 xz zst tgz tbz2 txz iso cab wim vhd vhdx vdi vmdk qcow qcow2 img");
+            Add("code", "cs fs fsx vb js jsx ts tsx py cpp c h hpp html css xaml json xml yml yaml sql ps1 psm1 sh bat cmd java rs go rb lua php swift kt kts dart scala vue svelte razor cshtml");
+            Add("sys", "exe dll sys msi msp msix appx ocx drv efi mui winmd pdb lib obj lnk scr cpl");
+            Add("data", "db db3 sqlite sqlite3 mdb accdb dbf dat bin blob cache index edb ldf mdf ndf log evtx etl trace dmp dump bak tmp temp ost pst");
+            Add("pkg", "archive pak vpk cpk bundle bundles asset assets resource resources unity3d uasset uexp ubulk utoc ucas pck");
+            Add("font", "ttf otf woff woff2 eot fon fnt");
+            Add("cfg", "ini cfg conf config toml properties reg inf manifest lock");
             return d;
         }
 
@@ -1067,6 +1080,10 @@ namespace KillerShell.Tools
             "arc"  => Color.FromRgb(0xFF, 0x8C, 0x00),
             "code" => Color.FromRgb(0x39, 0xC8, 0x14),
             "sys"  => Color.FromRgb(0xC8, 0x3C, 0x38),
+            "data" => Color.FromRgb(0x2D, 0x8C, 0xFF),
+            "pkg"  => Color.FromRgb(0xFF, 0x5C, 0x8A),
+            "font" => Color.FromRgb(0xB9, 0x8A, 0xFF),
+            "cfg"  => Color.FromRgb(0x00, 0xA8, 0x78),
             _      => Color.FromRgb(0x6E, 0x6E, 0x6E),
         };
 
@@ -1075,7 +1092,8 @@ namespace KillerShell.Tools
             var row = new WrapPanel { Margin = new Thickness(7, 4, 7, 4) };
             foreach (var item in new[] { ("img", ".jpg"), ("vid", ".mp4"), ("aud", ".mp3"),
                          ("doc", ".pdf"), ("arc", ".zip"), ("code", ".cs"),
-                         ("sys", ".exe"), ("oth", "...") })
+                         ("sys", ".exe"), ("data", ".db"), ("pkg", ".pak"),
+                         ("font", ".ttf"), ("cfg", ".ini"), ("oth", "...") })
             {
                 var entry = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 10, 0) };
                 entry.Children.Add(new Border { Width = 9, Height = 9, Margin = new Thickness(0, 3, 4, 0), Background = new SolidColorBrush(CategoryColor(item.Item1)) });

@@ -1539,8 +1539,45 @@ namespace KillerShell.Shell
         // just stops sitting on top of it. Dispatched so the badge has been arranged and has a
         // real ActualWidth by the time the clamp reads it.
         private void PortableBadge_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-            => Dispatcher.BeginInvoke(new Action(ElideFooterStatus),
-                                      System.Windows.Threading.DispatcherPriority.Loaded);
+            => Dispatcher.BeginInvoke(new Action(() =>
+               {
+                   PositionPortableBadge();
+                   ElideFooterStatus();
+               }), System.Windows.Threading.DispatcherPriority.Loaded);
+
+        // The install action belongs under the content panes, not at the center of the whole
+        // window. The pane grid and footer are in different layout branches, so translate the
+        // live pane geometry into footer coordinates. Side-by-side mode uses the divider;
+        // single-pane and stacked modes use the horizontal center of the left/top pane.
+        private void PaneLayout_LayoutUpdated(object? sender, EventArgs e) => PositionPortableBadge();
+
+        private void PositionPortableBadge()
+        {
+            if (!PortableBadge.IsVisible || FooterLayout.ActualWidth <= 0) return;
+
+            double anchor;
+            if (PaneSplitV.IsVisible && PaneSplitV.ActualWidth > 0)
+            {
+                anchor = PaneSplitV
+                    .TransformToVisual(FooterLayout)
+                    .Transform(new Point(PaneSplitV.ActualWidth / 2, 0)).X;
+            }
+            else
+            {
+                anchor = LeftPane
+                    .TransformToVisual(FooterLayout)
+                    .Transform(new Point(LeftPane.ActualWidth / 2, 0)).X;
+            }
+
+            double left = Math.Max(0, Math.Min(FooterLayout.ActualWidth - PortableBadge.ActualWidth,
+                                              anchor - PortableBadge.ActualWidth / 2));
+            if (PortableBadge.HorizontalAlignment != HorizontalAlignment.Left)
+                PortableBadge.HorizontalAlignment = HorizontalAlignment.Left;
+            if (Math.Abs(PortableBadge.Margin.Left - left) > 0.25 ||
+                PortableBadge.Margin.Top != 0 || PortableBadge.Margin.Right != 0 ||
+                PortableBadge.Margin.Bottom != 0)
+                PortableBadge.Margin = new Thickness(left, 0, 0, 0);
+        }
 
         // Measured with a real off-tree TextBlock, NOT FormattedText. FormattedText measures in
         // TextFormattingMode.Ideal and offers no way to ask for Display; this window is

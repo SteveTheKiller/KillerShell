@@ -104,7 +104,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <a href="#streaming" data-i18n="t_nav_streaming">Streaming &amp; memory</a>
 <a href="#export" data-i18n="t_nav_export">Export</a>
 <a href="#fileops" data-i18n="t_nav_fileops">File operations</a>
-<a href="#archives">Archives</a>
+<a href="#archives" data-i18n="t_arch_h">Archives</a>
 <a href="#terminal" data-i18n="t_nav_terminal">The terminal</a>
 <a href="#editor" data-i18n="t_nav_editor">The editor</a>
 <a href="#admin" data-i18n="t_nav_admin">Processes, storage, performance &amp; registry</a>
@@ -137,9 +137,9 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <tr><td data-i18n="t_stack_search">Search engine</td><td data-i18n="t_stack_search_d">A parallel engine: one walker feeds a worker per CPU core, and results are pushed to the UI in batches, cancelable at any time</td></tr>
 <tr><td data-i18n="t_stack_walk">File walk</td><td data-i18n="t_stack_walk_d">A breadth-first walk built on <code>Directory.EnumerateFiles</code>, yielding files one at a time and skipping folders it cannot read</td></tr>
 <tr><td data-i18n="t_stack_read">Content read</td><td data-i18n="t_stack_read_d">A buffered <code>FileStream</code> and <code>StreamReader</code> that reads each file line by line, with a null-byte check to skip binaries</td></tr>
-<tr><td>Archives</td><td>Zip and gzip out of .NET Framework itself and a tar reader written in place, so a .zip or a .tar browses like a folder without adding a single dependency</td></tr>
-<tr><td>Disk map</td><td>A parallel <code>FindFirstFileExW</code> walk feeding a squarified treemap, drawn in one render pass rather than built out of elements</td></tr>
-<tr><td data-i18n="t_stack_export">Export</td><td data-i18n="t_stack_export_d">A self-contained HTML report or CSV, written directly from the result set, no libraries required</td></tr>
+<tr><td data-i18n="t_arch_h">Archives</td><td data-i18n="t_stack_arch_d">Zip and gzip out of .NET Framework itself and a tar reader written in place, so a .zip or a .tar browses like a folder without adding a single dependency</td></tr>
+<tr><td data-i18n="t_stack_disk">Disk map</td><td data-i18n="t_stack_disk_d">A parallel <code>FindFirstFileExW</code> walk feeding a squarified treemap, drawn in one render pass rather than built out of elements</td></tr>
+<tr><td data-i18n="t_stack_export">Export</td><td data-i18n="t_stack_export_d">A self-contained HTML report or CSV, written directly from the result set or the storage scan, no libraries required</td></tr>
 <tr><td data-i18n="t_stack_term">Terminal</td><td data-i18n="t_stack_term_d">A hosted console: the shell you picked runs as a real child process and its output is drawn by the app, with the working directory tracked from the shell's own OSC 7 reports</td></tr>
 <tr><td data-i18n="t_stack_ed">Editor</td><td data-i18n="t_stack_ed_d">AvalonEdit (MIT), vendored as source and compiled into the exe rather than shipped as a DLL, so the app is still one file</td></tr>
 <tr><td data-i18n="t_stack_pkg">Packaging</td><td data-i18n="t_stack_pkg_d">Single executable. Run it portable, or install it for your account or for every user on the PC.</td></tr>
@@ -228,7 +228,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="export">
 <h2 data-i18n="t_export_h">Export</h2>
-<p data-i18n="t_export_p">Any result set can be written to a self-contained HTML report: the matched files, the matched lines with their line numbers, and the search that produced them. The report is a single file that opens in any browser with no dependencies, which makes it easy to attach to a ticket or keep as a record of what was found and where. A CSV export sits alongside it for spreadsheets.</p>
+<p data-i18n="t_export_p">Any result set can be written to a self-contained HTML report: the matched files, the matched lines with their line numbers, and the search that produced them. The report is a single file that opens in any browser with no dependencies, which makes it easy to attach to a ticket or keep as a record of what was found and where. A CSV export sits alongside it for spreadsheets. A Storage Analyzer scan exports the same way: a single HTML file carrying the current filters, an SVG treemap, ranked folder and file tables, and a file-type color legend.</p>
 </div>
 
 <div class="tech-sec" id="fileops">
@@ -239,22 +239,22 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 </div>
 
 <div class="tech-sec" id="archives">
-<h2>Archives</h2>
+<h2 data-i18n="t_arch_h">Archives</h2>
 
-<h3 id="archives-readers">No new dependencies</h3>
-<p>A .zip, .tar, .tar.gz, .tgz or .gz opens as a folder, with the same rows, sorting, views and keys as anywhere else, and nothing was added to the app to do it. Zip and gzip ship inside .NET Framework and come in on two framework <code>&lt;Reference&gt;</code> lines rather than packages, so the zero-dependency single-exe build is exactly what it was. Tar is parsed here in about two hundred lines, because <code>System.Formats.Tar</code> is .NET 7 and later while KillerShell targets 4.8.</p>
-<p>That reader takes every header flavor in circulation: v7, ustar, GNU long-name records and pax extended headers. pax is what bsdtar, macOS tar and Python's tarfile write by default, so a reader that knows only GNU silently truncates every long path written by anything modern. <code>.rar</code>, <code>.7z</code>, <code>.bz2</code>, <code>.xz</code>, <code>.cab</code> and <code>.iso</code> are neither read nor written; unrar's license forbids reimplementing RAR, so it would mean a dependency to embed.</p>
+<h3 id="archives-readers" data-i18n="t_arch_readers_h">No new dependencies</h3>
+<p data-i18n="t_arch_p1">A .zip, .tar, .tar.gz, .tgz or .gz opens as a folder, with the same rows, sorting, views and keys as anywhere else, and nothing was added to the app to do it. Zip and gzip ship inside .NET Framework and come in on two framework <code>&lt;Reference&gt;</code> lines rather than packages, so the zero-dependency single-exe build is exactly what it was. Tar is parsed here in about two hundred lines, because <code>System.Formats.Tar</code> is .NET 7 and later while KillerShell targets 4.8.</p>
+<p data-i18n="t_arch_p2">That reader takes every header flavor in circulation: v7, ustar, GNU long-name records and pax extended headers. pax is what bsdtar, macOS tar and Python's tarfile write by default, so a reader that knows only GNU silently truncates every long path written by anything modern. <code>.rar</code>, <code>.7z</code>, <code>.bz2</code>, <code>.xz</code>, <code>.cab</code> and <code>.iso</code> are neither read nor written; unrar's license forbids reimplementing RAR, so it would mean a dependency to embed.</p>
 
-<h3 id="archives-paths">Why the separator is a question mark</h3>
-<p>A location inside an archive is one string: the archive's own path, a separator, then the path within it, so a tab, a bookmark and the address bar go on treating a location as a single string. The question mark is the only character that satisfies both rules. It has to be illegal in a Windows <i>filename</i>, or a virtual path could collide with a real file; and it has to be legal to <code>System.IO.Path</code>, because these paths flow through <code>Path.GetExtension</code> all over the app. <code>&gt;</code> and <code>|</code> pass the first and fail the second, so <code>GetExtension</code> throws - which killed every icon inside an archive the first time this was built.</p>
-<p>Extraction treats every entry path as hostile. Archive paths are normalized to forward slashes with <code>.</code> and <code>..</code> segments removed before they reach the browser, and opening an entry deliberately keeps only its leaf filename. That leaf is written inside a new randomly named temporary folder rather than combining the archive's directory path with a destination. A crafted entry such as <code>..\..\Startup\payload.exe</code> therefore becomes an ordinary <code>payload.exe</code> in KillerShell's temporary extraction area instead of escaping it and overwriting something elsewhere on the machine - the Zip Slip attack.</p>
+<h3 id="archives-paths" data-i18n="t_arch_paths_h">Why the separator is a question mark</h3>
+<p data-i18n="t_arch_p3">A location inside an archive is one string: the archive's own path, a separator, then the path within it, so a tab, a bookmark and the address bar go on treating a location as a single string. The question mark is the only character that satisfies both rules. It has to be illegal in a Windows <i>filename</i>, or a virtual path could collide with a real file; and it has to be legal to <code>System.IO.Path</code>, because these paths flow through <code>Path.GetExtension</code> all over the app. <code>&gt;</code> and <code>|</code> pass the first and fail the second, so <code>GetExtension</code> throws - which killed every icon inside an archive the first time this was built.</p>
+<p data-i18n="t_arch_p4">Extraction treats every entry path as hostile. Archive paths are normalized to forward slashes with <code>.</code> and <code>..</code> segments removed before they reach the browser, and opening an entry deliberately keeps only its leaf filename. That leaf is written inside a new randomly named temporary folder rather than combining the archive's directory path with a destination. A crafted entry such as <code>..\..\Startup\payload.exe</code> therefore becomes an ordinary <code>payload.exe</code> in KillerShell's temporary extraction area instead of escaping it and overwriting something elsewhere on the machine - the Zip Slip attack.</p>
 
-<h3 id="archives-writing">Writing: zip only, never in place</h3>
-<p>A .zip is writable: add by drag or paste, rename, delete. Tar, .tar.gz, .tgz and .gz are read-only deliberately - the tar reader models regular files and directories only, so a rebuild would silently drop links, devices, FIFOs and sparse members, and a lone .gz holds one unnamed member, so "add a second file" has no representation in the format. A refused write says which refusal it was on the status bar; it never no-ops and never half-writes.</p>
-<p><code>ZipArchiveMode.Update</code> is the obvious route and is deliberately not used: it holds the whole archive in memory while it is open, and rewrites the file in place on save. Every operation instead streams a complete new archive beside the original, proves it reopens with the expected entry count, and only then swaps it in, so a crash or a full disk leaves the original untouched. Adding one file therefore rewrites the whole zip, which is why the status bar carries a percentage.</p>
+<h3 id="archives-writing" data-i18n="t_arch_writing_h">Writing: zip only, never in place</h3>
+<p data-i18n="t_arch_p5">A .zip is writable: add by drag or paste, rename, delete, New Folder. Tar, .tar.gz, .tgz and .gz are read-only deliberately - the tar reader models regular files and directories only, so a rebuild would silently drop links, devices, FIFOs and sparse members, and a lone .gz holds one unnamed member, so "add a second file" has no representation in the format. A refused write says which refusal it was on the status bar; it never no-ops and never half-writes.</p>
+<p data-i18n="t_arch_p6"><code>ZipArchiveMode.Update</code> is the obvious route and is deliberately not used: it holds the whole archive in memory while it is open, and rewrites the file in place on save. Every operation instead streams a complete new archive beside the original, proves it reopens with the expected entry count, and only then swaps it in, so a crash, a full disk or a cancel leaves the original untouched. Adding one file therefore rewrites the whole zip, which is why the status bar carries a percentage.</p>
 
-<h3 id="archives-out">Out is a copy, by design</h3>
-<p>Dragging out of an archive is a copy, always. A move out is an extract plus a delete, two steps with no way to make them one, and a failure between them either loses the file or silently leaves it in place; Explorer treats zip drag-out the same way. Dragging a <i>folder</i> out is not supported yet, and neither is New Folder inside an archive.</p>
+<h3 id="archives-out" data-i18n="t_arch_out_h">Out is a copy, by design</h3>
+<p data-i18n="t_arch_p7">Dragging out of an archive is a copy, always. A move out is an extract plus a delete, two steps with no way to make them one, and a failure between them either loses the file or silently leaves it in place; Explorer treats zip drag-out the same way. Dragging a <i>folder</i> out extracts its whole tree, folders and all, wherever you let go.</p>
 </div>
 
 <div class="tech-sec" id="terminal">
@@ -295,7 +295,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="themes">
 <h2 data-i18n="t_themes_h">Themes &amp; languages</h2>
-<p data-i18n="t_themes_p">KillerShell ships with thirteen themes: Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium and Mourning. Four of them - Dark, Light, Black and 98SE - each carry six accent colors on top of the palette; the other nine are a palette on their own. All of it switches live from the rail, with nothing to restart. The interface is localized in ten languages: English, Spanish, German, French, Turkish, Czech, Japanese, Chinese in both Traditional and Simplified, and Bengali. Every visible string is resolved through a resource lookup, so switching language reflows the whole window with no restart.</p>
+<p data-i18n="t_themes_p">KillerShell ships with thirteen themes: Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium and Mourning. Four of them - Dark, Light, Black and 98SE - each carry six accent colors on top of the palette; the other nine are a palette on their own. All of it switches live from the rail, with nothing to restart. The interface is localized in eleven languages: English, Spanish, German, French, Turkish, Polish, Czech, Japanese, Chinese in both Traditional and Simplified, and Bengali. Every visible string is resolved through a resource lookup, so switching language reflows the whole window with no restart.</p>
 <p data-i18n="t_themes_p2">The whole app also scales. Rolling the wheel over the title-bar wordmark drives a layout transform on the content host, roughly 2% a notch between 70% and 250%, remembered between runs. Because it is a layout transform rather than a render transform, text reflows and re-rasterizes at the new size instead of being stretched as a bitmap, and the title bar and footer stay a fixed size so the wordmark never moves out from under the pointer.</p>
 </div>
 
@@ -303,7 +303,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <h2 data-i18n="t_gloss_h">Glossary</h2>
 <p data-i18n="t_gloss_p">Plain-language definitions of the terms used on this page, in alphabetical order.</p>
 <table class="spec-table"><tr><th data-i18n="t_gloss_term">Term</th><th data-i18n="t_gloss_mean">What it means</th></tr>
-<tr><td>Archive</td><td>A .zip, .tar, .tar.gz, .tgz or .gz file. KillerShell opens these as folders, using the readers that ship inside .NET Framework plus a tar reader of its own, so browsing one costs no extra dependency.</td></tr>
+<tr><td data-i18n="t_g_archive">Archive</td><td data-i18n="t_g_archive_d">A .zip, .tar, .tar.gz, .tgz or .gz file. KillerShell opens these as folders, using the readers that ship inside .NET Framework plus a tar reader of its own, so browsing one costs no extra dependency.</td></tr>
 <tr><td data-i18n="t_g_binary">Binary file</td><td data-i18n="t_g_binary_d">A file that holds data rather than readable text, such as a program, image, or archive. KillerShell detects these by a null byte near the start and skips them during a content search.</td></tr>
 <tr><td data-i18n="t_g_bom">Byte-order mark</td><td data-i18n="t_g_bom_d">A few bytes at the very start of a text file that state how its characters are encoded. KillerShell reads it so unusual encodings are handled correctly.</td></tr>
 <tr><td data-i18n="t_g_case">Case sensitivity</td><td data-i18n="t_g_case_d">Whether uppercase and lowercase letters are treated as different. The default is off, so "Error" and "error" both match; a toggle turns it on for both names and content.</td></tr>
@@ -317,7 +317,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <tr><td data-i18n="t_g_regex">Regular expression</td><td data-i18n="t_g_regex_d">A precise pattern-matching notation. KillerShell converts each wildcard filename pattern into one internally to test names quickly.</td></tr>
 <tr><td data-i18n="t_g_stream">Streaming</td><td data-i18n="t_g_stream_d">Reading a file or a folder tree a small piece at a time instead of loading it whole, which keeps memory low no matter the size.</td></tr>
 <tr><td data-i18n="t_g_term">Term</td><td data-i18n="t_g_term_d">One search request: a pattern plus whether it applies to filenames or file contents. A single pass can run many terms at once.</td></tr>
-<tr><td>Treemap</td><td>A picture of a disk in which every file is a rectangle sized by how much room it takes up and folders are drawn as outlines around their contents, so the things using the space are the things you see first.</td></tr>
+<tr><td data-i18n="t_g_treemap">Treemap</td><td data-i18n="t_g_treemap_d">A picture of a disk in which every file is a rectangle sized by how much room it takes up and folders are drawn as outlines around their contents, so the things using the space are the things you see first.</td></tr>
 <tr><td data-i18n="t_g_wildcard">Wildcard</td><td data-i18n="t_g_wildcard_d">A filename pattern where an asterisk stands for any characters and a question mark for a single character, such as *.log or report_?.txt.</td></tr>
 </table>
 </div>

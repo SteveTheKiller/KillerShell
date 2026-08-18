@@ -9,7 +9,8 @@ using KillerShell.Services;
 namespace KillerShell
 {
     // The tab strip's icon, for EVERY kind of tab - a folder tab's own folder icon, and the brand
-    // art for a shell, an editor, Processes, Event Viewer, Performance or the Registry Editor.
+    // art for a shell, an editor, Processes, Event Viewer, Performance, Registry Editor or
+    // Storage Analyzer.
     //
     // It started as folder-tabs-only (a browsing tab used to carry no icon at all, because
     // TabGlyph - the strip's other slot - was a Segoe MDL2 glyph reserved for the non-folder
@@ -46,6 +47,9 @@ namespace KillerShell
             if (t.IsEventViewer)        return IconCache.Art("event_viewer");
             if (t.IsPerformanceMonitor) return IconCache.Art("perf_icon");
             if (t.IsRegistryEditor)     return IconCache.Art("registry_editor_icon");
+            // The analyzer represents disk usage, so use the exact theme-aware hard-drive art
+            // the folder tree uses for drive roots instead of its old generic MDL2 dash.
+            if (t.IsStorageAnalyzer)    return IconCache.Art("drive_icon");
 
             // A SEARCH tab. Tested on IsSearching, NOT on !IsBrowsing: a fresh or Home tab is
             // also not browsing, and keying off that would have stamped the search icon on every

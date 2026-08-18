@@ -51,10 +51,32 @@
     <!-- The cell grid runs flush to the pane edges; the cells' own 1px PaneBorderBrush frames
          are the seams between neighbors. -->
     <Thickness x:Key="MonitorGridMargin">0</Thickness>
+    <Thickness x:Key="PerformanceTabFootThickness">0</Thickness>
+    <!-- A REAL, reserved frame around the complete Performance PAGE. The 3px top inset is the
+         full-width gray strip directly below the entire tab bar; the 2px side/bottom insets keep
+         the black dashboard and its internal dividers inside the same continuous frame. -->
+    <Thickness x:Key="PerformanceContentInset">2,3,2,2</Thickness>
+    <SolidColorBrush x:Key="PerformancePageFrameBrush" Color="#c0c0c0" po:Freeze="True"/>
+    <SolidColorBrush x:Key="PerformancePageFrameDarkBrush" Color="#808080" po:Freeze="True"/>
+    <SolidColorBrush x:Key="PerformancePageFrameLightBrush" Color="#dfdfdf" po:Freeze="True"/>
+    <Thickness x:Key="PerformancePageFrameDarkThickness">1,1,0,0</Thickness>
+    <Thickness x:Key="PerformancePageFrameLightThickness">0,0,1,1</Thickness>
+    <!-- The raised bevel already supplies the About window edge; suppress its modern extra ring. -->
+    <Thickness x:Key="OverlayCardBorderThickness">0</Thickness>
+    <Visibility x:Key="DialogWordmarkVisibility">Collapsed</Visibility>
+    <Visibility x:Key="DialogPlainTitleVisibility">Visible</Visibility>
+    <SolidColorBrush x:Key="CheckBoxBackgroundBrush" Color="#ffffff" po:Freeze="True"/>
+    <SolidColorBrush x:Key="CheckBoxCheckedBackgroundBrush" Color="#ffffff" po:Freeze="True"/>
+    <SolidColorBrush x:Key="CheckBoxBorderBrush" Color="#808080" po:Freeze="True"/>
+    <SolidColorBrush x:Key="CheckBoxCheckedBorderBrush" Color="#808080" po:Freeze="True"/>
+    <sys:Double x:Key="CheckBoxGlyphSize">13</sys:Double>
+    <Thickness x:Key="CheckBoxSunkenDarkThickness">1,1,0,0</Thickness>
+    <Thickness x:Key="CheckBoxSunkenLightThickness">0,0,1,1</Thickness>
     <!-- The tool-tab wells are filled edge to edge: no gutters around the Events/Processes
          grids, and the Registry split runs flush left and right with only the skinny splitter
          dividing tree from values. -->
     <Thickness x:Key="ToolGridMargin">0</Thickness>
+    <Thickness x:Key="ProcessGridMargin">0</Thickness>
     <Thickness x:Key="RegSplitMargin">0</Thickness>
     <Thickness x:Key="RegGridMargin">0</Thickness>
     <sys:Double x:Key="RegSplitterWidth">3</sys:Double>
@@ -331,6 +353,9 @@
     <Visibility x:Key="DialogInlineSelVisibility" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Collapsed</Visibility>
 
     <Thickness x:Key="DialogContentMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">3,3,3,3</Thickness>
+    <!-- The raised frame is the dialog edge; the ordinary card ring would double its right/bottom. -->
+    <Thickness x:Key="DialogOuterBorderThickness">0</Thickness>
+    <Thickness x:Key="DialogTitleBarPadding">8,0,2,0</Thickness>
 
     <Thickness x:Key="DialogRowMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">3,0,3,0</Thickness>
 
@@ -394,7 +419,8 @@
 
     <Thickness x:Key="TabBarMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0</Thickness>
 
-    <Thickness x:Key="PaneEdgeThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0</Thickness>
+    <Thickness x:Key="PaneEdgeSideThickness">0</Thickness>
+    <Thickness x:Key="PaneEdgeBottomThickness">0</Thickness>
 
     <SolidColorBrush x:Key="FooterBevelDarkBrush" Color="#808080" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 

@@ -405,6 +405,17 @@ namespace KillerShell.Shell
                 };
             }
 
+            // Match the visible tab and the folder tree: Storage Analyzer is a disk tool, so its
+            // overflow row uses the same theme-aware drive artwork rather than a status dot.
+            if (tab.IsStorageAnalyzer)
+            {
+                return new Image
+                {
+                    Width = 16, Height = 16,
+                    Source = Services.IconCache.Art("drive_icon"),
+                };
+            }
+
             // A Processes tab, an Event Viewer tab, a Performance tab, or a document/shell with no
             // real file to ask Explorer about (untitled, demo mode, a folder that has since been
             // deleted/unplugged): nothing real to show an icon of, so a small color dot stands
@@ -417,16 +428,22 @@ namespace KillerShell.Shell
                 : tab.IsEventViewer         ? "WarningAmber"
                 : tab.IsPerformanceMonitor  ? "InfoBlue"
                 : tab.IsRegistryEditor      ? "PrimaryBrush"
-                : tab.IsStorageAnalyzer     ? "InfoBlue"
                 : "MutedTextBrush";
             dot.SetResourceReference(System.Windows.Shapes.Shape.FillProperty, brush);
             return dot;
         }
 
-        // Save the left panel's editable fields into the outgoing tab.
-        private void CaptureTab(SearchTab t)
+        // Save the focused pane's editable fields into the outgoing tab. A pane briefly has no
+        // active tab while it is being seeded, emptied, moved or closed; those are valid
+        // lifecycle states, not a tab whose fields can be captured.
+        private void CaptureTab(SearchTab? t)
         {
-            t.RootPath        = Pane.RootPathBox.Text;
+            if (t == null) return;
+
+            // Focus can move between panes from the same input event. Keep one pane for this
+            // whole snapshot so the fields and selected rows cannot come from different panes.
+            var pane = Pane;
+            t.RootPath        = pane.RootPathBox.Text;
             t.IncludePatterns = IncludePatternsBox.Text;
             t.ExcludePatterns = ExcludePatternsBox.Text;
             t.CaseSensitive   = CaseSensitiveCheck.IsChecked == true;
@@ -443,8 +460,8 @@ namespace KillerShell.Shell
             // called for the focused pane's active tab, so it normally is; reading the selection
             // off a list bound to something else would store another tab's rows here, and
             // storing an empty list instead would throw away what this tab had.
-            if (ReferenceEquals(Pane.ResultsList.ItemsSource, t.Results))
-                t.SelectedPaths = [.. Pane.ResultsList.SelectedItems
+            if (ReferenceEquals(pane.ResultsList.ItemsSource, t.Results))
+                t.SelectedPaths = [.. pane.ResultsList.SelectedItems
                     .OfType<SearchResult>().Select(r => r.FilePath)];
         }
 
@@ -519,6 +536,14 @@ namespace KillerShell.Shell
             ApplyRegistryEditorView(t);    // RegistryEditorTabs.cs - and a Registry Editor tab shows the tree
             ApplyStorageAnalyzerView(t);   // StorageTabs.cs      - and a Storage tab shows the treemap
             ApplyPaneBars(t);              // PaneBars.cs         - each kind wears its own bar
+
+            // The shared pane border/fades follow the incoming tab's real large ScrollViewer.
+            // Reset now so the outgoing tab cannot leave stale cues behind, then discover after
+            // the new hosts have completed their layout pass.
+            var scrollChromePane = Pane;
+            scrollChromePane.ResetScrollChrome();
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                new Action(scrollChromePane.RefreshScrollChrome));
 
             Pane.RootPathBox.Text             = t.RootPath;
             Pane.ScopePathLabel.Text          = t.PipeFiles != null ? t.PipeLabel

@@ -106,8 +106,13 @@
     <sys:String x:Key="Str_Portable">PŘENOSNÉ</sys:String>
     <sys:String x:Key="Str_Btn_Install">Nainstalovat KillerShell</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Nainstalovat</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">Aktualizovat</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">Nainstalovat KillerShell do vašeho uživatelského profilu?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">- Zástupce v nabídce Start&#x0A;- Objeví se v Přidat nebo odebrat programy</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">Aktualizovat stávající instalaci KillerShell?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">Tím se nahradí nainstalovaná kopie pro váš účet. Nastavení a uložená relace zůstanou zachovány. Tento přenosný soubor pak můžete ponechat nebo odstranit.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">Aktualizovat stávající instalaci KillerShell pro všechny uživatele?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Tím se nahradí kopie v Program Files. Samostatná uživatelská kopie pro tento účet bude odebrána, aby se KillerShell zobrazoval pouze jednou. Nastavení a uložená relace zůstanou zachovány.</sys:String>
     <sys:String x:Key="Str_Chk_Desktop">Zástupce na ploše</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Nainstalovat pro všechny uživatele (vyžaduje správce)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell je na tomto PC už nainstalovaný pro všechny uživatele, takže se aktualizuje tato kopie. Windows si vyžádají oprávnění.</sys:String>

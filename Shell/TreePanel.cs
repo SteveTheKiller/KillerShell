@@ -65,6 +65,11 @@ namespace KillerShell.Shell
 
             FolderTree.SizeChanged += (_, _) => SyncTreeEdgeFades();
             FolderTree.Loaded      += (_, _) => SyncTreeEdgeFades();
+
+            // The existing host mask handles rows clipped above and below. This companion mask
+            // handles long, horizontally clipped paths and fades them immediately before the
+            // vertical scrollbar while leaving the scrollbar itself crisp.
+            KillerShell.Controls.TreeSideFade.Attach(FolderTree);
         }
 
         /// <summary>

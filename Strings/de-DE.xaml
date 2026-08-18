@@ -87,8 +87,13 @@
     <sys:String x:Key="Str_Portable">PORTABEL</sys:String>
     <sys:String x:Key="Str_Btn_Install">KillerShell installieren</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Installieren</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">Aktualisieren</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell im Benutzerprofil installieren?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">- Startmenü-Verknüpfung&#x0A;- Erscheint unter Apps und Features</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">Vorhandene KillerShell-Installation aktualisieren?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">Die installierte Kopie für Ihr Konto wird ersetzt. Einstellungen und gespeicherte Sitzung bleiben erhalten. Diese portable Datei können Sie anschließend behalten oder löschen.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">Vorhandene KillerShell-Installation für alle Benutzer aktualisieren?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Die Kopie in Program Files wird ersetzt. Eine separate benutzerspezifische Kopie für dieses Konto wird entfernt, damit KillerShell nur einmal angezeigt wird. Einstellungen und gespeicherte Sitzung bleiben erhalten.</sys:String>
     <sys:String x:Key="Str_Chk_Desktop">Desktop-Verknüpfung</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">Für alle Benutzer installieren (Administrator erforderlich)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell ist auf diesem PC bereits für alle Benutzer installiert, daher wird diese Kopie aktualisiert. Windows fragt nach der Berechtigung.</sys:String>

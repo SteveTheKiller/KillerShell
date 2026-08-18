@@ -273,6 +273,10 @@
                                                 Width="2" Height="2" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                                                 Margin="0,0,-5,-4" Visibility="Collapsed"
                                                 Background="{DynamicResource TabSeamPatchBrush}"/>
+                                        <!-- Performance is the one 98SE page whose content is black.
+                                             Closing its selected tab with a gray foot keeps that black
+                                             surface from visually swallowing the tab. Zero-thickness on
+                                             every ordinary theme and collapsed for every other tab. -->
                                         <DockPanel LastChildFill="True">
                                             <!-- Nulled here rather than on the shared DangerButton style,
                                                  which the term and filter x's also use. -->
@@ -534,11 +538,12 @@
                    would not come down to the width of the left. It is right on
                    the rounded themes, where the pane is a floating card with a shadow; a Win98
                    client area fills its frame.
-                   PaneEdgeThickness: 1 normally. 0 on 98SE, where PaneEdgeBrush is transparent
-                   anyway, so the ring was invisible but still ate the pixel the raised bevel below
-                   needs to land on. -->
+                   The old PaneEdgeThickness ring has been split: its top/side frame remains,
+                   but a fixed bottom line over almost every tab made scrolling content look
+                   prematurely cut off at the viewport. The true bottom edge and scroll cues now
+                   live inside PaneContent and follow the active large ScrollViewer. -->
               <Border x:Name="ResultsPane" Grid.Row="1" Margin="{DynamicResource PaneOuterMargin}" Background="{DynamicResource MenuBackgroundBrush}"
-                    BorderBrush="{DynamicResource PaneEdgeBrush}" BorderThickness="{DynamicResource PaneEdgeThickness}" CornerRadius="{DynamicResource PanelCornerRadius}"
+                    BorderBrush="{DynamicResource PaneEdgeBrush}" BorderThickness="{DynamicResource PaneEdgeSideThickness}" CornerRadius="{DynamicResource PanelCornerRadius}"
                     Effect="{DynamicResource PaneShadowEffect}">
               <!-- Clipped to the pane's own rounded corners (PaneClip.cs). A Border with a
                    CornerRadius does NOT clip its child, so anything that reaches the top of the
@@ -548,6 +553,42 @@
               <Grid x:Name="PaneContent" SizeChanged="PaneContent_SizeChanged">
                 <!-- Same treatment as KillerPDF's document pane: the whole content pane is grain-wrapped. -->
                 <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                <!-- The old permanent bottom rule became a false content boundary on every
+                     scrolling tab. FilePane.xaml.cs keeps this replacement hidden until the
+                     active large viewport has positively reached the end of its real content. -->
+                <Border x:Name="ResultsPaneBottomEdge" IsHitTestVisible="False" Panel.ZIndex="100"
+                        BorderBrush="{DynamicResource PaneEdgeBrush}"
+                        BorderThickness="{DynamicResource PaneEdgeBottomThickness}"
+                        CornerRadius="{DynamicResource PanelCornerRadius}"/>
+                <!-- Hybrid scroll treatment: dense table tools dissolve their actual content;
+                     the graphical file browser and Performance retain the stronger viewport
+                     shadows. FilePane positions these over the full viewer, scrollbar included. -->
+                <Grid x:Name="PaneScrollTopCue" Height="24" VerticalAlignment="Top"
+                      Visibility="Collapsed" IsHitTestVisible="False" Panel.ZIndex="99"
+                      Opacity="{DynamicResource EdgeFadeOpacity}">
+                    <Border>
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#50000000" Offset="0"/>
+                                <GradientStop Color="#22000000" Offset="0.35"/>
+                                <GradientStop Color="#00000000" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+                    <Border Height="1" VerticalAlignment="Top"
+                            Background="{DynamicResource PaneBorderBrush}"/>
+                </Grid>
+                <Border x:Name="PaneScrollBottomCue" Height="28" VerticalAlignment="Bottom"
+                        Visibility="Collapsed" IsHitTestVisible="False" Panel.ZIndex="99"
+                        Opacity="{DynamicResource EdgeFadeOpacity}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#00000000" Offset="0"/>
+                            <GradientStop Color="#22000000" Offset="0.65"/>
+                            <GradientStop Color="#50000000" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
                 <!-- THE TAB PAGE BEVEL. A Win98 tab control's page is a RAISED panel - white down
                      the top and left, gray along the bottom and right - and the selected tab's own
                      white left edge is the SAME line continuing upward. That continuity is what
@@ -1737,24 +1778,23 @@
                      and live gauges in one surface, so there is nothing here for a location-style
                      bar to say. -->
                 <Grid x:Name="PerformanceHost" Visibility="Collapsed">
-                    <ContentControl x:Name="PerformanceSlot" Focusable="False"/>
+                    <!-- Actual reserved page-frame geometry: the black monitor is inset inside a
+                         full-width gray host, so the top strip cannot be covered or clipped away. -->
+                    <Grid Background="{DynamicResource PerformancePageFrameBrush}">
+                        <ContentControl x:Name="PerformanceSlot" Focusable="False"
+                                        Margin="{DynamicResource PerformanceContentInset}"/>
+                        <Border IsHitTestVisible="False" Panel.ZIndex="5"
+                                BorderBrush="{DynamicResource PerformancePageFrameDarkBrush}"
+                                BorderThickness="{DynamicResource PerformancePageFrameDarkThickness}"/>
+                        <Border IsHitTestVisible="False" Panel.ZIndex="5"
+                                BorderBrush="{DynamicResource PerformancePageFrameLightBrush}"
+                                BorderThickness="{DynamicResource PerformancePageFrameLightThickness}"/>
+                    </Grid>
                     <!-- NO grain layer. PaneContent above already paints grain across the whole
                          content pane, so a second tile inside a tool host DOUBLED it - which is
                          why every tool tab looked heavily textured next to the file listing,
                          which never had the extra layer (2026-08-09). Same mistake the bookmarks
                          drawer had against the sidebar's continuous grain. -->
-                    <!-- Sunken well, same as the two hosts above - the performance tab needs the
-                         bevel lines around it to separate it from the rest. Inert off 98SE. -->
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            Margin="{DynamicResource PaneBevelInnerMargin}"
-                            BorderBrush="{DynamicResource PaneBevelDark2Brush}"  BorderThickness="{DynamicResource PaneBevel2LightThickness}"/>
-                    <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                            Margin="{DynamicResource PaneBevelInnerMargin}"
-                            BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
                 </Grid>
                 <!-- A Registry Editor tab draws here, on the same terms as the other four host
                      grids above: declared before the list, only ever one of six visible, and

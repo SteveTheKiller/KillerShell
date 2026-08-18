@@ -87,8 +87,13 @@
     <sys:String x:Key="Str_Portable">可攜版</sys:String>
     <sys:String x:Key="Str_Btn_Install">安裝 KillerShell</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">安裝</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">更新</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">將 KillerShell 安裝到你的使用者設定檔？</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">- 開始功能表捷徑&#x0A;- 顯示在新增/移除程式中</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">更新現有的 KillerShell 安裝？</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">這會取代為你的帳戶安裝的副本，並保留設定與已儲存的工作階段。之後，你可以保留或刪除此可攜檔案。</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">更新現有的 KillerShell 全使用者安裝？</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">這會取代 Program Files 中的副本。為確保 KillerShell 只顯示一次，此帳戶另外安裝的使用者副本將被移除。設定與已儲存的工作階段會保留。</sys:String>
     <sys:String x:Key="Str_Chk_Desktop">桌面捷徑</sys:String>
     <sys:String x:Key="Str_Chk_AllUsers">為所有使用者安裝（需要系統管理員權限）</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell 已為這台電腦上的所有使用者安裝，因此將更新該複本。Windows 會要求授權。</sys:String>

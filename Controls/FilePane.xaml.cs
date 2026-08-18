@@ -1,8 +1,10 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using KillerShell.Models;
 
 using KillerShell.Shell;
@@ -43,6 +45,289 @@ namespace KillerShell
             // RelativeSource binding can reach the same reliable way {Binding X, Source=...} used
             // to reach the old static ResultsViewState.Current.
             ResultsList.Tag = ViewState;
+
+            // ScrollChanged is routed, so one handler sees the large viewport inside whichever
+            // tab is currently visible: the file list, editor, a DataGrid, Performance, etc.
+            // Small nested controls are ignored below. This drives the shared edge fades and the
+            // true-end-only bottom rule without every tab implementing its own copy.
+            PaneContent.AddHandler(ScrollViewer.ScrollChangedEvent,
+                new ScrollChangedEventHandler(PaneScroller_ScrollChanged), handledEventsToo: true);
+        }
+
+        private ScrollViewer? _paneScroller;
+        private Brush? _paneScrollerOriginalMask;
+        private LinearGradientBrush? _paneFadeMask;
+        private bool _paneUsesShadow;
+
+        private void PaneScroller_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var scroller = e.OriginalSource as ScrollViewer ?? e.Source as ScrollViewer;
+            if (scroller == null || !IsPrimaryScrollerSize(scroller)) return;
+
+            // A DataGrid and several other tabs contain a large, non-scrolling wrapper around
+            // the real scrolling viewport. Do not let an event from that wrapper replace a
+            // viewport which has actual vertical content; doing so would falsely reveal the
+            // bottom rule while the grid still has rows below it.
+            if (_paneScroller != null && _paneScroller != scroller &&
+                ScrollerScore(scroller) < ScrollerScore(_paneScroller))
+                return;
+
+            SetPaneScroller(scroller);
+            SyncScrollChrome(scroller);
+        }
+
+        private bool IsPrimaryScrollerSize(ScrollViewer scroller)
+        {
+            if (!scroller.IsVisible || PaneContent.ActualWidth <= 0 || PaneContent.ActualHeight <= 0)
+                return false;
+            return scroller.ActualWidth >= PaneContent.ActualWidth * 0.45 &&
+                   scroller.ActualHeight >= Math.Max(48, PaneContent.ActualHeight * 0.30);
+        }
+
+        /// <summary>Reset immediately during a tab switch, then re-discover the incoming tab's
+        /// largest visible ScrollViewer after it has been arranged.</summary>
+        internal void ResetScrollChrome()
+        {
+            SetPaneScroller(null);
+            // A tab switch starts with no knowledge of the incoming content extent. Hidden is
+            // the safe default: the line is revealed only after a real viewport is discovered
+            // and proves that it is at the end.
+            ResultsPaneBottomEdge.Visibility = Visibility.Collapsed;
+        }
+
+        internal void RefreshScrollChrome()
+        {
+            ScrollViewer? best = null;
+            double bestScore = 0;
+            FindScrollers(PaneContent, ref best, ref bestScore);
+            if (best == null)
+            {
+                ResetScrollChrome();
+                return;
+            }
+            SetPaneScroller(best);
+            SyncScrollChrome(best);
+        }
+
+        private void SetPaneScroller(ScrollViewer? scroller)
+        {
+            if (ReferenceEquals(_paneScroller, scroller)) return;
+
+            // Restore any mask the control arrived with when its tab is left. The shared fade
+            // belongs to the active pane viewport, not permanently to a recycled DataGrid or
+            // ListBox template part.
+            if (_paneScroller != null && ReferenceEquals(_paneScroller.OpacityMask, _paneFadeMask))
+                _paneScroller.OpacityMask = _paneScrollerOriginalMask;
+
+            _paneScroller = scroller;
+            _paneFadeMask = null;
+            _paneUsesShadow = scroller != null && UsesShadowCue(scroller);
+            _paneScrollerOriginalMask = scroller?.OpacityMask;
+
+            if (scroller == null || _paneUsesShadow) return;
+            _paneFadeMask = new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(0, 1),
+                MappingMode = BrushMappingMode.RelativeToBoundingBox
+            };
+            scroller.OpacityMask = _paneFadeMask;
+        }
+
+        private void FindScrollers(DependencyObject root, ref ScrollViewer? best, ref double bestScore)
+        {
+            int count = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(root, i);
+                if (child is ScrollViewer sv && IsPrimaryScrollerSize(sv))
+                {
+                    double score = ScrollerScore(sv);
+                    if (score > bestScore) { best = sv; bestScore = score; }
+                }
+                FindScrollers(child, ref best, ref bestScore);
+            }
+        }
+
+        private double ScrollerScore(ScrollViewer scroller)
+        {
+            double score = scroller.ActualWidth * scroller.ActualHeight;
+            // Any viewport with real vertical overflow outranks even a full-pane wrapper with
+            // none. The area still breaks ties between multiple genuinely scrolling regions.
+            if (scroller.ScrollableHeight > 0.5)
+                score += PaneContent.ActualWidth * PaneContent.ActualHeight * 4;
+            return score;
+        }
+
+        private void SyncScrollChrome(ScrollViewer scroller)
+        {
+            if (!scroller.IsVisible) return;
+            bool hasAbove = scroller.VerticalOffset > 0.5;
+            bool hasBelow = scroller.VerticalOffset < scroller.ScrollableHeight - 0.5;
+
+            if (!ReferenceEquals(_paneScroller, scroller)) SetPaneScroller(scroller);
+            if (scroller.ActualHeight <= 1) return;
+
+            // The file browser and Performance read better with the original dark edge shadow:
+            // those are spacious, graphical surfaces and the shadow establishes the viewport.
+            // Dense table tools such as Processes keep the subtler content dissolve below.
+            if (_paneUsesShadow)
+            {
+                SyncShadowCues(scroller, hasAbove, hasBelow);
+                ResultsPaneBottomEdge.Visibility = hasBelow ? Visibility.Collapsed : Visibility.Visible;
+                return;
+            }
+
+            PaneScrollTopCue.Visibility = Visibility.Collapsed;
+            PaneScrollBottomCue.Visibility = Visibility.Collapsed;
+            if (_paneFadeMask == null) return;
+
+            // The mask is on the FULL ScrollViewer, so it naturally reaches through the vertical
+            // scrollbar gutter instead of ending a few pixels early. Ordinary viewers fade from
+            // their outer edge. A DataGrid keeps its fixed column header fully opaque and starts
+            // the fade at the scrolling presenter immediately below it.
+            ScrollContentPresenter? presenter = FindViewportPresenter(scroller);
+            FrameworkElement verticalViewport = presenter != null && IsInsideDataGrid(scroller)
+                ? (FrameworkElement)presenter : scroller;
+            Point verticalOrigin;
+            try
+            {
+                verticalOrigin = verticalViewport.TransformToVisual(scroller)
+                    .Transform(new Point(0, 0));
+            }
+            catch { return; }
+
+            double height = scroller.ActualHeight;
+            // Pull the top transition two physical layout pixels upward. The previous overlay
+            // began just below the actual clip edge on file-browser grids and exposed a thin row.
+            double topY = Math.Max(0, verticalOrigin.Y - 2);
+            double bottomY = Math.Min(height,
+                verticalOrigin.Y + verticalViewport.ActualHeight);
+            double fade = Application.Current.TryFindResource("EdgeFadeOpacity") is double e ? e : 1.0;
+            double topStrength = Math.Min(1, scroller.VerticalOffset / 30.0) * fade;
+            double bottomStrength = Math.Min(1,
+                Math.Max(0, scroller.ScrollableHeight - scroller.VerticalOffset) / 34.0) * fade;
+
+            // Table applets keep their column heading and first visible row visually clean. Their
+            // lower edge still dissolves while more entries remain below; only the top cue is
+            // suppressed for Event Viewer and the shared Processes/Services view.
+            if (IsVisualDescendantOf(scroller, EventViewerHost) ||
+                IsVisualDescendantOf(scroller, ProcessListHost))
+                topStrength = 0;
+
+            BuildVerticalFade(_paneFadeMask, height, topY, bottomY,
+                hasAbove ? topStrength : 0, hasBelow ? bottomStrength : 0);
+            ResultsPaneBottomEdge.Visibility = hasBelow ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private bool UsesShadowCue(DependencyObject scroller) =>
+            IsVisualDescendantOf(scroller, ResultsList) ||
+            IsVisualDescendantOf(scroller, PerformanceHost);
+
+        private static bool IsVisualDescendantOf(DependencyObject child, DependencyObject ancestor)
+        {
+            DependencyObject? current = child;
+            while (current != null)
+            {
+                if (ReferenceEquals(current, ancestor)) return true;
+                current = VisualTreeHelper.GetParent(current);
+            }
+            return false;
+        }
+
+        private void SyncShadowCues(ScrollViewer scroller, bool hasAbove, bool hasBelow)
+        {
+            Point origin;
+            try { origin = scroller.TransformToVisual(PaneContent).Transform(new Point(0, 0)); }
+            catch { return; }
+
+            double left = Math.Max(0, origin.X);
+            double right = Math.Min(PaneContent.ActualWidth, origin.X + scroller.ActualWidth);
+            double width = Math.Max(0, right - left);
+            if (width <= 1) return;
+
+            PaneScrollTopCue.HorizontalAlignment = HorizontalAlignment.Left;
+            PaneScrollTopCue.Width = width;
+            PaneScrollTopCue.Margin = new Thickness(left, Math.Max(0, origin.Y - 2), 0, 0);
+
+            double below = Math.Max(0,
+                PaneContent.ActualHeight - (origin.Y + scroller.ActualHeight));
+            PaneScrollBottomCue.HorizontalAlignment = HorizontalAlignment.Left;
+            PaneScrollBottomCue.Width = width;
+            PaneScrollBottomCue.Margin = new Thickness(left, 0, 0, below);
+
+            PaneScrollTopCue.Visibility = hasAbove ? Visibility.Visible : Visibility.Collapsed;
+            PaneScrollBottomCue.Visibility = hasBelow ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private static void BuildVerticalFade(LinearGradientBrush brush, double height,
+            double topY, double bottomY, double topStrength, double bottomStrength)
+        {
+            double O(double px) => Math.Min(1, Math.Max(0, px / height));
+            Color A(double strength) => Color.FromArgb(
+                (byte)Math.Round(255 * (1 - Math.Min(1, Math.Max(0, strength)))), 0, 0, 0);
+
+            double topOuter = O(topY);
+            double topMid = O(topY + 11);
+            double topInner = O(Math.Min(bottomY, topY + 30));
+            double bottomInner = O(Math.Max(topY, bottomY - 34));
+            double bottomMid = O(Math.Max(topY, bottomY - 12));
+            double bottomOuter = O(bottomY);
+            double restore = Math.Min(1, bottomOuter + 0.001);
+
+            brush.GradientStops.Clear();
+            brush.GradientStops.Add(new GradientStop(Colors.Black, 0));
+            if (topOuter > 0.001)
+                brush.GradientStops.Add(new GradientStop(Colors.Black, Math.Max(0, topOuter - 0.001)));
+            brush.GradientStops.Add(new GradientStop(A(topStrength), topOuter));
+            brush.GradientStops.Add(new GradientStop(A(topStrength * 0.35), topMid));
+            brush.GradientStops.Add(new GradientStop(Colors.Black, topInner));
+            brush.GradientStops.Add(new GradientStop(Colors.Black, bottomInner));
+            brush.GradientStops.Add(new GradientStop(A(bottomStrength * 0.35), bottomMid));
+            brush.GradientStops.Add(new GradientStop(A(bottomStrength), bottomOuter));
+            // A DataGrid may have a horizontal scrollbar beneath its content presenter. Restore
+            // opacity immediately after the viewport so the bar itself never dissolves.
+            if (bottomOuter < 0.999)
+                brush.GradientStops.Add(new GradientStop(Colors.Black, restore));
+            brush.GradientStops.Add(new GradientStop(Colors.Black, 1));
+        }
+
+        private static bool IsInsideDataGrid(DependencyObject element)
+        {
+            DependencyObject? current = element;
+            while (current != null)
+            {
+                if (current is DataGrid) return true;
+                current = VisualTreeHelper.GetParent(current);
+            }
+            return false;
+        }
+
+        private static ScrollContentPresenter? FindViewportPresenter(ScrollViewer owner)
+        {
+            // Prefer the named template part where a template supplies it, then cover the shared
+            // BareScrollViewer template (whose presenter deliberately has no x:Name) by walking
+            // only for a presenter templated by this exact ScrollViewer.
+            if (owner.Template?.FindName("PART_ScrollContentPresenter", owner)
+                    is ScrollContentPresenter named && named.IsVisible)
+                return named;
+            return FindViewportPresenter(owner, owner);
+        }
+
+        private static ScrollContentPresenter? FindViewportPresenter(
+            DependencyObject root, ScrollViewer owner)
+        {
+            int count = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(root, i);
+                if (child is ScrollContentPresenter presenter && presenter.IsVisible &&
+                    ReferenceEquals(presenter.TemplatedParent, owner))
+                    return presenter;
+                var nested = FindViewportPresenter(child, owner);
+                if (nested != null) return nested;
+            }
+            return null;
         }
 
         // Resolved on first use, not in the constructor: the pane is built during the window's
@@ -234,6 +519,8 @@ namespace KillerShell
             }
             g.Freeze();
             el.Clip = g;
+
+            if (_paneScroller != null) SyncScrollChrome(_paneScroller);
 
             // The details columns are pixel widths shared by both panes, so they have to be
             // re-fitted whenever either pane changes size (ResultsView.UpdateColumnFit).

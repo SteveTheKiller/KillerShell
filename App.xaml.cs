@@ -318,12 +318,20 @@ namespace KillerShell
         /// <summary>True when KillerShell is already installed machine-wide.</summary>
         internal static bool MachineInstallExists() => File.Exists(MachineInstallExe);
 
+        /// <summary>True when KillerShell is already installed for the current user.</summary>
+        internal static bool UserInstallExists() => File.Exists(InstallExe);
+
         /// <summary>Installs KillerShell, then relaunches from the installed location.
         /// For an all-users install the app re-runs itself elevated with /silent - the same
         /// machine-wide path winget and choco already use - so UAC only appears when the user
         /// actually asked for it. Returns false if that elevation was declined or failed.</summary>
         internal static bool InstallAndRelaunch(bool wantDesktop, bool allUsers)
         {
+            // UI normally locks the machine-wide choice, but enforce the one-install rule here
+            // too so another caller can never create a per-user copy beside Program Files.
+            if (!allUsers && MachineInstallExists())
+                return false;
+
             if (allUsers)
             {
                 if (!RunElevatedSilentInstall()) return false;
@@ -331,13 +339,15 @@ namespace KillerShell
                 // Only ever one install: drop the per-user copy so there is a single Start Menu
                 // entry and a single uninstall entry. Settings are deliberately left alone.
                 RemovePerUserInstall();
+                SetDesktopShortcut(wantDesktop, MachineInstallExe);
 
                 Process.Start(new ProcessStartInfo(MachineInstallExe));
                 Application.Current.Shutdown();
                 return true;
             }
 
-            DoInstall(wantDesktop);
+            if (!DoInstall(wantDesktop)) return false;
+            if (!File.Exists(InstallExe)) return false;
             Process.Start(new ProcessStartInfo(InstallExe));
             Application.Current.Shutdown();
             return true;
@@ -437,6 +447,10 @@ namespace KillerShell
                     key.SetValue("NoModify",             1);
                     key.SetValue("NoRepair",             1);
                 }
+
+                // `/silent` is also the winget/choco/RMM entry point, so duplicate cleanup
+                // belongs here rather than only in the interactive caller. Settings survive.
+                RemovePerUserInstall();
             }
             catch (Exception ex)
             {
@@ -449,7 +463,7 @@ namespace KillerShell
         // Per-user install (the PORTABLE badge's Install button)
         // ============================================================
 
-        private static void DoInstall(bool wantDesktop)
+        private static bool DoInstall(bool wantDesktop)
         {
             try
             {
@@ -459,8 +473,7 @@ namespace KillerShell
 
                 Directory.CreateDirectory(StartMenuDir);
                 CreateShortcut(StartMenuLnk, InstallExe);
-                if (wantDesktop)
-                    CreateShortcut(DesktopLnk, InstallExe);
+                SetDesktopShortcut(wantDesktop, InstallExe);
 
                 string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "";
 
@@ -484,11 +497,13 @@ namespace KillerShell
                     key.SetValue("NoModify",             1);
                     key.SetValue("NoRepair",             1);
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Installation failed:\n{ex.Message}", AppName,
                     MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
 
@@ -512,6 +527,14 @@ namespace KillerShell
                     null, shortcut, null);
             }
             catch { /* best-effort */ }
+        }
+
+        private static void SetDesktopShortcut(bool enabled, string targetPath)
+        {
+            if (enabled)
+                CreateShortcut(DesktopLnk, targetPath);
+            else
+                try { if (File.Exists(DesktopLnk)) File.Delete(DesktopLnk); } catch { }
         }
 
         // ============================================================
@@ -566,7 +589,9 @@ namespace KillerShell
             string targetDir = machine ? MachineInstallDir : InstallDir;
             try { File.Delete(Path.Combine(startMenuDir, $"{AppName}.lnk")); } catch { }
             try { Directory.Delete(startMenuDir, recursive: false); } catch { }
-            if (!machine) try { File.Delete(DesktopLnk); } catch { }
+            // Interactive all-users installs create this shortcut only for the account that
+            // requested it, so that same account's uninstall should remove it as well.
+            try { File.Delete(DesktopLnk); } catch { }
 
             // Associations first, while the keys they hang off still exist. Both scopes are
             // attempted: the HKLM half is a no-op unless this uninstall was launched elevated

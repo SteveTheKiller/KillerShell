@@ -45,9 +45,11 @@ namespace KillerShell.Shell
                 _watcher = new FileSystemWatcher(folder)
                 {
                     // Size and LastWrite so an in-place edit refreshes the columns, not just
-                    // creates and deletes.
+                    // creates and deletes. Attributes matters to the show-hidden filter: an
+                    // existing item can enter or leave the listing without changing its name.
                     NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName
-                                 | NotifyFilters.LastWrite | NotifyFilters.Size,
+                                 | NotifyFilters.LastWrite | NotifyFilters.Size
+                                 | NotifyFilters.Attributes,
                     IncludeSubdirectories = false,
                 };
 
@@ -176,7 +178,7 @@ namespace KillerShell.Shell
 
             int nextSeq = tab.Results.Count == 0 ? 0 : tab.Results.Max(r => r.Seq) + 1;
             bool changed = false;
-            bool selectionRenamed = false;
+            bool selectionChanged = false;
             bool renamedInPlace = false;
 
             // Renames first, and IN PLACE: the generic create/delete loop below would otherwise
@@ -187,18 +189,34 @@ namespace KillerShell.Shell
             // the selection and the preview all pointed at the one row that actually changed.
             foreach (var (oldPath, newPath) in pairs)
             {
-                if (!byPath.TryGetValue(oldPath, out var existing)) continue;
-
                 string? parent = Path.GetDirectoryName(newPath);
                 if (!string.Equals(parent, tab.CurrentFolder, StringComparison.OrdinalIgnoreCase)) continue;
                 if (!File.Exists(newPath) && !Directory.Exists(newPath)) continue;
 
+                // If the old row was filtered out, leave the new path for the generic pass: it
+                // will either add a newly-visible name or reject a still-hidden one. If the row
+                // exists and the new name/attributes are filtered, remove it here instead of
+                // mutating the visible row into a dot/hidden/system entry.
+                if (!byPath.TryGetValue(oldPath, out var existing)) continue;
+
                 bool wasSelected = ReferenceEquals(Pane.ResultsList?.SelectedItem, existing);
+
+                if (ShouldHideListingPath(newPath))
+                {
+                    tab.Results.Remove(existing);
+                    changed = true;
+                    if (wasSelected) selectionChanged = true;
+
+                    paths.Remove(oldPath);
+                    paths.Remove(newPath);
+                    byPath.Remove(oldPath);
+                    continue;
+                }
 
                 existing.ApplyRename(newPath, Path.GetFileName(newPath));
                 changed = true;
                 renamedInPlace = true;
-                if (wasSelected) selectionRenamed = true;
+                if (wasSelected) selectionChanged = true;
 
                 paths.Remove(oldPath);
                 paths.Remove(newPath);
@@ -224,8 +242,10 @@ namespace KillerShell.Shell
                     continue;
                 }
 
-                // Hidden entries are not listed, so one becoming hidden should leave too.
-                if (IsHidden(path))
+                // Hidden, system and dot-prefixed entries leave only while the switch is off.
+                // The same predicate is used by the full listing, so watcher activity cannot
+                // silently undo what the toolbar says should be visible.
+                if (ShouldHideListingPath(path))
                 {
                     if (existing != null) { tab.Results.Remove(existing); changed = true; }
                     continue;
@@ -272,12 +292,15 @@ namespace KillerShell.Shell
             // The renamed row's own object survived, so the name/path fields shown in the
             // details strip still read the OLD name until this refreshes them - the file's bytes
             // did not change, so the already-decoded preview image is left alone on purpose.
-            if (selectionRenamed) UpdateDetailsPaneForSelection(Pane, animate: false);
+            if (selectionChanged) UpdateDetailsPaneForSelection(Pane, animate: false);
         }
 
-        private static bool IsHidden(string path)
+        private static bool ShouldHideListingPath(string path)
         {
-            try { return (File.GetAttributes(path) & FileAttributes.Hidden) != 0; }
+            try
+            {
+                return ShouldHideListingEntry(Path.GetFileName(path), File.GetAttributes(path));
+            }
             catch { return false; }
         }
 
