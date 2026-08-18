@@ -147,8 +147,13 @@ if (Test-Path $vsWhere) {
     }
 }
 if ($msbuild) {
-    & $msbuild 'KillerShell.csproj' /t:Publish /p:PublishProfile=FolderProfile /p:Configuration=Release /m /nologo /v:m
+    # Clean the intermediate tree as well as bin. A stale obj\Release publish manifest can
+    # retain an old expected output (notably KillerShell.exe.config) and make an otherwise valid
+    # publish fail while copying a file the current build no longer produces.
+    & $msbuild 'KillerShell.csproj' '/t:Clean;Publish' /p:PublishProfile=FolderProfile /p:Configuration=Release /m /nologo /v:m
 } else {
+    & dotnet clean 'KillerShell.csproj' -c Release
+    if ($LASTEXITCODE -ne 0) { Fail 'Clean failed' }
     & dotnet publish 'KillerShell.csproj' /p:PublishProfile=FolderProfile -c Release
 }
 if ($LASTEXITCODE -ne 0) { Fail 'Build failed' }
