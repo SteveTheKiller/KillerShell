@@ -54,7 +54,7 @@ namespace KillerShell
             _xmlEditor = BuildXmlEditor();
             XmlHost.Child = _xmlEditor;
 
-            Loaded += (_, _) => Anim.FadeIn(RootBorder);
+            Loaded += (_, _) => Anim.FadeIn(RootFade);
 
             // Opens sized to its content, then becomes an ordinary resizable window whose body
             // scrolls instead of overflowing (Controls/DialogContentSize.cs).
@@ -62,8 +62,6 @@ namespace KillerShell
 
             SourceInitialized += (_, _) =>
             {
-                ApplyRoundedCorners();
-                MainWindow.ApplyThemeBorder(this);
                 DialogScreenClamp.Apply(this);
             };
 
@@ -217,22 +215,67 @@ namespace KillerShell
             target.Children.Add(stack);
         }
 
-        [System.Runtime.InteropServices.DllImport("dwmapi.dll")]
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
-
-        private void ApplyRoundedCorners()
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            try
-            {
-                var hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
-                if (hwnd == IntPtr.Zero) return;
-                int pref = 2;   // DWMWCP_ROUND
-                DwmSetWindowAttribute(hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, ref pref, sizeof(int));
-            }
-            catch { /* pre-Win11: no rounded-corner API */ }
+            if (e.ChangedButton != MouseButton.Left) return;
+            e.Handled = true; // do not let the press bubble into the halo's resize handler
+            DragMove();
         }
 
-        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
+        // AllowsTransparency is what lets the shadow render outside the visible card, but a
+        // layered window has no native sizing frame. Keep the exact Windows resize behavior by
+        // forwarding presses in the 8px halo to the corresponding non-client hit target.
+        private const int WM_NCLBUTTONDOWN = 0x00A1;
+        private const int HTLEFT = 10, HTRIGHT = 11, HTTOP = 12, HTTOPLEFT = 13,
+                          HTTOPRIGHT = 14, HTBOTTOM = 15, HTBOTTOMLEFT = 16, HTBOTTOMRIGHT = 17;
+        private const double ResizeEdge = 8;
+
+        private int HitTestEdge(Point p)
+        {
+            bool left   = p.X <= ResizeEdge;
+            bool right  = p.X >= ActualWidth - ResizeEdge;
+            bool top    = p.Y <= ResizeEdge;
+            bool bottom = p.Y >= ActualHeight - ResizeEdge;
+
+            if (top && left)     return HTTOPLEFT;
+            if (top && right)    return HTTOPRIGHT;
+            if (bottom && left)  return HTBOTTOMLEFT;
+            if (bottom && right) return HTBOTTOMRIGHT;
+            if (left)            return HTLEFT;
+            if (right)           return HTRIGHT;
+            if (top)             return HTTOP;
+            if (bottom)          return HTBOTTOM;
+            return 0;
+        }
+
+        private void Resize_MouseMove(object sender, MouseEventArgs e)
+        {
+            Cursor = HitTestEdge(e.GetPosition(this)) switch
+            {
+                HTLEFT or HTRIGHT          => Cursors.SizeWE,
+                HTTOP or HTBOTTOM          => Cursors.SizeNS,
+                HTTOPLEFT or HTBOTTOMRIGHT => Cursors.SizeNWSE,
+                HTTOPRIGHT or HTBOTTOMLEFT => Cursors.SizeNESW,
+                _                          => Cursors.Arrow,
+            };
+        }
+
+        private void Resize_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left || !ReferenceEquals(e.OriginalSource, sender)) return;
+            int hit = HitTestEdge(e.GetPosition(this));
+            if (hit == 0) return;
+            e.Handled = true;
+            ReleaseCapture();
+            SendMessage(new System.Windows.Interop.WindowInteropHelper(this).Handle,
+                        WM_NCLBUTTONDOWN, new IntPtr(hit), IntPtr.Zero);
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
 
         /// <summary>Left/Right step to the previous/next record. This has to be a Preview
         /// (tunneling) handler at the Window level rather than living in OnKeyDown below: the

@@ -749,6 +749,14 @@ namespace KillerShell.Shell
                 p.ResultsPane.SetResourceReference(Border.BorderBrushProperty,
                     lit ? "PrimaryBrush" : "PaneBorderBrush");
 
+                // ResultsPane deliberately has no permanent bottom border: the ordinary content
+                // edge follows the active scroller so it does not falsely mark the viewport as
+                // the end of a long page. The focus ring is different UI state and must stay
+                // unbroken, so its bottom segment is an independent overlay (FilePane.xaml).
+                p.PaneFocusBottomEdge.Visibility = lit
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+
                 // The ring line in the band is that same border continuing across the top of
                 // the pane, so it takes the same brush. It is a child of the band rather than a
                 // border on the band, which is what lets the active tab break it (FilePane.xaml).

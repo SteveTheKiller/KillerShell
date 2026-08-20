@@ -560,6 +560,15 @@
                         BorderBrush="{DynamicResource PaneEdgeBrush}"
                         BorderThickness="{DynamicResource PaneEdgeBottomThickness}"
                         CornerRadius="{DynamicResource PanelCornerRadius}"/>
+                <!-- The ordinary bottom CONTENT edge above follows scroll position, but the
+                     selected-pane ring is a focus indicator and must never open at the bottom.
+                     DualPane.UpdatePaneFocusRing shows this segment only on the focused half;
+                     keeping it separate prevents scroll-chrome changes from breaking the ring. -->
+                <Border x:Name="PaneFocusBottomEdge" IsHitTestVisible="False" Panel.ZIndex="101"
+                        Visibility="Collapsed"
+                        BorderBrush="{DynamicResource PrimaryBrush}"
+                        BorderThickness="{DynamicResource PaneEdgeBottomThickness}"
+                        CornerRadius="{DynamicResource PanelCornerRadius}"/>
                 <!-- Hybrid scroll treatment: dense table tools dissolve their actual content;
                      the graphical file browser and Performance retain the stronger viewport
                      shadows. FilePane positions these over the full viewer, scrollbar included. -->

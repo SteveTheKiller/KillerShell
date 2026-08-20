@@ -377,11 +377,11 @@ namespace KillerShell.Editing
         /// </remarks>
         internal void ApplyTheme()
         {
-            // SurfaceBrush, not PaneBrush (2026-08-02) - the same "elevated but not
-            // stark" step the terminal now uses (TerminalPalette.cs), so a document reads as a
-            // page sunk slightly into the pane rather than flush with it. SurfaceBrush already
-            // sits between BackgroundBrush and PaneBrush in every theme.
-            Color bg     = Res("SurfaceBrush", Color.FromRgb(0x1E, 0x1E, 0x1E));
+            // EditorBackgroundBrush normally mirrors SurfaceBrush, preserving the slightly
+            // elevated document page used by the rounded themes. 98SE overrides it to white:
+            // a document is a sunken white client area in that UI, while SurfaceBrush is the
+            // #c0c0c0 window face and must remain gray for actual chrome and controls.
+            Color bg     = Res("EditorBackgroundBrush", Color.FromRgb(0x1E, 0x1E, 0x1E));
             Color fg     = Res("TextBrush",    Color.FromRgb(0xE0, 0xE0, 0xE0));
             Color dim    = Res("DimTextBrush", Color.FromRgb(0x80, 0x80, 0x80));
             Color accent = Res("PrimaryBrush", Color.FromRgb(0x50, 0xAE, 0xE8));

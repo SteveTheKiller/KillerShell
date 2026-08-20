@@ -413,6 +413,10 @@ namespace KillerShell.Services
             // Both default to the surface they already used, so the other twelve are untouched;
             // 98SE states #000000 for each in its app layer (Themes/98SE.xaml).
             Mirror("TerminalBackgroundBrush", "ListPaneBrush");
+            // A document surface is usually the palette's SurfaceBrush, but it is its own
+            // semantic token so flat desktop themes can use a white edit well without turning
+            // every gray window/control surface white too. 98SE supplies that override.
+            Mirror("EditorBackgroundBrush", "SurfaceBrush");
             // Text ON a MonitorCellBrush surface (the Performance tab's tiles, info panel and
             // detail card). Plain text brushes everywhere - except a theme whose cells are a
             // different world from its page, like 98SE's black CRT readouts on a light gray app,

@@ -28,6 +28,9 @@
          Explorer's own panes. -->
     <SolidColorBrush x:Key="ToolContentBrush" Color="#ffffff" po:Freeze="True"/>
     <SolidColorBrush x:Key="ToolTreeBrush"    Color="#ffffff" po:Freeze="True"/>
+    <!-- A text document is a white sunken client area, not the #c0c0c0 window face. Kept
+         separate from SurfaceBrush so the rest of the 98SE chrome remains correctly gray. -->
+    <SolidColorBrush x:Key="EditorBackgroundBrush" Color="#ffffff" po:Freeze="True"/>
     <!-- The fill that masks the tree's connecting line where the chevron crosses it
          (arrowFill, Controls/Controls.xaml). Its only job is to vanish into the surface behind
          the chevron, so it has to BE that surface. ThemeManager mirrors it onto

@@ -4,6 +4,15 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Hungarian localization for the complete app interface and killershell.net, bringing both to twelve languages.
+- Storage Analyzer now uses a Master File Table fast path for elevated scans of local NTFS drives and folders. It enumerates the volume by file ID, builds the same treemap tree, and automatically falls back to the existing parallel directory walker for ordinary accounts, network paths, other filesystems, or any unsupported MFT operation.
+
+### Changed
+- killershell.net's Help and Technical pages now have complete twelve-language coverage, including every newer archive, pane, editor, administration, Storage Analyzer, and shortcut section. The 90-row shortcut reference, its scope/category headings, and its List/Keyboard labels are generated from the app's own locale dictionaries so the website cannot drift from the F1 card. Polish, Czech, and Japanese are also accepted by the website language switcher instead of falling back to English.
+
 ## [1.2.2] - 2026-08-18
 
 This release makes portable installs and updates safer, expands Storage Analyzer and ZIP workflows, completes localization and theme coverage, and gives the 98SE interface a substantial polish pass.

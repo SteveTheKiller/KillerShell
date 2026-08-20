@@ -1,11 +1,11 @@
 <Window x:Class="KillerShell.EventDetailsDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="Event Details"
         Width="720" SizeToContent="Height" MinWidth="560" MinHeight="280" MaxWidth="1400" MaxHeight="900"
         WindowStyle="None" ResizeMode="CanResize" ShowInTaskbar="False"
-        Background="{DynamicResource BackgroundBrush}"
+        AllowsTransparency="True"
+        Background="Transparent"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
         UseLayoutRounding="True"
@@ -18,12 +18,28 @@
          opens it (Tools/EventViewerControl.cs) is a stand-alone control with no MainWindow overlay
          to reach - the same reason ProcessListControl's KillWithConfirm opens ConfirmDialog as its
          own Window instead. -->
-    <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="8" CornerRadius="0"
-                            GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
-    </shell:WindowChrome.WindowChrome>
+    <!-- A layered window gives the shadow real transparent space outside the card. RootFade owns
+         the opening animation so the card and its shadow arrive together; the childless shadow
+         sibling keeps the DropShadowEffect from rasterizing the pane's text subtree.
+         The halo is 0 and the opacity is 0 in 98SE, where a soft floating shadow is deliberately
+         inappropriate. Resizing is handed to Windows from the halo in code-behind. -->
+    <Grid x:Name="RootFade" Opacity="0" Background="#01000000"
+          MouseMove="Resize_MouseMove" MouseLeftButtonDown="Resize_MouseDown">
+        <Border Margin="{DynamicResource DialogHaloMargin}"
+                CornerRadius="{DynamicResource PanelCornerRadius}"
+                Background="{DynamicResource BackgroundBrush}"
+                IsHitTestVisible="False">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="3" Direction="270"
+                                  Opacity="{DynamicResource FlyoutShadowOpacity}"
+                                  RenderingBias="Quality"/>
+            </Border.Effect>
+        </Border>
 
-    <Border x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+    <Border x:Name="RootBorder" Margin="{DynamicResource DialogHaloMargin}"
+            Background="{DynamicResource BackgroundBrush}"
+            CornerRadius="{DynamicResource PanelCornerRadius}"
+            BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
         <Grid>
             <!-- BodyRow starts Auto and becomes Star after the first render
                  (Controls/DialogContentSize.cs). Auto is what SizeToContent="Height" above needs,
@@ -170,4 +186,5 @@
             </Grid>
         </Grid>
     </Border>
+    </Grid>
 </Window>

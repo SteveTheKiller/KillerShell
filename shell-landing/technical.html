@@ -14,8 +14,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <meta name="description" content="How KillerShell works under the hood: how it walks a folder tree, matches filenames, streams file contents line by line, reads archives as folders, maps a disk as a treemap, moves files, hosts a shell and edits text, all without ever building an index.">
 <link rel="icon" type="image/x-icon" href="brand/ksh-icon.ico">
 <script defer src="https://koya.thekiller.net/script.js" data-website-id="8f6a2876-9457-45d5-96ca-9008ee743944"></script>
-<link rel="stylesheet" href="ks.css?v=8">
-<link rel="stylesheet" href="palettes.generated.css?v=1">
+<link rel="stylesheet" href="ks.css?v=11">
 <style>
 .page-hero { text-align: center; padding: 44px 16px 8px; }
 .page-hero .wm-logo { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
@@ -83,6 +82,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <button class="lang-item" data-lang="fr">Francais</button>
 <button class="lang-item" data-lang="ja">&#26085;&#26412;&#35486;</button>
 <button class="lang-item" data-lang="pl">Polski</button>
+<button class="lang-item" data-lang="hu">Magyar</button>
 <button class="lang-item" data-lang="tr">Turkce</button>
 <button class="lang-item" data-lang="zh-cn">&#20013;&#25991; (&#31616;&#20307;)</button>
 <button class="lang-item" data-lang="zh">&#20013;&#25991; (&#32321;&#39636;)</button>
@@ -138,7 +138,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <tr><td data-i18n="t_stack_walk">File walk</td><td data-i18n="t_stack_walk_d">A breadth-first walk built on <code>Directory.EnumerateFiles</code>, yielding files one at a time and skipping folders it cannot read</td></tr>
 <tr><td data-i18n="t_stack_read">Content read</td><td data-i18n="t_stack_read_d">A buffered <code>FileStream</code> and <code>StreamReader</code> that reads each file line by line, with a null-byte check to skip binaries</td></tr>
 <tr><td data-i18n="t_arch_h">Archives</td><td data-i18n="t_stack_arch_d">Zip and gzip out of .NET Framework itself and a tar reader written in place, so a .zip or a .tar browses like a folder without adding a single dependency</td></tr>
-<tr><td data-i18n="t_stack_disk">Disk map</td><td data-i18n="t_stack_disk_d">A parallel <code>FindFirstFileExW</code> walk feeding a squarified treemap, drawn in one render pass rather than built out of elements</td></tr>
+<tr><td data-i18n="t_stack_disk">Disk map</td><td data-i18n="t_stack_disk_d">Direct NTFS Master File Table enumeration when elevated, with a parallel <code>FindFirstFileExW</code> fallback, feeding a squarified treemap drawn in one render pass</td></tr>
 <tr><td data-i18n="t_stack_export">Export</td><td data-i18n="t_stack_export_d">A self-contained HTML report or CSV, written directly from the result set or the storage scan, no libraries required</td></tr>
 <tr><td data-i18n="t_stack_term">Terminal</td><td data-i18n="t_stack_term_d">A hosted console: the shell you picked runs as a real child process and its output is drawn by the app, with the working directory tracked from the shell's own OSC 7 reports</td></tr>
 <tr><td data-i18n="t_stack_ed">Editor</td><td data-i18n="t_stack_ed_d">AvalonEdit (MIT), vendored as source and compiled into the exe rather than shipped as a DLL, so the app is still one file</td></tr>
@@ -283,7 +283,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <h3 id="admin-performance" data-i18n="t_admin_performance_h">Performance monitor</h3>
 <p data-i18n="t_admin_p2">Performance Monitor (F11) reads System.Diagnostics.PerformanceCounter directly: % Processor Time for CPU, with a per-core breakdown; Available and Committed bytes for RAM; % Disk Time and read/write bytes per second per physical disk; bytes sent and received per network adapter; and GPU Engine / GPU Adapter Memory summed the same way Task Manager itself does. Disks, adapters and GPUs are enumerated with WMI (Win32_DiskDrive, Win32_VideoController) rather than assumed to be singular. GPU counter instances are rescanned only every 8 ticks instead of every tick, because polling GetInstanceNames() on the GPU categories every second was spamming the Application event log with unrelated Perflib provider-reload errors. Every cell keeps 60 samples of history at a 1s tick, so its graph always shows the last minute.</p>
 <h3 id="admin-storage" data-i18n="t_admin_storage_h">Storage analyzer</h3>
-<p data-i18n="t_admin_p5">Storage Analyzer (F4, elevated on Ctrl+F4) is a parallel directory walk feeding a treemap. Enumeration goes straight at the Win32 FindFirstFileEx API with FindExInfoBasic, dropping the 8.3 short-name lookup nobody here needs, and every path carries the \\?\ prefix, so anything past MAX_PATH lists normally instead of failing. One worker per logical processor pulls directories off a shared queue, and reparse points are never followed, so a junction cannot make the same bytes count twice and a symlink loop cannot hang the scan. A folder the account cannot open is counted as skipped rather than treated as fatal.</p>
+<p data-i18n="t_admin_p5">Storage Analyzer (F4, elevated on Ctrl+F4) has two scanners feeding the same treemap. An elevated scan of a local NTFS volume enumerates the Master File Table by file ID and queries sizes directly from the volume, avoiding a path-by-path directory walk. Ordinary accounts, network paths, non-NTFS filesystems, and any MFT failure automatically fall back to the parallel Win32 FindFirstFileEx walker. That fallback drops the unused 8.3-name lookup, carries the \\?\ prefix for long paths, and runs one worker per logical processor. Neither route follows reparse points, and inaccessible entries are counted as skipped rather than making the scan fail.</p>
 <p data-i18n="t_admin_p5b">The map is drawn rather than built. A system drive is easily 200,000 visible rectangles, which is not a number of WPF elements any layout pass survives, so the whole thing is emitted in a single render pass, with the hover and selection rings on a separate overlay layer so moving the pointer never repaints the map underneath. Layout is a squarified treemap, the Bruls, Huizing and van Wijk algorithm, placing children largest first in rows along the shorter side so the rectangles stay close to square and therefore readable and clickable.</p>
 <p data-i18n="t_admin_p5c">The depth and minimum-size controls are view filters applied at draw time, never rescans, which is why they are instant, and neither loses a byte: a folder capped by depth is drawn as one rectangle carrying its whole subtree, and a file hidden by the size floor still counts inside the rectangle of the folder holding it.</p>
 <p data-i18n="t_admin_p5d">Rectangles are colored either by what a file is, from a small table of extension categories painted in the family's neon set with anything unrecognized left gray, so color always means identified, or by which top-level folder of the scan it came from, one hue per branch stepped by the golden angle. Deleting from the map goes through the shell's own Recycle Bin call, so the tab has no permanent-delete path at all, and the map is updated in place afterwards rather than rescanned.</p>
@@ -295,7 +295,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="themes">
 <h2 data-i18n="t_themes_h">Themes &amp; languages</h2>
-<p data-i18n="t_themes_p">KillerShell ships with thirteen themes: Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium and Mourning. Four of them - Dark, Light, Black and 98SE - each carry six accent colors on top of the palette; the other nine are a palette on their own. All of it switches live from the rail, with nothing to restart. The interface is localized in eleven languages: English, Spanish, German, French, Turkish, Polish, Czech, Japanese, Chinese in both Traditional and Simplified, and Bengali. Every visible string is resolved through a resource lookup, so switching language reflows the whole window with no restart.</p>
+<p data-i18n="t_themes_p">KillerShell ships with thirteen themes: Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium and Mourning. Four of them - Dark, Light, Black and 98SE - each carry six accent colors on top of the palette; the other nine are a palette on their own. All of it switches live from the rail, with nothing to restart. The interface is localized in twelve languages: English, Spanish, German, French, Hungarian, Turkish, Polish, Czech, Japanese, Chinese in both Traditional and Simplified, and Bengali. Every visible string is resolved through a resource lookup, so switching language reflows the whole window with no restart.</p>
 <p data-i18n="t_themes_p2">The whole app also scales. Rolling the wheel over the title-bar wordmark drives a layout transform on the content host, roughly 2% a notch between 70% and 250%, remembered between runs. Because it is a layout transform rather than a render transform, text reflows and re-rasterizes at the new size instead of being stretched as a bitmap, and the title bar and footer stay a fixed size so the wordmark never moves out from under the pointer.</p>
 </div>
 
@@ -332,8 +332,8 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>
-<script src="ks-i18n.js?v=2"></script>
-<script src="ks.js?v=2"></script>
+<script src="ks-i18n.js?v=3"></script>
+<script src="ks.js?v=4"></script>
 <script>
 (function(){
   var links=[].slice.call(document.querySelectorAll('.outline a'));

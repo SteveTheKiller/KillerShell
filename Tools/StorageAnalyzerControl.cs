@@ -11,15 +11,16 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using KillerShell.Shell;
+using Microsoft.Win32.SafeHandles;
 
 // The control behind a Storage Analyzer tab: pick a folder or drive, scan it, and see every
 // byte as a WizTree/WinDirStat-style treemap - a rectangle per file, area proportional to
 // size, folders as nested outlines, drawn in KillerShell's own retro language.
 //
-// Scanning is a parallel directory walk over FindFirstFileExW (basic info + large fetch),
-// one worker per logical processor pulling directories off a shared queue. It works on any
-// filesystem and any account; folders the account cannot open are skipped and counted rather
-// than failing the scan. An NTFS MFT fast path can slot in behind the same tree later.
+// Elevated scans of a local NTFS volume enumerate the MFT by file ID, then query file sizes
+// directly from the volume handle. Everything else uses the parallel FindFirstFileExW directory
+// walk: non-NTFS and network paths, ordinary accounts, and any machine where the MFT APIs refuse
+// the request. Both routes build the exact same FsNode tree for the renderer.
 //
 // Rendering is done by hand on one surface, the same reasoning as the terminal: a scan of a
 // system drive is easily 200k+ visible rectangles, and one OnRender pass over frozen brushes
@@ -645,6 +646,22 @@ namespace KillerShell.Tools
 
             var token = _cts.Token;
             var root = _root;
+            if (CanUseMftFastPath(_rootPath))
+            {
+                var mft = new Thread(() => MftScanWorker(token, root))
+                {
+                    IsBackground = true,
+                    Name = "StorageMftScan"
+                };
+                mft.Start();
+                return;
+            }
+
+            StartDirectoryWorkers(token, root);
+        }
+
+        private void StartDirectoryWorkers(CancellationToken token, FsNode root)
+        {
             int workers = Math.Max(2, Environment.ProcessorCount);
             for (int i = 0; i < workers; i++)
             {
@@ -652,6 +669,196 @@ namespace KillerShell.Tools
                 t.Start();
             }
         }
+
+        private static bool CanUseMftFastPath(string target)
+        {
+            if (!MainWindow.IsElevated || target.StartsWith(@"\\", StringComparison.Ordinal)) return false;
+            try
+            {
+                string? root = Path.GetPathRoot(target);
+                return !string.IsNullOrEmpty(root)
+                    && root!.Length >= 2
+                    && new DriveInfo(root).DriveFormat.Equals("NTFS", StringComparison.OrdinalIgnoreCase);
+            }
+            catch { return false; }
+        }
+
+        /// <summary>The fast route is deliberately fail-open. It builds into a private tree and
+        /// publishes nothing until the complete MFT graph is valid; an unsupported driver,
+        /// inaccessible record, or malformed response simply starts the normal walker.</summary>
+        private void MftScanWorker(CancellationToken token, FsNode publishedRoot)
+        {
+            var privateRoot = new FsNode { Name = _rootPath, IsDir = true, Children = [] };
+            if (TryScanMft(_rootPath, privateRoot, token))
+            {
+                if (token.IsCancellationRequested) FinishScan(privateRoot, aborted: true);
+                else
+                {
+                    _root = privateRoot;
+                    _zoomRoot = privateRoot;
+                    FinishScan(privateRoot, aborted: false);
+                }
+                return;
+            }
+
+            if (token.IsCancellationRequested)
+            {
+                FinishScan(publishedRoot, aborted: true);
+                return;
+            }
+
+            // Reset counters because a partially read MFT never becomes visible or contributes
+            // to the fallback summary.
+            _pFiles = 0; _pDirs = 0; _pBytes = 0; _pSkipped = 0;
+            publishedRoot.Children!.Clear();
+            _pending = 1;
+            _queue = new ConcurrentQueue<(string, FsNode)>();
+            _queue.Enqueue((_rootPath, publishedRoot));
+            StartDirectoryWorkers(token, publishedRoot);
+        }
+
+        private sealed class MftEntry
+        {
+            internal ulong Id;
+            internal ulong ParentId;
+            internal string Name = "";
+            internal uint Attributes;
+            internal bool IsDirectory => (Attributes & FileAttributeDirectory) != 0;
+            internal bool IsReparsePoint => (Attributes & FileAttributeReparsePoint) != 0;
+        }
+
+        private bool TryScanMft(string target, FsNode rootNode, CancellationToken token)
+        {
+            try
+            {
+                string drive = Path.GetPathRoot(target)!.Substring(0, 2);
+                using var volume = CreateFileW(@"\\.\" + drive, GenericRead,
+                    FileShareRead | FileShareWrite | FileShareDelete, IntPtr.Zero, OpenExisting, 0, IntPtr.Zero);
+                if (volume.IsInvalid) return false;
+
+                ulong targetId;
+                using (var targetHandle = CreateFileW(target, 0,
+                    FileShareRead | FileShareWrite | FileShareDelete, IntPtr.Zero, OpenExisting,
+                    FileFlagBackupSemantics, IntPtr.Zero))
+                {
+                    if (targetHandle.IsInvalid || !GetFileInformationByHandle(targetHandle, out var targetInfo)) return false;
+                    targetId = NormalizeFileId(((ulong)targetInfo.FileIndexHigh << 32) | targetInfo.FileIndexLow);
+                }
+
+                var records = ReadMftEntries(volume, token);
+                if (records == null || !records.ContainsKey(targetId)) return false;
+
+                var byParent = new Dictionary<ulong, List<MftEntry>>();
+                foreach (var entry in records.Values)
+                {
+                    if (!byParent.TryGetValue(entry.ParentId, out var list))
+                        byParent[entry.ParentId] = list = [];
+                    list.Add(entry);
+                }
+
+                var pending = new Queue<(ulong Id, FsNode Node)>();
+                pending.Enqueue((targetId, rootNode));
+                int candidateFiles = 0;
+                while (pending.Count > 0)
+                {
+                    token.ThrowIfCancellationRequested();
+                    var current = pending.Dequeue();
+                    if (!byParent.TryGetValue(current.Id, out var children)) continue;
+                    foreach (var entry in children)
+                    {
+                        if (entry.Id == targetId || entry.IsReparsePoint || entry.Name is "." or "..") continue;
+                        if (entry.IsDirectory)
+                        {
+                            var child = new FsNode { Name = entry.Name, IsDir = true, Parent = current.Node, Children = [] };
+                            current.Node.Children!.Add(child);
+                            Interlocked.Increment(ref _pDirs);
+                            pending.Enqueue((entry.Id, child));
+                        }
+                        else
+                        {
+                            candidateFiles++;
+                            long size = GetFileSizeById(volume, entry.Id);
+                            if (size < 0) { Interlocked.Increment(ref _pSkipped); continue; }
+                            current.Node.Children!.Add(new FsNode { Name = entry.Name, Size = size, Parent = current.Node });
+                            Interlocked.Increment(ref _pFiles);
+                            Interlocked.Add(ref _pBytes, size);
+                        }
+                    }
+                }
+                // A volume with files but no openable file IDs means this driver accepted the
+                // enumeration call without supporting the lookup half of the contract. An empty
+                // map would be a lie, so hand the target to the directory walker instead.
+                if (candidateFiles > 0 && Interlocked.Read(ref _pFiles) == 0) return false;
+                return true;
+            }
+            catch (OperationCanceledException) { return true; }
+            catch { return false; }
+        }
+
+        private static Dictionary<ulong, MftEntry>? ReadMftEntries(SafeFileHandle volume, CancellationToken token)
+        {
+            const int bufferSize = 1024 * 1024;
+            var output = new byte[bufferSize];
+            var query = new MFT_ENUM_DATA { StartFileReferenceNumber = 0, LowUsn = 0, HighUsn = long.MaxValue };
+            var records = new Dictionary<ulong, MftEntry>();
+            while (true)
+            {
+                token.ThrowIfCancellationRequested();
+                bool ok = DeviceIoControl(volume, FsctlEnumUsnData, ref query, Marshal.SizeOf(query),
+                    output, output.Length, out int bytes, IntPtr.Zero);
+                if (!ok)
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    if (error == ErrorHandleEof) break;
+                    return null;
+                }
+                if (bytes < 8) return null;
+                query.StartFileReferenceNumber = BitConverter.ToUInt64(output, 0);
+                int offset = 8;
+                while (offset + 60 <= bytes)
+                {
+                    int length = BitConverter.ToInt32(output, offset);
+                    if (length < 60 || offset + length > bytes) return null;
+                    ushort major = BitConverter.ToUInt16(output, offset + 4);
+                    // NTFS returns USN_RECORD_V2 here. V3 carries 128-bit IDs at different
+                    // offsets (used by ReFS, which never enters this route), so do not parse a
+                    // future/foreign layout as though it were V2.
+                    if (major == 2)
+                    {
+                        ushort nameLength = BitConverter.ToUInt16(output, offset + 56);
+                        ushort nameOffset = BitConverter.ToUInt16(output, offset + 58);
+                        if (nameOffset + nameLength <= length)
+                        {
+                            ulong id = NormalizeFileId(BitConverter.ToUInt64(output, offset + 8));
+                            records[id] = new MftEntry
+                            {
+                                Id = id,
+                                ParentId = NormalizeFileId(BitConverter.ToUInt64(output, offset + 16)),
+                                Attributes = BitConverter.ToUInt32(output, offset + 52),
+                                Name = System.Text.Encoding.Unicode.GetString(output, offset + nameOffset, nameLength)
+                            };
+                        }
+                    }
+                    offset += length;
+                }
+            }
+            return records;
+        }
+
+        private static long GetFileSizeById(SafeFileHandle volume, ulong id)
+        {
+            var descriptor = new FILE_ID_DESCRIPTOR
+            {
+                Size = (uint)Marshal.SizeOf<FILE_ID_DESCRIPTOR>(),
+                Type = 0,
+                FileId = unchecked((long)id)
+            };
+            using var file = OpenFileById(volume, ref descriptor, FileReadAttributes,
+                FileShareRead | FileShareWrite | FileShareDelete, IntPtr.Zero, FileFlagBackupSemantics);
+            return file.IsInvalid || !GetFileSizeEx(file, out long size) ? -1 : size;
+        }
+
+        private static ulong NormalizeFileId(ulong id) => id & 0x0000FFFFFFFFFFFFUL;
 
         private void CancelScan()
         {
@@ -1502,6 +1709,72 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  P/Invoke - enumeration and recycle
         // ═══════════════════════════════════════════════════════════
+        private const uint GenericRead = 0x80000000;
+        private const uint FileReadAttributes = 0x80;
+        private const uint FileShareRead = 0x1;
+        private const uint FileShareWrite = 0x2;
+        private const uint FileShareDelete = 0x4;
+        private const uint OpenExisting = 3;
+        private const uint FileFlagBackupSemantics = 0x02000000;
+        private const uint FileAttributeDirectory = 0x10;
+        private const uint FileAttributeReparsePoint = 0x400;
+        private const uint FsctlEnumUsnData = 0x000900B3;
+        private const int ErrorHandleEof = 38;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MFT_ENUM_DATA
+        {
+            public ulong StartFileReferenceNumber;
+            public long LowUsn;
+            public long HighUsn;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct FILE_ID_DESCRIPTOR
+        {
+            public uint Size;
+            public int Type;
+            public long FileId;
+            public long ExtendedFileId;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct BY_HANDLE_FILE_INFORMATION
+        {
+            public uint FileAttributes;
+            public System.Runtime.InteropServices.ComTypes.FILETIME CreationTime;
+            public System.Runtime.InteropServices.ComTypes.FILETIME LastAccessTime;
+            public System.Runtime.InteropServices.ComTypes.FILETIME LastWriteTime;
+            public uint VolumeSerialNumber;
+            public uint FileSizeHigh;
+            public uint FileSizeLow;
+            public uint NumberOfLinks;
+            public uint FileIndexHigh;
+            public uint FileIndexLow;
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern SafeFileHandle CreateFileW(string fileName, uint desiredAccess,
+            uint shareMode, IntPtr securityAttributes, uint creationDisposition,
+            uint flagsAndAttributes, IntPtr templateFile);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool DeviceIoControl(SafeFileHandle device, uint controlCode,
+            ref MFT_ENUM_DATA input, int inputSize, [Out] byte[] output, int outputSize,
+            out int bytesReturned, IntPtr overlapped);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetFileInformationByHandle(SafeFileHandle file,
+            out BY_HANDLE_FILE_INFORMATION information);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern SafeFileHandle OpenFileById(SafeFileHandle volume,
+            ref FILE_ID_DESCRIPTOR fileId, uint desiredAccess, uint shareMode,
+            IntPtr securityAttributes, uint flagsAndAttributes);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetFileSizeEx(SafeFileHandle file, out long fileSize);
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct WIN32_FIND_DATAW
         {

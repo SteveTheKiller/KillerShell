@@ -21,7 +21,7 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 - Use the built-in Event Viewer, Registry Editor, and Storage Analyzer without leaving the tab strip
 - Keyboard-first operation using familiar Explorer keys plus F4 storage, F7 edit, F8 shell, F9 processes, F10 split, F11 performance, and F1 for the complete shortcut overlay
 - Thirteen themes, including a full 98SE recreation; Dark, Light, Black, and 98SE each have six accent colors for 33 looks in all
-- Localized in 11 languages, with live switching and English fallback for incomplete translations
+- Localized in 12 languages, with live switching and English fallback for incomplete translations
 - Runs portable or self-installs per-user without UAC or machine-wide with UAC; `/silent` supports WinGet and managed deployment
 - Local-only: no indexing service, cloud account, advertisements, or telemetry
 
@@ -29,12 +29,12 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 
 <table>
 <tr>
-<td width="50%"><img src="docs/editor-icons.png" alt="Dual pane with a PowerShell script in the editor and an icon view"><br><sub>Two panes on one tab strip - a backup script open in the editor, an icon view beside it.</sub></td>
-<td width="50%"><img src="docs/context-menu.png" alt="Results context menu"><br><sub>Edit, open as administrator, search inside a folder, open a terminal, analyze storage, or copy a SHA-256.</sub></td>
+<td width="50%"><img src="docs/storage-analyzer.png" alt="Storage Analyzer showing a color-coded treemap of a drive"><br><sub>Storage Analyzer turns a drive into a color-coded treemap with filtering, zoom, export, and file operations built in.</sub></td>
+<td width="50%"><img src="docs/performance-processes.png" alt="Performance graphs and the process manager with the Fonts dialog open"><br><sub>Performance graphs and the searchable process manager stay live while app, terminal, and editor fonts are adjusted.</sub></td>
 </tr>
 <tr>
-<td><img src="docs/performance-events.png" alt="The Performance tab with an Event Viewer record open"><br><sub>Performance, Events, Processes, Services, Storage, and the Registry are tabs like any other.</sub></td>
-<td><img src="docs/theme-98se.png" alt="The 98SE theme with a terminal and thumbnails"><br><sub>Thirteen themes, including 98SE with square corners, raised bevels, and its own icon set.</sub></td>
+<td><img src="docs/files-terminal-menu.png" alt="File browser and PowerShell in two panes with the file context menu open"><br><sub>Browse files beside a live PowerShell tab; search, terminals, storage analysis, hashing, and admin actions stay one click away.</sub></td>
+<td><img src="docs/editor-languages.png" alt="Syntax-highlighted PowerShell editor with the language menu open"><br><sub>Syntax-highlighted editing, a persistent folder tree, and live switching among eleven localized interfaces.</sub></td>
 </tr>
 </table>
 

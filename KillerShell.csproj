@@ -27,32 +27,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\ksh-icon.ico"/>
+    <Resource Include="Resources\ksh-icon.ico" />
     <!-- The brand icon pack (IconCache.cs), drawn for every directory and every tab kind.
          Generated from brand\icons: each is cropped to its ink, squared and written at 128px,
          which covers the 20px draw size up to the 250% app-scale ceiling and gives folders the
          same optical weight as the tool icons (the source folder art carries 70px of padding the
          others do not). Regenerate rather than hand-editing anything in Resources\icons. -->
-    <Resource Include="Resources\icons\*.png"/>
+    <Resource Include="Resources\icons\*.png" />
     <!-- The period icon pack the 98SE theme draws from, same 24 filenames as the brand pack above
          so IconCache only has to swap a path prefix. Chicago95 art (GPL-3.0+/MIT), upscaled 5x
          nearest-neighbor from its 32px originals to the same 160px canvas - integer scaling with
          no interpolation, or the pixels stop being pixels. See Resources\icons\98\ATTRIBUTION.md
          for the per-icon source map and the license. NOT covered by the glob above: MSBuild's
          Include is not recursive, so this needs its own line. -->
-    <Resource Include="Resources\icons\98\*.png"/>
+    <Resource Include="Resources\icons\98\*.png" />
     <!-- The icon Explorer shows for the text types KillerShell associates. EmbeddedResource,
          not Resource: Associations.cs points DefaultIcon at a real path on disk, so App.xaml.cs
          has to extract it beside the exe. Same arrangement as KillerPDF's pdf-file.ico. -->
-    <EmbeddedResource Include="Resources\text-file.ico"/>
-    <Resource Include="Fonts\KillerShell.ttf"/>
+    <EmbeddedResource Include="Resources\text-file.ico" />
+    <Resource Include="Fonts\KillerShell.ttf" />
     <!-- 26 glyphs, 2.9 KB: the handful a stock Windows monospaced font does NOT have but the
          shipped prompt draws - the powerline separators, the git branch mark, the prompt chevron
          and the ahead/behind arrows. The terminal draws a cell from this when the user's chosen
          face has no glyph for it (Terminal/TerminalControl.cs), so a powerline prompt renders on
          a machine with nothing but Consolas without imposing a typeface on anybody.
          Subset of Terminess Nerd Font, SIL OFL 1.1 - see Fonts\KillerGlyphs-OFL.txt. -->
-    <Resource Include="Fonts\KillerGlyphs.ttf"/>
+    <Resource Include="Fonts\KillerGlyphs.ttf" />
   </ItemGroup>
 
   <!-- KillerPivot and KillerScripts, shipped with the app (Modules.cs). EmbeddedResource, not
@@ -87,20 +87,18 @@
        leave every built-in highlighting embedded under the wrong resource name, so the tree comes
        out of every default glob first and goes back in a line at a time. -->
   <ItemGroup>
-    <Compile          Remove="third_party\**" />
-    <Page             Remove="third_party\**" />
-    <Resource         Remove="third_party\**" />
+    <Compile Remove="third_party\**" />
+    <Page Remove="third_party\**" />
+    <Resource Remove="third_party\**" />
     <EmbeddedResource Remove="third_party\**" />
-    <None             Remove="third_party\**" />
+    <None Remove="third_party\**" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Their AssemblyInfo declares attributes this project already carries. -->
-    <Compile Include="third_party\AvalonEdit\**\*.cs"
-             Exclude="third_party\AvalonEdit\Properties\AssemblyInfo.cs" />
+    <Compile Include="third_party\AvalonEdit\**\*.cs" Exclude="third_party\AvalonEdit\Properties\AssemblyInfo.cs" />
 
-    <Page Include="third_party\AvalonEdit\**\*.xaml"
-          Exclude="third_party\AvalonEdit\themes\generic.xaml">
+    <Page Include="third_party\AvalonEdit\**\*.xaml" Exclude="third_party\AvalonEdit\themes\generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -118,10 +116,8 @@
          built-in definitions by typeof(Resources).FullName + "." + filename, and the name MSBuild
          would infer from this path begins with KillerShell.third_party, so PowerShell.xshd and
          every one of its neighbors would come back null at runtime. -->
-    <EmbeddedResource Include="third_party\AvalonEdit\Highlighting\Resources\*.xshd"
-                      LogicalName="ICSharpCode.AvalonEdit.Highlighting.Resources.%(Filename)%(Extension)" />
-    <EmbeddedResource Include="third_party\AvalonEdit\Highlighting\Resources\*.xsd"
-                      LogicalName="ICSharpCode.AvalonEdit.Highlighting.Resources.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="third_party\AvalonEdit\Highlighting\Resources\*.xshd" LogicalName="ICSharpCode.AvalonEdit.Highlighting.Resources.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="third_party\AvalonEdit\Highlighting\Resources\*.xsd" LogicalName="ICSharpCode.AvalonEdit.Highlighting.Resources.%(Filename)%(Extension)" />
 
     <!-- Referenced from their XAML: the two search buttons and the line-number margin cursor. -->
     <Resource Include="third_party\AvalonEdit\Search\next.png" />
@@ -158,7 +154,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.15.0">
+    <PackageReference Include="PolySharp" Version="1.16.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
