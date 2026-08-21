@@ -55,6 +55,73 @@ namespace KillerShell.Shell
         /// captured once so it can be restored exactly when the split closes.</summary>
         private double _paneSingleMinWidth = -1;
 
+        /// <summary>Pane A's share of the split at the last settled layout. Window-state JUMPS
+        /// (snap, maximize, unmaximize) re-derive A's pixel width from this so the panes keep
+        /// their proportions - a 50/50 split must not come out of maximize as 75/25. An
+        /// interactive edge drag keeps A fixed so the window edge eats pane B only; WM_ENTER/
+        /// EXITSIZEMOVE (<see cref="_inWindowSizeMove"/>, tracked in Chrome.cs WndProc) tells
+        /// the two apart. Ported from KillerPDF 1.7.4 (Shell/SplitPane.cs).</summary>
+        private double _paneARatio;
+
+        /// <summary>True while the user is interactively moving or resizing the window
+        /// (WM_ENTERSIZEMOVE..WM_EXITSIZEMOVE, tracked in Chrome.cs WndProc).</summary>
+        private bool _inWindowSizeMove;
+
+        /// <summary>True between the gutter's DragStarted and DragCompleted, so the state-jump
+        /// path never fights a drag in progress.</summary>
+        private bool _paneGutterDragging;
+
+        private bool _paneRatioHooked;
+
+        /// <summary>One-time wiring for the ratio-keeping resize path. Queued, never run inline:
+        /// writing a column width from inside the layout pass that raised SizeChanged re-enters
+        /// it (same rule as KillerPDF's SplitHost handler).</summary>
+        private void HookPaneRatio()
+        {
+            if (_paneRatioHooked) return;
+            _paneRatioHooked = true;
+            PaneHost.SizeChanged += (_, _) =>
+                Dispatcher.BeginInvoke(new System.Action(OnPaneHostResized),
+                                       System.Windows.Threading.DispatcherPriority.Background);
+            PaneSplitV.DragCompleted += PaneSplitV_DragCompleted;
+        }
+
+        /// <summary>PaneHost.SizeChanged lands here (queued). A size change OUTSIDE an
+        /// interactive move/resize is a window-state jump - snap, maximize, unmaximize - and
+        /// those keep the panes' RATIO; an edge drag keeps pane A fixed so the window edge eats
+        /// pane B only (the Pixel/Star invariant already does that on its own).</summary>
+        private void OnPaneHostResized()
+        {
+            if (!DualPane || !_paneSideBySide) return;
+            if (_paneSlideSettle != null || _paneGutterDragging) return;
+            double avail = PaneHost.ActualWidth - SplitPx;
+            if (avail <= 0) return;
+
+            if (_inWindowSizeMove || _paneARatio <= 0)
+            {
+                // Edge drag (or nothing remembered yet): A stays fixed; just refresh the share
+                // this layout settled on, so the next state jump restores it.
+                RememberPaneRatio();
+                return;
+            }
+
+            double aW = System.Math.Max(PaneMinWidth, avail * _paneARatio);
+            aW = System.Math.Min(aW, System.Math.Max(PaneMinWidth, avail - PaneMinWidth));
+            if (!PaneColA.Width.IsStar && System.Math.Abs(PaneColA.ActualWidth - aW) > 0.5)
+                PaneColA.Width = new GridLength(aW);
+        }
+
+        /// <summary>Remembers the proportion the current layout settled on - the value the
+        /// state-jump path restores. Refreshed after a gutter drag, a slide landing, and every
+        /// interactive edge resize.</summary>
+        private void RememberPaneRatio()
+        {
+            if (!DualPane || !_paneSideBySide) return;
+            double avail = PaneHost.ActualWidth - SplitPx;
+            if (avail > 0 && PaneColA.ActualWidth > 0)
+                _paneARatio = PaneColA.ActualWidth / avail;
+        }
+
         // The channel between two side-by-side panes is the splitter plus this, and the two are
         // sized so that it comes to exactly PaneEdge: the gap either side of a pane then reads
         // the same whether its neighbor is the other pane or the window edge.
@@ -87,6 +154,7 @@ namespace KillerShell.Shell
         {
             if (DualPane) return;
             DualPane = true;
+            HookPaneRatio();
 
             // The second pane opens on the SAME folder as the one you were in. Opening it empty
             // or at home would make the first thing you do every time "navigate it back to where
@@ -433,6 +501,9 @@ namespace KillerShell.Shell
                            PaneColB.Width = open
                                ? new GridLength(1, GridUnitType.Star)
                                : new GridLength(0);
+                           // Queued so the ratio reads the settled layout, not this frame's.
+                           Dispatcher.BeginInvoke(new System.Action(RememberPaneRatio),
+                               System.Windows.Threading.DispatcherPriority.Background);
                        });
         }
 
@@ -491,6 +562,9 @@ namespace KillerShell.Shell
                            ThawPane();
                            PaneColB.MinWidth = PaneMinWidth;
                            PaneColB.Width = new GridLength(1, GridUnitType.Star);
+                           // Queued so the ratio reads the settled layout, not this frame's.
+                           Dispatcher.BeginInvoke(new System.Action(RememberPaneRatio),
+                               System.Windows.Threading.DispatcherPriority.Background);
                        });
         }
 
@@ -531,10 +605,22 @@ namespace KillerShell.Shell
         // actually moved - restoring the Pixel/Star invariant the rest of this class depends on.
         private void PaneSplitV_DragStarted(object sender, DragStartedEventArgs e)
         {
+            _paneGutterDragging = true;
             _paneGutterGrowsWindow = WindowState != WindowState.Maximized
                                       && MonitorRoomToGrowRightDip() > 0;
             PaneSplitV.ResizeBehavior = GridResizeBehavior.PreviousAndNext;
             _gutterAWidthAtLastDelta = PaneColA.ActualWidth;
+        }
+
+        private void PaneSplitV_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            _paneGutterDragging = false;
+            // The maximized/snapped PreviousAndNext trade leaves BOTH columns as pixel lengths;
+            // restore the Pixel/Star invariant (same rendered widths - star is the remainder)
+            // so the edge-resize and state-jump rules keep working after the drag.
+            if (DualPane && _paneSideBySide)
+                PaneColB.Width = new GridLength(1, GridUnitType.Star);
+            RememberPaneRatio();
         }
 
         private void PaneSplitV_DragDelta(object sender, DragDeltaEventArgs e)

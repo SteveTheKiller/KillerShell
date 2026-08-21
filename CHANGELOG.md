@@ -4,7 +4,7 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.3] - Unreleased
 
 ### Added
 - Hungarian localization for the complete app interface and killershell.net, bringing both to twelve languages.
@@ -12,6 +12,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Changed
 - killershell.net's Help and Technical pages now have complete twelve-language coverage, including every newer archive, pane, editor, administration, Storage Analyzer, and shortcut section. The 90-row shortcut reference, its scope/category headings, and its List/Keyboard labels are generated from the app's own locale dictionaries so the website cannot drift from the F1 card. Polish, Czech, and Japanese are also accepted by the website language switcher instead of falling back to English.
+
+### Fixed
+- KillerShell now detects when both a per-user and an all-users installation exist and offers to remove the copy that is not running, and self-update keeps the Add/Remove Programs version current instead of leaving it describing the replaced build.
+- Snapping, maximizing, or restoring the window now keeps the dual panes' proportions instead of handing all the new space to one pane; dragging the window edge still resizes only the right pane.
 
 ## [1.2.2] - 2026-08-18
 

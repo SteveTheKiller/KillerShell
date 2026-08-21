@@ -113,6 +113,15 @@ namespace KillerShell
                 return;
             }
 
+            // Elevated half of the dual-install repair: removes the machine-wide copy.
+            if (e.Args.Length > 0 &&
+                string.Equals(e.Args[0], "/remove-machine-conflict", StringComparison.OrdinalIgnoreCase))
+            {
+                RemoveMachineInstallConflict();
+                Shutdown(0);
+                return;
+            }
+
             // Elevated retry of a recycle this user was refused: KillerShell.exe --recycle "<p>"...
             // Started by RecycleElevated (Elevation.cs) with the runas verb. It does the one job
             // and exits WITHOUT a window - the window that asked is still open behind it, and its
@@ -210,6 +219,8 @@ namespace KillerShell
             // creating the association in the first place.
             if (AssociationsRegistered(machine: false) || AssociationsRegistered(machine: true))
                 EnsureFileIcon();
+
+            OfferInstallConflictRepair();
 
             new MainWindow().Show();
         }
@@ -320,6 +331,47 @@ namespace KillerShell
 
         /// <summary>True when KillerShell is already installed for the current user.</summary>
         internal static bool UserInstallExists() => File.Exists(InstallExe);
+
+        /// <summary>Repairs a machine that carries BOTH a per-user and a machine-wide install -
+        /// the state where each Add/Remove Programs entry describes the other copy's version and
+        /// launching gets whichever exe the shell resolves first. Detected at startup; offers to
+        /// remove whichever copy is NOT running. Removing the machine copy needs elevation, so
+        /// that path re-runs this exe with /remove-machine-conflict under UAC.</summary>
+        private static void OfferInstallConflictRepair()
+        {
+            if (!File.Exists(InstallExe) || !File.Exists(MachineInstallExe)) return;
+            string current = Process.GetCurrentProcess().MainModule?.FileName ?? "";
+            bool runningMachine = string.Equals(current, MachineInstallExe, StringComparison.OrdinalIgnoreCase);
+            bool runningUser = string.Equals(current, InstallExe, StringComparison.OrdinalIgnoreCase);
+            if (!runningMachine && !runningUser) return;
+
+            string other = runningMachine ? "per-user" : "all-users";
+            if (MessageBox.Show($"KillerShell is installed twice. Remove the other {other} copy now?\n\nYour settings will not be removed.",
+                $"{AppName} installation conflict", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+
+            if (runningMachine) RemovePerUserInstall();
+            else
+            {
+                try
+                {
+                    using var p = Process.Start(new ProcessStartInfo(current, "/remove-machine-conflict")
+                    { UseShellExecute = true, Verb = "runas" });
+                    p?.WaitForExit();
+                }
+                catch { /* declining UAC leaves both copies in place */ }
+            }
+        }
+
+        private static void RemoveMachineInstallConflict()
+        {
+            string common = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), AppName);
+            try { Registry.LocalMachine.DeleteSubKeyTree(RegKey, false); } catch { }
+            try { Registry.LocalMachine.DeleteSubKeyTree(
+                @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell", false); } catch { }
+            UnregisterAssociations(machine: true);
+            try { if (Directory.Exists(common)) Directory.Delete(common, true); } catch { }
+            try { if (Directory.Exists(MachineInstallDir)) Directory.Delete(MachineInstallDir, true); } catch { }
+        }
 
         /// <summary>Installs KillerShell, then relaunches from the installed location.
         /// For an all-users install the app re-runs itself elevated with /silent - the same

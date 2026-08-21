@@ -163,6 +163,11 @@ namespace KillerShell.Shell
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            // Interactive move/resize bracket, read by the dual-pane ratio logic
+            // (DualPane.cs OnPaneHostResized) to tell an edge drag from a state jump.
+            if (msg == 0x0231) _inWindowSizeMove = true;    // WM_ENTERSIZEMOVE
+            else if (msg == 0x0232) _inWindowSizeMove = false;   // WM_EXITSIZEMOVE
+
             if (msg == WM_SETTINGCHANGE)
             {
                 string? area = null;

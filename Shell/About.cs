@@ -240,6 +240,29 @@ namespace KillerShell.Shell
 
                 bool needsElevation = !CanWriteTo(Path.GetDirectoryName(curExe)!);
 
+                // Keep Add/Remove Programs honest: the swap replaces the exe but the install keys
+                // still carry the old version, which is how a machine ends up with an ARP entry
+                // describing a version that is not on disk. The batch already runs elevated
+                // exactly when the target is the machine-wide install, so it is the one place
+                // that can write whichever hive matches. A portable exe writes nothing.
+                string newVersion = tag!.TrimStart('v', 'V');
+                string userExe = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Programs", AppDisplayName, $"{AppDisplayName}.exe");
+                string machineExe = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                    AppDisplayName, $"{AppDisplayName}.exe");
+                string hive = string.Equals(curExe, userExe, StringComparison.OrdinalIgnoreCase) ? "HKCU"
+                            : string.Equals(curExe, machineExe, StringComparison.OrdinalIgnoreCase) ? "HKLM"
+                            : "";
+                string regLines = "";
+                if (hive.Length > 0)
+                {
+                    regLines =
+                        $"reg add \"{hive}\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{AppDisplayName}\" /v DisplayVersion /t REG_SZ /d \"{newVersion}\" /f >nul 2>&1\r\n" +
+                        $"reg add \"{hive}\\Software\\{AppDisplayName}\" /v Version /t REG_SZ /d \"{newVersion}\" /f >nul 2>&1\r\n";
+                }
+
                 // When elevated, relaunch through explorer.exe so the app comes back at the
                 // user's normal integrity level instead of inheriting the elevated token.
                 string relaunch = needsElevation
@@ -253,6 +276,7 @@ namespace KillerShell.Shell
                     "if not errorlevel 1 ( ping -n 2 127.0.0.1 >nul & goto wait )\r\n" +
                     $"copy /y \"{newExe}\" \"{curExe}\" >nul 2>&1\r\n" +
                     "if errorlevel 1 goto failed\r\n" +
+                    regLines +
                     relaunch + "\r\n" +
                     "goto cleanup\r\n" +
                     ":failed\r\n" +
