@@ -17,10 +17,9 @@ namespace KillerShell
     // kinds). Now that there is real art for every kind, this answers for all of them and the
     // glyph slot is only a fallback for anything without a picture (2026-08-08).
     //
-    // Bound to the WHOLE tab, not a single property, because the answer depends on several at
-    // once - a search tab has a CurrentFolder too (its last-clicked result's folder) but is not
-    // a folder tab and must not grow a folder icon.
-    public sealed class TabFolderIconConverter : IValueConverter
+    // The tab itself is the first MultiBinding value. CurrentFolder, IsBrowsing and TabGlyph are
+    // additional values so WPF reruns this converter when navigation or terminal state changes.
+    public sealed class TabFolderIconConverter : IValueConverter, IMultiValueConverter
     {
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -73,6 +72,12 @@ namespace KillerShell
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             => throw new NotSupportedException();
+
+        public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            => values.Length == 0 ? null : Convert(values[0], targetType, parameter, culture);
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            => throw new NotSupportedException();
     }
 
     /// <summary>
@@ -80,7 +85,7 @@ namespace KillerShell
     /// the Segoe MDL2 glyph when it does, so a shell or Processes tab shows its picture instead of
     /// both. One converter asking the other keeps the two decisions from drifting apart.
     /// </summary>
-    public sealed class TabHasArtConverter : IValueConverter
+    public sealed class TabHasArtConverter : IValueConverter, IMultiValueConverter
     {
         private static readonly TabFolderIconConverter Icon = new();
 
@@ -88,6 +93,12 @@ namespace KillerShell
             => Icon.Convert(value, typeof(ImageSource), parameter!, culture) != null;
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotSupportedException();
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            => values.Length != 0 && Icon.Convert(values[0], typeof(ImageSource), parameter!, culture) != null;
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
             => throw new NotSupportedException();
     }
 }

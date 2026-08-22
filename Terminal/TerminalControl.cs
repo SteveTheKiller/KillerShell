@@ -485,6 +485,14 @@ namespace KillerShell.Terminal
         private void ApplySize()
         {
             if (_cellW <= 0 || _cellH <= 0) return;
+
+            // A newly created tab has not been measured yet. Keep the constructor's 80x25
+            // startup buffer until WPF gives the control a real size: a warm PowerShell can
+            // emit its first prompt before that first measure, and shrinking the buffer to 1x1
+            // here pushes the entire prompt into scrollback. The PTY remains alive and accepts
+            // input, which is why the tab then looks blank except for its cursor.
+            if (ActualWidth <= LeftInset || ActualHeight <= 0) return;
+
             int cols = Math.Max(1, (int)(Math.Max(0, ActualWidth - LeftInset) / _cellW));
             int rows = Math.Max(1, (int)(ActualHeight / _cellH));
 

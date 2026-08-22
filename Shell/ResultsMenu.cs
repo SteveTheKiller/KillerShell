@@ -120,7 +120,6 @@ namespace KillerShell.Shell
 
         private void OpenShellAt(string? folder, bool elevated)
         {
-            if (folder == null) return;
             OpenShell(Terminal.TerminalProfile.PowerShell(elevated), folder);   // TerminalTabs.cs
         }
 

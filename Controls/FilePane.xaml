@@ -299,8 +299,16 @@
                                                  room - the collapse trigger below. -->
                                             <Image x:Name="tabFolderIcon" DockPanel.Dock="Left"
                                                    Width="20" Height="20" Stretch="Uniform"
-                                                   Margin="0,0,5,0" VerticalAlignment="Center"
-                                                   Source="{Binding Converter={StaticResource TabFolderIcon}}"/>
+                                                   Margin="0,0,5,0" VerticalAlignment="Center">
+                                                <Image.Source>
+                                                    <MultiBinding Converter="{StaticResource TabFolderIcon}">
+                                                        <Binding/>
+                                                        <Binding Path="CurrentFolder"/>
+                                                        <Binding Path="IsBrowsing"/>
+                                                        <Binding Path="TabGlyph"/>
+                                                    </MultiBinding>
+                                                </Image.Source>
+                                            </Image>
                                             <!-- Shell tabs carry a glyph so a terminal is not
                                                  mistaken for a folder at a glance. Collapsed
                                                  for every other kind of tab, so nothing about
@@ -323,12 +331,28 @@
                                          let the MDL2 glyph above stand in. Every other kind now
                                          resolves to a brand icon, so the glyph is the exception
                                          rather than the rule. -->
-                                    <DataTrigger Binding="{Binding Converter={StaticResource TabFolderIcon}}" Value="{x:Null}">
+                                    <DataTrigger Value="{x:Null}">
+                                        <DataTrigger.Binding>
+                                            <MultiBinding Converter="{StaticResource TabFolderIcon}">
+                                                <Binding/>
+                                                <Binding Path="CurrentFolder"/>
+                                                <Binding Path="IsBrowsing"/>
+                                                <Binding Path="TabGlyph"/>
+                                            </MultiBinding>
+                                        </DataTrigger.Binding>
                                         <Setter TargetName="tabFolderIcon" Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                     <!-- ...and where there IS art, drop the glyph, or a shell tab
                                          would carry both its picture and its Segoe character. -->
-                                    <DataTrigger Binding="{Binding Converter={StaticResource TabHasArt}}" Value="True">
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <MultiBinding Converter="{StaticResource TabHasArt}">
+                                                <Binding/>
+                                                <Binding Path="CurrentFolder"/>
+                                                <Binding Path="IsBrowsing"/>
+                                                <Binding Path="TabGlyph"/>
+                                            </MultiBinding>
+                                        </DataTrigger.Binding>
                                         <Setter TargetName="tabGlyph" Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                     <!-- Last tab drops its right border: that 1px is a divider

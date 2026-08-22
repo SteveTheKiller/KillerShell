@@ -14,8 +14,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - killershell.net's Help and Technical pages now have complete twelve-language coverage, including every newer archive, pane, editor, administration, Storage Analyzer, and shortcut section. The 90-row shortcut reference, its scope/category headings, and its List/Keyboard labels are generated from the app's own locale dictionaries so the website cannot drift from the F1 card. Polish, Czech, and Japanese are also accepted by the website language switcher instead of falling back to English.
 
 ### Fixed
+
+- Browsing-tab icons now follow the current folder after navigation, including special folders such as Home and Pictures.
 - KillerShell now detects when both a per-user and an all-users installation exist and offers to remove the copy that is not running, and self-update keeps the Add/Remove Programs version current instead of leaving it describing the replaced build.
 - Snapping, maximizing, or restoring the window now keeps the dual panes' proportions instead of handing all the new space to one pane; dragging the window edge still resizes only the right pane.
+- Open terminal here from the results context menu now uses the folder being viewed when no file row is selected, matching F8 instead of silently doing nothing.
+- New terminal tabs now preserve their startup screen until layout supplies a real size, so a fast first PowerShell prompt remains visible instead of being pushed into scrollback by a temporary 1x1 buffer.
 
 ## [1.2.2] - 2026-08-18
 
