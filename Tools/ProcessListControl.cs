@@ -1319,7 +1319,7 @@ namespace KillerShell.Tools
 
         private void BuildProcessContextMenu(ProcessInfo p)
         {
-            var menu = new ContextMenu { PlacementTarget = _grid };
+            var menu = new OpaqueContextMenu { PlacementTarget = _grid };
 
             // Codepoints, not literal PUA characters - a literal glyph does not survive tooling
             // (CLAUDE.md), which is exactly why every other glyph in this app is set this way.
@@ -1352,7 +1352,7 @@ namespace KillerShell.Tools
 
         private void BuildServiceContextMenu(ServiceInfo s)
         {
-            var menu = new ContextMenu { PlacementTarget = _grid };
+            var menu = new OpaqueContextMenu { PlacementTarget = _grid };
 
             // E838: same folder glyph and same event as the process menu's "Open file location" -
             // conceptually identical (open the folder containing the service's executable).

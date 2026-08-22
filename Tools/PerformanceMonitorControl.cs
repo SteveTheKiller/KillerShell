@@ -932,7 +932,7 @@ namespace KillerShell.Tools
             // GetVisible() fresh" habit. "L" is ALSO wired directly as a local single-key
             // shortcut while the CPU graph has focus, per this app's own established local-
             // shortcut convention (Processes/Services tab's right-click actions this session).
-            var menu = new ContextMenu();
+            var menu = new OpaqueContextMenu();
             var toggleItem = new MenuItem { IsCheckable = true, InputGestureText = "L" };
             toggleItem.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Perf_ShowLogicalProcessors");
             var capturedTile = tile;

@@ -70,7 +70,7 @@ namespace KillerShell.Terminal
 
         private ContextMenu BuildMenu()
         {
-            var m = new ContextMenu();
+            var m = new OpaqueContextMenu();
 
             _copyItem = Row(m, "Str_Term_Copy", Glyph(0xE8C8), "Ctrl+Shift+C", () =>
             {

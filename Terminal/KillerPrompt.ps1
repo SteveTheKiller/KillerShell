@@ -57,7 +57,9 @@ $script:KFStamp   = [datetime]::MinValue
 
 function script:KFState {
     $path = $env:KS_STATE
-    if (-not $path -or -not (Test-Path -LiteralPath $path)) { return $null }
+    # A palette file can be briefly unavailable while KillerShell refreshes or cleans up
+    # session state. Keep the last complete palette rather than flashing the red fallback.
+    if (-not $path -or -not (Test-Path -LiteralPath $path)) { return $script:KFPalette }
 
     try {
         $stamp = (Get-Item -LiteralPath $path).LastWriteTimeUtc

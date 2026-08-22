@@ -284,7 +284,7 @@ namespace KillerShell.Shell
         {
             FocusPane(p);   // Panes.cs - the click already did this, but the menu acts on p
 
-            var menu = new ContextMenu
+            var menu = new OpaqueContextMenu
             {
                 Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom,
                 PlacementTarget = p.TabOverflowBtn,

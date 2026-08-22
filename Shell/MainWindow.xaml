@@ -260,7 +260,7 @@
                              already say the right thing (FolderTree.cs). On the TreeView itself,
                              not the item template - see the results list for why. -->
                         <TreeView.ContextMenu>
-                            <ContextMenu>
+                            <local:OpaqueContextMenu>
                                 <!-- "Open in new tab", not Str_Tab_New ("new search") - this row
                                      opens the node in a NEW TAB and has done for a long time; the
                                      label was left over from when every tab was a search, and it
@@ -315,7 +315,7 @@
                                 <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}" Click="TreeShellMenu_Click">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
                                 </MenuItem>
-                            </ContextMenu>
+                            </local:OpaqueContextMenu>
                         </TreeView.ContextMenu>
                         <TreeView.ItemContainerStyle>
                             <!-- Inherits the themed template from Controls.xaml and adds the
@@ -497,7 +497,7 @@
                                             </Style>
                                         </Border.Style>
                                         <Border.ContextMenu>
-                                            <ContextMenu>
+                                            <local:OpaqueContextMenu>
                                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}"
                                                           Click="BookmarkTerminal_Click">
                                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
@@ -523,7 +523,7 @@
                                                           Click="BookmarkRemove_Click">
                                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                                                 </MenuItem>
-                                            </ContextMenu>
+                                            </local:OpaqueContextMenu>
                                         </Border.ContextMenu>
                                         <StackPanel Orientation="Horizontal">
                                             <!-- 20 drawn, 16 measured - see the tree's own icon
@@ -648,7 +648,7 @@
                             FontSize="12" Margin="0,0,0,10" Click="TerminalRail_Click"
                             ToolTip="{DynamicResource Str_TT_Terminal}">
                         <Button.ContextMenu>
-                            <ContextMenu Placement="Top">
+                            <local:OpaqueContextMenu Placement="Top">
                                 <MenuItem Header="{DynamicResource Str_Term_PowerShell}" Click="RailShellPs_Click" InputGestureText="F8">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
                                 </MenuItem>
@@ -674,7 +674,7 @@
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE70F;"/></MenuItem.Icon>
                                     <MenuItem/>
                                 </MenuItem>
-                            </ContextMenu>
+                            </local:OpaqueContextMenu>
                         </Button.ContextMenu>
                     </Button>
                     <!-- Open or close the second pane, right-click flips side-by-side / stacked.
@@ -705,14 +705,14 @@
                             FontSize="12" Margin="0,0,0,10" Click="TaskManagerRail_Click"
                             ToolTip="{DynamicResource Str_TT_TaskManager}">
                         <Button.ContextMenu>
-                            <ContextMenu Placement="Top">
+                            <local:OpaqueContextMenu Placement="Top">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesOpen}" Click="RailProcessesOpen_Click" InputGestureText="F9">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8FD;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesAdmin}" Click="RailProcessesAdmin_Click" InputGestureText="Ctrl+F9">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
-                            </ContextMenu>
+                            </local:OpaqueContextMenu>
                         </Button.ContextMenu>
                     </Button>
                     <!-- E9D9 (Processing): opens or focuses the Performance Monitor tab - hardware
@@ -733,14 +733,14 @@
                             FontSize="12" Margin="0,0,0,10" Click="StorageRail_Click"
                             ToolTip="{DynamicResource Str_TT_Storage}">
                         <Button.ContextMenu>
-                            <ContextMenu Placement="Top">
+                            <local:OpaqueContextMenu Placement="Top">
                                 <MenuItem Header="{DynamicResource Str_Rail_StorageOpen}" Click="RailStorageOpen_Click" InputGestureText="F4">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Rail_StorageAdmin}" Click="RailStorageAdmin_Click" InputGestureText="Ctrl+F4">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
-                            </ContextMenu>
+                            </local:OpaqueContextMenu>
                         </Button.ContextMenu>
                     </Button>
                     <!-- E74C (OEM) - a four-pane window with a corner mark, which reads as the

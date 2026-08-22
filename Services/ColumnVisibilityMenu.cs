@@ -63,7 +63,7 @@ namespace KillerShell.Services
         internal static void ShowFor(FrameworkElement placementTarget, string settingsKey,
                                       params Entry[] columns)
         {
-            var menu = new ContextMenu { PlacementTarget = placementTarget, Placement = PlacementMode.Bottom };
+            var menu = new OpaqueContextMenu { PlacementTarget = placementTarget, Placement = PlacementMode.Bottom };
             foreach (var c in columns)
             {
                 var entry = c;   // local copy - each Click handler must capture its OWN entry, not the loop variable

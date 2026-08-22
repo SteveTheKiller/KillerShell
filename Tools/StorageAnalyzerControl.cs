@@ -465,7 +465,7 @@ namespace KillerShell.Tools
 
         private ContextMenu BuildDepthMenu()
         {
-            var menu = new ContextMenu();
+            var menu = new OpaqueContextMenu();
             foreach (int d in DepthChoices)
             {
                 int captured = d;
@@ -484,7 +484,7 @@ namespace KillerShell.Tools
 
         private ContextMenu BuildMinSizeMenu()
         {
-            var menu = new ContextMenu();
+            var menu = new OpaqueContextMenu();
             foreach (long m in MinSizeChoices)
             {
                 long captured = m;
@@ -1476,7 +1476,7 @@ namespace KillerShell.Tools
             var n = NodeAt(e.GetPosition(_map));
             if (n != null) { _selected = n; UpdateFooterLeft(); _map.InvalidateOverlay(); }
 
-            var menu = new ContextMenu();
+            var menu = new OpaqueContextMenu();
 
             if (n != null)
             {

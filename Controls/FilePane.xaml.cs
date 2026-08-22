@@ -93,6 +93,14 @@ namespace KillerShell
             // the safe default: the line is revealed only after a real viewport is discovered
             // and proves that it is at the end.
             ResultsPaneBottomEdge.Visibility = Visibility.Collapsed;
+            // The scroll cues have to go the same way. SyncShadowCues is the only thing that
+            // shows them, and only the file browser and Performance use it, so leaving them alone
+            // here stranded a dark gradient band over any tab that has no ScrollViewer to
+            // re-evaluate them - the terminal, which draws its own scrollback and never creates
+            // one. Switching from the browser to a shell tab left its bottom cue lying over the
+            // terminal at ZIndex 99, reading as a shadow inside the pane.
+            PaneScrollTopCue.Visibility = Visibility.Collapsed;
+            PaneScrollBottomCue.Visibility = Visibility.Collapsed;
         }
 
         internal void RefreshScrollChrome()

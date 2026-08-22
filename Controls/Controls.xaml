@@ -794,44 +794,22 @@
         </Style.Triggers>
     </Style>
 
-    <!-- Ported to KillerPDF's context menu surface value for value (KillerPDF MainWindow.xaml,
-         the ContextMenu style): Grid Margin 5, CornerRadius 4, Padding 4, and a 12/2/0.55-ish
-         shadow at Opacity 0.5. It used to carry KillerShell's own flyout shadow - 22 blur, 4
-         depth, radius 6 - which is nearly double the blur and double the drop, and read as a
-         much heavier halo than the rest of the family.
-         The shadow still lives on its OWN border behind the content, never on the one the menu
-         text renders inside: a DropShadowEffect rasterizes its whole subtree through a bitmap
-         pass and the text loses ClearType. KillerPDF splits it the same way. -->
+    <!-- KillerShell uses OpaqueContextMenu for every menu. Standard WPF ContextMenu hard-codes
+         AllowsTransparency=true on its private host popup, which prevents ClearType even when
+         the visible menu background is solid. The opaque host lets these labels use the same
+         crisp ClearType path as the rest of the window. -->
     <Style TargetType="ContextMenu">
-        <!-- IDEAL text here, not the window's Display. A menu is a Popup with
-             AllowsTransparency, and WPF cannot render ClearType onto a layered surface - it
-             silently drops to grayscale antialiasing. Display mode then snaps every stem to the
-             pixel grid, and grid-snapped stems with grayscale edges is exactly the "pixelated,
-             letters bleeding into each other" look (2026-08-09). Ideal positions glyphs at
-             subpixel offsets, which is what grayscale AA needs to read cleanly. The window keeps
-             Display, because on its own opaque surface ClearType works and Display is crisper.
-             SnapsToDevicePixels stays for the BORDERS - it does not affect glyph rasterization. -->
-        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
-        <!-- GRAYSCALE, stated explicitly. TextRenderingMode is an INHERITED property and the
-             window sets ClearType (MainWindow.xaml), which flows down into the menu through the
-             logical tree - a popup is not a visual child of the window but it inherits like
-             one. ClearType asks for subpixel (RGB-stripe) coverage, and on a layered
-             AllowsTransparency popup there is no opaque backdrop for those stripes to be
-             correct against, so the edges come out fringed and chunky. Naming Grayscale stops
-             the inheritance at the menu and gives smooth, neutral edges.
-             Formatting mode above and rendering mode here are two different things and BOTH
-             were wrong: Ideal fixes WHERE the glyph sits, Grayscale fixes HOW it is filled. -->
-        <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale"/>
+        <!-- Display plus ClearType is deliberate here. OpaqueContextMenu guarantees the solid
+             surface that subpixel rendering requires. -->
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
         <!-- The menu can be positioned at a fractional offset, which puts every glyph in it at a
              subpixel origin however well the text options are set. -->
         <Setter Property="UseLayoutRounding" Value="True"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="HasDropShadow" Value="False"/>
-        <!-- Compensates the shadow halo so a menu lands where it did when that halo was 5 (this
-             template) or 6 (FlyoutCard). Those two differ by a pixel, so the rail flyouts sit 1px
-             off their old spot; the menus are exact. -->
-        <Setter Property="HorizontalOffset" Value="-17"/>
-        <Setter Property="VerticalOffset" Value="-13"/>
+        <Setter Property="HorizontalOffset" Value="0"/>
+        <Setter Property="VerticalOffset" Value="0"/>
         <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -853,17 +831,8 @@
                          text options alone changed nothing (2026-08-09). Stopping the animation
                          hands the property back to this base value and the menu renders on the
                          ordinary path. -->
-                    <!-- Halo sized to MenuShadowEffect's 22/4: WPF expands render bounds by the FULL
-                         BlurRadius, so 22 each way, less the 4px lift off the top and plus it on the
-                         bottom. The offsets on the style above hold the card in place. -->
-                    <Grid x:Name="MenuRoot" Opacity="1" Margin="22,18,22,26">
-                        <!-- MenuShadow*: the family flyout shadow on every ordinary theme (opacity
-                             follows FlyoutShadowOpacity, 22/4 soft), and a HARD offset shadow at
-                             full opacity on 98SE - Win98 context menus cast a solid drop shadow. -->
-                        <Border CornerRadius="{DynamicResource ControlCornerRadius}" Background="{TemplateBinding Background}" IsHitTestVisible="False"
-                                Opacity="{DynamicResource MenuShadowOpacity}"
-                                Effect="{DynamicResource MenuShadowEffect}">
-                        </Border>
+                    <Grid x:Name="MenuRoot" Opacity="1" Background="{TemplateBinding Background}"
+                          RenderOptions.ClearTypeHint="Enabled">
                         <!-- Raised menu bevel, two pairs. Nothing on any theme but 98SE, whose
                              menus are a hard raised box rather than a rounded shadowed card. -->
                         <Border IsHitTestVisible="False" Panel.ZIndex="4"
@@ -874,10 +843,10 @@
                                 BorderBrush="{DynamicResource MenuBevel2LightBrush}" BorderThickness="{DynamicResource MenuBevel2LightThickness}"/>
                         <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
                                 BorderBrush="{DynamicResource MenuBevel2DarkBrush}"  BorderThickness="{DynamicResource MenuBevel2DarkThickness}"/>
-                        <Border CornerRadius="{DynamicResource ControlCornerRadius}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        <Border CornerRadius="0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}" Padding="4" SnapsToDevicePixels="True">
                             <Grid>
-                                <Border IsHitTestVisible="False" CornerRadius="{DynamicResource ControlCornerRadius}" Margin="-4"
+                                <Border IsHitTestVisible="False" CornerRadius="0" Margin="-4"
                                         Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                                 <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
                             </Grid>
@@ -903,6 +872,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="{x:Type kui:OpaqueContextMenu}"
+           BasedOn="{StaticResource {x:Type ContextMenu}}"/>
 
     <!-- Menu icon glyph: Segoe MDL2 at 12, left-aligned in the 16px gutter. The 2026-08-09
          selection/hover color language: icons rest on the plain text color and go accent with
@@ -937,12 +909,9 @@
              the one fade KillerPDF had that KillerShell could not match for want of submenus. -->
     <Style TargetType="MenuItem">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <!-- Restated on the ITEM as well as on the ContextMenu that holds it: a MenuItem in a
-             submenu lives in its OWN popup, which is not inside the parent menu's visual tree,
-             so the parent's text options do not reach it. Same reasoning as the ContextMenu
-             style above. -->
-        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
-        <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale"/>
+        <!-- Restated on the item because submenu content lives in its own opaque popup. -->
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
         <Setter Property="Background" Value="Transparent"/>
         <!-- TextBrush, not MenuTextBrush: menu items are body text, not secondary labels.
              Family standard, see KillerUI/README.md surface rules. -->
@@ -980,29 +949,22 @@
                                        Foreground="{DynamicResource MutedTextBrush}"
                                        VerticalAlignment="Center" Margin="12,0,0,0"
                                        Visibility="Collapsed"/>
-                            <Popup x:Name="SubPopup" AllowsTransparency="True" Placement="Right"
-                                   HorizontalOffset="-21" VerticalOffset="-13" Focusable="False" PopupAnimation="Fade"
-                                   IsOpen="{TemplateBinding IsSubmenuOpen}">
-                                <!-- Mirrors the ContextMenu surface so submenus match the parent.
-                                     Halo sized to the 22/4 shadow; the offsets above carry the
-                                     -17,-13 compensation (this halo grew from 5) on top of the -4 gap. -->
-                                <Grid Margin="22,18,22,26">
-                                    <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource ControlCornerRadius}" IsHitTestVisible="False">
-                                        <Border.Effect>
-                                            <DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="0.5"/>
-                                        </Border.Effect>
-                                    </Border>
+                            <kui:OpaquePopup x:Name="SubPopup" Placement="Right"
+                                             HorizontalOffset="0" VerticalOffset="0" Focusable="False"
+                                             IsOpen="{TemplateBinding IsSubmenuOpen}">
+                                <Grid Background="{DynamicResource MenuBackgroundBrush}"
+                                      RenderOptions.ClearTypeHint="Enabled">
                                     <Border Background="{DynamicResource MenuBackgroundBrush}"
                                             BorderBrush="{DynamicResource MenuBorderBrush}"
-                                            BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}" Padding="4">
+                                            BorderThickness="1" CornerRadius="0" Padding="4">
                                         <Grid>
                                             <Border IsHitTestVisible="False" Opacity="{DynamicResource GrainOpacity}"
-                                                    CornerRadius="{DynamicResource ControlCornerRadius}" Margin="-4" Background="{DynamicResource GrainTileBrush}"/>
+                                                    CornerRadius="0" Margin="-4" Background="{DynamicResource GrainTileBrush}"/>
                                             <ItemsPresenter/>
                                         </Grid>
                                     </Border>
                                 </Grid>
-                            </Popup>
+                            </kui:OpaquePopup>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>

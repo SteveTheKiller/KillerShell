@@ -28,12 +28,12 @@
                      whichever bar opened it. This is how the hide is DISCOVERED: Ctrl+F10 is the
                      only way back once the bar is gone, so the gesture text here is the menu
                      item's real payload. -->
-                <ContextMenu x:Key="BarMenu">
+                <local:OpaqueContextMenu x:Key="BarMenu">
                     <MenuItem Header="{DynamicResource Str_Menu_HideMenuBar}" InputGestureText="Ctrl+F10"
                               Click="BarHideMenu_Click">
                         <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7B3;"/></MenuItem.Icon>
                     </MenuItem>
-                </ContextMenu>
+                </local:OpaqueContextMenu>
             </UserControl.Resources>
 
             <Grid>
@@ -221,11 +221,11 @@
                                         </MultiBinding>
                                     </Border.Clip>
                                     <Border.ContextMenu>
-                                        <ContextMenu>
+                                        <local:OpaqueContextMenu>
                                             <MenuItem Header="{DynamicResource Str_Menu_PipeTab}"
                                                       Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                                       Click="PipeTab_Click"/>
-                                        </ContextMenu>
+                                        </local:OpaqueContextMenu>
                                     </Border.ContextMenu>
                                     <Grid>
                                         <!-- Grain follows the tab's radius, or the texture squares
@@ -804,7 +804,7 @@
                                            Source="{x:Static svc:IconCache.RecentsArt}"/>
                                 </Button.Content>
                                 <Button.ContextMenu>
-                                    <ContextMenu x:Name="RecentsMenu"/>
+                                    <local:OpaqueContextMenu x:Name="RecentsMenu"/>
                                 </Button.ContextMenu>
                             </Button>
                         </Grid>
@@ -1945,7 +1945,7 @@
                              template had no submenu popup, so a Copy submenu would silently
                              never open - but the template carries KillerPDF's SubPopup now, so
                              nesting the six Copy items is on the table if this list grows. -->
-                        <ContextMenu x:Key="ResultMenu">
+                        <local:OpaqueContextMenu x:Key="ResultMenu">
                             <MenuItem Header="{DynamicResource Str_Menu_OpenFile}"      Click="MenuOpen_Click"           InputGestureText="Enter">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8E5;"/></MenuItem.Icon>
                             </MenuItem>
@@ -2052,7 +2052,7 @@
                             <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}"     Click="MenuShell_Click"      InputGestureText="Shift+F10" Tag="shellmenu">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
                             </MenuItem>
-                        </ContextMenu>
+                        </local:OpaqueContextMenu>
 
                         <!-- Panels. List and details stack; icons wrap. The wrap panel virtualizes
                              (VirtualizingWrapPanel.cs) because a results list is not a directory

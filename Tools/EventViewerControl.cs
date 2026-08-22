@@ -870,7 +870,7 @@ namespace KillerShell.Tools
         {
             if (_grid.SelectedItem is not EventLogEntryInfo entry) { e.Handled = true; return; }
 
-            var menu = new ContextMenu { PlacementTarget = _grid };
+            var menu = new OpaqueContextMenu { PlacementTarget = _grid };
 
             MenuItem Item(string headerKey, string glyph, RoutedEventHandler click)
             {

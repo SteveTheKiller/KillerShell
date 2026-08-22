@@ -15,6 +15,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
+- Context menus now use opaque, square popup surfaces so menu labels render with ClearType instead of coarse grayscale antialiasing.
+- Terminal prompts now retain their last valid theme palette if the live session file is briefly unavailable, preventing the path block from flashing red while using a blue theme.
 - Browsing-tab icons now follow the current folder after navigation, including special folders such as Home and Pictures.
 - KillerShell now detects when both a per-user and an all-users installation exist and offers to remove the copy that is not running, and self-update keeps the Add/Remove Programs version current instead of leaving it describing the replaced build.
 - Snapping, maximizing, or restoring the window now keeps the dual panes' proportions instead of handing all the new space to one pane; dragging the window edge still resizes only the right pane.
