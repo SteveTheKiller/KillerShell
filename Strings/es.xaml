@@ -403,6 +403,7 @@
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
     <sys:String x:Key="Str_Fonts_Editor">TEXTO DEL EDITOR</sys:String>
 
+    <sys:String x:Key="Str_Prof_Reload">Recargar el perfil de PowerShell</sys:String>
     <sys:String x:Key="Str_Prof_Edit">Editar el perfil de PowerShell</sys:String>
     <sys:String x:Key="Str_Prof_Asking">Preguntando a {0} dónde está su perfil...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} no respondió - no se encontró su perfil.</sys:String>

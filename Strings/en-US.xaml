@@ -381,6 +381,7 @@
     <sys:String x:Key="Str_Btn_Reset">Reset</sys:String>
 
     <!-- PowerShell $PROFILE (ProfileMenu.cs, Terminal/ShellProfiles.cs) -->
+    <sys:String x:Key="Str_Prof_Reload">Reload PowerShell profile</sys:String>
     <sys:String x:Key="Str_Prof_Edit">Edit PowerShell profile</sys:String>
     <sys:String x:Key="Str_Prof_Asking">Asking {0} where its profile is...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} did not answer - could not find its profile.</sys:String>

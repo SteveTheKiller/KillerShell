@@ -12,6 +12,7 @@ Each language is a single XAML `ResourceDictionary` in the `Strings/` folder, na
 - `Strings/de-DE.xaml` - German
 - `Strings/es.xaml` - Spanish
 - `Strings/fr-FR.xaml` - French
+- `Strings/hu-HU.xaml` - Hungarian
 - `Strings/ja-JP.xaml` - Japanese
 - `Strings/pl-PL.xaml` - Polish
 - `Strings/tr-TR.xaml` - Turkish
@@ -39,7 +40,7 @@ Each language is a single XAML `ResourceDictionary` in the `Strings/` folder, na
 - **Don't translate file-system field names that are matched or sorted in code** (column headers like Name/Size/Modified are fine to translate - they're display-only; the underlying field logic doesn't depend on the label).
 - **Keep any `{0}` / `{1}` format placeholders** intact and in a sensible order for your language.
 - **Keep XML entities** (`&amp;`, `&#xNNNN;`) as they are.
-- **Use plain hyphens (`-`),** not em or en dashes, unless your language's typography requires otherwise.
+- **Use plain hyphens (`-`), never em or en dashes,** even where your language's typography would normally call for one. This is a house style rule applied across every app and every language, so it deliberately overrides local convention. If you think it is wrong for your language, say so in the pull request rather than working around it.
 - The file must be valid XML - paste it into any XML validator to check.
 
 ## Notes

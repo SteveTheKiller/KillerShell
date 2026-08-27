@@ -123,7 +123,7 @@ namespace KillerShell.Shell
             ApplyDetailsPreviewWidth(pane, pane.DetailsPaneHeight);   // recompute live, every tick of the drag
         }
 
-        internal void DetailsPaneGrip_DragCompleted(FilePane pane, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        internal void DetailsPaneGrip_DragCompleted(FilePane pane, System.Windows.Controls.Primitives.DragCompletedEventArgs _)
         {
             string key = PaneKey(pane);
             Services.ThemeManager.SetSetting("DetailsPaneHeight" + key,

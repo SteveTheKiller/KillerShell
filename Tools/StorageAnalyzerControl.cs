@@ -731,7 +731,7 @@ namespace KillerShell.Tools
         {
             try
             {
-                string drive = Path.GetPathRoot(target)!.Substring(0, 2);
+                string drive = Path.GetPathRoot(target)![..2];
                 using var volume = CreateFileW(@"\\.\" + drive, GenericRead,
                     FileShareRead | FileShareWrite | FileShareDelete, IntPtr.Zero, OpenExisting, 0, IntPtr.Zero);
                 if (volume.IsInvalid) return false;
@@ -762,15 +762,15 @@ namespace KillerShell.Tools
                 while (pending.Count > 0)
                 {
                     token.ThrowIfCancellationRequested();
-                    var current = pending.Dequeue();
-                    if (!byParent.TryGetValue(current.Id, out var children)) continue;
+                    var (id, node) = pending.Dequeue();
+                    if (!byParent.TryGetValue(id, out var children)) continue;
                     foreach (var entry in children)
                     {
                         if (entry.Id == targetId || entry.IsReparsePoint || entry.Name is "." or "..") continue;
                         if (entry.IsDirectory)
                         {
-                            var child = new FsNode { Name = entry.Name, IsDir = true, Parent = current.Node, Children = [] };
-                            current.Node.Children!.Add(child);
+                            var child = new FsNode { Name = entry.Name, IsDir = true, Parent = node, Children = [] };
+                            node.Children!.Add(child);
                             Interlocked.Increment(ref _pDirs);
                             pending.Enqueue((entry.Id, child));
                         }
@@ -779,7 +779,7 @@ namespace KillerShell.Tools
                             candidateFiles++;
                             long size = GetFileSizeById(volume, entry.Id);
                             if (size < 0) { Interlocked.Increment(ref _pSkipped); continue; }
-                            current.Node.Children!.Add(new FsNode { Name = entry.Name, Size = size, Parent = current.Node });
+                            node.Children!.Add(new FsNode { Name = entry.Name, Size = size, Parent = node });
                             Interlocked.Increment(ref _pFiles);
                             Interlocked.Add(ref _pBytes, size);
                         }

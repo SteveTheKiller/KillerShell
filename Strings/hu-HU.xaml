@@ -381,6 +381,7 @@
     <sys:String x:Key="Str_Btn_Reset">Reset</sys:String>
 
     <!-- PowerShell $PROFILE (ProfileMenu.cs, Terminal/ShellProfiles.cs) -->
+    <sys:String x:Key="Str_Prof_Reload">PowerShell-profil újratöltése</sys:String>
     <sys:String x:Key="Str_Prof_Edit">Szerkessze a PowerShell-profilt</sys:String>
     <sys:String x:Key="Str_Prof_Asking">{0} megkérdezése, hogy hol van a profilja...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} nem válaszolt – nem találta a profilját.</sys:String>

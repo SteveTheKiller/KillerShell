@@ -568,7 +568,9 @@ namespace KillerShell.Services
 
         private const int ILD_TRANSPARENT = 1;
 
-        private static Guid IID_IImageList = new("46EB5926-582E-4017-9FDF-E8998DAA0950");
+        // readonly is safe here: the one caller copies it into a local before passing it by ref
+        // (a readonly static cannot itself be a ref argument).
+        private static readonly Guid IID_IImageList = new("46EB5926-582E-4017-9FDF-E8998DAA0950");
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct SHFILEINFO

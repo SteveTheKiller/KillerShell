@@ -401,6 +401,7 @@
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
     <sys:String x:Key="Str_Fonts_Editor">エディターのテキスト</sys:String>
 
+    <sys:String x:Key="Str_Prof_Reload">PowerShell プロファイルを再読み込み</sys:String>
     <sys:String x:Key="Str_Prof_Edit">PowerShell プロファイルを編集</sys:String>
     <sys:String x:Key="Str_Prof_Asking">{0} にプロファイルの場所を問い合わせています...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} が応答しません - プロファイルが見つかりませんでした。</sys:String>

@@ -93,7 +93,7 @@ namespace KillerShell
                 ApplyRoundedCorners();
                 MainWindow.ApplyThemeBorder(this);
                 var src = (System.Windows.Interop.HwndSource?)PresentationSource.FromVisual(this);
-                src?.AddHook((IntPtr h, int msg, IntPtr w, IntPtr l, ref bool handled) =>
+                src?.AddHook((h, msg, w, l, ref handled) =>
                 {
                     if (msg == 0x0014 /* WM_ERASEBKGND */) { handled = true; return new IntPtr(1); }
                     return IntPtr.Zero;

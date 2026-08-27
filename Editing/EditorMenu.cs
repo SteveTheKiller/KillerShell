@@ -71,11 +71,11 @@ namespace KillerShell.Editing
             // nothing is worse than a dim one, and all four of these change every keystroke.
             m.Opened += (_, _) =>
             {
-                if (_undoItem != null) _undoItem.IsEnabled = CanUndo;
-                if (_redoItem != null) _redoItem.IsEnabled = CanRedo;
-                if (_cutItem  != null) _cutItem.IsEnabled  = TextArea.Selection?.Length > 0;
-                if (_copyItem != null) _copyItem.IsEnabled = TextArea.Selection?.Length > 0;
-                if (_wrapItem != null) _wrapItem.IsChecked = WordWrap;
+                _undoItem?.IsEnabled = CanUndo;
+                _redoItem?.IsEnabled = CanRedo;
+                _cutItem?.IsEnabled  = TextArea.Selection?.Length > 0;
+                _copyItem?.IsEnabled = TextArea.Selection?.Length > 0;
+                _wrapItem?.IsChecked = WordWrap;
             };
 
             ContextMenu = m;

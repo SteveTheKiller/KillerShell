@@ -141,7 +141,7 @@ namespace KillerShell
                 // Chrome.cs ApplyWindowCorners's own remark). Never wired in here before now.
                 MainWindow.ApplyWindowCorners(this, rounded: true);
                 var src = (System.Windows.Interop.HwndSource?)PresentationSource.FromVisual(this);
-                src?.AddHook((IntPtr h, int msg, IntPtr w, IntPtr l, ref bool handled) =>
+                src?.AddHook((h, msg, w, l, ref handled) =>
                 {
                     if (msg == 0x0014 /* WM_ERASEBKGND */) { handled = true; return new IntPtr(1); }
                     return IntPtr.Zero;

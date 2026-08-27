@@ -79,7 +79,7 @@ namespace KillerShell
         {
             try
             {
-                if (!(PresentationSource.FromVisual(visual) is HwndSource source) ||
+                if (PresentationSource.FromVisual(visual) is not HwndSource source ||
                     source.Handle == IntPtr.Zero)
                     return;
 

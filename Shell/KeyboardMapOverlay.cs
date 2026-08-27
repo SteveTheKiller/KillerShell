@@ -321,7 +321,7 @@ namespace KillerShell.Shell
                     key.MouseLeave += (_, _2) =>
                     {
                         _kbHoverAct = null; _kbHoverId = null;
-                        if (_kbDetail is not null) _kbDetail.Text = " ";
+                        _kbDetail?.Text = " ";
                         lift.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(130)));
                         KbMarqueeStop(act);
                     };

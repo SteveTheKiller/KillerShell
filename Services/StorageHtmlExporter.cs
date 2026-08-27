@@ -20,7 +20,7 @@ namespace KillerShell.Services
         }
 
         private static readonly (string Key, string Label, string File)[] ThemeFiles =
-        {
+        [
             ("dark", "Dark", "Dark"), ("light", "Light", "Light"),
             ("black", "Black", "Black"), ("98se", "98SE", "98SE"),
             ("blood", "Blood", "Blood"), ("greed", "Greed", "Greed"),
@@ -28,7 +28,7 @@ namespace KillerShell.Services
             ("decay", "Decay", "Decay"), ("mourning", "Mourning", "Mourning"),
             ("sepulchre", "Sepulchre", "Sepulchre"), ("delirium", "Delirium", "Delirium"),
             ("malaise", "Malaise", "Malaise")
-        };
+        ];
 
         internal void Export(string outputPath, StorageReport report)
         {
@@ -87,7 +87,7 @@ namespace KillerShell.Services
             sb.Append("</tbody></table></section>");
         }
 
-        private static readonly string[] MapColors = { "#276fbf", "#d14b52", "#2f9e62", "#c1842b", "#7957b8", "#208f9f", "#a64d79", "#687a35" };
+        private static readonly string[] MapColors = ["#276fbf", "#d14b52", "#2f9e62", "#c1842b", "#7957b8", "#208f9f", "#a64d79", "#687a35"];
         private static void DrawChildren(StringBuilder sb, StorageReportNode node, double x, double y, double w, double h, int depth, int limit, long total)
         {
             if (node.Children.Count == 0 || (limit > 0 && depth > limit)) return;

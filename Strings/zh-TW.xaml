@@ -403,6 +403,7 @@
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
     <sys:String x:Key="Str_Fonts_Editor">編輯器文字</sys:String>
 
+    <sys:String x:Key="Str_Prof_Reload">重新載入 PowerShell 設定檔</sys:String>
     <sys:String x:Key="Str_Prof_Edit">編輯 PowerShell 設定檔</sys:String>
     <sys:String x:Key="Str_Prof_Asking">正在詢問 {0} 設定檔的位置...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} 未回應 - 找不到其設定檔。</sys:String>

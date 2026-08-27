@@ -333,7 +333,7 @@ namespace KillerShell.Shell
             try
             {
                 using var network = Registry.CurrentUser.OpenSubKey("Network");
-                foreach (string letter in network?.GetSubKeyNames() ?? Array.Empty<string>())
+                foreach (string letter in network?.GetSubKeyNames() ?? [])
                 {
                     using var mapping = network!.OpenSubKey(letter);
                     string remote = mapping?.GetValue("RemotePath") as string ?? string.Empty;
@@ -359,11 +359,10 @@ namespace KillerShell.Shell
             catch (System.Security.SecurityException) { }
 
             string systemRoot = Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\";
-            wanted = wanted
+            wanted = [.. wanted
                 .OrderBy(n => string.Equals(n.Path, systemRoot, StringComparison.OrdinalIgnoreCase) ? 0
                             : n.Path.StartsWith(@"\\", StringComparison.Ordinal) ? 2 : 1)
-                .ThenBy(n => n.Path, StringComparer.OrdinalIgnoreCase)
-                .ToList();
+                .ThenBy(n => n.Path, StringComparer.OrdinalIgnoreCase)];
 
             var wantedPaths = new HashSet<string>(wanted.Select(n => n.Path),
                                                   StringComparer.OrdinalIgnoreCase);
@@ -415,10 +414,9 @@ namespace KillerShell.Shell
 
             _treeMenuItem ??= FolderTree.ContextMenu?.Items.OfType<MenuItem>()
                                           .FirstOrDefault(m => (m.Tag as string) == "fav");
-            if (_treeMenuItem != null)
-                _treeMenuItem.Header = Loc(IsBookmarked(_treeMenuNode.Path)
-                    ? "Str_Menu_RemoveFavorite"
-                    : "Str_Menu_AddFavorite");
+            _treeMenuItem?.Header = Loc(IsBookmarked(_treeMenuNode.Path)
+                ? "Str_Menu_RemoveFavorite"
+                : "Str_Menu_AddFavorite");
 
             // Read fresh on every open rather than bound once - the same convention
             // ColumnVisibilityMenu and the CPU tile's per-core toggle follow, and it keeps the
@@ -713,6 +711,55 @@ namespace KillerShell.Shell
             _treeSyncing = true;
             try { current.IsSelected = true; }
             finally { _treeSyncing = wasSyncing; }
+        }
+
+        /// <summary>
+        /// Re-reads ONE already-expanded branch. Safe to call for any folder at any time: it does
+        /// nothing when the tree is closed, and nothing when that branch was never expanded.
+        /// </summary>
+        /// <remarks>
+        /// This is what the browse watcher calls. A branch loads its children exactly once
+        /// (LoadChildrenAsync returns early when IsLoaded), so without something re-reading it the
+        /// tree keeps whatever was on disk the first time it was opened - a folder created by the
+        /// terminal, by another application, or by an installer never appears. That also breaks
+        /// navigation rather than just the display: RevealInTree matches segments against these
+        /// same cached children, so walking into a folder the tree has not heard of makes it give
+        /// up silently and the tree does not move at all.
+        /// </remarks>
+        internal async Task RefreshTreeBranch(string folder)
+        {
+            if (!_treeOpen || string.IsNullOrEmpty(folder)) return;
+            var node = FindLoadedNode(folder);
+            if (node != null) await node.RefreshAsync();
+        }
+
+        /// <summary>
+        /// The tree's node for a path, WITHOUT loading or expanding anything on the way.
+        /// </summary>
+        /// <remarks>
+        /// Returns null the moment a step has not been loaded. That is the point: a branch nobody
+        /// has opened holds nothing stale to correct, and loading it here would expand the tree
+        /// behind the user's back every time a file changed on disk.
+        /// </remarks>
+        private FolderNode? FindLoadedNode(string folder)
+        {
+            string full;
+            try { full = System.IO.Path.GetFullPath(folder); }
+            catch { return null; }
+
+            var current = _treeRoots.FirstOrDefault(
+                r => full.StartsWith(r.Path, StringComparison.OrdinalIgnoreCase));
+            if (current == null) return null;
+
+            foreach (string seg in RelativeSegments(current.Path, full))
+            {
+                if (!current.IsLoaded) return null;
+                var next = current.Children.FirstOrDefault(
+                    c => string.Equals(c.Name, seg, StringComparison.OrdinalIgnoreCase));
+                if (next == null) return null;
+                current = next;
+            }
+            return current;
         }
 
         private static IEnumerable<string> RelativeSegments(string rootPath, string fullPath)

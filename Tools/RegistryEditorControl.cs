@@ -1236,7 +1236,7 @@ namespace KillerShell.Tools
             parentNode.Refresh();
             parentNode.IsExpanded = true;
             var newNode = parentNode.Children.FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
-            if (newNode != null) newNode.IsSelected = true;
+            newNode?.IsSelected = true;
         }
 
         private void RenameKeyNode(RegistryNode node)
@@ -1282,7 +1282,7 @@ namespace KillerShell.Tools
             var parentNode = node.Parent;
             parentNode?.Refresh();
             var newNode = parentNode?.Children.FirstOrDefault(c => string.Equals(c.Name, newName, StringComparison.OrdinalIgnoreCase));
-            if (newNode != null) newNode.IsSelected = true;
+            newNode?.IsSelected = true;
         }
 
         private static void CopyKeyContents(RegistryKey src, RegistryKey dst)

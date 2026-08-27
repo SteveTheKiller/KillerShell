@@ -151,7 +151,14 @@ namespace KillerShell.Shell
                 _watchOverflow = false;
                 string? up = folder;
                 while (up != null && !Directory.Exists(up)) up = ParentOf(up);
-                if (up != null) await NavigateTo(up);
+                if (up != null)
+                {
+                    await NavigateTo(up);
+                    // The surviving ancestor, not the folder that went away: refreshing a node
+                    // that no longer exists does nothing, and it is the PARENT that is still
+                    // showing the dead child (FolderTree.cs).
+                    _ = RefreshTreeBranch(up);
+                }
                 return;
             }
 
@@ -161,6 +168,14 @@ namespace KillerShell.Shell
             _touched.Clear();
             _renamedPairs.Clear();
             _watchOverflow = false;
+
+            // The tree is a second view of these same folders, and this watcher is the only thing
+            // that hears about changes made anywhere other than this app's own file commands -
+            // the terminal, another application, an installer. RefreshAfterFileOp covers the
+            // commands; nothing covered the rest, so the tree kept the children it read when the
+            // branch was first expanded. Not awaited: the listing below is what the user is
+            // looking at, and a slow drive must not hold it up.
+            _ = RefreshTreeBranch(folder);   // FolderTree.cs
 
             if (relist) { await NavigateTo(folder, record: false); return; }
 

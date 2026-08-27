@@ -317,6 +317,7 @@
   <sys:String x:Key="Str_Term_Close">Zamknij terminal</sys:String>
   <sys:String x:Key="Str_Dlg_ResetPromptMsg">Przywrócić dostarczony skrypt monitu? Zmiany w tym pliku zostaną utracone.</sys:String>
   <sys:String x:Key="Str_Btn_Reset">Przywróć</sys:String>
+  <sys:String x:Key="Str_Prof_Reload">Przeładuj profil PowerShell</sys:String>
   <sys:String x:Key="Str_Prof_Edit">Edytuj profil PowerShell</sys:String>
   <sys:String x:Key="Str_Prof_Asking">Pytanie programu {0} o położenie profilu...</sys:String>
   <sys:String x:Key="Str_Prof_Failed">Program {0} nie odpowiedział — nie znaleziono profilu.</sys:String>

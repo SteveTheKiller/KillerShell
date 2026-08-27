@@ -403,6 +403,7 @@
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
     <sys:String x:Key="Str_Fonts_Editor">এডিটরের লেখা</sys:String>
 
+    <sys:String x:Key="Str_Prof_Reload">PowerShell প্রোফাইল পুনরায় লোড করুন</sys:String>
     <sys:String x:Key="Str_Prof_Edit">PowerShell প্রোফাইল সম্পাদনা করুন</sys:String>
     <sys:String x:Key="Str_Prof_Asking">{0}-কে তার প্রোফাইলের অবস্থান জিজ্ঞাসা করা হচ্ছে...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} সাড়া দেয়নি - এর প্রোফাইল খুঁজে পাওয়া যায়নি।</sys:String>

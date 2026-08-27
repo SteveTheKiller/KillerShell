@@ -403,6 +403,7 @@
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
     <sys:String x:Key="Str_Fonts_Editor">EDITORTEXT</sys:String>
 
+    <sys:String x:Key="Str_Prof_Reload">PowerShell-Profil neu laden</sys:String>
     <sys:String x:Key="Str_Prof_Edit">PowerShell-Profil bearbeiten</sys:String>
     <sys:String x:Key="Str_Prof_Asking">{0} wird nach dem Profilpfad gefragt...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} hat nicht geantwortet - Profil nicht gefunden.</sys:String>

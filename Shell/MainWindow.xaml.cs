@@ -1376,12 +1376,14 @@ namespace KillerShell.Shell
                      || (e.Key == System.Windows.Input.Key.System
                          && e.SystemKey == System.Windows.Input.Key.Enter))
             {
-                // Let open dropdowns, the date box, and the filter box handle Enter
-                // themselves, otherwise they can never commit.
+                // Let open dropdowns, the date box, the filter box, and the address bar handle
+                // Enter themselves, otherwise the window preview handler runs a search before
+                // their ordinary KeyDown handlers ever receive the key.
                 if (e.OriginalSource is ComboBoxItem ||
                     (e.OriginalSource is ComboBox cb && cb.IsDropDownOpen) ||
                     e.OriginalSource is System.Windows.Controls.Primitives.DatePickerTextBox ||
-                    ReferenceEquals(e.OriginalSource, Pane.ResultFilterBox))
+                    ReferenceEquals(e.OriginalSource, Pane.ResultFilterBox) ||
+                    ReferenceEquals(System.Windows.Input.Keyboard.FocusedElement, Pane.AddressBox))
                     return;
 
                 // Enter now has to serve two masters. In the results list with something

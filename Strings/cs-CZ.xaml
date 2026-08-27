@@ -401,6 +401,7 @@
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
     <sys:String x:Key="Str_Fonts_Editor">TEXT EDITORU</sys:String>
 
+    <sys:String x:Key="Str_Prof_Reload">Znovu načíst profil PowerShellu</sys:String>
     <sys:String x:Key="Str_Prof_Edit">Upravit profil PowerShellu</sys:String>
     <sys:String x:Key="Str_Prof_Asking">Dotaz na {0}, kde má profil...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} neodpověděl - profil se nepodařilo najít.</sys:String>

@@ -21,6 +21,7 @@ namespace KillerShell.Terminal
 
         private ContextMenu? _menu;
         private MenuItem? _copyItem;
+        private MenuItem? _reloadProfileItem;
 
         /// <summary>
         /// Raised as the Edit profile submenu opens, carrying the row for the window to fill.
@@ -56,7 +57,10 @@ namespace KillerShell.Terminal
 
             // Copy is the one row whose availability changes: with no selection there is nothing
             // to copy, and a lit row that does nothing is worse than a dim one.
-            if (_copyItem != null) _copyItem.IsEnabled = _hasSelection;
+            _copyItem?.IsEnabled = _hasSelection;
+            // cmd.exe has no PowerShell $PROFILE. The same menu belongs to both terminal skins,
+            // so keep the row visible for discovery but make its scope honest.
+            _reloadProfileItem?.IsEnabled = _palette.Skin != TerminalSkin.Lcd;
 
             _menu.PlacementTarget = this;
             _menu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
@@ -114,6 +118,12 @@ namespace KillerShell.Terminal
 
             Row(m, "Str_Term_ResetPrompt", Glyph(0xE777), null,
                 () => MenuCommand?.Invoke(TerminalMenuCommand.ResetPrompt));
+
+            // Run inside THIS shell rather than starting a helper process. PowerShell 7 and
+            // Windows PowerShell then each resolve their own $PROFILE, and any output, success,
+            // or error stays in the terminal where the user asked for the reload.
+            _reloadProfileItem = Row(m, "Str_Prof_Reload", Glyph(0xE895), null, () =>
+                Send("try { . $PROFILE; Write-Host 'PowerShell profile reloaded.' -ForegroundColor Green } catch { Write-Error $_ }\r"));
 
             // The user's $PROFILE, which is a DIFFERENT file from the prompt above it and a far
             // more common thing to want: the prompt script is ours and only runs in here, while

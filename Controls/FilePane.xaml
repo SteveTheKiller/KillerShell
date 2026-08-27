@@ -1924,7 +1924,17 @@
                         BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
                 <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"
                         Visibility="{Binding Visibility, ElementName=ResultsList}"/>
-                <ListBox x:Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="8,4,8,0" Focusable="True"
+                <!-- TOP PADDING IS 0, and that is the fix for the gray strip under the toolbar.
+                     ScrollViewer.Padding insets the content presenter permanently - it does NOT
+                     scroll away with the content - so a top padding is a band of empty pane that
+                     sits between the toolbar and the viewport at every scroll position. At rest it
+                     passes for deliberate spacing; scrolled, a clipped row of icons sits right
+                     under it and it reads as a gap (2026-08-25).
+                     Nothing is lost at rest: each tile already carries TileMargin (6 at the
+                     loosest density) plus TilePad's 8 on top, so the first row still has room.
+                     The 8 left and right stays - horizontal scrolling is disabled, so a permanent
+                     side inset is exactly what is wanted there. -->
+                <ListBox x:Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="8,0,8,0" Focusable="True"
                          FocusVisualStyle="{x:Null}" SelectionMode="Extended"
                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                          VirtualizingPanel.ScrollUnit="Pixel"

@@ -253,7 +253,7 @@ namespace KillerShell
         /// Values under RegKey that are NOT preferences. Written by the installer, read to decide
         /// whether this copy is portable, and so never cleared with the settings.
         /// </summary>
-        private static readonly string[] InstallMarkers = { "Installed", "InstallPath", "Version" };
+        private static readonly string[] InstallMarkers = ["Installed", "InstallPath", "Version"];
 
         /// <summary>
         /// Clear all Data: every saved preference, plus the temp files KillerShell extracted while
@@ -491,7 +491,7 @@ namespace KillerShell
                 {
                     key.SetValue("DisplayName",          AppName);
                     key.SetValue("DisplayVersion",       version);
-                    key.SetValue("Publisher",            "Steve / thekiller.net");
+                    key.SetValue("Publisher",            "Steve the Killer");
                     key.SetValue("InstallLocation",      installDir);
                     key.SetValue("DisplayIcon",          $"{installExe},0");
                     key.SetValue("UninstallString",      $"\"{installExe}\" /uninstall");
@@ -541,7 +541,7 @@ namespace KillerShell
                 {
                     key.SetValue("DisplayName",          AppName);
                     key.SetValue("DisplayVersion",       version);
-                    key.SetValue("Publisher",            "Steve / thekiller.net");
+                    key.SetValue("Publisher",            "Steve the Killer");
                     key.SetValue("InstallLocation",      InstallDir);
                     key.SetValue("DisplayIcon",          $"{InstallExe},0");
                     key.SetValue("UninstallString",      $"\"{InstallExe}\" /uninstall");
@@ -628,12 +628,12 @@ namespace KillerShell
                                          MachineInstallExe, StringComparison.OrdinalIgnoreCase);
             if (RelaunchMachineUninstallElevatedIfNeeded(machine)) return;
 
-            var res = MessageBox.Show(
+            var confirm = new ConfirmDialog(
                 "Uninstall KillerShell from this computer?",
-                $"{AppName} Uninstall",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-            if (res != MessageBoxResult.Yes) return;
+                null,
+                "Uninstall");
+            confirm.ShowDialog();
+            if (!confirm.Confirmed) return;
 
             string startMenuDir = machine
                 ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), AppName)
@@ -673,8 +673,6 @@ namespace KillerShell
                 UseShellExecute = true
             });
 
-            MessageBox.Show("KillerShell has been uninstalled.", AppName,
-                MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

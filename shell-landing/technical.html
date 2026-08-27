@@ -28,6 +28,19 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 .outline a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent); filter: none; }
 .outline a.on { color: var(--accent-text); border-left-color: var(--accent); background: var(--accent); }
 .outline a.sub { padding-left: 32px; font-size: 12px; opacity: 0.82; }
+/* Collapsible outline. Subsections are hidden until their section is the one being read or is
+   opened by hand; the chevron sits on the row rather than in the link, so clicking the title
+   still navigates. */
+.ol-head { display: flex; align-items: stretch; }
+.ol-head > a { flex: 1 1 auto; min-width: 0; }
+.ol-chev { flex: 0 0 auto; width: 26px; padding: 0; margin: 0; border: 0; background: none;
+  color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.ol-chev:hover { color: var(--accent); }
+.ol-chev svg { transition: transform .15s ease; }
+.ol-group.open .ol-chev svg { transform: rotate(90deg); }
+.ol-subs { display: none; }
+.ol-group.open .ol-subs { display: block; }
+@media (max-width: 900px) { .ol-subs, .ol-chev { display: none; } .ol-head { display: block; } }
 @media (max-width: 900px) { .outline { display:flex; flex-direction:row; flex-wrap:wrap; padding:8px; gap:4px; } .outline a { border-left:0; border-radius:5px; padding:6px 10px; } .outline a.on { border-left:0; } .outline a.sub { padding-left:10px; } }
 </style>
 </head>
@@ -335,12 +348,66 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <script src="ks-i18n.js?v=3"></script>
 <script src="ks.js?v=4"></script>
 <script>
+// COLLAPSIBLE OUTLINE. The page has fourteen sections and seven subsections, and listing
+// all twenty-one flat made the sidebar a wall you had to read to navigate.
+//
+// The grouping is built HERE, at runtime, rather than by nesting the markup: the twenty-one
+// links carry t_* keys that must stay byte-identical to the headings they name, so the safest
+// structure is one that never edits them. Wrapping moves the existing nodes, so the scroll-spy
+// below still finds all twenty-one through .outline a, in document order.
+(function(){
+  var nav=document.querySelector('.outline');
+  if(!nav) return;
+  var kids=[].slice.call(nav.children), groups=[], cur=null;
+  kids.forEach(function(a){
+    if(a.tagName!=='A') return;
+    if(a.classList.contains('sub')){
+      if(cur){ cur.subs.appendChild(a); }
+      return;
+    }
+    var g=document.createElement('div'); g.className='ol-group';
+    var head=document.createElement('div'); head.className='ol-head';
+    var subs=document.createElement('div'); subs.className='ol-subs';
+    nav.insertBefore(g,a); head.appendChild(a); g.appendChild(head); g.appendChild(subs);
+    cur={el:g,subs:subs,head:head};
+    groups.push(cur);
+  });
+  // A section with no subsections gets no chevron - an empty disclosure that opens onto
+  // nothing is worse than none at all.
+  groups.forEach(function(g){
+    if(!g.subs.children.length){ g.el.classList.add('ol-leaf'); return; }
+    var t=document.createElement('button');
+    t.className='ol-chev'; t.type='button'; t.setAttribute('aria-expanded','false');
+    t.setAttribute('aria-label','Expand section');
+    t.innerHTML='<svg viewBox="0 0 10 10" width="10" height="10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+    t.addEventListener('click',function(e){
+      e.preventDefault(); e.stopPropagation();
+      var open=g.el.classList.toggle('open');
+      t.setAttribute('aria-expanded',open?'true':'false');
+      g.el.dataset.manual='1';   // a hand-opened section is not auto-closed by scrolling
+    });
+    g.head.appendChild(t);
+  });
+  // Reading a section opens it. Sections you opened by hand stay open; the rest close, so the
+  // sidebar keeps showing where you are rather than growing as you scroll.
+  window.knOutlineReveal=function(a){
+    var g=a&&a.closest?a.closest('.ol-group'):null;
+    groups.forEach(function(x){
+      var open=(x.el===g)||x.el.dataset.manual==='1';
+      x.el.classList.toggle('open',open);
+      var c=x.head.querySelector('.ol-chev');
+      if(c) c.setAttribute('aria-expanded',open?'true':'false');
+    });
+  };
+})();
 (function(){
   var links=[].slice.call(document.querySelectorAll('.outline a'));
   var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
   var sc=document.querySelector('.content-scroll');
   function onScroll(){ var y=(sc?sc.scrollTop:window.scrollY)+100, cur=secs[0]; secs.forEach(function(s){ if(s&&s.offsetTop<=y) cur=s; });
-    links.forEach(function(a){ a.classList.toggle('on', cur && a.getAttribute('href')==='#'+cur.id); }); }
+    var active=null;
+    links.forEach(function(a){ var on=cur && a.getAttribute('href')==='#'+cur.id; a.classList.toggle('on', on); if(on) active=a; });
+    if(active && window.knOutlineReveal) window.knOutlineReveal(active); }
   (sc||window).addEventListener('scroll',onScroll,{passive:true}); onScroll();
 })();
 (function(){

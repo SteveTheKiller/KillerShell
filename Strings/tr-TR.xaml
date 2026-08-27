@@ -403,6 +403,7 @@
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
     <sys:String x:Key="Str_Fonts_Editor">DÜZENLEYİCİ METNİ</sys:String>
 
+    <sys:String x:Key="Str_Prof_Reload">PowerShell profilini yeniden yükle</sys:String>
     <sys:String x:Key="Str_Prof_Edit">PowerShell profilini düzenle</sys:String>
     <sys:String x:Key="Str_Prof_Asking">{0} uygulamasına profilinin yeri soruluyor...</sys:String>
     <sys:String x:Key="Str_Prof_Failed">{0} yanıt vermedi - profili bulunamadı.</sys:String>

@@ -88,10 +88,9 @@ namespace KillerShell.Shell
             _favMenuItem ??= Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
                                         .FirstOrDefault(m => (m.Tag as string) == "fav");
 
-            if (_favMenuItem != null)
-                _favMenuItem.Header = Loc(IsBookmarked(MenuFolder())
-                    ? "Str_Menu_RemoveFavorite"
-                    : "Str_Menu_AddFavorite");
+            _favMenuItem?.Header = Loc(IsBookmarked(MenuFolder())
+                ? "Str_Menu_RemoveFavorite"
+                : "Str_Menu_AddFavorite");
 
             // "More Windows options" needs an actual file or folder under the pointer - it opens
             // the real shell menu FOR that item, and has nothing to be about over empty pane
@@ -100,8 +99,7 @@ namespace KillerShell.Shell
             // before (2026-08-03).
             _shellMenuItem ??= Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
                                         .FirstOrDefault(m => (m.Tag as string) == "shellmenu");
-            if (_shellMenuItem != null)
-                _shellMenuItem.Visibility = seed != null ? Visibility.Visible : Visibility.Collapsed;
+            _shellMenuItem?.Visibility = seed != null ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private MenuItem? _favMenuItem;

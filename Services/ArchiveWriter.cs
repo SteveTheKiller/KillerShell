@@ -353,7 +353,7 @@ namespace KillerShell.Services
 
             var adds = new List<ArchiveAddItem>
             {
-                new ArchiveAddItem { EntryName = full + "/" },
+                new() { EntryName = full + "/" },
             };
             if (Rebuild(archivePath, raw => raw, adds, progress, ct, result))
             {

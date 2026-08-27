@@ -13,7 +13,7 @@ namespace KillerShell.Tools
         internal string Path { get; }
         internal long Size { get; }
         internal bool IsDirectory { get; }
-        internal List<StorageReportNode> Children { get; } = new();
+        internal List<StorageReportNode> Children { get; } = [];
     }
 
     internal sealed class StorageReport
