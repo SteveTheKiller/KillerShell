@@ -760,7 +760,7 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">在新分頁中開啟</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">在樹狀目錄中顯示或隱藏隱藏項目與點資料夾</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">切換全寬 — 拖曳標題可重新排列儲存格</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">切換全寬 - 拖曳標題可重新排列儲存格</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">切換圖表高度</sys:String>
     <!-- 儲存空間分析器 -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">分析儲存空間</sys:String>
@@ -783,7 +783,7 @@
     <sys:String x:Key="Str_Storage_Browse">選擇要掃描的資料夾或磁碟機</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">選擇資料夾或磁碟機，然後開始掃描</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">該資料夾不存在</sys:String>
-    <sys:String x:Key="Str_Storage_Stopped">掃描已停止 — 正在顯示已讀取的內容</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">掃描已停止 - 正在顯示已讀取的內容</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">已略過</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">在新分頁中開啟</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">在檔案總管中開啟</sys:String>
@@ -794,10 +794,10 @@
     <sys:String x:Key="Str_Storage_ColorByFolder">依最上層資料夾著色</sys:String>
     <sys:String x:Key="Str_Storage_Depth">深度</sys:String>
     <sys:String x:Key="Str_Storage_DepthAll">全部</sys:String>
-    <sys:String x:Key="Str_Storage_DepthTip">擁有獨立矩形的資料夾層數 — 數值越小，圖中越集中顯示大型資料夾</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">擁有獨立矩形的資料夾層數 - 數值越小，圖中越集中顯示大型資料夾</sys:String>
     <sys:String x:Key="Str_Storage_Min">最小</sys:String>
     <sys:String x:Key="Str_Storage_MinAll">全部</sys:String>
-    <sys:String x:Key="Str_Storage_MinSizeTip">隱藏小於此大小的項目 — 其位元組仍計入所在資料夾</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">隱藏小於此大小的項目 - 其位元組仍計入所在資料夾</sys:String>
     <sys:String x:Key="Str_Storage_Total">總計</sys:String>
     <sys:String x:Key="Str_Storage_Free">可用</sys:String>
 </ResourceDictionary>

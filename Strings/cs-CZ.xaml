@@ -761,7 +761,7 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">Otevřít na nové kartě</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">zobrazit nebo skrýt skryté položky a tečkové složky ve stromu</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Přepnout plnou šířku — přetažením záhlaví změníte pořadí buněk</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Přepnout plnou šířku - přetažením záhlaví změníte pořadí buněk</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">Přepnout výšku grafu</sys:String>
     <!-- Analýza úložiště -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyzovat úložiště</sys:String>
@@ -784,7 +784,7 @@
     <sys:String x:Key="Str_Storage_Browse">Vyberte složku nebo jednotku k analýze</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">Vyberte složku nebo jednotku a spusťte analýzu</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">Tato složka neexistuje</sys:String>
-    <sys:String x:Key="Str_Storage_Stopped">Analýza zastavena — zobrazuji načtená data</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Analýza zastavena - zobrazuji načtená data</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">přeskočeno</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Otevřít na nové kartě</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Otevřít v Průzkumníku</sys:String>
@@ -795,10 +795,10 @@
     <sys:String x:Key="Str_Storage_ColorByFolder">Barva podle hlavní složky</sys:String>
     <sys:String x:Key="Str_Storage_Depth">Hloubka</sys:String>
     <sys:String x:Key="Str_Storage_DepthAll">Vše</sys:String>
-    <sys:String x:Key="Str_Storage_DepthTip">Počet úrovní složek s vlastními obdélníky — nižší hodnota zjednoduší mapu na velké složky</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Počet úrovní složek s vlastními obdélníky - nižší hodnota zjednoduší mapu na velké složky</sys:String>
     <sys:String x:Key="Str_Storage_Min">Min.</sys:String>
     <sys:String x:Key="Str_Storage_MinAll">Vše</sys:String>
-    <sys:String x:Key="Str_Storage_MinSizeTip">Skryje menší položky — jejich bajty se stále započítají do nadřazené složky</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Skryje menší položky - jejich bajty se stále započítají do nadřazené složky</sys:String>
     <sys:String x:Key="Str_Storage_Total">celkem</sys:String>
     <sys:String x:Key="Str_Storage_Free">volné</sys:String>
 </ResourceDictionary>

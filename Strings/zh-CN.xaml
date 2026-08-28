@@ -760,7 +760,7 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">在新标签页中打开</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">在树中显示或隐藏隐藏项目和点文件夹</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">切换全宽 — 拖动标题可重新排列单元格</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">切换全宽 - 拖动标题可重新排列单元格</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">切换图表高度</sys:String>
     <!-- 存储分析器 -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">分析存储空间</sys:String>
@@ -783,7 +783,7 @@
     <sys:String x:Key="Str_Storage_Browse">选择要扫描的文件夹或驱动器</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">选择文件夹或驱动器，然后开始扫描</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">该文件夹不存在</sys:String>
-    <sys:String x:Key="Str_Storage_Stopped">扫描已停止 — 正在显示已读取的内容</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">扫描已停止 - 正在显示已读取的内容</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">已跳过</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">在新标签页中打开</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">在文件资源管理器中打开</sys:String>
@@ -794,10 +794,10 @@
     <sys:String x:Key="Str_Storage_ColorByFolder">按顶层文件夹着色</sys:String>
     <sys:String x:Key="Str_Storage_Depth">深度</sys:String>
     <sys:String x:Key="Str_Storage_DepthAll">全部</sys:String>
-    <sys:String x:Key="Str_Storage_DepthTip">拥有独立矩形的文件夹层数 — 数值越小，图中越集中显示大文件夹</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">拥有独立矩形的文件夹层数 - 数值越小，图中越集中显示大文件夹</sys:String>
     <sys:String x:Key="Str_Storage_Min">最小</sys:String>
     <sys:String x:Key="Str_Storage_MinAll">全部</sys:String>
-    <sys:String x:Key="Str_Storage_MinSizeTip">隐藏小于此大小的项目 — 其字节仍计入所在文件夹</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">隐藏小于此大小的项目 - 其字节仍计入所在文件夹</sys:String>
     <sys:String x:Key="Str_Storage_Total">总计</sys:String>
     <sys:String x:Key="Str_Storage_Free">可用</sys:String>
 </ResourceDictionary>

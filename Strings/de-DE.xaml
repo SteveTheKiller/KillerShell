@@ -763,7 +763,7 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">In neuem Tab öffnen</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">ausgeblendete Elemente und Punktordner im Baum ein- oder ausblenden</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Volle Breite umschalten — Kopfzeile ziehen, um Zellen neu anzuordnen</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Volle Breite umschalten - Kopfzeile ziehen, um Zellen neu anzuordnen</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">Diagrammhöhe umschalten</sys:String>
     <!-- Speicheranalyse -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Speicher analysieren</sys:String>
@@ -786,7 +786,7 @@
     <sys:String x:Key="Str_Storage_Browse">Ordner oder Laufwerk zum Scannen auswählen</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">Ordner oder Laufwerk auswählen, dann Scannen</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">Dieser Ordner ist nicht vorhanden</sys:String>
-    <sys:String x:Key="Str_Storage_Stopped">Scan gestoppt – gelesene Daten werden angezeigt</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Scan gestoppt - gelesene Daten werden angezeigt</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">übersprungen</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">In neuem Tab öffnen</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Im Explorer öffnen</sys:String>
@@ -797,10 +797,10 @@
     <sys:String x:Key="Str_Storage_ColorByFolder">Nach oberstem Ordner färben</sys:String>
     <sys:String x:Key="Str_Storage_Depth">Tiefe</sys:String>
     <sys:String x:Key="Str_Storage_DepthAll">Alle</sys:String>
-    <sys:String x:Key="Str_Storage_DepthTip">Anzahl der Ordnerebenen mit eigenen Rechtecken – niedrigere Werte reduzieren die Karte auf große Ordner</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Anzahl der Ordnerebenen mit eigenen Rechtecken - niedrigere Werte reduzieren die Karte auf große Ordner</sys:String>
     <sys:String x:Key="Str_Storage_Min">Min.</sys:String>
     <sys:String x:Key="Str_Storage_MinAll">Alle</sys:String>
-    <sys:String x:Key="Str_Storage_MinSizeTip">Kleinere Elemente ausblenden – ihre Bytes zählen weiterhin im übergeordneten Ordner</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Kleinere Elemente ausblenden - ihre Bytes zählen weiterhin im übergeordneten Ordner</sys:String>
     <sys:String x:Key="Str_Storage_Total">gesamt</sys:String>
     <sys:String x:Key="Str_Storage_Free">frei</sys:String>
 </ResourceDictionary>

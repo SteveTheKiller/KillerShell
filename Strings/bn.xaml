@@ -760,7 +760,7 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">নতুন ট্যাবে খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">ট্রিতে লুকানো আইটেম ও ডটফোল্ডার দেখান বা লুকান</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">পূর্ণ প্রস্থ টগল করুন — ঘর সাজাতে শিরোনাম টানুন</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">পূর্ণ প্রস্থ টগল করুন - ঘর সাজাতে শিরোনাম টানুন</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">গ্রাফের উচ্চতা টগল করুন</sys:String>
     <!-- স্টোরেজ বিশ্লেষক -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">স্টোরেজ বিশ্লেষণ করুন</sys:String>
@@ -783,7 +783,7 @@
     <sys:String x:Key="Str_Storage_Browse">স্ক্যানের জন্য ফোল্ডার বা ড্রাইভ বেছে নিন</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">ফোল্ডার বা ড্রাইভ বেছে নিয়ে স্ক্যান করুন</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">ফোল্ডারটি নেই</sys:String>
-    <sys:String x:Key="Str_Storage_Stopped">স্ক্যান থামানো হয়েছে — যতটুকু পড়া হয়েছে তা দেখানো হচ্ছে</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">স্ক্যান থামানো হয়েছে - যতটুকু পড়া হয়েছে তা দেখানো হচ্ছে</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">এড়ানো হয়েছে</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">নতুন ট্যাবে খুলুন</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Explorer-এ খুলুন</sys:String>
@@ -794,10 +794,10 @@
     <sys:String x:Key="Str_Storage_ColorByFolder">শীর্ষ ফোল্ডার অনুযায়ী রং</sys:String>
     <sys:String x:Key="Str_Storage_Depth">গভীরতা</sys:String>
     <sys:String x:Key="Str_Storage_DepthAll">সব</sys:String>
-    <sys:String x:Key="Str_Storage_DepthTip">কত স্তরের ফোল্ডার নিজস্ব আয়তক্ষেত্র পাবে — কম মানে বড় ফোল্ডারগুলোই বেশি দেখা যাবে</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">কত স্তরের ফোল্ডার নিজস্ব আয়তক্ষেত্র পাবে - কম মানে বড় ফোল্ডারগুলোই বেশি দেখা যাবে</sys:String>
     <sys:String x:Key="Str_Storage_Min">সর্বনিম্ন</sys:String>
     <sys:String x:Key="Str_Storage_MinAll">সব</sys:String>
-    <sys:String x:Key="Str_Storage_MinSizeTip">এর চেয়ে ছোট আইটেম লুকান — বাইটগুলো মূল ফোল্ডারের মোটে গণনা হবে</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">এর চেয়ে ছোট আইটেম লুকান - বাইটগুলো মূল ফোল্ডারের মোটে গণনা হবে</sys:String>
     <sys:String x:Key="Str_Storage_Total">মোট</sys:String>
     <sys:String x:Key="Str_Storage_Free">খালি</sys:String>
 </ResourceDictionary>

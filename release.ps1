@@ -175,6 +175,19 @@ foreach ($localeFile in Get-ChildItem (Join-Path $PSScriptRoot 'Strings') -Filte
 }
 Write-Host "Translations OK: $($englishStrings.Count) keys across $((Get-ChildItem (Join-Path $PSScriptRoot 'Strings') -Filter '*.xaml').Count) languages"
 
+# --- 3c. Punctuation gate ---
+# No en or em dashes anywhere, translated content included - the house style wins over
+# per-language convention. Runs with NO exclusions, matching KillerNotes. At release time the
+# clean-tree check guarantees every candidate file is tracked, so git grep covers everything.
+Step "Checking punctuation"
+$dashMatches = @(git grep -n -I -P '[\x{2013}\x{2014}]' -- . 2>$null)
+$dashGrepExit = $LASTEXITCODE
+if ($dashGrepExit -notin 0, 1) { Fail "Punctuation scan failed with exit code $dashGrepExit" }
+if ($dashMatches.Count -gt 0) {
+    Fail "Text contains an en or em dash:`n$($dashMatches -join "`n")"
+}
+Write-Host 'Punctuation OK'
+
 # --- 4. Clean Release publish (FolderProfile: net48, win-x64) ---
 Step "Building Release (publish)"
 if (Test-Path 'bin\Release') { Remove-Item 'bin\Release' -Recurse -Force }

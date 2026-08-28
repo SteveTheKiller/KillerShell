@@ -763,7 +763,7 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">Ouvrir dans un nouvel onglet</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">afficher ou masquer les éléments cachés et les dossiers à point dans l'arborescence</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Basculer en pleine largeur — faites glisser l'en-tête pour réorganiser les cellules</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Basculer en pleine largeur - faites glisser l'en-tête pour réorganiser les cellules</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">Basculer la hauteur du graphique</sys:String>
     <!-- Analyseur de stockage -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyser le stockage</sys:String>
@@ -786,7 +786,7 @@
     <sys:String x:Key="Str_Storage_Browse">Choisissez un dossier ou un lecteur à analyser</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">Choisissez un dossier ou un lecteur, puis lancez l'analyse</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">Ce dossier n'existe pas</sys:String>
-    <sys:String x:Key="Str_Storage_Stopped">Analyse arrêtée — affichage des données lues</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Analyse arrêtée - affichage des données lues</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">ignorés</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Ouvrir dans un nouvel onglet</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Ouvrir dans l'Explorateur</sys:String>
@@ -797,10 +797,10 @@
     <sys:String x:Key="Str_Storage_ColorByFolder">Couleur par dossier racine</sys:String>
     <sys:String x:Key="Str_Storage_Depth">Profondeur</sys:String>
     <sys:String x:Key="Str_Storage_DepthAll">Tout</sys:String>
-    <sys:String x:Key="Str_Storage_DepthTip">Nombre de niveaux de dossiers ayant leur propre rectangle — une valeur basse limite la carte aux gros dossiers</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Nombre de niveaux de dossiers ayant leur propre rectangle - une valeur basse limite la carte aux gros dossiers</sys:String>
     <sys:String x:Key="Str_Storage_Min">Min.</sys:String>
     <sys:String x:Key="Str_Storage_MinAll">Tout</sys:String>
-    <sys:String x:Key="Str_Storage_MinSizeTip">Masque les éléments plus petits — leurs octets restent comptés dans le dossier qui les contient</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Masque les éléments plus petits - leurs octets restent comptés dans le dossier qui les contient</sys:String>
     <sys:String x:Key="Str_Storage_Total">total</sys:String>
     <sys:String x:Key="Str_Storage_Free">libre</sys:String>
 </ResourceDictionary>

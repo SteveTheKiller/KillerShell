@@ -763,7 +763,7 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">Abrir en una pestaña nueva</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">mostrar u ocultar elementos ocultos y carpetas con punto en el árbol</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Alternar ancho completo — arrastra el encabezado para reordenar las celdas</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Alternar ancho completo - arrastra el encabezado para reordenar las celdas</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">Alternar altura del gráfico</sys:String>
     <!-- Analizador de almacenamiento -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Analizar almacenamiento</sys:String>

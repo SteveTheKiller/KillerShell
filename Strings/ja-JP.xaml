@@ -759,7 +759,7 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">新しいタブで開く</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">ツリーの隠し項目とドットフォルダーの表示を切り替える</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">全幅表示を切り替え — ヘッダーをドラッグしてセルを並べ替え</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">全幅表示を切り替え - ヘッダーをドラッグしてセルを並べ替え</sys:String>
     <sys:String x:Key="Str_Perf_ToggleGraphHeight">グラフの高さを切り替え</sys:String>
     <!-- ストレージ分析 -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">ストレージを分析</sys:String>
@@ -782,7 +782,7 @@
     <sys:String x:Key="Str_Storage_Browse">スキャンするフォルダーまたはドライブを選択</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">フォルダーまたはドライブを選択して、スキャンを開始してください</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">そのフォルダーは存在しません</sys:String>
-    <sys:String x:Key="Str_Storage_Stopped">スキャンを停止しました — 読み取った内容を表示しています</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">スキャンを停止しました - 読み取った内容を表示しています</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">スキップ</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">新しいタブで開く</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">エクスプローラーで開く</sys:String>
@@ -793,10 +793,10 @@
     <sys:String x:Key="Str_Storage_ColorByFolder">最上位フォルダーで色分け</sys:String>
     <sys:String x:Key="Str_Storage_Depth">深さ</sys:String>
     <sys:String x:Key="Str_Storage_DepthAll">すべて</sys:String>
-    <sys:String x:Key="Str_Storage_DepthTip">個別の長方形を表示するフォルダー階層数 — 小さい値ほど大きなフォルダーだけの表示になります</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">個別の長方形を表示するフォルダー階層数 - 小さい値ほど大きなフォルダーだけの表示になります</sys:String>
     <sys:String x:Key="Str_Storage_Min">最小</sys:String>
     <sys:String x:Key="Str_Storage_MinAll">すべて</sys:String>
-    <sys:String x:Key="Str_Storage_MinSizeTip">これより小さい項目を非表示 — 容量は親フォルダーの合計に含まれます</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">これより小さい項目を非表示 - 容量は親フォルダーの合計に含まれます</sys:String>
     <sys:String x:Key="Str_Storage_Total">合計</sys:String>
     <sys:String x:Key="Str_Storage_Free">空き</sys:String>
 </ResourceDictionary>
