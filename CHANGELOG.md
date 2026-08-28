@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.2.3] - Unreleased
 
 ### Added
+- Italian localization for the complete app interface and killershell.net, bringing both to thirteen languages.
 - Hungarian localization for the complete app interface and killershell.net, bringing both to twelve languages.
 - Storage Analyzer now uses a Master File Table fast path for elevated scans of local NTFS drives and folders. It enumerates the volume by file ID, builds the same treemap tree, and automatically falls back to the existing parallel directory walker for ordinary accounts, network paths, other filesystems, or any unsupported MFT operation.
 
