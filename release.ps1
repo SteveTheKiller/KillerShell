@@ -133,6 +133,48 @@ if ($scan -match 'has the following vulnerable packages') {
     Fail 'Vulnerable packages found. Resolve before releasing.'
 }
 
+# --- 3b. Translation gate ---
+# Every localization must contain the complete English key set. Matching placeholders are
+# required because a translated string can load successfully and still fail at runtime when
+# string.Format receives a value the translation discarded or renumbered.
+Step "Checking translations"
+function Read-StringMap([string]$Path) {
+    [xml]$document = Get-Content -Path $Path -Raw
+    $map = @{}
+    foreach ($node in $document.ResourceDictionary.ChildNodes) {
+        if ($node.NodeType -ne [System.Xml.XmlNodeType]::Element) { continue }
+        $key = $node.GetAttribute('Key', 'http://schemas.microsoft.com/winfx/2006/xaml')
+        if ($key) { $map[$key] = [string]$node.InnerText }
+    }
+    return $map
+}
+
+$englishStrings = Read-StringMap (Join-Path $PSScriptRoot 'Strings\en-US.xaml')
+if ($englishStrings.Count -eq 0) { Fail 'English translation file contains no resource keys' }
+foreach ($localeFile in Get-ChildItem (Join-Path $PSScriptRoot 'Strings') -Filter '*.xaml') {
+    if ($localeFile.Name -eq 'en-US.xaml') { continue }
+    $localized = Read-StringMap $localeFile.FullName
+    $missing = @($englishStrings.Keys | Where-Object { -not $localized.ContainsKey($_) })
+    $extra = @($localized.Keys | Where-Object { -not $englishStrings.ContainsKey($_) })
+    $empty = @($localized.Keys | Where-Object { [string]::IsNullOrWhiteSpace($localized[$_]) })
+    $placeholderMismatch = @()
+    foreach ($key in $englishStrings.Keys) {
+        if (-not $localized.ContainsKey($key)) { continue }
+        $englishPlaceholders = @([regex]::Matches($englishStrings[$key], '\{\d+(?::[^}]*)?\}') |
+            ForEach-Object Value | Sort-Object)
+        $localizedPlaceholders = @([regex]::Matches($localized[$key], '\{\d+(?::[^}]*)?\}') |
+            ForEach-Object Value | Sort-Object)
+        if ([string]::Join('|', $englishPlaceholders) -ne
+            [string]::Join('|', $localizedPlaceholders)) {
+            $placeholderMismatch += $key
+        }
+    }
+    if ($missing.Count -or $extra.Count -or $empty.Count -or $placeholderMismatch.Count) {
+        Fail "$($localeFile.Name) is incomplete: missing=$($missing.Count), extra=$($extra.Count), empty=$($empty.Count), placeholder mismatches=$($placeholderMismatch.Count)"
+    }
+}
+Write-Host "Translations OK: $($englishStrings.Count) keys across $((Get-ChildItem (Join-Path $PSScriptRoot 'Strings') -Filter '*.xaml').Count) languages"
+
 # --- 4. Clean Release publish (FolderProfile: net48, win-x64) ---
 Step "Building Release (publish)"
 if (Test-Path 'bin\Release') { Remove-Item 'bin\Release' -Recurse -Force }
