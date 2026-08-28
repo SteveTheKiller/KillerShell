@@ -16,6 +16,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
+- The 98SE theme's accent swatches now list navy first, matching KillerNotes' Win98 order and the theme's default accent.
 - The folder tree now follows changes made outside KillerShell's own file commands. A folder created or removed by the terminal, another application, or an installer appears in the tree instead of leaving the branch showing whatever was there when it was first expanded, and navigating into such a folder now moves the tree rather than silently doing nothing.
 - Context menus now use opaque, square popup surfaces so menu labels render with ClearType instead of coarse grayscale antialiasing.
 - Terminal prompts now retain their last valid theme palette if the live session file is briefly unavailable, preventing the path block from flashing red while using a blue theme.

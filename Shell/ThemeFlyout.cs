@@ -301,9 +301,12 @@ namespace KillerShell.Shell
         private static readonly (Accent Accent, string Hex)[] BlackStripColors =
             [(Accent.Red, "#FF2929"), (Accent.Orange, "#FF910A"), (Accent.Green, "#00FF66"),
              (Accent.Teal, "#0AFFE7"), (Accent.Blue, "#298DFF"), (Accent.Purple, "#B829FF")];
+        // 98SE order differs from the other three families on purpose: blue first because navy
+        // is the default 98SE accent, then the rest in KillerNotes' SE98Accents order - the
+        // family reference for the Win98 swatch row.
         private static readonly (Accent Accent, string Hex)[] SE98StripColors =
-            [(Accent.Red, "#800040"), (Accent.Orange, "#A05000"), (Accent.Green, "#006000"),
-             (Accent.Teal, "#008080"), (Accent.Blue, "#000080"), (Accent.Purple, "#5A376E")];
+            [(Accent.Blue, "#000080"), (Accent.Teal, "#008080"), (Accent.Green, "#006000"),
+             (Accent.Orange, "#A05000"), (Accent.Red, "#800040"), (Accent.Purple, "#5A376E")];
 
         private static (Accent Accent, string Hex)[] StripColorsFor(Theme family) => family switch
         {
