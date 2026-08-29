@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 
 namespace ICSharpCode.AvalonEdit.Utils
@@ -52,7 +51,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		public Rope()
 		{
 			// we'll construct the empty rope as a clone of an imaginary static empty rope
-			this.root = RopeNode<T>.emptyRopeNode;
+			root = RopeNode<T>.emptyRopeNode;
 			root.CheckInvariants();
 		}
 
@@ -70,17 +69,17 @@ namespace ICSharpCode.AvalonEdit.Utils
 			if (input is Rope<T> inputRope) {
 				// clone ropes instead of copying them
 				inputRope.root.Publish();
-				this.root = inputRope.root;
+				root = inputRope.root;
 			} else {
 				if (input is string text) {
 					// if a string is IEnumerable<T>, then T must be char
 					((Rope<char>)(object)this).root = CharRope.InitFromString(text);
 				} else {
 					T[] arr = ToArray(input);
-					this.root = RopeNode<T>.CreateFromArray(arr, 0, arr.Length);
+					root = RopeNode<T>.CreateFromArray(arr, 0, arr.Length);
 				}
 			}
-			this.root!.CheckInvariants();
+			root!.CheckInvariants();
 		}
 
 		/// <summary>
@@ -91,8 +90,8 @@ namespace ICSharpCode.AvalonEdit.Utils
 		public Rope(T[] array, int arrayIndex, int count)
 		{
 			VerifyArrayWithRange(array, arrayIndex, count);
-			this.root = RopeNode<T>.CreateFromArray(array, arrayIndex, count);
-			this.root.CheckInvariants();
+			root = RopeNode<T>.CreateFromArray(array, arrayIndex, count);
+			root.CheckInvariants();
 		}
 
 		/// <summary>
@@ -126,11 +125,11 @@ namespace ICSharpCode.AvalonEdit.Utils
 			}
 
 			if (length == 0) {
-				this.root = RopeNode<T>.emptyRopeNode;
+				root = RopeNode<T>.emptyRopeNode;
 			} else {
-				this.root = new FunctionNode<T>(length, initializer);
+				root = new FunctionNode<T>(length, initializer);
 			}
-			this.root!.CheckInvariants();
+			root!.CheckInvariants();
 		}
 
 		private static T[] ToArray(IEnumerable<T> input)
@@ -158,7 +157,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -197,8 +196,8 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// <exception cref="ArgumentOutOfRangeException">index or length is outside the valid range.</exception>
 		public void InsertRange(int index, Rope<T> newElements)
 		{
-			if (index < 0 || index > this.Length) {
-				throw new ArgumentOutOfRangeException("index", index, "0 <= index <= " + this.Length.ToString(CultureInfo.InvariantCulture));
+			if (index < 0 || index > Length) {
+				throw new ArgumentOutOfRangeException("index", index, "0 <= index <= " + Length.ToString(CultureInfo.InvariantCulture));
 			}
 			if (newElements == null) {
 				throw new ArgumentNullException("newElements");
@@ -237,8 +236,8 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// <exception cref="ArgumentOutOfRangeException">index or length is outside the valid range.</exception>
 		public void InsertRange(int index, T[] array, int arrayIndex, int count)
 		{
-			if (index < 0 || index > this.Length) {
-				throw new ArgumentOutOfRangeException("index", index, "0 <= index <= " + this.Length.ToString(CultureInfo.InvariantCulture));
+			if (index < 0 || index > Length) {
+				throw new ArgumentOutOfRangeException("index", index, "0 <= index <= " + Length.ToString(CultureInfo.InvariantCulture));
 			}
 			VerifyArrayWithRange(array, arrayIndex, count);
 			if (count > 0) {
@@ -254,7 +253,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// <exception cref="ArgumentNullException">newElements is null.</exception>
 		public void AddRange(IEnumerable<T> newElements)
 		{
-			InsertRange(this.Length, newElements);
+			InsertRange(Length, newElements);
 		}
 
 		/// <summary>
@@ -264,7 +263,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// <exception cref="ArgumentNullException">newElements is null.</exception>
 		public void AddRange(Rope<T> newElements)
 		{
-			InsertRange(this.Length, newElements);
+			InsertRange(Length, newElements);
 		}
 
 		/// <summary>
@@ -274,7 +273,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// <exception cref="ArgumentNullException">array is null.</exception>
 		public void AddRange(T[] array, int arrayIndex, int count)
 		{
-			InsertRange(this.Length, array, arrayIndex, count);
+			InsertRange(Length, array, arrayIndex, count);
 		}
 
 		/// <summary>
@@ -440,7 +439,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 			internal RopeCacheEntry(RopeNode<T> node, int nodeStartOffset)
 			{
 				this.node = node;
-				this.nodeStartIndex = nodeStartOffset;
+				nodeStartIndex = nodeStartOffset;
 			}
 
 			internal readonly bool IsInside(int offset)
@@ -474,15 +473,15 @@ namespace ICSharpCode.AvalonEdit.Utils
 		public T this[int index] {
 			get {
 				// use unsigned integers - this way negative values for index overflow and can be tested for with the same check
-				if (unchecked((uint)index >= (uint)this.Length)) {
-					throw new ArgumentOutOfRangeException("index", index, "0 <= index < " + this.Length.ToString(CultureInfo.InvariantCulture));
+				if (unchecked((uint)index >= (uint)Length)) {
+					throw new ArgumentOutOfRangeException("index", index, "0 <= index < " + Length.ToString(CultureInfo.InvariantCulture));
 				}
 				RopeCacheEntry entry = FindNodeUsingCache(index).PeekOrDefault();
 				return entry.node.contents![index - entry.nodeStartIndex];
 			}
 			set {
-				if (index < 0 || index >= this.Length) {
-					throw new ArgumentOutOfRangeException("index", index, "0 <= index < " + this.Length.ToString(CultureInfo.InvariantCulture));
+				if (index < 0 || index >= Length) {
+					throw new ArgumentOutOfRangeException("index", index, "0 <= index < " + Length.ToString(CultureInfo.InvariantCulture));
 				}
 				root = root.SetElement(index, value);
 				OnChanged();
@@ -528,7 +527,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 
 		internal ImmutableStack<RopeCacheEntry> FindNodeUsingCache(int index)
 		{
-			Debug.Assert(index >= 0 && index < this.Length);
+			Debug.Assert(index >= 0 && index < Length);
 
 			// thread safety: fetch stack into local variable
 			ImmutableStack<RopeCacheEntry>? stack = lastUsedNodeStack;
@@ -577,11 +576,11 @@ namespace ICSharpCode.AvalonEdit.Utils
 		#region ToString / WriteTo
 		internal void VerifyRange(int startIndex, int length)
 		{
-			if (startIndex < 0 || startIndex > this.Length) {
-				throw new ArgumentOutOfRangeException("startIndex", startIndex, "0 <= startIndex <= " + this.Length.ToString(CultureInfo.InvariantCulture));
+			if (startIndex < 0 || startIndex > Length) {
+				throw new ArgumentOutOfRangeException("startIndex", startIndex, "0 <= startIndex <= " + Length.ToString(CultureInfo.InvariantCulture));
 			}
-			if (length < 0 || startIndex + length > this.Length) {
-				throw new ArgumentOutOfRangeException("length", length, "0 <= length, startIndex(" + startIndex + ")+length <= " + this.Length.ToString(CultureInfo.InvariantCulture));
+			if (length < 0 || startIndex + length > Length) {
+				throw new ArgumentOutOfRangeException("length", length, "0 <= length, startIndex(" + startIndex + ")+length <= " + Length.ToString(CultureInfo.InvariantCulture));
 			}
 		}
 
@@ -611,7 +610,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		public override string ToString()
 		{
 			if (this is Rope<char> charRope) {
-				return charRope.ToString(0, this.Length);
+				return charRope.ToString(0, Length);
 			} else {
 				StringBuilder b = new();
 				foreach (T element in this) {
@@ -650,7 +649,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </remarks>
 		public int IndexOf(T item)
 		{
-			return IndexOf(item, 0, this.Length);
+			return IndexOf(item, 0, Length);
 		}
 
 		/// <summary>
@@ -688,7 +687,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </summary>
 		public int LastIndexOf(T item)
 		{
-			return LastIndexOf(item, 0, this.Length);
+			return LastIndexOf(item, 0, Length);
 		}
 
 		/// <summary>
@@ -737,7 +736,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </summary>
 		public void Add(T item)
 		{
-			InsertRange(this.Length, [item], 0, 1);
+			InsertRange(Length, [item], 0, 1);
 		}
 
 		/// <summary>
@@ -761,7 +760,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </remarks>
 		public void CopyTo(T[] array, int arrayIndex)
 		{
-			CopyTo(0, array, arrayIndex, this.Length);
+			CopyTo(0, array, arrayIndex, Length);
 		}
 
 		/// <summary>
@@ -775,7 +774,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		{
 			VerifyRange(index, count);
 			VerifyArrayWithRange(array, arrayIndex, count);
-			this.root.CopyTo(index, array, arrayIndex, count);
+			root.CopyTo(index, array, arrayIndex, count);
 		}
 
 		/// <summary>
@@ -802,7 +801,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </remarks>
 		public IEnumerator<T> GetEnumerator()
 		{
-			this.root.Publish();
+			root.Publish();
 			return Enumerate(root);
 		}
 
@@ -815,8 +814,8 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </remarks>
 		public T[] ToArray()
 		{
-			T[] arr = new T[this.Length];
-			this.root.CopyTo(0, arr, 0, arr.Length);
+			T[] arr = new T[Length];
+			root.CopyTo(0, arr, 0, arr.Length);
 			return arr;
 		}
 
@@ -866,7 +865,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 	}
 }

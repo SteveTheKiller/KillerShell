@@ -63,7 +63,7 @@ namespace ICSharpCode.AvalonEdit.Search
 		internal SearchInputHandler(TextArea textArea, SearchPanel panel)
 			: base(textArea)
 		{
-			RegisterCommands(this.CommandBindings);
+			RegisterCommands(CommandBindings);
 			this.panel = panel;
 		}
 

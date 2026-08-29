@@ -41,9 +41,7 @@ namespace ICSharpCode.AvalonEdit.Folding
 					isExpanded = value;
 					InvalidateVisual();
 				}
-				if (FoldingSection != null) {
-					FoldingSection.IsFolded = !value;
-				}
+				FoldingSection?.IsFolded = !value;
 			}
 		}
 
@@ -79,8 +77,8 @@ namespace ICSharpCode.AvalonEdit.Folding
 			Size pixelSize = PixelSnapHelpers.GetPixelSize(this);
 			Rect rect = new(pixelSize.Width / 2,
 								 pixelSize.Height / 2,
-								 this.RenderSize.Width - pixelSize.Width,
-								 this.RenderSize.Height - pixelSize.Height);
+								 RenderSize.Width - pixelSize.Width,
+								 RenderSize.Height - pixelSize.Height);
 			drawingContext.DrawRectangle(
 				IsMouseDirectlyOver ? margin.SelectedFoldingMarkerBackgroundBrush : margin.FoldingMarkerBackgroundBrush,
 				IsMouseDirectlyOver ? activePen : inactivePen, rect);

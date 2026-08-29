@@ -88,7 +88,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		private SimpleHighlightingBrush(SerializationInfo info, StreamingContext context)
 		{
 			// The value was written by GetObjectData below, so it round-trips.
-			this.brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(info.GetString("color"))!);
+			brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(info.GetString("color"))!);
 			brush.Freeze();
 		}
 
@@ -104,7 +104,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 				return false;
 			}
 
-			return this.brush.Color.Equals(other.brush.Color);
+			return brush.Color.Equals(other.brush.Color);
 		}
 
 		/// <inheritdoc/>
@@ -157,7 +157,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 				return false;
 			}
 
-			return object.Equals(this.property, other.property);
+			return Equals(property, other.property);
 		}
 
 		public override int GetHashCode()

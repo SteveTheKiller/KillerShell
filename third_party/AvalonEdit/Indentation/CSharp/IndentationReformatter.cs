@@ -110,7 +110,7 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 				return string.Format(
 					CultureInfo.InvariantCulture,
 					"[Block StartLine={0}, LastWord='{1}', Continuation={2}, OneLineBlock={3}, PreviousOneLineBlock={4}]",
-					this.StartLine, this.LastWord, this.Continuation, this.OneLineBlock, this.PreviousOneLineBlock);
+					StartLine, LastWord, Continuation, OneLineBlock, PreviousOneLineBlock);
 			}
 		}
 
@@ -292,13 +292,13 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 					continue;
 				}
 
-				if (!Char.IsWhiteSpace(c) && c != '[' && c != '/') {
+				if (!char.IsWhiteSpace(c) && c != '[' && c != '/') {
 					if (block.Bracket == '{') {
 						block.Continuation = true;
 					}
 				}
 
-				if (Char.IsLetterOrDigit(c)) {
+				if (char.IsLetterOrDigit(c)) {
 					wordBuilder.Append(c);
 				} else {
 					if (wordBuilder.Length > 0) {
@@ -360,7 +360,7 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 
 						block.Indent(Repeat(set.IndentString, oldBlock.OneLineBlock) +
 									 (oldBlock.Continuation ? set.IndentString : "") +
-									 (i == line.Length - 1 ? set.IndentString : new String(' ', i + 1)));
+									 (i == line.Length - 1 ? set.IndentString : new string(' ', i + 1)));
 						block.Bracket = c;
 						break;
 					case ')':
@@ -400,7 +400,7 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 						break;
 				}
 
-				if (!Char.IsWhiteSpace(c)) {
+				if (!char.IsWhiteSpace(c)) {
 					// register this char as last char
 					lastRealChar = c;
 				}
@@ -467,7 +467,7 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 					indent.Length = 0;
 					line = doc.Text; // get untrimmed line
 					for (int i = 0; i < line.Length; ++i) {
-						if (!Char.IsWhiteSpace(line[i])) {
+						if (!char.IsWhiteSpace(line[i])) {
 							break;
 						}
 
@@ -499,7 +499,7 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 
 			if (indent.Length != (doc.Text.Length - line.Length) ||
 				!doc.Text.StartsWith(indent.ToString(), StringComparison.Ordinal) ||
-				Char.IsWhiteSpace(doc.Text[indent.Length])) {
+				char.IsWhiteSpace(doc.Text[indent.Length])) {
 				doc.Text = indent.ToString() + line;
 			}
 		}
@@ -533,7 +533,7 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 		private static bool TrimEnd(IDocumentAccessor doc)
 		{
 			string line = doc.Text;
-			if (!Char.IsWhiteSpace(line[^1])) {
+			if (!char.IsWhiteSpace(line[^1])) {
 				return false;
 			}
 

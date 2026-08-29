@@ -70,7 +70,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		/// </summary>
 		public override readonly string ToString()
 		{
-			return string.Format(CultureInfo.InvariantCulture, "(Line {1}, Col {0})", this.column, this.line);
+			return string.Format(CultureInfo.InvariantCulture, "(Line {1}, Col {0})", column, line);
 		}
 
 		/// <summary>

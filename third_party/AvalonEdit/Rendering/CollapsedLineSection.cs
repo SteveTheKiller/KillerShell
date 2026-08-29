@@ -38,11 +38,11 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		internal CollapsedLineSection(HeightTree heightTree, DocumentLine start, DocumentLine end)
 		{
 			this.heightTree = heightTree;
-			this.Start = start;
-			this.End = end;
+			Start = start;
+			End = end;
 #if DEBUG
 			unchecked {
-				this.ID = " #" + nextId++;
+				ID = " #" + nextId++;
 			}
 #endif
 		}

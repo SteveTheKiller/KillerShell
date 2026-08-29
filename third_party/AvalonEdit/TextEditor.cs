@@ -66,7 +66,7 @@ namespace ICSharpCode.AvalonEdit
 		/// </summary>
 		protected TextEditor(TextArea textArea)
 		{
-			this.TextArea = textArea ?? throw new ArgumentNullException("textArea");
+			TextArea = textArea ?? throw new ArgumentNullException("textArea");
 
 			textArea.TextView.Services.AddService(typeof(TextEditor), this);
 
@@ -215,7 +215,7 @@ namespace ICSharpCode.AvalonEdit
 		[Localizability(LocalizationCategory.Text), DefaultValue("")]
 		public string Text {
 			get {
-				TextDocument document = this.Document;
+				TextDocument document = Document;
 				return document != null ? document.Text : string.Empty;
 			}
 			set {
@@ -223,14 +223,14 @@ namespace ICSharpCode.AvalonEdit
 				document.Text = value ?? string.Empty;
 				// after replacing the full text, the caret is positioned at the end of the document
 				// - reset it to the beginning.
-				this.CaretOffset = 0;
+				CaretOffset = 0;
 				document.UndoStack.ClearAll();
 			}
 		}
 
 		private TextDocument GetDocument()
 		{
-			TextDocument document = this.Document ?? throw ThrowUtil.NoDocumentAssigned();
+			TextDocument document = Document ?? throw ThrowUtil.NoDocumentAssigned();
 			return document;
 		}
 
@@ -368,7 +368,7 @@ namespace ICSharpCode.AvalonEdit
 		/// <summary>
 		/// Specifies whether the user can change the text editor content.
 		/// Setting this property will replace the
-		/// <see cref="Editing.TextArea.ReadOnlySectionProvider">TextArea.ReadOnlySectionProvider</see>.
+		/// <see cref="TextArea.ReadOnlySectionProvider">TextArea.ReadOnlySectionProvider</see>.
 		/// </summary>
 		public bool IsReadOnly {
 			get => (bool)GetValue(IsReadOnlyProperty); set => SetValue(IsReadOnlyProperty, Boxes.Box(value));
@@ -383,7 +383,7 @@ namespace ICSharpCode.AvalonEdit
 					editor.TextArea.ReadOnlySectionProvider = NoReadOnlySections.Instance;
 				}
 
-				TextEditorAutomationPeer? peer = TextEditorAutomationPeer.FromElement(editor) as TextEditorAutomationPeer;
+				TextEditorAutomationPeer? peer = System.Windows.Automation.Peers.UIElementAutomationPeer.FromElement(editor) as TextEditorAutomationPeer;
 				peer?.RaiseIsReadOnlyChanged((bool)e.OldValue, (bool)e.NewValue);
 			}
 		}
@@ -424,7 +424,7 @@ namespace ICSharpCode.AvalonEdit
 		private bool HandleIsOriginalChanged(PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "IsOriginalFile") {
-				TextDocument document = this.Document;
+				TextDocument document = Document;
 				if (document != null) {
 					SetCurrentValue(IsModifiedProperty, Boxes.Box(!document.UndoStack.IsOriginalFile));
 				}
@@ -460,8 +460,8 @@ namespace ICSharpCode.AvalonEdit
 				leftMargins.Insert(0, lineNumbers);
 				leftMargins.Insert(1, line);
 				Binding lineNumbersForeground = new("LineNumbersForeground") { Source = editor };
-				line.SetBinding(Line.StrokeProperty, lineNumbersForeground);
-				lineNumbers.SetBinding(Control.ForegroundProperty, lineNumbersForeground);
+				line.SetBinding(Shape.StrokeProperty, lineNumbersForeground);
+				lineNumbers.SetBinding(ForegroundProperty, lineNumbersForeground);
 			} else {
 				for (int i = 0; i < leftMargins.Count; i++) {
 					if (leftMargins[i] is LineNumberMargin) {
@@ -496,7 +496,7 @@ namespace ICSharpCode.AvalonEdit
 			TextEditor editor = (TextEditor)d;
 			LineNumberMargin? lineNumberMargin = editor.TextArea.LeftMargins.FirstOrDefault(margin => margin is LineNumberMargin) as LineNumberMargin; ;
 
-			lineNumberMargin?.SetValue(Control.ForegroundProperty, e.NewValue);
+			lineNumberMargin?.SetValue(ForegroundProperty, e.NewValue);
 		}
 		#endregion
 
@@ -764,11 +764,11 @@ namespace ICSharpCode.AvalonEdit
 				}
 
 				if (TextArea.Document != null) {
-					int offset = this.SelectionStart;
-					int length = this.SelectionLength;
+					int offset = SelectionStart;
+					int length = SelectionLength;
 					TextArea.Document.Replace(offset, length, value);
 					// keep inserted text selected
-					TextArea.Selection = SimpleSelection.Create(TextArea, offset, offset + value.Length);
+					TextArea.Selection = Selection.Create(TextArea, offset, offset + value.Length);
 				}
 			}
 		}
@@ -827,7 +827,7 @@ namespace ICSharpCode.AvalonEdit
 				throw new ArgumentOutOfRangeException("length", length, "Value must be between 0 and " + (documentLength - start));
 			}
 
-			TextArea.Selection = SimpleSelection.Create(TextArea, start, start + length);
+			TextArea.Selection = Selection.Create(TextArea, start, start + length);
 			TextArea.Caret.Offset = start + length;
 		}
 
@@ -837,7 +837,7 @@ namespace ICSharpCode.AvalonEdit
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int LineCount {
 			get {
-				TextDocument document = this.Document;
+				TextDocument document = Document;
 				if (document != null) {
 					return document.LineCount;
 				} else {
@@ -851,7 +851,7 @@ namespace ICSharpCode.AvalonEdit
 		/// </summary>
 		public void Clear()
 		{
-			this.Text = string.Empty;
+			Text = string.Empty;
 		}
 		#endregion
 
@@ -864,8 +864,8 @@ namespace ICSharpCode.AvalonEdit
 		/// </remarks>
 		public void Load(Stream stream)
 		{
-			using (StreamReader reader = FileReader.OpenStream(stream, this.Encoding ?? Encoding.UTF8)) {
-				this.Text = reader.ReadToEnd();
+			using (StreamReader reader = FileReader.OpenStream(stream, Encoding ?? Encoding.UTF8)) {
+				Text = reader.ReadToEnd();
 				SetCurrentValue(EncodingProperty, reader.CurrentEncoding); // assign encoding after ReadToEnd() so that the StreamReader can autodetect the encoding
 			}
 			SetCurrentValue(IsModifiedProperty, Boxes.False);
@@ -914,8 +914,8 @@ namespace ICSharpCode.AvalonEdit
 				throw new ArgumentNullException("stream");
 			}
 
-			Encoding encoding = this.Encoding;
-			TextDocument document = this.Document;
+			Encoding encoding = Encoding;
+			TextDocument document = Document;
 			StreamWriter writer = encoding != null ? new StreamWriter(stream, encoding) : new StreamWriter(stream);
 			document?.WriteTextTo(writer);
 			writer.Flush();
@@ -1033,11 +1033,11 @@ namespace ICSharpCode.AvalonEdit
 		/// <returns>The text view position, or null if the point is outside the document.</returns>
 		public TextViewPosition? GetPositionFromPoint(Point point)
 		{
-			if (this.Document == null) {
+			if (Document == null) {
 				return null;
 			}
 
-			TextView textView = this.TextArea.TextView;
+			TextView textView = TextArea.TextView;
 			return textView.GetPosition(TranslatePoint(point, textView) + textView.ScrollOffset);
 		}
 

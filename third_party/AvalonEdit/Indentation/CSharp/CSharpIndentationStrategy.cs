@@ -39,7 +39,7 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 		/// </summary>
 		public CSharpIndentationStrategy(TextEditorOptions options)
 		{
-			this.IndentationString = options.IndentationString;
+			IndentationString = options.IndentationString;
 		}
 
 		private string indentationString = "\t";
@@ -70,7 +70,7 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 			}
 
 			IndentationSettings settings = new() {
-				IndentString = this.IndentationString,
+				IndentString = IndentationString,
 				LeaveEmptyLines = keepEmptyLines
 			};
 

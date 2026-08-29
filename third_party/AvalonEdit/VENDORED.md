@@ -74,11 +74,39 @@ where MSBuild never looks. That surfaced 129,102 findings. They came down like t
 | `dotnet format style`, expression bodies, `var`, conditional delegate calls | 4,074 |
 | remaining mechanical rules | 3,252 |
 | audited exceptions recorded below | 1,632 |
+| 2026-08-29 pass, the three commands below | 120 |
+| IDE0032 and IDE0370 declined and recorded | 0 |
+
+### The 2026-08-29 pass
+
+Three tool invocations, 147 files, a clean build after each. Nothing was hand-edited, which is
+the point: on a re-extract these are replayed rather than reconstructed.
+
+```powershell
+dotnet format style KillerShell.csproj --diagnostics IDE0005 --severity warn --include third_party/
+dotnet format style KillerShell.csproj --diagnostics IDE0001 IDE0002 IDE0003 --severity warn --include third_party/
+dotnet format style KillerShell.csproj --diagnostics IDE0031 IDE0270 IDE0038 --severity warn --include third_party/
+```
+
+That is unused usings (14 files), redundant `this.` and namespace qualification (107), and null
+propagation plus pattern matching (26). Two rules were declined rather than fixed and are
+recorded in `third_party/.editorconfig` beside the earlier seven: **IDE0032** (84 sites, deletes
+a named backing field from each class, so an upstream diff would compare class shapes instead of
+statements) and **IDE0370**/**IDE0079** (36 sites, upstream's own `SuppressMessage` attributes,
+unnecessary only under this ruleset).
+
+Counting note: the IDE rules only run at build time with `-p:EnforceCodeStyleInBuild=true`. A
+normal build prints none of them, which is why the audit is measured that way:
+
+```powershell
+dotnet build KillerShell.csproj -c Debug -p:EnforceCodeStyleInBuild=true --no-incremental
+```
 
 Everything mechanical was fixed, not muted. Seven rules were turned down, each read site by site
 first and each recorded with its reasoning in `third_party/.editorconfig`: IDE0058 (240 sites, all
 idiomatic discards, no defect found), IDE0046 and IDE0045, IDE0290, IDE1006, IDE0010, IDE0060 and
-IDE0130. Two findings from that audit are worth knowing even though nothing was changed:
+IDE0130, joined on 2026-08-29 by IDE0032 and IDE0370/IDE0079. Two findings from that audit are
+worth knowing even though nothing was changed:
 
 - `Rendering/TextView.cs` `InvalidateLayer(KnownLayer)` ignores its parameter, so it invalidates
   every layer whatever you pass it. Upstream behavior, left alone deliberately.

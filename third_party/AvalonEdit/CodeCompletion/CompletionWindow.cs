@@ -46,14 +46,14 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 		public CompletionWindow(TextArea textArea) : base(textArea)
 		{
 			// keep height automatic
-			this.CloseAutomatically = true;
-			this.SizeToContent = SizeToContent.Height;
-			this.MaxHeight = 300;
-			this.Width = 175;
-			this.Content = CompletionList;
+			CloseAutomatically = true;
+			SizeToContent = SizeToContent.Height;
+			MaxHeight = 300;
+			Width = 175;
+			Content = CompletionList;
 			// prevent user from resizing window to 0x0
-			this.MinHeight = 15;
-			this.MinWidth = 30;
+			MinHeight = 15;
+			MinWidth = 30;
 
 			toolTip.PlacementTarget = this;
 			toolTip.Placement = PlacementMode.Right;
@@ -68,9 +68,7 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 			// Clear content after tooltip is closed.
 			// We cannot clear is immediately when setting IsOpen=false
 			// because the tooltip uses an animation for closing.
-			if (toolTip != null) {
-				toolTip.Content = null;
-			}
+			toolTip?.Content = null;
 		}
 
 		private void completionList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -109,26 +107,26 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 			// The window must close before Complete() is called.
 			// If the Complete callback pushes stacked input handlers, we don't want to pop those when the CC window closes.
 			ICompletionData? item = CompletionList.SelectedItem;
-			item?.Complete(this.TextArea, new AnchorSegment(this.TextArea.Document, this.StartOffset, this.EndOffset - this.StartOffset), e);
+			item?.Complete(TextArea, new AnchorSegment(TextArea.Document, StartOffset, EndOffset - StartOffset), e);
 		}
 
 		private void AttachEvents()
 		{
-			this.CompletionList.InsertionRequested += completionList_InsertionRequested;
-			this.CompletionList.SelectionChanged += completionList_SelectionChanged;
-			this.TextArea.Caret.PositionChanged += CaretPositionChanged;
-			this.TextArea.MouseWheel += textArea_MouseWheel;
-			this.TextArea.PreviewTextInput += textArea_PreviewTextInput;
+			CompletionList.InsertionRequested += completionList_InsertionRequested;
+			CompletionList.SelectionChanged += completionList_SelectionChanged;
+			TextArea.Caret.PositionChanged += CaretPositionChanged;
+			TextArea.MouseWheel += textArea_MouseWheel;
+			TextArea.PreviewTextInput += textArea_PreviewTextInput;
 		}
 
 		/// <inheritdoc/>
 		protected override void DetachEvents()
 		{
-			this.CompletionList.InsertionRequested -= completionList_InsertionRequested;
-			this.CompletionList.SelectionChanged -= completionList_SelectionChanged;
-			this.TextArea.Caret.PositionChanged -= CaretPositionChanged;
-			this.TextArea.MouseWheel -= textArea_MouseWheel;
-			this.TextArea.PreviewTextInput -= textArea_PreviewTextInput;
+			CompletionList.InsertionRequested -= completionList_InsertionRequested;
+			CompletionList.SelectionChanged -= completionList_SelectionChanged;
+			TextArea.Caret.PositionChanged -= CaretPositionChanged;
+			TextArea.MouseWheel -= textArea_MouseWheel;
+			TextArea.PreviewTextInput -= textArea_PreviewTextInput;
 			base.DetachEvents();
 		}
 
@@ -136,10 +134,8 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			if (toolTip != null) {
-				toolTip.IsOpen = false;
-				toolTip = null;
-			}
+			toolTip?.IsOpen = false;
+			toolTip = null;
 		}
 
 		/// <inheritdoc/>
@@ -180,7 +176,7 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 		public bool CloseAutomatically { get; set; }
 
 		/// <inheritdoc/>
-		protected override bool CloseOnFocusLost => this.CloseAutomatically;
+		protected override bool CloseOnFocusLost => CloseAutomatically;
 
 		/// <summary>
 		/// When this flag is set, code completion closes if the caret moves to the
@@ -192,8 +188,8 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 
 		private void CaretPositionChanged(object sender, EventArgs e)
 		{
-			int offset = this.TextArea.Caret.Offset;
-			if (offset == this.StartOffset) {
+			int offset = TextArea.Caret.Offset;
+			if (offset == StartOffset) {
 				if (CloseAutomatically && CloseWhenCaretAtBeginning) {
 					Close();
 				} else {
@@ -201,14 +197,14 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 				}
 				return;
 			}
-			if (offset < this.StartOffset || offset > this.EndOffset) {
+			if (offset < StartOffset || offset > EndOffset) {
 				if (CloseAutomatically) {
 					Close();
 				}
 			} else {
-				TextDocument document = this.TextArea.Document;
+				TextDocument document = TextArea.Document;
 				if (document != null) {
-					CompletionList.SelectItem(document.GetText(this.StartOffset, offset - this.StartOffset));
+					CompletionList.SelectItem(document.GetText(StartOffset, offset - StartOffset));
 				}
 			}
 		}

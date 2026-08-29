@@ -57,16 +57,16 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// </summary>
 		public VisualLineLinkText(VisualLine parentVisualLine, int length) : base(parentVisualLine, length)
 		{
-			this.RequireControlModifierForClick = true;
+			RequireControlModifierForClick = true;
 		}
 
 		/// <inheritdoc/>
 		public override TextRun CreateTextRun(int startVisualColumn, ITextRunConstructionContext context)
 		{
-			this.TextRunProperties.SetForegroundBrush(context.TextView.LinkTextForegroundBrush);
-			this.TextRunProperties.SetBackgroundBrush(context.TextView.LinkTextBackgroundBrush);
+			TextRunProperties.SetForegroundBrush(context.TextView.LinkTextForegroundBrush);
+			TextRunProperties.SetBackgroundBrush(context.TextView.LinkTextBackgroundBrush);
 			if (context.TextView.LinkTextUnderline) {
-				this.TextRunProperties.SetTextDecorations(TextDecorations.Underline);
+				TextRunProperties.SetTextDecorations(TextDecorations.Underline);
 			}
 
 			return base.CreateTextRun(startVisualColumn, context);
@@ -105,7 +105,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		protected internal override void OnMouseDown(MouseButtonEventArgs e)
 		{
 			if (e.ChangedButton == MouseButton.Left && !e.Handled && LinkIsClickable()) {
-				RequestNavigateEventArgs args = new(this.NavigateUri, this.TargetName) {
+				RequestNavigateEventArgs args = new(NavigateUri, TargetName) {
 					RoutedEvent = Hyperlink.RequestNavigateEvent
 				};
 				FrameworkElement? element = e.Source as FrameworkElement;
@@ -113,7 +113,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 				element?.RaiseEvent(args);
 				if (!args.Handled) {
 					try {
-						Process.Start(new ProcessStartInfo { FileName = this.NavigateUri.ToString(), UseShellExecute = true });
+						Process.Start(new ProcessStartInfo { FileName = NavigateUri.ToString(), UseShellExecute = true });
 					} catch {
 						// ignore all kinds of errors during web browser start
 					}
@@ -126,9 +126,9 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		protected override VisualLineText CreateInstance(int length)
 		{
 			return new VisualLineLinkText(ParentVisualLine, length) {
-				NavigateUri = this.NavigateUri,
-				TargetName = this.TargetName,
-				RequireControlModifierForClick = this.RequireControlModifierForClick
+				NavigateUri = NavigateUri,
+				TargetName = TargetName,
+				RequireControlModifierForClick = RequireControlModifierForClick
 			};
 		}
 	}

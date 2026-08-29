@@ -46,7 +46,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		{
 			this.textArea = textArea;
 			this.doc = doc;
-			this.segment = new AnchorSegment(doc, offset, length);
+			segment = new AnchorSegment(doc, offset, length);
 		}
 
 		private string ID => string.Format("({0}: {1})", GetHashCode().ToString("x8"), segment);
@@ -162,7 +162,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		{
 			Log("{0}.GetBoundingRectangles()", ID);
 			TextView textView = textArea.TextView;
-			_ = PresentationSource.FromVisual(this.textArea);
+			_ = PresentationSource.FromVisual(textArea);
 			List<double> result = [];
 			foreach (Rect rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment)) {
 				Point tl = textView.PointToScreen(rect.TopLeft);
@@ -185,7 +185,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		public IRawElementProviderSimple? GetEnclosingElement()
 		{
 			Log("{0}.GetEnclosingElement()", ID);
-			if (TextAreaAutomationPeer.FromElement(textArea) is not TextAreaAutomationPeer peer) {
+			if (System.Windows.Automation.Peers.UIElementAutomationPeer.FromElement(textArea) is not TextAreaAutomationPeer peer) {
 				throw new NotSupportedException();
 			}
 

@@ -34,7 +34,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		/// </summary>
 		public DocumentTextWriter(IDocument document, int insertionOffset)
 		{
-			this.InsertionOffset = insertionOffset;
+			InsertionOffset = insertionOffset;
 			this.document = document ?? throw new ArgumentNullException("document");
 			IDocumentLine? line = document.GetLineByOffset(insertionOffset);
 			if (line.DelimiterLength == 0) {
@@ -42,7 +42,7 @@ namespace ICSharpCode.AvalonEdit.Document
 			}
 
 			if (line != null) {
-				this.NewLine = document.GetText(line.EndOffset, line.DelimiterLength);
+				NewLine = document.GetText(line.EndOffset, line.DelimiterLength);
 			}
 		}
 

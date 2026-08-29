@@ -32,7 +32,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		public HtmlOptions()
 		{
-			this.TabSize = 4;
+			TabSize = 4;
 		}
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 				throw new ArgumentNullException("options");
 			}
 
-			this.TabSize = options.IndentationSize;
+			TabSize = options.IndentationSize;
 		}
 
 		/// <summary>

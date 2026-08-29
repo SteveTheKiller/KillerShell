@@ -102,7 +102,7 @@ namespace ICSharpCode.AvalonEdit.Folding
 			set {
 				if (title != value) {
 					title = value;
-					if (this.IsFolded) {
+					if (IsFolded) {
 						manager.Redraw(this);
 					}
 				}
@@ -124,8 +124,8 @@ namespace ICSharpCode.AvalonEdit.Folding
 			// Was Debug.Assert, which compiles away in release. A FoldingSection without its
 			// manager is unusable, so the guard belongs in the build that ships.
 			this.manager = manager ?? throw new ArgumentNullException(nameof(manager));
-			this.StartOffset = startOffset;
-			this.Length = endOffset - startOffset;
+			StartOffset = startOffset;
+			Length = endOffset - startOffset;
 		}
 
 		private void RemoveCollapsedLineSection()

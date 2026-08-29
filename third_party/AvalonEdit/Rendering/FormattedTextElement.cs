@@ -45,8 +45,8 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		public FormattedTextElement(string text, int documentLength) : base(1, documentLength)
 		{
 			this.text = text ?? throw new ArgumentNullException("text");
-			this.BreakBefore = LineBreakCondition.BreakPossible;
-			this.BreakAfter = LineBreakCondition.BreakPossible;
+			BreakBefore = LineBreakCondition.BreakPossible;
+			BreakAfter = LineBreakCondition.BreakPossible;
 		}
 
 		/// <summary>
@@ -55,9 +55,9 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// </summary>
 		public FormattedTextElement(TextLine text, int documentLength) : base(1, documentLength)
 		{
-			this.textLine = text ?? throw new ArgumentNullException("text");
-			this.BreakBefore = LineBreakCondition.BreakPossible;
-			this.BreakAfter = LineBreakCondition.BreakPossible;
+			textLine = text ?? throw new ArgumentNullException("text");
+			BreakBefore = LineBreakCondition.BreakPossible;
+			BreakAfter = LineBreakCondition.BreakPossible;
 		}
 
 		/// <summary>
@@ -66,9 +66,9 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// </summary>
 		public FormattedTextElement(FormattedText text, int documentLength) : base(1, documentLength)
 		{
-			this.formattedText = text ?? throw new ArgumentNullException("text");
-			this.BreakBefore = LineBreakCondition.BreakPossible;
-			this.BreakAfter = LineBreakCondition.BreakPossible;
+			formattedText = text ?? throw new ArgumentNullException("text");
+			BreakBefore = LineBreakCondition.BreakPossible;
+			BreakAfter = LineBreakCondition.BreakPossible;
 		}
 
 		/// <summary>
@@ -89,10 +89,10 @@ namespace ICSharpCode.AvalonEdit.Rendering
 			if (textLine == null) {
 				TextFormatter formatter = TextFormatterFactory.Create(context.TextView);
 				// No textLine means this element was built from a string, so text is set.
-				textLine = PrepareText(formatter, this.text!, this.TextRunProperties);
-				this.text = null;
+				textLine = PrepareText(formatter, text!, TextRunProperties);
+				text = null;
 			}
-			return new FormattedTextRun(this, this.TextRunProperties);
+			return new FormattedTextRun(this, TextRunProperties);
 		}
 
 		/// <summary>
@@ -138,7 +138,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		public FormattedTextRun(FormattedTextElement element, TextRunProperties properties)
 		{
 			this.properties = properties ?? throw new ArgumentNullException("properties");
-			this.Element = element ?? throw new ArgumentNullException("element");
+			Element = element ?? throw new ArgumentNullException("element");
 		}
 
 		/// <summary>

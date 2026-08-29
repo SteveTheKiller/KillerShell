@@ -43,7 +43,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		internal Caret(TextArea textArea)
 		{
 			this.textArea = textArea;
-			this.textView = textArea.TextView;
+			textView = textArea.TextView;
 			position = new TextViewPosition(1, 1, 0);
 
 			caretAdorner = new CaretLayer(textArea);
@@ -117,21 +117,21 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// to validate the visual column.
 		/// </summary>
 		public TextLocation Location {
-			get => position.Location; set => this.Position = new TextViewPosition(value);
+			get => position.Location; set => Position = new TextViewPosition(value);
 		}
 
 		/// <summary>
 		/// Gets/Sets the caret line.
 		/// </summary>
 		public int Line {
-			get => position.Line; set => this.Position = new TextViewPosition(value, position.Column);
+			get => position.Line; set => Position = new TextViewPosition(value, position.Column);
 		}
 
 		/// <summary>
 		/// Gets/Sets the caret column.
 		/// </summary>
 		public int Column {
-			get => position.Column; set => this.Position = new TextViewPosition(position.Line, value);
+			get => position.Column; set => Position = new TextViewPosition(position.Line, value);
 		}
 
 		/// <summary>
@@ -143,7 +143,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 				return position.VisualColumn;
 			}
 
-			set => this.Position = new TextViewPosition(position.Line, position.Column, value);
+			set => Position = new TextViewPosition(position.Line, position.Column, value);
 		}
 
 		private bool isInVirtualSpace;
@@ -162,7 +162,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 
 		internal void OnDocumentChanging()
 		{
-			storedCaretOffset = this.Offset;
+			storedCaretOffset = Offset;
 			InvalidateVisualColumn();
 		}
 
@@ -183,7 +183,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 				TextDocument document = textArea.Document;
 				if (document != null) {
 					// keep visual column
-					this.Position = new TextViewPosition(document.GetLocation(newCaretOffset), position.VisualColumn);
+					Position = new TextViewPosition(document.GetLocation(newCaretOffset), position.VisualColumn);
 				}
 			}
 			storedCaretOffset = -1;
@@ -205,8 +205,8 @@ namespace ICSharpCode.AvalonEdit.Editing
 			set {
 				TextDocument document = textArea.Document;
 				if (document != null) {
-					this.Position = new TextViewPosition(document.GetLocation(value));
-					this.DesiredXPos = double.NaN;
+					Position = new TextViewPosition(document.GetLocation(value));
+					DesiredXPos = double.NaN;
 				}
 			}
 		}
@@ -354,7 +354,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 						newOffset = newOffsetForwards;
 					}
 				}
-				this.Position = new TextViewPosition(textView.Document.GetLocation(newOffset), newVisualColumn);
+				Position = new TextViewPosition(textView.Document.GetLocation(newOffset), newVisualColumn);
 			}
 			isInVirtualSpace = position.VisualColumn > visualLine.VisualLength;
 		}
@@ -474,7 +474,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 			if (caretAdorner != null && textView != null) {
 				VisualLine? visualLine = textView.GetVisualLine(position.Line);
 				if (visualLine != null) {
-					Rect caretRect = this.textArea.OverstrikeMode ? CalcCaretOverstrikeRectangle(visualLine) : CalcCaretRectangle(visualLine);
+					Rect caretRect = textArea.OverstrikeMode ? CalcCaretOverstrikeRectangle(visualLine) : CalcCaretRectangle(visualLine);
 					// Create Win32 caret so that Windows knows where our managed caret is. This is necessary for
 					// features like 'Follow text editing' in the Windows Magnifier.
 					if (!hasWin32Caret) {

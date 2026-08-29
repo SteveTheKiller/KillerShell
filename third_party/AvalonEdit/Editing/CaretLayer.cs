@@ -40,7 +40,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		public CaretLayer(TextArea textArea) : base(textArea.TextView, KnownLayer.Caret)
 		{
 			this.textArea = textArea;
-			this.IsHitTestVisible = false;
+			IsHitTestVisible = false;
 			caretBlinkTimer.Tick += new EventHandler(caretBlinkTimer_Tick);
 		}
 
@@ -53,7 +53,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		public void Show(Rect caretRectangle)
 		{
 			this.caretRectangle = caretRectangle;
-			this.isVisible = true;
+			isVisible = true;
 			StartBlinkAnimation();
 			InvalidateVisual();
 		}
@@ -91,8 +91,8 @@ namespace ICSharpCode.AvalonEdit.Editing
 		{
 			base.OnRender(drawingContext);
 			if (isVisible && blink) {
-				Brush caretBrush = this.CaretBrush ?? (Brush)textView.GetValue(TextBlock.ForegroundProperty);
-				if (this.textArea.OverstrikeMode) {
+				Brush caretBrush = CaretBrush ?? (Brush)textView.GetValue(TextBlock.ForegroundProperty);
+				if (textArea.OverstrikeMode) {
 					if (caretBrush is SolidColorBrush scBrush) {
 						Color brushColor = scBrush.Color;
 						Color newColor = Color.FromArgb(100, brushColor.R, brushColor.G, brushColor.B);

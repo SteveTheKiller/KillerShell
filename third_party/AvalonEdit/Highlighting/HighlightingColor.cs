@@ -192,31 +192,31 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 				throw new ArgumentNullException("info");
 			}
 
-			this.Name = info.GetString("Name");
+			Name = info.GetString("Name");
 			if (info.GetBoolean("HasWeight")) {
-				this.FontWeight = System.Windows.FontWeight.FromOpenTypeWeight(info.GetInt32("Weight"));
+				FontWeight = System.Windows.FontWeight.FromOpenTypeWeight(info.GetInt32("Weight"));
 			}
 
 			if (info.GetBoolean("HasStyle")) {
-				this.FontStyle = (FontStyle?)new FontStyleConverter().ConvertFromInvariantString(info.GetString("Style"));
+				FontStyle = (FontStyle?)new FontStyleConverter().ConvertFromInvariantString(info.GetString("Style"));
 			}
 
 			if (info.GetBoolean("HasUnderline")) {
-				this.Underline = info.GetBoolean("Underline");
+				Underline = info.GetBoolean("Underline");
 			}
 
 			if (info.GetBoolean("HasStrikethrough")) {
-				this.Strikethrough = info.GetBoolean("Strikethrough");
+				Strikethrough = info.GetBoolean("Strikethrough");
 			}
 
-			this.Foreground = (HighlightingBrush?)info.GetValue("Foreground", typeof(SimpleHighlightingBrush));
-			this.Background = (HighlightingBrush?)info.GetValue("Background", typeof(SimpleHighlightingBrush));
+			Foreground = (HighlightingBrush?)info.GetValue("Foreground", typeof(SimpleHighlightingBrush));
+			Background = (HighlightingBrush?)info.GetValue("Background", typeof(SimpleHighlightingBrush));
 			if (info.GetBoolean("HasFamily")) {
-				this.FontFamily = new FontFamily(info.GetString("Family"));
+				FontFamily = new FontFamily(info.GetString("Family"));
 			}
 
 			if (info.GetBoolean("HasSize")) {
-				this.FontSize = info.GetInt32("Size");
+				FontSize = info.GetInt32("Size");
 			}
 		}
 
@@ -230,37 +230,37 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 				throw new ArgumentNullException("info");
 			}
 
-			info.AddValue("Name", this.Name);
-			info.AddValue("HasWeight", this.FontWeight.HasValue);
-			if (this.FontWeight.HasValue) {
-				info.AddValue("Weight", this.FontWeight.Value.ToOpenTypeWeight());
+			info.AddValue("Name", Name);
+			info.AddValue("HasWeight", FontWeight.HasValue);
+			if (FontWeight.HasValue) {
+				info.AddValue("Weight", FontWeight.Value.ToOpenTypeWeight());
 			}
 
-			info.AddValue("HasStyle", this.FontStyle.HasValue);
-			if (this.FontStyle.HasValue) {
-				info.AddValue("Style", this.FontStyle.Value.ToString());
+			info.AddValue("HasStyle", FontStyle.HasValue);
+			if (FontStyle.HasValue) {
+				info.AddValue("Style", FontStyle.Value.ToString());
 			}
 
-			info.AddValue("HasUnderline", this.Underline.HasValue);
-			if (this.Underline.HasValue) {
-				info.AddValue("Underline", this.Underline.Value);
+			info.AddValue("HasUnderline", Underline.HasValue);
+			if (Underline.HasValue) {
+				info.AddValue("Underline", Underline.Value);
 			}
 
-			info.AddValue("HasStrikethrough", this.Strikethrough.HasValue);
-			if (this.Strikethrough.HasValue) {
-				info.AddValue("Strikethrough", this.Strikethrough.Value);
+			info.AddValue("HasStrikethrough", Strikethrough.HasValue);
+			if (Strikethrough.HasValue) {
+				info.AddValue("Strikethrough", Strikethrough.Value);
 			}
 
-			info.AddValue("Foreground", this.Foreground);
-			info.AddValue("Background", this.Background);
-			info.AddValue("HasFamily", this.FontFamily != null);
-			if (this.FontFamily != null) {
-				info.AddValue("Family", this.FontFamily.FamilyNames.FirstOrDefault());
+			info.AddValue("Foreground", Foreground);
+			info.AddValue("Background", Background);
+			info.AddValue("HasFamily", FontFamily != null);
+			if (FontFamily != null) {
+				info.AddValue("Family", FontFamily.FamilyNames.FirstOrDefault());
 			}
 
-			info.AddValue("HasSize", this.FontSize.HasValue);
-			if (this.FontSize.HasValue) {
-				info.AddValue("Size", this.FontSize.Value.ToString());
+			info.AddValue("HasSize", FontSize.HasValue);
+			if (FontSize.HasValue) {
+				info.AddValue("Size", FontSize.Value.ToString());
 			}
 		}
 
@@ -313,7 +313,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// <inheritdoc/>
 		public override string ToString()
 		{
-			return "[" + GetType().Name + " " + (string.IsNullOrEmpty(this.Name) ? ToCss() : this.Name) + "]";
+			return "[" + GetType().Name + " " + (string.IsNullOrEmpty(Name) ? ToCss() : Name) + "]";
 		}
 
 		/// <summary>
@@ -358,10 +358,10 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 				return false;
 			}
 
-			return this.name == other.name && this.fontWeight == other.fontWeight
-				&& this.fontStyle == other.fontStyle && this.underline == other.underline && this.strikethrough == other.strikethrough
-				&& object.Equals(this.foreground, other.foreground) && object.Equals(this.background, other.background)
-				&& object.Equals(this.fontFamily, other.fontFamily) && object.Equals(this.FontSize, other.FontSize);
+			return name == other.name && fontWeight == other.fontWeight
+				&& fontStyle == other.fontStyle && underline == other.underline && strikethrough == other.strikethrough
+				&& Equals(foreground, other.foreground) && Equals(background, other.background)
+				&& Equals(fontFamily, other.fontFamily) && Equals(FontSize, other.FontSize);
 		}
 
 		/// <inheritdoc/>
@@ -402,35 +402,35 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		{
 			FreezableHelper.ThrowIfFrozen(this);
 			if (color.fontWeight != null) {
-				this.fontWeight = color.fontWeight;
+				fontWeight = color.fontWeight;
 			}
 
 			if (color.fontStyle != null) {
-				this.fontStyle = color.fontStyle;
+				fontStyle = color.fontStyle;
 			}
 
 			if (color.foreground != null) {
-				this.foreground = color.foreground;
+				foreground = color.foreground;
 			}
 
 			if (color.background != null) {
-				this.background = color.background;
+				background = color.background;
 			}
 
 			if (color.underline != null) {
-				this.underline = color.underline;
+				underline = color.underline;
 			}
 
 			if (color.strikethrough != null) {
-				this.strikethrough = color.strikethrough;
+				strikethrough = color.strikethrough;
 			}
 
 			if (color.fontFamily != null) {
-				this.fontFamily = color.fontFamily;
+				fontFamily = color.fontFamily;
 			}
 
 			if (color.fontSize != null) {
-				this.fontSize = color.fontSize;
+				fontSize = color.fontSize;
 			}
 		}
 

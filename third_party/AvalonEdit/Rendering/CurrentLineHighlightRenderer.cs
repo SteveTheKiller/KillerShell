@@ -37,11 +37,11 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		#region Properties
 
 		public int Line {
-			get => this.line;
+			get => line;
 			set {
-				if (this.line != value) {
-					this.line = value;
-					this.textView.InvalidateLayer(this.Layer);
+				if (line != value) {
+					line = value;
+					textView.InvalidateLayer(Layer);
 				}
 			}
 		}
@@ -60,16 +60,16 @@ namespace ICSharpCode.AvalonEdit.Rendering
 
 		public CurrentLineHighlightRenderer(TextView textView)
 		{
-			this.BorderPen = new Pen(new SolidColorBrush(DefaultBorder), 1);
-			this.BorderPen.Freeze();
+			BorderPen = new Pen(new SolidColorBrush(DefaultBorder), 1);
+			BorderPen.Freeze();
 
-			this.BackgroundBrush = new SolidColorBrush(DefaultBackground);
-			this.BackgroundBrush.Freeze();
+			BackgroundBrush = new SolidColorBrush(DefaultBackground);
+			BackgroundBrush.Freeze();
 
 			this.textView = textView ?? throw new ArgumentNullException("textView");
 			this.textView.BackgroundRenderers.Add(this);
 
-			this.line = 0;
+			line = 0;
 		}
 
 		public void Draw(TextView textView, DrawingContext drawingContext)
@@ -91,7 +91,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 
 			Geometry? geometry = builder.CreateGeometry();
 			if (geometry != null) {
-				drawingContext.DrawGeometry(this.BackgroundBrush, this.BorderPen, geometry);
+				drawingContext.DrawGeometry(BackgroundBrush, BorderPen, geometry);
 			}
 		}
 	}

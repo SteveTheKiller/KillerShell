@@ -62,15 +62,15 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		{
 			this.document = document;
 			weakLineTracker = WeakLineTracker.Register(document, this);
-			this.DefaultLineHeight = defaultLineHeight;
+			DefaultLineHeight = defaultLineHeight;
 			RebuildDocument();
 		}
 
 		public void Dispose()
 		{
 			weakLineTracker?.Deregister();
-			this.root = null;
-			this.weakLineTracker = null;
+			root = null;
+			weakLineTracker = null;
 		}
 
 		public bool IsDisposed => root == null;
@@ -152,13 +152,9 @@ namespace ICSharpCode.AvalonEdit.Rendering
 			HeightTreeNode node = nodes[middle];
 			node.left = BuildTree(nodes, start, middle, subtreeHeight - 1);
 			node.right = BuildTree(nodes, middle + 1, end, subtreeHeight - 1);
-			if (node.left != null) {
-				node.left.parent = node;
-			}
+			node.left?.parent = node;
 
-			if (node.right != null) {
-				node.right.parent = node;
-			}
+			node.right?.parent = node;
 
 			if (subtreeHeight == 1) {
 				node.color = RED;
@@ -887,14 +883,10 @@ namespace ICSharpCode.AvalonEdit.Rendering
 				// and overwrite the removedNode with it
 				ReplaceNode(removedNode, leftMost);
 				leftMost.left = removedNode.left;
-				if (leftMost.left != null) {
-					leftMost.left.parent = leftMost;
-				}
+				leftMost.left?.parent = leftMost;
 
 				leftMost.right = removedNode.right;
-				if (leftMost.right != null) {
-					leftMost.right.parent = leftMost;
-				}
+				leftMost.right?.parent = leftMost;
 
 				leftMost.color = removedNode.color;
 
@@ -1015,9 +1007,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 					replacedNode.parent.right = newNode;
 				}
 			}
-			if (newNode != null) {
-				newNode.parent = replacedNode.parent;
-			}
+			newNode?.parent = replacedNode.parent;
 			replacedNode.parent = null;
 		}
 
@@ -1032,9 +1022,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 
 			// set p's right child to be q's left child
 			p.right = q.left;
-			if (p.right != null) {
-				p.right.parent = p;
-			}
+			p.right?.parent = p;
 			// set q's left child to be p
 			q.left = p;
 			p.parent = q;
@@ -1051,9 +1039,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 
 			// set p's left child to be q's right child
 			p.left = q.right;
-			if (p.left != null) {
-				p.left.parent = p;
-			}
+			p.left?.parent = p;
 			// set q's right child to be p
 			q.right = p;
 			p.parent = q;

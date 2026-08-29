@@ -68,13 +68,13 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 			{
 				Func<IHighlightingDefinition> func;
 				lock (lockObj) {
-					if (this.definition != null) {
-						return this.definition;
+					if (definition != null) {
+						return definition;
 					}
 
 					// Not null here: it is only cleared after definition or storedException has
 					// been set, and both of those paths return or throw before reaching this.
-					func = this.lazyLoadingFunction!;
+					func = lazyLoadingFunction!;
 				}
 				Exception? exception = null;
 				IHighlightingDefinition? def = null;
@@ -93,17 +93,17 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 					exception = ex;
 				}
 				lock (lockObj) {
-					this.lazyLoadingFunction = null;
-					if (this.definition == null && this.storedException == null) {
-						this.definition = def;
-						this.storedException = exception;
+					lazyLoadingFunction = null;
+					if (definition == null && storedException == null) {
+						definition = def;
+						storedException = exception;
 					}
-					if (this.storedException != null) {
-						throw new HighlightingDefinitionInvalidException("Error delay-loading highlighting definition", this.storedException);
+					if (storedException != null) {
+						throw new HighlightingDefinitionInvalidException("Error delay-loading highlighting definition", storedException);
 					}
 
 					// No stored exception means the load produced a definition.
-					return this.definition!;
+					return definition!;
 				}
 			}
 
@@ -123,7 +123,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 
 			public override string ToString()
 			{
-				return this.Name ?? string.Empty;
+				return Name ?? string.Empty;
 			}
 
 			public IDictionary<string, string> Properties => GetDefinition().Properties;

@@ -268,7 +268,7 @@ namespace ICSharpCode.AvalonEdit
 				throw new ArgumentOutOfRangeException("column", column, "Value must be at least 1.");
 			}
 
-			int indentationSize = this.IndentationSize;
+			int indentationSize = IndentationSize;
 			if (ConvertTabsToSpaces) {
 				return new string(' ', indentationSize - ((column - 1) % indentationSize));
 			} else {

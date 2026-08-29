@@ -110,7 +110,7 @@ namespace ICSharpCode.AvalonEdit.Snippets
 			// every other synthetic raise in this codebase passes.
 			Caret_PositionChanged(this, EventArgs.Empty);
 
-			this.Text = GetText();
+			Text = GetText();
 		}
 
 		public void Deactivate(SnippetEventArgs e)
@@ -125,7 +125,7 @@ namespace ICSharpCode.AvalonEdit.Snippets
 
 		private void Caret_PositionChanged(object sender, EventArgs e)
 		{
-			ISegment? s = this.Segment;
+			ISegment? s = Segment;
 			if (s != null) {
 				bool newIsCaretInside = s.Contains(context.TextArea.Caret.Offset, 0);
 				if (newIsCaretInside != isCaretInside) {
@@ -154,8 +154,8 @@ namespace ICSharpCode.AvalonEdit.Snippets
 		{
 			if (managerType == typeof(TextDocumentWeakEventManager.TextChanged)) {
 				string newText = GetText();
-				if (this.Text != newText) {
-					this.Text = newText;
+				if (Text != newText) {
+					Text = newText;
 					TextChanged?.Invoke(this, e);
 				}
 				return true;
@@ -202,7 +202,7 @@ namespace ICSharpCode.AvalonEdit.Snippets
 
 			public KnownLayer Layer { get; set; }
 
-			public void Draw(TextView textView, System.Windows.Media.DrawingContext drawingContext)
+			public void Draw(TextView textView, DrawingContext drawingContext)
 			{
 				ISegment? s = element.Segment;
 				if (s != null) {

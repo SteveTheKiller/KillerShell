@@ -54,8 +54,8 @@ namespace ICSharpCode.AvalonEdit.Indentation.CSharp
 		public TextDocumentAccessor(TextDocument document)
 		{
 			doc = document ?? throw new ArgumentNullException("document");
-			this.minLine = 1;
-			this.maxLine = doc.LineCount;
+			minLine = 1;
+			maxLine = doc.LineCount;
 		}
 
 		/// <summary>

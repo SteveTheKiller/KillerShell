@@ -109,13 +109,13 @@ namespace ICSharpCode.AvalonEdit.Editing
 			: base(textArea)
 		{
 			InitDocument();
-			this.startLine = start.Line;
-			this.endLine = end.Line;
-			this.startXPos = GetXPos(textArea, start);
-			this.endXPos = GetXPos(textArea, end);
+			startLine = start.Line;
+			endLine = end.Line;
+			startXPos = GetXPos(textArea, start);
+			endXPos = GetXPos(textArea, end);
 			CalculateSegments();
-			this.topLeftOffset = this.segments.First().StartOffset;
-			this.bottomRightOffset = this.segments.Last().EndOffset;
+			topLeftOffset = segments.First().StartOffset;
+			bottomRightOffset = segments.Last().EndOffset;
 
 			this.start = start;
 			this.end = end;
@@ -126,14 +126,14 @@ namespace ICSharpCode.AvalonEdit.Editing
 		{
 			InitDocument();
 			this.startLine = startLine;
-			this.endLine = end.Line;
+			endLine = end.Line;
 			this.startXPos = startXPos;
-			this.endXPos = GetXPos(textArea, end);
+			endXPos = GetXPos(textArea, end);
 			CalculateSegments();
-			this.topLeftOffset = this.segments.First().StartOffset;
-			this.bottomRightOffset = this.segments.Last().EndOffset;
+			topLeftOffset = segments.First().StartOffset;
+			bottomRightOffset = segments.Last().EndOffset;
 
-			this.start = GetStart();
+			start = GetStart();
 			this.end = end;
 		}
 
@@ -141,24 +141,21 @@ namespace ICSharpCode.AvalonEdit.Editing
 			: base(textArea)
 		{
 			InitDocument();
-			this.startLine = start.Line;
+			startLine = start.Line;
 			this.endLine = endLine;
-			this.startXPos = GetXPos(textArea, start);
+			startXPos = GetXPos(textArea, start);
 			this.endXPos = endXPos;
 			CalculateSegments();
-			this.topLeftOffset = this.segments.First().StartOffset;
-			this.bottomRightOffset = this.segments.Last().EndOffset;
+			topLeftOffset = segments.First().StartOffset;
+			bottomRightOffset = segments.Last().EndOffset;
 
 			this.start = start;
-			this.end = GetEnd();
+			end = GetEnd();
 		}
 
 		private void InitDocument()
 		{
-			document = textArea.Document;
-			if (document == null) {
-				throw ThrowUtil.NoDocumentAssigned();
-			}
+			document = textArea.Document ?? throw ThrowUtil.NoDocumentAssigned();
 		}
 
 		private static double GetXPos(TextArea textArea, TextViewPosition pos)
@@ -213,7 +210,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		public override string GetText()
 		{
 			StringBuilder b = new();
-			foreach (ISegment s in this.Segments) {
+			foreach (ISegment s in Segments) {
 				if (b.Length > 0) {
 					b.AppendLine();
 				}
@@ -230,7 +227,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		}
 
 		/// <inheritdoc/>
-		public override int Length => this.Segments.Sum(s => s.Length);
+		public override int Length => Segments.Sum(s => s.Length);
 
 		/// <inheritdoc/>
 		public override bool EnableVirtualSpace => true;
@@ -250,10 +247,10 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// <inheritdoc/>
 		public override bool Equals(object obj)
 		{
-			return obj is RectangleSelection r && r.textArea == this.textArea
-				&& r.topLeftOffset == this.topLeftOffset && r.bottomRightOffset == this.bottomRightOffset
-				&& r.startLine == this.startLine && r.endLine == this.endLine
-				&& r.startXPos == this.startXPos && r.endXPos == this.endXPos;
+			return obj is RectangleSelection r && r.textArea == textArea
+				&& r.topLeftOffset == topLeftOffset && r.bottomRightOffset == bottomRightOffset
+				&& r.startLine == startLine && r.endLine == endLine
+				&& r.startXPos == startXPos && r.endXPos == endXPos;
 		}
 
 		/// <inheritdoc/>
@@ -302,7 +299,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 				TextViewPosition pos;
 				if (NewLineFinder.NextNewLine(newText, 0) == SimpleSegment.Invalid) {
 					// insert same text into every line
-					foreach (SelectionSegment lineSegment in this.Segments.Reverse()) {
+					foreach (SelectionSegment lineSegment in Segments.Reverse()) {
 						ReplaceSingleLineText(textArea, lineSegment, newText, out insertionLength);
 						totalInsertionLength += insertionLength;
 						firstInsertionLength = insertionLength;
@@ -385,7 +382,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		public const string RectangularSelectionDataType = "AvalonEditRectangularSelection";
 
 		/// <inheritdoc/>
-		public override System.Windows.DataObject CreateDataObject(TextArea textArea)
+		public override DataObject CreateDataObject(TextArea textArea)
 		{
 			DataObject data = base.CreateDataObject(textArea);
 

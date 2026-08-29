@@ -56,7 +56,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 			{
 				this.value = value;
 				this.count = count;
-				this.totalCount = count;
+				totalCount = count;
 			}
 
 			internal Node LeftMost {
@@ -145,7 +145,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 				throw new ArgumentNullException("equalityComparer");
 			}
 
-			this.comparisonFunc = equalityComparer.Equals;
+			comparisonFunc = equalityComparer.Equals;
 		}
 
 		/// <summary>
@@ -166,8 +166,8 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </summary>
 		public void InsertRange(int index, int count, T item)
 		{
-			if (index < 0 || index > this.Count) {
-				throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + this.Count);
+			if (index < 0 || index > Count) {
+				throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + Count);
 			}
 
 			if (count < 0) {
@@ -179,7 +179,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 			}
 
 			unchecked {
-				if (this.Count + count < 0) {
+				if (Count + count < 0) {
 					throw new OverflowException("Cannot insert elements: total number of elements must not exceed int.MaxValue.");
 				}
 			}
@@ -237,12 +237,12 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </summary>
 		public void RemoveRange(int index, int count)
 		{
-			if (index < 0 || index > this.Count) {
-				throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + this.Count);
+			if (index < 0 || index > Count) {
+				throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + Count);
 			}
 
-			if (count < 0 || index + count > this.Count) {
-				throw new ArgumentOutOfRangeException("count", count, "0 <= length, index(" + index + ")+count <= " + this.Count);
+			if (count < 0 || index + count > Count) {
+				throw new ArgumentOutOfRangeException("count", count, "0 <= length, index(" + index + ")+count <= " + Count);
 			}
 
 			if (count == 0) {
@@ -358,8 +358,8 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </summary>
 		public T this[int index] {
 			get {
-				if (index < 0 || index >= this.Count) {
-					throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + (this.Count - 1));
+				if (index < 0 || index >= Count) {
+					throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + (Count - 1));
 				}
 
 				return GetNode(ref index).value;
@@ -402,7 +402,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 					n = n.Successor;
 				}
 			}
-			Debug.Assert(index == this.Count);
+			Debug.Assert(index == Count);
 			return -1;
 		}
 
@@ -412,8 +412,8 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </summary>
 		public int GetStartOfRun(int index)
 		{
-			if (index < 0 || index >= this.Count) {
-				throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + (this.Count - 1));
+			if (index < 0 || index >= Count) {
+				throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + (Count - 1));
 			}
 
 			int indexInRun = index;
@@ -428,8 +428,8 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </summary>
 		public int GetEndOfRun(int index)
 		{
-			if (index < 0 || index >= this.Count) {
-				throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + (this.Count - 1));
+			if (index < 0 || index >= Count) {
+				throw new ArgumentOutOfRangeException("index", index, "Value must be between 0 and " + (Count - 1));
 			}
 
 			int indexInRun = index;
@@ -500,7 +500,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 		/// </summary>
 		public void Add(T item)
 		{
-			InsertRange(this.Count, 1, item);
+			InsertRange(Count, 1, item);
 		}
 
 		/// <summary>
@@ -528,12 +528,12 @@ namespace ICSharpCode.AvalonEdit.Utils
 				throw new ArgumentNullException("array");
 			}
 
-			if (array.Length < this.Count) {
+			if (array.Length < Count) {
 				throw new ArgumentException("The array is too small", "array");
 			}
 
-			if (arrayIndex < 0 || arrayIndex + this.Count > array.Length) {
-				throw new ArgumentOutOfRangeException("arrayIndex", arrayIndex, "Value must be between 0 and " + (array.Length - this.Count));
+			if (arrayIndex < 0 || arrayIndex + Count > array.Length) {
+				throw new ArgumentOutOfRangeException("arrayIndex", arrayIndex, "Value must be between 0 and " + (array.Length - Count));
 			}
 
 			foreach (T v in this) {
@@ -676,14 +676,10 @@ namespace ICSharpCode.AvalonEdit.Utils
 				// and overwrite the removedNode with it
 				ReplaceNode(removedNode, leftMost);
 				leftMost.left = removedNode.left;
-				if (leftMost.left != null) {
-					leftMost.left.parent = leftMost;
-				}
+				leftMost.left?.parent = leftMost;
 
 				leftMost.right = removedNode.right;
-				if (leftMost.right != null) {
-					leftMost.right.parent = leftMost;
-				}
+				leftMost.right?.parent = leftMost;
 
 				leftMost.color = removedNode.color;
 
@@ -801,9 +797,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 					replacedNode.parent.right = newNode;
 				}
 			}
-			if (newNode != null) {
-				newNode.parent = replacedNode.parent;
-			}
+			newNode?.parent = replacedNode.parent;
 			replacedNode.parent = null;
 		}
 
@@ -819,9 +813,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 
 			// set p's right child to be q's left child
 			p.right = q.left;
-			if (p.right != null) {
-				p.right.parent = p;
-			}
+			p.right?.parent = p;
 			// set q's left child to be p
 			q.left = p;
 			p.parent = q;
@@ -839,9 +831,7 @@ namespace ICSharpCode.AvalonEdit.Utils
 
 			// set p's left child to be q's right child
 			p.left = q.right;
-			if (p.left != null) {
-				p.left.parent = p;
-			}
+			p.left?.parent = p;
 			// set q's right child to be p
 			q.right = p;
 			p.parent = q;

@@ -33,9 +33,9 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// </summary>
 		public SelectionSegment(int startOffset, int endOffset)
 		{
-			this.StartOffset = Math.Min(startOffset, endOffset);
-			this.EndOffset = Math.Max(startOffset, endOffset);
-			this.StartVisualColumn = this.EndVisualColumn = -1;
+			StartOffset = Math.Min(startOffset, endOffset);
+			EndOffset = Math.Max(startOffset, endOffset);
+			StartVisualColumn = EndVisualColumn = -1;
 		}
 
 		/// <summary>
@@ -44,15 +44,15 @@ namespace ICSharpCode.AvalonEdit.Editing
 		public SelectionSegment(int startOffset, int startVC, int endOffset, int endVC)
 		{
 			if (startOffset < endOffset || (startOffset == endOffset && startVC <= endVC)) {
-				this.StartOffset = startOffset;
-				this.StartVisualColumn = startVC;
-				this.EndOffset = endOffset;
-				this.EndVisualColumn = endVC;
+				StartOffset = startOffset;
+				StartVisualColumn = startVC;
+				EndOffset = endOffset;
+				EndVisualColumn = endVC;
 			} else {
-				this.StartOffset = endOffset;
-				this.StartVisualColumn = endVC;
-				this.EndOffset = startOffset;
-				this.EndVisualColumn = startVC;
+				StartOffset = endOffset;
+				StartVisualColumn = endVC;
+				EndOffset = startOffset;
+				EndVisualColumn = startVC;
 			}
 		}
 

@@ -42,7 +42,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 			RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
 		}
 
-		private TextArea TextArea => (TextArea)base.Owner;
+		private TextArea TextArea => (TextArea)Owner;
 
 		protected override AutomationControlType GetAutomationControlTypeCore()
 		{

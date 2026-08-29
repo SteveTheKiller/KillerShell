@@ -99,32 +99,32 @@ namespace ICSharpCode.AvalonEdit.Highlighting.Xshd
 				throw new ArgumentNullException("info");
 			}
 
-			this.Name = info.GetString("Name");
-			this.Foreground = (HighlightingBrush?)info.GetValue("Foreground", typeof(HighlightingBrush));
-			this.Background = (HighlightingBrush?)info.GetValue("Background", typeof(HighlightingBrush));
+			Name = info.GetString("Name");
+			Foreground = (HighlightingBrush?)info.GetValue("Foreground", typeof(HighlightingBrush));
+			Background = (HighlightingBrush?)info.GetValue("Background", typeof(HighlightingBrush));
 			if (info.GetBoolean("HasWeight")) {
-				this.FontWeight = System.Windows.FontWeight.FromOpenTypeWeight(info.GetInt32("Weight"));
+				FontWeight = System.Windows.FontWeight.FromOpenTypeWeight(info.GetInt32("Weight"));
 			}
 
 			if (info.GetBoolean("HasStyle")) {
-				this.FontStyle = (FontStyle?)new FontStyleConverter().ConvertFromInvariantString(info.GetString("Style"));
+				FontStyle = (FontStyle?)new FontStyleConverter().ConvertFromInvariantString(info.GetString("Style"));
 			}
 
-			this.ExampleText = info.GetString("ExampleText");
+			ExampleText = info.GetString("ExampleText");
 			if (info.GetBoolean("HasUnderline")) {
-				this.Underline = info.GetBoolean("Underline");
+				Underline = info.GetBoolean("Underline");
 			}
 
 			if (info.GetBoolean("HasStrikethrough")) {
-				this.Strikethrough = info.GetBoolean("Strikethrough");
+				Strikethrough = info.GetBoolean("Strikethrough");
 			}
 
 			if (info.GetBoolean("HasFamily")) {
-				this.FontFamily = new FontFamily(info.GetString("Family"));
+				FontFamily = new FontFamily(info.GetString("Family"));
 			}
 
 			if (info.GetBoolean("HasSize")) {
-				this.FontSize = info.GetInt32("Size");
+				FontSize = info.GetInt32("Size");
 			}
 		}
 
@@ -138,38 +138,38 @@ namespace ICSharpCode.AvalonEdit.Highlighting.Xshd
 				throw new ArgumentNullException("info");
 			}
 
-			info.AddValue("Name", this.Name);
-			info.AddValue("Foreground", this.Foreground);
-			info.AddValue("Background", this.Background);
-			info.AddValue("HasUnderline", this.Underline.HasValue);
-			if (this.Underline.HasValue) {
-				info.AddValue("Underline", this.Underline.Value);
+			info.AddValue("Name", Name);
+			info.AddValue("Foreground", Foreground);
+			info.AddValue("Background", Background);
+			info.AddValue("HasUnderline", Underline.HasValue);
+			if (Underline.HasValue) {
+				info.AddValue("Underline", Underline.Value);
 			}
 
-			info.AddValue("HasStrikethrough", this.Strikethrough.HasValue);
-			if (this.Strikethrough.HasValue) {
-				info.AddValue("Strikethrough", this.Strikethrough.Value);
+			info.AddValue("HasStrikethrough", Strikethrough.HasValue);
+			if (Strikethrough.HasValue) {
+				info.AddValue("Strikethrough", Strikethrough.Value);
 			}
 
-			info.AddValue("HasWeight", this.FontWeight.HasValue);
-			if (this.FontWeight.HasValue) {
-				info.AddValue("Weight", this.FontWeight.Value.ToOpenTypeWeight());
+			info.AddValue("HasWeight", FontWeight.HasValue);
+			if (FontWeight.HasValue) {
+				info.AddValue("Weight", FontWeight.Value.ToOpenTypeWeight());
 			}
 
-			info.AddValue("HasStyle", this.FontStyle.HasValue);
-			if (this.FontStyle.HasValue) {
-				info.AddValue("Style", this.FontStyle.Value.ToString());
+			info.AddValue("HasStyle", FontStyle.HasValue);
+			if (FontStyle.HasValue) {
+				info.AddValue("Style", FontStyle.Value.ToString());
 			}
 
-			info.AddValue("ExampleText", this.ExampleText);
-			info.AddValue("HasFamily", this.FontFamily != null);
-			if (this.FontFamily != null) {
-				info.AddValue("Family", this.FontFamily.FamilyNames.FirstOrDefault());
+			info.AddValue("ExampleText", ExampleText);
+			info.AddValue("HasFamily", FontFamily != null);
+			if (FontFamily != null) {
+				info.AddValue("Family", FontFamily.FamilyNames.FirstOrDefault());
 			}
 
-			info.AddValue("HasSize", this.FontSize.HasValue);
-			if (this.FontSize.HasValue) {
-				info.AddValue("Size", this.FontSize.Value.ToString());
+			info.AddValue("HasSize", FontSize.HasValue);
+			if (FontSize.HasValue) {
+				info.AddValue("Size", FontSize.Value.ToString());
 			}
 		}
 

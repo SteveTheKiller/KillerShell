@@ -271,9 +271,7 @@ namespace ICSharpCode.AvalonEdit.Search
 		{
 			Close();
 			textArea.DocumentChanged -= textArea_DocumentChanged;
-			if (currentDocument != null) {
-				currentDocument.TextChanged -= textArea_Document_TextChanged;
-			}
+			currentDocument?.TextChanged -= textArea_Document_TextChanged;
 
 			textArea.DefaultInputHandler.NestedInputHandlers.Remove(handler);
 		}
@@ -286,9 +284,7 @@ namespace ICSharpCode.AvalonEdit.Search
 
 			renderer = new SearchResultBackgroundRenderer();
 			currentDocument = textArea.Document;
-			if (currentDocument != null) {
-				currentDocument.TextChanged += textArea_Document_TextChanged;
-			}
+			currentDocument?.TextChanged += textArea_Document_TextChanged;
 
 			textArea.DocumentChanged += textArea_DocumentChanged;
 			KeyDown += SearchLayerKeyDown;
@@ -301,9 +297,7 @@ namespace ICSharpCode.AvalonEdit.Search
 
 		private void textArea_DocumentChanged(object sender, EventArgs e)
 		{
-			if (currentDocument != null) {
-				currentDocument.TextChanged -= textArea_Document_TextChanged;
-			}
+			currentDocument?.TextChanged -= textArea_Document_TextChanged;
 
 			currentDocument = textArea.Document;
 			if (currentDocument != null) {
@@ -472,9 +466,7 @@ namespace ICSharpCode.AvalonEdit.Search
 
 			AdornerLayer layer = AdornerLayer.GetAdornerLayer(textArea);
 			layer?.Remove(adorner);
-			if (dropdownPopup != null) {
-				dropdownPopup.IsOpen = false;
-			}
+			dropdownPopup?.IsOpen = false;
 
 			messageView.IsOpen = false;
 			textArea.TextView.BackgroundRenderers.Remove(renderer);

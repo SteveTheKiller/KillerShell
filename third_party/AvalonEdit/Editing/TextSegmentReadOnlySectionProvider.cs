@@ -47,7 +47,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// </summary>
 		public TextSegmentReadOnlySectionProvider(TextSegmentCollection<T> segments)
 		{
-			this.Segments = segments ?? throw new ArgumentNullException("segments");
+			Segments = segments ?? throw new ArgumentNullException("segments");
 		}
 
 		/// <summary>

@@ -54,8 +54,8 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// </summary>
 		public LinkElementGenerator()
 		{
-			this.linkRegex = defaultLinkRegex;
-			this.RequireControlModifierForClick = true;
+			linkRegex = defaultLinkRegex;
+			RequireControlModifierForClick = true;
 		}
 
 		/// <summary>
@@ -63,12 +63,12 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// </summary>
 		protected LinkElementGenerator(Regex regex) : this()
 		{
-			this.linkRegex = regex ?? throw new ArgumentNullException("regex");
+			linkRegex = regex ?? throw new ArgumentNullException("regex");
 		}
 
 		void IBuiltinElementGenerator.FetchOptions(TextEditorOptions options)
 		{
-			this.RequireControlModifierForClick = options.RequireControlModifierForHyperlinkClick;
+			RequireControlModifierForClick = options.RequireControlModifierForHyperlinkClick;
 		}
 
 		private Match GetMatch(int startOffset, out int matchOffset)
@@ -115,7 +115,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 			// Only ever called from ConstructElement, which runs inside a generation pass.
 			VisualLineLinkText linkText = new(CurrentContext!.VisualLine, m.Length) {
 				NavigateUri = uri,
-				RequireControlModifierForClick = this.RequireControlModifierForClick
+				RequireControlModifierForClick = RequireControlModifierForClick
 			};
 			return linkText;
 		}

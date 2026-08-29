@@ -275,10 +275,10 @@ namespace ICSharpCode.AvalonEdit.Document
 					// This ensures that nodes immediately before or after the replaced segment
 					// stay where they are (independent from their MovementType)
 					PerformInsertText(firstDeletionSurvivor, node, entry.InsertionLength, entry.DefaultAnchorMovementIsBeforeInsertion);
-				} else if (node != null) {
+				} else {
 					// No deletion survivors:
 					// just perform the insertion
-					node.length += entry.InsertionLength;
+					node?.length += entry.InsertionLength;
 				}
 			}
 			if (node != null) {
@@ -304,9 +304,7 @@ namespace ICSharpCode.AvalonEdit.Document
 				TextAnchorNode n = nodesToDelete[pos];
 				// combine section of n with the following section
 				TextAnchorNode? s = n.Successor;
-				if (s != null) {
-					s.length += n.length;
-				}
+				s?.length += n.length;
 				RemoveNode(n);
 				if (s != null) {
 					UpdateAugmentedData(s);
@@ -516,14 +514,10 @@ namespace ICSharpCode.AvalonEdit.Document
 				// and overwrite the removedNode with it
 				ReplaceNode(removedNode, leftMost);
 				leftMost.left = removedNode.left;
-				if (leftMost.left != null) {
-					leftMost.left.parent = leftMost;
-				}
+				leftMost.left?.parent = leftMost;
 
 				leftMost.right = removedNode.right;
-				if (leftMost.right != null) {
-					leftMost.right.parent = leftMost;
-				}
+				leftMost.right?.parent = leftMost;
 
 				leftMost.color = removedNode.color;
 
@@ -643,9 +637,7 @@ namespace ICSharpCode.AvalonEdit.Document
 					replacedNode.parent.right = newNode;
 				}
 			}
-			if (newNode != null) {
-				newNode.parent = replacedNode.parent;
-			}
+			newNode?.parent = replacedNode.parent;
 			replacedNode.parent = null;
 		}
 
@@ -660,9 +652,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 			// set p's right child to be q's left child
 			p.right = q.left;
-			if (p.right != null) {
-				p.right.parent = p;
-			}
+			p.right?.parent = p;
 			// set q's left child to be p
 			q.left = p;
 			p.parent = q;
@@ -680,9 +670,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 			// set p's left child to be q's right child
 			p.left = q.right;
-			if (p.left != null) {
-				p.left.parent = p;
-			}
+			p.left?.parent = p;
 			// set q's right child to be p
 			q.right = p;
 			p.parent = q;

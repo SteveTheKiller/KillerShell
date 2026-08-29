@@ -509,7 +509,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 				// convert text back to correct newlines for this document
 				string newLine = TextUtilities.GetNewLineFromDocument(textArea.Document, textArea.Caret.Line);
 				text = TextUtilities.NormalizeNewLines(text, newLine);
-				text = textArea.Options.ConvertTabsToSpaces ? text.Replace("\t", new String(' ', textArea.Options.IndentationSize)) : text;
+				text = textArea.Options.ConvertTabsToSpaces ? text.Replace("\t", new string(' ', textArea.Options.IndentationSize)) : text;
 				return text;
 			} catch (OutOfMemoryException) {
 				// may happen when trying to paste a huge string

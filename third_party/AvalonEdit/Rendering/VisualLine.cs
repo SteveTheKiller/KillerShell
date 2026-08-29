@@ -130,8 +130,8 @@ namespace ICSharpCode.AvalonEdit.Rendering
 			// No null asserts: the parameter types state them, and asserting made all three field
 			// assignments below read as possibly-null.
 			this.textView = textView;
-			this.Document = textView.Document;
-			this.FirstDocumentLine = firstDocumentLine;
+			Document = textView.Document;
+			FirstDocumentLine = firstDocumentLine;
 		}
 
 		internal void ConstructVisualElements(ITextRunConstructionContext context, VisualLineElementGenerator[] generators)
@@ -150,14 +150,14 @@ namespace ICSharpCode.AvalonEdit.Rendering
 			foreach (VisualLineElement element in elements) {
 				element.SetTextRunProperties(new VisualLineElementTextRunProperties(globalTextRunProperties));
 			}
-			this.Elements = elements.AsReadOnly();
+			Elements = elements.AsReadOnly();
 			CalculateOffsets();
 			phase = LifetimePhase.Transforming;
 		}
 
 		private void PerformVisualElementConstruction(VisualLineElementGenerator[] generators)
 		{
-			TextDocument document = this.Document;
+			TextDocument document = Document;
 			int offset = FirstDocumentLine.Offset;
 			int currentLineEnd = offset + FirstDocumentLine.Length;
 			LastDocumentLine = FirstDocumentLine;
@@ -200,7 +200,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 								if (offset > currentLineEnd) {
 									DocumentLine newEndLine = document.GetLineByOffset(offset);
 									currentLineEnd = newEndLine.Offset + newEndLine.Length;
-									this.LastDocumentLine = newEndLine;
+									LastDocumentLine = newEndLine;
 									if (currentLineEnd < offset) {
 										throw new InvalidOperationException(
 											"The VisualLineElementGenerator " + g.GetType().Name +
@@ -418,7 +418,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		public TextLine GetTextLineByVisualYPosition(double visualTop)
 		{
 			const double epsilon = 0.0001;
-			double pos = this.VisualTop;
+			double pos = VisualTop;
 			foreach (TextLine tl in TextLines) {
 				pos += tl.Height;
 				if (visualTop + epsilon < pos) {
@@ -522,7 +522,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// </summary>
 		public int ValidateVisualColumn(int offset, int visualColumn, bool allowVirtualSpace)
 		{
-			int firstDocumentLineOffset = this.FirstDocumentLine.Offset;
+			int firstDocumentLineOffset = FirstDocumentLine.Offset;
 			if (visualColumn < 0) {
 				return GetVisualColumn(offset - firstDocumentLineOffset);
 			} else {
@@ -584,8 +584,8 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// </summary>
 		public TextViewPosition GetTextViewPosition(int visualColumn)
 		{
-			int documentOffset = GetRelativeOffset(visualColumn) + this.FirstDocumentLine.Offset;
-			return new TextViewPosition(this.Document.GetLocation(documentOffset), visualColumn);
+			int documentOffset = GetRelativeOffset(visualColumn) + FirstDocumentLine.Offset;
+			return new TextViewPosition(Document.GetLocation(documentOffset), visualColumn);
 		}
 
 		/// <summary>
@@ -598,8 +598,8 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		public TextViewPosition GetTextViewPosition(Point visualPosition, bool allowVirtualSpace)
 		{
 			int visualColumn = GetVisualColumn(visualPosition, allowVirtualSpace, out bool isAtEndOfLine);
-			int documentOffset = GetRelativeOffset(visualColumn) + this.FirstDocumentLine.Offset;
-			TextViewPosition pos = new(this.Document.GetLocation(documentOffset), visualColumn) {
+			int documentOffset = GetRelativeOffset(visualColumn) + FirstDocumentLine.Offset;
+			TextViewPosition pos = new(Document.GetLocation(documentOffset), visualColumn) {
 				IsAtEndOfLine = isAtEndOfLine
 			};
 			return pos;
@@ -615,8 +615,8 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		public TextViewPosition GetTextViewPositionFloor(Point visualPosition, bool allowVirtualSpace)
 		{
 			int visualColumn = GetVisualColumnFloor(visualPosition, allowVirtualSpace, out bool isAtEndOfLine);
-			int documentOffset = GetRelativeOffset(visualColumn) + this.FirstDocumentLine.Offset;
-			TextViewPosition pos = new(this.Document.GetLocation(documentOffset), visualColumn) {
+			int documentOffset = GetRelativeOffset(visualColumn) + FirstDocumentLine.Offset;
+			TextViewPosition pos = new(Document.GetLocation(documentOffset), visualColumn) {
 				IsAtEndOfLine = isAtEndOfLine
 			};
 			return pos;
@@ -677,11 +677,11 @@ namespace ICSharpCode.AvalonEdit.Rendering
 				// Search Backwards:
 				// If the last element doesn't handle line borders, return the line end as caret stop
 
-				if (visualColumn > this.VisualLength && !elements[^1].HandlesLineBorders && HasImplicitStopAtLineEnd(mode)) {
+				if (visualColumn > VisualLength && !elements[^1].HandlesLineBorders && HasImplicitStopAtLineEnd(mode)) {
 					if (allowVirtualSpace) {
 						return visualColumn - 1;
 					} else {
-						return this.VisualLength;
+						return VisualLength;
 					}
 				}
 				// skip elements that start after or at visualColumn
@@ -728,8 +728,8 @@ namespace ICSharpCode.AvalonEdit.Rendering
 				// if we've found nothing, and the last element doesn't handle line borders,
 				// return the line end as caret stop
 				if ((allowVirtualSpace || !elements[^1].HandlesLineBorders) && HasImplicitStopAtLineEnd(mode)) {
-					if (visualColumn < this.VisualLength) {
-						return this.VisualLength;
+					if (visualColumn < VisualLength) {
+						return VisualLength;
 					} else if (allowVirtualSpace) {
 						return visualColumn + 1;
 					}
@@ -777,7 +777,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 
 		public VisualLineDrawingVisual(VisualLine visualLine, FlowDirection flow)
 		{
-			this.VisualLine = visualLine;
+			VisualLine = visualLine;
 			DrawingContext drawingContext = RenderOpen();
 			double pos = 0;
 			foreach (TextLine textLine in visualLine.TextLines) {
@@ -789,7 +789,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 				}
 				pos += textLine.Height;
 			}
-			this.Height = pos;
+			Height = pos;
 			drawingContext.Close();
 		}
 

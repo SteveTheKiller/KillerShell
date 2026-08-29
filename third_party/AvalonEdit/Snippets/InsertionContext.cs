@@ -46,18 +46,18 @@ namespace ICSharpCode.AvalonEdit.Snippets
 		/// </summary>
 		public InsertionContext(TextArea textArea, int insertionPosition)
 		{
-			this.TextArea = textArea ?? throw new ArgumentNullException("textArea");
-			this.Document = textArea.Document;
-			this.SelectedText = textArea.Selection.GetText();
-			this.InsertionPosition = insertionPosition;
-			this.startPosition = insertionPosition;
+			TextArea = textArea ?? throw new ArgumentNullException("textArea");
+			Document = textArea.Document;
+			SelectedText = textArea.Selection.GetText();
+			InsertionPosition = insertionPosition;
+			startPosition = insertionPosition;
 
-			DocumentLine startLine = this.Document.GetLineByOffset(insertionPosition);
-			ISegment indentation = TextUtilities.GetWhitespaceAfter(this.Document, startLine.Offset);
-			this.Indentation = Document.GetText(indentation.Offset, Math.Min(indentation.EndOffset, insertionPosition) - indentation.Offset);
-			this.Tab = textArea.Options.IndentationString;
+			DocumentLine startLine = Document.GetLineByOffset(insertionPosition);
+			ISegment indentation = TextUtilities.GetWhitespaceAfter(Document, startLine.Offset);
+			Indentation = Document.GetText(indentation.Offset, Math.Min(indentation.EndOffset, insertionPosition) - indentation.Offset);
+			Tab = textArea.Options.IndentationString;
 
-			this.LineTerminator = TextUtilities.GetNewLineFromDocument(this.Document, startLine.LineNumber);
+			LineTerminator = TextUtilities.GetNewLineFromDocument(Document, startLine.LineNumber);
 		}
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace ICSharpCode.AvalonEdit.Snippets
 		/// <summary>
 		/// Gets the text document.
 		/// </summary>
-		public ICSharpCode.AvalonEdit.Document.TextDocument Document { get; private set; }
+		public TextDocument Document { get; private set; }
 
 		/// <summary>
 		/// Gets the text that was selected before the insertion of the snippet.
@@ -99,7 +99,7 @@ namespace ICSharpCode.AvalonEdit.Snippets
 		// Assigned by InsertionCompleted. Left non-nullable because Deactivate reads .Length off
 		// it without a guard; the one place that does test it for null is being defensive about
 		// a snippet that was never inserted. Worth a second look if that path ever throws.
-		private ICSharpCode.AvalonEdit.Document.AnchorSegment wholeSnippetAnchor = null!;
+		private AnchorSegment wholeSnippetAnchor = null!;
 		private bool deactivateIfSnippetEmpty;
 
 		/// <summary>
@@ -130,21 +130,21 @@ namespace ICSharpCode.AvalonEdit.Snippets
 				throw new InvalidOperationException();
 			}
 
-			text = text.Replace("\t", this.Tab);
+			text = text.Replace("\t", Tab);
 
-			using (this.Document.RunUpdate()) {
+			using (Document.RunUpdate()) {
 				int textOffset = 0;
 				SimpleSegment segment;
 				while ((segment = NewLineFinder.NextNewLine(text, textOffset)) != SimpleSegment.Invalid) {
 					string insertString = text[textOffset..segment.Offset]
-						+ this.LineTerminator + this.Indentation;
-					this.Document.Insert(InsertionPosition, insertString);
-					this.InsertionPosition += insertString.Length;
+						+ LineTerminator + Indentation;
+					Document.Insert(InsertionPosition, insertString);
+					InsertionPosition += insertString.Length;
 					textOffset = segment.EndOffset;
 				}
 				string remainingInsertString = text[textOffset..];
-				this.Document.Insert(InsertionPosition, remainingInsertString);
-				this.InsertionPosition += remainingInsertString.Length;
+				Document.Insert(InsertionPosition, remainingInsertString);
+				InsertionPosition += remainingInsertString.Length;
 			}
 		}
 
@@ -212,8 +212,8 @@ namespace ICSharpCode.AvalonEdit.Snippets
 			e ??= EventArgs.Empty;
 
 			currentStatus = Status.RaisingInsertionCompleted;
-			int endPosition = this.InsertionPosition;
-			this.wholeSnippetAnchor = new AnchorSegment(Document, startPosition, endPosition - startPosition);
+			int endPosition = InsertionPosition;
+			wholeSnippetAnchor = new AnchorSegment(Document, startPosition, endPosition - startPosition);
 			TextDocumentWeakEventManager.UpdateFinished.AddListener(Document, this);
 			deactivateIfSnippetEmpty = endPosition != startPosition;
 

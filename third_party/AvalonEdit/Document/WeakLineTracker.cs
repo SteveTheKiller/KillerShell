@@ -32,7 +32,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		private WeakLineTracker(TextDocument textDocument, ILineTracker targetTracker)
 		{
 			this.textDocument = textDocument;
-			this.targetObject = new WeakReference(targetTracker);
+			targetObject = new WeakReference(targetTracker);
 		}
 
 		/// <summary>
@@ -60,10 +60,8 @@ namespace ICSharpCode.AvalonEdit.Document
 		/// </summary>
 		public void Deregister()
 		{
-			if (textDocument != null) {
-				textDocument.LineTrackers.Remove(this);
-				textDocument = null;
-			}
+			textDocument?.LineTrackers.Remove(this);
+			textDocument = null;
 		}
 
 		void ILineTracker.BeforeRemoveLine(DocumentLine line)

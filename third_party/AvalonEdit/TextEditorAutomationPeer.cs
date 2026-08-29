@@ -27,7 +27,7 @@ using ICSharpCode.AvalonEdit.Utils;
 namespace ICSharpCode.AvalonEdit
 {
 	/// <summary>
-	/// Exposes <see cref="ICSharpCode.AvalonEdit.TextEditor"/> to automation.
+	/// Exposes <see cref="AvalonEdit.TextEditor"/> to automation.
 	/// </summary>
 	public class TextEditorAutomationPeer : FrameworkElementAutomationPeer, IValueProvider
 	{
@@ -39,16 +39,16 @@ namespace ICSharpCode.AvalonEdit
 			Debug.WriteLine("TextEditorAutomationPeer was created");
 		}
 
-		private TextEditor TextEditor => (TextEditor)base.Owner;
+		private TextEditor TextEditor => (TextEditor)Owner;
 
 		void IValueProvider.SetValue(string value)
 		{
-			this.TextEditor.Text = value;
+			TextEditor.Text = value;
 		}
 
-		string IValueProvider.Value => this.TextEditor.Text;
+		string IValueProvider.Value => TextEditor.Text;
 
-		bool IValueProvider.IsReadOnly => this.TextEditor.IsReadOnly;
+		bool IValueProvider.IsReadOnly => TextEditor.IsReadOnly;
 
 		/// <inheritdoc/>
 		protected override AutomationControlType GetAutomationControlTypeCore()
@@ -64,14 +64,14 @@ namespace ICSharpCode.AvalonEdit
 			}
 
 			if (patternInterface == PatternInterface.Scroll) {
-				ScrollViewer scrollViewer = this.TextEditor.ScrollViewer;
+				ScrollViewer scrollViewer = TextEditor.ScrollViewer;
 				if (scrollViewer != null) {
-					return UIElementAutomationPeer.FromElement(scrollViewer);
+					return FromElement(scrollViewer);
 				}
 			}
 
 			if (patternInterface == PatternInterface.Text) {
-				return FromElement(this.TextEditor.TextArea);
+				return FromElement(TextEditor.TextArea);
 			}
 
 			return base.GetPattern(patternInterface);

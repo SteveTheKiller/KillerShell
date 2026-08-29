@@ -43,7 +43,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// <inheritdoc/>
 		protected override void Colorize(ITextRunConstructionContext context)
 		{
-			this.CurrentContext = context ?? throw new ArgumentNullException("context");
+			CurrentContext = context ?? throw new ArgumentNullException("context");
 
 			currentDocumentLine = context.VisualLine.FirstDocumentLine;
 			firstLineStart = currentDocumentLineStartOffset = currentDocumentLine.Offset;
@@ -67,7 +67,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 				}
 			}
 			currentDocumentLine = null;
-			this.CurrentContext = null;
+			CurrentContext = null;
 		}
 
 		/// <summary>
@@ -92,7 +92,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 			}
 
 			// Only callable from ColorizeLine, which runs inside a Colorize call.
-			VisualLine vl = this.CurrentContext!.VisualLine;
+			VisualLine vl = CurrentContext!.VisualLine;
 			int visualStart = vl.GetVisualColumn(startOffset - firstLineStart);
 			int visualEnd = vl.GetVisualColumn(endOffset - firstLineStart);
 			if (visualStart < visualEnd) {

@@ -75,7 +75,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		public HighlightedInlineBuilder(string text)
 		{
-			this.Text = text ?? throw new ArgumentNullException("text");
+			Text = text ?? throw new ArgumentNullException("text");
 			stateChangeOffsets.Add(0);
 			stateChanges.Add(new HighlightingColor());
 		}
@@ -89,14 +89,14 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 				throw new ArgumentNullException("text");
 			}
 
-			this.Text = text.Text;
+			Text = text.Text;
 			stateChangeOffsets.AddRange(text.stateChangeOffsets);
 			stateChanges.AddRange(text.stateChanges);
 		}
 
 		private HighlightedInlineBuilder(string text, List<int> offsets, List<HighlightingColor> states)
 		{
-			this.Text = text;
+			Text = text;
 			stateChangeOffsets = offsets;
 			stateChanges = states;
 		}
@@ -201,7 +201,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		public HighlightedInlineBuilder Clone()
 		{
-			return new HighlightedInlineBuilder(this.Text,
+			return new HighlightedInlineBuilder(Text,
 												[.. stateChangeOffsets],
 												[.. stateChanges.Select(sc => sc.Clone())]);
 		}

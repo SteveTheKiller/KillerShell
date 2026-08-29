@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -137,7 +136,7 @@ namespace ICSharpCode.AvalonEdit.Folding
 					int startOffset = GetOffset(document, reader) - 4;
 					int endOffset = startOffset + comment.Length + 7;
 
-					string foldText = String.Concat("<!--", comment[..firstNewLine].TrimEnd('\r'), "-->");
+					string foldText = string.Concat("<!--", comment[..firstNewLine].TrimEnd('\r'), "-->");
 					foldMarkers.Add(new NewFolding(startOffset, endOffset) { Name = foldText });
 				}
 			}
@@ -159,10 +158,10 @@ namespace ICSharpCode.AvalonEdit.Folding
 			newFoldStart.StartLine = lineInfo.LineNumber;
 			newFoldStart.StartOffset = document.GetOffset(newFoldStart.StartLine, lineInfo.LinePosition - 1);
 
-			if (this.ShowAttributesWhenFolded && reader.HasAttributes) {
-				newFoldStart.Name = String.Concat("<", reader.Name, " ", GetAttributeFoldText(reader), ">");
+			if (ShowAttributesWhenFolded && reader.HasAttributes) {
+				newFoldStart.Name = string.Concat("<", reader.Name, " ", GetAttributeFoldText(reader), ">");
 			} else {
-				newFoldStart.Name = String.Concat("<", reader.Name, ">");
+				newFoldStart.Name = string.Concat("<", reader.Name, ">");
 			}
 
 			return newFoldStart;

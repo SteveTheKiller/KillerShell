@@ -16,7 +16,6 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 
@@ -36,7 +35,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 			// assignment below read as possibly-null.
 			this.textView = textView;
 			this.knownLayer = knownLayer;
-			this.Focusable = false;
+			Focusable = false;
 		}
 
 		// A layer is not hit-testable: returning null is how WPF is told to look past it, which is

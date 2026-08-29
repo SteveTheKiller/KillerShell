@@ -19,8 +19,6 @@
 using System;
 using System.Collections.Generic;
 
-using ICSharpCode.AvalonEdit.Utils;
-
 namespace ICSharpCode.AvalonEdit.Highlighting.Xshd
 {
 	/// <summary>
@@ -34,8 +32,8 @@ namespace ICSharpCode.AvalonEdit.Highlighting.Xshd
 		/// </summary>
 		public XshdSyntaxDefinition()
 		{
-			this.Elements = [];
-			this.Extensions = [];
+			Elements = [];
+			Extensions = [];
 		}
 
 		/// <summary>

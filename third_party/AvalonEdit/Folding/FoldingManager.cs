@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 
 using ICSharpCode.AvalonEdit.Document;
@@ -47,7 +46,7 @@ namespace ICSharpCode.AvalonEdit.Folding
 		public FoldingManager(TextDocument document)
 		{
 			this.document = document ?? throw new ArgumentNullException("document");
-			this.foldings = [];
+			foldings = [];
 			document.VerifyAccess();
 			TextDocumentWeakEventManager.Changed.AddListener(document, this);
 		}
@@ -261,7 +260,7 @@ namespace ICSharpCode.AvalonEdit.Folding
 				firstErrorOffset = int.MaxValue;
 			}
 
-			FoldingSection[] oldFoldings = [.. this.AllFoldings];
+			FoldingSection[] oldFoldings = [.. AllFoldings];
 			int oldFoldingIndex = 0;
 			int previousStartOffset = 0;
 			// merge new foldings into old foldings so that sections keep being collapsed
@@ -283,7 +282,7 @@ namespace ICSharpCode.AvalonEdit.Folding
 
 				// remove old foldings that were skipped
 				while (oldFoldingIndex < oldFoldings.Length && newFolding.StartOffset > oldFoldings[oldFoldingIndex].StartOffset) {
-					this.RemoveFolding(oldFoldings[oldFoldingIndex++]);
+					RemoveFolding(oldFoldings[oldFoldingIndex++]);
 				}
 				FoldingSection section;
 				// reuse current folding if its matching:
@@ -292,7 +291,7 @@ namespace ICSharpCode.AvalonEdit.Folding
 					section.Length = newFolding.EndOffset - newFolding.StartOffset;
 				} else {
 					// no matching current folding; create a new one:
-					section = this.CreateFolding(newFolding.StartOffset, newFolding.EndOffset);
+					section = CreateFolding(newFolding.StartOffset, newFolding.EndOffset);
 					// auto-close #regions only when opening the document
 					if (isFirstUpdate) {
 						section.IsFolded = newFolding.DefaultClosed;
@@ -309,7 +308,7 @@ namespace ICSharpCode.AvalonEdit.Folding
 					break;
 				}
 
-				this.RemoveFolding(oldSection);
+				RemoveFolding(oldSection);
 			}
 		}
 		#endregion

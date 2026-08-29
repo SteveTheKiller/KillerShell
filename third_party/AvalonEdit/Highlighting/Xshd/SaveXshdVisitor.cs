@@ -17,7 +17,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Linq;
 using System.Xml;
 
 namespace ICSharpCode.AvalonEdit.Highlighting.Xshd

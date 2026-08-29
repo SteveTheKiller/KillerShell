@@ -1,0 +1,29 @@
+# KillerShell's own code. The vendored tree has its own file at third_party\.editorconfig, which
+# RAISES the bar for that folder rather than lowering it; this one only records the two decisions
+# below. Both are decisions, not oversights - do not "fix" what they turn off.
+#
+# EditorConfig resolution is nearest-file-wins per key, and third_party\.editorconfig omits
+# "root = true" deliberately, so that tree inherits everything here and then overrides what it
+# needs. Keep it that way.
+
+root = true
+
+[*.md]
+end_of_line = crlf
+insert_final_newline = true
+
+[*.cs]
+
+# IDE0130, namespace does not match folder. Controls\ is FLAT and deliberately so: all thirteen
+# XAML files there declare x:Class="KillerShell.<Name>", so the flat namespace IS the convention,
+# and satisfying the rule would mean rewriting every x:Class plus every reference to them. The
+# same applies to Shell\, whose 54 files are partials of ONE MainWindow class sliced across a
+# folder. Recorded in code\CLAUDE.md as a decision.
+dotnet_diagnostic.IDE0130.severity = none
+
+# IDE1006, naming rule violation on an underscore prefix. Shell\Panes.cs declares _tabs and
+# _active as private members that forward to whichever pane has focus. They keep the field
+# spelling on purpose: about a hundred call sites across Tabs.cs, Session.cs and Results.cs read
+# exactly as they did when these were real fields, which is what made that refactor reviewable.
+# The comment above them in Panes.cs says the same thing.
+dotnet_diagnostic.IDE1006.severity = none

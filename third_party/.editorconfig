@@ -91,3 +91,20 @@ dotnet_diagnostic.IDE0072.severity = none
 # the one rule here that cannot be satisfied rather than merely being unfixed. Also in
 # AvalonEdit/VENDORED.md.
 dotnet_diagnostic.IDE0130.severity = none
+
+# IDE0032, use auto property. 84 sites, every one a private backing field whose only reader and
+# writer is its own property, so the rewrite is safe - and it is still declined. Unlike the
+# spelling-level rules that were fixed (qualification, null propagation, pattern matching), this
+# one DELETES a named field from each class, so an upstream diff stops comparing statements and
+# starts comparing class shapes. Several sit in Caret, UndoStack, TextView and HeightTree, whose
+# field-level invariants were read line by line during the nullable pass; churning their layout
+# again buys no correctness.
+dotnet_diagnostic.IDE0032.severity = none
+
+# IDE0370, suppression is unnecessary (and IDE0079, its message-severity twin). 36 sites, all of
+# them upstream's own SuppressMessage attributes. They are unnecessary only under THIS ruleset:
+# each one records why its code looks the way it does, usually against a CA rule this project
+# does not run. Deleting them discards upstream's reasoning and adds 36 divergences to the merge
+# list to silence a rule about rules.
+dotnet_diagnostic.IDE0370.severity = none
+dotnet_diagnostic.IDE0079.severity = none

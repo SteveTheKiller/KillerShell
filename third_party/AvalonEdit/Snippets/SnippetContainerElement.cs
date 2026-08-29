@@ -40,7 +40,7 @@ namespace ICSharpCode.AvalonEdit.Snippets
 		/// <inheritdoc/>
 		public override void Insert(InsertionContext context)
 		{
-			foreach (SnippetElement e in this.Elements) {
+			foreach (SnippetElement e in Elements) {
 				e.Insert(context);
 			}
 		}
@@ -49,7 +49,7 @@ namespace ICSharpCode.AvalonEdit.Snippets
 		public override Inline ToTextRun()
 		{
 			Span span = new();
-			foreach (SnippetElement e in this.Elements) {
+			foreach (SnippetElement e in Elements) {
 				Inline? r = e.ToTextRun();
 				if (r != null) {
 					span.Inlines.Add(r);

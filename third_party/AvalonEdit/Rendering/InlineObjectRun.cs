@@ -42,7 +42,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		public InlineObjectElement(int documentLength, UIElement element)
 			: base(1, documentLength)
 		{
-			this.Element = element ?? throw new ArgumentNullException("element");
+			Element = element ?? throw new ArgumentNullException("element");
 		}
 
 		/// <inheritdoc/>
@@ -52,7 +52,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 				throw new ArgumentNullException("context");
 			}
 
-			return new InlineObjectRun(1, this.TextRunProperties, this.Element);
+			return new InlineObjectRun(1, TextRunProperties, Element);
 		}
 	}
 
@@ -79,7 +79,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 
 			this.length = length;
 			this.properties = properties ?? throw new ArgumentNullException("properties");
-			this.Element = element ?? throw new ArgumentNullException("element");
+			Element = element ?? throw new ArgumentNullException("element");
 		}
 
 		/// <summary>
@@ -125,7 +125,7 @@ namespace ICSharpCode.AvalonEdit.Rendering
 		/// <inheritdoc/>
 		public override Rect ComputeBoundingBox(bool rightToLeft, bool sideways)
 		{
-			if (this.Element.IsArrangeValid) {
+			if (Element.IsArrangeValid) {
 				double baseline = TextBlock.GetBaselineOffset(Element);
 				if (double.IsNaN(baseline)) {
 					baseline = desiredSize.Height;

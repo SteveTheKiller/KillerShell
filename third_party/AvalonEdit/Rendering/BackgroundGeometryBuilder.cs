@@ -355,10 +355,10 @@ namespace ICSharpCode.AvalonEdit.Rendering
 					figure.Segments.Insert(insertionIndex, MakeArc(left + cr, lastBottom, dir2));
 				}
 			}
-			this.lastTop = top;
-			this.lastBottom = bottom;
-			this.lastLeft = left;
-			this.lastRight = right;
+			lastTop = top;
+			lastBottom = bottom;
+			lastLeft = left;
+			lastRight = right;
 		}
 
 		private ArcSegment MakeArc(double x, double y, SweepDirection dir)

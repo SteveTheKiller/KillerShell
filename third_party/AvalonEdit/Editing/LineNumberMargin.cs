@@ -88,8 +88,8 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// <inheritdoc/>
 		protected override void OnRender(DrawingContext drawingContext)
 		{
-			TextView? textView = this.TextView;
-			Size renderSize = this.RenderSize;
+			TextView? textView = TextView;
+			Size renderSize = RenderSize;
 			if (textView != null && textView.VisualLinesValid) {
 				Brush foreground = (Brush)GetValue(Control.ForegroundProperty);
 				foreach (VisualLine line in textView.VisualLines) {
@@ -108,9 +108,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// <inheritdoc/>
 		protected override void OnTextViewChanged(TextView? oldTextView, TextView? newTextView)
 		{
-			if (oldTextView != null) {
-				oldTextView.VisualLinesChanged -= TextViewVisualLinesChanged;
-			}
+			oldTextView?.VisualLinesChanged -= TextViewVisualLinesChanged;
 			base.OnTextViewChanged(oldTextView, newTextView);
 			if (newTextView != null) {
 				newTextView.VisualLinesChanged += TextViewVisualLinesChanged;

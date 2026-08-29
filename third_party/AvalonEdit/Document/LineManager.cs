@@ -18,7 +18,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace ICSharpCode.AvalonEdit.Document
 {
@@ -41,7 +40,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 		internal void UpdateListOfLineTrackers()
 		{
-			this.lineTrackers = [.. document.LineTrackers];
+			lineTrackers = [.. document.LineTrackers];
 		}
 
 		public LineManager(DocumentLineTree documentLineTree, TextDocument document)

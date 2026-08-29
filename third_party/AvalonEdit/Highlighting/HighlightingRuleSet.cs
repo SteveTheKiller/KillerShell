@@ -19,8 +19,6 @@
 using System;
 using System.Collections.Generic;
 
-using ICSharpCode.AvalonEdit.Utils;
-
 namespace ICSharpCode.AvalonEdit.Highlighting
 {
 	/// <summary>
@@ -34,8 +32,8 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		public HighlightingRuleSet()
 		{
-			this.Spans = [];
-			this.Rules = [];
+			Spans = [];
+			Rules = [];
 		}
 
 		/// <summary>

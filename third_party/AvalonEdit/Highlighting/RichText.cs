@@ -54,7 +54,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </param>
 		public RichText(string text, RichTextModel? model = null)
 		{
-			this.Text = text ?? throw new ArgumentNullException("text");
+			Text = text ?? throw new ArgumentNullException("text");
 			if (model != null) {
 				HighlightedSection[] sections = [.. model.GetHighlightedSections(0, text.Length)];
 				stateChangeOffsets = new int[sections.Length];
@@ -72,11 +72,11 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 
 		internal RichText(string text, int[] offsets, HighlightingColor[] states)
 		{
-			this.Text = text;
+			Text = text;
 			Debug.Assert(offsets[0] == 0);
 			Debug.Assert(offsets.Last() <= text.Length);
-			this.stateChangeOffsets = offsets;
-			this.stateChanges = states;
+			stateChangeOffsets = offsets;
+			stateChanges = states;
 		}
 
 		/// <summary>
@@ -224,7 +224,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		public RichText Substring(int offset, int length)
 		{
-			if (offset == 0 && length == this.Length) {
+			if (offset == 0 && length == Length) {
 				return this;
 			}
 
@@ -265,7 +265,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		public static RichText operator +(RichText a, RichText b)
 		{
-			return RichText.Concat(a, b);
+			return Concat(a, b);
 		}
 
 		/// <summary>

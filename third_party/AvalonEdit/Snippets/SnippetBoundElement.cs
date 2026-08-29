@@ -99,9 +99,7 @@ namespace ICSharpCode.AvalonEdit.Snippets
 		public void OnInsertionCompleted()
 		{
 			targetElement = context.GetActiveElement(targetSnippetElement) as IReplaceableActiveElement;
-			if (targetElement != null) {
-				targetElement.TextChanged += targetElement_TextChanged;
-			}
+			targetElement?.TextChanged += targetElement_TextChanged;
 		}
 
 		private void targetElement_TextChanged(object sender, EventArgs e)

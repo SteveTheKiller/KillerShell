@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Windows;
 
@@ -519,9 +518,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		{
 			int oldOffset = s.StartOffset;
 			TextSegment? successor = s.Successor;
-			if (successor != null) {
-				successor.nodeLength += s.nodeLength;
-			}
+			successor?.nodeLength += s.nodeLength;
 
 			RemoveNode(s);
 			if (successor != null) {
@@ -770,14 +767,10 @@ namespace ICSharpCode.AvalonEdit.Document
 				// and overwrite the removedNode with it
 				ReplaceNode(removedNode, leftMost);
 				leftMost.left = removedNode.left;
-				if (leftMost.left != null) {
-					leftMost.left.parent = leftMost;
-				}
+				leftMost.left?.parent = leftMost;
 
 				leftMost.right = removedNode.right;
-				if (leftMost.right != null) {
-					leftMost.right.parent = leftMost;
-				}
+				leftMost.right?.parent = leftMost;
 
 				leftMost.color = removedNode.color;
 
@@ -897,9 +890,7 @@ namespace ICSharpCode.AvalonEdit.Document
 					replacedNode.parent.right = newNode;
 				}
 			}
-			if (newNode != null) {
-				newNode.parent = replacedNode.parent;
-			}
+			newNode?.parent = replacedNode.parent;
 			replacedNode.parent = null;
 		}
 
@@ -914,9 +905,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 			// set p's right child to be q's left child
 			p.right = q.left;
-			if (p.right != null) {
-				p.right.parent = p;
-			}
+			p.right?.parent = p;
 			// set q's left child to be p
 			q.left = p;
 			p.parent = q;
@@ -934,9 +923,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 			// set p's left child to be q's right child
 			p.left = q.right;
-			if (p.left != null) {
-				p.left.parent = p;
-			}
+			p.left?.parent = p;
 			// set q's right child to be p
 			q.right = p;
 			p.parent = q;
@@ -1001,7 +988,7 @@ namespace ICSharpCode.AvalonEdit.Document
 				throw new ArgumentNullException("array");
 			}
 
-			if (array.Length < this.Count) {
+			if (array.Length < Count) {
 				throw new ArgumentException("The array is too small", "array");
 			}
 
@@ -1031,7 +1018,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 		#endregion
 	}

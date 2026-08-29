@@ -139,7 +139,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		/// </summary>
 		/// <exception cref="InvalidOperationException">The line was deleted.</exception>
 		/// <remarks>EndOffset = <see cref="Offset"/> + <see cref="Length"/>.</remarks>
-		public int EndOffset => this.Offset + this.Length;
+		public int EndOffset => Offset + Length;
 		#endregion
 
 		#region Length
@@ -240,9 +240,9 @@ namespace ICSharpCode.AvalonEdit.Document
 			}
 		}
 
-		IDocumentLine? IDocumentLine.NextLine => this.NextLine;
+		IDocumentLine? IDocumentLine.NextLine => NextLine;
 
-		IDocumentLine? IDocumentLine.PreviousLine => this.PreviousLine;
+		IDocumentLine? IDocumentLine.PreviousLine => PreviousLine;
 		#endregion
 
 		#region ToString

@@ -29,7 +29,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 	/// </summary>
 	/// <remarks>
 	/// <para>
-	/// There is one active input handler per text area (<see cref="Editing.TextArea.ActiveInputHandler"/>), plus
+	/// There is one active input handler per text area (<see cref="TextArea.ActiveInputHandler"/>), plus
 	/// a number of active stacked input handlers.
 	/// </para>
 	/// <para>
@@ -74,7 +74,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// </summary>
 		protected TextAreaStackedInputHandler(TextArea textArea)
 		{
-			this.TextArea = textArea ?? throw new ArgumentNullException("textArea");
+			TextArea = textArea ?? throw new ArgumentNullException("textArea");
 		}
 
 		/// <inheritdoc/>
@@ -117,7 +117,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// </summary>
 		public TextAreaInputHandler(TextArea textArea)
 		{
-			this.TextArea = textArea ?? throw new ArgumentNullException("textArea");
+			TextArea = textArea ?? throw new ArgumentNullException("textArea");
 			commandBindings = new ObserveAddRemoveCollection<CommandBinding>(CommandBinding_Added, CommandBinding_Removed);
 			inputBindings = new ObserveAddRemoveCollection<InputBinding>(InputBinding_Added, InputBinding_Removed);
 			nestedInputHandlers = new ObserveAddRemoveCollection<ITextAreaInputHandler>(NestedInputHandler_Added, NestedInputHandler_Removed);
@@ -179,8 +179,8 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// <param name="handler">The event handler to run when the command is executed.</param>
 		public void AddBinding(ICommand command, ModifierKeys modifiers, Key key, ExecutedRoutedEventHandler handler)
 		{
-			this.CommandBindings.Add(new CommandBinding(command, handler));
-			this.InputBindings.Add(new KeyBinding(command, key, modifiers));
+			CommandBindings.Add(new CommandBinding(command, handler));
+			InputBindings.Add(new KeyBinding(command, key, modifiers));
 		}
 		#endregion
 

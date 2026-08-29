@@ -31,7 +31,7 @@ namespace ICSharpCode.AvalonEdit.Document
 	/// 
 	/// NOTE: The tree is never empty, initially it contains an empty line.
 	/// </summary>
-	internal sealed class DocumentLineTree : IList<DocumentLine>
+	internal sealed class DocumentLineTree : IList<LineNode>
 	{
 		#region Constructor
 		private readonly TextDocument document;
@@ -41,7 +41,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		{
 			this.document = document;
 
-			DocumentLine emptyLine = new(document);
+			LineNode emptyLine = new(document);
 			root = emptyLine.InitLineNode();
 		}
 		#endregion
@@ -92,11 +92,11 @@ namespace ICSharpCode.AvalonEdit.Document
 		/// <summary>
 		/// Rebuild the tree, in O(n).
 		/// </summary>
-		public void RebuildTree(List<DocumentLine> documentLines)
+		public void RebuildTree(List<LineNode> documentLines)
 		{
 			LineNode[] nodes = new LineNode[documentLines.Count];
 			for (int i = 0; i < documentLines.Count; i++) {
-				DocumentLine ls = documentLines[i];
+				LineNode ls = documentLines[i];
 				LineNode node = ls.InitLineNode();
 				nodes[i] = node;
 			}
@@ -135,13 +135,9 @@ namespace ICSharpCode.AvalonEdit.Document
 			LineNode node = nodes[middle];
 			node.left = BuildTree(nodes, start, middle, subtreeHeight - 1);
 			node.right = BuildTree(nodes, middle + 1, end, subtreeHeight - 1);
-			if (node.left != null) {
-				node.left.parent = node;
-			}
+			node.left?.parent = node;
 
-			if (node.right != null) {
-				node.right.parent = node;
-			}
+			node.right?.parent = node;
 
 			if (subtreeHeight == 1) {
 				node.color = RED;
@@ -239,12 +235,12 @@ namespace ICSharpCode.AvalonEdit.Document
 		#endregion
 
 		#region GetLineBy
-		public DocumentLine GetByNumber(int number)
+		public LineNode GetByNumber(int number)
 		{
 			return GetNodeByIndex(number - 1);
 		}
 
-		public DocumentLine GetByOffset(int offset)
+		public LineNode GetByOffset(int offset)
 		{
 			return GetNodeByOffset(offset);
 		}
@@ -356,15 +352,15 @@ namespace ICSharpCode.AvalonEdit.Document
 		#endregion
 
 		#region Insert/Remove lines
-		public void RemoveLine(DocumentLine line)
+		public void RemoveLine(LineNode line)
 		{
 			RemoveNode(line);
 			line.isDeleted = true;
 		}
 
-		public DocumentLine InsertLineAfter(DocumentLine line, int totalLength)
+		public LineNode InsertLineAfter(LineNode line, int totalLength)
 		{
-			DocumentLine newLine = new(document) {
+			LineNode newLine = new(document) {
 				TotalLength = totalLength
 			};
 
@@ -372,7 +368,7 @@ namespace ICSharpCode.AvalonEdit.Document
 			return newLine;
 		}
 
-		private void InsertAfter(LineNode node, DocumentLine newLine)
+		private void InsertAfter(LineNode node, LineNode newLine)
 		{
 			LineNode newNode = newLine.InitLineNode();
 			if (node.right == null) {
@@ -480,14 +476,10 @@ namespace ICSharpCode.AvalonEdit.Document
 				// and overwrite the removedNode with it
 				ReplaceNode(removedNode, leftMost);
 				leftMost.left = removedNode.left;
-				if (leftMost.left != null) {
-					leftMost.left.parent = leftMost;
-				}
+				leftMost.left?.parent = leftMost;
 
 				leftMost.right = removedNode.right;
-				if (leftMost.right != null) {
-					leftMost.right.parent = leftMost;
-				}
+				leftMost.right?.parent = leftMost;
 
 				leftMost.color = removedNode.color;
 
@@ -607,9 +599,7 @@ namespace ICSharpCode.AvalonEdit.Document
 					replacedNode.parent.right = newNode;
 				}
 			}
-			if (newNode != null) {
-				newNode.parent = replacedNode.parent;
-			}
+			newNode?.parent = replacedNode.parent;
 			replacedNode.parent = null;
 		}
 
@@ -624,9 +614,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 			// set p's right child to be q's left child
 			p.right = q.left;
-			if (p.right != null) {
-				p.right.parent = p;
-			}
+			p.right?.parent = p;
 			// set q's left child to be p
 			q.left = p;
 			p.parent = q;
@@ -643,9 +631,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 			// set p's left child to be q's right child
 			p.left = q.right;
-			if (p.left != null) {
-				p.left.parent = p;
-			}
+			p.left?.parent = p;
 			// set q's right child to be p
 			q.right = p;
 			p.parent = q;
@@ -685,7 +671,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		#endregion
 
 		#region IList implementation
-		DocumentLine IList<DocumentLine>.this[int index] {
+		LineNode IList<LineNode>.this[int index] {
 			get {
 				document.VerifyAccess();
 				return GetByNumber(1 + index);
@@ -694,16 +680,16 @@ namespace ICSharpCode.AvalonEdit.Document
 			set => throw new NotSupportedException();
 		}
 
-		int ICollection<DocumentLine>.Count {
+		int ICollection<LineNode>.Count {
 			get {
 				document.VerifyAccess();
 				return LineCount;
 			}
 		}
 
-		bool ICollection<DocumentLine>.IsReadOnly => true;
+		bool ICollection<LineNode>.IsReadOnly => true;
 
-		int IList<DocumentLine>.IndexOf(DocumentLine item)
+		int IList<LineNode>.IndexOf(LineNode item)
 		{
 			document.VerifyAccess();
 			if (item == null || item.IsDeleted) {
@@ -718,33 +704,33 @@ namespace ICSharpCode.AvalonEdit.Document
 			}
 		}
 
-		void IList<DocumentLine>.Insert(int index, DocumentLine item)
+		void IList<LineNode>.Insert(int index, LineNode item)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IList<DocumentLine>.RemoveAt(int index)
+		void IList<LineNode>.RemoveAt(int index)
 		{
 			throw new NotSupportedException();
 		}
 
-		void ICollection<DocumentLine>.Add(DocumentLine item)
+		void ICollection<LineNode>.Add(LineNode item)
 		{
 			throw new NotSupportedException();
 		}
 
-		void ICollection<DocumentLine>.Clear()
+		void ICollection<LineNode>.Clear()
 		{
 			throw new NotSupportedException();
 		}
 
-		bool ICollection<DocumentLine>.Contains(DocumentLine item)
+		bool ICollection<LineNode>.Contains(LineNode item)
 		{
-			IList<DocumentLine> self = this;
+			IList<LineNode> self = this;
 			return self.IndexOf(item) >= 0;
 		}
 
-		void ICollection<DocumentLine>.CopyTo(DocumentLine[] array, int arrayIndex)
+		void ICollection<LineNode>.CopyTo(LineNode[] array, int arrayIndex)
 		{
 			if (array == null) {
 				throw new ArgumentNullException("array");
@@ -758,27 +744,27 @@ namespace ICSharpCode.AvalonEdit.Document
 				throw new ArgumentOutOfRangeException("arrayIndex", arrayIndex, "Value must be between 0 and " + (array.Length - LineCount));
 			}
 
-			foreach (DocumentLine ls in this) {
+			foreach (LineNode ls in this) {
 				array[arrayIndex++] = ls;
 			}
 		}
 
-		bool ICollection<DocumentLine>.Remove(DocumentLine item)
+		bool ICollection<LineNode>.Remove(LineNode item)
 		{
 			throw new NotSupportedException();
 		}
 
-		public IEnumerator<DocumentLine> GetEnumerator()
+		public IEnumerator<LineNode> GetEnumerator()
 		{
 			document.VerifyAccess();
 			return Enumerate();
 		}
 
-		private IEnumerator<DocumentLine> Enumerate()
+		private IEnumerator<LineNode> Enumerate()
 		{
 			document.VerifyAccess();
 			// root is never null: a document always has at least one line.
-			DocumentLine? line = root!.LeftMost;
+			LineNode? line = root!.LeftMost;
 			while (line != null) {
 				yield return line;
 				line = line.NextLine;
@@ -787,7 +773,7 @@ namespace ICSharpCode.AvalonEdit.Document
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 		#endregion
 	}

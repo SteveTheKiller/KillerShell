@@ -41,7 +41,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		// Element type is nullable: a newly inserted or invalidated line has no stored state yet,
 		// and null is what marks it as "not computed" until HighlightUpTo fills it in.
-		private readonly CompressingTreeList<SpanStack?> storedSpanStacks = new(object.ReferenceEquals);
+		private readonly CompressingTreeList<SpanStack?> storedSpanStacks = new(ReferenceEquals);
 		private readonly CompressingTreeList<bool> isValid = new((a, b) => a == b);
 		private readonly IHighlightingDefinition definition;
 		private readonly HighlightingEngine engine;
@@ -60,9 +60,9 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		public DocumentHighlighter(TextDocument document, IHighlightingDefinition definition)
 		{
-			this.Document = document ?? throw new ArgumentNullException("document");
+			Document = document ?? throw new ArgumentNullException("document");
 			this.definition = definition ?? throw new ArgumentNullException("definition");
-			this.engine = new HighlightingEngine(definition.MainRuleSet);
+			engine = new HighlightingEngine(definition.MainRuleSet);
 			document.VerifyAccess();
 			weakLineTracker = WeakLineTracker.Register(document, this);
 			InvalidateSpanStacks();
@@ -122,12 +122,12 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		{
 		}
 
-		private ImmutableStack<HighlightingSpan> initialSpanStack = SpanStack.Empty;
+		private SpanStack initialSpanStack = SpanStack.Empty;
 
 		/// <summary>
 		/// Gets/sets the initial span stack of the document. Default value is <see cref="SpanStack.Empty" />.
 		/// </summary>
-		public ImmutableStack<HighlightingSpan> InitialSpanStack {
+		public SpanStack InitialSpanStack {
 			get => initialSpanStack;
 			set {
 				initialSpanStack = value ?? SpanStack.Empty;

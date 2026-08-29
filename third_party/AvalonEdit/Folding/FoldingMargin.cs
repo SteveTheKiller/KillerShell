@@ -214,13 +214,9 @@ namespace ICSharpCode.AvalonEdit.Folding
 		/// <inheritdoc/>
 		protected override void OnTextViewChanged(TextView? oldTextView, TextView? newTextView)
 		{
-			if (oldTextView != null) {
-				oldTextView.VisualLinesChanged -= TextViewVisualLinesChanged;
-			}
+			oldTextView?.VisualLinesChanged -= TextViewVisualLinesChanged;
 			base.OnTextViewChanged(oldTextView, newTextView);
-			if (newTextView != null) {
-				newTextView.VisualLinesChanged += TextViewVisualLinesChanged;
-			}
+			newTextView?.VisualLinesChanged += TextViewVisualLinesChanged;
 			// Was (null, null): the handler ignores both, but a null sender misreports where the
 			// call came from, and EventArgs.Empty is the shape every other synthetic raise uses.
 			TextViewVisualLinesChanged(this, EventArgs.Empty);

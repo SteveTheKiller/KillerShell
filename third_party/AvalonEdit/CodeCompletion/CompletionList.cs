@@ -85,9 +85,7 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 			base.OnApplyTemplate();
 
 			listBox = GetTemplateChild("PART_ListBox") as CompletionListBox;
-			if (listBox != null) {
-				listBox.ItemsSource = completionData;
-			}
+			listBox?.ItemsSource = completionData;
 		}
 
 		/// <summary>
@@ -204,10 +202,7 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 					ApplyTemplate();
 				}
 
-				if (listBox != null) // may still be null if ApplyTemplate fails, or if listBox and value both are null
-{
-					listBox.SelectedItem = value;
-				}
+				listBox?.SelectedItem = value;
 			}
 		}
 
@@ -249,7 +244,7 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 				ApplyTemplate();
 			}
 
-			if (this.IsFiltering) {
+			if (IsFiltering) {
 				SelectItemFiltering(text);
 			} else {
 				SelectItemWithStart(text);
@@ -263,9 +258,9 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 		private void SelectItemFiltering(string query)
 		{
 			// if the user just typed one more character, don't filter all data but just filter what we are already displaying
-			ObservableCollection<ICompletionData> listToFilter = (this.currentList != null && (!string.IsNullOrEmpty(this.currentText)) && (!string.IsNullOrEmpty(query)) &&
-								query.StartsWith(this.currentText, StringComparison.Ordinal)) ?
-				this.currentList : this.completionData;
+			ObservableCollection<ICompletionData> listToFilter = (currentList != null && (!string.IsNullOrEmpty(currentText)) && (!string.IsNullOrEmpty(query)) &&
+								query.StartsWith(currentText, StringComparison.Ordinal)) ?
+				currentList : completionData;
 
 			var matchingItems =
 				from item in listToFilter
@@ -294,7 +289,7 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 				listBoxItems.Add(matchingItem.Item);
 				i++;
 			}
-			this.currentList = listBoxItems;
+			currentList = listBoxItems;
 			listBox.ItemsSource = listBoxItems;
 			SelectIndexCentered(bestIndex);
 		}

@@ -78,16 +78,16 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		/// </summary>
 		public HighlightedLine HighlightLine(IDocument document, IDocumentLine line)
 		{
-			this.lineStartOffset = line.Offset;
-			this.lineText = document.GetText(line);
+			lineStartOffset = line.Offset;
+			lineText = document.GetText(line);
 			try {
-				this.highlightedLine = new HighlightedLine(document, line);
+				highlightedLine = new HighlightedLine(document, line);
 				HighlightLineInternal();
-				return this.highlightedLine;
+				return highlightedLine;
 			} finally {
-				this.highlightedLine = null;
-				this.lineText = null!;
-				this.lineStartOffset = 0;
+				highlightedLine = null;
+				lineText = null!;
+				lineStartOffset = 0;
 			}
 		}
 
@@ -101,12 +101,12 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		public void ScanLine(IDocument document, IDocumentLine line)
 		{
 			//this.lineStartOffset = line.Offset; not necessary for scanning
-			this.lineText = document.GetText(line);
+			lineText = document.GetText(line);
 			try {
 				Debug.Assert(highlightedLine == null);
 				HighlightLineInternal();
 			} finally {
-				this.lineText = null!;
+				lineText = null!;
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 		{
 			position = 0;
 			ResetColorStack();
-			HighlightingRuleSet currentRuleSet = this.CurrentRuleSet;
+			HighlightingRuleSet currentRuleSet = CurrentRuleSet;
 			Stack<Match[]> storedMatchArrays = new();
 			Match[] matches = AllocateMatchArray(currentRuleSet.Spans.Count);
 			Match? endSpanMatch = null;
@@ -154,7 +154,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 					}
 
 					spanStack = spanStack.Pop();
-					currentRuleSet = this.CurrentRuleSet;
+					currentRuleSet = CurrentRuleSet;
 					//FreeMatchArray(matches);
 					if (storedMatchArrays.Count > 0) {
 						matches = storedMatchArrays.Pop();
@@ -175,7 +175,7 @@ namespace ICSharpCode.AvalonEdit.Highlighting
 					Debug.Assert(index >= 0);
 					HighlightingSpan newSpan = currentRuleSet.Spans[index];
 					spanStack = spanStack.Push(newSpan);
-					currentRuleSet = this.CurrentRuleSet;
+					currentRuleSet = CurrentRuleSet;
 					storedMatchArrays.Push(matches);
 					matches = AllocateMatchArray(currentRuleSet.Spans.Count);
 					if (newSpan.SpanColorIncludesStart) {
