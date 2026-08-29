@@ -366,8 +366,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 				if (textArea.Selection.EnableVirtualSpace || textArea.Document.GetLocation(endOffset) == endLocation) {
 					RectangleSelection rsel = new(textArea, startPosition, endLocation.Line, GetXPos(textArea, startPosition));
 					rsel.ReplaceSelectionWithText(text);
-					if (selectInsertedText && textArea.Selection is RectangleSelection) {
-						RectangleSelection sel = (RectangleSelection)textArea.Selection;
+					if (selectInsertedText && textArea.Selection is RectangleSelection sel) {
 						textArea.Selection = new RectangleSelection(textArea, startPosition, sel.endLine, sel.endXPos);
 					}
 					return true;

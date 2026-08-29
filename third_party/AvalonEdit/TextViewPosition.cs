@@ -131,8 +131,8 @@ namespace ICSharpCode.AvalonEdit
 		/// <inheritdoc/>
 		public override readonly bool Equals(object obj)
 		{
-			if (obj is TextViewPosition) {
-				return Equals((TextViewPosition)obj); // use Equals method below
+			if (obj is TextViewPosition position) {
+				return Equals(position); // use Equals method below
 			} else {
 				return false;
 			}

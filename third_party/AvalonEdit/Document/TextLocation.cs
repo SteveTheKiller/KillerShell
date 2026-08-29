@@ -198,8 +198,8 @@ namespace ICSharpCode.AvalonEdit.Document
 		/// <inheritdoc/>
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			if (value is string) {
-				string[] parts = ((string)value).Split(';', ',');
+			if (value is string text) {
+				string[] parts = text.Split(';', ',');
 				if (parts.Length == 2) {
 					return new TextLocation(int.Parse(parts[0], culture), int.Parse(parts[1], culture));
 				}
@@ -210,8 +210,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		/// <inheritdoc/>
 		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 		{
-			if (value is TextLocation && destinationType == typeof(string)) {
-				TextLocation loc = (TextLocation)value;
+			if (value is TextLocation loc && destinationType == typeof(string)) {
 				return loc.Line.ToString(culture) + ";" + loc.Column.ToString(culture);
 			}
 			return base.ConvertTo(context, culture, value, destinationType);

@@ -333,7 +333,7 @@ namespace ICSharpCode.AvalonEdit.Document
 		/// <inheritdoc/>
 		public override bool Equals(object obj)
 		{
-			return obj is OffsetChangeMapEntry && Equals((OffsetChangeMapEntry)obj);
+			return obj is OffsetChangeMapEntry entry && Equals(entry);
 		}
 
 		/// <inheritdoc/>

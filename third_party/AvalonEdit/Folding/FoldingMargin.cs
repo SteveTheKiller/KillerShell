@@ -166,10 +166,10 @@ namespace ICSharpCode.AvalonEdit.Folding
 		private static void OnUpdateBrushes(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			FoldingMargin? m = null;
-			if (d is FoldingMargin) {
-				m = (FoldingMargin)d;
-			} else if (d is TextEditor) {
-				m = ((TextEditor)d).TextArea.LeftMargins.FirstOrDefault(c => c is FoldingMargin) as FoldingMargin;
+			if (d is FoldingMargin foldingMargin) {
+				m = foldingMargin;
+			} else if (d is TextEditor textEditor) {
+				m = textEditor.TextArea.LeftMargins.FirstOrDefault(c => c is FoldingMargin) as FoldingMargin;
 			}
 
 			if (m == null) {

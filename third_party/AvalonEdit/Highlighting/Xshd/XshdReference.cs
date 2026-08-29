@@ -86,8 +86,8 @@ namespace ICSharpCode.AvalonEdit.Highlighting.Xshd
 		/// <inheritdoc/>
 		public override bool Equals(object? obj)
 		{
-			if (obj is XshdReference<T>) {
-				return Equals((XshdReference<T>)obj); // use Equals method below
+			if (obj is XshdReference<T> reference) {
+				return Equals(reference); // use Equals method below
 			} else {
 				return false;
 			}

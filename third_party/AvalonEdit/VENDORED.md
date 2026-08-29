@@ -74,7 +74,8 @@ where MSBuild never looks. That surfaced 129,102 findings. They came down like t
 | `dotnet format style`, expression bodies, `var`, conditional delegate calls | 4,074 |
 | remaining mechanical rules | 3,252 |
 | audited exceptions recorded below | 1,632 |
-| 2026-08-29 pass, the three commands below | 120 |
+| 2026-08-29 pass, the three commands below | 131 |
+| eleven IDE0038 sites the batch fixer would not take, fixed by hand | 120 |
 | IDE0032 and IDE0370 declined and recorded | 0 |
 
 ### The 2026-08-29 pass
@@ -89,7 +90,21 @@ dotnet format style KillerShell.csproj --diagnostics IDE0031 IDE0270 IDE0038 --s
 ```
 
 That is unused usings (14 files), redundant `this.` and namespace qualification (107), and null
-propagation plus pattern matching (26). Two rules were declined rather than fixed and are
+propagation plus pattern matching (26).
+
+**Eleven IDE0038 sites were then fixed by hand**, in `TextLocation` (x2), `SimpleSegment`,
+`OffsetChangeMap`, `RectangleSelection`, `FoldingMargin` (x2), `XshdReference`,
+`TextViewPosition`, `StringSegment` and `ExtensionMethods`. Every one was `x is T` followed by a
+separate `(T)x` cast, rewritten to `x is T name`; the batch fixer skips these because the cast
+sits where it will not follow it - in a `&&` right operand, in a separate statement inside the
+if body, or as an expression receiver. Two of them dropped a now-dead local declaration with it.
+These are the only edits in this pass that a re-extract has to redo by hand.
+
+Note that IDE0038 does not appear in a build even with `EnforceCodeStyleInBuild`; it is reported
+by the IDE analyzers only. Visual Studio's Error List, not a build, is the authoritative count
+for this tree.
+
+Two rules were declined rather than fixed and are
 recorded in `third_party/.editorconfig` beside the earlier seven: **IDE0032** (84 sites, deletes
 a named backing field from each class, so an upstream diff would compare class shapes instead of
 statements) and **IDE0370**/**IDE0079** (36 sites, upstream's own `SuppressMessage` attributes,

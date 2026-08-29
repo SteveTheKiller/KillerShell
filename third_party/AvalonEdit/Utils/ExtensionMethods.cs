@@ -220,10 +220,10 @@ namespace ICSharpCode.AvalonEdit.Utils
 				yield return obj;
 				if (obj is Visual or System.Windows.Media.Media3D.Visual3D) {
 					obj = VisualTreeHelper.GetParent(obj);
-				} else if (obj is FrameworkContentElement) {
+				} else if (obj is FrameworkContentElement contentElement) {
 					// When called with a non-visual such as a TextElement, walk up the
 					// logical tree instead.
-					obj = ((FrameworkContentElement)obj).Parent;
+					obj = contentElement.Parent;
 				} else {
 					break;
 				}
