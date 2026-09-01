@@ -4,32 +4,25 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.3] - Unreleased
+## [1.2.3] - 2026-09-01
+
+1.2.3 adds much faster elevated storage scans, completes fifteen-language coverage, and improves reliability across browsing, terminals, installation, themes, and killershell.net.
 
 ### Added
-- Storage Analyzer now uses a Master File Table fast path for elevated scans of local NTFS drives and folders. It enumerates the volume by file ID, builds the same treemap tree, and automatically falls back to the existing parallel directory walker for ordinary accounts, network paths, other filesystems, or any unsupported MFT operation.
-- Russian and Kazakh localization for the complete app interface and killershell.net, bringing both to fifteen languages and matching KillerScan and KillerPDF. Both are new translations rather than ports: only 55 of the 716 app keys exist in the other apps, because the terminal, editor, Registry, Event Viewer and Storage Analyzer strings are KillerShell's own. The website's 90-row shortcut reference is generated from the app dictionaries as before, so the two cannot drift.
-- Italian localization for the complete app interface and killershell.net, bringing both to thirteen languages.
-- Hungarian localization for the complete app interface and killershell.net, bringing both to twelve languages.
-- The family grab cursors, matching KillerNotes and KillerPDF: an open hand while hovering a Performance monitor cell header, and a closed hand for as long as the cell is being carried.
+- Storage Analyzer uses a Master File Table fast path for elevated local NTFS scans, with automatic fallback to the parallel directory walker.
+- Hungarian, Italian, Russian, and Kazakh localization completes the app and website in fifteen languages.
+- Performance Monitor cell headers use the family open-hand and closed-hand grab cursors.
 
 ### Changed
-- killershell.net's Help and Technical pages now have complete thirteen-language coverage, including every newer archive, pane, editor, administration, Storage Analyzer, and shortcut section. The 90-row shortcut reference, its scope/category headings, and its List/Keyboard labels are generated from the app's own locale dictionaries so the website cannot drift from the F1 card. Polish, Czech, and Japanese are also accepted by the website language switcher instead of falling back to English.
-- release.ps1 now gates every release on translations (a locale missing a key, carrying an extra one, holding an empty value, or with placeholders that do not match English fails the run) and on punctuation (no en or em dashes anywhere, translated content included). The dashes already present in the locale files and the website dictionaries were cleaned up in the same pass. The translation gate also reads the locale files as UTF-8 explicitly, so it sees the same content on PowerShell 5.1 and 7 instead of reading every non-Latin script as mojibake on the older shell.
+- killershell.net's Help, Technical, and generated 90-row shortcut reference now have complete fifteen-language coverage.
+- The release workflow now rejects incomplete translations, placeholder mismatches, prohibited punctuation, and inconsistent UTF-8 parsing.
 
 ### Fixed
-- Installed copies now register KillerShell as an available editor for Markdown, text, logs, configuration files, YAML, CSV, and PowerShell files in Windows Default Apps and Open With.
-- KillerShell now detects when both a per-user and an all-users installation exist and offers to remove the copy that is not running, and self-update keeps the Add/Remove Programs version current instead of leaving it describing the replaced build.
-- The folder tree now follows changes made outside KillerShell's own file commands. A folder created or removed by the terminal, another application, or an installer appears in the tree instead of leaving the branch showing whatever was there when it was first expanded, and navigating into such a folder now moves the tree rather than silently doing nothing.
-- Snapping, maximizing, or restoring the window now keeps the dual panes' proportions instead of handing all the new space to one pane; dragging the window edge still resizes only the right pane.
-- Open terminal here from the results context menu now uses the folder being viewed when no file row is selected, matching F8 instead of silently doing nothing.
-- New terminal tabs now preserve their startup screen until layout supplies a real size, so a fast first PowerShell prompt remains visible instead of being pushed into scrollback by a temporary 1x1 buffer.
-- killershell.net's Storage row in the technical stack table was truncated mid-sentence in eleven languages, with an unclosed code tag that pulled monospace styling across the rest of the cell. Several of those had also had the Win32 function name FindFirstFileExW itself translated, so the page named a function that does not exist. A collapsible help heading was missing its disclosure triangle in ten languages, and the Hungarian architecture note lost a code sample to an unescaped angle bracket.
-- Context menus now use opaque, square popup surfaces so menu labels render with ClearType instead of coarse grayscale antialiasing.
-- Browsing-tab icons now follow the current folder after navigation, including special folders such as Home and Pictures.
-- Terminal prompts now retain their last valid theme palette if the live session file is briefly unavailable, preventing the path block from flashing red while using a blue theme.
-- Secondary buttons now dim on hover instead of lighting up an accent border, which belongs to the primary and outline buttons. Sepulchre also gets its own hover color: it had been borrowing the teal from the row highlight, which read as the wrong palette entirely on that theme's warm brown surface.
-- The 98SE theme's accent swatches now list navy first, matching KillerNotes' Win98 order and the theme's default accent.
+- Installed copies register as editors for common text and configuration formats, and duplicate installations and self-update metadata are handled correctly.
+- The folder tree follows external changes and navigation, while browsing-tab icons follow the current folder.
+- Dual panes preserve their proportions across snapping, maximizing, and restoring.
+- Terminal commands, startup screens, and prompt palettes remain correct through empty selections, early layout, and temporary session-file failures.
+- Localized website markup, context-menu rendering, secondary-button hover states, and theme accent details are corrected.
 
 ## [1.2.2] - 2026-08-18
 

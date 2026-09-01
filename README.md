@@ -21,7 +21,7 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 - Use the built-in Event Viewer, Registry Editor, and Storage Analyzer without leaving the tab strip
 - Keyboard-first operation using familiar Explorer keys plus F4 storage, F7 edit, F8 shell, F9 processes, F10 split, F11 performance, and F1 for the complete shortcut overlay
 - Thirteen themes, including a full 98SE recreation; Dark, Light, Black, and 98SE each have six accent colors for 33 looks in all
-- Localized in 13 languages, with live switching and English fallback for incomplete translations
+- Localized in 15 languages, with live switching and English fallback for incomplete translations
 - Runs portable or self-installs per-user without UAC or machine-wide with UAC; `/silent` supports WinGet and managed deployment
 - Local-only: no indexing service, cloud account, advertisements, or telemetry
 
@@ -34,7 +34,7 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 </tr>
 <tr>
 <td><img src="docs/files-terminal-menu.png" alt="File browser and PowerShell in two panes with the file context menu open"><br><sub>Browse files beside a live PowerShell tab; search, terminals, storage analysis, hashing, and admin actions stay one click away.</sub></td>
-<td><img src="docs/editor-languages.png" alt="Syntax-highlighted PowerShell editor with the language menu open"><br><sub>Syntax-highlighted editing, a persistent folder tree, and live switching among thirteen localized interfaces.</sub></td>
+<td><img src="docs/editor-languages.png" alt="Syntax-highlighted PowerShell editor with the language menu open"><br><sub>Syntax-highlighted editing, a persistent folder tree, and live switching among fifteen localized interfaces.</sub></td>
 </tr>
 </table>
 
@@ -52,7 +52,7 @@ winget install SteveTheKiller.KillerShell
 ```
 
 - Prebuilt binary: <https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe>
-- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.2.2/KillerShell-1.2.2-src.zip>
+- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.2.3/KillerShell-1.2.3-src.zip>
 
 ## Build from source
 
