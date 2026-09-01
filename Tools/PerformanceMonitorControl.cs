@@ -1128,7 +1128,7 @@ namespace KillerShell.Tools
 
             // Transparent Background is load-bearing: without it the Grid's empty stretches are
             // not hit-testable and the drag handle only worked when the press landed on text.
-            var header = new Grid { Background = Brushes.Transparent, Cursor = Cursors.SizeAll };
+            var header = new Grid { Background = Brushes.Transparent, Cursor = Controls.DragCursors.Open };
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -1373,6 +1373,10 @@ namespace KillerShell.Tools
                 {
                     if (Math.Abs(pos.X - _dragStart.X) < 4 && Math.Abs(pos.Y - _dragStart.Y) < 4) return;
                     _dragActive = true;
+                    // The fist closes at the SAME moment the cell dims - past the threshold, not
+                    // on mousedown. A press that never becomes a drag is a click on the header,
+                    // and closing the hand for it would flicker on every stray press.
+                    Controls.DragCursors.BeginDrag();
                     tile.CellBorder.Opacity = 0.65;
                 }
 
@@ -1391,12 +1395,18 @@ namespace KillerShell.Tools
             {
                 if (header.IsMouseCaptured) header.ReleaseMouseCapture();
                 if (ReferenceEquals(_dragTile, tile) && _dragActive) SaveLayout();
+                Controls.DragCursors.EndDrag();
                 tile.CellBorder.Opacity = 1.0;
                 _dragTile = null;
                 _dragActive = false;
             };
-            // Capture can be torn away (alt-tab, a popup) - never leave a cell dimmed.
-            header.LostMouseCapture += (_, _) => tile.CellBorder.Opacity = 1.0;
+            // Capture can be torn away (alt-tab, a popup) - never leave a cell dimmed, and never
+            // leave the closed hand on screen for the rest of the session either.
+            header.LostMouseCapture += (_, _) =>
+            {
+                Controls.DragCursors.EndDrag();
+                tile.CellBorder.Opacity = 1.0;
+            };
         }
 
         /// <summary>The cell under a grid-space point, ignoring the dragged one.</summary>

@@ -45,6 +45,12 @@
          not Resource: Associations.cs points DefaultIcon at a real path on disk, so App.xaml.cs
          has to extract it beside the exe. Same arrangement as KillerPDF's pdf-file.ico. -->
     <EmbeddedResource Include="Resources\text-file.ico" />
+    <!-- The family grab cursors (Controls\DragCursors.cs): open hand on a draggable surface,
+         closed hand while the drag is live. 32x32 DIB, NOT PNG-compressed - LoadCursorFromFile
+         is unreliable with those. Art and the two files live in Killer Branding\icons; these are
+         copies, the same arrangement as the icon packs above. -->
+    <Resource Include="Resources\open_hand.cur" />
+    <Resource Include="Resources\closed_hand.cur" />
     <Resource Include="Fonts\KillerShell.ttf" />
     <!-- 26 glyphs, 2.9 KB: the handful a stock Windows monospaced font does NOT have but the
          shipped prompt draws - the powerline separators, the git branch mark, the prompt chevron
