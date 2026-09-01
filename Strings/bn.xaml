@@ -560,7 +560,7 @@
     <sys:String x:Key="Str_Evt_Loading">Event লগ লোড হচ্ছে...</sys:String>
     <sys:String x:Key="Str_Evt_MessageCopied">বার্তা কপি হয়েছে</sys:String>
     <sys:String x:Key="Str_Evt_NoMessage">(বার্তার ডেটা অনুপলব্ধ)</sys:String>
-    <sys:String x:Key="Str_Evt_Opcode">Opcode</sys:String>
+    <sys:String x:Key="Str_Evt_Opcode">অপকোড</sys:String>
     <sys:String x:Key="Str_Evt_ProcessId">Process ID</sys:String>
     <sys:String x:Key="Str_Evt_RecordId">Event রেকর্ড ID</sys:String>
     <sys:String x:Key="Str_Evt_RefreshFailed">Event লগ পড়া যায়নি - {0}</sys:String>
