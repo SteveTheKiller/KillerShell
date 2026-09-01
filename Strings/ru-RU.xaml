@@ -1,0 +1,818 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - Russian (ru-RU) strings. x:Key values are looked up at
+         runtime; never change them. Any key omitted here falls back to
+         en-US.xaml. {0}/{1} placeholders are filled by the app - keep them.
+         House style: plain hyphens only, never an en or em dash, even where
+         Russian typography would normally take one - release.ps1 gates on it.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">Язык</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Тема</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Прокрутите колесо над логотипом, чтобы изменить размер приложения</sys:String>
+    <sys:String x:Key="Str_St_AppSize">Размер приложения {0}%</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">тема</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">акцент</sys:String>
+    <sys:String x:Key="Str_Theme_Dark">Тёмная</sys:String>
+    <sys:String x:Key="Str_Theme_Light">Светлая</sys:String>
+    <sys:String x:Key="Str_Theme_Black">Чёрная</sys:String>
+    <sys:String x:Key="Str_Theme_Blood">Кровь</sys:String>
+    <sys:String x:Key="Str_Theme_Greed">Алчность</sys:String>
+    <sys:String x:Key="Str_Theme_Cyanotic">Цианоз</sys:String>
+    <sys:String x:Key="Str_Theme_SE98">98SE</sys:String>
+    <sys:String x:Key="Str_Theme_Ectoplasm">Эктоплазма</sys:String>
+    <sys:String x:Key="Str_Theme_Decay">Распад</sys:String>
+    <sys:String x:Key="Str_Theme_Mourning">Траур</sys:String>
+    <sys:String x:Key="Str_Theme_Sepulchre">Склеп</sys:String>
+    <sys:String x:Key="Str_Theme_Delirium">Бред</sys:String>
+    <sys:String x:Key="Str_Theme_Malaise">Недомогание</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">в:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(папка не выбрана - нажмите, чтобы выбрать)</sys:String>
+    <sys:String x:Key="Str_Scope_Dropped">перетащенные файлы</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Нажмите, чтобы сменить папку поиска</sys:String>
+    <sys:String x:Key="Str_TT_SearchPanel">Показать или скрыть панель поиска  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">Показать или скрыть дерево папок</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Свернуть боковые панели</sys:String>
+    <sys:String x:Key="Str_TT_Bookmarks">Закладки  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Добавить эту папку в закладки  (Ctrl+D)</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Показывать скрытые и системные элементы  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Показать сведения о файле  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Папки выше файлов</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">Добавить в закладки</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">Убрать из закладок</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">Скрыть строку меню</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">показать или скрыть закладки</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">перейти к закладке 1-10 (0 = десятая)</sys:String>
+    <sys:String x:Key="Str_TT_Back">Назад</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Вперёд</sys:String>
+    <sys:String x:Key="Str_Status_Listing">Открытие {0}...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">Элементов: {0}</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">Не удалось открыть {0}</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">Выберите корневую папку поиска</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">ФИЛЬТРЫ</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">включить</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">исключить</sys:String>
+    <sys:String x:Key="Str_TT_Include">Шаблоны через точку с запятой, например *.txt;*.log</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">Пути или шаблоны через точку с запятой, которые нужно пропустить</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">учитывать регистр</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ добавить фильтр</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">дополнительно</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">расширение</sys:String>
+    <sys:String x:Key="Str_Filter_Date">дата изменения</sys:String>
+    <sys:String x:Key="Str_Filter_Size">размер</sys:String>
+    <sys:String x:Key="Str_Cond_Is">равно</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">не равно</sys:String>
+    <sys:String x:Key="Str_Cond_Before">до</sys:String>
+    <sys:String x:Key="Str_Cond_After">после</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">больше</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">меньше</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">Справка по шаблонам</sys:String>
+    <sys:String x:Key="Str_Help_Title">ШАБЛОНЫ</sys:String>
+    <sys:String x:Key="Str_Help_Star">всё, что заканчивается на .log</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">имена, начинающиеся с report</sys:String>
+    <sys:String x:Key="Str_Help_Middle">имена, содержащие 2024</sys:String>
+    <sys:String x:Key="Str_Help_Q">? заменяет ровно один символ</sys:String>
+    <sys:String x:Key="Str_Help_List">перечислите несколько шаблонов через ;</sys:String>
+    <sys:String x:Key="Str_Help_Plain">обычный текст тоже работает - совпадает с именами, содержащими его</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">исключение также пропускает целые папки по имени</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">новый поиск</sys:String>
+    <sys:String x:Key="Str_Tab_Dropped">перетащено ({0})</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Новая вкладка поиска  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Закрыть вкладку</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">Отмена</sys:String>
+    <sys:String x:Key="Str_Btn_Select">Выбрать</sys:String>
+    <sys:String x:Key="Str_QA_Home">Домашняя папка</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">Рабочий стол</sys:String>
+    <sys:String x:Key="Str_QA_Documents">Документы</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">Загрузки</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">Изображения</sys:String>
+    <sys:String x:Key="Str_TT_Up">На папку вверх</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(вложенных папок нет - нажмите Выбрать, чтобы использовать эту папку)</sys:String>
+    <sys:String x:Key="Str_Col_Name">имя</sys:String>
+    <sys:String x:Key="Str_Col_Folder">расположение</sys:String>
+    <sys:String x:Key="Str_Sort_Found">как найдено</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">Отфильтровать эти результаты (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Искать внутри этих результатов</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Вторая панель  (F10)  |  правый клик переключает рядом / друг над другом</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">Другие инструменты</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Сортировать по</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">Этот компьютер</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">Искать внутри этих результатов</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{0} результатов из {1}  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">Пока нет результатов, внутри которых можно искать.</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">Не удалось запустить оболочку с правами администратора: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutNeedsSave">Сохраните документ, прежде чем перетаскивать его в другое окно</sys:String>
+    <sys:String x:Key="Str_Status_TermCwdNotFound">{0} не является существующей папкой</sys:String>
+    <sys:String x:Key="Str_Status_EdPathNotFound">{0} не является существующим расположением</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">ПОРТАТИВНАЯ</sys:String>
+    <sys:String x:Key="Str_Btn_Install">Установить KillerShell</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">Установить</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">Обновить</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">Установить KillerShell на этот компьютер?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">Портативное приложение копируется в папку программ. Добавляются ярлык в меню Пуск и запись в списке установленных программ. Этот портативный файл потом можно оставить или удалить.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">Обновить существующую установку KillerShell?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">Установленная копия для вашей учётной записи будет заменена. Настройки и сохранённый сеанс сохраняются. Этот портативный файл потом можно оставить или удалить.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">Обновить существующую установку KillerShell для всех пользователей?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Копия в Program Files будет заменена. Копия для этой учётной записи удаляется, чтобы KillerShell отображался только один раз. Настройки и сохранённый сеанс сохраняются.</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">Ярлык на рабочем столе</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">Установить для всех пользователей (нужны права администратора)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell уже установлен на этом компьютере для всех пользователей, поэтому будет обновлена именно эта копия. Windows запросит разрешение.</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Установка отменена</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">Скачать и установить KillerShell {0}?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">Приложение закроется и откроется снова автоматически.</sys:String>
+    <sys:String x:Key="Str_Btn_Update">Обновить</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">Выйти из KillerShell?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">Запомнить открытые вкладки</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">Запомнить мой выбор</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">Выйти</sys:String>
+    <sys:String x:Key="Str_Col_Size">размер</sys:String>
+    <sys:String x:Key="Str_Col_Modified">изменён</sys:String>
+    <sys:String x:Key="Str_Details_Empty">Ничего не выбрано</sys:String>
+    <sys:String x:Key="Str_Details_Created">создан</sys:String>
+    <sys:String x:Key="Str_Details_Type">тип</sys:String>
+    <sys:String x:Key="Str_Details_Attributes">атрибуты</sys:String>
+    <sys:String x:Key="Str_Details_Path">путь</sys:String>
+    <sys:String x:Key="Str_Details_Folder">Папка с файлами</sys:String>
+    <sys:String x:Key="Str_Details_NoExt">Файл</sys:String>
+    <sys:String x:Key="Str_Details_ExtFile">Файл {0}</sys:String>
+    <sys:String x:Key="Str_Details_AttrReadOnly">только для чтения</sys:String>
+    <sys:String x:Key="Str_Details_AttrHidden">скрытый</sys:String>
+    <sys:String x:Key="Str_Details_AttrSystem">системный</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">папок: {0}, файлов: {1}</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">Список</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">Значки</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">Таблица</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">ПОИСКОВЫЕ ЗАПРОСЫ</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ добавить запрос</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ добавить группу</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">ОЧИСТИТЬ</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">ИСКАТЬ</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">СТОП</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">РЕЗУЛЬТАТЫ</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">РЕЗУЛЬТАТЫ  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">Экспорт результатов  (Ctrl+Alt+E)  |  Ctrl+Alt+Shift+E для CSV</sys:String>
+    <sys:String x:Key="Str_TT_Result">Клик разворачивает  |  Двойной клик показывает в Проводнике  |  Правый клик для остального</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">РАЗВЕРНУТЬ ВСЁ</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">СВЕРНУТЬ ВСЁ</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">Открыть файл</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">Открыть с помощью...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">Показать в Проводнике</sys:String>
+    <sys:String x:Key="Str_Menu_OpenAdmin">Открыть от имени администратора</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">Искать внутри этой папки</sys:String>
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Анализ хранилища</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">Показывать скрытые папки и папки с точкой</sys:String>
+    <sys:String x:Key="Str_Menu_OpenInNewTab">Открыть в новой вкладке</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">Дерево: скрытые папки и папки с точкой показаны</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">Дерево: скрытые папки и папки с точкой скрыты</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">показать или скрыть в дереве скрытые папки и папки с точкой</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">Открыть здесь терминал</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Открыть здесь терминал от имени администратора</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Исключить эту папку</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">Копировать полный путь</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">Копировать имя файла</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">Копировать путь к папке</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">Копировать найденные строки</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">Копировать SHA-256</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">Свойства</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">Другие возможности Windows...</sys:String>
+    <sys:String x:Key="Str_Status_Copied">{0} скопировано в буфер обмена</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">Скопировано найденных строк: {0}</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">Скопировано файлов: {0} - вставьте в Проводнике</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">Нет найденных строк для копирования (у совпадений по имени их нет)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">Не удалось получить доступ к буферу обмена - его удерживает другое приложение</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">Вычисление хеша {0}...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">SHA-256 файла {0} скопирован</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">Не удалось прочитать файл для вычисления хеша</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">Повышение прав отклонено</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">Эта команда работает только с файлами, не с папками</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows отказалась это открыть</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">{0} исключается - запустите поиск снова, чтобы применить</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} уже исключён</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">Свернуть</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">Развернуть</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">Восстановить</sys:String>
+    <sys:String x:Key="Str_Menu_Close">Закрыть</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">Готово</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">Неверный или отсутствующий корневой путь.</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">Добавьте хотя бы один поисковый запрос или фильтр.</sys:String>
+    <sys:String x:Key="Str_Status_Done">Завершено за {0} с  -  совпадений: {1}.</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">Остановлено.</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">Очищено.</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">Пока нечего экспортировать.</sys:String>
+    <sys:String x:Key="Str_Status_Exported">Экспортировано: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">Не удалось экспортировать: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">Просмотрено файлов: {0}</sys:String>
+    <sys:String x:Key="Str_Count_Matches">совпадений: {0}</sys:String>
+
+    <!-- About overlay -->
+    <sys:String x:Key="Str_About_Title">О программе KillerShell</sys:String>
+    <sys:String x:Key="Str_Status_TextSize">Размер текста: {0}%</sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Одно портативное приложение для управления компьютером и его файлами. Файловый браузер, терминал, текстовый редактор, анализатор хранилища и инструменты администратора в одном окне. Утилита от </sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
+    <sys:String x:Key="Str_About_Version">ВЕРСИЯ</sys:String>
+    <sys:String x:Key="Str_About_Publisher">ИЗДАТЕЛЬ</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">ОТПЕЧАТОК</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Спрашивать перед отправкой папки в корзину</sys:String>
+    <sys:String x:Key="Str_About_ClearData">Очистить все данные</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Будут удалены все сохранённые настройки - тема, язык, шрифты, сохранённые места, недавние и сеанс - а также временные файлы, извлечённые из архивов. Ваши собственные файлы не затрагиваются. Продолжить?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Данные очищены - перезапустите KillerShell, чтобы удалить всё, что ещё используется</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  сделано выездным техником</sys:String>
+
+    <!-- HTML report (exported in the app's current language) -->
+    <sys:String x:Key="Str_Rpt_Meta">Создано {0} &#183; файлов: {1} &#183; совпадений: {2}</sys:String>
+    <sys:String x:Key="Str_Rpt_MetaList">Создано {0} &#183; элементов: {1}</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">Содержимое {0}.</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">В {0} выполнен поиск {1}.</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">имена файлов, содержащие {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">содержимое файлов, включающее {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">всё</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">или</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">найдено по</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... ещё +{0}</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">Создано в {0}</sys:String>
+
+    <!-- Term/group chips + tooltips -->
+    <sys:String x:Key="Str_Mode_Name">имя</sys:String>
+    <sys:String x:Key="Str_Mode_Content">содержимое</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">Имя файла / маска  (например, *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">Поиск по содержимому  (текст внутри файлов)</sys:String>
+    <sys:String x:Key="Str_Group_Any">ЛЮБОЕ</sys:String>
+    <sys:String x:Key="Str_Group_All">ВСЕ</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">ЛЮБОЕ: файл подходит, если сработал любой запрос из группы</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">ВСЕ: файл должен совпасть с каждым запросом в группе</sys:String>
+    <sys:String x:Key="Str_Join_And">И</sys:String>
+    <sys:String x:Key="Str_Join_Or">ИЛИ</sys:String>
+    <sys:String x:Key="Str_Chk_CloseTabs">Закрыть мои открытые вкладки</sys:String>
+
+    <!-- Help card: keyboard shortcuts section (F1) -->
+    <sys:String x:Key="Str_Help_Shortcuts">Сочетания клавиш</sys:String>
+    <sys:String x:Key="Str_Ks_Run">запустить поиск</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">закрыть всплывающие окна, остановить поиск, затем предложить выход</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">отфильтровать результаты</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">новая вкладка поиска</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">закрыть текущую вкладку</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">следующая вкладка (Shift: предыдущая)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">перейти к вкладке 1-9 (9 = последняя)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">добавить поисковый запрос</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">добавить фильтр</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">выбрать папку</sys:String>
+    <sys:String x:Key="Str_Ks_Help">показать эту карточку</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">переключить учёт регистра</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">очистить результаты</sys:String>
+    <sys:String x:Key="Str_Ks_Address">изменить расположение - введите путь и нажмите Enter</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">искать внутри этих результатов, в новой вкладке</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">показать или скрыть панель поиска</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">развернуть каждый результат</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">свернуть каждый результат</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">открыть вкладку PowerShell в этой папке</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">открыть вкладку CMD в этой папке</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">открыть PowerShell от имени администратора</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">открыть CMD от имени администратора</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">экспортировать результаты в HTML</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">экспортировать результаты в CSV</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManager">открыть вкладку Processes/Services</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManagerAdmin">открыть вкладку Processes/Services от имени администратора</sys:String>
+    <sys:String x:Key="Str_Ks_Performance">открыть вкладку Быстродействие</sys:String>
+    <sys:String x:Key="Str_Ks_ProcToggle">переключаться между процессами и службами</sys:String>
+    <sys:String x:Key="Str_Ks_EventViewer">открыть вкладку Просмотр событий (всегда с повышенными правами)</sys:String>
+    <sys:String x:Key="Str_Ks_RegistryEditor">открыть вкладку Редактор реестра (всегда с повышенными правами)</sys:String>
+    <sys:String x:Key="Str_Ks_RegFind">найти имя раздела или параметра (вкладка Редактор реестра)</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">Сочетания работают в любом месте окна. Открытые списки, поле даты и фильтр результатов оставляют Enter себе.</sys:String>
+
+    <!-- Font dialog -->
+    <sys:String x:Key="Str_Fonts_Row">Шрифты...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">ШРИФТЫ</sys:String>
+    <sys:String x:Key="Str_Fonts_App">ПРИЛОЖЕНИЕ</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">ТЕРМИНАЛ</sys:String>
+    <sys:String x:Key="Str_Fonts_Editor">ТЕКСТ РЕДАКТОРА</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">По умолчанию</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">Прокрутите колесо над списком, чтобы просмотреть начертания. Каждое изменение применяется сразу.</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">У {0} нет читаемых букв - оставлен предыдущий шрифт</sys:String>
+
+    <!-- Associations card -->
+    <sys:String x:Key="Str_Assoc_Row">Сопоставления файлов...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">СОПОСТАВЛЕНИЯ ФАЙЛОВ</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">Зарегистрируйте KillerShell в Windows, чтобы он появился в меню "Открыть с помощью", в параметрах приложений по умолчанию и в контекстном меню любой папки и диска.</sys:String>
+    <sys:String x:Key="Str_Assoc_What">ТЕКСТОВЫЕ ТИПЫ</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">Для .bat, .cmd и .reg вместо этого добавляется пункт "Изменить в KillerShell". Двойной клик по-прежнему запускает или применяет их, потому что тихо менять это - верный способ отнять у кого-то полдня.</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">Зарегистрировать для всех пользователей этого компьютера</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">Запустите KillerShell от имени администратора, чтобы зарегистрировать для всех пользователей</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">Зарегистрировать</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">Удалить регистрацию</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Открыть приложения по умолчанию Windows...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">Не зарегистрировано. Windows пока не предлагает KillerShell ни для одного типа файлов.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">Зарегистрировано для вашей учётной записи. Windows не переключит умолчание за вас - выберите KillerShell для каждого типа файлов в параметрах.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">Зарегистрировано для всех пользователей этого компьютера. Windows не переключит умолчание за вас - выберите KillerShell для каждого типа файлов в параметрах.</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">Это портативная копия. Сопоставления будут указывать туда, где сейчас лежит этот .exe, и перестанут работать, если его переместить или удалить.</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Зарегистрировано в Windows</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">Регистрация удалена</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows не приняла это изменение</sys:String>
+
+    <!-- Title-bar caption on an elevated window -->
+    <sys:String x:Key="Str_Title_Elevated">- Повышенные привилегии</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">скрыть или показать строку меню панели</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">открыть новое окно</sys:String>
+
+    <!-- Recently visited folders -->
+    <sys:String x:Key="Str_TT_Recents">Недавно посещённые папки</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">Недавних папок пока нет</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">Очистить список</sys:String>
+
+    <!-- Results density -->
+    <sys:String x:Key="Str_TT_Density">Плотность результатов - клик переключает по кругу, колесо шагает</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">Плотность: просторная</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">Плотность: обычная</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">Плотность: компактная</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">Плотность: плотная</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">Плотность: минимальная</sys:String>
+
+    <!-- Terminal right-click menu -->
+    <sys:String x:Key="Str_Term_Copy">Копировать</sys:String>
+    <sys:String x:Key="Str_Term_Paste">Вставить</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">Выделить всё</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Очистить</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">Новый терминал</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">Открыть здесь папку</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">Шрифты...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">Изменить приглашение...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">Сбросить приглашение</sys:String>
+    <sys:String x:Key="Str_Term_Close">Закрыть терминал</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">Вернуть штатный скрипт приглашения? Ваши правки в этом файле будут потеряны.</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">Сбросить</sys:String>
+
+    <!-- PowerShell $PROFILE -->
+    <sys:String x:Key="Str_Prof_Reload">Перезагрузить профиль PowerShell</sys:String>
+    <sys:String x:Key="Str_Prof_Edit">Изменить профиль PowerShell</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">Запрос к {0} о расположении его профиля...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} не ответил - не удалось найти его профиль.</sys:String>
+    <sys:String x:Key="Str_Prof_None">PowerShell не найден</sys:String>
+
+    <!-- Editor tabs -->
+    <sys:String x:Key="Str_Menu_Edit">Изменить</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} слишком велик для редактирования ({1} МБ).</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">Сохранить  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">Отменить  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">Вернуть  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">Найти  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">Перейти к строке  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Перенос по словам</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">Настройки редактора</sys:String>
+    <sys:String x:Key="Str_TT_EdEncoding">Нажмите, чтобы изменить кодировку следующего сохранения</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">строка</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8">UTF-8</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8Bom">UTF-8 с BOM</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Le">UTF-16 LE</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Be">UTF-16 BE</sys:String>
+    <sys:String x:Key="Str_Ed_EncAnsi">ANSI (Windows-1252)</sys:String>
+
+    <!-- Gear flyout -->
+    <sys:String x:Key="Str_Ed_OptLineNumbers">Номера строк</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">Подсвечивать текущую строку</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">Показывать пробелы и табуляции</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">Вставлять пробелы вместо табуляций</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">Перенос по словам</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">ОТСТУП</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">Шрифт и размер...</sys:String>
+
+    <!-- Right-click menu -->
+    <sys:String x:Key="Str_Ed_Undo">Отменить</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">Вернуть</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">Вырезать</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">Копировать</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">Вставить</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">Выделить всё</sys:String>
+    <sys:String x:Key="Str_Ed_Find">Найти...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">Перейти к строке...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">Сохранить</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">Настройки...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">Закрыть файл</sys:String>
+
+    <!-- Shell bar -->
+    <sys:String x:Key="Str_TT_TermCwd">Нажмите, чтобы изменить - введите папку и нажмите Enter для перехода</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">Новый терминал  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">Новый терминал от имени администратора  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Открыть эту папку во вкладке</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Очистить</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Шрифты...</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Нажмите, чтобы изменить - введите путь и нажмите Enter, чтобы переименовать или переместить файл</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOn">Перенос по словам включён.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">Перенос по словам выключен - прокручивайте, чтобы видеть длинные строки.</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">{0} сохранён.</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">Не удалось сохранить {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">Не удалось открыть {0}: {1}</sys:String>
+
+    <!-- New blank document -->
+    <sys:String x:Key="Str_TT_TabOverflow">Все вкладки</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">Потяните, чтобы изменить ширину  -  двойной клик сбрасывает</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">Новый документ  (F7)  |  Ctrl+F7 повторяет сохранение с правами администратора, если оно отклонено</sys:String>
+    <sys:String x:Key="Str_TT_NewDocAdmin">Новый документ, повтор сохранения с правами администратора  (Ctrl+F7)</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">без имени</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">Сохранить как</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">Все файлы</sys:String>
+
+    <sys:String x:Key="Str_Dlg_DiscardMsg">Закрыть этот файл без сохранения? Изменения будут потеряны.</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">Не сохранять</sys:String>
+
+    <!-- Rail button -->
+    <sys:String x:Key="Str_TT_Terminal">Открыть терминал  (F8)  -  правый клик для выбора</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell от имени администратора</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">Командная строка</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">Командная строка от имени администратора</sys:String>
+
+    <!-- Shortcuts card -->
+    <sys:String x:Key="Str_Ks_About">показать карточку о программе</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">ПОИСК</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">НАВИГАЦИЯ</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">ВКЛАДКИ</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">ВИД</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">ФАЙЛ</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">РЕДАКТИРОВАНИЕ</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">СПРАВКА</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">СПИСОК</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">КЛАВИАТУРА</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">удерживайте Ctrl, Shift или Alt, чтобы увидеть этот слой</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeGlobal">Везде</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">Файловый браузер</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">Терминал</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">Редактор</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">показаны клавиши для:</sys:String>
+
+    <!-- Explorer-convention bindings -->
+    <sys:String x:Key="Str_Ks_BackForward">назад / вперёд</sys:String>
+    <sys:String x:Key="Str_Ks_Back">назад</sys:String>
+    <sys:String x:Key="Str_Ks_Up">на папку вверх</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">обновить - перечитать папку или повторить поиск</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">выделить все результаты</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">поставить курсор в поле поиска</sys:String>
+
+    <!-- File operations -->
+    <sys:String x:Key="Str_Fo_Copying">Копирование...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">Перемещение...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">Удаление...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{0} из {1}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} здесь уже есть. Какой файл оставить?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">УЖЕ ЗДЕСЬ</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">КОПИРУЕТСЯ СЮДА</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">Сделать так же для всего остального в этой партии</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">Заменить</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">Пропустить</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">Оставить оба</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">Переименовать</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">Удалить</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">Новое имя</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">Новая папка</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">Удалить безвозвратно элементов: {0}? Это нельзя отменить - они не попадут в корзину.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Отправить в корзину элементов: {0}? В выделении есть папка, и всё её содержимое отправится тоже.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">Больше не спрашивать</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows отказалась это удалить. Если включён контролируемый доступ к папкам, повтор от имени администратора НЕ поможет - он блокирует по приложению, а не по уровню прав, и KillerShell нужно добавить в список разрешённых приложений в Безопасности Windows. Всё равно повторить от имени администратора?</sys:String>
+    <sys:String x:Key="Str_Btn_RetryAdmin">Повторить как админ</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Удаление отклонено - доступ запрещён</sys:String>
+    <sys:String x:Key="Str_Status_Selected">Выбрано элементов: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Удаление с повышенными правами тоже отклонено - проверьте контролируемый доступ к папкам в Безопасности Windows</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedSaveFailed">Сохранение {0} с повышенными правами тоже отклонено - проверьте контролируемый доступ к папкам в Безопасности Windows</sys:String>
+
+    <!-- File-operation shortcuts -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">вырезать / копировать / вставить файлы</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">переименовать</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">отправить в корзину</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">удалить безвозвратно</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">новая папка</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">Сначала откройте папку - на вкладке поиска их некуда положить</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">Нельзя перетащить папку в саму себя</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">Готово - элементов: {0}</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">Отменено после {0} элем.</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} выполнено, {1} не удалось</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">Не получилось</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">Не удалось переименовать - {0}</sys:String>
+
+    <!-- File-operation context menu -->
+    <sys:String x:Key="Str_Menu_Cut">Вырезать</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">Копировать</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">Вставить</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">Переименовать</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">Удалить  (Shift: безвозвратно)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">Новая папка</sys:String>
+
+    <!-- Themed file dialog -->
+    <sys:String x:Key="Str_Btn_Open">Открыть</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Сохранить</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">Имя файла:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">Тип файла:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">Все файлы</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Здесь нет ничего, что подходит под текущий тип файла.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">Такой папки не существует.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">Такого файла не существует.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">Заменить {0}?</sys:String>
+
+    <!-- Processes/Services tab -->
+    <sys:String x:Key="Str_TT_TaskManager">Processes/Services  (F9)  -  правый клик для выбора</sys:String>
+    <sys:String x:Key="Str_TabTitle_TaskManager">Processes/Services</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">Процессы</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Службы</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesOpen">Processes/Services</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesAdmin">Processes/Services от имени администратора</sys:String>
+    <sys:String x:Key="Str_TT_ProcFilter">Фильтр по имени, пути или пользователю</sys:String>
+    <sys:String x:Key="Str_Col_ProcName">Имя</sys:String>
+    <sys:String x:Key="Str_Col_ProcPid">PID</sys:String>
+    <sys:String x:Key="Str_Col_ProcUser">Пользователь</sys:String>
+    <sys:String x:Key="Str_Col_ProcCpu">CPU %</sys:String>
+    <sys:String x:Key="Str_Col_ProcMemory">Память</sys:String>
+    <sys:String x:Key="Str_Col_ProcCommandLine">Командная строка</sys:String>
+    <sys:String x:Key="Str_Col_ProcPath">Путь</sys:String>
+    <sys:String x:Key="Str_Menu_ProcOpenLocation">Открыть расположение файла</sys:String>
+    <sys:String x:Key="Str_Menu_ProcKill">Завершить процесс</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRestart">Перезапустить</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRunAsAdmin">Перезапустить от имени администратора</sys:String>
+    <sys:String x:Key="Str_Dlg_ProcKillMsg">Завершить {0} (PID {1})? Несохранённая работа в этом процессе будет потеряна.</sys:String>
+    <sys:String x:Key="Str_Proc_Killed">{0} завершён</sys:String>
+    <sys:String x:Key="Str_Proc_AlreadyExited">{0} уже завершился</sys:String>
+    <sys:String x:Key="Str_Proc_KillFailed">Не удалось завершить {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_Restarted">{0} перезапущен</sys:String>
+    <sys:String x:Key="Str_Proc_RestartFailed">Не удалось перезапустить {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_RefreshFailed">Не удалось обновить список процессов - {0}</sys:String>
+    <sys:String x:Key="Str_Proc_Loading">Загрузка списка процессов...</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsTitle">Сведения о процессе</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsParentPid">Родительский PID</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsStartTime">Время запуска</sys:String>
+    <sys:String x:Key="Str_TT_ProcPrev">Предыдущий процесс  (Стрелка влево)</sys:String>
+    <sys:String x:Key="Str_TT_ProcNext">Следующий процесс  (Стрелка вправо)</sys:String>
+    <sys:String x:Key="Str_TT_ProcCopyDetails">Копировать сведения  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_ProcClose">Закрыть  (Esc)</sys:String>
+
+    <!-- Processes/Services mode toggle -->
+    <sys:String x:Key="Str_TT_ProcToggleToServices">Переключиться на службы  (Ctrl+.)</sys:String>
+    <sys:String x:Key="Str_TT_ProcToggleToProcesses">Переключиться на процессы  (Ctrl+.)</sys:String>
+
+    <!-- Services view -->
+    <sys:String x:Key="Str_TT_SvcFilter">Фильтр по имени, отображаемому имени, пути или учётной записи</sys:String>
+    <sys:String x:Key="Str_Col_SvcName">Имя</sys:String>
+    <sys:String x:Key="Str_Col_SvcDisplayName">Отображаемое имя</sys:String>
+    <sys:String x:Key="Str_Col_SvcStatus">Состояние</sys:String>
+    <sys:String x:Key="Str_Col_SvcStartType">Тип запуска</sys:String>
+    <sys:String x:Key="Str_Col_SvcLogOnAs">Вход от имени</sys:String>
+    <sys:String x:Key="Str_Col_SvcPath">Путь</sys:String>
+    <sys:String x:Key="Str_Col_SvcDescription">Описание</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStart">Запустить</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStop">Остановить</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStartMsg">Запустить {0} ({1})?</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStopMsg">Остановить {0} ({1})? Всё, что от неё зависит, может перестать работать.</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcRestartMsg">Перезапустить {0} ({1})? Всё, что от неё зависит, будет ненадолго недоступно.</sys:String>
+    <sys:String x:Key="Str_Svc_Started">{0} запущена</sys:String>
+    <sys:String x:Key="Str_Svc_StartFailed">Не удалось запустить {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Stopped">{0} остановлена</sys:String>
+    <sys:String x:Key="Str_Svc_StopFailed">Не удалось остановить {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Restarted">{0} перезапущена</sys:String>
+    <sys:String x:Key="Str_Svc_RestartFailed">Не удалось перезапустить {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_RefreshFailed">Не удалось обновить список служб - {0}</sys:String>
+    <sys:String x:Key="Str_Svc_Loading">Загрузка списка служб...</sys:String>
+    <sys:String x:Key="Str_Svc_DetailsTitle">Сведения о службе</sys:String>
+    <sys:String x:Key="Str_TT_SvcPrev">Предыдущая служба  (Стрелка влево)</sys:String>
+    <sys:String x:Key="Str_TT_SvcNext">Следующая служба  (Стрелка вправо)</sys:String>
+    <sys:String x:Key="Str_TT_SvcCopyDetails">Копировать сведения  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_SvcClose">Закрыть  (Esc)</sys:String>
+
+    <!-- Event Viewer tab -->
+    <sys:String x:Key="Str_TT_EventViewer">Просмотр событий  (Ctrl+F12)</sys:String>
+    <sys:String x:Key="Str_TabTitle_EventViewer">Просмотр событий</sys:String>
+    <sys:String x:Key="Str_TT_EvtFilter">Фильтр по источнику, сообщению, категории или коду события</sys:String>
+    <sys:String x:Key="Str_TT_EvtLogPicker">Какой журнал читать</sys:String>
+    <sys:String x:Key="Str_TT_EvtLevelPicker">Какие уровни показывать</sys:String>
+    <sys:String x:Key="Str_TT_EvtRefresh">Перезагрузить текущий журнал и уровень</sys:String>
+    <sys:String x:Key="Str_Col_EvtLevel">Уровень</sys:String>
+    <sys:String x:Key="Str_Col_EvtLog">Журнал</sys:String>
+    <sys:String x:Key="Str_Col_EvtTime">Дата и время</sys:String>
+    <sys:String x:Key="Str_Col_EvtSource">Источник</sys:String>
+    <sys:String x:Key="Str_Col_EvtId">Код события</sys:String>
+    <sys:String x:Key="Str_Col_EvtCategory">Категория задачи</sys:String>
+    <sys:String x:Key="Str_Col_EvtMessage">Сообщение</sys:String>
+    <sys:String x:Key="Str_EvtLog_Application">Приложение</sys:String>
+    <sys:String x:Key="Str_EvtLog_System">Система</sys:String>
+    <sys:String x:Key="Str_EvtLog_Security">Безопасность</sys:String>
+    <sys:String x:Key="Str_EvtLog_All">Все журналы</sys:String>
+    <sys:String x:Key="Str_EvtLevel_All">Все уровни</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Error">Ошибка</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Warning">Предупреждение</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Information">Сведения</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyMessage">Копировать сообщение</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyDetails">Копировать сведения</sys:String>
+    <sys:String x:Key="Str_Evt_Loading">Загрузка журнала событий...</sys:String>
+    <sys:String x:Key="Str_Evt_RefreshFailed">Не удалось прочитать журнал событий - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_AccessDenied">Журнал безопасности читается только в окне с повышенными правами - часть записей может отсутствовать</sys:String>
+    <sys:String x:Key="Str_Evt_NoMessage">(данные сообщения недоступны)</sys:String>
+    <sys:String x:Key="Str_Evt_MessageCopied">Сообщение скопировано</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCopied">Сведения скопированы</sys:String>
+    <sys:String x:Key="Str_Evt_CopyFailed">Не удалось скопировать в буфер обмена - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsLevel">Уровень</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsTime">Время</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsSource">Источник</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsId">Код события</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCategory">Категория задачи</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsMessage">Сообщение</sys:String>
+
+    <!-- Performance Monitor tab -->
+    <sys:String x:Key="Str_TT_Performance">Быстродействие  (F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Performance">Быстродействие</sys:String>
+    <sys:String x:Key="Str_Perf_Gathering">Чтение сведений об оборудовании...</sys:String>
+    <sys:String x:Key="Str_Perf_GatherFailed">Не удалось прочитать сведения об оборудовании - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_CountersUnavailable">Счётчики производительности недоступны - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_Cpu">CPU</sys:String>
+    <sys:String x:Key="Str_Perf_Ram">RAM</sys:String>
+    <sys:String x:Key="Str_Perf_Network">Сеть</sys:String>
+    <sys:String x:Key="Str_Perf_Disk">Диск</sys:String>
+    <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Показать логические процессоры</sys:String>
+    <sys:String x:Key="Str_Perf_Utilization">Загрузка</sys:String>
+    <sys:String x:Key="Str_Perf_Throughput">Пропускная способность</sys:String>
+    <sys:String x:Key="Str_Perf_Send">Отправка</sys:String>
+    <sys:String x:Key="Str_Perf_Receive">Приём</sys:String>
+    <sys:String x:Key="Str_Perf_ActiveTime">Время активности</sys:String>
+    <sys:String x:Key="Str_Perf_TransferRate">Скорость передачи</sys:String>
+    <sys:String x:Key="Str_Perf_ReadSpeed">Скорость чтения</sys:String>
+    <sys:String x:Key="Str_Perf_WriteSpeed">Скорость записи</sys:String>
+    <sys:String x:Key="Str_Perf_DedicatedMemory">Выделенная память GPU</sys:String>
+    <sys:String x:Key="Str_Perf_SharedMemory">Общая память GPU</sys:String>
+    <sys:String x:Key="Str_Perf_InUse">Используется</sys:String>
+    <sys:String x:Key="Str_Perf_Available">Доступно</sys:String>
+    <sys:String x:Key="Str_Perf_Committed">Выделено</sys:String>
+    <sys:String x:Key="Str_Perf_Cores">Ядра</sys:String>
+    <sys:String x:Key="Str_Perf_LogicalProcessors">Логические процессоры</sys:String>
+    <sys:String x:Key="Str_Perf_BaseSpeed">Базовая частота</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Переключить полную ширину  -  потяните заголовок, чтобы изменить порядок ячеек</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Переключить высоту графика</sys:String>
+
+    <!-- Storage Analyzer tab -->
+    <sys:String x:Key="Str_TT_Storage">Анализатор хранилища  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Анализатор хранилища</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Анализатор хранилища</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Анализатор хранилища (сканирование с повышенными правами)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Анализатор хранилища</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Анализатор хранилища, сканирование с повышенными правами</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">начать сканирование (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">переключить глубину карты (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">переключить минимальный показываемый размер (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">переключить окраску по типу или папке (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">увеличить выбранную папку (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">уменьшить на один уровень (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">вернуться к корню сканирования (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">отправить выбранный элемент в корзину (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Сканировать</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Остановить</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Выберите папку или диск для сканирования</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Выберите папку или диск, затем нажмите Сканировать</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">Такой папки не существует</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Сканирование остановлено - показано то, что успело прочитаться</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">пропущено</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">Открыть в новой вкладке</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Открыть в Проводнике</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Копировать путь</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Удалить (в корзину)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Сканировать заново</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Окраска по типу файла</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Окраска по верхней папке</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Глубина</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">Вся</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Сколько уровней папок получают свои прямоугольники - меньше значит карта сглаживается до крупных папок</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Мин</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">Все</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Скрывать всё меньше этого - байты всё равно учитываются в папке, где они лежат</sys:String>
+    <sys:String x:Key="Str_Storage_Total">всего</sys:String>
+
+    <!-- Archives browsed as folders -->
+    <sys:String x:Key="Str_Status_Extracting">Извлечение {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">Не удалось извлечь {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">Не удалось прочитать архив - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Изменять можно только архивы .zip - этот открыт только для чтения</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Из архива можно перетаскивать только файлы - откройте папку и перетащите то, что внутри</sys:String>
+
+    <!-- Writing inside an archive -->
+    <sys:String x:Key="Str_Status_ArchiveWriting">Перезапись архива - {0}%</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">{0} добавлено в архив</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">{0} удалено из архива</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">Переименовано в {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">Добавлено {0} - для {1} не удалось получить допустимое имя, они пропущены</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">Не удалось обновить архив - {0}. Оригинал не изменён.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Этот файл архива помечен только для чтения - снимите отметку и повторите</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">Этот архив открыт в другой программе - закройте её и повторите</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">Нет прав на запись в этот архив</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">В архиве уже есть объект с таким именем</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">Этой записи больше нет в архиве</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">Такое имя нельзя использовать внутри архива</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">Там нечего добавлять</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">Архив оставлен без изменений</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">Некоторые из них уже есть в архиве</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">Скопировано из архива - запись осталась внутри</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">{0} из них уже есть в архиве.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">Удалить из архива элементов: {0}? Архив будет перезаписан целиком, и это нельзя отменить.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">Заменять вместо того, чтобы оставлять оба</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">Добавить</sys:String>
+
+    <sys:String x:Key="Str_Storage_Free">свободно</sys:String>
+
+    <!-- Registry Editor tab -->
+    <sys:String x:Key="Str_TT_RegistryEditor">Редактор реестра  (Ctrl+F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_RegistryEditor">Редактор реестра</sys:String>
+    <sys:String x:Key="Str_TT_RegFind">Найти имя раздела или параметра  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_RegRefresh">Перечитать выбранный раздел с диска  (F5)</sys:String>
+    <sys:String x:Key="Str_RegEd_FindNext">Найти далее</sys:String>
+    <sys:String x:Key="Str_RegEd_ComputerRoot">Компьютер</sys:String>
+    <sys:String x:Key="Str_RegEd_PathNotFound">Такого раздела не существует</sys:String>
+    <sys:String x:Key="Str_RegEd_AccessDenied">Доступ запрещён - этому разделу нужен более высокий уровень доступа, чем есть даже у этого окна с повышенными правами</sys:String>
+    <sys:String x:Key="Str_RegEd_NothingSelected">Сначала выберите раздел</sys:String>
+    <sys:String x:Key="Str_RegEd_Refreshed">Обновлено</sys:String>
+    <sys:String x:Key="Str_RegEd_NoMatches">Совпадений не найдено в загруженной части дерева</sys:String>
+    <sys:String x:Key="Str_RegEd_NameEmpty">Введите имя</sys:String>
+    <sys:String x:Key="Str_RegEd_NameHasBackslash">Имя не может содержать обратную косую черту</sys:String>
+    <sys:String x:Key="Str_RegEd_NameExists">Раздел или параметр с таким именем здесь уже есть</sys:String>
+    <sys:String x:Key="Str_RegEd_NewKeyDefaultName">Новый раздел #1</sys:String>
+    <sys:String x:Key="Str_RegEd_NewValueDefaultName">Новый параметр</sys:String>
+    <sys:String x:Key="Str_RegEd_CreateFailed">Не удалось создать - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_RenameFailed">Не удалось переименовать - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_DeleteFailed">Не удалось удалить - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_SaveFailed">Не удалось сохранить параметр - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}" и всё его содержимое удалено</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" удалён</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" сохранён</sys:String>
+    <sys:String x:Key="Str_RegEd_NameCopied">Имя скопировано</sys:String>
+    <sys:String x:Key="Str_RegEd_PathCopied">Путь скопирован</sys:String>
+    <sys:String x:Key="Str_RegEd_CopyFailed">Не удалось скопировать в буфер обмена - {0}</sys:String>
+    <sys:String x:Key="Str_Col_RegName">Имя</sys:String>
+    <sys:String x:Key="Str_Col_RegType">Тип</sys:String>
+    <sys:String x:Key="Str_Col_RegData">Значение</sys:String>
+    <sys:String x:Key="Str_Menu_RegNew">Создать</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewKey">Раздел</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewString">Строковый параметр</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewExpandString">Расширяемый строковый параметр</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewMultiString">Мультистроковый параметр</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewBinary">Двоичный параметр</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewDWord">Параметр DWORD</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewQWord">Параметр QWORD</sys:String>
+    <sys:String x:Key="Str_Menu_RegModify">Изменить...</sys:String>
+    <sys:String x:Key="Str_Menu_RegRename">Переименовать</sys:String>
+    <sys:String x:Key="Str_Menu_RegDelete">Удалить</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyName">Копировать имя</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyPath">Копировать полный путь</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewKeyMsg">Задайте имя нового раздела</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewValueMsg">Задайте имя нового параметра</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameKeyMsg">Переименовать раздел "{0}"</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameValueMsg">Переименовать параметр "{0}"</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteKeyMsg">Удалить безвозвратно раздел "{0}" и всё его содержимое? Это удалит и все вложенные подразделы, и все параметры под ними, а не только этот раздел - отмены нет, а удаление не того раздела может помешать программе запускаться или сломать саму Windows.</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteValueMsg">Удалить безвозвратно параметр "{0}"? Это нельзя отменить.</sys:String>
+    <sys:String x:Key="Str_RegEd_Save">Сохранить</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueData">Значение параметра</sys:String>
+    <sys:String x:Key="Str_RegEd_MultiHint">По одной записи в строке</sys:String>
+    <sys:String x:Key="Str_RegEd_BinaryHint">Пары шестнадцатеричных байтов через пробел (например, 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_RegEd_Base">Система счисления:</sys:String>
+    <sys:String x:Key="Str_RegEd_Hexadecimal">Шестнадцатеричная</sys:String>
+    <sys:String x:Key="Str_RegEd_Decimal">Десятичная</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidNumber">Это недопустимое число для выбранной системы счисления</sys:String>
+    <sys:String x:Key="Str_RegEd_OutOfRangeDword">Это значение слишком велико для 32-битного DWORD</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidByte">"{0}" не является допустимым шестнадцатеричным байтом</sys:String>
+
+    <!-- Event details dialog -->
+    <sys:String x:Key="Str_Evt_DetailsTitle">Сведения о событии</sys:String>
+    <sys:String x:Key="Str_Evt_Keywords">Ключевые слова</sys:String>
+    <sys:String x:Key="Str_Evt_Computer">Компьютер</sys:String>
+    <sys:String x:Key="Str_Evt_User">Пользователь / SID</sys:String>
+    <sys:String x:Key="Str_Evt_ProcessId">Код процесса</sys:String>
+    <sys:String x:Key="Str_Evt_ThreadId">Код потока</sys:String>
+    <sys:String x:Key="Str_Evt_ActivityId">Код действия</sys:String>
+    <sys:String x:Key="Str_Evt_RecordId">Код записи события</sys:String>
+    <sys:String x:Key="Str_Evt_Opcode">Код операции</sys:String>
+    <sys:String x:Key="Str_Evt_ViewXml">Показать исходный XML</sys:String>
+    <sys:String x:Key="Str_Evt_ViewFormatted">Показать форматированное</sys:String>
+    <sys:String x:Key="Str_Evt_SearchOnline">Найти это событие в интернете</sys:String>
+    <sys:String x:Key="Str_Btn_Close">Закрыть</sys:String>
+    <sys:String x:Key="Str_TT_EvtPrev">Предыдущее событие  (Стрелка влево)</sys:String>
+    <sys:String x:Key="Str_TT_EvtNext">Следующее событие  (Стрелка вправо)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewXml">Показать исходный XML  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewFormatted">Показать форматированное  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtSearchOnline">Найти это событие в интернете  (Alt+S)</sys:String>
+    <sys:String x:Key="Str_TT_EvtCopyDetails">Копировать сведения  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_EvtClose">Закрыть  (Esc)</sys:String>
+
+</ResourceDictionary>
