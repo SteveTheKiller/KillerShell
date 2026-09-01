@@ -2010,10 +2010,11 @@
         <!-- ══════════ SHORTCUTS OVERLAY (F1) - family standard, same chrome as the card above ══════════ -->
         <Grid x:Name="ShortcutsOverlay" Grid.RowSpan="3" Panel.ZIndex="9000" Visibility="Collapsed"
               Background="#88000000" MouseLeftButtonDown="ShortcutsOverlay_Click">
-            <!-- A large shortcuts surface is still bounded by the app window. MaxWidth is selected
-                 per view in KeyboardMapOverlay.cs; Stretch plus this inset means a narrow window
-                 shrinks the card instead of allowing a fixed 1000px board to escape its edge. -->
-            <Border x:Name="ShortcutCard" Margin="32" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+            <!-- Keep the shortcuts surface centered and card-sized on a large window. MaxWidth is
+                 selected per view in KeyboardMapOverlay.cs, while the margin still lets a narrow
+                 or short window shrink the card and hand overflow to its ScrollViewer. -->
+            <Border x:Name="ShortcutCard" Margin="32" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                    MaxHeight="620"
                     Background="{DynamicResource OverlayWindowBrush}" BorderBrush="{DynamicResource AppBorderBrush}"
                     BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" MouseLeftButtonDown="ShortcutsCard_Click">
                 <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270"
