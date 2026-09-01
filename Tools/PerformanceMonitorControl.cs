@@ -490,13 +490,7 @@ namespace KillerShell.Tools
         }
 
         private static string FormatLinkSpeed(ulong bitsPerSecond)
-        {
-            if (bitsPerSecond <= 0) return string.Empty;
-            double gbps = bitsPerSecond / 1_000_000_000.0;
-            if (gbps >= 1.0) return gbps.ToString("0.#", CultureInfo.InvariantCulture) + " Gbps";
-            double mbps = bitsPerSecond / 1_000_000.0;
-            return mbps.ToString("0", CultureInfo.InvariantCulture) + " Mbps";
-        }
+            => Services.PerformanceMetricFormatter.LinkSpeed(bitsPerSecond);
 
         private void ApplyStaticInfo(HardwareInfo info)
         {
@@ -1875,14 +1869,7 @@ namespace KillerShell.Tools
         }
 
         private static string ExtractGpuLuid(string instanceName)
-        {
-            int i = instanceName.IndexOf("luid_", StringComparison.OrdinalIgnoreCase);
-            if (i < 0) return instanceName;
-            int start = i + 5;
-            int end = instanceName.IndexOf("_phys", start, StringComparison.OrdinalIgnoreCase);
-            if (end < 0) end = instanceName.Length;
-            return instanceName[start..end];
-        }
+            => Services.PerformanceMetricFormatter.GpuLuid(instanceName);
 
         private void ApplyGpuSample(MetricTile tile, double util, double dedicatedBytes, double sharedBytes)
         {
@@ -1909,20 +1896,10 @@ namespace KillerShell.Tools
         //  FORMATTING
         // ═══════════════════════════════════════════════════════════
         private static string FormatThroughput(double bytesPerSec)
-        {
-            const double kb = 1024, mb = kb * 1024;
-            if (bytesPerSec >= mb) return (bytesPerSec / mb).ToString("0.0", CultureInfo.InvariantCulture) + " MB/s";
-            if (bytesPerSec >= kb) return (bytesPerSec / kb).ToString("0.0", CultureInfo.InvariantCulture) + " KB/s";
-            return bytesPerSec.ToString("0", CultureInfo.InvariantCulture) + " B/s";
-        }
+            => Services.PerformanceMetricFormatter.Throughput(bytesPerSec);
 
         private static string FormatBytes(double bytes)
-        {
-            const double mb = 1024 * 1024, gb = mb * 1024;
-            if (bytes >= gb) return (bytes / gb).ToString("0.00", CultureInfo.InvariantCulture) + " GB";
-            if (bytes >= mb) return (bytes / mb).ToString("0", CultureInfo.InvariantCulture) + " MB";
-            return bytes.ToString("0", CultureInfo.InvariantCulture) + " B";
-        }
+            => Services.PerformanceMetricFormatter.Bytes(bytes);
 
         // ═══════════════════════════════════════════════════════════
         //  STATUS LINE  -  the themed stand-in for a Win32 message box
