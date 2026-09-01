@@ -139,7 +139,12 @@ if ($scan -match 'has the following vulnerable packages') {
 # string.Format receives a value the translation discarded or renumbered.
 Step "Checking translations"
 function Read-StringMap([string]$Path) {
-    [xml]$document = Get-Content -Path $Path -Raw
+    # -Encoding UTF8 is load-bearing. The locale files are BOM-less UTF-8, and a bare Get-Content
+    # picks the ANSI codepage on PS 5.1 but UTF-8 on PS 7, so the same gate saw 13,015 Bengali
+    # characters on one shell and zero on the other. Keys and {0} placeholders are ASCII either
+    # way, which is why this never failed a release - but nothing that reads a VALUE can be
+    # trusted until the read agrees on both shells.
+    [xml]$document = Get-Content -Path $Path -Raw -Encoding UTF8
     $map = @{}
     foreach ($node in $document.ResourceDictionary.ChildNodes) {
         if ($node.NodeType -ne [System.Xml.XmlNodeType]::Element) { continue }
