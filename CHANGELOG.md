@@ -8,7 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 - Storage Analyzer now uses a Master File Table fast path for elevated scans of local NTFS drives and folders. It enumerates the volume by file ID, builds the same treemap tree, and automatically falls back to the existing parallel directory walker for ordinary accounts, network paths, other filesystems, or any unsupported MFT operation.
-- Russian and Kazakh localization for the complete app interface, bringing KillerShell to fifteen languages and matching KillerScan and KillerPDF. Both are new translations rather than ports: only 55 of the 716 keys exist in the other apps, because the terminal, editor, Registry, Event Viewer and Storage Analyzer strings are KillerShell's own.
+- Russian and Kazakh localization for the complete app interface and killershell.net, bringing both to fifteen languages and matching KillerScan and KillerPDF. Both are new translations rather than ports: only 55 of the 716 app keys exist in the other apps, because the terminal, editor, Registry, Event Viewer and Storage Analyzer strings are KillerShell's own. The website's 90-row shortcut reference is generated from the app dictionaries as before, so the two cannot drift.
 - Italian localization for the complete app interface and killershell.net, bringing both to thirteen languages.
 - Hungarian localization for the complete app interface and killershell.net, bringing both to twelve languages.
 - The family grab cursors, matching KillerNotes and KillerPDF: an open hand while hovering a Performance monitor cell header, and a closed hand for as long as the cell is being carried.
@@ -23,6 +23,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Snapping, maximizing, or restoring the window now keeps the dual panes' proportions instead of handing all the new space to one pane; dragging the window edge still resizes only the right pane.
 - Open terminal here from the results context menu now uses the folder being viewed when no file row is selected, matching F8 instead of silently doing nothing.
 - New terminal tabs now preserve their startup screen until layout supplies a real size, so a fast first PowerShell prompt remains visible instead of being pushed into scrollback by a temporary 1x1 buffer.
+- killershell.net's Storage row in the technical stack table was truncated mid-sentence in eleven languages, with an unclosed code tag that pulled monospace styling across the rest of the cell. Several of those had also had the Win32 function name FindFirstFileExW itself translated, so the page named a function that does not exist. A collapsible help heading was missing its disclosure triangle in ten languages, and the Hungarian architecture note lost a code sample to an unescaped angle bracket.
 - Context menus now use opaque, square popup surfaces so menu labels render with ClearType instead of coarse grayscale antialiasing.
 - Browsing-tab icons now follow the current folder after navigation, including special folders such as Home and Pictures.
 - Terminal prompts now retain their last valid theme palette if the live session file is briefly unavailable, preventing the path block from flashing red while using a blue theme.
