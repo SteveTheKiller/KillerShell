@@ -8,6 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 - Storage Analyzer now uses a Master File Table fast path for elevated scans of local NTFS drives and folders. It enumerates the volume by file ID, builds the same treemap tree, and automatically falls back to the existing parallel directory walker for ordinary accounts, network paths, other filesystems, or any unsupported MFT operation.
+- Russian and Kazakh localization for the complete app interface, bringing KillerShell to fifteen languages and matching KillerScan and KillerPDF. Both are new translations rather than ports: only 55 of the 716 keys exist in the other apps, because the terminal, editor, Registry, Event Viewer and Storage Analyzer strings are KillerShell's own.
 - Italian localization for the complete app interface and killershell.net, bringing both to thirteen languages.
 - Hungarian localization for the complete app interface and killershell.net, bringing both to twelve languages.
 - The family grab cursors, matching KillerNotes and KillerPDF: an open hand while hovering a Performance monitor cell header, and a closed hand for as long as the cell is being carried.
