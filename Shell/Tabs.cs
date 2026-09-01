@@ -169,7 +169,7 @@ namespace KillerShell.Shell
         // So the COUNT is capped rather than the width. As many tabs as fit at TabFloorWidth are
         // shown and the rest are collapsed - UniformGrid ignores a collapsed child when it
         // divides the band, so the survivors still fill it edge to edge with no arithmetic here.
-        // The chevron at the right end lists every tab, so nothing is unreachable.
+        // The chevron at the right end lists the collapsed tabs, so nothing is unreachable.
         //
         // Scrolling was the other option and is what a browser does. It lost because the band is
         // a bordered surface the pane's focus ring runs along, and a scrolled band cannot be edge
@@ -273,12 +273,10 @@ namespace KillerShell.Shell
 
         private bool _inTabResize;
 
-        /// <summary>The chevron: every tab in this pane, hidden ones included, in strip order.</summary>
+        /// <summary>The chevron lists only tabs collapsed out of this pane's strip.</summary>
         /// <remarks>
-        /// EVERY tab, not only the overflowed ones. A list that shows just what is off screen
-        /// makes you work out which those are before you can use it, and the visible ones cost
-        /// nothing to include. Built on each open rather than kept: titles change on every save,
-        /// navigation and rename.
+        /// Built on each open rather than kept because titles change on every save, navigation,
+        /// and rename.
         /// </remarks>
         internal void TabOverflowMenu(FilePane p)
         {
@@ -292,6 +290,8 @@ namespace KillerShell.Shell
 
             foreach (var t in p.Tabs)
             {
+                if (t.IsStripVisible) continue;
+
                 var tab = t;   // captured per row, not per loop
 
                 // Doubled, because a lone underscore in a MenuItem header is an access-key
