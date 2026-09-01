@@ -29,12 +29,12 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 
 <table>
 <tr>
-<td width="50%"><img src="docs/storage-analyzer.png" alt="Storage Analyzer showing a color-coded treemap of a drive"><br><sub>Storage Analyzer turns a drive into a color-coded treemap with filtering, zoom, export, and file operations built in.</sub></td>
-<td width="50%"><img src="docs/performance-processes.png" alt="Performance graphs and the process manager with the Fonts dialog open"><br><sub>Performance graphs and the searchable process manager stay live while app, terminal, and editor fonts are adjusted.</sub></td>
+<td width="50%"><img src="shell-landing/screenshots/02.png" alt="Storage Analyzer and Performance Monitor open side by side in the 98SE theme"><br><sub>Storage Analyzer and live performance graphs share one workspace, including disks, networks, GPUs, RAM, and per-core CPU history.</sub></td>
+<td width="50%"><img src="shell-landing/screenshots/03.png" alt="Live Processes table beside a PowerShell session in the Cyanotic theme"><br><sub>Manage processes beside a live PowerShell session without leaving the tab strip or losing the folder tree.</sub></td>
 </tr>
 <tr>
-<td><img src="docs/files-terminal-menu.png" alt="File browser and PowerShell in two panes with the file context menu open"><br><sub>Browse files beside a live PowerShell tab; search, terminals, storage analysis, hashing, and admin actions stay one click away.</sub></td>
-<td><img src="docs/editor-languages.png" alt="Syntax-highlighted PowerShell editor with the language menu open"><br><sub>Syntax-highlighted editing, a persistent folder tree, and live switching among fifteen localized interfaces.</sub></td>
+<td><img src="shell-landing/screenshots/04.png" alt="Syntax-highlighted PowerShell editor beside Registry Editor in the Delirium theme"><br><sub>Edit a PowerShell script beside the built-in Registry Editor, with both tools living in ordinary tabs.</sub></td>
+<td><img src="shell-landing/screenshots/07.png" alt="Two file-browser panes with the file actions menu open in the Blood theme"><br><sub>Browse in two panes and keep file operations, search, terminals, storage analysis, hashing, and admin actions one click away.</sub></td>
 </tr>
 </table>
 
