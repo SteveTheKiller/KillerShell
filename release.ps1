@@ -133,7 +133,12 @@ if ($scan -match 'has the following vulnerable packages') {
     Fail 'Vulnerable packages found. Resolve before releasing.'
 }
 
-# --- 3b. Translation gate ---
+# --- 3b. Release tests ---
+Step "Running Release tests"
+dotnet test (Join-Path $PSScriptRoot 'KillerShell.Tests\KillerShell.Tests.csproj') -c Release --no-restore --nologo -v quiet
+if ($LASTEXITCODE -ne 0) { Fail 'Release tests failed - fix them before releasing' }
+
+# --- 3c. Translation gate ---
 # Every localization must contain the complete English key set. Matching placeholders are
 # required because a translated string can load successfully and still fail at runtime when
 # string.Format receives a value the translation discarded or renumbered.

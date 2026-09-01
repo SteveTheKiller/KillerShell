@@ -482,9 +482,7 @@ namespace KillerShell.Tools
             string q = _filterBox.Text;
             if (q.Length == 0) return true;
 
-            return p.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
-                || p.Path.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
-                || p.User.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0;
+            return Services.ProcessListLogic.Matches(p, q);
         }
 
         /// <summary>Same broadening, applied to the Services view: Name OR Display Name OR Path
@@ -495,10 +493,7 @@ namespace KillerShell.Tools
             string q = _filterBox.Text;
             if (q.Length == 0) return true;
 
-            return s.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
-                || s.DisplayName.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
-                || s.Path.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0
-                || s.LogOnAs.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0;
+            return Services.ProcessListLogic.Matches(s, q);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -967,7 +962,7 @@ namespace KillerShell.Tools
                     string startupType = string.Empty, path = string.Empty, logOnAs = string.Empty, description = string.Empty;
                     if (wmi.TryGetValue(name, out var info))
                     {
-                        startupType = FriendlyStartMode(info.startMode);
+                        startupType = Services.ProcessListLogic.FriendlyStartMode(info.startMode);
                         path        = info.path;
                         logOnAs     = info.logOnAs;
                         description = info.description;
@@ -1215,33 +1210,6 @@ namespace KillerShell.Tools
         /// something readable instead of the raw WMI string. Does not distinguish "Automatic"
         /// from "Automatic (Delayed Start)" - that needs a registry read WMI does not expose,
         /// and plain "Automatic" is accurate as far as it goes.</summary>
-        private static string FriendlyStartMode(string raw) => raw switch
-        {
-            "Auto"     => "Automatic",
-            "Manual"   => "Manual",
-            "Disabled" => "Disabled",
-            "Boot"     => "Boot",
-            "System"   => "System",
-            _          => raw,
-        };
-
-        /// <summary>The exe path out of a service's (often argument-carrying) PathName - "svchost
-        /// -k netsvcs" and quoted-with-arguments paths both need this before GetDirectoryName can
-        /// find the actual folder. Same leading-token-strip technique ExtractArguments below uses
-        /// for a process's command line, just keeping the FIRST token instead of discarding it.</summary>
-        private static string ExtractExePath(string pathName)
-        {
-            if (string.IsNullOrEmpty(pathName)) return string.Empty;
-            string s = pathName.Trim();
-            if (s.StartsWith("\"", StringComparison.Ordinal))
-            {
-                int end = s.IndexOf('"', 1);
-                return end > 0 ? s[1..end] : s.Trim('"');
-            }
-            int sp = s.IndexOf(' ');
-            return sp > 0 ? s[..sp] : s;
-        }
-
         // ═══════════════════════════════════════════════════════════
         //  STATUS LINE  -  the themed stand-in for a Win32 message box
         // ═══════════════════════════════════════════════════════════
@@ -1359,7 +1327,7 @@ namespace KillerShell.Tools
             AddMenuItem(menu, "Str_Menu_ProcOpenLocation", ((char)0xE838).ToString(), (_, _) =>
             {
                 if (s.HasPath) OpenFileLocationRequested?.Invoke(
-                    System.IO.Path.GetDirectoryName(ExtractExePath(s.Path)) ?? string.Empty);
+                    System.IO.Path.GetDirectoryName(Services.ProcessListLogic.ExtractExePath(s.Path)) ?? string.Empty);
             }, enabled: s.HasPath, gesture: "Ctrl+O");
 
             // E768 (Play): starts a stopped service. Disabled while already running.
@@ -1472,7 +1440,7 @@ namespace KillerShell.Tools
                 if (ctrl && !shift && e.Key == Key.S) { if (!s.IsRunning) StartServiceWithConfirm(s); e.Handled = true; return; }
                 if (ctrl && !shift && e.Key == Key.O)
                 {
-                    if (s.HasPath) OpenFileLocationRequested?.Invoke(System.IO.Path.GetDirectoryName(ExtractExePath(s.Path)) ?? string.Empty);
+                    if (s.HasPath) OpenFileLocationRequested?.Invoke(System.IO.Path.GetDirectoryName(Services.ProcessListLogic.ExtractExePath(s.Path)) ?? string.Empty);
                     e.Handled = true;
                     return;
                 }
@@ -1529,7 +1497,7 @@ namespace KillerShell.Tools
             if (!p.HasPath) return;
 
             string path = p.Path;
-            string args = ExtractArguments(p.CommandLine);
+            string args = Services.ProcessListLogic.ExtractArguments(p.CommandLine);
 
             try
             {
@@ -1560,29 +1528,6 @@ namespace KillerShell.Tools
                 ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_RestartFailed"), p.Name, ex.Message),
                            error: true);
             }
-        }
-
-        /// <summary>Best-effort: the command line minus its own leading exe path/token.</summary>
-        private static string ExtractArguments(string commandLine)
-        {
-            if (string.IsNullOrEmpty(commandLine)) return string.Empty;
-
-            // The first token is usually the exe itself, quoted or not. Anything after it is
-            // "arguments" in the loose sense a relaunch needs - exact reconstruction is not
-            // possible from a flattened command line, and this is a best-effort restart, not a
-            // guarantee of identical arguments.
-            string rest = commandLine;
-            if (rest.StartsWith("\"", StringComparison.Ordinal))
-            {
-                int end = rest.IndexOf('"', 1);
-                rest = end > 0 ? rest[(end + 1)..] : string.Empty;
-            }
-            else
-            {
-                int sp = rest.IndexOf(' ');
-                rest = sp > 0 ? rest[(sp + 1)..] : string.Empty;
-            }
-            return rest.Trim();
         }
 
         // ═══════════════════════════════════════════════════════════

@@ -4,6 +4,13 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.4] - Unreleased
+
+1.2.4 improves maintainability and reliability through automated tests and testable service boundaries.
+
+### Changed
+- Core tool logic is separated from its interface and covered by local release tests.
+
 ## [1.2.3] - 2026-09-01
 
 1.2.3 adds much faster elevated storage scans, completes fifteen-language coverage, and improves reliability across browsing, terminals, installation, themes, and killershell.net.
