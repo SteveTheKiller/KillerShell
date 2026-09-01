@@ -218,7 +218,7 @@ namespace KillerShell
             // its own" (Associations.cs file header) covers refreshing the icon too, not just
             // creating the association in the first place.
             if (AssociationsRegistered(machine: false) || AssociationsRegistered(machine: true))
-                EnsureFileIcon();
+                EnsureFileIcon(ExePath);
 
             OfferInstallConflictRepair();
 
@@ -503,6 +503,7 @@ namespace KillerShell
                 // `/silent` is also the winget/choco/RMM entry point, so duplicate cleanup
                 // belongs here rather than only in the interactive caller. Settings survive.
                 RemovePerUserInstall();
+                RegisterAssociations(machine: true, exe: installExe);
             }
             catch (Exception ex)
             {
@@ -549,6 +550,7 @@ namespace KillerShell
                     key.SetValue("NoModify",             1);
                     key.SetValue("NoRepair",             1);
                 }
+                RegisterAssociations(machine: false, exe: InstallExe);
                 return true;
             }
             catch (Exception ex)

@@ -20,9 +20,9 @@ using Microsoft.Win32;
 // those in an editor on double-click by design - owning it changes nothing about what a
 // double-click means, which is the whole test.
 //
-// And it never registers anything on its own. A portable exe that scribbles into HKCR is a
-// portable exe that lies about being portable, so this runs only when the user asks for it,
-// from the Associations card.
+// A normal installation registers these capabilities so Windows can offer KillerShell as an
+// editor. A portable exe still writes nothing unless the user explicitly registers it from the
+// Associations card.
 namespace KillerShell
 {
     public partial class App
@@ -66,8 +66,8 @@ namespace KillerShell
         // app icon, so a distinct file icon cannot be served from the exe itself. Written
         // beside the exe rather than into LocalAppData so an all-users install points every
         // account at one copy. Same arrangement as KillerPDF's pdf-file.ico.
-        private static string FileIconPath =>
-            Path.Combine(Path.GetDirectoryName(ExePath)!, "text-file.ico");
+        private static string FileIconPathFor(string exe) =>
+            Path.Combine(Path.GetDirectoryName(exe)!, "text-file.ico");
 
         /// <summary>
         /// Drops text-file.ico beside the exe. Called only from RegisterAssociations, i.e. only
@@ -76,10 +76,11 @@ namespace KillerShell
         /// which is what happens on a dev build with no embedded resource, or if the exe sits
         /// somewhere unwritable.
         /// </summary>
-        private static void EnsureFileIcon()
+        private static void EnsureFileIcon(string exe)
         {
             try
             {
+                string fileIconPath = FileIconPathFor(exe);
                 var asm = System.Reflection.Assembly.GetExecutingAssembly();
                 var rn = Array.Find(asm.GetManifestResourceNames(),
                     n => n.IndexOf("text-file", StringComparison.OrdinalIgnoreCase) >= 0
@@ -99,11 +100,11 @@ namespace KillerShell
                 // re-registered by hand). Compare bytes and only rewrite when the embedded icon
                 // actually differs, so a repeat call after this fix stays a no-op once the file
                 // on disk matches what THIS build carries.
-                if (File.Exists(FileIconPath))
+                if (File.Exists(fileIconPath))
                 {
                     try
                     {
-                        byte[] onDisk = File.ReadAllBytes(FileIconPath);
+                        byte[] onDisk = File.ReadAllBytes(fileIconPath);
                         if (onDisk.Length == embedded.Length)
                         {
                             bool same = true;
@@ -115,7 +116,7 @@ namespace KillerShell
                     catch { /* fall through and try to overwrite */ }
                 }
 
-                File.WriteAllBytes(FileIconPath, embedded);
+                File.WriteAllBytes(fileIconPath, embedded);
             }
             catch { }
         }
@@ -139,14 +140,16 @@ namespace KillerShell
         /// the Capabilities block that puts KillerShell in Settings' Default apps list.
         /// Returns false if anything threw - which for HKLM means "not elevated".
         /// </summary>
-        internal static bool RegisterAssociations(bool machine)
+        internal static bool RegisterAssociations(bool machine) =>
+            RegisterAssociations(machine, ExePath);
+
+        internal static bool RegisterAssociations(bool machine, string exe)
         {
             try
             {
-                string exe = ExePath;
                 var root = RootFor(machine);
 
-                EnsureFileIcon();   // must land before WriteProgId, which tests for the file
+                EnsureFileIcon(exe);   // must land before WriteProgId, which tests for the file
                 WriteProgId(root, exe);
                 WriteOpenWithHints(root);
                 WriteEditVerbs(root, exe);
@@ -164,12 +167,13 @@ namespace KillerShell
         // identical keys to keep in step.
         private static void WriteProgId(RegistryKey root, string exe)
         {
+            string fileIconPath = FileIconPathFor(exe);
             using var p = root.CreateSubKey(@"Software\Classes\" + AssocProgId);
             p.SetValue("", "Text document");
             p.SetValue("FriendlyTypeName", "Text document");
             // Prefer the dedicated text-file icon; fall back to the app icon if it is not there.
             using (var i = p.CreateSubKey("DefaultIcon"))
-                i.SetValue("", File.Exists(FileIconPath) ? "\"" + FileIconPath + "\",0" : exe + ",0");
+                i.SetValue("", File.Exists(fileIconPath) ? "\"" + fileIconPath + "\",0" : exe + ",0");
             using (var c = p.CreateSubKey(@"shell\open\command")) c.SetValue("", "\"" + exe + "\" \"%1\"");
             using var s = p.CreateSubKey(@"shell\open"); s.SetValue("FriendlyAppName", AssocAppName);
         }
