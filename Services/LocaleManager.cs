@@ -3,13 +3,13 @@ using System.Windows;
 
 namespace KillerShell.Services
 {
-    // 14 UI languages on the way to KillerScan and KillerPDF's 15; kk-KZ is the one still to come.
-    // en-US is always the base layer so any locale that omits a key falls back to English; the
-    // chosen locale's file layers on top. Ported from KillerScan.
+    // 15 UI languages, matching KillerScan and KillerPDF. en-US is always the base layer so any
+    // locale that omits a key falls back to English; the chosen locale's file layers on top.
+    // Ported from KillerScan.
     //
     // Append new members at the END: the value is persisted by NAME, not by ordinal, but keeping
     // the order stable also keeps the language menu's order stable.
-    public enum Locale { EnUS, Es, ZhTW, ZhCN, Bn, TrTR, De, Fr, Ja, Cs, PlPL, HuHU, It, RuRU }
+    public enum Locale { EnUS, Es, ZhTW, ZhCN, Bn, TrTR, De, Fr, Ja, Cs, PlPL, HuHU, It, RuRU, KkKZ }
 
     public static class LocaleManager
     {
@@ -65,6 +65,7 @@ namespace KillerShell.Services
                 Locale.HuHU => new Uri("pack://application:,,,/Strings/hu-HU.xaml"),
                 Locale.It   => new Uri("pack://application:,,,/Strings/it-IT.xaml"),
                 Locale.RuRU => new Uri("pack://application:,,,/Strings/ru-RU.xaml"),
+                Locale.KkKZ => new Uri("pack://application:,,,/Strings/kk-KZ.xaml"),
                 _           => null,   // English: base only
             };
 

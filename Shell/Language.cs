@@ -23,6 +23,7 @@ namespace KillerShell.Shell
             (Locale.HuHU, "Magyar",       "hu-HU"),
             (Locale.It,   "Italiano",     "it-IT"),
             (Locale.Ja,   "日本語",       "ja-JP"),
+            (Locale.KkKZ, "Қазақша",     "kk-KZ"),
             (Locale.PlPL, "Polski",       "pl-PL"),
             (Locale.RuRU, "Русский",      "ru-RU"),
             (Locale.TrTR, "Türkçe",      "tr-TR"),

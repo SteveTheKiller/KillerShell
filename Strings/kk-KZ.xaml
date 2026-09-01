@@ -1,0 +1,818 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - Kazakh (kk-KZ) strings. x:Key values are looked up at
+         runtime; never change them. Any key omitted here falls back to
+         en-US.xaml. {0}/{1} placeholders are filled by the app - keep them.
+         House style: plain hyphens only, never an en or em dash - release.ps1
+         gates on it.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">Тіл</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Тақырып</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Қолданба өлшемін өзгерту үшін логотип үстінде тінтуір дөңгелегін айналдырыңыз</sys:String>
+    <sys:String x:Key="Str_St_AppSize">Қолданба өлшемі {0}%</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">тақырып</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">акцент</sys:String>
+    <sys:String x:Key="Str_Theme_Dark">Қараңғы</sys:String>
+    <sys:String x:Key="Str_Theme_Light">Ашық</sys:String>
+    <sys:String x:Key="Str_Theme_Black">Қара</sys:String>
+    <sys:String x:Key="Str_Theme_Blood">Қан</sys:String>
+    <sys:String x:Key="Str_Theme_Greed">Ашкөздік</sys:String>
+    <sys:String x:Key="Str_Theme_Cyanotic">Цианоз</sys:String>
+    <sys:String x:Key="Str_Theme_SE98">98SE</sys:String>
+    <sys:String x:Key="Str_Theme_Ectoplasm">Эктоплазма</sys:String>
+    <sys:String x:Key="Str_Theme_Decay">Ыдырау</sys:String>
+    <sys:String x:Key="Str_Theme_Mourning">Аза</sys:String>
+    <sys:String x:Key="Str_Theme_Sepulchre">Кесене</sys:String>
+    <sys:String x:Key="Str_Theme_Delirium">Сандырақ</sys:String>
+    <sys:String x:Key="Str_Theme_Malaise">Науқастық</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">мұнда:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(қалта таңдалмаған - таңдау үшін басыңыз)</sys:String>
+    <sys:String x:Key="Str_Scope_Dropped">тасталған файлдар</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Іздеу қалтасын ауыстыру үшін басыңыз</sys:String>
+    <sys:String x:Key="Str_TT_SearchPanel">Іздеу тақтасын көрсету немесе жасыру  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">Қалталар ағашын көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Бүйір тақталарды жию</sys:String>
+    <sys:String x:Key="Str_TT_Bookmarks">Бетбелгілер  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Бұл қалтаны бетбелгіге қосу  (Ctrl+D)</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Жасырын және жүйелік элементтерді көрсету  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Файл мәліметтерін көрсету  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Қалталарды файлдардан жоғары ұстау</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">Бетбелгілерге қосу</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">Бетбелгілерден алып тастау</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">Мәзір жолағын жасыру</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">бетбелгілерді көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">1-10 бетбелгісіне өту (0 = оныншы)</sys:String>
+    <sys:String x:Key="Str_TT_Back">Артқа</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Алға</sys:String>
+    <sys:String x:Key="Str_Status_Listing">{0} ашылуда...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">Элементтер: {0}</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">{0} ашылмады</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">Іздеудің түбірлік қалтасын таңдаңыз</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">СҮЗГІЛЕР</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">қосу</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">шығару</sys:String>
+    <sys:String x:Key="Str_TT_Include">Нүктелі үтірмен бөлінген үлгілер, мысалы *.txt;*.log</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">Өткізіп жіберуге арналған, нүктелі үтірмен бөлінген жолдар немесе үлгілер</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">әріп регистрін ескеру</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ сүзгі қосу</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">қосымша</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">кеңейтім</sys:String>
+    <sys:String x:Key="Str_Filter_Date">өзгертілген күні</sys:String>
+    <sys:String x:Key="Str_Filter_Size">өлшемі</sys:String>
+    <sys:String x:Key="Str_Cond_Is">тең</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">тең емес</sys:String>
+    <sys:String x:Key="Str_Cond_Before">дейін</sys:String>
+    <sys:String x:Key="Str_Cond_After">кейін</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">үлкен</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">кіші</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">Үлгілер бойынша анықтама</sys:String>
+    <sys:String x:Key="Str_Help_Title">ҮЛГІЛЕР</sys:String>
+    <sys:String x:Key="Str_Help_Star">.log-пен аяқталатын барлығы</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">report-тан басталатын атаулар</sys:String>
+    <sys:String x:Key="Str_Help_Middle">2024 бар атаулар</sys:String>
+    <sys:String x:Key="Str_Help_Q">? дәл бір таңбаны білдіреді</sys:String>
+    <sys:String x:Key="Str_Help_List">бірнеше үлгіні ; арқылы тізіңіз</sys:String>
+    <sys:String x:Key="Str_Help_Plain">жай мәтін де жұмыс істейді - оны қамтитын атаулармен сәйкеседі</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">шығару сондай-ақ бүкіл қалталарды атауы бойынша өткізіп жібереді</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">жаңа іздеу</sys:String>
+    <sys:String x:Key="Str_Tab_Dropped">тасталған ({0})</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Жаңа іздеу қойындысы  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Қойындыны жабу</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">Болдырмау</sys:String>
+    <sys:String x:Key="Str_Btn_Select">Таңдау</sys:String>
+    <sys:String x:Key="Str_QA_Home">Басты қалта</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">Жұмыс үстелі</sys:String>
+    <sys:String x:Key="Str_QA_Documents">Құжаттар</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">Жүктеулер</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">Суреттер</sys:String>
+    <sys:String x:Key="Str_TT_Up">Бір қалта жоғары</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(ішкі қалталар жоқ - осы қалтаны пайдалану үшін Таңдау батырмасын басыңыз)</sys:String>
+    <sys:String x:Key="Str_Col_Name">атауы</sys:String>
+    <sys:String x:Key="Str_Col_Folder">орналасуы</sys:String>
+    <sys:String x:Key="Str_Sort_Found">табылғандай</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">Осы нәтижелерді сүзу (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Осы нәтижелердің ішінен іздеу</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Екінші тақта  (F10)  |  оң жақ басу қатар / үстіңгі орналасуды ауыстырады</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">Басқа құралдар</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Бойынша сұрыптау</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">Осы компьютер</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">Осы нәтижелердің ішінен іздеу</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{1} ішінен {0} нәтиже  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">Ішінен іздеуге болатын нәтижелер әзірге жоқ.</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">Әкімші құқығымен қабықша іске қосылмады: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutNeedsSave">Құжатты басқа терезеге сүйремес бұрын сақтаңыз</sys:String>
+    <sys:String x:Key="Str_Status_TermCwdNotFound">{0} бар қалта емес</sys:String>
+    <sys:String x:Key="Str_Status_EdPathNotFound">{0} бар орналасу емес</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">ТАСЫМАЛДЫ</sys:String>
+    <sys:String x:Key="Str_Btn_Install">KillerShell орнату</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">Орнату</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">Жаңарту</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell осы компьютерге орнатылсын ба?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">Тасымалды қолданба бағдарламалар қалтасына көшіріледі. Бастау мәзіріне таңбаша және орнатылған бағдарламалар тізіміне жазба қосылады. Бұл тасымалды файлды кейін сақтауға да, жоюға да болады.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">KillerShell-дің бар орнатылымы жаңартылсын ба?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">Бұл сіздің тіркелгіңіздегі орнатылған көшірмені ауыстырады. Параметрлеріңіз бен сақталған сеансыңыз сақталады. Бұл тасымалды файлды кейін сақтауға да, жоюға да болады.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">KillerShell-дің барлық пайдаланушыға арналған орнатылымы жаңартылсын ба?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Бұл Program Files ішіндегі көшірмені ауыстырады. KillerShell бір рет қана көрінуі үшін осы тіркелгіге арналған көшірме жойылады. Параметрлеріңіз бен сақталған сеансыңыз сақталады.</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">Жұмыс үстеліндегі таңбаша</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">Барлық пайдаланушыға орнату (әкімші құқығы қажет)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell бұл компьютерде барлық пайдаланушыға әлдеқашан орнатылған, сондықтан дәл сол көшірме жаңартылады. Windows рұқсат сұрайды.</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Орнату болдырылмады</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">KillerShell {0} жүктеп алынып орнатылсын ба?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">Қолданба жабылып, автоматты түрде қайта ашылады.</sys:String>
+    <sys:String x:Key="Str_Btn_Update">Жаңарту</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell-ден шығу керек пе?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">Ашық қойындыларымды есте сақтау</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">Таңдауымды есте сақтау</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">Шығу</sys:String>
+    <sys:String x:Key="Str_Col_Size">өлшемі</sys:String>
+    <sys:String x:Key="Str_Col_Modified">өзгертілген</sys:String>
+    <sys:String x:Key="Str_Details_Empty">Ешнәрсе таңдалмаған</sys:String>
+    <sys:String x:Key="Str_Details_Created">жасалған</sys:String>
+    <sys:String x:Key="Str_Details_Type">түрі</sys:String>
+    <sys:String x:Key="Str_Details_Attributes">атрибуттар</sys:String>
+    <sys:String x:Key="Str_Details_Path">жол</sys:String>
+    <sys:String x:Key="Str_Details_Folder">Файл қалтасы</sys:String>
+    <sys:String x:Key="Str_Details_NoExt">Файл</sys:String>
+    <sys:String x:Key="Str_Details_ExtFile">{0} файлы</sys:String>
+    <sys:String x:Key="Str_Details_AttrReadOnly">тек оқуға</sys:String>
+    <sys:String x:Key="Str_Details_AttrHidden">жасырын</sys:String>
+    <sys:String x:Key="Str_Details_AttrSystem">жүйелік</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">қалталар: {0}, файлдар: {1}</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">Тізім</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">Таңбашалар</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">Кесте</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">ІЗДЕУ СӨЗДЕРІ</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ сөз қосу</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ топ қосу</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">ТАЗАЛАУ</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">ІЗДЕУ</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">ТОҚТАТУ</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">НӘТИЖЕЛЕР</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">НӘТИЖЕЛЕР  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">Нәтижелерді экспорттау  (Ctrl+Alt+E)  |  CSV үшін Ctrl+Alt+Shift+E</sys:String>
+    <sys:String x:Key="Str_TT_Result">Басу жаяды  |  Қос басу Explorer-де көрсетеді  |  Қалғаны үшін оң жақ басу</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">БӘРІН ЖАЮ</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">БӘРІН ЖИЮ</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">Файлды ашу</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">Мынамен ашу...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">Explorer-де көрсету</sys:String>
+    <sys:String x:Key="Str_Menu_OpenAdmin">Әкімші атынан ашу</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">Осы қалтаның ішінен іздеу</sys:String>
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Жинақтауышты талдау</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">Жасырын және нүктелі қалталарды көрсету</sys:String>
+    <sys:String x:Key="Str_Menu_OpenInNewTab">Жаңа қойындыда ашу</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">Ағаш: жасырын және нүктелі қалталар көрсетілген</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">Ағаш: жасырын және нүктелі қалталар жасырылған</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">ағаштағы жасырын және нүктелі қалталарды көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">Осы жерде терминал ашу</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Осы жерде терминалды әкімші атынан ашу</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Осы қалтаны шығару</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">Толық жолды көшіру</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">Файл атауын көшіру</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">Қалта жолын көшіру</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">Табылған жолдарды көшіру</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">SHA-256 көшіру</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">Сипаттар</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">Windows-тың басқа мүмкіндіктері...</sys:String>
+    <sys:String x:Key="Str_Status_Copied">{0} алмасу буферіне көшірілді</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">Көшірілген жолдар: {0}</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">Көшірілген файлдар: {0} - Explorer-де қойыңыз</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">Көшіретін табылған жолдар жоқ (атау бойынша сәйкестіктерде олар болмайды)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">Алмасу буферіне қол жеткізілмеді - оны басқа қолданба ұстап тұр</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">{0} хеші есептелуде...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">{0} файлының SHA-256 мәні көшірілді</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">Хеш есептеу үшін файл оқылмады</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">Құқықты арттырудан бас тартылды</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">Бұл пәрмен тек файлдармен жұмыс істейді, қалталармен емес</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows оны ашпады</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">{0} шығарылуда - қолдану үшін іздеуді қайта іске қосыңыз</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} әлдеқашан шығарылған</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">Жию</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">Жаю</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">Қалпына келтіру</sys:String>
+    <sys:String x:Key="Str_Menu_Close">Жабу</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">Дайын</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">Түбірлік жол жарамсыз немесе жоқ.</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">Кемінде бір іздеу сөзін немесе сүзгіні қосыңыз.</sys:String>
+    <sys:String x:Key="Str_Status_Done">{0} с ішінде аяқталды  -  сәйкес файлдар: {1}.</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">Тоқтатылды.</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">Тазаланды.</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">Әзірге экспорттайтын ештеңе жоқ.</sys:String>
+    <sys:String x:Key="Str_Status_Exported">Экспортталды: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">Экспорттау сәтсіз аяқталды: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">Қаралған файлдар: {0}</sys:String>
+    <sys:String x:Key="Str_Count_Matches">сәйкестік: {0}</sys:String>
+
+    <!-- About overlay -->
+    <sys:String x:Key="Str_About_Title">KillerShell туралы</sys:String>
+    <sys:String x:Key="Str_Status_TextSize">Мәтін өлшемі: {0}%</sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Компьютерді және оның файлдарын басқаруға арналған бір тасымалды қолданба. Файл шолғышы, терминал, мәтін өңдегіші, жинақтауыш талдағышы және әкімші құралдары бір терезеде. </sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> утилитасы.</sys:String>
+    <sys:String x:Key="Str_About_Version">НҰСҚА</sys:String>
+    <sys:String x:Key="Str_About_Publisher">ЖАРИЯЛАУШЫ</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">САУСАҚ ІЗІ</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Қалтаны себетке жіберер алдында сұрау</sys:String>
+    <sys:String x:Key="Str_About_ClearData">Барлық деректерді тазалау</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Бұл барлық сақталған параметрлерді - тақырып, тіл, қаріптер, сақталған орындар, соңғылар және сеанс - әрі мұрағаттардан шығарылған уақытша файлдарды жояды. Өз файлдарыңыз тимейді. Жалғастыру керек пе?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Деректер тазаланды - әлі қолданылып жатқанның бәрін тазалау үшін KillerShell-ді қайта іске қосыңыз</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  далалық техник жасаған</sys:String>
+
+    <!-- HTML report (exported in the app's current language) -->
+    <sys:String x:Key="Str_Rpt_Meta">Жасалған {0} &#183; файлдар: {1} &#183; сәйкестіктер: {2}</sys:String>
+    <sys:String x:Key="Str_Rpt_MetaList">Жасалған {0} &#183; элементтер: {1}</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">{0} мазмұны.</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">{0} ішінен {1} ізделді.</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">{0} бар файл атаулары</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">{0} бар файл мазмұны</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">барлығы</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">немесе</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">табылған</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... тағы +{0}</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">{0} арқылы жасалған</sys:String>
+
+    <!-- Term/group chips + tooltips -->
+    <sys:String x:Key="Str_Mode_Name">атауы</sys:String>
+    <sys:String x:Key="Str_Mode_Content">мазмұны</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">Файл атауы / қалқа  (мысалы, *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">Мазмұн бойынша іздеу  (файлдардың ішіндегі мәтін)</sys:String>
+    <sys:String x:Key="Str_Group_Any">КЕЗ КЕЛГЕН</sys:String>
+    <sys:String x:Key="Str_Group_All">БАРЛЫҒЫ</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">КЕЗ КЕЛГЕН: топтағы кез келген сөз сәйкес келсе, файл табылады</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">БАРЛЫҒЫ: файл топтағы әрбір сөзге сәйкес келуі керек</sys:String>
+    <sys:String x:Key="Str_Join_And">ЖӘНЕ</sys:String>
+    <sys:String x:Key="Str_Join_Or">НЕМЕСЕ</sys:String>
+    <sys:String x:Key="Str_Chk_CloseTabs">Ашық қойындыларымды жабу</sys:String>
+
+    <!-- Help card: keyboard shortcuts section (F1) -->
+    <sys:String x:Key="Str_Help_Shortcuts">Пернелер тіркесімдері</sys:String>
+    <sys:String x:Key="Str_Ks_Run">іздеуді іске қосу</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">қалқымалы терезелерді жабу, іздеуді тоқтату, содан соң шығуды ұсыну</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">нәтижелерді сүзу</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">жаңа іздеу қойындысы</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">ағымдағы қойындыны жабу</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">келесі қойынды (Shift: алдыңғы)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">1-9 қойындысына өту (9 = соңғы)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">іздеу сөзін қосу</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">сүзгі қосу</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">қалтаны таңдау</sys:String>
+    <sys:String x:Key="Str_Ks_Help">осы картаны көрсету</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">әріп регистрін ескеруді ауыстыру</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">нәтижелерді тазалау</sys:String>
+    <sys:String x:Key="Str_Ks_Address">орналасуды өзгерту - жолды теріп, Enter басыңыз</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">осы нәтижелердің ішінен жаңа қойындыда іздеу</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">іздеу тақтасын көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">әрбір нәтижені жаю</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">әрбір нәтижені жию</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">осы қалтада PowerShell қойындысын ашу</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">осы қалтада CMD қойындысын ашу</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell-ді әкімші атынан ашу</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD-ны әкімші атынан ашу</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">нәтижелерді HTML етіп экспорттау</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">нәтижелерді CSV етіп экспорттау</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManager">Processes/Services қойындысын ашу</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManagerAdmin">Processes/Services қойындысын әкімші атынан ашу</sys:String>
+    <sys:String x:Key="Str_Ks_Performance">Өнімділік қойындысын ашу</sys:String>
+    <sys:String x:Key="Str_Ks_ProcToggle">процестер мен қызметтер арасында ауысу</sys:String>
+    <sys:String x:Key="Str_Ks_EventViewer">Оқиғаларды қарау қойындысын ашу (әрқашан жоғары құқықпен)</sys:String>
+    <sys:String x:Key="Str_Ks_RegistryEditor">Тізілім өңдегіші қойындысын ашу (әрқашан жоғары құқықпен)</sys:String>
+    <sys:String x:Key="Str_Ks_RegFind">бөлім немесе параметр атауын табу (Тізілім өңдегіші қойындысы)</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">Тіркесімдер терезенің кез келген жерінде жұмыс істейді. Ашық тізімдер, күн өрісі және нәтиже сүзгісі Enter пернесін өздері пайдаланады.</sys:String>
+
+    <!-- Font dialog -->
+    <sys:String x:Key="Str_Fonts_Row">Қаріптер...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">ҚАРІПТЕР</sys:String>
+    <sys:String x:Key="Str_Fonts_App">ҚОЛДАНБА</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">ТЕРМИНАЛ</sys:String>
+    <sys:String x:Key="Str_Fonts_Editor">ӨҢДЕГІШ МӘТІНІ</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">Әдепкі</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">Қаріп үлгілерін қарау үшін тізім үстінде дөңгелекті айналдырыңыз. Әрбір өзгеріс бірден қолданылады.</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0} қаріпінде оқылатын әріптер жоқ - алдыңғы қаріп қалдырылды</sys:String>
+
+    <!-- Associations card -->
+    <sys:String x:Key="Str_Assoc_Row">Файл сәйкестіктері...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">ФАЙЛ СӘЙКЕСТІКТЕРІ</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">KillerShell "Мынамен ашу" мәзірінде, әдепкі қолданбалар параметрлерінде және кез келген қалта мен дискінің оң жақ мәзірінде көрінуі үшін оны Windows-та тіркеңіз.</sys:String>
+    <sys:String x:Key="Str_Assoc_What">МӘТІН ТҮРЛЕРІ</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd және .reg үшін оның орнына "KillerShell-де өңдеу" жолы қосылады. Оларды қос басу бұрынғыдай іске қосады немесе біріктіреді, өйткені мұны үнсіз өзгерту - біреудің жарты күнін алудың сенімді жолы.</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">Осы компьютердің барлық пайдаланушысы үшін тіркеу</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">Барлық пайдаланушы үшін тіркеу мақсатында KillerShell-ді әкімші атынан іске қосыңыз</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">Тіркеу</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">Тіркеуді жою</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Windows әдепкі қолданбаларын ашу...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">Тіркелмеген. Windows әзірге KillerShell-ді ешбір файл түріне ұсынбайды.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">Сіздің тіркелгіңіз үшін тіркелген. Windows әдепкіні сіз үшін ауыстырмайды - параметрлерде әр файл түріне KillerShell-ді өзіңіз таңдаңыз.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">Осы компьютердің барлық пайдаланушысы үшін тіркелген. Windows әдепкіні сіз үшін ауыстырмайды - параметрлерде әр файл түріне KillerShell-ді өзіңіз таңдаңыз.</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">Бұл тасымалды көшірме. Сәйкестіктер осы .exe қазір тұрған жерге сілтейді және оны жылжытсаңыз немесе жойсаңыз, істен шығады.</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Windows-та тіркелді</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">Тіркеу жойылды</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows бұл өзгерісті қабылдамады</sys:String>
+
+    <!-- Title-bar caption on an elevated window -->
+    <sys:String x:Key="Str_Title_Elevated">- Жоғары құқықтар</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">тақта мәзір жолағын жасыру немесе көрсету</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">жаңа терезе ашу</sys:String>
+
+    <!-- Recently visited folders -->
+    <sys:String x:Key="Str_TT_Recents">Жақында ашылған қалталар</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">Жақындағы қалталар әзірге жоқ</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">Тізімді тазалау</sys:String>
+
+    <!-- Results density -->
+    <sys:String x:Key="Str_TT_Density">Нәтиже тығыздығы - басу шеңбер бойынша ауыстырады, дөңгелек қадамдап жылжытады</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">Тығыздық: кең</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">Тығыздық: қалыпты</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">Тығыздық: ықшам</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">Тығыздық: тығыз</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">Тығыздық: ең аз</sys:String>
+
+    <!-- Terminal right-click menu -->
+    <sys:String x:Key="Str_Term_Copy">Көшіру</sys:String>
+    <sys:String x:Key="Str_Term_Paste">Қою</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">Бәрін таңдау</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Тазалау</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">Жаңа терминал</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">Осы жерде қалта ашу</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">Қаріптер...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">Шақыруды өңдеу...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">Шақыруды ысыру</sys:String>
+    <sys:String x:Key="Str_Term_Close">Терминалды жабу</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">Жеткізілген шақыру сценарийі қайтарылсын ба? Осы файлдағы өзгерістеріңіз жоғалады.</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">Ысыру</sys:String>
+
+    <!-- PowerShell $PROFILE -->
+    <sys:String x:Key="Str_Prof_Reload">PowerShell профилін қайта жүктеу</sys:String>
+    <sys:String x:Key="Str_Prof_Edit">PowerShell профилін өңдеу</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">{0} профилінің қайда екені сұралуда...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} жауап бермеді - оның профилі табылмады.</sys:String>
+    <sys:String x:Key="Str_Prof_None">PowerShell табылмады</sys:String>
+
+    <!-- Editor tabs -->
+    <sys:String x:Key="Str_Menu_Edit">Өңдеу</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} өңдеу үшін тым үлкен ({1} МБ).</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">Сақтау  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">Болдырмау  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">Қайталау  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">Табу  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">Жолға өту  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Сөз бойынша тасымалдау</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">Өңдегіш параметрлері</sys:String>
+    <sys:String x:Key="Str_TT_EdEncoding">Келесі сақтау жазатын кодтауды өзгерту үшін басыңыз</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">жол</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8">UTF-8</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8Bom">UTF-8 BOM-мен</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Le">UTF-16 LE</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Be">UTF-16 BE</sys:String>
+    <sys:String x:Key="Str_Ed_EncAnsi">ANSI (Windows-1252)</sys:String>
+
+    <!-- Gear flyout -->
+    <sys:String x:Key="Str_Ed_OptLineNumbers">Жол нөмірлері</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">Ағымдағы жолды бөлектеу</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">Бос орындар мен кестелеулерді көрсету</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">Кестелеудің орнына бос орын кірістіру</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">Сөз бойынша тасымалдау</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">ШЕГІНІС</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">Қаріп және өлшемі...</sys:String>
+
+    <!-- Right-click menu -->
+    <sys:String x:Key="Str_Ed_Undo">Болдырмау</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">Қайталау</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">Қиып алу</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">Көшіру</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">Қою</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">Бәрін таңдау</sys:String>
+    <sys:String x:Key="Str_Ed_Find">Табу...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">Жолға өту...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">Сақтау</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">Параметрлер...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">Файлды жабу</sys:String>
+
+    <!-- Shell bar -->
+    <sys:String x:Key="Str_TT_TermCwd">Өзгерту үшін басыңыз - қалтаны теріп, өту үшін Enter басыңыз</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">Жаңа терминал  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">Әкімші атынан жаңа терминал  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Осы қалтаны қойындыда ашу</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Тазалау</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Қаріптер...</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Өзгерту үшін басыңыз - файлдың атын өзгерту немесе жылжыту үшін жолды теріп, Enter басыңыз</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOn">Сөз бойынша тасымалдау қосулы.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">Сөз бойынша тасымалдау өшірулі - ұзын жолдарды көру үшін айналдырыңыз.</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">{0} сақталды.</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">{0} сақталмады: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">{0} ашылмады: {1}</sys:String>
+
+    <!-- New blank document -->
+    <sys:String x:Key="Str_TT_TabOverflow">Барлық қойындылар</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">Енін өзгерту үшін сүйреңіз  -  қос басу ысырады</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">Жаңа құжат  (F7)  |  сақтау қабылданбаса, Ctrl+F7 әкімші атынан қайталайды</sys:String>
+    <sys:String x:Key="Str_TT_NewDocAdmin">Жаңа құжат, әкімші атынан сақтауды қайталау  (Ctrl+F7)</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">атаусыз</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">Былай сақтау</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">Барлық файлдар</sys:String>
+
+    <sys:String x:Key="Str_Dlg_DiscardMsg">Бұл файл сақталмай жабылсын ба? Өзгерістеріңіз жоғалады.</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">Сақтамау</sys:String>
+
+    <!-- Rail button -->
+    <sys:String x:Key="Str_TT_Terminal">Терминал ашу  (F8)  -  таңдау үшін оң жақ басу</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell әкімші атынан</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">Пәрмен жолы</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">Пәрмен жолы әкімші атынан</sys:String>
+
+    <!-- Shortcuts card -->
+    <sys:String x:Key="Str_Ks_About">бағдарлама туралы картаны көрсету</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">ІЗДЕУ</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">ШАРЛАУ</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">ҚОЙЫНДЫЛАР</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">КӨРІНІС</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">ФАЙЛ</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">ӨҢДЕУ</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">АНЫҚТАМА</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">ТІЗІМ</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">ПЕРНЕТАҚТА</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">сол қабатты көру үшін Ctrl, Shift немесе Alt басып тұрыңыз</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeGlobal">Барлық жерде</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">Файл шолғышы</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">Терминал</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">Өңдегіш</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">пернелер көрсетілген:</sys:String>
+
+    <!-- Explorer-convention bindings -->
+    <sys:String x:Key="Str_Ks_BackForward">артқа / алға</sys:String>
+    <sys:String x:Key="Str_Ks_Back">артқа</sys:String>
+    <sys:String x:Key="Str_Ks_Up">бір қалта жоғары</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">жаңарту - қалтаны қайта оқу немесе іздеуді қайталау</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">барлық нәтижені таңдау</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">меңзерді іздеу өрісіне қою</sys:String>
+
+    <!-- File operations -->
+    <sys:String x:Key="Str_Fo_Copying">Көшірілуде...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">Жылжытылуда...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">Жойылуда...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{1} ішінен {0}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} мұнда бұрыннан бар. Қайсысын қалдырасыз?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">БҰРЫННАН БАР</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">КӨШІРІЛІП ЖАТЫР</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">Осы топтағы қалғанының бәріне де солай істеу</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">Ауыстыру</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">Өткізіп жіберу</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">Екеуін де қалдыру</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">Атын өзгерту</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">Жою</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">Жаңа атау</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">Жаңа қалта</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">{0} элемент біржола жойылсын ба? Мұны кері қайтару мүмкін емес - олар себетке түспейді.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">{0} элемент себетке жіберілсін бе? Таңдауда қалта бар, оның ішіндегінің бәрі де кетеді.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">Қайта сұрамау</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows мұны жоюдан бас тартты. Егер қалталарға бақыланатын қатынау қосулы болса, әкімші атынан қайталау КӨМЕКТЕСПЕЙДІ - ол құқық деңгейі бойынша емес, қолданба бойынша бөгейді, сондықтан KillerShell-ді Windows қауіпсіздігіндегі рұқсат етілген қолданбалар тізіміне қосу керек. Сонда да әкімші атынан қайталау керек пе?</sys:String>
+    <sys:String x:Key="Str_Btn_RetryAdmin">Әкімші атынан қайталау</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Жоюдан бас тартылды - қатынау рұқсат етілмеген</sys:String>
+    <sys:String x:Key="Str_Status_Selected">Таңдалған элементтер: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Жоғары құқықпен жою да қабылданбады - Windows қауіпсіздігіндегі қалталарға бақыланатын қатынауды тексеріңіз</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedSaveFailed">{0} файлын жоғары құқықпен сақтау да қабылданбады - Windows қауіпсіздігіндегі қалталарға бақыланатын қатынауды тексеріңіз</sys:String>
+
+    <!-- File-operation shortcuts -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">файлдарды қиып алу / көшіру / қою</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">атын өзгерту</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">себетке жіберу</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">біржола жою</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">жаңа қалта</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">Алдымен қалта ашыңыз - іздеу қойындысында оларды қоятын жер жоқ</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">Қалтаны өз ішіне тастауға болмайды</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">Дайын - элементтер: {0}</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">{0} элементтен кейін болдырылмады</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} орындалды, {1} сәтсіз</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">Бұл орындалмады</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">Атын өзгерту мүмкін болмады - {0}</sys:String>
+
+    <!-- File-operation context menu -->
+    <sys:String x:Key="Str_Menu_Cut">Қиып алу</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">Көшіру</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">Қою</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">Атын өзгерту</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">Жою  (Shift: біржола)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">Жаңа қалта</sys:String>
+
+    <!-- Themed file dialog -->
+    <sys:String x:Key="Str_Btn_Open">Ашу</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Сақтау</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">Файл атауы:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">Файл түрі:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">Барлық файлдар</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Мұнда ағымдағы файл түріне сәйкес ештеңе жоқ.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">Мұндай қалта жоқ.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">Мұндай файл жоқ.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} ауыстырылсын ба?</sys:String>
+
+    <!-- Processes/Services tab -->
+    <sys:String x:Key="Str_TT_TaskManager">Processes/Services  (F9)  -  таңдау үшін оң жақ басу</sys:String>
+    <sys:String x:Key="Str_TabTitle_TaskManager">Processes/Services</sys:String>
+    <sys:String x:Key="Str_TabTitle_Processes">Процестер</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Қызметтер</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesOpen">Processes/Services</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesAdmin">Processes/Services әкімші атынан</sys:String>
+    <sys:String x:Key="Str_TT_ProcFilter">Атауы, жолы немесе пайдаланушысы бойынша сүзу</sys:String>
+    <sys:String x:Key="Str_Col_ProcName">Атауы</sys:String>
+    <sys:String x:Key="Str_Col_ProcPid">PID</sys:String>
+    <sys:String x:Key="Str_Col_ProcUser">Пайдаланушы</sys:String>
+    <sys:String x:Key="Str_Col_ProcCpu">CPU %</sys:String>
+    <sys:String x:Key="Str_Col_ProcMemory">Жады</sys:String>
+    <sys:String x:Key="Str_Col_ProcCommandLine">Пәрмен жолы</sys:String>
+    <sys:String x:Key="Str_Col_ProcPath">Жол</sys:String>
+    <sys:String x:Key="Str_Menu_ProcOpenLocation">Файл орналасуын ашу</sys:String>
+    <sys:String x:Key="Str_Menu_ProcKill">Процесті аяқтау</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRestart">Қайта іске қосу</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRunAsAdmin">Әкімші атынан қайта іске қосу</sys:String>
+    <sys:String x:Key="Str_Dlg_ProcKillMsg">{0} (PID {1}) аяқталсын ба? Сол процестегі сақталмаған жұмыс жоғалады.</sys:String>
+    <sys:String x:Key="Str_Proc_Killed">{0} аяқталды</sys:String>
+    <sys:String x:Key="Str_Proc_AlreadyExited">{0} әлдеқашан аяқталған</sys:String>
+    <sys:String x:Key="Str_Proc_KillFailed">{0} аяқталмады - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_Restarted">{0} қайта іске қосылды</sys:String>
+    <sys:String x:Key="Str_Proc_RestartFailed">{0} қайта іске қосылмады - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_RefreshFailed">Процестер тізімі жаңартылмады - {0}</sys:String>
+    <sys:String x:Key="Str_Proc_Loading">Процестер тізімі жүктелуде...</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsTitle">Процесс мәліметтері</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsParentPid">Аталық PID</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsStartTime">Іске қосылу уақыты</sys:String>
+    <sys:String x:Key="Str_TT_ProcPrev">Алдыңғы процесс  (Сол жақ көрсеткі)</sys:String>
+    <sys:String x:Key="Str_TT_ProcNext">Келесі процесс  (Оң жақ көрсеткі)</sys:String>
+    <sys:String x:Key="Str_TT_ProcCopyDetails">Мәліметтерді көшіру  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_ProcClose">Жабу  (Esc)</sys:String>
+
+    <!-- Processes/Services mode toggle -->
+    <sys:String x:Key="Str_TT_ProcToggleToServices">Қызметтерге ауысу  (Ctrl+.)</sys:String>
+    <sys:String x:Key="Str_TT_ProcToggleToProcesses">Процестерге ауысу  (Ctrl+.)</sys:String>
+
+    <!-- Services view -->
+    <sys:String x:Key="Str_TT_SvcFilter">Атауы, көрсетілетін атауы, жолы немесе тіркелгісі бойынша сүзу</sys:String>
+    <sys:String x:Key="Str_Col_SvcName">Атауы</sys:String>
+    <sys:String x:Key="Str_Col_SvcDisplayName">Көрсетілетін атауы</sys:String>
+    <sys:String x:Key="Str_Col_SvcStatus">Күйі</sys:String>
+    <sys:String x:Key="Str_Col_SvcStartType">Іске қосылу түрі</sys:String>
+    <sys:String x:Key="Str_Col_SvcLogOnAs">Кім атынан кіреді</sys:String>
+    <sys:String x:Key="Str_Col_SvcPath">Жол</sys:String>
+    <sys:String x:Key="Str_Col_SvcDescription">Сипаттамасы</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStart">Іске қосу</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStop">Тоқтату</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStartMsg">{0} ({1}) іске қосылсын ба?</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStopMsg">{0} ({1}) тоқтатылсын ба? Оған тәуелді нәрселер жұмысын тоқтатуы мүмкін.</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcRestartMsg">{0} ({1}) қайта іске қосылсын ба? Оған тәуелді нәрселер қысқа уақытқа қолжетімсіз болады.</sys:String>
+    <sys:String x:Key="Str_Svc_Started">{0} іске қосылды</sys:String>
+    <sys:String x:Key="Str_Svc_StartFailed">{0} іске қосылмады - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Stopped">{0} тоқтатылды</sys:String>
+    <sys:String x:Key="Str_Svc_StopFailed">{0} тоқтатылмады - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Restarted">{0} қайта іске қосылды</sys:String>
+    <sys:String x:Key="Str_Svc_RestartFailed">{0} қайта іске қосылмады - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_RefreshFailed">Қызметтер тізімі жаңартылмады - {0}</sys:String>
+    <sys:String x:Key="Str_Svc_Loading">Қызметтер тізімі жүктелуде...</sys:String>
+    <sys:String x:Key="Str_Svc_DetailsTitle">Қызмет мәліметтері</sys:String>
+    <sys:String x:Key="Str_TT_SvcPrev">Алдыңғы қызмет  (Сол жақ көрсеткі)</sys:String>
+    <sys:String x:Key="Str_TT_SvcNext">Келесі қызмет  (Оң жақ көрсеткі)</sys:String>
+    <sys:String x:Key="Str_TT_SvcCopyDetails">Мәліметтерді көшіру  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_SvcClose">Жабу  (Esc)</sys:String>
+
+    <!-- Event Viewer tab -->
+    <sys:String x:Key="Str_TT_EventViewer">Оқиғаларды қарау  (Ctrl+F12)</sys:String>
+    <sys:String x:Key="Str_TabTitle_EventViewer">Оқиғаларды қарау</sys:String>
+    <sys:String x:Key="Str_TT_EvtFilter">Көзі, хабары, санаты немесе оқиға коды бойынша сүзу</sys:String>
+    <sys:String x:Key="Str_TT_EvtLogPicker">Қай журнал оқылады</sys:String>
+    <sys:String x:Key="Str_TT_EvtLevelPicker">Қай деңгейлер көрсетіледі</sys:String>
+    <sys:String x:Key="Str_TT_EvtRefresh">Ағымдағы журнал мен деңгейді қайта жүктеу</sys:String>
+    <sys:String x:Key="Str_Col_EvtLevel">Деңгей</sys:String>
+    <sys:String x:Key="Str_Col_EvtLog">Журнал</sys:String>
+    <sys:String x:Key="Str_Col_EvtTime">Күні мен уақыты</sys:String>
+    <sys:String x:Key="Str_Col_EvtSource">Көзі</sys:String>
+    <sys:String x:Key="Str_Col_EvtId">Оқиға коды</sys:String>
+    <sys:String x:Key="Str_Col_EvtCategory">Тапсырма санаты</sys:String>
+    <sys:String x:Key="Str_Col_EvtMessage">Хабар</sys:String>
+    <sys:String x:Key="Str_EvtLog_Application">Қолданба</sys:String>
+    <sys:String x:Key="Str_EvtLog_System">Жүйе</sys:String>
+    <sys:String x:Key="Str_EvtLog_Security">Қауіпсіздік</sys:String>
+    <sys:String x:Key="Str_EvtLog_All">Барлық журналдар</sys:String>
+    <sys:String x:Key="Str_EvtLevel_All">Барлық деңгейлер</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Error">Қате</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Warning">Ескерту</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Information">Ақпарат</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyMessage">Хабарды көшіру</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyDetails">Мәліметтерді көшіру</sys:String>
+    <sys:String x:Key="Str_Evt_Loading">Оқиғалар журналы жүктелуде...</sys:String>
+    <sys:String x:Key="Str_Evt_RefreshFailed">Оқиғалар журналы оқылмады - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_AccessDenied">Қауіпсіздік журналын оқу үшін жоғары құқықты терезе қажет - кейбір жазбалар жетіспеуі мүмкін</sys:String>
+    <sys:String x:Key="Str_Evt_NoMessage">(хабар деректері қолжетімсіз)</sys:String>
+    <sys:String x:Key="Str_Evt_MessageCopied">Хабар көшірілді</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCopied">Мәліметтер көшірілді</sys:String>
+    <sys:String x:Key="Str_Evt_CopyFailed">Алмасу буферіне көшірілмеді - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsLevel">Деңгей</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsTime">Уақыты</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsSource">Көзі</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsId">Оқиға коды</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCategory">Тапсырма санаты</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsMessage">Хабар</sys:String>
+
+    <!-- Performance Monitor tab -->
+    <sys:String x:Key="Str_TT_Performance">Өнімділік  (F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Performance">Өнімділік</sys:String>
+    <sys:String x:Key="Str_Perf_Gathering">Жабдық туралы мәлімет оқылуда...</sys:String>
+    <sys:String x:Key="Str_Perf_GatherFailed">Жабдық туралы мәлімет оқылмады - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_CountersUnavailable">Өнімділік есептегіштері қолжетімсіз - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_Cpu">CPU</sys:String>
+    <sys:String x:Key="Str_Perf_Ram">RAM</sys:String>
+    <sys:String x:Key="Str_Perf_Network">Желі</sys:String>
+    <sys:String x:Key="Str_Perf_Disk">Диск</sys:String>
+    <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Логикалық процессорларды көрсету</sys:String>
+    <sys:String x:Key="Str_Perf_Utilization">Жүктелуі</sys:String>
+    <sys:String x:Key="Str_Perf_Throughput">Өткізу қабілеті</sys:String>
+    <sys:String x:Key="Str_Perf_Send">Жіберу</sys:String>
+    <sys:String x:Key="Str_Perf_Receive">Қабылдау</sys:String>
+    <sys:String x:Key="Str_Perf_ActiveTime">Белсенді уақыты</sys:String>
+    <sys:String x:Key="Str_Perf_TransferRate">Тасымалдау жылдамдығы</sys:String>
+    <sys:String x:Key="Str_Perf_ReadSpeed">Оқу жылдамдығы</sys:String>
+    <sys:String x:Key="Str_Perf_WriteSpeed">Жазу жылдамдығы</sys:String>
+    <sys:String x:Key="Str_Perf_DedicatedMemory">Бөлінген GPU жады</sys:String>
+    <sys:String x:Key="Str_Perf_SharedMemory">Ортақ GPU жады</sys:String>
+    <sys:String x:Key="Str_Perf_InUse">Қолданылуда</sys:String>
+    <sys:String x:Key="Str_Perf_Available">Қолжетімді</sys:String>
+    <sys:String x:Key="Str_Perf_Committed">Тағайындалған</sys:String>
+    <sys:String x:Key="Str_Perf_Cores">Ядролар</sys:String>
+    <sys:String x:Key="Str_Perf_LogicalProcessors">Логикалық процессорлар</sys:String>
+    <sys:String x:Key="Str_Perf_BaseSpeed">Базалық жиілігі</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleWidth">Толық енді ауыстыру  -  ұяшық ретін өзгерту үшін тақырыпты сүйреңіз</sys:String>
+    <sys:String x:Key="Str_Perf_ToggleGraphHeight">График биіктігін ауыстыру</sys:String>
+
+    <!-- Storage Analyzer tab -->
+    <sys:String x:Key="Str_TT_Storage">Жинақтауыш талдағышы  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Жинақтауыш талдағышы</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Жинақтауыш талдағышы</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Жинақтауыш талдағышы (жоғары құқықпен қарау)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Жинақтауыш талдағышы</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Жинақтауыш талдағышы, жоғары құқықпен қарау</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">қарауды бастау (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">карта тереңдігін ауыстыру (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">көрсетілетін ең кіші өлшемді ауыстыру (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">түрі немесе қалтасы бойынша бояуды ауыстыру (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">таңдалған қалтаны үлкейту (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">бір деңгей кішірейту (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">қарау түбіріне оралу (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">таңдалған элементті себетке жіберу (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Қарау</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Тоқтату</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Қарайтын қалтаны немесе дискіні таңдаңыз</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Қалтаны немесе дискіні таңдап, Қарау батырмасын басыңыз</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">Мұндай қалта жоқ</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Қарау тоқтатылды - оқылып үлгергені көрсетілген</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">өткізілді</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">Жаңа қойындыда ашу</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Explorer-де ашу</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Жолды көшіру</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Жою (себетке)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Қайта қарау</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Файл түрі бойынша бояу</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Жоғарғы қалта бойынша бояу</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Тереңдік</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">Барлығы</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Қанша қалта деңгейі өз тіктөртбұрышын алады - азырақ болса, карта үлкен қалталарға дейін жалпыланады</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Ең аз</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">Барлығы</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Осыдан кішінің бәрін жасыру - байттар өздері жатқан қалтада бәрібір есептеледі</sys:String>
+    <sys:String x:Key="Str_Storage_Total">барлығы</sys:String>
+
+    <!-- Archives browsed as folders -->
+    <sys:String x:Key="Str_Status_Extracting">{0} шығарылуда...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">{0} шығарылмады</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">Мұрағат оқылмады - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Тек .zip мұрағаттарын өзгертуге болады - бұл тек оқуға ашылды</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Мұрағаттан тек файлдарды сүйреуге болады - қалтаны ашып, ішіндегіні сүйреңіз</sys:String>
+
+    <!-- Writing inside an archive -->
+    <sys:String x:Key="Str_Status_ArchiveWriting">Мұрағат қайта жазылуда - {0}%</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">{0} мұрағатқа қосылды</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">{0} мұрағаттан алынды</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">Атауы {0} болып өзгертілді</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} қосылды - {1} үшін жарамды атау берілмеді, олар өткізіліп жіберілді</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">Мұрағат жаңартылмады - {0}. Түпнұсқа өзгерген жоқ.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Бұл мұрағат файлы тек оқуға деп белгіленген - белгіні алып, қайталаңыз</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">Бұл мұрағат басқа бағдарламада ашық - оны жауып, қайталаңыз</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">Бұл мұрағатқа жазуға рұқсат жоқ</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">Мұрағатта мұндай атаумен нәрсе бұрыннан бар</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">Бұл жазба мұрағатта енді жоқ</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">Мұндай атауды мұрағат ішінде пайдалануға болмайды</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">Онда қосатын ештеңе жоқ</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">Мұрағат өзгеріссіз қалдырылды</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">Олардың кейбірі мұрағатта бұрыннан бар</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">Мұрағаттан көшірілді - жазба ішінде қалды</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">Олардың {0} мұрағатта бұрыннан бар.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">Мұрағаттан {0} элемент алынсын ба? Мұрағат толығымен қайта жазылады және мұны кері қайтару мүмкін емес.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">Екеуін де қалдырудың орнына ауыстыру</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">Қосу</sys:String>
+
+    <sys:String x:Key="Str_Storage_Free">бос</sys:String>
+
+    <!-- Registry Editor tab -->
+    <sys:String x:Key="Str_TT_RegistryEditor">Тізілім өңдегіші  (Ctrl+F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_RegistryEditor">Тізілім өңдегіші</sys:String>
+    <sys:String x:Key="Str_TT_RegFind">Бөлім немесе параметр атауын табу  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_RegRefresh">Таңдалған бөлімді дискіден қайта оқу  (F5)</sys:String>
+    <sys:String x:Key="Str_RegEd_FindNext">Келесіні табу</sys:String>
+    <sys:String x:Key="Str_RegEd_ComputerRoot">Компьютер</sys:String>
+    <sys:String x:Key="Str_RegEd_PathNotFound">Мұндай бөлім жоқ</sys:String>
+    <sys:String x:Key="Str_RegEd_AccessDenied">Қатынау рұқсат етілмеген - бұл бөлімге осы жоғары құқықты терезеде барынан да жоғары қатынау деңгейі қажет</sys:String>
+    <sys:String x:Key="Str_RegEd_NothingSelected">Алдымен бөлімді таңдаңыз</sys:String>
+    <sys:String x:Key="Str_RegEd_Refreshed">Жаңартылды</sys:String>
+    <sys:String x:Key="Str_RegEd_NoMatches">Ағаштың жүктелген бөлігінен сәйкестік табылмады</sys:String>
+    <sys:String x:Key="Str_RegEd_NameEmpty">Атауды енгізіңіз</sys:String>
+    <sys:String x:Key="Str_RegEd_NameHasBackslash">Атауда кері қиғаш сызық болмауы керек</sys:String>
+    <sys:String x:Key="Str_RegEd_NameExists">Мұндай атаумен бөлім немесе параметр мұнда бұрыннан бар</sys:String>
+    <sys:String x:Key="Str_RegEd_NewKeyDefaultName">Жаңа бөлім #1</sys:String>
+    <sys:String x:Key="Str_RegEd_NewValueDefaultName">Жаңа параметр</sys:String>
+    <sys:String x:Key="Str_RegEd_CreateFailed">Жасалмады - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_RenameFailed">Атауы өзгертілмеді - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_DeleteFailed">Жойылмады - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_SaveFailed">Параметр сақталмады - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}" және оның ішіндегінің бәрі жойылды</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" жойылды</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" сақталды</sys:String>
+    <sys:String x:Key="Str_RegEd_NameCopied">Атау көшірілді</sys:String>
+    <sys:String x:Key="Str_RegEd_PathCopied">Жол көшірілді</sys:String>
+    <sys:String x:Key="Str_RegEd_CopyFailed">Алмасу буферіне көшірілмеді - {0}</sys:String>
+    <sys:String x:Key="Str_Col_RegName">Атауы</sys:String>
+    <sys:String x:Key="Str_Col_RegType">Түрі</sys:String>
+    <sys:String x:Key="Str_Col_RegData">Мәні</sys:String>
+    <sys:String x:Key="Str_Menu_RegNew">Жасау</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewKey">Бөлім</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewString">Жолдық параметр</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewExpandString">Кеңейтілетін жолдық параметр</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewMultiString">Көпжолдық параметр</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewBinary">Екілік параметр</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewDWord">DWORD параметрі</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewQWord">QWORD параметрі</sys:String>
+    <sys:String x:Key="Str_Menu_RegModify">Өзгерту...</sys:String>
+    <sys:String x:Key="Str_Menu_RegRename">Атын өзгерту</sys:String>
+    <sys:String x:Key="Str_Menu_RegDelete">Жою</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyName">Атауын көшіру</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyPath">Толық жолды көшіру</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewKeyMsg">Жаңа бөлімге атау беріңіз</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewValueMsg">Жаңа параметрге атау беріңіз</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameKeyMsg">"{0}" бөлімінің атын өзгерту</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameValueMsg">"{0}" параметрінің атын өзгерту</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteKeyMsg">"{0}" бөлімі және оның ішіндегінің бәрі біржола жойылсын ба? Бұл тек осы бөлімді ғана емес, астындағы барлық ішкі бөлімдер мен параметрлерді де жояды - кері қайтару жоқ, ал қате бөлімді жою бағдарламаның іске қосылуына кедергі келтіруі немесе Windows-тың өзін бұзуы мүмкін.</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteValueMsg">"{0}" параметрі біржола жойылсын ба? Мұны кері қайтару мүмкін емес.</sys:String>
+    <sys:String x:Key="Str_RegEd_Save">Сақтау</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueData">Параметр мәні</sys:String>
+    <sys:String x:Key="Str_RegEd_MultiHint">Әр жолда бір жазба</sys:String>
+    <sys:String x:Key="Str_RegEd_BinaryHint">Бос орынмен бөлінген он алтылық байт жұптары (мысалы, 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_RegEd_Base">Санау жүйесі:</sys:String>
+    <sys:String x:Key="Str_RegEd_Hexadecimal">Он алтылық</sys:String>
+    <sys:String x:Key="Str_RegEd_Decimal">Ондық</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidNumber">Бұл таңдалған санау жүйесі үшін жарамды сан емес</sys:String>
+    <sys:String x:Key="Str_RegEd_OutOfRangeDword">Бұл мән 32 биттік DWORD үшін тым үлкен</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidByte">"{0}" жарамды он алтылық байт емес</sys:String>
+
+    <!-- Event details dialog -->
+    <sys:String x:Key="Str_Evt_DetailsTitle">Оқиға мәліметтері</sys:String>
+    <sys:String x:Key="Str_Evt_Keywords">Кілт сөздер</sys:String>
+    <sys:String x:Key="Str_Evt_Computer">Компьютер</sys:String>
+    <sys:String x:Key="Str_Evt_User">Пайдаланушы / SID</sys:String>
+    <sys:String x:Key="Str_Evt_ProcessId">Процесс коды</sys:String>
+    <sys:String x:Key="Str_Evt_ThreadId">Ағын коды</sys:String>
+    <sys:String x:Key="Str_Evt_ActivityId">Әрекет коды</sys:String>
+    <sys:String x:Key="Str_Evt_RecordId">Оқиға жазбасының коды</sys:String>
+    <sys:String x:Key="Str_Evt_Opcode">Операция коды</sys:String>
+    <sys:String x:Key="Str_Evt_ViewXml">Бастапқы XML-ді көрсету</sys:String>
+    <sys:String x:Key="Str_Evt_ViewFormatted">Пішімделгенін көрсету</sys:String>
+    <sys:String x:Key="Str_Evt_SearchOnline">Бұл оқиғаны интернеттен іздеу</sys:String>
+    <sys:String x:Key="Str_Btn_Close">Жабу</sys:String>
+    <sys:String x:Key="Str_TT_EvtPrev">Алдыңғы оқиға  (Сол жақ көрсеткі)</sys:String>
+    <sys:String x:Key="Str_TT_EvtNext">Келесі оқиға  (Оң жақ көрсеткі)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewXml">Бастапқы XML-ді көрсету  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewFormatted">Пішімделгенін көрсету  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtSearchOnline">Бұл оқиғаны интернеттен іздеу  (Alt+S)</sys:String>
+    <sys:String x:Key="Str_TT_EvtCopyDetails">Мәліметтерді көшіру  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_EvtClose">Жабу  (Esc)</sys:String>
+
+</ResourceDictionary>
