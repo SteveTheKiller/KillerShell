@@ -165,13 +165,7 @@ namespace KillerShell.Tools
     internal static class RegistryPathHelper
     {
         internal static readonly (string Name, RegistryKey Root)[] Hives =
-        [
-            ("HKEY_CLASSES_ROOT",   Registry.ClassesRoot),
-            ("HKEY_CURRENT_USER",   Registry.CurrentUser),
-            ("HKEY_LOCAL_MACHINE",  Registry.LocalMachine),
-            ("HKEY_USERS",          Registry.Users),
-            ("HKEY_CURRENT_CONFIG", Registry.CurrentConfig),
-        ];
+            KillerShell.Services.RegistryEditorLogic.Hives;
 
         /// <summary>Opens <paramref name="fullPath"/> fresh - the caller disposes it. Returns null
         /// for an unknown hive name or a key that no longer exists; never throws for that case,
@@ -179,23 +173,12 @@ namespace KillerShell.Tools
         /// UnauthorizedAccessException around the call, same as LoadChildren above).</summary>
         internal static RegistryKey? OpenKey(string fullPath, bool writable)
         {
-            if (string.IsNullOrEmpty(fullPath)) return null;
-
-            int sep = fullPath.IndexOf('\\');
-            string hiveName = sep < 0 ? fullPath : fullPath[..sep];
-            string sub      = sep < 0 ? string.Empty : fullPath[(sep + 1)..];
-
-            foreach (var (Name, Root) in Hives)
-                if (string.Equals(Name, hiveName, StringComparison.OrdinalIgnoreCase))
-                    return sub.Length == 0 ? Root : Root.OpenSubKey(sub, writable);
-
-            return null;
+            return KillerShell.Services.RegistryEditorLogic.OpenKey(fullPath, writable);
         }
 
         internal static string ParentPath(string fullPath)
         {
-            int idx = fullPath.LastIndexOf('\\');
-            return idx < 0 ? string.Empty : fullPath[..idx];
+            return KillerShell.Services.RegistryEditorLogic.ParentPath(fullPath);
         }
     }
 
@@ -206,16 +189,8 @@ namespace KillerShell.Tools
     // ═══════════════════════════════════════════════════════════
     internal static class RegistryValueFormat
     {
-        internal static string KindLabel(RegistryValueKind k) => k switch
-        {
-            RegistryValueKind.String       => "REG_SZ",
-            RegistryValueKind.ExpandString => "REG_EXPAND_SZ",
-            RegistryValueKind.Binary       => "REG_BINARY",
-            RegistryValueKind.DWord        => "REG_DWORD",
-            RegistryValueKind.MultiString  => "REG_MULTI_SZ",
-            RegistryValueKind.QWord        => "REG_QWORD",
-            _                              => "REG_NONE",
-        };
+        internal static string KindLabel(RegistryValueKind k)
+            => KillerShell.Services.RegistryEditorLogic.KindLabel(k);
 
         // HKEY_CLASSES_ROOT is a merged HKLM+HKCU view and, past the ArgumentException fix for
         // malformed names, can also carry a value whose DATA is pathologically large (some stray
@@ -225,57 +200,8 @@ namespace KillerShell.Tools
         // thread for a long time with nothing to catch, which reads as "app hung", not "app
         // crashed". Cap what ever reaches the grid; Modify still reads and edits the real,
         // untruncated value, this only bounds what gets displayed.
-        private const int MaxDisplayChars = 4000;
-
-        private static string Truncate(string s)
-            => s.Length <= MaxDisplayChars
-                ? s
-                : s[..MaxDisplayChars] + $"...  ({s.Length} chars total)";
-
         internal static string DataLabel(object? value, RegistryValueKind kind)
-        {
-            switch (kind)
-            {
-                case RegistryValueKind.String:
-                case RegistryValueKind.ExpandString:
-                    return Truncate(value as string ?? string.Empty);
-
-                case RegistryValueKind.DWord:
-                {
-                    uint v = unchecked((uint)Convert.ToInt64(value ?? 0, System.Globalization.CultureInfo.InvariantCulture));
-                    return $"0x{v:x8} ({v})";
-                }
-
-                case RegistryValueKind.QWord:
-                {
-                    ulong v = unchecked((ulong)Convert.ToInt64(value ?? 0L, System.Globalization.CultureInfo.InvariantCulture));
-                    return $"0x{v:x16} ({v})";
-                }
-
-                case RegistryValueKind.Binary:
-                {
-                    var bytes = value as byte[] ?? [];
-                    if (bytes.Length == 0) return string.Empty;
-                    // Cap the byte count BEFORE building the hex string, not after - a many-MB
-                    // blob turned into a "XX XX XX ..." string first would already have paid the
-                    // cost Truncate exists to avoid.
-                    int shown = Math.Min(bytes.Length, MaxDisplayChars / 3);
-                    var hex = string.Join(" ", bytes.Take(shown).Select(b => b.ToString("x2", System.Globalization.CultureInfo.InvariantCulture)));
-                    return shown < bytes.Length ? hex + $" ...  ({bytes.Length} bytes total)" : hex;
-                }
-
-                case RegistryValueKind.MultiString:
-                {
-                    var arr = value as string[] ?? [];
-                    // " | " between entries, not the raw NUL/CRLF regedit's own file format uses -
-                    // this is a grid cell, and entries have to stay visibly separated on one line.
-                    return Truncate(string.Join("  |  ", arr));
-                }
-
-                default:
-                    return Truncate(value?.ToString() ?? string.Empty);
-            }
-        }
+            => KillerShell.Services.RegistryEditorLogic.DataLabel(value, kind);
     }
 
     /// <summary>One row of the value grid.</summary>
@@ -1204,9 +1130,12 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         private static string? ValidateName(string v)
         {
-            if (string.IsNullOrWhiteSpace(v)) return MainWindow.LocStatic("Str_RegEd_NameEmpty");
-            if (v.IndexOf('\\') >= 0) return MainWindow.LocStatic("Str_RegEd_NameHasBackslash");
-            return null;
+            return KillerShell.Services.RegistryEditorLogic.ValidateName(v) switch
+            {
+                KillerShell.Services.RegistryNameError.Empty => MainWindow.LocStatic("Str_RegEd_NameEmpty"),
+                KillerShell.Services.RegistryNameError.ContainsBackslash => MainWindow.LocStatic("Str_RegEd_NameHasBackslash"),
+                _ => null,
+            };
         }
 
         private void CreateNewKey(RegistryNode parentNode)
