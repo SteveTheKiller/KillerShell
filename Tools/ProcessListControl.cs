@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Management;
 using System.ServiceProcess;
 using System.Windows;
 using System.Windows.Controls;
@@ -197,8 +196,8 @@ namespace KillerShell.Tools
             _timer = new DispatcherTimer { Interval = RefreshInterval };
             _timer.Tick += (_, _) =>
             {
-                if (_mode == ViewMode.Processes) Refresh();
-                else RefreshServices();
+                if (_mode == ViewMode.Processes) _ = RefreshAsync();
+                else _ = RefreshServicesAsync();
             };
 
             // Started on Loaded / stopped on Unloaded rather than for the tab's whole lifetime:
@@ -206,7 +205,7 @@ namespace KillerShell.Tools
             // terminal and the editor), and Loaded/Unloaded fire on exactly that move - so a
             // Processes/Services tab sitting in the background costs nothing until it is looked
             // at again.
-            Loaded   += (_, _) => { Refresh(); _timer.Start(); };
+            Loaded   += (_, _) => { _ = RefreshAsync(); _timer.Start(); };
             Unloaded += (_, _) => _timer.Stop();
 
             _statusClearTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(4) };
@@ -432,8 +431,8 @@ namespace KillerShell.Tools
             // Refresh immediately rather than waiting up to RefreshInterval for the next tick -
             // switching modes and staring at a stale or empty grid for over a second reads as
             // broken.
-            if (mode == ViewMode.Processes) Refresh();
-            else RefreshServices();
+            if (mode == ViewMode.Processes) _ = RefreshAsync();
+            else _ = RefreshServicesAsync();
         }
 
         private static DataGridTextColumn Col(string headerKey, string bindingPath, double width,
@@ -529,7 +528,7 @@ namespace KillerShell.Tools
         private bool _demoProcPopulated;
         private bool _demoSvcPopulated;
 
-        private async void Refresh()
+        private async Task RefreshAsync()
         {
             if (MainWindow.DemoMode)
             {
@@ -610,7 +609,8 @@ namespace KillerShell.Tools
             // throws Win32Exception for an elevated/protected process when this app is not
             // elevated). ParentProcessId rides along on the SAME query - it costs nothing extra
             // to ask WMI for one more column, unlike a second per-row lookup would.
-            Dictionary<int, (string cmd, string path, string parentPid)> wmi = QueryWmiProcesses();
+            Dictionary<int, (string CommandLine, string Path, string ParentPid)> wmi =
+                Services.ProcessListQueryService.QueryProcesses();
 
             // Process.GetProcesses() hands back live handles, not a snapshot struct - each one
             // has to be disposed or a tab left open for hours slowly leaks kernel handles, one
@@ -682,9 +682,9 @@ namespace KillerShell.Tools
                     string cmd = string.Empty, path = string.Empty, parentPid = "-";
                     if (wmi.TryGetValue(pid, out var info))
                     {
-                        cmd       = info.cmd       ?? string.Empty;
-                        path      = info.path      ?? string.Empty;
-                        parentPid = info.parentPid ?? "-";
+                        cmd       = info.CommandLine ?? string.Empty;
+                        path      = info.Path        ?? string.Empty;
+                        parentPid = info.ParentPid   ?? "-";
                     }
 
                     // Owner is the one field NOT worth waiting on here (see EnrichOwners) - a
@@ -730,7 +730,7 @@ namespace KillerShell.Tools
                     // which is what threw RaceOnRCWCleanup in the first place (Shutdown remark).
                     if (token.IsCancellationRequested) return;
 
-                    string owner = QueryOwner(pid);
+                    string owner = Services.ProcessListQueryService.QueryOwner(pid);
                     _ownerCache[pid] = owner;
                     _ownerPending.TryRemove(pid, out _);
                     if (token.IsCancellationRequested) return;   // window may be gone by now
@@ -821,62 +821,6 @@ namespace KillerShell.Tools
             }
         }
 
-        private static Dictionary<int, (string cmd, string path, string parentPid)> QueryWmiProcesses()
-        {
-            var result = new Dictionary<int, (string, string, string)>();
-            try
-            {
-                using var searcher = new ManagementObjectSearcher(
-                    "SELECT ProcessId, ParentProcessId, CommandLine, ExecutablePath FROM Win32_Process");
-                using var rows = searcher.Get();
-                foreach (ManagementObject row in rows.Cast<ManagementObject>())
-                {
-                    using (row)
-                    {
-                        int pid = Convert.ToInt32(row["ProcessId"]);
-                        string cmd  = row["CommandLine"]    as string ?? string.Empty;
-                        string path = row["ExecutablePath"] as string ?? string.Empty;
-                        string parentPid = row["ParentProcessId"] is { } pp
-                            ? Convert.ToInt32(pp).ToString(System.Globalization.CultureInfo.InvariantCulture)
-                            : "-";
-                        result[pid] = (cmd, path, parentPid);
-                    }
-                }
-            }
-            catch { /* WMI unavailable/locked down - every row just shows empty cmd/path/parent */ }
-            return result;
-        }
-
-        /// <summary>
-        /// "DOMAIN\user", or "-" when WMI's GetOwner() cannot answer (a system process, or one
-        /// this process cannot see into without elevation). Called once per PID ever - see the
-        /// cache comment on _ownerCache.
-        /// </summary>
-        private static string QueryOwner(int pid)
-        {
-            try
-            {
-                using var searcher = new ManagementObjectSearcher(
-                    $"SELECT Handle FROM Win32_Process WHERE ProcessId = {pid}");
-                using var rows = searcher.Get();
-                foreach (ManagementObject row in rows.Cast<ManagementObject>())
-                {
-                    using (row)
-                    {
-                        var args = new object[2];
-                        uint hr = (uint)row.InvokeMethod("GetOwner", args);
-                        if (hr == 0 && args[0] is string user && !string.IsNullOrEmpty(user))
-                        {
-                            string domain = args[1] as string ?? string.Empty;
-                            return domain.Length > 0 ? domain + "\\" + user : user;
-                        }
-                    }
-                }
-            }
-            catch { /* swallow - "-" is the answer for "could not tell" */ }
-            return "-";
-        }
-
         // ═══════════════════════════════════════════════════════════
         //  REFRESH - SERVICES
         // ═══════════════════════════════════════════════════════════
@@ -885,7 +829,7 @@ namespace KillerShell.Tools
         /// <summary>Same two-halves shape as Refresh() above: BuildServiceSamples does the slow
         /// enumeration off the UI thread, ApplyServiceSamples is the only part allowed to touch
         /// _svcItems.</summary>
-        private async void RefreshServices()
+        private async Task RefreshServicesAsync()
         {
             if (MainWindow.DemoMode)
             {
@@ -933,7 +877,7 @@ namespace KillerShell.Tools
         /// </summary>
         private (List<ServiceSample> samples, HashSet<string> seen) BuildServiceSamples()
         {
-            var wmi = QueryWmiServices();
+            var wmi = Services.ProcessListQueryService.QueryServices();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var samples = new List<ServiceSample>();
 
@@ -962,10 +906,10 @@ namespace KillerShell.Tools
                     string startupType = string.Empty, path = string.Empty, logOnAs = string.Empty, description = string.Empty;
                     if (wmi.TryGetValue(name, out var info))
                     {
-                        startupType = Services.ProcessListLogic.FriendlyStartMode(info.startMode);
-                        path        = info.path;
-                        logOnAs     = info.logOnAs;
-                        description = info.description;
+                        startupType = Services.ProcessListLogic.FriendlyStartMode(info.StartMode);
+                        path        = info.Path;
+                        logOnAs     = info.LogOnAs;
+                        description = info.Description;
                     }
 
                     samples.Add(new ServiceSample(name, displayName, status, startupType, logOnAs, path, description, canStop));
@@ -1178,32 +1122,6 @@ namespace KillerShell.Tools
         /// log-on account - never one per row. Keyed by service Name (case-insensitive, matching
         /// ServiceController.ServiceName's own comparison), not by any numeric id - a service has
         /// no PID-equivalent identity the way a process does.</summary>
-        private static Dictionary<string, (string startMode, string path, string logOnAs, string description)> QueryWmiServices()
-        {
-            var result = new Dictionary<string, (string, string, string, string)>(StringComparer.OrdinalIgnoreCase);
-            try
-            {
-                using var searcher = new ManagementObjectSearcher(
-                    "SELECT Name, StartMode, PathName, StartName, Description FROM Win32_Service");
-                using var rows = searcher.Get();
-                foreach (ManagementObject row in rows.Cast<ManagementObject>())
-                {
-                    using (row)
-                    {
-                        string name = row["Name"] as string ?? string.Empty;
-                        if (name.Length == 0) continue;
-                        string startMode   = row["StartMode"]   as string ?? string.Empty;
-                        string path        = row["PathName"]    as string ?? string.Empty;
-                        string logOnAs     = row["StartName"]   as string ?? string.Empty;
-                        string description = row["Description"] as string ?? string.Empty;
-                        result[name] = (startMode, path, logOnAs, description);
-                    }
-                }
-            }
-            catch { /* WMI unavailable/locked down - every row falls back to ServiceController alone */ }
-            return result;
-        }
-
         /// <summary>Win32_Service.StartMode comes back as "Auto"/"Manual"/"Disabled"/"Boot"/
         /// "System" - the last two are kernel driver states Win32_Service should not actually
         /// report for a real service, kept here only so an unexpected value still shows
@@ -1543,7 +1461,7 @@ namespace KillerShell.Tools
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
 
-            RunServiceAction(s, sc => sc.Start(), ServiceControllerStatus.Running,
+            _ = RunServiceActionAsync(s, Services.ServiceControlAction.Start,
                 "Str_Svc_Started", "Str_Svc_StartFailed");
         }
 
@@ -1555,7 +1473,7 @@ namespace KillerShell.Tools
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
 
-            RunServiceAction(s, sc => sc.Stop(), ServiceControllerStatus.Stopped,
+            _ = RunServiceActionAsync(s, Services.ServiceControlAction.Stop,
                 "Str_Svc_Stopped", "Str_Svc_StopFailed");
         }
 
@@ -1572,34 +1490,8 @@ namespace KillerShell.Tools
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
 
-            string name = s.Name, display = s.DisplayName;
-            Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    using var sc = new ServiceController(name);
-                    if (sc.Status != ServiceControllerStatus.Stopped)
-                    {
-                        sc.Stop();
-                        sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(15));
-                    }
-                    sc.Refresh();
-                    sc.Start();
-                    sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.BeginInvoke(new Action(() => ShowStatus(
-                        string.Format(MainWindow.LocStatic("Str_Svc_RestartFailed"), display, ex.Message), error: true)));
-                    return;
-                }
-
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    ShowStatus(string.Format(MainWindow.LocStatic("Str_Svc_Restarted"), display), error: false);
-                    RefreshServices();
-                }));
-            }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            _ = RunServiceActionAsync(s, Services.ServiceControlAction.Restart,
+                "Str_Svc_Restarted", "Str_Svc_RestartFailed");
         }
 
         /// <summary>Shared Start/Stop runner: opens its OWN ServiceController by name (the row's
@@ -1607,31 +1499,20 @@ namespace KillerShell.Tools
         /// disposed by the time an action runs) on a background thread, waits for the target
         /// status, then reports back and pulls a fresh row rather than waiting for the next
         /// 1.5-second tick.</summary>
-        private void RunServiceAction(ServiceInfo s, Action<ServiceController> action,
-                                      ServiceControllerStatus waitFor, string successKey, string failKey)
+        private async Task RunServiceActionAsync(ServiceInfo s, Services.ServiceControlAction action,
+                                                 string successKey, string failKey)
         {
-            string name = s.Name, display = s.DisplayName;
-            Task.Factory.StartNew(() =>
+            Services.ServiceControlResult result = await Services.ServiceControlService.ExecuteAsync(
+                s.Name, action, _ownerCts.Token);
+            if (result.Canceled) return;
+            if (!result.Succeeded)
             {
-                try
-                {
-                    using var sc = new ServiceController(name);
-                    action(sc);
-                    sc.WaitForStatus(waitFor, TimeSpan.FromSeconds(15));
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.BeginInvoke(new Action(() => ShowStatus(
-                        string.Format(MainWindow.LocStatic(failKey), display, ex.Message), error: true)));
-                    return;
-                }
+                ShowStatus(string.Format(MainWindow.LocStatic(failKey), s.DisplayName, result.Error), error: true);
+                return;
+            }
 
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    ShowStatus(string.Format(MainWindow.LocStatic(successKey), display), error: false);
-                    RefreshServices();
-                }));
-            }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            ShowStatus(string.Format(MainWindow.LocStatic(successKey), s.DisplayName), error: false);
+            await RefreshServicesAsync();
         }
     }
 }
