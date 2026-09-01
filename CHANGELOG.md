@@ -7,25 +7,26 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.2.3] - Unreleased
 
 ### Added
+- Storage Analyzer now uses a Master File Table fast path for elevated scans of local NTFS drives and folders. It enumerates the volume by file ID, builds the same treemap tree, and automatically falls back to the existing parallel directory walker for ordinary accounts, network paths, other filesystems, or any unsupported MFT operation.
 - Italian localization for the complete app interface and killershell.net, bringing both to thirteen languages.
 - Hungarian localization for the complete app interface and killershell.net, bringing both to twelve languages.
-- Storage Analyzer now uses a Master File Table fast path for elevated scans of local NTFS drives and folders. It enumerates the volume by file ID, builds the same treemap tree, and automatically falls back to the existing parallel directory walker for ordinary accounts, network paths, other filesystems, or any unsupported MFT operation.
+- The family grab cursors, matching KillerNotes and KillerPDF: an open hand while hovering a Performance monitor cell header, and a closed hand for as long as the cell is being carried.
 
 ### Changed
-- release.ps1 now gates every release on translations (a locale missing a key, carrying an extra one, holding an empty value, or with placeholders that do not match English fails the run) and on punctuation (no en or em dashes anywhere, translated content included). The dashes already present in the locale files and the website dictionaries were cleaned up in the same pass.
 - killershell.net's Help and Technical pages now have complete twelve-language coverage, including every newer archive, pane, editor, administration, Storage Analyzer, and shortcut section. The 90-row shortcut reference, its scope/category headings, and its List/Keyboard labels are generated from the app's own locale dictionaries so the website cannot drift from the F1 card. Polish, Czech, and Japanese are also accepted by the website language switcher instead of falling back to English.
+- release.ps1 now gates every release on translations (a locale missing a key, carrying an extra one, holding an empty value, or with placeholders that do not match English fails the run) and on punctuation (no en or em dashes anywhere, translated content included). The dashes already present in the locale files and the website dictionaries were cleaned up in the same pass.
 
 ### Fixed
-
-- The 98SE theme's accent swatches now list navy first, matching KillerNotes' Win98 order and the theme's default accent.
-- The folder tree now follows changes made outside KillerShell's own file commands. A folder created or removed by the terminal, another application, or an installer appears in the tree instead of leaving the branch showing whatever was there when it was first expanded, and navigating into such a folder now moves the tree rather than silently doing nothing.
-- Context menus now use opaque, square popup surfaces so menu labels render with ClearType instead of coarse grayscale antialiasing.
-- Terminal prompts now retain their last valid theme palette if the live session file is briefly unavailable, preventing the path block from flashing red while using a blue theme.
-- Browsing-tab icons now follow the current folder after navigation, including special folders such as Home and Pictures.
 - KillerShell now detects when both a per-user and an all-users installation exist and offers to remove the copy that is not running, and self-update keeps the Add/Remove Programs version current instead of leaving it describing the replaced build.
+- The folder tree now follows changes made outside KillerShell's own file commands. A folder created or removed by the terminal, another application, or an installer appears in the tree instead of leaving the branch showing whatever was there when it was first expanded, and navigating into such a folder now moves the tree rather than silently doing nothing.
 - Snapping, maximizing, or restoring the window now keeps the dual panes' proportions instead of handing all the new space to one pane; dragging the window edge still resizes only the right pane.
 - Open terminal here from the results context menu now uses the folder being viewed when no file row is selected, matching F8 instead of silently doing nothing.
 - New terminal tabs now preserve their startup screen until layout supplies a real size, so a fast first PowerShell prompt remains visible instead of being pushed into scrollback by a temporary 1x1 buffer.
+- Context menus now use opaque, square popup surfaces so menu labels render with ClearType instead of coarse grayscale antialiasing.
+- Browsing-tab icons now follow the current folder after navigation, including special folders such as Home and Pictures.
+- Terminal prompts now retain their last valid theme palette if the live session file is briefly unavailable, preventing the path block from flashing red while using a blue theme.
+- Secondary buttons now dim on hover instead of lighting up an accent border, which belongs to the primary and outline buttons. Sepulchre also gets its own hover color: it had been borrowing the teal from the row highlight, which read as the wrong palette entirely on that theme's warm brown surface.
+- The 98SE theme's accent swatches now list navy first, matching KillerNotes' Win98 order and the theme's default accent.
 
 ## [1.2.2] - 2026-08-18
 
