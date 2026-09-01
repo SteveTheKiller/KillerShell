@@ -9,7 +9,7 @@ $localeFiles = [ordered]@{
     en = 'en-US.xaml'; hu = 'hu-HU.xaml'; pl = 'pl-PL.xaml'; cs = 'cs-CZ.xaml'
     es = 'es.xaml'; de = 'de-DE.xaml'; fr = 'fr-FR.xaml'; tr = 'tr-TR.xaml'
     'zh-cn' = 'zh-CN.xaml'; zh = 'zh-TW.xaml'; bn = 'bn.xaml'; ja = 'ja-JP.xaml'
-    it = 'it-IT.xaml'
+    it = 'it-IT.xaml'; ru = 'ru-RU.xaml'; kk = 'kk-KZ.xaml'
 }
 $labels = [ordered]@{}
 foreach ($locale in $localeFiles.Keys) {
