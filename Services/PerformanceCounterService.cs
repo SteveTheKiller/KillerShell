@@ -35,6 +35,21 @@ namespace KillerShell.Services
             }
         }
 
+        internal static bool Prime(PerformanceCounter? counter)
+            => TrySample(counter, out _);
+
+        internal static string[] GetInstanceNames(string category)
+        {
+            try
+            {
+                return new PerformanceCounterCategory(category).GetInstanceNames();
+            }
+            catch
+            {
+                return Array.Empty<string>();
+            }
+        }
+
         internal static double ClampPercent(double value)
             => Math.Min(100, Math.Max(0, value));
 

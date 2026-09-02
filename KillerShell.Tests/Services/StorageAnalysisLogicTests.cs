@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Text;
 using KillerShell.Services;
 using Xunit;
 
@@ -85,6 +86,35 @@ namespace KillerShell.Tests.Services
             Assert.Equal(15, total);
             Assert.Equal(10, root.Children![0].Size);
             Assert.Equal(5, root.Children[1].Size);
+        }
+
+        [Fact]
+        public void MftParser_ReadsVersionTwoRecordFields()
+        {
+            const int RecordOffset = 8;
+            const int NameOffset = 60;
+            string name = "sample.txt";
+            byte[] nameBytes = Encoding.Unicode.GetBytes(name);
+            int recordLength = NameOffset + nameBytes.Length;
+            var buffer = new byte[RecordOffset + recordLength];
+            BitConverter.GetBytes((ulong)99).CopyTo(buffer, 0);
+            BitConverter.GetBytes(recordLength).CopyTo(buffer, RecordOffset);
+            BitConverter.GetBytes((ushort)2).CopyTo(buffer, RecordOffset + 4);
+            BitConverter.GetBytes((ulong)42).CopyTo(buffer, RecordOffset + 8);
+            BitConverter.GetBytes((ulong)7).CopyTo(buffer, RecordOffset + 16);
+            BitConverter.GetBytes((uint)0x20).CopyTo(buffer, RecordOffset + 52);
+            BitConverter.GetBytes((ushort)nameBytes.Length).CopyTo(buffer, RecordOffset + 56);
+            BitConverter.GetBytes((ushort)NameOffset).CopyTo(buffer, RecordOffset + 58);
+            nameBytes.CopyTo(buffer, RecordOffset + NameOffset);
+
+            Dictionary<ulong, StorageMftEntry>? records =
+                StorageMftReader.ParseRecords(buffer, buffer.Length);
+
+            StorageMftEntry entry = Assert.Single(records!).Value;
+            Assert.Equal((ulong)42, entry.Id);
+            Assert.Equal((ulong)7, entry.ParentId);
+            Assert.Equal(name, entry.Name);
+            Assert.False(entry.IsDirectory);
         }
     }
 }

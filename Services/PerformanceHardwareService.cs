@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Management;
+using System.Threading;
 
 namespace KillerShell.Services
 {
@@ -58,12 +59,13 @@ namespace KillerShell.Services
 
     internal static class PerformanceHardwareService
     {
-        internal static PerformanceHardwareInfo Gather()
+        internal static PerformanceHardwareInfo Gather(CancellationToken cancellationToken)
         {
             string cpu = "-", ram = "-", gpu = "-", network = "-";
             double totalRamGb = 0;
             int cores = 0, threads = 0, baseMhz = 0;
 
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 using var searcher = new ManagementObjectSearcher(
@@ -72,6 +74,7 @@ namespace KillerShell.Services
                 var names = new List<string>();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     using (row)
                     {
                         string name = (row["Name"] as string ?? string.Empty).Trim();
@@ -83,14 +86,16 @@ namespace KillerShell.Services
                 }
                 if (names.Count > 0) cpu = string.Join(" + ", names) + $" ({cores}C / {threads}T)";
             }
-            catch { }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
 
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 using var searcher = new ManagementObjectSearcher("SELECT TotalPhysicalMemory FROM Win32_ComputerSystem");
                 using var rows = searcher.Get();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     using (row)
                     {
                         if (row["TotalPhysicalMemory"] is not { } total) continue;
@@ -99,15 +104,17 @@ namespace KillerShell.Services
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
 
             var gpus = new List<string>();
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController");
                 using var rows = searcher.Get();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     using (row)
                     {
                         string name = (row["Name"] as string ?? string.Empty).Trim();
@@ -116,33 +123,37 @@ namespace KillerShell.Services
                 }
                 if (gpus.Count > 0) gpu = string.Join(", ", gpus);
             }
-            catch { }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
 
             var models = new Dictionary<int, string>();
             var lettersByDisk = new Dictionary<int, List<string>>();
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 using var searcher = new ManagementObjectSearcher("SELECT Index, Model FROM Win32_DiskDrive");
                 using var rows = searcher.Get();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     using (row)
                     {
                         if (row["Index"] is not { } rawIndex) continue;
                         int index = Convert.ToInt32(rawIndex);
                         string model = (row["Model"] as string ?? string.Empty).Trim();
                         if (model.Length > 0) models[index] = model;
-                        lettersByDisk[index] = ReadDriveLetters(row);
+                        lettersByDisk[index] = ReadDriveLetters(row, cancellationToken);
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
 
             var disks = new List<PerformanceDiskInfo>();
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 foreach (string instance in new PerformanceCounterCategory("PhysicalDisk").GetInstanceNames())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (instance == "_Total") continue;
                     int separator = instance.IndexOf(' ');
                     bool hasIndex = int.TryParse(separator > 0 ? instance[..separator] : instance, out int index);
@@ -152,8 +163,9 @@ namespace KillerShell.Services
                     disks.Add(new PerformanceDiskInfo(instance, model, letters));
                 }
             }
-            catch { }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
 
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 using var searcher = new ManagementObjectSearcher(
@@ -162,6 +174,7 @@ namespace KillerShell.Services
                 var adapters = new List<string>();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     using (row)
                     {
                         string name = (row["Name"] as string ?? string.Empty).Trim();
@@ -173,23 +186,28 @@ namespace KillerShell.Services
                 }
                 if (adapters.Count > 0) network = string.Join("; ", adapters);
             }
-            catch { }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
 
             var counterAdapters = new List<string>();
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 foreach (string instance in new PerformanceCounterCategory("Network Interface").GetInstanceNames())
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (instance.IndexOf("Loopback", StringComparison.OrdinalIgnoreCase) < 0 &&
                         instance.IndexOf("isatap", StringComparison.OrdinalIgnoreCase) < 0)
                         counterAdapters.Add(instance);
+                }
             }
-            catch { }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
 
             return new PerformanceHardwareInfo(cpu, ram, gpu, network, totalRamGb, cores, threads,
                 baseMhz, disks, gpus, counterAdapters);
         }
 
-        private static List<string> ReadDriveLetters(ManagementObject disk)
+        private static List<string> ReadDriveLetters(
+            ManagementObject disk, CancellationToken cancellationToken)
         {
             var letters = new List<string>();
             try
@@ -197,10 +215,12 @@ namespace KillerShell.Services
                 using var partitions = disk.GetRelated("Win32_DiskPartition");
                 foreach (ManagementObject partition in partitions.Cast<ManagementObject>())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     using (partition)
                     using (var logicalDisks = partition.GetRelated("Win32_LogicalDisk"))
                     foreach (ManagementObject logicalDisk in logicalDisks.Cast<ManagementObject>())
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
                         using (logicalDisk)
                         {
                             string letter = (logicalDisk["DeviceID"] as string ?? string.Empty).Trim();
@@ -209,7 +229,7 @@ namespace KillerShell.Services
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
             letters.Sort(StringComparer.OrdinalIgnoreCase);
             return letters;
         }

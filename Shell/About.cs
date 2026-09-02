@@ -408,7 +408,8 @@ namespace KillerShell.Shell
             {
                 exePath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
                 if (exePath.Length == 0) return (false, "(unavailable)", "(none)");
-                using var cert = new X509Certificate2(X509Certificate.CreateFromSignedFile(exePath));
+                using var sourceCertificate = X509Certificate.CreateFromSignedFile(exePath);
+                using var cert = new X509Certificate2(sourceCertificate);
                 var subj = cert.GetNameInfo(X509NameType.SimpleName, false);
                 subject = string.IsNullOrEmpty(subj) ? cert.Subject : subj;
                 thumb   = string.IsNullOrEmpty(cert.Thumbprint) ? "(none)" : cert.Thumbprint;

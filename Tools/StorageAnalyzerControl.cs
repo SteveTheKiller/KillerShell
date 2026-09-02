@@ -12,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using KillerShell.Shell;
-using Microsoft.Win32.SafeHandles;
 
 // The control behind a Storage Analyzer tab: pick a folder or drive, scan it, and see every
 // byte as a WizTree/WinDirStat-style treemap - a rectangle per file, area proportional to
@@ -667,17 +666,7 @@ namespace KillerShell.Tools
         }
 
         private static bool CanUseMftFastPath(string target)
-        {
-            if (!MainWindow.IsElevated || target.StartsWith(@"\\", StringComparison.Ordinal)) return false;
-            try
-            {
-                string? root = Path.GetPathRoot(target);
-                return !string.IsNullOrEmpty(root)
-                    && root!.Length >= 2
-                    && new DriveInfo(root).DriveFormat.Equals("NTFS", StringComparison.OrdinalIgnoreCase);
-            }
-            catch { return false; }
-        }
+            => Services.StorageMftReader.CanUse(target, MainWindow.IsElevated);
 
         /// <summary>The fast route is deliberately fail-open. It builds into a private tree and
         /// publishes nothing until the complete MFT graph is valid; an unsupported driver,
@@ -713,39 +702,14 @@ namespace KillerShell.Tools
             StartDirectoryWorkers(token, publishedRoot);
         }
 
-        private sealed class MftEntry
-        {
-            internal ulong Id;
-            internal ulong ParentId;
-            internal string Name = "";
-            internal uint Attributes;
-            internal bool IsDirectory => (Attributes & FileAttributeDirectory) != 0;
-            internal bool IsReparsePoint => (Attributes & FileAttributeReparsePoint) != 0;
-        }
-
         private bool TryScanMft(string target, FsNode rootNode, CancellationToken token)
         {
             try
             {
-                string drive = Path.GetPathRoot(target)![..2];
-                using var volume = CreateFileW(@"\\.\" + drive, GenericRead,
-                    FileShareRead | FileShareWrite | FileShareDelete, IntPtr.Zero, OpenExisting, 0, IntPtr.Zero);
-                if (volume.IsInvalid) return false;
+                if (!Services.StorageMftReader.TryRead(target, token, out var scan)) return false;
 
-                ulong targetId;
-                using (var targetHandle = CreateFileW(target, 0,
-                    FileShareRead | FileShareWrite | FileShareDelete, IntPtr.Zero, OpenExisting,
-                    FileFlagBackupSemantics, IntPtr.Zero))
-                {
-                    if (targetHandle.IsInvalid || !GetFileInformationByHandle(targetHandle, out var targetInfo)) return false;
-                    targetId = NormalizeFileId(((ulong)targetInfo.FileIndexHigh << 32) | targetInfo.FileIndexLow);
-                }
-
-                var records = ReadMftEntries(volume, token);
-                if (records == null || !records.ContainsKey(targetId)) return false;
-
-                var byParent = new Dictionary<ulong, List<MftEntry>>();
-                foreach (var entry in records.Values)
+                var byParent = new Dictionary<ulong, List<Services.StorageMftEntry>>();
+                foreach (var entry in scan.Entries.Values)
                 {
                     if (!byParent.TryGetValue(entry.ParentId, out var list))
                         byParent[entry.ParentId] = list = [];
@@ -753,7 +717,7 @@ namespace KillerShell.Tools
                 }
 
                 var pending = new Queue<(ulong Id, FsNode Node)>();
-                pending.Enqueue((targetId, rootNode));
+                pending.Enqueue((scan.TargetId, rootNode));
                 int candidateFiles = 0;
                 while (pending.Count > 0)
                 {
@@ -762,7 +726,7 @@ namespace KillerShell.Tools
                     if (!byParent.TryGetValue(id, out var children)) continue;
                     foreach (var entry in children)
                     {
-                        if (entry.Id == targetId || entry.IsReparsePoint || entry.Name is "." or "..") continue;
+                        if (entry.Id == scan.TargetId || entry.IsReparsePoint || entry.Name is "." or "..") continue;
                         if (entry.IsDirectory)
                         {
                             var child = new FsNode { Name = entry.Name, IsDir = true, Parent = node, Children = [] };
@@ -773,7 +737,7 @@ namespace KillerShell.Tools
                         else
                         {
                             candidateFiles++;
-                            long size = GetFileSizeById(volume, entry.Id);
+                            long size = entry.Size;
                             if (size < 0) { Interlocked.Increment(ref _pSkipped); continue; }
                             node.Children!.Add(new FsNode { Name = entry.Name, Size = size, Parent = node });
                             Interlocked.Increment(ref _pFiles);
@@ -790,71 +754,6 @@ namespace KillerShell.Tools
             catch (OperationCanceledException) { return true; }
             catch { return false; }
         }
-
-        private static Dictionary<ulong, MftEntry>? ReadMftEntries(SafeFileHandle volume, CancellationToken token)
-        {
-            const int bufferSize = 1024 * 1024;
-            var output = new byte[bufferSize];
-            var query = new MFT_ENUM_DATA { StartFileReferenceNumber = 0, LowUsn = 0, HighUsn = long.MaxValue };
-            var records = new Dictionary<ulong, MftEntry>();
-            while (true)
-            {
-                token.ThrowIfCancellationRequested();
-                bool ok = DeviceIoControl(volume, FsctlEnumUsnData, ref query, Marshal.SizeOf(query),
-                    output, output.Length, out int bytes, IntPtr.Zero);
-                if (!ok)
-                {
-                    int error = Marshal.GetLastWin32Error();
-                    if (error == ErrorHandleEof) break;
-                    return null;
-                }
-                if (bytes < 8) return null;
-                query.StartFileReferenceNumber = BitConverter.ToUInt64(output, 0);
-                int offset = 8;
-                while (offset + 60 <= bytes)
-                {
-                    int length = BitConverter.ToInt32(output, offset);
-                    if (length < 60 || offset + length > bytes) return null;
-                    ushort major = BitConverter.ToUInt16(output, offset + 4);
-                    // NTFS returns USN_RECORD_V2 here. V3 carries 128-bit IDs at different
-                    // offsets (used by ReFS, which never enters this route), so do not parse a
-                    // future/foreign layout as though it were V2.
-                    if (major == 2)
-                    {
-                        ushort nameLength = BitConverter.ToUInt16(output, offset + 56);
-                        ushort nameOffset = BitConverter.ToUInt16(output, offset + 58);
-                        if (nameOffset + nameLength <= length)
-                        {
-                            ulong id = NormalizeFileId(BitConverter.ToUInt64(output, offset + 8));
-                            records[id] = new MftEntry
-                            {
-                                Id = id,
-                                ParentId = NormalizeFileId(BitConverter.ToUInt64(output, offset + 16)),
-                                Attributes = BitConverter.ToUInt32(output, offset + 52),
-                                Name = System.Text.Encoding.Unicode.GetString(output, offset + nameOffset, nameLength)
-                            };
-                        }
-                    }
-                    offset += length;
-                }
-            }
-            return records;
-        }
-
-        private static long GetFileSizeById(SafeFileHandle volume, ulong id)
-        {
-            var descriptor = new FILE_ID_DESCRIPTOR
-            {
-                Size = (uint)Marshal.SizeOf<FILE_ID_DESCRIPTOR>(),
-                Type = 0,
-                FileId = unchecked((long)id)
-            };
-            using var file = OpenFileById(volume, ref descriptor, FileReadAttributes,
-                FileShareRead | FileShareWrite | FileShareDelete, IntPtr.Zero, FileFlagBackupSemantics);
-            return file.IsInvalid || !GetFileSizeEx(file, out long size) ? -1 : size;
-        }
-
-        private static ulong NormalizeFileId(ulong id) => id & 0x0000FFFFFFFFFFFFUL;
 
         private void CancelScan()
         {
@@ -1109,57 +1008,6 @@ namespace KillerShell.Tools
             {
                 children[index].Rect = layout[index];
                 children[index].Gen = _gen;
-            }
-        }
-
-        private void SquarifyLegacy(List<FsNode> children, long total, Rect rect)
-        {
-            double x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
-            double scale = w * h / Math.Max(1, total);   // pixels per byte
-
-            int i = 0;
-            while (i < children.Count)
-            {
-                bool horizontalRow = w < h;                     // rows lie along the SHORTER side
-                double side = horizontalRow ? w : h;
-                if (side < 1) { for (; i < children.Count; i++) { children[i].Rect = Rect.Empty; children[i].Gen = _gen; } return; }
-
-                // Grow the row while the worst aspect ratio keeps improving.
-                int start = i;
-                double rowArea = 0, rowMax = 0, rowMin = double.MaxValue, worst = double.MaxValue;
-                int end = i;
-                while (end < children.Count)
-                {
-                    double a = Math.Max(0.0001, children[end].Size * scale);
-                    double na = rowArea + a;
-                    double nMax = Math.Max(rowMax, a), nMin = Math.Min(rowMin, a);
-                    double nWorst = Math.Max(side * side * nMax / (na * na), na * na / (side * side * nMin));
-                    if (nWorst > worst && end > start) break;
-                    rowArea = na; rowMax = nMax; rowMin = nMin; worst = nWorst;
-                    end++;
-                }
-
-                double thickness = rowArea / side;
-                double along = horizontalRow ? x : y;
-                for (int k = start; k < end; k++)
-                {
-                    double a = Math.Max(0.0001, children[k].Size * scale);
-                    double len = a / Math.Max(0.0001, thickness);
-                    children[k].Rect = horizontalRow
-                        ? new Rect(along, y, len, thickness)
-                        : new Rect(x, along, thickness, len);
-                    children[k].Gen = _gen;
-                    along += len;
-                }
-
-                if (horizontalRow) { y += thickness; h -= thickness; }
-                else               { x += thickness; w -= thickness; }
-                i = end;
-                if (w < 0.5 || h < 0.5)
-                {
-                    for (; i < children.Count; i++) { children[i].Rect = Rect.Empty; children[i].Gen = _gen; }
-                    return;
-                }
             }
         }
 
@@ -1643,74 +1491,8 @@ namespace KillerShell.Tools
             => Services.StorageAnalysisLogic.FormatSize(bytes);
 
         // ═══════════════════════════════════════════════════════════
-        //  P/Invoke - enumeration and recycle
+        //  P/Invoke - recycle
         // ═══════════════════════════════════════════════════════════
-        private const uint GenericRead = 0x80000000;
-        private const uint FileReadAttributes = 0x80;
-        private const uint FileShareRead = 0x1;
-        private const uint FileShareWrite = 0x2;
-        private const uint FileShareDelete = 0x4;
-        private const uint OpenExisting = 3;
-        private const uint FileFlagBackupSemantics = 0x02000000;
-        private const uint FileAttributeDirectory = 0x10;
-        private const uint FileAttributeReparsePoint = 0x400;
-        private const uint FsctlEnumUsnData = 0x000900B3;
-        private const int ErrorHandleEof = 38;
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MFT_ENUM_DATA
-        {
-            public ulong StartFileReferenceNumber;
-            public long LowUsn;
-            public long HighUsn;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct FILE_ID_DESCRIPTOR
-        {
-            public uint Size;
-            public int Type;
-            public long FileId;
-            public long ExtendedFileId;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct BY_HANDLE_FILE_INFORMATION
-        {
-            public uint FileAttributes;
-            public System.Runtime.InteropServices.ComTypes.FILETIME CreationTime;
-            public System.Runtime.InteropServices.ComTypes.FILETIME LastAccessTime;
-            public System.Runtime.InteropServices.ComTypes.FILETIME LastWriteTime;
-            public uint VolumeSerialNumber;
-            public uint FileSizeHigh;
-            public uint FileSizeLow;
-            public uint NumberOfLinks;
-            public uint FileIndexHigh;
-            public uint FileIndexLow;
-        }
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern SafeFileHandle CreateFileW(string fileName, uint desiredAccess,
-            uint shareMode, IntPtr securityAttributes, uint creationDisposition,
-            uint flagsAndAttributes, IntPtr templateFile);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool DeviceIoControl(SafeFileHandle device, uint controlCode,
-            ref MFT_ENUM_DATA input, int inputSize, [Out] byte[] output, int outputSize,
-            out int bytesReturned, IntPtr overlapped);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool GetFileInformationByHandle(SafeFileHandle file,
-            out BY_HANDLE_FILE_INFORMATION information);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern SafeFileHandle OpenFileById(SafeFileHandle volume,
-            ref FILE_ID_DESCRIPTOR fileId, uint desiredAccess, uint shareMode,
-            IntPtr securityAttributes, uint flagsAndAttributes);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool GetFileSizeEx(SafeFileHandle file, out long fileSize);
-
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct SHFILEOPSTRUCT
         {

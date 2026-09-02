@@ -14,6 +14,13 @@ insert_final_newline = true
 
 [*.cs]
 
+# First-party correctness rules relevant to long-running and disposable work are build warnings.
+# Style suggestions retain their normal IDE severity so the release build stays actionable.
+dotnet_diagnostic.CA1849.severity = warning
+dotnet_diagnostic.CA2000.severity = warning
+dotnet_diagnostic.CA2012.severity = warning
+dotnet_diagnostic.CA2016.severity = warning
+
 # IDE0130, namespace does not match folder. Controls\ is FLAT and deliberately so: all thirteen
 # XAML files there declare x:Class="KillerShell.<Name>", so the flat namespace IS the convention,
 # and satisfying the rule would mean rewriting every x:Class plus every reference to them. The

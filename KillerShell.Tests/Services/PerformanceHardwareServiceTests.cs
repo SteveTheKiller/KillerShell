@@ -1,5 +1,6 @@
 using KillerShell.Services;
 using Xunit;
+using System.Threading;
 
 namespace KillerShell.Tests.Services
 {
@@ -8,7 +9,7 @@ namespace KillerShell.Tests.Services
         [Fact]
         public void Gather_ReturnsCompleteCollectionShape()
         {
-            PerformanceHardwareInfo info = PerformanceHardwareService.Gather();
+            PerformanceHardwareInfo info = PerformanceHardwareService.Gather(CancellationToken.None);
 
             Assert.NotNull(info.Disks);
             Assert.NotNull(info.Gpus);

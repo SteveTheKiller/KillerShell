@@ -56,6 +56,7 @@ namespace KillerShell.Tools
         private const int HistorySamples = 60;
 
         private readonly DispatcherTimer _timer;
+        private readonly CancellationTokenSource _lifetimeCts = new();
 
         private readonly TextBlock[] _staticInfoTexts;
         private readonly TextBlock _statusLine;
@@ -172,8 +173,14 @@ namespace KillerShell.Tools
                     // might get reused mid-cleanup (see the long remark on this in
                     // ProcessListControl.cs Refresh() - it is the exact crash this app already hit
                     // once for real).
-                    info = await Task.Factory.StartNew(Services.PerformanceHardwareService.Gather,
-                        CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                    CancellationToken token = _lifetimeCts.Token;
+                    info = await Task.Factory.StartNew(
+                        () => Services.PerformanceHardwareService.Gather(token), token,
+                        TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
                 }
                 catch (Exception ex)
                 {
@@ -197,6 +204,7 @@ namespace KillerShell.Tools
         /// </summary>
         internal void Shutdown()
         {
+            _lifetimeCts.Cancel();
             _timer.Stop();
             _statusClearTimer.Stop();
             DisposeCounters();
@@ -248,247 +256,6 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  STATIC HARDWARE INFO  -  fetched once, never re-queried
         // ═══════════════════════════════════════════════════════════
-        private readonly struct DiskInfo
-        {
-            internal readonly string InstanceName;
-            internal readonly string Model;
-            /// <summary>Drive letter(s) (e.g. "C:") that live on this physical disk, from the
-            /// Win32_DiskDrive -> Win32_DiskPartition -> Win32_LogicalDisk association walk in
-            /// GatherStaticInfo. Empty for an unpartitioned disk or one holding only a hidden
-            /// partition with no letter - never null.</summary>
-            internal readonly List<string> DriveLetters;
-            internal DiskInfo(string instanceName, string model, List<string> driveLetters)
-            {
-                InstanceName = instanceName; Model = model; DriveLetters = driveLetters;
-            }
-        }
-
-        private readonly struct HardwareInfo
-        {
-            internal readonly string Cpu;
-            internal readonly string Ram;
-            internal readonly string Gpu;
-            internal readonly string Network;
-            internal readonly double TotalRamGb;
-            internal readonly int CpuCores;
-            internal readonly int CpuThreads;
-            internal readonly int CpuBaseMhz;
-            internal readonly List<DiskInfo> Disks;
-            internal readonly List<string> Gpus;
-            internal readonly List<string> NetAdapters;
-
-            internal HardwareInfo(string cpu, string ram, string gpu, string network, double totalRamGb,
-                int cpuCores, int cpuThreads, int cpuBaseMhz,
-                List<DiskInfo> disks, List<string> gpus, List<string> netAdapters)
-            {
-                Cpu = cpu; Ram = ram; Gpu = gpu; Network = network; TotalRamGb = totalRamGb;
-                CpuCores = cpuCores; CpuThreads = cpuThreads; CpuBaseMhz = cpuBaseMhz;
-                Disks = disks; Gpus = gpus; NetAdapters = netAdapters;
-            }
-
-            internal static HardwareInfo Empty => new("-", "-", "-", "-", 0, 0, 0, 0,
-                [], [], []);
-        }
-
-        /// <summary>
-        /// Everything about the machine that never changes for the life of the tab, gathered with
-        /// one bulk WMI query per fact - the same "one query for the whole machine, not one per
-        /// item" discipline Processes/Event Viewer already follow. Also enumerates the
-        /// PerformanceCounter instance names for disks and network adapters here (off the UI
-        /// thread, same as the WMI calls) so the tile-building and counter-creation passes both
-        /// use the exact same instance identifiers this machine actually has - no separate
-        /// re-enumeration later that could drift from what was shown.
-        /// </summary>
-        private static HardwareInfo GatherStaticInfo()
-        {
-            string cpu = "-", ram = "-", gpu = "-", net = "-";
-            double totalRamGb = 0;
-            int cpuCores = 0, cpuThreads = 0, cpuBaseMhz = 0;
-
-            // CPU: model name plus core/thread count plus base clock. Multi-socket machines are
-            // rare on the desktops this app targets, but summed rather than assumed-one so a
-            // workstation with more than one physical CPU still reports an honest total.
-            try
-            {
-                using var searcher = new ManagementObjectSearcher(
-                    "SELECT Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed FROM Win32_Processor");
-                using var rows = searcher.Get();
-                var names = new List<string>();
-                foreach (ManagementObject row in rows.Cast<ManagementObject>())
-                {
-                    using (row)
-                    {
-                        string name = (row["Name"] as string ?? string.Empty).Trim();
-                        if (name.Length > 0 && !names.Contains(name)) names.Add(name);
-                        if (row["NumberOfCores"] is { } c) cpuCores += Convert.ToInt32(c);
-                        if (row["NumberOfLogicalProcessors"] is { } t) cpuThreads += Convert.ToInt32(t);
-                        if (cpuBaseMhz == 0 && row["MaxClockSpeed"] is { } mhz) cpuBaseMhz = Convert.ToInt32(mhz);
-                    }
-                }
-                if (names.Count > 0)
-                    cpu = string.Join(" + ", names) + $" ({cpuCores}C / {cpuThreads}T)";
-            }
-            catch { /* WMI unavailable/locked down - "-" stands in */ }
-
-            // RAM: total installed, from ComputerSystem rather than summing PhysicalMemory
-            // sticks - one row instead of N, and it is the number Windows itself calls "installed
-            // RAM".
-            try
-            {
-                using var searcher = new ManagementObjectSearcher(
-                    "SELECT TotalPhysicalMemory FROM Win32_ComputerSystem");
-                using var rows = searcher.Get();
-                foreach (ManagementObject row in rows.Cast<ManagementObject>())
-                {
-                    using (row)
-                    {
-                        if (row["TotalPhysicalMemory"] is { } t)
-                        {
-                            totalRamGb = Convert.ToInt64(t) / 1024.0 / 1024.0 / 1024.0;
-                            ram = totalRamGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB installed";
-                        }
-                    }
-                }
-            }
-            catch { /* "-" stands in */ }
-
-            // GPU: every video controller Windows enumerates - a laptop with integrated +
-            // discrete graphics genuinely has two, and both get their own tile below rather than
-            // guessing which one is "the" GPU.
-            var gpus = new List<string>();
-            try
-            {
-                using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController");
-                using var rows = searcher.Get();
-                foreach (ManagementObject row in rows.Cast<ManagementObject>())
-                {
-                    using (row)
-                    {
-                        string name = (row["Name"] as string ?? string.Empty).Trim();
-                        if (name.Length > 0) gpus.Add(name);
-                    }
-                }
-                if (gpus.Count > 0) gpu = string.Join(", ", gpus);
-            }
-            catch { /* "-" stands in, gpus stays empty - no GPU tiles */ }
-
-            // Disks: cross-reference Win32_DiskDrive (index -> model, and index -> drive
-            // letter(s) via the association walk below) with the PhysicalDisk perf-counter
-            // category's own instance names (index-prefixed, e.g. "0 C:"), so every disk tile
-            // points at a counter instance this machine actually exposes.
-            var diskModels = new Dictionary<int, string>();
-            var diskDriveLetters = new Dictionary<int, List<string>>();
-            try
-            {
-                using var searcher = new ManagementObjectSearcher("SELECT Index, Model FROM Win32_DiskDrive");
-                using var rows = searcher.Get();
-                foreach (ManagementObject row in rows.Cast<ManagementObject>())
-                {
-                    using (row)
-                    {
-                        if (row["Index"] is { } idxObj)
-                        {
-                            int idx = Convert.ToInt32(idxObj);
-                            string model = (row["Model"] as string ?? string.Empty).Trim();
-                            if (model.Length > 0) diskModels[idx] = model;
-
-                            // Walk Win32_DiskDrive -> Win32_DiskPartition -> Win32_LogicalDisk to
-                            // find which drive letter(s), if any, live on this physical disk - a
-                            // disk can have zero (unpartitioned, or only a hidden/system
-                            // partition), one, or several (multiple partitions each lettered).
-                            // One-time cost, done here alongside the rest of this bulk gather -
-                            // never repeated per refresh tick.
-                            var letters = new List<string>();
-                            try
-                            {
-                                using var partitions = row.GetRelated("Win32_DiskPartition");
-                                foreach (ManagementObject partition in partitions.Cast<ManagementObject>())
-                                {
-                                    using (partition)
-                                    {
-                                        using var logicalDisks = partition.GetRelated("Win32_LogicalDisk");
-                                        foreach (ManagementObject logicalDisk in logicalDisks.Cast<ManagementObject>())
-                                        {
-                                            using (logicalDisk)
-                                            {
-                                                string letter = (logicalDisk["DeviceID"] as string ?? string.Empty).Trim();
-                                                if (letter.Length > 0) letters.Add(letter);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            catch { /* association walk failed - tile just shows "Disk N" with no letters */ }
-                            letters.Sort(StringComparer.OrdinalIgnoreCase);
-                            diskDriveLetters[idx] = letters;
-                        }
-                    }
-                }
-            }
-            catch { /* falls back to bare instance names below */ }
-
-            var disks = new List<DiskInfo>();
-            try
-            {
-                foreach (string inst in new PerformanceCounterCategory("PhysicalDisk").GetInstanceNames())
-                {
-                    if (inst == "_Total") continue;
-                    int spaceIdx = inst.IndexOf(' ');
-                    string indexPart = spaceIdx > 0 ? inst[..spaceIdx] : inst;
-                    bool haveIdx = int.TryParse(indexPart, out int idx);
-                    string model = haveIdx && diskModels.TryGetValue(idx, out var m) ? m : inst;
-                    List<string> letters = haveIdx && diskDriveLetters.TryGetValue(idx, out var l) ? l : [];
-                    disks.Add(new DiskInfo(inst, model, letters));
-                }
-            }
-            catch { /* no PhysicalDisk category on this machine - no disk tiles, not fatal */ }
-
-            // Network: name + link speed for every adapter that is actually up, for the overview
-            // panel text - a machine can list a dozen virtual/disabled adapters (VPN clients,
-            // Hyper-V switches, disabled Bluetooth PAN), and none of those are what anyone reading
-            // this tab wants to see.
-            try
-            {
-                using var searcher = new ManagementObjectSearcher(
-                    "SELECT Name, Speed FROM Win32_NetworkAdapter WHERE NetEnabled = TRUE AND PhysicalAdapter = TRUE");
-                using var rows = searcher.Get();
-                var parts = new List<string>();
-                foreach (ManagementObject row in rows.Cast<ManagementObject>())
-                {
-                    using (row)
-                    {
-                        string name = (row["Name"] as string ?? string.Empty).Trim();
-                        if (name.Length == 0) continue;
-                        string speed = row["Speed"] is { } s ? FormatLinkSpeed(Convert.ToUInt64(s)) : string.Empty;
-                        parts.Add(speed.Length > 0 ? $"{name} - {speed}" : name);
-                    }
-                }
-                if (parts.Count > 0) net = string.Join("; ", parts);
-            }
-            catch { /* "-" stands in */ }
-
-            // Network adapter TILES key off the "Network Interface" perf-counter category's own
-            // instance names instead - those are what Bytes Sent/sec and Bytes Received/sec
-            // actually key on, and trying to line them up with the WMI names above is fragile
-            // (perf-counter instance names sanitize characters WMI's Name does not), so each tile
-            // just uses its own instance name as its description too.
-            var netAdapters = new List<string>();
-            try
-            {
-                foreach (string inst in new PerformanceCounterCategory("Network Interface").GetInstanceNames())
-                {
-                    if (inst.IndexOf("Loopback", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        inst.IndexOf("isatap", StringComparison.OrdinalIgnoreCase) >= 0)
-                        continue;
-                    netAdapters.Add(inst);
-                }
-            }
-            catch { /* no Network Interface category - no network tiles, not fatal */ }
-
-            return new HardwareInfo(cpu, ram, gpu, net, totalRamGb, cpuCores, cpuThreads, cpuBaseMhz,
-                disks, gpus, netAdapters);
-        }
-
         private static string FormatLinkSpeed(ulong bitsPerSecond)
             => Services.PerformanceMetricFormatter.LinkSpeed(bitsPerSecond);
 
@@ -1469,7 +1236,7 @@ namespace KillerShell.Tools
             try
             {
                 var names = new List<string>();
-                foreach (string inst in new PerformanceCounterCategory("Processor").GetInstanceNames())
+                foreach (string inst in Services.PerformanceCounterService.GetInstanceNames("Processor"))
                     if (inst != "_Total" && int.TryParse(inst, out _)) names.Add(inst);
                 names.Sort((a, b) => int.Parse(a, CultureInfo.InvariantCulture).CompareTo(int.Parse(b, CultureInfo.InvariantCulture)));
 
@@ -1477,8 +1244,9 @@ namespace KillerShell.Tools
                 var graphs = new Sparkline[names.Count];
                 for (int i = 0; i < names.Count; i++)
                 {
-                    counters[i] = new PerformanceCounter("Processor", "% Processor Time", names[i]);
-                    counters[i].NextValue();   // rate counter - first read has no baseline, discarded
+                    counters[i] = TryCreateCounter("Processor", "% Processor Time", names[i])!;
+                    if (counters[i] == null) return;
+                    Services.PerformanceCounterService.Prime(counters[i]);
                     graphs[i] = new Sparkline(HistorySamples, 100, "PrimaryBrush");
                 }
                 cs.CoreCounters = counters;
@@ -1509,14 +1277,14 @@ namespace KillerShell.Tools
                         case MetricKind.Cpu:
                         {
                             var cs = (CpuState)tile.State!;
-                            cs.Total = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-                            cs.Total.NextValue();
+                            cs.Total = TryCreateCounter("Processor", "% Processor Time", "_Total");
+                            Services.PerformanceCounterService.Prime(cs.Total);
                             break;
                         }
                         case MetricKind.Ram:
                         {
                             var rs = (RamState)tile.State!;
-                            rs.Avail = new PerformanceCounter("Memory", "Available MBytes");
+                            rs.Avail = TryCreateCounterNoInstance("Memory", "Available MBytes");
                             rs.Committed = TryCreateCounterNoInstance("Memory", "Committed Bytes");
                             break;
                         }
@@ -1526,9 +1294,9 @@ namespace KillerShell.Tools
                             ds.PercentTime = TryCreateCounter("PhysicalDisk", "% Disk Time", ds.InstanceName);
                             ds.ReadBytes = TryCreateCounter("PhysicalDisk", "Disk Read Bytes/sec", ds.InstanceName);
                             ds.WriteBytes = TryCreateCounter("PhysicalDisk", "Disk Write Bytes/sec", ds.InstanceName);
-                            ds.PercentTime?.NextValue();
-                            ds.ReadBytes?.NextValue();
-                            ds.WriteBytes?.NextValue();
+                            Services.PerformanceCounterService.Prime(ds.PercentTime);
+                            Services.PerformanceCounterService.Prime(ds.ReadBytes);
+                            Services.PerformanceCounterService.Prime(ds.WriteBytes);
                             break;
                         }
                         case MetricKind.Network:
@@ -1536,8 +1304,8 @@ namespace KillerShell.Tools
                             var ns = (NetState)tile.State!;
                             ns.Sent = TryCreateCounter("Network Interface", "Bytes Sent/sec", ns.InstanceName);
                             ns.Recv = TryCreateCounter("Network Interface", "Bytes Received/sec", ns.InstanceName);
-                            ns.Sent?.NextValue();
-                            ns.Recv?.NextValue();
+                            Services.PerformanceCounterService.Prime(ns.Sent);
+                            Services.PerformanceCounterService.Prime(ns.Recv);
                             break;
                         }
                         case MetricKind.Gpu:
@@ -1755,8 +1523,8 @@ namespace KillerShell.Tools
             {
                 if (rescan)
                 {
-                    try { _cachedGpuEngineInstances = new PerformanceCounterCategory("GPU Engine").GetInstanceNames(); }
-                    catch { _cachedGpuEngineInstances = []; }
+                    _cachedGpuEngineInstances =
+                        Services.PerformanceCounterService.GetInstanceNames("GPU Engine");
 
                     var seen = new HashSet<string>(_cachedGpuEngineInstances, StringComparer.Ordinal);
                     var stale = new List<string>();
@@ -1776,18 +1544,26 @@ namespace KillerShell.Tools
 
                     if (!_gpuEngineCounters.TryGetValue(inst, out var pc))
                     {
+                        PerformanceCounter? created = TryCreateCounter(
+                            "GPU Engine", "Utilization Percentage", inst);
                         try
                         {
-                            pc = new PerformanceCounter("GPU Engine", "Utilization Percentage", inst, true);
-                            pc.NextValue();   // no baseline yet - this tick's reading is meaningless
-                            _gpuEngineCounters[inst] = pc;
+                            if (created != null)
+                            {
+                                Services.PerformanceCounterService.Prime(created);
+                                _gpuEngineCounters[inst] = created;
+                                created = null;
+                            }
                         }
-                        catch { /* instance vanished between GetInstanceNames and here - skip it */ }
+                        finally { created?.Dispose(); }
                         continue;
                     }
 
-                    try { luidUtil.TryGetValue(luid, out double cur); luidUtil[luid] = cur + pc.NextValue(); }
-                    catch { /* stale - drop this tick's contribution */ }
+                    if (Services.PerformanceCounterService.TrySample(pc, out double sample))
+                    {
+                        luidUtil.TryGetValue(luid, out double cur);
+                        luidUtil[luid] = cur + sample;
+                    }
                 }
 
                 var luidDedicated = new Dictionary<string, double>(StringComparer.Ordinal);
@@ -1796,8 +1572,8 @@ namespace KillerShell.Tools
                 {
                     if (rescan)
                     {
-                        try { _cachedGpuMemInstances = new PerformanceCounterCategory("GPU Adapter Memory").GetInstanceNames(); }
-                        catch { _cachedGpuMemInstances = []; }
+                        _cachedGpuMemInstances =
+                            Services.PerformanceCounterService.GetInstanceNames("GPU Adapter Memory");
 
                         var seenMem = new HashSet<string>(_cachedGpuMemInstances, StringComparer.Ordinal);
                         var staleMem = new List<string>();
@@ -1814,24 +1590,23 @@ namespace KillerShell.Tools
                     {
                         string luid = ExtractGpuLuid(inst);
                         allLuids.Add(luid);
-                        try
+                        if (!_gpuMemDedicatedCounters.TryGetValue(inst, out var dedPc))
                         {
-                            if (!_gpuMemDedicatedCounters.TryGetValue(inst, out var dedPc))
-                            {
-                                dedPc = new PerformanceCounter("GPU Adapter Memory", "Dedicated Usage", inst, true);
-                                _gpuMemDedicatedCounters[inst] = dedPc;
-                            }
-                            if (!_gpuMemSharedCounters.TryGetValue(inst, out var shrPc))
-                            {
-                                shrPc = new PerformanceCounter("GPU Adapter Memory", "Shared Usage", inst, true);
-                                _gpuMemSharedCounters[inst] = shrPc;
-                            }
-                            double ded = dedPc.NextValue();
-                            double shr = shrPc.NextValue();
+                            dedPc = TryCreateCounter("GPU Adapter Memory", "Dedicated Usage", inst);
+                            if (dedPc != null) _gpuMemDedicatedCounters[inst] = dedPc;
+                        }
+                        if (!_gpuMemSharedCounters.TryGetValue(inst, out var shrPc))
+                        {
+                            shrPc = TryCreateCounter("GPU Adapter Memory", "Shared Usage", inst);
+                            if (shrPc != null) _gpuMemSharedCounters[inst] = shrPc;
+                        }
+                        if (dedPc != null && shrPc != null &&
+                            Services.PerformanceCounterService.TrySample(dedPc, out double ded) &&
+                            Services.PerformanceCounterService.TrySample(shrPc, out double shr))
+                        {
                             luidDedicated.TryGetValue(luid, out double curD); luidDedicated[luid] = curD + ded;
                             luidShared.TryGetValue(luid, out double curS); luidShared[luid] = curS + shr;
                         }
-                        catch { /* this adapter's memory counters unavailable this tick */ }
                     }
                 }
 

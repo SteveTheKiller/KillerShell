@@ -15,8 +15,13 @@
 
 [*.cs]
 
-# Every analyzer finding is a warning in here, so nothing hides at suggestion severity.
-dotnet_analyzer_diagnostic.severity = warning
+# Vendored AvalonEdit is kept source-compatible with upstream and excluded from first-party
+# analyzer enforcement. Compiler errors still apply normally.
+dotnet_analyzer_diagnostic.severity = none
+dotnet_diagnostic.CA1849.severity = none
+dotnet_diagnostic.CA2000.severity = none
+dotnet_diagnostic.CA2012.severity = none
+dotnet_diagnostic.CA2016.severity = none
 
 # ---- the convention this tree is written in (SharpDevelop house style) ----
 indent_style = tab

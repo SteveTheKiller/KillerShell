@@ -7,6 +7,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AssemblyTitle>KillerShell</AssemblyTitle>
     <Product>KillerShell</Product>
     <Company>killertools.net</Company>

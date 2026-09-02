@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -75,7 +76,9 @@ namespace KillerShell.Services
             {
                 return new ServiceControlResult(false, true, string.Empty);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is InvalidOperationException
+                                       or Win32Exception
+                                       or System.ServiceProcess.TimeoutException)
             {
                 return new ServiceControlResult(false, false, ex.Message);
             }

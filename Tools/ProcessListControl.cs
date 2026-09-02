@@ -561,8 +561,13 @@ namespace KillerShell.Tools
                     // use." A LongRunning task gets its own thread that exits (and takes its
                     // RCWs' lifetime with it) when this one call is done, never handed to
                     // anything else.
-                    built = await Task.Factory.StartNew(() => BuildSamples(now),
-                        CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                    CancellationToken token = _ownerCts.Token;
+                    built = await Task.Factory.StartNew(() => BuildSamples(now, token),
+                        token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
                 }
                 catch (Exception ex)
                 {
@@ -594,8 +599,10 @@ namespace KillerShell.Tools
         /// Refresh()'s BuildSamples starts - that is exactly why they are ConcurrentDictionary
         /// and not plain Dictionary.
         /// </remarks>
-        private (List<ProcessSample> samples, HashSet<int> seen, List<int> needOwner) BuildSamples(DateTime now)
+        private (List<ProcessSample> samples, HashSet<int> seen, List<int> needOwner) BuildSamples(
+            DateTime now, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var live = Process.GetProcesses();
             var seen = new HashSet<int>(live.Length);
             var samples = new List<ProcessSample>(live.Length);
@@ -618,6 +625,7 @@ namespace KillerShell.Tools
             // exception mid-row still reaches the dispose.
             foreach (var proc in live)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 try
                 {
                     int pid = proc.Id;
@@ -851,8 +859,13 @@ namespace KillerShell.Tools
                     // LongRunning for the same reason Refresh()'s BuildSamples is: WMI's
                     // ManagementObjectSearcher/ManagementObject are COM RCWs that must not be
                     // handed to a pooled ThreadPool thread that might get reused mid-cleanup.
-                    built = await Task.Factory.StartNew(BuildServiceSamples,
-                        CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                    CancellationToken token = _ownerCts.Token;
+                    built = await Task.Factory.StartNew(() => BuildServiceSamples(token),
+                        token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
                 }
                 catch (Exception ex)
                 {
@@ -875,8 +888,10 @@ namespace KillerShell.Tools
         /// - the same "one bulk query, not one per row" discipline BuildSamples already follows
         /// for processes.
         /// </summary>
-        private (List<ServiceSample> samples, HashSet<string> seen) BuildServiceSamples()
+        private (List<ServiceSample> samples, HashSet<string> seen) BuildServiceSamples(
+            CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var wmi = Services.ProcessListQueryService.QueryServices();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var samples = new List<ServiceSample>();
@@ -884,6 +899,7 @@ namespace KillerShell.Tools
             ServiceController[] controllers = ServiceController.GetServices();
             foreach (var sc in controllers)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 try
                 {
                     string name;
