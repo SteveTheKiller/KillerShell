@@ -163,7 +163,7 @@ namespace KillerShell.Tools
                 _staticGathered = true;
                 ShowStatus(MainWindow.LocStatic("Str_Perf_Gathering"), error: false, sticky: true);
 
-                HardwareInfo info;
+                Services.PerformanceHardwareInfo info;
                 try
                 {
                     // LongRunning, not a pooled Task.Run - GatherStaticInfo does WMI work, and
@@ -172,13 +172,13 @@ namespace KillerShell.Tools
                     // might get reused mid-cleanup (see the long remark on this in
                     // ProcessListControl.cs Refresh() - it is the exact crash this app already hit
                     // once for real).
-                    info = await Task.Factory.StartNew(GatherStaticInfo,
+                    info = await Task.Factory.StartNew(Services.PerformanceHardwareService.Gather,
                         CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
                 }
                 catch (Exception ex)
                 {
                     ShowStatus(string.Format(MainWindow.LocStatic("Str_Perf_GatherFailed"), ex.Message), error: true);
-                    info = HardwareInfo.Empty;
+                    info = Services.PerformanceHardwareInfo.Empty;
                 }
 
                 ApplyStaticInfo(info);
@@ -492,7 +492,7 @@ namespace KillerShell.Tools
         private static string FormatLinkSpeed(ulong bitsPerSecond)
             => Services.PerformanceMetricFormatter.LinkSpeed(bitsPerSecond);
 
-        private void ApplyStaticInfo(HardwareInfo info)
+        private void ApplyStaticInfo(Services.PerformanceHardwareInfo info)
         {
             _totalRamGb = info.TotalRamGb;
             _staticInfoTexts[0].Text = "CPU   " + info.Cpu;
@@ -850,7 +850,7 @@ namespace KillerShell.Tools
             internal bool MemoryAvailable;
         }
 
-        private void BuildTiles(HardwareInfo info)
+        private void BuildTiles(Services.PerformanceHardwareInfo info)
         {
             _tiles.Clear();
             _gpuTiles.Clear();
@@ -895,7 +895,7 @@ namespace KillerShell.Tools
             catch { return false; }
         }
 
-        private MetricTile BuildCpuTile(HardwareInfo info)
+        private MetricTile BuildCpuTile(Services.PerformanceHardwareInfo info)
         {
             var tile = new MetricTile
             {
@@ -960,7 +960,7 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private MetricTile BuildRamTile(HardwareInfo info)
+        private MetricTile BuildRamTile(Services.PerformanceHardwareInfo info)
         {
             var tile = new MetricTile
             {
@@ -982,7 +982,7 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private MetricTile BuildDiskTile(DiskInfo d, int index)
+        private MetricTile BuildDiskTile(Services.PerformanceDiskInfo d, int index)
         {
             // "Disk 0 (C:)" / "Disk 1 (C:, D:)" / bare "Disk N" with no parentheses when the
             // physical disk has no lettered volume (unpartitioned, or only a hidden/system
@@ -1934,23 +1934,20 @@ namespace KillerShell.Tools
             private readonly Polyline[] _lines;
             private readonly List<double>[] _seriesSamples;
             private readonly int _maxSamples;
-            private readonly bool _autoScale;
-            private double _scaleMax;
+            private readonly Services.MetricHistory _history;
 
             internal Sparkline(int maxSamples, double fixedScaleMax, params string[] brushKeys)
             {
                 _maxSamples = maxSamples;
-                _autoScale = fixedScaleMax <= 0;
-                _scaleMax = fixedScaleMax > 0 ? fixedScaleMax : 1;
-
                 int n = Math.Max(1, brushKeys.Length);
                 _lines = new Polyline[n];
                 _seriesSamples = new List<double>[n];
+                _history = new Services.MetricHistory(n, maxSamples, fixedScaleMax);
 
                 _canvas = new Canvas { ClipToBounds = true };
                 for (int i = 0; i < n; i++)
                 {
-                    _seriesSamples[i] = [];
+                    _seriesSamples[i] = (List<double>)_history.Series[i];
                     var line = new Polyline { StrokeThickness = 1.5 };
                     line.SetResourceReference(Shape.StrokeProperty, i < brushKeys.Length ? brushKeys[i] : "PrimaryBrush");
                     _lines[i] = line;
@@ -1987,22 +1984,7 @@ namespace KillerShell.Tools
             /// <summary>One value per series, in the same order the brush keys were given.</summary>
             internal void Push(params double[] values)
             {
-                for (int i = 0; i < values.Length && i < _seriesSamples.Length; i++)
-                {
-                    var list = _seriesSamples[i];
-                    list.Add(values[i]);
-                    while (list.Count > _maxSamples) list.RemoveAt(0);
-                }
-
-                if (_autoScale)
-                {
-                    double max = 1;
-                    foreach (var list in _seriesSamples)
-                        foreach (double s in list)
-                            if (s > max) max = s;
-                    _scaleMax = max * 1.2;
-                }
-
+                _history.Push(values);
                 Redraw();
             }
 
@@ -2021,7 +2003,7 @@ namespace KillerShell.Tools
                     for (int i = 0; i < samples.Count; i++)
                     {
                         double x = (startIndex + i) * stepX;
-                        double frac = _scaleMax > 0 ? Math.Min(1.0, samples[i] / _scaleMax) : 0;
+                        double frac = _history.ScaleMax > 0 ? Math.Min(1.0, samples[i] / _history.ScaleMax) : 0;
                         double y = h - frac * h;
                         pts.Add(new Point(x, y));
                     }
