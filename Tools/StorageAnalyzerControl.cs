@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -588,12 +589,7 @@ namespace KillerShell.Tools
         /// <summary>Badge-sized size label - "10M" rather than "10.0 MB", because it rides a
         /// 26px button beside a glyph.</summary>
         private static string ShortSize(long bytes)
-        {
-            const long mb = 1L << 20, gb = 1L << 30;
-            if (bytes >= gb) return (bytes / gb).ToString(CultureInfo.InvariantCulture) + "G";
-            if (bytes >= mb) return (bytes / mb).ToString(CultureInfo.InvariantCulture) + "M";
-            return (bytes / 1024).ToString(CultureInfo.InvariantCulture) + "K";
-        }
+            => Services.StorageAnalysisLogic.ShortSize(bytes);
 
         /// <summary>Torn down when the tab closes (StorageTabs.cs) and on window close.</summary>
         internal void Shutdown()
@@ -896,47 +892,28 @@ namespace KillerShell.Tools
 
         private void ScanDirectory(string path, FsNode node, ConcurrentQueue<(string, FsNode)> queue, CancellationToken token)
         {
-            // \\?\ so paths past MAX_PATH enumerate instead of erroring - real on any dev drive.
-            IntPtr h = FindFirstFileExW("\\\\?\\" + path + "\\*", 1 /*FindExInfoBasic*/, out var fd,
-                                        0 /*FindExSearchNameMatch*/, IntPtr.Zero, 2 /*FIND_FIRST_EX_LARGE_FETCH*/);
-            if (h == new IntPtr(-1)) { Interlocked.Increment(ref _pSkipped); return; }
-
+            Services.StorageDirectoryReadResult result = Services.StorageDirectoryReader.Read(path, token);
+            if (result.Skipped) { Interlocked.Increment(ref _pSkipped); return; }
             var children = node.Children!;
-            try
+            foreach (Services.StorageDirectoryEntry entry in result.Entries)
             {
-                do
+                if (token.IsCancellationRequested) return;
+                if (entry.IsDirectory)
                 {
-                    if (token.IsCancellationRequested) return;
-                    string name = fd.cFileName;
-                    if (name == "." || name == "..") continue;
-
-                    bool isDir = (fd.dwFileAttributes & 0x10) != 0;         // FILE_ATTRIBUTE_DIRECTORY
-                    bool reparse = (fd.dwFileAttributes & 0x400) != 0;      // FILE_ATTRIBUTE_REPARSE_POINT
-
-                    if (isDir)
-                    {
-                        // Junctions and symlinks are NOT followed: following them double-counts
-                        // whole subtrees and can cycle (WinDirStat's own rule).
-                        if (reparse) continue;
-                        var child = new FsNode { Name = name, IsDir = true, Parent = node, Children = [] };
-                        lock (children) children.Add(child);
-                        Interlocked.Increment(ref _pDirs);
-                        Interlocked.Increment(ref _pending);
-                        queue.Enqueue((path + "\\" + name, child));
-                    }
-                    else
-                    {
-                        if (reparse) continue;
-                        long size = ((long)fd.nFileSizeHigh << 32) | fd.nFileSizeLow;
-                        var child = new FsNode { Name = name, Size = size, Parent = node };
-                        lock (children) children.Add(child);
-                        Interlocked.Increment(ref _pFiles);
-                        Interlocked.Add(ref _pBytes, size);
-                    }
+                    var child = new FsNode { Name = entry.Name, IsDir = true, Parent = node, Children = [] };
+                    lock (children) children.Add(child);
+                    Interlocked.Increment(ref _pDirs);
+                    Interlocked.Increment(ref _pending);
+                    queue.Enqueue((path + "\\" + entry.Name, child));
                 }
-                while (FindNextFileW(h, out fd));
+                else
+                {
+                    var child = new FsNode { Name = entry.Name, Size = entry.Size, Parent = node };
+                    lock (children) children.Add(child);
+                    Interlocked.Increment(ref _pFiles);
+                    Interlocked.Add(ref _pBytes, entry.Size);
+                }
             }
-            finally { FindClose(h); }
         }
 
         private void FinishScan(FsNode root, bool aborted)
@@ -961,14 +938,8 @@ namespace KillerShell.Tools
         }
 
         private static long Aggregate(FsNode n)
-        {
-            if (n.Children == null) return n.Size;
-            long total = 0;
-            foreach (var c in n.Children) total += Aggregate(c);
-            n.Size = total;
-            n.Children.Sort((a, b) => b.Size.CompareTo(a.Size));   // squarify wants largest-first
-            return total;
-        }
+            => Services.StorageAnalysisLogic.Aggregate(
+                n, node => node.Children, node => node.Size, (node, size) => node.Size = size);
 
         private void UpdateProgressText() => ReportStatus?.Invoke(ProgressSummary());
 
@@ -1132,6 +1103,17 @@ namespace KillerShell.Tools
         /// </summary>
         private void Squarify(List<FsNode> children, long total, Rect rect)
         {
+            Rect[] layout = Services.StorageAnalysisLogic.Squarify(
+                children.Select(child => child.Size).ToArray(), total, rect);
+            for (int index = 0; index < children.Count; index++)
+            {
+                children[index].Rect = layout[index];
+                children[index].Gen = _gen;
+            }
+        }
+
+        private void SquarifyLegacy(List<FsNode> children, long total, Rect rect)
+        {
             double x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
             double scale = w * h / Math.Max(1, total);   // pixels per byte
 
@@ -1246,53 +1228,14 @@ namespace KillerShell.Tools
             return Color.FromRgb((byte)((r + m) * 255), (byte)((g + m) * 255), (byte)((b + m) * 255));
         }
 
-        // Extension -> category color, the family neon set so the map reads in the same voice
-        // as the shortcuts overlays. Only genuinely unknown/extensionless files remain gray;
-        // common data, package/game, font and configuration files have their own families too.
-        private static readonly Dictionary<string, string> ExtCategory = BuildExtCategories();
-        private static Dictionary<string, string> BuildExtCategories()
-        {
-            var d = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            void Add(string cat, string exts) { foreach (var e in exts.Split(' ')) d[e] = cat; }
-            Add("img", "png jpg jpeg gif bmp webp ico svg tif tiff raw heic heif avif jxl psd xcf kra");
-            Add("vid", "mp4 mkv avi mov wmv flv webm m4v mpg mpeg ts mts m2ts vob 3gp ogv");
-            Add("aud", "mp3 wav flac ogg m4a wma aac opus mid midi aif aiff alac ape");
-            Add("doc", "pdf doc docx xls xlsx ppt pptx odt ods odp txt md rtf csv epub mobi azw azw3 one msg eml tex");
-            Add("arc", "zip rar 7z tar gz bz2 xz zst tgz tbz2 txz iso cab wim vhd vhdx vdi vmdk qcow qcow2 img");
-            Add("code", "cs fs fsx vb js jsx ts tsx py cpp c h hpp html css xaml json xml yml yaml sql ps1 psm1 sh bat cmd java rs go rb lua php swift kt kts dart scala vue svelte razor cshtml");
-            Add("sys", "exe dll sys msi msp msix appx ocx drv efi mui winmd pdb lib obj lnk scr cpl");
-            Add("data", "db db3 sqlite sqlite3 mdb accdb dbf dat bin blob cache index edb ldf mdf ndf log evtx etl trace dmp dump bak tmp temp ost pst");
-            Add("pkg", "archive pak vpk cpk bundle bundles asset assets resource resources unity3d uasset uexp ubulk utoc ucas pck");
-            Add("font", "ttf otf woff woff2 eot fon fnt");
-            Add("cfg", "ini cfg conf config toml properties reg inf manifest lock");
-            return d;
-        }
-
         private SolidColorBrush CategoryBrush(string fileName)
         {
-            string ext = "";
-            int dot = fileName.LastIndexOf('.');
-            if (dot >= 0 && dot < fileName.Length - 1) ext = fileName[(dot + 1)..];
-            ExtCategory.TryGetValue(ext, out string? cat);
-            string key = cat ?? "oth";
+            string key = Services.StorageAnalysisLogic.CategoryFor(fileName);
             return CachedBrush(key, CategoryColor(key));
         }
 
-        private static Color CategoryColor(string key) => key switch
-        {
-            "img"  => Color.FromRgb(0xF2, 0x22, 0xFF),
-            "vid"  => Color.FromRgb(0x8C, 0x1E, 0xFF),
-            "aud"  => Color.FromRgb(0x00, 0xC8, 0xC3),
-            "doc"  => Color.FromRgb(0xFF, 0xD3, 0x19),
-            "arc"  => Color.FromRgb(0xFF, 0x8C, 0x00),
-            "code" => Color.FromRgb(0x39, 0xC8, 0x14),
-            "sys"  => Color.FromRgb(0xC8, 0x3C, 0x38),
-            "data" => Color.FromRgb(0x2D, 0x8C, 0xFF),
-            "pkg"  => Color.FromRgb(0xFF, 0x5C, 0x8A),
-            "font" => Color.FromRgb(0xB9, 0x8A, 0xFF),
-            "cfg"  => Color.FromRgb(0x00, 0xA8, 0x78),
-            _      => Color.FromRgb(0x6E, 0x6E, 0x6E),
-        };
+        private static Color CategoryColor(string key)
+            => Services.StorageAnalysisLogic.CategoryColor(key);
 
         private static Border BuildCategoryLegend()
         {
@@ -1697,14 +1640,7 @@ namespace KillerShell.Tools
         }
 
         private static string FormatSize(long bytes)
-        {
-            const double kb = 1024, mb = kb * 1024, gb = mb * 1024, tb = gb * 1024;
-            if (bytes >= tb) return (bytes / tb).ToString("0.00", CultureInfo.InvariantCulture) + " TB";
-            if (bytes >= gb) return (bytes / gb).ToString("0.00", CultureInfo.InvariantCulture) + " GB";
-            if (bytes >= mb) return (bytes / mb).ToString("0.0", CultureInfo.InvariantCulture) + " MB";
-            if (bytes >= kb) return (bytes / kb).ToString("0.0", CultureInfo.InvariantCulture) + " KB";
-            return bytes.ToString(CultureInfo.InvariantCulture) + " B";
-        }
+            => Services.StorageAnalysisLogic.FormatSize(bytes);
 
         // ═══════════════════════════════════════════════════════════
         //  P/Invoke - enumeration and recycle
@@ -1774,31 +1710,6 @@ namespace KillerShell.Tools
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool GetFileSizeEx(SafeFileHandle file, out long fileSize);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private struct WIN32_FIND_DATAW
-        {
-            public uint dwFileAttributes;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
-            public uint nFileSizeHigh;
-            public uint nFileSizeLow;
-            public uint dwReserved0;
-            public uint dwReserved1;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string cFileName;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]  public string cAlternateFileName;
-        }
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern IntPtr FindFirstFileExW(string lpFileName, int fInfoLevelId,
-            out WIN32_FIND_DATAW lpFindFileData, int fSearchOp, IntPtr lpSearchFilter, int dwAdditionalFlags);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-        private static extern bool FindNextFileW(IntPtr hFindFile, out WIN32_FIND_DATAW lpFindFileData);
-
-        [DllImport("kernel32.dll")]
-        private static extern bool FindClose(IntPtr hFindFile);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct SHFILEOPSTRUCT
