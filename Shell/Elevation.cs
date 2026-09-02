@@ -485,8 +485,9 @@ namespace KillerShell.Shell
             // gray bevel frame, drawn by the root Border's edge - NOT painted over the frame
             // rings, which swallowed the gray border when tried that way - the regular gray
             // border stays, with the colored ring AROUND it. ElevationEdge* resolve to the
-            // accent at 2px on a flat theme and to the window's ordinary WindowEdge values
-            // everywhere else, so nothing changes where the halo is the signal.
+            // lighter end of the titlebar gradient at 2px on a flat theme and to the window's
+            // ordinary WindowEdge values everywhere else, so nothing changes where the halo is
+            // the signal.
             WindowFrame.SetResourceReference(Border.BorderBrushProperty, "ElevationEdgeBrush");
             WindowFrame.SetResourceReference(Border.BorderThicknessProperty, "ElevationEdgeThickness");
 

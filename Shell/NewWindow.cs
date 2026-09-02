@@ -27,41 +27,6 @@ namespace KillerShell.Shell
             OpenNewWindowInternal(null);
         }
 
-        /// <summary>
-        /// Open a new window explicitly unelevated, even if called from an elevated process.
-        /// Used when F8 (non-elevated shell) is pressed in an admin-only window.
-        /// </summary>
-        internal static void OpenUnelevated(string? folder = null)
-        {
-            // From an elevated process, we need to explicitly drop privileges. runas with /user
-            // is the standard way, but it prompts. Instead, use Explorer.exe as a launcher - it
-            // runs unelevated by default even when called from an elevated process, because
-            // Explorer is designed to be a shell that can launch things at any privilege level.
-            string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
-            if (string.IsNullOrEmpty(exe)) return;
-
-            // KNOWN BROKEN, do not trust this path (2026-08-08). "explorer.exe <file>"
-            // launches ONE file and takes no arguments for it: Explorer parses each remaining
-            // token as something to open, fails, and opens a folder window per token instead. So
-            // this does not start KillerShell with --new-window/--cwd at all, it just throws up
-            // Explorer windows. It only ever ran by accident - an elevated window restoring the
-            // session and asking for a non-elevated shell per tab - which is fixed at the source
-            // in MainWindow.xaml.cs (an elevated window no longer restores). Pressing F8 in an
-            // admin window still reaches here and still misbehaves; dropping privileges properly
-            // needs the shell's own ShellExecute via IShellDispatch2, not this.
-            var psi = new ProcessStartInfo("explorer.exe")
-            {
-                UseShellExecute = false,
-                Arguments = "\"" + exe + "\" --new-window" +
-                           (!string.IsNullOrEmpty(folder) ? " --cwd \"" + folder + "\"" : ""),
-                WorkingDirectory = string.IsNullOrEmpty(folder) ?
-                                  System.IO.Path.GetDirectoryName(exe) ?? string.Empty : folder,
-            };
-
-            try { Process.Start(psi); }
-            catch { /* failed to launch; nothing we can do from here */ }
-        }
-
         /// <remarks>
         /// This took a `bool elevate` that nothing in the method ever read: no `Verb = "runas"` was
         /// ever set, so a caller asking for an elevated window would have got an ordinary one and

@@ -108,11 +108,7 @@ namespace KillerShell.Shell
             // window is a task you finish, not the one you live in) - not restoring is the mirror
             // of that and was simply missed. An elevated relaunch is started with --eventviewer /
             // --processes / --shell, never --new-window, so freshWindow was false and the admin
-            // window came up carrying every tab from the ordinary one. Each restored TERMINAL tab
-            // then asked for a non-elevated shell inside an elevated window, which OpenShell
-            // answers by bouncing the request back out through OpenUnelevated - one explorer.exe
-            // and one extra KillerShell PER RESTORED SHELL TAB. That is where the pile of Explorer
-            // windows came from: seven tabs, seven windows; eight tabs, eight.
+            // window came up carrying every tab from the ordinary one.
             if (DemoMode || freshWindow || IsElevated || !TryRestoreTabs())
                 ActivateTab(CreateTab());   // Session.cs / Tabs.cs
 

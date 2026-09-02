@@ -38,6 +38,17 @@ namespace KillerShell.Services
             return fallback;
         }
 
+        internal static Color LightTitleBarColor(Brush? titleBar, Color fallback)
+        {
+            if (titleBar is not LinearGradientBrush gradient || gradient.GradientStops.Count == 0)
+                return fallback;
+
+            GradientStop light = gradient.GradientStops[0];
+            foreach (GradientStop stop in gradient.GradientStops)
+                if (stop.Offset > light.Offset) light = stop;
+            return light.Color;
+        }
+
         public static Func<string, string?> GetSetting { get; set; } = _ => null;
         public static Action<string, string> SetSetting { get; set; } = (_, _) => { };
 
@@ -832,9 +843,15 @@ namespace KillerShell.Services
                     combined["ComboPopupShadow"] = combo;
                 }
 
-                // The elevated window's edge - see Elevation.cs ApplyElevationHalo: a 2px accent
-                // band around the gray frame on a flat theme, the ordinary window edge otherwise.
-                combined["ElevationEdgeBrush"] = flat ? combined["PrimaryBrush"] : combined["WindowEdgeBrush"];
+                // The elevated flat-theme edge uses the lighter end of the titlebar gradient.
+                // Every 98SE accent overlay supplies that gradient, so the edge follows accent
+                // changes without repeating six color values here.
+                Color fallbackEdge = combined["PrimaryBrush"] is SolidColorBrush primary
+                    ? primary.Color : Colors.Transparent;
+                var lightEdge = new SolidColorBrush(
+                    LightTitleBarColor(combined["TitleBarBrush"] as Brush, fallbackEdge));
+                lightEdge.Freeze();
+                combined["ElevationEdgeBrush"] = flat ? lightEdge : combined["WindowEdgeBrush"];
                 combined["ElevationEdgeThickness"] = flat ? new Thickness(2) : combined["WindowEdgeThickness"];
 
                 // KillerScan is the family reference for overlay-card padding. The flat theme's

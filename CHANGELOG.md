@@ -11,6 +11,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Changed
 - Core tool logic is separated from its interface and covered by local release tests.
 
+### Fixed
+- Administrator windows keep new terminals as tabs and use a brighter theme-matched border.
+
 ## [1.2.3] - 2026-09-01
 
 1.2.3 adds much faster elevated storage scans, completes fifteen-language coverage, and improves reliability across browsing, terminals, installation, themes, and killershell.net.

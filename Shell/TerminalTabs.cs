@@ -31,23 +31,13 @@ namespace KillerShell.Shell
             // (Modules.cs). Cheap after the first call.
             EnsureBundledModules();
 
-            if (profile.Elevated)
+            if (NeedsElevatedRelaunch(profile.Elevated, IsElevated))
             {
                 // An elevated process cannot attach to an unelevated pseudoconsole - it is a
                 // UAC integrity boundary, not an API gap. So we relaunch OURSELVES elevated and
                 // let that instance host the shell, which is also how Windows Terminal handles
                 // it. Elevation.cs owns the relaunch.
                 RelaunchElevated(profile, folder);
-                return;
-            }
-
-            // Non-elevated profile in an elevated window: can't attach a non-elevated shell to an
-            // elevated pseudoconsole (same UAC boundary). Launch a new non-elevated window instead.
-            // This is the mirror of RelaunchElevated above: F8 pressed in an admin-only KillerShell
-            // should open a new non-elevated window, not try (and fail) to add a tab here.
-            if (IsElevated)
-            {
-                OpenUnelevated(folder);
                 return;
             }
 
@@ -65,6 +55,9 @@ namespace KillerShell.Shell
             ActivateTab(tab);
         }
 
+        internal static bool NeedsElevatedRelaunch(bool profileElevated, bool windowElevated)
+            => profileElevated && !windowElevated;
+
         /// <summary>
         /// The shell an elevated relaunch was started FOR (Elevation.cs): one pane, no sidebar,
         /// no menubar, wide enough for the Killer scripts.
@@ -81,12 +74,8 @@ namespace KillerShell.Shell
             // Only strip the window down if a terminal actually appeared. Every line below is
             // "this window exists to run ONE shell" - close the other tabs, hide the menubar,
             // shut the sidebar, widen past 90 columns - and all of it is wrong if OpenShell
-            // bailed out instead of making one. It did exactly that when the profile arrived
-            // unelevated in an elevated window: the request left through OpenUnelevated and this
-            // ran anyway, leaving a chrome-less FILE BROWSER with no menubar, no tree and no
-            // address bar - no way to tell what folder it is in (2026-08-08). The
-            // profile bug is fixed in Elevation.cs ApplyStartupShell; this guard means any future
-            // bail-out degrades to an ordinary usable window instead of a blind one.
+            // bailed out instead of making one. This guard means any future bail-out degrades to
+            // an ordinary usable window instead of a blind one.
             if (Pane.Active?.Term == null) return;
 
             // Just the shell. The pane seeds itself with a folder tab at startup so the strip is
