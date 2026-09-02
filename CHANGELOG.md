@@ -12,6 +12,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Core tool logic is separated from its interface and covered by local release tests.
 
 ### Fixed
+- Folder-picker names now show their complete text in a hover tooltip when a column clips them.
 - Administrator windows keep new terminals as tabs and use a brighter theme-matched border.
 - On the Sepulchre and Mourning themes the theme picker's radio ring, dot and label no longer vanish into the row's hover highlight; they turn white while hovered.
 

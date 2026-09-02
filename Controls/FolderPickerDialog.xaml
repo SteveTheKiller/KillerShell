@@ -174,7 +174,7 @@
                                         </TextBlock.Style>
                                     </TextBlock>
                                     <TextBlock Text="{Binding Label}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center"
-                                               TextTrimming="CharacterEllipsis"/>
+                                               TextTrimming="CharacterEllipsis" ToolTip="{Binding Label}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
