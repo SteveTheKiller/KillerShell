@@ -238,7 +238,7 @@ namespace KillerShell.Shell
         /// height is remembered and restored, but the collapse itself is automatic and never
         /// needs a manual resize.
         /// </summary>
-        private void SyncDetailsPaneCollapse(FilePane pane, bool animate)
+        private static void SyncDetailsPaneCollapse(FilePane pane, bool animate)
         {
             if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
 
