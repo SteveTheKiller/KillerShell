@@ -137,7 +137,7 @@ namespace KillerShell.Shell
         /// results pane, so the file listing
         /// above always keeps at least the other half.
         /// </summary>
-        private double DetailsPaneCeiling(FilePane pane)
+        private static double DetailsPaneCeiling(FilePane pane)
             => pane.ResultsPane.ActualHeight > 0 ? pane.ResultsPane.ActualHeight * 0.5 : DetailsPaneHeightFallbackCeiling;
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace KillerShell.Shell
         /// measured but not when a child of it is measured directly. +1 rounds long, never
         /// short, same as every other Measure()-based estimate here.
         /// </summary>
-        private double DetailsPaneContentFloor(FilePane pane)
+        private static double DetailsPaneContentFloor(FilePane pane)
         {
             FrameworkElement content = pane.DetailsFieldsGrid.Visibility == Visibility.Visible
                 ? (FrameworkElement)pane.DetailsFieldsGrid
@@ -201,7 +201,7 @@ namespace KillerShell.Shell
         /// aspect ratio regardless, so a portrait image still ends up narrower even with room to
         /// spare - that is expected, not a bug.
         /// </summary>
-        private void ApplyDetailsPreviewWidth(FilePane pane, double stripHeight)
+        private static void ApplyDetailsPreviewWidth(FilePane pane, double stripHeight)
         {
             double preferred = Math.Max(DetailsPreviewMinWidth, stripHeight * DetailsPreviewWidthRatio);
 
@@ -406,7 +406,7 @@ namespace KillerShell.Shell
             SyncDetailsPaneCollapse(pane, animate);
         }
 
-        private void ShowDetailsEmpty(FilePane pane)
+        private static void ShowDetailsEmpty(FilePane pane)
         {
             pane.DetailsFieldsGrid.Visibility = Visibility.Collapsed;
             pane.DetailsEmptyText.Visibility  = Visibility.Visible;

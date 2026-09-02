@@ -87,7 +87,7 @@ namespace KillerShell.Shell
                 {
                     // COLORREF is 0x00BBGGRR
                     int colorref = b.Color.R | (b.Color.G << 8) | (b.Color.B << 16);
-                    DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, ref colorref, sizeof(int));
+                    _ = DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, ref colorref, sizeof(int));
                 }
             }
             catch { /* pre-Win11: attribute unsupported */ }
@@ -120,7 +120,7 @@ namespace KillerShell.Shell
                 var hwnd = new WindowInteropHelper(w).Handle;
                 if (hwnd == IntPtr.Zero) return;
                 int pref = rounded ? DWMWCP_ROUND : DWMWCP_DONOTROUND;
-                DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref pref, sizeof(int));
+                _ = DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref pref, sizeof(int));
             }
             catch { /* pre-Win11: no rounded-corner API */ }
         }
@@ -265,7 +265,7 @@ namespace KillerShell.Shell
             IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
             if (monitor != IntPtr.Zero)
             {
-                var info = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
+                var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
                 GetMonitorInfo(monitor, ref info);
                 RECT work = info.rcWork;
                 RECT mon = info.rcMonitor;
@@ -303,7 +303,7 @@ namespace KillerShell.Shell
                 if (hwnd == IntPtr.Zero) return double.MaxValue;
                 IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
                 if (monitor == IntPtr.Zero) return double.MaxValue;
-                var info = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
+                var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
                 if (!GetMonitorInfo(monitor, ref info)) return double.MaxValue;
                 double workWidthPx = Math.Abs(info.rcWork.right - info.rcWork.left);
                 var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
@@ -336,7 +336,7 @@ namespace KillerShell.Shell
                 if (hwnd == IntPtr.Zero) return double.MaxValue;
                 IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
                 if (monitor == IntPtr.Zero) return double.MaxValue;
-                var info = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
+                var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
                 if (!GetMonitorInfo(monitor, ref info)) return double.MaxValue;
                 var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
                 double workRightDip = info.rcWork.right / dpi.DpiScaleX;

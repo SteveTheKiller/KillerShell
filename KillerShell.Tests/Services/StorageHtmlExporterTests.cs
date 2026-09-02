@@ -19,7 +19,7 @@ namespace KillerShell.Tests.Services
                     "C:\\root&folder\\<script>alert(1)</script>", 10, false));
                 var report = new StorageReport("C:\\root&folder", "C:\\root&folder", 10, 0, 0, false, root);
 
-                new StorageHtmlExporter().Export(output, report);
+                StorageHtmlExporter.Export(output, report);
                 string html = File.ReadAllText(output);
 
                 Assert.Contains("C:\\root&amp;folder", html);

@@ -149,7 +149,7 @@ namespace KillerShell.Shell
         /// its tree or its value grid. Walked up the tree rather than tested against one type, the
         /// same way ProcessListHasFocus/EventViewerHasFocus are.
         /// </summary>
-        internal bool RegistryEditorHasFocus
+        internal static bool RegistryEditorHasFocus
         {
             get
             {

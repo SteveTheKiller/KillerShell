@@ -51,7 +51,7 @@ namespace KillerShell.Shell
         {
             try
             {
-                GetWindowThreadProcessId(hwnd, out uint pid);
+                _ = GetWindowThreadProcessId(hwnd, out uint pid);
                 using var proc = System.Diagnostics.Process.GetProcessById((int)pid);
                 string? exe  = proc.MainModule?.FileName;
                 string? mine = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
@@ -259,7 +259,7 @@ namespace KillerShell.Shell
         {
             try
             {
-                var cds = (COPYDATASTRUCT)Marshal.PtrToStructure(lParam, typeof(COPYDATASTRUCT))!;
+                var cds = Marshal.PtrToStructure<COPYDATASTRUCT>(lParam);
                 if (cds.dwData.ToInt64() != HandoffTag || cds.lpData == IntPtr.Zero) return IntPtr.Zero;
 
                 string args = Marshal.PtrToStringUni(cds.lpData) ?? string.Empty;

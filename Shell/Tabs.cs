@@ -200,7 +200,7 @@ namespace KillerShell.Shell
         /// can to keep the active tab on screen, which is the one invariant that matters - a tab
         /// you just switched to and cannot see is worse than no strip at all.
         /// </remarks>
-        private void ApplyTabWindow(FilePane p)
+        private static void ApplyTabWindow(FilePane p)
         {
             var tabs = p.Tabs;
             int n = tabs.Count;
@@ -681,7 +681,7 @@ namespace KillerShell.Shell
         /// RefreshBrowsingTab - but putting rows back by path is identical work either way.
         /// </remarks>
         private void ApplySelectionByPath(FilePane pane, SearchTab t,
-                                          System.Collections.Generic.ICollection<string> paths)
+                                          System.Collections.Generic.List<string> paths)
         {
             if (paths.Count == 0) return;
 
@@ -784,7 +784,7 @@ namespace KillerShell.Shell
         // Closing the active tab yanks its content away, so a short ghost fade
         // softens it. Plain tab switches are instant by design.
 
-        private System.Windows.Media.ImageSource? SnapshotPane()
+        private System.Windows.Media.Imaging.RenderTargetBitmap? SnapshotPane()
         {
             if (Pane.ResultsPane.ActualWidth < 1 || Pane.ResultsPane.ActualHeight < 1) return null;
             try

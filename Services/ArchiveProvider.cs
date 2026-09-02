@@ -226,7 +226,7 @@ namespace KillerShell.Services
             return ReadZip(archivePath);
         }
 
-        private static IEnumerable<ArchiveEntryInfo> ReadZip(string archivePath)
+        private static List<ArchiveEntryInfo> ReadZip(string archivePath)
         {
             var list = new List<ArchiveEntryInfo>();
             using var zip = ZipFile.OpenRead(archivePath);
@@ -302,7 +302,7 @@ namespace KillerShell.Services
         // next 512-byte boundary. Two zeroed headers end the archive.
         private const int TarBlock = 512;
 
-        private static IEnumerable<ArchiveEntryInfo> ReadTar(string archivePath, bool gzip)
+        private static List<ArchiveEntryInfo> ReadTar(string archivePath, bool gzip)
         {
             var list = new List<ArchiveEntryInfo>();
 

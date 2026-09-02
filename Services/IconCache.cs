@@ -100,7 +100,7 @@ namespace KillerShell.Services
             }
         }
 
-        private static ImageSource? Load(string relative)
+        private static BitmapImage? Load(string relative)
         {
             try
             {
@@ -492,7 +492,7 @@ namespace KillerShell.Services
             }
         }
 
-        private static ImageSource? FromHIcon(IntPtr hIcon, bool crop)
+        private static BitmapSource? FromHIcon(IntPtr hIcon, bool crop)
         {
             try
             {

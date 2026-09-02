@@ -358,7 +358,7 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  BUILD - the cell grid shell
         // ═══════════════════════════════════════════════════════════
-        private UIElement BuildCellsPanel()
+        private ScrollViewer BuildCellsPanel()
         {
             _cellsGrid = new Grid();
             _cellsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -489,7 +489,7 @@ namespace KillerShell.Tools
 
         /// <summary>Small color-dot + label + live value under a multi-series graph. This is the
         /// one authoritative readout for those series: no duplicate value strip below it.</summary>
-        private static UIElement BuildLegend(out TextBlock[] valueBlocks,
+        private static WrapPanel BuildLegend(out TextBlock[] valueBlocks,
             params (string BrushKey, string LabelKey)[] entries)
         {
             var panel = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 4) };
@@ -523,7 +523,7 @@ namespace KillerShell.Tools
             return panel;
         }
 
-        private static UIElement BuildField(string labelKey, string valueBrushKey, out TextBlock valueBlock)
+        private static StackPanel BuildField(string labelKey, string valueBrushKey, out TextBlock valueBlock)
         {
             var label = new TextBlock { FontSize = 10 };
             label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
@@ -724,7 +724,7 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private MetricTile BuildRamTile(Services.PerformanceHardwareInfo info)
+        private static MetricTile BuildRamTile(Services.PerformanceHardwareInfo info)
         {
             var tile = new MetricTile
             {
@@ -746,7 +746,7 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private MetricTile BuildDiskTile(Services.PerformanceDiskInfo d, int index)
+        private static MetricTile BuildDiskTile(Services.PerformanceDiskInfo d, int index)
         {
             // "Disk 0 (C:)" / "Disk 1 (C:, D:)" / bare "Disk N" with no parentheses when the
             // physical disk has no lettered volume (unpartitioned, or only a hidden/system
@@ -781,7 +781,7 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private MetricTile BuildNetworkTile(string instanceName, int index, int totalCount)
+        private static MetricTile BuildNetworkTile(string instanceName, int index, int totalCount)
         {
             string label = MainWindow.LocStatic("Str_Perf_Network") + (totalCount > 1 ? " " + index : "");
             var tile = new MetricTile
@@ -1195,7 +1195,7 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  CPU per-core toggle
         // ═══════════════════════════════════════════════════════════
-        private void ToggleCpuCoreView(MetricTile cpuTile)
+        private static void ToggleCpuCoreView(MetricTile cpuTile)
         {
             var cs = (CpuState)cpuTile.State!;
             cs.ShowCores = !cs.ShowCores;
@@ -1203,7 +1203,7 @@ namespace KillerShell.Tools
             cs.GraphArea.Child = cs.ShowCores ? BuildCoreGrid(cs) : cs.AggregateGraph.Host;
         }
 
-        private static UIElement BuildCoreGrid(CpuState cs)
+        private static UniformGrid BuildCoreGrid(CpuState cs)
         {
             // Built once and cached on the CpuState (cs.CoreGrid) - cs.CoreGraphs itself is only
             // ever created once too (SetUpCoreCountersIfNeeded's own early-return guard), so
@@ -1357,7 +1357,7 @@ namespace KillerShell.Tools
             SampleGpus();
         }
 
-        private void SampleCpuTile(MetricTile tile)
+        private static void SampleCpuTile(MetricTile tile)
         {
             var cs = (CpuState)tile.State!;
             if (cs.Total == null) return;
@@ -1417,7 +1417,7 @@ namespace KillerShell.Tools
             catch { }
         }
 
-        private void SampleDiskTile(MetricTile tile)
+        private static void SampleDiskTile(MetricTile tile)
         {
             var ds = (DiskState)tile.State!;
             try
@@ -1441,7 +1441,7 @@ namespace KillerShell.Tools
             catch { }
         }
 
-        private void SampleNetworkTile(MetricTile tile)
+        private static void SampleNetworkTile(MetricTile tile)
         {
             var ns = (NetState)tile.State!;
             try
@@ -1641,7 +1641,7 @@ namespace KillerShell.Tools
         private static string ExtractGpuLuid(string instanceName)
             => Services.PerformanceMetricFormatter.GpuLuid(instanceName);
 
-        private void ApplyGpuSample(MetricTile tile, double util, double dedicatedBytes, double sharedBytes)
+        private static void ApplyGpuSample(MetricTile tile, double util, double dedicatedBytes, double sharedBytes)
         {
             util = Math.Min(100, Math.Max(0, util));
             var gs = (GpuState)tile.State!;

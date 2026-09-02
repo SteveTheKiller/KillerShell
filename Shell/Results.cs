@@ -225,7 +225,7 @@ namespace KillerShell.Shell
         }
 
         // Filters the collection VIEW by name or path - the underlying results are untouched.
-        private void ApplyFilter(SearchTab t)
+        private static void ApplyFilter(SearchTab t)
         {
             var view = System.Windows.Data.CollectionViewSource.GetDefaultView(t.Results);
             string q = t.FilterText.Trim();

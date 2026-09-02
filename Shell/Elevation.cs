@@ -536,7 +536,7 @@ namespace KillerShell.Shell
             var self = new System.Windows.Interop.WindowInteropHelper(this).Handle;
             IntPtr found = IntPtr.Zero;
 
-            EnumWindows((hwnd, _) =>
+            EnumWindows((hwnd, lParam) =>
             {
                 if (hwnd == self || !IsKillerShellProcessWindow(hwnd)) return true;   // keep looking
 
@@ -544,7 +544,7 @@ namespace KillerShell.Shell
                 if (len == 0) return true;
 
                 var sb = new System.Text.StringBuilder(len + 1);
-                GetWindowText(hwnd, sb, sb.Capacity);
+                _ = GetWindowText(hwnd, sb, sb.Capacity);
                 if (sb.ToString().IndexOf(suffix, StringComparison.Ordinal) < 0) return true;
 
                 found = hwnd;

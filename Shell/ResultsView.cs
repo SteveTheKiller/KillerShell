@@ -282,7 +282,7 @@ namespace KillerShell.Shell
         };
 
         /// <summary>Back to the shipped width. Double-clicking a divider does this.</summary>
-        public double DefaultColumnWidth(int column) => column switch
+        public static double DefaultColumnWidth(int column) => column switch
         {
             1 => DefaultNameWidth,
             2 => DefaultLocationWidth,
@@ -847,7 +847,7 @@ namespace KillerShell.Shell
             // figures of rows, so "fit the widest value" would mean walking every one of them.
             if (e.ClickCount == 2)
             {
-                state.SetColumnWidth(column, state.DefaultColumnWidth(column));
+                state.SetColumnWidth(column, ResultsViewState.DefaultColumnWidth(column));
                 SaveColumn(Pane, column);
                 e.Handled = true;
                 return;

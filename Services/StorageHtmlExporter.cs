@@ -30,7 +30,7 @@ namespace KillerShell.Services
             ("malaise", "Malaise", "Malaise")
         ];
 
-        internal void Export(string outputPath, StorageReport report)
+        internal static void Export(string outputPath, StorageReport report)
         {
             var palettes = LoadPalettes();
             string current = ThemeManager.Current == Theme.SE98
@@ -50,7 +50,7 @@ namespace KillerShell.Services
                   .Append(";--surface:").Append(p.Surface).Append(";--pane:").Append(p.Pane)
                   .Append(";--accent:").Append(p.Accent).Append(";--text:").Append(p.Text)
                   .Append(";--muted:").Append(p.Muted).Append(";--border:").Append(p.Border)
-                  .Append(";--hover:").Append(p.Hover).Append("}");
+                  .Append(";--hover:").Append(p.Hover).Append('}');
             sb.Append("*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--text);font:14px 'Segoe UI',sans-serif}.wrap{max-width:1280px;margin:auto}h1,h2{font-family:Consolas,monospace}h1{margin:0}.accent{color:var(--accent)}.top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.switch{display:flex;gap:6px;flex-wrap:wrap;max-width:340px}.switch button{width:19px;height:19px;border-radius:50%;border:2px solid var(--border);cursor:pointer}.switch button.active{border-color:var(--text)}.meta{color:var(--muted);line-height:1.8}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.card,.map,table{background:var(--pane);border:1px solid var(--border)}.card{padding:13px}.card b{display:block;font:20px Consolas,monospace;color:var(--accent)}.map{padding:8px;overflow:hidden}svg{display:block;width:100%;height:auto}rect{stroke:var(--bg);stroke-width:1}text{fill:#fff;font:11px Consolas,monospace;pointer-events:none;text-shadow:0 1px 2px #000}.tables{display:grid;grid-template-columns:1fr 1fr;gap:18px}table{border-collapse:collapse;width:100%;table-layout:fixed}th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}th{background:var(--surface);color:var(--muted)}tr:hover td{background:var(--hover)}td.path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}td.num{width:110px;text-align:right;font-family:Consolas,monospace}.foot{color:var(--muted);font-size:11px;margin-top:18px}@media(max-width:800px){body{padding:12px}.cards,.tables{grid-template-columns:1fr}}</style></head><body><div class='wrap'>");
             sb.Append("<div class='top'><div><h1>Killer<span class='accent'>Shell</span> Storage</h1><div class='meta'>Generated ")
               .Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm")).Append("<br>View: ").Append(E(report.ViewRoot))

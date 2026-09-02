@@ -105,7 +105,7 @@ namespace KillerShell.Terminal
         private void Launch(string commandLine, string workingDir)
         {
             var si = new STARTUPINFOEX();
-            si.StartupInfo.cb = Marshal.SizeOf(typeof(STARTUPINFOEX));
+            si.StartupInfo.cb = Marshal.SizeOf<STARTUPINFOEX>();
 
             // Called twice on purpose: the first call fails with INSUFFICIENT_BUFFER and fills
             // in the size, which is the documented way to learn it.
@@ -157,7 +157,7 @@ namespace KillerShell.Terminal
         {
             var t = new Thread(() =>
             {
-                WaitForSingleObject(_process, INFINITE);
+                _ = WaitForSingleObject(_process, INFINITE);
                 GetExitCodeProcess(_process, out int code);
                 HasExited = true;
                 try { Exited?.Invoke(code); } catch { /* a dying tab is not worth a crash */ }
@@ -179,7 +179,7 @@ namespace KillerShell.Terminal
             if (_pc == IntPtr.Zero || _disposed) return;
             if (cols < 1) cols = 1;
             if (rows < 1) rows = 1;
-            ResizePseudoConsole(_pc, new COORD { X = cols, Y = rows });
+            _ = ResizePseudoConsole(_pc, new COORD { X = cols, Y = rows });
         }
 
         // ═══════════════════════════════════════════════════════════

@@ -22,7 +22,7 @@ namespace KillerShell.Shell
         internal static string HomeFolder { get; private set; } =
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-        private void InitHomeFolder()
+        private static void InitHomeFolder()
         {
             string saved = Services.ThemeManager.GetSetting("HomeFolder") ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(saved) && Directory.Exists(saved)) HomeFolder = saved;

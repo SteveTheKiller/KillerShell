@@ -61,7 +61,7 @@ namespace KillerShell.Shell
         /// pointer wins over the folder being browsed, the same rule DropTarget uses on disk:
         /// dropping onto a folder icon has to mean into THAT folder.
         /// </summary>
-        private bool ArchiveDropTarget(FilePane pane, DependencyObject? src,
+        private static bool ArchiveDropTarget(FilePane pane, DependencyObject? src,
                                        out string archivePath, out string entryFolder)
         {
             if (!ArchiveTarget(pane, out archivePath, out entryFolder)) return false;

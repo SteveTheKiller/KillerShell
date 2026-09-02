@@ -258,7 +258,7 @@ namespace KillerShell.Services
                 string norm = NormalizeExisting(raw);
                 // Only a REPLACE drops anything that is already there, and only the exact name.
                 return replaced.Contains(norm) ? null : raw;
-            }, adds, progress, ct, result);
+            }, adds, progress, result, ct);
 
             if (ok) { result.Ok = true; result.Changed = changed; }
             return result;
@@ -355,7 +355,7 @@ namespace KillerShell.Services
             {
                 new() { EntryName = full + "/" },
             };
-            if (Rebuild(archivePath, raw => raw, adds, progress, ct, result))
+            if (Rebuild(archivePath, raw => raw, adds, progress, result, ct))
             {
                 result.Ok = true;
                 result.Changed = 1;
@@ -394,7 +394,7 @@ namespace KillerShell.Services
                         || norm.StartsWith(t + "/", StringComparison.OrdinalIgnoreCase))
                     { dropped++; return null; }
                 return raw;
-            }, null, progress, ct, result);
+            }, null, progress, result, ct);
 
             if (!ok) return result;
 
@@ -477,7 +477,7 @@ namespace KillerShell.Services
                     return trailing ? newPath + tail + "/" : newPath + tail;
                 }
                 return raw;
-            }, null, progress, ct, result);
+            }, null, progress, result, ct);
 
             if (!ok) return result;
 
@@ -501,7 +501,7 @@ namespace KillerShell.Services
         private static bool Rebuild(string archivePath, Func<string, string?> mapName,
                                     List<ArchiveAddItem>? adds,
                                     Action<int, int, string>? progress,
-                                    CancellationToken ct, ArchiveWriteResult result)
+                                    ArchiveWriteResult result, CancellationToken ct)
         {
             string dir  = Path.GetDirectoryName(archivePath) ?? ".";
             string leaf = Path.GetFileName(archivePath);

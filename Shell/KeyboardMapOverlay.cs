@@ -397,7 +397,7 @@ namespace KillerShell.Shell
 
         /// <summary>Scrolls a truncated caption back and forth inside its clipped host while the
         /// key is hovered. No-op when the full text already fits.</summary>
-        private void KbMarqueeStart(TextBlock act)
+        private static void KbMarqueeStart(TextBlock act)
         {
             if (act.Visibility != Visibility.Visible || act.Parent is not Border host) return;
 
@@ -435,7 +435,7 @@ namespace KillerShell.Shell
                 { AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever, BeginTime = TimeSpan.FromMilliseconds(350) });
         }
 
-        private void KbMarqueeStop(TextBlock act)
+        private static void KbMarqueeStop(TextBlock act)
         {
             var tt = (TranslateTransform)act.RenderTransform;
             tt.BeginAnimation(TranslateTransform.XProperty, null);

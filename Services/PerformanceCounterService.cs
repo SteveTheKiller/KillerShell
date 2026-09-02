@@ -46,7 +46,7 @@ namespace KillerShell.Services
             }
             catch
             {
-                return Array.Empty<string>();
+                return [];
             }
         }
 

@@ -81,7 +81,7 @@ namespace KillerShell
             AddField(FieldsPanel, "Str_Col_ProcCommandLine", Current.CommandLine, wrap: true, last: true, topMargin: 14);
         }
 
-        private void AddField(Panel target, string labelKey, string value, bool wrap = false, bool last = false, double topMargin = 0)
+        private static void AddField(Panel target, string labelKey, string value, bool wrap = false, bool last = false, double topMargin = 0)
         {
             var stack = new StackPanel { Margin = new Thickness(0, topMargin, 0, last ? 0 : 10) };
 
@@ -113,7 +113,7 @@ namespace KillerShell
                 var hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
                 if (hwnd == IntPtr.Zero) return;
                 int pref = 2;   // DWMWCP_ROUND
-                DwmSetWindowAttribute(hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, ref pref, sizeof(int));
+                _ = DwmSetWindowAttribute(hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, ref pref, sizeof(int));
             }
             catch { /* pre-Win11: no rounded-corner API */ }
         }

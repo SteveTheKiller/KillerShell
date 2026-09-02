@@ -149,7 +149,7 @@ namespace KillerShell.Shell
         /// (ProcessTabs.cs) - the filter box and the DataGrid are both descendants of
         /// EventViewerControl, not the control itself.
         /// </summary>
-        internal bool EventViewerHasFocus
+        internal static bool EventViewerHasFocus
         {
             get
             {

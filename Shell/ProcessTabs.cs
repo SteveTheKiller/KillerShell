@@ -185,7 +185,7 @@ namespace KillerShell.Shell
         /// (EditorTabs.cs) - the filter box and the DataGrid are both descendants of
         /// ProcessListControl, not the control itself.
         /// </summary>
-        internal bool ProcessListHasFocus
+        internal static bool ProcessListHasFocus
         {
             get
             {

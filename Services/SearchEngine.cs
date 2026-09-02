@@ -37,7 +37,7 @@ namespace KillerShell.Services
             IList<string>?     fileList = null)
         {
             await Task.Run(() => RunSearch(rootPath, groups, filters, includePatterns,
-                                           excludePatterns, caseSensitive, ct, fileList));
+                                           excludePatterns, caseSensitive, fileList, ct));
         }
 
         // ── Core search (producer / workers / UI pump) ───────────
@@ -48,8 +48,8 @@ namespace KillerShell.Services
             string             includePatterns,
             string             excludePatterns,
             bool               caseSensitive,
-            CancellationToken  ct,
-            IList<string>?     fileList)
+            IList<string>?     fileList,
+            CancellationToken  ct)
         {
             var comparison = caseSensitive
                 ? StringComparison.Ordinal

@@ -29,7 +29,7 @@ namespace KillerShell.Services
         /// cannot be inferred from an empty <paramref name="terms"/>: a search with only
         /// FILTERS ("every .pdf over 100 MB") also has no terms and is still a search.
         /// </param>
-        public void Export(string outputPath,
+        public static void Export(string outputPath,
                            IList<SearchResult> results,
                            IList<SearchTerm>   terms,
                            string              rootPath,

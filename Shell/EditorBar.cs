@@ -254,7 +254,7 @@ namespace KillerShell.Shell
             pane.EditorPathBox.SelectAll();
         }
 
-        private void EndEditEdPath(FilePane pane)
+        private static void EndEditEdPath(FilePane pane)
         {
             pane.EditorPathBox.Visibility = Visibility.Collapsed;
             pane.EditorPathText.Visibility = Visibility.Visible;

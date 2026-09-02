@@ -85,7 +85,7 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  STARTUP
         // ═══════════════════════════════════════════════════════════
-        private void InitFonts()
+        private static void InitFonts()
         {
             // Resolved once, before anything asks: a shell or a document built later reads this
             // rather than re-scanning the installed families every time it needs a fallback.

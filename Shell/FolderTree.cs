@@ -762,7 +762,7 @@ namespace KillerShell.Shell
             return current;
         }
 
-        private static IEnumerable<string> RelativeSegments(string rootPath, string fullPath)
+        private static string[] RelativeSegments(string rootPath, string fullPath)
         {
             string rest = fullPath[rootPath.Length..];
             return rest.Split([ System.IO.Path.DirectorySeparatorChar,

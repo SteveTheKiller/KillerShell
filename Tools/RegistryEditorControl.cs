@@ -912,7 +912,7 @@ namespace KillerShell.Tools
         /// <summary>Expands the chain up to (and including) <paramref name="node"/> and selects
         /// it, same shape as FolderTree.RevealInTree - only ever expands, never collapses
         /// anything the user had open.</summary>
-        private void SelectNode(RegistryNode node, bool expandAncestors)
+        private static void SelectNode(RegistryNode node, bool expandAncestors)
         {
             if (expandAncestors)
             {
@@ -1174,7 +1174,7 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  CREATE / RENAME / DELETE / MODIFY - values
         // ═══════════════════════════════════════════════════════════
-        private string NextAvailableValueName(RegistryNode node)
+        private static string NextAvailableValueName(RegistryNode node)
         {
             string baseName = MainWindow.LocStatic("Str_RegEd_NewValueDefaultName");
             var existing = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

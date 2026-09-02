@@ -64,7 +64,7 @@ namespace KillerShell.Shell
             pane.TermCwdBox.SelectAll();
         }
 
-        private void EndEditTermCwd(FilePane pane)
+        private static void EndEditTermCwd(FilePane pane)
         {
             pane.TermCwdBox.Visibility = Visibility.Collapsed;
             pane.TermCwdText.Visibility = Visibility.Visible;

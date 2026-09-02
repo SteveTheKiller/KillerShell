@@ -888,7 +888,7 @@ namespace KillerShell.Tools
         /// - the same "one bulk query, not one per row" discipline BuildSamples already follows
         /// for processes.
         /// </summary>
-        private (List<ServiceSample> samples, HashSet<string> seen) BuildServiceSamples(
+        private static (List<ServiceSample> samples, HashSet<string> seen) BuildServiceSamples(
             CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

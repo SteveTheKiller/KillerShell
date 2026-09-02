@@ -84,13 +84,13 @@ namespace KillerShell
                     return;
 
                 int policy = DwmncrpEnabled;
-                DwmSetWindowAttribute(source.Handle, DwmwaNcRenderingPolicy,
-                                      ref policy, Marshal.SizeOf(typeof(int)));
+                _ = DwmSetWindowAttribute(source.Handle, DwmwaNcRenderingPolicy,
+                                      ref policy, Marshal.SizeOf<int>());
 
                 // A one-pixel frame is enough to make DWM provide the standard system shadow;
                 // the opaque WPF menu still paints the entire client area above it.
                 var margins = new Margins { Left = 1, Right = 1, Top = 1, Bottom = 1 };
-                DwmExtendFrameIntoClientArea(source.Handle, ref margins);
+                _ = DwmExtendFrameIntoClientArea(source.Handle, ref margins);
             }
             catch (DllNotFoundException)
             {

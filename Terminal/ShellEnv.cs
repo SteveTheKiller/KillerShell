@@ -117,7 +117,7 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  STATE FILE
         // ═══════════════════════════════════════════════════════════
-        private void WriteState(string path)
+        private static void WriteState(string path)
         {
             try
             {

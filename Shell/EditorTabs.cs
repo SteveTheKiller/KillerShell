@@ -403,7 +403,7 @@ namespace KillerShell.Shell
         /// is a child of it: with a straight "is TextArea" test, typing in that bar would fall
         /// back to the window's own bindings and the first Backspace would navigate a folder.
         /// </remarks>
-        internal bool EditorHasFocus
+        internal static bool EditorHasFocus
         {
             get
             {

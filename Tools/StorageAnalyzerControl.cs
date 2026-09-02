@@ -414,7 +414,7 @@ namespace KillerShell.Tools
         /// at its default the button is a clean glyph like the rest of the toolbar, and an
         /// active filter announces itself rather than hiding in a tooltip.
         /// </summary>
-        private Border MakeFilterButton(int glyph, string tipKey, out TextBlock badge, Func<ContextMenu> buildMenu)
+        private static Border MakeFilterButton(int glyph, string tipKey, out TextBlock badge, Func<ContextMenu> buildMenu)
         {
             var g = new TextBlock
             {
@@ -643,7 +643,7 @@ namespace KillerShell.Tools
             var root = _root;
             if (CanUseMftFastPath(_rootPath))
             {
-                var mft = new Thread(() => MftScanWorker(token, root))
+                var mft = new Thread(() => MftScanWorker(root, token))
                 {
                     IsBackground = true,
                     Name = "StorageMftScan"
@@ -652,15 +652,15 @@ namespace KillerShell.Tools
                 return;
             }
 
-            StartDirectoryWorkers(token, root);
+            StartDirectoryWorkers(root, token);
         }
 
-        private void StartDirectoryWorkers(CancellationToken token, FsNode root)
+        private void StartDirectoryWorkers(FsNode root, CancellationToken token)
         {
             int workers = Math.Max(2, Environment.ProcessorCount);
             for (int i = 0; i < workers; i++)
             {
-                var t = new Thread(() => ScanWorker(token, root)) { IsBackground = true, Name = "StorageScan" };
+                var t = new Thread(() => ScanWorker(root, token)) { IsBackground = true, Name = "StorageScan" };
                 t.Start();
             }
         }
@@ -671,7 +671,7 @@ namespace KillerShell.Tools
         /// <summary>The fast route is deliberately fail-open. It builds into a private tree and
         /// publishes nothing until the complete MFT graph is valid; an unsupported driver,
         /// inaccessible record, or malformed response simply starts the normal walker.</summary>
-        private void MftScanWorker(CancellationToken token, FsNode publishedRoot)
+        private void MftScanWorker(FsNode publishedRoot, CancellationToken token)
         {
             var privateRoot = new FsNode { Name = _rootPath, IsDir = true, Children = [] };
             if (TryScanMft(_rootPath, privateRoot, token))
@@ -699,7 +699,7 @@ namespace KillerShell.Tools
             _pending = 1;
             _queue = new ConcurrentQueue<(string, FsNode)>();
             _queue.Enqueue((_rootPath, publishedRoot));
-            StartDirectoryWorkers(token, publishedRoot);
+            StartDirectoryWorkers(publishedRoot, token);
         }
 
         private bool TryScanMft(string target, FsNode rootNode, CancellationToken token)
@@ -761,7 +761,7 @@ namespace KillerShell.Tools
             // FinishScan(aborted) runs from the worker that notices; nothing else to do here.
         }
 
-        private void ScanWorker(CancellationToken token, FsNode root)
+        private void ScanWorker(FsNode root, CancellationToken token)
         {
             var queue = _queue!;
             while (true)
@@ -1003,7 +1003,7 @@ namespace KillerShell.Tools
         private void Squarify(List<FsNode> children, long total, Rect rect)
         {
             Rect[] layout = Services.StorageAnalysisLogic.Squarify(
-                children.Select(child => child.Size).ToArray(), total, rect);
+                [.. children.Select(child => child.Size)], total, rect);
             for (int index = 0; index < children.Count; index++)
             {
                 children[index].Rect = layout[index];
@@ -1326,7 +1326,7 @@ namespace KillerShell.Tools
             menu.IsOpen = true;
         }
 
-        private MenuItem MakeItem(string headerKey, int glyph)
+        private static MenuItem MakeItem(string headerKey, int glyph)
         {
             var item = new MenuItem();
             item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
@@ -1378,7 +1378,7 @@ namespace KillerShell.Tools
         }
 
         // ── Footer ───────────────────────────────────────────────
-        private string FullPath(FsNode n)
+        private static string FullPath(FsNode n)
         {
             var parts = new List<string>();
             for (var cur = n; cur != null; cur = cur.Parent) parts.Insert(0, cur.Name);

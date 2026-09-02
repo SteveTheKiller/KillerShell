@@ -171,7 +171,7 @@ namespace KillerShell.Shell
             return t;
         }
 
-        private void AddDemoResult(SearchTab t, string folder, string name, int sizeKb,
+        private static void AddDemoResult(SearchTab t, string folder, string name, int sizeKb,
                                    DateTime modified, List<LineMatch>? lines = null)
         {
             var term = t.Groups[0].Terms[0];

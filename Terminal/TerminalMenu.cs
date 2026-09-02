@@ -72,7 +72,7 @@ namespace KillerShell.Terminal
         // made KillerPDF's release.ps1 PS7-only.
         private static string Glyph(int cp) => ((char)cp).ToString();
 
-        private ContextMenu BuildMenu()
+        private OpaqueContextMenu BuildMenu()
         {
             var m = new OpaqueContextMenu();
 

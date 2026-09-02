@@ -62,17 +62,17 @@ namespace KillerShell.Services
             int separator = fullPath.IndexOf('\\');
             hiveName = separator < 0 ? fullPath : fullPath[..separator];
             subKey = separator < 0 ? string.Empty : fullPath[(separator + 1)..];
-            foreach (var hive in Hives)
-                if (string.Equals(hive.Name, hiveName, StringComparison.OrdinalIgnoreCase)) return true;
+            foreach (var (name, _) in Hives)
+                if (string.Equals(name, hiveName, StringComparison.OrdinalIgnoreCase)) return true;
             return false;
         }
 
         internal static RegistryKey? OpenKey(string fullPath, bool writable)
         {
             if (!TrySplitPath(fullPath, out string hiveName, out string subKey)) return null;
-            foreach (var hive in Hives)
-                if (string.Equals(hive.Name, hiveName, StringComparison.OrdinalIgnoreCase))
-                    return subKey.Length == 0 ? hive.Root : hive.Root.OpenSubKey(subKey, writable);
+            foreach (var (name, root) in Hives)
+                if (string.Equals(name, hiveName, StringComparison.OrdinalIgnoreCase))
+                    return subKey.Length == 0 ? root : root.OpenSubKey(subKey, writable);
             return null;
         }
 

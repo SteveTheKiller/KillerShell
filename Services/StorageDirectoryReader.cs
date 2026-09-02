@@ -38,7 +38,7 @@ namespace KillerShell.Services
             IntPtr handle = FindFirstFileExW("\\\\?\\" + path + "\\*", 1, out Win32FindData data,
                 0, IntPtr.Zero, 2);
             if (handle == new IntPtr(-1))
-                return new StorageDirectoryReadResult(Array.Empty<StorageDirectoryEntry>(), true);
+                return new StorageDirectoryReadResult([], true);
 
             var entries = new List<StorageDirectoryEntry>();
             try
@@ -72,10 +72,10 @@ namespace KillerShell.Services
             private System.Runtime.InteropServices.ComTypes.FILETIME _lastWriteTime;
             internal uint FileSizeHigh;
             internal uint FileSizeLow;
-            private uint _reserved0;
-            private uint _reserved1;
+            private readonly uint _reserved0;
+            private readonly uint _reserved1;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] internal string FileName;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)] private string _alternateFileName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)] private readonly string _alternateFileName;
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]

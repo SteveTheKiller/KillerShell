@@ -132,7 +132,7 @@ namespace KillerShell.Shell
         /// True while focus is inside the Performance Monitor control. Walked up the tree rather
         /// than tested against one type, the same way ProcessListHasFocus/EventViewerHasFocus are.
         /// </summary>
-        internal bool PerformanceMonitorHasFocus
+        internal static bool PerformanceMonitorHasFocus
         {
             get
             {

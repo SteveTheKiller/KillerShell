@@ -375,7 +375,7 @@ namespace KillerShell
                 var hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
                 if (hwnd == IntPtr.Zero) return;
                 int pref = 2;   // DWMWCP_ROUND
-                DwmSetWindowAttribute(hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, ref pref, sizeof(int));
+                _ = DwmSetWindowAttribute(hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, ref pref, sizeof(int));
             }
             catch { /* pre-Win11: no rounded-corner API */ }
         }

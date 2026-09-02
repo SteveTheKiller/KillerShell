@@ -278,7 +278,7 @@ namespace KillerShell
 
         // ── Formatting ───────────────────────────────────────────
 
-        private string Describe(string path, long size, DateTime modified, bool isDirectory)
+        private static string Describe(string path, long size, DateTime modified, bool isDirectory)
         {
             string line = path;
             if (!isDirectory) line += Environment.NewLine + Human(size);

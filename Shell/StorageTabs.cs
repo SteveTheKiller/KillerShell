@@ -154,7 +154,7 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         /// <summary>True while focus is inside the Storage Analyzer control - same tree walk
         /// as ProcessListHasFocus/PerformanceMonitorHasFocus.</summary>
-        internal bool StorageAnalyzerHasFocus
+        internal static bool StorageAnalyzerHasFocus
         {
             get
             {

@@ -376,7 +376,7 @@ namespace KillerShell.Shell
         //  KEYBOARD OWNERSHIP
         // ═══════════════════════════════════════════════════════════
         /// <summary>True while the caret is inside a live shell.</summary>
-        internal bool TerminalHasFocus =>
+        internal static bool TerminalHasFocus =>
             System.Windows.Input.Keyboard.FocusedElement is TerminalControl;
 
         /// <summary>
@@ -389,7 +389,7 @@ namespace KillerShell.Shell
         /// a runaway command unkillable. Nor is Ctrl+F, because a shell has its own history
         /// search and the results filter means nothing over a pty.
         /// </remarks>
-        private bool IsWindowChord(System.Windows.Input.KeyEventArgs e, bool ctrl, bool shift, bool alt)
+        private static bool IsWindowChord(System.Windows.Input.KeyEventArgs e, bool ctrl, bool shift, bool alt)
         {
             var key = e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key;
 

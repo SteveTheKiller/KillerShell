@@ -29,7 +29,7 @@ namespace KillerShell.Shell
         /// The tree is a left-hand panel and freezes Right, its inner edge, so it slides out to
         /// the left (TreePanel.cs). Read the note at each call site before changing one.
         /// </param>
-        private void SlideColumn(ColumnDefinition col, FrameworkElement panel, bool open,
+        private static void SlideColumn(ColumnDefinition col, FrameworkElement panel, bool open,
                                  double width, double minOpen, double maxOpen,
                                  HorizontalAlignment freezeAlign, bool animate)
         {

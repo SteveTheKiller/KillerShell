@@ -100,7 +100,7 @@ namespace KillerShell.Shell
         }
 
         /// <summary>Look up a localized string; falls back to the key name if missing.</summary>
-        private string Loc(string key) => LocStatic(key);
+        private static string Loc(string key) => LocStatic(key);
 
         /// <summary>
         /// The same lookup, reachable from a model. Bookmark needs it to name the This PC entry

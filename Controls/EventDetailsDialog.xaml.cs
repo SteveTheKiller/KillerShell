@@ -193,7 +193,7 @@ namespace KillerShell
         /// <summary>One labeled field, same shape as the About card's info panel
         /// (MainWindow.xaml AboutInfoGrid): a DimTextBrush Consolas 10 caption over a
         /// TextBrush value.</summary>
-        private void AddField(Panel target, string labelKey, string value, bool wrap = false, bool last = false, double topMargin = 0)
+        private static void AddField(Panel target, string labelKey, string value, bool wrap = false, bool last = false, double topMargin = 0)
         {
             var stack = new StackPanel { Margin = new Thickness(0, topMargin, 0, last ? 0 : 10) };
 

@@ -163,7 +163,7 @@ namespace KillerShell.Terminal
             return g;
         }
 
-        private Cell[] NewLine(int cols)
+        private static Cell[] NewLine(int cols)
         {
             var line = new Cell[cols];
             for (int c = 0; c < cols; c++) { line[c].Fg = DefaultColor; line[c].Bg = DefaultColor; }
