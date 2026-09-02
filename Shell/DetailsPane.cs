@@ -110,7 +110,7 @@ namespace KillerShell.Shell
         /// splitter would be fighting that. Dragging UP grows the strip, so the delta is
         /// subtracted: a Thumb reports downward movement as positive.
         /// </summary>
-        internal void DetailsPaneGrip_DragDelta(FilePane pane, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        internal static void DetailsPaneGrip_DragDelta(FilePane pane, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {
             if (!pane.DetailsPaneOpen) return;
 
@@ -225,7 +225,7 @@ namespace KillerShell.Shell
         /// content height - the same estimate ApplyDetailsPane always used, now doing double duty
         /// as the drag floor too (DetailsPaneContentFloor/ClampDetailsPaneHeight).
         /// </summary>
-        private double NormalDetailsPaneHeight(FilePane pane)
+        private static double NormalDetailsPaneHeight(FilePane pane)
             => pane.DetailsPaneUserSized
              ? ClampDetailsPaneHeight(pane, pane.DetailsPaneHeight)
              : ClampDetailsPaneHeight(pane, DetailsPaneContentFloor(pane));
@@ -328,7 +328,7 @@ namespace KillerShell.Shell
         /// Called from DetailsPaneContent's own SizeChanged, and again once the async Created/
         /// Attributes stat and the async image decode land.
         /// </summary>
-        internal void CorrectDetailsPaneHeight(FilePane pane)
+        internal static void CorrectDetailsPaneHeight(FilePane pane)
         {
             if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
 

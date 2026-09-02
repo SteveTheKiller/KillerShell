@@ -723,7 +723,7 @@ namespace KillerShell.Shell
         /// (KsScope / KsAll, ShortcutsOverlay.cs), which is also how the shortcuts card and the
         /// keyboard map are able to show both.
         /// </remarks>
-        private bool ChordOwnedByFocus(params KsScope[] owners)
+        private static bool ChordOwnedByFocus(params KsScope[] owners)
         {
             var scope = KsFocusScope;   // ShortcutsOverlay.cs
             foreach (var s in owners)

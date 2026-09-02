@@ -444,8 +444,8 @@ namespace KillerShell
         // Passes THIS pane, like ToolStrip_SizeChanged above: the strip that opens/closes belongs
         // to whichever pane's button was clicked, not necessarily the focused one.
         private void DetailsPane_Click(object s, RoutedEventArgs e)        => Owner.DetailsPaneToggle_Click(this);
-        private void DetailsPaneContent_SizeChanged(object s, SizeChangedEventArgs e) => Owner.CorrectDetailsPaneHeight(this);
-        private void DetailsPaneGrip_DragDelta(object s, DragDeltaEventArgs e)         => Owner.DetailsPaneGrip_DragDelta(this, e);
+        private void DetailsPaneContent_SizeChanged(object s, SizeChangedEventArgs e) => MainWindow.CorrectDetailsPaneHeight(this);
+        private void DetailsPaneGrip_DragDelta(object s, DragDeltaEventArgs e)         => MainWindow.DetailsPaneGrip_DragDelta(this, e);
         private void DetailsPaneGrip_DragCompleted(object s, DragCompletedEventArgs e) => Owner.DetailsPaneGrip_DragCompleted(this, e);
         private void ExpandAll_Click(object s, RoutedEventArgs e)          => Owner.ExpandAll_Click(s, e);
         private void FavoriteStar_Click(object s, RoutedEventArgs e)      => Owner.FavoriteStar_Click(s, e);
