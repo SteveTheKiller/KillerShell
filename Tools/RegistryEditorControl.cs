@@ -92,7 +92,7 @@ namespace KillerShell.Tools
 
             // --demo never touches the real registry - see Services\DemoRegistry.cs. RegistryKey
             // is sealed, so there is no faking one; this reads the fabricated table instead of
-            // ever calling RegistryPathHelper.OpenKey.
+            // ever opening a real registry key.
             if (MainWindow.DemoMode)
             {
                 foreach (var name in KillerShell.Services.DemoRegistry.ChildrenOf(FullPath))
@@ -104,7 +104,7 @@ namespace KillerShell.Tools
 
             try
             {
-                using var key = RegistryPathHelper.OpenKey(FullPath, writable: false);
+                using var key = Services.RegistryEditorLogic.OpenKey(FullPath, writable: false);
                 if (key != null)
                     foreach (var name in key.GetSubKeyNames()
                                               .OrderBy(n => n, StringComparer.OrdinalIgnoreCase))
@@ -156,54 +156,6 @@ namespace KillerShell.Tools
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  PATH RESOLUTION  -  the five hives this tab roots at, and turning a "HIVE\Sub\Key" string
-    //  (the tree's own FullPath, and whatever the address bar's Enter hands back) into a real,
-    //  freshly-opened RegistryKey. Local machine only - no RegistryView/remote-registry handling,
-    //  by design (out of scope, see the file header on RegistryEditorTabs.cs).
-    // ═══════════════════════════════════════════════════════════
-    internal static class RegistryPathHelper
-    {
-        internal static readonly (string Name, RegistryKey Root)[] Hives =
-            KillerShell.Services.RegistryEditorLogic.Hives;
-
-        /// <summary>Opens <paramref name="fullPath"/> fresh - the caller disposes it. Returns null
-        /// for an unknown hive name or a key that no longer exists; never throws for that case,
-        /// only for a genuine access failure (caller catches SecurityException/
-        /// UnauthorizedAccessException around the call, same as LoadChildren above).</summary>
-        internal static RegistryKey? OpenKey(string fullPath, bool writable)
-        {
-            return KillerShell.Services.RegistryEditorLogic.OpenKey(fullPath, writable);
-        }
-
-        internal static string ParentPath(string fullPath)
-        {
-            return KillerShell.Services.RegistryEditorLogic.ParentPath(fullPath);
-        }
-    }
-
-    // ═══════════════════════════════════════════════════════════
-    //  VALUE FORMATTING  -  Name/Type/Data exactly the way regedit itself shows them: a DWORD/
-    //  QWORD as both hex and decimal, binary as space-separated hex byte pairs, a multi-string
-    //  with its entries visibly separated rather than run together.
-    // ═══════════════════════════════════════════════════════════
-    internal static class RegistryValueFormat
-    {
-        internal static string KindLabel(RegistryValueKind k)
-            => KillerShell.Services.RegistryEditorLogic.KindLabel(k);
-
-        // HKEY_CLASSES_ROOT is a merged HKLM+HKCU view and, past the ArgumentException fix for
-        // malformed names, can also carry a value whose DATA is pathologically large (some stray
-        // COM registration blob stored as REG_SZ/REG_BINARY instead of the small string regedit
-        // expects). A DataGrid cell has to measure and lay out whatever string it is handed, and
-        // WPF's text layout is not linear in string length - a multi-megabyte cell freezes the UI
-        // thread for a long time with nothing to catch, which reads as "app hung", not "app
-        // crashed". Cap what ever reaches the grid; Modify still reads and edits the real,
-        // untruncated value, this only bounds what gets displayed.
-        internal static string DataLabel(object? value, RegistryValueKind kind)
-            => KillerShell.Services.RegistryEditorLogic.DataLabel(value, kind);
-    }
-
     /// <summary>One row of the value grid.</summary>
     internal sealed class RegistryValueRow
     {
@@ -211,9 +163,9 @@ namespace KillerShell.Tools
         internal string Name { get; }
         public string DisplayName => Name.Length == 0 ? "(Default)" : Name;
         internal RegistryValueKind Kind { get; }
-        public string KindLabel => RegistryValueFormat.KindLabel(Kind);
+        public string KindLabel => Services.RegistryEditorLogic.KindLabel(Kind);
         internal object? RawValue { get; }
-        public string DataLabel => RegistryValueFormat.DataLabel(RawValue, Kind);
+        public string DataLabel => Services.RegistryEditorLogic.DataLabel(RawValue, Kind);
 
         internal RegistryValueRow(string name, RegistryValueKind kind, object? rawValue)
         {
@@ -303,7 +255,7 @@ namespace KillerShell.Tools
             // Cheap: five nodes, no registry access until one is actually expanded. Never deferred
             // to Loaded the way EventViewerControl's first query is - there is nothing here worth
             // waiting for.
-            foreach (var h in RegistryPathHelper.Hives)
+            foreach (var h in Services.RegistryEditorLogic.Hives)
                 _roots.Add(new RegistryNode(h.Name, h.Name, isRoot: true));
             _tree.ItemsSource = _roots;
 
@@ -987,7 +939,7 @@ namespace KillerShell.Tools
 
             try
             {
-                using var key = RegistryPathHelper.OpenKey(node.FullPath, writable: false);
+                using var key = Services.RegistryEditorLogic.OpenKey(node.FullPath, writable: false);
                 if (key == null) return;
 
                 var names = key.GetValueNames();
@@ -1081,7 +1033,7 @@ namespace KillerShell.Tools
                 if (!n.IsLoaded) return;
                 try
                 {
-                    using var key = RegistryPathHelper.OpenKey(n.FullPath, writable: false);
+                    using var key = Services.RegistryEditorLogic.OpenKey(n.FullPath, writable: false);
                     if (key != null)
                         foreach (var vn in key.GetValueNames())
                             flat.Add((n, vn));
@@ -1183,7 +1135,7 @@ namespace KillerShell.Tools
             string newName = dlg.Value;
             if (string.Equals(newName, node.Name, StringComparison.Ordinal)) return;
 
-            string parentPath = RegistryPathHelper.ParentPath(node.FullPath);
+            string parentPath = Services.RegistryEditorLogic.ParentPath(node.FullPath);
             var result = KillerShell.Services.RegistryEditorLogic.RenameKey(parentPath, node.Name, newName);
             if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_RenameFailed"); return; }
 
@@ -1209,7 +1161,7 @@ namespace KillerShell.Tools
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
 
-            string parentPath = RegistryPathHelper.ParentPath(node.FullPath);
+            string parentPath = Services.RegistryEditorLogic.ParentPath(node.FullPath);
             var result = KillerShell.Services.RegistryEditorLogic.DeleteKey(parentPath, node.Name);
             if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_DeleteFailed"); return; }
 
@@ -1228,7 +1180,7 @@ namespace KillerShell.Tools
             var existing = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             try
             {
-                using var key = RegistryPathHelper.OpenKey(node.FullPath, writable: false);
+                using var key = Services.RegistryEditorLogic.OpenKey(node.FullPath, writable: false);
                 if (key != null) foreach (var n in key.GetValueNames()) existing.Add(n);
             }
             catch { /* best-effort suggestion only - the create call re-validates for real */ }

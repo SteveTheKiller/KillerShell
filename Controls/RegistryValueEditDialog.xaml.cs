@@ -6,7 +6,6 @@ using System.Windows.Input;
 using Microsoft.Win32;
 
 using KillerShell.Shell;
-using KillerShell.Tools;
 
 namespace KillerShell
 {
@@ -35,7 +34,7 @@ namespace KillerShell
             SourceInitialized += (_, _) => MainWindow.ApplyThemeBorder(this);
 
             NameText.Text = displayName;
-            KindText.Text = RegistryValueFormat.KindLabel(kind);
+            KindText.Text = Services.RegistryEditorLogic.KindLabel(kind);
 
             switch (kind)
             {
