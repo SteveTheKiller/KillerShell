@@ -890,10 +890,7 @@ namespace KillerShell.Tools
         }
 
         private static bool SafeCategoryExists(string category)
-        {
-            try { return PerformanceCounterCategory.Exists(category); }
-            catch { return false; }
-        }
+            => Services.PerformanceCounterService.CategoryExists(category);
 
         private MetricTile BuildCpuTile(Services.PerformanceHardwareInfo info)
         {
@@ -1559,16 +1556,10 @@ namespace KillerShell.Tools
         }
 
         private static PerformanceCounter? TryCreateCounter(string category, string counter, string instance)
-        {
-            try { return new PerformanceCounter(category, counter, instance); }
-            catch { return null; }
-        }
+            => Services.PerformanceCounterService.Create(category, counter, instance);
 
         private static PerformanceCounter? TryCreateCounterNoInstance(string category, string counter)
-        {
-            try { return new PerformanceCounter(category, counter); }
-            catch { return null; }
-        }
+            => Services.PerformanceCounterService.Create(category, counter);
 
         // ═══════════════════════════════════════════════════════════
         //  LIVE COUNTERS  -  per-tick sampling
@@ -1604,14 +1595,16 @@ namespace KillerShell.Tools
             if (cs.Total == null) return;
             try
             {
-                double pct = Math.Min(100, Math.Max(0, cs.Total.NextValue()));
+                if (!Services.PerformanceCounterService.TrySample(cs.Total, out double rawPercent)) return;
+                double pct = Services.PerformanceCounterService.ClampPercent(rawPercent);
                 tile.TileSummaryText.Text = pct.ToString("0.0", CultureInfo.InvariantCulture) + " %";
                 cs.AggregateGraph.Push(pct);
 
                 if (cs.ShowCores)
                     for (int i = 0; i < cs.CoreCounters.Length; i++)
                     {
-                        double c = Math.Min(100, Math.Max(0, cs.CoreCounters[i].NextValue()));
+                        if (!Services.PerformanceCounterService.TrySample(cs.CoreCounters[i], out double rawCore)) return;
+                        double c = Services.PerformanceCounterService.ClampPercent(rawCore);
                         cs.CoreGraphs[i].Push(c);
                     }
 
@@ -1626,7 +1619,7 @@ namespace KillerShell.Tools
             if (rs.Avail == null) return;
             try
             {
-                double availMb = rs.Avail.NextValue();
+                if (!Services.PerformanceCounterService.TrySample(rs.Avail, out double availMb)) return;
                 if (_totalRamGb > 0)
                 {
                     double availGb = availMb / 1024.0;
@@ -1646,7 +1639,8 @@ namespace KillerShell.Tools
 
                 if (rs.Committed != null)
                 {
-                    double committedMb = rs.Committed.NextValue() / 1024.0 / 1024.0;
+                    if (!Services.PerformanceCounterService.TrySample(rs.Committed, out double committedBytes)) return;
+                    double committedMb = committedBytes / 1024.0 / 1024.0;
                     tile.FieldValues[1] = (committedMb / 1024.0).ToString("0.0", CultureInfo.InvariantCulture) + " GB";
                 }
 
@@ -1660,9 +1654,10 @@ namespace KillerShell.Tools
             var ds = (DiskState)tile.State!;
             try
             {
-                double activePct = ds.PercentTime != null ? Math.Min(100, Math.Max(0, ds.PercentTime.NextValue())) : 0;
-                double readBps = ds.ReadBytes?.NextValue() ?? 0;
-                double writeBps = ds.WriteBytes?.NextValue() ?? 0;
+                if (!Services.PerformanceCounterService.TrySample(ds.PercentTime, out double activeRaw) ||
+                    !Services.PerformanceCounterService.TrySample(ds.ReadBytes, out double readBps) ||
+                    !Services.PerformanceCounterService.TrySample(ds.WriteBytes, out double writeBps)) return;
+                double activePct = Services.PerformanceCounterService.ClampPercent(activeRaw);
 
                 tile.TileSummaryText.Text = activePct.ToString("0", CultureInfo.InvariantCulture) + " %";
                 tile.BigGraphs[0].Push(activePct);
@@ -1683,8 +1678,8 @@ namespace KillerShell.Tools
             var ns = (NetState)tile.State!;
             try
             {
-                double sent = ns.Sent?.NextValue() ?? 0;
-                double recv = ns.Recv?.NextValue() ?? 0;
+                if (!Services.PerformanceCounterService.TrySample(ns.Sent, out double sent) ||
+                    !Services.PerformanceCounterService.TrySample(ns.Recv, out double recv)) return;
 
                 if (tile.LegendValueBlocks.Length >= 2)
                 {
