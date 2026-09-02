@@ -13,6 +13,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 - Administrator windows keep new terminals as tabs and use a brighter theme-matched border.
+- On the Sepulchre theme the theme picker's radio ring, dot and label no longer vanish into the row's hover highlight; they turn white while hovered.
 
 ## [1.2.3] - 2026-09-01
 

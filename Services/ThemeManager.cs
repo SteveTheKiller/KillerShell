@@ -328,6 +328,11 @@ namespace KillerShell.Services
                 var white = new SolidColorBrush(Colors.White); white.Freeze();
                 combined["CaptionCloseHoverFgBrush"] = white;
             }
+            // The theme picker's ring, dot and label while HOVERED. Defaults to the accent so
+            // nothing changes; a theme whose accent equals its hover fill (Sepulchre) overrides
+            // it, or the radio vanishes into its own highlight. KillerPDF's key.
+            if (!combined.Contains("RadioHoverFgBrush") && combined.Contains("PrimaryBrush"))
+                combined["RadioHoverFgBrush"] = combined["PrimaryBrush"];
             // TextBrush, not ChromeTextBrush: ChromeButton drew its glyphs in TextBrush before the
             // caption tokens existed, and ChromeTextBrush is a good deal dimmer (#b6b6b6 against
             // #e0e0e0 on Dark) - mirroring that would have quietly faded the window buttons on all
