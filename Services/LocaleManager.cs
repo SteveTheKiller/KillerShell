@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Windows;
 
 namespace KillerShell.Services
@@ -30,8 +31,39 @@ namespace KillerShell.Services
         /// <summary>Call once at startup (after ThemeManager.Initialize) to restore the saved locale.</summary>
         public static void Initialize()
         {
-            _current = Enum.TryParse<Locale>(GetSetting("Locale"), out var l) ? l : Locale.EnUS;
+            var saved = GetSetting("Locale");
+            if (Enum.TryParse<Locale>(saved, out var locale))
+            {
+                _current = locale;
+            }
+            else
+            {
+                _current = LocaleForCulture(CultureInfo.CurrentUICulture);
+                SetSetting("Locale", _current.ToString());
+            }
             ApplyInternal(_current);
+        }
+
+        internal static Locale LocaleForCulture(CultureInfo culture)
+        {
+            string name = culture.Name;
+            string language = culture.TwoLetterISOLanguageName;
+            if (language == "zh")
+                return name.IndexOf("Hant", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                       name.EndsWith("-TW", StringComparison.OrdinalIgnoreCase) ||
+                       name.EndsWith("-HK", StringComparison.OrdinalIgnoreCase) ||
+                       name.EndsWith("-MO", StringComparison.OrdinalIgnoreCase)
+                    ? Locale.ZhTW
+                    : Locale.ZhCN;
+
+            return language switch
+            {
+                "bn" => Locale.Bn, "cs" => Locale.Cs, "de" => Locale.De,
+                "es" => Locale.Es, "fr" => Locale.Fr, "hu" => Locale.HuHU,
+                "it" => Locale.It, "ja" => Locale.Ja, "kk" => Locale.KkKZ,
+                "pl" => Locale.PlPL, "ru" => Locale.RuRU, "tr" => Locale.TrTR,
+                _ => Locale.EnUS,
+            };
         }
 
         /// <summary>Switch locale, persist the choice, and hot-swap the string ResourceDictionary.</summary>

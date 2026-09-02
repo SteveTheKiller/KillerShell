@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.2.4 improves maintainability and reliability through automated tests and testable service boundaries.
 
 ### Changed
+- On first launch, the interface follows the Windows display language when it is supported.
 - Core tool logic is separated from its interface and covered by local release tests.
 
 ### Fixed
