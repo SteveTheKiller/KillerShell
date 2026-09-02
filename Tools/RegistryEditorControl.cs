@@ -1138,6 +1138,17 @@ namespace KillerShell.Tools
             };
         }
 
+        private void ShowEditFailure(KillerShell.Services.RegistryEditResult result, string failureKey)
+        {
+            string message = result.Status switch
+            {
+                KillerShell.Services.RegistryEditStatus.AccessDenied => MainWindow.LocStatic("Str_RegEd_AccessDenied"),
+                KillerShell.Services.RegistryEditStatus.AlreadyExists => MainWindow.LocStatic("Str_RegEd_NameExists"),
+                _ => string.Format(MainWindow.LocStatic(failureKey), result.Error),
+            };
+            ShowStatus(message, error: true);
+        }
+
         private void CreateNewKey(RegistryNode parentNode)
         {
             var dlg = new RegistryInputDialog(
@@ -1149,18 +1160,8 @@ namespace KillerShell.Tools
             if (!dlg.Confirmed) return;
 
             string name = dlg.Value;
-            try
-            {
-                using var parent = RegistryPathHelper.OpenKey(parentNode.FullPath, writable: true);
-                if (parent == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-                using var created = parent.CreateSubKey(name);
-                if (created == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-            }
-            catch (Exception ex) when (ex is SecurityException or UnauthorizedAccessException or IOException or ArgumentException)
-            {
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_CreateFailed"), ex.Message), error: true);
-                return;
-            }
+            var result = KillerShell.Services.RegistryEditorLogic.CreateKey(parentNode.FullPath, name);
+            if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_CreateFailed"); return; }
 
             parentNode.Refresh();
             parentNode.IsExpanded = true;
@@ -1183,51 +1184,13 @@ namespace KillerShell.Tools
             if (string.Equals(newName, node.Name, StringComparison.Ordinal)) return;
 
             string parentPath = RegistryPathHelper.ParentPath(node.FullPath);
-            try
-            {
-                using var parent = RegistryPathHelper.OpenKey(parentPath, writable: true);
-                if (parent == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-                if (parent.GetSubKeyNames().Any(n => string.Equals(n, newName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    ShowStatus(MainWindow.LocStatic("Str_RegEd_NameExists"), error: true);
-                    return;
-                }
-
-                // The registry API has no atomic rename for a key - copy the whole subtree to the
-                // new name, then delete the old one. Correct even for a key with many nested
-                // subkeys/values, just not the single fast call a real rename would be.
-                using var src = parent.OpenSubKey(node.Name, writable: false);
-                using var dst = parent.CreateSubKey(newName);
-                if (src == null || dst == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-                CopyKeyContents(src, dst);
-                parent.DeleteSubKeyTree(node.Name);
-            }
-            catch (Exception ex) when (ex is SecurityException or UnauthorizedAccessException or IOException or ArgumentException)
-            {
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_RenameFailed"), ex.Message), error: true);
-                return;
-            }
+            var result = KillerShell.Services.RegistryEditorLogic.RenameKey(parentPath, node.Name, newName);
+            if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_RenameFailed"); return; }
 
             var parentNode = node.Parent;
             parentNode?.Refresh();
             var newNode = parentNode?.Children.FirstOrDefault(c => string.Equals(c.Name, newName, StringComparison.OrdinalIgnoreCase));
             newNode?.IsSelected = true;
-        }
-
-        private static void CopyKeyContents(RegistryKey src, RegistryKey dst)
-        {
-            foreach (var vn in src.GetValueNames())
-            {
-                var kind = src.GetValueKind(vn);
-                var val = src.GetValue(vn, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
-                if (val != null) dst.SetValue(vn, val, kind);
-            }
-            foreach (var sk in src.GetSubKeyNames())
-            {
-                using var srcChild = src.OpenSubKey(sk, writable: false);
-                using var dstChild = dst.CreateSubKey(sk);
-                if (srcChild != null && dstChild != null) CopyKeyContents(srcChild, dstChild);
-            }
         }
 
         /// <summary>
@@ -1246,18 +1209,9 @@ namespace KillerShell.Tools
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
 
-            try
-            {
-                string parentPath = RegistryPathHelper.ParentPath(node.FullPath);
-                using var parent = RegistryPathHelper.OpenKey(parentPath, writable: true);
-                if (parent == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-                parent.DeleteSubKeyTree(node.Name);
-            }
-            catch (Exception ex) when (ex is SecurityException or UnauthorizedAccessException or IOException or ArgumentException)
-            {
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_DeleteFailed"), ex.Message), error: true);
-                return;
-            }
+            string parentPath = RegistryPathHelper.ParentPath(node.FullPath);
+            var result = KillerShell.Services.RegistryEditorLogic.DeleteKey(parentPath, node.Name);
+            if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_DeleteFailed"); return; }
 
             var parentNode = node.Parent;
             parentNode?.Children.Remove(node);
@@ -1307,22 +1261,8 @@ namespace KillerShell.Tools
                 _                              => 0,   // DWord
             };
 
-            try
-            {
-                using var key = RegistryPathHelper.OpenKey(node.FullPath, writable: true);
-                if (key == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-                if (key.GetValueNames().Any(n => string.Equals(n, name, StringComparison.OrdinalIgnoreCase)))
-                {
-                    ShowStatus(MainWindow.LocStatic("Str_RegEd_NameExists"), error: true);
-                    return;
-                }
-                key.SetValue(name, defaultData, kind);
-            }
-            catch (Exception ex) when (ex is SecurityException or UnauthorizedAccessException or IOException or ArgumentException)
-            {
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_CreateFailed"), ex.Message), error: true);
-                return;
-            }
+            var result = KillerShell.Services.RegistryEditorLogic.CreateValue(node.FullPath, name, defaultData, kind);
+            if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_CreateFailed"); return; }
 
             LoadValues(node);
             var row = _values.FirstOrDefault(r => string.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
@@ -1344,18 +1284,10 @@ namespace KillerShell.Tools
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
 
-            try
-            {
-                using var key = RegistryPathHelper.OpenKey(node.FullPath, writable: true);
-                if (key == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-                key.SetValue(row.Name, dlg.ResultValue!, kind);
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_ValueSaved"), row.DisplayName), error: false);
-            }
-            catch (Exception ex) when (ex is SecurityException or UnauthorizedAccessException or IOException or ArgumentException)
-            {
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_SaveFailed"), ex.Message), error: true);
-                return;
-            }
+            var result = KillerShell.Services.RegistryEditorLogic.SetValue(
+                node.FullPath, row.Name, dlg.ResultValue!, kind);
+            if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_SaveFailed"); return; }
+            ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_ValueSaved"), row.DisplayName), error: false);
 
             LoadValues(node);
         }
@@ -1374,25 +1306,8 @@ namespace KillerShell.Tools
             string newName = dlg.Value;
             if (string.Equals(newName, row.Name, StringComparison.Ordinal)) return;
 
-            try
-            {
-                using var key = RegistryPathHelper.OpenKey(node.FullPath, writable: true);
-                if (key == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-                if (key.GetValueNames().Any(n => string.Equals(n, newName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    ShowStatus(MainWindow.LocStatic("Str_RegEd_NameExists"), error: true);
-                    return;
-                }
-                var kind = key.GetValueKind(row.Name);
-                var val = key.GetValue(row.Name, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
-                key.SetValue(newName, val!, kind);
-                key.DeleteValue(row.Name);
-            }
-            catch (Exception ex) when (ex is SecurityException or UnauthorizedAccessException or IOException or ArgumentException)
-            {
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_RenameFailed"), ex.Message), error: true);
-                return;
-            }
+            var result = KillerShell.Services.RegistryEditorLogic.RenameValue(node.FullPath, row.Name, newName);
+            if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_RenameFailed"); return; }
 
             LoadValues(node);
         }
@@ -1405,17 +1320,8 @@ namespace KillerShell.Tools
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
 
-            try
-            {
-                using var key = RegistryPathHelper.OpenKey(node.FullPath, writable: true);
-                if (key == null) { ShowStatus(MainWindow.LocStatic("Str_RegEd_AccessDenied"), error: true); return; }
-                key.DeleteValue(row.Name, throwOnMissingValue: false);
-            }
-            catch (Exception ex) when (ex is SecurityException or UnauthorizedAccessException or IOException or ArgumentException)
-            {
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_DeleteFailed"), ex.Message), error: true);
-                return;
-            }
+            var result = KillerShell.Services.RegistryEditorLogic.DeleteValue(node.FullPath, row.Name);
+            if (!result.Succeeded) { ShowEditFailure(result, "Str_RegEd_DeleteFailed"); return; }
 
             LoadValues(node);
             ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_ValueDeleted"), row.DisplayName), error: false);

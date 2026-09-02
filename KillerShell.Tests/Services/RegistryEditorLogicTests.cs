@@ -1,3 +1,4 @@
+using System;
 using KillerShell.Services;
 using Microsoft.Win32;
 using Xunit;
@@ -39,6 +40,33 @@ namespace KillerShell.Tests.Services
                 new byte[] { 0x00, 0x0f, 0xff }, RegistryValueKind.Binary));
             Assert.Equal("one  |  two", RegistryEditorLogic.DataLabel(
                 new[] { "one", "two" }, RegistryValueKind.MultiString));
+        }
+
+        [Fact]
+        public void RegistryEdits_RoundTripInDisposableCurrentUserKey()
+        {
+            string rootName = "KillerShell.Tests." + Guid.NewGuid().ToString("N");
+            string parentPath = "HKEY_CURRENT_USER\\Software";
+            string rootPath = parentPath + "\\" + rootName;
+            try
+            {
+                Assert.True(RegistryEditorLogic.CreateKey(parentPath, rootName).Succeeded);
+                Assert.True(RegistryEditorLogic.CreateValue(
+                    rootPath, "Name", "first", RegistryValueKind.String).Succeeded);
+                Assert.True(RegistryEditorLogic.SetValue(
+                    rootPath, "Name", "second", RegistryValueKind.String).Succeeded);
+                Assert.True(RegistryEditorLogic.RenameValue(rootPath, "Name", "Renamed").Succeeded);
+
+                using var key = RegistryEditorLogic.OpenKey(rootPath, writable: false);
+                Assert.NotNull(key);
+                Assert.Equal("second", key!.GetValue("Renamed"));
+
+                Assert.True(RegistryEditorLogic.DeleteValue(rootPath, "Renamed").Succeeded);
+            }
+            finally
+            {
+                RegistryEditorLogic.DeleteKey(parentPath, rootName);
+            }
         }
     }
 }
