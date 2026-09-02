@@ -140,7 +140,7 @@ namespace KillerShell.Shell
             "PipeBtn", "ExportBtn", "OverflowBtn",
         ];
 
-        internal void Overflow_Click(FilePane pane)
+        internal static void Overflow_Click(FilePane pane)
         {
             var p = pane.OverflowPopup;
             p.IsOpen = !p.IsOpen;

@@ -659,7 +659,7 @@ namespace KillerShell.Tools
         private static bool SafeCategoryExists(string category)
             => Services.PerformanceCounterService.CategoryExists(category);
 
-        private MetricTile BuildCpuTile(Services.PerformanceHardwareInfo info)
+        private static MetricTile BuildCpuTile(Services.PerformanceHardwareInfo info)
         {
             var tile = new MetricTile
             {

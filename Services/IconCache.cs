@@ -445,7 +445,7 @@ namespace KillerShell.Services
             return mine;
         }
 
-        private static ImageSource? LoadSmallPath(string pathOrName, bool real)
+        private static BitmapSource? LoadSmallPath(string pathOrName, bool real)
         {
             var info = new SHFILEINFO();
             uint flags = SHGFI_ICON | SHGFI_LARGEICON;
@@ -462,7 +462,7 @@ namespace KillerShell.Services
         // ── 48px / 256px path (system image list) ────────────────
         // SHGFI_SYSICONINDEX gives the file type's index into the system image list; the image
         // list for the requested size then hands back that entry as an icon we own.
-        private static ImageSource? LoadFromImageList(string pathOrName, bool real, int shil)
+        private static BitmapSource? LoadFromImageList(string pathOrName, bool real, int shil)
         {
             var info = new SHFILEINFO();
             uint flags = SHGFI_SYSICONINDEX;

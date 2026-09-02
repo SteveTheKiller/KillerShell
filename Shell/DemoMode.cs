@@ -13,7 +13,7 @@ namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        public static bool DemoMode;
+        public static bool DemoMode { get; set; }
 
         private static readonly Random DemoRng = new(1337);   // same data every run
 
@@ -190,7 +190,7 @@ namespace KillerShell.Shell
             t.Results.Add(r);
         }
 
-        private void FinishDemoTab(SearchTab t, int scanned, double seconds)
+        private static void FinishDemoTab(SearchTab t, int scanned, double seconds)
         {
             t.ScannedCount  = scanned;
             t.StatusKey     = "Str_Status_Done";

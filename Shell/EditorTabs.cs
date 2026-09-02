@@ -232,7 +232,7 @@ namespace KillerShell.Shell
         /// a close x on its right, and at this size an asterisk reads as part of the file name
         /// instead of as a mark on it.
         /// </remarks>
-        private void SetEditorTitle(SearchTab t)
+        private static void SetEditorTitle(SearchTab t)
         {
             if (t.Editor == null) return;
             string name = t.Editor.IsUntitled ? Loc("Str_Ed_Untitled")
@@ -431,7 +431,7 @@ namespace KillerShell.Shell
         /// Ctrl+S is XOFF, which would freeze the terminal with no obvious way back, and Ctrl+G
         /// is a bell the shell may well want to ring.
         /// </remarks>
-        private bool IsEditorChord(System.Windows.Input.KeyEventArgs e, bool ctrl, bool shift, bool alt)
+        private static bool IsEditorChord(System.Windows.Input.KeyEventArgs e, bool ctrl, bool shift, bool alt)
         {
             if (ctrl && !shift && !alt
                 && (e.Key == System.Windows.Input.Key.S || e.Key == System.Windows.Input.Key.G))

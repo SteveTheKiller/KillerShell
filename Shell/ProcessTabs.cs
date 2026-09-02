@@ -91,7 +91,7 @@ namespace KillerShell.Shell
         /// <summary>The tab title for one of the two views. Its own method because the title is
         /// set from two places - when the tab is built and whenever the mode toggles - and a
         /// language change has to be able to re-derive it.</summary>
-        private string ProcessTabTitle(bool isProcesses)
+        private static string ProcessTabTitle(bool isProcesses)
             => Loc(isProcesses ? "Str_TabTitle_Processes" : "Str_TabTitle_Services");
 
         /// <summary>

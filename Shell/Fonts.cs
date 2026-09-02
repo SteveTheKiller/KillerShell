@@ -252,7 +252,7 @@ namespace KillerShell.Shell
 
             // Each combo gets its OWN list, headed by its own default row naming what that slot
             // actually falls back to. Sharing one list would share selection state.
-            List<FontChoice> WithDefault(List<FontChoice> from, string shipped)
+            static List<FontChoice> WithDefault(List<FontChoice> from, string shipped)
             {
                 var l = new List<FontChoice>(from.Count + 1)
                 {

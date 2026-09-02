@@ -183,7 +183,7 @@ namespace KillerShell.Shell
         /// floor - the floor bends to the ceiling, letting the floor come down to
         /// meet the ceiling on a very short window rather than forcing a height that cannot fit.
         /// </summary>
-        private double ClampDetailsPaneHeight(FilePane pane, double h)
+        private static double ClampDetailsPaneHeight(FilePane pane, double h)
         {
             double contentFloor = DetailsPaneContentFloor(pane);
             double ceiling = Math.Max(contentFloor, DetailsPaneCeiling(pane));
@@ -529,7 +529,7 @@ namespace KillerShell.Shell
             }
         }
 
-        private void ShowDetailsMulti(FilePane pane, List<SearchResult> items)
+        private static void ShowDetailsMulti(FilePane pane, List<SearchResult> items)
         {
             pane.DetailsEmptyText.Visibility  = Visibility.Collapsed;
             pane.DetailsFieldsGrid.Visibility = Visibility.Visible;
@@ -559,14 +559,14 @@ namespace KillerShell.Shell
             // one file from the selection at random.
         }
 
-        private string DescribeExtension(string fileName)
+        private static string DescribeExtension(string fileName)
         {
             string ext = Path.GetExtension(fileName);
             if (string.IsNullOrEmpty(ext)) return Loc("Str_Details_NoExt");
             return string.Format(Loc("Str_Details_ExtFile"), ext.TrimStart('.').ToUpperInvariant());
         }
 
-        private string DescribeAttributes(FileAttributes fa)
+        private static string DescribeAttributes(FileAttributes fa)
         {
             var bits = new List<string>();
             if ((fa & FileAttributes.ReadOnly) != 0) bits.Add(Loc("Str_Details_AttrReadOnly"));

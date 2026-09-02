@@ -399,7 +399,7 @@ namespace KillerShell.Shell
         /// window does. Order matters only in that these are mutually exclusive in practice -
         /// focus is in exactly one control.
         /// </summary>
-        private KsScope KsFocusScope
+        private static KsScope KsFocusScope
         {
             get
             {

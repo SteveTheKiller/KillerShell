@@ -154,6 +154,11 @@ namespace KillerShell.Services
             }
 
             // ---- Producer: walks the tree (or the piped list) into a bounded queue ----
+            // The token is deliberately NOT handed to Task.Run or the waits below. Cancellation
+            // here is cooperative: the loops watch ct themselves and drain to a clean finish, so
+            // the producer's CompleteAdding always runs and no exception escapes RunSearch. A task
+            // created with an already-canceled token never starts, which would leave the workers
+            // blocked on the feed forever. CancellationToken.None says that on purpose.
             using var feed = new BlockingCollection<string>(boundedCapacity: 8192);
             var producer = Task.Run(() =>
             {
@@ -167,7 +172,7 @@ namespace KillerShell.Services
                 }
                 catch (OperationCanceledException) { /* graceful stop */ }
                 finally { feed.CompleteAdding(); }
-            });
+            }, CancellationToken.None);
 
             // ---- Workers: one per core, capped so a Threadripper doesn't thrash I/O ----
             int workerCount = Math.Max(2, Math.Min(16, Environment.ProcessorCount));
@@ -181,7 +186,7 @@ namespace KillerShell.Services
                         try { EvaluateFile(filePath); }
                         catch { /* one bad file never kills a worker */ }
                     }
-                });
+                }, CancellationToken.None);
 
             // ---- UI pump: this task flushes batches every ~150ms until the workers finish ----
             const int UiIntervalMs = 150;
@@ -213,9 +218,9 @@ namespace KillerShell.Services
                 ProgressChanged?.Invoke(Volatile.Read(ref processed));
             }
 
-            while (!Task.WaitAll(workers, UiIntervalMs))
+            while (!Task.WaitAll(workers, UiIntervalMs, CancellationToken.None))
                 Flush();
-            try { producer.Wait(); } catch (AggregateException) { /* producer OCE already handled */ }
+            try { producer.Wait(CancellationToken.None); } catch (AggregateException) { /* producer OCE already handled */ }
             Flush();   // final drain
         }
 

@@ -156,7 +156,7 @@ namespace KillerShell.Terminal
             Version++;
         }
 
-        private Cell[][] New(int cols, int rows)
+        private static Cell[][] New(int cols, int rows)
         {
             var g = new Cell[rows][];
             for (int r = 0; r < rows; r++) g[r] = NewLine(cols);

@@ -534,7 +534,7 @@ namespace KillerShell
             // re-fitted whenever either pane changes size (ResultsView.UpdateColumnFit).
             Owner.UpdateColumnFit();
         }
-        private void Overflow_Click(object s, RoutedEventArgs e)            => Owner.Overflow_Click(this);
+        private void Overflow_Click(object s, RoutedEventArgs e)            => MainWindow.Overflow_Click(this);
         // Passes THIS pane, like the two above: the menu drops from this pane's chevron.
         private void Recents_Click(object s, RoutedEventArgs e)             => Owner.Recents_Click(this);
         // Dual pane's two handlers are gone from here: the button moved to the window's icon
