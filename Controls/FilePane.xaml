@@ -562,10 +562,8 @@
                    would not come down to the width of the left. It is right on
                    the rounded themes, where the pane is a floating card with a shadow; a Win98
                    client area fills its frame.
-                   The old PaneEdgeThickness ring has been split: its top/side frame remains,
-                   but a fixed bottom line over almost every tab made scrolling content look
-                   prematurely cut off at the viewport. The true bottom edge and scroll cues now
-                   live inside PaneContent and follow the active large ScrollViewer. -->
+                   The bottom frame is an overlay inside PaneContent so scrolling children
+                   cannot paint over it. Scroll cues are independent of the pane frame. -->
               <Border x:Name="ResultsPane" Grid.Row="1" Margin="{DynamicResource PaneOuterMargin}" Background="{DynamicResource MenuBackgroundBrush}"
                     BorderBrush="{DynamicResource PaneEdgeBrush}" BorderThickness="{DynamicResource PaneEdgeSideThickness}" CornerRadius="{DynamicResource PanelCornerRadius}"
                     Effect="{DynamicResource PaneShadowEffect}">
@@ -577,15 +575,12 @@
               <Grid x:Name="PaneContent" SizeChanged="PaneContent_SizeChanged">
                 <!-- Same treatment as KillerPDF's document pane: the whole content pane is grain-wrapped. -->
                 <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                <!-- The old permanent bottom rule became a false content boundary on every
-                     scrolling tab. FilePane.xaml.cs keeps this replacement hidden until the
-                     active large viewport has positively reached the end of its real content. -->
+                <!-- Keep the pane frame visible for every tab and scroll position. -->
                 <Border x:Name="ResultsPaneBottomEdge" IsHitTestVisible="False" Panel.ZIndex="100"
                         BorderBrush="{DynamicResource PaneEdgeBrush}"
                         BorderThickness="{DynamicResource PaneEdgeBottomThickness}"
                         CornerRadius="{DynamicResource PanelCornerRadius}"/>
-                <!-- The ordinary bottom CONTENT edge above follows scroll position, but the
-                     selected-pane ring is a focus indicator and must never open at the bottom.
+                <!-- The selected-pane ring overlays the permanent bottom frame.
                      DualPane.UpdatePaneFocusRing shows this segment only on the focused half;
                      keeping it separate prevents scroll-chrome changes from breaking the ring. -->
                 <Border x:Name="PaneFocusBottomEdge" IsHitTestVisible="False" Panel.ZIndex="101"

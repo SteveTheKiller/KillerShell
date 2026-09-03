@@ -89,11 +89,7 @@ namespace KillerShell
         internal void ResetScrollChrome()
         {
             SetPaneScroller(null);
-            // A tab switch starts with no knowledge of the incoming content extent. Hidden is
-            // the safe default: the line is revealed only after a real viewport is discovered
-            // and proves that it is at the end.
-            ResultsPaneBottomEdge.Visibility = Visibility.Collapsed;
-            // The scroll cues have to go the same way. SyncShadowCues is the only thing that
+            // Reset scroll cues while discovering the incoming viewport. SyncShadowCues
             // shows them, and only the file browser and Performance use it, so leaving them alone
             // here stranded a dark gradient band over any tab that has no ScrollViewer to
             // re-evaluate them - the terminal, which draws its own scrollback and never creates
@@ -182,7 +178,6 @@ namespace KillerShell
             if (_paneUsesShadow)
             {
                 SyncShadowCues(scroller, hasAbove, hasBelow);
-                ResultsPaneBottomEdge.Visibility = hasBelow ? Visibility.Collapsed : Visibility.Visible;
                 return;
             }
 
@@ -225,7 +220,6 @@ namespace KillerShell
 
             BuildVerticalFade(_paneFadeMask, height, topY, bottomY,
                 hasAbove ? topStrength : 0, hasBelow ? bottomStrength : 0);
-            ResultsPaneBottomEdge.Visibility = hasBelow ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private bool UsesShadowCue(DependencyObject scroller) =>
