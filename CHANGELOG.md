@@ -13,6 +13,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Core tool logic is separated from its interface and covered by local release tests.
 
 ### Fixed
+- On the 98SE theme the keyboard map's keys are white instead of button-face gray.
 - Restored the bottom content-pane border across all tabs and scroll positions.
 - Folder-picker names now show their complete text in a hover tooltip when a column clips them.
 - Administrator windows keep new terminals as tabs and use a brighter theme-matched border.

@@ -301,7 +301,10 @@ namespace KillerShell.Shell
                         Margin = new Thickness(0, 0, 4, 0),
                         Child = inner,
                     };
-                    key.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
+                    // KeyCapBrush, not PaneBrush directly: the cap tracks PaneBrush on every theme
+                    // that does not declare it, but 98SE paints its caps white so the map does not
+                    // read as a slab of button-face gray. Same key in KillerScan and Killendar.
+                    key.SetResourceReference(Border.BackgroundProperty, "KeyCapBrush");
                     key.SetResourceReference(Border.BorderBrushProperty, "CardBorderBrush");
 
                     // Hover lifts the cap a few pixels, like the cards on killertools.net.

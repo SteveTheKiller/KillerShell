@@ -234,6 +234,9 @@ namespace KillerShell.Services
                     else if (!combined.Contains(key)) combined[key] = Transparent;
                 }
 
+            // The keyboard map's key caps. 98SE names its own, white rather than button-face gray.
+            Mirror("KeyCapBrush", "PaneBrush");
+
             SetIfAbsent("AboutCaptionMargin", new Thickness(0));
             // TRANSPARENT with zero thickness: no ordinary theme draws a lifted edge on its bars.
             // Mirroring PaneBorderBrush would have been harmless only because the thickness is 0,
