@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>killershell</id>
+    <version>REPLACE_VERSION</version>
+    <packageSourceUrl>https://github.com/SteveTheKiller/KillerShell</packageSourceUrl>
+    <owners>SteveTheKiller</owners>
+    <title>KillerShell</title>
+    <authors>Steve the Killer</authors>
+    <projectUrl>https://killershell.net</projectUrl>
+    <iconUrl>https://cdn.jsdelivr.net/gh/SteveTheKiller/KillerShell@vREPLACE_VERSION/Resources/ksh-icon.ico</iconUrl>
+    <licenseUrl>https://github.com/SteveTheKiller/KillerShell/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/SteveTheKiller/KillerShell</projectSourceUrl>
+    <docsUrl>https://github.com/SteveTheKiller/KillerShell/blob/main/README.md</docsUrl>
+    <bugTrackerUrl>https://github.com/SteveTheKiller/KillerShell/issues</bugTrackerUrl>
+    <tags>file-manager explorer powershell terminal editor sysadmin portable</tags>
+    <summary>Windows shell for power users. File browser, terminal, editor and admin tools in one portable EXE.</summary>
+    <description>Free and open-source Windows shell for power users. A file browser, PowerShell or CMD terminal, text editor, search engine and administration toolkit share one window, one tab strip and one set of keys. No agent, no account, no separate runtime installer.
+
+- Browse folders in list, icon or details view with tabs, favorites, a folder tree, live filesystem updates and two panes arranged side by side or stacked
+- Search names with wildcards or stream file contents line by line across every CPU core, with multiple ANY/ALL terms, filters, chained searches and HTML or CSV export
+- Open PowerShell, Windows PowerShell or CMD in the current folder, track its working directory live, and edit the included prompt or your real PowerShell profile
+- Edit text with syntax highlighting, find, go to line, undo/redo, encoding and line-ending preservation, indentation controls and a dedicated font setting
+- Copy, move, rename, recycle, permanently delete and drag files to or from Explorer, with asynchronous progress and Replace, Skip or Keep both collision handling
+- Work with ZIP archives, including empty folders and complete folder-tree drag-out, without changing the original when a rewrite is canceled
+- Inspect and manage processes and services, including live CPU and memory sorting, filtering, ownership, restart and elevation where needed
+- Monitor CPU, RAM, disks, networks and GPUs with live graphs and per-core CPU history
+- Use the built-in Event Viewer, Registry Editor and Storage Analyzer without leaving the tab strip
+- Keyboard-first operation using familiar Explorer keys plus F4 storage, F7 edit, F8 shell, F9 processes, F10 split, F11 performance and F1 for the complete shortcut overlay
+- Thirteen themes including a full 98SE recreation; Dark, Light, Black and 98SE each carry six accent colors for 33 looks in all
+- Localized in fifteen languages, switchable live, with English fallback for incomplete translations
+- One self-contained Windows EXE, no runtime install; runs portable, self-installs per-user without UAC, or machine-wide with UAC, and /silent supports scripted deployment
+- GPLv3, local-only: no indexing service, no cloud account, no advertisements, no telemetry
+    </description>
+    <releaseNotes>https://github.com/SteveTheKiller/KillerShell/releases/tag/vREPLACE_VERSION</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
