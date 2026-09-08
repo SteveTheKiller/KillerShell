@@ -82,8 +82,8 @@ namespace KillerShell.Shell
                 // vendored palettes used this key for something else; they do not, and the switch
                 // painted Sepulchre's frame brown. PaneBorderBrush stays as
                 // the fallback for a palette that declines to state one.
-                if ((Application.Current.TryFindResource("AppBorderBrush")
-                     ?? Application.Current.TryFindResource("PaneBorderBrush")) is SolidColorBrush b)
+                if ((w.TryFindResource("AppBorderBrush")
+                     ?? w.TryFindResource("PaneBorderBrush")) is SolidColorBrush b)
                 {
                     // COLORREF is 0x00BBGGRR
                     int colorref = b.Color.R | (b.Color.G << 8) | (b.Color.B << 16);

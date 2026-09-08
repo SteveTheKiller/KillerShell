@@ -16,9 +16,17 @@ namespace KillerShell
 
         public ConfirmDialog(string message, string? bullets, string okText,
                              string? check1Label = null, bool check1Initial = false,
-                             string? check2Label = null, bool check2Initial = false)
+                             string? check2Label = null, bool check2Initial = false,
+                             bool installer = false, bool notification = false)
         {
+            if (installer) Resources.MergedDictionaries.Add(Services.ThemeManager.CreateInstallerTheme());
             InitializeComponent();
+            if (installer)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                ShowInTaskbar = true;
+            }
+            if (notification) CancelBtn.Visibility = Visibility.Collapsed;
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
             SourceInitialized += (_, _) => MainWindow.ApplyThemeBorder(this);
 

@@ -169,6 +169,18 @@ namespace KillerShell.Services
 
         private static void LoadDict(Theme theme)
         {
+            var app = Application.Current;
+            if (app == null) return;
+            var combined = CreateDictionary(theme, AccentFor(theme));
+            var merged = app.Resources.MergedDictionaries;
+            if (merged.Count > 0) merged[0] = combined;
+            else merged.Add(combined);
+        }
+
+        internal static ResourceDictionary CreateInstallerTheme() => CreateDictionary(Theme.Dark, Accent.Blue);
+
+        private static ResourceDictionary CreateDictionary(Theme theme, Accent accent)
+        {
             // Build the combined dictionary (base theme + accent overlay) OFF the live tree
             // first, then publish it in ONE assignment. Setting merged[0] to a brand-new
             // ResourceDictionary fires exactly one resource-invalidation pass across the whole
@@ -189,7 +201,6 @@ namespace KillerShell.Services
             foreach (object key in newDict.Keys)
                 combined[key] = newDict[key];
 
-            var accent = AccentFor(theme);
             if (HasAccents(theme) && accent != Accent.Green)
             {
                 string family = theme == Theme.Light ? "Light"
@@ -1038,16 +1049,7 @@ namespace KillerShell.Services
             // after every palette/accent merge so gradient brushes remain gradients.
             combined["OverlayWindowBrush"] = combined["BackgroundBrush"];
 
-            // Null-guarded (CS8602): Application.Current is null during design time and unit
-            // hosting, and the nullable analysis flags the bare dereference. Nothing to merge
-            // into without an application anyway.
-            var app = Application.Current;
-            if (app == null) return;
-            var merged = app.Resources.MergedDictionaries;
-            if (merged.Count > 0)
-                merged[0] = combined;
-            else
-                merged.Add(combined);
+            return combined;
         }
     }
 }

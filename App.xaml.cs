@@ -88,6 +88,7 @@ namespace KillerShell
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             // Render on the CPU so the window isn't black over console-session screen-sharing tools
             // (ScreenConnect, Kaseya LiveConnect, VNC, TeamViewer). Negligible cost for this app.
@@ -222,7 +223,9 @@ namespace KillerShell
 
             OfferInstallConflictRepair();
 
-            new MainWindow().Show();
+            ShutdownMode = ShutdownMode.OnLastWindowClose;
+            MainWindow = new MainWindow();
+            MainWindow.Show();
         }
 
         // ============================================================
@@ -346,8 +349,10 @@ namespace KillerShell
             if (!runningMachine && !runningUser) return;
 
             string other = runningMachine ? "per-user" : "all-users";
-            if (MessageBox.Show($"KillerShell is installed twice. Remove the other {other} copy now?\n\nYour settings will not be removed.",
-                $"{AppName} installation conflict", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+            var confirm = new ConfirmDialog($"KillerShell is installed twice. Remove the other {other} copy now?\n\nYour settings will not be removed.",
+                null, "Yes", installer: true);
+            confirm.ShowDialog();
+            if (!confirm.Confirmed) return;
 
             if (runningMachine) RemovePerUserInstall();
             else
@@ -555,8 +560,9 @@ namespace KillerShell
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Installation failed:\n{ex.Message}", AppName,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                var owner = Current.MainWindow is { IsVisible: true } window ? window : null;
+                new ConfirmDialog($"Installation failed:\n{ex.Message}", null, "OK",
+                    installer: owner == null, notification: true) { Owner = owner }.ShowDialog();
                 return false;
             }
         }
@@ -618,8 +624,8 @@ namespace KillerShell
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Uninstall could not request administrator access:\n{ex.Message}",
-                    AppName, MessageBoxButton.OK, MessageBoxImage.Error);
+                new ConfirmDialog($"Uninstall could not request administrator access:\n{ex.Message}",
+                    null, "OK", installer: true, notification: true).ShowDialog();
             }
             return true;
         }
@@ -633,7 +639,7 @@ namespace KillerShell
             var confirm = new ConfirmDialog(
                 "Uninstall KillerShell from this computer?",
                 null,
-                "Uninstall");
+                "Uninstall", installer: true);
             confirm.ShowDialog();
             if (!confirm.Confirmed) return;
 
