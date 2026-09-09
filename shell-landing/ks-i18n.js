@@ -3,6 +3,7 @@
    Values are innerHTML - keep inline tags (<b>, <code>, <a>, <br>, <li>) intact. */
 window.I18N = {
  "hu": {
+  "package_install_intro": "Vagy telepítse a terminálból:",
   "nav_dl": "Letöltés",
   "nav_howto": "Segítség",
   "nav_tech": "Műszaki",
@@ -303,6 +304,7 @@ window.I18N = {
  },
 
  "pl": {
+  "package_install_intro": "Lub zainstaluj z terminala:",
   "nav_dl": "Pobierz",
   "nav_howto": "Pomoc",
   "nav_tech": "Szczegóły techniczne",
@@ -553,6 +555,7 @@ window.I18N = {
   "h_ins_p4": "Nadal utknąłeś albo znalazłeś coś zepsutego? <a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>Strona zgłoszeń</a> jest otwarta dla każdego, a spora część tego, co robi KillerShell, właśnie tam się zaczęła."
  },
  "es": {
+  "package_install_intro": "O instala desde tu terminal:",
   "nav_dl": "Descargar",
   "nav_howto": "Cómo se usa",
   "nav_tech": "Técnica",
@@ -803,6 +806,7 @@ window.I18N = {
   "h_ins_p4": "Sigues atascado, o has encontrado algo roto? La <a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>página de issues</a> está abierta a cualquiera, y buena parte de lo que hace KillerShell empezo allí."
  },
  "de": {
+  "package_install_intro": "Oder über das Terminal installieren:",
   "nav_dl": "Download",
   "nav_howto": "Anleitung",
   "nav_tech": "Technik",
@@ -1053,6 +1057,7 @@ window.I18N = {
   "h_ins_p4": "Steckst du immer noch fest, oder hast du etwas Kaputtes gefunden? Die <a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>Issues-Seite</a> steht allen offen, und ein guter Teil dessen, was KillerShell kann, hat dort angefangen."
  },
  "fr": {
+  "package_install_intro": "Ou installez depuis votre terminal :",
   "nav_dl": "Télécharger",
   "nav_howto": "Mode d'emploi",
   "nav_tech": "Technique",
@@ -1303,6 +1308,7 @@ window.I18N = {
   "h_ins_p4": "Toujours bloque, ou vous avez trouve quelque chose de casse ? La <a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>page des issues</a> est ouverte a tous, et une bonne partie de ce que fait KillerShell a commencé la."
  },
  "tr": {
+  "package_install_intro": "Veya terminalinizden yükleyin:",
   "nav_dl": "Indir",
   "nav_howto": "Nasil kullanilir",
   "nav_tech": "Teknik",
@@ -1553,6 +1559,7 @@ window.I18N = {
   "h_ins_p4": "Hâlâ takildiniz mi ya da bozuk bir sey mi buldunuz? <a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>issues sayfasi</a> herkese aciktir ve KillerShell'in yaptiklarinin büyük bir bölümü orada basladi."
  },
  "zh-cn": {
+  "package_install_intro": "或从终端安装：",
   "nav_dl": "下载",
   "nav_howto": "使用方法",
   "nav_tech": "技术",
@@ -1803,6 +1810,7 @@ window.I18N = {
   "h_ins_p4": "还是卡住了，或者发现了什么毛病？<a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>issues 页面</a>对所有人开放，KillerShell 现在做的不少事情，最初都是从那里开始的。"
  },
  "zh": {
+  "package_install_intro": "或從終端機安裝：",
   "nav_dl": "下載",
   "nav_howto": "使用方法",
   "nav_tech": "技術",
@@ -2053,6 +2061,7 @@ window.I18N = {
   "h_ins_p4": "還是卡住了，或者發現了什麼毛病？<a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>issues 頁面</a>對所有人開放，KillerShell 現在做的不少事情，最初都是從那裡開始的。"
  },
  "cs": {
+  "package_install_intro": "Nebo nainstalujte z terminálu:",
   "nav_dl": "Stáhnout",
   "nav_howto": "Návod",
   "nav_tech": "Technika",
@@ -2303,6 +2312,7 @@ window.I18N = {
   "h_ins_p4": "Pořád se zasekáváte, nebo jste narazili na něco rozbitého? <a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>Stránka issues</a> je otevřená komukoli a dobrá část toho, co KillerShell umí, začala právě tam."
  },
  "ja": {
+  "package_install_intro": "またはターミナルからインストール：",
   "nav_dl": "ダウンロード",
   "nav_howto": "使い方",
   "nav_tech": "技術情報",
@@ -2553,6 +2563,7 @@ window.I18N = {
   "h_ins_p4": "まだ困っていますか? それとも何か壊れているものを見つけましたか? <a href='https://github.com/SteveTheKiller/KillerShell/issues' target='_blank' rel='noopener'>issues ページ</a>は誰にでも開かれていて、KillerShell ができることのかなりの部分はそこから始まりました。"
  },
  "bn": {
+  "package_install_intro": "অথবা টার্মিনাল থেকে ইনস্টল করুন:",
   "nav_dl": "ডাউনলোড",
   "nav_howto": "ব্যবহারবিধি",
   "nav_tech": "প্রযুক্তি",
@@ -3322,6 +3333,7 @@ Object.assign(window.I18N["bn"],{"hx_001":"প্রত্যেক সারি
 /* END GENERATED HELP COVERAGE */
 
 window.I18N["it"] = {
+  "package_install_intro": "Oppure installa dal terminale:",
  "nav_dl": "Download",
  "nav_howto": "Aiuto",
  "nav_tech": "Tecnica",
@@ -3742,6 +3754,7 @@ window.I18N["it"] = {
 };
 
 window.I18N["ru"] = {
+  "package_install_intro": "Или установите через терминал:",
  "nav_dl": "Скачать",
  "nav_howto": "Справка",
  "nav_tech": "Технически",
@@ -4162,6 +4175,7 @@ window.I18N["ru"] = {
 };
 
 window.I18N["kk"] = {
+  "package_install_intro": "Немесе терминал арқылы орнатыңыз:",
  "nav_dl": "Жүктеп алу",
  "nav_howto": "Анықтама",
  "nav_tech": "Техникалық",
