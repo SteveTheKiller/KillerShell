@@ -13,6 +13,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Core tool logic is separated from its interface and covered by local release tests.
 
 ### Fixed
+- The enabled details pane retains its height when selection is cleared, keeping the file layout stable.
 - Standalone installation dialogs use the default Dark/Blue appearance; in-app prompts follow the active theme.
 - On the 98SE theme the keyboard map's keys are white instead of button-face gray.
 - Restored the bottom content-pane border across all tabs and scroll positions.

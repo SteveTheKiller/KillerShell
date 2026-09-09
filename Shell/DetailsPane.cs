@@ -48,10 +48,6 @@ namespace KillerShell.Shell
         // its margin either side.
         private const double DetailsPaneDividerWidth = 16;
 
-        // The strip's thin collapsed state - no reason to eat half the screen for one
-        // dash-filled row. Roughly a status-bar line: enough for the "No item
-        // selected" text (or nothing at all, for a selected folder) to sit vertically centered.
-        private const double DetailsPaneCollapsedHeight = 30;
 
         // Bounds for the strip's HEIGHT (the thing the new grip actually drags). No fixed max
         // constant - the ceiling is 50% of the results pane's own height (DetailsPaneCeiling),
@@ -220,35 +216,21 @@ namespace KillerShell.Shell
         private static bool IsDetailsPaneEmpty(FilePane pane) => pane.DetailsEmptyText.Visibility == Visibility.Visible;
 
         /// <summary>
-        /// The height the strip wants when it DOES have something meaningful to show: the user's
-        /// last-dragged height once they have ever touched the grip, otherwise the live measured
-        /// content height - the same estimate ApplyDetailsPane always used, now doing double duty
-        /// as the drag floor too (DetailsPaneContentFloor/ClampDetailsPaneHeight).
+        /// Retains the reserved height, growing when content needs more space.
         /// </summary>
         private static double NormalDetailsPaneHeight(FilePane pane)
-            => pane.DetailsPaneUserSized
-             ? ClampDetailsPaneHeight(pane, pane.DetailsPaneHeight)
-             : ClampDetailsPaneHeight(pane, DetailsPaneContentFloor(pane));
+            => ClampDetailsPaneHeight(pane, Math.Max(pane.DetailsPaneHeight, DetailsPaneContentFloor(pane)));
 
         /// <summary>
-        /// Grows or shrinks the strip between its thin collapsed line and its normal (dragged or
-        /// measured) height, purely from whether the content just painted is meaningful
-        /// (select nothing or a folder -> one thin line; select a file -> back to the
-        /// normal/last-dragged height). Independent of DetailsPaneUserSized - a user-dragged
-        /// height is remembered and restored, but the collapse itself is automatic and never
-        /// needs a manual resize.
+        /// Keeps the enabled strip's space reserved across selection changes.
         /// </summary>
         private static void SyncDetailsPaneCollapse(FilePane pane, bool animate)
         {
             if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
 
-            // The collapsed target is ALSO the real measured floor, not the bare constant - the
-            // constant is only a sanity minimum for a degenerate pre-layout measurement, so the
-            // "No item selected" line (or the empty state's own margins) is never clipped either.
             bool empty = IsDetailsPaneEmpty(pane);
-            double target = empty
-                ? Math.Max(DetailsPaneCollapsedHeight, DetailsPaneContentFloor(pane))
-                : NormalDetailsPaneHeight(pane);
+            double target = NormalDetailsPaneHeight(pane);
+            pane.DetailsPaneHeight = target;
 
             if (empty == pane.DetailsPaneCollapsed && Math.Abs(pane.DetailsPane.ActualHeight - target) < 0.5) return;
 
@@ -332,8 +314,7 @@ namespace KillerShell.Shell
         {
             if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
 
-            // The collapsed thin line is owned entirely by SyncDetailsPaneCollapse - correcting
-            // against measured content here would fight that animation every SizeChanged tick.
+            // Empty content keeps the space reserved by the selection update.
             if (IsDetailsPaneEmpty(pane)) return;
 
             // Once the user has dragged the grip, the strip keeps whatever height they chose -
@@ -348,11 +329,13 @@ namespace KillerShell.Shell
                 if (pane.DetailsPane.ActualHeight >= floor - 0.5) return;
                 pane.DetailsPane.BeginAnimation(FrameworkElement.HeightProperty, null);
                 pane.DetailsPane.Height = floor;
+                pane.DetailsPaneHeight = floor;
                 ApplyDetailsPreviewWidth(pane, floor);
                 return;
             }
 
-            double needed = ClampDetailsPaneHeight(pane, DetailsPaneContentFloor(pane));
+            double needed = NormalDetailsPaneHeight(pane);
+            pane.DetailsPaneHeight = needed;
             if (Math.Abs(pane.DetailsPane.ActualHeight - needed) < 0.5) return;
 
             pane.DetailsPane.BeginAnimation(FrameworkElement.HeightProperty, null);
