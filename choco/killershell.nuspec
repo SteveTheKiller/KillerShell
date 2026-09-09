@@ -15,7 +15,7 @@
     <docsUrl>https://github.com/SteveTheKiller/KillerShell/blob/main/README.md</docsUrl>
     <bugTrackerUrl>https://github.com/SteveTheKiller/KillerShell/issues</bugTrackerUrl>
     <tags>file-manager explorer powershell terminal editor sysadmin portable</tags>
-    <summary>Windows shell for power users. File browser, terminal, editor and admin tools in one portable EXE.</summary>
+    <summary>Open-source Windows toolkit with a dual-pane file manager, terminal, text editor, powerful search and system administration tools.</summary>
     <description>Free and open-source Windows shell for power users. A file browser, PowerShell or CMD terminal, text editor, search engine and administration toolkit share one window, one tab strip and one set of keys. No agent, no account, no separate runtime installer.
 
 - Browse folders in list, icon or details view with tabs, favorites, a folder tree, live filesystem updates and two panes arranged side by side or stacked
