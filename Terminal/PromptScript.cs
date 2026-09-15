@@ -140,7 +140,7 @@ namespace KillerShell.Shell
                 "if ($l.Provider.Name -eq 'FileSystem') " +
                 "{ $q = [string][char]27 + ']9;9;' + $l.ProviderPath + [char]7 + $q }; $q }";
 
-            return " -NoExit -Command \". '" + safe + "'; " + wrap + "\"";
+            return " -NoExit -Command \". '" + safe + "'; " + wrap + "; " + Terminal.TerminalControl.NetworkColorSetup + "\"";
         }
 
         // ═══════════════════════════════════════════════════════════
