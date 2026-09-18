@@ -37,11 +37,11 @@ namespace KillerShell.Shell
         /// Show the location row only on a listing tab. Called from ActivateTab.
         /// </summary>
         /// <remarks>
-        /// F10's per-pane hide still wins (MenuBar.cs): a pane whose row the user has put away
+        /// Alt+M's per-pane hide still wins (MenuBar.cs): a pane whose row the user has put away
         /// keeps it away when they switch back to a folder tab, rather than having it handed
         /// back by a tab switch they did not think of as a request for chrome.
         ///
-        /// The animated path is deliberately not used. F10 slides because the row is the thing
+        /// The animated path is deliberately not used. Alt+M slides because the row is the thing
         /// you are looking at when you press it; a tab switch replaces the whole pane at once,
         /// and a row sliding shut underneath that reads as lag rather than as motion.
         /// </remarks>
@@ -59,7 +59,7 @@ namespace KillerShell.Shell
         /// <remarks>
         /// The rule lives here, in one predicate, because it has to be enforced in TWO places
         /// and used to be spelled out in only one. ApplyPaneBars runs on a tab switch; the
-        /// Ctrl+F10 menubar toggle (MenuBar.cs) reaches the same row without going through a
+        /// Alt+M menubar toggle (MenuBar.cs) reaches the same row without going through a
         /// tab switch at all, and it had no tab-kind test. Toggling it on a shell tab therefore
         /// slid the folder location row open directly ABOVE the shell's own bar and the tab came
         /// up wearing two identical stacked bars until the next tab switch tidied it away. It

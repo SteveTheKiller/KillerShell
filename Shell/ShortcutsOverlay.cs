@@ -185,7 +185,7 @@ namespace KillerShell.Shell
             new(KsScope.Global, "Tabs",   "Ctrl+F11",       "Str_Ks_RegistryEditor", KbLayer.Ctrl, "F11"),
 
             new(KsScope.Global, "View",   "F5",             "Str_Ks_Refresh",      KbLayer.Base, "F5"),
-            new(KsScope.Global, "View",   "Ctrl+F10",       "Str_Ks_MenuBar",      KbLayer.Ctrl, "F10"),
+            new(KsScope.Global, "View",   "Alt+M",          "Str_Ks_MenuBar",      KbLayer.Alt, "M"),
             new(KsScope.Global, "View",   "F10 / Ctrl+Shift+P", "Str_TT_DualPane", KbLayer.Base, "F10"),
             new(KsScope.Global, "View",   "",               "Str_TT_DualPane",     KbLayer.CtrlShift, "P"),
             new(KsScope.Global, "View",   "Ctrl+H",         "Str_TT_ShowHidden",   KbLayer.Ctrl, "H"),

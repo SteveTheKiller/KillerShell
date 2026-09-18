@@ -6,10 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.2.4] - Unreleased
 
-1.2.4 improves maintainability and reliability through automated tests and testable service boundaries.
+1.2.4 rebuilds the file list around an Explorer-style compact view with Ctrl+wheel view cycling, moves the pane menubar toggle to the family-standard Alt+M, and adds automated test coverage across the tool suite.
 
 ### Changed
 - Network commands in PowerShell terminals use the same address, MAC, port, timing, and success/failure colors as KillerScan.
+- The file list's List view is Explorer's compact layout - a 16px icon and name per row, flowing into vertical columns - replacing the expandable cards.
+- Ctrl+wheel over the results cycles between Icons, List and Details at the ends of each mode's size range, in addition to stepping icon sizes within a mode.
+- The pane menubar toggle moved from Ctrl+F10 to Alt+M, matching the family convention for hiding the chrome.
 - On first launch, the interface follows the Windows display language when it is supported.
 - Core tool logic is separated from its interface and covered by local release tests.
 
@@ -21,6 +24,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Folder-picker names now show their complete text in a hover tooltip when a column clips them.
 - Administrator windows keep new terminals as tabs and use a brighter theme-matched border.
 - On the Sepulchre and Mourning themes the theme picker's radio ring, dot and label no longer vanish into the row's hover highlight; they turn white while hovered.
+- Chocolatey package now installs the app instead of leaving the download in the Chocolatey tools folder.
 
 ## [1.2.3] - 2026-09-01
 

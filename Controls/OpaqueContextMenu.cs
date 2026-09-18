@@ -52,12 +52,16 @@ namespace KillerShell
     /// <summary>
     /// Asks the Desktop Window Manager to draw outside the popup HWND. Unlike a WPF
     /// DropShadowEffect this does not make the popup transparent or bitmap its contents, so
-    /// menu text stays on the ClearType rendering path.
+    /// menu text stays on the ClearType rendering path. On a flat theme it also pins the popup's
+    /// corner preference, since an opaque HWND otherwise picks up the Windows 11 rounded frame
+    /// around a square menu.
     /// </summary>
     internal static class NativePopupShadow
     {
         private const int DwmwaNcRenderingPolicy = 2;
         private const int DwmncrpEnabled = 2;
+        private const int DwmwaWindowCornerPreference = 33;
+        private const int DwmwcpDoNotRound = 1;
 
         [StructLayout(LayoutKind.Sequential)]
         private struct Margins
@@ -91,6 +95,17 @@ namespace KillerShell
                 // the opaque WPF menu still paints the entire client area above it.
                 var margins = new Margins { Left = 1, Right = 1, Top = 1, Bottom = 1 };
                 _ = DwmExtendFrameIntoClientArea(source.Handle, ref margins);
+
+                // AllowsTransparency=false makes this a real opaque popup window, and Windows 11
+                // rounds those by default, so a flat theme's square menu sat inside a rounded DWM
+                // frame. Same treatment the window chrome already applies on a flat theme. The
+                // rounded themes stay on the system default and their menus are unchanged.
+                if (KillerShell.Shell.MainWindow.FlatChrome)
+                {
+                    int corners = DwmwcpDoNotRound;
+                    _ = DwmSetWindowAttribute(source.Handle, DwmwaWindowCornerPreference,
+                                          ref corners, Marshal.SizeOf<int>());
+                }
             }
             catch (DllNotFoundException)
             {

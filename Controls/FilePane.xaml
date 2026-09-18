@@ -25,11 +25,11 @@
 
                 <!-- Right-click on any of the pane's menu bars - the folder location row, the
                      shell bar, the editor bar. One shared instance; PlacementTarget follows
-                     whichever bar opened it. This is how the hide is DISCOVERED: Ctrl+F10 is the
+                     whichever bar opened it. This is how the hide is DISCOVERED: Alt+M is the
                      only way back once the bar is gone, so the gesture text here is the menu
                      item's real payload. -->
                 <local:OpaqueContextMenu x:Key="BarMenu">
-                    <MenuItem Header="{DynamicResource Str_Menu_HideMenuBar}" InputGestureText="Ctrl+F10"
+                    <MenuItem Header="{DynamicResource Str_Menu_HideMenuBar}" InputGestureText="Alt+M"
                               Click="BarHideMenu_Click">
                         <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7B3;"/></MenuItem.Icon>
                     </MenuItem>
@@ -2073,6 +2073,17 @@
                                 ItemHeight="{Binding Tag.TileHeight, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                         </ItemsPanelTemplate>
 
+                        <!-- COMPACT LIST VIEW. Explorer's List: 16px icon + name on a single line
+                             in a narrow column. WrapPanel with Orientation="Vertical" fills the
+                             first column top-to-bottom then starts the next column to the right,
+                             which is the pattern Explorer's List uses. Non-virtualizing on purpose:
+                             the wrap panel virtualizer only supports horizontal flow, and a
+                             typical listing is bounded. The ListBox's ScrollViewer is switched to
+                             horizontal by ApplyResultsViewToPane when this template is active. -->
+                        <ItemsPanelTemplate x:Key="PanelWrapVertical">
+                            <WrapPanel Orientation="Vertical" ItemWidth="220" ItemHeight="22"/>
+                        </ItemsPanelTemplate>
+
                         <!-- ICON VIEW. Fixed-size tile: art on top, name wrapped to two lines
                              under it. No expander - a tile cannot carry matched content lines,
                              and the wrap panel needs every item the same height anyway. The art
@@ -2121,6 +2132,40 @@
                                                TextAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                                                MaxHeight="30"
                                                Margin="{Binding Tag.TileNamePad, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+
+                        <!-- COMPACT LIST ROW. Paired with PanelWrapVertical above. 16px icon +
+                             name in a 220x22 slot; identical hover/selection treatment to the
+                             other row templates so a marquee, keyboard, or right-click select
+                             reads the same across every view. TileArt.Size pinned to 16 so the
+                             icon is always the small variant, regardless of the pane's TileSize. -->
+                        <DataTemplate x:Key="CompactListRowTemplate" DataType="{x:Type models:SearchResult}">
+                            <Border Cursor="Hand" Tag="{Binding FilePath}" ToolTip="{Binding FilePath}"
+                                    PreviewMouseLeftButtonDown="ResultHeader_MouseDown">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <StackPanel Orientation="Horizontal" Margin="4,2">
+                                    <Image Width="16" Height="16" VerticalAlignment="Center"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           shellns:TileArt.Path="{Binding FilePath}"
+                                           shellns:TileArt.IsDirectory="{Binding IsDirectory}"
+                                           shellns:TileArt.Size="16"/>
+                                    <TextBlock Text="{Binding FileName}" Style="{StaticResource ResultText}"
+                                               Margin="6,0,0,0" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

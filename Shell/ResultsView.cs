@@ -624,20 +624,37 @@ namespace KillerShell.Shell
             // KillerShell.Models.SearchResult in the default black, because a ListBox with no
             // ItemTemplate falls back to ToString(). It survived this long because startup in
             // icons or details view looks perfectly fine; only switching TO list view shows it.
+            // Retained for the transitional period while the inline card template is still on
+            // the ListBox; the compact-list template below has replaced its role.
             _listTemplate ??= Pane.ResultsList.ItemTemplate;
 
             int mode = Pane.ViewMode;
 
+            // mode 0 = Compact List (Explorer's List): wrap panel that flows top-to-bottom into
+            // vertical columns. mode 1 = Icons (tile grid). mode 2 = Details (sortable columns).
             Pane.ResultsList.ItemsPanel = (ItemsPanelTemplate)Pane.ResultsList.FindResource(
-                mode == 1 ? "PanelWrap" : "PanelStack");
+                mode == 0 ? "PanelWrapVertical" :
+                mode == 1 ? "PanelWrap"
+                          : "PanelStack");
 
             Pane.ResultsList.ItemTemplate =
-                mode == 1 ? (DataTemplate)Pane.ResultsList.FindResource("TileTemplate") :
-                mode == 2 ? (DataTemplate)Pane.ResultsList.FindResource("DetailsRowTemplate")
-                          : _listTemplate;
+                mode == 0 ? (DataTemplate)Pane.ResultsList.FindResource("CompactListRowTemplate") :
+                mode == 1 ? (DataTemplate)Pane.ResultsList.FindResource("TileTemplate")
+                          : (DataTemplate)Pane.ResultsList.FindResource("DetailsRowTemplate");
 
-            // Column headers belong to details view; expand/collapse-all only means anything for
-            // the cards, which are the only layout with something to expand.
+            // Compact List scrolls horizontally (columns spread to the right, matching Explorer);
+            // Icons and Details scroll vertically. CanContentScroll is switched off in compact
+            // mode so a mouse wheel produces smooth pixel scroll across columns instead of item-
+            // at-a-time jumps, which mis-report the wrap panel's virtual size.
+            ScrollViewer.SetHorizontalScrollBarVisibility(Pane.ResultsList,
+                mode == 0 ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled);
+            ScrollViewer.SetVerticalScrollBarVisibility(Pane.ResultsList,
+                mode == 0 ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
+            ScrollViewer.SetCanContentScroll(Pane.ResultsList, mode != 0);
+
+            // Column headers belong to details view. Expand-all had a role only on the old
+            // expandable-cards template that mode 0 used to carry; the compact list has nothing
+            // to expand, so it is hidden in every mode now.
             //
             // Hidden, not Collapsed: the button sits in the header's right-hand strip, and a
             // collapsed element gives up its width, so every other control in that strip slid
@@ -656,7 +673,7 @@ namespace KillerShell.Shell
             // every one of them already agrees on), so it doubles as "is a listing even showing".
             bool showingListing = Pane.ResultsList.Visibility == Visibility.Visible;
             Pane.DetailsHeader.Visibility   = mode == 2 && showingListing ? Visibility.Visible : Visibility.Collapsed;
-            Pane.ExpandAllButton.Visibility = mode == 0 ? Visibility.Visible : Visibility.Hidden;
+            Pane.ExpandAllButton.Visibility = Visibility.Hidden;
 
             Pane.ViewListBtn.Tag    = mode == 0 ? "on" : null;
             Pane.ViewIconsBtn.Tag   = mode == 1 ? "on" : null;
@@ -707,41 +724,68 @@ namespace KillerShell.Shell
             Pane.ColModArrow.Text    = _active.SortIndex == 4 ? a : string.Empty;
         }
 
-        // ── Icon sizing (Ctrl+wheel over the results pane) ───────
+        // ── Icon sizing + view cycling (Ctrl+wheel over the results pane) ───────
         // Explorer's gesture, and it is free here: the app-wide zoom is the wheel over the
         // title-bar wordmark with no modifier (AppScale.cs), so the two never meet. Steps are
         // discrete because the shell only has a few real icon sizes to give - sliding smoothly
         // between them would just be resampling the same bitmap.
+        //
+        // At the ends of a mode's ladder the wheel flips to the next mode (Explorer parity):
+        // scrolling smaller past Icons' smallest step lands in Compact List; scrolling smaller
+        // past Compact List lands in Details; scrolling larger reverses the same chain. Details
+        // has no size ladder, so a further scroll down there simply stays in Details.
         internal void ResultsList_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             if ((System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == 0) return;
 
-            // Each view steps its OWN ladder. The tile grid's art is the content, so it climbs to
-            // 256; a card or a details row is text with a marker beside it, so it stops at 64.
-            // Both are the same gesture in the same place, which is the part that matters.
-            var  state = Pane.ViewState;
-            bool tiles = Pane.ViewMode == 1;
-            var  steps = tiles ? ResultsViewState.Steps : ResultsViewState.RowIconSteps;
-            int  now   = tiles ? state.TileSize : state.RowIconSize;
+            e.Handled = true;   // do not also scroll the list
+            int dir  = e.Delta > 0 ? +1 : -1;
+            int mode = Pane.ViewMode;
+            var state = Pane.ViewState;
 
-            int i = Array.IndexOf(steps, now);
-            if (i < 0)
+            if (mode == 1)
             {
-                // Restored from a setting that is not on the ladder: snap to the nearest step.
-                i = 0;
-                for (int k = 1; k < steps.Length; k++)
-                    if (Math.Abs(steps[k] - now) < Math.Abs(steps[i] - now)) i = k;
+                // Icons: step the tile ladder. Fall off the bottom into Compact List; the top is
+                // capped at the largest step (256px is already Explorer's biggest).
+                var steps = ResultsViewState.Steps;
+                int i = NearestStep(steps, state.TileSize) + dir;
+                if (i < 0) { SetResultsView(0); return; }
+                if (i >= steps.Length) i = steps.Length - 1;
+                state.TileSize = steps[i];
+                Services.ThemeManager.SetSetting("ResultsTileSize" + PaneKey(Pane),
+                    steps[i].ToString(CultureInfo.InvariantCulture));
+                return;
             }
 
-            i = Math.Max(0, Math.Min(steps.Length - 1, i + (e.Delta > 0 ? 1 : -1)));
+            if (mode == 0)
+            {
+                // Compact List has no size ladder of its own. Scrolling smaller drops to Details;
+                // scrolling larger climbs back into Icons at its smallest tile size.
+                if (dir < 0) { SetResultsView(2); return; }
+                var steps = ResultsViewState.Steps;
+                state.TileSize = steps[0];
+                Services.ThemeManager.SetSetting("ResultsTileSize" + PaneKey(Pane),
+                    steps[0].ToString(CultureInfo.InvariantCulture));
+                SetResultsView(1);
+                return;
+            }
 
-            if (tiles) state.TileSize    = steps[i];
-            else       state.RowIconSize = steps[i];
+            // Details: scrolling larger promotes to Compact List. Scrolling smaller is a no-op -
+            // there is nothing below Details in the chain.
+            if (dir > 0) SetResultsView(0);
+        }
 
-            Services.ThemeManager.SetSetting((tiles ? "ResultsTileSize" : "ResultsRowIconSize") + PaneKey(Pane),
-                steps[i].ToString(CultureInfo.InvariantCulture));
-
-            e.Handled = true;   // do not also scroll the list
+        // Steps are strictly monotonic, so the nearest index is either the exact hit or the
+        // closest of the two neighbors. Called from Ctrl+wheel when a persisted size is not on
+        // the current ladder (upgrade path from an older setting).
+        private static int NearestStep(int[] steps, int now)
+        {
+            int i = Array.IndexOf(steps, now);
+            if (i >= 0) return i;
+            i = 0;
+            for (int k = 1; k < steps.Length; k++)
+                if (Math.Abs(steps[k] - now) < Math.Abs(steps[i] - now)) i = k;
+            return i;
         }
 
         // ── Column resizing (details view) ───────────────────────

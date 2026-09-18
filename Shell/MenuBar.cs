@@ -4,7 +4,7 @@ using System.Windows.Media.Animation;
 
 // Hiding the pane menubar. Partial of MainWindow.
 //
-// Ctrl+F10 collapses the location row - nav buttons, path, tool strip - in the FOCUSED pane, and
+// Alt+M collapses the location row - nav buttons, path, tool strip - in the FOCUSED pane, and
 // brings it back. Per pane, not window-wide: the two panes are usually doing different jobs, and
 // a shell you want bare does not mean you also want the folder listing beside it stripped of its
 // path and its view buttons.
@@ -13,10 +13,13 @@ using System.Windows.Media.Animation;
 // state. Per tab would mean the chrome jumped on every tab switch, which is the opposite of
 // what hiding it is for.
 //
-// Bare F10 toggles the second pane (dual pane) instead, since 2026-08-02 - see MainWindow.xaml.cs
-// for that handler and DualPane.cs for what it does. Menu bar moved to Ctrl+F10 to sit next to it
-// on the same key. Shift+F10 keeps its own meaning as Windows' context-menu key. Both F10 forms
-// are listed in IsWindowChord (TerminalTabs.cs), so they still work while a shell has focus.
+// Alt+M is the family convention for "hide the chrome": KillerNotes uses it for the mentions
+// bar and KillerPDF uses it for reading view. The chord was Ctrl+F10 until 2026-09-15; it moved
+// to consolidate the concept across the family and to work uniformly whether the current tab is
+// a listing, a shell, or an editor. Alt-chords are forwarded to the window from inside a shell
+// by IsWindowChord (TerminalTabs.cs), so Alt+M still works while a shell has focus. Bare F10
+// stays the dual-pane toggle (MainWindow.xaml.cs) and Shift+F10 keeps its own meaning as
+// Windows' context-menu key.
 namespace KillerShell.Shell
 {
     public partial class MainWindow
@@ -55,7 +58,7 @@ namespace KillerShell.Shell
             }
         }
 
-        /// <summary>Toggle the FOCUSED pane's menubar. Bound to Ctrl+F10.</summary>
+        /// <summary>Toggle the FOCUSED pane's menubar. Bound to Alt+M.</summary>
         internal void ToggleMenuBar() => SetMenuBar(Pane, !Pane.MenuBarHidden, animate: true);
 
         /// <summary>The bars' right-click "Hide menu bar" row (FilePane.xaml BarMenu). Acts on
@@ -111,7 +114,7 @@ namespace KillerShell.Shell
 
             // The row only ever belongs to a LISTING tab (PaneBars.cs WearsLocationRow). Every
             // other kind of tab wears its own bar, and handing this one back on top of that bar
-            // is what put TWO identical stacked bars on a shell or document tab: Ctrl+F10 calls
+            // is what put TWO identical stacked bars on a shell or document tab: Alt+M calls
             // straight through SetMenuBar without going near a tab switch, so it never consulted
             // the tab kind at all. Forced hidden here rather than in each caller, so the rule
             // holds for every path that reaches the row.

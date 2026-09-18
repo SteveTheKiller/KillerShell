@@ -1046,14 +1046,17 @@ namespace KillerShell.Shell
                 Pane.ResultsList.SelectAll();
                 e.Handled = true;
             }
-            else if (IsF10(e) && ctrl && !shift && !alt)
+            else if (alt && !ctrl && !shift
+                     && (e.Key == System.Windows.Input.Key.M
+                         || (e.Key == System.Windows.Input.Key.System && e.SystemKey == System.Windows.Input.Key.M)))
             {
-                // Ctrl+F10: hide the pane menubar, in either pane (MenuBar.cs). It acts on the
+                // Alt+M: hide the pane menubar, in either pane (MenuBar.cs). It acts on the
                 // folder LOCATION ROW, so it is a no-op on a tab kind that wears its own bar
-                // instead - see SetLocationRow, which enforces that. It used to hand the row
-                // back on top of a shell's or document's own bar, giving that tab two stacked
-                // bars. Moved off plain F10 so F10 could become Dual
-                // Pane; Shift+F10 (below) keeps meaning Windows' own context-menu key regardless.
+                // instead - see SetLocationRow, which enforces that. Reaches this handler from
+                // inside a shell too because IsWindowChord (TerminalTabs.cs) forwards every
+                // Alt-chord to the window. Matches KillerNotes' Alt+M (hide mentions bar) and
+                // KillerPDF's Alt+M (reading view) - the family convention for "hide the chrome".
+                // Alt chords arrive as Key.System with the real key in SystemKey.
                 ToggleMenuBar();
                 e.Handled = true;
             }
