@@ -48,6 +48,22 @@
     <sys:String x:Key="Str_Perf_Threads">Wątki</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Czas pracy</sys:String>
     <sys:String x:Key="Str_Perf_Free">Wolne</sys:String>
+    <sys:String x:Key="Str_About_Computing">obliczanie...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Pobieranie...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Dostępna aktualizacja: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(niepodpisany)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(niepodpisany lub błąd łańcucha certyfikatów)</sys:String>
+    <sys:String x:Key="Str_About_None">(brak)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(niedostępne)</sys:String>
+    <sys:String x:Key="Str_TT_About">O programie  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Zapisz wyniki jako CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Zapisz wyniki jako HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Zapisz raport magazynu jako HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Wybierz plik</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Nie można uruchomić powłoki.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[proces zakończył się z kodem {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">Ponownie załadowano profil PowerShell.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB wolne</sys:String>
     <sys:String x:Key="Str_Perf_Idle">bezczynny</sys:String>
     <!-- Powłoka, wyszukiwanie i przeglądanie -->
     <sys:String x:Key="Str_TT_AppSize">Przewiń nad logotypem, aby zmienić rozmiar aplikacji</sys:String>

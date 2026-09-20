@@ -675,6 +675,22 @@
     <sys:String x:Key="Str_Perf_Threads">Thread</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Tempo di attività</sys:String>
     <sys:String x:Key="Str_Perf_Free">Libera</sys:String>
+    <sys:String x:Key="Str_About_Computing">calcolo in corso...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Download in corso...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Aggiornamento disponibile: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(non firmato)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(non firmato o catena di certificati non valida)</sys:String>
+    <sys:String x:Key="Str_About_None">(nessuno)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(non disponibile)</sys:String>
+    <sys:String x:Key="Str_TT_About">Informazioni  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Salva i risultati come CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Salva i risultati come HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Salva il report di archiviazione come HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Seleziona file</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Impossibile avviare la shell.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[processo terminato con codice {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">Profilo PowerShell ricaricato.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB liberi</sys:String>
     <sys:String x:Key="Str_Perf_Idle">inattivo</sys:String>
 
     <!-- Storage Analyzer tab -->

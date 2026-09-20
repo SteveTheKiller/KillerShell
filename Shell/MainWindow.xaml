@@ -1483,7 +1483,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                 Margin="{DynamicResource FooterCellPadding}">
                 <TextBlock x:Name="VersionLabel" Text="v0.99" Foreground="{DynamicResource TextFooter}" FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center" Margin="0,0,12,0"
-                           Cursor="Hand" ToolTip="About" MouseLeftButtonUp="VersionLabel_Click"/>
+                           Cursor="Hand" ToolTip="{DynamicResource Str_TT_About}" MouseLeftButtonUp="VersionLabel_Click"/>
                 <!-- 14px trailing margin keeps the copyright clear of the corner grip (family standard) -->
                 <TextBlock FontSize="10" VerticalAlignment="Center" FontFamily="{DynamicResource MonoFont}" Margin="0,0,14,0">
                     <Run Text="&#x00A9; 2026 " Foreground="{DynamicResource TextFooter}"/>

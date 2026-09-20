@@ -776,6 +776,22 @@
     <sys:String x:Key="Str_Perf_Threads">线程</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">运行时间</sys:String>
     <sys:String x:Key="Str_Perf_Free">空闲</sys:String>
+    <sys:String x:Key="Str_About_Computing">正在计算...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">正在下载...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">有可用更新: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(未签名)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(未签名或证书链验证失败)</sys:String>
+    <sys:String x:Key="Str_About_None">(无)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(不可用)</sys:String>
+    <sys:String x:Key="Str_TT_About">关于  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">将结果另存为 CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">将结果另存为 HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">将存储报告另存为 HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">选择文件</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">无法启动 shell。</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[进程已退出，代码 {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">已重新加载 PowerShell 配置文件。</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB 可用</sys:String>
     <sys:String x:Key="Str_Perf_Idle">闲置</sys:String>
     <!-- 存储分析器 -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">分析存储空间</sys:String>

@@ -779,6 +779,22 @@
     <sys:String x:Key="Str_Perf_Threads">Subprocesos</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Tiempo activo</sys:String>
     <sys:String x:Key="Str_Perf_Free">Libre</sys:String>
+    <sys:String x:Key="Str_About_Computing">calculando...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Descargando...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Actualización disponible: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(sin firmar)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(sin firmar o falló la cadena de certificados)</sys:String>
+    <sys:String x:Key="Str_About_None">(ninguno)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(no disponible)</sys:String>
+    <sys:String x:Key="Str_TT_About">Acerca de  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Guardar resultados como CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Guardar resultados como HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Guardar informe de almacenamiento como HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Seleccionar archivo</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">No se pudo iniciar el shell.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[el proceso terminó con el código {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">Perfil de PowerShell recargado.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB libres</sys:String>
     <sys:String x:Key="Str_Perf_Idle">inactivo</sys:String>
     <!-- Analizador de almacenamiento -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Analizar almacenamiento</sys:String>

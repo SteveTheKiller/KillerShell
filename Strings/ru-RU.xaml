@@ -678,6 +678,22 @@
     <sys:String x:Key="Str_Perf_Threads">Потоки</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Время работы</sys:String>
     <sys:String x:Key="Str_Perf_Free">Свободно</sys:String>
+    <sys:String x:Key="Str_About_Computing">вычисление...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Загрузка...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Доступно обновление: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(не подписано)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(не подписано или ошибка цепочки сертификатов)</sys:String>
+    <sys:String x:Key="Str_About_None">(нет)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(недоступно)</sys:String>
+    <sys:String x:Key="Str_TT_About">О программе  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Сохранить результаты как CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Сохранить результаты как HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Сохранить отчет о хранилище как HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Выбор файла</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Не удалось запустить оболочку.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[процесс завершился с кодом {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">Профиль PowerShell перезагружен.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} МБ свободно</sys:String>
     <sys:String x:Key="Str_Perf_Idle">простаивает</sys:String>
 
     <!-- Storage Analyzer tab -->

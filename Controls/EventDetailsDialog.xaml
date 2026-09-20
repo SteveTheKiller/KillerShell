@@ -1,7 +1,7 @@
 <Window x:Class="KillerShell.EventDetailsDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Event Details"
+        Title="{DynamicResource Str_Evt_DetailsTitle}"
         Width="720" SizeToContent="Height" MinWidth="560" MinHeight="280" MaxWidth="1400" MaxHeight="900"
         WindowStyle="None" ResizeMode="CanResize" ShowInTaskbar="False"
         AllowsTransparency="True"

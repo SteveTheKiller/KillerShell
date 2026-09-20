@@ -709,6 +709,22 @@
     <sys:String x:Key="Str_Perf_Threads">Threads</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Up time</sys:String>
     <sys:String x:Key="Str_Perf_Free">Free</sys:String>
+    <sys:String x:Key="Str_About_Computing">computing...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Downloading...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Update available: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(not signed)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(not signed or chain failed)</sys:String>
+    <sys:String x:Key="Str_About_None">(none)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(unavailable)</sys:String>
+    <sys:String x:Key="Str_TT_About">About  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Save results as CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Save results as HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Save storage report as HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Select file</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Could not start the shell.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[process exited with code {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell profile reloaded.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB free</sys:String>
     <sys:String x:Key="Str_Perf_Idle">idle</sys:String>
 
     <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Tools/StorageAnalyzerControl.cs) -->

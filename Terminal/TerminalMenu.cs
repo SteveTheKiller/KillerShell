@@ -123,7 +123,11 @@ namespace KillerShell.Terminal
             // Windows PowerShell then each resolve their own $PROFILE, and any output, success,
             // or error stays in the terminal where the user asked for the reload.
             _reloadProfileItem = Row(m, "Str_Prof_Reload", Glyph(0xE895), null, () =>
-                Send("try { . $PROFILE; Write-Host 'PowerShell profile reloaded.' -ForegroundColor Green } catch { Write-Error $_ }\r"));
+                // Doubled apostrophes: the text lands inside a single-quoted PowerShell string, and
+                // several locales spell this message with one.
+                Send("try { . $PROFILE; Write-Host '"
+                     + Shell.MainWindow.LocStatic("Str_Term_ProfileReloaded").Replace("'", "''")
+                     + "' -ForegroundColor Green } catch { Write-Error $_ }\r"));
 
             // The user's $PROFILE, which is a DIFFERENT file from the prompt above it and a far
             // more common thing to want: the prompt script is ours and only runs in here, while

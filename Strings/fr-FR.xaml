@@ -779,6 +779,22 @@
     <sys:String x:Key="Str_Perf_Threads">Threads</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Durée d'activité</sys:String>
     <sys:String x:Key="Str_Perf_Free">Libre</sys:String>
+    <sys:String x:Key="Str_About_Computing">calcul en cours...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Téléchargement...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Mise à jour disponible : {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(non signé)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(non signé ou échec de la chaîne de certificats)</sys:String>
+    <sys:String x:Key="Str_About_None">(aucun)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(indisponible)</sys:String>
+    <sys:String x:Key="Str_TT_About">À propos  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Enregistrer les résultats au format CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Enregistrer les résultats au format HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Enregistrer le rapport de stockage au format HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Sélectionner un fichier</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Impossible de démarrer le shell.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[processus terminé avec le code {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">Profil PowerShell rechargé.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} Mo libres</sys:String>
     <sys:String x:Key="Str_Perf_Idle">inactif</sys:String>
     <!-- Analyseur de stockage -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyser le stockage</sys:String>

@@ -884,7 +884,8 @@ namespace KillerShell.Tools
                 }
                 else
                 {
-                    tile.TileSummaryText.Text = availMb.ToString("0", CultureInfo.InvariantCulture) + " MB free";
+                    tile.TileSummaryText.Text = string.Format(MainWindow.LocStatic("Str_Perf_MbFree"),
+                        availMb.ToString("0", CultureInfo.InvariantCulture));
                 }
 
                 if (rs.Committed != null)

@@ -775,6 +775,22 @@
     <sys:String x:Key="Str_Perf_Threads">スレッド</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">稼働時間</sys:String>
     <sys:String x:Key="Str_Perf_Free">空き</sys:String>
+    <sys:String x:Key="Str_About_Computing">計算中...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">ダウンロード中...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">更新があります: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(署名なし)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(署名なし、または証明書チェーンの検証に失敗)</sys:String>
+    <sys:String x:Key="Str_About_None">(なし)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(利用不可)</sys:String>
+    <sys:String x:Key="Str_TT_About">バージョン情報  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">結果を CSV として保存</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">結果を HTML として保存</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">ストレージ レポートを HTML として保存</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">ファイルの選択</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">シェルを起動できませんでした。</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[プロセスはコード {0} で終了しました]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell プロファイルを再読み込みしました。</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">空き {0} MB</sys:String>
     <sys:String x:Key="Str_Perf_Idle">アイドル</sys:String>
     <!-- ストレージ分析 -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">ストレージを分析</sys:String>

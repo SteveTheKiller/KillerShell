@@ -71,7 +71,7 @@ namespace KillerShell.Shell
             var (sigValid, subject, thumb) = GetSignerInfo();
             // --demo previews the signed card (DemoMode.cs), using the real cert values.
             if (DemoMode) { sigValid = true; subject = DemoSubject; thumb = DemoThumbprint; }
-            AboutPublisherBlock.Text  = sigValid ? subject : "(not signed or chain failed)";
+            AboutPublisherBlock.Text  = sigValid ? subject : Loc("Str_About_NotSignedChain");
             // Shown only when the exe carries the expected signer AND the signature actually verifies -
             // reading a cert out of the file does not prove the file was not tampered with.
             bool signedByMe = sigValid && subject.IndexOf(SignerName, StringComparison.OrdinalIgnoreCase) >= 0;
@@ -83,7 +83,7 @@ namespace KillerShell.Shell
             AboutAkaRun.Text         = (char)0x201C + AkaName + (char)0x201D;
             AboutAkaBlock.Visibility = signedByMe ? Visibility.Visible : Visibility.Collapsed;
             AboutThumbprintBlock.Text = thumb;
-            AboutSha256Block.Text     = "computing...";
+            AboutSha256Block.Text     = Loc("Str_About_Computing");
             AboutUpdateButton.Visibility = Visibility.Collapsed;
 
             // Read every time the card opens, not once at startup: the delete prompt's
@@ -182,7 +182,7 @@ namespace KillerShell.Shell
             if (!dlg.Confirmed) return;
 
             AboutUpdateButton.IsEnabled = false;
-            AboutUpdateText.Text = "Downloading...";
+            AboutUpdateText.Text = Loc("Str_About_Downloading");
 
             string? newExe = null;
             try
@@ -221,7 +221,7 @@ namespace KillerShell.Shell
             catch
             {
                 AboutUpdateButton.IsEnabled = true;
-                AboutUpdateText.Text = $"Update available: {tag}";
+                AboutUpdateText.Text = string.Format(Loc("Str_About_UpdateAvailable"), tag);
                 OpenUrl($"https://github.com/{GitHubRepo}/releases/latest");
                 return;
             }
@@ -303,7 +303,7 @@ namespace KillerShell.Shell
             {
                 try { if (newExe is not null && File.Exists(newExe)) File.Delete(newExe); } catch { }
                 AboutUpdateButton.IsEnabled = true;
-                AboutUpdateText.Text = $"Update available: {tag}";
+                AboutUpdateText.Text = string.Format(Loc("Str_About_UpdateAvailable"), tag);
             }
         }
 
@@ -344,7 +344,7 @@ namespace KillerShell.Shell
                 await Dispatcher.BeginInvoke((Action)(() =>
                 {
                     _updateTag = $"v{lat.ToString(3)}";
-                    AboutUpdateText.Text = $"Update available: {_updateTag}";
+                    AboutUpdateText.Text = string.Format(Loc("Str_About_UpdateAvailable"), _updateTag);
                     AboutUpdateButton.Visibility = Visibility.Visible;
                 }));
             }
@@ -401,20 +401,20 @@ namespace KillerShell.Shell
         /// a signed exe carries its own intermediates, so the chain still builds offline.</summary>
         private static (bool valid, string subject, string thumb) GetSignerInfo()
         {
-            var subject = "(not signed)";
-            var thumb   = "(none)";
+            var subject = Loc("Str_About_NotSigned");
+            var thumb   = Loc("Str_About_None");
             string? exePath;
             try
             {
                 exePath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
-                if (exePath.Length == 0) return (false, "(unavailable)", "(none)");
+                if (exePath.Length == 0) return (false, Loc("Str_About_Unavailable"), Loc("Str_About_None"));
                 using var sourceCertificate = X509Certificate.CreateFromSignedFile(exePath);
                 using var cert = new X509Certificate2(sourceCertificate);
                 var subj = cert.GetNameInfo(X509NameType.SimpleName, false);
                 subject = string.IsNullOrEmpty(subj) ? cert.Subject : subj;
-                thumb   = string.IsNullOrEmpty(cert.Thumbprint) ? "(none)" : cert.Thumbprint;
+                thumb   = string.IsNullOrEmpty(cert.Thumbprint) ? Loc("Str_About_None") : cert.Thumbprint;
             }
-            catch { return (false, "(not signed)", "(none)"); }
+            catch { return (false, Loc("Str_About_NotSigned"), Loc("Str_About_None")); }
 
             var pathPtr     = Marshal.StringToHGlobalUni(exePath);
             var fileInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf<WINTRUST_FILE_INFO>());
@@ -453,12 +453,12 @@ namespace KillerShell.Shell
             try
             {
                 var path = Process.GetCurrentProcess().MainModule?.FileName;
-                if (string.IsNullOrEmpty(path) || !File.Exists(path)) return "(unavailable)";
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) return Loc("Str_About_Unavailable");
                 using var sha = SHA256.Create();
                 using var fs  = File.OpenRead(path);
                 return BitConverter.ToString(sha.ComputeHash(fs)).Replace("-", "").ToLowerInvariant();
             }
-            catch { return "(unavailable)"; }
+            catch { return Loc("Str_About_Unavailable"); }
         }
     }
 }

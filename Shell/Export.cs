@@ -35,7 +35,7 @@ namespace KillerShell.Shell
             {
                 Filter   = "CSV File|*.csv",
                 FileName = $"KillerShell-{DateTime.Now:yyyyMMdd-HHmmss}.csv",
-                Title    = "Save results as CSV"
+                Title    = Loc("Str_Export_TitleCsv")
             };
             if (dlg.ShowDialog(this) != true) return;
 
@@ -76,7 +76,7 @@ namespace KillerShell.Shell
             {
                 Filter   = "HTML Files|*.html",
                 FileName = $"KillerShell-{DateTime.Now:yyyyMMdd-HHmmss}.html",
-                Title    = "Save results as HTML"
+                Title    = Loc("Str_Export_TitleHtml")
             };
 
             if (dlg.ShowDialog(this) == true)
@@ -113,7 +113,7 @@ namespace KillerShell.Shell
             {
                 Filter = "HTML Files|*.html",
                 FileName = $"KillerShell-Storage-{DateTime.Now:yyyyMMdd-HHmmss}.html",
-                Title = "Save storage report as HTML"
+                Title = Loc("Str_Export_TitleStorage")
             };
             if (dlg.ShowDialog(this) != true) return;
 

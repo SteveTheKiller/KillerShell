@@ -334,13 +334,13 @@ namespace KillerShell.Terminal
             {
                 // Printed INTO the buffer rather than thrown: the tab is already open, and a
                 // message where the shell would have been is more use than a dialog.
-                WriteLocal("\r\n  Could not start the shell.\r\n  " + ex.Message + "\r\n");
+                WriteLocal("\r\n  " + MainWindow.LocStatic("Str_Term_StartFailed") + "\r\n  " + ex.Message + "\r\n");
                 return;
             }
 
             _pty.Exited += code => Dispatcher.BeginInvoke(new Action(() =>
             {
-                WriteLocal("\r\n[process exited with code " + code + "]\r\n");
+                WriteLocal("\r\n" + string.Format(MainWindow.LocStatic("Str_Term_Exited"), code) + "\r\n");
                 Exited?.Invoke(code);
             }));
 

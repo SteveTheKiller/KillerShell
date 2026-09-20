@@ -779,6 +779,22 @@
     <sys:String x:Key="Str_Perf_Threads">İş parçacıkları</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Çalışma süresi</sys:String>
     <sys:String x:Key="Str_Perf_Free">Boş</sys:String>
+    <sys:String x:Key="Str_About_Computing">hesaplanıyor...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">İndiriliyor...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Güncelleme var: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(imzalı değil)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(imzalı değil veya sertifika zinciri başarısız)</sys:String>
+    <sys:String x:Key="Str_About_None">(yok)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(kullanılamıyor)</sys:String>
+    <sys:String x:Key="Str_TT_About">Hakkında  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Sonuçları CSV olarak kaydet</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Sonuçları HTML olarak kaydet</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Depolama raporunu HTML olarak kaydet</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Dosya seç</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Kabuk başlatılamadı.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[işlem {0} koduyla sonlandı]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell profili yeniden yüklendi.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB boş</sys:String>
     <sys:String x:Key="Str_Perf_Idle">boşta</sys:String>
     <!-- Depolama Çözümleyicisi -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Depolamayı çözümle</sys:String>

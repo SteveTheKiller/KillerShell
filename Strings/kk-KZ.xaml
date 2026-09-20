@@ -678,6 +678,22 @@
     <sys:String x:Key="Str_Perf_Threads">Ағындар</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Жұмыс уақыты</sys:String>
     <sys:String x:Key="Str_Perf_Free">Бос</sys:String>
+    <sys:String x:Key="Str_About_Computing">есептелуде...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Жүктелуде...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Жаңарту қолжетімді: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(қол қойылмаған)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(қол қойылмаған немесе сертификат тізбегі сәтсіз)</sys:String>
+    <sys:String x:Key="Str_About_None">(жоқ)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(қолжетімсіз)</sys:String>
+    <sys:String x:Key="Str_TT_About">Бағдарлама туралы  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Нәтижелерді CSV ретінде сақтау</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Нәтижелерді HTML ретінде сақтау</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Сақтау орны есебін HTML ретінде сақтау</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Файлды таңдау</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Қабықшаны іске қосу мүмкін болмады.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[процесс {0} кодымен аяқталды]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell профилі қайта жүктелді.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} МБ бос</sys:String>
     <sys:String x:Key="Str_Perf_Idle">бос тұр</sys:String>
 
     <!-- Storage Analyzer tab -->

@@ -709,6 +709,22 @@
     <sys:String x:Key="Str_Perf_Threads">Szálak</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Működési idő</sys:String>
     <sys:String x:Key="Str_Perf_Free">Szabad</sys:String>
+    <sys:String x:Key="Str_About_Computing">számítás...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Letöltés...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Frissítés érhető el: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(nincs aláírva)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(nincs aláírva, vagy a tanúsítványlánc hibás)</sys:String>
+    <sys:String x:Key="Str_About_None">(nincs)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(nem érhető el)</sys:String>
+    <sys:String x:Key="Str_TT_About">Névjegy  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Találatok mentése CSV-ként</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Találatok mentése HTML-ként</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Tárhelyjelentés mentése HTML-ként</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Fájl kiválasztása</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">A shell nem indítható el.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[a folyamat {0} kóddal kilépett]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">A PowerShell-profil újratöltve.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB szabad</sys:String>
     <sys:String x:Key="Str_Perf_Idle">tétlen</sys:String>
 
     <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Tools/StorageAnalyzerControl.cs) -->

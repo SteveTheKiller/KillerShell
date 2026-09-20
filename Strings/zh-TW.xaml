@@ -776,6 +776,22 @@
     <sys:String x:Key="Str_Perf_Threads">執行緒</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">運作時間</sys:String>
     <sys:String x:Key="Str_Perf_Free">空閒</sys:String>
+    <sys:String x:Key="Str_About_Computing">正在計算...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">正在下載...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">有可用更新: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(未簽署)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(未簽署或憑證鏈驗證失敗)</sys:String>
+    <sys:String x:Key="Str_About_None">(無)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(無法使用)</sys:String>
+    <sys:String x:Key="Str_TT_About">關於  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">將結果另存為 CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">將結果另存為 HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">將儲存空間報告另存為 HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">選取檔案</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">無法啟動 shell。</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[處理程序已結束，代碼 {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">已重新載入 PowerShell 設定檔。</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB 可用</sys:String>
     <sys:String x:Key="Str_Perf_Idle">閒置</sys:String>
     <!-- 儲存空間分析器 -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">分析儲存空間</sys:String>

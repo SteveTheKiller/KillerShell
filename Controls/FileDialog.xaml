@@ -8,7 +8,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
-        Title="Select file"
+        Title="{DynamicResource Str_Dlg_SelectFile}"
         Width="720" Height="520" MinWidth="560" MinHeight="420"
         WindowStyle="None" ResizeMode="CanResize" ShowInTaskbar="False"
         Background="{DynamicResource BackgroundBrush}"

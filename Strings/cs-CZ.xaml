@@ -777,6 +777,22 @@
     <sys:String x:Key="Str_Perf_Threads">Vlákna</sys:String>
     <sys:String x:Key="Str_Perf_UpTime">Doba provozu</sys:String>
     <sys:String x:Key="Str_Perf_Free">Volné</sys:String>
+    <sys:String x:Key="Str_About_Computing">probíhá výpočet...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Stahování...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">K dispozici je aktualizace: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(nepodepsáno)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(nepodepsáno nebo selhal řetěz certifikátů)</sys:String>
+    <sys:String x:Key="Str_About_None">(žádné)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(nedostupné)</sys:String>
+    <sys:String x:Key="Str_TT_About">O aplikaci  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Uložit výsledky jako CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Uložit výsledky jako HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Uložit zprávu o úložišti jako HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Vybrat soubor</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Shell se nepodařilo spustit.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[proces skončil s kódem {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">Profil PowerShellu byl znovu načten.</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB volných</sys:String>
     <sys:String x:Key="Str_Perf_Idle">nečinný</sys:String>
     <!-- Analýza úložiště -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyzovat úložiště</sys:String>
