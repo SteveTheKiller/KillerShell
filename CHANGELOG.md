@@ -24,6 +24,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Core tool logic is separated from its interface and covered by local release tests.
 
 ### Fixed
+- Killer scripts such as `wursa` and `amort`, and the KillerShell prompt, now load in PowerShell tabs on machines still on the default Restricted execution policy. The policy is relaxed to RemoteSigned for that shell process only; AllSigned and Group Policy settings are left alone.
 - About panel states, save dialog titles, details window titles, and terminal start and exit messages follow the interface language instead of staying in English.
 - The enabled details pane retains its height when selection is cleared, keeping the file layout stable.
 - Standalone installation dialogs use the default Dark/Blue appearance; in-app prompts follow the active theme.

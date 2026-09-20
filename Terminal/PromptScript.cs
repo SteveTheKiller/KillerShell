@@ -140,7 +140,18 @@ namespace KillerShell.Shell
                 "if ($l.Provider.Name -eq 'FileSystem') " +
                 "{ $q = [string][char]27 + ']9;9;' + $l.ProviderPath + [char]7 + $q }; $q }";
 
-            return " -NoExit -Command \". '" + safe + "'; " + wrap + "; " + Terminal.TerminalControl.NetworkColorSetup + "\"";
+            // FIRST, before the dot-source: a Windows client ships with the Restricted execution
+            // policy, under which neither KillerPrompt.ps1 nor the bundled script modules can
+            // load, and a module that cannot load fails silently - its commands just come back
+            // as "not recognized". Relaxed to RemoteSigned for THIS PROCESS only, and only from
+            // Restricted: nothing is written to the machine or the user, a policy somebody chose
+            // on purpose (AllSigned, or anything set by Group Policy, which wins over the
+            // process scope and throws here) is left exactly as it was.
+            const string policy =
+                "try { if ((Get-ExecutionPolicy) -eq 'Restricted') " +
+                "{ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction Stop } } catch { }; ";
+
+            return " -NoExit -Command \"" + policy + ". '" + safe + "'; " + wrap + "; " + Terminal.TerminalControl.NetworkColorSetup + "\"";
         }
 
         // ═══════════════════════════════════════════════════════════
