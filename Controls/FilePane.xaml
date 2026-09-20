@@ -1039,14 +1039,26 @@
                      hand-clears the scrollbar; keep the two in step if you change either. -->
                 <!-- Styled to match KillerScan's DataGrid column headers (MainWindow.xaml,
                      DataGrid.ColumnHeaderStyle): TableHeaderBrush behind, MutedTextBrush type at
-                     11, and the accent stripe underneath as a 1px HeaderLineBrush bottom border
-                     rather than the pane's own gray. Top corners rounded to 5 so the band sits
-                     inside the pane's CornerRadius 6 instead of squaring it off. -->
+                     11.5 semibold so the headings read as headings over 11px rows, and the accent
+                     stripe underneath as a 1px HeaderLineBrush bottom border rather than the
+                     pane's own gray. Square corners: the band sits under the
+                     location row, so a rounded top cuts two notches into a straight seam, and when
+                     the row is hidden PaneContent's clip already rounds whatever reaches the top
+                     of the pane (FilePane.xaml.cs PaneContent_SizeChanged). -->
                 <Border x:Name="DetailsHeader" DockPanel.Dock="Top" Visibility="Collapsed"
                         Background="{DynamicResource TableHeaderBrush}" BorderBrush="{DynamicResource HeaderLineBrush}"
-                        BorderThickness="0,0,0,1" CornerRadius="5,5,0,0"
-                        Padding="{Binding ViewState.HeaderPad, RelativeSource={RelativeSource AncestorType=local:FilePane}}"
+                        BorderThickness="0,0,0,1"
                         MouseRightButtonUp="DetailsHeader_MouseRightButtonUp">
+                  <Grid>
+                  <!-- Its own grain, for the reason the location row above carries one: the
+                       pane's grain layer is painted first, so this band's opaque face covered it
+                       and the band came out as a flat strip between two textured surfaces. The
+                       inset that used to be the Border's Padding is the scroll viewer's Margin
+                       now, because a Border's Padding insets its WHOLE child, grain included, and
+                       would leave an untextured frame around the band. -->
+                  <Border IsHitTestVisible="False"
+                          Background="{DynamicResource GrainTileBrush}"
+                          Opacity="{DynamicResource GrainOpacity}"/>
                   <!-- The header lives inside a scroll viewer with BOTH bars disabled, which is
                        not about scrolling at all - it is the only thing that stops this Grid's
                        width reaching the window.
@@ -1062,7 +1074,8 @@
                        the tab strip is wrapped the same way. -->
                   <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                 VerticalScrollBarVisibility="Disabled"
-                                FocusVisualStyle="{x:Null}">
+                                FocusVisualStyle="{x:Null}"
+                                Margin="{Binding ViewState.HeaderPad, RelativeSource={RelativeSource AncestorType=local:FilePane}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <!-- Tracks the row's icon column, or every row sits off its heading. -->
@@ -1081,37 +1094,37 @@
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="1" Style="{StaticResource ColHeaderBtn}" Click="ColName_Click">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource Str_Col_Name}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock Text="{DynamicResource Str_Col_Name}" FontFamily="{DynamicResource MonoFont}" FontSize="11.5" FontWeight="SemiBold"/>
                                 <TextBlock x:Name="ColNameArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Column="2" Style="{StaticResource ColHeaderBtn}" Click="ColFolder_Click">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource Str_Col_Folder}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock Text="{DynamicResource Str_Col_Folder}" FontFamily="{DynamicResource MonoFont}" FontSize="11.5" FontWeight="SemiBold"/>
                                 <TextBlock x:Name="ColFolderArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Column="3" Style="{StaticResource ColHeaderBtn}" HorizontalContentAlignment="Right" Click="ColSize_Click">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource Str_Col_Size}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock Text="{DynamicResource Str_Col_Size}" FontFamily="{DynamicResource MonoFont}" FontSize="11.5" FontWeight="SemiBold"/>
                                 <TextBlock x:Name="ColSizeArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Column="4" Style="{StaticResource ColHeaderBtn}" Click="ColModified_Click">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource Str_Col_Modified}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock Text="{DynamicResource Str_Col_Modified}" FontFamily="{DynamicResource MonoFont}" FontSize="11.5" FontWeight="SemiBold"/>
                                 <TextBlock x:Name="ColModArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Column="5" Style="{StaticResource ColHeaderBtn}" Click="ColType_Click">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource Str_Col_Type}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock Text="{DynamicResource Str_Col_Type}" FontFamily="{DynamicResource MonoFont}" FontSize="11.5" FontWeight="SemiBold"/>
                                 <TextBlock x:Name="ColTypeArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Column="6" Style="{StaticResource ColHeaderBtn}" Click="ColCreated_Click">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource Str_Col_Created}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock Text="{DynamicResource Str_Col_Created}" FontFamily="{DynamicResource MonoFont}" FontSize="11.5" FontWeight="SemiBold"/>
                                 <TextBlock x:Name="ColCreatedArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
@@ -1178,6 +1191,7 @@
                                 ToolTip="{DynamicResource Str_TT_ColResize}"/>
                     </Grid>
                   </ScrollViewer>
+                  </Grid>
                 </Border>
 
                 <!-- PER-PANE STATUS BAR: the short, fixed per-TAB facts only - how many files

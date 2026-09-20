@@ -114,12 +114,11 @@ namespace KillerShell.Shell
                 double r = PaneRadius, b = BarRadius;
                 Pane.ResultsPane.CornerRadius = new CornerRadius(firstActive ? 0 : r, lastActive ? 0 : r, r, r);
                 Pane.ScopeBar.CornerRadius    = new CornerRadius(firstActive ? 0 : b, 0, 0, 0);
-                // The details header is the top of the pane whenever the location row is hidden,
-                // so it has to nest inside the pane's curve the same way. Left at a fixed 5,5 it
-                // kept its own curve under a squared pane corner, and the sliver of pane showing
-                // outside the curve but inside the square border read as a hard edge.
-                Pane.DetailsHeader.CornerRadius =
-                    new CornerRadius(firstActive ? 0 : b, lastActive ? 0 : b, 0, 0);
+                // The details header carries NO radius of its own. It is the top of the pane only
+                // while the location row is hidden, and then PaneContent's clip rounds it to the
+                // pane's curve, corner by corner (RefreshPaneClip below). With the row showing it
+                // sits under a straight edge, where a curve of its own cut a notch out of the
+                // band's top corner wherever the active tab was not above it.
                 // The ring line in the band IS the pane's top border, so it curves where the
                 // pane curves. Left flat and full-width it overshot the corner and read as a
                 // rule laid across the pane rather than as its edge (FilePane.xaml).
@@ -130,7 +129,6 @@ namespace KillerShell.Shell
                 double r = PaneRadius, b = BarRadius;
                 Pane.ResultsPane.CornerRadius   = new CornerRadius(r);
                 Pane.ScopeBar.CornerRadius      = new CornerRadius(b, 0, 0, 0);
-                Pane.DetailsHeader.CornerRadius = new CornerRadius(b, b, 0, 0);
             }
 
             // The content clip mirrors ResultsPane.CornerRadius per corner now

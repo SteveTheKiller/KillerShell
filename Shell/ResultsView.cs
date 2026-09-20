@@ -496,8 +496,8 @@ namespace KillerShell.Shell
         // results, and letting it shrink would just make the column names harder to hit.
         private static readonly Thickness[] HeaderPads =
         [
-            new(20, 4, 36, 4), new(14, 4, 30, 4), new(10, 4, 26, 4),
-            new(8, 4, 24, 4),  new(6, 4, 22, 4),
+            new(20, 1, 36, 1), new(14, 1, 30, 1), new(10, 1, 26, 1),
+            new(8, 1, 24, 1),  new(6, 1, 22, 1),
         ];
 
         public Thickness RowPad    => RowPads[_density];
