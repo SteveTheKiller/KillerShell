@@ -43,8 +43,12 @@
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Żałoba</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">pokaż lub ukryj elementy ukryte i foldery z kropką w drzewie</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Przełącz pełną szerokość - przeciągnij nagłówek, aby zmienić kolejność komórek</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Przełącz wysokość wykresu</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Szybkość</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Procesy</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Wątki</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Czas pracy</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Wolne</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">bezczynny</sys:String>
     <!-- Powłoka, wyszukiwanie i przeglądanie -->
     <sys:String x:Key="Str_TT_AppSize">Przewiń nad logotypem, aby zmienić rozmiar aplikacji</sys:String>
     <sys:String x:Key="Str_St_AppSize">Rozmiar aplikacji {0}%</sys:String>
@@ -573,7 +577,7 @@
   <sys:String x:Key="Str_Perf_Network">Sieć</sys:String>
   <sys:String x:Key="Str_Perf_Disk">Dysk</sys:String>
   <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
-  <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Pokaż procesory logiczne</sys:String>
+  <sys:String x:Key="Str_Perf_Cached">W pamięci podręcznej</sys:String>
   <sys:String x:Key="Str_Perf_Utilization">Wykorzystanie</sys:String>
   <sys:String x:Key="Str_Perf_Throughput">Przepustowość</sys:String>
   <sys:String x:Key="Str_Perf_Send">Wysyłanie</sys:String>

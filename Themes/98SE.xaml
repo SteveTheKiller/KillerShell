@@ -15,6 +15,11 @@
          a retro green for the text in the black squares. -->
     <SolidColorBrush x:Key="MonitorTextBrush"  Color="#00c000" po:Freeze="True"/>
     <SolidColorBrush x:Key="MonitorMutedBrush" Color="#008000" po:Freeze="True"/>
+    <!-- ...and the accent on them. PrimaryBrush here is a dark color chosen against the gray
+         window face, and the CPU trace, its headline and the per-processor squares drawn in it
+         are all but invisible on black. The era's bright cyan: it reads at a glance and is
+         none of the greens, the disk orange or the memory blue already on the dashboard. -->
+    <SolidColorBrush x:Key="MonitorAccentBrush" Color="#00c0c0" po:Freeze="True"/>
     <!-- The Events/Processes/Registry tables' alternate-row stripe: a SOLID light gray on the
          white rows, deliberately NOT the #c0c0c0 window face - white and gray striped, but not
          the same gray as the main window color. #dfdfdf is the era's scrollbar

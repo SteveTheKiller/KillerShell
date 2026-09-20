@@ -629,7 +629,7 @@
     <sys:String x:Key="Str_Perf_Receive">Příjem</sys:String>
     <sys:String x:Key="Str_Perf_Send">Odesílání</sys:String>
     <sys:String x:Key="Str_Perf_SharedMemory">Sdílená paměť GPU</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Zobrazit logické procesory</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">V mezipaměti</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Propustnost</sys:String>
     <sys:String x:Key="Str_Perf_TransferRate">Přenosová rychlost</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Využití</sys:String>
@@ -772,8 +772,12 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">Otevřít na nové kartě</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">zobrazit nebo skrýt skryté položky a tečkové složky ve stromu</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Přepnout plnou šířku - přetažením záhlaví změníte pořadí buněk</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Přepnout výšku grafu</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Rychlost</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Procesy</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Vlákna</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Doba provozu</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Volné</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">nečinný</sys:String>
     <!-- Analýza úložiště -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyzovat úložiště</sys:String>
     <sys:String x:Key="Str_TT_Storage">Analýza úložiště  (F4)</sys:String>

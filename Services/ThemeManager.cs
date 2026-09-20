@@ -453,6 +453,12 @@ namespace KillerShell.Services
             // which states retro phosphor greens.
             Mirror("MonitorTextBrush", "TextBrush");
             Mirror("MonitorMutedBrush", "MutedTextBrush");
+            // The accent ON a MonitorCellBrush surface: the CPU trace and headline, the
+            // per-processor squares, the read and dedicated-memory series. PrimaryBrush
+            // everywhere, for the same reason the two above mirror the text brushes - and 98SE
+            // states its own for the same reason too: its accent is picked against light gray
+            // and all but disappears on the black cells.
+            Mirror("MonitorAccentBrush", "PrimaryBrush");
             // The DataGrids' alternate-row stripe (Events, Processes, Registry). RowAltBrush
             // everywhere, exactly as the style hardcoded; 98SE states a real Win98-adjacent
             // stripe - white rows with a gray that is NOT the window face gray.

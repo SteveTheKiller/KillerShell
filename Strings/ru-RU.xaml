@@ -656,7 +656,7 @@
     <sys:String x:Key="Str_Perf_Network">Сеть</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Диск</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Показать логические процессоры</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">Кэшировано</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Загрузка</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Пропускная способность</sys:String>
     <sys:String x:Key="Str_Perf_Send">Отправка</sys:String>
@@ -673,8 +673,12 @@
     <sys:String x:Key="Str_Perf_Cores">Ядра</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Логические процессоры</sys:String>
     <sys:String x:Key="Str_Perf_BaseSpeed">Базовая частота</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Переключить полную ширину  -  потяните заголовок, чтобы изменить порядок ячеек</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Переключить высоту графика</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Скорость</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Процессы</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Потоки</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Время работы</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Свободно</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">простаивает</sys:String>
 
     <!-- Storage Analyzer tab -->
     <sys:String x:Key="Str_TT_Storage">Анализатор хранилища  (F4)</sys:String>

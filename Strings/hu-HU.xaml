@@ -687,7 +687,7 @@
     <sys:String x:Key="Str_Perf_Network">Hálózat</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Lemez</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Logikai processzorok megjelenítése</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">Gyorsítótárazott</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Kihasználás</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">áteresztőképesség</sys:String>
     <sys:String x:Key="Str_Perf_Send">Küldés</sys:String>
@@ -704,8 +704,12 @@
     <sys:String x:Key="Str_Perf_Cores">Magok</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Logikai processzorok</sys:String>
     <sys:String x:Key="Str_Perf_BaseSpeed">Alapsebesség</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Teljes szélesség átváltása - húzza a fejlécet a cellák átrendezéséhez</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">A grafikon magasságának váltása</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Sebesség</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Folyamatok</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Szálak</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Működési idő</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Szabad</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">tétlen</sys:String>
 
     <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Tools/StorageAnalyzerControl.cs) -->
     <sys:String x:Key="Str_TT_Storage">Tároláselemző (F4)</sys:String>

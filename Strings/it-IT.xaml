@@ -653,7 +653,7 @@
     <sys:String x:Key="Str_Perf_Network">Rete</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Disco</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Mostra i processori logici</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">Nella cache</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utilizzo</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Velocità effettiva</sys:String>
     <sys:String x:Key="Str_Perf_Send">Invio</sys:String>
@@ -670,8 +670,12 @@
     <sys:String x:Key="Str_Perf_Cores">Core</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Processori logici</sys:String>
     <sys:String x:Key="Str_Perf_BaseSpeed">Velocità di base</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Alterna larghezza piena  -  trascina l'intestazione per riordinare le celle</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Alterna l'altezza del grafico</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Velocità</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Processi</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Thread</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Tempo di attività</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Libera</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">inattivo</sys:String>
 
     <!-- Storage Analyzer tab -->
     <sys:String x:Key="Str_TT_Storage">Analizzatore di spazio  (F4)</sys:String>

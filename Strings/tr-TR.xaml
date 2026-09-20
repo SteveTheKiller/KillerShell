@@ -631,7 +631,7 @@
     <sys:String x:Key="Str_Perf_Receive">Alma</sys:String>
     <sys:String x:Key="Str_Perf_Send">Gönderme</sys:String>
     <sys:String x:Key="Str_Perf_SharedMemory">Paylaşılan GPU belleği</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Mantıksal işlemcileri göster</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">Önbelleğe alınan</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Verim</sys:String>
     <sys:String x:Key="Str_Perf_TransferRate">Aktarım hızı</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Kullanım</sys:String>
@@ -774,8 +774,12 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">Yeni sekmede aç</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">ağaçta gizli öğeleri ve nokta klasörlerini göster veya gizle</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Tam genişliği değiştir - hücreleri sıralamak için başlığı sürükleyin</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Grafik yüksekliğini değiştir</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Hız</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">İşlemler</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">İş parçacıkları</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Çalışma süresi</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Boş</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">boşta</sys:String>
     <!-- Depolama Çözümleyicisi -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Depolamayı çözümle</sys:String>
     <sys:String x:Key="Str_TT_Storage">Depolama Çözümleyicisi  (F4)</sys:String>

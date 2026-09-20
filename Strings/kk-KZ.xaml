@@ -656,7 +656,7 @@
     <sys:String x:Key="Str_Perf_Network">Желі</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Диск</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Логикалық процессорларды көрсету</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">Кэштелген</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Жүктелуі</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Өткізу қабілеті</sys:String>
     <sys:String x:Key="Str_Perf_Send">Жіберу</sys:String>
@@ -673,8 +673,12 @@
     <sys:String x:Key="Str_Perf_Cores">Ядролар</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Логикалық процессорлар</sys:String>
     <sys:String x:Key="Str_Perf_BaseSpeed">Базалық жиілігі</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Толық енді ауыстыру  -  ұяшық ретін өзгерту үшін тақырыпты сүйреңіз</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">График биіктігін ауыстыру</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Жылдамдық</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Процестер</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Ағындар</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Жұмыс уақыты</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Бос</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">бос тұр</sys:String>
 
     <!-- Storage Analyzer tab -->
     <sys:String x:Key="Str_TT_Storage">Жинақтауыш талдағышы  (F4)</sys:String>

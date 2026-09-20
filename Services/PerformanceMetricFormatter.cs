@@ -39,5 +39,18 @@ namespace KillerShell.Services
             if (bytes >= mb) return (bytes / mb).ToString("0", CultureInfo.InvariantCulture) + " MB";
             return bytes.ToString("0", CultureInfo.InvariantCulture) + " B";
         }
+
+        /// <summary>"4:12:55", or "3d 04:12:55" once the machine has been up a day. The day count
+        /// leads because it is the part that answers "when was this last restarted".</summary>
+        internal static string UpTime(TimeSpan elapsed)
+        {
+            if (elapsed < TimeSpan.Zero) elapsed = TimeSpan.Zero;
+            string clock = elapsed.Minutes.ToString("00", CultureInfo.InvariantCulture) + ":"
+                         + elapsed.Seconds.ToString("00", CultureInfo.InvariantCulture);
+            return elapsed.Days > 0
+                ? elapsed.Days.ToString(CultureInfo.InvariantCulture) + "d "
+                  + elapsed.Hours.ToString("00", CultureInfo.InvariantCulture) + ":" + clock
+                : elapsed.Hours.ToString(CultureInfo.InvariantCulture) + ":" + clock;
+        }
     }
 }

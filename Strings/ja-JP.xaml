@@ -626,7 +626,7 @@
     <sys:String x:Key="Str_Perf_Receive">受信</sys:String>
     <sys:String x:Key="Str_Perf_Send">送信</sys:String>
     <sys:String x:Key="Str_Perf_SharedMemory">共有 GPU メモリ</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">論理プロセッサを表示</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">キャッシュ済み</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">スループット</sys:String>
     <sys:String x:Key="Str_Perf_TransferRate">転送速度</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">使用率</sys:String>
@@ -770,8 +770,12 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">新しいタブで開く</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">ツリーの隠し項目とドットフォルダーの表示を切り替える</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">全幅表示を切り替え - ヘッダーをドラッグしてセルを並べ替え</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">グラフの高さを切り替え</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">速度</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">プロセス</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">スレッド</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">稼働時間</sys:String>
+    <sys:String x:Key="Str_Perf_Free">空き</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">アイドル</sys:String>
     <!-- ストレージ分析 -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">ストレージを分析</sys:String>
     <sys:String x:Key="Str_TT_Storage">ストレージ分析  (F4)</sys:String>

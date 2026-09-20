@@ -687,7 +687,7 @@
     <sys:String x:Key="Str_Perf_Network">Network</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Disk</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Show logical processors</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">Cached</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utilization</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Throughput</sys:String>
     <sys:String x:Key="Str_Perf_Send">Send</sys:String>
@@ -704,8 +704,12 @@
     <sys:String x:Key="Str_Perf_Cores">Cores</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Logical processors</sys:String>
     <sys:String x:Key="Str_Perf_BaseSpeed">Base speed</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Toggle full-width  -  drag the header to reorder cells</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Toggle graph height</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Speed</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Processes</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Threads</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Up time</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Free</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">idle</sys:String>
 
     <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Tools/StorageAnalyzerControl.cs) -->
     <sys:String x:Key="Str_TT_Storage">Storage Analyzer  (F4)</sys:String>

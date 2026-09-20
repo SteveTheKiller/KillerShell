@@ -13,6 +13,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Sorting Details view by a date groups the files under Explorer's headings, from Today to A long time ago. Group by date in the header menu turns it off.
 
 ### Changed
+- Performance Monitor is one fixed dashboard in place of the rearrangeable tile grid: a summary strip, large CPU and RAM panels, a row per disk and network adapter that folds to one line when idle, and a card per GPU.
+- Performance graphs are filled and carry a scale; send/receive and read/write are mirrored around a center line. The CPU panel shows a load square per logical processor plus live clock speed, process and thread counts, and up time; RAM shows an in use, cached, and free bar.
 - Dates in the file list and details pane use the Windows short date and time format, such as 9/14/2026 10:09 PM.
 - Network commands in PowerShell terminals use the same address, MAC, port, timing, and success/failure colors as KillerScan.
 - The file list's List view is Explorer's compact layout - a 16px icon and name per row, flowing into vertical columns - replacing the expandable cards.

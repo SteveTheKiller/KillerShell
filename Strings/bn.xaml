@@ -628,7 +628,7 @@
     <sys:String x:Key="Str_Perf_Receive">গ্রহণ</sys:String>
     <sys:String x:Key="Str_Perf_Send">পাঠানো</sys:String>
     <sys:String x:Key="Str_Perf_SharedMemory">শেয়ার্ড GPU মেমরি</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">লজিক্যাল প্রসেসর দেখান</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">ক্যাশে করা</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">থ্রুপুট</sys:String>
     <sys:String x:Key="Str_Perf_TransferRate">ট্রান্সফার রেট</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">ব্যবহারের হার</sys:String>
@@ -771,8 +771,12 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">নতুন ট্যাবে খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">ট্রিতে লুকানো আইটেম ও ডটফোল্ডার দেখান বা লুকান</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">পূর্ণ প্রস্থ টগল করুন - ঘর সাজাতে শিরোনাম টানুন</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">গ্রাফের উচ্চতা টগল করুন</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">গতি</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">প্রসেস</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">থ্রেড</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">চালু থাকার সময়</sys:String>
+    <sys:String x:Key="Str_Perf_Free">ফাঁকা</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">নিষ্ক্রিয়</sys:String>
     <!-- স্টোরেজ বিশ্লেষক -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">স্টোরেজ বিশ্লেষণ করুন</sys:String>
     <sys:String x:Key="Str_TT_Storage">স্টোরেজ বিশ্লেষক  (F4)</sys:String>

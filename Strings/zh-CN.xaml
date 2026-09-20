@@ -628,7 +628,7 @@
     <sys:String x:Key="Str_Perf_Receive">接收</sys:String>
     <sys:String x:Key="Str_Perf_Send">发送</sys:String>
     <sys:String x:Key="Str_Perf_SharedMemory">共享 GPU 内存</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">显示逻辑处理器</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">已缓存</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">吞吐量</sys:String>
     <sys:String x:Key="Str_Perf_TransferRate">传输速率</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">利用率</sys:String>
@@ -771,8 +771,12 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">在新标签页中打开</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">在树中显示或隐藏隐藏项目和点文件夹</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">切换全宽 - 拖动标题可重新排列单元格</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">切换图表高度</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">速度</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">进程</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">线程</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">运行时间</sys:String>
+    <sys:String x:Key="Str_Perf_Free">空闲</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">闲置</sys:String>
     <!-- 存储分析器 -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">分析存储空间</sys:String>
     <sys:String x:Key="Str_TT_Storage">存储分析器  (F4)</sys:String>

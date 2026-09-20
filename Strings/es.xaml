@@ -631,7 +631,7 @@
     <sys:String x:Key="Str_Perf_Receive">Recibir</sys:String>
     <sys:String x:Key="Str_Perf_Send">Enviar</sys:String>
     <sys:String x:Key="Str_Perf_SharedMemory">Memoria de GPU compartida</sys:String>
-    <sys:String x:Key="Str_Perf_ShowLogicalProcessors">Mostrar procesadores lógicos</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">En caché</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Rendimiento</sys:String>
     <sys:String x:Key="Str_Perf_TransferRate">Velocidad de transferencia</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utilización</sys:String>
@@ -774,8 +774,12 @@
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">Abrir en una pestaña nueva</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">mostrar u ocultar elementos ocultos y carpetas con punto en el árbol</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleWidth">Alternar ancho completo - arrastra el encabezado para reordenar las celdas</sys:String>
-    <sys:String x:Key="Str_Perf_ToggleGraphHeight">Alternar altura del gráfico</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Velocidad</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Procesos</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Subprocesos</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Tiempo activo</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Libre</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">inactivo</sys:String>
     <!-- Analizador de almacenamiento -->
     <sys:String x:Key="Str_Menu_AnalyzeStorage">Analizar almacenamiento</sys:String>
     <sys:String x:Key="Str_TT_Storage">Analizador de almacenamiento  (F4)</sys:String>

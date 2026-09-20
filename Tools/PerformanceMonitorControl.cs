@@ -15,18 +15,19 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using KillerShell.Shell;
 
-// The control behind a Performance Monitor tab: a scrolling TWO-COLUMN GRID of full-size cells,
-// one per monitored item - CPU, RAM, one per PHYSICAL disk, one per network adapter, one per
-// GPU - each enumerated from the machine rather than assumed to be exactly one, in KillerShell's
-// own retro-terminal language: MonitorCellBrush cards, MonoFont readouts. Every cell carries its
-// own big live graph(s) and numeric fields, all live at once - no master/detail, no selection
-// (a grid of full-size cells with the graph and info inside each, replacing the old
-// Task-Manager-style tile list + detail panel).
+// The control behind a Performance Monitor tab: ONE designed dashboard, in KillerShell's own
+// retro-terminal language (MonitorCellBrush cards, MonoFont readouts). A summary strip across the
+// top carries the headline number and a trace for CPU, memory, disk, network and GPU; under it
+// the CPU and memory panels take the room, every physical disk and network adapter is a row in
+// its own panel, and each GPU gets a card. Everything is enumerated from the machine rather than
+// assumed to be exactly one, and all of it is live at once - no master/detail, no selection.
 //
-// The grid is the user's to arrange: each cell is 1 or 2 columns wide (the header's width toggle),
-// and dragging a cell's header reorders the cells live. Order and widths persist app-wide in ONE
-// setting ("PerfLayout" - "id:span|id:span|...", ids stable per metric, see CellId) so the layout
-// survives restarts and unknown/new hardware simply appends in natural order.
+// The layout is fixed on purpose. It used to be a two-column grid of identical cells the user
+// could reorder and resize, which weighted a twelve-thread CPU and an unplugged network adapter
+// the same. Now the busy panels get the space and an idle device folds to a single line.
+//
+// This file is the data side: counters, sampling, the tile model and the Sparkline. The
+// dashboard's construction lives in PerformanceMonitorLayout.cs, the other half of this class.
 //
 // Same "own host, own control, MOVED not rebuilt between activations" rule ProcessListControl and
 // EventViewerControl already carry (Shell/ProcessTabs.cs / Shell/EventViewerTabs.cs): a
@@ -39,7 +40,7 @@ using KillerShell.Shell;
 // help with.
 namespace KillerShell.Tools
 {
-    internal sealed class PerformanceMonitorControl : Grid
+    internal sealed partial class PerformanceMonitorControl : Grid
     {
         // ── Refresh cadence ──────────────────────────────────────
         /// <summary>
@@ -58,24 +59,15 @@ namespace KillerShell.Tools
         private readonly DispatcherTimer _timer;
         private readonly CancellationTokenSource _lifetimeCts = new();
 
-        private readonly TextBlock[] _staticInfoTexts;
         private readonly TextBlock _statusLine;
         private readonly DispatcherTimer _statusClearTimer;
 
-        // ── Cell-grid state ──────────────────────────────────────
-        private Grid _cellsGrid = null!;
-
-        // _tiles is the DISPLAY ORDER (drag-to-reorder rearranges it); _gpuTiles keeps its
-        // BUILD order forever - SampleGpus pairs sorted LUIDs against it by index, so letting a
-        // drag reorder it would relabel one adapter's activity as another's.
+        // ── Metric state ─────────────────────────────────────────
+        // _tiles is every metric in build order; _gpuTiles is the GPU subset in the same order -
+        // SampleGpus pairs sorted LUIDs against it by index, so its order must never change or
+        // one adapter's activity would be relabeled as another's.
         private readonly List<MetricTile> _tiles = [];
         private readonly List<MetricTile> _gpuTiles = [];
-
-        // Drag-to-reorder state: the cell whose header is held, where the press started (grid
-        // space), and whether the press has travelled far enough to count as a drag.
-        private MetricTile? _dragTile;
-        private Point _dragStart;
-        private bool _dragActive;
 
         private bool _countersAvailable;
 
@@ -109,8 +101,8 @@ namespace KillerShell.Tools
 
         internal PerformanceMonitorControl()
         {
-            RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // static hardware panel
-            RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // tiles + detail
+            RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // summary strip
+            RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // the panels
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
 
             // PaneBrush, the same tier as the file browser's location row and the ACTIVE TAB, so
@@ -130,13 +122,15 @@ namespace KillerShell.Tools
             SetRowSpan(rootGrain, 3);
             Children.Add(rootGrain);
 
-            var staticPanel = BuildStaticInfoPanel(out _staticInfoTexts);
-            SetRow(staticPanel, 0);
-            Children.Add(staticPanel);
+            // Both are empty shells until the hardware is known (ApplyStaticInfo -> BuildDashboard);
+            // the status line says so in the meantime.
+            var summaryStrip = BuildSummaryStrip();     // PerformanceMonitorLayout.cs
+            SetRow(summaryStrip, 0);
+            Children.Add(summaryStrip);
 
-            var cellsPanel = BuildCellsPanel();
-            SetRow(cellsPanel, 1);
-            Children.Add(cellsPanel);
+            var panels = BuildPanelsScroller();         // PerformanceMonitorLayout.cs
+            SetRow(panels, 1);
+            Children.Add(panels);
 
             _statusLine = BuildStatusLine();
             SetRow(_statusLine, 2);
@@ -219,16 +213,24 @@ namespace KillerShell.Tools
                     case MetricKind.Cpu:
                         var cs = (CpuState)tile.State!;
                         cs.Total?.Dispose();
+                        cs.Performance?.Dispose();
+                        cs.Processes?.Dispose();
+                        cs.Threads?.Dispose();
                         foreach (var c in cs.CoreCounters) c.Dispose();
                         cs.CoreCounters = [];
                         cs.Total = null;
+                        cs.Performance = null;
+                        cs.Processes = null;
+                        cs.Threads = null;
                         break;
                     case MetricKind.Ram:
                         var rs = (RamState)tile.State!;
                         rs.Avail?.Dispose();
                         rs.Committed?.Dispose();
+                        rs.Free?.Dispose();
                         rs.Avail = null;
                         rs.Committed = null;
+                        rs.Free = null;
                         break;
                     case MetricKind.Disk:
                         var ds = (DiskState)tile.State!;
@@ -261,86 +263,11 @@ namespace KillerShell.Tools
 
         private void ApplyStaticInfo(Services.PerformanceHardwareInfo info)
         {
+            // The device names that used to fill a hardware panel of their own now sit under the
+            // title of the panel they describe (BuildDashboard), so this only keeps the total.
             _totalRamGb = info.TotalRamGb;
-            _staticInfoTexts[0].Text = "CPU   " + info.Cpu;
-            _staticInfoTexts[1].Text = "RAM   " + info.Ram;
-            _staticInfoTexts[2].Text = "GPU   " + info.Gpu;
-            _staticInfoTexts[3].Text = "NET   " + info.Network;
 
             BuildTiles(info);
-        }
-
-        // ═══════════════════════════════════════════════════════════
-        //  BUILD - static info panel
-        // ═══════════════════════════════════════════════════════════
-        private static Border BuildStaticInfoPanel(out TextBlock[] texts)
-        {
-            texts = new TextBlock[4];
-            var infoGrid = new Grid { Margin = new Thickness(12, 8, 12, 8) };
-            infoGrid.ColumnDefinitions.Add(new ColumnDefinition
-                { Width = new GridLength(1, GridUnitType.Star) });
-            infoGrid.ColumnDefinitions.Add(new ColumnDefinition
-                { Width = new GridLength(1, GridUnitType.Star) });
-            infoGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            infoGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            string[] initial = ["CPU   -", "RAM   -", "GPU   -", "NET   -"];
-            for (int i = 0; i < texts.Length; i++)
-            {
-                var text = new TextBlock
-                {
-                    FontSize = 12,
-                    TextWrapping = TextWrapping.Wrap,
-                    Text = initial[i],
-                    Margin = new Thickness(i % 2 == 0 ? 0 : 12, 1, 0, 1),
-                };
-                text.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-                // Monitor* brushes keep the black 98SE phosphor panel readable too.
-                text.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
-                SetColumn(text, i % 2);
-                SetRow(text, i / 2);
-                infoGrid.Children.Add(text);
-                texts[i] = text;
-            }
-
-            var infoRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4));
-
-            // The panel's own grain layer, under the readout text and over its own opaque face.
-            // The control's ROOT paints its grain first (see the ctor), so any opaque surface
-            // stacked on top of it covers that grain and comes out as a flat, textureless card
-            // on an otherwise textured tab. Every opaque face in this app repaints grain over
-            // itself for exactly this reason - the folder LocationRow (Controls/FilePane.xaml)
-            // over its own PaneBrush, and ToolTabChrome.WrapBar over its bar face.
-            // GrainOpacity is 0 on 98SE, so this paints nothing there and that theme is
-            // unaffected.
-            var infoGrain = ToolTabChrome.Grain();
-            // Match the card's rounding: a Border does not clip its child, so a square grain
-            // rectangle would paint noise into the four rounded corners the face leaves empty.
-            infoGrain.CornerRadius = infoRadius;
-
-            // The padding moves off the Border and onto the grid, because a Border's Padding
-            // insets its WHOLE child - grain included - which would leave an untextured ring
-            // inside the panel's edge.
-            var infoHost = new Grid();
-            infoHost.Children.Add(infoGrain);
-            infoHost.Children.Add(infoGrid);
-
-            var panel = new Border
-            {
-                CornerRadius = infoRadius,
-                BorderThickness = new Thickness(1),
-                Child = infoHost,
-            };
-            // PaneBrush, not BackgroundBrush: an info panel is CONTENT sitting on the tab's
-            // chrome, so it takes the same pane color as a terminal or a file listing. On the
-            // window tier it also inherited the full-window gradient on five of the themes and
-            // re-ramped it inside the panel.
-            panel.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
-            panel.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
-            // Monitor*Margin tokens: the literals the panel/scrollers/tiles always carried on
-            // every ordinary theme, collapsed to 2px seams on 98SE.
-            panel.SetResourceReference(FrameworkElement.MarginProperty, "MonitorInfoMargin");
-            return panel;
         }
 
         private static TextBlock BuildStatusLine()
@@ -356,128 +283,8 @@ namespace KillerShell.Tools
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  BUILD - the cell grid shell
+        //  BUILD - shared card pieces (the dashboard itself is PerformanceMonitorLayout.cs)
         // ═══════════════════════════════════════════════════════════
-        private ScrollViewer BuildCellsPanel()
-        {
-            _cellsGrid = new Grid();
-            _cellsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            _cellsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            var scroller = new ScrollViewer
-            {
-                Content = _cellsGrid,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-            };
-            // MonitorGridMargin: 2 a side so the cells' own 6px MonitorTileMargin lands their
-            // edges at 8, flush with the info panel above; 0 on 98SE so the cells run to the
-            // pane edge like every other well (the tab strip above runs to the window edge, and
-            // anything short of it reads as the right edge being off).
-            scroller.SetResourceReference(FrameworkElement.MarginProperty, "MonitorGridMargin");
-            return scroller;
-        }
-
-        /// <summary>
-        /// Flows one-wide cells into two INDEPENDENT vertical stacks. A shared Grid row takes the
-        /// height of its taller child, which left a gray block under a shorter Network/CPU tile
-        /// whenever the disk opposite it was taller. Independent stacks let the divider positions
-        /// differ on the left and right and make each column butt together continuously.
-        ///
-        /// A two-wide tile closes the current two-column band, spans the complete width, then
-        /// starts a new independent band below it. Cell elements are moved, never rebuilt, so
-        /// graph history survives every reorder and width toggle.
-        /// </summary>
-        private void LayoutCells()
-        {
-            // Detach the reusable cell Borders from the nested stack panels created by the last
-            // layout. Clearing only _cellsGrid would orphan that tree while leaving each Border's
-            // logical parent intact, and WPF refuses to add an element to a second parent.
-            foreach (var tile in _tiles)
-                if (tile.CellBorder.Parent is Panel oldParent)
-                    oldParent.Children.Remove(tile.CellBorder);
-
-            _cellsGrid.Children.Clear();
-            _cellsGrid.RowDefinitions.Clear();
-            var flow = new StackPanel { Orientation = Orientation.Vertical };
-            SetColumnSpan(flow, 2);
-            _cellsGrid.Children.Add(flow);
-
-            StackPanel? left = null, right = null;
-            int nextColumn = 0;
-
-            void StartBand()
-            {
-                var band = new Grid();
-                band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                left = new StackPanel { Orientation = Orientation.Vertical };
-                right = new StackPanel { Orientation = Orientation.Vertical };
-                SetColumn(left, 0);
-                SetColumn(right, 1);
-                band.Children.Add(left);
-                band.Children.Add(right);
-                flow.Children.Add(band);
-                nextColumn = 0;
-            }
-
-            foreach (var tile in _tiles)
-            {
-                if (tile.ColSpan == 2)
-                {
-                    flow.Children.Add(tile.CellBorder);
-                    left = right = null;       // next narrow tile begins a fresh band
-                    nextColumn = 0;
-                    continue;
-                }
-
-                if (left == null || right == null) StartBand();
-                (nextColumn == 0 ? left! : right!).Children.Add(tile.CellBorder);
-                nextColumn = 1 - nextColumn;
-            }
-        }
-
-        // ── Layout persistence ───────────────────────────────────
-        // ONE setting, "id:span|id:span|..." in display order. Ids are stable per metric
-        // (CellId), so the layout survives restarts; hardware this machine grew since the
-        // setting was written simply appends in natural build order, and entries for hardware
-        // that went away are dropped on the next save.
-        private const string SetPerfLayout = "PerfLayout";
-
-        private void ApplySavedLayout()
-        {
-            string saved = Services.ThemeManager.GetSetting(SetPerfLayout) ?? string.Empty;
-            if (saved.Length == 0) return;
-
-            var order = new List<MetricTile>();
-            foreach (string raw in saved.Split(['|'], StringSplitOptions.RemoveEmptyEntries))
-            {
-                // Trailing ":s" = short graphs, parsed (and appended in SaveLayout) from the
-                // right so layouts saved before the height toggle existed still load unchanged.
-                string entry = raw;
-                bool shortGraphs = entry.EndsWith(":s", StringComparison.Ordinal);
-                if (shortGraphs) entry = entry[..^2];
-
-                int colon = entry.LastIndexOf(':');
-                string id = colon > 0 ? entry[..colon] : entry;
-                var tile = _tiles.FirstOrDefault(t => t.Id == id);
-                if (tile == null || order.Contains(tile)) continue;
-
-                tile.ShortGraphs = shortGraphs;
-                if (colon > 0 && int.TryParse(entry[(colon + 1)..], out int span))
-                    tile.ColSpan = span == 2 ? 2 : 1;
-                order.Add(tile);
-            }
-            foreach (var t in _tiles) if (!order.Contains(t)) order.Add(t);
-
-            _tiles.Clear();
-            _tiles.AddRange(order);
-        }
-
-        private void SaveLayout()
-            => Services.ThemeManager.SetSetting(SetPerfLayout,
-                   string.Join("|", _tiles.Select(t => t.Id + ":" + t.ColSpan + (t.ShortGraphs ? ":s" : ""))));
-
         private static TextBlock BuildGraphCaption(string key)
         {
             var tb = new TextBlock { FontSize = 10.5, Margin = new Thickness(0, 6, 0, 2) };
@@ -551,41 +358,44 @@ namespace KillerShell.Tools
         private sealed class MetricTile
         {
             internal MetricKind Kind;
-            internal string Id = "";           // stable per metric ("cpu", "disk0", ...) - the layout setting's key
-            internal int ColSpan = 1;          // 1 = half row, 2 = full row; the header toggle flips it
-            internal bool ShortGraphs;         // half-height graphs; the header toggle flips it, saved per tile
             internal string Label = "";
             internal string Description = "-";
-            internal Border CellBorder = null!;
-            internal TextBlock TileSummaryText = null!;   // the live one-liner beside the cell title
+            internal TextBlock TileSummaryText = null!;   // the live headline beside the panel or row title
             internal string SummaryBrushKey = "MonitorMutedBrush";
-            internal bool ShowSummary = true;
-            internal bool ShowDescription = true;
             internal TextBlock[] LegendValueBlocks = [];
-            internal TextBlock[] FieldValueBlocks = [];   // per-cell, built with the cell, always live
+            internal TextBlock[] FieldValueBlocks = [];   // built with the panel, always live
             internal Sparkline[] BigGraphs = [];
-            internal string[] GraphCaptionKeys = [];
             internal string[] FieldLabelKeys = [];
             internal string[] FieldBrushKeys = [];
             internal string[] FieldValues = [];
             internal object? State;
+
+            // The one number the summary strip reads for this metric: a percentage for CPU, RAM,
+            // disk and GPU, bytes per second for a network adapter.
+            internal double Primary;
+
+            // Disk and network ROWS only (PerformanceMonitorLayout.cs BuildDeviceRow): a device
+            // with nothing happening on it folds down to its one header line.
+            internal FrameworkElement? RowGraph;
+            internal TextBlock? RowIdleText;
+            internal bool RowExpanded;
+            internal int IdleTicks;
         }
 
         private sealed class CpuState
         {
             internal PerformanceCounter? Total;
+            internal PerformanceCounter? Performance;   // % of base clock, for the live speed
+            internal PerformanceCounter? Processes;
+            internal PerformanceCounter? Threads;
             internal PerformanceCounter[] CoreCounters = [];
-            internal Sparkline[] CoreGraphs = [];
-            // Built ONCE (BuildCoreGrid) and reused on every later toggle rather than rebuilt -
-            // a fresh UniformGrid every toggle would try to re-add the SAME g.Host elements that
-            // are still logical children of the PREVIOUS UniformGrid instance (GraphArea.Child
-            // only detaches whichever grid is currently showing, not one sitting unused off to
-            // the side), which threw "Specified element is already the logical child of another
-            // element" the second time per-core view was toggled back on.
-            internal UniformGrid? CoreGrid;
+            // One square per logical processor, its fill's opacity tracking that processor's
+            // load. Replaces a grid of per-core graphs that were mostly empty boxes on a
+            // many-thread CPU.
+            internal Border[] CoreFills = [];
+            internal FrameworkElement[] CoreCells = [];
+            internal UniformGrid CoreStrip = null!;
             internal Sparkline AggregateGraph = null!;
-            internal Border GraphArea = null!;
-            internal bool ShowCores;
             internal int PhysicalCores;
             internal int LogicalProcessors;
             internal int BaseMhz;
@@ -595,6 +405,8 @@ namespace KillerShell.Tools
         {
             internal PerformanceCounter? Avail;
             internal PerformanceCounter? Committed;
+            internal PerformanceCounter? Free;          // free and zeroed pages; available minus this is cached
+            internal ColumnDefinition[] BarColumns = [];
         }
 
         private sealed class DiskState
@@ -621,8 +433,6 @@ namespace KillerShell.Tools
         {
             _tiles.Clear();
             _gpuTiles.Clear();
-            _cellsGrid.Children.Clear();
-            _cellsGrid.RowDefinitions.Clear();
 
             // Local, cheap, no WMI: whether these two counter categories exist at all on this
             // machine, checked once so SampleGpus doesn't have to probe (and possibly throw)
@@ -646,14 +456,7 @@ namespace KillerShell.Tools
                 _gpuTiles.Add(t);
             }
 
-            ApplySavedLayout();
-            foreach (var tile in _tiles) BuildCell(tile);
-            LayoutCells();
-
-            // The CPU graph area's context menu wants real keyboard focus for WPF's built-in
-            // Shift+F10 / Menu-key handling - deferred so it lands after the grid has laid out.
-            if (_tiles.FirstOrDefault(t => t.Kind == MetricKind.Cpu)?.State is CpuState focusCs)
-                Dispatcher.BeginInvoke(new Action(() => focusCs.GraphArea.Focus()), DispatcherPriority.Background);
+            BuildDashboard();   // PerformanceMonitorLayout.cs
         }
 
         private static bool SafeCategoryExists(string category)
@@ -664,7 +467,6 @@ namespace KillerShell.Tools
             var tile = new MetricTile
             {
                 Kind = MetricKind.Cpu,
-                Id = "cpu",
                 Label = MainWindow.LocStatic("Str_Perf_Cpu"),
                 Description = info.Cpu,
             };
@@ -674,44 +476,16 @@ namespace KillerShell.Tools
                 PhysicalCores = info.CpuCores,
                 LogicalProcessors = info.CpuThreads,
                 BaseMhz = info.CpuBaseMhz,
-                AggregateGraph = new Sparkline(HistorySamples, 100, "PrimaryBrush"),
+                AggregateGraph = new Sparkline(HistorySamples, 100, "MonitorAccentBrush"),
             };
-            cs.GraphArea = new Border { Focusable = true, Background = Brushes.Transparent, Child = cs.AggregateGraph.Host };
-
-            // "needs the option to graph logical cores, from context menu maybe. that also needs
-            // a keyboard shortcut for the context menu, and a checkmark on the left." - the
-            // IsCheckable MenuItem pattern here is copied exactly from
-            // Services/ColumnVisibilityMenu.cs (the app's one other checkable-menu user), so the
-            // checkmark renders through the same, already-proven themed MenuItem template. The
-            // Shift+F10 / Menu-key open comes free from WPF once this element is Focusable and
-            // actually has focus (initial focus in BuildTiles, click-to-focus below); the
-            // checked state is set fresh in Opened
-            // rather than baked in once, matching ColumnVisibilityMenu.ShowFor's own "read
-            // GetVisible() fresh" habit. "L" is ALSO wired directly as a local single-key
-            // shortcut while the CPU graph has focus, per this app's own established local-
-            // shortcut convention (Processes/Services tab's right-click actions this session).
-            var menu = new OpaqueContextMenu();
-            var toggleItem = new MenuItem { IsCheckable = true, InputGestureText = "L" };
-            toggleItem.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Perf_ShowLogicalProcessors");
-            var capturedTile = tile;
-            menu.Opened += (_, _) => toggleItem.IsChecked = cs.ShowCores;
-            toggleItem.Click += (_, _) => ToggleCpuCoreView(capturedTile);
-            menu.Items.Add(toggleItem);
-            cs.GraphArea.ContextMenu = menu;
-            cs.GraphArea.KeyDown += (_, e) =>
-            {
-                if (e.Key == Key.L) { ToggleCpuCoreView(capturedTile); e.Handled = true; }
-            };
-            // No selection to hand focus over anymore (the old SelectTile did this), so a click
-            // on the graph itself is what arms the L shortcut and Shift+F10.
-            cs.GraphArea.MouseLeftButtonDown += (_, _) => cs.GraphArea.Focus();
 
             tile.State = cs;
-            tile.SummaryBrushKey = "PrimaryBrush";
-            // Utilization already lives beside CPU in the header and labels the graph. The only
-            // non-repeated facts below it are the core count and base speed.
-            tile.FieldLabelKeys = ["Str_Perf_Cores", "Str_Perf_BaseSpeed"];
-            tile.FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush"];
+            tile.SummaryBrushKey = "MonitorAccentBrush";
+            // Two facts that never change, then four that do (SampleCpuTile fills those in).
+            tile.FieldLabelKeys = ["Str_Perf_Cores", "Str_Perf_BaseSpeed", "Str_Perf_Speed",
+                                   "Str_Perf_Processes", "Str_Perf_Threads", "Str_Perf_UpTime"];
+            tile.FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush", "MonitorAccentBrush",
+                                   "MonitorTextBrush", "MonitorTextBrush", "MonitorTextBrush"];
             tile.FieldValues =
             [
                 info.CpuCores > 0 && info.CpuThreads > 0
@@ -719,6 +493,7 @@ namespace KillerShell.Tools
                       + info.CpuThreads.ToString(CultureInfo.InvariantCulture) + "T"
                     : info.CpuCores > 0 ? info.CpuCores.ToString(CultureInfo.InvariantCulture) : "-",
                 info.CpuBaseMhz > 0 ? (info.CpuBaseMhz / 1000.0).ToString("0.00", CultureInfo.InvariantCulture) + " GHz" : "-",
+                "-", "-", "-", "-",
             ];
 
             return tile;
@@ -729,13 +504,10 @@ namespace KillerShell.Tools
             var tile = new MetricTile
             {
                 Kind = MetricKind.Ram,
-                Id = "ram",
                 Label = MainWindow.LocStatic("Str_Perf_Ram"),
                 Description = info.Ram,
                 State = new RamState(),
                 SummaryBrushKey = "TypeWindows",
-                ShowDescription = false, // total installed already appears in the headline
-                GraphCaptionKeys = ["Str_Perf_Utilization"],
                 BigGraphs = [new Sparkline(HistorySamples, 100, "TypeWindows")],
                 // In use is already the complete headline (used / total and percentage).
                 FieldLabelKeys = ["Str_Perf_Available", "Str_Perf_Committed"],
@@ -758,20 +530,19 @@ namespace KillerShell.Tools
             var tile = new MetricTile
             {
                 Kind = MetricKind.Disk,
-                Id = "disk" + index,
                 Label = label,
                 Description = d.Model,
                 State = new DiskState { InstanceName = d.InstanceName },
                 SummaryBrushKey = "WarnBrush",
-                // Transfer rate is already identified by the Read/Write legend below its graph.
-                GraphCaptionKeys = ["Str_Perf_ActiveTime"],
                 // Read = accent (the app's own "primary flow" color everywhere else), Write = the
                 // family's second bright, theme-stable color (TypeWindows, reused from KillerScan's
                 // device-type palette) - same two-color convention as the network graph below.
+                // Mirrored: reads rise from the center line and writes hang below it, so the two
+                // never hide each other. Active time is the row's headline number, not a graph.
                 BigGraphs =
                 [
-                    new Sparkline(HistorySamples, 100, "WarnBrush"),
-                    new Sparkline(HistorySamples, 0, "PrimaryBrush", "TypeWindows"),
+                    new Sparkline(HistorySamples, 0, "MonitorAccentBrush", "TypeWindows")
+                        { Mirrored = true, ScaleFormatter = FormatThroughput },
                 ],
                 FieldLabelKeys = [],
                 FieldBrushKeys = [],
@@ -787,14 +558,15 @@ namespace KillerShell.Tools
             var tile = new MetricTile
             {
                 Kind = MetricKind.Network,
-                Id = "net" + index,
                 Label = label,
                 Description = instanceName,
                 State = new NetState { InstanceName = instanceName },
-                ShowSummary = false,
-                // The legend immediately under this graph names both series, so it needs no
-                // duplicate Throughput caption above it. Send = blue, Receive = theme-aware green.
-                BigGraphs = [new Sparkline(HistorySamples, 0, "TypeWindows", "OkBrush")],
+                // Send = blue, rising from the center line; Receive = theme-aware green, below it.
+                BigGraphs =
+                [
+                    new Sparkline(HistorySamples, 0, "TypeWindows", "OkBrush")
+                        { Mirrored = true, ScaleFormatter = FormatThroughput },
+                ],
                 FieldLabelKeys = [],
                 FieldBrushKeys = [],
                 FieldValues = [],
@@ -809,7 +581,6 @@ namespace KillerShell.Tools
             var tile = new MetricTile
             {
                 Kind = MetricKind.Gpu,
-                Id = "gpu" + index,
                 Label = MainWindow.LocStatic("Str_Perf_Gpu") + " " + index,
                 Description = name,
                 State = gs,
@@ -823,9 +594,9 @@ namespace KillerShell.Tools
                 // two-series plot. The colored legend below identifies both lines; repeating
                 // those labels as graph captions only spends vertical space and separates data
                 // that is easier to compare when overlaid.
-                var memory = new Sparkline(HistorySamples, 0, "PrimaryBrush", "TypeWindows");
+                var memory = new Sparkline(HistorySamples, 0, "MonitorAccentBrush", "TypeWindows")
+                    { ScaleFormatter = FormatBytes };
                 tile.BigGraphs = [utilGraph, memory];
-                tile.GraphCaptionKeys = ["Str_Perf_Utilization"];
                 tile.FieldLabelKeys = [];
                 tile.FieldBrushKeys = [];
                 tile.FieldValues = [];
@@ -833,7 +604,6 @@ namespace KillerShell.Tools
             else
             {
                 tile.BigGraphs = [utilGraph];
-                tile.GraphCaptionKeys = ["Str_Perf_Utilization"];
                 tile.FieldLabelKeys = [];
                 tile.FieldBrushKeys = [];
                 tile.FieldValues = [];
@@ -843,124 +613,10 @@ namespace KillerShell.Tools
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  CELLS  -  build, width toggle, drag-to-reorder
+        //  CARDS  -  the one surface every panel of the dashboard sits on
         // ═══════════════════════════════════════════════════════════
-        /// <summary>
-        /// Builds the tile's CELL: header (title + live summary + toggles), a full-width device
-        /// name when the metric has one, then the big graph(s),
-        /// legend and numeric fields, all always live. Built ONCE per tile; LayoutCells only
-        /// ever re-parents the finished Border, so graph history survives every reorder and
-        /// width change.
-        /// </summary>
-        private void BuildCell(MetricTile tile)
+        private static Border BuildCard(FrameworkElement body)
         {
-            var title = new TextBlock
-            { FontSize = 16, FontWeight = FontWeights.Bold, Text = tile.Label, VerticalAlignment = VerticalAlignment.Center };
-            title.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            title.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
-
-            var summary = new TextBlock
-            {
-                FontSize = 11, Text = tile.ShowSummary ? "-" : string.Empty,
-                Visibility = tile.ShowSummary ? Visibility.Visible : Visibility.Collapsed,
-                Margin = new Thickness(10, 0, 0, 2), VerticalAlignment = VerticalAlignment.Bottom
-            };
-            summary.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            summary.SetResourceReference(TextBlock.ForegroundProperty, tile.SummaryBrushKey);
-            tile.TileSummaryText = summary;
-
-            // Hardware/adapter names get their own line. Sharing the header's leftover column
-            // truncated the information people use to tell two disks, GPUs or NICs apart.
-            var description = new TextBlock
-            {
-                FontSize = 11, Text = tile.Description, ToolTip = tile.Description,
-                TextWrapping = TextWrapping.Wrap,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Thickness(0, 3, 0, 0),
-            };
-            description.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            description.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
-
-            var heightBtn = BuildHeightToggle(tile);
-            var widthBtn = BuildWidthToggle(tile);
-
-            // Transparent Background is load-bearing: without it the Grid's empty stretches are
-            // not hit-testable and the drag handle only worked when the press landed on text.
-            var header = new Grid { Background = Brushes.Transparent, Cursor = Controls.DragCursors.Open };
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            SetColumn(title, 0);
-            SetColumn(summary, 1);
-            SetColumn(heightBtn, 3);
-            SetColumn(widthBtn, 4);
-            header.Children.Add(title);
-            header.Children.Add(summary);
-            header.Children.Add(heightBtn);
-            header.Children.Add(widthBtn);
-            WireCellDrag(header, tile);
-
-            var body = new StackPanel();
-            body.Children.Add(header);
-            if (tile.ShowDescription) body.Children.Add(description);
-
-            if (tile.Kind == MetricKind.Cpu)
-            {
-                var cs = (CpuState)tile.State!;
-                body.Children.Add(BuildGraphCaption("Str_Perf_Utilization"));
-                body.Children.Add(cs.GraphArea);
-            }
-            else
-            {
-                for (int i = 0; i < tile.BigGraphs.Length; i++)
-                {
-                    if (i < tile.GraphCaptionKeys.Length)
-                        body.Children.Add(BuildGraphCaption(tile.GraphCaptionKeys[i]));
-                    else
-                        tile.BigGraphs[i].Host.Margin = new Thickness(0, 6, 0, 0);
-                    body.Children.Add(tile.BigGraphs[i].Host);
-                }
-            }
-            // One funnel for every graph height (build + the header's height toggle). BOTH CPU
-            // heights, not just the area's: the Host keeps its constructed 52 unless set, and a
-            // 52px well centered in the area's Border reads as a band of dead space above and
-            // below the graph. The area is fixed so the per-core toggle cannot change the cell's
-            // height.
-            ApplyGraphHeights(tile);
-
-            if (tile.Kind == MetricKind.Network)
-                body.Children.Add(BuildLegend(out tile.LegendValueBlocks,
-                    ("TypeWindows", "Str_Perf_Send"), ("OkBrush", "Str_Perf_Receive")));
-            else if (tile.Kind == MetricKind.Disk)
-                body.Children.Add(BuildLegend(out tile.LegendValueBlocks,
-                    ("PrimaryBrush", "Str_Perf_ReadSpeed"), ("TypeWindows", "Str_Perf_WriteSpeed")));
-            else if (tile.Kind == MetricKind.Gpu && tile.BigGraphs.Length >= 2)
-                body.Children.Add(BuildLegend(out tile.LegendValueBlocks,
-                    ("PrimaryBrush", "Str_Perf_DedicatedMemory"), ("TypeWindows", "Str_Perf_SharedMemory")));
-
-            // A fixed three-across strip, not a WrapPanel: equal thirds always fit one row per
-            // three fields whatever the cell width, so the strip stays one line high on every
-            // standard card instead of wrapping into a second row at half width.
-            if (tile.FieldLabelKeys.Length > 0)
-            {
-                var fields = new UniformGrid
-                {
-                    Columns = Math.Min(3, tile.FieldLabelKeys.Length),
-                    Margin = new Thickness(0, 2, 0, 0)
-                };
-                tile.FieldValueBlocks = new TextBlock[tile.FieldLabelKeys.Length];
-                for (int i = 0; i < tile.FieldLabelKeys.Length; i++)
-                {
-                    string brushKey = i < tile.FieldBrushKeys.Length
-                        ? tile.FieldBrushKeys[i] : "MonitorTextBrush";
-                    fields.Children.Add(BuildField(tile.FieldLabelKeys[i], brushKey, out var valueBlock));
-                    tile.FieldValueBlocks[i] = valueBlock;
-                }
-                body.Children.Add(fields);
-            }
-
             var cellRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("ChartCornerRadius", 4));
 
             // The cell's own grain layer, under its content and over its own opaque face.
@@ -988,200 +644,15 @@ namespace KillerShell.Tools
             {
                 CornerRadius = cellRadius,
                 BorderThickness = new Thickness(1),
-                // Top, not the default Stretch: a grid row is as tall as its tallest cell, and
-                // a stretched shorter neighbor pads its own inside out to match - the "cells
-                // are too tall" complaint. Hugging the content leaves the gap OUTSIDE the
-                // card, where it reads as layout instead of dead space.
-                VerticalAlignment = VerticalAlignment.Top,
+                // Stretch, the default: two cards sharing a band of the dashboard are meant to
+                // end on the same line. The body inside stays top-aligned, so a shorter panel's
+                // spare room falls below its content rather than being spread through it.
                 Child = cellHost,
             };
             cell.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
             cell.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             cell.SetResourceReference(FrameworkElement.MarginProperty, "MonitorTileMargin");
-            tile.CellBorder = cell;
-
-            RefreshDetailFieldValues(tile);
-        }
-
-        /// <summary>Every graph height in one place, called at build and by the header's height
-        /// toggle: normal graphs are a compact 60px (35 when a tile stacks several); the optional
-        /// short state trims them further without crushing the logical-CPU grid into slivers.
-        /// The CPU tile sets BOTH the area and the aggregate host (see the comment at the
-        /// BuildCell call site); the per-core grid needs nothing - its hosts stretch.</summary>
-        private static void ApplyGraphHeights(MetricTile tile)
-        {
-            double single = tile.ShortGraphs ? 42 : 60;
-            double multi  = tile.ShortGraphs ? 24 : 35;
-            if (tile.Kind == MetricKind.Cpu && tile.State is CpuState cs)
-            {
-                cs.GraphArea.Height = single;
-                cs.AggregateGraph.Host.Height = single;
-                return;
-            }
-            foreach (var g in tile.BigGraphs)
-                g.Host.Height = tile.BigGraphs.Length > 1 ? multi : single;
-        }
-
-        /// <summary>
-        /// The header's graph-height toggle, the vertical sibling of BuildWidthToggle below:
-        /// E70D (shrink to half-height graphs) on a full-height cell, E70E (back to full) on a
-        /// short one. Same bare Border + glyph pattern, same hover language, saved per tile.
-        /// </summary>
-        private Border BuildHeightToggle(MetricTile tile)
-        {
-            var glyph = new TextBlock
-            {
-                FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                FontSize = 12,
-                Text = ((char)(tile.ShortGraphs ? 0xE70E : 0xE70D)).ToString(),
-            };
-            glyph.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
-
-            var btn = new Border
-            {
-                Background = Brushes.Transparent,   // hit-testable; hover recolors the GLYPH only
-                Padding = new Thickness(5, 3, 5, 3),
-                Cursor = Cursors.Hand,
-                VerticalAlignment = VerticalAlignment.Center,
-                Child = glyph,
-            };
-            btn.SetResourceReference(FrameworkElement.ToolTipProperty, "Str_Perf_ToggleGraphHeight");
-
-            btn.MouseEnter += (_, _) => glyph.SetResourceReference(TextBlock.ForegroundProperty, "PrimaryBrush");
-            btn.MouseLeave += (_, _) => glyph.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
-
-            // Handled DOWN keeps the header's drag handler out of a toggle click.
-            btn.MouseLeftButtonDown += (_, e) => e.Handled = true;
-            btn.MouseLeftButtonUp += (_, e) =>
-            {
-                e.Handled = true;
-                tile.ShortGraphs = !tile.ShortGraphs;
-                glyph.Text = ((char)(tile.ShortGraphs ? 0xE70E : 0xE70D)).ToString();
-                ApplyGraphHeights(tile);   // row heights are Auto, so the grid reflows on its own
-                SaveLayout();
-            };
-            return btn;
-        }
-
-        /// <summary>
-        /// The header's 1-column / 2-column toggle: E740 (expand) on a half-width cell, E73F
-        /// (back to half) on a full-width one. A bare Border + glyph rather than a Button - a
-        /// Button with Background=Transparent keeps WPF's default template and its system-blue
-        /// hover. Rest neutral, hover accent: the family icon hover language.
-        /// </summary>
-        private Border BuildWidthToggle(MetricTile tile)
-        {
-            var glyph = new TextBlock
-            {
-                FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                FontSize = 12,
-                Text = ((char)(tile.ColSpan == 2 ? 0xE73F : 0xE740)).ToString(),
-            };
-            glyph.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
-
-            var btn = new Border
-            {
-                Background = Brushes.Transparent,   // hit-testable; hover recolors the GLYPH only
-                Padding = new Thickness(5, 3, 5, 3),
-                Cursor = Cursors.Hand,
-                VerticalAlignment = VerticalAlignment.Center,
-                Child = glyph,
-            };
-            btn.SetResourceReference(FrameworkElement.ToolTipProperty, "Str_Perf_ToggleWidth");
-
-            btn.MouseEnter += (_, _) => glyph.SetResourceReference(TextBlock.ForegroundProperty, "PrimaryBrush");
-            btn.MouseLeave += (_, _) => glyph.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
-
-            // Handled DOWN keeps the header's drag handler out of a toggle click.
-            btn.MouseLeftButtonDown += (_, e) => e.Handled = true;
-            btn.MouseLeftButtonUp += (_, e) =>
-            {
-                e.Handled = true;
-                tile.ColSpan = tile.ColSpan == 1 ? 2 : 1;
-                glyph.Text = ((char)(tile.ColSpan == 2 ? 0xE73F : 0xE740)).ToString();
-                LayoutCells();
-                SaveLayout();
-            };
-            return btn;
-        }
-
-        /// <summary>
-        /// Drag the header to reorder cells, live: past a 4px threshold the cell dims, and
-        /// whenever the pointer is over ANOTHER cell the dragged one takes that cell's slot in
-        /// _tiles and the grid re-flows immediately - the reorder IS the drag preview. Saved
-        /// once on release. Stable against oscillation because after a move the pointer sits
-        /// over the dragged cell itself, which CellAt ignores.
-        /// </summary>
-        private void WireCellDrag(Grid header, MetricTile tile)
-        {
-            header.MouseLeftButtonDown += (_, e) =>
-            {
-                _dragTile = tile;
-                _dragActive = false;
-                _dragStart = e.GetPosition(_cellsGrid);
-                header.CaptureMouse();
-            };
-            header.MouseMove += (_, e) =>
-            {
-                if (!ReferenceEquals(_dragTile, tile) || !header.IsMouseCaptured
-                    || e.LeftButton != MouseButtonState.Pressed) return;
-
-                var pos = e.GetPosition(_cellsGrid);
-                if (!_dragActive)
-                {
-                    if (Math.Abs(pos.X - _dragStart.X) < 4 && Math.Abs(pos.Y - _dragStart.Y) < 4) return;
-                    _dragActive = true;
-                    // The fist closes at the SAME moment the cell dims - past the threshold, not
-                    // on mousedown. A press that never becomes a drag is a click on the header,
-                    // and closing the hand for it would flicker on every stray press.
-                    Controls.DragCursors.BeginDrag();
-                    tile.CellBorder.Opacity = 0.65;
-                }
-
-                if (CellAt(pos, tile) is { } target)
-                {
-                    int from = _tiles.IndexOf(tile), to = _tiles.IndexOf(target);
-                    if (from >= 0 && to >= 0 && from != to)
-                    {
-                        _tiles.RemoveAt(from);
-                        _tiles.Insert(to, tile);
-                        LayoutCells();
-                    }
-                }
-            };
-            header.MouseLeftButtonUp += (_, _) =>
-            {
-                if (header.IsMouseCaptured) header.ReleaseMouseCapture();
-                if (ReferenceEquals(_dragTile, tile) && _dragActive) SaveLayout();
-                Controls.DragCursors.EndDrag();
-                tile.CellBorder.Opacity = 1.0;
-                _dragTile = null;
-                _dragActive = false;
-            };
-            // Capture can be torn away (alt-tab, a popup) - never leave a cell dimmed, and never
-            // leave the closed hand on screen for the rest of the session either.
-            header.LostMouseCapture += (_, _) =>
-            {
-                Controls.DragCursors.EndDrag();
-                tile.CellBorder.Opacity = 1.0;
-            };
-        }
-
-        /// <summary>The cell under a grid-space point, ignoring the dragged one.</summary>
-        private MetricTile? CellAt(Point gridPoint, MetricTile ignore)
-        {
-            foreach (var t in _tiles)
-            {
-                if (ReferenceEquals(t, ignore)) continue;
-                var cell = t.CellBorder;
-                if (cell == null || cell.ActualWidth <= 0) continue;
-
-                Point topLeft = cell.TranslatePoint(new Point(0, 0), _cellsGrid);
-                if (gridPoint.X >= topLeft.X && gridPoint.X <= topLeft.X + cell.ActualWidth
-                 && gridPoint.Y >= topLeft.Y && gridPoint.Y <= topLeft.Y + cell.ActualHeight)
-                    return t;
-            }
-            return null;
+            return cell;
         }
 
         /// <summary>Writes a tile's current FieldValues into its cell's own value blocks -
@@ -1193,43 +664,8 @@ namespace KillerShell.Tools
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  CPU per-core toggle
+        //  CPU per-processor counters (the heat strip under the CPU graph)
         // ═══════════════════════════════════════════════════════════
-        private static void ToggleCpuCoreView(MetricTile cpuTile)
-        {
-            var cs = (CpuState)cpuTile.State!;
-            cs.ShowCores = !cs.ShowCores;
-            if (cs.ShowCores) SetUpCoreCountersIfNeeded(cs);
-            cs.GraphArea.Child = cs.ShowCores ? BuildCoreGrid(cs) : cs.AggregateGraph.Host;
-        }
-
-        private static UniformGrid BuildCoreGrid(CpuState cs)
-        {
-            // Built once and cached on the CpuState (cs.CoreGrid) - cs.CoreGraphs itself is only
-            // ever created once too (SetUpCoreCountersIfNeeded's own early-return guard), so
-            // there is never a second set of Host elements to add and never a reason to build a
-            // second UniformGrid. ToggleCpuCoreView just reassigns GraphArea.Child between this
-            // and cs.AggregateGraph.Host on every press.
-            if (cs.CoreGrid != null) return cs.CoreGrid;
-
-            // Rows/Columns left at 0 (WPF default): UniformGrid auto-arranges into a near-square
-            // grid from the child count alone, so this works the same whether the machine has 4
-            // logical processors or 32 - no per-core-count layout logic needed.
-            var grid = new UniformGrid();
-            foreach (var g in cs.CoreGraphs)
-            {
-                // Fill the uniform cell instead of a fixed 50px host: 12 threads at 50px + margins
-                // (3 rows of 54) overran the fixed graph area (160px at the time), so every row
-                // lost its bottom edge. Stretching lets the UniformGrid divide the area exactly,
-                // whatever the core count, and the 1px margin packs the grid tighter than the old 2px.
-                g.Host.Height = double.NaN;
-                g.Host.Margin = new Thickness(1);
-                grid.Children.Add(g.Host);
-            }
-            cs.CoreGrid = grid;
-            return grid;
-        }
-
         private static void SetUpCoreCountersIfNeeded(CpuState cs)
         {
             if (cs.CoreCounters.Length > 0) return;
@@ -1241,18 +677,16 @@ namespace KillerShell.Tools
                 names.Sort((a, b) => int.Parse(a, CultureInfo.InvariantCulture).CompareTo(int.Parse(b, CultureInfo.InvariantCulture)));
 
                 var counters = new PerformanceCounter[names.Count];
-                var graphs = new Sparkline[names.Count];
                 for (int i = 0; i < names.Count; i++)
                 {
                     counters[i] = TryCreateCounter("Processor", "% Processor Time", names[i])!;
                     if (counters[i] == null) return;
                     Services.PerformanceCounterService.Prime(counters[i]);
-                    graphs[i] = new Sparkline(HistorySamples, 100, "PrimaryBrush");
                 }
                 cs.CoreCounters = counters;
-                cs.CoreGraphs = graphs;
+                BuildCoreCells(cs);   // PerformanceMonitorLayout.cs
             }
-            catch { /* leave empty - the toggled view just shows nothing rather than throw */ }
+            catch { /* leave empty - the strip just stays hidden rather than throw */ }
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1279,6 +713,14 @@ namespace KillerShell.Tools
                             var cs = (CpuState)tile.State!;
                             cs.Total = TryCreateCounter("Processor", "% Processor Time", "_Total");
                             Services.PerformanceCounterService.Prime(cs.Total);
+
+                            // Each of these is optional on its own: a machine missing one loses
+                            // that one readout (its field stays a dash), not the CPU panel.
+                            cs.Performance = TryCreateCounter("Processor Information", "% Processor Performance", "_Total");
+                            Services.PerformanceCounterService.Prime(cs.Performance);
+                            cs.Processes = TryCreateCounterNoInstance("System", "Processes");
+                            cs.Threads = TryCreateCounterNoInstance("System", "Threads");
+                            SetUpCoreCountersIfNeeded(cs);
                             break;
                         }
                         case MetricKind.Ram:
@@ -1286,6 +728,7 @@ namespace KillerShell.Tools
                             var rs = (RamState)tile.State!;
                             rs.Avail = TryCreateCounterNoInstance("Memory", "Available MBytes");
                             rs.Committed = TryCreateCounterNoInstance("Memory", "Committed Bytes");
+                            rs.Free = TryCreateCounterNoInstance("Memory", "Free & Zero Page List Bytes");
                             break;
                         }
                         case MetricKind.Disk:
@@ -1355,6 +798,7 @@ namespace KillerShell.Tools
             }
 
             SampleGpus();
+            UpdateSummary();   // PerformanceMonitorLayout.cs - after every panel has its number
         }
 
         private static void SampleCpuTile(MetricTile tile)
@@ -1365,16 +809,33 @@ namespace KillerShell.Tools
             {
                 if (!Services.PerformanceCounterService.TrySample(cs.Total, out double rawPercent)) return;
                 double pct = Services.PerformanceCounterService.ClampPercent(rawPercent);
-                tile.TileSummaryText.Text = pct.ToString("0.0", CultureInfo.InvariantCulture) + " %";
+                tile.TileSummaryText.Text = pct.ToString("0", CultureInfo.InvariantCulture) + " %";
+                tile.Primary = pct;
                 cs.AggregateGraph.Push(pct);
 
-                if (cs.ShowCores)
-                    for (int i = 0; i < cs.CoreCounters.Length; i++)
-                    {
-                        if (!Services.PerformanceCounterService.TrySample(cs.CoreCounters[i], out double rawCore)) return;
-                        double c = Services.PerformanceCounterService.ClampPercent(rawCore);
-                        cs.CoreGraphs[i].Push(c);
-                    }
+                for (int i = 0; i < cs.CoreCounters.Length && i < cs.CoreFills.Length; i++)
+                {
+                    if (!Services.PerformanceCounterService.TrySample(cs.CoreCounters[i], out double rawCore)) break;
+                    double c = Services.PerformanceCounterService.ClampPercent(rawCore);
+                    // A floor, so an idle processor is a faint square rather than a hole in the
+                    // strip; the rest of the range is the load.
+                    cs.CoreFills[i].Opacity = 0.10 + 0.90 * (c / 100.0);
+                    cs.CoreCells[i].ToolTip = i.ToString(CultureInfo.InvariantCulture) + ": "
+                        + c.ToString("0", CultureInfo.InvariantCulture) + " %";
+                }
+
+                // Live clock = the base clock scaled by how hard the package is being driven. It
+                // runs past 100 % under turbo, which is the point of showing it.
+                if (cs.Performance != null && cs.BaseMhz > 0
+                    && Services.PerformanceCounterService.TrySample(cs.Performance, out double perfPct) && perfPct > 0)
+                    tile.FieldValues[2] = (cs.BaseMhz * perfPct / 100.0 / 1000.0)
+                        .ToString("0.00", CultureInfo.InvariantCulture) + " GHz";
+                if (cs.Processes != null && Services.PerformanceCounterService.TrySample(cs.Processes, out double procs))
+                    tile.FieldValues[3] = procs.ToString("N0", CultureInfo.CurrentCulture);
+                if (cs.Threads != null && Services.PerformanceCounterService.TrySample(cs.Threads, out double threads))
+                    tile.FieldValues[4] = threads.ToString("N0", CultureInfo.CurrentCulture);
+                tile.FieldValues[5] = Services.PerformanceMetricFormatter.UpTime(
+                    TimeSpan.FromMilliseconds(GetTickCount64()));
 
                 RefreshDetailFieldValues(tile);
             }
@@ -1397,8 +858,29 @@ namespace KillerShell.Tools
                         _totalRamGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB (" +
                         pct.ToString("0", CultureInfo.InvariantCulture) + "%)";
                     double clamped = Math.Min(100, pct);
+                    tile.Primary = clamped;
                     if (tile.BigGraphs.Length > 0) tile.BigGraphs[0].Push(clamped);
                     tile.FieldValues[0] = availGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+
+                    // The composition bar: in use, then cached (available memory that still holds
+                    // file data and is handed back on demand), then truly free. Without the free
+                    // counter the bar is two segments, in use and available.
+                    double freeGb = availGb;
+                    if (rs.Free != null && Services.PerformanceCounterService.TrySample(rs.Free, out double freeBytes))
+                        freeGb = Math.Min(availGb, freeBytes / 1024.0 / 1024.0 / 1024.0);
+                    double cachedGb = Math.Max(0, availGb - freeGb);
+                    if (rs.BarColumns.Length == 3)
+                    {
+                        rs.BarColumns[0].Width = new GridLength(usedGb, GridUnitType.Star);
+                        rs.BarColumns[1].Width = new GridLength(cachedGb, GridUnitType.Star);
+                        rs.BarColumns[2].Width = new GridLength(freeGb, GridUnitType.Star);
+                    }
+                    if (tile.LegendValueBlocks.Length >= 3)
+                    {
+                        tile.LegendValueBlocks[0].Text = usedGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+                        tile.LegendValueBlocks[1].Text = cachedGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+                        tile.LegendValueBlocks[2].Text = freeGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+                    }
                 }
                 else
                 {
@@ -1428,8 +910,9 @@ namespace KillerShell.Tools
                 double activePct = Services.PerformanceCounterService.ClampPercent(activeRaw);
 
                 tile.TileSummaryText.Text = activePct.ToString("0", CultureInfo.InvariantCulture) + " %";
-                tile.BigGraphs[0].Push(activePct);
-                tile.BigGraphs[1].Push(readBps, writeBps);
+                tile.Primary = activePct;
+                tile.BigGraphs[0].Push(readBps, writeBps);
+                UpdateRowActivity(tile, activePct >= 1 || readBps + writeBps >= RowActivityBytes);   // PerformanceMonitorLayout.cs
                 if (tile.LegendValueBlocks.Length >= 2)
                 {
                     tile.LegendValueBlocks[0].Text = FormatThroughput(readBps);
@@ -1454,7 +937,10 @@ namespace KillerShell.Tools
                     tile.LegendValueBlocks[0].Text = FormatThroughput(sent);
                     tile.LegendValueBlocks[1].Text = FormatThroughput(recv);
                 }
+                tile.Primary = sent + recv;
+                tile.TileSummaryText.Text = FormatThroughput(sent + recv);
                 tile.BigGraphs[0].Push(sent, recv);
+                UpdateRowActivity(tile, sent + recv >= RowActivityBytes);   // PerformanceMonitorLayout.cs
 
                 RefreshDetailFieldValues(tile);
             }
@@ -1647,6 +1133,7 @@ namespace KillerShell.Tools
             var gs = (GpuState)tile.State!;
 
             tile.BigGraphs[0].Push(util);
+            tile.Primary = util;
             tile.TileSummaryText.Text = util.ToString("0", CultureInfo.InvariantCulture) + " %";
 
             if (gs.MemoryAvailable && tile.BigGraphs.Length >= 2)
@@ -1670,6 +1157,11 @@ namespace KillerShell.Tools
 
         private static string FormatBytes(double bytes)
             => Services.PerformanceMetricFormatter.Bytes(bytes);
+
+        // Milliseconds since boot. Environment.TickCount wraps after 24.9 days, which is well
+        // inside how long a server or a field laptop stays up.
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern ulong GetTickCount64();
 
         // ═══════════════════════════════════════════════════════════
         //  STATUS LINE  -  the themed stand-in for a Win32 message box
@@ -1702,28 +1194,84 @@ namespace KillerShell.Tools
             internal readonly Border Host;
             private readonly Canvas _canvas;
             private readonly Polyline[] _lines;
+            private readonly Polygon[] _fills;
+            private readonly Line[] _gridLines = new Line[3];
+            private readonly TextBlock _scaleLabel;
+            private readonly Border _grain;
             private readonly List<double>[] _seriesSamples;
             private readonly int _maxSamples;
             private readonly Services.MetricHistory _history;
+
+            /// <summary>
+            /// Two series drawn away from a shared center line instead of over each other: the
+            /// first rises from it, the second hangs below it, both on the one scale. For a pair
+            /// that are read against each other (send and receive, read and write), where an
+            /// overlay lets the busier trace bury the quieter one.
+            /// </summary>
+            internal bool Mirrored { get; set; }
+
+            /// <summary>What the top of an AUTO-scaled graph is worth, in words. A trace with no
+            /// stated scale only shows shape; this is what makes it a measurement. Fixed-scale
+            /// graphs are percentages and label themselves.</summary>
+            internal Func<double, string>? ScaleFormatter { get; set; }
 
             internal Sparkline(int maxSamples, double fixedScaleMax, params string[] brushKeys)
             {
                 _maxSamples = maxSamples;
                 int n = Math.Max(1, brushKeys.Length);
                 _lines = new Polyline[n];
+                _fills = new Polygon[n];
                 _seriesSamples = new List<double>[n];
                 _history = new Services.MetricHistory(n, maxSamples, fixedScaleMax);
 
                 _canvas = new Canvas { ClipToBounds = true };
+
+                // Quarter lines first, so the fills and traces draw over them. Quarters of a
+                // plain graph are 25/50/75 %; on a mirrored one the middle line IS the axis.
+                for (int i = 0; i < _gridLines.Length; i++)
+                {
+                    var rule = new Line
+                    {
+                        StrokeThickness = 1,
+                        StrokeDashArray = [2, 4],
+                        Opacity = 0.28,
+                        SnapsToDevicePixels = true,
+                    };
+                    rule.SetResourceReference(Shape.StrokeProperty, "MonitorMutedBrush");
+                    _gridLines[i] = rule;
+                    _canvas.Children.Add(rule);
+                }
+
+                // Every fill under every trace, so a second series' fill never paints over the
+                // first series' line.
+                for (int i = 0; i < n; i++)
+                {
+                    var fill = new Polygon { Opacity = 0.18 };
+                    fill.SetResourceReference(Shape.FillProperty, i < brushKeys.Length ? brushKeys[i] : "MonitorAccentBrush");
+                    _fills[i] = fill;
+                    _canvas.Children.Add(fill);
+                }
                 for (int i = 0; i < n; i++)
                 {
                     _seriesSamples[i] = (List<double>)_history.Series[i];
                     var line = new Polyline { StrokeThickness = 1.5 };
-                    line.SetResourceReference(Shape.StrokeProperty, i < brushKeys.Length ? brushKeys[i] : "PrimaryBrush");
+                    line.SetResourceReference(Shape.StrokeProperty, i < brushKeys.Length ? brushKeys[i] : "MonitorAccentBrush");
                     _lines[i] = line;
                     _canvas.Children.Add(line);
                 }
                 _canvas.SizeChanged += (_, _) => Redraw();
+
+                _scaleLabel = new TextBlock
+                {
+                    FontSize = 9,
+                    Margin = new Thickness(5, 2, 0, 0),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    IsHitTestVisible = false,
+                    Text = fixedScaleMax > 0 ? fixedScaleMax.ToString("0", CultureInfo.InvariantCulture) + " %" : string.Empty,
+                };
+                _scaleLabel.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+                _scaleLabel.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
 
                 var wellRadius = new CornerRadius(KillerShell.Services.ThemeManager.Radius("SmallCornerRadius", 3));
 
@@ -1735,10 +1283,12 @@ namespace KillerShell.Tools
                 // well's own corners because a Border does not clip its child.
                 var wellGrain = ToolTabChrome.Grain();
                 wellGrain.CornerRadius = wellRadius;
+                _grain = wellGrain;
 
                 var wellHost = new Grid();
                 wellHost.Children.Add(wellGrain);
                 wellHost.Children.Add(_canvas);
+                wellHost.Children.Add(_scaleLabel);   // over the plot, in its top-left corner
 
                 Host = new Border
                 {
@@ -1758,26 +1308,67 @@ namespace KillerShell.Tools
                 Redraw();
             }
 
+            /// <summary>
+            /// The summary strip's version: the trace and its fill with nothing around them - no
+            /// well, no border, no quarter lines, no scale. At that size it is a shape to glance
+            /// at beside a number, and the full graph it summarizes is on the same screen.
+            /// </summary>
+            internal void MakeBare()
+            {
+                Host.BorderThickness = new Thickness(0);
+                Host.Background = Brushes.Transparent;
+                _grain.Visibility = Visibility.Collapsed;
+                _scaleLabel.Visibility = Visibility.Collapsed;
+                foreach (var rule in _gridLines) rule.Visibility = Visibility.Collapsed;
+            }
+
             private void Redraw()
             {
                 double w = _canvas.ActualWidth, h = _canvas.ActualHeight;
                 double stepX = _maxSamples > 1 ? w / (_maxSamples - 1) : 0;
 
+                for (int i = 0; i < _gridLines.Length; i++)
+                {
+                    double y = Math.Round(h * (i + 1) / 4.0);
+                    _gridLines[i].X1 = 0; _gridLines[i].X2 = w;
+                    _gridLines[i].Y1 = y; _gridLines[i].Y2 = y;
+                }
+
+                if (ScaleFormatter != null) _scaleLabel.Text = ScaleFormatter(_history.ScaleMax);
+
+                // A plain graph grows up from its floor. A mirrored one has its axis across the
+                // middle and half the height to each side of it.
+                bool mirrored = Mirrored && _lines.Length == 2;
+                double axis = mirrored ? h / 2 : h;
+                double reach = mirrored ? h / 2 : h;
+
                 for (int s = 0; s < _lines.Length; s++)
                 {
                     var samples = _seriesSamples[s];
-                    if (w <= 0 || h <= 0 || samples.Count == 0) { _lines[s].Points = []; continue; }
+                    if (w <= 0 || h <= 0 || samples.Count == 0)
+                    {
+                        _lines[s].Points = [];
+                        _fills[s].Points = [];
+                        continue;
+                    }
 
+                    double direction = mirrored && s == 1 ? +1 : -1;   // screen y grows downward
                     var pts = new PointCollection(samples.Count);
                     int startIndex = _maxSamples - samples.Count;   // newest sample lands at the right edge
                     for (int i = 0; i < samples.Count; i++)
                     {
                         double x = (startIndex + i) * stepX;
                         double frac = _history.ScaleMax > 0 ? Math.Min(1.0, samples[i] / _history.ScaleMax) : 0;
-                        double y = h - frac * h;
-                        pts.Add(new Point(x, y));
+                        pts.Add(new Point(x, axis + direction * frac * reach));
                     }
                     _lines[s].Points = pts;
+
+                    // The same outline closed back along the axis.
+                    var area = new PointCollection(samples.Count + 2);
+                    foreach (var p in pts) area.Add(p);
+                    area.Add(new Point(pts[pts.Count - 1].X, axis));
+                    area.Add(new Point(pts[0].X, axis));
+                    _fills[s].Points = area;
                 }
             }
         }
