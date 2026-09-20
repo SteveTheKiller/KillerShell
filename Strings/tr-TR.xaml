@@ -104,6 +104,17 @@
     <sys:String x:Key="Str_Btn_Quit">Çıkış</sys:String>
     <sys:String x:Key="Str_Col_Size">boyut</sys:String>
     <sys:String x:Key="Str_Col_Modified">değiştirilme</sys:String>
+    <sys:String x:Key="Str_Col_Type">tür</sys:String>
+    <sys:String x:Key="Str_Col_Created">oluşturulma</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Tarihe göre grupla</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Bugün</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Dün</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">Bu haftanın başlarında</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">Geçen hafta</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">Bu ayın başlarında</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">Geçen ay</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Bu yılın başlarında</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">Uzun zaman önce</sys:String>
     <sys:String x:Key="Str_Sum_Counts">{0} klasör, {1} dosya</sys:String>
     <sys:String x:Key="Str_TT_ViewList">Liste görünümü</sys:String>
     <sys:String x:Key="Str_TT_ViewIcons">Simge görünümü</sys:String>

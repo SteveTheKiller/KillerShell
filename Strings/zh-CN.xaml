@@ -104,6 +104,17 @@
     <sys:String x:Key="Str_Btn_Quit">退出</sys:String>
     <sys:String x:Key="Str_Col_Size">大小</sys:String>
     <sys:String x:Key="Str_Col_Modified">修改时间</sys:String>
+    <sys:String x:Key="Str_Col_Type">类型</sys:String>
+    <sys:String x:Key="Str_Col_Created">创建时间</sys:String>
+    <sys:String x:Key="Str_GroupByDate">按日期分组</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">今天</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">昨天</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">本周早些时候</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">上周</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">本月早些时候</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">上月</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">今年早些时候</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">很久以前</sys:String>
     <sys:String x:Key="Str_Sum_Counts">{0} 个文件夹，{1} 个文件</sys:String>
     <sys:String x:Key="Str_TT_ViewList">列表视图</sys:String>
     <sys:String x:Key="Str_TT_ViewIcons">图标视图</sys:String>

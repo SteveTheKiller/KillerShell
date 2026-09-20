@@ -144,6 +144,17 @@
     <sys:String x:Key="Str_Btn_Quit">Выйти</sys:String>
     <sys:String x:Key="Str_Col_Size">размер</sys:String>
     <sys:String x:Key="Str_Col_Modified">изменён</sys:String>
+    <sys:String x:Key="Str_Col_Type">тип</sys:String>
+    <sys:String x:Key="Str_Col_Created">создан</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Группировать по дате</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Сегодня</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Вчера</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">Ранее на этой неделе</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">На прошлой неделе</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">Ранее в этом месяце</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">В прошлом месяце</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Ранее в этом году</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">Давно</sys:String>
     <sys:String x:Key="Str_Details_Empty">Ничего не выбрано</sys:String>
     <sys:String x:Key="Str_Details_Created">создан</sys:String>
     <sys:String x:Key="Str_Details_Type">тип</sys:String>

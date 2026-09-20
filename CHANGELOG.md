@@ -8,7 +8,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 1.2.4 rebuilds the file list around an Explorer-style compact view with Ctrl+wheel view cycling, moves the pane menubar toggle to the family-standard Alt+M, and adds automated test coverage across the tool suite.
 
+### Added
+- Details view has sortable Type and Created columns; Type shows the same names Explorer does. Show or hide them from the column header's right-click menu.
+- Sorting Details view by a date groups the files under Explorer's headings, from Today to A long time ago. Group by date in the header menu turns it off.
+
 ### Changed
+- Dates in the file list and details pane use the Windows short date and time format, such as 9/14/2026 10:09 PM.
 - Network commands in PowerShell terminals use the same address, MAC, port, timing, and success/failure colors as KillerScan.
 - The file list's List view is Explorer's compact layout - a 16px icon and name per row, flowing into vertical columns - replacing the expandable cards.
 - Ctrl+wheel over the results cycles between Icons, List and Details at the ends of each mode's size range, in addition to stepping icon sizes within a mode.

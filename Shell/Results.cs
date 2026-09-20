@@ -110,6 +110,8 @@ namespace KillerShell.Shell
             Pane.SortFolderItem.Tag   = idx == 2 ? "on" : null;
             Pane.SortSizeItem.Tag     = idx == 3 ? "on" : null;
             Pane.SortModifiedItem.Tag = idx == 4 ? "on" : null;
+            Pane.SortTypeItem.Tag     = idx == 5 ? "on" : null;
+            Pane.SortCreatedItem.Tag  = idx == 6 ? "on" : null;
         }
 
         internal void SortDir_Click(object sender, RoutedEventArgs e)
@@ -145,12 +147,23 @@ namespace KillerShell.Shell
                 UpdateColumnArrows();   // ResultsView.cs
             }
 
+            // Cleared with the sort and for the same reason: a group description on a view that
+            // is still being filled regroups on every add.
+            if (view.GroupDescriptions.Count > 0) view.GroupDescriptions.Clear();
+
             if (t.IsSearching) return;   // deferred - re-applied when the search finishes
+
+            // Date groups (Today, Last week, ...) when the details view is sorted by a date
+            // column. Null for every other sort, view and pane setting.
+            string? groupBy = DateGroupProperty(t);
 
             // Folders first while browsing, whatever the chosen key is, the way every file
             // manager does it. IsDirectory descending puts true before false. Search results are
             // all files, so this is skipped there rather than being a no-op sort on every add.
-            if (t.IsBrowsing && FoldersOnTop)   // ViewOptions.cs
+            //
+            // Not under date groups. A group sits where its first row lands, so folders sorted
+            // ahead of the files would drag their groups to the top out of date order.
+            if (groupBy == null && t.IsBrowsing && FoldersOnTop)   // ViewOptions.cs
                 view.SortDescriptions.Add(new System.ComponentModel.SortDescription(
                     nameof(SearchResult.IsDirectory), System.ComponentModel.ListSortDirection.Descending));
 
@@ -160,6 +173,8 @@ namespace KillerShell.Shell
                 2 => nameof(SearchResult.Directory),
                 3 => nameof(SearchResult.SizeBytes),
                 4 => nameof(SearchResult.Modified),
+                5 => nameof(SearchResult.TypeName),
+                6 => nameof(SearchResult.Created),
                 _ => null,   // 0 = as found (Seq = discovery order)
             };
             // "as found" reverses too: descending on the discovery sequence.
@@ -168,6 +183,38 @@ namespace KillerShell.Shell
                 view.SortDescriptions.Add(new System.ComponentModel.SortDescription(prop,
                     t.SortAsc ? System.ComponentModel.ListSortDirection.Ascending
                               : System.ComponentModel.ListSortDirection.Descending));
+
+            // Same type, then by name, the way a type sort reads in Explorer; without it rows of
+            // one type keep whatever order the last sort left them in.
+            if (t.SortIndex == 5)
+                view.SortDescriptions.Add(new System.ComponentModel.SortDescription(
+                    nameof(SearchResult.FileName), System.ComponentModel.ListSortDirection.Ascending));
+
+            // After the sort, so the groups form over rows that are already in date order.
+            if (groupBy != null)
+                view.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription(groupBy));
+        }
+
+        /// <summary>
+        /// The property to group <paramref name="t"/>'s rows on, or null for no groups.
+        /// </summary>
+        /// <remarks>
+        /// Details view only: the list and icon views lay out through VirtualizingWrapPanel,
+        /// which does not virtualize inside groups, and a grouped folder of six figures there
+        /// would realize every row.
+        /// </remarks>
+        private string? DateGroupProperty(SearchTab t)
+        {
+            if (t.SortIndex != 4 && t.SortIndex != 6) return null;
+
+            // A tab still being built is not in either strip yet; it is headed for the focused
+            // pane, so that pane's settings are the ones that will apply to it.
+            FilePane pane = LeftPane.Tabs.Contains(t) ? LeftPane
+                          : RightPane.Tabs.Contains(t) ? RightPane : Pane;
+            if (pane.ViewMode != 2 || !pane.ViewState.DateGroups) return null;
+
+            return t.SortIndex == 4 ? nameof(SearchResult.ModifiedGroup)
+                                    : nameof(SearchResult.CreatedGroup);
         }
 
         // ═══════════════════════════════════════════════════════════

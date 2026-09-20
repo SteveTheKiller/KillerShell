@@ -43,8 +43,26 @@ namespace KillerShell.Models
             }
         }
 
-        public string ModifiedLabel =>
-            Modified == default ? string.Empty : Modified.ToString("yyyy-MM-dd HH:mm");
+        // The culture's short date and short time ("9/14/2026 10:09 PM" under en-US), which is
+        // what Explorer's date columns show. One format for every date the listing draws.
+        internal static string DateLabel(System.DateTime d) =>
+            d == default ? string.Empty : d.ToString("g", System.Globalization.CultureInfo.CurrentCulture);
+
+        public string ModifiedLabel => DateLabel(Modified);
+
+        // Stat'd alongside Modified wherever the listing already holds the file's info, so the
+        // Created column and its sort never go back to the disk per row.
+        public System.DateTime Created { get; set; }
+
+        public string CreatedLabel => DateLabel(Created);
+
+        /// <summary>The shell's name for this kind of file ("PDF Document", "File folder"),
+        /// cached per extension (Services/ShellTypeNames.cs).</summary>
+        public string TypeName => Services.ShellTypeNames.For(FilePath, IsDirectory);
+
+        // Explorer's date buckets, as the key the details view groups on (DateGroups.cs).
+        public int ModifiedGroup => Services.DateGroups.KeyFor(Modified);
+        public int CreatedGroup  => Services.DateGroups.KeyFor(Created);
 
         /// <summary>Directory with zero-width break opportunities after each backslash,
         /// so wrapped paths break cleanly at separators instead of mid-name.</summary>
@@ -83,6 +101,7 @@ namespace KillerShell.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileName)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilePath)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Icon)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TypeName)));
         }
 
         /// <summary>Only matches with line hits - filename-term matches carry no useful

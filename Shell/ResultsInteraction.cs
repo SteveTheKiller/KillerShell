@@ -172,7 +172,7 @@ namespace KillerShell.Shell
             var host = ItemsHost();
             if (host == null) return;
 
-            foreach (var child in host.Children.OfType<ListBoxItem>())
+            foreach (var child in RealizedRows(host))
             {
                 Rect bounds;
                 try
@@ -186,6 +186,29 @@ namespace KillerShell.Shell
 
                 if (hit) child.IsSelected = true;
                 else if (!_marqueeAdditive) child.IsSelected = false;
+            }
+        }
+
+        // Under date groups (Results.cs) the host holds GroupItems and the rows sit one panel
+        // further down, inside each group's own presenter.
+        private static IEnumerable<ListBoxItem> RealizedRows(Panel host)
+        {
+            foreach (var c in host.Children)
+            {
+                if (c is ListBoxItem row) yield return row;
+                else if (c is GroupItem group)
+                    foreach (var inner in RowsUnder(group)) yield return inner;
+            }
+        }
+
+        private static IEnumerable<ListBoxItem> RowsUnder(DependencyObject root)
+        {
+            int n = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < n; i++)
+            {
+                var c = VisualTreeHelper.GetChild(root, i);
+                if (c is ListBoxItem row) yield return row;
+                else foreach (var inner in RowsUnder(c)) yield return inner;
             }
         }
 

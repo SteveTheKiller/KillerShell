@@ -144,6 +144,17 @@
     <sys:String x:Key="Str_Chk_RememberChoice">Zapamiętaj mój wybór</sys:String>
     <sys:String x:Key="Str_Col_Size">rozmiar</sys:String>
     <sys:String x:Key="Str_Col_Modified">zmodyfikowano</sys:String>
+    <sys:String x:Key="Str_Col_Type">typ</sys:String>
+    <sys:String x:Key="Str_Col_Created">utworzono</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Grupuj według daty</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Dzisiaj</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Wczoraj</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">Wcześniej w tym tygodniu</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">W zeszłym tygodniu</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">Wcześniej w tym miesiącu</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">W zeszłym miesiącu</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Wcześniej w tym roku</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">Dawno temu</sys:String>
     <sys:String x:Key="Str_Details_Empty">Nie wybrano elementu</sys:String>
     <sys:String x:Key="Str_Details_Created">utworzono</sys:String>
     <sys:String x:Key="Str_Details_Type">typ</sys:String>

@@ -446,7 +446,7 @@ namespace KillerShell.Shell
             // file opened through a dialog while --demo is up.
             if (DemoMode && Services.DemoFs.Find(path) is { } demoEntry)
             {
-                pane.DetailsCreatedText.Text = demoEntry.Created.ToString("yyyy-MM-dd HH:mm");
+                pane.DetailsCreatedText.Text = Models.SearchResult.DateLabel(demoEntry.Created);
                 pane.DetailsAttrText.Text = "-";
             }
             else
@@ -476,7 +476,7 @@ namespace KillerShell.Shell
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (gen != pane.DetailsGen) return;   // a newer selection already landed
-                    pane.DetailsCreatedText.Text = created == default ? "-" : created.ToString("yyyy-MM-dd HH:mm");
+                    pane.DetailsCreatedText.Text = created == default ? "-" : Models.SearchResult.DateLabel(created);
                     pane.DetailsAttrText.Text = attrs.Length > 0 ? attrs : "-";
                     CorrectDetailsPaneHeight(pane);
                 }));

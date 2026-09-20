@@ -126,11 +126,27 @@ namespace KillerShell.Shell
         internal const double DefaultLocationWidth = 240;
         internal const double DefaultSizeWidth     = 86;
         internal const double DefaultModifiedWidth = 128;
+        internal const double DefaultTypeWidth     = 150;
+        internal const double DefaultCreatedWidth  = 128;
 
         private double _namePx     = DefaultNameWidth;
         private double _locationPx = DefaultLocationWidth;
         private double _sizePx     = DefaultSizeWidth;
         private double _modifiedPx = DefaultModifiedWidth;
+        private double _typePx     = DefaultTypeWidth;
+        private double _createdPx  = DefaultCreatedWidth;
+
+        // Every width the header and the rows bind to. A change to any one column's width or
+        // visibility moves the fit factor, and the fit factor is in all of them.
+        private void NotifyColumnWidths()
+        {
+            Notify(nameof(NameWidth));
+            Notify(nameof(LocationWidth));
+            Notify(nameof(SizeWidth));
+            Notify(nameof(ModifiedWidth));
+            Notify(nameof(TypeWidth));
+            Notify(nameof(CreatedWidth));
+        }
 
         // Zero while browsing, where the location repeats the folder you are already standing in
         // on every single row; restored for search results, which is the one case where rows come
@@ -154,6 +170,8 @@ namespace KillerShell.Shell
                 Notify(nameof(NameWidth));
                 Notify(nameof(SizeWidth));
                 Notify(nameof(ModifiedWidth));
+                Notify(nameof(TypeWidth));
+                Notify(nameof(CreatedWidth));
             }
         }
 
@@ -184,6 +202,8 @@ namespace KillerShell.Shell
                 Notify(nameof(NameWidth));
                 Notify(nameof(LocationWidth));
                 Notify(nameof(ModifiedWidth));
+                Notify(nameof(TypeWidth));
+                Notify(nameof(CreatedWidth));
             }
         }
 
@@ -201,6 +221,64 @@ namespace KillerShell.Shell
                 Notify(nameof(NameWidth));
                 Notify(nameof(LocationWidth));
                 Notify(nameof(SizeWidth));
+                Notify(nameof(TypeWidth));
+                Notify(nameof(CreatedWidth));
+            }
+        }
+
+        private bool _typeVisible = true;
+
+        public bool TypeVisible
+        {
+            get => _typeVisible;
+            set
+            {
+                if (_typeVisible == value) return;
+                _typeVisible = value;
+                Notify();
+                Notify(nameof(TypeGripVisibility));
+                NotifyColumnWidths();
+            }
+        }
+
+        // A hidden column is zero wide but its grip is not, and a grip left behind would sit on
+        // top of its neighbor's and resize a column nobody can see.
+        public Visibility TypeGripVisibility =>
+            _typeVisible ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility CreatedGripVisibility =>
+            _createdVisible ? Visibility.Visible : Visibility.Collapsed;
+
+        // Off until asked for, the way Explorer ships it: most listings are read by when a file
+        // last changed, and a second date column costs the name its width.
+        private bool _createdVisible;
+
+        public bool CreatedVisible
+        {
+            get => _createdVisible;
+            set
+            {
+                if (_createdVisible == value) return;
+                _createdVisible = value;
+                Notify();
+                Notify(nameof(CreatedGripVisibility));
+                NotifyColumnWidths();
+            }
+        }
+
+        // Date groups (Today, Yesterday, Last week, ...) over a details listing sorted by a date
+        // column. Read by ApplySort (Results.cs), which is where a change takes effect - the
+        // window listens for this property and re-sorts the pane's tabs (InitResultsView).
+        private bool _dateGroups = true;
+
+        public bool DateGroups
+        {
+            get => _dateGroups;
+            set
+            {
+                if (_dateGroups == value) return;
+                _dateGroups = value;
+                Notify();
             }
         }
 
@@ -226,6 +304,8 @@ namespace KillerShell.Shell
                 Notify(nameof(LocationWidth));
                 Notify(nameof(SizeWidth));
                 Notify(nameof(ModifiedWidth));
+                Notify(nameof(TypeWidth));
+                Notify(nameof(CreatedWidth));
             }
         }
 
@@ -238,6 +318,8 @@ namespace KillerShell.Shell
                 double want = _namePx
                             + (_sizeVisible ? _sizePx : 0)
                             + (_modifiedVisible ? _modifiedPx : 0)
+                            + (_typeVisible ? _typePx : 0)
+                            + (_createdVisible ? _createdPx : 0)
                             + (_locationHidden ? 0 : _locationPx);
                 if (want <= _availableWidth || want <= 0) return 1;
                 return _availableWidth / want;
@@ -253,6 +335,8 @@ namespace KillerShell.Shell
         public GridLength LocationWidth => _locationHidden ? new GridLength(0) : new GridLength(Fit(_locationPx));
         public GridLength SizeWidth     => _sizeVisible ? new GridLength(Fit(_sizePx)) : new GridLength(0);
         public GridLength ModifiedWidth => _modifiedVisible ? new GridLength(Fit(_modifiedPx)) : new GridLength(0);
+        public GridLength TypeWidth     => _typeVisible ? new GridLength(Fit(_typePx)) : new GridLength(0);
+        public GridLength CreatedWidth  => _createdVisible ? new GridLength(Fit(_createdPx)) : new GridLength(0);
 
         /// <summary>Set one column's width, clamped. Returns what it actually became.</summary>
         /// <remarks>
@@ -268,6 +352,8 @@ namespace KillerShell.Shell
                 case 2: _locationPx = px; Notify(nameof(LocationWidth)); break;
                 case 3: _sizePx     = px; Notify(nameof(SizeWidth));     break;
                 case 4: _modifiedPx = px; Notify(nameof(ModifiedWidth)); break;
+                case 5: _typePx     = px; Notify(nameof(TypeWidth));     break;
+                case 6: _createdPx  = px; Notify(nameof(CreatedWidth));  break;
             }
             return px;
         }
@@ -278,6 +364,8 @@ namespace KillerShell.Shell
             1 => _namePx,
             2 => _locationPx,
             3 => _sizePx,
+            5 => _typePx,
+            6 => _createdPx,
             _ => _modifiedPx,
         };
 
@@ -287,6 +375,8 @@ namespace KillerShell.Shell
             1 => DefaultNameWidth,
             2 => DefaultLocationWidth,
             3 => DefaultSizeWidth,
+            5 => DefaultTypeWidth,
+            6 => DefaultCreatedWidth,
             _ => DefaultModifiedWidth,
         };
 
@@ -306,6 +396,8 @@ namespace KillerShell.Shell
             if (column != 2 && !_locationHidden) t += _locationPx;
             if (column != 3 && _sizeVisible) t += _sizePx;
             if (column != 4 && _modifiedVisible) t += _modifiedPx;
+            if (column != 5 && _typeVisible) t += _typePx;
+            if (column != 6 && _createdVisible) t += _createdPx;
             return t;
         }
 
@@ -547,7 +639,7 @@ namespace KillerShell.Shell
 
                 // Dragged details-column widths. Each restored independently, so one bad or
                 // missing value leaves the others alone rather than resetting the whole row.
-                foreach (int col in new[] { 1, 2, 3, 4 })
+                foreach (int col in new[] { 1, 2, 3, 4, 5, 6 })
                     if (double.TryParse(Services.ThemeManager.GetSetting(ColSettingKey(col) + key), NumberStyles.Float,
                                         CultureInfo.InvariantCulture, out double w))
                         p.ViewState.SetColumnWidth(col, w);
@@ -558,9 +650,30 @@ namespace KillerShell.Shell
                 // already has its own context-driven show/hide and is left out of this menu so
                 // the two mechanisms cannot fight over the same column.
                 Services.ColumnVisibilityMenu.RestoreVisibility("ResultsDetails" + key, DetailsColumnEntries(p));
+
+                // The header menu flips DateGroups on the pane's state; grouping lives on each
+                // tab's collection view, so the tabs have to be re-sorted for it to show.
+                var pane = p;
+                p.ViewState.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName == nameof(ResultsViewState.DateGroups)) ReapplyDateSorts(pane);
+                };
             }
 
             ApplyResultsView();
+
+            // Tab restore sorted its tabs before the view mode and the group setting above were
+            // known, and date groups depend on both.
+            ReapplyDateSorts(LeftPane);
+            ReapplyDateSorts(RightPane);
+        }
+
+        /// <summary>Re-sort the tabs whose date groups a view or setting change can add or remove.
+        /// Only the date-sorted ones: nothing else about a listing depends on the view mode.</summary>
+        private void ReapplyDateSorts(FilePane pane)
+        {
+            foreach (var t in pane.Tabs)
+                if (t.SortIndex == 4 || t.SortIndex == 6) ApplySort(t);   // Results.cs
         }
 
         /// <summary>The Size/Modified toggle entries for ONE pane, rebuilt on demand rather than
@@ -572,6 +685,14 @@ namespace KillerShell.Shell
                 () => pane.ViewState.SizeVisible,     v => pane.ViewState.SizeVisible = v),
             new Services.ColumnVisibilityMenu.Entry("Modified", "Str_Col_Modified", true,
                 () => pane.ViewState.ModifiedVisible, v => pane.ViewState.ModifiedVisible = v),
+            new Services.ColumnVisibilityMenu.Entry("Type", "Str_Col_Type", true,
+                () => pane.ViewState.TypeVisible,     v => pane.ViewState.TypeVisible = v),
+            new Services.ColumnVisibilityMenu.Entry("Created", "Str_Col_Created", false,
+                () => pane.ViewState.CreatedVisible,  v => pane.ViewState.CreatedVisible = v),
+            // Not a column, but it is a checkable fact about this header's listing and it
+            // persists the same way, so it rides the same menu.
+            new Services.ColumnVisibilityMenu.Entry("DateGroups", "Str_GroupByDate", true,
+                () => pane.ViewState.DateGroups,      v => pane.ViewState.DateGroups = v),
         ];
 
         /// <summary>Right-click the details column-header band: the same shared toggle menu the
@@ -594,7 +715,13 @@ namespace KillerShell.Shell
         {
             if (Pane.ViewMode == mode) return;
             Pane.ViewMode = mode;
+
+            // Date groups exist in details view only, and the wrap panels must never lay out a
+            // grouped view (they cannot virtualize inside groups): the groups come off BEFORE the
+            // panel changes on the way out of details, and go on AFTER it on the way in.
+            if (mode != 2) ReapplyDateSorts(Pane);
             ApplyResultsViewToPane();
+            if (mode == 2) ReapplyDateSorts(Pane);
             Services.ThemeManager.SetSetting("ResultsView" + PaneKey(Pane), mode.ToString(CultureInfo.InvariantCulture));
         }
 
@@ -689,6 +816,8 @@ namespace KillerShell.Shell
         internal void ColFolder_Click(object sender, RoutedEventArgs e)   => SetColumnSort(2);
         internal void ColSize_Click(object sender, RoutedEventArgs e)     => SetColumnSort(3);
         internal void ColModified_Click(object sender, RoutedEventArgs e) => SetColumnSort(4);
+        internal void ColType_Click(object sender, RoutedEventArgs e)     => SetColumnSort(5);
+        internal void ColCreated_Click(object sender, RoutedEventArgs e)  => SetColumnSort(6);
 
         private void SetColumnSort(int index)
         {
@@ -703,7 +832,7 @@ namespace KillerShell.Shell
                 _active.SortIndex = index;
                 // Text sorts want A first; size and date want the biggest and newest first, which
                 // is what you are looking for when you click those.
-                _active.SortAsc = index == 1 || index == 2;
+                _active.SortAsc = index == 1 || index == 2 || index == 5;
             }
 
             ApplySort(_active);
@@ -722,6 +851,8 @@ namespace KillerShell.Shell
             Pane.ColFolderArrow.Text = _active.SortIndex == 2 ? a : string.Empty;
             Pane.ColSizeArrow.Text   = _active.SortIndex == 3 ? a : string.Empty;
             Pane.ColModArrow.Text    = _active.SortIndex == 4 ? a : string.Empty;
+            Pane.ColTypeArrow.Text   = _active.SortIndex == 5 ? a : string.Empty;
+            Pane.ColCreatedArrow.Text = _active.SortIndex == 6 ? a : string.Empty;
         }
 
         // ── Icon sizing + view cycling (Ctrl+wheel over the results pane) ───────
@@ -819,6 +950,8 @@ namespace KillerShell.Shell
             1 => "ResultsColName",
             2 => "ResultsColLocation",
             3 => "ResultsColSize",
+            5 => "ResultsColType",
+            6 => "ResultsColCreated",
             _ => "ResultsColModified",
         };
 

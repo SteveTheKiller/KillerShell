@@ -150,6 +150,17 @@
     <sys:String x:Key="Str_Btn_Quit">Kilép</sys:String>
     <sys:String x:Key="Str_Col_Size">méretet</sys:String>
     <sys:String x:Key="Str_Col_Modified">módosított</sys:String>
+    <sys:String x:Key="Str_Col_Type">típus</sys:String>
+    <sys:String x:Key="Str_Col_Created">létrehozva</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Csoportosítás dátum szerint</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Ma</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Tegnap</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">A hét elején</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">Múlt héten</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">A hónap elején</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">Múlt hónapban</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Az év elején</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">Régen</sys:String>
     <sys:String x:Key="Str_Details_Empty">Nincs kiválasztva elem</sys:String>
     <sys:String x:Key="Str_Details_Created">létre</sys:String>
     <sys:String x:Key="Str_Details_Type">típus</sys:String>

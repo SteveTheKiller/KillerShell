@@ -351,6 +351,7 @@ namespace KillerShell.Shell
                         IsDirectory = e.IsDir,
                         SizeBytes   = e.IsDir ? 0 : e.Size,
                         Modified    = e.Modified,
+                        Created     = e.Created,
                         Seq         = seq++,
                     });
                 }
@@ -388,6 +389,7 @@ namespace KillerShell.Shell
                         IsDirectory = isDir,
                         SizeBytes   = isDir ? 0 : SafeLength((FileInfo)e),
                         Modified    = SafeWriteTime(e),
+                        Created     = SafeCreateTime(e),
                         Seq         = seq++,
                     });
                 }
@@ -403,6 +405,13 @@ namespace KillerShell.Shell
         private static DateTime SafeWriteTime(FileSystemInfo i)
         {
             try { return i.LastWriteTime; } catch { return default; }
+        }
+
+        // Already in hand: the enumeration's find data carries the creation time, so this is
+        // not a second stat.
+        private static DateTime SafeCreateTime(FileSystemInfo i)
+        {
+            try { return i.CreationTime; } catch { return default; }
         }
 
         private static long SafeLength(FileInfo f)

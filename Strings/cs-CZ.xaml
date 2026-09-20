@@ -123,6 +123,17 @@
     <sys:String x:Key="Str_Btn_Quit">Ukončit</sys:String>
     <sys:String x:Key="Str_Col_Size">velikost</sys:String>
     <sys:String x:Key="Str_Col_Modified">změněno</sys:String>
+    <sys:String x:Key="Str_Col_Type">typ</sys:String>
+    <sys:String x:Key="Str_Col_Created">vytvořeno</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Seskupit podle data</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Dnes</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Včera</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">Dříve tento týden</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">Minulý týden</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">Dříve tento měsíc</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">Minulý měsíc</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Dříve v tomto roce</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">Před dlouhou dobou</sys:String>
     <sys:String x:Key="Str_Sum_Counts">{0} složek, {1} souborů</sys:String>
     <sys:String x:Key="Str_TT_ViewList">Zobrazení seznamu</sys:String>
     <sys:String x:Key="Str_TT_ViewIcons">Zobrazení ikon</sys:String>

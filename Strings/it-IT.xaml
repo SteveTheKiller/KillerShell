@@ -142,6 +142,17 @@
     <sys:String x:Key="Str_Btn_Quit">Esci</sys:String>
     <sys:String x:Key="Str_Col_Size">dimensione</sys:String>
     <sys:String x:Key="Str_Col_Modified">modificato</sys:String>
+    <sys:String x:Key="Str_Col_Type">tipo</sys:String>
+    <sys:String x:Key="Str_Col_Created">creato</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Raggruppa per data</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Oggi</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Ieri</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">All'inizio della settimana</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">La settimana scorsa</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">All'inizio del mese</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">Il mese scorso</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">All'inizio dell'anno</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">Molto tempo fa</sys:String>
     <sys:String x:Key="Str_Details_Empty">Nessun elemento selezionato</sys:String>
     <sys:String x:Key="Str_Details_Created">creato</sys:String>
     <sys:String x:Key="Str_Details_Type">tipo</sys:String>

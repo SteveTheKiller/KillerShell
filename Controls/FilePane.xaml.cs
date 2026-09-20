@@ -453,6 +453,8 @@ namespace KillerShell
         private void ColFolder_Click(object s, RoutedEventArgs e)          => Owner.ColFolder_Click(s, e);
         private void ColSize_Click(object s, RoutedEventArgs e)            => Owner.ColSize_Click(s, e);
         private void ColModified_Click(object s, RoutedEventArgs e)        => Owner.ColModified_Click(s, e);
+        private void ColType_Click(object s, RoutedEventArgs e)            => Owner.ColType_Click(s, e);
+        private void ColCreated_Click(object s, RoutedEventArgs e)         => Owner.ColCreated_Click(s, e);
         private void ColGrip_MouseDown(object s, MouseButtonEventArgs e)   => Owner.ColGrip_MouseDown(s, e);
         private void ColGrip_MouseMove(object s, MouseEventArgs e)         => Owner.ColGrip_MouseMove(s, e);
         private void ColGrip_MouseUp(object s, MouseButtonEventArgs e)     => Owner.ColGrip_MouseUp(s, e);

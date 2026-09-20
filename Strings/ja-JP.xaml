@@ -123,6 +123,17 @@
     <sys:String x:Key="Str_Btn_Quit">終了</sys:String>
     <sys:String x:Key="Str_Col_Size">サイズ</sys:String>
     <sys:String x:Key="Str_Col_Modified">更新日時</sys:String>
+    <sys:String x:Key="Str_Col_Type">種類</sys:String>
+    <sys:String x:Key="Str_Col_Created">作成日時</sys:String>
+    <sys:String x:Key="Str_GroupByDate">日付でグループ化</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">今日</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">昨日</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">今週に入ってから</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">先週</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">今月に入ってから</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">先月</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">今年に入ってから</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">かなり前</sys:String>
     <sys:String x:Key="Str_Sum_Counts">{0} 個のフォルダー、{1} 個のファイル</sys:String>
     <sys:String x:Key="Str_TT_ViewList">一覧表示</sys:String>
     <sys:String x:Key="Str_TT_ViewIcons">アイコン表示</sys:String>

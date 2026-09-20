@@ -144,6 +144,17 @@
     <sys:String x:Key="Str_Btn_Quit">Шығу</sys:String>
     <sys:String x:Key="Str_Col_Size">өлшемі</sys:String>
     <sys:String x:Key="Str_Col_Modified">өзгертілген</sys:String>
+    <sys:String x:Key="Str_Col_Type">түрі</sys:String>
+    <sys:String x:Key="Str_Col_Created">жасалған</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Күні бойынша топтау</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Бүгін</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Кеше</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">Осы аптаның басында</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">Өткен аптада</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">Осы айдың басында</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">Өткен айда</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Осы жылдың басында</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">Көп уақыт бұрын</sys:String>
     <sys:String x:Key="Str_Details_Empty">Ешнәрсе таңдалмаған</sys:String>
     <sys:String x:Key="Str_Details_Created">жасалған</sys:String>
     <sys:String x:Key="Str_Details_Type">түрі</sys:String>

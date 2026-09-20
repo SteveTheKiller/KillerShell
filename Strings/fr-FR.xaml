@@ -104,6 +104,17 @@
     <sys:String x:Key="Str_Btn_Quit">Quitter</sys:String>
     <sys:String x:Key="Str_Col_Size">taille</sys:String>
     <sys:String x:Key="Str_Col_Modified">modifié</sys:String>
+    <sys:String x:Key="Str_Col_Type">type</sys:String>
+    <sys:String x:Key="Str_Col_Created">créé</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Grouper par date</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Aujourd'hui</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Hier</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">Plus tôt cette semaine</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">La semaine dernière</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">Plus tôt ce mois-ci</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">Le mois dernier</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Plus tôt cette année</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">Il y a longtemps</sys:String>
     <sys:String x:Key="Str_Sum_Counts">{0} dossier(s), {1} fichier(s)</sys:String>
     <sys:String x:Key="Str_TT_ViewList">Vue liste</sys:String>
     <sys:String x:Key="Str_TT_ViewIcons">Vue icônes</sys:String>

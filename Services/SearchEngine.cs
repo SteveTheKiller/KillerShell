@@ -147,6 +147,7 @@ namespace KillerShell.Services
                     var fi = new FileInfo(filePath);
                     result.SizeBytes = fi.Length;
                     result.Modified  = fi.LastWriteTime;
+                    result.Created   = fi.CreationTime;
                 }
                 catch { /* unreadable - sorts to the bottom */ }
                 result.Seq = Interlocked.Increment(ref seq) - 1;

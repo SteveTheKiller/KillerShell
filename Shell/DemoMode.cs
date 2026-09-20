@@ -162,6 +162,7 @@ namespace KillerShell.Shell
                     IsDirectory = e.IsDir,
                     SizeBytes   = e.IsDir ? 0 : e.Size,
                     Modified    = e.Modified,
+                    Created     = e.Created,
                     Seq         = t.Results.Count,
                 });
 

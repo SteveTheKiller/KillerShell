@@ -863,6 +863,12 @@
                                                 Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
                                         <Button x:Name="SortModifiedItem" CommandParameter="4" Content="{DynamicResource Str_Col_Modified}"
                                                 Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
+                                                Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
+                                        <Button x:Name="SortTypeItem" CommandParameter="5" Content="{DynamicResource Str_Col_Type}"
+                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
+                                                Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
+                                        <Button x:Name="SortCreatedItem" CommandParameter="6" Content="{DynamicResource Str_Col_Created}"
+                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
                                                 Padding="10,3" FontSize="11" Click="SortItem_Click"/>
                                     </StackPanel>
                                 </Border>
@@ -1069,6 +1075,8 @@
                             <ColumnDefinition Width="{Binding ViewState.LocationWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                             <ColumnDefinition Width="{Binding ViewState.SizeWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                             <ColumnDefinition Width="{Binding ViewState.ModifiedWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
+                            <ColumnDefinition Width="{Binding ViewState.TypeWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
+                            <ColumnDefinition Width="{Binding ViewState.CreatedWidth, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="1" Style="{StaticResource ColHeaderBtn}" Click="ColName_Click">
@@ -1093,6 +1101,18 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{DynamicResource Str_Col_Modified}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
                                 <TextBlock x:Name="ColModArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Column="5" Style="{StaticResource ColHeaderBtn}" Click="ColType_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Str_Col_Type}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock x:Name="ColTypeArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Column="6" Style="{StaticResource ColHeaderBtn}" Click="ColCreated_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Str_Col_Created}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                <TextBlock x:Name="ColCreatedArrow" FontFamily="Segoe MDL2 Assets" FontSize="8" Margin="4,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
 
@@ -1136,6 +1156,22 @@
                                 ToolTip="{DynamicResource Str_TT_ColResize}"/>
                         <Border Grid.Column="4" Tag="4" Width="6" Margin="0,0,-3,0"
                                 HorizontalAlignment="Right" Background="Transparent" Cursor="SizeWE"
+                                PreviewMouseLeftButtonDown="ColGrip_MouseDown"
+                                PreviewMouseMove="ColGrip_MouseMove"
+                                PreviewMouseLeftButtonUp="ColGrip_MouseUp"
+                                ToolTip="{DynamicResource Str_TT_ColResize}"/>
+                        <!-- Type and Created can both be switched off from the header menu, and
+                             their grips go with them the way Location's does. -->
+                        <Border Grid.Column="5" Tag="5" Width="6" Margin="0,0,-3,0"
+                                HorizontalAlignment="Right" Background="Transparent" Cursor="SizeWE"
+                                Visibility="{Binding ViewState.TypeGripVisibility, RelativeSource={RelativeSource AncestorType=local:FilePane}}"
+                                PreviewMouseLeftButtonDown="ColGrip_MouseDown"
+                                PreviewMouseMove="ColGrip_MouseMove"
+                                PreviewMouseLeftButtonUp="ColGrip_MouseUp"
+                                ToolTip="{DynamicResource Str_TT_ColResize}"/>
+                        <Border Grid.Column="6" Tag="6" Width="6" Margin="0,0,-3,0"
+                                HorizontalAlignment="Right" Background="Transparent" Cursor="SizeWE"
+                                Visibility="{Binding ViewState.CreatedGripVisibility, RelativeSource={RelativeSource AncestorType=local:FilePane}}"
                                 PreviewMouseLeftButtonDown="ColGrip_MouseDown"
                                 PreviewMouseMove="ColGrip_MouseMove"
                                 PreviewMouseLeftButtonUp="ColGrip_MouseUp"
@@ -1933,6 +1969,7 @@
                          FocusVisualStyle="{x:Null}" SelectionMode="Extended"
                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                          VirtualizingPanel.ScrollUnit="Pixel"
+                         VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                          PreviewMouseWheel="ResultsList_PreviewMouseWheel"
                          PreviewMouseLeftButtonDown="ResultsList_PreviewMouseLeftButtonDown"
                          PreviewMouseMove="ResultsList_PreviewMouseMove"
@@ -2201,6 +2238,8 @@
                                         <ColumnDefinition Width="{Binding Tag.LocationWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                         <ColumnDefinition Width="{Binding Tag.SizeWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                         <ColumnDefinition Width="{Binding Tag.ModifiedWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                        <ColumnDefinition Width="{Binding Tag.TypeWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                        <ColumnDefinition Width="{Binding Tag.CreatedWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <!-- TileArt rather than {Binding Icon}, which is a fixed 32px
@@ -2226,11 +2265,62 @@
                                                FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"
                                                TextAlignment="Right" Margin="0,0,10,0"/>
                                     <TextBlock Grid.Column="4" Text="{Binding ModifiedLabel}" Style="{StaticResource ResultMuted}"
-                                               FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"/>
+                                               FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                                    <TextBlock Grid.Column="5" Text="{Binding TypeName}" Style="{StaticResource ResultMuted}"
+                                               FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                                    <TextBlock Grid.Column="6" Text="{Binding CreatedLabel}" Style="{StaticResource ResultMuted}"
+                                               FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>
+
+                        <svc:DateGroupNameConverter x:Key="DateGroupName"/>
                     </ListBox.Resources>
+
+                    <!-- DATE GROUPS. Details view, sorted by Modified or Created (Results.cs
+                         ApplySort puts the group description on and takes it off; with none on
+                         the view this style is inert). The heading is a label and a rule.
+                         The left inset is the row's own, so the label starts where the icons do.
+                         The container is the stock GroupItem template minus its 5px left margin
+                         on the rows, which pushed every grouped row off its column heading. The
+                         part names are the stock ones; virtualizing inside groups looks them up. -->
+                    <ListBox.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="GroupItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="GroupItem">
+                                                <StackPanel>
+                                                    <ContentPresenter x:Name="PART_Header"/>
+                                                    <ItemsPresenter x:Name="ItemsPresenter"/>
+                                                </StackPanel>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="{Binding Tag.RowPad, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name, Converter={StaticResource DateGroupName}}"
+                                                   Foreground="{DynamicResource PrimaryPressedBrush}"
+                                                   FontFamily="{DynamicResource MonoFont}" FontSize="11"
+                                                   Margin="0,8,0,3" VerticalAlignment="Center"/>
+                                        <Border Grid.Column="1" Height="1" Margin="10,6,0,0" VerticalAlignment="Center"
+                                                Background="{DynamicResource HeaderLineBrush}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListBox.GroupStyle>
 
                     <!-- The menu hangs off the ListBox rather than off the Border inside each of
                          the three item templates. One owner instead of one per realized

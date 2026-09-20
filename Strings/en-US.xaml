@@ -150,6 +150,17 @@
     <sys:String x:Key="Str_Btn_Quit">Quit</sys:String>
     <sys:String x:Key="Str_Col_Size">size</sys:String>
     <sys:String x:Key="Str_Col_Modified">modified</sys:String>
+    <sys:String x:Key="Str_Col_Type">type</sys:String>
+    <sys:String x:Key="Str_Col_Created">created</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Group by date</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">Today</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">Yesterday</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">Earlier this week</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">Last week</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">Earlier this month</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">Last month</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Earlier this year</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">A long time ago</sys:String>
     <sys:String x:Key="Str_Details_Empty">No item selected</sys:String>
     <sys:String x:Key="Str_Details_Created">created</sys:String>
     <sys:String x:Key="Str_Details_Type">type</sys:String>

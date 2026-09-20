@@ -104,6 +104,17 @@
     <sys:String x:Key="Str_Btn_Quit">বন্ধ করুন</sys:String>
     <sys:String x:Key="Str_Col_Size">আকার</sys:String>
     <sys:String x:Key="Str_Col_Modified">পরিবর্তিত</sys:String>
+    <sys:String x:Key="Str_Col_Type">ধরন</sys:String>
+    <sys:String x:Key="Str_Col_Created">তৈরি</sys:String>
+    <sys:String x:Key="Str_GroupByDate">তারিখ অনুযায়ী গ্রুপ করুন</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">আজ</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">গতকাল</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">এই সপ্তাহের শুরুতে</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">গত সপ্তাহে</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">এই মাসের শুরুতে</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">গত মাসে</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">এই বছরের শুরুতে</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">অনেক আগে</sys:String>
     <sys:String x:Key="Str_Sum_Counts">{0}টি ফোল্ডার, {1}টি ফাইল</sys:String>
     <sys:String x:Key="Str_TT_ViewList">তালিকা ভিউ</sys:String>
     <sys:String x:Key="Str_TT_ViewIcons">আইকন ভিউ</sys:String>

@@ -335,6 +335,7 @@ namespace KillerShell.Shell
                         Directory   = folder,
                         IsDirectory = true,
                         Modified    = d.LastWriteTime,
+                        Created     = d.CreationTime,
                         Seq         = seq,
                     };
                 }
@@ -347,6 +348,7 @@ namespace KillerShell.Shell
                     Directory = folder,
                     SizeBytes = f.Length,
                     Modified  = f.LastWriteTime,
+                    Created   = f.CreationTime,
                     Seq       = seq,
                 };
             }
