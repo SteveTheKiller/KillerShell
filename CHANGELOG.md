@@ -4,6 +4,13 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.6] - Unreleased
+
+1.2.6 makes the elevated caption readable on the 98SE theme.
+
+### Fixed
+- On the 98SE theme the Elevated Privileges caption in an admin window's title bar is white instead of disappearing into the title bar.
+
 ## [1.2.5] - 2026-09-20
 
 1.2.5 keeps the List view responsive in folders with thousands of files.

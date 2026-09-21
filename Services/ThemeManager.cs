@@ -352,6 +352,9 @@ namespace KillerShell.Services
             // #e0e0e0 on Dark) - mirroring that would have quietly faded the window buttons on all
             // twelve non-flat themes. 98SE states its own, so it is unaffected either way.
             Mirror("CaptionGlyphBrush", "TextBrush");
+            // The elevated caption beside the wordmark stays the accent everywhere except 98SE,
+            // whose title bar IS the accent, so it states white.
+            Mirror("ElevatedTagBrush", "PrimaryBrush");
             // PaneBorderBrush, matching what SurfaceButton actually drew. CardBorderBrush is a
             // different tier and is #787878 on Black, which would have put a bright gray box
             // round every secondary button.

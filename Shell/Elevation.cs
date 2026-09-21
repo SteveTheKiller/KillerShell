@@ -492,8 +492,9 @@ namespace KillerShell.Shell
             WindowFrame.SetResourceReference(Border.BorderThicknessProperty, "ElevationEdgeThickness");
 
             // The ring reads as "something is different" from the corner of the eye; the caption
-            // is what says WHAT. Accent, same as the ring, so the two are obviously one signal.
-            ElevatedTag.SetResourceReference(TextBlock.ForegroundProperty, "PrimaryBrush");
+            // is what says WHAT. Accent, same as the ring, so the two are obviously one signal;
+            // 98SE's title bar is the accent itself, so its ElevatedTagBrush is white.
+            ElevatedTag.SetResourceReference(TextBlock.ForegroundProperty, "ElevatedTagBrush");
             ElevatedTag.Visibility = Visibility.Visible;
 
             // The taskbar and Alt+Tab read this, so an admin window is identifiable even when
