@@ -58,7 +58,7 @@ choco install killershell
 ```
 
 - Prebuilt binary: <https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe>
-- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.2.4/KillerShell-1.2.4-src.zip>
+- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.2.5/KillerShell-1.2.5-src.zip>
 
 ## Build from source
 
