@@ -112,9 +112,9 @@
 
   <ItemGroup>
     <!-- Their AssemblyInfo declares attributes this project already carries. -->
-    <Compile Include="third_party\AvalonEdit\**\*.cs" Exclude="third_party\AvalonEdit\Properties\AssemblyInfo.cs" />
+    <Compile Include="third_party\AvalonEdit\**\*.cs" Exclude="third_party\AvalonEdit\Properties\AssemblyInfo.cs;third_party\AvalonEdit\obj\**;third_party\AvalonEdit\bin\**" />
 
-    <Page Include="third_party\AvalonEdit\**\*.xaml" Exclude="third_party\AvalonEdit\themes\generic.xaml">
+    <Page Include="third_party\AvalonEdit\**\*.xaml" Exclude="third_party\AvalonEdit\themes\generic.xaml;third_party\AvalonEdit\obj\**;third_party\AvalonEdit\bin\**">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
