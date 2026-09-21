@@ -18,8 +18,11 @@ namespace KillerShell
     // into arithmetic instead of a layout pass, which is the whole trick - the panel never has to
     // measure an unrealized item to know where it lands.
     //
-    // Scrolling is vertical and pixel-based (IScrollInfo). Horizontal scrolling is deliberately
-    // not offered: tiles wrap to the viewport width, so there is never anything to scroll to.
+    // Scrolling is pixel-based (IScrollInfo) and runs along one axis only. Horizontal orientation
+    // (icons view) fills rows left to right, wraps to the viewport width and scrolls vertically.
+    // Vertical orientation (Compact List, Explorer's List) fills columns top to bottom, wraps to
+    // the viewport height and scrolls horizontally, so a folder of any size only realizes the
+    // columns on screen. The mouse wheel follows the scrolling axis in both.
     //
     // Container recycling is supported and is what the results list uses
     // (VirtualizingPanel.VirtualizationMode="Recycling"): the generator hands back an existing
@@ -48,31 +51,49 @@ namespace KillerShell
             set => SetValue(ItemHeightProperty, value);
         }
 
-        // ── Layout arithmetic ────────────────────────────────────
-        private int    _columns   = 1;
-        private int    _itemCount;
-        private double _pixelStep = 16;   // one wheel/line unit, recomputed from ItemHeight
+        public static readonly DependencyProperty OrientationProperty =
+            DependencyProperty.Register(nameof(Orientation), typeof(Orientation), typeof(VirtualizingWrapPanel),
+                new FrameworkPropertyMetadata(Orientation.Horizontal, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-        private int ColumnsFor(double width)
+        public Orientation Orientation
         {
-            double w = ItemWidth;
-            if (w <= 0 || double.IsInfinity(width) || width <= 0) return 1;
-            return Math.Max(1, (int)Math.Floor(width / w));
+            get => (Orientation)GetValue(OrientationProperty);
+            set => SetValue(OrientationProperty, value);
+        }
+
+        private bool IsVertical => Orientation == Orientation.Vertical;
+
+        // ── Layout arithmetic ────────────────────────────────────
+        // A "line" is a row in horizontal orientation and a column in vertical orientation;
+        // _perLine is how many items fit across one before it wraps.
+        private int    _perLine   = 1;
+        private int    _itemCount;
+        private double _pixelStep = 16;   // one wheel/line unit, recomputed from the item size
+
+        private double LineSize  => Math.Max(1, IsVertical ? ItemWidth : ItemHeight);
+        private double ScrollPos => IsVertical ? _offset.X : _offset.Y;
+        private double ViewSpan  => IsVertical ? _viewport.Width : _viewport.Height;
+
+        private int PerLineFor(Size available)
+        {
+            double item  = IsVertical ? ItemHeight : ItemWidth;
+            double space = IsVertical ? available.Height : available.Width;
+            if (item <= 0 || double.IsInfinity(space) || space <= 0) return 1;
+            return Math.Max(1, (int)Math.Floor(space / item));
         }
 
         private int FirstVisibleIndex()
         {
-            int row = (int)Math.Floor(_offset.Y / Math.Max(1, ItemHeight));
-            return Math.Max(0, row * _columns);
+            int line = (int)Math.Floor(ScrollPos / LineSize);
+            return Math.Max(0, line * _perLine);
         }
 
         private int LastVisibleIndex()
         {
-            double h = Math.Max(1, ItemHeight);
-            int lastRow = (int)Math.Floor((_offset.Y + _viewport.Height - 0.1) / h);
-            // One row of overscan keeps a wheel notch from exposing blank tiles before the next
+            int lastLine = (int)Math.Floor((ScrollPos + ViewSpan - 0.1) / LineSize);
+            // One line of overscan keeps a wheel notch from exposing blank tiles before the next
             // measure pass lands.
-            return Math.Min(_itemCount - 1, ((lastRow + 1) * _columns) + _columns - 1);
+            return Math.Min(_itemCount - 1, ((lastLine + 1) * _perLine) + _perLine - 1);
         }
 
         // ── Measure ──────────────────────────────────────────────
@@ -85,12 +106,14 @@ namespace KillerShell
             if (itemsCtrl == null) return new Size(0, 0);
 
             _itemCount = itemsCtrl.Items.Count;
-            _columns   = ColumnsFor(availableSize.Width);
-            _pixelStep = Math.Max(1, ItemHeight / 3);
+            _perLine   = PerLineFor(availableSize);
+            _pixelStep = Math.Max(1, LineSize / 3);
 
-            int rows = _columns > 0 ? (int)Math.Ceiling((double)_itemCount / _columns) : 0;
+            int lines = _perLine > 0 ? (int)Math.Ceiling((double)_itemCount / _perLine) : 0;
 
-            var extent = new Size(_columns * ItemWidth, rows * ItemHeight);
+            var extent = IsVertical
+                ? new Size(lines * ItemWidth, _perLine * ItemHeight)
+                : new Size(_perLine * ItemWidth, lines * ItemHeight);
             var viewport = new Size(
                 double.IsInfinity(availableSize.Width)  ? extent.Width  : availableSize.Width,
                 double.IsInfinity(availableSize.Height) ? extent.Height : availableSize.Height);
@@ -187,7 +210,7 @@ namespace KillerShell
         protected override Size ArrangeOverride(Size finalSize)
         {
             var generator = ItemContainerGenerator;
-            _columns = ColumnsFor(finalSize.Width);
+            _perLine = PerLineFor(finalSize);
 
             for (int childIndex = 0; childIndex < InternalChildren.Count; childIndex++)
             {
@@ -195,14 +218,12 @@ namespace KillerShell
                 int itemIndex = generator.IndexFromGeneratorPosition(new GeneratorPosition(childIndex, 0));
                 if (itemIndex < 0) continue;
 
-                int row = itemIndex / _columns;
-                int col = itemIndex % _columns;
+                int line = itemIndex / _perLine;
+                int slot = itemIndex % _perLine;
 
-                child.Arrange(new Rect(
-                    col * ItemWidth,
-                    (row * ItemHeight) - _offset.Y,
-                    ItemWidth,
-                    ItemHeight));
+                child.Arrange(IsVertical
+                    ? new Rect((line * ItemWidth) - _offset.X, slot * ItemHeight, ItemWidth, ItemHeight)
+                    : new Rect(slot * ItemWidth, (line * ItemHeight) - _offset.Y, ItemWidth, ItemHeight));
             }
             return finalSize;
         }
@@ -221,6 +242,7 @@ namespace KillerShell
                 case NotifyCollectionChangedAction.Reset:
                     RemoveInternalChildRange(0, InternalChildren.Count);
                     SetVerticalOffset(0);
+                    SetHorizontalOffset(0);
                     break;
             }
             InvalidateMeasure();
@@ -232,7 +254,7 @@ namespace KillerShell
         private Point _offset;
 
         public bool CanVerticallyScroll   { get; set; }
-        public bool CanHorizontallyScroll { get; set; }   // accepted, never acted on - tiles wrap
+        public bool CanHorizontallyScroll { get; set; }   // accepted; the orientation decides the axis
 
         public double ExtentWidth      => _extent.Width;
         public double ExtentHeight     => _extent.Height;
@@ -253,6 +275,8 @@ namespace KillerShell
             // Shrinking content (a new search, a filter) can strand the offset past the end.
             double maxY = Math.Max(0, _extent.Height - _viewport.Height);
             if (_offset.Y > maxY) { _offset.Y = maxY; changed = true; }
+            double maxX = Math.Max(0, _extent.Width - _viewport.Width);
+            if (_offset.X > maxX) { _offset.X = maxX; changed = true; }
 
             if (changed) ScrollOwner?.InvalidateScrollInfo();
         }
@@ -268,25 +292,46 @@ namespace KillerShell
             InvalidateMeasure();   // a new offset means a different realized range
         }
 
-        public void SetHorizontalOffset(double offset) { /* no horizontal scrolling */ }
+        // Only the vertical orientation scrolls sideways; a horizontal panel wraps to the width.
+        public void SetHorizontalOffset(double offset)
+        {
+            if (!IsVertical) return;
 
-        public void LineUp()   => SetVerticalOffset(_offset.Y - _pixelStep);
-        public void LineDown() => SetVerticalOffset(_offset.Y + _pixelStep);
-        public void PageUp()   => SetVerticalOffset(_offset.Y - _viewport.Height);
-        public void PageDown() => SetVerticalOffset(_offset.Y + _viewport.Height);
+            double maxX = Math.Max(0, _extent.Width - _viewport.Width);
+            offset = Math.Max(0, Math.Min(offset, maxX));
+            if (Math.Abs(offset - _offset.X) < 0.01) return;
 
-        public void MouseWheelUp()   => SetVerticalOffset(_offset.Y - (_pixelStep * 3));
-        public void MouseWheelDown() => SetVerticalOffset(_offset.Y + (_pixelStep * 3));
+            _offset.X = offset;
+            ScrollOwner?.InvalidateScrollInfo();
+            InvalidateMeasure();   // a new offset means a different realized range
+        }
 
-        public void LineLeft()  { }
-        public void LineRight() { }
-        public void PageLeft()  { }
-        public void PageRight() { }
-        public void MouseWheelLeft()  { }
-        public void MouseWheelRight() { }
+        // Moves along whichever axis this orientation scrolls.
+        private void ScrollBy(double delta)
+        {
+            if (IsVertical) SetHorizontalOffset(_offset.X + delta);
+            else            SetVerticalOffset(_offset.Y + delta);
+        }
 
-        // Keyboard navigation and SelectedItem changes route through here. Only vertical movement
-        // is possible, so this scrolls the target's row just inside the viewport.
+        public void LineUp()   { if (!IsVertical) SetVerticalOffset(_offset.Y - _pixelStep); }
+        public void LineDown() { if (!IsVertical) SetVerticalOffset(_offset.Y + _pixelStep); }
+        public void PageUp()   { if (!IsVertical) SetVerticalOffset(_offset.Y - _viewport.Height); }
+        public void PageDown() { if (!IsVertical) SetVerticalOffset(_offset.Y + _viewport.Height); }
+
+        // The wheel follows the scrolling axis, so a plain wheel moves Compact List's columns.
+        public void MouseWheelUp()   => ScrollBy(-(_pixelStep * 3));
+        public void MouseWheelDown() => ScrollBy(_pixelStep * 3);
+
+        public void LineLeft()  { if (IsVertical) SetHorizontalOffset(_offset.X - _pixelStep); }
+        public void LineRight() { if (IsVertical) SetHorizontalOffset(_offset.X + _pixelStep); }
+        public void PageLeft()  { if (IsVertical) SetHorizontalOffset(_offset.X - _viewport.Width); }
+        public void PageRight() { if (IsVertical) SetHorizontalOffset(_offset.X + _viewport.Width); }
+        public void MouseWheelLeft()  { if (IsVertical) SetHorizontalOffset(_offset.X - (_pixelStep * 3)); }
+        public void MouseWheelRight() { if (IsVertical) SetHorizontalOffset(_offset.X + (_pixelStep * 3)); }
+
+        // Keyboard navigation and SelectedItem changes route through here. Movement is along the
+        // scrolling axis only, so this scrolls the target's row (or column) just inside the
+        // viewport.
         public Rect MakeVisible(Visual visual, Rect rectangle)
         {
             if (visual is not UIElement child) return rectangle;
@@ -298,13 +343,38 @@ namespace KillerShell
                 new GeneratorPosition(childIndex, 0));
             if (itemIndex < 0) return rectangle;
 
-            double top    = (itemIndex / _columns) * ItemHeight;
-            double bottom = top + ItemHeight;
+            ScrollLineIntoView(itemIndex);
 
-            if (top < _offset.Y)                            SetVerticalOffset(top);
-            else if (bottom > _offset.Y + _viewport.Height) SetVerticalOffset(bottom - _viewport.Height);
+            int line = itemIndex / _perLine;
+            int slot = itemIndex % _perLine;
+            return IsVertical
+                ? new Rect((line * ItemWidth) - _offset.X, slot * ItemHeight, ItemWidth, ItemHeight)
+                : new Rect(slot * ItemWidth, (line * ItemHeight) - _offset.Y, ItemWidth, ItemHeight);
+        }
 
-            return new Rect(0, top - _offset.Y, ItemWidth, ItemHeight);
+        private void ScrollLineIntoView(int itemIndex)
+        {
+            double start = (itemIndex / _perLine) * LineSize;
+            double end   = start + LineSize;
+
+            if (start < ScrollPos)                  ScrollTo(start);
+            else if (end > ScrollPos + ViewSpan)    ScrollTo(end - ViewSpan);
+        }
+
+        private void ScrollTo(double pos)
+        {
+            if (IsVertical) SetHorizontalOffset(pos);
+            else            SetVerticalOffset(pos);
+        }
+
+        // ListBox.ScrollIntoView lands here when the target item has no container yet, which is
+        // the normal case in a large folder: scroll its line into range so the next layout pass
+        // realizes it.
+        protected override void BringIndexIntoView(int index)
+        {
+            if (index < 0 || index >= _itemCount) return;
+            ScrollLineIntoView(index);
+            UpdateLayout();
         }
     }
 }

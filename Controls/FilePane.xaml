@@ -2125,14 +2125,14 @@
                         </ItemsPanelTemplate>
 
                         <!-- COMPACT LIST VIEW. Explorer's List: 16px icon + name on a single line
-                             in a narrow column. WrapPanel with Orientation="Vertical" fills the
-                             first column top-to-bottom then starts the next column to the right,
-                             which is the pattern Explorer's List uses. Non-virtualizing on purpose:
-                             the wrap panel virtualizer only supports horizontal flow, and a
-                             typical listing is bounded. The ListBox's ScrollViewer is switched to
-                             horizontal by ApplyResultsViewToPane when this template is active. -->
+                             in a narrow column. The vertical wrap panel fills the first column
+                             top-to-bottom then starts the next column to the right, which is the
+                             pattern Explorer's List uses. It virtualizes like the icon grid, so a
+                             folder of tens of thousands of files only builds the columns on
+                             screen. The ListBox's ScrollViewer is switched to horizontal by
+                             ApplyResultsViewToPane when this template is active. -->
                         <ItemsPanelTemplate x:Key="PanelWrapVertical">
-                            <WrapPanel Orientation="Vertical" ItemWidth="220" ItemHeight="22"/>
+                            <local:VirtualizingWrapPanel Orientation="Vertical" ItemWidth="220" ItemHeight="22"/>
                         </ItemsPanelTemplate>
 
                         <!-- ICON VIEW. Fixed-size tile: art on top, name wrapped to two lines

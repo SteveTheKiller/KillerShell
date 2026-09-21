@@ -770,14 +770,15 @@ namespace KillerShell.Shell
                           : (DataTemplate)Pane.ResultsList.FindResource("DetailsRowTemplate");
 
             // Compact List scrolls horizontally (columns spread to the right, matching Explorer);
-            // Icons and Details scroll vertically. CanContentScroll is switched off in compact
-            // mode so a mouse wheel produces smooth pixel scroll across columns instead of item-
-            // at-a-time jumps, which mis-report the wrap panel's virtual size.
+            // Icons and Details scroll vertically. CanContentScroll stays on in every mode: with
+            // it off the ScrollViewer measures the panel at its full size and scrolls it itself,
+            // which realizes every item and hangs on a large folder. The wrap panels already
+            // scroll by pixels through IScrollInfo.
             ScrollViewer.SetHorizontalScrollBarVisibility(Pane.ResultsList,
                 mode == 0 ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled);
             ScrollViewer.SetVerticalScrollBarVisibility(Pane.ResultsList,
                 mode == 0 ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
-            ScrollViewer.SetCanContentScroll(Pane.ResultsList, mode != 0);
+            ScrollViewer.SetCanContentScroll(Pane.ResultsList, true);
 
             // Column headers belong to details view. Expand-all had a role only on the old
             // expandable-cards template that mode 0 used to carry; the compact list has nothing
