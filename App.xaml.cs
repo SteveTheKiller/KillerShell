@@ -348,9 +348,12 @@ namespace KillerShell
             bool runningUser = string.Equals(current, InstallExe, StringComparison.OrdinalIgnoreCase);
             if (!runningMachine && !runningUser) return;
 
-            string other = runningMachine ? "per-user" : "all-users";
-            var confirm = new ConfirmDialog($"KillerShell is installed twice. Remove the other {other} copy now?\n\nYour settings will not be removed.",
-                null, "Yes", installer: true);
+            // Runs after LocaleManager.Initialize (OnStartup), so the saved language is live here.
+            // Two whole sentences rather than one with the scope spliced in: "per-user" and
+            // "all-users" do not drop into the same slot in every language.
+            var confirm = new ConfirmDialog(
+                AppMainWindow.LocStatic(runningMachine ? "Str_Dlg_InstalledTwiceUser" : "Str_Dlg_InstalledTwiceMachine"),
+                null, AppMainWindow.LocStatic("Str_Btn_Yes"), installer: true);
             confirm.ShowDialog();
             if (!confirm.Confirmed) return;
 
@@ -561,7 +564,8 @@ namespace KillerShell
             catch (Exception ex)
             {
                 var owner = Current.MainWindow is { IsVisible: true } window ? window : null;
-                new ConfirmDialog($"Installation failed:\n{ex.Message}", null, "OK",
+                new ConfirmDialog(string.Format(AppMainWindow.LocStatic("Str_Dlg_InstallFailed"), ex.Message),
+                    null, AppMainWindow.LocStatic("Str_Btn_OK"),
                     installer: owner == null, notification: true) { Owner = owner }.ShowDialog();
                 return false;
             }
@@ -624,8 +628,8 @@ namespace KillerShell
             }
             catch (Exception ex)
             {
-                new ConfirmDialog($"Uninstall could not request administrator access:\n{ex.Message}",
-                    null, "OK", installer: true, notification: true).ShowDialog();
+                new ConfirmDialog(string.Format(AppMainWindow.LocStatic("Str_Dlg_UninstallElevateFailed"), ex.Message),
+                    null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notification: true).ShowDialog();
             }
             return true;
         }
@@ -637,9 +641,9 @@ namespace KillerShell
             if (RelaunchMachineUninstallElevatedIfNeeded(machine)) return;
 
             var confirm = new ConfirmDialog(
-                "Uninstall KillerShell from this computer?",
+                AppMainWindow.LocStatic("Str_Dlg_UninstallConfirm"),
                 null,
-                "Uninstall", installer: true);
+                AppMainWindow.LocStatic("Str_Btn_Uninstall"), installer: true);
             confirm.ShowDialog();
             if (!confirm.Confirmed) return;
 

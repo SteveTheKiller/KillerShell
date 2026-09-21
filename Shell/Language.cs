@@ -109,6 +109,27 @@ namespace KillerShell.Shell
         internal static string LocStatic(string key)
             => Application.Current.TryFindResource(key) as string ?? key;
 
+        /// <summary>
+        /// A failure reason handed up from the service layer, in the interface language.
+        /// </summary>
+        /// <remarks>
+        /// FileOps and ArchiveProvider have no UI dependency and keep it that way: their own
+        /// reasons are fixed English tokens, translated HERE where a window exists. Anything
+        /// else is an exception message, which Windows already wrote in its own language, and
+        /// passes through untouched.
+        /// </remarks>
+        internal static string LocReason(string reason) => reason switch
+        {
+            "empty name"                      => LocStatic("Str_Err_EmptyName"),
+            "invalid characters"              => LocStatic("Str_Err_InvalidChars"),
+            "already exists"                  => LocStatic("Str_Err_AlreadyExists"),
+            "no file name"                    => LocStatic("Str_Err_NoFileName"),
+            "no folder name"                  => LocStatic("Str_Err_NoFolderName"),
+            "entry not found"                 => LocStatic("Str_Err_EntryNotFound"),
+            "entry escaped extraction folder" => LocStatic("Str_Err_EntryEscaped"),
+            _                                 => reason,
+        };
+
         /// <summary>Re-applies strings set in code so a live language switch updates them.
         /// Static {DynamicResource Str_*} XAML refreshes itself; everything below is the
         /// dynamic remainder: model-computed chips/tooltips, and per-tab status lines

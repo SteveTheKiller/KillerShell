@@ -303,7 +303,7 @@ namespace KillerShell.Shell
                          && string.Equals(newPath, editor.FilePath, StringComparison.OrdinalIgnoreCase);
             if (!caseOnly && (File.Exists(newPath) || Directory.Exists(newPath)))
             {
-                SetTabStatusKey(t, "Str_Status_RenameFailed", "already exists");
+                SetTabStatusKey(t, "Str_Status_RenameFailed", LocReason("already exists"));
                 return;
             }
 

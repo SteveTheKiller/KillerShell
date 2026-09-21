@@ -334,7 +334,7 @@ namespace KillerShell.Shell
             if (!dlg.Confirmed) return;
 
             string? err = FileOps.Rename(path, dlg.NewName);
-            if (err != null) SetTabStatusKey(_active, "Str_Status_RenameFailed", err);
+            if (err != null) SetTabStatusKey(_active, "Str_Status_RenameFailed", LocReason(err));
             else RefreshAfterFileOp();
         }
 

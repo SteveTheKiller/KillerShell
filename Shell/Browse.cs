@@ -523,7 +523,7 @@ namespace KillerShell.Shell
 
                 if (temp == null)
                 {
-                    SetTabStatusKey(tab, "Str_Status_ExtractFailed", error ?? r.FileName);
+                    SetTabStatusKey(tab, "Str_Status_ExtractFailed", error != null ? LocReason(error) : r.FileName);
                     return;
                 }
                 SetTabStatus(tab, string.Empty);

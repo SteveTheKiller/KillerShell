@@ -44,7 +44,7 @@ namespace KillerShell.Services
 
             sb.Append("<!doctype html><html lang='en' class='theme-").Append(current)
               .Append("'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>")
-              .Append("<title>KillerShell Storage Report</title><style>");
+              .Append("<title>").Append(E(L("Str_StRpt_Title", "KillerShell Storage Report"))).Append("</title><style>");
             foreach (var p in palettes)
                 sb.Append("html.theme-").Append(p.Key).Append("{--bg:").Append(p.Bg)
                   .Append(";--surface:").Append(p.Surface).Append(";--pane:").Append(p.Pane)
@@ -52,18 +52,20 @@ namespace KillerShell.Services
                   .Append(";--muted:").Append(p.Muted).Append(";--border:").Append(p.Border)
                   .Append(";--hover:").Append(p.Hover).Append('}');
             sb.Append("*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--text);font:14px 'Segoe UI',sans-serif}.wrap{max-width:1280px;margin:auto}h1,h2{font-family:Consolas,monospace}h1{margin:0}.accent{color:var(--accent)}.top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.switch{display:flex;gap:6px;flex-wrap:wrap;max-width:340px}.switch button{width:19px;height:19px;border-radius:50%;border:2px solid var(--border);cursor:pointer}.switch button.active{border-color:var(--text)}.meta{color:var(--muted);line-height:1.8}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.card,.map,table{background:var(--pane);border:1px solid var(--border)}.card{padding:13px}.card b{display:block;font:20px Consolas,monospace;color:var(--accent)}.map{padding:8px;overflow:hidden}svg{display:block;width:100%;height:auto}rect{stroke:var(--bg);stroke-width:1}text{fill:#fff;font:11px Consolas,monospace;pointer-events:none;text-shadow:0 1px 2px #000}.tables{display:grid;grid-template-columns:1fr 1fr;gap:18px}table{border-collapse:collapse;width:100%;table-layout:fixed}th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}th{background:var(--surface);color:var(--muted)}tr:hover td{background:var(--hover)}td.path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}td.num{width:110px;text-align:right;font-family:Consolas,monospace}.foot{color:var(--muted);font-size:11px;margin-top:18px}@media(max-width:800px){body{padding:12px}.cards,.tables{grid-template-columns:1fr}}</style></head><body><div class='wrap'>");
-            sb.Append("<div class='top'><div><h1>Killer<span class='accent'>Shell</span> Storage</h1><div class='meta'>Generated ")
-              .Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm")).Append("<br>View: ").Append(E(report.ViewRoot))
-              .Append("<br>Scan root: ").Append(E(report.ScanRoot)).Append("</div></div><div id='themes' class='switch'></div></div>");
-            sb.Append("<div class='cards'><div class='card'><span>Total shown</span><b>").Append(Size(report.TotalSize))
-              .Append("</b></div><div class='card'><span>Depth filter</span><b>").Append(report.DepthLimit == 0 ? "All" : report.DepthLimit.ToString())
-              .Append("</b></div><div class='card'><span>Minimum size</span><b>").Append(report.MinimumSize == 0 ? "All" : Size(report.MinimumSize)).Append("</b></div></div>");
-            sb.Append("<h2>Treemap</h2><div class='map'><svg viewBox='0 0 1200 500' role='img' aria-label='Storage treemap'>");
+            sb.Append("<div class='top'><div><h1>Killer<span class='accent'>Shell</span> Storage</h1><div class='meta'>")
+              .Append(E(string.Format(L("Str_StRpt_Generated", "Generated {0}"), DateTime.Now.ToString("yyyy-MM-dd HH:mm"))))
+              .Append("<br>").Append(E(string.Format(L("Str_StRpt_View", "View: {0}"), report.ViewRoot)))
+              .Append("<br>").Append(E(string.Format(L("Str_StRpt_ScanRoot", "Scan root: {0}"), report.ScanRoot))).Append("</div></div><div id='themes' class='switch'></div></div>");
+            string treemap = E(L("Str_StRpt_Treemap", "Treemap"));
+            sb.Append("<div class='cards'><div class='card'><span>").Append(E(L("Str_StRpt_TotalShown", "Total shown"))).Append("</span><b>").Append(Size(report.TotalSize))
+              .Append("</b></div><div class='card'><span>").Append(E(L("Str_StRpt_DepthFilter", "Depth filter"))).Append("</span><b>").Append(report.DepthLimit == 0 ? E(L("Str_Storage_DepthAll", "All")) : report.DepthLimit.ToString())
+              .Append("</b></div><div class='card'><span>").Append(E(L("Str_StRpt_MinSize", "Minimum size"))).Append("</span><b>").Append(report.MinimumSize == 0 ? E(L("Str_Storage_MinAll", "All")) : Size(report.MinimumSize)).Append("</b></div></div>");
+            sb.Append("<h2>").Append(treemap).Append("</h2><div class='map'><svg viewBox='0 0 1200 500' role='img' aria-label='").Append(treemap).Append("'>");
             DrawChildren(sb, report.Root, 0, 0, 1200, 500, 1, report.DepthLimit, report.TotalSize);
             sb.Append("</svg></div><div class='tables'>");
-            AddTable(sb, "Biggest folders", folders, report.TotalSize);
-            AddTable(sb, "Biggest files", files, report.TotalSize);
-            sb.Append("</div><div class='foot'>Generated by KillerShell</div></div><script>var T=[");
+            AddTable(sb, L("Str_StRpt_BigFolders", "Biggest folders"), folders, report.TotalSize);
+            AddTable(sb, L("Str_StRpt_BigFiles", "Biggest files"), files, report.TotalSize);
+            sb.Append("</div><div class='foot'>").Append(E(string.Format(L("Str_Rpt_GenBy", "Generated by {0}"), "KillerShell"))).Append("</div></div><script>var T=[");
             sb.Append(string.Join(",", palettes.Select(p => "['" + p.Key + "','" + p.Label + "','" + p.Pane + "']")));
             sb.Append("];var s=document.getElementById('themes');function setTheme(k){document.documentElement.className='theme-'+k;Array.prototype.forEach.call(s.children,function(b){b.className=b.dataset.k===k?'active':''})}T.forEach(function(t){var b=document.createElement('button');b.title=t[1];b.dataset.k=t[0];b.style.background=t[2];b.onclick=function(){setTheme(t[0])};s.appendChild(b)});setTheme('")
               .Append(current).Append("');document.documentElement.style.setProperty('--accent','").Append(accent).Append("');</script></body></html>");
@@ -79,7 +81,8 @@ namespace KillerShell.Services
 
         private static void AddTable(StringBuilder sb, string title, IList<StorageReportNode> nodes, long total)
         {
-            sb.Append("<section><h2>").Append(title).Append("</h2><table><thead><tr><th>Path</th><th class='num'>Size</th><th class='num'>Percent</th></tr></thead><tbody>");
+            sb.Append("<section><h2>").Append(E(title)).Append("</h2><table><thead><tr><th>").Append(E(L("Str_StRpt_Path", "Path")))
+              .Append("</th><th class='num'>").Append(E(L("Str_StRpt_Size", "Size"))).Append("</th><th class='num'>").Append(E(L("Str_StRpt_Percent", "Percent"))).Append("</th></tr></thead><tbody>");
             foreach (var n in nodes)
                 sb.Append("<tr><td class='path' title='").Append(E(n.Path)).Append("'>").Append(E(n.Path))
                   .Append("</td><td class='num'>").Append(Size(n.Size)).Append("</td><td class='num'>")
@@ -123,6 +126,11 @@ namespace KillerShell.Services
             }
             return result;
         }
+
+        // A UI string from the live locale resources, English when there is no application
+        // (the tests) or no such key. Same helper HtmlExporter uses for the results report.
+        private static string L(string key, string fallback) =>
+            Application.Current?.TryFindResource(key) as string ?? fallback;
 
         private static string Hex(ResourceDictionary d, string key) => BrushHex(d[key], "#808080");
         private static string BrushHex(object? value, string fallback) => value is SolidColorBrush b ? $"#{b.Color.R:X2}{b.Color.G:X2}{b.Color.B:X2}" : fallback;
