@@ -17,7 +17,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Performance graphs are filled and carry a scale; send/receive and read/write are mirrored around a center line. The CPU panel shows a load square per logical processor plus live clock speed, process and thread counts, and up time; RAM shows an in use, cached, and free bar.
 - Dates in the file list and details pane use the Windows short date and time format, such as 9/14/2026 10:09 PM.
 - Network commands in PowerShell terminals use the same address, MAC, port, timing, and success/failure colors as KillerScan.
-- The file list's List view is Explorer's compact layout - a 16px icon and name per row, flowing into vertical columns - replacing the expandable cards.
+- The file list's List view replaces the expandable cards with Explorer's compact layout, showing a 16px icon and name per row that flow into vertical columns.
 - Ctrl+wheel over the results cycles between Icons, List and Details at the ends of each mode's size range, in addition to stepping icon sizes within a mode.
 - The pane menubar toggle moved from Ctrl+F10 to Alt+M, matching the family convention for hiding the chrome.
 - On first launch, the interface follows the Windows display language when it is supported.
