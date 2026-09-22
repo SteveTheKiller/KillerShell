@@ -21,7 +21,7 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 - Use the built-in Event Viewer, Registry Editor, and Storage Analyzer without leaving the tab strip
 - Keyboard-first operation using familiar Explorer keys plus F4 storage, F7 edit, F8 shell, F9 processes, F10 split, F11 performance, and F1 for the complete shortcut overlay
 - Thirteen themes, including a full 98SE recreation; Dark, Light, Black, and 98SE each have six accent colors for 33 looks in all
-- Localized in 15 languages, with live switching and English fallback for incomplete translations
+- Localized in 16 languages, with live switching and English fallback for incomplete translations
 - Runs portable or self-installs per-user without UAC or machine-wide with UAC; `/silent` supports WinGet and managed deployment
 - Local-only: no indexing service, cloud account, advertisements, or telemetry
 

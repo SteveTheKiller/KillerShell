@@ -6,7 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.2.6] - Unreleased
 
-1.2.6 makes the elevated caption readable on the 98SE theme.
+1.2.6 adds Vietnamese localization and makes the elevated caption readable on the 98SE theme.
+
+### Added
+- Vietnamese localization for the app and website. (Thanks @vuanhvu11982)
 
 ### Fixed
 - On the 98SE theme the Elevated Privileges caption in an admin window's title bar is white instead of disappearing into the title bar.

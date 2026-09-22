@@ -1,0 +1,867 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <!-- ================================================================
+         KillerShell - English (en-US) strings. x:Key values are looked up at
+         runtime; never change them. Other locales layer over this file; any
+         key they omit falls back here. {0}/{1} placeholders are filled by the
+         app - keep them.
+         ================================================================ -->
+  <!-- Title bar / flyout -->
+  <sys:String x:Key="Str_TT_Language">Ngôn ngữ</sys:String>
+  <sys:String x:Key="Str_TT_Theme">Giao diện</sys:String>
+  <!-- App-wide accessibility zoom: wheel over the title-bar wordmark (AppScale.cs) -->
+  <sys:String x:Key="Str_TT_AppSize">Cuộn chuột trên biểu trưng để thay đổi kích thước ứng dụng</sys:String>
+  <sys:String x:Key="Str_St_AppSize">Kích thước ứng dụng {0}%</sys:String>
+  <sys:String x:Key="Str_Lbl_Theme">giao diện</sys:String>
+  <sys:String x:Key="Str_Lbl_Accent">màu nhấn</sys:String>
+  <sys:String x:Key="Str_Theme_Dark">Tối</sys:String>
+  <sys:String x:Key="Str_Theme_Light">Sáng</sys:String>
+  <sys:String x:Key="Str_Theme_Black">Đen</sys:String>
+  <sys:String x:Key="Str_Theme_Blood">Máu</sys:String>
+  <sys:String x:Key="Str_Theme_Greed">Tham lam</sys:String>
+  <sys:String x:Key="Str_Theme_Cyanotic">Tím tái</sys:String>
+  <!-- 98SE is a product name, not a word - it stays untranslated in every locale. -->
+  <sys:String x:Key="Str_Theme_SE98">98SE</sys:String>
+  <sys:String x:Key="Str_Theme_Ectoplasm">Ngoại chất</sys:String>
+  <sys:String x:Key="Str_Theme_Decay">Mục rữa</sys:String>
+  <sys:String x:Key="Str_Theme_Mourning">Tang tóc</sys:String>
+  <sys:String x:Key="Str_Theme_Sepulchre">Hầm mộ</sys:String>
+  <sys:String x:Key="Str_Theme_Delirium">Mê sảng</sys:String>
+  <sys:String x:Key="Str_Theme_Malaise">Uể oải</sys:String>
+  <!-- Scope bar -->
+  <sys:String x:Key="Str_Lbl_In">trong:</sys:String>
+  <sys:String x:Key="Str_Scope_Empty">(chưa chọn thư mục, bấm để chọn)</sys:String>
+  <!-- Source name in the scope breadcrumb when a tab was made by dropping files on the window -->
+  <sys:String x:Key="Str_Scope_Dropped">các tệp đã thả</sys:String>
+  <sys:String x:Key="Str_TT_Scope">Bấm để đổi thư mục tìm kiếm</sys:String>
+  <!-- Browsing (Browse.cs) -->
+  <sys:String x:Key="Str_TT_SearchPanel">Hiện hoặc ẩn bảng tìm kiếm  (Ctrl+Shift+S)</sys:String>
+  <sys:String x:Key="Str_TT_TreePanel">Hiện hoặc ẩn cây thư mục</sys:String>
+  <sys:String x:Key="Str_TT_CollapseSidebar">Thu gọn các bảng bên</sys:String>
+  <!-- Bookmarks (Bookmarks.cs) -->
+  <sys:String x:Key="Str_TT_Bookmarks">Dấu trang  (Ctrl+B)</sys:String>
+  <sys:String x:Key="Str_TT_Favorite">Đánh dấu thư mục này  (Ctrl+D)</sys:String>
+  <sys:String x:Key="Str_TT_ShowHidden">Hiện các mục ẩn và mục hệ thống  (Ctrl+H)</sys:String>
+  <sys:String x:Key="Str_TT_DetailsPane">Hiện thông tin chi tiết về tệp  (Alt+P)</sys:String>
+  <sys:String x:Key="Str_TT_FoldersTop">Luôn đặt thư mục phía trên tệp</sys:String>
+  <sys:String x:Key="Str_Menu_AddFavorite">Thêm vào Dấu trang</sys:String>
+  <sys:String x:Key="Str_Menu_RemoveFavorite">Xóa khỏi Dấu trang</sys:String>
+  <sys:String x:Key="Str_Menu_HideMenuBar">Ẩn thanh menu</sys:String>
+  <sys:String x:Key="Str_Ks_Bookmarks">hiện hoặc ẩn dấu trang</sys:String>
+  <sys:String x:Key="Str_Ks_JumpBookmark">đi đến dấu trang 1-10 (0 = dấu trang thứ mười)</sys:String>
+  <sys:String x:Key="Str_TT_Back">Quay lại</sys:String>
+  <sys:String x:Key="Str_TT_Forward">Tiến</sys:String>
+  <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
+  <sys:String x:Key="Str_Status_Listing">Đang mở {0}...</sys:String>
+  <sys:String x:Key="Str_Status_Listed">{0} mục</sys:String>
+  <sys:String x:Key="Str_Status_BadPath">Không thể mở {0}</sys:String>
+  <sys:String x:Key="Str_Dlg_SelectFolder">Chọn thư mục gốc để tìm kiếm</sys:String>
+  <!-- Search config -->
+  <sys:String x:Key="Str_Lbl_Filters">BỘ LỌC</sys:String>
+  <sys:String x:Key="Str_Lbl_Include">bao gồm</sys:String>
+  <sys:String x:Key="Str_Lbl_Exclude">loại trừ</sys:String>
+  <sys:String x:Key="Str_TT_Include">Các mẫu được phân tách bằng dấu chấm phẩy, ví dụ: *.txt;*.log</sys:String>
+  <sys:String x:Key="Str_TT_Exclude">Các đường dẫn hoặc mẫu cần bỏ qua, được phân tách bằng dấu chấm phẩy</sys:String>
+  <sys:String x:Key="Str_Chk_CaseSensitive">phân biệt chữ hoa chữ thường</sys:String>
+  <sys:String x:Key="Str_Btn_AddFilter">+ thêm bộ lọc</sys:String>
+  <sys:String x:Key="Str_Lbl_Advanced">nâng cao</sys:String>
+  <sys:String x:Key="Str_Filter_Ext">phần mở rộng</sys:String>
+  <sys:String x:Key="Str_Filter_Date">ngày sửa đổi</sys:String>
+  <sys:String x:Key="Str_Filter_Size">kích thước</sys:String>
+  <sys:String x:Key="Str_Cond_Is">là</sys:String>
+  <sys:String x:Key="Str_Cond_IsNot">không phải</sys:String>
+  <sys:String x:Key="Str_Cond_Before">trước</sys:String>
+  <sys:String x:Key="Str_Cond_After">sau</sys:String>
+  <sys:String x:Key="Str_Cond_Larger">trên</sys:String>
+  <sys:String x:Key="Str_Cond_Smaller">dưới</sys:String>
+  <!-- Pattern help card -->
+  <sys:String x:Key="Str_TT_PatternHelp">Trợ giúp về mẫu</sys:String>
+  <sys:String x:Key="Str_Help_Title">MẪU</sys:String>
+  <sys:String x:Key="Str_Help_Star">mọi tên kết thúc bằng .log</sys:String>
+  <sys:String x:Key="Str_Help_Prefix">các tên bắt đầu bằng report</sys:String>
+  <sys:String x:Key="Str_Help_Middle">các tên có chứa 2024</sys:String>
+  <sys:String x:Key="Str_Help_Q">? đại diện cho đúng một ký tự</sys:String>
+  <sys:String x:Key="Str_Help_List">liệt kê nhiều mẫu, ngăn cách bằng ;</sys:String>
+  <sys:String x:Key="Str_Help_Plain">văn bản thuần cũng dùng được, khớp với các tên có chứa văn bản đó</sys:String>
+  <sys:String x:Key="Str_Help_Exclude">tính năng loại trừ cũng bỏ qua toàn bộ thư mục theo tên</sys:String>
+  <!-- Tabs -->
+  <sys:String x:Key="Str_Tab_New">tìm kiếm mới</sys:String>
+  <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
+  <sys:String x:Key="Str_Tab_Dropped">đã thả ({0})</sys:String>
+  <sys:String x:Key="Str_TT_NewTab">Tab tìm kiếm mới  (Ctrl+T)</sys:String>
+  <sys:String x:Key="Str_TT_CloseTab">Đóng tab</sys:String>
+  <!-- Folder picker -->
+  <sys:String x:Key="Str_Btn_Cancel">Hủy</sys:String>
+  <sys:String x:Key="Str_Btn_Select">Chọn</sys:String>
+  <sys:String x:Key="Str_QA_Home">Trang chủ</sys:String>
+  <sys:String x:Key="Str_QA_Desktop">Màn hình nền</sys:String>
+  <sys:String x:Key="Str_QA_Documents">Tài liệu</sys:String>
+  <sys:String x:Key="Str_QA_Downloads">Tệp tải xuống</sys:String>
+  <sys:String x:Key="Str_QA_Pictures">Ảnh</sys:String>
+  <sys:String x:Key="Str_TT_Up">Lên một thư mục</sys:String>
+  <sys:String x:Key="Str_Dlg_NoSubfolders">(không có thư mục con, bấm Chọn để dùng thư mục này)</sys:String>
+  <sys:String x:Key="Str_Col_Name">tên</sys:String>
+  <sys:String x:Key="Str_Col_Folder">vị trí</sys:String>
+  <sys:String x:Key="Str_Sort_Found">theo thứ tự tìm thấy</sys:String>
+  <sys:String x:Key="Str_TT_FilterResults">Lọc các kết quả này (Ctrl+F)</sys:String>
+  <sys:String x:Key="Str_TT_Pipe">Tìm kiếm trong các kết quả này</sys:String>
+  <sys:String x:Key="Str_TT_DualPane">Ngăn thứ hai  (F10)  |  bấm chuột phải để chuyển đổi giữa bố cục cạnh nhau và xếp chồng</sys:String>
+  <sys:String x:Key="Str_TT_MoreTools">Công cụ khác</sys:String>
+  <sys:String x:Key="Str_TT_Sort">Sắp xếp theo</sys:String>
+  <sys:String x:Key="Str_Nav_ThisPc">PC này</sys:String>
+  <sys:String x:Key="Str_Menu_PipeTab">Tìm kiếm trong các kết quả này</sys:String>
+  <sys:String x:Key="Str_Pipe_Scope">{0} kết quả từ {1}  |  {2}</sys:String>
+  <sys:String x:Key="Str_Status_NoPipe">Chưa có kết quả để tìm kiếm bên trong.</sys:String>
+  <sys:String x:Key="Str_Status_ElevateFailed">Không thể khởi động shell với quyền quản trị: {0}</sys:String>
+  <sys:String x:Key="Str_Status_TearOutNeedsSave">Hãy lưu tài liệu trước khi kéo tài liệu sang cửa sổ khác</sys:String>
+  <sys:String x:Key="Str_Status_TermCwdNotFound">{0} không phải là một thư mục hiện có</sys:String>
+  <sys:String x:Key="Str_Status_EdPathNotFound">{0} không phải là một vị trí hiện có</sys:String>
+  <!-- Portable install + quit dialog -->
+  <sys:String x:Key="Str_Portable">BẢN DI ĐỘNG</sys:String>
+  <sys:String x:Key="Str_Btn_Install">Cài đặt KillerShell</sys:String>
+  <sys:String x:Key="Str_Btn_DoInstall">Cài đặt</sys:String>
+  <sys:String x:Key="Str_Btn_DoUpdate">Cập nhật</sys:String>
+  <sys:String x:Key="Str_Dlg_InstallMsg">Cài đặt KillerShell trên máy tính này?</sys:String>
+  <sys:String x:Key="Str_Dlg_InstallBullets">Ứng dụng di động sẽ được sao chép vào thư mục Programs của bạn. Một lối tắt trong menu Bắt đầu và một mục trong Thêm hoặc xóa chương trình sẽ được tạo. Sau đó, bạn có thể giữ lại hoặc xóa tệp di động này.</sys:String>
+  <sys:String x:Key="Str_Dlg_UpdateUserMsg">Cập nhật bản cài đặt KillerShell hiện có của bạn?</sys:String>
+  <sys:String x:Key="Str_Dlg_UpdateUserBullets">Thao tác này sẽ thay thế bản đã cài đặt cho tài khoản của bạn. Các cài đặt và phiên đã lưu của bạn sẽ được giữ nguyên. Sau đó, bạn có thể giữ lại hoặc xóa tệp di động này.</sys:String>
+  <sys:String x:Key="Str_Dlg_UpdateMachineMsg">Cập nhật bản cài đặt KillerShell hiện có dành cho tất cả người dùng?</sys:String>
+  <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Thao tác này sẽ thay thế bản sao trong Program Files. Mọi bản sao riêng cho người dùng của tài khoản này sẽ bị xóa để KillerShell chỉ xuất hiện một lần. Các cài đặt và phiên đã lưu của bạn sẽ được giữ nguyên.</sys:String>
+  <sys:String x:Key="Str_Chk_Desktop">Lối tắt trên màn hình nền</sys:String>
+  <sys:String x:Key="Str_Chk_AllUsers">Cài đặt cho tất cả người dùng (cần quyền quản trị)</sys:String>
+  <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell đã được cài đặt cho tất cả người dùng trên PC này, vì vậy thao tác này sẽ cập nhật bản đó. Windows sẽ yêu cầu cấp quyền.</sys:String>
+  <sys:String x:Key="Str_St_InstallCanceled">Đã hủy cài đặt</sys:String>
+  <sys:String x:Key="Str_Dlg_UpdateMsg">Tải xuống và cài đặt KillerShell {0}?</sys:String>
+  <sys:String x:Key="Str_Dlg_UpdateBullets">Ứng dụng sẽ tự động đóng và mở lại.</sys:String>
+  <sys:String x:Key="Str_Btn_Update">Cập nhật</sys:String>
+  <sys:String x:Key="Str_Dlg_QuitMsg">Thoát KillerShell?</sys:String>
+  <sys:String x:Key="Str_Chk_RememberTabs">Ghi nhớ các tab đang mở của tôi</sys:String>
+  <sys:String x:Key="Str_Chk_RememberChoice">Ghi nhớ lựa chọn của tôi</sys:String>
+  <sys:String x:Key="Str_Btn_Quit">Thoát</sys:String>
+  <sys:String x:Key="Str_Col_Size">kích thước</sys:String>
+  <sys:String x:Key="Str_Col_Modified">ngày sửa đổi</sys:String>
+  <sys:String x:Key="Str_Col_Type">Loại</sys:String>
+  <sys:String x:Key="Str_Col_Created">Ngày tạo</sys:String>
+  <sys:String x:Key="Str_GroupByDate">Nhóm theo ngày</sys:String>
+  <sys:String x:Key="Str_DateGroup_Today">Hôm nay</sys:String>
+  <sys:String x:Key="Str_DateGroup_Yesterday">Hôm qua</sys:String>
+  <sys:String x:Key="Str_DateGroup_ThisWeek">Đầu tuần này</sys:String>
+  <sys:String x:Key="Str_DateGroup_LastWeek">Tuần trước</sys:String>
+  <sys:String x:Key="Str_DateGroup_ThisMonth">Đầu tháng này</sys:String>
+  <sys:String x:Key="Str_DateGroup_LastMonth">Tháng trước</sys:String>
+  <sys:String x:Key="Str_DateGroup_ThisYear">Đầu năm nay</sys:String>
+  <sys:String x:Key="Str_DateGroup_LongAgo">Từ lâu</sys:String>
+  <sys:String x:Key="Str_Details_Empty">Chưa chọn mục nào</sys:String>
+  <sys:String x:Key="Str_Details_Created">ngày tạo</sys:String>
+  <sys:String x:Key="Str_Details_Type">loại</sys:String>
+  <sys:String x:Key="Str_Details_Attributes">thuộc tính</sys:String>
+  <sys:String x:Key="Str_Details_Path">đường dẫn</sys:String>
+  <sys:String x:Key="Str_Details_Folder">Thư mục</sys:String>
+  <sys:String x:Key="Str_Details_NoExt">Tệp</sys:String>
+  <sys:String x:Key="Str_Details_ExtFile">Tệp {0}</sys:String>
+  <sys:String x:Key="Str_Details_AttrReadOnly">chỉ đọc</sys:String>
+  <sys:String x:Key="Str_Details_AttrHidden">ẩn</sys:String>
+  <sys:String x:Key="Str_Details_AttrSystem">hệ thống</sys:String>
+  <sys:String x:Key="Str_Sum_Counts">{0} thư mục, {1} tệp</sys:String>
+  <sys:String x:Key="Str_TT_ViewList">Dạng xem danh sách</sys:String>
+  <sys:String x:Key="Str_TT_ViewIcons">Dạng xem biểu tượng</sys:String>
+  <sys:String x:Key="Str_TT_ViewDetails">Dạng xem chi tiết</sys:String>
+  <sys:String x:Key="Str_Lbl_SearchTerms">ĐIỀU KIỆN TÌM KIẾM</sys:String>
+  <sys:String x:Key="Str_Btn_AddTerm">+ thêm điều kiện</sys:String>
+  <sys:String x:Key="Str_Btn_AddGroup">+ thêm nhóm</sys:String>
+  <sys:String x:Key="Str_Btn_Clear">XÓA</sys:String>
+  <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+  <sys:String x:Key="Str_Btn_Search">TÌM KIẾM</sys:String>
+  <sys:String x:Key="Str_Btn_Stop">DỪNG</sys:String>
+  <!-- Results -->
+  <sys:String x:Key="Str_Lbl_Results">KẾT QUẢ</sys:String>
+  <sys:String x:Key="Str_Lbl_ResultsCount">KẾT QUẢ  ({0})</sys:String>
+  <sys:String x:Key="Str_Btn_Export">Xuất kết quả  (Ctrl+Alt+E)  |  Nhấn Ctrl+Alt+Shift+E để xuất CSV</sys:String>
+  <sys:String x:Key="Str_TT_Result">Bấm để mở rộng  |  Bấm đúp để hiển thị trong Explorer  |  Bấm chuột phải để xem thêm</sys:String>
+  <sys:String x:Key="Str_Btn_ExpandAll">MỞ RỘNG TẤT CẢ</sys:String>
+  <sys:String x:Key="Str_Btn_CollapseAll">THU GỌN TẤT CẢ</sys:String>
+  <sys:String x:Key="Str_Menu_OpenFile">Mở tệp</sys:String>
+  <sys:String x:Key="Str_Menu_OpenWith">Mở bằng...</sys:String>
+  <sys:String x:Key="Str_Menu_ShowExplorer">Hiển thị trong Explorer</sys:String>
+  <!-- Results context menu (ResultsMenu.cs). Copy commands act on the whole selection. -->
+  <sys:String x:Key="Str_Menu_OpenAdmin">Mở với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Menu_SearchHere">Tìm kiếm trong thư mục này</sys:String>
+  <sys:String x:Key="Str_Menu_AnalyzeStorage">Phân tích dung lượng lưu trữ</sys:String>
+  <sys:String x:Key="Str_Menu_TreeShowHidden">Hiển thị mục ẩn và thư mục bắt đầu bằng dấu chấm</sys:String>
+  <sys:String x:Key="Str_Menu_OpenInNewTab">Mở trong tab mới</sys:String>
+  <sys:String x:Key="Str_Status_TreeHiddenOn">Cây thư mục: đang hiển thị mục ẩn và thư mục bắt đầu bằng dấu chấm</sys:String>
+  <sys:String x:Key="Str_Status_TreeHiddenOff">Cây thư mục: đang ẩn mục ẩn và thư mục bắt đầu bằng dấu chấm</sys:String>
+  <sys:String x:Key="Str_Ks_TreeHidden">hiển thị hoặc ẩn mục ẩn và thư mục bắt đầu bằng dấu chấm trong cây thư mục</sys:String>
+  <sys:String x:Key="Str_Menu_OpenTerminal">Mở terminal tại đây</sys:String>
+  <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Mở terminal tại đây với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Menu_ExcludeFolder">Loại trừ thư mục này</sys:String>
+  <sys:String x:Key="Str_Menu_CopyPath">Sao chép đường dẫn đầy đủ</sys:String>
+  <sys:String x:Key="Str_Menu_CopyName">Sao chép tên tệp</sys:String>
+  <sys:String x:Key="Str_Menu_CopyFolder">Sao chép đường dẫn thư mục</sys:String>
+  <sys:String x:Key="Str_Menu_CopyLines">Sao chép các dòng khớp</sys:String>
+  <sys:String x:Key="Str_Menu_CopyHash">Sao chép SHA-256</sys:String>
+  <sys:String x:Key="Str_Menu_Properties">Thuộc tính</sys:String>
+  <sys:String x:Key="Str_Menu_ShellMenu">Thêm tùy chọn Windows...</sys:String>
+  <!-- Status lines those commands write; {0} is a count or a file name -->
+  <sys:String x:Key="Str_Status_Copied">Đã sao chép {0} vào bảng tạm</sys:String>
+  <sys:String x:Key="Str_Status_CopiedLines">Đã sao chép {0} dòng khớp</sys:String>
+  <sys:String x:Key="Str_Status_CopiedFiles">Đã sao chép {0} tệp, hãy dán trong Explorer</sys:String>
+  <sys:String x:Key="Str_Status_NoLines">Không có dòng khớp nào để sao chép (các tên khớp không chứa dòng nào)</sys:String>
+  <sys:String x:Key="Str_Status_ClipboardBusy">Không thể truy cập bảng tạm vì một ứng dụng khác đang sử dụng</sys:String>
+  <sys:String x:Key="Str_Status_Hashing">Đang tính hàm băm cho {0}...</sys:String>
+  <sys:String x:Key="Str_Status_HashCopied">Đã sao chép SHA-256 của {0}</sys:String>
+  <sys:String x:Key="Str_Status_HashFailed">Không thể đọc tệp để tính hàm băm</sys:String>
+  <sys:String x:Key="Str_Status_ElevationDeclined">Đã từ chối cấp quyền quản trị</sys:String>
+  <sys:String x:Key="Str_Status_FileOnly">Lệnh đó chỉ dùng được với tệp, không dùng được với thư mục</sys:String>
+  <sys:String x:Key="Str_Status_ShellFailed">Windows không thể mở mục đó</sys:String>
+  <sys:String x:Key="Str_Status_Excluded">Đang loại trừ {0}. Hãy chạy lại tìm kiếm để áp dụng</sys:String>
+  <sys:String x:Key="Str_Status_AlreadyExcluded">{0} đã được loại trừ</sys:String>
+  <sys:String x:Key="Str_Menu_Minimize">Thu nhỏ</sys:String>
+  <sys:String x:Key="Str_Menu_Maximize">Phóng to</sys:String>
+  <sys:String x:Key="Str_Menu_Restore">Khôi phục</sys:String>
+  <sys:String x:Key="Str_Menu_Close">Đóng</sys:String>
+  <!-- Status messages -->
+  <sys:String x:Key="Str_Status_Ready">Sẵn sàng</sys:String>
+  <sys:String x:Key="Str_Status_InvalidRoot">Đường dẫn gốc không hợp lệ hoặc bị thiếu.</sys:String>
+  <sys:String x:Key="Str_Status_NoTerms">Hãy thêm ít nhất một từ khóa hoặc bộ lọc tìm kiếm.</sys:String>
+  <sys:String x:Key="Str_Status_Done">Hoàn tất sau {0} giây. Có {1} tệp khớp.</sys:String>
+  <sys:String x:Key="Str_Status_Stopped">Đã dừng.</sys:String>
+  <sys:String x:Key="Str_Status_Cleared">Đã xóa.</sys:String>
+  <sys:String x:Key="Str_Status_NothingExport">Chưa có nội dung nào để xuất.</sys:String>
+  <sys:String x:Key="Str_Status_Exported">Đã xuất: {0}</sys:String>
+  <sys:String x:Key="Str_Status_ExportFailed">Xuất không thành công: {0}</sys:String>
+  <sys:String x:Key="Str_Status_Scanned">Đã quét {0} tệp</sys:String>
+  <sys:String x:Key="Str_Count_Matches">{0} kết quả khớp</sys:String>
+  <!-- About overlay -->
+  <!-- Tagline is composed in XAML: DescA + "GPLv3 " + [Killer Tools link] + DescB.
+         GPLv3 and the product name stay out of the translatable text (family standard). -->
+  <sys:String x:Key="Str_About_Title">Giới thiệu về KillerShell</sys:String>
+  <sys:String x:Key="Str_Status_TextSize">Cỡ chữ: {0}%</sys:String>
+  <sys:String x:Key="Str_About_DescA" xml:space="preserve">Một ứng dụng di động để quản lý máy tính và các tệp trên đó. Trình duyệt tệp, cửa sổ dòng lệnh, trình soạn thảo văn bản, công cụ phân tích dung lượng lưu trữ và công cụ quản trị đều nằm trong cùng một cửa sổ. Một tiện ích </sys:String>
+  <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
+  <sys:String x:Key="Str_About_Version">PHIÊN BẢN</sys:String>
+  <sys:String x:Key="Str_About_Publisher">NHÀ PHÁT HÀNH</sys:String>
+  <sys:String x:Key="Str_About_Thumbprint">DẤU VÂN TAY</sys:String>
+  <sys:String x:Key="Str_About_Sha">SHA-256 CỦA EXE</sys:String>
+  <sys:String x:Key="Str_About_ConfirmFolderDelete">Hỏi trước khi chuyển thư mục vào Thùng rác</sys:String>
+  <!-- Clear all Data: the link, its confirm and its result. Kept with the About keys rather than
+         split across three sections - one feature, and a translator needs to see them together. -->
+  <sys:String x:Key="Str_About_ClearData">Xóa toàn bộ dữ liệu</sys:String>
+  <sys:String x:Key="Str_Dlg_ClearDataMsg">Thao tác này sẽ xóa mọi cài đặt đã lưu, bao gồm giao diện, ngôn ngữ, phông chữ, vị trí đã lưu, mục gần đây và phiên làm việc, cùng các tệp tạm được giải nén từ tệp lưu trữ. Các tệp của bạn sẽ không bị ảnh hưởng. Bạn có muốn tiếp tục không?</sys:String>
+  <sys:String x:Key="Str_Status_DataCleared">Đã xóa dữ liệu. Hãy khởi động lại KillerShell để hoàn tất việc xóa mọi nội dung vẫn đang được sử dụng</sys:String>
+  <sys:String x:Key="Str_About_Footer">GPLv3  |  do một kỹ thuật viên hiện trường xây dựng</sys:String>
+  <!-- HTML report (exported in the app's current language) -->
+  <sys:String x:Key="Str_Rpt_Meta">Được tạo lúc {0} · {1} tệp · {2} kết quả khớp</sys:String>
+  <!-- Browsing export: a folder listing counts items and has no matches or query -->
+  <sys:String x:Key="Str_Rpt_MetaList">Được tạo lúc {0} · {1} mục</sys:String>
+  <sys:String x:Key="Str_Rpt_Listing">Danh sách của {0}.</sys:String>
+  <sys:String x:Key="Str_Rpt_Query">Đã tìm kiếm {1} trong {0}.</sys:String>
+  <sys:String x:Key="Str_Rpt_TermName">tên tệp chứa {0}</sys:String>
+  <sys:String x:Key="Str_Rpt_TermContent">nội dung tệp chứa {0}</sys:String>
+  <sys:String x:Key="Str_Rpt_Everything">mọi thứ</sys:String>
+  <sys:String x:Key="Str_Rpt_Or">hoặc</sys:String>
+  <sys:String x:Key="Str_Rpt_Found">được tìm thấy bởi</sys:String>
+  <sys:String x:Key="Str_Rpt_More">... và thêm {0} mục</sys:String>
+  <sys:String x:Key="Str_Rpt_GenBy">Được tạo bởi {0}</sys:String>
+  <!-- Term/group chips + tooltips (computed in the models, re-raised on language switch) -->
+  <sys:String x:Key="Str_Mode_Name">tên</sys:String>
+  <sys:String x:Key="Str_Mode_Content">nội dung</sys:String>
+  <sys:String x:Key="Str_TT_ModeName">Tên tệp / ký tự đại diện  (ví dụ: *.log)</sys:String>
+  <sys:String x:Key="Str_TT_ModeContent">Tìm kiếm nội dung  (văn bản bên trong tệp)</sys:String>
+  <sys:String x:Key="Str_Group_Any">BẤT KỲ</sys:String>
+  <sys:String x:Key="Str_Group_All">TẤT CẢ</sys:String>
+  <sys:String x:Key="Str_TT_GroupAny">BẤT KỲ: một tệp được coi là khớp nếu có bất kỳ từ khóa nào trong nhóm này khớp</sys:String>
+  <sys:String x:Key="Str_TT_GroupAll">TẤT CẢ: một tệp phải khớp với mọi từ khóa trong nhóm này</sys:String>
+  <sys:String x:Key="Str_Join_And">VÀ</sys:String>
+  <sys:String x:Key="Str_Join_Or">HOẶC</sys:String>
+  <!-- Quit dialog: opt-out tab checkbox (unchecked = tabs are remembered) -->
+  <sys:String x:Key="Str_Chk_CloseTabs">Đóng các tab đang mở của tôi</sys:String>
+  <!-- Help card: keyboard shortcuts section (F1) -->
+  <sys:String x:Key="Str_Help_Shortcuts">Phím tắt</sys:String>
+  <sys:String x:Key="Str_Ks_Run">chạy tìm kiếm</sys:String>
+  <sys:String x:Key="Str_Ks_Esc">đóng cửa sổ bật lên, dừng tìm kiếm, sau đó hỏi có muốn thoát không</sys:String>
+  <sys:String x:Key="Str_Ks_FilterResults">lọc kết quả</sys:String>
+  <sys:String x:Key="Str_Ks_NewTab">mở tab tìm kiếm mới</sys:String>
+  <sys:String x:Key="Str_Ks_CloseTab">đóng tab hiện tại</sys:String>
+  <sys:String x:Key="Str_Ks_NextTab">chuyển đến tab tiếp theo (Shift: tab trước)</sys:String>
+  <sys:String x:Key="Str_Ks_JumpTab">chuyển đến tab 1-9 (9 = tab cuối)</sys:String>
+  <sys:String x:Key="Str_Ks_AddTerm">thêm cụm từ tìm kiếm</sys:String>
+  <sys:String x:Key="Str_Ks_AddFilter">thêm bộ lọc</sys:String>
+  <sys:String x:Key="Str_Ks_Folder">chọn thư mục</sys:String>
+  <sys:String x:Key="Str_Ks_Help">hiển thị thẻ này</sys:String>
+  <sys:String x:Key="Str_Ks_CaseSensitive">bật hoặc tắt chế độ khớp có phân biệt chữ hoa chữ thường</sys:String>
+  <sys:String x:Key="Str_Ks_Clear">xóa kết quả</sys:String>
+  <sys:String x:Key="Str_Ks_Address">chỉnh sửa vị trí, nhập đường dẫn rồi nhấn Enter</sys:String>
+  <sys:String x:Key="Str_Ks_Pipe">tìm kiếm trong các kết quả này ở một tab mới</sys:String>
+  <sys:String x:Key="Str_Ks_SearchPanel">hiển thị hoặc ẩn bảng tìm kiếm</sys:String>
+  <sys:String x:Key="Str_Ks_ExpandAll">mở rộng mọi kết quả</sys:String>
+  <sys:String x:Key="Str_Ks_CollapseAll">thu gọn mọi kết quả</sys:String>
+  <sys:String x:Key="Str_Ks_Shell">mở tab PowerShell trong thư mục này</sys:String>
+  <sys:String x:Key="Str_Ks_ShellCmd">mở tab CMD trong thư mục này</sys:String>
+  <sys:String x:Key="Str_Ks_ShellAdmin">mở PowerShell với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Ks_ShellCmdAdmin">mở CMD với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Ks_ExportHtml">xuất kết quả dưới dạng HTML</sys:String>
+  <sys:String x:Key="Str_Ks_ExportCsv">xuất kết quả dưới dạng CSV</sys:String>
+  <sys:String x:Key="Str_Ks_TaskManager">mở tab Tiến trình/Dịch vụ</sys:String>
+  <sys:String x:Key="Str_Ks_TaskManagerAdmin">mở tab Tiến trình/Dịch vụ với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Ks_Performance">mở tab Hiệu suất</sys:String>
+  <sys:String x:Key="Str_Ks_ProcToggle">chuyển đổi giữa Tiến trình và Dịch vụ</sys:String>
+  <sys:String x:Key="Str_Ks_EventViewer">mở tab Trình xem sự kiện (luôn chạy với quyền nâng cao)</sys:String>
+  <sys:String x:Key="Str_Ks_RegistryEditor">mở tab Trình chỉnh sửa Sổ đăng ký (luôn chạy với quyền nâng cao)</sys:String>
+  <sys:String x:Key="Str_Ks_RegFind">tìm tên khóa hoặc giá trị (tab Trình chỉnh sửa Sổ đăng ký)</sys:String>
+  <sys:String x:Key="Str_Ks_Hint">Các phím tắt hoạt động ở mọi vị trí trong cửa sổ. Các danh sách thả xuống đang mở, ô ngày và bộ lọc kết quả sẽ tự xử lý phím Enter.</sys:String>
+  <!-- Font dialog, reached from the row under the theme flyout -->
+  <sys:String x:Key="Str_Fonts_Row">Phông chữ...</sys:String>
+  <sys:String x:Key="Str_Fonts_Title">PHÔNG CHỮ</sys:String>
+  <sys:String x:Key="Str_Fonts_App">ỨNG DỤNG</sys:String>
+  <sys:String x:Key="Str_Fonts_Terminal">DÒNG LỆNH</sys:String>
+  <sys:String x:Key="Str_Fonts_Editor">VĂN BẢN TRÌNH SOẠN THẢO</sys:String>
+  <sys:String x:Key="Str_Fonts_Default">Mặc định</sys:String>
+  <sys:String x:Key="Str_Fonts_Hint">Lăn con lăn chuột trên danh sách để duyệt các kiểu chữ. Mọi thay đổi đều được áp dụng ngay lập tức.</sys:String>
+  <sys:String x:Key="Str_Fonts_Unreadable">{0} không có ký tự nào dễ đọc. Phông chữ trước đó sẽ được giữ lại</sys:String>
+  <!-- Associations card (Associations.cs, AssociationsCard.cs). Registering is something we
+         can do; DEFAULTING is the user's call in Settings, and the wording has to keep those
+         two apart or the card is promising something Windows will not let it deliver. -->
+  <sys:String x:Key="Str_Assoc_Row">Liên kết tệp...</sys:String>
+  <sys:String x:Key="Str_Assoc_Title">LIÊN KẾT TỆP</sys:String>
+  <sys:String x:Key="Str_Assoc_Intro">Đăng ký KillerShell với Windows để ứng dụng xuất hiện trong "Mở bằng", trong mục Ứng dụng mặc định của Cài đặt và trong menu chuột phải của mọi thư mục và ổ đĩa.</sys:String>
+  <sys:String x:Key="Str_Assoc_What">LOẠI VĂN BẢN</sys:String>
+  <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd và .reg sẽ có mục "Chỉnh sửa bằng KillerShell". Thao tác bấm đúp vẫn chạy hoặc hợp nhất các tệp này, vì âm thầm thay đổi hành vi đó có thể khiến ai đó mất cả buổi chiều.</sys:String>
+  <sys:String x:Key="Str_Assoc_AllUsers">Đăng ký cho tất cả người dùng trên PC này</sys:String>
+  <sys:String x:Key="Str_Assoc_NeedsAdmin">Chạy KillerShell với quyền quản trị viên để đăng ký cho tất cả người dùng</sys:String>
+  <sys:String x:Key="Str_Assoc_Register">Đăng ký</sys:String>
+  <sys:String x:Key="Str_Assoc_Remove">Xóa đăng ký</sys:String>
+  <sys:String x:Key="Str_Assoc_OpenSettings">Mở ứng dụng mặc định của Windows...</sys:String>
+  <sys:String x:Key="Str_Assoc_StateNone">Chưa đăng ký. Windows chưa đề xuất KillerShell cho bất kỳ loại tệp nào.</sys:String>
+  <sys:String x:Key="Str_Assoc_StateUser">Đã đăng ký cho tài khoản của bạn. Windows sẽ không tự thay đổi ứng dụng mặc định. Hãy chọn KillerShell cho từng loại tệp trong Cài đặt.</sys:String>
+  <sys:String x:Key="Str_Assoc_StateMachine">Đã đăng ký cho tất cả người dùng trên PC này. Windows sẽ không tự thay đổi ứng dụng mặc định. Hãy chọn KillerShell cho từng loại tệp trong Cài đặt.</sys:String>
+  <sys:String x:Key="Str_Assoc_Portable">Đây là bản di động. Các liên kết sẽ trỏ đến vị trí hiện tại của tệp .exe này và sẽ bị hỏng nếu bạn di chuyển hoặc xóa tệp.</sys:String>
+  <sys:String x:Key="Str_Assoc_Registered">Đã đăng ký với Windows</sys:String>
+  <sys:String x:Key="Str_Assoc_Removed">Đã xóa đăng ký</sys:String>
+  <sys:String x:Key="Str_Assoc_Failed">Windows không chấp nhận thay đổi đó</sys:String>
+  <!-- Title-bar caption on an elevated window, beside the wordmark -->
+  <sys:String x:Key="Str_Title_Elevated">- Đặc quyền nâng cao</sys:String>
+  <sys:String x:Key="Str_Ks_MenuBar">ẩn hoặc hiện thanh menu của ngăn</sys:String>
+  <sys:String x:Key="Str_Ks_NewWindow">mở cửa sổ mới</sys:String>
+  <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+  <sys:String x:Key="Str_TT_Recents">Các thư mục đã truy cập gần đây</sys:String>
+  <sys:String x:Key="Str_Recents_Empty">Chưa có thư mục nào được truy cập gần đây</sys:String>
+  <sys:String x:Key="Str_Recents_Clear">Xóa danh sách</sys:String>
+  <!-- Results density, on the rail (Density.cs) -->
+  <sys:String x:Key="Str_TT_Density">Mật độ kết quả: bấm để chuyển đổi, cuộn để điều chỉnh từng mức</sys:String>
+  <sys:String x:Key="Str_St_DensityRoomy">Mật độ: rộng rãi</sys:String>
+  <sys:String x:Key="Str_St_DensityFull">Mật độ: thoải mái</sys:String>
+  <sys:String x:Key="Str_St_DensityCompact">Mật độ: thu gọn</sys:String>
+  <sys:String x:Key="Str_St_DensityTight">Mật độ: sít</sys:String>
+  <sys:String x:Key="Str_St_DensityMin">Mật độ: tối thiểu</sys:String>
+  <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+  <sys:String x:Key="Str_Term_Copy">Sao chép</sys:String>
+  <sys:String x:Key="Str_Term_Paste">Dán</sys:String>
+  <sys:String x:Key="Str_Term_SelectAll">Chọn tất cả</sys:String>
+  <sys:String x:Key="Str_Term_Clear">Xóa</sys:String>
+  <sys:String x:Key="Str_Term_NewShell">Cửa sổ dòng lệnh mới</sys:String>
+  <sys:String x:Key="Str_Term_OpenFolder">Mở thư mục tại đây</sys:String>
+  <sys:String x:Key="Str_Term_Fonts">Phông chữ...</sys:String>
+  <sys:String x:Key="Str_Term_EditPrompt">Chỉnh sửa dấu nhắc...</sys:String>
+  <sys:String x:Key="Str_Term_ResetPrompt">Đặt lại dấu nhắc</sys:String>
+  <sys:String x:Key="Str_Term_Close">Đóng cửa sổ dòng lệnh</sys:String>
+  <sys:String x:Key="Str_Dlg_ResetPromptMsg">Khôi phục tập lệnh dấu nhắc đi kèm? Các chỉnh sửa của bạn đối với tệp này sẽ bị mất.</sys:String>
+  <sys:String x:Key="Str_Btn_Reset">Đặt lại</sys:String>
+  <!-- PowerShell $PROFILE (ProfileMenu.cs, Terminal/ShellProfiles.cs) -->
+  <sys:String x:Key="Str_Prof_Reload">Tải lại hồ sơ PowerShell</sys:String>
+  <sys:String x:Key="Str_Prof_Edit">Chỉnh sửa hồ sơ PowerShell</sys:String>
+  <sys:String x:Key="Str_Prof_Asking">Đang hỏi {0} vị trí hồ sơ...</sys:String>
+  <sys:String x:Key="Str_Prof_Failed">{0} không phản hồi, không thể tìm thấy hồ sơ.</sys:String>
+  <sys:String x:Key="Str_Prof_None">Không tìm thấy PowerShell</sys:String>
+  <!-- Editor tabs (EditorTabs.cs, Editing/EditorControl.cs) -->
+  <sys:String x:Key="Str_Menu_Edit">Chỉnh sửa</sys:String>
+  <sys:String x:Key="Str_Ed_TooBig">{0} quá lớn để chỉnh sửa ({1} MB).</sys:String>
+  <sys:String x:Key="Str_TT_EdSave">Lưu  (Ctrl+S)</sys:String>
+  <sys:String x:Key="Str_TT_EdUndo">Hoàn tác  (Ctrl+Z)</sys:String>
+  <sys:String x:Key="Str_TT_EdRedo">Làm lại  (Ctrl+Y)</sys:String>
+  <sys:String x:Key="Str_TT_EdFind">Tìm  (Ctrl+F)</sys:String>
+  <sys:String x:Key="Str_TT_EdGoto">Đi đến dòng  (Ctrl+G)</sys:String>
+  <sys:String x:Key="Str_TT_EdWrap">Ngắt dòng theo từ</sys:String>
+  <sys:String x:Key="Str_TT_EdSettings">Cài đặt trình soạn thảo</sys:String>
+  <sys:String x:Key="Str_TT_EdEncoding">Bấm để thay đổi bảng mã dùng cho lần lưu tiếp theo</sys:String>
+  <sys:String x:Key="Str_Ed_GotoLabel">dòng</sys:String>
+  <sys:String x:Key="Str_Ed_EncUtf8">UTF-8</sys:String>
+  <sys:String x:Key="Str_Ed_EncUtf8Bom">UTF-8 có BOM</sys:String>
+  <sys:String x:Key="Str_Ed_EncUtf16Le">UTF-16 LE</sys:String>
+  <sys:String x:Key="Str_Ed_EncUtf16Be">UTF-16 BE</sys:String>
+  <sys:String x:Key="Str_Ed_EncAnsi">ANSI (Windows-1252)</sys:String>
+  <!-- Gear flyout -->
+  <sys:String x:Key="Str_Ed_OptLineNumbers">Số dòng</sys:String>
+  <sys:String x:Key="Str_Ed_OptCurrentLine">Tô sáng dòng hiện tại</sys:String>
+  <sys:String x:Key="Str_Ed_OptWhitespace">Hiện dấu cách và tab</sys:String>
+  <sys:String x:Key="Str_Ed_OptSpaces">Chèn dấu cách thay cho tab</sys:String>
+  <sys:String x:Key="Str_Ed_OptWrap">Ngắt dòng theo từ</sys:String>
+  <sys:String x:Key="Str_Ed_OptIndent">THỤT LỀ</sys:String>
+  <sys:String x:Key="Str_Ed_OptFonts">Phông chữ và cỡ chữ...</sys:String>
+  <!-- Right-click menu (Editing/EditorMenu.cs) -->
+  <sys:String x:Key="Str_Ed_Undo">Hoàn tác</sys:String>
+  <sys:String x:Key="Str_Ed_Redo">Làm lại</sys:String>
+  <sys:String x:Key="Str_Ed_Cut">Cắt</sys:String>
+  <sys:String x:Key="Str_Ed_Copy">Sao chép</sys:String>
+  <sys:String x:Key="Str_Ed_Paste">Dán</sys:String>
+  <sys:String x:Key="Str_Ed_SelectAll">Chọn tất cả</sys:String>
+  <sys:String x:Key="Str_Ed_Find">Tìm...</sys:String>
+  <sys:String x:Key="Str_Ed_Goto">Đi đến dòng...</sys:String>
+  <sys:String x:Key="Str_Ed_Save">Lưu</sys:String>
+  <sys:String x:Key="Str_Ed_Settings">Cài đặt...</sys:String>
+  <sys:String x:Key="Str_Ed_CloseTab">Đóng tệp</sys:String>
+  <!-- Shell bar (TerminalBar.cs) -->
+  <sys:String x:Key="Str_TT_TermCwd">Bấm để chỉnh sửa, nhập một thư mục rồi nhấn Enter để cd đến đó</sys:String>
+  <sys:String x:Key="Str_TT_TermNew">Terminal mới  (F8)</sys:String>
+  <sys:String x:Key="Str_TT_TermAdmin">Terminal mới với quyền quản trị viên  (Ctrl+F8)</sys:String>
+  <sys:String x:Key="Str_TT_TermFolder">Mở thư mục này trong một tab</sys:String>
+  <sys:String x:Key="Str_TT_TermClear">Xóa</sys:String>
+  <sys:String x:Key="Str_TT_TermFonts">Phông chữ...</sys:String>
+  <sys:String x:Key="Str_TT_EdPath">Bấm để chỉnh sửa, nhập đường dẫn rồi nhấn Enter để đổi tên hoặc di chuyển tệp</sys:String>
+  <sys:String x:Key="Str_Ed_WrapOn">Đã bật ngắt dòng.</sys:String>
+  <sys:String x:Key="Str_Ed_WrapOff">Đã tắt ngắt dòng. Hãy cuộn để xem các dòng dài.</sys:String>
+  <sys:String x:Key="Str_Ed_Saved">Đã lưu {0}.</sys:String>
+  <sys:String x:Key="Str_Ed_SaveFailed">Không thể lưu {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Ed_OpenFailed">Không thể mở {0}: {1}</sys:String>
+  <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
+  <sys:String x:Key="Str_TT_TabOverflow">Tất cả các tab</sys:String>
+  <sys:String x:Key="Str_TT_ColResize">Kéo để đổi kích thước, bấm đúp để đặt lại</sys:String>
+  <sys:String x:Key="Str_TT_NewDoc">Tài liệu mới  (F7)  |  Ctrl+F7 thử lưu lại với quyền quản trị viên nếu bị từ chối</sys:String>
+  <sys:String x:Key="Str_TT_NewDocAdmin">Tài liệu mới, thử lưu lại với quyền quản trị viên  (Ctrl+F7)</sys:String>
+  <sys:String x:Key="Str_Ed_Untitled">chưa đặt tên</sys:String>
+  <sys:String x:Key="Str_Ed_SaveAs">Lưu dưới dạng</sys:String>
+  <sys:String x:Key="Str_Ed_AllFiles">Tất cả tệp</sys:String>
+  <sys:String x:Key="Str_Dlg_DiscardMsg">Đóng tệp này mà không lưu? Các thay đổi của bạn sẽ bị mất.</sys:String>
+  <sys:String x:Key="Str_Btn_Discard">Bỏ thay đổi</sys:String>
+  <!-- Rail button: left click opens PowerShell, right click picks -->
+  <sys:String x:Key="Str_TT_Terminal">Mở terminal  (F8), bấm chuột phải để chọn</sys:String>
+  <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+  <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Term_Cmd">Command Prompt</sys:String>
+  <sys:String x:Key="Str_Term_CmdAdmin">Command Prompt với quyền quản trị viên</sys:String>
+  <!-- Shortcuts card: category headings, the LIST / KEYBOARD toggle, and the keyboard's hint -->
+  <sys:String x:Key="Str_Ks_About">hiển thị thẻ giới thiệu</sys:String>
+  <sys:String x:Key="Str_Ks_CatSearch">TÌM KIẾM</sys:String>
+  <sys:String x:Key="Str_Ks_CatNav">ĐIỀU HƯỚNG</sys:String>
+  <sys:String x:Key="Str_Ks_CatTabs">TAB</sys:String>
+  <sys:String x:Key="Str_Ks_CatView">CHẾ ĐỘ XEM</sys:String>
+  <sys:String x:Key="Str_Ks_CatFile">TỆP</sys:String>
+  <sys:String x:Key="Str_Ks_CatEdit">CHỈNH SỬA</sys:String>
+  <sys:String x:Key="Str_Ks_CatHelp">TRỢ GIÚP</sys:String>
+  <sys:String x:Key="Str_Ks_ViewList">DANH SÁCH</sys:String>
+  <sys:String x:Key="Str_Ks_ViewKeyboard">BÀN PHÍM</sys:String>
+  <sys:String x:Key="Str_Ks_HoldHint">giữ Ctrl, Shift hoặc Alt để xem trước lớp phím đó</sys:String>
+  <!-- Shortcuts card: SCOPE section headings. A binding belongs to one applet or to the whole
+         window, which is a separate question from its category (SEARCH/NAVIGATION/...) and gets
+         its own headings. Only four are here: the Processes, Event Viewer, Registry Editor and
+         Storage Analyzer sections reuse those tabs' own Str_TabTitle_* strings rather than
+         translating the same nouns a second time. Str_Ks_ScopeShown labels the applet name above
+         the keyboard map, which can only draw one meaning per keycap and so has to say which. -->
+  <sys:String x:Key="Str_Ks_ScopeGlobal">Mọi nơi</sys:String>
+  <sys:String x:Key="Str_Ks_ScopeFiles">Trình duyệt tệp</sys:String>
+  <sys:String x:Key="Str_Ks_ScopeTerminal">Terminal</sys:String>
+  <sys:String x:Key="Str_Ks_ScopeEditor">Trình soạn thảo</sys:String>
+  <sys:String x:Key="Str_Ks_ScopeShown">đang hiển thị các phím dành cho:</sys:String>
+  <!-- Explorer-convention bindings -->
+  <sys:String x:Key="Str_Ks_BackForward">quay lại / tiến tới</sys:String>
+  <sys:String x:Key="Str_Ks_Back">quay lại</sys:String>
+  <sys:String x:Key="Str_Ks_Up">đi lên một thư mục</sys:String>
+  <sys:String x:Key="Str_Ks_Refresh">làm mới, liệt kê lại thư mục hoặc chạy lại tìm kiếm</sys:String>
+  <sys:String x:Key="Str_Ks_SelectAll">chọn mọi kết quả</sys:String>
+  <sys:String x:Key="Str_Ks_FocusSearch">đặt con trỏ vào hộp tìm kiếm</sys:String>
+  <!-- File operations: progress, conflicts, and their buttons -->
+  <sys:String x:Key="Str_Fo_Copying">Đang sao chép...</sys:String>
+  <sys:String x:Key="Str_Fo_Moving">Đang di chuyển...</sys:String>
+  <sys:String x:Key="Str_Fo_Deleting">Đang xóa...</sys:String>
+  <sys:String x:Key="Str_Fo_OfCount">{0} trên {1}</sys:String>
+  <sys:String x:Key="Str_Fo_ConflictTitle">{0} đã tồn tại tại đây. Bạn muốn giữ tệp nào?</sys:String>
+  <sys:String x:Key="Str_Fo_Existing">ĐÃ CÓ SẴN</sys:String>
+  <sys:String x:Key="Str_Fo_Incoming">ĐANG ĐƯỢC SAO CHÉP VÀO</sys:String>
+  <sys:String x:Key="Str_Fo_ApplyAll">Thực hiện tương tự với mọi mục còn lại trong đợt này</sys:String>
+  <sys:String x:Key="Str_Btn_Replace">Thay thế</sys:String>
+  <sys:String x:Key="Str_Btn_Skip">Bỏ qua</sys:String>
+  <sys:String x:Key="Str_Btn_KeepBoth">Giữ cả hai</sys:String>
+  <sys:String x:Key="Str_Btn_Rename">Đổi tên</sys:String>
+  <sys:String x:Key="Str_Btn_Delete">Xóa</sys:String>
+  <sys:String x:Key="Str_Fo_RenameTitle">Tên mới</sys:String>
+  <sys:String x:Key="Str_Fo_NewFolderName">Thư mục mới</sys:String>
+  <sys:String x:Key="Str_Dlg_DeleteMsg">Xóa vĩnh viễn {0} mục? Bạn không thể hoàn tác thao tác này. Các mục này sẽ không được chuyển vào Thùng rác.</sys:String>
+  <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Chuyển {0} mục vào Thùng rác? Phần đã chọn có chứa một thư mục nên mọi nội dung bên trong cũng sẽ được chuyển vào Thùng rác.</sys:String>
+  <sys:String x:Key="Str_Chk_DontAskAgain">Không hỏi lại</sys:String>
+  <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows đã từ chối xóa mục này. Nếu Controlled Folder Access đang bật, thử lại với tư cách quản trị viên sẽ KHÔNG có tác dụng. Tính năng này chặn theo ứng dụng, không phải theo cấp quyền, và bạn phải thêm KillerShell vào danh sách ứng dụng được phép trong Windows Security. Vẫn thử lại với tư cách quản trị viên?</sys:String>
+  <sys:String x:Key="Str_Btn_RetryAdmin">Thử lại với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Status_DeleteDenied">Không thể xóa vì quyền truy cập bị từ chối</sys:String>
+  <sys:String x:Key="Str_Status_Selected">Đã chọn {0} mục</sys:String>
+  <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Yêu cầu xóa với quyền nâng cao cũng bị từ chối. Hãy kiểm tra Controlled Folder Access trong Windows Security</sys:String>
+  <sys:String x:Key="Str_Status_ElevatedSaveFailed">Yêu cầu lưu {0} với quyền nâng cao cũng bị từ chối. Hãy kiểm tra Controlled Folder Access trong Windows Security</sys:String>
+  <!-- File-operation shortcuts and their outcomes -->
+  <sys:String x:Key="Str_Ks_CutCopyPaste">cắt / sao chép / dán tệp</sys:String>
+  <sys:String x:Key="Str_Ks_Rename">đổi tên</sys:String>
+  <sys:String x:Key="Str_Ks_Recycle">chuyển vào Thùng rác</sys:String>
+  <sys:String x:Key="Str_Ks_DeleteForever">xóa vĩnh viễn</sys:String>
+  <sys:String x:Key="Str_Ks_NewFolder">thư mục mới</sys:String>
+  <sys:String x:Key="Str_Status_PasteNeedsFolder">Trước tiên, hãy mở một thư mục. Không có nơi để đặt các mục này trong tab tìm kiếm</sys:String>
+  <sys:String x:Key="Str_Status_DropIntoSelf">Không thể thả một thư mục vào chính nó</sys:String>
+  <sys:String x:Key="Str_Status_OpDone">Hoàn tất. {0} mục</sys:String>
+  <sys:String x:Key="Str_Status_OpCanceled">Đã hủy sau khi xử lý {0} mục</sys:String>
+  <sys:String x:Key="Str_Status_OpPartial">Đã hoàn tất {0}, thất bại {1}</sys:String>
+  <sys:String x:Key="Str_Status_OpFailed">Thao tác không thành công</sys:String>
+  <sys:String x:Key="Str_Status_RenameFailed">Không thể đổi tên. {0}</sys:String>
+  <!-- File-operation context menu -->
+  <sys:String x:Key="Str_Menu_Cut">Cắt</sys:String>
+  <sys:String x:Key="Str_Menu_Copy">Sao chép</sys:String>
+  <sys:String x:Key="Str_Menu_Paste">Dán</sys:String>
+  <sys:String x:Key="Str_Menu_Rename">Đổi tên</sys:String>
+  <sys:String x:Key="Str_Menu_Delete">Xóa  (Shift: xóa vĩnh viễn)</sys:String>
+  <sys:String x:Key="Str_Menu_NewFolder">Thư mục mới</sys:String>
+  <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+  <sys:String x:Key="Str_Btn_Open">Mở</sys:String>
+  <sys:String x:Key="Str_Btn_Save">Lưu</sys:String>
+  <sys:String x:Key="Str_Dlg_FileName">Tên tệp:</sys:String>
+  <sys:String x:Key="Str_Dlg_FileType">Loại tệp:</sys:String>
+  <sys:String x:Key="Str_Dlg_AllFiles">Tất cả tệp</sys:String>
+  <sys:String x:Key="Str_Dlg_NoMatchingFiles">Không có mục nào ở đây khớp với loại tệp hiện tại.</sys:String>
+  <sys:String x:Key="Str_Dlg_NoSuchFolder">Thư mục đó không tồn tại.</sys:String>
+  <sys:String x:Key="Str_Dlg_NoSuchFile">Tệp đó không tồn tại.</sys:String>
+  <sys:String x:Key="Str_Dlg_OverwriteMsg">Thay thế {0}?</sys:String>
+  <!-- Processes/Services tab (Shell/ProcessTabs.cs, Tools/ProcessListControl.cs). The tab's
+         user-facing label is "Processes/Services" now that it shows a Services view too - the
+         underlying mechanism (ProcessListControl, OpenTaskManager, RelaunchElevatedProcesses, the
+         command-line flag that opens it directly) all keep their existing "Process"/"TaskManager"
+         names, unchanged. -->
+  <sys:String x:Key="Str_TT_TaskManager">Tiến trình/Dịch vụ  (F9)  •  bấm chuột phải để chọn</sys:String>
+  <sys:String x:Key="Str_TabTitle_TaskManager">Tiến trình/Dịch vụ</sys:String>
+  <!-- The tab shows ONE of the two views at a time, so its title names that one. The combined
+         key above is still used for the rail button and its tooltips, where it describes the
+         tool rather than the current view. -->
+  <sys:String x:Key="Str_TabTitle_Processes">Tiến trình</sys:String>
+  <sys:String x:Key="Str_TabTitle_Services">Dịch vụ</sys:String>
+  <sys:String x:Key="Str_Rail_ProcessesOpen">Tiến trình/Dịch vụ</sys:String>
+  <sys:String x:Key="Str_Rail_ProcessesAdmin">Tiến trình/Dịch vụ với tư cách quản trị viên</sys:String>
+  <sys:String x:Key="Str_TT_ProcFilter">Lọc theo tên, đường dẫn hoặc người dùng</sys:String>
+  <sys:String x:Key="Str_Col_ProcName">Tên</sys:String>
+  <sys:String x:Key="Str_Col_ProcPid">PID</sys:String>
+  <sys:String x:Key="Str_Col_ProcUser">Người dùng</sys:String>
+  <sys:String x:Key="Str_Col_ProcCpu">CPU %</sys:String>
+  <sys:String x:Key="Str_Col_ProcMemory">Bộ nhớ</sys:String>
+  <sys:String x:Key="Str_Col_ProcCommandLine">Dòng lệnh</sys:String>
+  <sys:String x:Key="Str_Col_ProcPath">Đường dẫn</sys:String>
+  <sys:String x:Key="Str_Menu_ProcOpenLocation">Mở vị trí tệp</sys:String>
+  <sys:String x:Key="Str_Menu_ProcKill">Kết thúc tiến trình</sys:String>
+  <sys:String x:Key="Str_Menu_ProcRestart">Khởi động lại</sys:String>
+  <sys:String x:Key="Str_Menu_ProcRunAsAdmin">Khởi động lại với tư cách quản trị viên</sys:String>
+  <sys:String x:Key="Str_Dlg_ProcKillMsg">Kết thúc {0} (PID {1})? Mọi công việc chưa lưu trong tiến trình đó sẽ bị mất.</sys:String>
+  <sys:String x:Key="Str_Proc_Killed">Đã kết thúc {0}</sys:String>
+  <sys:String x:Key="Str_Proc_AlreadyExited">{0} đã thoát trước đó</sys:String>
+  <sys:String x:Key="Str_Proc_KillFailed">Không thể kết thúc {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Proc_Restarted">Đã khởi động lại {0}</sys:String>
+  <sys:String x:Key="Str_Proc_RestartFailed">Không thể khởi động lại {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Proc_RefreshFailed">Không thể làm mới danh sách tiến trình: {0}</sys:String>
+  <sys:String x:Key="Str_Proc_Loading">Đang tải danh sách tiến trình...</sys:String>
+  <sys:String x:Key="Str_Proc_DetailsTitle">Chi tiết tiến trình</sys:String>
+  <sys:String x:Key="Str_Proc_DetailsParentPid">PID tiến trình mẹ</sys:String>
+  <sys:String x:Key="Str_Proc_DetailsStartTime">Thời gian bắt đầu</sys:String>
+  <sys:String x:Key="Str_TT_ProcPrev">Tiến trình trước  (Left arrow)</sys:String>
+  <sys:String x:Key="Str_TT_ProcNext">Tiến trình tiếp theo  (Right arrow)</sys:String>
+  <sys:String x:Key="Str_TT_ProcCopyDetails">Sao chép chi tiết  (Ctrl+C)</sys:String>
+  <sys:String x:Key="Str_TT_ProcClose">Đóng  (Esc)</sys:String>
+  <!-- The Processes/Services mode toggle above the filter box: one icon button, its glyph the
+         current mode, its tooltip naming what clicking switches TO next. -->
+  <sys:String x:Key="Str_TT_ProcToggleToServices">Chuyển sang Dịch vụ  (Ctrl+.)</sys:String>
+  <sys:String x:Key="Str_TT_ProcToggleToProcesses">Chuyển sang Tiến trình  (Ctrl+.)</sys:String>
+  <!-- The Services view of the same tab. -->
+  <sys:String x:Key="Str_TT_SvcFilter">Lọc theo tên, tên hiển thị, đường dẫn hoặc tài khoản</sys:String>
+  <sys:String x:Key="Str_Col_SvcName">Tên</sys:String>
+  <sys:String x:Key="Str_Col_SvcDisplayName">Tên hiển thị</sys:String>
+  <sys:String x:Key="Str_Col_SvcStatus">Trạng thái</sys:String>
+  <sys:String x:Key="Str_Col_SvcStartType">Kiểu khởi động</sys:String>
+  <sys:String x:Key="Str_Col_SvcLogOnAs">Đăng nhập với tư cách</sys:String>
+  <sys:String x:Key="Str_Col_SvcPath">Đường dẫn</sys:String>
+  <sys:String x:Key="Str_Col_SvcDescription">Mô tả</sys:String>
+  <sys:String x:Key="Str_Menu_SvcStart">Khởi động</sys:String>
+  <sys:String x:Key="Str_Menu_SvcStop">Dừng</sys:String>
+  <sys:String x:Key="Str_Dlg_SvcStartMsg">Khởi động {0} ({1})?</sys:String>
+  <sys:String x:Key="Str_Dlg_SvcStopMsg">Dừng {0} ({1})? Mọi thành phần phụ thuộc vào dịch vụ này có thể ngừng hoạt động.</sys:String>
+  <sys:String x:Key="Str_Dlg_SvcRestartMsg">Khởi động lại {0} ({1})? Mọi thành phần phụ thuộc vào dịch vụ này sẽ tạm thời không dùng được.</sys:String>
+  <sys:String x:Key="Str_Svc_Started">Đã khởi động {0}</sys:String>
+  <sys:String x:Key="Str_Svc_StartFailed">Không thể khởi động {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Svc_Stopped">Đã dừng {0}</sys:String>
+  <sys:String x:Key="Str_Svc_StopFailed">Không thể dừng {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Svc_Restarted">Đã khởi động lại {0}</sys:String>
+  <sys:String x:Key="Str_Svc_RestartFailed">Không thể khởi động lại {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Svc_RefreshFailed">Không thể làm mới danh sách dịch vụ: {0}</sys:String>
+  <sys:String x:Key="Str_Svc_Loading">Đang tải danh sách dịch vụ...</sys:String>
+  <sys:String x:Key="Str_Svc_DetailsTitle">Chi tiết dịch vụ</sys:String>
+  <sys:String x:Key="Str_TT_SvcPrev">Dịch vụ trước  (Left arrow)</sys:String>
+  <sys:String x:Key="Str_TT_SvcNext">Dịch vụ tiếp theo  (Right arrow)</sys:String>
+  <sys:String x:Key="Str_TT_SvcCopyDetails">Sao chép chi tiết  (Ctrl+C)</sys:String>
+  <sys:String x:Key="Str_TT_SvcClose">Đóng  (Esc)</sys:String>
+  <!-- Event Viewer tab (Shell/EventViewerTabs.cs, Tools/EventViewerControl.cs) -->
+  <sys:String x:Key="Str_TT_EventViewer">Event Viewer  (Ctrl+F12)</sys:String>
+  <sys:String x:Key="Str_TabTitle_EventViewer">Event Viewer</sys:String>
+  <sys:String x:Key="Str_TT_EvtFilter">Lọc theo nguồn, thông báo, danh mục hoặc ID sự kiện</sys:String>
+  <sys:String x:Key="Str_TT_EvtLogPicker">Nhật ký cần đọc</sys:String>
+  <sys:String x:Key="Str_TT_EvtLevelPicker">Các mức cần hiển thị</sys:String>
+  <sys:String x:Key="Str_TT_EvtRefresh">Tải lại nhật ký và mức hiện tại</sys:String>
+  <sys:String x:Key="Str_Col_EvtLevel">Mức</sys:String>
+  <sys:String x:Key="Str_Col_EvtLog">Nhật ký</sys:String>
+  <sys:String x:Key="Str_Col_EvtTime">Ngày và giờ</sys:String>
+  <sys:String x:Key="Str_Col_EvtSource">Nguồn</sys:String>
+  <sys:String x:Key="Str_Col_EvtId">ID sự kiện</sys:String>
+  <sys:String x:Key="Str_Col_EvtCategory">Danh mục tác vụ</sys:String>
+  <sys:String x:Key="Str_Col_EvtMessage">Thông báo</sys:String>
+  <sys:String x:Key="Str_EvtLog_Application">Ứng dụng</sys:String>
+  <sys:String x:Key="Str_EvtLog_System">Hệ thống</sys:String>
+  <sys:String x:Key="Str_EvtLog_Security">Bảo mật</sys:String>
+  <sys:String x:Key="Str_EvtLog_All">Tất cả nhật ký</sys:String>
+  <sys:String x:Key="Str_EvtLevel_All">Tất cả các mức</sys:String>
+  <sys:String x:Key="Str_EvtLevel_Error">Lỗi</sys:String>
+  <sys:String x:Key="Str_EvtLevel_Warning">Cảnh báo</sys:String>
+  <sys:String x:Key="Str_EvtLevel_Information">Thông tin</sys:String>
+  <sys:String x:Key="Str_Menu_EvtCopyMessage">Sao chép thông báo</sys:String>
+  <sys:String x:Key="Str_Menu_EvtCopyDetails">Sao chép chi tiết</sys:String>
+  <sys:String x:Key="Str_Evt_Loading">Đang tải nhật ký sự kiện...</sys:String>
+  <sys:String x:Key="Str_Evt_RefreshFailed">Không thể đọc nhật ký sự kiện: {0}</sys:String>
+  <sys:String x:Key="Str_Evt_AccessDenied">Cần mở cửa sổ với quyền quản trị để đọc nhật ký Bảo mật. Một số mục có thể bị thiếu</sys:String>
+  <sys:String x:Key="Str_Evt_NoMessage">(không có dữ liệu thông báo)</sys:String>
+  <sys:String x:Key="Str_Evt_MessageCopied">Đã sao chép thông báo</sys:String>
+  <sys:String x:Key="Str_Evt_DetailsCopied">Đã sao chép chi tiết</sys:String>
+  <sys:String x:Key="Str_Evt_CopyFailed">Không thể sao chép vào bảng tạm: {0}</sys:String>
+  <sys:String x:Key="Str_Evt_DetailsLevel">Mức</sys:String>
+  <sys:String x:Key="Str_Evt_DetailsTime">Thời gian</sys:String>
+  <sys:String x:Key="Str_Evt_DetailsSource">Nguồn</sys:String>
+  <sys:String x:Key="Str_Evt_DetailsId">ID sự kiện</sys:String>
+  <sys:String x:Key="Str_Evt_DetailsCategory">Danh mục tác vụ</sys:String>
+  <sys:String x:Key="Str_Evt_DetailsMessage">Thông báo</sys:String>
+  <!-- Performance Monitor tab (Shell/PerformanceTabs.cs, Tools/PerformanceMonitorControl.cs) -->
+  <sys:String x:Key="Str_TT_Performance">Hiệu suất  (F11)</sys:String>
+  <sys:String x:Key="Str_TabTitle_Performance">Hiệu suất</sys:String>
+  <sys:String x:Key="Str_Perf_Gathering">Đang đọc thông tin phần cứng...</sys:String>
+  <sys:String x:Key="Str_Perf_GatherFailed">Không thể đọc thông tin phần cứng: {0}</sys:String>
+  <sys:String x:Key="Str_Perf_CountersUnavailable">Không có bộ đếm hiệu suất: {0}</sys:String>
+  <sys:String x:Key="Str_Perf_Cpu">CPU</sys:String>
+  <sys:String x:Key="Str_Perf_Ram">RAM</sys:String>
+  <sys:String x:Key="Str_Perf_Network">Mạng</sys:String>
+  <sys:String x:Key="Str_Perf_Disk">Ổ đĩa</sys:String>
+  <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+  <sys:String x:Key="Str_Perf_Cached">Đã lưu vào bộ nhớ đệm</sys:String>
+  <sys:String x:Key="Str_Perf_Utilization">Mức sử dụng</sys:String>
+  <sys:String x:Key="Str_Perf_Throughput">Thông lượng</sys:String>
+  <sys:String x:Key="Str_Perf_Send">Gửi</sys:String>
+  <sys:String x:Key="Str_Perf_Receive">Nhận</sys:String>
+  <sys:String x:Key="Str_Perf_ActiveTime">Thời gian hoạt động</sys:String>
+  <sys:String x:Key="Str_Perf_TransferRate">Tốc độ truyền</sys:String>
+  <sys:String x:Key="Str_Perf_ReadSpeed">Tốc độ đọc</sys:String>
+  <sys:String x:Key="Str_Perf_WriteSpeed">Tốc độ ghi</sys:String>
+  <sys:String x:Key="Str_Perf_DedicatedMemory">Bộ nhớ GPU chuyên dụng</sys:String>
+  <sys:String x:Key="Str_Perf_SharedMemory">Bộ nhớ GPU dùng chung</sys:String>
+  <sys:String x:Key="Str_Perf_InUse">Đang sử dụng</sys:String>
+  <sys:String x:Key="Str_Perf_Available">Khả dụng</sys:String>
+  <sys:String x:Key="Str_Perf_Committed">Đã cam kết</sys:String>
+  <sys:String x:Key="Str_Perf_Cores">Lõi</sys:String>
+  <sys:String x:Key="Str_Perf_LogicalProcessors">Bộ xử lý lô-gic</sys:String>
+  <sys:String x:Key="Str_Perf_BaseSpeed">Tốc độ cơ sở</sys:String>
+  <sys:String x:Key="Str_Perf_Speed">Tốc độ</sys:String>
+  <sys:String x:Key="Str_Perf_Processes">Tiến trình</sys:String>
+  <sys:String x:Key="Str_Perf_Threads">Luồng</sys:String>
+  <sys:String x:Key="Str_Perf_UpTime">Thời gian hoạt động</sys:String>
+  <sys:String x:Key="Str_Perf_Free">Còn trống</sys:String>
+  <sys:String x:Key="Str_About_Computing">đang tính toán...</sys:String>
+  <sys:String x:Key="Str_About_Downloading">Đang tải xuống...</sys:String>
+  <sys:String x:Key="Str_About_UpdateAvailable">Có bản cập nhật: {0}</sys:String>
+  <sys:String x:Key="Str_About_NotSigned">(chưa được ký)</sys:String>
+  <sys:String x:Key="Str_About_NotSignedChain">(chưa được ký hoặc không xác thực được chuỗi chứng chỉ)</sys:String>
+  <sys:String x:Key="Str_About_None">(không có)</sys:String>
+  <sys:String x:Key="Str_About_Unavailable">(không khả dụng)</sys:String>
+  <sys:String x:Key="Str_TT_About">Giới thiệu  (F12)</sys:String>
+  <sys:String x:Key="Str_Export_TitleCsv">Lưu kết quả dưới dạng CSV</sys:String>
+  <sys:String x:Key="Str_Export_TitleHtml">Lưu kết quả dưới dạng HTML</sys:String>
+  <sys:String x:Key="Str_Export_TitleStorage">Lưu báo cáo lưu trữ dưới dạng HTML</sys:String>
+  <sys:String x:Key="Str_Dlg_SelectFile">Chọn tệp</sys:String>
+  <sys:String x:Key="Str_Term_StartFailed">Không thể khởi động shell.</sys:String>
+  <sys:String x:Key="Str_Term_Exited">[tiến trình đã thoát với mã {0}]</sys:String>
+  <sys:String x:Key="Str_Term_ProfileReloaded">Đã tải lại hồ sơ PowerShell.</sys:String>
+  <sys:String x:Key="Str_StRpt_Title">Báo cáo lưu trữ KillerShell</sys:String>
+  <sys:String x:Key="Str_StRpt_Generated">Được tạo lúc {0}</sys:String>
+  <sys:String x:Key="Str_StRpt_View">Chế độ xem: {0}</sys:String>
+  <sys:String x:Key="Str_StRpt_ScanRoot">Thư mục gốc quét: {0}</sys:String>
+  <sys:String x:Key="Str_StRpt_TotalShown">Tổng dung lượng hiển thị</sys:String>
+  <sys:String x:Key="Str_StRpt_DepthFilter">Bộ lọc độ sâu</sys:String>
+  <sys:String x:Key="Str_StRpt_MinSize">Kích thước tối thiểu</sys:String>
+  <sys:String x:Key="Str_StRpt_Treemap">Sơ đồ cây</sys:String>
+  <sys:String x:Key="Str_StRpt_BigFolders">Các thư mục lớn nhất</sys:String>
+  <sys:String x:Key="Str_StRpt_BigFiles">Các tệp lớn nhất</sys:String>
+  <sys:String x:Key="Str_StRpt_Path">Đường dẫn</sys:String>
+  <sys:String x:Key="Str_StRpt_Size">Kích thước</sys:String>
+  <sys:String x:Key="Str_StRpt_Percent">Phần trăm</sys:String>
+  <sys:String x:Key="Str_Err_EmptyName">tên trống</sys:String>
+  <sys:String x:Key="Str_Err_InvalidChars">ký tự không hợp lệ</sys:String>
+  <sys:String x:Key="Str_Err_AlreadyExists">đã tồn tại</sys:String>
+  <sys:String x:Key="Str_Err_NoFileName">không có tên tệp</sys:String>
+  <sys:String x:Key="Str_Err_NoFolderName">không có tên thư mục</sys:String>
+  <sys:String x:Key="Str_Err_EntryNotFound">không tìm thấy mục</sys:String>
+  <sys:String x:Key="Str_Err_EntryEscaped">mục đã thoát khỏi thư mục giải nén</sys:String>
+  <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell đã được cài đặt hai lần. Bạn có muốn xóa ngay bản cài đặt khác dành cho người dùng hiện tại không?
+
+Các cài đặt của bạn sẽ không bị xóa.</sys:String>
+  <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell đã được cài đặt hai lần. Bạn có muốn xóa ngay bản cài đặt khác dành cho tất cả người dùng không?
+
+Các cài đặt của bạn sẽ không bị xóa.</sys:String>
+  <sys:String x:Key="Str_Dlg_InstallFailed">Cài đặt không thành công:
+{0}</sys:String>
+  <sys:String x:Key="Str_Btn_Yes">Có</sys:String>
+  <sys:String x:Key="Str_Btn_OK">OK</sys:String>
+  <sys:String x:Key="Str_Dlg_UninstallElevateFailed">Trình gỡ cài đặt không thể yêu cầu quyền quản trị viên:
+{0}</sys:String>
+  <sys:String x:Key="Str_Dlg_UninstallConfirm">Gỡ cài đặt KillerShell khỏi máy tính này?</sys:String>
+  <sys:String x:Key="Str_Btn_Uninstall">Gỡ cài đặt</sys:String>
+  <sys:String x:Key="Str_Perf_MbFree">còn trống {0} MB</sys:String>
+  <sys:String x:Key="Str_Perf_Idle">không hoạt động</sys:String>
+  <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Tools/StorageAnalyzerControl.cs) -->
+  <sys:String x:Key="Str_TT_Storage">Trình phân tích lưu trữ  (F4)</sys:String>
+  <sys:String x:Key="Str_TabTitle_Storage">Trình phân tích lưu trữ</sys:String>
+  <sys:String x:Key="Str_Rail_StorageOpen">Trình phân tích lưu trữ</sys:String>
+  <sys:String x:Key="Str_Rail_StorageAdmin">Trình phân tích lưu trữ (quét với quyền quản trị viên)</sys:String>
+  <sys:String x:Key="Str_Ks_Storage">Trình phân tích lưu trữ</sys:String>
+  <sys:String x:Key="Str_Ks_StorageAdmin">Trình phân tích lưu trữ, quét với quyền quản trị viên</sys:String>
+  <!-- Local to the Storage Analyzer tab, only while it has focus -->
+  <sys:String x:Key="Str_Ks_StorageScan">bắt đầu quét (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Ks_StorageDepth">chuyển đổi độ sâu của sơ đồ cây (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Ks_StorageMin">chuyển đổi kích thước tối thiểu được hiển thị (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Ks_StorageColor">chuyển cách tô màu theo loại hoặc thư mục (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Ks_StorageZoomIn">phóng to vào thư mục đã chọn (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Ks_StorageZoomOut">thu nhỏ ra một cấp (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Ks_StorageHome">trở về thư mục gốc quét (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Ks_StorageRecycle">chuyển mục đã chọn vào Thùng rác (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Storage_Scan">Quét</sys:String>
+  <sys:String x:Key="Str_Storage_Stop">Dừng</sys:String>
+  <sys:String x:Key="Str_Storage_Browse">Chọn thư mục hoặc ổ đĩa để quét</sys:String>
+  <sys:String x:Key="Str_Storage_Prompt">Chọn thư mục hoặc ổ đĩa, sau đó chọn Quét</sys:String>
+  <sys:String x:Key="Str_Storage_BadTarget">Thư mục đó không tồn tại</sys:String>
+  <sys:String x:Key="Str_Storage_Stopped">Đã dừng quét, đang hiển thị dữ liệu đã đọc</sys:String>
+  <sys:String x:Key="Str_Storage_Skipped">đã bỏ qua</sys:String>
+  <sys:String x:Key="Str_Storage_OpenInTab">Mở trong tab mới</sys:String>
+  <sys:String x:Key="Str_Storage_RevealExplorer">Mở trong File Explorer</sys:String>
+  <sys:String x:Key="Str_Storage_CopyPath">Sao chép đường dẫn</sys:String>
+  <sys:String x:Key="Str_Storage_Delete">Xóa (Thùng rác)</sys:String>
+  <sys:String x:Key="Str_Storage_Rescan">Quét lại</sys:String>
+  <sys:String x:Key="Str_Storage_ColorByType">Tô màu theo loại tệp</sys:String>
+  <sys:String x:Key="Str_Storage_ColorByFolder">Tô màu theo thư mục cấp cao nhất</sys:String>
+  <sys:String x:Key="Str_Storage_Depth">Độ sâu</sys:String>
+  <sys:String x:Key="Str_Storage_DepthAll">Tất cả</sys:String>
+  <sys:String x:Key="Str_Storage_DepthTip">Số cấp thư mục được hiển thị bằng các hình chữ nhật riêng, giá trị thấp hơn sẽ đơn giản hóa bản đồ để chỉ hiện các thư mục lớn</sys:String>
+  <sys:String x:Key="Str_Storage_Min">Tối thiểu</sys:String>
+  <sys:String x:Key="Str_Storage_MinAll">Tất cả</sys:String>
+  <sys:String x:Key="Str_Storage_MinSizeTip">Ẩn mọi mục nhỏ hơn kích thước này, dung lượng của chúng vẫn được tính vào thư mục chứa</sys:String>
+  <sys:String x:Key="Str_Storage_Total">tổng cộng</sys:String>
+  <!-- Archives browsed as folders (Services/ArchiveProvider.cs, Shell/Browse.cs) -->
+  <sys:String x:Key="Str_Status_Extracting">Đang giải nén {0}...</sys:String>
+  <sys:String x:Key="Str_Status_ExtractFailed">Không thể giải nén {0}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveFailed">Không thể đọc tệp nén: {0}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveReadOnly">Chỉ có thể thay đổi tệp nén .zip, tệp này được mở ở chế độ chỉ đọc</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveNoDrag">Chỉ có thể kéo tệp ra khỏi tệp nén, hãy mở thư mục rồi kéo các mục bên trong</sys:String>
+  <!-- Writing inside an archive (Services/ArchiveWriter.cs, Shell/ArchiveEdit.cs) -->
+  <sys:String x:Key="Str_Status_ArchiveWriting">Đang ghi lại tệp nén: {0}%</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveAdded">Đã thêm {0} vào tệp nén</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveDeleted">Đã xóa {0} khỏi tệp nén</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveRenamed">Đã đổi tên thành {0}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveSomeRejected">Đã thêm {0}, có {1} mục không thể được đặt tên hợp lệ nên đã bị bỏ qua</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveWriteFailed">Không thể cập nhật tệp nén: {0}. Tệp gốc không thay đổi.</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Tệp nén đó được đánh dấu là chỉ đọc, hãy bỏ thuộc tính này rồi thử lại</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveInUse">Tệp nén đó đang được mở trong một chương trình khác, hãy đóng chương trình đó rồi thử lại</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveDenied">Không có quyền ghi vào tệp nén đó</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveNameTaken">Tệp nén đã chứa một mục có tên đó</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveEntryGone">Mục đó không còn trong tệp nén</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveBadName">Không thể sử dụng tên đó bên trong tệp nén</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveNothingAdded">Không có gì để thêm</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveCanceled">Tệp nén không thay đổi</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveCollide">Một số mục đã có trong tệp nén</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveDragCopy">Đã sao chép ra khỏi tệp nén, mục đó vẫn còn bên trong</sys:String>
+  <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">{0} mục trong số này đã có trong tệp nén.</sys:String>
+  <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">Xóa {0} mục khỏi tệp nén? Toàn bộ tệp nén sẽ được ghi lại và không thể hoàn tác thao tác này.</sys:String>
+  <sys:String x:Key="Str_Chk_ArchiveReplace">Thay thế các mục đó thay vì giữ cả hai</sys:String>
+  <sys:String x:Key="Str_Btn_ArchiveAdd">Thêm</sys:String>
+  <sys:String x:Key="Str_Storage_Free">còn trống</sys:String>
+  <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Tools/RegistryEditorControl.cs) -->
+  <sys:String x:Key="Str_TT_RegistryEditor">Trình chỉnh sửa Sổ đăng ký  (Ctrl+F11)</sys:String>
+  <sys:String x:Key="Str_TabTitle_RegistryEditor">Trình chỉnh sửa Sổ đăng ký</sys:String>
+  <sys:String x:Key="Str_TT_RegFind">Tìm tên khóa hoặc giá trị  (Ctrl+F)</sys:String>
+  <sys:String x:Key="Str_TT_RegRefresh">Tải lại khóa đã chọn từ đĩa  (F5)</sys:String>
+  <sys:String x:Key="Str_RegEd_FindNext">Tìm tiếp</sys:String>
+  <sys:String x:Key="Str_RegEd_ComputerRoot">Máy tính</sys:String>
+  <sys:String x:Key="Str_RegEd_PathNotFound">Khóa đó không tồn tại</sys:String>
+  <sys:String x:Key="Str_RegEd_AccessDenied">Quyền truy cập bị từ chối, khóa này yêu cầu cấp truy cập cao hơn cả quyền của cửa sổ đang chạy với đặc quyền nâng cao này</sys:String>
+  <sys:String x:Key="Str_RegEd_NothingSelected">Trước tiên, hãy chọn một khóa</sys:String>
+  <sys:String x:Key="Str_RegEd_Refreshed">Đã làm mới</sys:String>
+  <sys:String x:Key="Str_RegEd_NoMatches">Không tìm thấy kết quả phù hợp trong phần cây hiện đang được tải</sys:String>
+  <sys:String x:Key="Str_RegEd_NameEmpty">Nhập tên</sys:String>
+  <sys:String x:Key="Str_RegEd_NameHasBackslash">Tên không được chứa dấu gạch chéo ngược</sys:String>
+  <sys:String x:Key="Str_RegEd_NameExists">Một khóa hoặc giá trị có tên đó đã tồn tại tại đây</sys:String>
+  <sys:String x:Key="Str_RegEd_NewKeyDefaultName">Khóa mới #1</sys:String>
+  <sys:String x:Key="Str_RegEd_NewValueDefaultName">Giá trị mới</sys:String>
+  <sys:String x:Key="Str_RegEd_CreateFailed">Không thể tạo mục này: {0}</sys:String>
+  <sys:String x:Key="Str_RegEd_RenameFailed">Không thể đổi tên mục này: {0}</sys:String>
+  <sys:String x:Key="Str_RegEd_DeleteFailed">Không thể xóa mục này: {0}</sys:String>
+  <sys:String x:Key="Str_RegEd_SaveFailed">Không thể lưu giá trị: {0}</sys:String>
+  <sys:String x:Key="Str_RegEd_KeyDeleted">Đã xóa "{0}" cùng toàn bộ nội dung bên trong</sys:String>
+  <sys:String x:Key="Str_RegEd_ValueDeleted">Đã xóa "{0}"</sys:String>
+  <sys:String x:Key="Str_RegEd_ValueSaved">Đã lưu "{0}"</sys:String>
+  <sys:String x:Key="Str_RegEd_NameCopied">Đã sao chép tên</sys:String>
+  <sys:String x:Key="Str_RegEd_PathCopied">Đã sao chép đường dẫn</sys:String>
+  <sys:String x:Key="Str_RegEd_CopyFailed">Không thể sao chép vào bảng tạm: {0}</sys:String>
+  <sys:String x:Key="Str_Col_RegName">Tên</sys:String>
+  <sys:String x:Key="Str_Col_RegType">Loại</sys:String>
+  <sys:String x:Key="Str_Col_RegData">Dữ liệu</sys:String>
+  <sys:String x:Key="Str_Menu_RegNew">Mới</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewKey">Khóa</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewString">Giá trị chuỗi</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewExpandString">Giá trị chuỗi có thể mở rộng</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewMultiString">Giá trị đa chuỗi</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewBinary">Giá trị nhị phân</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewDWord">Giá trị DWORD</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewQWord">Giá trị QWORD</sys:String>
+  <sys:String x:Key="Str_Menu_RegModify">Sửa đổi...</sys:String>
+  <sys:String x:Key="Str_Menu_RegRename">Đổi tên</sys:String>
+  <sys:String x:Key="Str_Menu_RegDelete">Xóa</sys:String>
+  <sys:String x:Key="Str_Menu_RegCopyName">Sao chép tên</sys:String>
+  <sys:String x:Key="Str_Menu_RegCopyPath">Sao chép đường dẫn đầy đủ</sys:String>
+  <sys:String x:Key="Str_Dlg_RegNewKeyMsg">Đặt tên cho khóa mới</sys:String>
+  <sys:String x:Key="Str_Dlg_RegNewValueMsg">Đặt tên cho giá trị mới</sys:String>
+  <sys:String x:Key="Str_Dlg_RegRenameKeyMsg">Đổi tên khóa "{0}"</sys:String>
+  <sys:String x:Key="Str_Dlg_RegRenameValueMsg">Đổi tên giá trị "{0}"</sys:String>
+  <sys:String x:Key="Str_Dlg_RegDeleteKeyMsg">Xóa vĩnh viễn khóa "{0}" và toàn bộ nội dung bên trong? Thao tác này cũng xóa mọi khóa con và mọi giá trị nằm bên dưới, chứ không chỉ riêng khóa này. Không thể hoàn tác và việc xóa nhầm khóa có thể khiến chương trình không khởi động được hoặc làm hỏng chính Windows.</sys:String>
+  <sys:String x:Key="Str_Dlg_RegDeleteValueMsg">Xóa vĩnh viễn giá trị "{0}"? Không thể hoàn tác thao tác này.</sys:String>
+  <!-- Value edit dialog (Controls/RegistryValueEditDialog.xaml) - adapts its input to the
+         value's RegistryValueKind, one dialog for all six editable types. -->
+  <sys:String x:Key="Str_RegEd_Save">Lưu</sys:String>
+  <sys:String x:Key="Str_RegEd_ValueData">Dữ liệu giá trị</sys:String>
+  <sys:String x:Key="Str_RegEd_MultiHint">Mỗi dòng một mục</sys:String>
+  <sys:String x:Key="Str_RegEd_BinaryHint">Các cặp byte hệ thập lục phân, phân tách bằng dấu cách (ví dụ: 01 A4 FF 00)</sys:String>
+  <sys:String x:Key="Str_RegEd_Base">Cơ số:</sys:String>
+  <sys:String x:Key="Str_RegEd_Hexadecimal">Thập lục phân</sys:String>
+  <sys:String x:Key="Str_RegEd_Decimal">Thập phân</sys:String>
+  <sys:String x:Key="Str_RegEd_InvalidNumber">Đây không phải là số hợp lệ đối với cơ số đã chọn</sys:String>
+  <sys:String x:Key="Str_RegEd_OutOfRangeDword">Giá trị này quá lớn đối với DWORD 32 bit</sys:String>
+  <sys:String x:Key="Str_RegEd_InvalidByte">"{0}" không phải là byte hệ thập lục phân hợp lệ</sys:String>
+  <!-- Event details dialog (Controls/EventDetailsDialog.xaml) - double-click a row -->
+  <sys:String x:Key="Str_Evt_DetailsTitle">Chi tiết sự kiện</sys:String>
+  <sys:String x:Key="Str_Evt_Keywords">Từ khóa</sys:String>
+  <sys:String x:Key="Str_Evt_Computer">Máy tính</sys:String>
+  <sys:String x:Key="Str_Evt_User">Người dùng / SID</sys:String>
+  <sys:String x:Key="Str_Evt_ProcessId">ID tiến trình</sys:String>
+  <sys:String x:Key="Str_Evt_ThreadId">ID luồng</sys:String>
+  <sys:String x:Key="Str_Evt_ActivityId">ID hoạt động</sys:String>
+  <sys:String x:Key="Str_Evt_RecordId">ID bản ghi sự kiện</sys:String>
+  <sys:String x:Key="Str_Evt_Opcode">Mã thao tác</sys:String>
+  <sys:String x:Key="Str_Evt_ViewXml">Xem XML thô</sys:String>
+  <sys:String x:Key="Str_Evt_ViewFormatted">Xem bản đã định dạng</sys:String>
+  <sys:String x:Key="Str_Evt_SearchOnline">Tìm kiếm sự kiện này trên mạng</sys:String>
+  <sys:String x:Key="Str_Btn_Close">Đóng</sys:String>
+  <sys:String x:Key="Str_TT_EvtPrev">Sự kiện trước  (Mũi tên trái)</sys:String>
+  <sys:String x:Key="Str_TT_EvtNext">Sự kiện tiếp theo  (Mũi tên phải)</sys:String>
+  <sys:String x:Key="Str_TT_EvtViewXml">Xem XML thô  (Alt+X)</sys:String>
+  <sys:String x:Key="Str_TT_EvtViewFormatted">Xem bản đã định dạng  (Alt+X)</sys:String>
+  <sys:String x:Key="Str_TT_EvtSearchOnline">Tìm kiếm sự kiện này trên mạng  (Alt+S)</sys:String>
+  <sys:String x:Key="Str_TT_EvtCopyDetails">Sao chép chi tiết  (Ctrl+C)</sys:String>
+  <sys:String x:Key="Str_TT_EvtClose">Đóng  (Esc)</sys:String>
+</ResourceDictionary>

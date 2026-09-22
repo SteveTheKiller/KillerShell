@@ -27,6 +27,7 @@ namespace KillerShell.Shell
             (Locale.PlPL, "Polski",       "pl-PL"),
             (Locale.RuRU, "Русский",      "ru-RU"),
             (Locale.TrTR, "Türkçe",      "tr-TR"),
+            (Locale.ViVN, "Tiếng Việt",  "vi-VN"),
             (Locale.ZhCN, "中文 (简体)",  "zh-CN"),
             (Locale.ZhTW, "中文 (繁體)",  "zh-TW"),
         ];
