@@ -144,7 +144,13 @@ namespace KillerShell.Shell
         private const int WM_GETMINMAXINFO = 0x0024;
         private const int WM_ERASEBKGND    = 0x0014;
         private const int WM_NCRBUTTONUP   = 0x00A5;
+        private const int WM_XBUTTONUP     = 0x020C;
+        private const int WM_APPCOMMAND    = 0x0319;
         private const int HTCAPTION        = 2;
+        private const int XBUTTON1         = 1;
+        private const int XBUTTON2         = 2;
+        private const int APPCOMMAND_BROWSER_BACKWARD = 1;
+        private const int APPCOMMAND_BROWSER_FORWARD  = 2;
         private const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
 
         // Another KillerShell window handing us a tab it was dragged onto (TabHandoff.cs) -
@@ -160,6 +166,21 @@ namespace KillerShell.Shell
         // Installing a CLI tool and finding the terminal still cannot see it is the case that
         // matters (ShellEnv.cs, RefreshEnvironmentPath).
         private const int WM_SETTINGCHANGE = 0x001A;
+
+        internal static int MouseHistoryDirectionFromMessage(int msg, IntPtr wParam, IntPtr lParam)
+        {
+            int command;
+            if (msg == WM_XBUTTONUP)
+                command = (int)((wParam.ToInt64() >> 16) & 0xFFFF);
+            else if (msg == WM_APPCOMMAND)
+                command = (int)((lParam.ToInt64() >> 16) & 0x0FFF);
+            else
+                return 0;
+
+            if (command == XBUTTON1 || command == APPCOMMAND_BROWSER_BACKWARD) return -1;
+            if (command == XBUTTON2 || command == APPCOMMAND_BROWSER_FORWARD) return 1;
+            return 0;
+        }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -177,6 +198,14 @@ namespace KillerShell.Shell
                     RefreshEnvironmentPath();   // ShellEnv.cs
                 // Deliberately not marked handled: this is an observation, and WPF and any other
                 // hook on this window are entitled to see the broadcast too.
+            }
+            int mouseHistoryDirection = MouseHistoryDirectionFromMessage(msg, wParam, lParam);
+            if (mouseHistoryDirection != 0)
+            {
+                if (mouseHistoryDirection < 0) NavBack_Click(this, new RoutedEventArgs());
+                else                           NavForward_Click(this, new RoutedEventArgs());
+                handled = true;
+                return IntPtr.Zero;
             }
             if (msg == WM_ERASEBKGND)
             {

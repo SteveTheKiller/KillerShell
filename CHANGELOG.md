@@ -13,6 +13,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 - On the 98SE theme the Elevated Privileges caption in an admin window's title bar is white instead of disappearing into the title bar.
+- Mouse Back and Forward buttons navigate folder history again.
 
 ## [1.2.5] - 2026-09-20
 

@@ -224,24 +224,6 @@ namespace KillerShell.Shell
                 if (!DemoMode && !IsElevated) SaveTabsOnExit();   // Session.cs
             };
 
-            // The two thumb buttons on a mouse, at the WINDOW level so they work over a folder
-            // listing, the tree and a terminal alike - a shell has no use for them and Windows
-            // has meant Back and Forward by them for twenty years. Preview, so the terminal's
-            // own mouse handling never sees them first.
-            PreviewMouseDown += (_, e) =>
-            {
-                if (e.ChangedButton == System.Windows.Input.MouseButton.XButton1)
-                {
-                    NavBack_Click(this, new RoutedEventArgs());      // Browse.cs
-                    e.Handled = true;
-                }
-                else if (e.ChangedButton == System.Windows.Input.MouseButton.XButton2)
-                {
-                    NavForward_Click(this, new RoutedEventArgs());   // Browse.cs
-                    e.Handled = true;
-                }
-            };
-
             // ThemeFlyout is a Button.ContextMenu now (matching LangMenu, KillerPDF's pattern),
             // and a ContextMenu's own popup already closes itself on an outside click or when
             // the window is deactivated/moved - the hand-rolled close-tracking a raw Popup
