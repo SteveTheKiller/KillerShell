@@ -280,12 +280,20 @@ namespace KillerShell.Services
             // whereas the top rail is the pane's real frame and must remain present.
             SetIfAbsent("PaneEdgeSideThickness", new Thickness(1, 1, 1, 0));
             SetIfAbsent("PaneEdgeBottomThickness", new Thickness(0, 0, 0, 1));
+            Mirror("FocusedPaneBrush", "PaneBrush");
+            Mirror("TabActiveBrush", "PaneBrush");
+            Mirror("TabInactiveBrush", "BackgroundBrush");
+            Mirror("DocumentPaneBevelTopLeftBrush", "PaneBevelDarkBrush");
+            Mirror("DocumentPaneBevelBottomRightBrush", "PaneBevelLightBrush");
+            Mirror("DocumentPaneBevelInnerTopLeftBrush", "PaneBevelDark2Brush");
+            Mirror("DocumentPaneBevelInnerBottomRightBrush", "PaneBevelLight2Brush");
             // The ACTIVE tab's dark bevel: BevelDarkThickness with the BOTTOM dropped, so the tab
             // opens into the content below it instead of ruling a line across the join. 0 here
             // rather than a computed "BevelDarkThickness minus its bottom" - on the twelve
             // non-flat themes the bevel is zero already, so the two are the same value, and a
             // literal cannot go wrong if a theme later states an asymmetric bevel.
             SetIfAbsent("TabActiveBevelDarkThickness", new Thickness(0));
+            SetIfAbsent("TabBevelLightThickness", new Thickness(0));
             // The INACTIVE tab's dark bevel. Mirrors BevelDarkThickness's default of 0, so the
             // twelve rounded themes are unaffected; a flat theme states a 1px foot instead of the
             // shared 2px, because a doubled rule under the tab strip reads as a sunken menu bar.
@@ -628,6 +636,19 @@ namespace KillerShell.Services
             // The tab's outer margin. Default is the literal it replaced; a flat theme opens a 2px
             // gap on the right so both chamfered corners are visible against the band.
             SetIfAbsent("TabMargin", new Thickness(0, 3, 0, 1));
+            SetIfAbsent("TabActiveMargin", new Thickness(0, 3, 0, 0));
+            SetIfAbsent("TabInactiveFirstMargin", new Thickness(0, 3, 0, 1));
+            SetIfAbsent("TabInactiveLastMargin", new Thickness(0, 3, 0, 1));
+            SetIfAbsent("TabActiveFirstMargin", new Thickness(0, 3, 0, 0));
+            SetIfAbsent("TabActiveLastMargin", new Thickness(0, 3, 0, 0));
+            SetIfAbsent("TabActiveOnlyMargin", new Thickness(0, 3, 0, 0));
+            SetIfAbsent("TabActiveOuterOutlineMargin", new Thickness(0));
+            SetIfAbsent("TabActiveInnerBevelBrush", Transparent);
+            SetIfAbsent("TabActiveInnerBevelThickness", new Thickness(0));
+            SetIfAbsent("TabActiveInnerBevelMargin", new Thickness(0));
+            SetIfAbsent("RetroTabJoinVisibility", Visibility.Collapsed);
+            SetIfAbsent("RetroActiveTabOutlineVisibility", Visibility.Collapsed);
+            SetIfAbsent("TabBandHeight", double.NaN);
             // The ACTIVE tab's dark-bevel margin. Defaults to the same family literal the shared
             // TabBevelMargin uses (harmless - only a flat theme draws tab bevels at all); 98SE
             // pulls its bottom in so the dark right edge stops at the menu bar's white top line.

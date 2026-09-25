@@ -71,6 +71,33 @@ namespace KillerShell.Shell
             bool show = LivePanes().Any(p => p.Tabs.Count > 1);
             Pane.TabBar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
 
+            bool retroTheme = Services.ThemeManager.Current == Services.Theme.SE98;
+            bool retroTabs = show && retroTheme;
+            if (retroTabs)
+            {
+                Pane.ResultsPane.BorderThickness = new Thickness(1, 0, 1, 1);
+                Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 0, 0, 0);
+                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0, 0, 1, 1);
+                Pane.PaneBevelInnerDark.BorderThickness = new Thickness(1, 0, 0, 0);
+                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0, 0, 0, 1);
+            }
+            else if (retroTheme)
+            {
+                Pane.ResultsPane.BorderThickness = new Thickness(1);
+                Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 1, 0, 0);
+                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0, 0, 1, 1);
+                Pane.PaneBevelInnerDark.BorderThickness = new Thickness(1, 1, 0, 0);
+                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0, 0, 1, 1);
+            }
+            else
+            {
+                Pane.ResultsPane.SetResourceReference(Border.BorderThicknessProperty, "PaneEdgeSideThickness");
+                Pane.PaneBevelOuterDark.BorderThickness = new Thickness(0);
+                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);
+                Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);
+                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0);
+            }
+
             // Which tabs fit at this width, before anything below asks which is on an edge.
             ApplyTabWindow(Pane);
 
@@ -86,13 +113,20 @@ namespace KillerShell.Shell
             // AND handed its right side to the band, which drew that side at the band's edge -
             // past the chevron, as a green stripe up the far right with nothing under it.
             bool chevron = Pane.TabOverflowBtn.Visibility == Visibility.Visible;
+            bool hostFillsBand = Pane.TabStripHost.Width >=
+                Math.Max(0, Pane.TabBar.ActualWidth - (chevron ? TabChevronWidth : 0)) - 0.5;
 
             var strip = _tabs.Where(t => t.IsStripVisible).ToList();
-            foreach (var t in _tabs) { t.IsFirst = false; t.IsLast = false; }
+            foreach (var t in _tabs)
+            {
+                t.IsFirst = false;
+                t.IsLast = false;
+                t.UseRetroTabChrome = retroTabs;
+            }
             if (strip.Count > 0)
             {
                 strip[0].IsFirst              = true;
-                strip[^1].IsLast = !chevron;
+                strip[^1].IsLast = !chevron && hostFillsBand;
             }
 
             if (show)
@@ -122,7 +156,6 @@ namespace KillerShell.Shell
                 // The ring line in the band IS the pane's top border, so it curves where the
                 // pane curves. Left flat and full-width it overshot the corner and read as a
                 // rule laid across the pane rather than as its edge (FilePane.xaml).
-                Pane.TabBarRing.CornerRadius  = new CornerRadius(firstActive ? 0 : r, lastActive ? 0 : r, 0, 0);
             }
             else
             {
@@ -136,6 +169,34 @@ namespace KillerShell.Shell
             // corners just changed - otherwise a last-active tab squared the pane's border while
             // the clip kept rounding the bar under it.
             Pane.RefreshPaneClip();
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                (Action)(() => UpdateRetroTabInnerJoin(Pane)));
+        }
+
+        private static void UpdateRetroTabInnerJoin(FilePane pane)
+        {
+            pane.RetroTabInnerJoinLeft.Width = 0;
+            pane.RetroTabInnerJoinRight.Width = 0;
+
+            if (Services.ThemeManager.Current != Services.Theme.SE98 ||
+                pane.TabBar.Visibility != Visibility.Visible || pane.Active == null)
+                return;
+
+            pane.TabStrip.UpdateLayout();
+            if (pane.TabStrip.ItemContainerGenerator.ContainerFromItem(pane.Active) is not FrameworkElement activeTab ||
+                activeTab.ActualWidth <= 0 || pane.RetroTabInnerJoin.ActualWidth <= 0)
+                return;
+
+            Point activeOrigin = activeTab.TranslatePoint(new Point(0, 0), pane.RetroTabInnerJoin);
+            double joinWidth = pane.RetroTabInnerJoin.ActualWidth;
+            double activeLeft = Math.Max(0, Math.Min(joinWidth, Math.Round(activeOrigin.X)));
+            double activeRight = Math.Max(activeLeft,
+                Math.Min(joinWidth, Math.Round(activeOrigin.X + activeTab.ActualWidth)));
+
+            pane.RetroTabInnerJoinLeft.Width = activeLeft;
+            Canvas.SetLeft(pane.RetroTabInnerJoinLeft, 0);
+            pane.RetroTabInnerJoinRight.Width = joinWidth - activeRight;
+            Canvas.SetLeft(pane.RetroTabInnerJoinRight, activeRight);
         }
 
         /// <summary>
@@ -184,6 +245,9 @@ namespace KillerShell.Shell
         /// </remarks>
         private const double TabFloorWidth = 120;
 
+        /// <summary>Widest a tab may grow when only a few tabs are open.</summary>
+        private const double TabCeilingWidth = 240;
+
         /// <summary>What the chevron takes out of the band while it is showing.</summary>
         private const double TabChevronWidth = 26;
 
@@ -205,6 +269,7 @@ namespace KillerShell.Shell
             if (n == 0)
             {
                 p.TabOverflowBtn.Visibility = Visibility.Collapsed;
+                p.TabStripHost.Width = 0;
                 return;
             }
 
@@ -226,6 +291,11 @@ namespace KillerShell.Shell
             }
 
             p.TabOverflowBtn.Visibility = overflow ? Visibility.Visible : Visibility.Collapsed;
+
+            double stripAvail = Math.Max(0, avail - (overflow ? TabChevronWidth : 0));
+            int visibleCount = overflow ? cap : n;
+            p.TabStripHost.Width = Math.Max(TabFloorWidth,
+                Math.Min(stripAvail, visibleCount * TabCeilingWidth));
 
             int start = 0;
             if (overflow)

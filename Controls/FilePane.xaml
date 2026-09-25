@@ -18,11 +18,6 @@
              xmlns:models="clr-namespace:KillerShell.Models">
 
             <UserControl.Resources>
-                <!-- Turns the TabChamfer theme scalar into the tab's clip geometry. Win98 tabs cut
-                     their top corners at 45 degrees, which a CornerRadius cannot express at all.
-                     Returns null when the scalar is 0, so no other theme is clipped. -->
-                <local:TabChamferConverter x:Key="TabChamferConv"/>
-
                 <!-- Right-click on any of the pane's menu bars - the folder location row, the
                      shell bar, the editor bar. One shared instance; PlacementTarget follows
                      whichever bar opened it. This is how the hide is DISCOVERED: Alt+M is the
@@ -64,6 +59,7 @@
                    on that side only, and the 6 on top was the last gap left between the caption
                    and the client area once ContentPaneMargin went to 0. -->
               <Border Grid.Row="0" x:Name="TabBar" Panel.ZIndex="20" Margin="{DynamicResource TabBarMargin}"
+                      Height="{DynamicResource TabBandHeight}"
                       Background="Transparent" Visibility="Collapsed"
                       SizeChanged="TabBar_SizeChanged">
                <Grid>
@@ -110,20 +106,18 @@
                         </LinearGradientBrush>
                     </Border.OpacityMask>
                 </Border>
-                <!-- Not a flat 1px strip: the pane's top corners are rounded under an INACTIVE
-                     tab (Tabs.cs), and a straight line ran past the curve and stopped dead at
-                     the pane's outer edge. This is the pane's top border drawn again, radii and
-                     all - 7px tall with a -6 bottom margin, so its 1px TOP edge lands in the
-                     band's last row and its curved sides drop out of the band and land exactly
-                     on the pane's own left/right border, same brush, same pixels. Tabs.cs keeps
-                     the radii in step with the pane's. -->
-                <!-- PaneEdgeBrush, which a flat theme sets TRANSPARENT: on 98SE the tab's own
-                     bevel and the pane's bevel already describe the join, and this extra 1px rule
-                     drew as a gray line between the active tab and the content below it. Every
-                     other theme keeps the ring exactly as before. -->
-                <Border x:Name="TabBarRing" Height="7" VerticalAlignment="Bottom" Margin="0,0,0,-6"
-                        BorderThickness="1,1,1,0" CornerRadius="{DynamicResource TabCornerRadius}" IsHitTestVisible="False"
-                        BorderBrush="{DynamicResource PaneEdgeBrush}"/>
+                <Border x:Name="RetroTabJoinLine" Height="1" VerticalAlignment="Bottom"
+                        Background="{DynamicResource PaneBorderBrush}"
+                        Visibility="{DynamicResource RetroTabJoinVisibility}"
+                        IsHitTestVisible="False"/>
+                <Canvas x:Name="RetroTabInnerJoin" Height="1" VerticalAlignment="Bottom"
+                        Margin="1,0,2,-1" Visibility="{DynamicResource RetroTabJoinVisibility}"
+                        IsHitTestVisible="False" SnapsToDevicePixels="True">
+                    <Border x:Name="RetroTabInnerJoinLeft" Height="1"
+                            Background="{DynamicResource BevelLightBrush}"/>
+                    <Border x:Name="RetroTabInnerJoinRight" Height="1"
+                            Background="{DynamicResource BevelLightBrush}"/>
+                </Canvas>
                 <DockPanel LastChildFill="True">
                 <!-- Overflow chevron: only tabs collapsed out of this pane's strip (Tabs.cs
                      TabOverflowMenu). Docked BEFORE the strip so the strip's remaining width is
@@ -145,9 +139,12 @@
                      bar's actual width, which is the point. -->
                 <!-- FocusVisualStyle nulled: a ScrollViewer is focusable, and once focus lands
                      here WPF draws its stock dotted rectangle around the whole strip. -->
-                <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled"
-                              FocusVisualStyle="{x:Null}">
-                    <ItemsControl x:Name="TabStrip">
+                <ScrollViewer x:Name="TabScroll" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled"
+                              Background="Transparent" FocusVisualStyle="{x:Null}" HorizontalContentAlignment="Left"
+                              UseLayoutRounding="True" SnapsToDevicePixels="True">
+                    <Grid x:Name="TabStripHost" HorizontalAlignment="Left"
+                          UseLayoutRounding="True" SnapsToDevicePixels="True">
+                    <ItemsControl x:Name="TabStrip" UseLayoutRounding="True" SnapsToDevicePixels="True">
                         <!-- The ACTIVE tab draws above its neighbors. Items paint in index
                              order, so the tab to the right of the active one was painting over
                              the active tab's 1px right border and the ring stopped dead at that
@@ -199,8 +196,8 @@
                                      one so the tab sits about a pixel shorter, which is the Win98
                                      proportion that goes alongside the chamfer. -->
                                 <Border x:Name="tabBd" CornerRadius="{DynamicResource TabCornerRadius}" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
-                                        MinWidth="60"
-                                        Tag="{DynamicResource TabChamfer}"
+                                        MinWidth="120" MaxWidth="240"
+                                        UseLayoutRounding="True" SnapsToDevicePixels="True"
                                         Cursor="Hand" Background="Transparent"
                                         BorderThickness="0,0,1,0"
                                         BorderBrush="{DynamicResource PaneEdgeBrush}"
@@ -208,18 +205,6 @@
                                         PreviewMouseLeftButtonDown="Tab_DragDown"
                                         PreviewMouseMove="Tab_DragMove"
                                         PreviewMouseLeftButtonUp="Tab_DragUp">
-                                    <!-- The Win98 chamfer. Null geometry on every theme whose
-                                         TabChamfer is 0, so only the flat theme is clipped at all.
-                                         The geometry deliberately runs past the tab's foot so the
-                                         bevels' negative bottom margin (TabBevelMargin) survives
-                                         the clip - only the TOP corners are meant to be cut. -->
-                                    <Border.Clip>
-                                        <MultiBinding Converter="{StaticResource TabChamferConv}">
-                                            <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}"/>
-                                            <Binding Path="ActualHeight" RelativeSource="{RelativeSource Self}"/>
-                                            <Binding Path="Tag" RelativeSource="{RelativeSource Self}"/>
-                                        </MultiBinding>
-                                    </Border.Clip>
                                     <Border.ContextMenu>
                                         <local:OpaqueContextMenu>
                                             <MenuItem Header="{DynamicResource Str_Menu_PipeTab}"
@@ -252,9 +237,13 @@
                                              flat theme that overhang showed one pixel of dark line
                                              below the tab's foot. Default is
                                              exactly the old literal. -->
+                                        <Border x:Name="tabActiveRetroOuterOutline" IsHitTestVisible="False" Panel.ZIndex="3"
+                                                Margin="{DynamicResource TabActiveOuterOutlineMargin}"
+                                                BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1,1,1,0"
+                                                SnapsToDevicePixels="True" Visibility="Collapsed"/>
                                         <Border x:Name="tabBevelLight" IsHitTestVisible="False" Margin="{DynamicResource TabBevelMargin}" Panel.ZIndex="4"
                                                 BorderBrush="{DynamicResource BevelLightBrush}"
-                                                BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                                BorderThickness="{DynamicResource TabBevelLightThickness}"/>
                                         <!-- TabInactiveBevelDarkThickness, not the shared
                                              BevelDarkThickness. That key is 0,0,2,2, so an
                                              INACTIVE tab drew a 2px dark band along its foot, and
@@ -264,15 +253,11 @@
                                         <Border x:Name="tabBevelDark" IsHitTestVisible="False" Margin="{DynamicResource TabBevelMargin}" Panel.ZIndex="4"
                                                 BorderBrush="{DynamicResource BevelDarkBrush}"
                                                 BorderThickness="{DynamicResource TabInactiveBevelDarkThickness}"/>
-                                        <!-- ACTIVE only (IsActive trigger): the 2x2 white corner
-                                             patch that lets the menu bar's white top line run
-                                             UNDER the active tab's dark right edge, the same
-                                             junction every inactive seam has. Transparent on
-                                             every theme but 98SE - see TabSeamPatchBrush. -->
-                                        <Border x:Name="tabSeamPatch" IsHitTestVisible="False" Panel.ZIndex="5"
-                                                Width="2" Height="2" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                                Margin="0,0,-5,-4" Visibility="Collapsed"
-                                                Background="{DynamicResource TabSeamPatchBrush}"/>
+                                        <Border x:Name="tabActiveRetroInnerBevel" IsHitTestVisible="False" Panel.ZIndex="6"
+                                                Margin="{DynamicResource TabActiveInnerBevelMargin}"
+                                                BorderBrush="{DynamicResource TabActiveInnerBevelBrush}"
+                                                BorderThickness="{DynamicResource TabActiveInnerBevelThickness}"
+                                                SnapsToDevicePixels="True" Visibility="Collapsed"/>
                                         <!-- Performance is the one 98SE page whose content is black.
                                              Closing its selected tab with a gray foot keeps that black
                                              surface from visually swallowing the tab. Zero-thickness on
@@ -363,8 +348,22 @@
                                     <DataTrigger Binding="{Binding IsLast}" Value="True">
                                         <Setter TargetName="tabBd" Property="BorderThickness" Value="0"/>
                                     </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsFirst}" Value="True"/>
+                                            <Condition Binding="{Binding IsActive}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabInactiveFirstMargin}"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsLast}" Value="True"/>
+                                            <Condition Binding="{Binding IsActive}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabInactiveLastMargin}"/>
+                                    </MultiDataTrigger>
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                        <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource PaneBrush}"/>
+                                        <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource TabActiveBrush}"/>
                                         <!-- Only the active tab draws its own grain - it is opaque,
                                              so it hides the band's layer and needs to replace it. -->
                                         <Setter TargetName="tabGrain" Property="Opacity" Value="{DynamicResource GrainOpacity}"/>
@@ -376,7 +375,7 @@
                                         <!-- Reaches the foot of the band so its own fill breaks
                                              the ring line where the tab is - that break is what
                                              joins the tab to the content below it. -->
-                                        <Setter TargetName="tabBd" Property="Margin" Value="0,3,0,0"/>
+                                        <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabActiveMargin}"/>
                                         <!-- OPEN BOTTOM. The tab's dark bevel is 0,0,2,2 - right AND
                                              bottom - so the active tab was drawing a 2px gray rule
                                              along its own foot, directly between itself and the
@@ -396,7 +395,8 @@
                                              default is the family TabBevelMargin literal, and
                                              every other theme draws no bevel anyway. -->
                                         <Setter TargetName="tabBevelDark" Property="Margin" Value="{DynamicResource TabActiveBevelDarkMargin}"/>
-                                        <Setter TargetName="tabSeamPatch" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="tabActiveRetroOuterOutline" Property="Visibility" Value="{DynamicResource RetroActiveTabOutlineVisibility}"/>
+                                        <Setter TargetName="tabActiveRetroInnerBevel" Property="Visibility" Value="{DynamicResource RetroActiveTabOutlineVisibility}"/>
                                         <!-- Top padding gives back the 3px the accent stripe takes,
                                              so the title doesn't drop when a tab activates. -->
                                         <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabActivePadding}"/>
@@ -421,6 +421,31 @@
                                         <Setter TargetName="tabLbl" Property="FontWeight" Value="Bold"/>
                                         <Setter TargetName="tabLbl" Property="FontSize" Value="11.5"/>
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding UseRetroTabChrome}" Value="True">
+                                        <Setter TargetName="tabBd" Property="Effect" Value="{x:Null}"/>
+                                    </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                            <Condition Binding="{Binding IsFirst}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabActiveFirstMargin}"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                            <Condition Binding="{Binding IsLast}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabActiveLastMargin}"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                            <Condition Binding="{Binding IsFirst}" Value="True"/>
+                                            <Condition Binding="{Binding IsLast}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabActiveOnlyMargin}"/>
+                                    </MultiDataTrigger>
                                     <!-- Unfocused pane: the lip drops off the accent entirely and
                                          takes the pane's own border color, so the whole unlit
                                          ring - lip, band line and pane border - is ONE value. At
@@ -459,76 +484,44 @@
                                     <DataTrigger Binding="{Binding PaneFocused}" Value="True">
                                         <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusThickness}"/>
                                         <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusPadding}"/>
+                                        <Setter TargetName="tabBd" Property="BorderBrush" Value="{DynamicResource TabActiveRingBrush}"/>
                                     </DataTrigger>
-                                    <!-- The OUTERMOST side is the band's to draw (TabEdgeLeft /
-                                         TabEdgeRight below), so the first and last tab must not
-                                         draw it as well. Two 1px borders at the same x is a 2px
-                                         edge on a ring that is 1px everywhere else - and only
-                                         SOMETIMES, because whether the tab's own outer border
-                                         clears the ScrollViewer's clip depends on how the
-                                         UniformGrid divided a fractional band width. That is
-                                         where the halo came out uneven, and why it changed when
-                                         the split moved.
-                                         The padding gives the pixel back on that side so the
-                                         title does not shift, exactly as PaneFocused does.
-                                         Declared after PaneFocused - all three match on a first
-                                         or last tab and the last match wins. -->
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding PaneFocused}" Value="True"/>
-                                            <Condition Binding="{Binding IsFirst}"     Value="True"/>
+                                            <Condition Binding="{Binding UseRetroTabChrome}" Value="True"/>
+                                            <Condition Binding="{Binding PaneDimmed}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
-                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusFirstThickness}"/>
-                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusFirstPadding}"/>
+                                        <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource TabInactiveBrush}"/>
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding UseRetroTabChrome}" Value="True"/>
                                             <Condition Binding="{Binding PaneFocused}" Value="True"/>
-                                            <Condition Binding="{Binding IsLast}"      Value="True"/>
                                         </MultiDataTrigger.Conditions>
-                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusLastThickness}"/>
-                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusLastPadding}"/>
+                                        <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource FocusedPaneBrush}"/>
                                     </MultiDataTrigger>
-                                    <!-- One tab in a focused pane owns BOTH edges, so it draws
-                                         neither. Last of the three for the same reason. -->
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding PaneFocused}" Value="True"/>
-                                            <Condition Binding="{Binding IsFirst}"     Value="True"/>
-                                            <Condition Binding="{Binding IsLast}"      Value="True"/>
+                                            <Condition Binding="{Binding UseRetroTabChrome}" Value="True"/>
+                                            <Condition Binding="{Binding IsActive}" Value="False"/>
                                         </MultiDataTrigger.Conditions>
-                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusOnlyThickness}"/>
-                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusOnlyPadding}"/>
+                                        <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource TabInactiveBrush}"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding UseRetroTabChrome}" Value="True"/>
+                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                            <Condition Binding="{Binding PaneDimmed}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource TabActiveBrush}"/>
                                     </MultiDataTrigger>
                                 </DataTemplate.Triggers>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    </Grid>
                 </ScrollViewer>
                 </DockPanel>
-                <!-- The ring's two vertical ends, drawn by the BAND rather than by the tab.
-                     A tab's own left/right border sits on the strip's clip edge when it is the
-                     first or last tab, and the ScrollViewer cuts it: the UniformGrid divides a
-                     fractional band width, so the outermost border lands a hair outside the
-                     viewport and vanishes. Whether it survives depends on the split width, which
-                     is why it came and went. These are anchored to the band's own edges, so
-                     there is no arithmetic to land wrong.
-                     Declared after the strip so they draw over the tabs, and only shown when the
-                     tab that owns that edge is the active one (DualPane.cs) - an inactive tab
-                     leaves the pane's corner rounded and there is nothing to continue.
-                     Top margin 9 = the tab's own 3 plus its 6px corner radius, so each strip
-                     starts where the tab's side actually becomes vertical. Square-topped at 3 it
-                     stood proud of the rounded corner as a little spike. Inside the arc the
-                     tab's border is inset from the band edge, so it is nowhere near the clip and
-                     draws itself fine. -->
-                <!-- TabActiveRingBrush = PrimaryBrush everywhere but 98SE, where the focus ring is
-                     transparent - see the note on the active tab's BorderBrush setter. -->
-                <Border x:Name="TabEdgeLeft" Width="1" HorizontalAlignment="Left" Margin="0,9,0,0"
-                        IsHitTestVisible="False" Visibility="Collapsed"
-                        Background="{DynamicResource TabActiveRingBrush}"/>
-                <Border x:Name="TabEdgeRight" Width="1" HorizontalAlignment="Right" Margin="0,9,0,0"
-                        IsHitTestVisible="False" Visibility="Collapsed"
-                        Background="{DynamicResource TabActiveRingBrush}"/>
                </Grid>
               </Border>
 
@@ -575,6 +568,14 @@
               <Grid x:Name="PaneContent" SizeChanged="PaneContent_SizeChanged">
                 <!-- Same treatment as KillerPDF's document pane: the whole content pane is grain-wrapped. -->
                 <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                <Border x:Name="PaneBevelOuterDark" IsHitTestVisible="False" Panel.ZIndex="110"
+                        BorderBrush="{DynamicResource DocumentPaneBevelTopLeftBrush}"/>
+                <Border x:Name="PaneBevelOuterLight" IsHitTestVisible="False" Panel.ZIndex="110"
+                        BorderBrush="{DynamicResource DocumentPaneBevelBottomRightBrush}"/>
+                <Border x:Name="PaneBevelInnerDark" IsHitTestVisible="False" Panel.ZIndex="110" Margin="1"
+                        BorderBrush="{DynamicResource DocumentPaneBevelInnerTopLeftBrush}"/>
+                <Border x:Name="PaneBevelInnerLight" IsHitTestVisible="False" Panel.ZIndex="110" Margin="1"
+                        BorderBrush="{DynamicResource DocumentPaneBevelInnerBottomRightBrush}"/>
                 <!-- Keep the pane frame visible for every tab and scroll position. -->
                 <Border x:Name="ResultsPaneBottomEdge" IsHitTestVisible="False" Panel.ZIndex="100"
                         BorderBrush="{DynamicResource PaneEdgeBrush}"

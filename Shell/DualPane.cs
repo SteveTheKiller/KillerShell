@@ -828,32 +828,19 @@ namespace KillerShell.Shell
         /// </summary>
         internal void UpdatePaneFocusRing()
         {
+            bool retro = Services.ThemeManager.Current == Services.Theme.SE98;
             foreach (var p in new[] { LeftPane, RightPane })
             {
                 bool lit = DualPane && ReferenceEquals(p, Pane);
+                bool paneActive = ReferenceEquals(p, Pane) && (DualPane || retro);
 
                 p.ResultsPane.SetResourceReference(Border.BorderBrushProperty,
-                    lit ? "PrimaryBrush" : "PaneBorderBrush");
+                    lit && !retro ? "PrimaryBrush" : "PaneBorderBrush");
 
                 // The focused pane's bottom accent overlays the permanent theme border.
-                p.PaneFocusBottomEdge.Visibility = lit
+                p.PaneFocusBottomEdge.Visibility = lit && !retro
                     ? Visibility.Visible
                     : Visibility.Collapsed;
-
-                // The ring line in the band is that same border continuing across the top of
-                // the pane, so it takes the same brush. It is a child of the band rather than a
-                // border on the band, which is what lets the active tab break it (FilePane.xaml).
-                // TabRingIdleBrush, NOT PaneBorderBrush: it mirrors PaneBorderBrush on the twelve
-                // rounded themes, but a flat theme states it transparent. Hardcoding the brush here
-                // overrode the transparent PaneEdgeBrush the markup binds, which is what drew the
-                // gray rule under the active tab and the gray stub at the left of the menu bar on
-                // 98SE.
-                // TabActiveRingBrush, not PrimaryBrush: it IS PrimaryBrush on every ordinary
-                // theme, but 98SE states it Transparent - the lit ring was drawing the accent
-                // across the top of the focused pane's band and down its sides on a theme whose
-                // tabs carry no accent at all (dual pane).
-                p.TabBarRing.SetResourceReference(Border.BorderBrushProperty,
-                    lit ? "TabActiveRingBrush" : "TabRingIdleBrush");
 
                 // And the active tab's own sides, via the model so the template can trigger on
                 // it. PaneDimmed is the other half: the active tab of the pane that does NOT
@@ -861,33 +848,9 @@ namespace KillerShell.Shell
                 // with one pane open both are false and that pane's lip stays bright.
                 foreach (var t in p.Tabs)
                 {
-                    t.PaneFocused = lit && t.IsActive;
+                    t.PaneFocused = paneActive && t.IsActive;
                     t.PaneDimmed  = DualPane && !lit && t.IsActive;
                 }
-
-                // The outermost verticals come from the band, not from the tab - a first or last
-                // tab's own side border lands on the strip's clip edge and gets cut
-                // (FilePane.xaml). Same ownership rule the pane's corner rounding uses: the
-                // first tab owns the left edge, the last owns the right, and only while active.
-                // Read off the tab rather than recomputed from the collection: with the strip
-                // windowed (Tabs.cs ApplyTabWindow) the tab on an edge is not the one at the end
-                // of the list, and two places working that out separately is two places to get
-                // it wrong. UpdateTabBarInPane sets them, and every path here runs after it.
-                bool firstActive = p.Active?.IsFirst == true;
-                bool lastActive  = p.Active?.IsLast  == true;
-                // Shown whenever the ACTIVE tab owns that edge, not only while lit: in single
-                // pane (and on the unfocused half of a dual pane) the pane's own border should
-                // continue up the active tab's outer side too, in the idle ring brush - the
-                // rightmost active tab needs the pane border on its right edge, and the
-                // leftmost active tab the same on its left.
-                // TabRingIdleBrush mirrors PaneBorderBrush on the rounded themes and is
-                // transparent on 98SE, so the flat theme stays exactly as it is.
-                p.TabEdgeLeft.Visibility  = firstActive ? Visibility.Visible : Visibility.Collapsed;
-                p.TabEdgeRight.Visibility = lastActive  ? Visibility.Visible : Visibility.Collapsed;
-                p.TabEdgeLeft.SetResourceReference(Border.BackgroundProperty,
-                    lit ? "TabActiveRingBrush" : "TabRingIdleBrush");
-                p.TabEdgeRight.SetResourceReference(Border.BackgroundProperty,
-                    lit ? "TabActiveRingBrush" : "TabRingIdleBrush");
             }
         }
 

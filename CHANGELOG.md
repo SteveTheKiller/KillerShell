@@ -6,7 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.2.6] - Unreleased
 
-1.2.6 adds Vietnamese localization and makes the elevated caption readable on the 98SE theme.
+1.2.6 adds Vietnamese localization and brings the finished family tab geometry to KillerShell.
 
 ### Added
 - Vietnamese localization for the app and website. (Thanks @vuanhvu11982)
@@ -14,6 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - On the 98SE theme the Elevated Privileges caption in an admin window's title bar is white instead of disappearing into the title bar.
 - Mouse Back and Forward buttons navigate folder history again.
+- Tabs use bounded left-aligned widths and continuous pane borders, including correct 98SE active and inactive faces and bevel joins.
 
 ## [1.2.5] - 2026-09-20
 

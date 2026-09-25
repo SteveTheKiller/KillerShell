@@ -218,6 +218,15 @@ namespace KillerShell.Models
             set { _paneDimmed = value; Notify(); }
         }
 
+        // True only while the 98SE tab band is visible. The tab template uses this to select
+        // the classic face colors and crisp bevels without changing any modern theme.
+        private bool _useRetroTabChrome;
+        public bool UseRetroTabChrome
+        {
+            get => _useRetroTabChrome;
+            set { _useRetroTabChrome = value; Notify(); }
+        }
+
         // MDL2 glyph shown before the title, empty for a folder or search tab. Notifying,
         // because it is bound in the tab template (see the note in CLAUDE.md about
         // non-notifying bound properties on this model).
@@ -228,11 +237,10 @@ namespace KillerShell.Models
             set { _tabGlyph = value; Notify(); }
         }
 
-        // Sitting on the strip's right EDGE - which is the last visible tab, but only while the
-        // overflow chevron is hidden. The tab's 1px right border is a divider BETWEEN tabs, so a
-        // tab on the edge has to drop it, where it would read as a stray rule; a tab with the
-        // chevron beside it still wants it. It also decides who owns the ring's right vertical
-        // (see IsFirst). UpdateTabBar sets it on every add, close, drag-reorder and resize.
+        // Sitting on the pane's right edge, which is the last visible tab only when the bounded
+        // strip fills the available band and the overflow chevron is hidden. The tab's 1px right
+        // border is a divider between tabs, so a tab on the edge drops it. UpdateTabBar sets this
+        // on every add, close, drag-reorder and resize.
         private bool _isLast;
         public bool IsLast
         {
@@ -240,13 +248,9 @@ namespace KillerShell.Models
             set { _isLast = value; Notify(); }
         }
 
-        // Leftmost tab in the strip. Only the focus ring reads this: the band draws the ring's
-        // outermost verticals itself (FilePane.xaml TabEdgeLeft / TabEdgeRight), because a tab's
-        // own outer border sits on the ScrollViewer's clip edge and survives or vanishes
-        // depending on how the UniformGrid divided a fractional band width. Without this the
-        // first and last tab drew that side TOO, so the outer edge of the ring was 2px wherever
-        // the clip happened to spare it and 1px everywhere else - the same width the pane border
-        // and the band line are. Set beside IsLast on every add, close and drag-reorder.
+        // Leftmost visible tab in the strip. The classic theme uses this to align the selected
+        // tab's raised perimeter with the pane's inner bevel. Set beside IsLast on every add,
+        // close, drag-reorder and resize.
         private bool _isFirst;
         public bool IsFirst
         {

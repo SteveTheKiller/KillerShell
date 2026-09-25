@@ -57,7 +57,7 @@ namespace KillerShell.Shell
             Services.ThemeManager.ThemeChanged += () =>
             {
                 UpdateThemeSwatchSelection(); UpdateAccentStrip(animate: false); SyncTitleBarMetrics();
-                ApplyPaneMargins(); LeftPane?.RefreshPaneClip(); RightPane?.RefreshPaneClip();
+                UpdateTabBar(); LeftPane?.RefreshPaneClip(); RightPane?.RefreshPaneClip();
                 // Timed so one theme click prints this next to CrossfadeSwap's heavy work and the
                 // slow half of the pause before the fade can be identified instead of guessed at
                 // (ThemeFlyout.cs TimedStep). DEBUG only; a release build prints nothing.
@@ -256,11 +256,9 @@ namespace KillerShell.Shell
         /// inside the gap between the theme swap and the crossfade, which is the gap the user sees
         /// as a stall.
         ///
-        /// Nothing else in the row templates needs the Refresh. The two converters the strip uses
-        /// are TabFolderIconConverter, which asks IconCache and nothing else, and
-        /// TabChamferConverter, which takes the TabChamfer theme scalar as a BOUND value and so
-        /// re-evaluates itself when the resource changes. Every other theme-reactive part of a row
-        /// is a DynamicResource brush, which repaints on its own.
+        /// Nothing else in the row templates needs the Refresh. TabFolderIconConverter asks
+        /// IconCache and nothing else. Every other theme-reactive part of a row is a
+        /// DynamicResource brush, which repaints on its own.
         /// </summary>
         private void RepaintIcons()
         {
