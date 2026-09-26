@@ -34,6 +34,9 @@
     <Compile Remove="KillerShell.Tests\**\*.cs" />
     <EmbeddedResource Remove="KillerShell.Tests\**\*" />
     <None Remove="KillerShell.Tests\**\*" />
+    <Compile Remove="KillerShell.Cli\**\*.cs" />
+    <EmbeddedResource Remove="KillerShell.Cli\**\*" />
+    <None Remove="KillerShell.Cli\**\*" />
   </ItemGroup>
 
   <ItemGroup>
