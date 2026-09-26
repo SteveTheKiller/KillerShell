@@ -15,9 +15,10 @@ namespace KillerShell.Cli
         private const int DefaultLimit = 100;
         private const int MaximumLimit = 500;
 
-        private static int Main(string[] args)
+        internal static int Main(string[] args)
         {
-            Console.OutputEncoding = new UTF8Encoding(false);
+            try { Console.OutputEncoding = new UTF8Encoding(false); }
+            catch (IOException) { /* A GUI process with redirected output can lack a console handle. */ }
             if (args.Length == 1 && args[0] == "--version")
             {
                 Console.WriteLine(typeof(SearchEngine).Assembly.GetName().Version);
@@ -96,8 +97,8 @@ namespace KillerShell.Cli
                 }
                 if (found.Count >= limit) cancellation.Cancel();
             };
-            engine.SearchAsync(root, new[] { group }, Array.Empty<SearchFilter>(),
-                string.Empty, string.Empty, false, cancellation.Token).GetAwaiter().GetResult();
+            System.Threading.Tasks.Task.Run(() => engine.SearchAsync(root, new[] { group }, Array.Empty<SearchFilter>(),
+                string.Empty, string.Empty, false, cancellation.Token)).GetAwaiter().GetResult();
 
             var output = new StringBuilder("{\"results\":[");
             bool first = true;

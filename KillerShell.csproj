@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net48</TargetFramework>
     <UseWPF>true</UseWPF>
+    <StartupObject>KillerShell.App</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -35,6 +36,7 @@
     <EmbeddedResource Remove="KillerShell.Tests\**\*" />
     <None Remove="KillerShell.Tests\**\*" />
     <Compile Remove="KillerShell.Cli\**\*.cs" />
+    <Compile Include="KillerShell.Cli\Program.cs" />
     <EmbeddedResource Remove="KillerShell.Cli\**\*" />
     <None Remove="KillerShell.Cli\**\*" />
   </ItemGroup>

@@ -10,7 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 - Vietnamese localization for the app and website. (Thanks @vuanhvu11982)
-- A read-only search command returns bounded JSON results for scripts and agents.
+- The installed app's read-only search command returns bounded JSON results for scripts and agents.
 
 ### Fixed
 - On the 98SE theme the Elevated Privileges caption in an admin window's title bar is white instead of disappearing into the title bar.
