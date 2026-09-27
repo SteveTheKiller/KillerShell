@@ -25,8 +25,8 @@ public sealed class TabLayoutTests
 
         XElement tab = document.Descendants()
             .Single(element => (string?)element.Attribute(x + "Name") == "tabBd");
-        Assert.Equal("120", (string?)tab.Attribute("MinWidth"));
-        Assert.Equal("240", (string?)tab.Attribute("MaxWidth"));
+        Assert.Equal("160", (string?)tab.Attribute("MinWidth"));
+        Assert.Equal("260", (string?)tab.Attribute("MaxWidth"));
 
         XElement grain = document.Descendants()
             .Single(element => (string?)element.Attribute(x + "Name") == "tabGrain");
@@ -75,6 +75,11 @@ public sealed class TabLayoutTests
             .Single(element => (string?)element.Attribute(x + "Name") == "tabActiveRetroOuterOutline");
         Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)outline.Attribute("BorderBrush"));
         Assert.Equal("1,1,1,0", (string?)outline.Attribute("BorderThickness"));
+        Assert.DoesNotContain(document.Descendants(), setter =>
+            setter.Name.LocalName == "Setter"
+            && (string?)setter.Attribute("TargetName") == "tabActiveRetroOuterOutline"
+            && (string?)setter.Attribute("Property") == "Visibility"
+            && (string?)setter.Attribute("Value") == "Collapsed");
         XElement inactiveOutline = document.Descendants()
             .Single(element => (string?)element.Attribute(x + "Name") == "tabInactiveRetroOuterOutline");
         Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)inactiveOutline.Attribute("BorderBrush"));
@@ -94,15 +99,15 @@ public sealed class TabLayoutTests
                     setter.Name.LocalName == "Setter"
                     && (string?)setter.Attribute("TargetName") == "tabBd"
                     && (string?)setter.Attribute("Property") == "Background"));
-        Assert.Contains(inactiveTrigger.Elements(), setter =>
-            setter.Name.LocalName == "Setter"
-            && (string?)setter.Attribute("TargetName") == "tabBd"
-            && (string?)setter.Attribute("Property") == "BorderThickness"
-            && (string?)setter.Attribute("Value") == "1,1,1,0");
         Assert.DoesNotContain(inactiveTrigger.Elements(), setter =>
             setter.Name.LocalName == "Setter"
+            && (string?)setter.Attribute("TargetName") == "tabBd"
+            && (string?)setter.Attribute("Property") == "BorderThickness");
+        Assert.Contains(document.Descendants().Where(element => element.Name.LocalName == "MultiDataTrigger").SelectMany(element => element.Elements()), setter =>
+            setter.Name.LocalName == "Setter"
             && (string?)setter.Attribute("TargetName") == "tabInactiveRetroOuterOutline"
-            && (string?)setter.Attribute("Property") == "Visibility");
+            && (string?)setter.Attribute("Property") == "Visibility"
+            && (string?)setter.Attribute("Value") == "Visible");
 
         string ThicknessValue(string key) => theme.Descendants()
             .Single(element => element.Name.LocalName == "Thickness" &&
@@ -112,10 +117,13 @@ public sealed class TabLayoutTests
         Assert.Equal("0,-2,0,0", ThicknessValue("PaneOuterMargin"));
         Assert.Equal("8,6,5,2", ThicknessValue("TabPadding"));
         Assert.Equal("8,4,5,4", ThicknessValue("TabActivePadding"));
+        Assert.Equal("0,5,0,1", ThicknessValue("TabMargin"));
+        Assert.Equal("0,5,0,1", ThicknessValue("TabInactiveFirstMargin"));
+        Assert.Equal("0,5,1,1", ThicknessValue("TabInactiveLastMargin"));
         Assert.Equal("0,3,0,-3", ThicknessValue("TabActiveMargin"));
-        Assert.Equal("-1,3,0,-3", ThicknessValue("TabActiveFirstMargin"));
+        Assert.Equal("0,3,0,-3", ThicknessValue("TabActiveFirstMargin"));
         Assert.Equal("0,3,1,-3", ThicknessValue("TabActiveLastMargin"));
-        Assert.Equal("-1,3,1,-3", ThicknessValue("TabActiveOnlyMargin"));
+        Assert.Equal("0,3,1,-3", ThicknessValue("TabActiveOnlyMargin"));
         Assert.Equal("0", ThicknessValue("PaneBevel2LightThickness"));
         Assert.Equal("0,0,1,1", ThicknessValue("BarEdgeDarkThickness"));
     }

@@ -238,15 +238,13 @@ namespace KillerShell.Shell
 
         /// <summary>Narrowest a tab may get before the strip stops taking more.</summary>
         /// <remarks>
-        /// Picked from what it has to hold rather than off a grid: 120px of Consolas 11.5 is
-        /// about sixteen characters once the glyph, the close x and the padding are paid for -
-        /// "Backup-Nightl...", enough to tell two scripts apart. Much below a hundred and the
-        /// ellipsis starts eating the part that distinguishes them, which is the whole job.
+        /// At 160px, the icon, close button, and padding still leave enough room to identify
+        /// tool and folder titles before the overflow menu takes over.
         /// </remarks>
-        private const double TabFloorWidth = 120;
+        private const double TabFloorWidth = 160;
 
         /// <summary>Widest a tab may grow when only a few tabs are open.</summary>
-        private const double TabCeilingWidth = 240;
+        private const double TabCeilingWidth = 260;
 
         /// <summary>What the chevron takes out of the band while it is showing.</summary>
         private const double TabChevronWidth = 26;
