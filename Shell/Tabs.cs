@@ -75,23 +75,29 @@ namespace KillerShell.Shell
             bool retroTabs = show && retroTheme;
             if (retroTabs)
             {
+                Pane.ResultsPane.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
                 Pane.ResultsPane.BorderThickness = new Thickness(1, 0, 1, 1);
+                Pane.PaneBevelOuterDark.Margin = new Thickness(1, 0, 1, 1);
                 Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 0, 0, 0);
-                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0, 0, 1, 1);
-                Pane.PaneBevelInnerDark.BorderThickness = new Thickness(1, 0, 0, 0);
-                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0, 0, 0, 1);
+                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);
+                Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);
+                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0);
             }
             else if (retroTheme)
             {
+                Pane.ResultsPane.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
                 Pane.ResultsPane.BorderThickness = new Thickness(1);
+                Pane.PaneBevelOuterDark.Margin = new Thickness(1);
                 Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 1, 0, 0);
-                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0, 0, 1, 1);
-                Pane.PaneBevelInnerDark.BorderThickness = new Thickness(1, 1, 0, 0);
-                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0, 0, 1, 1);
+                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);
+                Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);
+                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0);
             }
             else
             {
+                Pane.ResultsPane.SetResourceReference(Border.BorderBrushProperty, "PaneEdgeBrush");
                 Pane.ResultsPane.SetResourceReference(Border.BorderThicknessProperty, "PaneEdgeSideThickness");
+                Pane.PaneBevelOuterDark.Margin = new Thickness(0);
                 Pane.PaneBevelOuterDark.BorderThickness = new Thickness(0);
                 Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);
                 Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);

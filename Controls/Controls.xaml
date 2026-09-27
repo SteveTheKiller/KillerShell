@@ -656,8 +656,10 @@
                                 <ControlTemplate TargetType="RepeatButton">
                                     <Grid>
                                         <Border Background="{DynamicResource SortButtonBrush}"/>
-                                        <Border BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                                        <Border BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                        <Border BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                                        <Border BorderBrush="{DynamicResource FrameOuterDarkBrush}" BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+                                        <Border Margin="1" BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                                        <Border Margin="1" BorderBrush="{DynamicResource FrameInnerDarkBrush}" BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
                                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                 </ControlTemplate>
@@ -676,8 +678,10 @@
                                 <ControlTemplate TargetType="RepeatButton">
                                     <Grid>
                                         <Border Background="{DynamicResource SortButtonBrush}"/>
-                                        <Border BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                                        <Border BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                        <Border BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                                        <Border BorderBrush="{DynamicResource FrameOuterDarkBrush}" BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+                                        <Border Margin="1" BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                                        <Border Margin="1" BorderBrush="{DynamicResource FrameInnerDarkBrush}" BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
                                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                 </ControlTemplate>
@@ -719,9 +723,13 @@
                                                                 Margin="{DynamicResource ScrollThumbMargin}"/>
                                                         <!-- Raised thumb bevel: 98SE only. -->
                                                         <Border IsHitTestVisible="False" Margin="{DynamicResource ScrollThumbMargin}"
-                                                                BorderBrush="{DynamicResource ScrollTrackBevelLight}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                                                BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
                                                         <Border IsHitTestVisible="False" Margin="{DynamicResource ScrollThumbMargin}"
-                                                                BorderBrush="{DynamicResource ScrollTrackBevelDark}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                                                BorderBrush="{DynamicResource FrameOuterDarkBrush}" BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+                                                        <Border IsHitTestVisible="False" Margin="1"
+                                                                BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                                                        <Border IsHitTestVisible="False" Margin="1"
+                                                                BorderBrush="{DynamicResource FrameInnerDarkBrush}" BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
                                                         </Grid>
                                                         <ControlTemplate.Triggers>
                                                             <!-- ScrollThumbMarginH, not the literal 0,4: that squeeze is the

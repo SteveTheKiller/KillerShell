@@ -254,6 +254,7 @@ namespace KillerShell.Services
             // which is the kind of accident that breaks the moment someone changes the thickness.
             SetIfAbsent("BarEdgeBrush", Transparent);
             SetIfAbsent("BarEdgeThickness", new Thickness(0));
+            SetIfAbsent("LocationBarEdgeThickness", new Thickness(0));
             // The bar's DARK half, so a raised toolbar has both edges. Transparent/0 by default,
             // exactly like BarEdge* above, so no other theme grows one.
             SetIfAbsent("BarEdgeDarkBrush", Transparent);
@@ -274,7 +275,7 @@ namespace KillerShell.Services
             SetIfAbsent("BarCornerRadiusValue", 5.0);
             // The pane card and tab-strip insets.
             SetIfAbsent("PaneOuterMargin", new Thickness(0, -1, 8, 0));
-            SetIfAbsent("TabBarMargin", new Thickness(0, 6, 8, 0));
+            SetIfAbsent("TabBarMargin", new Thickness(0, 0, 8, 0));
             // Keep the pane's top and side rails. Only the BOTTOM rule follows scroll position:
             // a fixed bottom line reads as the end of content while a tab is still scrolling,
             // whereas the top rail is the pane's real frame and must remain present.
@@ -648,6 +649,7 @@ namespace KillerShell.Services
             SetIfAbsent("TabActiveInnerBevelBrush", Transparent);
             SetIfAbsent("TabActiveInnerBevelThickness", new Thickness(0));
             SetIfAbsent("TabActiveInnerBevelMargin", new Thickness(0));
+            SetIfAbsent("TabActiveBevelLightMargin", new Thickness(-12, -4, -5, -5));
             SetIfAbsent("RetroTabJoinVisibility", Visibility.Collapsed);
             SetIfAbsent("RetroActiveTabOutlineVisibility", Visibility.Collapsed);
             SetIfAbsent("TabBandHeight", double.NaN);
@@ -987,15 +989,14 @@ namespace KillerShell.Services
                 }
                 else combined["CardShadowEffect"] = null;
 
-                // The ACTIVE tab's accent stripe. 3px across the top by default; a flat theme gets
-                // none, because a Win98 tab is identified by its bevel and by being joined to the
-                // pane, not by a colored bar. The padding compensates either way so the title
-                // never shifts as a tab activates.
+                // The ACTIVE tab's accent outline runs across the top and both sides by default.
+                // A flat theme gets none because a Win98 tab is identified by its bevel and join.
+                // The padding compensates either way so the title never shifts on activation.
                 if (!combined.Contains("TabStripeThickness"))
-                    combined["TabStripeThickness"] = flat ? new Thickness(0) : new Thickness(0, 3, 0, 0);
+                    combined["TabStripeThickness"] = flat ? new Thickness(0) : new Thickness(1, 3, 1, 0);
                 if (!combined.Contains("TabActivePadding"))
                     combined["TabActivePadding"] = flat ? new Thickness(12, 4, 5, 5)
-                                                        : new Thickness(12, 1, 5, 5);
+                                                        : new Thickness(11, 1, 4, 5);
 
                 // A TAB is the panel radius on its TOP corners only - the bottom two are where it
                 // joins the pane and must stay square. Derived so it tracks PanelCornerRadius and

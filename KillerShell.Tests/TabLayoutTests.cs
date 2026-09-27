@@ -72,19 +72,13 @@ public sealed class TabLayoutTests
         Assert.Contains("UpdateRetroTabInnerJoin", source, StringComparison.Ordinal);
         Assert.Contains("Canvas.SetLeft(pane.RetroTabInnerJoinRight, activeRight)", source, StringComparison.Ordinal);
 
-        XElement outline = document.Descendants()
-            .Single(element => (string?)element.Attribute(x + "Name") == "tabActiveRetroOuterOutline");
-        Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)outline.Attribute("BorderBrush"));
-        Assert.Equal("1,1,1,0", (string?)outline.Attribute("BorderThickness"));
-        Assert.DoesNotContain(document.Descendants(), setter =>
-            setter.Name.LocalName == "Setter"
-            && (string?)setter.Attribute("TargetName") == "tabActiveRetroOuterOutline"
-            && (string?)setter.Attribute("Property") == "Visibility"
-            && (string?)setter.Attribute("Value") == "Collapsed");
-        XElement inactiveOutline = document.Descendants()
-            .Single(element => (string?)element.Attribute(x + "Name") == "tabInactiveRetroOuterOutline");
-        Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)inactiveOutline.Attribute("BorderBrush"));
-        Assert.Equal("1,1,1,0", (string?)inactiveOutline.Attribute("BorderThickness"));
+        foreach (string outlineName in new[] { "tabActiveRetroOuterOutline", "tabInactiveRetroOuterOutline" })
+        {
+            XElement outline = document.Descendants()
+                .Single(element => (string?)element.Attribute(x + "Name") == outlineName);
+            Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)outline.Attribute("BorderBrush"));
+            Assert.Equal("1,1,1,0", (string?)outline.Attribute("BorderThickness"));
+        }
 
         XElement inactiveTrigger = document.Descendants()
             .Where(element => element.Name.LocalName == "MultiDataTrigger")
@@ -100,33 +94,65 @@ public sealed class TabLayoutTests
                     setter.Name.LocalName == "Setter"
                     && (string?)setter.Attribute("TargetName") == "tabBd"
                     && (string?)setter.Attribute("Property") == "Background"));
-        Assert.DoesNotContain(inactiveTrigger.Elements(), setter =>
-            setter.Name.LocalName == "Setter"
-            && (string?)setter.Attribute("TargetName") == "tabBd"
-            && (string?)setter.Attribute("Property") == "BorderThickness");
         Assert.Contains(document.Descendants().Where(element => element.Name.LocalName == "MultiDataTrigger").SelectMany(element => element.Elements()), setter =>
             setter.Name.LocalName == "Setter"
             && (string?)setter.Attribute("TargetName") == "tabInactiveRetroOuterOutline"
             && (string?)setter.Attribute("Property") == "Visibility"
             && (string?)setter.Attribute("Value") == "Visible");
+        XElement closeOffset = inactiveTrigger.Elements()
+            .Single(setter => setter.Name.LocalName == "Setter"
+                && (string?)setter.Attribute("TargetName") == "tabClose"
+                && (string?)setter.Attribute("Property") == "RenderTransform");
+        XElement translate = closeOffset.Descendants()
+            .Single(element => element.Name.LocalName == "TranslateTransform");
+        Assert.Equal("-2", (string?)translate.Attribute("Y"));
 
         string ThicknessValue(string key) => theme.Descendants()
             .Single(element => element.Name.LocalName == "Thickness" &&
                 (string?)element.Attribute(x + "Key") == key).Value;
-        Assert.Equal("-8,-4,-6,-2", ThicknessValue("TabActiveOuterOutlineMargin"));
-        Assert.Equal("-8,-5,-6,-3", ThicknessValue("TabInactiveOuterOutlineMargin"));
         Assert.Equal("0,-2,0,0", ThicknessValue("PaneOuterMargin"));
         Assert.Equal("8,6,5,2", ThicknessValue("TabPadding"));
         Assert.Equal("8,4,5,4", ThicknessValue("TabActivePadding"));
         Assert.Equal("0,5,0,1", ThicknessValue("TabMargin"));
         Assert.Equal("0,5,0,1", ThicknessValue("TabInactiveFirstMargin"));
         Assert.Equal("0,5,1,1", ThicknessValue("TabInactiveLastMargin"));
-        Assert.Equal("0,3,0,-3", ThicknessValue("TabActiveMargin"));
-        Assert.Equal("0,3,0,-3", ThicknessValue("TabActiveFirstMargin"));
-        Assert.Equal("0,3,1,-3", ThicknessValue("TabActiveLastMargin"));
-        Assert.Equal("0,3,1,-3", ThicknessValue("TabActiveOnlyMargin"));
+        Assert.Equal("0,3,0,0", ThicknessValue("TabActiveMargin"));
+        Assert.Equal("0,3,0,0", ThicknessValue("TabActiveFirstMargin"));
+        Assert.Equal("0,3,1,0", ThicknessValue("TabActiveLastMargin"));
+        Assert.Equal("0,3,1,0", ThicknessValue("TabActiveOnlyMargin"));
+        Assert.Equal("-8,-4,-6,0", ThicknessValue("TabActiveOuterOutlineMargin"));
+        Assert.Equal("-8,-5,-6,0", ThicknessValue("TabInactiveOuterOutlineMargin"));
+        Assert.Equal("-8,-4,-5,0", ThicknessValue("TabActiveBevelLightMargin"));
         Assert.Equal("0", ThicknessValue("PaneBevel2LightThickness"));
+        Assert.Equal("0", ThicknessValue("PaneBevel2DarkThickness"));
+        Assert.Equal("1,1,0,0", ThicknessValue("BarEdgeThickness"));
+        Assert.Equal("1,0,0,0", ThicknessValue("LocationBarEdgeThickness"));
         Assert.Equal("0,0,1,1", ThicknessValue("BarEdgeDarkThickness"));
+    }
+
+    [Fact]
+    public void NormalTabsKeepCompactSpacingAndBothActiveSideBorders()
+    {
+        string root = FindRepositoryRoot();
+        string source = File.ReadAllText(Path.Combine(root, "Services", "ThemeManager.cs"));
+
+        Assert.Contains("SetIfAbsent(\"TabBarMargin\", new Thickness(0, 0, 8, 0));", source, StringComparison.Ordinal);
+        Assert.Contains("combined[\"TabStripeThickness\"] = flat ? new Thickness(0) : new Thickness(1, 3, 1, 0);", source, StringComparison.Ordinal);
+        Assert.Contains(": new Thickness(11, 1, 4, 5);", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RetroContentPaneUsesOneOuterLineAndOneInnerHighlight()
+    {
+        string root = FindRepositoryRoot();
+        string source = File.ReadAllText(Path.Combine(root, "Shell", "Tabs.cs"));
+
+        Assert.Contains("Pane.ResultsPane.BorderThickness = new Thickness(1, 0, 1, 1);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.PaneBevelOuterDark.Margin = new Thickness(1, 0, 1, 1);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 0, 0, 0);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0);", source, StringComparison.Ordinal);
     }
 
     [Fact]

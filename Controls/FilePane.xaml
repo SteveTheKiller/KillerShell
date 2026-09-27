@@ -269,7 +269,7 @@
                                         <DockPanel LastChildFill="True">
                                             <!-- Nulled here rather than on the shared DangerButton style,
                                                  which the term and filter x's also use. -->
-                                            <Button DockPanel.Dock="Right" Content="x" Style="{StaticResource DangerButton}" Width="18" Height="18" Margin="4,0,0,0"
+                                            <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Style="{StaticResource DangerButton}" Width="18" Height="18" Margin="4,0,0,0"
                                                     FocusVisualStyle="{x:Null}"
                                                     ToolTip="{DynamicResource Str_TT_CloseTab}" Tag="{Binding}" Click="CloseTab_Click"/>
                                             <!-- A browsing tab's real Windows folder icon
@@ -372,6 +372,7 @@
                                              the ring line where the tab is - that break is what
                                              joins the tab to the content below it. -->
                                         <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabActiveMargin}"/>
+                                        <Setter TargetName="tabBevelLight" Property="Margin" Value="{DynamicResource TabActiveBevelLightMargin}"/>
                                         <!-- OPEN BOTTOM. The tab's dark bevel is 0,0,2,2 - right AND
                                              bottom - so the active tab was drawing a 2px gray rule
                                              along its own foot, directly between itself and the
@@ -509,6 +510,11 @@
                                             <Condition Binding="{Binding IsActive}" Value="False"/>
                                         </MultiDataTrigger.Conditions>
                                         <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource TabInactiveBrush}"/>
+                                        <Setter TargetName="tabClose" Property="RenderTransform">
+                                            <Setter.Value>
+                                                <TranslateTransform Y="-2"/>
+                                            </Setter.Value>
+                                        </Setter>
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
@@ -666,14 +672,14 @@
                     <Border Grid.ColumnSpan="3" IsHitTestVisible="False"
                             Background="{DynamicResource GrainTileBrush}"
                             Opacity="{DynamicResource GrainOpacity}"/>
-                    <!-- The bar's raised top edge. Nothing on any theme but 98SE, where a toolbar
-                         is lifted off the surface by a light line along its top and left. -->
+                    <!-- The tab band's segmented join supplies the top highlight and leaves it
+                         open beneath the active tab. This border supplies the left highlight. -->
                     <!-- RAISED: the pair goes by NAME here - light on the LightThickness. That is
                          the opposite of the content well below, which crosses them to read as
                          pressed in. Menu bar raised, content sunken. -->
                     <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
                             BorderBrush="{DynamicResource BarEdgeBrush}"
-                            BorderThickness="{DynamicResource BarEdgeThickness}"/>
+                            BorderThickness="{DynamicResource LocationBarEdgeThickness}"/>
                     <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
                             BorderBrush="{DynamicResource BarEdgeDarkBrush}"
                             BorderThickness="{DynamicResource BarEdgeDarkThickness}"/>

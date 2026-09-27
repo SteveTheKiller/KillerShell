@@ -249,17 +249,19 @@
 
     <Thickness x:Key="TabInactiveBevelDarkThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,0,1,0</Thickness>
 
-    <Thickness x:Key="TabBevelMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,-4</Thickness>
+    <Thickness x:Key="TabBevelMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,0</Thickness>
 
-    <Thickness x:Key="TabActiveOuterOutlineMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-6,-2</Thickness>
+    <Thickness x:Key="TabActiveOuterOutlineMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-6,0</Thickness>
 
-    <Thickness x:Key="TabInactiveOuterOutlineMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-5,-6,-3</Thickness>
+    <Thickness x:Key="TabInactiveOuterOutlineMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-5,-6,0</Thickness>
 
-    <Thickness x:Key="TabActiveBevelDarkMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,-4</Thickness>
+    <Thickness x:Key="TabActiveBevelLightMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,0</Thickness>
+
+    <Thickness x:Key="TabActiveBevelDarkMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,0</Thickness>
 
     <SolidColorBrush x:Key="TabActiveInnerBevelBrush" Color="#dfdfdf" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
     <Thickness x:Key="TabActiveInnerBevelThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">1,1,0,0</Thickness>
-    <Thickness x:Key="TabActiveInnerBevelMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-7,-3,-4,-4</Thickness>
+    <Thickness x:Key="TabActiveInnerBevelMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-7,-3,-4,0</Thickness>
 
     <Thickness x:Key="TabGrainMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,-5</Thickness>
 
@@ -318,12 +320,12 @@
     <sys:Double x:Key="DetailsDividerWidth" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">0</sys:Double>
 
     <Thickness x:Key="TabMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,0,1</Thickness>
-    <Thickness x:Key="TabActiveMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,0,-3</Thickness>
+    <Thickness x:Key="TabActiveMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,0,0</Thickness>
     <Thickness x:Key="TabInactiveFirstMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,0,1</Thickness>
     <Thickness x:Key="TabInactiveLastMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,1,1</Thickness>
-    <Thickness x:Key="TabActiveFirstMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,0,-3</Thickness>
-    <Thickness x:Key="TabActiveLastMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,1,-3</Thickness>
-    <Thickness x:Key="TabActiveOnlyMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,1,-3</Thickness>
+    <Thickness x:Key="TabActiveFirstMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,0,0</Thickness>
+    <Thickness x:Key="TabActiveLastMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,1,0</Thickness>
+    <Thickness x:Key="TabActiveOnlyMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,1,0</Thickness>
     <Visibility x:Key="RetroTabJoinVisibility" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Visible</Visibility>
     <Visibility x:Key="RetroActiveTabOutlineVisibility" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Visible</Visibility>
     <sys:Double x:Key="TabBandHeight" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">28</sys:Double>
@@ -423,7 +425,14 @@
 
     <Thickness x:Key="ScrollThumbMarginH" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0</Thickness>
 
-    <SolidColorBrush x:Key="ScrollTrackBrush" Color="#dfdfdf" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <DrawingBrush x:Key="ScrollTrackBrush" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,2,2" ViewboxUnits="Absolute" Viewbox="0,0,2,2" Stretch="None" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#ffffff" Geometry="M0,0 H2 V2 H0 Z"/>
+                <GeometryDrawing Brush="#dfdfdf" Geometry="M0,0 H1 V1 H0 Z M1,1 H2 V2 H1 Z"/>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
 
     <SolidColorBrush x:Key="ScrollTrackBevelDark" Color="#808080" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
@@ -450,7 +459,7 @@
 
     <Thickness x:Key="PaneBevel2LightThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0</Thickness>
 
-    <Thickness x:Key="PaneBevel2DarkThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,0,1,1</Thickness>
+    <Thickness x:Key="PaneBevel2DarkThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0</Thickness>
 
     <Thickness x:Key="PaneBevelInnerMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">1</Thickness>
 
@@ -515,7 +524,9 @@
 
     <SolidColorBrush x:Key="BarEdgeBrush" Color="#ffffff" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
-    <Thickness x:Key="BarEdgeThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">2,2,0,0</Thickness>
+    <Thickness x:Key="BarEdgeThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">1,1,0,0</Thickness>
+
+    <Thickness x:Key="LocationBarEdgeThickness" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">1,0,0,0</Thickness>
 
     <SolidColorBrush x:Key="BarEdgeDarkBrush" Color="#808080" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
