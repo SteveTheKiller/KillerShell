@@ -57,6 +57,7 @@ public sealed class TabLayoutTests
         XElement join = document.Descendants()
             .Single(element => (string?)element.Attribute(x + "Name") == "RetroTabJoinLine");
         Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)join.Attribute("Background"));
+        Assert.Equal("0,0,0,1", (string?)join.Attribute("Margin"));
 
         XElement innerJoin = document.Descendants()
             .Single(element => (string?)element.Attribute(x + "Name") == "RetroTabInnerJoin");
