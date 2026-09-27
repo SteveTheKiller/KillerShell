@@ -14,6 +14,8 @@ namespace KillerShell.Cli
     {
         private const int DefaultLimit = 100;
         private const int MaximumLimit = 500;
+        private const int DefaultReadCharacters = 32768;
+        private const int MaximumReadCharacters = 65536;
 
         internal static int Main(string[] args)
         {
@@ -29,7 +31,7 @@ namespace KillerShell.Cli
                 PrintUsage();
                 return 0;
             }
-            if (args.Length < 2 || args[0] != "search")
+            if (args.Length < 2)
             {
                 PrintUsage();
                 return 2;
@@ -37,7 +39,16 @@ namespace KillerShell.Cli
 
             try
             {
-                return Search(args);
+                switch (args[0])
+                {
+                    case "search": return Search(args);
+                    case "list": return ListDirectory(args);
+                    case "info": return FileInfo(args);
+                    case "read": return ReadText(args);
+                    default:
+                        PrintUsage();
+                        return 2;
+                }
             }
             catch (ArgumentException ex)
             {
@@ -49,6 +60,101 @@ namespace KillerShell.Cli
                 Console.Error.WriteLine(ex.Message);
                 return 1;
             }
+        }
+
+        private static int ListDirectory(string[] args)
+        {
+            string root = Path.GetFullPath(args[1]);
+            if (!Directory.Exists(root))
+                throw new ArgumentException("List path is not a directory");
+
+            int limit = ReadSingleIntegerOption(args, "--limit", DefaultLimit, 1, MaximumLimit);
+            var entries = new DirectoryInfo(root).EnumerateFileSystemInfos()
+                .OrderByDescending(item => (item.Attributes & FileAttributes.Directory) != 0)
+                .ThenBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+                .Take(limit + 1)
+                .ToList();
+            bool limitReached = entries.Count > limit;
+            if (limitReached) entries.RemoveAt(entries.Count - 1);
+
+            var output = new StringBuilder("{\"path\":").Append(JsonString(root)).Append(",\"entries\":[");
+            bool first = true;
+            foreach (var item in entries)
+            {
+                if (!first) output.Append(',');
+                first = false;
+                bool isDirectory = (item.Attributes & FileAttributes.Directory) != 0;
+                output.Append("{\"name\":").Append(JsonString(item.Name));
+                output.Append(",\"path\":").Append(JsonString(item.FullName));
+                output.Append(",\"isDirectory\":").Append(isDirectory ? "true" : "false");
+                output.Append(",\"sizeBytes\":");
+                if (isDirectory) output.Append("null");
+                else output.Append(((System.IO.FileInfo)item).Length.ToString(CultureInfo.InvariantCulture));
+                output.Append(",\"modifiedUtc\":").Append(JsonString(item.LastWriteTimeUtc.ToString("O", CultureInfo.InvariantCulture)));
+                output.Append('}');
+            }
+            output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false").Append('}');
+            Console.WriteLine(output.ToString());
+            return 0;
+        }
+
+        private static int FileInfo(string[] args)
+        {
+            if (args.Length != 2)
+                throw new ArgumentException("File details accept one path");
+
+            string path = Path.GetFullPath(args[1]);
+            bool isDirectory = Directory.Exists(path);
+            if (!isDirectory && !File.Exists(path))
+                throw new ArgumentException("Path does not exist");
+
+            FileSystemInfo item = isDirectory ? (FileSystemInfo)new DirectoryInfo(path) : new System.IO.FileInfo(path);
+            var output = new StringBuilder("{\"name\":").Append(JsonString(item.Name));
+            output.Append(",\"path\":").Append(JsonString(item.FullName));
+            output.Append(",\"isDirectory\":").Append(isDirectory ? "true" : "false");
+            output.Append(",\"sizeBytes\":");
+            if (isDirectory) output.Append("null");
+            else output.Append(((System.IO.FileInfo)item).Length.ToString(CultureInfo.InvariantCulture));
+            output.Append(",\"createdUtc\":").Append(JsonString(item.CreationTimeUtc.ToString("O", CultureInfo.InvariantCulture)));
+            output.Append(",\"modifiedUtc\":").Append(JsonString(item.LastWriteTimeUtc.ToString("O", CultureInfo.InvariantCulture)));
+            output.Append(",\"attributes\":").Append(JsonString(item.Attributes.ToString())).Append('}');
+            Console.WriteLine(output.ToString());
+            return 0;
+        }
+
+        private static int ReadText(string[] args)
+        {
+            string path = Path.GetFullPath(args[1]);
+            if (!File.Exists(path))
+                throw new ArgumentException("Read path is not a file");
+
+            int maximum = ReadSingleIntegerOption(args, "--max-chars", DefaultReadCharacters, 1, MaximumReadCharacters);
+            var buffer = new char[maximum + 1];
+            int count;
+            using (var reader = new StreamReader(path, Encoding.UTF8, true))
+                count = reader.ReadBlock(buffer, 0, buffer.Length);
+            string text = new string(buffer, 0, Math.Min(count, maximum));
+            if (text.IndexOf('\0') >= 0)
+                throw new ArgumentException("File does not appear to contain text");
+
+            var info = new System.IO.FileInfo(path);
+            var output = new StringBuilder("{\"path\":").Append(JsonString(path));
+            output.Append(",\"sizeBytes\":").Append(info.Length.ToString(CultureInfo.InvariantCulture));
+            output.Append(",\"text\":").Append(JsonString(text));
+            output.Append(",\"truncated\":").Append(count > maximum ? "true" : "false").Append('}');
+            Console.WriteLine(output.ToString());
+            return 0;
+        }
+
+        private static int ReadSingleIntegerOption(string[] args, string option, int defaultValue, int minimum, int maximum)
+        {
+            if (args.Length == 2) return defaultValue;
+            if (args.Length != 4 || args[2] != option
+                || !int.TryParse(args[3], NumberStyles.None, CultureInfo.InvariantCulture, out int value)
+                || value < minimum || value > maximum)
+                throw new ArgumentException(option + " must be between " + minimum.ToString(CultureInfo.InvariantCulture)
+                    + " and " + maximum.ToString(CultureInfo.InvariantCulture));
+            return value;
         }
 
         private static int Search(string[] args)
@@ -132,6 +238,9 @@ namespace KillerShell.Cli
         {
             Console.WriteLine("KillerShell.Cli search <folder> --name <pattern> [--content <text>] [--limit 1..500]");
             Console.WriteLine("KillerShell.Cli search <folder> --content <text> [--limit 1..500]");
+            Console.WriteLine("KillerShell.Cli list <folder> [--limit 1..500]");
+            Console.WriteLine("KillerShell.Cli info <path>");
+            Console.WriteLine("KillerShell.Cli read <file> [--max-chars 1..65536]");
         }
     }
 }

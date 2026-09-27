@@ -138,7 +138,22 @@ html[data-theme="light"] .page-title { text-shadow: none; }
    (matching killertools.net's .kt-main-row) is what then makes that shadow paint OVER the
    statusbar's chrome instead of under it - .statusbar itself stays position:relative with no
    z-index of its own, same as .kt-statusbar, so it loses the stacking comparison to .shell. */
-.shell { display: grid; grid-template-columns: 1fr 268px; flex: 1 1 auto; min-height: 0; overflow: visible; position: relative; z-index: 2; background: var(--sidebar); }
+.shell { display: grid; grid-template-columns: 1fr 300px; flex: 1 1 auto; min-height: 0; overflow: visible; position: relative; z-index: 2; background: var(--sidebar); }
+@media (min-width: 901px) {
+  body.compact-sidebar .shell { grid-template-columns: minmax(0, 1fr) 150px; }
+  body.compact-sidebar.sidebar-first .shell { grid-template-columns: 150px minmax(0, 1fr); }
+}
+body.compact-sidebar .outline { padding: 2px 0; }
+body.compact-sidebar .outline a { padding: 5px 6px 5px 8px; overflow-wrap: anywhere; }
+body.compact-sidebar .outline a.sub { padding-left: 14px; }
+body.compact-sidebar .outline a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 10%, transparent); filter: none; }
+@media (max-width: 1100px) { body.compact-sidebar.mcp-page .shell { grid-template-columns: minmax(0, 1fr); } }
+@media (min-width: 1101px) { .shell:has(.mcp-page-grid) { grid-template-columns: minmax(0, 1fr) 150px; } }
+.shell:has(.mcp-page-grid) .outline { padding: 2px 0; }
+.shell:has(.mcp-page-grid) .outline a { padding: 5px 6px 5px 8px; overflow-wrap: anywhere; }
+.mcp-limit-list { display: grid; gap: 6px; margin: 8px 0; padding-left: 22px; color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+.mcp-limit-list li::marker { color: var(--accent); }
+.shell:has(.mcp-page-grid) .outline a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 10%, transparent); filter: none; }
 .shell::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: url('grain.png?v=2') repeat fixed; background-size: 256px 256px; opacity: 1; }
 @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
 /* Inset rounded pane (killertools.net MenuLayout treatment): 8px chrome gutter on the window edges, 2px hugging the sidebar, none above the statusbar.
@@ -266,6 +281,14 @@ html[data-theme="light"] .page-title { text-shadow: none; }
 
 /* ---- Phones: reflow the app-chrome topbar into tidy rows + stack the statusbar ---- */
 @media (max-width: 560px) {
+  .topbar { max-width: 100vw; }
+  .tb-home .tb-wm { display: none; }
+  .hero .hero-lockup { flex-wrap: nowrap; gap: 8px; max-width: 100%; }
+  .hero .hero-icon { width: min(30vw, 110px); height: auto; }
+  .hero .hero-lockup .wm-logo { width: min(62vw, 260px); height: auto; max-width: calc(100vw - 150px); }
+  body .mcp-brand { gap: 6px; max-width: 100%; }
+  body .mcp-brand .mcp-brand-wordmark { width: min(50vw, 200px); }
+  body .mcp-brand .mcp-suffix { font-size: clamp(22px, 7vw, 28px); }
   .topbar { min-height: 0; padding: 8px 12px; gap: 8px 9px; justify-content: center; }
   .tb-icon { width: 30px; height: 30px; }
   .tb-wm { height: 18px; }
@@ -325,6 +348,7 @@ html[data-theme="light"] .tb-mcp-accent { text-shadow: none; }
 
 /* ============ About page ============ */
 .about-card { background: var(--modal) url('grain.png?v=2') repeat; background-size: 256px 256px; border: 1px solid var(--pane-border); border-radius: 10px; padding: 22px 24px; margin-bottom: 18px; }
+.about-card, .hero-info, .feature-card { border-top: 2px solid var(--sel, var(--accent)); }
 .about-card h2 { font-size: 19px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
 .about-card p { color: var(--muted); font-size: 14.5px; line-height: 1.7; margin-bottom: 11px; }
 .about-card p:last-child { margin-bottom: 0; }
@@ -399,3 +423,89 @@ html[data-theme="cyanotic"] .spec-table th { background: var(--chrome); color: v
 .accent-bar .pill .x { cursor: pointer; color: var(--muted); font-size: 17px; line-height: 1; background: none; border: 0; appearance: none; -webkit-appearance: none; padding: 0 2px; margin-left: 3px; }
 .accent-bar .pill .x:hover { color: var(--danger); }
 .accent-bar .pill .lbl { font-family: Consolas, monospace; font-size: 12px; color: var(--muted); letter-spacing: .3px; } 
+
+
+/* Keep shared landing and MCP chrome within phone viewports. */
+@media (max-width: 560px) {
+  .topbar { flex-wrap: wrap !important; }
+
+  .topbar,
+  .shell,
+  .content,
+  .content-scroll,
+  .content-inner,
+  .hero,
+  .hero .hero-lockup,
+  .page-hero,
+  .mcp-brand {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .content-inner { width: 100%; }
+  .hero-info { width: min(336px, 100%); }
+  .mcp-page-grid,
+  .mcp-side-column,
+  .mcp-main-column,
+  .mcp-page-grid .about-card,
+  .install-state { min-width: 0; max-width: 100%; }
+
+  .package-commands {
+    grid-template-columns: 48px minmax(0, 1fr);
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .topbar .tb-nav {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  .hero .hero-lockup {
+    flex-direction: column;
+  }
+
+  .hero .hero-icon {
+    width: auto !important;
+    height: min(30vw, 116px) !important;
+    max-width: 100% !important;
+  }
+
+  .hero .hero-lockup .wm-logo {
+    width: min(82vw, 320px) !important;
+    height: auto !important;
+    max-width: calc(100vw - 32px) !important;
+  }
+
+  body .mcp-brand {
+    gap: 6px !important;
+  }
+
+  body .mcp-brand .mcp-icon-pair {
+    flex-basis: 56px !important;
+    width: 56px !important;
+    height: 52px !important;
+  }
+
+  body .mcp-brand .mcp-family-icon {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  body .mcp-brand .mcp-app-icon {
+    right: 4px !important;
+    bottom: 4px !important;
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  body .mcp-brand .mcp-brand-wordmark {
+    width: min(48vw, 180px) !important;
+    max-width: calc(100vw - 150px) !important;
+  }
+
+  body .mcp-brand .mcp-suffix {
+    flex: 0 0 auto;
+    font-size: clamp(19px, 6vw, 25px) !important;
+  }
+}
