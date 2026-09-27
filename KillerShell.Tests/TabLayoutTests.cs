@@ -80,6 +80,30 @@ public sealed class TabLayoutTests
         Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)inactiveOutline.Attribute("BorderBrush"));
         Assert.Equal("1,1,1,0", (string?)inactiveOutline.Attribute("BorderThickness"));
 
+        XElement inactiveTrigger = document.Descendants()
+            .Where(element => element.Name.LocalName == "MultiDataTrigger")
+            .Single(element => element.Descendants().Any(condition =>
+                    condition.Name.LocalName == "Condition"
+                    && (string?)condition.Attribute("Binding") == "{Binding UseRetroTabChrome}"
+                    && (string?)condition.Attribute("Value") == "True")
+                && element.Descendants().Any(condition =>
+                    condition.Name.LocalName == "Condition"
+                    && (string?)condition.Attribute("Binding") == "{Binding IsActive}"
+                    && (string?)condition.Attribute("Value") == "False")
+                && element.Elements().Any(setter =>
+                    setter.Name.LocalName == "Setter"
+                    && (string?)setter.Attribute("TargetName") == "tabBd"
+                    && (string?)setter.Attribute("Property") == "Background"));
+        Assert.Contains(inactiveTrigger.Elements(), setter =>
+            setter.Name.LocalName == "Setter"
+            && (string?)setter.Attribute("TargetName") == "tabBd"
+            && (string?)setter.Attribute("Property") == "BorderThickness"
+            && (string?)setter.Attribute("Value") == "1,1,1,0");
+        Assert.DoesNotContain(inactiveTrigger.Elements(), setter =>
+            setter.Name.LocalName == "Setter"
+            && (string?)setter.Attribute("TargetName") == "tabInactiveRetroOuterOutline"
+            && (string?)setter.Attribute("Property") == "Visibility");
+
         string ThicknessValue(string key) => theme.Descendants()
             .Single(element => element.Name.LocalName == "Thickness" &&
                 (string?)element.Attribute(x + "Key") == key).Value;

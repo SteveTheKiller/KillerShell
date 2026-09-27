@@ -510,7 +510,9 @@
                                             <Condition Binding="{Binding IsActive}" Value="False"/>
                                         </MultiDataTrigger.Conditions>
                                         <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource TabInactiveBrush}"/>
-                                        <Setter TargetName="tabInactiveRetroOuterOutline" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="tabBd" Property="BorderBrush" Value="{DynamicResource PaneBorderBrush}"/>
+                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="1,1,1,0"/>
+                                        <Setter TargetName="tabBd" Property="Padding" Value="7,5,5,2"/>
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
