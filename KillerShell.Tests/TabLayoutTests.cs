@@ -83,8 +83,8 @@ public sealed class TabLayoutTests
         string ThicknessValue(string key) => theme.Descendants()
             .Single(element => element.Name.LocalName == "Thickness" &&
                 (string?)element.Attribute(x + "Key") == key).Value;
-        Assert.Equal("-8,-4,-5,-2", ThicknessValue("TabActiveOuterOutlineMargin"));
-        Assert.Equal("-8,-5,-5,-3", ThicknessValue("TabInactiveOuterOutlineMargin"));
+        Assert.Equal("-8,-4,-6,-2", ThicknessValue("TabActiveOuterOutlineMargin"));
+        Assert.Equal("-8,-5,-6,-3", ThicknessValue("TabInactiveOuterOutlineMargin"));
         Assert.Equal("0,-2,0,0", ThicknessValue("PaneOuterMargin"));
         Assert.Equal("8,6,5,2", ThicknessValue("TabPadding"));
         Assert.Equal("8,4,5,4", ThicknessValue("TabActivePadding"));
@@ -94,6 +94,18 @@ public sealed class TabLayoutTests
         Assert.Equal("-1,3,1,-3", ThicknessValue("TabActiveOnlyMargin"));
         Assert.Equal("0", ThicknessValue("PaneBevel2LightThickness"));
         Assert.Equal("0,0,1,1", ThicknessValue("BarEdgeDarkThickness"));
+    }
+
+    [Fact]
+    public void VerticalTabDragCanStartATearOut()
+    {
+        string root = FindRepositoryRoot();
+        string source = File.ReadAllText(Path.Combine(root, "Shell", "Tabs.cs"));
+
+        Assert.Contains("MinimumHorizontalDragDistance", source, StringComparison.Ordinal);
+        Assert.Contains("MinimumVerticalDragDistance", source, StringComparison.Ordinal);
+        Assert.Contains("OutsideWindow(e)", source, StringComparison.Ordinal);
+        Assert.Contains("TearOutTab(t)", source, StringComparison.Ordinal);
     }
 
     [Fact]

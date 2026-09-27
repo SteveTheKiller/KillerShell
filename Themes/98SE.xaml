@@ -251,9 +251,9 @@
 
     <Thickness x:Key="TabBevelMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,-4</Thickness>
 
-    <Thickness x:Key="TabActiveOuterOutlineMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,-2</Thickness>
+    <Thickness x:Key="TabActiveOuterOutlineMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-6,-2</Thickness>
 
-    <Thickness x:Key="TabInactiveOuterOutlineMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-5,-5,-3</Thickness>
+    <Thickness x:Key="TabInactiveOuterOutlineMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-5,-6,-3</Thickness>
 
     <Thickness x:Key="TabActiveBevelDarkMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-8,-4,-5,-4</Thickness>
 

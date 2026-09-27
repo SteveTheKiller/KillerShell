@@ -1081,8 +1081,11 @@ namespace KillerShell.Shell
             var cont = TabContainer(_tabDragTab);
             if (cont == null) return;
 
-            double x = e.GetPosition(Pane.TabStrip).X;
-            if (!_tabDragging && Math.Abs(x - _tabDragStart.X) < SystemParameters.MinimumHorizontalDragDistance) return;
+            Point pointer = e.GetPosition(Pane.TabStrip);
+            double x = pointer.X;
+            if (!_tabDragging
+                && Math.Abs(pointer.X - _tabDragStart.X) < SystemParameters.MinimumHorizontalDragDistance
+                && Math.Abs(pointer.Y - _tabDragStart.Y) < SystemParameters.MinimumVerticalDragDistance) return;
             _tabDragging = true;
             Panel.SetZIndex(cont, 3);   // grabbed tab rides above its neighbors
 
