@@ -227,7 +227,7 @@ namespace KillerShell.Services
             var replaced = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var a in adds)
             {
-                if (!taken.Contains(a.EntryName)) { taken.Add(a.EntryName); continue; }
+                if (taken.Add(a.EntryName)) continue;
 
                 switch (collision)
                 {
