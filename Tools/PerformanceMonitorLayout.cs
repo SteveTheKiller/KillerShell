@@ -529,10 +529,8 @@ namespace KillerShell.Tools
         {
             tile.RowExpanded = expanded;
             tile.IdleTicks = 0;
-            if (tile.RowGraph != null)
-                tile.RowGraph.Visibility = expanded ? Visibility.Visible : Visibility.Collapsed;
-            if (tile.RowIdleText != null)
-                tile.RowIdleText.Visibility = expanded ? Visibility.Collapsed : Visibility.Visible;
+            tile.RowGraph?.Visibility = expanded ? Visibility.Visible : Visibility.Collapsed;
+            tile.RowIdleText?.Visibility = expanded ? Visibility.Collapsed : Visibility.Visible;
         }
 
         // ═══════════════════════════════════════════════════════════

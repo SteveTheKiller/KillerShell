@@ -1367,7 +1367,7 @@ namespace KillerShell.Tools
                     // The same outline closed back along the axis.
                     var area = new PointCollection(samples.Count + 2);
                     foreach (var p in pts) area.Add(p);
-                    area.Add(new Point(pts[pts.Count - 1].X, axis));
+                    area.Add(new Point(pts[^1].X, axis));
                     area.Add(new Point(pts[0].X, axis));
                     _fills[s].Points = area;
                 }

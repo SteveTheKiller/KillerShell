@@ -146,7 +146,7 @@ namespace KillerShell.Cli
             int count;
             using (var reader = new StreamReader(path, Encoding.UTF8, true))
                 count = reader.ReadBlock(buffer, 0, buffer.Length);
-            string text = new string(buffer, 0, Math.Min(count, maximum));
+            string text = new(buffer, 0, Math.Min(count, maximum));
             if (text.IndexOf('\0') >= 0)
                 throw new ArgumentException("File does not appear to contain text");
 
@@ -225,7 +225,7 @@ namespace KillerShell.Cli
                 output.Append(",\"timeUtc\":").Append(record.TimeCreated.HasValue ? JsonString(record.TimeCreated.Value.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture)) : "null");
                 string message;
                 try { message = record.FormatDescription() ?? string.Empty; } catch { message = string.Empty; }
-                output.Append(",\"message\":").Append(JsonString(message.Length <= 2000 ? message : message.Substring(0, 2000))).Append('}');
+                output.Append(",\"message\":").Append(JsonString(message.Length <= 2000 ? message : message[..2000])).Append('}');
             }
             output.Append("],\"limitReached\":").Append(count == limit ? "true" : "false").Append('}');
             Console.WriteLine(output.ToString());
@@ -236,8 +236,7 @@ namespace KillerShell.Cli
         {
             if (args.Length < 2 || args.Length > 4) throw new ArgumentException("Registry inspection needs one key path and optional limit");
             int limit = ReadSingleIntegerOption(args, "--limit", DefaultLimit, 1, 100, 2);
-            using var key = OpenRegistryKey(args[1]);
-            if (key == null) throw new ArgumentException("Registry key does not exist or cannot be read");
+            using var key = OpenRegistryKey(args[1]) ?? throw new ArgumentException("Registry key does not exist or cannot be read");
             var subkeys = key.GetSubKeyNames().OrderBy(value => value, StringComparer.OrdinalIgnoreCase).Take(limit).ToArray();
             var names = key.GetValueNames().OrderBy(value => value, StringComparer.OrdinalIgnoreCase).Take(limit).ToArray();
             var output = new StringBuilder("{\"path\":").Append(JsonString(args[1])).Append(",\"subkeys\":[");
@@ -298,8 +297,8 @@ namespace KillerShell.Cli
         private static RegistryKey OpenRegistryKey(string path)
         {
             int separator = path.IndexOf('\\');
-            string hive = separator < 0 ? path : path.Substring(0, separator);
-            string subkey = separator < 0 ? string.Empty : path.Substring(separator + 1);
+            string hive = separator < 0 ? path : path[..separator];
+            string subkey = separator < 0 ? string.Empty : path[(separator + 1)..];
             RegistryKey root = hive.ToUpperInvariant() switch
             {
                 "HKEY_CLASSES_ROOT" => Microsoft.Win32.Registry.ClassesRoot,
@@ -321,7 +320,7 @@ namespace KillerShell.Cli
                 string[] strings => string.Join(" | ", strings),
                 _ => Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty,
             };
-            return text.Length <= 4000 ? text : text.Substring(0, 4000);
+            return text.Length <= 4000 ? text : text[..4000];
         }
 
         private static int ReadSingleIntegerOption(string[] args, string option, int defaultValue, int minimum, int maximum, int valueCount = 2)
@@ -382,7 +381,7 @@ namespace KillerShell.Cli
                 }
                 if (found.Count >= limit) cancellation.Cancel();
             };
-            System.Threading.Tasks.Task.Run(() => engine.SearchAsync(root, new[] { group }, Array.Empty<SearchFilter>(),
+            System.Threading.Tasks.Task.Run(() => engine.SearchAsync(root, [group], Array.Empty<SearchFilter>(),
                 string.Empty, string.Empty, false, cancellation.Token)).GetAwaiter().GetResult();
 
             var output = new StringBuilder("{\"results\":[");
@@ -431,7 +430,7 @@ namespace KillerShell.Cli
         private sealed class DisposableList<T> : IDisposable where T : IDisposable
         {
             internal IReadOnlyList<T> Items { get; }
-            internal DisposableList(IEnumerable<T> items) => Items = items.ToList();
+            internal DisposableList(IEnumerable<T> items) => Items = [.. items];
             public void Dispose() { foreach (var item in Items) item.Dispose(); }
         }
     }
