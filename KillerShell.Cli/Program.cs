@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using KillerShell.Models;
 using KillerShell.Services;
+using Microsoft.Win32;
 
 namespace KillerShell.Cli
 {
@@ -31,7 +36,7 @@ namespace KillerShell.Cli
                 PrintUsage();
                 return 0;
             }
-            if (args.Length < 2)
+            if (args.Length == 0)
             {
                 PrintUsage();
                 return 2;
@@ -45,6 +50,12 @@ namespace KillerShell.Cli
                     case "list": return ListDirectory(args);
                     case "info": return FileInfo(args);
                     case "read": return ReadText(args);
+                    case "processes": return Processes(args);
+                    case "services": return Services(args);
+                    case "events": return Events(args);
+                    case "registry": return Registry(args);
+                    case "drives": return Drives(args);
+                    case "hash": return HashFile(args);
                     default:
                         PrintUsage();
                         return 2;
@@ -64,6 +75,7 @@ namespace KillerShell.Cli
 
         private static int ListDirectory(string[] args)
         {
+            if (args.Length < 2) throw new ArgumentException("List needs one directory path");
             string root = Path.GetFullPath(args[1]);
             if (!Directory.Exists(root))
                 throw new ArgumentException("List path is not a directory");
@@ -124,6 +136,7 @@ namespace KillerShell.Cli
 
         private static int ReadText(string[] args)
         {
+            if (args.Length < 2) throw new ArgumentException("Read needs one file path");
             string path = Path.GetFullPath(args[1]);
             if (!File.Exists(path))
                 throw new ArgumentException("Read path is not a file");
@@ -146,11 +159,176 @@ namespace KillerShell.Cli
             return 0;
         }
 
-        private static int ReadSingleIntegerOption(string[] args, string option, int defaultValue, int minimum, int maximum)
+        private static int Processes(string[] args)
         {
-            if (args.Length == 2) return defaultValue;
-            if (args.Length != 4 || args[2] != option
-                || !int.TryParse(args[3], NumberStyles.None, CultureInfo.InvariantCulture, out int value)
+            int limit = ReadSingleIntegerOption(args, "--limit", DefaultLimit, 1, MaximumLimit, 1);
+            var rows = Process.GetProcesses().OrderBy(item => item.ProcessName, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(item => item.Id).Take(limit + 1).ToList();
+            bool limitReached = rows.Count > limit;
+            if (limitReached) rows.RemoveAt(rows.Count - 1);
+            var output = new StringBuilder("{\"processes\":[");
+            for (int i = 0; i < rows.Count; i++)
+            {
+                using var process = rows[i];
+                if (i > 0) output.Append(',');
+                output.Append("{\"name\":").Append(JsonString(process.ProcessName));
+                output.Append(",\"pid\":").Append(process.Id.ToString(CultureInfo.InvariantCulture));
+                try { output.Append(",\"memoryBytes\":").Append(process.WorkingSet64.ToString(CultureInfo.InvariantCulture)); }
+                catch { output.Append(",\"memoryBytes\":null"); }
+                output.Append('}');
+            }
+            output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false").Append('}');
+            Console.WriteLine(output.ToString());
+            return 0;
+        }
+
+        private static int Services(string[] args)
+        {
+            int limit = ReadSingleIntegerOption(args, "--limit", DefaultLimit, 1, MaximumLimit, 1);
+            using var services = new DisposableList<ServiceController>(ServiceController.GetServices());
+            var rows = services.Items.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase).Take(limit + 1).ToList();
+            bool limitReached = rows.Count > limit;
+            if (limitReached) rows.RemoveAt(rows.Count - 1);
+            var output = new StringBuilder("{\"services\":[");
+            for (int i = 0; i < rows.Count; i++)
+            {
+                if (i > 0) output.Append(',');
+                var service = rows[i];
+                output.Append("{\"name\":").Append(JsonString(service.ServiceName));
+                output.Append(",\"displayName\":").Append(JsonString(service.DisplayName));
+                output.Append(",\"status\":").Append(JsonString(service.Status.ToString())).Append('}');
+            }
+            output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false").Append('}');
+            Console.WriteLine(output.ToString());
+            return 0;
+        }
+
+        private static int Events(string[] args)
+        {
+            if (args.Length < 2 || args.Length > 4) throw new ArgumentException("Events need a log name and optional limit");
+            string log = args[1];
+            if (log != "Application" && log != "System" && log != "Security")
+                throw new ArgumentException("Log must be Application, System, or Security");
+            int limit = ReadSingleIntegerOption(args, "--limit", 50, 1, 100, 2);
+            var query = new EventLogQuery(log, PathType.LogName) { ReverseDirection = true };
+            using var reader = new EventLogReader(query);
+            var output = new StringBuilder("{\"log\":").Append(JsonString(log)).Append(",\"events\":[");
+            int count = 0;
+            for (; count < limit; count++)
+            {
+                using EventRecord record = reader.ReadEvent();
+                if (record == null) break;
+                if (count > 0) output.Append(',');
+                output.Append("{\"id\":").Append(record.Id.ToString(CultureInfo.InvariantCulture));
+                output.Append(",\"level\":").Append(JsonString(record.LevelDisplayName ?? string.Empty));
+                output.Append(",\"provider\":").Append(JsonString(record.ProviderName ?? string.Empty));
+                output.Append(",\"timeUtc\":").Append(record.TimeCreated.HasValue ? JsonString(record.TimeCreated.Value.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture)) : "null");
+                string message;
+                try { message = record.FormatDescription() ?? string.Empty; } catch { message = string.Empty; }
+                output.Append(",\"message\":").Append(JsonString(message.Length <= 2000 ? message : message.Substring(0, 2000))).Append('}');
+            }
+            output.Append("],\"limitReached\":").Append(count == limit ? "true" : "false").Append('}');
+            Console.WriteLine(output.ToString());
+            return 0;
+        }
+
+        private static int Registry(string[] args)
+        {
+            if (args.Length < 2 || args.Length > 4) throw new ArgumentException("Registry inspection needs one key path and optional limit");
+            int limit = ReadSingleIntegerOption(args, "--limit", DefaultLimit, 1, 100, 2);
+            using var key = OpenRegistryKey(args[1]);
+            if (key == null) throw new ArgumentException("Registry key does not exist or cannot be read");
+            var subkeys = key.GetSubKeyNames().OrderBy(value => value, StringComparer.OrdinalIgnoreCase).Take(limit).ToArray();
+            var names = key.GetValueNames().OrderBy(value => value, StringComparer.OrdinalIgnoreCase).Take(limit).ToArray();
+            var output = new StringBuilder("{\"path\":").Append(JsonString(args[1])).Append(",\"subkeys\":[");
+            for (int i = 0; i < subkeys.Length; i++) { if (i > 0) output.Append(','); output.Append(JsonString(subkeys[i])); }
+            output.Append("],\"values\":[");
+            for (int i = 0; i < names.Length; i++)
+            {
+                if (i > 0) output.Append(',');
+                string name = names[i];
+                RegistryValueKind kind = key.GetValueKind(name);
+                object value = key.GetValue(name, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
+                output.Append("{\"name\":").Append(JsonString(name));
+                output.Append(",\"kind\":").Append(JsonString(kind.ToString()));
+                output.Append(",\"data\":").Append(JsonString(RegistryData(value))).Append('}');
+            }
+            bool limited = key.SubKeyCount > subkeys.Length || key.ValueCount > names.Length;
+            output.Append("],\"limitReached\":").Append(limited ? "true" : "false").Append('}');
+            Console.WriteLine(output.ToString());
+            return 0;
+        }
+
+        private static int Drives(string[] args)
+        {
+            if (args.Length != 1) throw new ArgumentException("Drives does not accept arguments");
+            var output = new StringBuilder("{\"drives\":[");
+            bool first = true;
+            foreach (var drive in DriveInfo.GetDrives().OrderBy(item => item.Name, StringComparer.OrdinalIgnoreCase))
+            {
+                if (!first) output.Append(',');
+                first = false;
+                output.Append("{\"name\":").Append(JsonString(drive.Name));
+                output.Append(",\"type\":").Append(JsonString(drive.DriveType.ToString()));
+                output.Append(",\"ready\":").Append(drive.IsReady ? "true" : "false");
+                if (drive.IsReady)
+                {
+                    output.Append(",\"format\":").Append(JsonString(drive.DriveFormat));
+                    output.Append(",\"totalBytes\":").Append(drive.TotalSize.ToString(CultureInfo.InvariantCulture));
+                    output.Append(",\"freeBytes\":").Append(drive.AvailableFreeSpace.ToString(CultureInfo.InvariantCulture));
+                }
+                output.Append('}');
+            }
+            Console.WriteLine(output.Append("]}").ToString());
+            return 0;
+        }
+
+        private static int HashFile(string[] args)
+        {
+            if (args.Length != 2) throw new ArgumentException("Hash accepts one file path");
+            string path = Path.GetFullPath(args[1]);
+            if (!File.Exists(path)) throw new ArgumentException("Hash path is not a file");
+            using var stream = File.OpenRead(path);
+            using var algorithm = SHA256.Create();
+            string hash = BitConverter.ToString(algorithm.ComputeHash(stream)).Replace("-", string.Empty).ToLowerInvariant();
+            Console.WriteLine("{\"path\":" + JsonString(path) + ",\"algorithm\":\"SHA-256\",\"hash\":" + JsonString(hash) + "}");
+            return 0;
+        }
+
+        private static RegistryKey OpenRegistryKey(string path)
+        {
+            int separator = path.IndexOf('\\');
+            string hive = separator < 0 ? path : path.Substring(0, separator);
+            string subkey = separator < 0 ? string.Empty : path.Substring(separator + 1);
+            RegistryKey root = hive.ToUpperInvariant() switch
+            {
+                "HKEY_CLASSES_ROOT" => Microsoft.Win32.Registry.ClassesRoot,
+                "HKEY_CURRENT_USER" => Microsoft.Win32.Registry.CurrentUser,
+                "HKEY_LOCAL_MACHINE" => Microsoft.Win32.Registry.LocalMachine,
+                "HKEY_USERS" => Microsoft.Win32.Registry.Users,
+                "HKEY_CURRENT_CONFIG" => Microsoft.Win32.Registry.CurrentConfig,
+                _ => throw new ArgumentException("Registry path must begin with a supported hive name"),
+            };
+            return subkey.Length == 0 ? root : root.OpenSubKey(subkey, false);
+        }
+
+        private static string RegistryData(object value)
+        {
+            string text = value switch
+            {
+                null => string.Empty,
+                byte[] bytes => BitConverter.ToString(bytes).Replace("-", " "),
+                string[] strings => string.Join(" | ", strings),
+                _ => Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty,
+            };
+            return text.Length <= 4000 ? text : text.Substring(0, 4000);
+        }
+
+        private static int ReadSingleIntegerOption(string[] args, string option, int defaultValue, int minimum, int maximum, int valueCount = 2)
+        {
+            if (args.Length == valueCount) return defaultValue;
+            if (args.Length != valueCount + 2 || args[valueCount] != option
+                || !int.TryParse(args[valueCount + 1], NumberStyles.None, CultureInfo.InvariantCulture, out int value)
                 || value < minimum || value > maximum)
                 throw new ArgumentException(option + " must be between " + minimum.ToString(CultureInfo.InvariantCulture)
                     + " and " + maximum.ToString(CultureInfo.InvariantCulture));
@@ -159,6 +337,7 @@ namespace KillerShell.Cli
 
         private static int Search(string[] args)
         {
+            if (args.Length < 2) throw new ArgumentException("Search needs one directory path");
             string root = Path.GetFullPath(args[1]);
             if (!Directory.Exists(root))
                 throw new ArgumentException("Search root is not a directory");
@@ -241,6 +420,19 @@ namespace KillerShell.Cli
             Console.WriteLine("KillerShell.Cli list <folder> [--limit 1..500]");
             Console.WriteLine("KillerShell.Cli info <path>");
             Console.WriteLine("KillerShell.Cli read <file> [--max-chars 1..65536]");
+            Console.WriteLine("KillerShell.Cli processes [--limit 1..500]");
+            Console.WriteLine("KillerShell.Cli services [--limit 1..500]");
+            Console.WriteLine("KillerShell.Cli events <Application|System|Security> [--limit 1..100]");
+            Console.WriteLine("KillerShell.Cli registry <hive\\key> [--limit 1..100]");
+            Console.WriteLine("KillerShell.Cli drives");
+            Console.WriteLine("KillerShell.Cli hash <file>");
+        }
+
+        private sealed class DisposableList<T> : IDisposable where T : IDisposable
+        {
+            internal IReadOnlyList<T> Items { get; }
+            internal DisposableList(IEnumerable<T> items) => Items = items.ToList();
+            public void Dispose() { foreach (var item in Items) item.Dispose(); }
         }
     }
 }

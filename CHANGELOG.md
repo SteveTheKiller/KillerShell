@@ -9,7 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.2.6 adds Vietnamese localization, family tab geometry, and local MCP file tools.
 
 ### Added
-- KillerMCP can use the installed app to search, list, inspect, and read local files without changing them.
+- KillerMCP can use the installed app to inspect files, processes, services, event logs, registry keys, and drives without changing them.
 - Vietnamese localization for the app and website.
 
 ### Fixed

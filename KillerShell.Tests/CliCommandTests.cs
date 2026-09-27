@@ -40,6 +40,32 @@ public sealed class CliCommandTests
         }
     }
 
+    [Fact]
+    public void SystemInspectionCommandsReturnBoundedJson()
+    {
+        string file = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(file, "KillerShell MCP");
+            Result hash = Run("hash", file);
+            Assert.Equal(0, hash.ExitCode);
+            Assert.Contains("\"algorithm\":\"SHA-256\"", hash.Output, StringComparison.Ordinal);
+
+            Result processes = Run("processes", "--limit", "1");
+            Assert.Equal(0, processes.ExitCode);
+            Assert.Contains("\"processes\":[", processes.Output, StringComparison.Ordinal);
+            Assert.Contains("\"limitReached\":true", processes.Output, StringComparison.Ordinal);
+
+            Result drives = Run("drives");
+            Assert.Equal(0, drives.ExitCode);
+            Assert.Contains("\"drives\":[", drives.Output, StringComparison.Ordinal);
+        }
+        finally
+        {
+            File.Delete(file);
+        }
+    }
+
     private static Result Run(params string[] arguments)
     {
         string executable = typeof(SearchEngine).Assembly.Location;
