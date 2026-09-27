@@ -1134,6 +1134,7 @@ namespace KillerShell.Shell
         {
             if (sender is not FrameworkElement bd || !bd.IsMouseCaptured) return;
             bd.ReleaseMouseCapture();
+            e.Handled = true;
             bool wasDragging = _tabDragging;
             var  t = _tabDragTab;
             _tabDragTab  = null;

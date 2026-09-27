@@ -28,6 +28,10 @@ public sealed class TabLayoutTests
         Assert.Equal("120", (string?)tab.Attribute("MinWidth"));
         Assert.Equal("240", (string?)tab.Attribute("MaxWidth"));
 
+        XElement grain = document.Descendants()
+            .Single(element => (string?)element.Attribute(x + "Name") == "tabGrain");
+        Assert.Equal("{DynamicResource TabGrainMargin}", (string?)grain.Attribute("Margin"));
+
         Assert.DoesNotContain(document.Descendants(), element =>
             (string?)element.Attribute(x + "Name") is "TabEdgeLeft" or "TabEdgeRight" or "TabBarRing" or "tabSeamPatch");
     }
@@ -46,8 +50,9 @@ public sealed class TabLayoutTests
                 (string?)element.Attribute(x + "Key") == key)
             .Attribute("Color")!;
 
-        Assert.Equal("#9f9f9f", BrushColor("TabActiveBrush"), ignoreCase: true);
-        Assert.Equal("#c0c0c0", BrushColor("TabInactiveBrush"), ignoreCase: true);
+        Assert.Equal("#c0c0c0", BrushColor("TabActiveBrush"), ignoreCase: true);
+        Assert.Equal("#9f9f9f", BrushColor("TabInactiveBrush"), ignoreCase: true);
+        Assert.Equal("#c0c0c0", BrushColor("FocusedPaneBrush"), ignoreCase: true);
 
         XElement join = document.Descendants()
             .Single(element => (string?)element.Attribute(x + "Name") == "RetroTabJoinLine");
@@ -70,15 +75,40 @@ public sealed class TabLayoutTests
             .Single(element => (string?)element.Attribute(x + "Name") == "tabActiveRetroOuterOutline");
         Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)outline.Attribute("BorderBrush"));
         Assert.Equal("1,1,1,0", (string?)outline.Attribute("BorderThickness"));
+        XElement inactiveOutline = document.Descendants()
+            .Single(element => (string?)element.Attribute(x + "Name") == "tabInactiveRetroOuterOutline");
+        Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)inactiveOutline.Attribute("BorderBrush"));
+        Assert.Equal("1,1,1,0", (string?)inactiveOutline.Attribute("BorderThickness"));
 
         string ThicknessValue(string key) => theme.Descendants()
             .Single(element => element.Name.LocalName == "Thickness" &&
                 (string?)element.Attribute(x + "Key") == key).Value;
-        Assert.Equal("-13,-5,-6,-2", ThicknessValue("TabActiveOuterOutlineMargin"));
+        Assert.Equal("-8,-4,-5,-2", ThicknessValue("TabActiveOuterOutlineMargin"));
+        Assert.Equal("-8,-5,-5,-3", ThicknessValue("TabInactiveOuterOutlineMargin"));
+        Assert.Equal("0,-2,0,0", ThicknessValue("PaneOuterMargin"));
+        Assert.Equal("8,6,5,2", ThicknessValue("TabPadding"));
+        Assert.Equal("8,4,5,4", ThicknessValue("TabActivePadding"));
         Assert.Equal("0,3,0,-3", ThicknessValue("TabActiveMargin"));
-        Assert.Equal("1,3,0,-3", ThicknessValue("TabActiveFirstMargin"));
+        Assert.Equal("-1,3,0,-3", ThicknessValue("TabActiveFirstMargin"));
         Assert.Equal("0,3,1,-3", ThicknessValue("TabActiveLastMargin"));
-        Assert.Equal("1,3,1,-3", ThicknessValue("TabActiveOnlyMargin"));
+        Assert.Equal("-1,3,1,-3", ThicknessValue("TabActiveOnlyMargin"));
+        Assert.Equal("0", ThicknessValue("PaneBevel2LightThickness"));
+        Assert.Equal("0,0,1,1", ThicknessValue("BarEdgeDarkThickness"));
+    }
+
+    [Fact]
+    public void DragGhostUsesTheActiveTabThemeResources()
+    {
+        string root = FindRepositoryRoot();
+        var window = XDocument.Load(Path.Combine(root, "Shell", "MainWindow.xaml"));
+        XNamespace x = "http://schemas.microsoft.com/winfx/2006/xaml";
+        XElement ghost = window.Descendants()
+            .Single(element => (string?)element.Attribute(x + "Name") == "TabDragGhost");
+
+        Assert.Equal("{DynamicResource TabCornerRadius}", (string?)ghost.Attribute("CornerRadius"));
+        Assert.Equal("{DynamicResource TabActiveBrush}", (string?)ghost.Attribute("Background"));
+        Assert.Equal("{DynamicResource TabActivePadding}", (string?)ghost.Attribute("Padding"));
+        Assert.Equal("{DynamicResource BarShadowEffect}", (string?)ghost.Attribute("Effect"));
     }
 
     private static string FindRepositoryRoot()

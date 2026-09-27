@@ -192,9 +192,9 @@
                                 <!-- 1px bottom margin keeps an inactive tab clear of the ring
                                      line at the foot of the band; the active tab drops it and
                                      covers its own segment. -->
-                                <!-- TabPadding, not the literal 12,4,5,5: 98SE trims the bottom by
-                                     one so the tab sits about a pixel shorter, which is the Win98
-                                     proportion that goes alongside the chamfer. -->
+                                <!-- TabPadding keeps each label aligned within its tab state. The
+                                     98SE value also uses a tighter left inset so the icon leaves
+                                     more room for the title. -->
                                 <Border x:Name="tabBd" CornerRadius="{DynamicResource TabCornerRadius}" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
                                         MinWidth="120" MaxWidth="240"
                                         UseLayoutRounding="True" SnapsToDevicePixels="True"
@@ -223,7 +223,7 @@
                                              fill that hides the band, so the IsActive trigger
                                              below turns this back on for that one. -->
                                         <Border x:Name="tabGrain" IsHitTestVisible="False"
-                                                CornerRadius="{DynamicResource TabCornerRadius}" Margin="-12,-4,-5,-5"
+                                                CornerRadius="{DynamicResource TabCornerRadius}" Margin="{DynamicResource TabGrainMargin}"
                                                 Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
                                         <!-- Win98 tab bevel: light along the top and left, dark
                                              down the right. A Win98 tab is a raised control, not
@@ -237,8 +237,12 @@
                                              flat theme that overhang showed one pixel of dark line
                                              below the tab's foot. Default is
                                              exactly the old literal. -->
-                                        <Border x:Name="tabActiveRetroOuterOutline" IsHitTestVisible="False" Panel.ZIndex="3"
+                                        <Border x:Name="tabActiveRetroOuterOutline" IsHitTestVisible="False" Panel.ZIndex="7"
                                                 Margin="{DynamicResource TabActiveOuterOutlineMargin}"
+                                                BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1,1,1,0"
+                                                SnapsToDevicePixels="True" Visibility="Collapsed"/>
+                                        <Border x:Name="tabInactiveRetroOuterOutline" IsHitTestVisible="False" Panel.ZIndex="7"
+                                                Margin="{DynamicResource TabInactiveOuterOutlineMargin}"
                                                 BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1,1,1,0"
                                                 SnapsToDevicePixels="True" Visibility="Collapsed"/>
                                         <Border x:Name="tabBevelLight" IsHitTestVisible="False" Margin="{DynamicResource TabBevelMargin}" Panel.ZIndex="4"
@@ -265,7 +269,7 @@
                                         <DockPanel LastChildFill="True">
                                             <!-- Nulled here rather than on the shared DangerButton style,
                                                  which the term and filter x's also use. -->
-                                            <Button DockPanel.Dock="Right" Content="x" Style="{StaticResource DangerButton}" Width="18" Height="18" Margin="6,0,0,0"
+                                            <Button DockPanel.Dock="Right" Content="x" Style="{StaticResource DangerButton}" Width="18" Height="18" Margin="4,0,0,0"
                                                     FocusVisualStyle="{x:Null}"
                                                     ToolTip="{DynamicResource Str_TT_CloseTab}" Tag="{Binding}" Click="CloseTab_Click"/>
                                             <!-- A browsing tab's real Windows folder icon
@@ -284,7 +288,7 @@
                                                  room - the collapse trigger below. -->
                                             <Image x:Name="tabFolderIcon" DockPanel.Dock="Left"
                                                    Width="20" Height="20" Stretch="Uniform"
-                                                   Margin="0,0,5,0" VerticalAlignment="Center">
+                                                   Margin="0,0,3,0" VerticalAlignment="Center">
                                                 <Image.Source>
                                                     <MultiBinding Converter="{StaticResource TabFolderIcon}">
                                                         <Binding/>
@@ -300,7 +304,7 @@
                                                  a folder tab moves. -->
                                             <TextBlock x:Name="tabGlyph" DockPanel.Dock="Left"
                                                        Text="{Binding TabGlyph}" FontFamily="Segoe MDL2 Assets"
-                                                       FontSize="12" Margin="0,0,5,0" VerticalAlignment="Center"
+                                                       FontSize="12" Margin="0,0,3,0" VerticalAlignment="Center"
                                                        Foreground="{DynamicResource MutedTextBrush}"/>
                                             <TextBlock x:Name="tabLbl" Text="{Binding Title}" FontFamily="Consolas" FontSize="11"
                                                        Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center"
@@ -506,6 +510,7 @@
                                             <Condition Binding="{Binding IsActive}" Value="False"/>
                                         </MultiDataTrigger.Conditions>
                                         <Setter TargetName="tabBd" Property="Background" Value="{DynamicResource TabInactiveBrush}"/>
+                                        <Setter TargetName="tabInactiveRetroOuterOutline" Property="Visibility" Value="Visible"/>
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>

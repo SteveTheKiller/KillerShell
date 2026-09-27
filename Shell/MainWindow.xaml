@@ -2121,23 +2121,41 @@
              the drop from ever finding the pane beneath it. -->
         <Canvas x:Name="DragLayer" Grid.RowSpan="3" Panel.ZIndex="90"
                 IsHitTestVisible="False" Visibility="Collapsed">
-            <!-- A half-real copy of the tab, carrying the same accent lip and glyph so it is
-                 obviously THE tab rather than a generic drag box. -->
-            <Border x:Name="TabDragGhost" Opacity="0.72" CornerRadius="6,6,0,0" Padding="12,2,10,5"
-                    Background="{DynamicResource PaneBrush}"
-                    BorderThickness="0,3,0,0" BorderBrush="{DynamicResource PrimaryBrush}">
-                <Border.Effect>
-                    <DropShadowEffect Color="Black" BlurRadius="14" ShadowDepth="3"
-                                      Direction="270" Opacity="0.5"/>
-                </Border.Effect>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="TabDragGhostGlyph" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                               Margin="0,0,5,0" VerticalAlignment="Center"
-                               Foreground="{DynamicResource MutedTextBrush}"/>
-                    <TextBlock x:Name="TabDragGhostText" FontFamily="Consolas" FontSize="11.5"
-                               FontWeight="Bold" VerticalAlignment="Center"
-                               Foreground="{DynamicResource TextBrush}"/>
-                </StackPanel>
+            <!-- The drag copy uses the same theme resources as an active tab. -->
+            <Border x:Name="TabDragGhost" Opacity="0.82"
+                    CornerRadius="{DynamicResource TabCornerRadius}"
+                    Padding="{DynamicResource TabActivePadding}"
+                    Background="{DynamicResource TabActiveBrush}"
+                    BorderThickness="{DynamicResource TabStripeThickness}"
+                    BorderBrush="{DynamicResource TabActiveRingBrush}"
+                    Effect="{DynamicResource BarShadowEffect}">
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="TabDragGhostGlyph" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   Margin="0,0,5,0" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource MutedTextBrush}"/>
+                        <TextBlock x:Name="TabDragGhostText" FontFamily="Consolas" FontSize="11.5"
+                                   FontWeight="Bold" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextBrush}"/>
+                    </StackPanel>
+                    <Border IsHitTestVisible="False" Panel.ZIndex="3"
+                            Margin="{DynamicResource TabActiveOuterOutlineMargin}"
+                            BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1,1,1,0"
+                            Visibility="{DynamicResource RetroActiveTabOutlineVisibility}"/>
+                    <Border IsHitTestVisible="False" Panel.ZIndex="4"
+                            Margin="{DynamicResource TabBevelMargin}"
+                            BorderBrush="{DynamicResource BevelLightBrush}"
+                            BorderThickness="{DynamicResource TabBevelLightThickness}"/>
+                    <Border IsHitTestVisible="False" Panel.ZIndex="4"
+                            Margin="{DynamicResource TabActiveBevelDarkMargin}"
+                            BorderBrush="{DynamicResource BevelDarkBrush}"
+                            BorderThickness="{DynamicResource TabActiveBevelDarkThickness}"/>
+                    <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                            Margin="{DynamicResource TabActiveInnerBevelMargin}"
+                            BorderBrush="{DynamicResource TabActiveInnerBevelBrush}"
+                            BorderThickness="{DynamicResource TabActiveInnerBevelThickness}"
+                            Visibility="{DynamicResource RetroActiveTabOutlineVisibility}"/>
+                </Grid>
             </Border>
 
             <!-- Where it would land. Only shown over the target strip, because anywhere else

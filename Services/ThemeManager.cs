@@ -319,6 +319,7 @@ namespace KillerShell.Services
             // trims the BOTTOM so the right-hand dark edge stops at the tab's foot instead of
             // hanging a pixel into the pane below it.
             SetIfAbsent("TabBevelMargin", new Thickness(-12, -4, -5, -5));
+            SetIfAbsent("TabGrainMargin", new Thickness(-12, -4, -5, -5));
             // The folder tree's inset inside its well (MainWindow.xaml TreeFadeHost). Default is
             // the literal it replaced; a flat theme zeroes the top so the well's own fill does not
             // show above the first row as a white strip, and the scrollbar starts at the frame.
@@ -621,8 +622,8 @@ namespace KillerShell.Services
             // TabChamferConverter returns a null Clip for 0, so the twelve rounded themes are not
             // clipped at all. Only a flat theme states a value.
             SetIfAbsent("TabChamfer", 0.0);
-            // The tab's own padding. Default is the literal FilePane.xaml carried; a flat theme
-            // trims a pixel off the bottom for the shorter Win98 tab.
+            // The tab's own padding. Default is the literal FilePane.xaml carried. A flat theme
+            // supplies its compact horizontal inset and state-aligned vertical padding.
             SetIfAbsent("TabPadding", new Thickness(12, 4, 5, 5));
             // No PageBevel* keys: the tab page reuses the PaneBevel* set the sidebar well already
             // uses, so the two recesses are the same four Borders and cannot drift apart. A
@@ -643,6 +644,7 @@ namespace KillerShell.Services
             SetIfAbsent("TabActiveLastMargin", new Thickness(0, 3, 0, 0));
             SetIfAbsent("TabActiveOnlyMargin", new Thickness(0, 3, 0, 0));
             SetIfAbsent("TabActiveOuterOutlineMargin", new Thickness(0));
+            SetIfAbsent("TabInactiveOuterOutlineMargin", new Thickness(0));
             SetIfAbsent("TabActiveInnerBevelBrush", Transparent);
             SetIfAbsent("TabActiveInnerBevelThickness", new Thickness(0));
             SetIfAbsent("TabActiveInnerBevelMargin", new Thickness(0));

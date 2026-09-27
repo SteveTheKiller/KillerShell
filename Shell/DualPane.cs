@@ -834,6 +834,11 @@ namespace KillerShell.Shell
                 bool lit = DualPane && ReferenceEquals(p, Pane);
                 bool paneActive = ReferenceEquals(p, Pane) && (DualPane || retro);
 
+                string barBrush = retro && DualPane && !lit ? "TabInactiveBrush" : "PaneBrush";
+                p.LocationRow.SetResourceReference(Panel.BackgroundProperty, barBrush);
+                p.TerminalBarRow.SetResourceReference(Border.BackgroundProperty, barBrush);
+                p.EditorBarRow.SetResourceReference(Border.BackgroundProperty, barBrush);
+
                 p.ResultsPane.SetResourceReference(Border.BorderBrushProperty,
                     lit && !retro ? "PrimaryBrush" : "PaneBorderBrush");
 
