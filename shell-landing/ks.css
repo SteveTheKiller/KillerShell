@@ -79,7 +79,7 @@ html[data-theme="cyanotic"] .wm-logo .wms { color: #50AEE8; }
 html[data-theme="light"] .page-title { text-shadow: none; }
 
 /* ---- Top bar (single app-style chrome bar) ---- */
-.topbar { position: relative; flex: 0 0 auto; z-index: 100; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 8px 16px 0; background: var(--sidebar); }
+.topbar { position: relative; flex: 0 0 auto; z-index: 100; display: flex; align-items: center; gap: 14px; flex-wrap: nowrap; padding: 8px 16px 0; background: var(--sidebar); }
 .topbar::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: url('grain.png?v=2') repeat fixed; background-size: 256px 256px; opacity: 1; }
 .topbar > * { position: relative; z-index: 1; }
 .tb-home { display: inline-flex; align-items: center; gap: 9px; color: var(--text); }
@@ -263,7 +263,7 @@ body.compact-sidebar .outline a:hover { color: var(--text); background: color-mi
 .outline::-webkit-scrollbar-track,
 .outline::-webkit-scrollbar-track-piece { background: transparent !important; }
 
-@media (max-width: 1120px) {
+@media (max-width: 1320px) {
   .topbar { flex-wrap: nowrap; padding-bottom: 8px; }
   .theme-toggle { display: inline-flex; flex: 0 0 auto; }
   .topbar .tgrp { display: none; position: absolute; top: calc(100% + 7px); right: 12px; z-index: 120; width: 170px; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--modal) url('grain.png?v=2') repeat; background-size: 256px 256px; box-shadow: 0 10px 28px rgba(0,0,0,0.48); }
@@ -337,7 +337,7 @@ html[data-theme="light"] .tb-mcp-accent { text-shadow: none; }
 .acc-pop .acc-pop-label { font-size: 11px; font-family: Consolas, monospace; color: var(--muted); margin-right: 1px; }
 
 /* ============ Landing hero info block (replaces the terminal) ============ */
-.hero-info { background: color-mix(in srgb, var(--modal) 80%, transparent) url('grain.png?v=2') repeat; background-size: 256px 256px; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); border: 1px solid var(--pane-border); border-left: 2px solid var(--tab-edge); border-right: 2px solid var(--tab-edge); border-radius: 8px; box-shadow: 0 14px 32px rgba(0,0,0,0.4); padding: 15px 14px; font-family: Consolas, monospace; font-size: 13px; line-height: 1.9; flex: 0 0 auto; width: 336px; transition: transform 0.12s, box-shadow 0.15s, border-color 0.12s; }
+.hero-info { background: color-mix(in srgb, var(--modal) 80%, transparent) url('grain.png?v=2') repeat; background-size: 256px 256px; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); border: 1px solid var(--pane-border); border-left: 2px solid var(--tab-edge); border-right: 2px solid var(--tab-edge); border-radius: 8px; box-shadow: 0 14px 32px rgba(0,0,0,0.4); padding: 15px 14px; font-family: Consolas, monospace; font-size: 13px; line-height: 1.9; flex: 0 0 auto; width: 310px; transition: transform 0.12s, box-shadow 0.15s, border-color 0.12s; }
 .hero-info:hover { border-left-color: var(--accent); border-right-color: var(--accent); }
 .hero-info:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-top-color: var(--dragline); border-bottom-color: var(--dragline); }
 .hero-info .row { display: flex; gap: 8px; }
@@ -443,7 +443,7 @@ html[data-theme="cyanotic"] .spec-table th { background: var(--chrome); color: v
   }
 
   .content-inner { width: 100%; }
-  .hero-info { width: min(336px, 100%); }
+  .hero-info { width: min(310px, 100%); }
   .mcp-page-grid,
   .mcp-side-column,
   .mcp-main-column,
@@ -508,4 +508,31 @@ html[data-theme="cyanotic"] .spec-table th { background: var(--chrome); color: v
     flex: 0 0 auto;
     font-size: clamp(19px, 6vw, 25px) !important;
   }
+}
+/* Use the compact theme picker at every width. */
+.theme-toggle { display: inline-flex; flex: 0 0 26px; width: 26px; height: 26px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; background: none; }
+.theme-toggle:hover, .theme-toggle[aria-expanded="true"] { border-color: var(--accent); box-shadow: none; }
+.topbar .tgrp { display: none; position: absolute; top: calc(100% + 7px); right: 12px; z-index: 120; width: 170px; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--modal) url('grain.png?v=2') repeat; background-size: 256px 256px; box-shadow: 0 10px 28px rgba(0,0,0,0.48); }
+.topbar .tgrp.open { display: flex; }
+
+/* Tighten the header before switching to the intentional stacked layout. */
+@media (max-width: 900px) {
+  .topbar { gap: 7px; padding-left: 10px; padding-right: 10px; }
+  .tb-nav { gap: 0; }
+  .tb-nav a { padding-left: 8px; padding-right: 8px; }
+}
+@media (max-width: 1000px) {
+  .topbar { min-height: 0; padding: 8px 12px; gap: 8px 9px; justify-content: center; flex-wrap: wrap !important; }
+  .tb-spacer { display: none; }
+  .topbar .tb-nav { order: 1; flex-basis: 100%; justify-content: center; gap: 2px; padding-top: 7px; border-top: 1px solid var(--border); }
+  .topbar .theme-toggle { order: 2; }
+  .topbar .accent-switch { order: 3; }
+  .topbar .lang-switch { order: 4; }
+}
+
+/* Keep the app badge visually level with the lowest KillerMCP drip. */
+@media (max-width: 600px) {
+  body .mcp-brand .mcp-icon-pair { flex-basis: 72px !important; width: 72px !important; height: 64px !important; }
+  body .mcp-brand .mcp-family-icon { width: 58px !important; height: 58px !important; }
+  body .mcp-brand .mcp-app-icon { right: 10px !important; bottom: 6px !important; width: 32px !important; height: 32px !important; }
 }
