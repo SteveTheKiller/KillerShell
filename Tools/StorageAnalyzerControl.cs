@@ -145,7 +145,7 @@ namespace KillerShell.Tools
 
             // ── Row 0: target box, browse, scan/stop, view controls ───
             var bar = new Grid();
-            bar.SetResourceReference(MarginProperty, "MonitorInfoMargin");
+            bar.SetResourceReference(MarginProperty, "StorageBarMargin");
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             bar.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });

@@ -525,6 +525,10 @@ namespace KillerShell.Services
             // instead of floating in gray gutters.
             SetIfAbsent("MonitorDetailMargin",   new Thickness(4, 0, 8, 8));
             SetIfAbsent("MonitorInfoMargin",     new Thickness(8, 8, 8, 8));
+            // The Storage Analyzer address row (StorageAnalyzerControl.cs). Mirrors the info
+            // panel margin it used to share, so nothing moves on any ordinary theme; 98SE states
+            // its own inset because there the info margin is flush.
+            Mirror("StorageBarMargin", "MonitorInfoMargin");
             SetIfAbsent("MonitorTileListMargin", new Thickness(8, 0, 4, 8));
             SetIfAbsent("MonitorTileMargin",     new Thickness(6, 3, 6, 3));
             // The cell GRID's outer margin (the 2026-08-09 grid-of-cells layout). 2 a side so

@@ -116,18 +116,18 @@ public sealed class TabLayoutTests
         Assert.Equal("0,5,0,1", ThicknessValue("TabMargin"));
         Assert.Equal("0,5,0,1", ThicknessValue("TabInactiveFirstMargin"));
         Assert.Equal("0,5,0,1", ThicknessValue("TabInactiveLastMargin"));
-        Assert.Equal("-2,5,-2,0", ThicknessValue("TabActiveMargin"));
-        Assert.Equal("0,5,-2,0", ThicknessValue("TabActiveFirstMargin"));
-        Assert.Equal("-2,5,0,0", ThicknessValue("TabActiveLastMargin"));
-        Assert.Equal("0,5,0,0", ThicknessValue("TabActiveOnlyMargin"));
+        Assert.Equal("-2,3,0,0", ThicknessValue("TabActiveMargin"));
+        Assert.Equal("0,3,0,0", ThicknessValue("TabActiveFirstMargin"));
+        Assert.Equal("-2,3,0,0", ThicknessValue("TabActiveLastMargin"));
+        Assert.Equal("0,3,0,0", ThicknessValue("TabActiveOnlyMargin"));
         Assert.Equal("-8,-4,-5,-4", ThicknessValue("TabActiveOuterOutlineMargin"));
-        Assert.Equal("-8,-4,-6,-2", ThicknessValue("TabInactiveOuterOutlineMargin"));
+        Assert.Equal("-8,-6,-6,-2", ThicknessValue("TabInactiveOuterOutlineMargin"));
         Assert.Equal("-8,-4,-4,-4", ThicknessValue("TabActiveBevelLightMargin"));
         Assert.Equal("1,1,0,0", ThicknessValue("PaneBevel2LightThickness"));
         Assert.Equal("0,0,1,1", ThicknessValue("PaneBevel2DarkThickness"));
-        Assert.Equal("1,1,0,0", ThicknessValue("BarEdgeThickness"));
-        Assert.Equal("1,0,0,0", ThicknessValue("LocationBarEdgeThickness"));
-        Assert.Equal("0,0,1,1", ThicknessValue("BarEdgeDarkThickness"));
+        Assert.Equal("0", ThicknessValue("BarEdgeThickness"));
+        Assert.Equal("0", ThicknessValue("LocationBarEdgeThickness"));
+        Assert.Equal("0,0,0,1", ThicknessValue("BarEdgeDarkThickness"));
     }
 
     [Fact]
