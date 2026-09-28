@@ -15,7 +15,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - On the 98SE theme the Elevated Privileges caption in an admin window's title bar is white instead of disappearing into the title bar.
 - Mouse Back and Forward buttons navigate folder history again.
-- Tabs use bounded left-aligned widths and continuous pane borders, including correct 98SE active and inactive faces and bevel joins.
+- Tabs use bounded left-aligned widths and continuous pane borders. The 98SE theme now matches Windows 98 pixel for pixel: tab edges and the page under them, the 4px window frame, the 18px caption and its buttons, four-color button bevels, flat toolbar buttons that raise on hover, and double-recessed wells.
 
 ## [1.2.5] - 2026-09-20
 

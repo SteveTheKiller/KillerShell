@@ -107,7 +107,7 @@
                     </Border.OpacityMask>
                 </Border>
                 <Border x:Name="RetroTabJoinLine" Height="1" VerticalAlignment="Bottom" Margin="0,0,0,1"
-                        Background="{DynamicResource PaneBorderBrush}"
+                        Background="{DynamicResource RetroTabJoinLineBrush}"
                         Visibility="{DynamicResource RetroTabJoinVisibility}"
                         IsHitTestVisible="False"/>
                 <Canvas x:Name="RetroTabInnerJoin" Height="1" VerticalAlignment="Bottom"
@@ -237,13 +237,20 @@
                                              flat theme that overhang showed one pixel of dark line
                                              below the tab's foot. Default is
                                              exactly the old literal. -->
+                                        <!-- The outer outline's brush and thickness are theme tokens.
+                                             Defaults are the PaneBorderBrush 1,1,1,0 cap this used
+                                             to hardcode; 98SE states a black 0,0,1,0 so the outline
+                                             is the 1px black line outside a Win98 tab's #808080
+                                             right edge and nothing sits on top of its white top. -->
                                         <Border x:Name="tabActiveRetroOuterOutline" IsHitTestVisible="False" Panel.ZIndex="7"
                                                 Margin="{DynamicResource TabActiveOuterOutlineMargin}"
-                                                BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1,1,1,0"
+                                                BorderBrush="{DynamicResource TabOuterOutlineBrush}"
+                                                BorderThickness="{DynamicResource TabOuterOutlineThickness}"
                                                 SnapsToDevicePixels="True" Visibility="Collapsed"/>
                                         <Border x:Name="tabInactiveRetroOuterOutline" IsHitTestVisible="False" Panel.ZIndex="7"
                                                 Margin="{DynamicResource TabInactiveOuterOutlineMargin}"
-                                                BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1,1,1,0"
+                                                BorderBrush="{DynamicResource TabOuterOutlineBrush}"
+                                                BorderThickness="{DynamicResource TabOuterOutlineThickness}"
                                                 SnapsToDevicePixels="True" Visibility="Collapsed"/>
                                         <Border x:Name="tabBevelLight" IsHitTestVisible="False" Margin="{DynamicResource TabBevelMargin}" Panel.ZIndex="4"
                                                 BorderBrush="{DynamicResource BevelLightBrush}"

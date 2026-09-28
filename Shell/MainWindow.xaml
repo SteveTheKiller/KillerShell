@@ -2140,7 +2140,8 @@
                     </StackPanel>
                     <Border IsHitTestVisible="False" Panel.ZIndex="3"
                             Margin="{DynamicResource TabActiveOuterOutlineMargin}"
-                            BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1,1,1,0"
+                            BorderBrush="{DynamicResource TabOuterOutlineBrush}"
+                            BorderThickness="{DynamicResource TabOuterOutlineThickness}"
                             Visibility="{DynamicResource RetroActiveTabOutlineVisibility}"/>
                     <Border IsHitTestVisible="False" Panel.ZIndex="4"
                             Margin="{DynamicResource TabBevelMargin}"

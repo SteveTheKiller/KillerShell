@@ -73,8 +73,12 @@
                          real raised control rather than a flat accent slab. -->
                     <Border IsHitTestVisible="False"
                             BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                    <Border IsHitTestVisible="False"
+                    <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
                             BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
+                            BorderBrush="{DynamicResource BevelInnerLightBrush}" BorderThickness="{DynamicResource BevelInnerLightThickness}"/>
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -120,8 +124,12 @@
                     <!-- Raised button bevel. Nothing on any theme but 98SE. -->
                     <Border IsHitTestVisible="False"
                             BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                    <Border IsHitTestVisible="False"
+                    <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
                             BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
+                            BorderBrush="{DynamicResource BevelInnerLightBrush}" BorderThickness="{DynamicResource BevelInnerLightThickness}"/>
+                    <Border IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <!-- OnOutlineBtnBrush, NOT OnPrimaryBrush: the fill here is
@@ -171,21 +179,27 @@
                             CornerRadius="{DynamicResource ControlCornerRadius}" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <!-- Raised bevel. Nothing on any theme but 98SE. -->
-                    <Border IsHitTestVisible="False"
-                            BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                    <Border IsHitTestVisible="False"
-                            BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                    <!-- Bar-button edge: a chip on a Win98 bar is FLAT at rest, raises a 1px
+                         white/#808080 edge on hover and sinks it on press, like Explorer's toolbar.
+                         Both thicknesses are theme tokens that are 0 on every ordinary theme. -->
+                    <Border x:Name="tbLight" IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource ToolBevelLightThickness}"/>
+                    <Border x:Name="tbDark" IsHitTestVisible="False"
+                            BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource ToolBevelDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <!-- Order matters: IsPressed after IsMouseOver so it wins. -->
                         <!-- A real fill change, not an opacity fade - the fade is invisible on a
                              dark panel and the button reads as dead. -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ToolHoverFaceBrush}"/>
+                            <Setter TargetName="tbLight" Property="BorderThickness" Value="{DynamicResource ToolHoverBevelLightThickness}"/>
+                            <Setter TargetName="tbDark"  Property="BorderThickness" Value="{DynamicResource ToolHoverBevelDarkThickness}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+                            <Setter TargetName="tbLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
+                            <Setter TargetName="tbDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
                         </Trigger>
                         <!-- Checked/selected state - same Tag="on" convention and the same
                              SelectionBg/SelectionFg pair every other checkable button style in
@@ -326,7 +340,9 @@
                             <Grid Grid.Column="1" Margin="{DynamicResource ComboChevMargin}" MinWidth="{DynamicResource ComboButtonMinWidth}">
                                 <Border Background="{DynamicResource ComboButtonBrush}"/>
                                 <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                                <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}" BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}" BorderBrush="{DynamicResource BevelInnerLightBrush}" BorderThickness="{DynamicResource BevelInnerLightThickness}"/>
+                                <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
                                 <TextBlock x:Name="chev" Text="{DynamicResource ComboChevGlyph}" FontFamily="{DynamicResource ComboChevFont}" FontSize="8"
                                            Foreground="{DynamicResource DimTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{DynamicResource ComboChevGlyphMargin}"/>
                             </Grid>
@@ -1338,8 +1354,12 @@
                              so it costs nothing and draws nothing there. -->
                         <Border IsHitTestVisible="False"
                                 BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                        <Border IsHitTestVisible="False"
+                        <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
                                 BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                        <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
+                                BorderBrush="{DynamicResource BevelInnerLightBrush}" BorderThickness="{DynamicResource BevelInnerLightThickness}"/>
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bd" Property="Background" Value="{DynamicResource CaptionHoverBrush}"/></Trigger>
@@ -1371,8 +1391,12 @@
                         </Border>
                         <Border x:Name="bevelLight" IsHitTestVisible="False"
                                 BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                        <Border x:Name="bevelDark" IsHitTestVisible="False"
+                        <Border x:Name="bevelDark" IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
                                 BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                        <Border x:Name="bevelInnerLight" IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
+                                BorderBrush="{DynamicResource BevelInnerLightBrush}" BorderThickness="{DynamicResource BevelInnerLightThickness}"/>
+                        <Border x:Name="bevelOuterDark" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -1384,8 +1408,10 @@
                              state at all. Both bevels are zero-thickness on
                              every other theme, so this trigger does nothing there. -->
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="bevelLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
-                            <Setter TargetName="bevelDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
+                            <Setter TargetName="bevelLight" Property="BorderBrush" Value="{DynamicResource BevelOuterDarkBrush}"/>
+                            <Setter TargetName="bevelDark"  Property="BorderBrush" Value="{DynamicResource BevelInnerLightBrush}"/>
+                            <Setter TargetName="bevelInnerLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
+                            <Setter TargetName="bevelOuterDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1448,8 +1474,12 @@
                         <Border Background="{DynamicResource CaptionButtonBrush}"/>
                         <Border x:Name="bevelLight" IsHitTestVisible="False"
                                 BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                        <Border x:Name="bevelDark" IsHitTestVisible="False"
+                        <Border x:Name="bevelDark" IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
                                 BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                        <Border x:Name="bevelInnerLight" IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
+                                BorderBrush="{DynamicResource BevelInnerLightBrush}" BorderThickness="{DynamicResource BevelInnerLightThickness}"/>
+                        <Border x:Name="bevelOuterDark" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -1457,8 +1487,10 @@
                             <Setter Property="Foreground" Value="{DynamicResource AboutCloseHoverFg}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="bevelLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
-                            <Setter TargetName="bevelDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
+                            <Setter TargetName="bevelLight" Property="BorderBrush" Value="{DynamicResource BevelOuterDarkBrush}"/>
+                            <Setter TargetName="bevelDark"  Property="BorderBrush" Value="{DynamicResource BevelInnerLightBrush}"/>
+                            <Setter TargetName="bevelInnerLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
+                            <Setter TargetName="bevelOuterDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1579,19 +1611,30 @@
                                 CornerRadius="{DynamicResource SmallCornerRadius}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                        <!-- Raised bevel: 98SE only, where a toolbar button is a real button. -->
-                        <Border IsHitTestVisible="False"
-                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                        <Border IsHitTestVisible="False"
-                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                        <!-- Toolbar button edge: a Win98 toolbar button is FLAT at rest, raises a
+                             1px white/#808080 edge on hover and sinks it on press. The rest and
+                             hover thicknesses are theme tokens that are 0 on every ordinary theme,
+                             so nothing draws there; 98SE states 0 at rest and 1px on hover. -->
+                        <Border x:Name="tbLight" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource ToolBevelLightThickness}"/>
+                        <Border x:Name="tbDark" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource ToolBevelDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <!-- Hover = accent glyph on the neutral wash (2026-08-09 color language).
                              Declared BEFORE Tag="on" so a hovered SELECTED button keeps white-on-
                              accent - the later trigger wins the Foreground, never accent-on-accent. -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource ToolHoverFaceBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="tbLight" Property="BorderThickness" Value="{DynamicResource ToolHoverBevelLightThickness}"/>
+                            <Setter TargetName="tbDark"  Property="BorderThickness" Value="{DynamicResource ToolHoverBevelDarkThickness}"/>
+                        </Trigger>
+                        <!-- PRESSED: the hover edge inverts so the button sinks. Inert off 98SE,
+                             where both thicknesses are 0. -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="tbLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
+                            <Setter TargetName="tbDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
                         </Trigger>
                         <Trigger Property="Tag" Value="on">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource SelectionBg}"/>
@@ -2001,19 +2044,30 @@
                                 CornerRadius="{DynamicResource SmallCornerRadius}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                        <!-- Raised bevel: 98SE only, where a toolbar button is a real button. -->
-                        <Border IsHitTestVisible="False"
-                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                        <Border IsHitTestVisible="False"
-                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                        <!-- Toolbar button edge: a Win98 toolbar button is FLAT at rest, raises a
+                             1px white/#808080 edge on hover and sinks it on press. The rest and
+                             hover thicknesses are theme tokens that are 0 on every ordinary theme,
+                             so nothing draws there; 98SE states 0 at rest and 1px on hover. -->
+                        <Border x:Name="tbLight" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource ToolBevelLightThickness}"/>
+                        <Border x:Name="tbDark" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource ToolBevelDarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <!-- Hover = accent glyph on the neutral wash (2026-08-09 color language).
                              Declared BEFORE Tag="on" so a hovered SELECTED button keeps white-on-
                              accent - the later trigger wins the Foreground, never accent-on-accent. -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource ToolHoverFaceBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="tbLight" Property="BorderThickness" Value="{DynamicResource ToolHoverBevelLightThickness}"/>
+                            <Setter TargetName="tbDark"  Property="BorderThickness" Value="{DynamicResource ToolHoverBevelDarkThickness}"/>
+                        </Trigger>
+                        <!-- PRESSED: the hover edge inverts so the button sinks. Inert off 98SE,
+                             where both thicknesses are 0. -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="tbLight" Property="BorderBrush" Value="{DynamicResource BevelDarkBrush}"/>
+                            <Setter TargetName="tbDark"  Property="BorderBrush" Value="{DynamicResource BevelLightBrush}"/>
                         </Trigger>
                         <Trigger Property="Tag" Value="on">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource SelectionBg}"/>

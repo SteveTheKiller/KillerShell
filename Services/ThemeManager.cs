@@ -267,6 +267,21 @@ namespace KillerShell.Services
             SetIfAbsent("BevelDarkThickness", new Thickness(0));
             SetIfAbsent("BevelLightBrush", Transparent);
             SetIfAbsent("BevelLightThickness", new Thickness(0));
+            // The second ring of the raised edge (Controls.xaml): the inner light and outer dark
+            // lines that make a Win98 button's four-color bevel. Zero and transparent here, so the
+            // twelve rounded themes draw exactly what they did; 98SE states #dfdfdf and black.
+            SetIfAbsent("BevelInnerMargin", new Thickness(0));
+            SetIfAbsent("BevelInnerLightBrush", Transparent);
+            SetIfAbsent("BevelInnerLightThickness", new Thickness(0));
+            SetIfAbsent("BevelOuterDarkBrush", Transparent);
+            SetIfAbsent("BevelOuterDarkThickness", new Thickness(0));
+            // Toolbar buttons (ViewToggleBtn, PickerViewBtn): the edge at rest and on hover, and
+            // the hovered face. 0 and the ordinary hover wash here, so the twelve rounded themes
+            // are unchanged; 98SE is flat at rest with a 1px raised edge on hover, as Explorer was.
+            SetIfAbsent("ToolBevelLightThickness", new Thickness(0));
+            SetIfAbsent("ToolBevelDarkThickness", new Thickness(0));
+            SetIfAbsent("ToolHoverBevelLightThickness", new Thickness(0));
+            SetIfAbsent("ToolHoverBevelDarkThickness", new Thickness(0));
             // The pane's outer radius and the nested-bar radius, as SCALARS. Tabs.cs builds its
             // corners one at a time from first/last-tab state, so it needs the number rather than
             // a ready-made CornerRadius - and it had the numbers as literals, which is why the
@@ -646,6 +661,15 @@ namespace KillerShell.Services
             SetIfAbsent("TabActiveOnlyMargin", new Thickness(0, 3, 0, 0));
             SetIfAbsent("TabActiveOuterOutlineMargin", new Thickness(0));
             SetIfAbsent("TabInactiveOuterOutlineMargin", new Thickness(0));
+            // The retro outer outline's brush and thickness (FilePane.xaml, MainWindow.xaml drag
+            // ghost). Defaults are the PaneBorderBrush 1,1,1,0 cap the markup used to hardcode,
+            // and the outline is collapsed on every theme but 98SE anyway, so the twelve rounded
+            // themes are unchanged. 98SE states a black right-only line.
+            Mirror("TabOuterOutlineBrush", "PaneBorderBrush");
+            SetIfAbsent("TabOuterOutlineThickness", new Thickness(1, 1, 1, 0));
+            // The dark rule at the foot of the tab band (RetroTabJoinLine). Mirrors the
+            // PaneBorderBrush it used to hardcode; collapsed on every theme but 98SE.
+            Mirror("RetroTabJoinLineBrush", "PaneBorderBrush");
             SetIfAbsent("TabActiveInnerBevelBrush", Transparent);
             SetIfAbsent("TabActiveInnerBevelThickness", new Thickness(0));
             SetIfAbsent("TabActiveInnerBevelMargin", new Thickness(0));
@@ -749,6 +773,9 @@ namespace KillerShell.Services
             // opaque tile. 98SE states #c0c0c0 - there, a toolbar button IS a raised button.
             SetIfAbsent("SortButtonBrush", Transparent);
             Mirror("SurfaceHoverBrush", "RowHoverBrush");
+            // The toolbar buttons' hovered face (Controls.xaml ViewToggleBtn). Mirrors the wash
+            // above so it reads its source AFTER it exists; 98SE states the flat button face.
+            Mirror("ToolHoverFaceBrush", "SurfaceHoverBrush");
             // The selection's EXISTING values, moved into the contract rather than replaced by
             // it: DarkTextBox drew a PrimaryBrush selection at 0.3. TextFieldBrush itself is
             // computed further up (before SearchFieldBrush mirrors it), where the gradient

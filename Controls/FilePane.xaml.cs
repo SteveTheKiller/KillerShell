@@ -507,19 +507,26 @@ namespace KillerShell
             var cr = ResultsPane.CornerRadius;
             double w = el.ActualWidth, h = el.ActualHeight;
             if (w <= 0 || h <= 0) return;
+            // The clip covers ResultsPane's PADDING ring too. On 98SE with the tab strip showing,
+            // Tabs.cs reserves the Win98 page edge as padding and pulls the edge overlays out into
+            // it with negative margins; a clip stopped at PaneContent's own rect cut every one of
+            // those lines off. Padding is 0 on every ordinary theme, so this is the same rect
+            // there.
+            var pad = ResultsPane.Padding;
+            double x0 = -pad.Left, y0 = -pad.Top, x1 = w + pad.Right, y1 = h + pad.Bottom;
             double tl = cr.TopLeft, tr = cr.TopRight, br = cr.BottomRight, bl = cr.BottomLeft;
             var g = new System.Windows.Media.StreamGeometry();
             using (var c = g.Open())
             {
-                c.BeginFigure(new Point(tl, 0), true, true);
-                c.LineTo(new Point(w - tr, 0), false, false);
-                if (tr > 0) c.ArcTo(new Point(w, tr), new Size(tr, tr), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
-                c.LineTo(new Point(w, h - br), false, false);
-                if (br > 0) c.ArcTo(new Point(w - br, h), new Size(br, br), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
-                c.LineTo(new Point(bl, h), false, false);
-                if (bl > 0) c.ArcTo(new Point(0, h - bl), new Size(bl, bl), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
-                c.LineTo(new Point(0, tl), false, false);
-                if (tl > 0) c.ArcTo(new Point(tl, 0), new Size(tl, tl), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
+                c.BeginFigure(new Point(x0 + tl, y0), true, true);
+                c.LineTo(new Point(x1 - tr, y0), false, false);
+                if (tr > 0) c.ArcTo(new Point(x1, y0 + tr), new Size(tr, tr), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
+                c.LineTo(new Point(x1, y1 - br), false, false);
+                if (br > 0) c.ArcTo(new Point(x1 - br, y1), new Size(br, br), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
+                c.LineTo(new Point(x0 + bl, y1), false, false);
+                if (bl > 0) c.ArcTo(new Point(x0, y1 - bl), new Size(bl, bl), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
+                c.LineTo(new Point(x0, y0 + tl), false, false);
+                if (tl > 0) c.ArcTo(new Point(x0 + tl, y0), new Size(tl, tl), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
             }
             g.Freeze();
             el.Clip = g;

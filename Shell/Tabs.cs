@@ -75,18 +75,32 @@ namespace KillerShell.Shell
             bool retroTabs = show && retroTheme;
             if (retroTabs)
             {
+                // The pane under a Win98 tab strip is the tab control's PAGE: a raised box whose
+                // left column is white (continuing the first tab's white left edge straight
+                // down) and whose right and bottom are black outside, #808080 inside. The page
+                // edge is 1px on the left and 2px on the right and bottom, reserved as PADDING so
+                // the content wells sit inside it and keep their own sunken rings; the lines
+                // themselves are the ZIndex-110 overlays inside PaneContent, pulled out into that
+                // padding by negative margins so no child can paint over them and the tabs' edge
+                // columns line up with the page's.
                 Pane.ResultsPane.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
-                Pane.ResultsPane.BorderThickness = new Thickness(1, 0, 1, 1);
-                Pane.PaneBevelOuterDark.Margin = new Thickness(1, 0, 1, 1);
+                Pane.ResultsPane.BorderThickness = new Thickness(0);
+                Pane.ResultsPane.Padding = new Thickness(1, 0, 2, 2);
+                Pane.PaneBevelOuterDark.Margin = new Thickness(-1, 0, -2, -2);
                 Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 0, 0, 0);
-                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);
+                Pane.PaneBevelOuterLight.Margin = new Thickness(-1, 0, -2, -2);
+                Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0, 0, 1, 1);
                 Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);
-                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0);
+                Pane.PaneBevelInnerLight.Margin = new Thickness(0, 0, -1, -1);
+                Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0, 0, 1, 1);
             }
             else if (retroTheme)
             {
                 Pane.ResultsPane.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
                 Pane.ResultsPane.BorderThickness = new Thickness(1);
+                Pane.ResultsPane.Padding = new Thickness(0);
+                Pane.PaneBevelOuterLight.Margin = new Thickness(0);
+                Pane.PaneBevelInnerLight.Margin = new Thickness(1);
                 Pane.PaneBevelOuterDark.Margin = new Thickness(1);
                 Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 1, 0, 0);
                 Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);
@@ -97,7 +111,10 @@ namespace KillerShell.Shell
             {
                 Pane.ResultsPane.SetResourceReference(Border.BorderBrushProperty, "PaneEdgeBrush");
                 Pane.ResultsPane.SetResourceReference(Border.BorderThicknessProperty, "PaneEdgeSideThickness");
+                Pane.ResultsPane.Padding = new Thickness(0);
                 Pane.PaneBevelOuterDark.Margin = new Thickness(0);
+                Pane.PaneBevelOuterLight.Margin = new Thickness(0);
+                Pane.PaneBevelInnerLight.Margin = new Thickness(1);
                 Pane.PaneBevelOuterDark.BorderThickness = new Thickness(0);
                 Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);
                 Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);
@@ -175,6 +192,11 @@ namespace KillerShell.Shell
             // corners just changed - otherwise a last-active tab squared the pane's border while
             // the clip kept rounding the bar under it.
             Pane.RefreshPaneClip();
+            // Break the page line under the new active tab NOW, in the same pass that moved the
+            // tab's own edges, and again once layout settles. Deferred alone, the break arrived
+            // a beat after the tab lit and the strip visibly caught up with itself on every
+            // switch.
+            UpdateRetroTabInnerJoin(Pane);
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
                 (Action)(() => UpdateRetroTabInnerJoin(Pane)));
         }
@@ -192,6 +214,14 @@ namespace KillerShell.Shell
             if (pane.TabStrip.ItemContainerGenerator.ContainerFromItem(pane.Active) is not FrameworkElement activeTab ||
                 activeTab.ActualWidth <= 0 || pane.RetroTabInnerJoin.ActualWidth <= 0)
                 return;
+
+            // Measure the tab's own Border (the template root), not its container: on 98SE the
+            // active tab overhangs its cell by TabActiveMargin's negative sides, the way a
+            // selected Win98 tab is wider than its neighbors, and the page line has to break
+            // at the tab's real edges rather than at the cell's.
+            if (System.Windows.Media.VisualTreeHelper.GetChildrenCount(activeTab) > 0 &&
+                System.Windows.Media.VisualTreeHelper.GetChild(activeTab, 0) is FrameworkElement tabRoot && tabRoot.ActualWidth > 0)
+                activeTab = tabRoot;
 
             Point activeOrigin = activeTab.TranslatePoint(new Point(0, 0), pane.RetroTabInnerJoin);
             double joinWidth = pane.RetroTabInnerJoin.ActualWidth;

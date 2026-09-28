@@ -56,7 +56,7 @@ public sealed class TabLayoutTests
 
         XElement join = document.Descendants()
             .Single(element => (string?)element.Attribute(x + "Name") == "RetroTabJoinLine");
-        Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)join.Attribute("Background"));
+        Assert.Equal("{DynamicResource RetroTabJoinLineBrush}", (string?)join.Attribute("Background"));
         Assert.Equal("0,0,0,1", (string?)join.Attribute("Margin"));
 
         XElement innerJoin = document.Descendants()
@@ -76,8 +76,8 @@ public sealed class TabLayoutTests
         {
             XElement outline = document.Descendants()
                 .Single(element => (string?)element.Attribute(x + "Name") == outlineName);
-            Assert.Equal("{DynamicResource PaneBorderBrush}", (string?)outline.Attribute("BorderBrush"));
-            Assert.Equal("1,1,1,0", (string?)outline.Attribute("BorderThickness"));
+            Assert.Equal("{DynamicResource TabOuterOutlineBrush}", (string?)outline.Attribute("BorderBrush"));
+            Assert.Equal("{DynamicResource TabOuterOutlineThickness}", (string?)outline.Attribute("BorderThickness"));
         }
 
         XElement inactiveTrigger = document.Descendants()
@@ -112,19 +112,19 @@ public sealed class TabLayoutTests
                 (string?)element.Attribute(x + "Key") == key).Value;
         Assert.Equal("0,-2,0,0", ThicknessValue("PaneOuterMargin"));
         Assert.Equal("8,6,5,2", ThicknessValue("TabPadding"));
-        Assert.Equal("8,4,5,4", ThicknessValue("TabActivePadding"));
+        Assert.Equal("8,4,4,4", ThicknessValue("TabActivePadding"));
         Assert.Equal("0,5,0,1", ThicknessValue("TabMargin"));
         Assert.Equal("0,5,0,1", ThicknessValue("TabInactiveFirstMargin"));
-        Assert.Equal("0,5,1,1", ThicknessValue("TabInactiveLastMargin"));
-        Assert.Equal("0,3,0,0", ThicknessValue("TabActiveMargin"));
-        Assert.Equal("0,3,0,0", ThicknessValue("TabActiveFirstMargin"));
-        Assert.Equal("0,3,1,0", ThicknessValue("TabActiveLastMargin"));
-        Assert.Equal("0,3,1,0", ThicknessValue("TabActiveOnlyMargin"));
-        Assert.Equal("-8,-4,-6,0", ThicknessValue("TabActiveOuterOutlineMargin"));
-        Assert.Equal("-8,-5,-6,0", ThicknessValue("TabInactiveOuterOutlineMargin"));
-        Assert.Equal("-8,-4,-5,0", ThicknessValue("TabActiveBevelLightMargin"));
-        Assert.Equal("0", ThicknessValue("PaneBevel2LightThickness"));
-        Assert.Equal("0", ThicknessValue("PaneBevel2DarkThickness"));
+        Assert.Equal("0,5,0,1", ThicknessValue("TabInactiveLastMargin"));
+        Assert.Equal("-2,5,-2,0", ThicknessValue("TabActiveMargin"));
+        Assert.Equal("0,5,-2,0", ThicknessValue("TabActiveFirstMargin"));
+        Assert.Equal("-2,5,0,0", ThicknessValue("TabActiveLastMargin"));
+        Assert.Equal("0,5,0,0", ThicknessValue("TabActiveOnlyMargin"));
+        Assert.Equal("-8,-4,-5,-4", ThicknessValue("TabActiveOuterOutlineMargin"));
+        Assert.Equal("-8,-4,-6,-2", ThicknessValue("TabInactiveOuterOutlineMargin"));
+        Assert.Equal("-8,-4,-4,-4", ThicknessValue("TabActiveBevelLightMargin"));
+        Assert.Equal("1,1,0,0", ThicknessValue("PaneBevel2LightThickness"));
+        Assert.Equal("0,0,1,1", ThicknessValue("PaneBevel2DarkThickness"));
         Assert.Equal("1,1,0,0", ThicknessValue("BarEdgeThickness"));
         Assert.Equal("1,0,0,0", ThicknessValue("LocationBarEdgeThickness"));
         Assert.Equal("0,0,1,1", ThicknessValue("BarEdgeDarkThickness"));
@@ -142,17 +142,18 @@ public sealed class TabLayoutTests
     }
 
     [Fact]
-    public void RetroContentPaneUsesOneOuterLineAndOneInnerHighlight()
+    public void RetroContentPaneIsAWin98PageWithPaddedEdges()
     {
         string root = FindRepositoryRoot();
         string source = File.ReadAllText(Path.Combine(root, "Shell", "Tabs.cs"));
 
-        Assert.Contains("Pane.ResultsPane.BorderThickness = new Thickness(1, 0, 1, 1);", source, StringComparison.Ordinal);
-        Assert.Contains("Pane.PaneBevelOuterDark.Margin = new Thickness(1, 0, 1, 1);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.ResultsPane.BorderThickness = new Thickness(0);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.ResultsPane.Padding = new Thickness(1, 0, 2, 2);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.PaneBevelOuterDark.Margin = new Thickness(-1, 0, -2, -2);", source, StringComparison.Ordinal);
         Assert.Contains("Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 0, 0, 0);", source, StringComparison.Ordinal);
-        Assert.Contains("Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0, 0, 1, 1);", source, StringComparison.Ordinal);
         Assert.Contains("Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);", source, StringComparison.Ordinal);
-        Assert.Contains("Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0);", source, StringComparison.Ordinal);
+        Assert.Contains("Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0, 0, 1, 1);", source, StringComparison.Ordinal);
     }
 
     [Fact]
