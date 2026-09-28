@@ -1025,11 +1025,14 @@
                                Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
                                HorizontalOffset="-14" VerticalOffset="-2">
                             <Grid Margin="14">
-                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="4" IsHitTestVisible="False">
-                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="2" Direction="270" Opacity="0.5"/></Border.Effect>
+                                <!-- Corner and shadow are theme tokens: the 4px radius and 0.5
+                                     shadow this hardcoded on every ordinary theme, square and
+                                     shadowless on 98SE. -->
+                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource OverflowCornerRadius}" IsHitTestVisible="False">
+                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="2" Direction="270" Opacity="{DynamicResource OverflowShadowOpacity}"/></Border.Effect>
                                 </Border>
                                 <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                        BorderThickness="1" CornerRadius="4" Padding="6">
+                                        BorderThickness="1" CornerRadius="{DynamicResource OverflowCornerRadius}" Padding="6">
                                     <!-- Horizontal: the shed items are icon buttons, and stacking
                                          them would make a tall thin column of unlabeled glyphs. -->
                                     <StackPanel x:Name="OverflowPanel" Orientation="Horizontal"/>

@@ -529,6 +529,10 @@ namespace KillerShell.Services
             // panel margin it used to share, so nothing moves on any ordinary theme; 98SE states
             // its own inset because there the info margin is flush.
             Mirror("StorageBarMargin", "MonitorInfoMargin");
+            // The toolbar overflow popup's corner and shadow (FilePane.xaml). Defaults are the
+            // literals the markup carried, so the ordinary themes are unchanged; 98SE squares it.
+            SetIfAbsent("OverflowCornerRadius", new CornerRadius(4));
+            SetIfAbsent("OverflowShadowOpacity", 0.5);
             SetIfAbsent("MonitorTileListMargin", new Thickness(8, 0, 4, 8));
             SetIfAbsent("MonitorTileMargin",     new Thickness(6, 3, 6, 3));
             // The cell GRID's outer margin (the 2026-08-09 grid-of-cells layout). 2 a side so

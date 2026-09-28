@@ -57,6 +57,9 @@
     <!-- The Storage Analyzer's address row: inset so its sunken field and buttons sit inside
          the bar instead of running into the page line above and the well below. -->
     <Thickness x:Key="StorageBarMargin">3,3,3,3</Thickness>
+    <!-- The toolbar overflow popup (FilePane.xaml OverflowPopup): square and shadowless here. -->
+    <CornerRadius x:Key="OverflowCornerRadius">0</CornerRadius>
+    <sys:Double x:Key="OverflowShadowOpacity">0</sys:Double>
     <Thickness x:Key="MonitorTileListMargin">0,0,2,2</Thickness>
     <Thickness x:Key="MonitorTileMargin">0,0,0,2</Thickness>
     <!-- The cell grid runs flush to the pane edges; the cells' own 1px PaneBorderBrush frames
@@ -350,10 +353,10 @@
 
     <sys:Double x:Key="DetailsDividerWidth" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">0</sys:Double>
 
-    <Thickness x:Key="TabMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,0,1</Thickness>
+    <Thickness x:Key="TabMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,0,0</Thickness>
     <Thickness x:Key="TabActiveMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-2,3,0,0</Thickness>
-    <Thickness x:Key="TabInactiveFirstMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,0,1</Thickness>
-    <Thickness x:Key="TabInactiveLastMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,0,1</Thickness>
+    <Thickness x:Key="TabInactiveFirstMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,0,0</Thickness>
+    <Thickness x:Key="TabInactiveLastMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,5,0,0</Thickness>
     <Thickness x:Key="TabActiveFirstMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,0,0</Thickness>
     <Thickness x:Key="TabActiveLastMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">-2,3,0,0</Thickness>
     <Thickness x:Key="TabActiveOnlyMargin" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,3,0,0</Thickness>

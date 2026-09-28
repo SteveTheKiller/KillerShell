@@ -85,13 +85,16 @@ namespace KillerShell.Shell
                 // columns line up with the page's.
                 Pane.ResultsPane.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
                 Pane.ResultsPane.BorderThickness = new Thickness(0);
+                // The pane rides 2px up under the band (PaneOuterMargin), so the edge overlays
+                // start 2px down: the page's side lines begin on the page line's row, not two
+                // rows above it beside the overflow chevron.
                 Pane.ResultsPane.Padding = new Thickness(1, 0, 2, 2);
-                Pane.PaneBevelOuterDark.Margin = new Thickness(-1, 0, -2, -2);
+                Pane.PaneBevelOuterDark.Margin = new Thickness(-1, 2, -2, -2);
                 Pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 0, 0, 0);
-                Pane.PaneBevelOuterLight.Margin = new Thickness(-1, 0, -2, -2);
+                Pane.PaneBevelOuterLight.Margin = new Thickness(-1, 2, -2, -2);
                 Pane.PaneBevelOuterLight.BorderThickness = new Thickness(0, 0, 1, 1);
                 Pane.PaneBevelInnerDark.BorderThickness = new Thickness(0);
-                Pane.PaneBevelInnerLight.Margin = new Thickness(0, 0, -1, -1);
+                Pane.PaneBevelInnerLight.Margin = new Thickness(0, 2, -1, -1);
                 Pane.PaneBevelInnerLight.BorderThickness = new Thickness(0, 0, 1, 1);
             }
             else if (retroTheme)
