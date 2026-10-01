@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - With one pane open, the active tab's outline fades into the tab at its foot instead of ending in a hard line.
 - Tab icons sit 2px from the tab's left edge instead of behind a wide gap.
+- On Dark, Greed, Blood and Cyanotic the terminal sits on a clearly darker screen than the window around it.
 - On Greed, Blood and Cyanotic, menus and bars sit a clear step darker than the window, and the boxes in About use the content pane color.
 
 ## [1.2.6] - 2026-09-27
