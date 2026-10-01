@@ -574,10 +574,10 @@ namespace KillerShell.Services
             SetIfAbsent("TabFocusFirstThickness", new Thickness(0, 3, 1, 0));
             SetIfAbsent("TabFocusLastThickness",  new Thickness(1, 3, 0, 0));
             SetIfAbsent("TabFocusOnlyThickness",  new Thickness(0, 3, 0, 0));
-            SetIfAbsent("TabFocusPadding",      new Thickness(11, 1, 4, 5));
-            SetIfAbsent("TabFocusFirstPadding", new Thickness(12, 1, 4, 5));
-            SetIfAbsent("TabFocusLastPadding",  new Thickness(11, 1, 5, 5));
-            SetIfAbsent("TabFocusOnlyPadding",  new Thickness(12, 1, 5, 5));
+            SetIfAbsent("TabFocusPadding",      new Thickness(1, 1, 4, 5));
+            SetIfAbsent("TabFocusFirstPadding", new Thickness(2, 1, 4, 5));
+            SetIfAbsent("TabFocusLastPadding",  new Thickness(1, 1, 5, 5));
+            SetIfAbsent("TabFocusOnlyPadding",  new Thickness(2, 1, 5, 5));
             Mirror("MonitorCellBrush", "MenuBackgroundBrush");
 
             // A terminal that overrides its BACKGROUND has to override its foreground and accent
@@ -646,9 +646,9 @@ namespace KillerShell.Services
             // TabChamferConverter returns a null Clip for 0, so the twelve rounded themes are not
             // clipped at all. Only a flat theme states a value.
             SetIfAbsent("TabChamfer", 0.0);
-            // The tab's own padding. Default is the literal FilePane.xaml carried. A flat theme
+            // The tab's own padding: 2px from the tab's left edge to its icon. A flat theme
             // supplies its compact horizontal inset and state-aligned vertical padding.
-            SetIfAbsent("TabPadding", new Thickness(12, 4, 5, 5));
+            SetIfAbsent("TabPadding", new Thickness(2, 4, 5, 5));
             // No PageBevel* keys: the tab page reuses the PaneBevel* set the sidebar well already
             // uses, so the two recesses are the same four Borders and cannot drift apart. A
             // single-ring PageBevel* pair was tried on 2026-08-09 and rejected - a Win98 recess is
@@ -1031,7 +1031,7 @@ namespace KillerShell.Services
                     combined["TabStripeThickness"] = flat ? new Thickness(0) : new Thickness(1, 3, 1, 0);
                 if (!combined.Contains("TabActivePadding"))
                     combined["TabActivePadding"] = flat ? new Thickness(12, 4, 5, 5)
-                                                        : new Thickness(11, 1, 4, 5);
+                                                        : new Thickness(1, 1, 4, 5);
 
                 // A TAB is the panel radius on its TOP corners only - the bottom two are where it
                 // joins the pane and must stay square. Derived so it tracks PanelCornerRadius and
