@@ -29,7 +29,7 @@
 - Use the built-in Event Viewer, Registry Editor and Storage Analyzer without leaving the tab strip
 - Keyboard-first operation using familiar Explorer keys plus F4 storage, F7 edit, F8 shell, F9 processes, F10 split, F11 performance and F1 for the complete shortcut overlay
 - Thirteen themes including a full 98SE recreation; Dark, Light, Black and 98SE each carry six accent colors for 33 looks in all
-- Localized in sixteen languages, switchable live, with English fallback for incomplete translations
+- Localized in nineteen languages, switchable live, with English fallback for incomplete translations
 - One self-contained Windows EXE, no runtime install; runs portable, self-installs per-user without UAC, or machine-wide with UAC, and /silent supports scripted deployment
 - GPLv3, local-only: no indexing service, no cloud account, no advertisements, no telemetry
     </description>
