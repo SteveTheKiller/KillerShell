@@ -7,6 +7,7 @@
     <owners>SteveTheKiller</owners>
     <title>KillerShell</title>
     <authors>Steve the Killer</authors>
+    <copyright>Copyright (c) 2026 Steve the Killer</copyright>
     <projectUrl>https://killershell.net</projectUrl>
     <iconUrl>https://cdn.jsdelivr.net/gh/SteveTheKiller/KillerShell@vREPLACE_VERSION/Resources/ksh-icon.ico</iconUrl>
     <licenseUrl>https://github.com/SteveTheKiller/KillerShell/blob/main/LICENSE</licenseUrl>
