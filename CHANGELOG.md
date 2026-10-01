@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.3.0] - Unreleased
 
+### Added
+- Ukrainian localization.
+
 ### Fixed
 - With one pane open, the active tab's outline fades into the tab at its foot instead of ending in a hard line.
 - Tab icons sit 2px from the tab's left edge instead of behind a wide gap.
