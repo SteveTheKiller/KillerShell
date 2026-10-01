@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Added
 - Added yellow and magenta accents to the neutral and 98SE themes.
 - Ukrainian localization.
+- Norwegian (Bokmål) and Brazilian Portuguese localization.
 
 ### Fixed
 - With one pane open, the active tab's outline fades into the tab at its foot instead of ending in a hard line.

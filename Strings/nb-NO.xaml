@@ -1,0 +1,911 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - Norsk bokmål (nb-NO) strings. x:Key values are looked up at
+         runtime; never change them. Other locales layer over this file; any
+         key they omit falls back here. {0}/{1} placeholders are filled by the
+         app - keep them.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">Språk</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Tema</sys:String>
+    <!-- App-wide accessibility zoom: wheel over the title-bar wordmark (AppScale.cs) -->
+    <sys:String x:Key="Str_TT_AppSize">Rull over ordmerket for å endre størrelsen på appen</sys:String>
+    <sys:String x:Key="Str_St_AppSize">Appstørrelse {0} %</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">tema</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">aksent</sys:String>
+    <sys:String x:Key="Str_Theme_Dark">Mørk</sys:String>
+    <sys:String x:Key="Str_Theme_Light">Lys</sys:String>
+    <sys:String x:Key="Str_Theme_Black">Svart</sys:String>
+    <sys:String x:Key="Str_Theme_Blood">Blod</sys:String>
+    <sys:String x:Key="Str_Theme_Greed">Grådighet</sys:String>
+    <sys:String x:Key="Str_Theme_Cyanotic">Cyanotisk</sys:String>
+    <!-- 98SE is a product name, not a word - it stays untranslated in every locale. -->
+    <sys:String x:Key="Str_Theme_SE98">98SE</sys:String>
+    <sys:String x:Key="Str_Theme_Ectoplasm">Ektoplasma</sys:String>
+    <sys:String x:Key="Str_Theme_Decay">Forfall</sys:String>
+    <sys:String x:Key="Str_Theme_Mourning">Sorg</sys:String>
+    <sys:String x:Key="Str_Theme_Sepulchre">Gravkammer</sys:String>
+    <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
+    <sys:String x:Key="Str_Theme_Malaise">Ubehag</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">i:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(ingen mappe valgt - klikk for å velge)</sys:String>
+    <!-- Source name in the scope breadcrumb when a tab was made by dropping files on the window -->
+    <sys:String x:Key="Str_Scope_Dropped">slippede filer</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Klikk for å endre søkemappe</sys:String>
+    <!-- Browsing (Browse.cs) -->
+    <sys:String x:Key="Str_TT_SearchPanel">Vis eller skjul søkepanelet  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">Vis eller skjul mappetreet</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Skjul sidepanelene</sys:String>
+    <!-- Bookmarks (Bookmarks.cs) -->
+    <sys:String x:Key="Str_TT_Bookmarks">Bokmerker  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Legg til bokmerke for denne mappen  (Ctrl+D)</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Vis skjulte elementer og systemelementer  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Vis fildetaljer  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Hold mapper over filer</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">Legg til i bokmerker</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">Fjern fra bokmerker</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">Skjul menylinjen</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">vis eller skjul bokmerker</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">gå til bokmerke 1-10 (0 = tiende)</sys:String>
+    <sys:String x:Key="Str_TT_Back">Tilbake</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Fremover</sys:String>
+    <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
+    <sys:String x:Key="Str_Status_Listing">Åpner {0}...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">{0} element(er)</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">Kan ikke åpne {0}</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">Velg rotmappe for søk</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">FILTRE</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">ta med</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">utelat</sys:String>
+    <sys:String x:Key="Str_TT_Include">Mønstre atskilt med semikolon, f.eks. *.txt;*.log</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">Stier eller mønstre som skal hoppes over, atskilt med semikolon</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">skill mellom store og små bokstaver</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ legg til filter</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">avansert</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">filtype</sys:String>
+    <sys:String x:Key="Str_Filter_Date">endringsdato</sys:String>
+    <sys:String x:Key="Str_Filter_Size">størrelse</sys:String>
+    <sys:String x:Key="Str_Cond_Is">er</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">er ikke</sys:String>
+    <sys:String x:Key="Str_Cond_Before">før</sys:String>
+    <sys:String x:Key="Str_Cond_After">etter</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">over</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">under</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">Mønsterhjelp</sys:String>
+    <sys:String x:Key="Str_Help_Title">MØNSTRE</sys:String>
+    <sys:String x:Key="Str_Help_Star">alt som slutter på .log</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">navn som starter med report</sys:String>
+    <sys:String x:Key="Str_Help_Middle">navn som inneholder 2024</sys:String>
+    <sys:String x:Key="Str_Help_Q">? står for nøyaktig ett tegn</sys:String>
+    <sys:String x:Key="Str_Help_List">list flere mønstre med ; mellom dem</sys:String>
+    <sys:String x:Key="Str_Help_Plain">vanlig tekst fungerer også - treffer navn som inneholder den</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">utelat hopper også over hele mapper etter navn</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">nytt søk</sys:String>
+    <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
+    <sys:String x:Key="Str_Tab_Dropped">slippet ({0})</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Ny søkefane  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Lukk fane</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">Avbryt</sys:String>
+    <sys:String x:Key="Str_Btn_Select">Velg</sys:String>
+    <sys:String x:Key="Str_QA_Home">Hjem</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">Skrivebord</sys:String>
+    <sys:String x:Key="Str_QA_Documents">Dokumenter</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">Nedlastinger</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">Bilder</sys:String>
+    <sys:String x:Key="Str_TT_Up">Opp ett mappenivå</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(ingen undermapper - klikk Velg for å bruke denne mappen)</sys:String>
+    <sys:String x:Key="Str_Col_Name">navn</sys:String>
+    <sys:String x:Key="Str_Col_Folder">plassering</sys:String>
+    <sys:String x:Key="Str_Sort_Found">som funnet</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">Filtrer disse resultatene  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Søk i disse resultatene</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Andre panel  (F10)  |  høyreklikk for å bytte mellom side ved side og stablet</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">Flere verktøy</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Sorter etter</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">Denne PC-en</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">Søk i disse resultatene</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{0} resultater fra {1}  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">Ingen resultater å søke i ennå.</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">Kunne ikke starte et forhøyet skall: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutNeedsSave">Lagre dokumentet før du drar det til et annet vindu</sys:String>
+    <sys:String x:Key="Str_Status_TermCwdNotFound">{0} er ikke en mappe som finnes</sys:String>
+    <sys:String x:Key="Str_Status_EdPathNotFound">{0} er ikke en plassering som finnes</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">PORTABEL</sys:String>
+    <sys:String x:Key="Str_Btn_Install">Installer KillerShell</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">Installer</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">Oppdater</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">Installere KillerShell på denne datamaskinen?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">Den portable appen kopieres til Programmer-mappen din. Det legges til en snarvei i Startmenyen og en oppføring i «Legg til eller fjern programmer». Du kan beholde eller slette denne portable filen etterpå.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">Oppdatere den eksisterende KillerShell-installasjonen din?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">Dette erstatter den installerte kopien for kontoen din. Innstillingene og den lagrede økten beholdes. Du kan beholde eller slette denne portable filen etterpå.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">Oppdatere den eksisterende KillerShell-installasjonen for alle brukere?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Dette erstatter kopien i Program Files. Eventuelle kopier per bruker for denne kontoen fjernes, slik at KillerShell bare vises én gang. Innstillingene og den lagrede økten beholdes.</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">Snarvei på skrivebordet</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">Installer for alle brukere (krever administrator)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell er allerede installert for alle brukere på denne PC-en, så dette oppdaterer den kopien. Windows ber om tillatelse.</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">Installasjonen ble avbrutt</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMsg">Laste ned og installere KillerShell {0}?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateBullets">Appen lukkes og åpnes på nytt automatisk.</sys:String>
+    <sys:String x:Key="Str_Btn_Update">Oppdater</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">Avslutte KillerShell?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">Husk fanene mine</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">Husk valget mitt</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">Avslutt</sys:String>
+    <sys:String x:Key="Str_Col_Size">størrelse</sys:String>
+    <sys:String x:Key="Str_Col_Modified">endret</sys:String>
+    <sys:String x:Key="Str_Col_Type">type</sys:String>
+    <sys:String x:Key="Str_Col_Created">opprettet</sys:String>
+    <sys:String x:Key="Str_GroupByDate">Grupper etter dato</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">I dag</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">I går</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">Tidligere denne uken</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">Forrige uke</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">Tidligere denne måneden</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">Forrige måned</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">Tidligere i år</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">For lenge siden</sys:String>
+    <sys:String x:Key="Str_Details_Empty">Ingen element valgt</sys:String>
+    <sys:String x:Key="Str_Details_Created">opprettet</sys:String>
+    <sys:String x:Key="Str_Details_Type">type</sys:String>
+    <sys:String x:Key="Str_Details_Attributes">attributter</sys:String>
+    <sys:String x:Key="Str_Details_Path">sti</sys:String>
+    <sys:String x:Key="Str_Details_Folder">Filmappe</sys:String>
+    <sys:String x:Key="Str_Details_NoExt">Fil</sys:String>
+    <sys:String x:Key="Str_Details_ExtFile">{0}-fil</sys:String>
+    <sys:String x:Key="Str_Details_AttrReadOnly">skrivebeskyttet</sys:String>
+    <sys:String x:Key="Str_Details_AttrHidden">skjult</sys:String>
+    <sys:String x:Key="Str_Details_AttrSystem">system</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">{0} mappe(r), {1} fil(er)</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">Listevisning</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">Ikonvisning</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">Detaljvisning</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">SØKEORD</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ legg til søkeord</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ legg til gruppe</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">TØM</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">SØK</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">STOPP</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">RESULTATER</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">RESULTATER  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">Eksporter resultater  (Ctrl+Alt+E)  |  Ctrl+Alt+Shift+E for CSV</sys:String>
+    <sys:String x:Key="Str_TT_Result">Klikk for å utvide  |  Dobbeltklikk for å vise i Filutforsker  |  Høyreklikk for mer</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">UTVID ALLE</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">SLÅ SAMMEN ALLE</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">Åpne fil</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">Åpne med...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">Vis i Filutforsker</sys:String>
+    <!-- Results context menu (ResultsMenu.cs). Copy commands act on the whole selection. -->
+    <sys:String x:Key="Str_Menu_OpenAdmin">Åpne som administrator</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">Søk i denne mappen</sys:String>
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">Analyser lagring</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">Vis skjulte mapper og punktmapper</sys:String>
+    <sys:String x:Key="Str_Menu_OpenInNewTab">Åpne i ny fane</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">Tre: viser skjulte mapper og punktmapper</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">Tre: skjuler skjulte mapper og punktmapper</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">vis eller skjul skjulte mapper og punktmapper i treet</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">Åpne terminal her</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Åpne terminal her som administrator</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Utelat denne mappen</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">Kopier full sti</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">Kopier filnavn</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">Kopier mappesti</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">Kopier samsvarende linjer</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">Kopier SHA-256</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">Egenskaper</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">Flere Windows-valg...</sys:String>
+    <!-- Status lines those commands write; {0} is a count or a file name -->
+    <sys:String x:Key="Str_Status_Copied">Kopierte {0} til utklippstavlen</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">Kopierte {0} samsvarende linjer</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">Kopierte {0} fil(er) - lim inn i Filutforsker</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">Ingen samsvarende linjer å kopiere (navnetreff har ingen)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">Fikk ikke tilgang til utklippstavlen - en annen app holder på den</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">Beregner hash for {0}...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">SHA-256 for {0} er kopiert</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">Kunne ikke lese filen for å beregne hash</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">Heving av rettigheter ble avslått</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">Den kommandoen fungerer bare på filer, ikke mapper</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows ville ikke åpne det</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">Utelater {0} - kjør søket på nytt for å bruke det</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0} er allerede utelatt</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">Minimer</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">Maksimer</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">Gjenopprett</sys:String>
+    <sys:String x:Key="Str_Menu_Close">Lukk</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">Klar</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">Ugyldig eller manglende rotsti.</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">Legg til minst ett søkeord eller filter.</sys:String>
+    <sys:String x:Key="Str_Status_Done">Ferdig på {0} s  -  {1} fil(er) samsvarte.</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">Stoppet.</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">Tømt.</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">Ingenting å eksportere ennå.</sys:String>
+    <sys:String x:Key="Str_Status_Exported">Eksportert: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">Eksport mislyktes: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">{0} filer skannet</sys:String>
+    <sys:String x:Key="Str_Count_Matches">{0} treff</sys:String>
+
+    <!-- About overlay -->
+    <!-- Tagline is composed in XAML: DescA + "GPLv3 " + [Killer Tools link] + DescB.
+         GPLv3 and the product name stay out of the translatable text (family standard). -->
+    <sys:String x:Key="Str_About_Title">Om KillerShell</sys:String>
+    <sys:String x:Key="Str_Status_TextSize">Tekststørrelse: {0} %</sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Én portabel app for å administrere en datamaskin og filene på den. Filleser, terminal, tekstredigering, lagringsanalyse og administratorverktøy deler ett vindu. Et </sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> verktøy.</sys:String>
+    <sys:String x:Key="Str_About_Version">VERSJON</sys:String>
+    <sys:String x:Key="Str_About_Publisher">UTGIVER</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">AVTRYKK</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">Spør før en mappe sendes til Papirkurven</sys:String>
+    <!-- Clear all Data: the link, its confirm and its result. Kept with the About keys rather than
+         split across three sections - one feature, and a translator needs to see them together. -->
+    <sys:String x:Key="Str_About_ClearData">Fjern alle data</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Dette sletter alle lagrede innstillinger - tema, språk, skrifttyper, lagrede steder, nylige og økten - og de midlertidige filene som er pakket ut fra arkiver. Dine egne filer berøres ikke. Fortsette?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">Data fjernet - start KillerShell på nytt for å fullføre fjerningen av alt som fortsatt er i bruk</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  laget av en felttekniker</sys:String>
+
+    <!-- HTML report (exported in the app's current language) -->
+    <sys:String x:Key="Str_Rpt_Meta">Opprettet {0} &#183; {1} filer &#183; {2} treff</sys:String>
+    <!-- Browsing export: a folder listing counts items and has no matches or query -->
+    <sys:String x:Key="Str_Rpt_MetaList">Opprettet {0} &#183; {1} elementer</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">Oversikt over {0}.</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">Søkte i {0} etter {1}.</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">filnavn som inneholder {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">filinnhold som inneholder {0}</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">alt</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">eller</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">funnet av</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... +{0} til</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">Opprettet av {0}</sys:String>
+
+    <!-- Term/group chips + tooltips (computed in the models, re-raised on language switch) -->
+    <sys:String x:Key="Str_Mode_Name">navn</sys:String>
+    <sys:String x:Key="Str_Mode_Content">innhold</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">Filnavn / jokertegn  (f.eks. *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">Innholdssøk  (tekst inne i filer)</sys:String>
+    <sys:String x:Key="Str_Group_Any">HVILKEN SOM HELST</sys:String>
+    <sys:String x:Key="Str_Group_All">ALLE</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">HVILKEN SOM HELST: en fil samsvarer hvis ett av søkeordene i gruppen treffer</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">ALLE: en fil må samsvare med alle søkeordene i gruppen</sys:String>
+    <sys:String x:Key="Str_Join_And">OG</sys:String>
+    <sys:String x:Key="Str_Join_Or">ELLER</sys:String>
+    <!-- Quit dialog: opt-out tab checkbox (unchecked = tabs are remembered) -->
+    <sys:String x:Key="Str_Chk_CloseTabs">Lukk fanene mine</sys:String>
+
+    <!-- Help card: keyboard shortcuts section (F1) -->
+    <sys:String x:Key="Str_Help_Shortcuts">Hurtigtaster</sys:String>
+    <sys:String x:Key="Str_Ks_Run">kjør søket</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">lukk hurtigvinduer, stopp søket, og tilby deretter å avslutte</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">filtrer resultatene</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">ny søkefane</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">lukk gjeldende fane</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">neste fane (Shift: forrige)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">gå til fane 1-9 (9 = siste)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">legg til et søkeord</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">legg til et filter</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">velg mappen</sys:String>
+    <sys:String x:Key="Str_Ks_Help">vis dette kortet</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">slå på eller av skille mellom store og små bokstaver</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">tøm resultatene</sys:String>
+    <sys:String x:Key="Str_Ks_Address">rediger plasseringen - skriv en sti og trykk Enter</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">søk i disse resultatene, i en ny fane</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">vis eller skjul søkepanelet</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">utvid alle resultater</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">slå sammen alle resultater</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">åpne en PowerShell-fane i denne mappen</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">åpne en CMD-fane i denne mappen</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">åpne PowerShell som administrator</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">åpne CMD som administrator</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">eksporter resultatene som HTML</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">eksporter resultatene som CSV</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManager">åpne fanen Prosesser/Tjenester</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManagerAdmin">åpne fanen Prosesser/Tjenester som administrator</sys:String>
+    <sys:String x:Key="Str_Ks_Performance">åpne fanen Ytelse</sys:String>
+    <sys:String x:Key="Str_Ks_ProcToggle">bytt mellom Prosesser og Tjenester</sys:String>
+    <sys:String x:Key="Str_Ks_EventViewer">åpne fanen Hendelsesliste (alltid forhøyet)</sys:String>
+    <sys:String x:Key="Str_Ks_RegistryEditor">åpne fanen Registerredigering (alltid forhøyet)</sys:String>
+    <sys:String x:Key="Str_Ks_RegFind">finn et nøkkel- eller verdinavn (fanen Registerredigering)</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">Hurtigtaster fungerer overalt i vinduet. Åpne nedtrekkslister, datofeltet og resultatfilteret beholder Enter for seg selv.</sys:String>
+
+    <!-- Font dialog, reached from the row under the theme flyout -->
+    <sys:String x:Key="Str_Fonts_Row">Skrifttyper...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">SKRIFTTYPER</sys:String>
+    <sys:String x:Key="Str_Fonts_App">APP</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">TERMINAL</sys:String>
+    <sys:String x:Key="Str_Fonts_Editor">REDIGERINGSTEKST</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">Standard</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">Rull over en liste for å bla gjennom skrifttyper. Hver endring brukes med en gang.</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0} har ingen lesbare bokstaver - beholder forrige skrifttype</sys:String>
+
+    <!-- Associations card (Associations.cs, AssociationsCard.cs). Registering is something we
+         can do; DEFAULTING is the user's call in Settings, and the wording has to keep those
+         two apart or the card is promising something Windows will not let it deliver. -->
+    <sys:String x:Key="Str_Assoc_Row">Filtilknytninger...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">FILTILKNYTNINGER</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">Registrer KillerShell i Windows slik at den vises i «Åpne med», i Innstillinger under Standardapper, og i høyreklikkmenyen til alle mapper og stasjoner.</sys:String>
+    <sys:String x:Key="Str_Assoc_What">TEKSTTYPER</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd og .reg får i stedet en «Rediger med KillerShell»-oppføring. Dobbeltklikk kjører eller slår dem fortsatt sammen som før, fordi det å endre det i det stille er slik noen mister en hel ettermiddag.</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">Registrer for alle brukere på denne PC-en</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">Kjør KillerShell som administrator for å registrere for alle brukere</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">Registrer</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">Fjern registrering</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Åpne Windows standardapper...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">Ikke registrert. Windows tilbyr ikke KillerShell for noen filtype ennå.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">Registrert for kontoen din. Windows bytter ikke standard for deg - velg KillerShell per filtype i Innstillinger.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">Registrert for alle brukere på denne PC-en. Windows bytter ikke standard for deg - velg KillerShell per filtype i Innstillinger.</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">Denne kopien er portabel. Tilknytningene peker dit denne .exe-filen ligger akkurat nå, og slutter å virke hvis du flytter eller sletter den.</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Registrert i Windows</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">Registreringen er fjernet</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows godtok ikke den endringen</sys:String>
+
+    <!-- Title-bar caption on an elevated window, beside the wordmark -->
+    <sys:String x:Key="Str_Title_Elevated">- Utvidede rettigheter</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">skjul eller vis panelets menylinje</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">åpne et nytt vindu</sys:String>
+
+    <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+    <sys:String x:Key="Str_TT_Recents">Nylig besøkte mapper</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">Ingen nylige mapper ennå</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">Tøm listen</sys:String>
+
+    <!-- Results density, on the rail (Density.cs) -->
+    <sys:String x:Key="Str_TT_Density">Resultattetthet - klikk for å bla gjennom, bruk hjulet for å justere trinnvis</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">Tetthet: romslig</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">Tetthet: komfortabel</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">Tetthet: kompakt</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">Tetthet: tett</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">Tetthet: minimal</sys:String>
+
+    <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+    <sys:String x:Key="Str_Term_Copy">Kopier</sys:String>
+    <sys:String x:Key="Str_Term_Paste">Lim inn</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">Merk alt</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Tøm</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">Ny terminal</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">Åpne mappen her</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">Skrifttyper...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">Rediger ledetekst...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">Tilbakestill ledetekst</sys:String>
+    <sys:String x:Key="Str_Term_Close">Lukk terminal</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">Sette tilbake det medfølgende ledetekstskriptet? Endringene dine i denne filen går tapt.</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">Tilbakestill</sys:String>
+
+    <!-- PowerShell $PROFILE (ProfileMenu.cs, Terminal/ShellProfiles.cs) -->
+    <sys:String x:Key="Str_Prof_Reload">Last inn PowerShell-profilen på nytt</sys:String>
+    <sys:String x:Key="Str_Prof_Edit">Rediger PowerShell-profilen</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">Spør {0} hvor profilen ligger...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0} svarte ikke - fant ikke profilen.</sys:String>
+    <sys:String x:Key="Str_Prof_None">Fant ikke PowerShell</sys:String>
+
+    <!-- Editor tabs (EditorTabs.cs, Editing/EditorControl.cs) -->
+    <sys:String x:Key="Str_Menu_Edit">Rediger</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0} er for stor til å redigere ({1} MB).</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">Lagre  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">Angre  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">Gjør om  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">Finn  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">Gå til linje  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Tekstbryting</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">Redigeringsinnstillinger</sys:String>
+    <sys:String x:Key="Str_TT_EdEncoding">Klikk for å endre kodingen neste lagring bruker</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">linje</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8">UTF-8</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8Bom">UTF-8 med BOM</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Le">UTF-16 LE</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Be">UTF-16 BE</sys:String>
+    <sys:String x:Key="Str_Ed_EncAnsi">ANSI (Windows-1252)</sys:String>
+
+    <!-- Gear flyout -->
+    <sys:String x:Key="Str_Ed_OptLineNumbers">Linjenumre</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">Uthev gjeldende linje</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">Vis mellomrom og tabulatorer</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">Sett inn mellomrom, ikke tabulatorer</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">Tekstbryting</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">INNRYKK</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">Skrifttype og størrelse...</sys:String>
+
+    <!-- Right-click menu (Editing/EditorMenu.cs) -->
+    <sys:String x:Key="Str_Ed_Undo">Angre</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">Gjør om</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">Klipp ut</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">Kopier</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">Lim inn</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">Merk alt</sys:String>
+    <sys:String x:Key="Str_Ed_Find">Finn...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">Gå til linje...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">Lagre</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">Innstillinger...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">Lukk fil</sys:String>
+
+    <!-- Shell bar (TerminalBar.cs) -->
+    <sys:String x:Key="Str_TT_TermCwd">Klikk for å redigere - skriv en mappe og trykk Enter for å bytte dit med cd</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">Ny terminal  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">Ny terminal som administrator  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Åpne denne mappen i en fane</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Tøm</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Skrifttyper...</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Klikk for å redigere - skriv en sti og trykk Enter for å gi filen nytt navn eller flytte den</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOn">Tekstbryting på.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">Tekstbryting av - rull for å se lange linjer.</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">Lagret {0}.</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">Kunne ikke lagre {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">Kunne ikke åpne {0}: {1}</sys:String>
+
+    <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
+    <sys:String x:Key="Str_TT_TabOverflow">Alle faner</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">Dra for å endre størrelse  -  dobbeltklikk for å tilbakestille</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">Nytt dokument  (F7)  |  Ctrl+F7 prøver en administratorlagring på nytt hvis den blir avvist</sys:String>
+    <sys:String x:Key="Str_TT_NewDocAdmin">Nytt dokument, ny administratorlagring  (Ctrl+F7)</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">uten navn</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">Lagre som</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">Alle filer</sys:String>
+
+    <sys:String x:Key="Str_Dlg_DiscardMsg">Lukke denne filen uten å lagre? Endringene dine går tapt.</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">Forkast</sys:String>
+
+    <!-- Rail button: left click opens PowerShell, right click picks -->
+    <sys:String x:Key="Str_TT_Terminal">Åpne en terminal  (F8)  -  høyreklikk for å velge</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell som administrator</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">Ledetekst</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">Ledetekst som administrator</sys:String>
+
+    <!-- Shortcuts card: category headings, the LIST / KEYBOARD toggle, and the keyboard's hint -->
+    <sys:String x:Key="Str_Ks_About">vis Om-kortet</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">SØK</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">NAVIGERING</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">FANER</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">VISNING</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">FIL</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">REDIGERING</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">HJELP</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">LISTE</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">TASTATUR</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">hold inne Ctrl, Shift eller Alt for å forhåndsvise det laget</sys:String>
+    <!-- Shortcuts card: SCOPE section headings. A binding belongs to one applet or to the whole
+         window, which is a separate question from its category (SEARCH/NAVIGATION/...) and gets
+         its own headings. Only four are here: the Processes, Event Viewer, Registry Editor and
+         Storage Analyzer sections reuse those tabs' own Str_TabTitle_* strings rather than
+         translating the same nouns a second time. Str_Ks_ScopeShown labels the applet name above
+         the keyboard map, which can only draw one meaning per keycap and so has to say which. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">Overalt</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">Filleser</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">Redigering</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">viser taster for:</sys:String>
+
+    <!-- Explorer-convention bindings -->
+    <sys:String x:Key="Str_Ks_BackForward">gå tilbake / fremover</sys:String>
+    <sys:String x:Key="Str_Ks_Back">gå tilbake</sys:String>
+    <sys:String x:Key="Str_Ks_Up">gå opp ett mappenivå</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">oppdater - list mappen på nytt, eller kjør søket på nytt</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">merk alle resultater</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">sett markøren i søkefeltet</sys:String>
+
+    <!-- File operations: progress, conflicts, and their buttons -->
+    <sys:String x:Key="Str_Fo_Copying">Kopierer...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">Flytter...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">Sletter...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{0} av {1}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">{0} finnes allerede her. Hvilken vil du beholde?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">FINNES ALLEREDE</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">KOPIERES INN</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">Gjør det samme for alt annet i denne gruppen</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">Erstatt</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">Hopp over</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">Behold begge</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">Gi nytt navn</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">Slett</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">Nytt navn</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">Ny mappe</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">Slette {0} element(er) permanent? Dette kan ikke angres - de går ikke til Papirkurven.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Sende {0} element(er) til Papirkurven? Utvalget inneholder en mappe, og alt i den følger med.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">Ikke spør igjen</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows nektet å slette dette. Hvis Kontrollert mappetilgang er på, hjelper det IKKE å prøve på nytt som administrator - den blokkerer per app, ikke per tillatelsesnivå, og KillerShell må legges til i listen over tillatte apper i Windows-sikkerhet. Prøve på nytt som administrator likevel?</sys:String>
+    <sys:String x:Key="Str_Btn_RetryAdmin">Prøv som admin</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">Sletting avvist - tilgang nektet</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0} elementer valgt</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Sletting med utvidede rettigheter ble også avvist - sjekk Kontrollert mappetilgang i Windows-sikkerhet</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedSaveFailed">Lagring av {0} med utvidede rettigheter ble også avvist - sjekk Kontrollert mappetilgang i Windows-sikkerhet</sys:String>
+
+    <!-- File-operation shortcuts and their outcomes -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">klipp ut / kopier / lim inn filer</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">gi nytt navn</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">send til Papirkurven</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">slett permanent</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">ny mappe</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">Åpne en mappe først - det er ingen plass å legge dette på en søkefane</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">Kan ikke slippe en mappe inn i seg selv</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">Ferdig - {0} element(er)</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">Avbrutt etter {0} element(er)</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0} ferdig, {1} mislyktes</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">Det fungerte ikke</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">Kunne ikke gi nytt navn - {0}</sys:String>
+
+    <!-- File-operation context menu -->
+    <sys:String x:Key="Str_Menu_Cut">Klipp ut</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">Kopier</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">Lim inn</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">Gi nytt navn</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">Slett  (Shift: permanent)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">Ny mappe</sys:String>
+
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">Åpne</sys:String>
+    <sys:String x:Key="Str_Btn_Save">Lagre</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">Filnavn:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">Filtype:</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">Alle filer</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">Ingenting her samsvarer med gjeldende filtype.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">Den mappen finnes ikke.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">Den filen finnes ikke.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">Erstatte {0}?</sys:String>
+
+    <!-- Processes/Services tab (Shell/ProcessTabs.cs, Tools/ProcessListControl.cs). The tab's
+         user-facing label is "Processes/Services" now that it shows a Services view too - the
+         underlying mechanism (ProcessListControl, OpenTaskManager, RelaunchElevatedProcesses, the
+         command-line flag that opens it directly) all keep their existing "Process"/"TaskManager"
+         names, unchanged. -->
+    <sys:String x:Key="Str_TT_TaskManager">Prosesser/Tjenester  (F9)  -  høyreklikk for å velge</sys:String>
+    <sys:String x:Key="Str_TabTitle_TaskManager">Prosesser/Tjenester</sys:String>
+    <!-- The tab shows ONE of the two views at a time, so its title names that one. The combined
+         key above is still used for the rail button and its tooltips, where it describes the
+         tool rather than the current view. -->
+    <sys:String x:Key="Str_TabTitle_Processes">Prosesser</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">Tjenester</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesOpen">Prosesser/Tjenester</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesAdmin">Prosesser/Tjenester som administrator</sys:String>
+    <sys:String x:Key="Str_TT_ProcFilter">Filtrer etter navn, sti eller bruker</sys:String>
+    <sys:String x:Key="Str_Col_ProcName">Navn</sys:String>
+    <sys:String x:Key="Str_Col_ProcPid">PID</sys:String>
+    <sys:String x:Key="Str_Col_ProcUser">Bruker</sys:String>
+    <sys:String x:Key="Str_Col_ProcCpu">CPU %</sys:String>
+    <sys:String x:Key="Str_Col_ProcMemory">Minne</sys:String>
+    <sys:String x:Key="Str_Col_ProcCommandLine">Kommandolinje</sys:String>
+    <sys:String x:Key="Str_Col_ProcPath">Sti</sys:String>
+    <sys:String x:Key="Str_Menu_ProcOpenLocation">Åpne filplassering</sys:String>
+    <sys:String x:Key="Str_Menu_ProcKill">Avslutt prosess</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRestart">Start på nytt</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRunAsAdmin">Start på nytt som administrator</sys:String>
+    <sys:String x:Key="Str_Dlg_ProcKillMsg">Avslutte {0} (PID {1})? Ulagret arbeid i den prosessen går tapt.</sys:String>
+    <sys:String x:Key="Str_Proc_Killed">{0} ble avsluttet</sys:String>
+    <sys:String x:Key="Str_Proc_AlreadyExited">{0} var allerede avsluttet</sys:String>
+    <sys:String x:Key="Str_Proc_KillFailed">Kunne ikke avslutte {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_Restarted">{0} ble startet på nytt</sys:String>
+    <sys:String x:Key="Str_Proc_RestartFailed">Kunne ikke starte {0} på nytt - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_RefreshFailed">Kunne ikke oppdatere prosesslisten - {0}</sys:String>
+    <sys:String x:Key="Str_Proc_Loading">Laster prosessliste...</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsTitle">Prosessdetaljer</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsParentPid">Overordnet PID</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsStartTime">Starttidspunkt</sys:String>
+    <sys:String x:Key="Str_TT_ProcPrev">Forrige prosess  (venstrepil)</sys:String>
+    <sys:String x:Key="Str_TT_ProcNext">Neste prosess  (høyrepil)</sys:String>
+    <sys:String x:Key="Str_TT_ProcCopyDetails">Kopier detaljer  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_ProcClose">Lukk  (Esc)</sys:String>
+
+    <!-- The Processes/Services mode toggle above the filter box: one icon button, its glyph the
+         current mode, its tooltip naming what clicking switches TO next. -->
+    <sys:String x:Key="Str_TT_ProcToggleToServices">Bytt til Tjenester  (Ctrl+.)</sys:String>
+    <sys:String x:Key="Str_TT_ProcToggleToProcesses">Bytt til Prosesser  (Ctrl+.)</sys:String>
+
+    <!-- The Services view of the same tab. -->
+    <sys:String x:Key="Str_TT_SvcFilter">Filtrer etter navn, visningsnavn, sti eller konto</sys:String>
+    <sys:String x:Key="Str_Col_SvcName">Navn</sys:String>
+    <sys:String x:Key="Str_Col_SvcDisplayName">Visningsnavn</sys:String>
+    <sys:String x:Key="Str_Col_SvcStatus">Status</sys:String>
+    <sys:String x:Key="Str_Col_SvcStartType">Oppstartstype</sys:String>
+    <sys:String x:Key="Str_Col_SvcLogOnAs">Logg på som</sys:String>
+    <sys:String x:Key="Str_Col_SvcPath">Sti</sys:String>
+    <sys:String x:Key="Str_Col_SvcDescription">Beskrivelse</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStart">Start</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStop">Stopp</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStartMsg">Starte {0} ({1})?</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStopMsg">Stoppe {0} ({1})? Alt som er avhengig av den, kan slutte å fungere.</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcRestartMsg">Starte {0} ({1}) på nytt? Alt som er avhengig av den, blir midlertidig utilgjengelig.</sys:String>
+    <sys:String x:Key="Str_Svc_Started">{0} ble startet</sys:String>
+    <sys:String x:Key="Str_Svc_StartFailed">Kunne ikke starte {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Stopped">{0} ble stoppet</sys:String>
+    <sys:String x:Key="Str_Svc_StopFailed">Kunne ikke stoppe {0} - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Restarted">{0} ble startet på nytt</sys:String>
+    <sys:String x:Key="Str_Svc_RestartFailed">Kunne ikke starte {0} på nytt - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_RefreshFailed">Kunne ikke oppdatere tjenestelisten - {0}</sys:String>
+    <sys:String x:Key="Str_Svc_Loading">Laster tjenesteliste...</sys:String>
+    <sys:String x:Key="Str_Svc_DetailsTitle">Tjenestedetaljer</sys:String>
+    <sys:String x:Key="Str_TT_SvcPrev">Forrige tjeneste  (venstrepil)</sys:String>
+    <sys:String x:Key="Str_TT_SvcNext">Neste tjeneste  (høyrepil)</sys:String>
+    <sys:String x:Key="Str_TT_SvcCopyDetails">Kopier detaljer  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_SvcClose">Lukk  (Esc)</sys:String>
+
+    <!-- Event Viewer tab (Shell/EventViewerTabs.cs, Tools/EventViewerControl.cs) -->
+    <sys:String x:Key="Str_TT_EventViewer">Hendelsesliste  (Ctrl+F12)</sys:String>
+    <sys:String x:Key="Str_TabTitle_EventViewer">Hendelsesliste</sys:String>
+    <sys:String x:Key="Str_TT_EvtFilter">Filtrer etter kilde, melding, kategori eller hendelses-ID</sys:String>
+    <sys:String x:Key="Str_TT_EvtLogPicker">Hvilken logg som skal leses</sys:String>
+    <sys:String x:Key="Str_TT_EvtLevelPicker">Hvilke nivåer som skal vises</sys:String>
+    <sys:String x:Key="Str_TT_EvtRefresh">Last inn gjeldende logg og nivå på nytt</sys:String>
+    <sys:String x:Key="Str_Col_EvtLevel">Nivå</sys:String>
+    <sys:String x:Key="Str_Col_EvtLog">Logg</sys:String>
+    <sys:String x:Key="Str_Col_EvtTime">Dato og klokkeslett</sys:String>
+    <sys:String x:Key="Str_Col_EvtSource">Kilde</sys:String>
+    <sys:String x:Key="Str_Col_EvtId">Hendelses-ID</sys:String>
+    <sys:String x:Key="Str_Col_EvtCategory">Oppgavekategori</sys:String>
+    <sys:String x:Key="Str_Col_EvtMessage">Melding</sys:String>
+    <sys:String x:Key="Str_EvtLog_Application">Program</sys:String>
+    <sys:String x:Key="Str_EvtLog_System">System</sys:String>
+    <sys:String x:Key="Str_EvtLog_Security">Sikkerhet</sys:String>
+    <sys:String x:Key="Str_EvtLog_All">Alle logger</sys:String>
+    <sys:String x:Key="Str_EvtLevel_All">Alle nivåer</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Error">Feil</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Warning">Advarsel</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Information">Informasjon</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyMessage">Kopier melding</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyDetails">Kopier detaljer</sys:String>
+    <sys:String x:Key="Str_Evt_Loading">Laster hendelseslogg...</sys:String>
+    <sys:String x:Key="Str_Evt_RefreshFailed">Kunne ikke lese hendelsesloggen - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_AccessDenied">Sikkerhetsloggen krever et vindu med utvidede rettigheter for å leses - noen oppføringer kan mangle</sys:String>
+    <sys:String x:Key="Str_Evt_NoMessage">(meldingsdata utilgjengelig)</sys:String>
+    <sys:String x:Key="Str_Evt_MessageCopied">Meldingen er kopiert</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCopied">Detaljene er kopiert</sys:String>
+    <sys:String x:Key="Str_Evt_CopyFailed">Kunne ikke kopiere til utklippstavlen - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsLevel">Nivå</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsTime">Tid</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsSource">Kilde</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsId">Hendelses-ID</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCategory">Oppgavekategori</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsMessage">Melding</sys:String>
+
+    <!-- Performance Monitor tab (Shell/PerformanceTabs.cs, Tools/PerformanceMonitorControl.cs) -->
+    <sys:String x:Key="Str_TT_Performance">Ytelse  (F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Performance">Ytelse</sys:String>
+    <sys:String x:Key="Str_Perf_Gathering">Leser maskinvareinformasjon...</sys:String>
+    <sys:String x:Key="Str_Perf_GatherFailed">Kunne ikke lese maskinvareinformasjon - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_CountersUnavailable">Ytelsesindikatorer er utilgjengelige - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_Cpu">CPU</sys:String>
+    <sys:String x:Key="Str_Perf_Ram">RAM</sys:String>
+    <sys:String x:Key="Str_Perf_Network">Nettverk</sys:String>
+    <sys:String x:Key="Str_Perf_Disk">Disk</sys:String>
+    <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">Bufret</sys:String>
+    <sys:String x:Key="Str_Perf_Utilization">Utnyttelse</sys:String>
+    <sys:String x:Key="Str_Perf_Throughput">Gjennomstrømning</sys:String>
+    <sys:String x:Key="Str_Perf_Send">Send</sys:String>
+    <sys:String x:Key="Str_Perf_Receive">Motta</sys:String>
+    <sys:String x:Key="Str_Perf_ActiveTime">Aktiv tid</sys:String>
+    <sys:String x:Key="Str_Perf_TransferRate">Overføringshastighet</sys:String>
+    <sys:String x:Key="Str_Perf_ReadSpeed">Lesehastighet</sys:String>
+    <sys:String x:Key="Str_Perf_WriteSpeed">Skrivehastighet</sys:String>
+    <sys:String x:Key="Str_Perf_DedicatedMemory">Dedikert GPU-minne</sys:String>
+    <sys:String x:Key="Str_Perf_SharedMemory">Delt GPU-minne</sys:String>
+    <sys:String x:Key="Str_Perf_InUse">I bruk</sys:String>
+    <sys:String x:Key="Str_Perf_Available">Tilgjengelig</sys:String>
+    <sys:String x:Key="Str_Perf_Committed">Allokert</sys:String>
+    <sys:String x:Key="Str_Perf_Cores">Kjerner</sys:String>
+    <sys:String x:Key="Str_Perf_LogicalProcessors">Logiske prosessorer</sys:String>
+    <sys:String x:Key="Str_Perf_BaseSpeed">Basishastighet</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">Hastighet</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">Prosesser</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">Tråder</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">Oppetid</sys:String>
+    <sys:String x:Key="Str_Perf_Free">Ledig</sys:String>
+    <sys:String x:Key="Str_About_Computing">beregner...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">Laster ned...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">Oppdatering tilgjengelig: {0}</sys:String>
+    <sys:String x:Key="Str_About_NotSigned">(ikke signert)</sys:String>
+    <sys:String x:Key="Str_About_NotSignedChain">(ikke signert eller kjedekontroll mislyktes)</sys:String>
+    <sys:String x:Key="Str_About_None">(ingen)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(utilgjengelig)</sys:String>
+    <sys:String x:Key="Str_TT_About">Om  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">Lagre resultater som CSV</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">Lagre resultater som HTML</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">Lagre lagringsrapport som HTML</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">Velg fil</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">Kunne ikke starte skallet.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[prosessen avsluttet med kode {0}]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell-profilen er lastet inn på nytt.</sys:String>
+    <sys:String x:Key="Str_StRpt_Title">KillerShell lagringsrapport</sys:String>
+    <sys:String x:Key="Str_StRpt_Generated">Opprettet {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_View">Visning: {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_ScanRoot">Skannerot: {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_TotalShown">Totalt vist</sys:String>
+    <sys:String x:Key="Str_StRpt_DepthFilter">Dybdefilter</sys:String>
+    <sys:String x:Key="Str_StRpt_MinSize">Minste størrelse</sys:String>
+    <sys:String x:Key="Str_StRpt_Treemap">Trekart</sys:String>
+    <sys:String x:Key="Str_StRpt_BigFolders">Største mapper</sys:String>
+    <sys:String x:Key="Str_StRpt_BigFiles">Største filer</sys:String>
+    <sys:String x:Key="Str_StRpt_Path">Sti</sys:String>
+    <sys:String x:Key="Str_StRpt_Size">Størrelse</sys:String>
+    <sys:String x:Key="Str_StRpt_Percent">Prosent</sys:String>
+    <sys:String x:Key="Str_Err_EmptyName">tomt navn</sys:String>
+    <sys:String x:Key="Str_Err_InvalidChars">ugyldige tegn</sys:String>
+    <sys:String x:Key="Str_Err_AlreadyExists">finnes allerede</sys:String>
+    <sys:String x:Key="Str_Err_NoFileName">mangler filnavn</sys:String>
+    <sys:String x:Key="Str_Err_NoFolderName">mangler mappenavn</sys:String>
+    <sys:String x:Key="Str_Err_EntryNotFound">oppføringen ble ikke funnet</sys:String>
+    <sys:String x:Key="Str_Err_EntryEscaped">oppføringen havnet utenfor utpakkingsmappen</sys:String>
+    <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell er installert to ganger. Fjerne den andre kopien per bruker nå?&#x0A;&#x0A;Innstillingene dine fjernes ikke.</sys:String>
+    <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell er installert to ganger. Fjerne den andre kopien for alle brukere nå?&#x0A;&#x0A;Innstillingene dine fjernes ikke.</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallFailed">Installasjonen mislyktes:&#x0A;{0}</sys:String>
+    <sys:String x:Key="Str_Btn_Yes">Ja</sys:String>
+    <sys:String x:Key="Str_Btn_OK">OK</sys:String>
+    <sys:String x:Key="Str_Dlg_UninstallElevateFailed">Avinstalleringen kunne ikke be om administratortilgang:&#x0A;{0}</sys:String>
+    <sys:String x:Key="Str_Dlg_UninstallConfirm">Avinstallere KillerShell fra denne datamaskinen?</sys:String>
+    <sys:String x:Key="Str_Btn_Uninstall">Avinstaller</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0} MB ledig</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">inaktiv</sys:String>
+
+    <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Tools/StorageAnalyzerControl.cs) -->
+    <sys:String x:Key="Str_TT_Storage">Lagringsanalyse  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">Lagringsanalyse</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">Lagringsanalyse</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">Lagringsanalyse (skanning med utvidede rettigheter)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">Lagringsanalyse</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">Lagringsanalyse, skanning med utvidede rettigheter</sys:String>
+    <!-- Local to the Storage Analyzer tab, only while it has focus -->
+    <sys:String x:Key="Str_Ks_StorageScan">start skanningen (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">bla gjennom trekartets dybde (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">bla gjennom minste viste størrelse (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">bytt farging etter type eller mappe (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">zoom inn på valgt mappe (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">zoom ut ett nivå (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">tilbake til skannerot (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">send valgt element til Papirkurven (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Skann</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Stopp</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">Velg en mappe eller stasjon å skanne</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">Velg en mappe eller stasjon, og klikk deretter Skann</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">Den mappen finnes ikke</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">Skanningen ble stoppet - viser det som ble lest</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">hoppet over</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">Åpne i ny fane</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">Åpne i Filutforsker</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">Kopier sti</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">Slett (Papirkurv)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">Skann på nytt</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">Farge etter filtype</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">Farge etter toppmappe</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">Dybde</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">Alle</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">Hvor mange mappenivåer som får egne rektangler - lavere verdi flater ut kartet til de store mappene</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Min</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">Alle</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">Skjul alt som er mindre enn dette - bytene teller fortsatt med i mappen som inneholder dem</sys:String>
+    <sys:String x:Key="Str_Storage_Total">totalt</sys:String>
+
+    <!-- Archives browsed as folders (Services/ArchiveProvider.cs, Shell/Browse.cs) -->
+    <sys:String x:Key="Str_Status_Extracting">Pakker ut {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">Kunne ikke pakke ut {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">Kunne ikke lese arkivet - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">Bare .zip-arkiver kan endres - dette åpnes skrivebeskyttet</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">Bare filer kan dras ut av et arkiv - åpne mappen og dra det som ligger inni</sys:String>
+
+    <!-- Writing inside an archive (Services/ArchiveWriter.cs, Shell/ArchiveEdit.cs) -->
+    <sys:String x:Key="Str_Status_ArchiveWriting">Skriver arkivet på nytt - {0} %</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">La til {0} i arkivet</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">Fjernet {0} fra arkivet</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">Fikk nytt navn: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">La til {0} - {1} kunne ikke få et gyldig navn og ble hoppet over</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">Kunne ikke oppdatere arkivet - {0}. Originalen er uendret.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Den arkivfilen er skrivebeskyttet - fjern det og prøv igjen</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">Det arkivet er åpent i et annet program - lukk det og prøv igjen</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">Ingen tillatelse til å skrive til det arkivet</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">Arkivet inneholder allerede noe med det navnet</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">Den oppføringen finnes ikke lenger i arkivet</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">Det navnet kan ikke brukes i et arkiv</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">Ingenting å legge til der</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">Arkivet er uendret</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">Noen av disse finnes allerede i arkivet</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">Kopiert ut av arkivet - oppføringen ligger fortsatt der</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">{0} av disse finnes allerede i arkivet.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">Fjerne {0} element(er) fra arkivet? Hele arkivet skrives på nytt, og dette kan ikke angres.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">Erstatt dem i stedet for å beholde begge</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">Legg til</sys:String>
+
+    <sys:String x:Key="Str_Storage_Free">ledig</sys:String>
+
+    <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Tools/RegistryEditorControl.cs) -->
+    <sys:String x:Key="Str_TT_RegistryEditor">Registerredigering  (Ctrl+F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_RegistryEditor">Registerredigering</sys:String>
+    <sys:String x:Key="Str_TT_RegFind">Finn et nøkkel- eller verdinavn  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_RegRefresh">Last inn valgt nøkkel på nytt fra disk  (F5)</sys:String>
+    <sys:String x:Key="Str_RegEd_FindNext">Finn neste</sys:String>
+    <sys:String x:Key="Str_RegEd_ComputerRoot">Datamaskin</sys:String>
+    <sys:String x:Key="Str_RegEd_PathNotFound">Den nøkkelen finnes ikke</sys:String>
+    <sys:String x:Key="Str_RegEd_AccessDenied">Tilgang nektet - denne nøkkelen krever høyere tilgangsnivå enn selv dette vinduet med utvidede rettigheter har</sys:String>
+    <sys:String x:Key="Str_RegEd_NothingSelected">Velg en nøkkel først</sys:String>
+    <sys:String x:Key="Str_RegEd_Refreshed">Oppdatert</sys:String>
+    <sys:String x:Key="Str_RegEd_NoMatches">Ingen treff i den delen av treet som er lastet inn</sys:String>
+    <sys:String x:Key="Str_RegEd_NameEmpty">Skriv inn et navn</sys:String>
+    <sys:String x:Key="Str_RegEd_NameHasBackslash">Et navn kan ikke inneholde omvendt skråstrek</sys:String>
+    <sys:String x:Key="Str_RegEd_NameExists">En nøkkel eller verdi med det navnet finnes allerede her</sys:String>
+    <sys:String x:Key="Str_RegEd_NewKeyDefaultName">Ny nøkkel #1</sys:String>
+    <sys:String x:Key="Str_RegEd_NewValueDefaultName">Ny verdi</sys:String>
+    <sys:String x:Key="Str_RegEd_CreateFailed">Kunne ikke opprette den - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_RenameFailed">Kunne ikke gi den nytt navn - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_DeleteFailed">Kunne ikke slette den - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_SaveFailed">Kunne ikke lagre verdien - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}" og alt i den ble slettet</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" ble slettet</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" ble lagret</sys:String>
+    <sys:String x:Key="Str_RegEd_NameCopied">Navnet er kopiert</sys:String>
+    <sys:String x:Key="Str_RegEd_PathCopied">Stien er kopiert</sys:String>
+    <sys:String x:Key="Str_RegEd_CopyFailed">Kunne ikke kopiere til utklippstavlen - {0}</sys:String>
+    <sys:String x:Key="Str_Col_RegName">Navn</sys:String>
+    <sys:String x:Key="Str_Col_RegType">Type</sys:String>
+    <sys:String x:Key="Str_Col_RegData">Data</sys:String>
+    <sys:String x:Key="Str_Menu_RegNew">Ny</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewKey">Nøkkel</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewString">Strengverdi</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewExpandString">Utvidbar strengverdi</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewMultiString">Flerstrengsverdi</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewBinary">Binærverdi</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewDWord">DWORD-verdi</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewQWord">QWORD-verdi</sys:String>
+    <sys:String x:Key="Str_Menu_RegModify">Endre...</sys:String>
+    <sys:String x:Key="Str_Menu_RegRename">Gi nytt navn</sys:String>
+    <sys:String x:Key="Str_Menu_RegDelete">Slett</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyName">Kopier navn</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyPath">Kopier full sti</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewKeyMsg">Gi den nye nøkkelen et navn</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewValueMsg">Gi den nye verdien et navn</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameKeyMsg">Gi nøkkelen "{0}" nytt navn</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameValueMsg">Gi verdien "{0}" nytt navn</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteKeyMsg">Slette nøkkelen "{0}" og alt i den permanent? Dette sletter alle undernøkler og alle verdier under den også, ikke bare denne ene nøkkelen - det finnes ingen angrefunksjon, og å fjerne feil nøkkel kan hindre et program i å starte eller ødelegge Windows.</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteValueMsg">Slette verdien "{0}" permanent? Dette kan ikke angres.</sys:String>
+    <!-- Value edit dialog (Controls/RegistryValueEditDialog.xaml) - adapts its input to the
+         value's RegistryValueKind, one dialog for all six editable types. -->
+    <sys:String x:Key="Str_RegEd_Save">Lagre</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueData">Verdidata</sys:String>
+    <sys:String x:Key="Str_RegEd_MultiHint">Én oppføring per linje</sys:String>
+    <sys:String x:Key="Str_RegEd_BinaryHint">Heksadesimale byte-par atskilt med mellomrom (f.eks. 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_RegEd_Base">Base:</sys:String>
+    <sys:String x:Key="Str_RegEd_Hexadecimal">Heksadesimal</sys:String>
+    <sys:String x:Key="Str_RegEd_Decimal">Desimal</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidNumber">Det er ikke et gyldig tall for valgt base</sys:String>
+    <sys:String x:Key="Str_RegEd_OutOfRangeDword">Den verdien er for stor for en 32-bits DWORD</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidByte">"{0}" er ikke en gyldig heksadesimal byte</sys:String>
+
+    <!-- Event details dialog (Controls/EventDetailsDialog.xaml) - double-click a row -->
+    <sys:String x:Key="Str_Evt_DetailsTitle">Hendelsesdetaljer</sys:String>
+    <sys:String x:Key="Str_Evt_Keywords">Nøkkelord</sys:String>
+    <sys:String x:Key="Str_Evt_Computer">Datamaskin</sys:String>
+    <sys:String x:Key="Str_Evt_User">Bruker / SID</sys:String>
+    <sys:String x:Key="Str_Evt_ProcessId">Prosess-ID</sys:String>
+    <sys:String x:Key="Str_Evt_ThreadId">Tråd-ID</sys:String>
+    <sys:String x:Key="Str_Evt_ActivityId">Aktivitets-ID</sys:String>
+    <sys:String x:Key="Str_Evt_RecordId">Hendelsespost-ID</sys:String>
+    <sys:String x:Key="Str_Evt_Opcode">Opkode</sys:String>
+    <sys:String x:Key="Str_Evt_ViewXml">Vis rå XML</sys:String>
+    <sys:String x:Key="Str_Evt_ViewFormatted">Vis formatert</sys:String>
+    <sys:String x:Key="Str_Evt_SearchOnline">Søk etter denne hendelsen på nettet</sys:String>
+    <sys:String x:Key="Str_Btn_Close">Lukk</sys:String>
+    <sys:String x:Key="Str_TT_EvtPrev">Forrige hendelse  (venstrepil)</sys:String>
+    <sys:String x:Key="Str_TT_EvtNext">Neste hendelse  (høyrepil)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewXml">Vis rå XML  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewFormatted">Vis formatert  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtSearchOnline">Søk etter denne hendelsen på nettet  (Alt+S)</sys:String>
+    <sys:String x:Key="Str_TT_EvtCopyDetails">Kopier detaljer  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_EvtClose">Lukk  (Esc)</sys:String>
+
+</ResourceDictionary>
