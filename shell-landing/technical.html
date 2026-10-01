@@ -19,8 +19,15 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 .page-hero { text-align: center; padding: 44px 16px 8px; }
 .page-hero .wm-logo { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
 .page-hero p { color: var(--muted); font-size: 15px; margin: 4px auto 0; max-width: 540px; }
-.content-inner { max-width: 860px; margin: 0 auto; padding: 0 28px 56px; }
-.tech-sec { scroll-margin-top: 84px; }
+.content-inner { max-width: 1440px; margin: 0 auto; padding: 0 28px 56px; }
+.tech-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
+.tech-column { display: grid; gap: 18px; min-width: 0; }
+.tech-sec { min-width: 0; margin: 0; padding: 20px 22px; border: 1px solid var(--pane-border); border-top: 2px solid var(--sel, var(--accent)); border-radius: 10px; background: var(--modal) url('grain.png?v=2') repeat; background-size: 256px 256px; scroll-margin-top: 84px; }
+.tech-sec > :first-child { margin-top: 0; }
+.tech-sec > :last-child { margin-bottom: 0; }
+.tech-sec table { width: 100%; }
+.tech-sec code { overflow-wrap: anywhere; }
+@media (max-width: 1050px) { .tech-grid { grid-template-columns: 1fr; } }
 @media (min-width: 901px){ .shell { grid-template-columns: 268px 1fr; } .content { margin: 8px 8px 0 2px; } }
 .sb-tabs .on { border-bottom: 0; }
 .outline { padding: 8px 0; overflow-y: auto; flex: 1; min-height: 0; }
@@ -147,6 +154,9 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <p data-i18n="t_hero_sub">A look under the hood at how KillerShell walks a folder tree, matches filenames, reads inside files and archives, moves them around, hosts a shell, edits text, maps a disk and manages processes, performance, events and the registry - all without ever building an index.</p>
 </section>
 
+<div class="tech-grid">
+<div class="tech-column">
+
 <div class="tech-sec" id="stack">
 <h2 data-i18n="t_stack_h">Tech stack</h2>
 <p data-i18n="t_stack_p">KillerShell is a native Windows app. There is no Electron, no browser engine, no runtime to install, and no background service. Everything below ships inside a single .exe that runs on its own:</p>
@@ -249,6 +259,9 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <p data-i18n="t_export_p">Any result set can be written to a self-contained HTML report: the matched files, the matched lines with their line numbers, and the search that produced them. The report is a single file that opens in any browser with no dependencies, which makes it easy to attach to a ticket or keep as a record of what was found and where. A CSV export sits alongside it for spreadsheets. A Storage Analyzer scan exports the same way: a single HTML file carrying the current filters, an SVG treemap, ranked folder and file tables, and a file-type color legend.</p>
 </div>
 
+</div>
+<div class="tech-column">
+
 <div class="tech-sec" id="fileops">
 <h2 data-i18n="t_fops_h">File operations</h2>
 <p data-i18n="t_fops_p1">Copy and move run on a background worker with a progress card showing the current file and a real byte count, so a large copy never freezes the window. A name collision at the destination stops the worker and asks, showing both files' size and date, with Replace, Skip or Keep both and a "do the same for the rest" checkbox. The worker genuinely waits on that answer rather than copying ahead of it, so nothing is overwritten while the question is still on screen.</p>
@@ -338,6 +351,9 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <tr><td data-i18n="t_g_treemap">Treemap</td><td data-i18n="t_g_treemap_d">A picture of a disk in which every file is a rectangle sized by how much room it takes up and folders are drawn as outlines around their contents, so the things using the space are the things you see first.</td></tr>
 <tr><td data-i18n="t_g_wildcard">Wildcard</td><td data-i18n="t_g_wildcard_d">A filename pattern where an asterisk stands for any characters and a question mark for a single character, such as *.log or report_?.txt.</td></tr>
 </table>
+</div>
+
+</div>
 </div>
 
 </div>

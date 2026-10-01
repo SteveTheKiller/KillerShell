@@ -24,7 +24,7 @@ html[data-theme="mourning"] { --bg:#554c5d; --sidebar:#3b3642; }
 /* Card surfaces mirror the app context-menu background in every web theme. */
 html[data-theme="dark"] { --modal:#2b2b2b; }
 html[data-theme="light"] { --modal:#ffffff; }
-html[data-theme="hc"] { --modal:#121212; }
+html[data-theme="hc"] { --panel:#000000; --modal:#050505; }
 html[data-theme="blood"] { --modal:#1e0a0b; }
 html[data-theme="greed"] { --modal:#001e13; }
 html[data-theme="cyanotic"] { --modal:#001624; }
@@ -143,6 +143,10 @@ html[data-theme="light"] .acc[data-accent="yellow"] { background: #EAD900 !impor
 @media (min-width: 901px) {
   body.compact-sidebar .shell { grid-template-columns: minmax(0, 1fr) 150px; }
   body.compact-sidebar.sidebar-first .shell { grid-template-columns: 150px minmax(0, 1fr); }
+}
+@media (min-width: 1101px) {
+  body.compact-sidebar.sidebar-first .sidebar { grid-column: 1; grid-row: 1; }
+  body.compact-sidebar.sidebar-first .content { grid-column: 2; grid-row: 1; }
 }
 body.compact-sidebar .outline { padding: 2px 0; }
 body.compact-sidebar .outline a { padding: 5px 6px 5px 8px; overflow-wrap: anywhere; }
@@ -380,6 +384,7 @@ html[data-theme="light"] .tech-sec h3 { text-shadow: none; }
 .diagram { margin: 20px 0 6px; padding: 14px 16px; border: 1px solid var(--pane-border); border-radius: 10px; background: var(--modal); }
 /* Technical cards match the app's textured context-menu surface. */
 .codeblock, .cli-demo, .diagram { background: var(--modal) url('grain.png?v=2') repeat; background-size: 256px 256px; }
+html:not([data-theme="light"]) .codeblock { background-color: color-mix(in srgb, var(--modal) 65%, #000); border-color: color-mix(in srgb, var(--text) 28%, var(--modal)); border-left-color: var(--accent); }
 .diagram svg { width: 100%; height: auto; display: block; cursor: zoom-in; }
 .diagram figcaption { font-size: 12.5px; line-height: 1.55; color: var(--muted); margin-top: 10px; }
 .diagram .zoom-hint { display: block; color: var(--muted); font-size: 11px; margin-top: 4px; }
