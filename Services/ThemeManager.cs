@@ -1070,6 +1070,25 @@ namespace KillerShell.Services
             if (!combined.Contains("TabActiveRingBrush"))
                 combined["TabActiveRingBrush"] = combined["PrimaryBrush"];
 
+            // One pane open: the active tab's outline has no pane ring to join below it, so its
+            // sides used to stop dead at the tab's foot. This copy of the ring fades from the full
+            // accent at the top to clear at the bottom, so the sides melt into the tab instead.
+            // A non-solid ring (98SE's is transparent anyway) is used as it is.
+            if (!combined.Contains("TabActiveRingFadeBrush"))
+            {
+                if (combined["TabActiveRingBrush"] is SolidColorBrush ring)
+                {
+                    var c = ring.Color;
+                    var fade = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(0, 1) };
+                    fade.GradientStops.Add(new GradientStop(c, 0));
+                    fade.GradientStops.Add(new GradientStop(c, 0.3));
+                    fade.GradientStops.Add(new GradientStop(Color.FromArgb(0, c.R, c.G, c.B), 1));
+                    fade.Freeze();
+                    combined["TabActiveRingFadeBrush"] = fade;
+                }
+                else combined["TabActiveRingFadeBrush"] = combined["TabActiveRingBrush"];
+            }
+
             // A flat-theme checkbox keeps its white sunken well when selected, so its mark uses
             // the live accent rather than the ordinary themes' on-accent foreground.
             if (combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool flatCheck && flatCheck)

@@ -457,6 +457,17 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabActiveOnlyMargin}"/>
                                     </MultiDataTrigger>
+                                    <!-- One pane open (neither focused nor dimmed): the active tab's
+                                         sides fade out toward its foot instead of stopping dead,
+                                         since there is no pane ring below for them to join. -->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                            <Condition Binding="{Binding PaneFocused}" Value="False"/>
+                                            <Condition Binding="{Binding PaneDimmed}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabBd" Property="BorderBrush" Value="{DynamicResource TabActiveRingFadeBrush}"/>
+                                    </MultiDataTrigger>
                                     <!-- Unfocused pane: the lip drops off the accent entirely and
                                          takes the pane's own border color, so the whole unlit
                                          ring - lip, band line and pane border - is ONE value. At
