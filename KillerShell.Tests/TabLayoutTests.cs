@@ -138,7 +138,7 @@ public sealed class TabLayoutTests
 
         Assert.Contains("SetIfAbsent(\"TabBarMargin\", new Thickness(0, 0, 8, 0));", source, StringComparison.Ordinal);
         Assert.Contains("combined[\"TabStripeThickness\"] = flat ? new Thickness(0) : new Thickness(1, 3, 1, 0);", source, StringComparison.Ordinal);
-        Assert.Contains(": new Thickness(11, 1, 4, 5);", source, StringComparison.Ordinal);
+        Assert.Contains(": new Thickness(1, 1, 4, 5);", source, StringComparison.Ordinal);
     }
 
     [Fact]
