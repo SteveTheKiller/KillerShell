@@ -13,7 +13,7 @@ namespace KillerShell.Services
         Dark, Light, Black, SE98, Blood, Greed, Cyanotic, Ectoplasm, Decay,
         Mourning, Sepulchre, Delirium, Malaise
     }
-    public enum Accent { Green, Red, Blue, Purple, Orange, Teal }
+    public enum Accent { Green, Red, Blue, Purple, Orange, Teal, Yellow, Magenta }
 
     /// <summary>
     /// Swaps the app-owned palette dictionary (MergedDictionaries[0]) in

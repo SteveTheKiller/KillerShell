@@ -293,20 +293,20 @@ namespace KillerShell.Shell
         }
 
         private static readonly (Accent Accent, string Hex)[] DarkStripColors =
-            [(Accent.Red, "#DD504B"), (Accent.Orange, "#E8962C"), (Accent.Green, "#1EA54C"),
-             (Accent.Teal, "#1FB8A8"), (Accent.Blue, "#4580D9"), (Accent.Purple, "#B982E3")];
+            [(Accent.Red, "#DD504B"), (Accent.Orange, "#E8962C"), (Accent.Yellow, "#EAD900"), (Accent.Green, "#1EA54C"),
+             (Accent.Teal, "#1FB8A8"), (Accent.Blue, "#4580D9"), (Accent.Purple, "#B982E3"), (Accent.Magenta, "#FF52C9")];
         private static readonly (Accent Accent, string Hex)[] LightStripColors =
-            [(Accent.Red, "#931A1A"), (Accent.Orange, "#C7710F"), (Accent.Green, "#1B5E20"),
-             (Accent.Teal, "#0D827E"), (Accent.Blue, "#18608E"), (Accent.Purple, "#5A1690")];
+            [(Accent.Red, "#931A1A"), (Accent.Orange, "#C7710F"), (Accent.Yellow, "#EAD900"), (Accent.Green, "#1B5E20"),
+             (Accent.Teal, "#0D827E"), (Accent.Blue, "#18608E"), (Accent.Purple, "#5A1690"), (Accent.Magenta, "#A60070")];
         private static readonly (Accent Accent, string Hex)[] BlackStripColors =
-            [(Accent.Red, "#FF2929"), (Accent.Orange, "#FF910A"), (Accent.Green, "#00FF66"),
-             (Accent.Teal, "#0AFFE7"), (Accent.Blue, "#298DFF"), (Accent.Purple, "#B829FF")];
+            [(Accent.Red, "#FF2929"), (Accent.Orange, "#FF910A"), (Accent.Yellow, "#FFEB00"), (Accent.Green, "#00FF66"),
+             (Accent.Teal, "#0AFFE7"), (Accent.Blue, "#298DFF"), (Accent.Purple, "#B829FF"), (Accent.Magenta, "#FF2BBD")];
         // 98SE order differs from the other three families on purpose: blue first because navy
         // is the default 98SE accent, then the rest in KillerNotes' SE98Accents order - the
         // family reference for the Win98 swatch row.
         private static readonly (Accent Accent, string Hex)[] SE98StripColors =
             [(Accent.Blue, "#000080"), (Accent.Teal, "#008080"), (Accent.Green, "#006000"),
-             (Accent.Orange, "#A05000"), (Accent.Red, "#800040"), (Accent.Purple, "#5A376E")];
+             (Accent.Orange, "#A05000"), (Accent.Yellow, "#EAD900"), (Accent.Red, "#800040"), (Accent.Purple, "#5A376E"), (Accent.Magenta, "#750052")];
 
         private static (Accent Accent, string Hex)[] StripColorsFor(Theme family) => family switch
         {
@@ -321,7 +321,7 @@ namespace KillerShell.Shell
         private const double AccentStripWidth = 39;
         private const double AccentStripSlideMs = 180;
         private Border[] StripDots =>
-            [AccentStripDot0, AccentStripDot1, AccentStripDot2, AccentStripDot3, AccentStripDot4, AccentStripDot5];
+            [AccentStripDot0, AccentStripDot1, AccentStripDot2, AccentStripDot3, AccentStripDot4, AccentStripDot5, AccentStripDot6, AccentStripDot7];
 
         private void PopulateAccentStrip(Theme family)
         {
@@ -330,6 +330,9 @@ namespace KillerShell.Shell
             for (int i = 0; i < dots.Length; i++)
             {
                 dots[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i].Hex));
+                dots[i].Effect = colors[i].Accent == Accent.Yellow && (family is Theme.Light or Theme.SE98)
+                    ? new System.Windows.Media.Effects.DropShadowEffect { Color = System.Windows.Media.Colors.Black, BlurRadius = 4, ShadowDepth = 1, Opacity = 0.45 }
+                    : null;
                 dots[i].Tag = colors[i].Accent.ToString();
             }
             _stripFamily = family;
