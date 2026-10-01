@@ -126,7 +126,8 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-                <TextBox x:Name="PathBox" Grid.Column="1" Height="28" VerticalContentAlignment="Center" KeyDown="PathBox_KeyDown"/>
+                <TextBox x:Name="PathBox" Grid.Column="1" Height="28" VerticalContentAlignment="Center" KeyDown="PathBox_KeyDown"
+                         AutomationProperties.Name="{Binding Text, RelativeSource={RelativeSource Self}}"/>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8,0,0,0" VerticalAlignment="Center">
                     <Button x:Name="ViewListBtn"    Style="{StaticResource PickerViewBtn}" Content="&#xE8FD;" ToolTip="{DynamicResource Str_TT_ViewList}"    Click="ViewList_Click"/>
                     <Button x:Name="ViewIconsBtn"   Style="{StaticResource PickerViewBtn}" Content="&#xE80A;" ToolTip="{DynamicResource Str_TT_ViewIcons}"   Click="ViewIcons_Click"   Margin="2,0"/>
@@ -214,6 +215,7 @@
                         </Grid>
                         <Grid>
                             <ListBox x:Name="FileList" Background="Transparent" BorderThickness="0" Padding="2,4"
+                                     AutomationProperties.Name="{DynamicResource Str_Col_Name}"
                                      ItemContainerStyle="{StaticResource PickerRow}"
                                      ItemTemplate="{StaticResource RowTemplate}"
                                      ItemsPanel="{StaticResource PanelStack}"
@@ -246,11 +248,13 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource Str_Dlg_FileName}" VerticalAlignment="Center"
                            Margin="0,0,10,0" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="11"/>
                 <TextBox x:Name="FileNameBox" Grid.Row="0" Grid.Column="1" Height="28"
+                         AutomationProperties.Name="{DynamicResource Str_Dlg_FileName}"
                          VerticalContentAlignment="Center" KeyDown="FileNameBox_KeyDown"/>
 
                 <TextBlock x:Name="FilterLabel" Grid.Row="1" Grid.Column="0" Text="{DynamicResource Str_Dlg_FileType}" VerticalAlignment="Center"
                            Margin="0,8,10,0" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="11"/>
                 <ComboBox x:Name="FilterCombo" Grid.Row="1" Grid.Column="1" Height="28" Margin="0,8,0,0"
+                          AutomationProperties.Name="{DynamicResource Str_Dlg_FileType}"
                           SelectionChanged="Filter_SelectionChanged"/>
             </Grid>
 

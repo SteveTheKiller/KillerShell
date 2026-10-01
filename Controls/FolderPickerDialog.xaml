@@ -123,7 +123,8 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-                <TextBox x:Name="PathBox" Grid.Column="1" Height="28" VerticalContentAlignment="Center" KeyDown="PathBox_KeyDown"/>
+                <TextBox x:Name="PathBox" Grid.Column="1" Height="28" VerticalContentAlignment="Center" KeyDown="PathBox_KeyDown"
+                         AutomationProperties.Name="{Binding Text, RelativeSource={RelativeSource Self}}"/>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8,0,0,0" VerticalAlignment="Center">
                     <Button x:Name="ViewListBtn"    Style="{StaticResource PickerViewBtn}" Content="&#xE8FD;" ToolTip="{DynamicResource Str_TT_ViewList}"    Click="ViewList_Click"/>
                     <Button x:Name="ViewIconsBtn"   Style="{StaticResource PickerViewBtn}" Content="&#xE80A;" ToolTip="{DynamicResource Str_TT_ViewIcons}"   Click="ViewIcons_Click"   Margin="2,0"/>
@@ -221,6 +222,7 @@
                                  the first view-button press (2026-08-09). ApplyView owns both
                                  from then on; these are just the same starting state. -->
                             <ListBox x:Name="FolderList" Background="Transparent" BorderThickness="0" Padding="2,4"
+                                     AutomationProperties.Name="{DynamicResource Str_Col_Name}"
                                      ItemContainerStyle="{StaticResource PickerRow}"
                                      ItemTemplate="{StaticResource RowTemplate}"
                                      ItemsPanel="{StaticResource PanelListCols}"

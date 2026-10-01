@@ -42,6 +42,7 @@
     </Style>
 
     <Style x:Key="PrimaryButton" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
         <Setter Property="FontFamily" Value="Consolas"/>
@@ -97,6 +98,7 @@
     </Style>
 
     <Style x:Key="OutlineButton" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <!-- TRANSPARENT at rest. This is the family's outline button: an accent OUTLINE at rest
              that fills solid on hover. It was filled with RowSelectedBrush, which on the newer
              themes is a 27% white wash - so the Install button in the portable badge came up as
@@ -160,6 +162,7 @@
     <!-- ChipFaceBrush: the pane tier on every ordinary theme, a raised #c0c0c0 Win98 button face
          on a flat one. Its hover follows ChipHoverBrush for the same reason. -->
     <Style x:Key="SurfaceButton" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Background" Value="{DynamicResource ChipFaceBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="FontSize" Value="13"/>
@@ -458,6 +461,7 @@
     </Style>
 
     <Style x:Key="GrungeCalendarNavButton" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource ChromeTextBrush}"/>
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
@@ -1219,6 +1223,7 @@
     </Style>
 
     <Style x:Key="ThemeSwatch" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}"/>
         <Setter Property="Width" Value="15"/>
         <Setter Property="Height" Value="15"/>
         <Setter Property="Margin" Value="2,0"/>
@@ -1335,6 +1340,7 @@
          a short beveled Win98 button with a real face and no hover on a flat one. Bound, so
          98SE needs no branch and no second style. -->
     <Style x:Key="ChromeButton" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Background" Value="{DynamicResource CaptionButtonBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource CaptionGlyphBrush}"/>
         <Setter Property="FontWeight" Value="{DynamicResource CaptionGlyphWeight}"/>
@@ -1460,6 +1466,7 @@
          ChromeCloseButton was tried here first and dragged the main window's red hover fill and
          glyph onto the cards, which read wrong on the ordinary themes. -->
     <Style x:Key="OverlayCloseButton" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Foreground" Value="{DynamicResource AboutCloseFg}"/>
         <Setter Property="FontFamily" Value="{DynamicResource AboutCloseFont}"/>
@@ -1552,6 +1559,7 @@
          glyph with a soft shadow, turning the accent color on hover. Set Content to the glyph;
          override FontFamily/FontSize for text glyphs like a "?" button. -->
     <Style x:Key="RailButton" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <!-- 20 logical hugs the 16px glyphs; the RailW=24 column (SearchPanel.cs) leaves only a
@@ -2030,6 +2038,7 @@
 
     <!-- View toggle buttons; Tag="on" marks the active mode. -->
     <Style x:Key="PickerViewBtn" TargetType="Button">
+        <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Width" Value="26"/>
         <Setter Property="Height" Value="22"/>
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
