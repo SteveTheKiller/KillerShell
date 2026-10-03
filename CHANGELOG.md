@@ -12,6 +12,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Norwegian (Bokmål) localization.
 - Brazilian Portuguese localization.
 
+### Changed
+- The language menu now shows its 19 languages in two columns.
+
 ### Fixed
 - With one pane open, the active tab's outline fades into the tab at its foot instead of ending in a hard line.
 - Tab icons sit 2px from the tab's left edge instead of behind a wide gap.

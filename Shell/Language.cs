@@ -41,17 +41,24 @@ namespace KillerShell.Shell
             ToggleRailFlyout(LangMenu);
         }
 
-        // Same family flyout standard as ThemeFlyout (MainWindow.xaml): a StackPanel of
-        // ThemeRadio-styled RadioButtons is the ContextMenu's one content item, auto-wrapped by
+        // Same family flyout standard as ThemeFlyout (MainWindow.xaml): two columns of
+        // ThemeRadio-styled RadioButtons are the ContextMenu's one content item, auto-wrapped by
         // WPF in a PanelMenuItem-styled container. Ported from KillerPDF's XAML-built LangFlyout,
-        // built in code here instead of ten repeated XAML blocks - same RadioButton content, same
+        // built in code here instead of repeated XAML blocks - same RadioButton content, same
         // Grid(name, code) row shape.
         private void BuildLanguageMenu(ContextMenu menu)
         {
             menu.Items.Clear();
             var current = LocaleManager.Current;
 
-            var panel = new StackPanel { Margin = new Thickness(12, 10, 14, 10) };
+            var columns = new StackPanel { Orientation = Orientation.Horizontal,
+                                           Margin = new Thickness(12, 10, 14, 10) };
+            var left = new StackPanel { Width = 200 };
+            var right = new StackPanel { Width = 200, Margin = new Thickness(14, 0, 0, 0) };
+            columns.Children.Add(left);
+            columns.Children.Add(right);
+            int half = (Languages.Length + 1) / 2;
+            int index = 0;
 
             foreach (var (loc, name, code) in Languages)
             {
@@ -88,10 +95,10 @@ namespace KillerShell.Shell
                     Tag = loc.ToString(),
                 };
                 radio.Checked += Lang_Checked;
-                panel.Children.Add(radio);
+                (index++ < half ? left : right).Children.Add(radio);
             }
 
-            menu.Items.Add(panel);
+            menu.Items.Add(columns);
         }
 
         private void Lang_Checked(object sender, RoutedEventArgs e)

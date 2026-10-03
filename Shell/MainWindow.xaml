@@ -787,7 +787,7 @@
                             <!-- Family flyout standard, ported verbatim from KillerPDF: chrome
                                  ONLY from FlyoutCard + FlyoutGrain, PanelMenuItem stripping the
                                  MenuItem container. Content built in code (Language.cs
-                                 BuildLanguageMenu) as RadioButtons in a single StackPanel, same
+                                 BuildLanguageMenu) as RadioButtons in two columns, same
                                  shape as PDF's XAML-built LangFlyout. Placement set in code
                                  (LangButton_Click, via FlyoutPlacement.cs) - pinned to the
                                  content pane's bottom-left corner, PDF's own mechanism. -->
