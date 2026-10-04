@@ -11,6 +11,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Ukrainian localization.
 - Norwegian (Bokmål) localization.
 - Brazilian Portuguese localization.
+- Added a silent uninstall, `/uninstall-silent`, registered as the quiet uninstall so WinGet and other package managers can remove KillerShell without a prompt.
 
 ### Changed
 - The language menu now shows its 19 languages in two columns.
