@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://killershell.net"><img src="docs/wordmark.png" width="640" alt="KillerShell - one portable Windows exe for managing a computer and everything on it"></a>
+  <a href="https://killershell.net"><img src="docs/wordmark.png" height="180" alt="KillerShell - one portable Windows exe for managing a computer and everything on it"></a>
 </p>
 
 Free and open-source Windows shell for power users. A file browser, PowerShell or CMD terminal, text editor, search engine, and administration toolkit share one window, one tab strip, and one set of keys.
