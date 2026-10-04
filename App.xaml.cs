@@ -124,6 +124,7 @@ namespace KillerShell
                 (string.Equals(e.Args[0], "/uninstall", StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(e.Args[0], "/uninstall-silent", StringComparison.OrdinalIgnoreCase)))
             {
+                TaskbarIdentity.UseUninstall();
                 Uninstall(string.Equals(e.Args[0], "/uninstall-silent", StringComparison.OrdinalIgnoreCase));
                 Shutdown();
                 return;

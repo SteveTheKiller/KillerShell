@@ -22,6 +22,7 @@ namespace KillerShell
         {
             if (installer) Resources.MergedDictionaries.Add(Services.ThemeManager.CreateInstallerTheme());
             InitializeComponent();
+            TaskbarIdentity.Track(this);
             // Same icon frame the main title bar picks from the multi-size .ico.
             try
             {
