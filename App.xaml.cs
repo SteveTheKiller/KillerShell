@@ -101,6 +101,7 @@ namespace KillerShell
 
             base.OnStartup(e);
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            AppMainWindow.PublishGrainTile();   // install and uninstall dialogs open before any main window
 
             // Render on the CPU so the window isn't black over console-session screen-sharing tools
             // (ScreenConnect, Kaseya LiveConnect, VNC, TeamViewer). Negligible cost for this app.

@@ -21,6 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On Dark, Decay, Greed, Blood and Cyanotic the terminal sits on a clearly darker screen than the window around it.
 - On Greed, Blood and Cyanotic the folder block in the terminal prompt is drawn in the theme's own color, so its text is readable instead of light on white.
 - On Greed, Blood and Cyanotic, menus and bars sit a clear step darker than the window, and the boxes in About use the content pane color.
+- Install and uninstall windows now show the film grain and the app icon in the title bar.
 
 ## [1.2.6] - 2026-09-27
 

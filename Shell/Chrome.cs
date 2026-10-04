@@ -434,6 +434,18 @@ namespace KillerShell.Shell
         // Film grain: bright + dark specks (~33% density) so it reads on dark and light themes.
         private void ApplyGrainTexture()
         {
+            var bmp = PublishGrainTile();
+            foreach (var name in new[] { "GrainBrush", "TitleGrainBrush", "ToolbarGrainBrush", "StatusGrainBrush", "FlyoutGrainBrush" })
+                if (FindName(name) is ImageBrush ib) ib.ImageSource = bmp;
+        }
+
+        /// <summary>
+        /// Generates the grain tile and publishes it as the app-level GrainTileBrush. App startup
+        /// calls this too, so dialogs shown before any main window exists (install, uninstall,
+        /// install repair) are textured like the rest of the app.
+        /// </summary>
+        internal static BitmapSource PublishGrainTile()
+        {
             const int size = 256;
             var bmp = new WriteableBitmap(size, size, 96, 96, PixelFormats.Bgra32, null);
             var pixels = new byte[size * size * 4];
@@ -451,9 +463,6 @@ namespace KillerShell.Shell
             }
             bmp.WritePixels(new Int32Rect(0, 0, size, size), pixels, size * 4, 0);
 
-            foreach (var name in new[] { "GrainBrush", "TitleGrainBrush", "ToolbarGrainBrush", "StatusGrainBrush", "FlyoutGrainBrush" })
-                if (FindName(name) is ImageBrush ib) ib.ImageSource = bmp;
-
             var grainTile = new ImageBrush(bmp)
             {
                 TileMode = TileMode.Tile,
@@ -463,6 +472,7 @@ namespace KillerShell.Shell
             };
             grainTile.Freeze();
             Application.Current.Resources["GrainTileBrush"] = grainTile;
+            return bmp;
         }
     }
 }

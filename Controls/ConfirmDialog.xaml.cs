@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -21,6 +22,16 @@ namespace KillerShell
         {
             if (installer) Resources.MergedDictionaries.Add(Services.ThemeManager.CreateInstallerTheme());
             InitializeComponent();
+            // Same icon frame the main title bar picks from the multi-size .ico.
+            try
+            {
+                var dec = System.Windows.Media.Imaging.BitmapDecoder.Create(
+                    new System.Uri("pack://application:,,,/Resources/ksh-icon.ico"),
+                    System.Windows.Media.Imaging.BitmapCreateOptions.None,
+                    System.Windows.Media.Imaging.BitmapCacheOption.OnLoad);
+                TitleIcon.Source = dec.Frames.OrderBy(f => System.Math.Abs(f.PixelWidth - 32)).First();
+            }
+            catch { TitleIcon.Visibility = Visibility.Collapsed; }
             if (installer)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
