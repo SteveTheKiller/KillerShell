@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 using KillerShell.Shell;
 
@@ -30,7 +31,10 @@ namespace KillerShell
                     new System.Uri("pack://application:,,,/Resources/ksh-icon.ico"),
                     System.Windows.Media.Imaging.BitmapCreateOptions.None,
                     System.Windows.Media.Imaging.BitmapCacheOption.OnLoad);
-                TitleIcon.Source = dec.Frames.OrderBy(f => System.Math.Abs(f.PixelWidth - 32)).First();
+                void RefreshTitleIcon() => TitleIcon.Source = dec.Frames.OrderBy(frame =>
+                    System.Math.Abs(frame.PixelWidth - TitleIcon.ActualWidth * VisualTreeHelper.GetDpi(TitleIcon).DpiScaleX)).First();
+                TitleIcon.Loaded += (_, _) => RefreshTitleIcon();
+                TitleIcon.SizeChanged += (_, _) => RefreshTitleIcon();
             }
             catch { TitleIcon.Visibility = Visibility.Collapsed; }
             if (installer)
