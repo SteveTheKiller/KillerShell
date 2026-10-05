@@ -79,7 +79,11 @@ namespace KillerShell.Shell
                     new Uri("pack://application:,,,/Resources/ksh-icon.ico"),
                     System.Windows.Media.Imaging.BitmapCreateOptions.None,
                     System.Windows.Media.Imaging.BitmapCacheOption.OnLoad);
-                TitleIcon.Source = dec.Frames.OrderBy(f => Math.Abs(f.PixelWidth - 32)).First();
+                void RefreshTitleIcon() => TitleIcon.Source = dec.Frames
+                    .OrderBy(frame => Math.Abs(frame.PixelWidth - TitleIcon.ActualWidth * System.Windows.Media.VisualTreeHelper.GetDpi(TitleIcon).DpiScaleX))
+                    .First();
+                TitleIcon.Loaded += (_, _) => RefreshTitleIcon();
+                TitleIcon.SizeChanged += (_, _) => RefreshTitleIcon();
                 AboutIcon.Source = dec.Frames.OrderBy(f => Math.Abs(f.PixelWidth - 64)).First();
             }
             catch { /* icon missing - wordmark alone is fine */ }

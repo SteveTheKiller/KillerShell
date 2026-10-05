@@ -18,6 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Selected states now use subtle gradients outside 98SE, Light buttons have softer gray borders, and yellow wordmarks match their accent.
 
 ### Fixed
+- The title bar icon uses a size-matched frame.
 - With one pane open, the active tab's outline fades into the tab at its foot instead of ending in a hard line.
 - Tab icons sit 2px from the tab's left edge instead of behind a wide gap.
 - On Dark, Decay, Greed, Blood and Cyanotic the terminal sits on a clearly darker screen than the window around it.
