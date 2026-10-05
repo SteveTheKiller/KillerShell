@@ -22,6 +22,8 @@ namespace KillerShell.Terminal
         private ContextMenu? _menu;
         private MenuItem? _copyItem;
         private MenuItem? _reloadProfileItem;
+        internal TerminalShellKind ShellKind { get; set; } = TerminalShellKind.PowerShell;
+        internal event Action<MenuItem>? LaunchSubmenuOpening;
 
         /// <summary>
         /// Raised as the Edit profile submenu opens, carrying the row for the window to fill.
@@ -60,7 +62,7 @@ namespace KillerShell.Terminal
             _copyItem?.IsEnabled = _hasSelection;
             // cmd.exe has no PowerShell $PROFILE. The same menu belongs to both terminal skins,
             // so keep the row visible for discovery but make its scope honest.
-            _reloadProfileItem?.IsEnabled = _palette.Skin != TerminalSkin.Lcd;
+            _reloadProfileItem?.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
 
             _menu.PlacementTarget = this;
             _menu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
@@ -90,14 +92,20 @@ namespace KillerShell.Terminal
             // believing it had already drawn a prompt, so the next keystroke would paint over
             // nothing. Sending the command brings the prompt back the way the shell wants it,
             // and cls works the same in pwsh, powershell and cmd.
-            Row(m, "Str_Term_Clear", Glyph(0xE894), null, () => Send("cls\r"));
+            Row(m, "Str_Term_Clear", Glyph(0xE894), null, () => Send(ShellKind == TerminalShellKind.Wsl || ShellKind == TerminalShellKind.Custom ? "clear\r" : "cls\r"));
 
             m.Items.Add(new Separator());
 
             // These belong to the WINDOW - it owns the panes and the tab strip - so they are
             // raised rather than carried out here. The control does not know it is in a tab.
-            Row(m, "Str_Term_NewShell", Glyph(0xE756), "F8",
-                () => MenuCommand?.Invoke(TerminalMenuCommand.NewShell));
+            var launches = new MenuItem { InputGestureText = "F8" };
+            launches.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Term_NewShell");
+            var launchIcon = new TextBlock { Text = Glyph(0xE756) };
+            launchIcon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
+            launches.Icon = launchIcon;
+            m.Items.Add(launches);
+            launches.Items.Add(new MenuItem());
+            launches.SubmenuOpened += (_, _) => LaunchSubmenuOpening?.Invoke(launches);
 
             // The reverse of "open a terminal here": whatever the shell has cd'd to, opened as a
             // folder tab. The buffer tracks the working directory already (OSC 7), so this is
@@ -113,11 +121,13 @@ namespace KillerShell.Terminal
             // rather than a dialog of checkboxes over it - anything a dialog could offer, the
             // file already does, and better. Reset is next to it because a script you are
             // encouraged to edit needs a way back.
-            Row(m, "Str_Term_EditPrompt", Glyph(0xE70F), null,
+            var editPrompt = Row(m, "Str_Term_EditPrompt", Glyph(0xE70F), null,
                 () => MenuCommand?.Invoke(TerminalMenuCommand.EditPrompt));
+            editPrompt.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
 
-            Row(m, "Str_Term_ResetPrompt", Glyph(0xE777), null,
+            var resetPrompt = Row(m, "Str_Term_ResetPrompt", Glyph(0xE777), null,
                 () => MenuCommand?.Invoke(TerminalMenuCommand.ResetPrompt));
+            resetPrompt.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
 
             // Run inside THIS shell rather than starting a helper process. PowerShell 7 and
             // Windows PowerShell then each resolve their own $PROFILE, and any output, success,
@@ -138,6 +148,7 @@ namespace KillerShell.Terminal
             // as it opens; the placeholder child is only what makes WPF draw the arrow and fire
             // SubmenuOpened at all, and it is replaced before it can be seen.
             var profile = new MenuItem { InputGestureText = "Ctrl+," };
+            profile.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
             profile.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Prof_Edit");
 
             var profileIcon = new TextBlock { Text = Glyph(0xE70F) };

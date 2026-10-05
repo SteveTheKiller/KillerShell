@@ -299,7 +299,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">іздеу тақтасын көрсету немесе жасыру</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">әрбір нәтижені жаю</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">әрбір нәтижені жию</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">осы қалтада PowerShell қойындысын ашу</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">әдепкі профильмен терминалды ашу</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">осы қалтада CMD қойындысын ашу</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell-ді әкімші атынан ашу</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD-ны әкімші атынан ашу</sys:String>
@@ -873,5 +873,25 @@
     <sys:String x:Key="Str_TT_EvtSearchOnline">Бұл оқиғаны интернеттен іздеу  (Alt+S)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Мәліметтерді көшіру  (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Жабу  (Esc)</sys:String>
+
+    <sys:String x:Key="Str_Term_Profiles">Терминал профильдері</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Терминал профильдерін басқару...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Атауы</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Орындалатын файл</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Аргументтер</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Бастапқы қалта</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Әдепкі терминал</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Мәзірден жасыру</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Әкімші ретінде іске қосу</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Профиль қосу</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Профильді жою</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Жоғары жылжыту</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Төмен жылжыту</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Атау мен орындалатын файлды енгізіңіз. Әр профильдің атауы бірегей болуы керек.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Сақтау</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell мен пәрмен жолы кірістірілген. Орнатылған WSL дистрибутивтері автоматты түрде көрсетіледі және Bash пайдаланады.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Қабық түрі</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Теңшелетін</sys:String>
 
 </ResourceDictionary>

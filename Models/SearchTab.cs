@@ -41,6 +41,7 @@ namespace KillerShell.Models
         /// system's own PowerShell/cmd icon instead of an app-drawn glyph.
         /// </summary>
         internal string? TermExePath;
+        internal KillerShell.Terminal.TerminalProfile? LaunchProfile;
 
         // ── Editing (Editing/) ───────────────────────────────────
         // A document tab owns its editor, and the editor owns the text, the undo stack and the

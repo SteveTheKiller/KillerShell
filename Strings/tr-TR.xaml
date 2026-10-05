@@ -220,7 +220,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">arama panelini göster veya gizle</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">tüm sonuçları aç</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">tüm sonuçları kapat</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">bu klasörde PowerShell sekmesi aç</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">varsayılan profille terminal aç</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">bu klasörde CMD sekmesi aç</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell'i yönetici olarak aç</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD'yi yönetici olarak aç</sys:String>
@@ -862,4 +862,24 @@
     <sys:String x:Key="Str_Storage_MinSizeTip">Bundan küçük öğeleri gizler - baytları üst klasörün toplamına katılmaya devam eder</sys:String>
     <sys:String x:Key="Str_Storage_Total">toplam</sys:String>
     <sys:String x:Key="Str_Storage_Free">boş</sys:String>
+    <sys:String x:Key="Str_Term_Profiles">Terminal profilleri</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Terminal profillerini yönet...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Ad</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Yürütülebilir dosya</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Bağımsız değişkenler</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Başlangıç klasörü</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Varsayılan terminal</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Menüden gizle</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Yönetici olarak çalıştır</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Profil ekle</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Profili kaldır</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Yukarı taşı</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Aşağı taşı</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Bir ad ve yürütülebilir dosya girin. Her profilin adı benzersiz olmalıdır.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Kaydet</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell ve Komut İstemi yerleşiktir. Yüklü WSL dağıtımları otomatik olarak görünür ve Bash kullanır.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Kabuk türü</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Özel</sys:String>
+
 </ResourceDictionary>

@@ -649,9 +649,10 @@
                             ToolTip="{DynamicResource Str_TT_Terminal}">
                         <Button.ContextMenu>
                             <local:OpaqueContextMenu Placement="Top">
-                                <MenuItem Header="{DynamicResource Str_Term_PowerShell}" Click="RailShellPs_Click" InputGestureText="F8">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
+                                <MenuItem Header="{DynamicResource Str_Term_Profiles}" SubmenuOpened="LaunchProfiles_Opened">
+                                    <MenuItem/>
                                 </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_Term_ManageProfiles}" Click="ManageTerminalProfiles_Click"/>
                                 <MenuItem Header="{DynamicResource Str_Term_PowerShellAdmin}" Click="RailShellPsAdmin_Click" InputGestureText="Ctrl+F8">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>

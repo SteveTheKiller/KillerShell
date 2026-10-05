@@ -313,7 +313,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">показати або сховати панель пошуку</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">розгорнути всі результати</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">згорнути всі результати</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">відкрити вкладку PowerShell у цій папці</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">відкрити термінал із типовим профілем</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">відкрити вкладку CMD у цій папці</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">відкрити PowerShell від імені адміністратора</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">відкрити CMD від імені адміністратора</sys:String>
@@ -907,5 +907,25 @@
     <sys:String x:Key="Str_TT_EvtSearchOnline">Шукати цю подію в Інтернеті  (Alt+S)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Копіювати відомості  (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Закрити  (Esc)</sys:String>
+
+    <sys:String x:Key="Str_Term_Profiles">Профілі термінала</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Керування профілями термінала...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Назва</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Виконуваний файл</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Аргументи</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Початкова папка</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Типовий термінал</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Приховати в меню</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Запуск від імені адміністратора</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Додати профіль</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Видалити профіль</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Перемістити вгору</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Перемістити вниз</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Введіть назву та виконуваний файл. Назва кожного профілю має бути унікальною.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Зберегти</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell і Командний рядок вбудовані. Установлені дистрибутиви WSL відображаються автоматично й використовують Bash.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Тип оболонки</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Користувацький</sys:String>
 
 </ResourceDictionary>

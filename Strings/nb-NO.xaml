@@ -313,7 +313,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">vis eller skjul søkepanelet</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">utvid alle resultater</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">slå sammen alle resultater</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">åpne en PowerShell-fane i denne mappen</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">åpne en terminal med standardprofilen</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">åpne en CMD-fane i denne mappen</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">åpne PowerShell som administrator</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">åpne CMD som administrator</sys:String>
@@ -907,5 +907,25 @@
     <sys:String x:Key="Str_TT_EvtSearchOnline">Søk etter denne hendelsen på nettet  (Alt+S)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Kopier detaljer  (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Lukk  (Esc)</sys:String>
+
+    <sys:String x:Key="Str_Term_Profiles">Terminalprofiler</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Administrer terminalprofiler...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Navn</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Programfil</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Argumenter</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Startmappe</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Standardterminal</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Skjul fra menyen</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Kjør som administrator</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Legg til profil</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Fjern profil</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Flytt opp</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Flytt ned</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Skriv inn et navn og en programfil. Hver profil må ha et unikt navn.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Lagre</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell og Ledetekst er innebygd. Installerte WSL-distribusjoner vises automatisk og bruker Bash.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Shelltype</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Egendefinert</sys:String>
 
 </ResourceDictionary>

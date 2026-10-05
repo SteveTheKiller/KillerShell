@@ -313,7 +313,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">pokaż lub ukryj panel wyszukiwania</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">rozwiń każdy wynik</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">zwiń każdy wynik</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">otwórz kartę PowerShell w tym folderze</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">otwórz terminal z domyślnym profilem</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">otwórz kartę CMD w tym folderze</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">otwórz PowerShell jako administrator</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">otwórz CMD jako administrator</sys:String>
@@ -777,4 +777,24 @@
   <sys:String x:Key="Str_TT_EvtSearchOnline">Wyszukaj to zdarzenie w Internecie  (Alt+S)</sys:String>
   <sys:String x:Key="Str_TT_EvtCopyDetails">Kopiuj szczegóły  (Ctrl+C)</sys:String>
   <sys:String x:Key="Str_TT_EvtClose">Zamknij  (Esc)</sys:String>
+    <sys:String x:Key="Str_Term_Profiles">Profile terminala</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Zarządzaj profilami terminala...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Nazwa</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Plik wykonywalny</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Argumenty</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Folder początkowy</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Domyślny terminal</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Ukryj w menu</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Uruchom jako administrator</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Dodaj profil</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Usuń profil</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Przenieś w górę</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Przenieś w dół</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Wprowadź nazwę i plik wykonywalny. Każdy profil musi mieć unikatową nazwę.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Zapisz</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell i Wiersz polecenia są wbudowane. Zainstalowane dystrybucje WSL pojawiają się automatycznie i używają Bash.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Typ powłoki</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Niestandardowy</sys:String>
+
 </ResourceDictionary>

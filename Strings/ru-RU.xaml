@@ -299,7 +299,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">показать или скрыть панель поиска</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">развернуть каждый результат</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">свернуть каждый результат</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">открыть вкладку PowerShell в этой папке</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">открыть терминал с профилем по умолчанию</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">открыть вкладку CMD в этой папке</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">открыть PowerShell от имени администратора</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">открыть CMD от имени администратора</sys:String>
@@ -873,5 +873,25 @@
     <sys:String x:Key="Str_TT_EvtSearchOnline">Найти это событие в интернете  (Alt+S)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Копировать сведения  (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Закрыть  (Esc)</sys:String>
+
+    <sys:String x:Key="Str_Term_Profiles">Профили терминала</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Управление профилями терминала...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Название</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Исполняемый файл</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Аргументы</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Начальная папка</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Терминал по умолчанию</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Скрыть в меню</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Запуск от имени администратора</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Добавить профиль</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Удалить профиль</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Переместить вверх</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Переместить вниз</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Введите название и исполняемый файл. Название каждого профиля должно быть уникальным.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Сохранить</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell и Командная строка встроены. Установленные дистрибутивы WSL отображаются автоматически и используют Bash.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Тип оболочки</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Пользовательский</sys:String>
 
 </ResourceDictionary>

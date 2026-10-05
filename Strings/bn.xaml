@@ -220,7 +220,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">সার্চ প্যানেল দেখান বা লুকান</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">সব ফলাফল খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">সব ফলাফল বন্ধ করুন</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">এই ফোল্ডারে একটি PowerShell ট্যাব খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">ডিফল্ট প্রোফাইল দিয়ে একটি টার্মিনাল খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">এই ফোল্ডারে একটি CMD ট্যাব খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell প্রশাসক হিসেবে খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD প্রশাসক হিসেবে খুলুন</sys:String>
@@ -859,4 +859,24 @@
     <sys:String x:Key="Str_Storage_MinSizeTip">এর চেয়ে ছোট আইটেম লুকান - বাইটগুলো মূল ফোল্ডারের মোটে গণনা হবে</sys:String>
     <sys:String x:Key="Str_Storage_Total">মোট</sys:String>
     <sys:String x:Key="Str_Storage_Free">খালি</sys:String>
+    <sys:String x:Key="Str_Term_Profiles">টার্মিনাল প্রোফাইল</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">টার্মিনাল প্রোফাইল পরিচালনা...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">নাম</sys:String>
+    <sys:String x:Key="Str_Term_Executable">এক্সিকিউটেবল</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">আর্গুমেন্ট</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">শুরুর ফোল্ডার</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">ডিফল্ট টার্মিনাল</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">মেনু থেকে লুকান</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">প্রশাসক হিসেবে চালান</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">প্রোফাইল যোগ করুন</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">প্রোফাইল সরান</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">উপরে সরান</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">নিচে সরান</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">একটি নাম ও এক্সিকিউটেবল লিখুন। প্রতিটি প্রোফাইলের নাম আলাদা হতে হবে।</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">সংরক্ষণ করুন</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell ও Command Prompt বিল্ট-ইন। ইনস্টল করা WSL ডিস্ট্রিবিউশনগুলো স্বয়ংক্রিয়ভাবে দেখা যায় এবং Bash ব্যবহার করে।</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">শেলের ধরন</sys:String>
+    <sys:String x:Key="Str_Term_Custom">কাস্টম</sys:String>
+
 </ResourceDictionary>

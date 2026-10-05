@@ -264,7 +264,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">検索パネルの表示を切り替え</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">すべての結果を展開</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">すべての結果を折りたたむ</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">このフォルダーで PowerShell タブを開く</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">既定のプロファイルでターミナルを開く</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">このフォルダーで CMD タブを開く</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell を管理者として開く</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD を管理者として開く</sys:String>
@@ -858,4 +858,24 @@
     <sys:String x:Key="Str_Storage_MinSizeTip">これより小さい項目を非表示 - 容量は親フォルダーの合計に含まれます</sys:String>
     <sys:String x:Key="Str_Storage_Total">合計</sys:String>
     <sys:String x:Key="Str_Storage_Free">空き</sys:String>
+    <sys:String x:Key="Str_Term_Profiles">ターミナルプロファイル</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">ターミナルプロファイルの管理...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">名前</sys:String>
+    <sys:String x:Key="Str_Term_Executable">実行ファイル</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">引数</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">開始フォルダー</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">既定のターミナル</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">メニューから非表示</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">管理者として実行</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">プロファイルを追加</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">プロファイルを削除</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">上へ移動</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">下へ移動</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">名前と実行ファイルを入力してください。各プロファイルには固有の名前が必要です。</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">保存</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell とコマンドプロンプトは組み込まれています。インストール済みの WSL ディストリビューションは自動的に表示され、Bash を使用します。</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">シェルの種類</sys:String>
+    <sys:String x:Key="Str_Term_Custom">カスタム</sys:String>
+
 </ResourceDictionary>

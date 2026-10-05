@@ -129,7 +129,7 @@ namespace KillerShell.Shell
                     // Somewhere that no longer exists is dropped rather than shown as a dead
                     // row - a favorite that cannot be opened is worse than one that quietly
                     // went away. This PC is not a directory, so it is exempt from that check.
-                    if (IsThisPc(p) || Directory.Exists(p)) _bookmarks.Add(new Bookmark { Path = p });
+                    if (IsThisPc(p) || Services.WslDistributions.TryParsePath(p, out _, out _) || Directory.Exists(p)) _bookmarks.Add(new Bookmark { Path = p });
                 }
 
             // Whether the drawer itself was left open - same "1"/not-"1" convention as
@@ -402,7 +402,7 @@ namespace KillerShell.Shell
         // ── Membership ───────────────────────────────────────────
         private bool IsBookmarked(string? path)
             => !string.IsNullOrEmpty(path)
-            && _bookmarks.Any(b => string.Equals(b.Path, path, StringComparison.OrdinalIgnoreCase));
+            && _bookmarks.Any(b => Services.WslDistributions.PathsEqual(b.Path, path));
 
         private void AddBookmark(string? path)
         {
@@ -414,7 +414,7 @@ namespace KillerShell.Shell
             // dead control everywhere in --demo, on the one screen whose saved places are the
             // thing being demonstrated.
             if (string.IsNullOrEmpty(path)) return;
-            if (!IsThisPc(path) && !Directory.Exists(path)
+            if (!IsThisPc(path) && !Services.WslDistributions.TryParsePath(path!, out _, out _) && !Directory.Exists(path)
                 && !(DemoMode && Services.DemoFs.Has(path!))) return; // Browse.cs, DemoFileSystem.cs
             if (IsBookmarked(path)) return;
 
@@ -428,7 +428,7 @@ namespace KillerShell.Shell
             if (string.IsNullOrEmpty(path)) return;
 
             var hit = _bookmarks.FirstOrDefault(
-                b => string.Equals(b.Path, path, StringComparison.OrdinalIgnoreCase));
+                b => Services.WslDistributions.PathsEqual(b.Path, path));
             if (hit == null) return;
 
             _bookmarks.Remove(hit);
@@ -478,7 +478,7 @@ namespace KillerShell.Shell
             foreach (var b in _bookmarks)
             {
                 bool on = !string.IsNullOrEmpty(here)
-                    && string.Equals(b.Path, here, StringComparison.OrdinalIgnoreCase);
+                    && Services.WslDistributions.PathsEqual(b.Path, here);
 
                 if (BookmarkContainer(b) is { } container
                     && FindDescendant<System.Windows.Controls.Border>(container) is { } row)
@@ -602,7 +602,7 @@ namespace KillerShell.Shell
         private void BookmarkTerminal_Click(object sender, RoutedEventArgs e)
         {
             if (sender is FrameworkElement fe && fe.DataContext is Bookmark b)
-                OpenShell(Terminal.TerminalProfile.PowerShell(elevated: false), b.Path);   // TerminalTabs.cs
+                OpenShell(Terminal.TerminalProfileStore.ForFolder(b.Path), b.Path);
         }
 
         private void BookmarkTerminalAdmin_Click(object sender, RoutedEventArgs e)

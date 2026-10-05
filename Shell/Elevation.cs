@@ -62,7 +62,7 @@ namespace KillerShell.Shell
             // escape - but NOT off a drive root, because "C:" is drive-RELATIVE and would
             // resolve against the new process's current directory rather than naming the
             // root. Same trap that sent Up-from-C: back to the home folder.
-            string flags = "--shell " + (profile.Skin == TerminalSkin.Lcd ? "cmd" : "pwsh")
+            string flags = "--terminal-profile " + profile.HandoffToken()
                           + " --cwd \"" + TrimForArg(folder) + "\"";
 
             // Same reuse as RelaunchElevatedProcesses/RelaunchElevatedEventViewer below: an
@@ -79,7 +79,7 @@ namespace KillerShell.Shell
                 UseShellExecute = true,          // required for the runas verb
                 Verb = "runas",
                 Arguments = flags,
-                WorkingDirectory = folder,
+                WorkingDirectory = profile.Kind == TerminalShellKind.Wsl ? HomeFolder : folder,
             };
 
             try
@@ -423,16 +423,23 @@ namespace KillerShell.Shell
         internal void ApplyStartupShell()
         {
             var args = Environment.GetCommandLineArgs();
-            string? kind = null, cwd = null;
+            string? kind = null, cwd = null, profileToken = null;
 
             for (int i = 1; i < args.Length - 1; i++)
             {
                 if (string.Equals(args[i], "--shell", StringComparison.OrdinalIgnoreCase)) kind = args[i + 1];
                 else if (string.Equals(args[i], "--cwd", StringComparison.OrdinalIgnoreCase)) cwd = args[i + 1];
+                else if (string.Equals(args[i], "--terminal-profile", StringComparison.OrdinalIgnoreCase)) profileToken = args[i + 1];
             }
 
             // --cwd on its own is a plain new window (NewWindow.cs) asking to open where the
             // window it came from was. No shell, no bare layout - just land in the folder.
+            if (profileToken != null)
+            {
+                var launch = TerminalProfile.FromHandoffToken(profileToken);
+                if (launch != null) OpenStartupShell(launch, cwd);
+                return;
+            }
             if (kind == null)
             {
                 if (!string.IsNullOrEmpty(cwd) && System.IO.Directory.Exists(cwd))

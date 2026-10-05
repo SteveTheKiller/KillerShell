@@ -220,7 +220,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">顯示或隱藏搜尋面板</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">展開全部結果</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">摺疊全部結果</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">在此資料夾中開啟 PowerShell 分頁</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">使用預設設定檔開啟終端機</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">在此資料夾中開啟 CMD 分頁</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">以系統管理員身分開啟 PowerShell</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">以系統管理員身分開啟 CMD</sys:String>
@@ -859,4 +859,24 @@
     <sys:String x:Key="Str_Storage_MinSizeTip">隱藏小於此大小的項目 - 其位元組仍計入所在資料夾</sys:String>
     <sys:String x:Key="Str_Storage_Total">總計</sys:String>
     <sys:String x:Key="Str_Storage_Free">可用</sys:String>
+    <sys:String x:Key="Str_Term_Profiles">終端機設定檔</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">管理終端機設定檔...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">名稱</sys:String>
+    <sys:String x:Key="Str_Term_Executable">執行檔</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">引數</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">起始資料夾</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">預設終端機</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">從選單隱藏</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">以系統管理員身分執行</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">新增設定檔</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">移除設定檔</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">上移</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">下移</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">請輸入名稱與執行檔。每個設定檔的名稱必須唯一。</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">儲存</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">內建 PowerShell 與命令提示字元。已安裝的 WSL 發行版會自動顯示並使用 Bash。</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Shell 類型</sys:String>
+    <sys:String x:Key="Str_Term_Custom">自訂</sys:String>
+
 </ResourceDictionary>

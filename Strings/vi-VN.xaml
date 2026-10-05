@@ -296,7 +296,7 @@
   <sys:String x:Key="Str_Ks_SearchPanel">hiển thị hoặc ẩn bảng tìm kiếm</sys:String>
   <sys:String x:Key="Str_Ks_ExpandAll">mở rộng mọi kết quả</sys:String>
   <sys:String x:Key="Str_Ks_CollapseAll">thu gọn mọi kết quả</sys:String>
-  <sys:String x:Key="Str_Ks_Shell">mở tab PowerShell trong thư mục này</sys:String>
+  <sys:String x:Key="Str_Ks_Shell">mở terminal bằng hồ sơ mặc định</sys:String>
   <sys:String x:Key="Str_Ks_ShellCmd">mở tab CMD trong thư mục này</sys:String>
   <sys:String x:Key="Str_Ks_ShellAdmin">mở PowerShell với quyền quản trị viên</sys:String>
   <sys:String x:Key="Str_Ks_ShellCmdAdmin">mở CMD với quyền quản trị viên</sys:String>
@@ -864,4 +864,24 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_TT_EvtSearchOnline">Tìm kiếm sự kiện này trên mạng  (Alt+S)</sys:String>
   <sys:String x:Key="Str_TT_EvtCopyDetails">Sao chép chi tiết  (Ctrl+C)</sys:String>
   <sys:String x:Key="Str_TT_EvtClose">Đóng  (Esc)</sys:String>
+    <sys:String x:Key="Str_Term_Profiles">Hồ sơ terminal</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Quản lý hồ sơ terminal...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Tên</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Tệp thực thi</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Đối số</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Thư mục bắt đầu</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Terminal mặc định</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Ẩn khỏi menu</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Chạy với quyền quản trị</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Thêm hồ sơ</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Xóa hồ sơ</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Di chuyển lên</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Di chuyển xuống</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Nhập tên và tệp thực thi. Mỗi hồ sơ phải có tên riêng.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Lưu</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell và Command Prompt được tích hợp sẵn. Các bản phân phối WSL đã cài đặt tự động xuất hiện và dùng Bash.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Loại shell</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Tùy chỉnh</sys:String>
+
 </ResourceDictionary>

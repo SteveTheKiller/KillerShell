@@ -31,19 +31,28 @@ namespace KillerShell.Shell
         private static readonly FolderNode Placeholder = new("", "", false);
 
         public string Path { get; }
-        public string Name { get; }
+        public string Name { get; private set; }
+        internal void RefreshGroupName(string name)
+        {
+            if (!IsGroup || Name == name) return;
+            Name = name;
+            Raise(nameof(Name));
+        }
 
         // Drives get their own treatment: they are always expandable, they never disappear
         // mid-session, and their label is "Local Disk (C:)" rather than a bare folder name.
         public bool IsDrive { get; }
+        public bool IsGroup { get; }
 
         public ObservableCollection<FolderNode> Children { get; } = [];
 
-        public FolderNode(string path, string name, bool mayHaveChildren, bool isDrive = false)
+        public FolderNode(string path, string name, bool mayHaveChildren, bool isDrive = false, bool isGroup = false)
         {
             Path = path;
             Name = name;
             IsDrive = isDrive;
+            IsGroup = isGroup;
+            IsLoaded = isGroup;
             if (mayHaveChildren) Children.Add(Placeholder);
         }
 
@@ -128,6 +137,11 @@ namespace KillerShell.Shell
         internal async Task RefreshAsync()
         {
             if (!IsLoaded) return;
+            if (IsGroup)
+            {
+                foreach (var child in Children.ToArray()) await child.RefreshAsync();
+                return;
+            }
 
             string path = Path;
             var fresh = await Task.Run(() => EnumerateChildren(path)).ConfigureAwait(true);
@@ -138,13 +152,14 @@ namespace KillerShell.Shell
             // the folder above and navigated the pane up one. Deleting a file in Documents landed
             // you in your home folder. Removing only what actually left the disk keeps the
             // selected node and its container exactly where they were.
-            var byName = new Dictionary<string, FolderNode>(StringComparer.OrdinalIgnoreCase);
+            var comparer = Services.WslDistributions.TryParsePath(Path, out _, out _) ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+            var byName = new Dictionary<string, FolderNode>(comparer);
             foreach (var n in fresh) byName[n.Name] = n;
 
             for (int i = Children.Count - 1; i >= 0; i--)
                 if (!byName.ContainsKey(Children[i].Name)) Children.RemoveAt(i);
 
-            var have = new Dictionary<string, FolderNode>(StringComparer.OrdinalIgnoreCase);
+            var have = new Dictionary<string, FolderNode>(comparer);
             foreach (var c in Children) have[c.Name] = c;
 
             for (int i = 0; i < fresh.Count; i++)
@@ -364,6 +379,20 @@ namespace KillerShell.Shell
                             : n.Path.StartsWith(@"\\", StringComparison.Ordinal) ? 2 : 1)
                 .ThenBy(n => n.Path, StringComparer.OrdinalIgnoreCase)];
 
+            var distros = Services.WslDistributions.Installed();
+            if (distros.Count > 0)
+            {
+                const string linuxRoot = @"\\wsl.localhost\";
+                var linux = _treeRoots.FirstOrDefault(n => n.IsGroup) ?? new FolderNode(linuxRoot, Loc("Str_Term_Linux"), false, isGroup: true);
+                linux.RefreshGroupName(Loc("Str_Term_Linux"));
+                foreach (var old in linux.Children.ToArray())
+                    if (!distros.Any(d => Services.WslDistributions.Root(d) == old.Path)) linux.Children.Remove(old);
+                foreach (string distro in distros)
+                    if (!linux.Children.Any(n => n.Path == Services.WslDistributions.Root(distro)))
+                        linux.Children.Add(new FolderNode(Services.WslDistributions.Root(distro), distro, true));
+                wanted.Add(linux);
+            }
+
             var wantedPaths = new HashSet<string>(wanted.Select(n => n.Path),
                                                   StringComparer.OrdinalIgnoreCase);
             for (int i = _treeRoots.Count - 1; i >= 0; i--)
@@ -410,7 +439,7 @@ namespace KillerShell.Shell
                 _treeSyncing = false;
             }
 
-            if (_treeMenuNode == null) { e.Handled = true; return; }   // empty space: no menu
+            if (_treeMenuNode == null || _treeMenuNode.IsGroup) { e.Handled = true; return; }
 
             _treeMenuItem ??= FolderTree.ContextMenu?.Items.OfType<MenuItem>()
                                           .FirstOrDefault(m => (m.Tag as string) == "fav");
@@ -459,7 +488,7 @@ namespace KillerShell.Shell
         private void TreeTerminal_Click(object sender, RoutedEventArgs e)
         {
             if (TreeMenuPath() is { } p)
-                OpenShell(Terminal.TerminalProfile.PowerShell(elevated: false), p);   // TerminalTabs.cs
+                OpenShell(Terminal.TerminalProfileStore.ForFolder(p), p);
         }
 
         private void TreeTerminalAdmin_Click(object sender, RoutedEventArgs e)
@@ -614,6 +643,7 @@ namespace KillerShell.Shell
         private async Task ExpandTreePath(string folder)
         {
             string full;
+            if (Services.WslDistributions.TryParsePath(folder, out string distro, out string linuxPath)) folder = Services.WslDistributions.ToWindowsPath(distro, linuxPath);
             try { full = System.IO.Path.GetFullPath(folder); }
             catch { return; }
 
@@ -628,7 +658,7 @@ namespace KillerShell.Shell
             foreach (string seg in RelativeSegments(root.Path, full))
             {
                 var next = current.Children.FirstOrDefault(
-                    c => string.Equals(c.Name, seg, StringComparison.OrdinalIgnoreCase));
+                    c => string.Equals(c.Name, seg, current.IsGroup || !Services.WslDistributions.TryParsePath(current.Path, out _, out _) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
                 if (next == null) return;   // renamed, deleted, or hidden by the current filter
 
                 current = next;
@@ -641,6 +671,7 @@ namespace KillerShell.Shell
         {
             if (_treeSyncing) return;
             if (e.NewValue is not FolderNode node) return;
+            if (node.IsGroup) { node.IsExpanded = true; return; }
             if (string.IsNullOrEmpty(node.Path)) return;   // the placeholder, mid-load
 
             // GoToFolder, not NavigateTo: with a tool tab open there is no listing to navigate
@@ -662,6 +693,7 @@ namespace KillerShell.Shell
             if (!_treeOpen || string.IsNullOrEmpty(folder)) return;
 
             string full;
+            if (Services.WslDistributions.TryParsePath(folder, out string distro, out string linuxPath)) folder = Services.WslDistributions.ToWindowsPath(distro, linuxPath);
             try { full = System.IO.Path.GetFullPath(folder); }
             catch { return; }
 
@@ -683,7 +715,7 @@ namespace KillerShell.Shell
             for (int i = 0; i < segments.Count; i++)
             {
                 var next = current.Children.FirstOrDefault(
-                    c => string.Equals(c.Name, segments[i], StringComparison.OrdinalIgnoreCase));
+                    c => string.Equals(c.Name, segments[i], current.IsGroup || !Services.WslDistributions.TryParsePath(current.Path, out _, out _) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
                 if (next == null) return;   // hidden, or gone since the listing
 
                 current = next;
@@ -744,6 +776,7 @@ namespace KillerShell.Shell
         private FolderNode? FindLoadedNode(string folder)
         {
             string full;
+            if (Services.WslDistributions.TryParsePath(folder, out string distro, out string linuxPath)) folder = Services.WslDistributions.ToWindowsPath(distro, linuxPath);
             try { full = System.IO.Path.GetFullPath(folder); }
             catch { return null; }
 
@@ -755,7 +788,7 @@ namespace KillerShell.Shell
             {
                 if (!current.IsLoaded) return null;
                 var next = current.Children.FirstOrDefault(
-                    c => string.Equals(c.Name, seg, StringComparison.OrdinalIgnoreCase));
+                    c => string.Equals(c.Name, seg, current.IsGroup || !Services.WslDistributions.TryParsePath(current.Path, out _, out _) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
                 if (next == null) return null;
                 current = next;
             }

@@ -313,7 +313,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">a keresőpanel megjelenítése vagy elrejtése</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">bővítse ki az összes eredményt</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">összeomlik minden eredményt</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">nyissa meg a PowerShell lapot ebben a mappában</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">terminál megnyitása az alapértelmezett profillal</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">nyisson meg egy CMD lapot ebben a mappában</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">nyissa meg a PowerShellt rendszergazdaként</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">nyissa meg a CMD-t rendszergazdaként</sys:String>
@@ -907,5 +907,25 @@
     <sys:String x:Key="Str_TT_EvtSearchOnline">Keresés ezen az eseményen online (Alt+S)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Részletek másolása (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Bezárás (Esc)</sys:String>
+
+    <sys:String x:Key="Str_Term_Profiles">Terminálprofilok</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Terminálprofilok kezelése...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Név</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Futtatható fájl</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Argumentumok</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Kezdőmappa</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Alapértelmezett terminál</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Elrejtés a menüből</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Futtatás rendszergazdaként</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Profil hozzáadása</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Profil eltávolítása</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Mozgatás felfelé</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Mozgatás lefelé</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Adjon meg egy nevet és egy futtatható fájlt. Minden profil neve legyen egyedi.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Mentés</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">A PowerShell és a Parancssor be van építve. A telepített WSL-disztribúciók automatikusan megjelennek, és Bash-t használnak.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Shell típusa</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Egyéni</sys:String>
 
 </ResourceDictionary>

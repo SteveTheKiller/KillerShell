@@ -1528,6 +1528,9 @@
                                     <Button x:Name="TermNewBtn" Content="&#xE756;" Width="24" Height="20" Padding="0"
                                             FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                             ToolTip="{DynamicResource Str_TT_TermNew}" Click="TermNew_Click"/>
+                                    <Button Content="&#xE70D;" Width="18" Height="20" Padding="0"
+                                            FontFamily="Segoe MDL2 Assets" FontSize="10" Style="{StaticResource SurfaceButton}"
+                                            ToolTip="{DynamicResource Str_Term_Profiles}" Click="TermProfiles_Click"/>
                                     <Button x:Name="TermAdminBtn" Content="&#xE7EF;" Width="24" Height="20" Padding="0" Margin="4,0,0,0"
                                             FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                             ToolTip="{DynamicResource Str_TT_TermAdmin}" Click="TermAdmin_Click"/>

@@ -24,7 +24,9 @@ namespace KillerShell.Shell
         /// </summary>
         internal void OpenShell(TerminalProfile profile, string? folder = null)
         {
-            folder = Resolve(folder);
+            folder ??= profile.StartFolder.Length > 0 ? profile.StartFolder : Pane.Active?.CurrentFolder;
+            folder = profile.Kind == TerminalShellKind.Wsl
+                ? Services.WslDistributions.ToLinuxPath(folder, profile.Distribution!) : Resolve(folder);
 
             // Before anything is spawned: the child inherits our environment block, so
             // PSModulePath has to carry the bundled modules by the time CreateProcess runs
@@ -172,8 +174,9 @@ namespace KillerShell.Shell
             }
             finally { FocusPaneQuiet(keep); }
 
-            var term = new TerminalControl(profile.Skin);
+            var term = new TerminalControl(profile.Skin) { ShellKind = profile.Kind };
             tab.Term = term;
+            tab.LaunchProfile = profile;
             tab.TabGlyph = profile.Glyph;
             tab.TermExePath = profile.ExePath;
             // The tab title is WHERE the shell is, not what it happens to be running - Browse.cs's
@@ -196,10 +199,10 @@ namespace KillerShell.Shell
                 switch (cmd)
                 {
                     case TerminalMenuCommand.NewShell:
-                        OpenShell(TerminalProfile.PowerShell(), tab.CurrentFolder);
+                        OpenShell(TerminalProfileStore.Default());
                         break;
                     case TerminalMenuCommand.OpenFolder:
-                        OpenFolderTabLeft(tab.CurrentFolder);
+                        OpenFolderTabLeft(profile.BrowsePath(tab.CurrentFolder));
                         break;
                     case TerminalMenuCommand.Fonts:
                         FontsRow_Click(this, new RoutedEventArgs());   // Fonts.cs
@@ -220,6 +223,7 @@ namespace KillerShell.Shell
             // hosts actually on this machine (ProfileMenu.cs). Subscribed here rather than at
             // menu-build time because the menu is not built until the first right-click.
             term.ProfileSubmenuOpening += BuildProfileMenu;
+            term.LaunchSubmenuOpening += menu => BuildTerminalProfiles(menu, profile.BrowsePath(tab.CurrentFolder));
 
             // And the folder follows a cd, so the OTHER pane can be pointed at it later - and so
             // the tab title does too, now that the title IS the location (see the remark above).
@@ -227,7 +231,7 @@ namespace KillerShell.Shell
             {
                 tab.CurrentFolder = dir;
                 tab.RootPath = dir;
-                tab.Title = FolderTitle(dir);   // Browse.cs
+                tab.Title = profile.Kind == TerminalShellKind.Wsl && dir != "/" ? dir.TrimEnd('/').Substring(dir.TrimEnd('/').LastIndexOf('/') + 1) : FolderTitle(dir);
                 SyncTerminalBar(tab);   // TerminalBar.cs - the cwd readout is the shell's own now
             }));
 
@@ -239,7 +243,7 @@ namespace KillerShell.Shell
                 tab.TabGlyph = ((char)0xE711).ToString();   // a cross, so a dead shell reads as dead
             }));
 
-            term.Start(profile.CommandLine, folder);
+            term.Start(profile.LaunchCommand(folder), profile.Kind == TerminalShellKind.Wsl ? HomeFolder : folder);
             return tab;
         }
 
@@ -460,7 +464,7 @@ namespace KillerShell.Shell
         // button's own ContextMenu (MainWindow.xaml) carries the four, so WPF opens it on right
         // click with no code here at all.
         private void TerminalRail_Click(object sender, RoutedEventArgs e)
-            => OpenShell(TerminalProfile.PowerShell());
+            => OpenShell(TerminalProfileStore.Default());
 
         private void RailShellPs_Click(object sender, RoutedEventArgs e)
             => OpenShell(TerminalProfile.PowerShell());

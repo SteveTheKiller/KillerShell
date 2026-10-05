@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using KillerShell.Models;
+using KillerShell.Terminal;
 
 // Dragging a tab out of the window entirely, browser-style: past the edge and it lets go,
 // becoming its own window. Partial of MainWindow.
@@ -108,10 +109,9 @@ namespace KillerShell.Shell
             {
                 // The running shell cannot follow across a process boundary - a torn-out or
                 // merged terminal tab reopens as a FRESH shell in the same folder, not the same
-                // session (see the file header). PowerShell rather than whatever it actually
-                // was: SearchTab does not remember which of PowerShell/cmd/elevated a shell tab
-                // was opened with, only its glyph, which is not enough to tell them apart.
-                return "--shell pwsh --cwd \"" + TrimForArg(cwd) + "\"";   // Elevation.cs - TrimForArg
+                // session (see the file header). Carry the launch profile with the current folder.
+                return "--terminal-profile " + (t.LaunchProfile ?? TerminalProfile.PowerShell()).HandoffToken()
+                    + " --cwd \"" + TrimForArg(cwd) + "\"";
             }
 
             if (t.Editor != null)

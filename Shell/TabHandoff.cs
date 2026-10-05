@@ -313,11 +313,17 @@ namespace KillerShell.Shell
             {
                 int edit  = tok.FindIndex(a => string.Equals(a, "--edit", StringComparison.OrdinalIgnoreCase));
                 int shell = tok.FindIndex(a => string.Equals(a, "--shell", StringComparison.OrdinalIgnoreCase));
+                int profileI = tok.FindIndex(a => string.Equals(a, "--terminal-profile", StringComparison.OrdinalIgnoreCase));
                 int cwdI  = tok.FindIndex(a => string.Equals(a, "--cwd", StringComparison.OrdinalIgnoreCase));
                 string cwd = cwdI >= 0 && cwdI + 1 < tok.Count ? tok[cwdI + 1] : HomeFolder;
 
                 if (edit >= 0 && edit + 1 < tok.Count && System.IO.File.Exists(tok[edit + 1]))
                     OpenForEditing(tok[edit + 1]);   // EditorTabs.cs
+                else if (profileI >= 0 && profileI + 1 < tok.Count)
+                {
+                    var launch = TerminalProfile.FromHandoffToken(tok[profileI + 1]);
+                    if (launch != null) OpenShell(launch, cwd);
+                }
                 else if (shell >= 0 && shell + 1 < tok.Count)
                     OpenShell(string.Equals(tok[shell + 1], "cmd", StringComparison.OrdinalIgnoreCase)
                               ? TerminalProfile.Cmd() : TerminalProfile.PowerShell(), cwd);

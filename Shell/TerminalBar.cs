@@ -90,7 +90,8 @@ namespace KillerShell.Shell
             if (t?.Term == null) { EndEditTermCwd(pane); return; }
 
             string path = box.Text.Trim();
-            if (!System.IO.Directory.Exists(path))
+            var profile = t.LaunchProfile ?? Terminal.TerminalProfile.PowerShell();
+            if (profile.Kind != Terminal.TerminalShellKind.Wsl && !System.IO.Directory.Exists(path))
             {
                 // Stays in edit mode rather than reverting - a typo is worth the chance to fix,
                 // not a round trip back through click-to-edit.
@@ -98,11 +99,9 @@ namespace KillerShell.Shell
                 return;
             }
 
-            // cd, not Set-Location - the one alias every shell this app can open understands
-            // (pwsh, Windows PowerShell, cmd), so this never has to know which one it is talking
-            // to. TrimForArg (Elevation.cs) so a drive root ("C:\") does not get trimmed down to
-            // the drive-relative "C:" - the same trap Up-from-a-drive-root already had to dodge.
-            t.Term.Send("cd \"" + TrimForArg(path) + "\"\r");
+            // Send a literal path using this shell's quoting and directory-change command.
+            if (path.IndexOfAny(['\r', '\n', '\0']) >= 0) return;
+            t.Term.Send(profile.ChangeDirectoryCommand(path));
             t.Term.Focus();
             EndEditTermCwd(pane);
         }
@@ -116,13 +115,13 @@ namespace KillerShell.Shell
         }
 
         internal void TermNew_Click(object sender, RoutedEventArgs e)
-            => OpenShell(Terminal.TerminalProfile.PowerShell(), _active.CurrentFolder);
+            => OpenShell(Terminal.TerminalProfileStore.Default());
 
         internal void TermAdmin_Click(object sender, RoutedEventArgs e)
             => OpenShell(Terminal.TerminalProfile.PowerShell(elevated: true), _active.CurrentFolder);
 
         internal void TermFolder_Click(object sender, RoutedEventArgs e)
-            => OpenFolderTabLeft(_active.CurrentFolder);
+            => OpenFolderTabLeft(_active.LaunchProfile?.BrowsePath(_active.CurrentFolder) ?? _active.CurrentFolder);
 
         /// <summary>
         /// Clear the screen by asking the SHELL to, not by wiping our own buffer.
@@ -136,7 +135,7 @@ namespace KillerShell.Shell
         {
             var term = _active.Term;
             if (term == null) return;
-            term.Send("cls\r");
+            term.Send(_active.LaunchProfile?.ClearCommand ?? "cls\r");
             term.Focus();
         }
 

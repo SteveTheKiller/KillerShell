@@ -203,6 +203,7 @@ namespace KillerShell
                 if (a[0] == '-' || a[0] == '/')
                 {
                     if (string.Equals(a, "--shell", StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(a, "--terminal-profile", StringComparison.OrdinalIgnoreCase) ||
                         string.Equals(a, "--cwd",   StringComparison.OrdinalIgnoreCase)) i++;
                     continue;
                 }

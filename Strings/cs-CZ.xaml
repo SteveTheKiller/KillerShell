@@ -264,7 +264,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">zobrazit nebo skrýt panel hledání</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">rozbalit všechny výsledky</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">sbalit všechny výsledky</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">otevřít panel PowerShell v této složce</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">otevřít terminál s výchozím profilem</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">otevřít panel CMD v této složce</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">otevřít PowerShell jako správce</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">otevřít CMD jako správce</sys:String>
@@ -860,4 +860,24 @@
     <sys:String x:Key="Str_Storage_MinSizeTip">Skryje menší položky - jejich bajty se stále započítají do nadřazené složky</sys:String>
     <sys:String x:Key="Str_Storage_Total">celkem</sys:String>
     <sys:String x:Key="Str_Storage_Free">volné</sys:String>
+    <sys:String x:Key="Str_Term_Profiles">Profily terminálu</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Spravovat profily terminálu...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Název</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Spustitelný soubor</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Argumenty</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Výchozí složka</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Výchozí terminál</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Skrýt v nabídce</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Spustit jako správce</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Přidat profil</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Odebrat profil</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Posunout nahoru</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Posunout dolů</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Zadejte název a spustitelný soubor. Každý profil musí mít jedinečný název.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Uložit</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell a Příkazový řádek jsou vestavěné. Nainstalované distribuce WSL se zobrazují automaticky a používají Bash.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Typ shellu</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Vlastní</sys:String>
+
 </ResourceDictionary>

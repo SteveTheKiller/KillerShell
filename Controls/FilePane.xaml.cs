@@ -634,6 +634,7 @@ namespace KillerShell
         private void TermCwdBox_KeyDown(object s, KeyEventArgs e)          => Owner.TermCwdBox_KeyDown(s, e);
         private void TermCwdBox_LostFocus(object s, RoutedEventArgs e)     => Owner.TermCwdBox_LostFocus(s, e);
         private void TermNew_Click(object s, RoutedEventArgs e)            => Owner.TermNew_Click(s, e);
+        private void TermProfiles_Click(object s, RoutedEventArgs e)       => Owner.TermProfiles_Click(s, e);
         private void TermAdmin_Click(object s, RoutedEventArgs e)          => Owner.TermAdmin_Click(s, e);
         private void TermFolder_Click(object s, RoutedEventArgs e)         => Owner.TermFolder_Click(s, e);
         private void TermClear_Click(object s, RoutedEventArgs e)          => Owner.TermClear_Click(s, e);

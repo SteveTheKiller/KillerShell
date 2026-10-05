@@ -220,7 +220,7 @@
     <sys:String x:Key="Str_Ks_SearchPanel">Suchbereich ein- oder ausblenden</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">alle Ergebnisse aufklappen</sys:String>
     <sys:String x:Key="Str_Ks_CollapseAll">alle Ergebnisse zuklappen</sys:String>
-    <sys:String x:Key="Str_Ks_Shell">PowerShell-Tab in diesem Ordner öffnen</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">Terminal mit dem Standardprofil öffnen</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">CMD-Tab in diesem Ordner öffnen</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">PowerShell als Administrator öffnen</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD als Administrator öffnen</sys:String>
@@ -862,4 +862,24 @@
     <sys:String x:Key="Str_Storage_MinSizeTip">Kleinere Elemente ausblenden - ihre Bytes zählen weiterhin im übergeordneten Ordner</sys:String>
     <sys:String x:Key="Str_Storage_Total">gesamt</sys:String>
     <sys:String x:Key="Str_Storage_Free">frei</sys:String>
+    <sys:String x:Key="Str_Term_Profiles">Terminalprofile</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">Terminalprofile verwalten...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">Name</sys:String>
+    <sys:String x:Key="Str_Term_Executable">Programmdatei</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">Argumente</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">Startordner</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">Standardterminal</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">Im Menü ausblenden</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">Als Administrator ausführen</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">Profil hinzufügen</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">Profil entfernen</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">Nach oben</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">Nach unten</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">Geben Sie einen Namen und eine Programmdatei ein. Jeder Profilname muss eindeutig sein.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">Speichern</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell und die Eingabeaufforderung sind integriert. Installierte WSL-Distributionen werden automatisch angezeigt und verwenden Bash.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Shelltyp</sys:String>
+    <sys:String x:Key="Str_Term_Custom">Benutzerdefiniert</sys:String>
+
 </ResourceDictionary>

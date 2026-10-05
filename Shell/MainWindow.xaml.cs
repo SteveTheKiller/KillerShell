@@ -1212,7 +1212,8 @@ namespace KillerShell.Shell
             {
                 bool admin = ctrl;
                 OpenShell(shift ? Terminal.TerminalProfile.Cmd(elevated: admin)
-                                : Terminal.TerminalProfile.PowerShell(elevated: admin));
+                                : admin ? Terminal.TerminalProfile.PowerShell(elevated: true)
+                                : Terminal.TerminalProfileStore.Default());
                 e.Handled = true;
             }
             // Ctrl+` is the chord VS Code and Windows Terminal both use for "open a terminal
@@ -1220,7 +1221,7 @@ namespace KillerShell.Shell
             else if (ctrl && !alt && e.Key == System.Windows.Input.Key.OemTilde)
             {
                 OpenShell(shift ? Terminal.TerminalProfile.Cmd()
-                                : Terminal.TerminalProfile.PowerShell());
+                                : Terminal.TerminalProfileStore.Default());
                 e.Handled = true;
             }
             else if (ctrl && alt && e.Key == System.Windows.Input.Key.OemTilde)

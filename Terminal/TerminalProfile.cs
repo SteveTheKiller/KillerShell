@@ -10,8 +10,16 @@ using KillerShell.Shell;
 
 namespace KillerShell.Terminal
 {
+    internal enum TerminalShellKind { PowerShell, Cmd, Wsl, Custom }
+
     internal sealed class TerminalProfile
     {
+        public string Id { get; private set; } = string.Empty;
+        public TerminalShellKind Kind { get; private set; }
+        public string? Distribution { get; private set; }
+        public string StartFolder { get; private set; } = string.Empty;
+        private TerminalProfileEntry? _entry;
+        public string ClearCommand => Kind == TerminalShellKind.Wsl || Kind == TerminalShellKind.Custom ? "clear\r" : "cls\r";
         public string Name { get; }
         public string CommandLine { get; }
         public TerminalSkin Skin { get; }
@@ -56,15 +64,77 @@ namespace KillerShell.Terminal
                        : Quote(exe) + " -NoLogo" + prompt;
 
             return new("PowerShell", cmd, exe, TerminalSkin.Default,
-                       elevated ? GlyphAdmin : GlyphShell, elevated);
+                       elevated ? GlyphAdmin : GlyphShell, elevated) { Id = "pwsh", Kind = exe.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) ? TerminalShellKind.Cmd : TerminalShellKind.PowerShell };
         }
 
         public static TerminalProfile Cmd(bool elevated = false)
         {
             string exe = ResolveCmdExe();
             return new("Command Prompt", Quote(exe), exe, TerminalSkin.Lcd,
-                       elevated ? GlyphAdmin : GlyphShell, elevated);
+                       elevated ? GlyphAdmin : GlyphShell, elevated) { Id = "cmd", Kind = TerminalShellKind.Cmd };
         }
+
+        internal static TerminalProfile Wsl(string distro)
+        {
+            if (!Services.WslDistributions.ValidName(distro)) throw new ArgumentException(nameof(distro));
+            string exe = Path.Combine(Environment.SystemDirectory, "wsl.exe");
+            return new(distro, Quote(exe), exe, TerminalSkin.Default, GlyphShell, false)
+                { Id = "wsl:" + distro, Kind = TerminalShellKind.Wsl, Distribution = distro };
+        }
+
+        internal static TerminalProfile FromEntry(TerminalProfileEntry entry)
+        {
+            TerminalProfile builtin = entry.Kind switch
+            {
+                TerminalShellKind.PowerShell => PowerShell(entry.Elevated),
+                TerminalShellKind.Cmd => Cmd(entry.Elevated),
+                TerminalShellKind.Wsl => Wsl(entry.Distribution),
+                _ => new(entry.Name, Services.WslDistributions.QuoteArgument(Environment.ExpandEnvironmentVariables(entry.Executable)) + " " + entry.Arguments,
+                    Environment.ExpandEnvironmentVariables(entry.Executable), TerminalSkin.Default, entry.Elevated ? GlyphAdmin : GlyphShell, entry.Elevated) { Kind = entry.CustomKind }
+            };
+            return new(entry.Name, builtin.CommandLine, builtin.ExePath, builtin.Skin, builtin.Glyph, entry.Elevated)
+                { Id = entry.Id, Kind = builtin.Kind, Distribution = builtin.Distribution, StartFolder = Environment.ExpandEnvironmentVariables(entry.StartFolder), _entry = entry.Copy() };
+        }
+
+        internal string HandoffToken() => Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(
+            TerminalProfileStore.Serialize([_entry ?? new TerminalProfileEntry { Id = Id, Name = Name, Kind = Kind, Distribution = Distribution ?? string.Empty, Elevated = Elevated }])));
+
+        internal static TerminalProfile? FromHandoffToken(string token)
+        {
+            try
+            {
+                var entries = TerminalProfileStore.Deserialize(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(token)));
+                return entries.Count == 1 ? entries[0].Resolve() : null;
+            }
+            catch (FormatException) { return null; }
+            catch (ArgumentException) { return null; }
+        }
+
+        internal string LaunchCommand(string folder)
+        {
+            if (Kind != TerminalShellKind.Wsl) return CommandLine;
+            // Bash loads the user's normal startup file and keeps its PS1. Only cwd reporting is added.
+            const string rc = "if [ -f ~/.bashrc ]; then . ~/.bashrc; fi\n"
+                + "__killershell_cwd() { printf '\\033]9;9;%s\\007' \"$PWD\"; }\n"
+                + "if [[ $(declare -p PROMPT_COMMAND 2>/dev/null) == 'declare -a'* ]]; then PROMPT_COMMAND+=(__killershell_cwd); "
+                + "else PROMPT_COMMAND=\"${PROMPT_COMMAND:+$PROMPT_COMMAND; }__killershell_cwd\"; fi\n";
+            string encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(rc));
+            string bash = "exec bash --rcfile <(printf %s " + encoded + " | base64 -d) -i";
+            return Quote(ExePath) + " --distribution " + Services.WslDistributions.QuoteArgument(Distribution!)
+                + " --cd " + Services.WslDistributions.QuoteArgument(folder)
+                + " --exec bash -c " + Services.WslDistributions.QuoteArgument(bash);
+        }
+
+        internal string BrowsePath(string folder) => Kind == TerminalShellKind.Wsl
+            ? Services.WslDistributions.ToWindowsPath(Distribution!, folder) : folder;
+
+        internal string ChangeDirectoryCommand(string path) => Kind switch
+        {
+            TerminalShellKind.Wsl => path == "~" ? "cd ~\r" : "cd -- " + Services.WslDistributions.BashQuote(Services.WslDistributions.ToLinuxPath(path, Distribution!)) + "\r",
+            TerminalShellKind.PowerShell => "Set-Location -LiteralPath '" + path.Replace("'", "''") + "'\r",
+            TerminalShellKind.Cmd => "cd /d " + Services.WslDistributions.QuoteArgument(path) + "\r",
+            _ => "cd -- " + Services.WslDistributions.BashQuote(path) + "\r"
+        };
 
         // ═══════════════════════════════════════════════════════════
         //  RESOLUTION

@@ -118,7 +118,7 @@ namespace KillerShell.Shell
 
         private void OpenShellAt(string? folder, bool elevated)
         {
-            OpenShell(Terminal.TerminalProfile.PowerShell(elevated), folder);   // TerminalTabs.cs
+            OpenShell(elevated ? Terminal.TerminalProfile.PowerShell(true) : Terminal.TerminalProfileStore.ForFolder(folder), folder);
         }
 
         // Favorites are folders, so this acts on the seed itself when it is one and on the
