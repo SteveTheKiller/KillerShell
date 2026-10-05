@@ -14,4 +14,5 @@
     <SolidColorBrush x:Key="OutlinePressedBrush" Color="#2A1D0D" po:Freeze="True"/>
     <SolidColorBrush x:Key="ScrollThumbBrush"    Color="#88E8962C" po:Freeze="True"/>
     <SolidColorBrush x:Key="TabEdgeBrush"        Color="#66E8962C" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ComboHighlightTextBrush" Color="#E0E0E0"/>
 </ResourceDictionary>

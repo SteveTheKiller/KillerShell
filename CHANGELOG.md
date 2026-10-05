@@ -27,7 +27,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Install and uninstall windows now show the film grain and the app icon in the title bar.
 - The uninstaller has its own taskbar button, labeled "Uninstall KillerShell", with the app icon.
 - The portable footer button reads PORTABLE, like KillerPDF and KillerScan, and its tooltip offers the install.
-- Delirium context-menu dividers now use subtle gray.
+- Improved menu, selection, and footer text contrast, with subtle gray Delirium dividers.
 
 ## [1.2.6] - 2026-09-27
 
