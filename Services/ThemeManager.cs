@@ -245,6 +245,8 @@ namespace KillerShell.Services
                     else if (!combined.Contains(key)) combined[key] = Transparent;
                 }
 
+            Mirror("MenuSeparatorBrush", "MenuBorderBrush");
+
             // The keyboard map's key caps. 98SE names its own, white rather than button-face gray.
             Mirror("KeyCapBrush", "PaneBrush");
 
