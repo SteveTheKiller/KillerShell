@@ -25,7 +25,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - Linux terminals report their current folder and use the correct clear and folder-change commands. PowerShell profile actions stay scoped to PowerShell.
 - On Greed, Blood and Cyanotic the folder block in the terminal prompt is drawn in the theme's own color, so its text is readable instead of light on white.
-- Improved menu, selection, and footer text contrast, with subtle gray Delirium dividers.
 - Inactive 98SE pane toolbar buttons match the dimmed menubar.
 - 98SE rows show a visible hover highlight, and selected bookmarks retain their selection while hovered.
 - Ctrl+wheel changes file and folder picker views and icon sizes.
