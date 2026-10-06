@@ -272,7 +272,11 @@ namespace KillerShell.Tools
             Services.ThemeManager.ThemeChanged -= OnThemeChanged;
         }
 
-        private void OnThemeChanged() => ApplyTreeChevronMask(_tree);
+        private void OnThemeChanged()
+        {
+            ApplyTreeChevronMask(_tree);
+            ApplyValueHeaderCorners(_grid);
+        }
 
         /// <summary>
         /// Point this tree's chevron mask at the surface it actually sits on.
@@ -649,9 +653,6 @@ namespace KillerShell.Tools
             // style (Controls.xaml, still flat/square and used as-is by Task Manager/Event Viewer -
             // untouched here) is only overridden on the leftmost and rightmost columns via their
             // own HeaderStyle; the middle Type column keeps the grid's plain ColumnHeaderStyle.
-            var hr = KillerShell.Services.ThemeManager.Radius("BarCornerRadiusValue", 5);
-            name.HeaderStyle = BuildValueHeaderStyle(new CornerRadius(hr, 0, 0, 0));
-            data.HeaderStyle = BuildValueHeaderStyle(new CornerRadius(0, hr, 0, 0));
 
             // A long binary/multi-string value clips at the column edge just like the Processes/
             // Event Viewer grids do - the edit dialog (double-click / Enter / Modify...) is where
@@ -663,11 +664,19 @@ namespace KillerShell.Tools
             grid.Columns.Add(name);
             grid.Columns.Add(kind);
             grid.Columns.Add(data);
+            ApplyValueHeaderCorners(grid);
 
             grid.ContextMenuOpening += Grid_ContextMenuOpening;
             grid.MouseDoubleClick += Grid_MouseDoubleClick;
             grid.PreviewKeyDown += Grid_PreviewKeyDown;
             return grid;
+        }
+
+        private static void ApplyValueHeaderCorners(DataGrid grid)
+        {
+            var radius = Services.ThemeManager.Radius("BarCornerRadiusValue", 5);
+            grid.Columns[0].HeaderStyle = BuildValueHeaderStyle(new CornerRadius(radius, 0, 0, 0));
+            grid.Columns[2].HeaderStyle = BuildValueHeaderStyle(new CornerRadius(0, radius, 0, 0));
         }
 
         private static DataGridTextColumn Col(string headerKey, string bindingPath, double width)

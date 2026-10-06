@@ -584,14 +584,10 @@
                    client area fills its frame.
                    The bottom frame is an overlay inside PaneContent so scrolling children
                    cannot paint over it. Scroll cues are independent of the pane frame. -->
-              <Border x:Name="ResultsPane" Grid.Row="1" Margin="{DynamicResource PaneOuterMargin}" Background="{DynamicResource MenuBackgroundBrush}"
+              <local:PickerBorder x:Name="ResultsPane" Grid.Row="1" Margin="{DynamicResource PaneOuterMargin}" Background="{DynamicResource MenuBackgroundBrush}"
                     BorderBrush="{DynamicResource PaneEdgeBrush}" BorderThickness="{DynamicResource PaneEdgeSideThickness}" CornerRadius="{DynamicResource PanelCornerRadius}"
                     Effect="{DynamicResource PaneShadowEffect}">
-              <!-- Clipped to the pane's own rounded corners (PaneClip.cs). A Border with a
-                   CornerRadius does NOT clip its child, so anything that reaches the top of the
-                   pane squares those corners off. Nothing did while the location row was always
-                   there - the row's own background filled the corner - but F10 hides it, and
-                   then the terminal and the results list run straight into the curve. -->
+              <!-- The frame clips content to its inner stroke edge, including headers exposed by F10. -->
               <Grid x:Name="PaneContent" SizeChanged="PaneContent_SizeChanged">
                 <!-- Same treatment as KillerPDF's document pane: the whole content pane is grain-wrapped. -->
                 <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
@@ -1074,8 +1070,7 @@
                      stripe underneath as a 1px HeaderLineBrush bottom border rather than the
                      pane's own gray. Square corners: the band sits under the
                      location row, so a rounded top cuts two notches into a straight seam, and when
-                     the row is hidden PaneContent's clip already rounds whatever reaches the top
-                     of the pane (FilePane.xaml.cs PaneContent_SizeChanged). -->
+                     the row is hidden the frame clips the band to its inner border corners. -->
                 <Border x:Name="DetailsHeader" DockPanel.Dock="Top" Visibility="Collapsed"
                         Background="{DynamicResource TableHeaderBrush}" BorderBrush="{DynamicResource HeaderLineBrush}"
                         BorderThickness="0,0,0,1"
@@ -2532,6 +2527,6 @@
                   </Grid>
               </Border>
               </Grid>
-              </Border>
+              </local:PickerBorder>
             </Grid>
 </UserControl>

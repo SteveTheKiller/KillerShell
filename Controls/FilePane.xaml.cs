@@ -470,67 +470,17 @@ namespace KillerShell
         private void ToolStrip_SizeChanged(object s, SizeChangedEventArgs e) => Owner.ToolStrip_SizeChanged(this);
 
         /// <summary>
-        /// Clip the pane content to the pane's own rounded corners.
+        /// Refresh the border's inner clip after theme or active-tab corner changes.
+        /// PickerBorder includes the padding ring used by the 98SE bevel overlays.
         /// </summary>
-        /// <remarks>
-        /// One of the few things kept in this file rather than forwarded: it is geometry for
-        /// THIS pane, with no window state in it at all.
-        ///
-        /// A Border with a CornerRadius draws a rounded edge but does not clip its child, so
-        /// anything that reaches the top of the pane squares those corners off. Nothing ever did
-        /// while the location row was always present - the row's own background filled the
-        /// corner - so the bug only appeared once F10 could hide it and the terminal and results
-        /// list ran straight into the curve.
-        ///
-        /// Radius 5, not the border's 6: the clip sits INSIDE a 1px border, so it has to follow
-        /// the inner curve or it would show a hairline of content outside the stroke.
-        /// </remarks>
-        /// <summary>
-        /// Recompute the pane clip after a THEME change. The clip is only rebuilt on SizeChanged,
-        /// and a theme switch does not resize anything, so without this the pane keeps the previous
-        /// theme's corner radius until the window is dragged - which is how a flat theme could come
-        /// up with rounded corners. Called from MainWindow's ThemeChanged.
-        /// `e` is unused by the handler, so passing null is safe.
-        /// </summary>
-        internal void RefreshPaneClip() => PaneContent_SizeChanged(PaneContent, null!);
+        internal void RefreshPaneClip()
+        {
+            ResultsPane.InvalidateArrange();
+            ResultsPane.UpdateLayout();
+        }
 
         private void PaneContent_SizeChanged(object s, SizeChangedEventArgs e)
         {
-            if (s is not FrameworkElement el) return;
-            // PER-CORNER now, mirroring ResultsPane.CornerRadius - which Tabs.cs squares on the
-            // top corner under a first/last ACTIVE tab. The old uniform RectangleGeometry kept
-            // clipping the bar's top-right ROUND while the pane's own border squared, which left
-            // a tiny rounded bit of the menubar visible below the tab whenever the rightmost tab
-            // was the active one. Tabs.cs calls RefreshPaneClip whenever it
-            // re-syncs the corners, so the clip can never lag them. (This also still covers the
-            // 98SE case: its CornerRadius is 0 everywhere, so the geometry is a plain rect.)
-            var cr = ResultsPane.CornerRadius;
-            double w = el.ActualWidth, h = el.ActualHeight;
-            if (w <= 0 || h <= 0) return;
-            // The clip covers ResultsPane's PADDING ring too. On 98SE with the tab strip showing,
-            // Tabs.cs reserves the Win98 page edge as padding and pulls the edge overlays out into
-            // it with negative margins; a clip stopped at PaneContent's own rect cut every one of
-            // those lines off. Padding is 0 on every ordinary theme, so this is the same rect
-            // there.
-            var pad = ResultsPane.Padding;
-            double x0 = -pad.Left, y0 = -pad.Top, x1 = w + pad.Right, y1 = h + pad.Bottom;
-            double tl = cr.TopLeft, tr = cr.TopRight, br = cr.BottomRight, bl = cr.BottomLeft;
-            var g = new System.Windows.Media.StreamGeometry();
-            using (var c = g.Open())
-            {
-                c.BeginFigure(new Point(x0 + tl, y0), true, true);
-                c.LineTo(new Point(x1 - tr, y0), false, false);
-                if (tr > 0) c.ArcTo(new Point(x1, y0 + tr), new Size(tr, tr), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
-                c.LineTo(new Point(x1, y1 - br), false, false);
-                if (br > 0) c.ArcTo(new Point(x1 - br, y1), new Size(br, br), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
-                c.LineTo(new Point(x0 + bl, y1), false, false);
-                if (bl > 0) c.ArcTo(new Point(x0, y1 - bl), new Size(bl, bl), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
-                c.LineTo(new Point(x0, y0 + tl), false, false);
-                if (tl > 0) c.ArcTo(new Point(x0 + tl, y0), new Size(tl, tl), 0, false, System.Windows.Media.SweepDirection.Clockwise, false, false);
-            }
-            g.Freeze();
-            el.Clip = g;
-
             if (_paneScroller != null) SyncScrollChrome(_paneScroller);
 
             // The details columns are pixel widths shared by both panes, so they have to be
