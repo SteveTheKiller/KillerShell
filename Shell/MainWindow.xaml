@@ -697,9 +697,30 @@
                     <!-- System tools share one rail button; right-click offers elevated actions. -->
                     <Button x:Name="SystemToolsRailBtn" Style="{StaticResource RailButton}" Content="&#xE713;"
                             FontSize="12" Margin="0,0,0,10" Click="SystemToolsRail_Click"
-                            ToolTip="{DynamicResource Str_TT_SystemTools}">
+                            ToolTip="{DynamicResource Str_TT_SystemTools}" ContextMenuOpening="SystemToolsAdmin_Opening">
                         <Button.Resources>
-                            <local:OpaqueContextMenu x:Key="SystemToolsMenu" Placement="Right" HorizontalOffset="4">
+                            <Style x:Key="SystemToolsFlyoutStyle" TargetType="{x:Type local:OpaqueContextMenu}"
+                                   BasedOn="{StaticResource {x:Type local:OpaqueContextMenu}}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type local:OpaqueContextMenu}">
+                                            <Grid>
+                                                <Border Style="{StaticResource FlyoutCard}">
+                                                    <Grid>
+                                                        <ItemsPresenter/>
+                                                        <Border Style="{StaticResource FlyoutGrain}"/>
+                                                    </Grid>
+                                                </Border>
+                                                <Border IsHitTestVisible="False" Margin="22,18,22,26"
+                                                        BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                                                <Border IsHitTestVisible="False" Margin="22,18,22,26"
+                                                        BorderBrush="{DynamicResource BevelDarkBrush}" BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                            <local:OpaqueContextMenu x:Key="SystemToolsMenu" Style="{StaticResource SystemToolsFlyoutStyle}">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesOpen}" Click="RailProcessesOpen_Click" InputGestureText="F9">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8FD;"/></MenuItem.Icon>
                                 </MenuItem>
@@ -719,7 +740,7 @@
                             </local:OpaqueContextMenu>
                         </Button.Resources>
                         <Button.ContextMenu>
-                            <local:OpaqueContextMenu Placement="Right" HorizontalOffset="4">
+                            <local:OpaqueContextMenu Style="{StaticResource SystemToolsFlyoutStyle}">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesAdmin}" Click="RailProcessesAdmin_Click" InputGestureText="Ctrl+F9">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>

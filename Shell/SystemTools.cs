@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 
 namespace KillerShell.Shell
 {
@@ -10,10 +9,14 @@ namespace KillerShell.Shell
         {
             var menu = (ContextMenu)SystemToolsRailBtn.Resources["SystemToolsMenu"];
             SystemToolsRailBtn.ContextMenu.IsOpen = false;
-            menu.PlacementTarget = SystemToolsRailBtn;
-            menu.Placement = PlacementMode.Right;
-            menu.HorizontalOffset = 4;
-            menu.IsOpen = true;
+            ToggleRailFlyout(menu);
+        }
+
+        private void SystemToolsAdmin_Opening(object sender, ContextMenuEventArgs e)
+        {
+            ((ContextMenu)SystemToolsRailBtn.Resources["SystemToolsMenu"]).IsOpen = false;
+            FlyoutPlacement.UsePane(PaneHost);
+            FlyoutPlacement.Attach(SystemToolsRailBtn.ContextMenu, this);
         }
     }
 }
