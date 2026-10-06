@@ -1,6 +1,7 @@
 <Window x:Class="KillerShell.FolderPickerDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:picker="clr-namespace:KillerShell"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="{DynamicResource Str_Dlg_SelectFolder}"
         Width="980" Height="620" MinWidth="600" MinHeight="460"
@@ -19,7 +20,7 @@
 
     <!-- Row, view and column styles live in Controls.xaml, shared with FileDialog. -->
 
-    <Border x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+    <picker:PickerBorder x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
@@ -64,34 +65,7 @@
                     </Grid>
                     <!-- Foreground via Style setter so hover/press triggers can win over it -->
                     <Button Content="&#xE8BB;" Click="Cancel_Click" HorizontalAlignment="Right" Width="30" Height="26" FontSize="10"
-                            FontFamily="Segoe MDL2 Assets" Background="Transparent" BorderThickness="0" Cursor="Hand">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Foreground" Value="{DynamicResource ChromeTextBrush}"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <!-- SmallCornerRadius is 3 on all twelve rounded
-                                                 themes, the literal this replaces, and 0 on
-                                                 98SE where nothing is rounded. -->
-                                            <Border x:Name="xb" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                                                </Trigger>
-                                                <Trigger Property="IsPressed" Value="True">
-                                                    <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                                                    <Setter TargetName="xb" Property="Background" Value="#33C42B1C"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                            FontFamily="Segoe MDL2 Assets" Background="Transparent" BorderThickness="0" Cursor="Hand" Style="{StaticResource ChromeCloseButton}"/>
                 </Grid>
             </Border>
 
@@ -258,5 +232,5 @@
                 </StackPanel>
             </Grid>
         </Grid>
-    </Border>
+    </picker:PickerBorder>
 </Window>
