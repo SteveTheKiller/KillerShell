@@ -1,6 +1,7 @@
 <Window x:Class="KillerShell.RegistryValueEditDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:picker="clr-namespace:KillerShell"
         Title="KillerShell"
         Width="440" SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
@@ -20,7 +21,7 @@
          four input panels below is visible at a time. Requires an explicit Save click; there is
          no auto-save on focus-lost anywhere in this dialog (CLAUDE.md safety rule for this
          feature) - tabbing away from a half-typed edit must never silently write bad data. -->
-    <Border x:Name="RootBorder" Opacity="0"
+    <picker:PickerBorder x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
             BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="1"
@@ -31,7 +32,7 @@
                               Opacity="{DynamicResource FlyoutShadowOpacity}"/>
         </Border.Effect>
         <Grid>
-            <Border IsHitTestVisible="False" CornerRadius="6"
+            <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
                     Opacity="{DynamicResource GrainOpacity}"
                     Background="{DynamicResource GrainTileBrush}"/>
             <!-- Raised dialog bevel, the ConfirmDialog/ProcessDetails pair - inert on every
@@ -164,5 +165,5 @@
                 </StackPanel>
             </Grid>
         </Grid>
-    </Border>
+    </picker:PickerBorder>
 </Window>

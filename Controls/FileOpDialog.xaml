@@ -10,6 +10,7 @@
 <Window x:Class="KillerShell.FileOpDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:picker="clr-namespace:KillerShell"
         Title="KillerShell"
         Width="480" SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
@@ -23,7 +24,7 @@
         SnapsToDevicePixels="True"
         ShowInTaskbar="False">
 
-    <Border x:Name="RootBorder" Opacity="0"
+    <picker:PickerBorder x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
             BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="1"
@@ -34,7 +35,7 @@
                               Opacity="{DynamicResource FlyoutShadowOpacity}"/>
         </Border.Effect>
         <Grid>
-            <Border IsHitTestVisible="False" CornerRadius="6"
+            <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
                     Opacity="{DynamicResource GrainOpacity}"
                     Background="{DynamicResource GrainTileBrush}"/>
 
@@ -185,5 +186,5 @@
                 </Grid>
             </Grid>
         </Grid>
-    </Border>
+    </picker:PickerBorder>
 </Window>

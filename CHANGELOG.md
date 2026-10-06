@@ -19,7 +19,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Selected states now use subtle gradients outside 98SE, Light buttons have softer gray borders, and yellow wordmarks match their accent.
 
 ### Fixed
-- Fixed picker corners and kept the close X white over its red hover background.
+- Fixed picker and dialog frame corners and kept the close X white over its red hover background.
 - Linux terminals report their current folder and use the correct clear and folder-change commands. PowerShell profile actions stay scoped to PowerShell.
 - Main window and dialog title bar icons use size-matched frames.
 - With one pane open, the active tab's outline fades into the tab at its foot instead of ending in a hard line.

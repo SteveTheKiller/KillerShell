@@ -20,7 +20,7 @@
 
     <!-- Row, view and column styles live in Controls.xaml, shared with FileDialog. -->
 
-    <picker:PickerBorder x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
+<picker:PickerBorder x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="0">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>

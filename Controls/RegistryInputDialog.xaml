@@ -1,6 +1,7 @@
 <Window x:Class="KillerShell.RegistryInputDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:picker="clr-namespace:KillerShell"
         Title="KillerShell"
         Width="380" SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
@@ -18,7 +19,7 @@
          one input shape ConfirmDialog itself does not carry (message + optional checkboxes only),
          so this is its sibling rather than a reused instance. Used for renaming a key/value and
          for naming a freshly created key/value (RegistryEditorControl.cs). -->
-    <Border x:Name="RootBorder" Opacity="0"
+    <picker:PickerBorder x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
             BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="1"
@@ -29,7 +30,7 @@
                               Opacity="{DynamicResource FlyoutShadowOpacity}"/>
         </Border.Effect>
         <Grid>
-            <Border IsHitTestVisible="False" CornerRadius="6"
+            <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
                     Opacity="{DynamicResource GrainOpacity}"
                     Background="{DynamicResource GrainTileBrush}"/>
 
@@ -102,5 +103,5 @@
                 </StackPanel>
             </Grid>
         </Grid>
-    </Border>
+    </picker:PickerBorder>
 </Window>

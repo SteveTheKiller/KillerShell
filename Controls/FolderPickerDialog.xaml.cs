@@ -42,6 +42,9 @@ namespace KillerShell
         {
             InitializeComponent();
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
+            void RefreshPickerChrome() => PickerWindowChrome.Apply(this, RootBorder);
+            Loaded += (_, _) => Services.ThemeManager.ThemeChanged += RefreshPickerChrome;
+            Closed += (_, _) => Services.ThemeManager.ThemeChanged -= RefreshPickerChrome;
 
             // Remember the last picker size AND placement across opens and restarts
             // (HKCU\Software\KillerShell via the shared registry setting hooks).
@@ -90,8 +93,7 @@ namespace KillerShell
             // claims WM_ERASEBKGND (KillerPDF's anti-flash trick for resizes).
             SourceInitialized += (_, _) =>
             {
-                ApplyRoundedCorners();
-                MainWindow.ApplyThemeBorder(this);
+                PickerWindowChrome.Apply(this, RootBorder);
                 var src = (System.Windows.Interop.HwndSource?)PresentationSource.FromVisual(this);
                 src?.AddHook((h, msg, w, l, ref handled) =>
                 {
@@ -365,21 +367,6 @@ namespace KillerShell
         }
 
         // ── Chrome / confirm ─────────────────────────────────────────────────────
-        [System.Runtime.InteropServices.DllImport("dwmapi.dll")]
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
-
-        private void ApplyRoundedCorners()
-        {
-            try
-            {
-                var hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
-                if (hwnd == IntPtr.Zero) return;
-                int pref = 2;   // DWMWCP_ROUND
-                _ = DwmSetWindowAttribute(hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, ref pref, sizeof(int));
-            }
-            catch { /* pre-Win11: no rounded-corner API */ }
-        }
-
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
 
         private void Cancel_Click(object sender, RoutedEventArgs e) => Close();

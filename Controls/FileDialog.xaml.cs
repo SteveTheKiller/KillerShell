@@ -89,6 +89,9 @@ namespace KillerShell
             _mode = mode;
             InitializeComponent();
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
+            void RefreshPickerChrome() => PickerWindowChrome.Apply(this, RootBorder);
+            Loaded += (_, _) => Services.ThemeManager.ThemeChanged += RefreshPickerChrome;
+            Closed += (_, _) => Services.ThemeManager.ThemeChanged -= RefreshPickerChrome;
 
             // Size and placement remembered separately from the folder picker: this dialog is a
             // different shape and sharing the keys would make each one fight the other.
@@ -135,11 +138,7 @@ namespace KillerShell
 
             SourceInitialized += (_, _) =>
             {
-                MainWindow.ApplyThemeBorder(this);
-                // Rounded corners AND, on Windows 11, the standard window drop shadow that comes
-                // bundled with them for a chromeless popup (2026-08-03 - see
-                // Chrome.cs ApplyWindowCorners's own remark). Never wired in here before now.
-                MainWindow.ApplyWindowCorners(this, rounded: true);
+                PickerWindowChrome.Apply(this, RootBorder);
                 var src = (System.Windows.Interop.HwndSource?)PresentationSource.FromVisual(this);
                 src?.AddHook((h, msg, w, l, ref handled) =>
                 {

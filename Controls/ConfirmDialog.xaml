@@ -1,6 +1,7 @@
 <Window x:Class="KillerShell.ConfirmDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:picker="clr-namespace:KillerShell"
         Title="KillerShell"
         Width="380" SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
@@ -21,7 +22,7 @@
     <!-- CornerRadius and the halo margin come from the theme. The halo is the transparent gutter
          the drop shadow needs; a flat theme sets it to 0 because it casts no shadow, and leaving
          a 10px invisible margin there would push the resize grab outside the visible window. -->
-    <Border x:Name="RootBorder" Opacity="0"
+    <picker:PickerBorder x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
             BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="{DynamicResource DialogOuterBorderThickness}"
@@ -130,5 +131,5 @@
                 </StackPanel>
             </Grid>
         </Grid>
-    </Border>
+    </picker:PickerBorder>
 </Window>
