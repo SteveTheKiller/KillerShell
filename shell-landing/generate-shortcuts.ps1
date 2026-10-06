@@ -1,7 +1,8 @@
 param(
     [string]$Source = (Join-Path $PSScriptRoot '..\Shell\ShortcutsOverlay.cs'),
     [string]$StringsDirectory = (Join-Path $PSScriptRoot '..\Strings'),
-    [string]$Output = (Join-Path $PSScriptRoot 'shortcuts.generated.js')
+    [string]$Output = (Join-Path $PSScriptRoot 'shortcuts.generated.js'),
+    [switch]$Check
 )
 
 $sourceText = [IO.File]::ReadAllText((Resolve-Path $Source))
@@ -23,18 +24,20 @@ foreach ($locale in $localeFiles.Keys) {
     $labels[$locale] = $dict
 }
 
-$pattern = 'new\(KsScope\.(?<scope>\w+),\s*"(?<cat>[^"]+)",\s*"(?<keys>[^"]*)",\s*"(?<label>Str_[^"]+)"'
+$pattern = 'new\(KsScope\.(?<scope>\w+),\s*"(?<cat>[^"]+)",\s*"(?<keys>[^"]*)",\s*"(?<label>Str_[^"]+)",\s*KbLayer\.(?<layer>\w+)(?<caps>[^)]*)\)'
 $rows = foreach ($match in [regex]::Matches($sourceText, $pattern)) {
-    if (-not $match.Groups['keys'].Value) { continue }
     $labelKey = $match.Groups['label'].Value
     $row = [ordered]@{
         scope = $match.Groups['scope'].Value
         category = $match.Groups['cat'].Value
         keys = $match.Groups['keys'].Value
+        layer = $match.Groups['layer'].Value.ToLowerInvariant()
+        caps = @([regex]::Matches($match.Groups['caps'].Value, '"(?<id>[^"]+)"') | ForEach-Object { $_.Groups['id'].Value })
         label = [ordered]@{}
     }
     foreach ($locale in $localeFiles.Keys) {
-        $row.label[$locale] = $(if ($labels[$locale].ContainsKey($labelKey)) { $labels[$locale][$labelKey] } else { $labels.en[$labelKey] })
+        if (!$labels[$locale].ContainsKey($labelKey)) { throw "Missing $locale shortcut label: $labelKey" }
+        $row.label[$locale] = $labels[$locale][$labelKey]
     }
     $row
 }
@@ -58,5 +61,12 @@ foreach ($view in ([ordered]@{ List='Str_Ks_ViewList'; Keyboard='Str_Ks_ViewKeyb
 $json = $rows | ConvertTo-Json -Depth 3 -Compress
 $metaJson = $meta | ConvertTo-Json -Depth 4 -Compress
 $content = "/* Generated from Shell/ShortcutsOverlay.cs and every Strings dictionary. */`nwindow.KS_SHORTCUTS=$json;`nwindow.KS_SHORTCUT_META=$metaJson;`n"
-[IO.File]::WriteAllText($Output, $content, [Text.UTF8Encoding]::new($false))
-Write-Host "Generated $($rows.Count) shortcut rows -> $Output"
+$content = $content.Replace("'", '\u0027').Replace('<', '\u003c').Replace('>', '\u003e').Replace('&', '\u0026')
+if ($content.IndexOf([char]0x2013) -ge 0 -or $content.IndexOf([char]0x2014) -ge 0) { throw 'Prohibited dash in generated content' }
+if ($Check) {
+    if (!(Test-Path -LiteralPath $Output) -or [IO.File]::ReadAllText($Output) -cne $content) { throw 'Generated shortcuts are stale. Run generate-shortcuts.ps1' }
+    Write-Host "Generated shortcuts are current ($($rows.Count) rows, $($localeFiles.Count) locales)"
+} else {
+    [IO.File]::WriteAllText($Output, $content, [Text.UTF8Encoding]::new($false))
+    Write-Host "Generated $($rows.Count) shortcut rows -> $Output"
+}

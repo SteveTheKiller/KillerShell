@@ -2,6 +2,106 @@
    Page-specific behavior (screenshot strip, outline scroll-spy) stays inline per page. */
 (function () {
   var root = document.documentElement;
+  var chromeEnglish = {"site_ui_theme":"Theme","site_ui_choose_theme":"Choose theme","site_ui_accent":"Accent color","site_ui_close":"Close","site_ui_language":"Language","site_ui_copy":"Copy to clipboard","site_ui_copied":"Copied","site_ui_click":"Click me","site_ui_home":"Home","site_ui_shortcuts":"Shortcut view","site_ui_screenshot":"Screenshot","site_ui_red":"Red","site_ui_orange":"Orange","site_ui_yellow":"Yellow","site_ui_green":"Green","site_ui_teal":"Teal","site_ui_blue":"Blue","site_ui_purple":"Purple","site_ui_magenta":"Magenta","site_ui_expand":"Expand section","site_ui_collapse":"Collapse section","site_ui_family":"Part of","footer_src":"Source on GitHub"};
+  function chromeText(key) {
+    var lang = root.getAttribute('lang') || 'en';
+    if (lang === 'zh-Hant') lang = 'zh';
+    if (lang === 'zh-Hans') lang = 'zh-cn';
+    var dict = window.I18N && window.I18N[lang];
+    return dict && dict[key] != null ? dict[key] : chromeEnglish[key] || (EN && EN[key]);
+  }
+  function localizeChrome() {
+    function label(selector, key, attribute) {
+      document.querySelectorAll(selector).forEach(function (element) { element.setAttribute(attribute, chromeText(key)); });
+    }
+    label('.theme-toggle', 'site_ui_theme', 'title');
+    label('.theme-toggle', 'site_ui_choose_theme', 'aria-label');
+    label('.tgrp', 'site_ui_theme', 'aria-label');
+    label('#accentToggle', 'site_ui_accent', 'title');
+    label('#accentToggle, #accentPop, .accent-bar', 'site_ui_accent', 'aria-label');
+    label('.accent-bar .x', 'site_ui_close', 'aria-label');
+    label('#langToggle', 'site_ui_language', 'title');
+    label('#langToggle, .lang-switch', 'site_ui_language', 'aria-label');
+    label('.tb-home', 'site_ui_home', 'title');
+    label('#verEgg', 'site_ui_click', 'title');
+    label('.ks-viewtoggle', 'site_ui_shortcuts', 'aria-label');
+    label('#lightbox', 'site_ui_screenshot', 'aria-label');
+    ['red','orange','yellow','green','teal','blue','purple','magenta'].forEach(function (color) {
+      label('.acc[data-accent="' + color + '"]', 'site_ui_' + color, 'title');
+      label('.acc[data-accent="' + color + '"]', 'site_ui_' + color, 'aria-label');
+    });
+    var accentLabel = document.querySelector('.accent-bar .lbl');
+    if (accentLabel) {
+      var lang = root.getAttribute('lang');
+      if (lang === 'zh-Hant') lang = 'zh';
+      if (lang === 'zh-Hans') lang = 'zh-cn';
+      accentLabel.textContent = window.I18N && window.I18N[lang] ? window.I18N[lang].accent_label : 'accent:';
+    }
+  }
+
+  function localizeExtras() {
+    document.querySelectorAll('.ol-chev').forEach(function (button) { button.setAttribute('aria-label', chromeText('site_ui_expand')); });
+    document.querySelectorAll('.statusbar .left').forEach(function (footer) {
+      var sourceLink = footer.querySelector('a[href*="github.com/SteveTheKiller/KillerShell"]');
+      if (sourceLink) sourceLink.textContent = chromeText('footer_src');
+      [].slice.call(footer.childNodes).forEach(function (node) {
+        if (node.nodeType !== 3) return;
+        if (!node._familyEnglish && node.nodeValue.indexOf('Part of') >= 0) node._familyEnglish = node.nodeValue;
+        if (node._familyEnglish) node.nodeValue = node._familyEnglish.replace('Part of', chromeText('site_ui_family'));
+      });
+    });
+    document.querySelectorAll('.sb-thumb').forEach(function (button) {
+      var image = button.querySelector('img');
+      if (!image) return;
+      if (!button.dataset.englishDescription) button.dataset.englishDescription = image.alt;
+      var description = screenshotDescription(+button.dataset.idx, button.dataset.englishDescription);
+      button.title = description; button.setAttribute('aria-label', description);
+      image.alt = description; image.title = description;
+    });
+    var preview = document.getElementById('lightboxImg');
+    if (preview && preview.dataset.englishDescription) {
+      var match = preview.src.match(/(\d+)\.png(?:[?#].*)?$/);
+      if (match) {
+        var description = screenshotDescription(+match[1], preview.dataset.englishDescription);
+        preview.alt = description; preview.title = description;
+        var caption = document.getElementById('lightboxCaption');
+        if (caption) caption.textContent = description;
+      }
+    }
+    document.querySelectorAll('svg text[data-max-width]').forEach(function (text) {
+      text.removeAttribute('textLength');
+      if (text.getComputedTextLength && text.getComputedTextLength() > +text.dataset.maxWidth) {
+        text.setAttribute('textLength', text.dataset.maxWidth);
+        text.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+      }
+    });
+    var heading = document.querySelector('.page-hero .page-title, .help-hero .page-title, .hero .tagline');
+    var intro = document.querySelector('.page-hero p[data-i18n], .hero p[data-i18n], .help-hero p[data-i18n]');
+    if (heading) {
+      var titleKey = document.querySelector('[data-i18n="t_hero_kicker"]') ? 'nav_tech' : document.querySelector('[data-i18n="h_hero_kicker"]') ? 'nav_howto' : document.querySelector('[data-i18n="about_kicker"]') ? 'nav_about' : null;
+      document.title = 'KillerShell: ' + (titleKey ? chromeText(titleKey) : heading.textContent.trim());
+      document.querySelectorAll('meta[property="og:title"], meta[name="twitter:title"]').forEach(function (meta) { meta.content = document.title; });
+    }
+    if (intro) document.querySelectorAll('meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]').forEach(function (meta) { meta.content = intro.textContent.trim(); });
+  }
+  function screenshotDescription(index, english) {
+    var lang = root.getAttribute('lang') || 'en';
+    if (lang === 'zh-Hant') lang = 'zh';
+    if (lang === 'zh-Hans') lang = 'zh-cn';
+    var dict = window.I18N && window.I18N[lang];
+    if (!dict) return english;
+    var captions = [
+      'Dark: ' + dict.f_fname_t,
+      '98SE: ' + dict.f_storage_t + ', ' + dict.f_perf_t,
+      'Cyanotic: ' + dict.f_procsvc_t + ', PowerShell',
+      'Delirium: ' + dict.f_editor_t + ', ' + dict.f_reg_t,
+      'Light: ' + dict.f_browse_t,
+      'Black: ' + dict.h_nav_shortcuts,
+      'Blood: ' + dict.f_panes_t + ', ' + dict.f_fileops_t
+    ];
+    return 'KillerShell ' + (captions[index - 1] || english);
+  }
+  window.ksLocalizeChrome = function () { localizeChrome(); localizeExtras(); };
   var THEMES = ['dark','light','hc','blood','greed','cyanotic','ectoplasm','decay','malaise','sepulchre','delirium','mourning'];
   var NEUTRAL = ['dark','light','hc'];
   var THEMED = ['blood','greed','cyanotic','ectoplasm','decay','malaise','sepulchre','delirium','mourning'];  // fixed-color wordmark art
@@ -32,8 +132,8 @@
     var toggle = document.createElement('button');
     toggle.type = 'button';
     toggle.className = 'theme-toggle';
-    toggle.title = 'Theme';
-    toggle.setAttribute('aria-label', 'Choose theme');
+    toggle.title = chromeText('site_ui_theme');
+    toggle.setAttribute('aria-label', chromeText('site_ui_choose_theme'));
     toggle.setAttribute('aria-haspopup', 'true');
     toggle.setAttribute('aria-expanded', 'false');
     var preview = document.createElement('span');
@@ -100,7 +200,7 @@
       if (p) { d.style.background = p[0]; d.style.color = p[0]; }
       d.setAttribute('aria-pressed', d.dataset.accent === name ? 'true' : 'false');
     });
-    if (accToggle) { accToggle.style.background = pair[0]; accToggle.title = 'Accent color'; }
+    if (accToggle) { accToggle.style.background = pair[0]; accToggle.title = chromeText('site_ui_accent'); }
     try { localStorage.setItem('kshell-accent', name); } catch (e) {}
     updateLogos();
   }
@@ -142,7 +242,7 @@
     var blbl = document.createElement('span'); blbl.className = 'lbl'; blbl.textContent = 'accent:';
     pill.appendChild(blbl);
     accDots.forEach(function (d) { pill.appendChild(d); });
-    var bx = document.createElement('button'); bx.className = 'x'; bx.setAttribute('aria-label', 'Close'); bx.innerHTML = '&times;';
+    var bx = document.createElement('button'); bx.className = 'x'; bx.setAttribute('aria-label', chromeText('site_ui_close')); bx.innerHTML = '&times;';
     bx.addEventListener('click', hideAccentBar);
     pill.appendChild(bx);
     accentBar.appendChild(pill);
@@ -226,6 +326,8 @@
       var k = n.getAttribute('data-i18n');
       n.innerHTML = (dict && dict[k] != null) ? dict[k] : EN[k];
     });
+    localizeChrome();
+    localizeExtras();
     langItems.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'); });
     if (langToggle) langToggle.innerHTML = FLAGS[lang] || FLAGS.en;
     try { localStorage.setItem('kshell-lang', lang); } catch (e) {}
@@ -260,7 +362,7 @@
     var i;
     do { i = Math.floor(Math.random() * eggLines.length); } while (i === lastEggLine);
     lastEggLine = i;
-    return eggLines[i];
+    return chromeText('site_egg_' + i) || eggLines[i];
   }
 
   var verEgg = document.getElementById('verEgg');

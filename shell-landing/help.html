@@ -195,7 +195,9 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="acc-item"><button class="acc-head" data-i18n="hx_007">Registering vs defaulting<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_win_p2">Registering and defaulting are two different things, and only one of them is KillerShell's to do. Since Windows 8 the key that records your default app has been protected by a signed hash, so any program claiming to make itself the default is either forging that or about to stop working when Windows notices. KillerShell registers, then opens Settings on its own entry so you can pick per file type. Nothing changes until you do.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_008">.bat, .cmd &amp; .reg handling<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_win_p3"><code>.bat</code>, <code>.cmd</code> and <code>.reg</code> deliberately get an "Edit with KillerShell" row rather than taking the open verb. Their double-click runs or merges them, and quietly changing what that means is how someone loses an afternoon. <code>.ps1</code> is treated as ordinary text, because Windows already opens those in an editor on double-click.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_009">Per-user vs all-users<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_win_p4">Per-user by default. Tick the box in an elevated window to register for everyone on the PC. Both uninstall paths take it back out again, so a registration never outlives the .exe it points at. If you are running portable the card says so, because the associations will point at wherever that .exe sits right now.</p></div></div></div>
-<div class="acc-item"><button class="acc-head" data-i18n="hx_010">Command-line arguments<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_win_p5">Handing KillerShell a path works whether or not you register anything: <code>KillerShell.exe "C:\logs"</code> browses that folder, and <code>KillerShell.exe "C:\logs\today.log"</code> opens the file in an editor tab.</p></div></div></div>
+<div class="acc-item"><button class="acc-head" data-i18n="hx_010">Command-line arguments<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_win_p5">Handing KillerShell a path works whether or not you register anything: <code>KillerShell.exe "C:\logs"</code> browses that folder, and <code>KillerShell.exe "C:\logs\today.log"</code> opens the file in an editor tab.</p><p data-i18n="t_cli_p">The read-only CLI returns JSON for files, search, processes, services, events, registry, drives and SHA-256 hashes. Security-log access requires administrator privileges.</p><pre><code>KillerShell.exe --cli list "C:\logs"
+KillerShell.exe --cli search "C:\logs" --content "error"
+KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 
 <h2 class="help-cat" id="start" data-i18n="h_nav_start">Getting started</h2>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_011">First launch<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_start_p1">Download the .exe and run it. There is nothing to install, no account to make and no runtime to fetch. KillerShell opens on your home folder and is ready to work. If you want it in the Start Menu, the <b>PORTABLE</b> badge in the title bar opens the built-in installer.</p></div></div></div>
@@ -254,7 +256,8 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="acc-item"><button class="acc-head" data-i18n="hx_066">Details &amp; preview<span class="kbd">Alt+P</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="hx_067"><b>Alt+P</b> shows or hides a bottom-anchored file details pane for the item you have selected: type, size, dates, attributes, the full path, and a thumbnail for images or the type icon for everything else. It tracks the selection live and collapses to a thin line when there is nothing to show. Drag its top edge to make it taller. Each pane has its own strip, and each remembers whether it was open and how tall you made it.</p></div></div></div>
 
 <h2 class="help-cat" id="terminal" data-i18n="h_nav_terminal">The terminal</h2>
-<div class="acc-item"><button class="acc-head" data-i18n="hx_068">Opening a shell<span class="kbd">F8 / Shift+F8 / Ctrl+F8 / Ctrl+Shift+F8</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p1"><b>F8</b> opens PowerShell in the folder you are looking at, <b>Shift+F8</b> opens CMD, and <b>Ctrl+F8</b> opens PowerShell elevated. The terminal button on the rail does the same on a left click, and right-clicking it lets you pick the host. A shell opened from a result's right-click menu starts in that file's folder.</p><p data-i18n="hx_069"><b>Ctrl+Shift+F8</b> is the fourth of the set: CMD, elevated. <b>Ctrl+backtick</b> and <b>Ctrl+Alt+backtick</b> are aliases for the two PowerShell ones, because VS Code and Windows Terminal both train that chord. PowerShell means pwsh where PowerShell 7 is installed and Windows PowerShell where it is not, decided when the tab opens rather than when the app starts, so installing 7 mid-session is picked up on the next shell.</p></div></div></div>
+<div class="acc-item"><button class="acc-head" data-i18n="h_profiles_h">Terminal profiles &amp; WSL<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_profiles_p">Use the terminal profile menu to manage profiles: choose the default, name a custom command, set its executable, arguments and start folder, or hide a profile. Installed WSL distributions appear automatically. Their Linux folders are available in the sidebar and can be pinned.</p></div></div></div>
+<div class="acc-item"><button class="acc-head" data-i18n="hx_068">Opening a shell<span class="kbd">F8 / Shift+F8 / Ctrl+F8 / Ctrl+Shift+F8</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p1"><b>F8</b> opens your default terminal profile. <b>Shift+F8</b> opens CMD and <b>Ctrl+F8</b> opens elevated PowerShell. Right-click the terminal rail button to choose a profile.</p><p data-i18n="hx_069"><b>Ctrl+Shift+F8</b> opens elevated CMD. <code>Ctrl+` = F8</code>; <code>Ctrl+Alt+` = Ctrl+F8</code>.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_070">Editable working directory<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p2">The working directory is tracked live and shown on the shell's toolbar. <b>Click it</b> to edit it in place - type a folder and press Enter to <code>cd</code> the running shell straight there, or press Escape to cancel without changing anything. The right-click menu has copy, paste, select all, clear, a new terminal, open folder here, fonts, and edit or reset the prompt.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_071">PowerShell profile<span class="kbd">Ctrl+,</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p3">KillerShell ships a prompt script you can edit or put back. Your own PowerShell <b>$PROFILE</b> is reachable from the rail menu, the shell's right-click menu or <b>Ctrl+comma</b>. The submenu lists the PowerShell hosts actually installed on the machine, because PowerShell 7 and Windows PowerShell do not share a profile and editing the wrong one is most of the "why is my profile not loading" in the world. It asks each host where its profile is rather than assuming a path, which matters on any machine where OneDrive has redirected Documents. A profile that does not exist yet is created.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_072">The prompt &amp; fallback font<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_term_p4">The prompt draws powerline separators, a git branch mark and its own chevron, none of which any monospaced font Windows ships actually has. Rather than making you install a Nerd Font, KillerShell carries a 26-glyph, 2.9 KB fallback face and uses it only for the characters your chosen font is missing. Pick any font you like; the prompt still renders.</p></div></div></div>
@@ -519,11 +522,11 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="kb-layers" id="kbScopes"></div>
 <div class="kb-layers" id="kbLayers"></div>
 <div class="kb-scroll"><div class="kb-board" id="kbBoard"></div></div>
-<div class="kb-detail" id="kbDetail">Click or hover a lit key to see what it does.</div>
+<div class="kb-detail" id="kbDetail" data-i18n="site_kb_detail_hint">Hover a highlighted key to see its action.</div>
 </div>
 
 <h2 class="help-cat" id="looks" data-i18n="h_nav_looks">Themes &amp; fonts</h2>
-<div class="acc-item"><button class="acc-head" data-i18n="hx_110">Themes &amp; accents<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p1">Thirteen themes: Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium and Mourning. Dark, Light, Black and 98SE each carry six accent colors; the other nine are a palette on their own. The paint roller at the bottom of the rail switches them live, and nothing restarts.</p><p data-i18n="hx_111">The flyout stays open while you try them, and the switch is a crossfade rather than the window changing in pieces. Two more rows live under the themes: the Fonts dialog, and the File associations card.</p></div></div></div>
+<div class="acc-item"><button class="acc-head" data-i18n="hx_110">Themes &amp; accents<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p1">13 themes, 41 looks: Dark, Light, Black and 98SE each have 8 accent colors. The other 9 have fixed palettes. Switch live without restarting.</p><p data-i18n="hx_111">The flyout stays open while you try them, and the switch is a crossfade rather than the window changing in pieces. Two more rows live under the themes: the Fonts dialog, and the File associations card.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_112">Fonts dialog<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p2">The Fonts dialog has three slots: the app, the terminal and the editor. The terminal and editor lists are filtered to fixed-width faces. Roll the wheel over a list to browse faces and each one applies as you land on it, so you see it before you commit to it.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_113">App size &amp; density<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p3">Roll the wheel over the wordmark in the title bar to resize the whole app, about 2% a notch between 70% and 250%. It reflows rather than stretching a bitmap, so text stays sharp, and the setting is remembered. The density button on the rail separately controls how tightly the result rows are packed.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_114">Language<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_look_p4">The language menu is the globe on the rail, above the theme button. Nineteen languages, switched live: English, Spanish, German, French, Hungarian, Italian, Turkish, Vietnamese, Polish, Czech, Japanese, Chinese in both Traditional and Simplified, Bengali, Russian, Kazakh, Ukrainian, Norwegian (Bokmål) and Brazilian Portuguese.</p></div></div></div>
@@ -538,9 +541,9 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <span class="right"><span id="verEgg" title="click me">v1.2.6</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
-<script src="ks-i18n.js?v=5"></script>
-<script src="shortcuts.generated.js?v=3"></script>
-<script src="ks.js?v=6"></script>
+<script src="ks-i18n.js?v=7"></script>
+<script src="shortcuts.generated.js?v=4"></script>
+<script src="ks.js?v=7"></script>
 <script>
 /* Replace the checked-in fallback with the table generated from the app's KsAll source. */
 (function () {
@@ -555,7 +558,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
    if (keyboardButton) keyboardButton.textContent = localized(meta.views && meta.views.Keyboard, lang) || 'KEYBOARD';
    host.textContent = '';
    scopeOrder.forEach(function (scope) {
-    var scoped = rows.filter(function (r) { return r.scope === scope; });
+    var scoped = rows.filter(function (r) { return r.scope === scope && r.keys; });
     if (!scoped.length) return;
     var heading = document.createElement('h3'); heading.className = 'kbd-scope';
     heading.textContent = localized(meta.scopes && meta.scopes[scope], lang) || scope; host.appendChild(heading);
@@ -633,174 +636,27 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
      ["","",0.6],["Left","←",1],["Down","↓",1],["Right","→",1]]
   ];
 
-  // scope -> layer -> keycap id -> [category, short keycap label, full description]. Every entry
-  // is a row of KsAll; labels are shortened for the fixed-size keycap the way the app's marquee
-  // shortens them on hover instead. Where one binding owns several caps (Ctrl+1-9, Alt+1-0,
-  // Ctrl+X / C / V) each cap carries its own short label and they share the description.
-  var KB_SCOPES = {
-    global: {
-      base: {
-        Enter:["search","Run","run the search"],
-        Back:["nav","Back","go back"],
-        F8:["tabs","Shell","open a PowerShell tab in this folder"],
-        F9:["tabs","Task Mgr","open the Processes/Services tab"],
-        F11:["tabs","Perf","open the Performance tab"],
-        F4:["tabs","Storage","Storage Analyzer"],
-        F5:["view","Refresh","refresh - re-list the folder, or re-run the search"],
-        F10:["view","Dual pane","second pane - right-click to flip side-by-side / stacked"],
-        Esc:["edit","Esc","close popups, stop the search, then offer to quit"],
-        F1:["help","Help","show this card"],
-        F12:["help","About","show the about card"]
-      },
-      ctrl: {
-        E:["search","Focus","put the caret in the search box"],
-        F:["search","Filter","filter the results"],
-        L:["nav","Address","edit the location - type a path and press Enter"],
-        O:["nav","Folder","choose the folder"],
-        B:["nav","Bookmarks","show or hide bookmarks"],
-        N:["tabs","New win","open a new window"],
-        T:["tabs","New tab","new search tab"],
-        W:["tabs","Close tab","close the current tab"],
-        Tab:["tabs","Next tab","next tab (Shift: previous)"],
-        D1:["tabs","Tab 1","jump to tab 1-9 (9 = last)"], D2:["tabs","Tab 2","jump to tab 1-9 (9 = last)"],
-        D3:["tabs","Tab 3","jump to tab 1-9 (9 = last)"], D4:["tabs","Tab 4","jump to tab 1-9 (9 = last)"],
-        D5:["tabs","Tab 5","jump to tab 1-9 (9 = last)"], D6:["tabs","Tab 6","jump to tab 1-9 (9 = last)"],
-        D7:["tabs","Tab 7","jump to tab 1-9 (9 = last)"], D8:["tabs","Tab 8","jump to tab 1-9 (9 = last)"],
-        D9:["tabs","Tab 9","jump to tab 1-9 (9 = last)"],
-        Grave:["tabs","Shell","open a PowerShell tab in this folder"],
-        F8:["tabs","Shell admin","open PowerShell as administrator"],
-        F9:["tabs","Task Mgr admin","open the Processes/Services tab as administrator"],
-        F4:["tabs","Storage admin","Storage Analyzer, elevated scan"],
-        F12:["tabs","Event Viewer","open the Event Viewer tab (always elevated)"],
-        F11:["tabs","Reg Editor","open the Registry Editor tab (always elevated)"],
-        F10:["view","Menu bar","hide or show the pane menubar"],
-        H:["view","Hidden","show hidden and system items"],
-        Right:["view","Expand","expand every result"],
-        Left:["view","Collapse","collapse every result"],
-        Comma:["file","PS profile","edit PowerShell profile"]
-      },
-      ctrlshift: {
-        A:["search","Add term","add a search term"],
-        F:["search","Pipe","search within these results, in a new tab"],
-        Tab:["tabs","Prev tab","next tab (Shift: previous)"],
-        F8:["tabs","CMD admin","open CMD as administrator"],
-        P:["view","Dual pane","second pane - right-click to flip side-by-side / stacked"],
-        S:["view","Search panel","show or hide the search panel"]
-      },
-      shift: {
-        F7:["search","Filter","add a filter"],
-        F8:["tabs","CMD","open a CMD tab in this folder"]
-      },
-      alt: {
-        C:["search","Case","toggle case-sensitive matching"],
-        D:["nav","Address","edit the location - type a path and press Enter"],
-        Left:["nav","Back","go back / forward"],
-        Right:["nav","Forward","go back / forward"],
-        Up:["nav","Up","go up one folder"],
-        D1:["nav","Bmk 1","go to bookmark 1-10 (0 = tenth)"], D2:["nav","Bmk 2","go to bookmark 1-10 (0 = tenth)"],
-        D3:["nav","Bmk 3","go to bookmark 1-10 (0 = tenth)"], D4:["nav","Bmk 4","go to bookmark 1-10 (0 = tenth)"],
-        D5:["nav","Bmk 5","go to bookmark 1-10 (0 = tenth)"], D6:["nav","Bmk 6","go to bookmark 1-10 (0 = tenth)"],
-        D7:["nav","Bmk 7","go to bookmark 1-10 (0 = tenth)"], D8:["nav","Bmk 8","go to bookmark 1-10 (0 = tenth)"],
-        D9:["nav","Bmk 9","go to bookmark 1-10 (0 = tenth)"], D0:["nav","Bmk 10","go to bookmark 1-10 (0 = tenth)"],
-        P:["view","Details","show file details"]
-      }
-    },
-    // Enter takes no cap here on purpose: on a file tab it both opens the selection and runs the
-    // search, and a cap can only say one thing, so the always-true global meaning keeps it.
-    files: {
-      base: {
-        F7:["file","Edit","edit the selected file"],
-        F6:["file","Explorer","show in Explorer"],
-        F3:["file","Search here","search inside this folder"],
-        F2:["edit","Rename","rename"],
-        Del:["edit","Recycle","send to the Recycle Bin"]
-      },
-      ctrl: {
-        F7:["file","New doc admin","new document, admin-save retry"],
-        D:["file","Bookmark","add to bookmarks"],
-        A:["edit","Select all","select every result"],
-        X:["edit","Cut","cut / copy / paste files"],
-        C:["edit","Copy","cut / copy / paste files"],
-        V:["edit","Paste","cut / copy / paste files"]
-      },
-      ctrlshift: {
-        O:["file","Open with","open with..."],
-        Enter:["file","Open admin","open as administrator"],
-        E:["file","Exclude","exclude this folder"],
-        N:["edit","New folder","new folder"],
-        L:["edit","Clear","clear the results"],
-        C:["edit","Copy path","copy full path"],
-        M:["edit","Copy name","copy file name"],
-        D:["edit","Copy folder","copy folder path"],
-        Y:["edit","Copy lines","copy matched lines"],
-        H:["edit","Copy hash","copy SHA-256"]
-      },
-      shift: {
-        F10:["file","More opts","more Windows options"],
-        Del:["edit","Delete","delete permanently"]
-      },
-      alt: {
-        Enter:["file","Properties","properties"]
-      }
-    },
-    terminal: {
-      ctrlshift: {
-        C:["edit","Copy","copy"],
-        A:["edit","Select all","select all"]
-      }
-    },
-    editor: {
-      ctrl: {
-        G:["edit","Go to line","go to line"],
-        S:["edit","Save","save"]
-      }
-    },
-    // Delete is End process in Processes mode and Stop in Services mode; the cap shows the mode
-    // the tab opens in, as the app's does.
-    processes: {
-      base: {
-        Del:["edit","End process","end process"]
-      },
-      ctrl: {
-        R:["edit","Restart","restart"],
-        O:["edit","File location","open file location"],
-        S:["edit","Start","start"],
-        Period:["edit","Proc/Svc","switch between Processes and Services"]
-      },
-      ctrlshift: {
-        A:["edit","Run as admin","restart as administrator"]
-      }
-    },
-    registry: {
-      base: {
-        Enter:["edit","Modify","modify a value"],
-        F5:["view","Reload","reload the selected key from disk"]
-      },
-      ctrl: {
-        F:["search","Find","find a key or value name"],
-        C:["edit","Copy path","copy full path"]
-      }
-    },
-    storage: {
-      base: {
-        D:["view","Depth","cycle treemap depth"],
-        M:["view","Min size","cycle the minimum size shown"],
-        C:["view","Color","switch coloring by type or folder"],
-        Enter:["nav","Zoom in","zoom into the selected folder"],
-        Back:["nav","Zoom out","zoom out one level"],
-        Home:["nav","Scan root","back to the scan root"],
-        Del:["edit","Recycle","send the selected item to the Recycle Bin"]
-      },
-      ctrl: {
-        Enter:["search","Scan","start the scan"]
-      }
-    }
-  };
+  // Both shortcut views read the generated app registry.
+  var KB_SCOPES = {};
+  function guideLanguage() {
+    var lang = document.documentElement.getAttribute('lang') || 'en';
+    return lang === 'zh-Hant' ? 'zh' : lang === 'zh-Hans' ? 'zh-cn' : lang;
+  }
+  function guideText(value) { return value && (value[guideLanguage()] || value.en) || ''; }
+  function updateBindings() {
+    KB_SCOPES = {};
+    window.KS_SHORTCUTS.forEach(function (row) {
+      var scope = row.scope.toLowerCase(), category = row.category.toLowerCase();
+      var layers = KB_SCOPES[scope] || (KB_SCOPES[scope] = {});
+      var caps = layers[row.layer] || (layers[row.layer] = {});
+      row.caps.forEach(function (id) { caps[id] = [category, guideText(row.label), guideText(row.label)]; });
+    });
+  }
+  updateBindings();
 
-  // The Event Viewer and the Performance tab are absent on purpose: neither has a key of its own,
-  // so both read as Everywhere, and offering them would draw the same board under another name.
+  // Performance has no scoped shortcuts and uses the global bindings.
   var SCOPES = [["global","EVERYWHERE"],["files","FILE BROWSER"],["terminal","TERMINAL"],
-                ["editor","EDITOR"],["processes","PROCESSES/SERVICES"],
+                ["editor","EDITOR"],["processes","PROCESSES/SERVICES"],["events","EVENT VIEWER"],
                 ["registry","REGISTRY EDITOR"],["storage","STORAGE ANALYZER"]];
   var SCOPE_LABEL = {};
   SCOPES.forEach(function(s){ SCOPE_LABEL[s[0]] = s[1]; });
@@ -812,6 +668,26 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 
   var kbBuilt = false, curLayer = "base", curScope = "global", curLit = {};
   var keyEls = {}, detailEl, layerBtns = {}, scopeBtns = {};
+  function uiText(key, fallback) {
+    var dictionary = window.I18N && window.I18N[guideLanguage()];
+    return dictionary && dictionary[key] || fallback;
+  }
+  function detailHint() { return uiText('site_kb_detail_hint', 'Hover a highlighted key to see its action.'); }
+  function localizeKeyboard() {
+    updateBindings();
+    Object.keys(window.KS_SHORTCUT_META.scopes).forEach(function (scope) {
+      SCOPE_LABEL[scope.toLowerCase()] = guideText(window.KS_SHORTCUT_META.scopes[scope]);
+    });
+    Object.keys(window.KS_SHORTCUT_META.categories).forEach(function (category) {
+      CAT_LABEL[category.toLowerCase()] = guideText(window.KS_SHORTCUT_META.categories[category]);
+    });
+    if (!kbBuilt) return;
+    Object.keys(scopeBtns).forEach(function (scope) { scopeBtns[scope].textContent = SCOPE_LABEL[scope]; });
+    layerBtns.base.textContent = uiText('site_kb_base', 'BASE');
+    document.querySelector('#kbScopes .kb-hint').textContent = uiText('site_kb_scope_hint', 'The board shows one tab at a time.');
+    document.querySelector('#kbLayers .kb-hint').textContent = uiText('site_kb_layer_hint', 'Hold Ctrl, Shift or Alt to preview that layer.');
+    paintBoard();
+  }
 
   // The scope's own bindings are laid down first and Everywhere fills only the caps they left, so
   // a scoped binding wins its key outright. Same resolution as KbLit in KeyboardMapOverlay.cs.
@@ -876,7 +752,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
           el.appendChild(actEl);
           el.appendChild(barEl);
           el.addEventListener('mouseenter', function(){ showDetail(id); });
-          el.addEventListener('mouseleave', function(){ detailEl.textContent = 'Click or hover a lit key to see what it does.'; });
+          el.addEventListener('mouseleave', function(){ detailEl.textContent = detailHint(); });
           keyEls[id] = { el: el, act: actEl, bar: barEl };
         }
         r.appendChild(el);
@@ -887,7 +763,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 
   function showDetail(id){
     var e = curLit[id];
-    if (!e) { detailEl.textContent = 'Click or hover a lit key to see what it does.'; return; }
+    if (!e) { detailEl.textContent = detailHint(); return; }
     // A scoped binding names its tab here as well as on the button row above the board: the row
     // says what the board as a whole is showing, this says which key under the pointer is the one
     // that only exists on that tab.
@@ -918,7 +794,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
     });
     Object.keys(layerBtns).forEach(function(l){ layerBtns[l].classList.toggle('on', l === curLayer); });
     Object.keys(scopeBtns).forEach(function(s){ scopeBtns[s].classList.toggle('on', s === curScope); });
-    detailEl.textContent = 'Click or hover a lit key to see what it does.';
+    detailEl.textContent = detailHint();
   }
 
   function setLayer(layer){ curLayer = layer; paintBoard(); }
@@ -931,7 +807,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
     buildScopeButtons();
     buildLayerButtons();
     buildBoard();
-    paintBoard();
+    localizeKeyboard();
   }
 
   var listBtn = document.getElementById('ksListBtn'), kbBtn = document.getElementById('ksKbBtn');
@@ -947,6 +823,8 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
       buildKeyboard();
     });
   }
+  localizeKeyboard();
+  window.addEventListener('ks-language-changed', localizeKeyboard);
 })();
 </script>
 <script>

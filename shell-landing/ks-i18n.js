@@ -6498,3 +6498,1220 @@ if (I18N["pt"]) Object.assign(I18N["pt"], {
  "h_look_p4": "O menu de idioma é o globo na barra lateral, acima do botão de tema. Dezenove idiomas, com troca ao vivo: inglês, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tanto tradicional quanto simplificado, bengali, russo, cazaque, ucraniano, norueguês bokmål e português do Brasil.",
  "t_themes_p": "O KillerShell inclui treze temas: Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium e Mourning. Quatro deles - Dark, Light, Black e 98SE - trazem, além disso, seis cores de destaque sobre a paleta; os outros nove são uma paleta por si só. Tudo muda ao vivo pela barra lateral, sem nada para reiniciar. A interface está localizada em dezenove idiomas: inglês, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tradicional e simplificado, bengali, russo, cazaque, ucraniano, norueguês bokmål e português do Brasil. Cada texto visível é resolvido por uma consulta de recursos, então trocar o idioma recompõe a janela inteira sem reinicialização."
 });
+// Terminal profiles, CLI and current theme descriptions.
+Object.assign(I18N["es"], {
+ "f_term_d": "PowerShell, CMD, WSL y comandos personalizados comparten las pestañas. Guarda perfiles de terminal, elige un shell predeterminado y explora su carpeta actual.",
+ "h_term_p1": "<b>F8</b> abre el perfil de terminal predeterminado; en una carpeta WSL abre esa distribución. <b>Shift+F8</b> abre CMD y <b>Ctrl+F8</b> abre PowerShell como administrador. Haz clic derecho en el botón de terminal de la barra lateral para elegir un perfil.",
+ "h_profiles_h": "Perfiles de terminal y WSL",
+ "h_profiles_p": "En el menú de perfiles puedes elegir el predeterminado, nombrar un comando personalizado, configurar ejecutable, argumentos y carpeta inicial, u ocultar un perfil. Las distribuciones WSL instaladas aparecen automáticamente. Sus carpetas Linux están en la barra lateral y se pueden fijar.",
+ "t_term_p1": "Los perfiles se guardan en la configuración local y se resuelven al abrirlos. WSL ejecuta <code>wsl.exe</code> y Bash; conserva el <code>.bashrc</code> y el prompt habituales. KillerShell sigue siendo una aplicación para Windows.",
+ "t_term_p2": "PowerShell y Bash de WSL informan su carpeta mediante <code>OSC 9;9</code>; el analizador también acepta <code>OSC 7</code>. Las rutas Linux se traducen a <code>\\\\wsl.localhost\\</code> para explorarlas. Los shells personalizados deben informar su carpeta para actualizar la barra.",
+ "f_themes_d": "13 temas, 41 apariencias: Dark, Light, Black y 98SE tienen 8 colores de acento cada uno. Los otros 9 tienen paletas fijas. Cambia sin reiniciar.",
+ "h_look_p1": "13 temas, 41 apariencias: Dark, Light, Black y 98SE tienen 8 colores de acento cada uno. Los otros 9 tienen paletas fijas. Cambia sin reiniciar.",
+ "t_themes_p": "13 temas, 41 apariencias: Dark, Light, Black y 98SE tienen 8 colores de acento cada uno. Los otros 9 tienen paletas fijas. Cambia sin reiniciar.",
+ "t_cli_p": "La CLI de solo lectura devuelve JSON para archivos, búsquedas, procesos, servicios, eventos, registro, unidades y hashes SHA-256. El registro de seguridad requiere permisos de administrador.",
+ "site_kb_base": "BASE",
+ "site_kb_scope_hint": "El teclado muestra una pestaña a la vez.",
+ "site_kb_layer_hint": "Mantén Ctrl, Shift o Alt para ver esa capa.",
+ "site_kb_detail_hint": "Pasa sobre una tecla resaltada para ver su acción."
+});
+I18N["es"].b1_d = I18N["es"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 temas, 41 apariencias: Dark, Light, Black y 98SE tienen 8 colores de acento cada uno. Los otros 9 tienen paletas fijas. Cambia sin reiniciar.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["de"], {
+ "f_term_d": "PowerShell, CMD, WSL und eigene Befehle teilen sich die Registerleiste. Speichere Terminalprofile, wähle eine Standardshell und öffne ihren aktuellen Ordner.",
+ "h_term_p1": "<b>F8</b> öffnet das Standard-Terminalprofil; in einem WSL-Ordner die betreffende Distribution. <b>Shift+F8</b> öffnet CMD, <b>Ctrl+F8</b> PowerShell als Administrator. Ein Rechtsklick auf die Terminal-Schaltfläche der Seitenleiste öffnet die Profilauswahl.",
+ "h_profiles_h": "Terminalprofile und WSL",
+ "h_profiles_p": "Im Profilmenü kannst du den Standard wählen, eigene Befehle benennen, Programm, Argumente und Startordner festlegen oder ein Profil ausblenden. Installierte WSL-Distributionen erscheinen automatisch. Ihre Linux-Ordner sind in der Seitenleiste verfügbar und lassen sich anheften.",
+ "t_term_p1": "Profile werden lokal gespeichert und beim Öffnen aufgelöst. WSL verwendet <code>wsl.exe</code> und Bash; die normale <code>.bashrc</code> und Eingabeaufforderung bleiben erhalten. KillerShell bleibt eine Windows-Anwendung.",
+ "t_term_p2": "PowerShell und WSL-Bash melden ihren Ordner mit <code>OSC 9;9</code>; der Parser akzeptiert auch <code>OSC 7</code>. Linux-Pfade werden zum Durchsuchen auf <code>\\\\wsl.localhost\\</code> abgebildet. Eigene Shells müssen ihren Ordner melden, damit die Anzeige aktuell bleibt.",
+ "f_themes_d": "13 Designs, 41 Varianten: Dark, Light, Black und 98SE haben jeweils 8 Akzentfarben. Die anderen 9 haben feste Paletten. Wechsel ohne Neustart.",
+ "h_look_p1": "13 Designs, 41 Varianten: Dark, Light, Black und 98SE haben jeweils 8 Akzentfarben. Die anderen 9 haben feste Paletten. Wechsel ohne Neustart.",
+ "t_themes_p": "13 Designs, 41 Varianten: Dark, Light, Black und 98SE haben jeweils 8 Akzentfarben. Die anderen 9 haben feste Paletten. Wechsel ohne Neustart.",
+ "t_cli_p": "Die schreibgeschützte CLI liefert JSON für Dateien, Suche, Prozesse, Dienste, Ereignisse, Registrierung, Laufwerke und SHA-256-Hashes. Das Sicherheitsprotokoll erfordert Administratorrechte.",
+ "site_kb_base": "BASIS",
+ "site_kb_scope_hint": "Die Tastatur zeigt jeweils eine Registerkarte.",
+ "site_kb_layer_hint": "Halte Ctrl, Shift oder Alt für diese Ebene gedrückt.",
+ "site_kb_detail_hint": "Zeige auf eine hervorgehobene Taste, um ihre Aktion zu sehen."
+});
+I18N["de"].b1_d = I18N["de"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 Designs, 41 Varianten: Dark, Light, Black und 98SE haben jeweils 8 Akzentfarben. Die anderen 9 haben feste Paletten. Wechsel ohne Neustart.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["fr"], {
+ "f_term_d": "PowerShell, CMD, WSL et les commandes personnalisées partagent les onglets. Enregistrez des profils, choisissez un shell par défaut et parcourez son dossier courant.",
+ "h_term_p1": "<b>F8</b> ouvre le profil par défaut ; dans un dossier WSL, il ouvre cette distribution. <b>Shift+F8</b> ouvre CMD et <b>Ctrl+F8</b> PowerShell en administrateur. Un clic droit sur le bouton du terminal dans la barre latérale permet de choisir un profil.",
+ "h_profiles_h": "Profils de terminal et WSL",
+ "h_profiles_p": "Le menu des profils permet de choisir le profil par défaut, nommer une commande, définir son exécutable, ses arguments et son dossier initial, ou masquer un profil. Les distributions WSL installées apparaissent automatiquement. Leurs dossiers Linux sont accessibles dans la barre latérale et peuvent être épinglés.",
+ "t_term_p1": "Les profils sont enregistrés localement et résolus à leur ouverture. WSL utilise <code>wsl.exe</code> et Bash ; le <code>.bashrc</code> et l'invite habituels sont conservés. KillerShell reste une application Windows.",
+ "t_term_p2": "PowerShell et Bash sous WSL signalent leur dossier avec <code>OSC 9;9</code> ; l'analyseur accepte aussi <code>OSC 7</code>. Les chemins Linux sont convertis en <code>\\\\wsl.localhost\\</code> pour la navigation. Les shells personnalisés doivent signaler leur dossier pour actualiser la barre.",
+ "f_themes_d": "13 thèmes, 41 apparences : Dark, Light, Black et 98SE ont chacun 8 couleurs d'accent. Les 9 autres ont une palette fixe. Changez sans redémarrer.",
+ "h_look_p1": "13 thèmes, 41 apparences : Dark, Light, Black et 98SE ont chacun 8 couleurs d'accent. Les 9 autres ont une palette fixe. Changez sans redémarrer.",
+ "t_themes_p": "13 thèmes, 41 apparences : Dark, Light, Black et 98SE ont chacun 8 couleurs d'accent. Les 9 autres ont une palette fixe. Changez sans redémarrer.",
+ "t_cli_p": "La CLI en lecture seule renvoie du JSON pour les fichiers, recherches, processus, services, événements, registre, lecteurs et empreintes SHA-256. Le journal de sécurité nécessite les droits administrateur.",
+ "site_kb_base": "BASE",
+ "site_kb_scope_hint": "Le clavier affiche un onglet à la fois.",
+ "site_kb_layer_hint": "Maintenez Ctrl, Shift ou Alt pour afficher cette couche.",
+ "site_kb_detail_hint": "Survolez une touche en surbrillance pour voir son action."
+});
+I18N["fr"].b1_d = I18N["fr"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 thèmes, 41 apparences : Dark, Light, Black et 98SE ont chacun 8 couleurs d'accent. Les 9 autres ont une palette fixe. Changez sans redémarrer.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["it"], {
+ "f_term_d": "PowerShell, CMD, WSL e comandi personalizzati condividono le schede. Salva profili di terminale, scegli una shell predefinita e sfoglia la sua cartella corrente.",
+ "h_term_p1": "<b>F8</b> apre il profilo predefinito; in una cartella WSL apre quella distribuzione. <b>Shift+F8</b> apre CMD e <b>Ctrl+F8</b> PowerShell come amministratore. Fai clic destro sul pulsante del terminale nella barra laterale per scegliere un profilo.",
+ "h_profiles_h": "Profili di terminale e WSL",
+ "h_profiles_p": "Dal menu dei profili puoi scegliere il predefinito, dare un nome a un comando, impostarne eseguibile, argomenti e cartella iniziale, oppure nascondere un profilo. Le distribuzioni WSL installate appaiono automaticamente. Le cartelle Linux sono nella barra laterale e possono essere fissate.",
+ "t_term_p1": "I profili sono salvati nelle impostazioni locali e risolti all'apertura. WSL usa <code>wsl.exe</code> e Bash; conserva il normale <code>.bashrc</code> e il prompt. KillerShell resta un'applicazione Windows.",
+ "t_term_p2": "PowerShell e Bash di WSL comunicano la cartella con <code>OSC 9;9</code>; il parser accetta anche <code>OSC 7</code>. I percorsi Linux vengono mappati su <code>\\\\wsl.localhost\\</code> per la navigazione. Le shell personalizzate devono comunicare la cartella per aggiornare la barra.",
+ "f_themes_d": "13 temi, 41 aspetti: Dark, Light, Black e 98SE hanno 8 colori di accento ciascuno. Gli altri 9 hanno tavolozze fisse. Cambia senza riavviare.",
+ "h_look_p1": "13 temi, 41 aspetti: Dark, Light, Black e 98SE hanno 8 colori di accento ciascuno. Gli altri 9 hanno tavolozze fisse. Cambia senza riavviare.",
+ "t_themes_p": "13 temi, 41 aspetti: Dark, Light, Black e 98SE hanno 8 colori di accento ciascuno. Gli altri 9 hanno tavolozze fisse. Cambia senza riavviare.",
+ "t_cli_p": "La CLI di sola lettura restituisce JSON per file, ricerche, processi, servizi, eventi, registro, unità e hash SHA-256. Il registro di sicurezza richiede privilegi amministrativi.",
+ "site_kb_base": "BASE",
+ "site_kb_scope_hint": "La tastiera mostra una scheda alla volta.",
+ "site_kb_layer_hint": "Tieni premuto Ctrl, Shift o Alt per vedere quel livello.",
+ "site_kb_detail_hint": "Passa su un tasto evidenziato per vederne l'azione."
+});
+I18N["it"].b1_d = I18N["it"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 temi, 41 aspetti: Dark, Light, Black e 98SE hanno 8 colori di accento ciascuno. Gli altri 9 hanno tavolozze fisse. Cambia senza riavviare.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["pt"], {
+ "f_term_d": "PowerShell, CMD, WSL e comandos personalizados compartilham as abas. Salve perfis de terminal, escolha o shell padrão e navegue pela pasta atual dele.",
+ "h_term_p1": "<b>F8</b> abre o perfil padrão; em uma pasta WSL, abre essa distribuição. <b>Shift+F8</b> abre CMD e <b>Ctrl+F8</b> abre PowerShell como administrador. Clique com o botão direito no terminal da barra lateral para escolher um perfil.",
+ "h_profiles_h": "Perfis de terminal e WSL",
+ "h_profiles_p": "No menu de perfis, escolha o padrão, dê um nome a um comando personalizado, defina executável, argumentos e pasta inicial, ou oculte um perfil. As distribuições WSL instaladas aparecem automaticamente. As pastas Linux ficam na barra lateral e podem ser fixadas.",
+ "t_term_p1": "Os perfis são salvos nas configurações locais e resolvidos ao abrir. WSL usa <code>wsl.exe</code> e Bash; mantém o <code>.bashrc</code> e o prompt habituais. KillerShell continua sendo um aplicativo Windows.",
+ "t_term_p2": "PowerShell e Bash no WSL informam a pasta com <code>OSC 9;9</code>; o analisador também aceita <code>OSC 7</code>. Os caminhos Linux são mapeados para <code>\\\\wsl.localhost\\</code> para navegação. Shells personalizados precisam informar a pasta para atualizar a barra.",
+ "f_themes_d": "13 temas, 41 visuais: Dark, Light, Black e 98SE têm 8 cores de destaque cada. Os outros 9 têm paletas fixas. Troque sem reiniciar.",
+ "h_look_p1": "13 temas, 41 visuais: Dark, Light, Black e 98SE têm 8 cores de destaque cada. Os outros 9 têm paletas fixas. Troque sem reiniciar.",
+ "t_themes_p": "13 temas, 41 visuais: Dark, Light, Black e 98SE têm 8 cores de destaque cada. Os outros 9 têm paletas fixas. Troque sem reiniciar.",
+ "t_cli_p": "A CLI somente leitura retorna JSON para arquivos, buscas, processos, serviços, eventos, registro, unidades e hashes SHA-256. O log de segurança exige privilégios de administrador.",
+ "site_kb_base": "BASE",
+ "site_kb_scope_hint": "O teclado mostra uma aba por vez.",
+ "site_kb_layer_hint": "Segure Ctrl, Shift ou Alt para ver essa camada.",
+ "site_kb_detail_hint": "Passe sobre uma tecla destacada para ver sua ação."
+});
+I18N["pt"].b1_d = I18N["pt"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 temas, 41 visuais: Dark, Light, Black e 98SE têm 8 cores de destaque cada. Os outros 9 têm paletas fixas. Troque sem reiniciar.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["nb"], {
+ "f_term_d": "PowerShell, CMD, WSL og egne kommandoer deler fanene. Lagre terminalprofiler, velg et standardskall og bla i den gjeldende mappen.",
+ "h_term_p1": "<b>F8</b> åpner standardprofilen; i en WSL-mappe åpnes den distribusjonen. <b>Shift+F8</b> åpner CMD og <b>Ctrl+F8</b> PowerShell som administrator. Høyreklikk terminalknappen i sidelinjen for å velge profil.",
+ "h_profiles_h": "Terminalprofiler og WSL",
+ "h_profiles_p": "I profilmenyen kan du velge standard, gi en egen kommando et navn, angi program, argumenter og startmappe eller skjule en profil. Installerte WSL-distribusjoner vises automatisk. Linux-mappene finnes i sidelinjen og kan festes.",
+ "t_term_p1": "Profiler lagres lokalt og tolkes når de åpnes. WSL bruker <code>wsl.exe</code> og Bash; vanlig <code>.bashrc</code> og ledetekst beholdes. KillerShell er fortsatt et Windows-program.",
+ "t_term_p2": "PowerShell og WSL Bash melder mappen med <code>OSC 9;9</code>; parseren godtar også <code>OSC 7</code>. Linux-stier kobles til <code>\\\\wsl.localhost\\</code> for filvisning. Egne skall må melde mappen for å holde verktøylinjen oppdatert.",
+ "f_themes_d": "13 temaer, 41 uttrykk: Dark, Light, Black og 98SE har 8 aksentfarger hver. De andre 9 har faste paletter. Bytt uten omstart.",
+ "h_look_p1": "13 temaer, 41 uttrykk: Dark, Light, Black og 98SE har 8 aksentfarger hver. De andre 9 har faste paletter. Bytt uten omstart.",
+ "t_themes_p": "13 temaer, 41 uttrykk: Dark, Light, Black og 98SE har 8 aksentfarger hver. De andre 9 har faste paletter. Bytt uten omstart.",
+ "t_cli_p": "Den skrivebeskyttede CLI-en returnerer JSON for filer, søk, prosesser, tjenester, hendelser, register, stasjoner og SHA-256-hasher. Sikkerhetsloggen krever administratorrettigheter.",
+ "site_kb_base": "GRUNNLAG",
+ "site_kb_scope_hint": "Tastaturet viser én fane om gangen.",
+ "site_kb_layer_hint": "Hold Ctrl, Shift eller Alt for å se det laget.",
+ "site_kb_detail_hint": "Pek på en markert tast for å se handlingen."
+});
+I18N["nb"].b1_d = I18N["nb"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 temaer, 41 uttrykk: Dark, Light, Black og 98SE har 8 aksentfarger hver. De andre 9 har faste paletter. Bytt uten omstart.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["pl"], {
+ "f_term_d": "PowerShell, CMD, WSL i własne polecenia korzystają ze wspólnych kart. Zapisuj profile terminala, wybierz domyślną powłokę i przeglądaj jej bieżący folder.",
+ "h_term_p1": "<b>F8</b> otwiera domyślny profil; w folderze WSL otwiera daną dystrybucję. <b>Shift+F8</b> otwiera CMD, a <b>Ctrl+F8</b> PowerShell jako administrator. Kliknij prawym przyciskiem terminal na pasku bocznym, aby wybrać profil.",
+ "h_profiles_h": "Profile terminala i WSL",
+ "h_profiles_p": "Menu profili pozwala wybrać domyślny profil, nazwać własne polecenie, ustawić program, argumenty i folder początkowy albo ukryć profil. Zainstalowane dystrybucje WSL pojawiają się automatycznie. Ich foldery Linux są na pasku bocznym i można je przypinać.",
+ "t_term_p1": "Profile są zapisywane lokalnie i rozwiązywane przy otwieraniu. WSL używa <code>wsl.exe</code> i Bash; zachowuje zwykły <code>.bashrc</code> i znak zachęty. KillerShell pozostaje aplikacją Windows.",
+ "t_term_p2": "PowerShell i Bash w WSL zgłaszają folder przez <code>OSC 9;9</code>; parser przyjmuje też <code>OSC 7</code>. Ścieżki Linux są mapowane na <code>\\\\wsl.localhost\\</code> do przeglądania. Własne powłoki muszą zgłaszać folder, aby pasek był aktualny.",
+ "f_themes_d": "13 motywów, 41 wyglądów: Dark, Light, Black i 98SE mają po 8 kolorów akcentu. Pozostałe 9 ma stałe palety. Zmieniaj bez restartu.",
+ "h_look_p1": "13 motywów, 41 wyglądów: Dark, Light, Black i 98SE mają po 8 kolorów akcentu. Pozostałe 9 ma stałe palety. Zmieniaj bez restartu.",
+ "t_themes_p": "13 motywów, 41 wyglądów: Dark, Light, Black i 98SE mają po 8 kolorów akcentu. Pozostałe 9 ma stałe palety. Zmieniaj bez restartu.",
+ "t_cli_p": "CLI tylko do odczytu zwraca JSON dla plików, wyszukiwania, procesów, usług, zdarzeń, rejestru, dysków i skrótów SHA-256. Dziennik zabezpieczeń wymaga uprawnień administratora.",
+ "site_kb_base": "PODSTAWOWE",
+ "site_kb_scope_hint": "Klawiatura pokazuje jedną kartę naraz.",
+ "site_kb_layer_hint": "Przytrzymaj Ctrl, Shift lub Alt, aby zobaczyć tę warstwę.",
+ "site_kb_detail_hint": "Najedź na wyróżniony klawisz, aby zobaczyć jego działanie."
+});
+I18N["pl"].b1_d = I18N["pl"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 motywów, 41 wyglądów: Dark, Light, Black i 98SE mają po 8 kolorów akcentu. Pozostałe 9 ma stałe palety. Zmieniaj bez restartu.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["cs"], {
+ "f_term_d": "PowerShell, CMD, WSL a vlastní příkazy sdílejí karty. Uložte profily terminálu, vyberte výchozí shell a procházejte jeho aktuální složku.",
+ "h_term_p1": "<b>F8</b> otevře výchozí profil; ve složce WSL otevře danou distribuci. <b>Shift+F8</b> otevře CMD a <b>Ctrl+F8</b> PowerShell jako správce. Pravým kliknutím na tlačítko terminálu v postranním panelu vyberete profil.",
+ "h_profiles_h": "Profily terminálu a WSL",
+ "h_profiles_p": "V nabídce profilů vyberte výchozí, pojmenujte vlastní příkaz, nastavte program, argumenty a počáteční složku nebo profil skryjte. Nainstalované distribuce WSL se objeví automaticky. Jejich složky Linux jsou v postranním panelu a lze je připnout.",
+ "t_term_p1": "Profily se ukládají místně a vyhodnocují při otevření. WSL používá <code>wsl.exe</code> a Bash; zachovává běžný <code>.bashrc</code> a prompt. KillerShell zůstává aplikací pro Windows.",
+ "t_term_p2": "PowerShell a Bash ve WSL hlásí složku pomocí <code>OSC 9;9</code>; parser přijímá také <code>OSC 7</code>. Cesty Linux se pro procházení převádějí na <code>\\\\wsl.localhost\\</code>. Vlastní shelly musí hlásit složku, aby byl panel aktuální.",
+ "f_themes_d": "13 motivů, 41 vzhledů: Dark, Light, Black a 98SE mají každý 8 barev akcentu. Ostatních 9 má pevné palety. Přepínejte bez restartu.",
+ "h_look_p1": "13 motivů, 41 vzhledů: Dark, Light, Black a 98SE mají každý 8 barev akcentu. Ostatních 9 má pevné palety. Přepínejte bez restartu.",
+ "t_themes_p": "13 motivů, 41 vzhledů: Dark, Light, Black a 98SE mají každý 8 barev akcentu. Ostatních 9 má pevné palety. Přepínejte bez restartu.",
+ "t_cli_p": "CLI pouze pro čtení vrací JSON pro soubory, hledání, procesy, služby, události, registr, disky a hashe SHA-256. Protokol zabezpečení vyžaduje práva správce.",
+ "site_kb_base": "ZÁKLAD",
+ "site_kb_scope_hint": "Klávesnice ukazuje vždy jednu kartu.",
+ "site_kb_layer_hint": "Podržte Ctrl, Shift nebo Alt pro zobrazení této vrstvy.",
+ "site_kb_detail_hint": "Najeďte na zvýrazněnou klávesu a zobrazte její akci."
+});
+I18N["cs"].b1_d = I18N["cs"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 motivů, 41 vzhledů: Dark, Light, Black a 98SE mají každý 8 barev akcentu. Ostatních 9 má pevné palety. Přepínejte bez restartu.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["hu"], {
+ "f_term_d": "A PowerShell, CMD, WSL és saját parancsok közös lapokat használnak. Ments terminálprofilokat, válassz alapértelmezett parancsértelmezőt, és tallózd az aktuális mappáját.",
+ "h_term_p1": "Az <b>F8</b> az alapértelmezett profilt nyitja meg; WSL-mappában az adott disztribúciót. A <b>Shift+F8</b> CMD-t, a <b>Ctrl+F8</b> rendszergazdai PowerShellt nyit. Profilválasztáshoz kattints jobb gombbal az oldalsáv terminálgombjára.",
+ "h_profiles_h": "Terminálprofilok és WSL",
+ "h_profiles_p": "A profilmenüben kiválaszthatod az alapértelmezettet, elnevezhetsz saját parancsot, megadhatod a programot, argumentumokat és kezdőmappát, vagy elrejthetsz profilt. A telepített WSL-disztribúciók automatikusan megjelennek. Linux-mappáik az oldalsávon vannak és rögzíthetők.",
+ "t_term_p1": "A profilok helyi beállításokban tárolódnak és megnyitáskor oldódnak fel. A WSL <code>wsl.exe</code>-t és Basht használ; megőrzi a szokásos <code>.bashrc</code>-t és promptot. A KillerShell továbbra is Windows-alkalmazás.",
+ "t_term_p2": "A PowerShell és a WSL Bash <code>OSC 9;9</code> sorozattal jelzi a mappát; az elemző az <code>OSC 7</code>-et is elfogadja. A Linux-útvonalak tallózáshoz a <code>\\\\wsl.localhost\\</code> alá kerülnek. A saját parancsértelmezőknek jelezniük kell a mappát a sáv frissítéséhez.",
+ "f_themes_d": "13 téma, 41 megjelenés: a Dark, Light, Black és 98SE egyenként 8 kiemelőszínt kínál. A többi 9 rögzített palettát használ. Váltás újraindítás nélkül.",
+ "h_look_p1": "13 téma, 41 megjelenés: a Dark, Light, Black és 98SE egyenként 8 kiemelőszínt kínál. A többi 9 rögzített palettát használ. Váltás újraindítás nélkül.",
+ "t_themes_p": "13 téma, 41 megjelenés: a Dark, Light, Black és 98SE egyenként 8 kiemelőszínt kínál. A többi 9 rögzített palettát használ. Váltás újraindítás nélkül.",
+ "t_cli_p": "A csak olvasó CLI JSON-t ad vissza fájlokhoz, kereséshez, folyamatokhoz, szolgáltatásokhoz, eseményekhez, regisztrációs adatbázishoz, meghajtókhoz és SHA-256 hashekhez. A biztonsági napló rendszergazdai jogot igényel.",
+ "site_kb_base": "ALAP",
+ "site_kb_scope_hint": "A billentyűzet egyszerre egy lapot mutat.",
+ "site_kb_layer_hint": "Tartsd lenyomva a Ctrl, Shift vagy Alt gombot az adott réteghez.",
+ "site_kb_detail_hint": "Mutass egy kiemelt billentyűre a művelet megtekintéséhez."
+});
+I18N["hu"].b1_d = I18N["hu"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 téma, 41 megjelenés: a Dark, Light, Black és 98SE egyenként 8 kiemelőszínt kínál. A többi 9 rögzített palettát használ. Váltás újraindítás nélkül.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["tr"], {
+ "f_term_d": "PowerShell, CMD, WSL ve özel komutlar aynı sekmeleri kullanır. Terminal profillerini kaydedin, varsayılan kabuğu seçin ve geçerli klasörünü açın.",
+ "h_term_p1": "<b>F8</b> varsayılan profili açar; bir WSL klasöründe ilgili dağıtımı açar. <b>Shift+F8</b> CMD, <b>Ctrl+F8</b> yönetici PowerShell açar. Profil seçmek için yan çubuktaki terminal düğmesine sağ tıklayın.",
+ "h_profiles_h": "Terminal profilleri ve WSL",
+ "h_profiles_p": "Profil menüsünde varsayılanı seçin, özel komutu adlandırın, programı, bağımsız değişkenleri ve başlangıç klasörünü ayarlayın veya profili gizleyin. Kurulu WSL dağıtımları otomatik görünür. Linux klasörleri yan çubuktadır ve sabitlenebilir.",
+ "t_term_p1": "Profiller yerel ayarlarda saklanır ve açılırken çözümlenir. WSL, <code>wsl.exe</code> ve Bash kullanır; normal <code>.bashrc</code> ve istem korunur. KillerShell bir Windows uygulaması olarak kalır.",
+ "t_term_p2": "PowerShell ve WSL Bash klasörü <code>OSC 9;9</code> ile bildirir; ayrıştırıcı <code>OSC 7</code> de kabul eder. Linux yolları gezinmek için <code>\\\\wsl.localhost\\</code> ile eşlenir. Özel kabuklar araç çubuğunu güncel tutmak için klasörü bildirmelidir.",
+ "f_themes_d": "13 tema, 41 görünüm: Dark, Light, Black ve 98SE için 8'er vurgu rengi vardır. Diğer 9 tema sabit palet kullanır. Yeniden başlatmadan değiştirin.",
+ "h_look_p1": "13 tema, 41 görünüm: Dark, Light, Black ve 98SE için 8'er vurgu rengi vardır. Diğer 9 tema sabit palet kullanır. Yeniden başlatmadan değiştirin.",
+ "t_themes_p": "13 tema, 41 görünüm: Dark, Light, Black ve 98SE için 8'er vurgu rengi vardır. Diğer 9 tema sabit palet kullanır. Yeniden başlatmadan değiştirin.",
+ "t_cli_p": "Salt okunur CLI dosyalar, arama, işlemler, hizmetler, olaylar, kayıt defteri, sürücüler ve SHA-256 özetleri için JSON döndürür. Güvenlik günlüğü yönetici yetkisi gerektirir.",
+ "site_kb_base": "TEMEL",
+ "site_kb_scope_hint": "Klavye aynı anda bir sekmeyi gösterir.",
+ "site_kb_layer_hint": "Katmanı görmek için Ctrl, Shift veya Alt tuşunu basılı tutun.",
+ "site_kb_detail_hint": "Eylemi görmek için vurgulu tuşun üzerine gelin."
+});
+I18N["tr"].b1_d = I18N["tr"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 tema, 41 görünüm: Dark, Light, Black ve 98SE için 8'er vurgu rengi vardır. Diğer 9 tema sabit palet kullanır. Yeniden başlatmadan değiştirin.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["vi"], {
+ "f_term_d": "PowerShell, CMD, WSL và lệnh tùy chỉnh dùng chung các tab. Lưu hồ sơ terminal, chọn shell mặc định và duyệt thư mục hiện tại của shell.",
+ "h_term_p1": "<b>F8</b> mở hồ sơ mặc định; trong thư mục WSL sẽ mở bản phân phối đó. <b>Shift+F8</b> mở CMD và <b>Ctrl+F8</b> mở PowerShell với quyền quản trị. Nhấp phải nút terminal trên thanh bên để chọn hồ sơ.",
+ "h_profiles_h": "Hồ sơ terminal và WSL",
+ "h_profiles_p": "Trong menu hồ sơ, chọn mặc định, đặt tên lệnh tùy chỉnh, thiết lập chương trình, đối số và thư mục ban đầu, hoặc ẩn hồ sơ. Các bản phân phối WSL đã cài tự xuất hiện. Thư mục Linux nằm trên thanh bên và có thể ghim.",
+ "t_term_p1": "Hồ sơ lưu trong thiết lập cục bộ và được xử lý khi mở. WSL dùng <code>wsl.exe</code> và Bash; giữ nguyên <code>.bashrc</code> và dấu nhắc thông thường. KillerShell vẫn là ứng dụng Windows.",
+ "t_term_p2": "PowerShell và Bash trong WSL báo thư mục bằng <code>OSC 9;9</code>; bộ phân tích cũng nhận <code>OSC 7</code>. Đường dẫn Linux ánh xạ sang <code>\\\\wsl.localhost\\</code> để duyệt. Shell tùy chỉnh phải báo thư mục để thanh công cụ cập nhật.",
+ "f_themes_d": "13 giao diện, 41 kiểu: Dark, Light, Black và 98SE có 8 màu nhấn mỗi giao diện. 9 giao diện còn lại có bảng màu cố định. Chuyển ngay không cần khởi động lại.",
+ "h_look_p1": "13 giao diện, 41 kiểu: Dark, Light, Black và 98SE có 8 màu nhấn mỗi giao diện. 9 giao diện còn lại có bảng màu cố định. Chuyển ngay không cần khởi động lại.",
+ "t_themes_p": "13 giao diện, 41 kiểu: Dark, Light, Black và 98SE có 8 màu nhấn mỗi giao diện. 9 giao diện còn lại có bảng màu cố định. Chuyển ngay không cần khởi động lại.",
+ "t_cli_p": "CLI chỉ đọc trả JSON cho tệp, tìm kiếm, tiến trình, dịch vụ, sự kiện, registry, ổ đĩa và mã băm SHA-256. Nhật ký bảo mật cần quyền quản trị.",
+ "site_kb_base": "CƠ BẢN",
+ "site_kb_scope_hint": "Bàn phím hiển thị từng tab một.",
+ "site_kb_layer_hint": "Giữ Ctrl, Shift hoặc Alt để xem lớp đó.",
+ "site_kb_detail_hint": "Di chuột lên phím được tô sáng để xem tác vụ."
+});
+I18N["vi"].b1_d = I18N["vi"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 giao diện, 41 kiểu: Dark, Light, Black và 98SE có 8 màu nhấn mỗi giao diện. 9 giao diện còn lại có bảng màu cố định. Chuyển ngay không cần khởi động lại.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["ru"], {
+ "f_term_d": "PowerShell, CMD, WSL и пользовательские команды работают в общих вкладках. Сохраняйте профили терминала, выбирайте оболочку по умолчанию и открывайте её текущую папку.",
+ "h_term_p1": "<b>F8</b> открывает профиль по умолчанию; в папке WSL открывает соответствующий дистрибутив. <b>Shift+F8</b> открывает CMD, <b>Ctrl+F8</b> PowerShell с правами администратора. Для выбора профиля щёлкните правой кнопкой по терминалу на боковой панели.",
+ "h_profiles_h": "Профили терминала и WSL",
+ "h_profiles_p": "В меню профилей можно выбрать основной, назвать свою команду, задать программу, аргументы и начальную папку или скрыть профиль. Установленные дистрибутивы WSL появляются автоматически. Их папки Linux доступны на боковой панели и закрепляются.",
+ "t_term_p1": "Профили хранятся в локальных настройках и разрешаются при открытии. WSL использует <code>wsl.exe</code> и Bash; обычные <code>.bashrc</code> и приглашение сохраняются. KillerShell остаётся приложением Windows.",
+ "t_term_p2": "PowerShell и Bash в WSL сообщают папку через <code>OSC 9;9</code>; анализатор также принимает <code>OSC 7</code>. Пути Linux отображаются на <code>\\\\wsl.localhost\\</code> для просмотра. Пользовательские оболочки должны сообщать папку для обновления панели.",
+ "f_themes_d": "13 тем, 41 вариант: Dark, Light, Black и 98SE имеют по 8 акцентных цветов. Остальные 9 используют фиксированные палитры. Переключение без перезапуска.",
+ "h_look_p1": "13 тем, 41 вариант: Dark, Light, Black и 98SE имеют по 8 акцентных цветов. Остальные 9 используют фиксированные палитры. Переключение без перезапуска.",
+ "t_themes_p": "13 тем, 41 вариант: Dark, Light, Black и 98SE имеют по 8 акцентных цветов. Остальные 9 используют фиксированные палитры. Переключение без перезапуска.",
+ "t_cli_p": "CLI только для чтения возвращает JSON для файлов, поиска, процессов, служб, событий, реестра, дисков и хешей SHA-256. Журнал безопасности требует прав администратора.",
+ "site_kb_base": "ОСНОВНОЙ",
+ "site_kb_scope_hint": "Клавиатура показывает одну вкладку за раз.",
+ "site_kb_layer_hint": "Удерживайте Ctrl, Shift или Alt для просмотра этого слоя.",
+ "site_kb_detail_hint": "Наведите на выделенную клавишу, чтобы увидеть действие."
+});
+I18N["ru"].b1_d = I18N["ru"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 тем, 41 вариант: Dark, Light, Black и 98SE имеют по 8 акцентных цветов. Остальные 9 используют фиксированные палитры. Переключение без перезапуска.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["uk"], {
+ "f_term_d": "PowerShell, CMD, WSL і власні команди працюють у спільних вкладках. Зберігайте профілі термінала, обирайте типову оболонку й переглядайте її поточну папку.",
+ "h_term_p1": "<b>F8</b> відкриває типовий профіль; у папці WSL відкриває відповідний дистрибутив. <b>Shift+F8</b> відкриває CMD, <b>Ctrl+F8</b> PowerShell із правами адміністратора. Для вибору профілю клацніть правою кнопкою термінал на бічній панелі.",
+ "h_profiles_h": "Профілі термінала та WSL",
+ "h_profiles_p": "У меню профілів можна обрати типовий, назвати власну команду, задати програму, аргументи й початкову папку або приховати профіль. Установлені дистрибутиви WSL з'являються автоматично. Їхні папки Linux доступні на бічній панелі й закріплюються.",
+ "t_term_p1": "Профілі зберігаються локально й визначаються під час відкриття. WSL використовує <code>wsl.exe</code> та Bash; звичайні <code>.bashrc</code> і запрошення зберігаються. KillerShell залишається застосунком Windows.",
+ "t_term_p2": "PowerShell і Bash у WSL повідомляють папку через <code>OSC 9;9</code>; аналізатор також приймає <code>OSC 7</code>. Шляхи Linux відображаються на <code>\\\\wsl.localhost\\</code> для перегляду. Власні оболонки мають повідомляти папку для оновлення панелі.",
+ "f_themes_d": "13 тем, 41 вигляд: Dark, Light, Black і 98SE мають по 8 кольорів акценту. Інші 9 мають фіксовані палітри. Перемикайте без перезапуску.",
+ "h_look_p1": "13 тем, 41 вигляд: Dark, Light, Black і 98SE мають по 8 кольорів акценту. Інші 9 мають фіксовані палітри. Перемикайте без перезапуску.",
+ "t_themes_p": "13 тем, 41 вигляд: Dark, Light, Black і 98SE мають по 8 кольорів акценту. Інші 9 мають фіксовані палітри. Перемикайте без перезапуску.",
+ "t_cli_p": "CLI лише для читання повертає JSON для файлів, пошуку, процесів, служб, подій, реєстру, дисків і хешів SHA-256. Журнал безпеки потребує прав адміністратора.",
+ "site_kb_base": "ОСНОВНИЙ",
+ "site_kb_scope_hint": "Клавіатура показує одну вкладку за раз.",
+ "site_kb_layer_hint": "Утримуйте Ctrl, Shift або Alt для перегляду цього шару.",
+ "site_kb_detail_hint": "Наведіть на виділену клавішу, щоб побачити дію."
+});
+I18N["uk"].b1_d = I18N["uk"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 тем, 41 вигляд: Dark, Light, Black і 98SE мають по 8 кольорів акценту. Інші 9 мають фіксовані палітри. Перемикайте без перезапуску.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["kk"], {
+ "f_term_d": "PowerShell, CMD, WSL және жеке пәрмендер ортақ қойындыларда жұмыс істейді. Терминал профильдерін сақтап, әдепкі қабықты таңдап, оның ағымдағы қалтасын шолыңыз.",
+ "h_term_p1": "<b>F8</b> әдепкі профильді ашады; WSL қалтасында сол дистрибутивті ашады. <b>Shift+F8</b> CMD, <b>Ctrl+F8</b> әкімші PowerShell ашады. Профиль таңдау үшін бүйір панельдегі терминал түймесін оң жақпен басыңыз.",
+ "h_profiles_h": "Терминал профильдері және WSL",
+ "h_profiles_p": "Профиль мәзірінде әдепкіні таңдаңыз, жеке пәрменді атаңыз, бағдарламаны, аргументтерді және бастапқы қалтаны орнатыңыз немесе профильді жасырыңыз. Орнатылған WSL дистрибутивтері автоматты көрінеді. Linux қалталары бүйір панельде қолжетімді және бекітіледі.",
+ "t_term_p1": "Профильдер жергілікті баптауларда сақталып, ашылғанда анықталады. WSL <code>wsl.exe</code> және Bash қолданады; қалыпты <code>.bashrc</code> пен шақыру сақталады. KillerShell Windows қолданбасы болып қалады.",
+ "t_term_p2": "PowerShell және WSL Bash қалтаны <code>OSC 9;9</code> арқылы хабарлайды; талдаушы <code>OSC 7</code> де қабылдайды. Linux жолдары шолу үшін <code>\\\\wsl.localhost\\</code> жолына сәйкестендіріледі. Жеке қабықтар панельді жаңарту үшін қалтаны хабарлауы керек.",
+ "f_themes_d": "13 тақырып, 41 көрініс: Dark, Light, Black және 98SE әрқайсысында 8 екпін түсі бар. Қалған 9 тақырыптың палитрасы тұрақты. Қайта іске қоспай ауыстырыңыз.",
+ "h_look_p1": "13 тақырып, 41 көрініс: Dark, Light, Black және 98SE әрқайсысында 8 екпін түсі бар. Қалған 9 тақырыптың палитрасы тұрақты. Қайта іске қоспай ауыстырыңыз.",
+ "t_themes_p": "13 тақырып, 41 көрініс: Dark, Light, Black және 98SE әрқайсысында 8 екпін түсі бар. Қалған 9 тақырыптың палитрасы тұрақты. Қайта іске қоспай ауыстырыңыз.",
+ "t_cli_p": "Тек оқуға арналған CLI файлдар, іздеу, процестер, қызметтер, оқиғалар, тізілім, дискілер және SHA-256 хэштері үшін JSON қайтарады. Қауіпсіздік журналы әкімші құқығын қажет етеді.",
+ "site_kb_base": "НЕГІЗГІ",
+ "site_kb_scope_hint": "Пернетақта бір уақытта бір қойындыны көрсетеді.",
+ "site_kb_layer_hint": "Сол қабатты көру үшін Ctrl, Shift немесе Alt ұстап тұрыңыз.",
+ "site_kb_detail_hint": "Әрекетті көру үшін ерекшеленген пернеге меңзерді апарыңыз."
+});
+I18N["kk"].b1_d = I18N["kk"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 тақырып, 41 көрініс: Dark, Light, Black және 98SE әрқайсысында 8 екпін түсі бар. Қалған 9 тақырыптың палитрасы тұрақты. Қайта іске қоспай ауыстырыңыз.</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["ja"], {
+ "f_term_d": "PowerShell、CMD、WSL、カスタムコマンドを同じタブで使えます。端末プロファイルを保存し、既定のシェルを選び、現在のフォルダーを参照できます。",
+ "h_term_p1": "<b>F8</b> は既定のプロファイルを開きます。WSL フォルダーでは対応するディストリビューションを開きます。<b>Shift+F8</b> は CMD、<b>Ctrl+F8</b> は管理者 PowerShell を開きます。サイドバーの端末ボタンを右クリックしてプロファイルを選択します。",
+ "h_profiles_h": "端末プロファイルと WSL",
+ "h_profiles_p": "プロファイルメニューで既定を選び、カスタムコマンドの名前、実行ファイル、引数、開始フォルダーを設定したり、プロファイルを非表示にできます。インストール済みの WSL ディストリビューションは自動表示されます。Linux フォルダーはサイドバーから参照でき、ピン留めできます。",
+ "t_term_p1": "プロファイルはローカル設定に保存され、開く際に解決されます。WSL は <code>wsl.exe</code> と Bash を使用し、通常の <code>.bashrc</code> とプロンプトを保持します。KillerShell は引き続き Windows アプリです。",
+ "t_term_p2": "PowerShell と WSL Bash は <code>OSC 9;9</code> でフォルダーを報告します。パーサーは <code>OSC 7</code> も受け付けます。Linux パスは参照用に <code>\\\\wsl.localhost\\</code> に対応付けられます。カスタムシェルはツールバーを更新するためにフォルダーを報告する必要があります。",
+ "f_themes_d": "13 テーマ、41 通りの外観。Dark、Light、Black、98SE は各 8 色のアクセントカラーを持ち、残る 9 テーマは固定パレットです。再起動せずに切り替えられます。",
+ "h_look_p1": "13 テーマ、41 通りの外観。Dark、Light、Black、98SE は各 8 色のアクセントカラーを持ち、残る 9 テーマは固定パレットです。再起動せずに切り替えられます。",
+ "t_themes_p": "13 テーマ、41 通りの外観。Dark、Light、Black、98SE は各 8 色のアクセントカラーを持ち、残る 9 テーマは固定パレットです。再起動せずに切り替えられます。",
+ "t_cli_p": "読み取り専用 CLI はファイル、検索、プロセス、サービス、イベント、レジストリ、ドライブ、SHA-256 ハッシュを JSON で返します。セキュリティログには管理者権限が必要です。",
+ "site_kb_base": "基本",
+ "site_kb_scope_hint": "キーボードは一度に 1 つのタブを表示します。",
+ "site_kb_layer_hint": "Ctrl、Shift、Alt を押したままにすると、そのレイヤーを表示します。",
+ "site_kb_detail_hint": "強調表示されたキーにポインターを置くと、操作を確認できます。"
+});
+I18N["ja"].b1_d = I18N["ja"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 テーマ、41 通りの外観。Dark、Light、Black、98SE は各 8 色のアクセントカラーを持ち、残る 9 テーマは固定パレットです。再起動せずに切り替えられます。</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["zh-cn"], {
+ "f_term_d": "PowerShell、CMD、WSL 和自定义命令共用标签栏。保存终端配置，选择默认 Shell，并浏览其当前文件夹。",
+ "h_term_p1": "<b>F8</b> 打开默认终端配置；在 WSL 文件夹中则打开对应的发行版。<b>Shift+F8</b> 打开 CMD，<b>Ctrl+F8</b> 打开管理员 PowerShell。右键单击侧栏的终端按钮可选择配置。",
+ "h_profiles_h": "终端配置与 WSL",
+ "h_profiles_p": "在配置菜单中选择默认配置，为自定义命令命名，设置可执行文件、参数和起始文件夹，或隐藏配置。已安装的 WSL 发行版自动显示。Linux 文件夹可从侧栏访问并固定。",
+ "t_term_p1": "配置保存在本地设置中，在打开时解析。WSL 使用 <code>wsl.exe</code> 和 Bash，保留正常的 <code>.bashrc</code> 与提示符。KillerShell 仍然是 Windows 应用。",
+ "t_term_p2": "PowerShell 和 WSL Bash 通过 <code>OSC 9;9</code> 报告文件夹；解析器也接受 <code>OSC 7</code>。Linux 路径映射到 <code>\\\\wsl.localhost\\</code> 以供浏览。自定义 Shell 必须报告文件夹，才能保持工具栏更新。",
+ "f_themes_d": "13 种主题，41 种外观：Dark、Light、Black 和 98SE 各有 8 种强调色，其他 9 种主题使用固定调色板。无需重启即可切换。",
+ "h_look_p1": "13 种主题，41 种外观：Dark、Light、Black 和 98SE 各有 8 种强调色，其他 9 种主题使用固定调色板。无需重启即可切换。",
+ "t_themes_p": "13 种主题，41 种外观：Dark、Light、Black 和 98SE 各有 8 种强调色，其他 9 种主题使用固定调色板。无需重启即可切换。",
+ "t_cli_p": "只读 CLI 以 JSON 返回文件、搜索、进程、服务、事件、注册表、驱动器和 SHA-256 哈希。访问安全日志需要管理员权限。",
+ "site_kb_base": "基础",
+ "site_kb_scope_hint": "键盘一次显示一个标签页。",
+ "site_kb_layer_hint": "按住 Ctrl、Shift 或 Alt 预览对应层。",
+ "site_kb_detail_hint": "将鼠标移到高亮键上查看操作。"
+});
+I18N["zh-cn"].b1_d = I18N["zh-cn"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 种主题，41 种外观：Dark、Light、Black 和 98SE 各有 8 种强调色，其他 9 种主题使用固定调色板。无需重启即可切换。</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["zh"], {
+ "f_term_d": "PowerShell、CMD、WSL 與自訂命令共用分頁列。儲存終端設定檔，選擇預設 Shell，並瀏覽其目前資料夾。",
+ "h_term_p1": "<b>F8</b> 開啟預設終端設定檔；在 WSL 資料夾中則開啟對應的發行版。<b>Shift+F8</b> 開啟 CMD，<b>Ctrl+F8</b> 開啟系統管理員 PowerShell。右鍵按側欄的終端按鈕可選擇設定檔。",
+ "h_profiles_h": "終端設定檔與 WSL",
+ "h_profiles_p": "在設定檔選單中選擇預設項目，為自訂命令命名，設定執行檔、引數與起始資料夾，或隱藏設定檔。已安裝的 WSL 發行版自動顯示。Linux 資料夾可從側欄存取並釘選。",
+ "t_term_p1": "設定檔儲存在本機設定中，於開啟時解析。WSL 使用 <code>wsl.exe</code> 與 Bash，保留正常的 <code>.bashrc</code> 和提示字元。KillerShell 仍是 Windows 應用程式。",
+ "t_term_p2": "PowerShell 與 WSL Bash 透過 <code>OSC 9;9</code> 回報資料夾；剖析器也接受 <code>OSC 7</code>。Linux 路徑對應至 <code>\\\\wsl.localhost\\</code> 以供瀏覽。自訂 Shell 必須回報資料夾，才能保持工具列更新。",
+ "f_themes_d": "13 種主題，41 種外觀：Dark、Light、Black 和 98SE 各有 8 種強調色，其他 9 種主題使用固定調色盤。不必重新啟動即可切換。",
+ "h_look_p1": "13 種主題，41 種外觀：Dark、Light、Black 和 98SE 各有 8 種強調色，其他 9 種主題使用固定調色盤。不必重新啟動即可切換。",
+ "t_themes_p": "13 種主題，41 種外觀：Dark、Light、Black 和 98SE 各有 8 種強調色，其他 9 種主題使用固定調色盤。不必重新啟動即可切換。",
+ "t_cli_p": "唯讀 CLI 以 JSON 傳回檔案、搜尋、處理程序、服務、事件、登錄、磁碟機與 SHA-256 雜湊。存取安全性記錄需要系統管理員權限。",
+ "site_kb_base": "基本",
+ "site_kb_scope_hint": "鍵盤一次顯示一個分頁。",
+ "site_kb_layer_hint": "按住 Ctrl、Shift 或 Alt 預覽對應層。",
+ "site_kb_detail_hint": "將滑鼠移至反白按鍵查看操作。"
+});
+I18N["zh"].b1_d = I18N["zh"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13 種主題，41 種外觀：Dark、Light、Black 和 98SE 各有 8 種強調色，其他 9 種主題使用固定調色盤。不必重新啟動即可切換。</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["bn"], {
+ "f_term_d": "PowerShell, CMD, WSL ও নিজস্ব কমান্ড একই ট্যাবে চলে। টার্মিনাল প্রোফাইল সংরক্ষণ করুন, ডিফল্ট শেল বেছে নিন ও তার বর্তমান ফোল্ডার দেখুন।",
+ "h_term_p1": "<b>F8</b> ডিফল্ট প্রোফাইল খোলে; WSL ফোল্ডারে সংশ্লিষ্ট ডিস্ট্রিবিউশন খোলে। <b>Shift+F8</b> CMD ও <b>Ctrl+F8</b> প্রশাসক PowerShell খোলে। প্রোফাইল বাছতে সাইডবারের টার্মিনাল বোতামে ডান-ক্লিক করুন।",
+ "h_profiles_h": "টার্মিনাল প্রোফাইল ও WSL",
+ "h_profiles_p": "প্রোফাইল মেনুতে ডিফল্ট বাছুন, নিজস্ব কমান্ডের নাম, প্রোগ্রাম, আর্গুমেন্ট ও শুরুর ফোল্ডার সেট করুন, অথবা প্রোফাইল লুকান। ইনস্টল করা WSL ডিস্ট্রিবিউশন স্বয়ংক্রিয়ভাবে দেখা যায়। Linux ফোল্ডার সাইডবারে পাওয়া যায় ও পিন করা যায়।",
+ "t_term_p1": "প্রোফাইল স্থানীয় সেটিংসে থাকে ও খোলার সময় নির্ধারিত হয়। WSL <code>wsl.exe</code> ও Bash ব্যবহার করে; স্বাভাবিক <code>.bashrc</code> ও প্রম্পট অক্ষত থাকে। KillerShell একটি Windows অ্যাপই থাকে।",
+ "t_term_p2": "PowerShell ও WSL Bash <code>OSC 9;9</code> দিয়ে ফোল্ডার জানায়; পার্সার <code>OSC 7</code>-ও গ্রহণ করে। ব্রাউজ করার জন্য Linux পথ <code>\\\\wsl.localhost\\</code>-এ ম্যাপ হয়। টুলবার হালনাগাদ রাখতে নিজস্ব শেলকে ফোল্ডার জানাতে হবে।",
+ "f_themes_d": "13টি থিম, 41টি রূপ: Dark, Light, Black ও 98SE-তে 8টি করে অ্যাকসেন্ট রং আছে। অন্য 9টির স্থির প্যালেট। পুনরায় চালু না করেই বদলান।",
+ "h_look_p1": "13টি থিম, 41টি রূপ: Dark, Light, Black ও 98SE-তে 8টি করে অ্যাকসেন্ট রং আছে। অন্য 9টির স্থির প্যালেট। পুনরায় চালু না করেই বদলান।",
+ "t_themes_p": "13টি থিম, 41টি রূপ: Dark, Light, Black ও 98SE-তে 8টি করে অ্যাকসেন্ট রং আছে। অন্য 9টির স্থির প্যালেট। পুনরায় চালু না করেই বদলান।",
+ "t_cli_p": "শুধু-পঠন CLI ফাইল, অনুসন্ধান, প্রসেস, সার্ভিস, ইভেন্ট, রেজিস্ট্রি, ড্রাইভ ও SHA-256 হ্যাশের জন্য JSON দেয়। নিরাপত্তা লগে প্রশাসকের অধিকার লাগে।",
+ "site_kb_base": "মূল",
+ "site_kb_scope_hint": "কিবোর্ড একবারে একটি ট্যাব দেখায়।",
+ "site_kb_layer_hint": "সেই স্তর দেখতে Ctrl, Shift বা Alt ধরে রাখুন।",
+ "site_kb_detail_hint": "কাজ দেখতে হাইলাইট করা কীতে মাউস রাখুন।"
+});
+I18N["bn"].b1_d = I18N["bn"].b1_d.replace(/<li>[^<]*<b>[^<]*<\/b>[^<]*33[^<]*<\/li>/, "<li>13টি থিম, 41টি রূপ: Dark, Light, Black ও 98SE-তে 8টি করে অ্যাকসেন্ট রং আছে। অন্য 9টির স্থির প্যালেট। পুনরায় চালু না করেই বদলান।</li>").replace(/(<li><b>[^<]*<\/b>[^<]*PowerShell)[^<]*CMD[^<]*(<\/li>)/, '$1, CMD, WSL$2');
+Object.assign(I18N["es"], {
+ "h_term_p1": "<b>F8</b> abre el perfil de terminal predeterminado. <b>Shift+F8</b> abre CMD y <b>Ctrl+F8</b> abre PowerShell como administrador. Haz clic derecho en el botón de terminal de la barra lateral para elegir un perfil.",
+ "t_stack_term_d": "PowerShell y Bash de WSL informan su carpeta mediante <code>OSC 9;9</code>; el analizador también acepta <code>OSC 7</code>. Las rutas Linux se traducen a <code>\\\\wsl.localhost\\</code> para explorarlas. Los shells personalizados deben informar su carpeta para actualizar la barra."
+});
+Object.assign(I18N["de"], {
+ "h_term_p1": "<b>F8</b> öffnet das Standard-Terminalprofil. <b>Shift+F8</b> öffnet CMD, <b>Ctrl+F8</b> PowerShell als Administrator. Ein Rechtsklick auf die Terminal-Schaltfläche der Seitenleiste öffnet die Profilauswahl.",
+ "t_stack_term_d": "PowerShell und WSL-Bash melden ihren Ordner mit <code>OSC 9;9</code>; der Parser akzeptiert auch <code>OSC 7</code>. Linux-Pfade werden zum Durchsuchen auf <code>\\\\wsl.localhost\\</code> abgebildet. Eigene Shells müssen ihren Ordner melden, damit die Anzeige aktuell bleibt."
+});
+Object.assign(I18N["fr"], {
+ "h_term_p1": "<b>F8</b> ouvre le profil par défaut. <b>Shift+F8</b> ouvre CMD et <b>Ctrl+F8</b> PowerShell en administrateur. Un clic droit sur le bouton du terminal dans la barre latérale permet de choisir un profil.",
+ "t_stack_term_d": "PowerShell et Bash sous WSL signalent leur dossier avec <code>OSC 9;9</code> ; l'analyseur accepte aussi <code>OSC 7</code>. Les chemins Linux sont convertis en <code>\\\\wsl.localhost\\</code> pour la navigation. Les shells personnalisés doivent signaler leur dossier pour actualiser la barre."
+});
+Object.assign(I18N["it"], {
+ "h_term_p1": "<b>F8</b> apre il profilo predefinito. <b>Shift+F8</b> apre CMD e <b>Ctrl+F8</b> PowerShell come amministratore. Fai clic destro sul pulsante del terminale nella barra laterale per scegliere un profilo.",
+ "t_stack_term_d": "PowerShell e Bash di WSL comunicano la cartella con <code>OSC 9;9</code>; il parser accetta anche <code>OSC 7</code>. I percorsi Linux vengono mappati su <code>\\\\wsl.localhost\\</code> per la navigazione. Le shell personalizzate devono comunicare la cartella per aggiornare la barra."
+});
+Object.assign(I18N["pt"], {
+ "h_term_p1": "<b>F8</b> abre o perfil padrão. <b>Shift+F8</b> abre CMD e <b>Ctrl+F8</b> abre PowerShell como administrador. Clique com o botão direito no terminal da barra lateral para escolher um perfil.",
+ "t_stack_term_d": "PowerShell e Bash no WSL informam a pasta com <code>OSC 9;9</code>; o analisador também aceita <code>OSC 7</code>. Os caminhos Linux são mapeados para <code>\\\\wsl.localhost\\</code> para navegação. Shells personalizados precisam informar a pasta para atualizar a barra."
+});
+Object.assign(I18N["nb"], {
+ "h_term_p1": "<b>F8</b> åpner standardprofilen. <b>Shift+F8</b> åpner CMD og <b>Ctrl+F8</b> PowerShell som administrator. Høyreklikk terminalknappen i sidelinjen for å velge profil.",
+ "t_stack_term_d": "PowerShell og WSL Bash melder mappen med <code>OSC 9;9</code>; parseren godtar også <code>OSC 7</code>. Linux-stier kobles til <code>\\\\wsl.localhost\\</code> for filvisning. Egne skall må melde mappen for å holde verktøylinjen oppdatert."
+});
+Object.assign(I18N["pl"], {
+ "h_term_p1": "<b>F8</b> otwiera domyślny profil. <b>Shift+F8</b> otwiera CMD, a <b>Ctrl+F8</b> PowerShell jako administrator. Kliknij prawym przyciskiem terminal na pasku bocznym, aby wybrać profil.",
+ "t_stack_term_d": "PowerShell i Bash w WSL zgłaszają folder przez <code>OSC 9;9</code>; parser przyjmuje też <code>OSC 7</code>. Ścieżki Linux są mapowane na <code>\\\\wsl.localhost\\</code> do przeglądania. Własne powłoki muszą zgłaszać folder, aby pasek był aktualny."
+});
+Object.assign(I18N["cs"], {
+ "h_term_p1": "<b>F8</b> otevře výchozí profil. <b>Shift+F8</b> otevře CMD a <b>Ctrl+F8</b> PowerShell jako správce. Pravým kliknutím na tlačítko terminálu v postranním panelu vyberete profil.",
+ "t_stack_term_d": "PowerShell a Bash ve WSL hlásí složku pomocí <code>OSC 9;9</code>; parser přijímá také <code>OSC 7</code>. Cesty Linux se pro procházení převádějí na <code>\\\\wsl.localhost\\</code>. Vlastní shelly musí hlásit složku, aby byl panel aktuální."
+});
+Object.assign(I18N["hu"], {
+ "h_term_p1": "Az <b>F8</b> az alapértelmezett profilt nyitja meg. A <b>Shift+F8</b> CMD-t, a <b>Ctrl+F8</b> rendszergazdai PowerShellt nyit. Profilválasztáshoz kattints jobb gombbal az oldalsáv terminálgombjára.",
+ "t_stack_term_d": "A PowerShell és a WSL Bash <code>OSC 9;9</code> sorozattal jelzi a mappát; az elemző az <code>OSC 7</code>-et is elfogadja. A Linux-útvonalak tallózáshoz a <code>\\\\wsl.localhost\\</code> alá kerülnek. A saját parancsértelmezőknek jelezniük kell a mappát a sáv frissítéséhez."
+});
+Object.assign(I18N["tr"], {
+ "h_term_p1": "<b>F8</b> varsayılan profili açar. <b>Shift+F8</b> CMD, <b>Ctrl+F8</b> yönetici PowerShell açar. Profil seçmek için yan çubuktaki terminal düğmesine sağ tıklayın.",
+ "t_stack_term_d": "PowerShell ve WSL Bash klasörü <code>OSC 9;9</code> ile bildirir; ayrıştırıcı <code>OSC 7</code> de kabul eder. Linux yolları gezinmek için <code>\\\\wsl.localhost\\</code> ile eşlenir. Özel kabuklar araç çubuğunu güncel tutmak için klasörü bildirmelidir."
+});
+Object.assign(I18N["vi"], {
+ "h_term_p1": "<b>F8</b> mở hồ sơ mặc định. <b>Shift+F8</b> mở CMD và <b>Ctrl+F8</b> mở PowerShell với quyền quản trị. Nhấp phải nút terminal trên thanh bên để chọn hồ sơ.",
+ "t_stack_term_d": "PowerShell và Bash trong WSL báo thư mục bằng <code>OSC 9;9</code>; bộ phân tích cũng nhận <code>OSC 7</code>. Đường dẫn Linux ánh xạ sang <code>\\\\wsl.localhost\\</code> để duyệt. Shell tùy chỉnh phải báo thư mục để thanh công cụ cập nhật."
+});
+Object.assign(I18N["ru"], {
+ "h_term_p1": "<b>F8</b> открывает профиль по умолчанию. <b>Shift+F8</b> открывает CMD, <b>Ctrl+F8</b> PowerShell с правами администратора. Для выбора профиля щёлкните правой кнопкой по терминалу на боковой панели.",
+ "t_stack_term_d": "PowerShell и Bash в WSL сообщают папку через <code>OSC 9;9</code>; анализатор также принимает <code>OSC 7</code>. Пути Linux отображаются на <code>\\\\wsl.localhost\\</code> для просмотра. Пользовательские оболочки должны сообщать папку для обновления панели."
+});
+Object.assign(I18N["uk"], {
+ "h_term_p1": "<b>F8</b> відкриває типовий профіль. <b>Shift+F8</b> відкриває CMD, <b>Ctrl+F8</b> PowerShell із правами адміністратора. Для вибору профілю клацніть правою кнопкою термінал на бічній панелі.",
+ "t_stack_term_d": "PowerShell і Bash у WSL повідомляють папку через <code>OSC 9;9</code>; аналізатор також приймає <code>OSC 7</code>. Шляхи Linux відображаються на <code>\\\\wsl.localhost\\</code> для перегляду. Власні оболонки мають повідомляти папку для оновлення панелі."
+});
+Object.assign(I18N["kk"], {
+ "h_term_p1": "<b>F8</b> әдепкі профильді ашады. <b>Shift+F8</b> CMD, <b>Ctrl+F8</b> әкімші PowerShell ашады. Профиль таңдау үшін бүйір панельдегі терминал түймесін оң жақпен басыңыз.",
+ "t_stack_term_d": "PowerShell және WSL Bash қалтаны <code>OSC 9;9</code> арқылы хабарлайды; талдаушы <code>OSC 7</code> де қабылдайды. Linux жолдары шолу үшін <code>\\\\wsl.localhost\\</code> жолына сәйкестендіріледі. Жеке қабықтар панельді жаңарту үшін қалтаны хабарлауы керек."
+});
+Object.assign(I18N["ja"], {
+ "h_term_p1": "<b>F8</b> は既定のプロファイルを開きます。<b>Shift+F8</b> は CMD、<b>Ctrl+F8</b> は管理者 PowerShell を開きます。サイドバーの端末ボタンを右クリックしてプロファイルを選択します。",
+ "t_stack_term_d": "PowerShell と WSL Bash は <code>OSC 9;9</code> でフォルダーを報告します。パーサーは <code>OSC 7</code> も受け付けます。Linux パスは参照用に <code>\\\\wsl.localhost\\</code> に対応付けられます。カスタムシェルはツールバーを更新するためにフォルダーを報告する必要があります。"
+});
+Object.assign(I18N["zh-cn"], {
+ "h_term_p1": "<b>F8</b> 打开默认终端配置。<b>Shift+F8</b> 打开 CMD，<b>Ctrl+F8</b> 打开管理员 PowerShell。右键单击侧栏的终端按钮可选择配置。",
+ "t_stack_term_d": "PowerShell 和 WSL Bash 通过 <code>OSC 9;9</code> 报告文件夹；解析器也接受 <code>OSC 7</code>。Linux 路径映射到 <code>\\\\wsl.localhost\\</code> 以供浏览。自定义 Shell 必须报告文件夹，才能保持工具栏更新。"
+});
+Object.assign(I18N["zh"], {
+ "h_term_p1": "<b>F8</b> 開啟預設終端設定檔。<b>Shift+F8</b> 開啟 CMD，<b>Ctrl+F8</b> 開啟系統管理員 PowerShell。右鍵按側欄的終端按鈕可選擇設定檔。",
+ "t_stack_term_d": "PowerShell 與 WSL Bash 透過 <code>OSC 9;9</code> 回報資料夾；剖析器也接受 <code>OSC 7</code>。Linux 路徑對應至 <code>\\\\wsl.localhost\\</code> 以供瀏覽。自訂 Shell 必須回報資料夾，才能保持工具列更新。"
+});
+Object.assign(I18N["bn"], {
+ "h_term_p1": "<b>F8</b> ডিফল্ট প্রোফাইল খোলে। <b>Shift+F8</b> CMD ও <b>Ctrl+F8</b> প্রশাসক PowerShell খোলে। প্রোফাইল বাছতে সাইডবারের টার্মিনাল বোতামে ডান-ক্লিক করুন।",
+ "t_stack_term_d": "PowerShell ও WSL Bash <code>OSC 9;9</code> দিয়ে ফোল্ডার জানায়; পার্সার <code>OSC 7</code>-ও গ্রহণ করে। ব্রাউজ করার জন্য Linux পথ <code>\\\\wsl.localhost\\</code>-এ ম্যাপ হয়। টুলবার হালনাগাদ রাখতে নিজস্ব শেলকে ফোল্ডার জানাতে হবে।"
+});
+Object.keys(I18N).forEach(function (locale) {
+ var text = I18N[locale].hx_069;
+ var nextShortcut = text.indexOf('<b>', text.indexOf('</b>') + 4);
+ I18N[locale].hx_069 = text.slice(0, nextShortcut) + '<code>Ctrl+` = F8</code>; <code>Ctrl+Alt+` = Ctrl+F8</code>.';
+});
+// Shared chrome, hover labels and version messages.
+Object.assign(I18N["es"], {
+ "site_ui_theme": "Tema",
+ "site_ui_choose_theme": "Elegir tema",
+ "site_ui_accent": "Color de acento",
+ "site_ui_close": "Cerrar",
+ "site_ui_language": "Idioma",
+ "site_ui_copy": "Copiar al portapapeles",
+ "site_ui_copied": "Copiado",
+ "site_ui_click": "Haz clic",
+ "site_ui_home": "Inicio",
+ "site_ui_shortcuts": "Vista de atajos",
+ "site_ui_screenshot": "Captura de pantalla",
+ "site_ui_red": "Rojo",
+ "site_ui_orange": "Naranja",
+ "site_ui_yellow": "Amarillo",
+ "site_ui_green": "Verde",
+ "site_ui_teal": "Verde azulado",
+ "site_ui_blue": "Azul",
+ "site_ui_purple": "Morado",
+ "site_ui_magenta": "Magenta",
+ "site_egg_0": "Explorer, cmd y Notepad entran en una ventana. Solo uno sale.",
+ "site_egg_1": "Llamó el Administrador de tareas. Quiere recuperar su lista de procesos.",
+ "site_egg_2": "Cuatro herramientas entraron en una barra de pestañas. KillerShell salió con todas puestas.",
+ "site_egg_3": "PowerShell, el Editor del Registro y un editor de texto, acorralados en un exe. Nadie pidió refuerzos.",
+ "site_egg_4": "Se llama KillerShell porque FileManagerButAlsoATerminalAndAlsoAnEditor.exe no cabía en el icono.",
+ "site_egg_5": "Un exe, sin instalador ni suscripción. Lo único que muere es tu costumbre de usar Explorer.exe."
+});
+Object.assign(I18N["de"], {
+ "site_ui_theme": "Design",
+ "site_ui_choose_theme": "Design wählen",
+ "site_ui_accent": "Akzentfarbe",
+ "site_ui_close": "Schließen",
+ "site_ui_language": "Sprache",
+ "site_ui_copy": "In Zwischenablage kopieren",
+ "site_ui_copied": "Kopiert",
+ "site_ui_click": "Klick mich",
+ "site_ui_home": "Startseite",
+ "site_ui_shortcuts": "Tastenkürzelansicht",
+ "site_ui_screenshot": "Bildschirmfoto",
+ "site_ui_red": "Rot",
+ "site_ui_orange": "Orange",
+ "site_ui_yellow": "Gelb",
+ "site_ui_green": "Grün",
+ "site_ui_teal": "Türkis",
+ "site_ui_blue": "Blau",
+ "site_ui_purple": "Violett",
+ "site_ui_magenta": "Magenta",
+ "site_egg_0": "Explorer, cmd und Notepad betreten ein Fenster. Nur einer kommt heraus.",
+ "site_egg_1": "Der Task-Manager hat angerufen. Er will seine Prozessliste zurück.",
+ "site_egg_2": "Vier Werkzeuge betraten eine Registerleiste. KillerShell kam mit allen wieder heraus.",
+ "site_egg_3": "PowerShell, Registrierungs-Editor und Texteditor in einer exe eingekesselt. Niemand rief Verstärkung.",
+ "site_egg_4": "Es heißt KillerShell, weil FileManagerButAlsoATerminalAndAlsoAnEditor.exe nicht aufs Symbol passte.",
+ "site_egg_5": "Eine exe, kein Installer, kein Abo. Nur deine Explorer.exe-Gewohnheit stirbt."
+});
+Object.assign(I18N["fr"], {
+ "site_ui_theme": "Thème",
+ "site_ui_choose_theme": "Choisir un thème",
+ "site_ui_accent": "Couleur d'accent",
+ "site_ui_close": "Fermer",
+ "site_ui_language": "Langue",
+ "site_ui_copy": "Copier dans le presse-papiers",
+ "site_ui_copied": "Copié",
+ "site_ui_click": "Cliquez ici",
+ "site_ui_home": "Accueil",
+ "site_ui_shortcuts": "Vue des raccourcis",
+ "site_ui_screenshot": "Capture d'écran",
+ "site_ui_red": "Rouge",
+ "site_ui_orange": "Orange",
+ "site_ui_yellow": "Jaune",
+ "site_ui_green": "Vert",
+ "site_ui_teal": "Sarcelle",
+ "site_ui_blue": "Bleu",
+ "site_ui_purple": "Violet",
+ "site_ui_magenta": "Magenta",
+ "site_egg_0": "Explorer, cmd et Notepad entrent dans une fenêtre. Un seul en ressort.",
+ "site_egg_1": "Le Gestionnaire des tâches a appelé. Il veut récupérer sa liste de processus.",
+ "site_egg_2": "Quatre outils sont entrés dans une barre d'onglets. KillerShell est ressorti en les portant tous.",
+ "site_egg_3": "PowerShell, l'Éditeur du Registre et un éditeur de texte, coincés dans un exe. Personne n'a appelé de renfort.",
+ "site_egg_4": "Ça s'appelle KillerShell parce que FileManagerButAlsoATerminalAndAlsoAnEditor.exe ne tenait pas sur l'icône.",
+ "site_egg_5": "Un exe, sans installateur ni abonnement. Seule votre habitude d'Explorer.exe disparaît."
+});
+Object.assign(I18N["it"], {
+ "site_ui_theme": "Tema",
+ "site_ui_choose_theme": "Scegli tema",
+ "site_ui_accent": "Colore di accento",
+ "site_ui_close": "Chiudi",
+ "site_ui_language": "Lingua",
+ "site_ui_copy": "Copia negli appunti",
+ "site_ui_copied": "Copiato",
+ "site_ui_click": "Fai clic",
+ "site_ui_home": "Pagina iniziale",
+ "site_ui_shortcuts": "Vista delle scorciatoie",
+ "site_ui_screenshot": "Schermata",
+ "site_ui_red": "Rosso",
+ "site_ui_orange": "Arancione",
+ "site_ui_yellow": "Giallo",
+ "site_ui_green": "Verde",
+ "site_ui_teal": "Verde acqua",
+ "site_ui_blue": "Blu",
+ "site_ui_purple": "Viola",
+ "site_ui_magenta": "Magenta",
+ "site_egg_0": "Explorer, cmd e Notepad entrano in una finestra. Ne esce uno solo.",
+ "site_egg_1": "Ha chiamato Gestione attività. Rivuole il suo elenco processi.",
+ "site_egg_2": "Quattro strumenti sono entrati in una barra di schede. KillerShell è uscito indossandoli tutti.",
+ "site_egg_3": "PowerShell, Editor del Registro e un editor di testo, accerchiati in un exe. Nessuno ha chiamato rinforzi.",
+ "site_egg_4": "Si chiama KillerShell perché FileManagerButAlsoATerminalAndAlsoAnEditor.exe non entrava nell'icona.",
+ "site_egg_5": "Un exe, senza installer né abbonamento. A morire è solo la tua abitudine a Explorer.exe."
+});
+Object.assign(I18N["pt"], {
+ "site_ui_theme": "Tema",
+ "site_ui_choose_theme": "Escolher tema",
+ "site_ui_accent": "Cor de destaque",
+ "site_ui_close": "Fechar",
+ "site_ui_language": "Idioma",
+ "site_ui_copy": "Copiar para a área de transferência",
+ "site_ui_copied": "Copiado",
+ "site_ui_click": "Clique aqui",
+ "site_ui_home": "Início",
+ "site_ui_shortcuts": "Visualização de atalhos",
+ "site_ui_screenshot": "Captura de tela",
+ "site_ui_red": "Vermelho",
+ "site_ui_orange": "Laranja",
+ "site_ui_yellow": "Amarelo",
+ "site_ui_green": "Verde",
+ "site_ui_teal": "Verde-azulado",
+ "site_ui_blue": "Azul",
+ "site_ui_purple": "Roxo",
+ "site_ui_magenta": "Magenta",
+ "site_egg_0": "Explorer, cmd e Notepad entram em uma janela. Só um sai.",
+ "site_egg_1": "O Gerenciador de Tarefas ligou. Quer a lista de processos de volta.",
+ "site_egg_2": "Quatro ferramentas entraram em uma barra de abas. KillerShell saiu vestindo todas.",
+ "site_egg_3": "PowerShell, Editor do Registro e um editor de texto, encurralados em um exe. Ninguém pediu reforços.",
+ "site_egg_4": "Chama-se KillerShell porque FileManagerButAlsoATerminalAndAlsoAnEditor.exe não cabia no ícone.",
+ "site_egg_5": "Um exe, sem instalador nem assinatura. Só o hábito de usar Explorer.exe está morrendo."
+});
+Object.assign(I18N["nb"], {
+ "site_ui_theme": "Tema",
+ "site_ui_choose_theme": "Velg tema",
+ "site_ui_accent": "Aksentfarge",
+ "site_ui_close": "Lukk",
+ "site_ui_language": "Språk",
+ "site_ui_copy": "Kopier til utklippstavlen",
+ "site_ui_copied": "Kopiert",
+ "site_ui_click": "Klikk her",
+ "site_ui_home": "Hjem",
+ "site_ui_shortcuts": "Snarveisvisning",
+ "site_ui_screenshot": "Skjermbilde",
+ "site_ui_red": "Rød",
+ "site_ui_orange": "Oransje",
+ "site_ui_yellow": "Gul",
+ "site_ui_green": "Grønn",
+ "site_ui_teal": "Blågrønn",
+ "site_ui_blue": "Blå",
+ "site_ui_purple": "Lilla",
+ "site_ui_magenta": "Magenta",
+ "site_egg_0": "Explorer, cmd og Notepad går inn i ett vindu. Bare én kommer ut.",
+ "site_egg_1": "Oppgavebehandling ringte. Den vil ha prosesslisten tilbake.",
+ "site_egg_2": "Fire verktøy gikk inn i en fanelinje. KillerShell kom ut med alle på seg.",
+ "site_egg_3": "PowerShell, Registerredigering og en teksteditor, fanget i én exe. Ingen ba om forsterkninger.",
+ "site_egg_4": "Det heter KillerShell fordi FileManagerButAlsoATerminalAndAlsoAnEditor.exe ikke fikk plass på ikonet.",
+ "site_egg_5": "Én exe, ingen installerer, intet abonnement. Bare Explorer.exe-vanen din dør."
+});
+Object.assign(I18N["pl"], {
+ "site_ui_theme": "Motyw",
+ "site_ui_choose_theme": "Wybierz motyw",
+ "site_ui_accent": "Kolor akcentu",
+ "site_ui_close": "Zamknij",
+ "site_ui_language": "Język",
+ "site_ui_copy": "Kopiuj do schowka",
+ "site_ui_copied": "Skopiowano",
+ "site_ui_click": "Kliknij tutaj",
+ "site_ui_home": "Strona główna",
+ "site_ui_shortcuts": "Widok skrótów",
+ "site_ui_screenshot": "Zrzut ekranu",
+ "site_ui_red": "Czerwony",
+ "site_ui_orange": "Pomarańczowy",
+ "site_ui_yellow": "Żółty",
+ "site_ui_green": "Zielony",
+ "site_ui_teal": "Morski",
+ "site_ui_blue": "Niebieski",
+ "site_ui_purple": "Fioletowy",
+ "site_ui_magenta": "Magenta",
+ "site_egg_0": "Explorer, cmd i Notepad wchodzą do jednego okna. Wychodzi tylko jeden.",
+ "site_egg_1": "Dzwonił Menedżer zadań. Chce odzyskać swoją listę procesów.",
+ "site_egg_2": "Cztery narzędzia weszły na pasek kart. KillerShell wyszedł, nosząc je wszystkie.",
+ "site_egg_3": "PowerShell, Edytor rejestru i edytor tekstu, otoczeni w jednym exe. Nikt nie wezwał wsparcia.",
+ "site_egg_4": "Nazywa się KillerShell, bo FileManagerButAlsoATerminalAndAlsoAnEditor.exe nie mieściło się na ikonie.",
+ "site_egg_5": "Jeden exe, bez instalatora i abonamentu. Ginie tylko twój nawyk używania Explorer.exe."
+});
+Object.assign(I18N["cs"], {
+ "site_ui_theme": "Motiv",
+ "site_ui_choose_theme": "Vybrat motiv",
+ "site_ui_accent": "Barva akcentu",
+ "site_ui_close": "Zavřít",
+ "site_ui_language": "Jazyk",
+ "site_ui_copy": "Kopírovat do schránky",
+ "site_ui_copied": "Zkopírováno",
+ "site_ui_click": "Klikněte sem",
+ "site_ui_home": "Domů",
+ "site_ui_shortcuts": "Zobrazení zkratek",
+ "site_ui_screenshot": "Snímek obrazovky",
+ "site_ui_red": "Červená",
+ "site_ui_orange": "Oranžová",
+ "site_ui_yellow": "Žlutá",
+ "site_ui_green": "Zelená",
+ "site_ui_teal": "Modrozelená",
+ "site_ui_blue": "Modrá",
+ "site_ui_purple": "Fialová",
+ "site_ui_magenta": "Purpurová",
+ "site_egg_0": "Explorer, cmd a Notepad vejdou do jednoho okna. Vyjde jen jeden.",
+ "site_egg_1": "Volal Správce úloh. Chce svůj seznam procesů zpátky.",
+ "site_egg_2": "Čtyři nástroje vešly do lišty karet. KillerShell vyšel se všemi na sobě.",
+ "site_egg_3": "PowerShell, Editor registru a textový editor, zahnaní do jednoho exe. Nikdo nevolal posily.",
+ "site_egg_4": "Jmenuje se KillerShell, protože FileManagerButAlsoATerminalAndAlsoAnEditor.exe se nevešlo na ikonu.",
+ "site_egg_5": "Jeden exe, bez instalátoru a předplatného. Umírá jen váš návyk na Explorer.exe."
+});
+Object.assign(I18N["hu"], {
+ "site_ui_theme": "Téma",
+ "site_ui_choose_theme": "Téma kiválasztása",
+ "site_ui_accent": "Kiemelőszín",
+ "site_ui_close": "Bezárás",
+ "site_ui_language": "Nyelv",
+ "site_ui_copy": "Másolás a vágólapra",
+ "site_ui_copied": "Másolva",
+ "site_ui_click": "Kattints ide",
+ "site_ui_home": "Kezdőlap",
+ "site_ui_shortcuts": "Gyorsbillentyűk nézete",
+ "site_ui_screenshot": "Képernyőkép",
+ "site_ui_red": "Piros",
+ "site_ui_orange": "Narancssárga",
+ "site_ui_yellow": "Sárga",
+ "site_ui_green": "Zöld",
+ "site_ui_teal": "Türkiz",
+ "site_ui_blue": "Kék",
+ "site_ui_purple": "Lila",
+ "site_ui_magenta": "Magenta",
+ "site_egg_0": "Az Explorer, a cmd és a Notepad belép egy ablakba. Csak egy jön ki.",
+ "site_egg_1": "Hívott a Feladatkezelő. Visszakéri a folyamatlistáját.",
+ "site_egg_2": "Négy eszköz belépett egy lapsávba. A KillerShell mindet magára öltve jött ki.",
+ "site_egg_3": "PowerShell, Beállításszerkesztő és szövegszerkesztő, egy exe-be szorítva. Senki sem hívott erősítést.",
+ "site_egg_4": "Azért KillerShell, mert a FileManagerButAlsoATerminalAndAlsoAnEditor.exe nem fért rá az ikonra.",
+ "site_egg_5": "Egy exe, nincs telepítő, nincs előfizetés. Csak az Explorer.exe-szokásod hal meg."
+});
+Object.assign(I18N["tr"], {
+ "site_ui_theme": "Tema",
+ "site_ui_choose_theme": "Tema seç",
+ "site_ui_accent": "Vurgu rengi",
+ "site_ui_close": "Kapat",
+ "site_ui_language": "Dil",
+ "site_ui_copy": "Panoya kopyala",
+ "site_ui_copied": "Kopyalandı",
+ "site_ui_click": "Buraya tıklayın",
+ "site_ui_home": "Ana sayfa",
+ "site_ui_shortcuts": "Kısayol görünümü",
+ "site_ui_screenshot": "Ekran görüntüsü",
+ "site_ui_red": "Kırmızı",
+ "site_ui_orange": "Turuncu",
+ "site_ui_yellow": "Sarı",
+ "site_ui_green": "Yeşil",
+ "site_ui_teal": "Turkuaz",
+ "site_ui_blue": "Mavi",
+ "site_ui_purple": "Mor",
+ "site_ui_magenta": "Macenta",
+ "site_egg_0": "Explorer, cmd ve Notepad bir pencereye girer. Yalnızca biri çıkar.",
+ "site_egg_1": "Görev Yöneticisi aradı. İşlem listesini geri istiyor.",
+ "site_egg_2": "Dört araç bir sekme çubuğuna girdi. KillerShell hepsini kuşanıp çıktı.",
+ "site_egg_3": "PowerShell, Kayıt Defteri Düzenleyicisi ve metin düzenleyicisi bir exe içinde kuşatıldı. Kimse destek çağırmadı.",
+ "site_egg_4": "Adı KillerShell çünkü FileManagerButAlsoATerminalAndAlsoAnEditor.exe simgeye sığmadı.",
+ "site_egg_5": "Tek exe, kurulum programı yok, abonelik yok. Ölen tek şey Explorer.exe alışkanlığınız."
+});
+Object.assign(I18N["vi"], {
+ "site_ui_theme": "Giao diện",
+ "site_ui_choose_theme": "Chọn giao diện",
+ "site_ui_accent": "Màu nhấn",
+ "site_ui_close": "Đóng",
+ "site_ui_language": "Ngôn ngữ",
+ "site_ui_copy": "Sao chép vào bảng nhớ tạm",
+ "site_ui_copied": "Đã sao chép",
+ "site_ui_click": "Nhấp vào đây",
+ "site_ui_home": "Trang chủ",
+ "site_ui_shortcuts": "Chế độ phím tắt",
+ "site_ui_screenshot": "Ảnh chụp màn hình",
+ "site_ui_red": "Đỏ",
+ "site_ui_orange": "Cam",
+ "site_ui_yellow": "Vàng",
+ "site_ui_green": "Xanh lá",
+ "site_ui_teal": "Xanh ngọc",
+ "site_ui_blue": "Xanh dương",
+ "site_ui_purple": "Tím",
+ "site_ui_magenta": "Hồng tím",
+ "site_egg_0": "Explorer, cmd và Notepad bước vào một cửa sổ. Chỉ một bước ra.",
+ "site_egg_1": "Trình quản lý tác vụ gọi. Nó muốn lấy lại danh sách tiến trình.",
+ "site_egg_2": "Bốn công cụ bước vào thanh tab. KillerShell bước ra với cả bốn trên người.",
+ "site_egg_3": "PowerShell, Trình sửa Registry và trình soạn thảo bị dồn vào một exe. Không ai gọi viện trợ.",
+ "site_egg_4": "Tên là KillerShell vì FileManagerButAlsoATerminalAndAlsoAnEditor.exe không vừa trên biểu tượng.",
+ "site_egg_5": "Một exe, không trình cài đặt, không thuê bao. Chỉ thói quen Explorer.exe của bạn đang chết."
+});
+Object.assign(I18N["ru"], {
+ "site_ui_theme": "Тема",
+ "site_ui_choose_theme": "Выбрать тему",
+ "site_ui_accent": "Акцентный цвет",
+ "site_ui_close": "Закрыть",
+ "site_ui_language": "Язык",
+ "site_ui_copy": "Копировать в буфер обмена",
+ "site_ui_copied": "Скопировано",
+ "site_ui_click": "Нажмите здесь",
+ "site_ui_home": "Главная",
+ "site_ui_shortcuts": "Вид сочетаний клавиш",
+ "site_ui_screenshot": "Снимок экрана",
+ "site_ui_red": "Красный",
+ "site_ui_orange": "Оранжевый",
+ "site_ui_yellow": "Жёлтый",
+ "site_ui_green": "Зелёный",
+ "site_ui_teal": "Бирюзовый",
+ "site_ui_blue": "Синий",
+ "site_ui_purple": "Фиолетовый",
+ "site_ui_magenta": "Пурпурный",
+ "site_egg_0": "Explorer, cmd и Notepad заходят в одно окно. Выходит только один.",
+ "site_egg_1": "Звонил Диспетчер задач. Просит вернуть список процессов.",
+ "site_egg_2": "Четыре инструмента вошли в полосу вкладок. KillerShell вышел, надев их все.",
+ "site_egg_3": "PowerShell, редактор реестра и текстовый редактор окружены в одном exe. Никто не вызвал подкрепление.",
+ "site_egg_4": "Название KillerShell выбрано потому, что FileManagerButAlsoATerminalAndAlsoAnEditor.exe не поместилось на значке.",
+ "site_egg_5": "Один exe, без установщика и подписки. Умирает лишь привычка к Explorer.exe."
+});
+Object.assign(I18N["uk"], {
+ "site_ui_theme": "Тема",
+ "site_ui_choose_theme": "Обрати тему",
+ "site_ui_accent": "Колір акценту",
+ "site_ui_close": "Закрити",
+ "site_ui_language": "Мова",
+ "site_ui_copy": "Копіювати в буфер обміну",
+ "site_ui_copied": "Скопійовано",
+ "site_ui_click": "Натисніть тут",
+ "site_ui_home": "Головна",
+ "site_ui_shortcuts": "Вигляд комбінацій клавіш",
+ "site_ui_screenshot": "Знімок екрана",
+ "site_ui_red": "Червоний",
+ "site_ui_orange": "Помаранчевий",
+ "site_ui_yellow": "Жовтий",
+ "site_ui_green": "Зелений",
+ "site_ui_teal": "Бірюзовий",
+ "site_ui_blue": "Синій",
+ "site_ui_purple": "Фіолетовий",
+ "site_ui_magenta": "Пурпуровий",
+ "site_egg_0": "Explorer, cmd і Notepad заходять в одне вікно. Виходить лише один.",
+ "site_egg_1": "Телефонував Диспетчер завдань. Хоче повернути список процесів.",
+ "site_egg_2": "Чотири інструменти зайшли на панель вкладок. KillerShell вийшов, вдягнувши їх усі.",
+ "site_egg_3": "PowerShell, редактор реєстру й текстовий редактор оточені в одному exe. Ніхто не викликав підкріплення.",
+ "site_egg_4": "Назва KillerShell, бо FileManagerButAlsoATerminalAndAlsoAnEditor.exe не помістилося на піктограмі.",
+ "site_egg_5": "Один exe, без інсталятора й передплати. Помирає лише звичка до Explorer.exe."
+});
+Object.assign(I18N["kk"], {
+ "site_ui_theme": "Тақырып",
+ "site_ui_choose_theme": "Тақырып таңдау",
+ "site_ui_accent": "Екпін түсі",
+ "site_ui_close": "Жабу",
+ "site_ui_language": "Тіл",
+ "site_ui_copy": "Алмасу буферіне көшіру",
+ "site_ui_copied": "Көшірілді",
+ "site_ui_click": "Осы жерді басыңыз",
+ "site_ui_home": "Басты бет",
+ "site_ui_shortcuts": "Пернелер тіркесімі көрінісі",
+ "site_ui_screenshot": "Экран суреті",
+ "site_ui_red": "Қызыл",
+ "site_ui_orange": "Қызғылт сары",
+ "site_ui_yellow": "Сары",
+ "site_ui_green": "Жасыл",
+ "site_ui_teal": "Көкшіл жасыл",
+ "site_ui_blue": "Көк",
+ "site_ui_purple": "Күлгін",
+ "site_ui_magenta": "Маджента",
+ "site_egg_0": "Explorer, cmd және Notepad бір терезеге кіреді. Тек біреуі шығады.",
+ "site_egg_1": "Тапсырмалар диспетчері қоңырау шалды. Процестер тізімін қайтаруды сұрайды.",
+ "site_egg_2": "Төрт құрал қойындылар жолағына кірді. KillerShell бәрін киіп шықты.",
+ "site_egg_3": "PowerShell, тізілім редакторы және мәтін редакторы бір exe ішінде қоршауда қалды. Ешкім көмек шақырмады.",
+ "site_egg_4": "Атауы KillerShell, себебі FileManagerButAlsoATerminalAndAlsoAnEditor.exe белгішеге сыймады.",
+ "site_egg_5": "Бір exe, орнатушы да, жазылым да жоқ. Тек Explorer.exe әдетіңіз жоғалады."
+});
+Object.assign(I18N["ja"], {
+ "site_ui_theme": "テーマ",
+ "site_ui_choose_theme": "テーマを選択",
+ "site_ui_accent": "アクセントカラー",
+ "site_ui_close": "閉じる",
+ "site_ui_language": "言語",
+ "site_ui_copy": "クリップボードにコピー",
+ "site_ui_copied": "コピーしました",
+ "site_ui_click": "クリック",
+ "site_ui_home": "ホーム",
+ "site_ui_shortcuts": "ショートカット表示",
+ "site_ui_screenshot": "スクリーンショット",
+ "site_ui_red": "赤",
+ "site_ui_orange": "オレンジ",
+ "site_ui_yellow": "黄",
+ "site_ui_green": "緑",
+ "site_ui_teal": "青緑",
+ "site_ui_blue": "青",
+ "site_ui_purple": "紫",
+ "site_ui_magenta": "マゼンタ",
+ "site_egg_0": "Explorer、cmd、Notepad が 1 つのウィンドウに入る。出てくるのは 1 つだけ。",
+ "site_egg_1": "タスク マネージャーから電話。プロセス一覧を返してほしいそうだ。",
+ "site_egg_2": "4 つのツールがタブバーに入った。KillerShell は全部を身に着けて出てきた。",
+ "site_egg_3": "PowerShell、レジストリ エディター、テキスト エディターが 1 つの exe に包囲された。誰も応援を呼ばなかった。",
+ "site_egg_4": "FileManagerButAlsoATerminalAndAlsoAnEditor.exe がアイコンに収まらなかったので KillerShell という名前になった。",
+ "site_egg_5": "exe は 1 つ。インストーラーもサブスクもない。消えるのは Explorer.exe を使う習慣だけ。"
+});
+Object.assign(I18N["zh-cn"], {
+ "site_ui_theme": "主题",
+ "site_ui_choose_theme": "选择主题",
+ "site_ui_accent": "强调色",
+ "site_ui_close": "关闭",
+ "site_ui_language": "语言",
+ "site_ui_copy": "复制到剪贴板",
+ "site_ui_copied": "已复制",
+ "site_ui_click": "点击这里",
+ "site_ui_home": "主页",
+ "site_ui_shortcuts": "快捷键视图",
+ "site_ui_screenshot": "屏幕截图",
+ "site_ui_red": "红色",
+ "site_ui_orange": "橙色",
+ "site_ui_yellow": "黄色",
+ "site_ui_green": "绿色",
+ "site_ui_teal": "青绿色",
+ "site_ui_blue": "蓝色",
+ "site_ui_purple": "紫色",
+ "site_ui_magenta": "洋红色",
+ "site_egg_0": "Explorer、cmd 和 Notepad 走进同一个窗口。只有一个走出来。",
+ "site_egg_1": "任务管理器来电话了。它想要回自己的进程列表。",
+ "site_egg_2": "四个工具走进标签栏。KillerShell 披着它们全走出来了。",
+ "site_egg_3": "PowerShell、注册表编辑器和文本编辑器被困在同一个 exe 中。没人叫援兵。",
+ "site_egg_4": "叫 KillerShell，是因为 FileManagerButAlsoATerminalAndAlsoAnEditor.exe 放不进图标。",
+ "site_egg_5": "一个 exe，没有安装程序，没有订阅。消失的只有你用 Explorer.exe 的习惯。"
+});
+Object.assign(I18N["zh"], {
+ "site_ui_theme": "主題",
+ "site_ui_choose_theme": "選擇主題",
+ "site_ui_accent": "強調色",
+ "site_ui_close": "關閉",
+ "site_ui_language": "語言",
+ "site_ui_copy": "複製到剪貼簿",
+ "site_ui_copied": "已複製",
+ "site_ui_click": "按這裡",
+ "site_ui_home": "首頁",
+ "site_ui_shortcuts": "快捷鍵檢視",
+ "site_ui_screenshot": "螢幕擷取畫面",
+ "site_ui_red": "紅色",
+ "site_ui_orange": "橙色",
+ "site_ui_yellow": "黃色",
+ "site_ui_green": "綠色",
+ "site_ui_teal": "藍綠色",
+ "site_ui_blue": "藍色",
+ "site_ui_purple": "紫色",
+ "site_ui_magenta": "洋紅色",
+ "site_egg_0": "Explorer、cmd 和 Notepad 走進同一個視窗。只有一個走出來。",
+ "site_egg_1": "工作管理員來電話了。它想要回自己的處理程序清單。",
+ "site_egg_2": "四個工具走進分頁列。KillerShell 披著它們全走出來了。",
+ "site_egg_3": "PowerShell、登錄編輯程式與文字編輯器被困在同一個 exe 中。沒人叫援兵。",
+ "site_egg_4": "叫 KillerShell，是因為 FileManagerButAlsoATerminalAndAlsoAnEditor.exe 放不進圖示。",
+ "site_egg_5": "一個 exe，沒有安裝程式，沒有訂閱。消失的只有你用 Explorer.exe 的習慣。"
+});
+Object.assign(I18N["bn"], {
+ "site_ui_theme": "থিম",
+ "site_ui_choose_theme": "থিম বাছুন",
+ "site_ui_accent": "অ্যাকসেন্ট রং",
+ "site_ui_close": "বন্ধ করুন",
+ "site_ui_language": "ভাষা",
+ "site_ui_copy": "ক্লিপবোর্ডে কপি করুন",
+ "site_ui_copied": "কপি হয়েছে",
+ "site_ui_click": "এখানে ক্লিক করুন",
+ "site_ui_home": "হোম",
+ "site_ui_shortcuts": "শর্টকাট দৃশ্য",
+ "site_ui_screenshot": "স্ক্রিনশট",
+ "site_ui_red": "লাল",
+ "site_ui_orange": "কমলা",
+ "site_ui_yellow": "হলুদ",
+ "site_ui_green": "সবুজ",
+ "site_ui_teal": "নীলচে সবুজ",
+ "site_ui_blue": "নীল",
+ "site_ui_purple": "বেগুনি",
+ "site_ui_magenta": "ম্যাজেন্টা",
+ "site_egg_0": "Explorer, cmd আর Notepad একই উইন্ডোতে ঢোকে। বের হয় শুধু একজন।",
+ "site_egg_1": "টাস্ক ম্যানেজার ফোন করেছে। তার প্রসেস তালিকা ফেরত চায়।",
+ "site_egg_2": "চারটি টুল ট্যাব বারে ঢুকল। KillerShell সবগুলো গায়ে চড়িয়ে বের হলো।",
+ "site_egg_3": "PowerShell, রেজিস্ট্রি এডিটর আর টেক্সট এডিটর একই exe-তে আটকা পড়েছে। কেউ সাহায্য ডাকেনি।",
+ "site_egg_4": "নাম KillerShell, কারণ FileManagerButAlsoATerminalAndAlsoAnEditor.exe আইকনে ধরেনি।",
+ "site_egg_5": "একটি exe, ইনস্টলার নেই, সাবস্ক্রিপশন নেই। মরছে শুধু আপনার Explorer.exe ব্যবহারের অভ্যাস।"
+});
+// Search diagram and footer accessibility labels.
+Object.assign(I18N["es"], {
+ "site_diagram_0": "carpeta + términos + filtros",
+ "site_diagram_1": "escribe una consulta y busca",
+ "site_diagram_2": "recorre los archivos uno a uno",
+ "site_diagram_3": "flujo continuo; omite carpetas ilegibles",
+ "site_diagram_4": "excluir, luego incluir",
+ "site_diagram_5": "descartar archivos fuera del alcance",
+ "site_diagram_6": "términos de nombre",
+ "site_diagram_7": "comodines sobre",
+ "site_diagram_8": "nombre de archivo",
+ "site_diagram_9": "términos de texto",
+ "site_diagram_10": "leer línea por línea",
+ "site_diagram_11": "omitir archivos binarios",
+ "site_diagram_12": "resultados cada ~150 ms",
+ "site_diagram_13": "resultados continuos; cancelar cuando quieras",
+ "site_ui_expand": "Expandir sección",
+ "site_ui_collapse": "Contraer sección",
+ "site_ui_family": "Parte de"
+});
+Object.assign(I18N["de"], {
+ "site_diagram_0": "Ordner + Begriffe + Filter",
+ "site_diagram_1": "Suchanfrage eingeben und suchen",
+ "site_diagram_2": "Dateien einzeln durchlaufen",
+ "site_diagram_3": "Dateistrom; unlesbare Ordner überspringen",
+ "site_diagram_4": "ausschließen, dann einschließen",
+ "site_diagram_5": "Dateien außerhalb des Bereichs verwerfen",
+ "site_diagram_6": "Namensbegriffe",
+ "site_diagram_7": "Platzhaltervergleich mit",
+ "site_diagram_8": "Dateinamen",
+ "site_diagram_9": "Textbegriffe",
+ "site_diagram_10": "Zeile für Zeile lesen",
+ "site_diagram_11": "Binärdateien überspringen",
+ "site_diagram_12": "Ergebnisse alle ~150 ms",
+ "site_diagram_13": "Ergebnisstrom; jederzeit abbrechen",
+ "site_ui_expand": "Abschnitt erweitern",
+ "site_ui_collapse": "Abschnitt einklappen",
+ "site_ui_family": "Teil von"
+});
+Object.assign(I18N["fr"], {
+ "site_diagram_0": "dossier + termes + filtres",
+ "site_diagram_1": "saisir une requête et rechercher",
+ "site_diagram_2": "parcourir les fichiers un à un",
+ "site_diagram_3": "flux de fichiers ; ignorer l'illisible",
+ "site_diagram_4": "exclure, puis inclure",
+ "site_diagram_5": "écarter les fichiers hors périmètre",
+ "site_diagram_6": "termes du nom",
+ "site_diagram_7": "correspondance générique sur",
+ "site_diagram_8": "nom du fichier",
+ "site_diagram_9": "termes du texte",
+ "site_diagram_10": "lire ligne par ligne",
+ "site_diagram_11": "ignorer les fichiers binaires",
+ "site_diagram_12": "résultats toutes les ~150 ms",
+ "site_diagram_13": "résultats en continu ; annuler à tout moment",
+ "site_ui_expand": "Développer la section",
+ "site_ui_collapse": "Réduire la section",
+ "site_ui_family": "Fait partie de"
+});
+Object.assign(I18N["it"], {
+ "site_diagram_0": "cartella + termini + filtri",
+ "site_diagram_1": "inserisci la query e cerca",
+ "site_diagram_2": "scorri i file uno alla volta",
+ "site_diagram_3": "flusso di file; salta cartelle illeggibili",
+ "site_diagram_4": "escludi, poi includi",
+ "site_diagram_5": "scarta file fuori dall'ambito",
+ "site_diagram_6": "termini del nome",
+ "site_diagram_7": "corrispondenza jolly sul",
+ "site_diagram_8": "nome del file",
+ "site_diagram_9": "termini del testo",
+ "site_diagram_10": "leggi riga per riga",
+ "site_diagram_11": "salta file binari",
+ "site_diagram_12": "risultati ogni ~150 ms",
+ "site_diagram_13": "risultati continui; annulla quando vuoi",
+ "site_ui_expand": "Espandi sezione",
+ "site_ui_collapse": "Comprimi sezione",
+ "site_ui_family": "Parte di"
+});
+Object.assign(I18N["pt"], {
+ "site_diagram_0": "pasta + termos + filtros",
+ "site_diagram_1": "digite uma consulta e busque",
+ "site_diagram_2": "percorra os arquivos um por vez",
+ "site_diagram_3": "fluxo de arquivos; pule pastas ilegíveis",
+ "site_diagram_4": "excluir, depois incluir",
+ "site_diagram_5": "descarte arquivos fora do escopo",
+ "site_diagram_6": "termos do nome",
+ "site_diagram_7": "coringas no",
+ "site_diagram_8": "nome do arquivo",
+ "site_diagram_9": "termos do texto",
+ "site_diagram_10": "leia linha por linha",
+ "site_diagram_11": "pule arquivos binários",
+ "site_diagram_12": "resultados a cada ~150 ms",
+ "site_diagram_13": "resultados contínuos; cancele quando quiser",
+ "site_ui_expand": "Expandir seção",
+ "site_ui_collapse": "Recolher seção",
+ "site_ui_family": "Parte de"
+});
+Object.assign(I18N["nb"], {
+ "site_diagram_0": "mappe + ord + filtre",
+ "site_diagram_1": "skriv en spørring og søk",
+ "site_diagram_2": "gå gjennom én fil om gangen",
+ "site_diagram_3": "filstrøm; hopp over ulesbare mapper",
+ "site_diagram_4": "utelukk, deretter inkluder",
+ "site_diagram_5": "forkast filer utenfor området",
+ "site_diagram_6": "navneord",
+ "site_diagram_7": "jokertegn mot",
+ "site_diagram_8": "filnavn",
+ "site_diagram_9": "tekstord",
+ "site_diagram_10": "les linje for linje",
+ "site_diagram_11": "hopp over binærfiler",
+ "site_diagram_12": "resultater hver ~150 ms",
+ "site_diagram_13": "resultatstrøm; avbryt når som helst",
+ "site_ui_expand": "Utvid seksjon",
+ "site_ui_collapse": "Skjul seksjon",
+ "site_ui_family": "En del av"
+});
+Object.assign(I18N["pl"], {
+ "site_diagram_0": "folder + wyrażenia + filtry",
+ "site_diagram_1": "wpisz zapytanie i wyszukaj",
+ "site_diagram_2": "przeglądaj pliki pojedynczo",
+ "site_diagram_3": "strumień plików; pomijaj nieczytelne foldery",
+ "site_diagram_4": "wyklucz, potem uwzględnij",
+ "site_diagram_5": "odrzuć pliki poza zakresem",
+ "site_diagram_6": "wyrażenia nazwy",
+ "site_diagram_7": "wzorzec wieloznaczny dla",
+ "site_diagram_8": "nazwy pliku",
+ "site_diagram_9": "wyrażenia tekstu",
+ "site_diagram_10": "czytaj wiersz po wierszu",
+ "site_diagram_11": "pomijaj pliki binarne",
+ "site_diagram_12": "wyniki co ~150 ms",
+ "site_diagram_13": "strumień wyników; anuluj w każdej chwili",
+ "site_ui_expand": "Rozwiń sekcję",
+ "site_ui_collapse": "Zwiń sekcję",
+ "site_ui_family": "Część"
+});
+Object.assign(I18N["cs"], {
+ "site_diagram_0": "složka + výrazy + filtry",
+ "site_diagram_1": "zadejte dotaz a hledejte",
+ "site_diagram_2": "procházet soubory jednotlivě",
+ "site_diagram_3": "proud souborů; přeskočit nečitelné složky",
+ "site_diagram_4": "vyloučit, pak zahrnout",
+ "site_diagram_5": "zahodit soubory mimo rozsah",
+ "site_diagram_6": "výrazy názvu",
+ "site_diagram_7": "zástupné znaky pro",
+ "site_diagram_8": "název souboru",
+ "site_diagram_9": "textové výrazy",
+ "site_diagram_10": "číst řádek po řádku",
+ "site_diagram_11": "přeskočit binární soubory",
+ "site_diagram_12": "výsledky každých ~150 ms",
+ "site_diagram_13": "proud výsledků; kdykoli zrušit",
+ "site_ui_expand": "Rozbalit sekci",
+ "site_ui_collapse": "Sbalit sekci",
+ "site_ui_family": "Součást"
+});
+Object.assign(I18N["hu"], {
+ "site_diagram_0": "mappa + kifejezések + szűrők",
+ "site_diagram_1": "írd be a lekérdezést és keress",
+ "site_diagram_2": "fájlok bejárása egyenként",
+ "site_diagram_3": "fájlfolyam; olvashatatlan mappák kihagyása",
+ "site_diagram_4": "kizárás, majd bevonás",
+ "site_diagram_5": "hatókörön kívüli fájlok eldobása",
+ "site_diagram_6": "névkifejezések",
+ "site_diagram_7": "helyettesítő illesztés a",
+ "site_diagram_8": "fájlnévre",
+ "site_diagram_9": "szövegkifejezések",
+ "site_diagram_10": "olvasás soronként",
+ "site_diagram_11": "bináris fájlok kihagyása",
+ "site_diagram_12": "eredmények ~150 ms-onként",
+ "site_diagram_13": "eredményfolyam; bármikor megszakítható",
+ "site_ui_expand": "Szakasz kibontása",
+ "site_ui_collapse": "Szakasz összecsukása",
+ "site_ui_family": "Része ennek:"
+});
+Object.assign(I18N["tr"], {
+ "site_diagram_0": "klasör + terimler + filtreler",
+ "site_diagram_1": "sorguyu girip arayın",
+ "site_diagram_2": "dosyaları tek tek gezin",
+ "site_diagram_3": "dosya akışı; okunamayan klasörleri atla",
+ "site_diagram_4": "önce dışla, sonra dahil et",
+ "site_diagram_5": "kapsam dışı dosyaları bırak",
+ "site_diagram_6": "ad terimleri",
+ "site_diagram_7": "joker eşleştirmesi:",
+ "site_diagram_8": "dosya adı",
+ "site_diagram_9": "metin terimleri",
+ "site_diagram_10": "satır satır oku",
+ "site_diagram_11": "ikili dosyaları atla",
+ "site_diagram_12": "her ~150 ms'de sonuçlar",
+ "site_diagram_13": "sonuç akışı; istediğiniz an iptal",
+ "site_ui_expand": "Bölümü genişlet",
+ "site_ui_collapse": "Bölümü daralt",
+ "site_ui_family": "Bir parçası:"
+});
+Object.assign(I18N["vi"], {
+ "site_diagram_0": "thư mục + từ khóa + bộ lọc",
+ "site_diagram_1": "nhập truy vấn rồi tìm kiếm",
+ "site_diagram_2": "duyệt từng tệp một",
+ "site_diagram_3": "luồng tệp; bỏ qua thư mục không đọc được",
+ "site_diagram_4": "loại trừ, rồi bao gồm",
+ "site_diagram_5": "bỏ tệp ngoài phạm vi",
+ "site_diagram_6": "từ khóa tên",
+ "site_diagram_7": "khớp ký tự đại diện trên",
+ "site_diagram_8": "tên tệp",
+ "site_diagram_9": "từ khóa văn bản",
+ "site_diagram_10": "đọc từng dòng",
+ "site_diagram_11": "bỏ qua tệp nhị phân",
+ "site_diagram_12": "kết quả mỗi ~150 ms",
+ "site_diagram_13": "luồng kết quả; hủy bất cứ lúc nào",
+ "site_ui_expand": "Mở rộng mục",
+ "site_ui_collapse": "Thu gọn mục",
+ "site_ui_family": "Một phần của"
+});
+Object.assign(I18N["ru"], {
+ "site_diagram_0": "папка + запросы + фильтры",
+ "site_diagram_1": "введите запрос и начните поиск",
+ "site_diagram_2": "обход файлов по одному",
+ "site_diagram_3": "поток файлов; пропуск нечитаемых папок",
+ "site_diagram_4": "исключить, затем включить",
+ "site_diagram_5": "отбросить файлы вне области",
+ "site_diagram_6": "запросы имени",
+ "site_diagram_7": "сопоставить шаблон с",
+ "site_diagram_8": "именем файла",
+ "site_diagram_9": "текстовые запросы",
+ "site_diagram_10": "читать построчно",
+ "site_diagram_11": "пропускать двоичные файлы",
+ "site_diagram_12": "результаты каждые ~150 мс",
+ "site_diagram_13": "поток результатов; отмена в любой момент",
+ "site_ui_expand": "Развернуть раздел",
+ "site_ui_collapse": "Свернуть раздел",
+ "site_ui_family": "Часть"
+});
+Object.assign(I18N["uk"], {
+ "site_diagram_0": "папка + запити + фільтри",
+ "site_diagram_1": "введіть запит і почніть пошук",
+ "site_diagram_2": "обхід файлів по одному",
+ "site_diagram_3": "потік файлів; пропуск нечитаних папок",
+ "site_diagram_4": "виключити, потім включити",
+ "site_diagram_5": "відкинути файли поза областю",
+ "site_diagram_6": "запити назви",
+ "site_diagram_7": "зіставити шаблон з",
+ "site_diagram_8": "назвою файлу",
+ "site_diagram_9": "текстові запити",
+ "site_diagram_10": "читати рядок за рядком",
+ "site_diagram_11": "пропускати двійкові файли",
+ "site_diagram_12": "результати кожні ~150 мс",
+ "site_diagram_13": "потік результатів; скасувати будь-коли",
+ "site_ui_expand": "Розгорнути розділ",
+ "site_ui_collapse": "Згорнути розділ",
+ "site_ui_family": "Частина"
+});
+Object.assign(I18N["kk"], {
+ "site_diagram_0": "қалта + сөздер + сүзгілер",
+ "site_diagram_1": "сұрау енгізіп, іздеңіз",
+ "site_diagram_2": "файлдарды бір-бірден шолу",
+ "site_diagram_3": "файл ағыны; оқылмайтын қалталарды өткізу",
+ "site_diagram_4": "алып тастау, содан кейін қосу",
+ "site_diagram_5": "ауқымнан тыс файлдарды өткізу",
+ "site_diagram_6": "атау сөздері",
+ "site_diagram_7": "қойылмалы таңбамен салыстыру:",
+ "site_diagram_8": "файл атауы",
+ "site_diagram_9": "мәтін сөздері",
+ "site_diagram_10": "жол-жолымен оқу",
+ "site_diagram_11": "екілік файлдарды өткізу",
+ "site_diagram_12": "нәтижелер әр ~150 мс сайын",
+ "site_diagram_13": "нәтиже ағыны; кез келген сәтте тоқтату",
+ "site_ui_expand": "Бөлімді ашу",
+ "site_ui_collapse": "Бөлімді жию",
+ "site_ui_family": "Бір бөлігі:"
+});
+Object.assign(I18N["ja"], {
+ "site_diagram_0": "フォルダー + 条件 + フィルター",
+ "site_diagram_1": "クエリを入力して検索",
+ "site_diagram_2": "ファイルを 1 つずつ走査",
+ "site_diagram_3": "順次読み込み、読めないフォルダーは除外",
+ "site_diagram_4": "除外してから対象を指定",
+ "site_diagram_5": "範囲外のファイルを除外",
+ "site_diagram_6": "名前の条件",
+ "site_diagram_7": "ワイルドカードで照合",
+ "site_diagram_8": "ファイル名",
+ "site_diagram_9": "本文の条件",
+ "site_diagram_10": "1 行ずつ読み込み",
+ "site_diagram_11": "バイナリファイルは除外",
+ "site_diagram_12": "約 150 ms ごとに結果表示",
+ "site_diagram_13": "結果を逐次表示、いつでも中止",
+ "site_ui_expand": "セクションを展開",
+ "site_ui_collapse": "セクションを折りたたむ",
+ "site_ui_family": "所属:"
+});
+Object.assign(I18N["zh-cn"], {
+ "site_diagram_0": "文件夹 + 条件 + 筛选",
+ "site_diagram_1": "输入查询并搜索",
+ "site_diagram_2": "逐个遍历文件",
+ "site_diagram_3": "流式读取；跳过不可读文件夹",
+ "site_diagram_4": "先排除，再包含",
+ "site_diagram_5": "丢弃范围外的文件",
+ "site_diagram_6": "名称条件",
+ "site_diagram_7": "通配符匹配",
+ "site_diagram_8": "文件名",
+ "site_diagram_9": "文本条件",
+ "site_diagram_10": "逐行读取",
+ "site_diagram_11": "跳过二进制文件",
+ "site_diagram_12": "每 ~150 ms 返回结果",
+ "site_diagram_13": "流式显示结果；随时取消",
+ "site_ui_expand": "展开章节",
+ "site_ui_collapse": "折叠章节",
+ "site_ui_family": "属于"
+});
+Object.assign(I18N["zh"], {
+ "site_diagram_0": "資料夾 + 條件 + 篩選",
+ "site_diagram_1": "輸入查詢並搜尋",
+ "site_diagram_2": "逐一走訪檔案",
+ "site_diagram_3": "串流讀取；略過無法讀取的資料夾",
+ "site_diagram_4": "先排除，再納入",
+ "site_diagram_5": "捨棄範圍外的檔案",
+ "site_diagram_6": "名稱條件",
+ "site_diagram_7": "萬用字元比對",
+ "site_diagram_8": "檔名",
+ "site_diagram_9": "文字條件",
+ "site_diagram_10": "逐行讀取",
+ "site_diagram_11": "略過二進位檔案",
+ "site_diagram_12": "每 ~150 ms 傳回結果",
+ "site_diagram_13": "串流顯示結果；隨時取消",
+ "site_ui_expand": "展開章節",
+ "site_ui_collapse": "摺疊章節",
+ "site_ui_family": "屬於"
+});
+Object.assign(I18N["bn"], {
+ "site_diagram_0": "ফোল্ডার + শব্দ + ফিল্টার",
+ "site_diagram_1": "কোয়েরি লিখে অনুসন্ধান করুন",
+ "site_diagram_2": "একবারে একটি ফাইল দেখুন",
+ "site_diagram_3": "ফাইল প্রবাহ; অপাঠ্য ফোল্ডার বাদ দিন",
+ "site_diagram_4": "আগে বাদ, পরে অন্তর্ভুক্ত",
+ "site_diagram_5": "পরিসীমার বাইরের ফাইল বাদ দিন",
+ "site_diagram_6": "নামের শব্দ",
+ "site_diagram_7": "ওয়াইল্ডকার্ড মেলান",
+ "site_diagram_8": "ফাইলের নাম",
+ "site_diagram_9": "লেখার শব্দ",
+ "site_diagram_10": "লাইন ধরে পড়ুন",
+ "site_diagram_11": "বাইনারি ফাইল বাদ দিন",
+ "site_diagram_12": "প্রতি ~150 ms-এ ফলাফল",
+ "site_diagram_13": "ফলাফল প্রবাহ; যেকোনো সময় বাতিল",
+ "site_ui_expand": "বিভাগ প্রসারিত করুন",
+ "site_ui_collapse": "বিভাগ সংকুচিত করুন",
+ "site_ui_family": "অংশ:"
+});
+Object.keys(I18N).forEach(function (locale) {
+ I18N[locale].h_profiles_h += '<span class="chev">&#9656;</span>';
+});

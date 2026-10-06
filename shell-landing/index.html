@@ -210,7 +210,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <div class="blurb"><h3 data-i18n="b1_t">Fully featured</h3><ul class="blurb-list" data-i18n="b1_d">
 <li><b>Browse</b> - list, icon and details views</li>
 <li><b>Search</b> - names or contents, with no index</li>
-<li><b>Terminal</b> - PowerShell or CMD in a tab</li>
+<li><b>Terminal</b>: PowerShell, CMD, WSL and custom profiles</li>
 <li><b>Editor</b> - F7, with syntax highlighting</li>
 <li><b>Files</b> - copy, move, rename, delete</li>
 <li><b>Tabs</b> - folders, searches, shells, files</li>
@@ -218,7 +218,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <li><b>Processes</b> - F9, with services and live CPU/RAM</li>
 <li><b>Registry</b> - Ctrl+F11, lazy-loaded tree with search</li>
 <li><b>Storage</b> - F4, a treemap of where the space went</li>
-<li><b>Themes</b> - thirteen, four of them with six live accent colors each (33 looks)</li>
+<li><b>Themes</b>: 13 themes, 8 accents on four themes (41 looks)</li>
 </ul></div>
 </div>
 </section>
@@ -228,7 +228,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <div class="feature-grid">
 <div class="feature-card"><h3 data-i18n="f_fname_t">Filename search</h3><p data-i18n="f_fname_d">Wildcard patterns like <code>*.log</code> or <code>report_*.xlsx</code> matched against every filename in the tree. Results stream in real time with no pre-indexing.</p></div>
 <div class="feature-card"><h3 data-i18n="f_content_t">Content search</h3><p data-i18n="f_content_d">Streams through files line by line without loading them into RAM. Shows matched lines with their line numbers, and skips binary files automatically.</p></div>
-<div class="feature-card"><h3 data-i18n="f_term_t">Terminal in a tab</h3><p data-i18n="f_term_d">PowerShell, Windows PowerShell or CMD opens in the folder you are looking at, elevated if you want it. The working directory is tracked live, so one click turns it back into a browsing tab.</p></div>
+<div class="feature-card"><h3 data-i18n="f_term_t">Terminal in a tab</h3><p data-i18n="f_term_d">PowerShell, CMD, WSL and custom commands share one tab strip. Save terminal profiles, choose a default shell, and browse a terminal's current folder.</p></div>
 <div class="feature-card"><h3 data-i18n="f_editor_t">Editor in a tab</h3><p data-i18n="f_editor_d">Open any file with F7. Syntax highlighting, line numbers, find and go to line, with word wrap on by default. Your encoding and line endings are preserved exactly, never invented.</p></div>
 <div class="feature-card"><h3 data-i18n="f_pipe_t">Search within results</h3><p data-i18n="f_pipe_d">Pipe one search's results into a new tab and search inside just those files. Chain as deep as you like; each pass only touches the survivors of the last.</p></div>
 <div class="feature-card"><h3 data-i18n="f_panes_t">Two panes</h3><p data-i18n="f_panes_d">F10 splits the window side by side or stacked, each pane with its own tabs. Drag files from one to the other, or keep a search on the left and a shell on the right.</p></div>
@@ -247,7 +247,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <div class="feature-card"><h3 data-i18n="f_keys_t">Keyboard driven</h3><p data-i18n="f_keys_d">Explorer's conventions where they exist, and single keys rather than chords where they do not. F1 shows every gesture as a list or on a visual keyboard you can hold Ctrl over.</p></div>
 <div class="feature-card"><h3 data-i18n="f_install_t">Install or run portable</h3><p data-i18n="f_install_d">Drop the .exe anywhere and run it, or install it for just you, or for every user on the PC.<br>No extra runtimes or dependencies are required.</p></div>
 <div class="feature-card"><h3 data-i18n="f_private_t">Private by design</h3><p data-i18n="f_private_d">Everything runs on your machine. No agent is installed, no account is required, no cloud, and no telemetry is sent anywhere.<br>Nothing about your files leaves the device.</p></div>
-<div class="feature-card"><h3 data-i18n="f_themes_t">Themes &amp; accents</h3><p data-i18n="f_themes_d">Thirteen themes (Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium and Mourning), four of them carrying six accent colors of their own, all switchable live.</p></div>
+<div class="feature-card"><h3 data-i18n="f_themes_t">Themes &amp; accents</h3><p data-i18n="f_themes_d">13 themes, 41 looks: Dark, Light, Black and 98SE each have 8 accent colors. The other 9 have fixed palettes. Switch live without restarting.</p></div>
 <div class="feature-card"><h3 data-i18n="f_lang_t">Nineteen languages</h3><p data-i18n="f_lang_d">The interface is localized in nineteen languages (English, Spanish, German, French, Hungarian, Italian, Turkish, Vietnamese, Polish, Czech, Japanese, Chinese Traditional and Simplified, Bengali, Russian, Kazakh, Ukrainian, Norwegian (Bokmål) and Brazilian Portuguese), switchable live from the toolbar.</p></div>
 </div>
 </section>
@@ -278,8 +278,8 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 </div>
 <div class="egg-toast" id="eggToast"></div>
 
-<script src="ks-i18n.js?v=5"></script>
-<script src="ks.js?v=6"></script>
+<script src="ks-i18n.js?v=7"></script>
+<script src="ks.js?v=7"></script>
 <script src="feature-carousel.js?v=2"></script>
 <script>
 (function () {
@@ -306,6 +306,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
   function openLightbox(src, description, trigger) {
     lastLightboxTrigger = trigger;
     lightboxImg.src = src;
+    lightboxImg.dataset.englishDescription = trigger.dataset.englishDescription || description;
     lightboxImg.alt = description;
     lightboxImg.title = description;
     lightboxCaption.textContent = description;
@@ -338,13 +339,14 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
         b.className = 'sb-thumb'; b.title = description; b.dataset.idx = n;
         b.setAttribute('aria-label', description);
         b.appendChild(img);
-        b.addEventListener('click', function () { openLightbox(src, description, b); });
+        b.addEventListener('click', function () { openLightbox(src, b.getAttribute('aria-label'), b); });
         // Insert in numeric order regardless of which image finishes loading first.
         var next = null, kids = sbThumbs.children;
         for (var k = 0; k < kids.length; k++) {
           if (kids[k].dataset && +kids[k].dataset.idx > n) { next = kids[k]; break; }
         }
         sbThumbs.insertBefore(b, next);
+        if (window.ksLocalizeChrome) window.ksLocalizeChrome();
         loaded++;
         updateFade();
       };

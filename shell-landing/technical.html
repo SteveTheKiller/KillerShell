@@ -168,7 +168,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <tr><td data-i18n="t_arch_h">Archives</td><td data-i18n="t_stack_arch_d">Zip and gzip out of .NET Framework itself and a tar reader written in place, so a .zip or a .tar browses like a folder without adding a single dependency</td></tr>
 <tr><td data-i18n="t_stack_disk">Disk map</td><td data-i18n="t_stack_disk_d">Direct NTFS Master File Table enumeration when elevated, with a parallel <code>FindFirstFileExW</code> fallback, feeding a squarified treemap drawn in one render pass</td></tr>
 <tr><td data-i18n="t_stack_export">Export</td><td data-i18n="t_stack_export_d">A self-contained HTML report or CSV, written directly from the result set or the storage scan, no libraries required</td></tr>
-<tr><td data-i18n="t_stack_term">Terminal</td><td data-i18n="t_stack_term_d">A hosted console: the shell you picked runs as a real child process and its output is drawn by the app, with the working directory tracked from the shell's own OSC 7 reports</td></tr>
+<tr><td data-i18n="t_stack_term">Terminal</td><td data-i18n="t_stack_term_d">PowerShell and WSL Bash report their folder with <code>OSC 9;9</code>; the parser also accepts <code>OSC 7</code>. Linux paths map to <code>\\wsl.localhost\</code> for browsing. Custom shells must report their folder to keep the toolbar current.</td></tr>
 <tr><td data-i18n="t_stack_ed">Editor</td><td data-i18n="t_stack_ed_d">AvalonEdit (MIT), vendored as source and compiled into the exe rather than shipped as a DLL, so the app is still one file</td></tr>
 <tr><td data-i18n="t_stack_pkg">Packaging</td><td data-i18n="t_stack_pkg_d">Single executable. Run it portable, or install it for your account or for every user on the PC.</td></tr>
 </table>
@@ -191,34 +191,34 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <marker id="pfAcc" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="var(--accent)"/></marker>
 </defs>
 <rect x="260" y="16" width="300" height="52" rx="8" fill="var(--modal)" stroke="var(--accent)"/>
-<text x="410" y="39" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="700" font-family="monospace">folder + terms + filters</text>
-<text x="410" y="57" text-anchor="middle" fill="var(--muted)" font-size="11">what you type in and press search</text>
+<text data-i18n="site_diagram_0" data-max-width="276" x="410" y="39" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="700" font-family="monospace">folder + terms + filters</text>
+<text data-i18n="site_diagram_1" data-max-width="276" x="410" y="57" text-anchor="middle" fill="var(--muted)" font-size="11">enter a query and search</text>
 <line x1="410" y1="68" x2="410" y2="98" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#pfAcc)"/>
 
 <rect x="250" y="100" width="320" height="52" rx="8" fill="var(--panel)" stroke="var(--pane-border)"/>
-<text x="410" y="123" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600">walk the tree, one file at a time</text>
-<text x="410" y="141" text-anchor="middle" fill="var(--muted)" font-size="11">streamed, never listed up front; unreadable folders skipped</text>
+<text data-i18n="site_diagram_2" data-max-width="296" x="410" y="123" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600">walk files one at a time</text>
+<text data-i18n="site_diagram_3" data-max-width="296" x="410" y="141" text-anchor="middle" fill="var(--muted)" font-size="11">stream files; skip unreadable folders</text>
 <line x1="410" y1="152" x2="410" y2="182" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#pfAcc)"/>
 
 <rect x="270" y="184" width="280" height="48" rx="8" fill="var(--panel)" stroke="var(--pane-border)"/>
-<text x="410" y="205" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">filters: exclude, then include</text>
-<text x="410" y="222" text-anchor="middle" fill="var(--muted)" font-size="11">files outside the scope are dropped here</text>
+<text data-i18n="site_diagram_4" data-max-width="256" x="410" y="205" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">exclude, then include</text>
+<text data-i18n="site_diagram_5" data-max-width="256" x="410" y="222" text-anchor="middle" fill="var(--muted)" font-size="11">drop files outside the scope</text>
 <line x1="410" y1="232" x2="410" y2="262" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#pfAcc)"/>
 
 <rect x="120" y="264" width="270" height="70" rx="8" fill="var(--panel)" stroke="var(--pane-border)"/>
-<text x="255" y="288" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">name terms</text>
-<text x="255" y="307" text-anchor="middle" fill="var(--muted)" font-size="11">wildcard match on the</text>
-<text x="255" y="322" text-anchor="middle" fill="var(--muted)" font-size="11">filename</text>
+<text data-i18n="site_diagram_6" data-max-width="246" x="255" y="288" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">name terms</text>
+<text data-i18n="site_diagram_7" data-max-width="246" x="255" y="307" text-anchor="middle" fill="var(--muted)" font-size="11">wildcard match on</text>
+<text data-i18n="site_diagram_8" data-max-width="246" x="255" y="322" text-anchor="middle" fill="var(--muted)" font-size="11">filename</text>
 <rect x="430" y="264" width="270" height="70" rx="8" fill="var(--panel)" stroke="var(--pane-border)"/>
-<text x="565" y="288" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">text terms</text>
-<text x="565" y="307" text-anchor="middle" fill="var(--muted)" font-size="11">read the file line by line,</text>
-<text x="565" y="322" text-anchor="middle" fill="var(--muted)" font-size="11">skip if it looks binary</text>
+<text data-i18n="site_diagram_9" data-max-width="246" x="565" y="288" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="600">text terms</text>
+<text data-i18n="site_diagram_10" data-max-width="246" x="565" y="307" text-anchor="middle" fill="var(--muted)" font-size="11">read line by line</text>
+<text data-i18n="site_diagram_11" data-max-width="246" x="565" y="322" text-anchor="middle" fill="var(--muted)" font-size="11">skip binary files</text>
 <line x1="255" y1="334" x2="360" y2="378" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pfAcc)"/>
 <line x1="565" y1="334" x2="460" y2="378" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#pfAcc)"/>
 
 <rect x="250" y="380" width="320" height="48" rx="8" fill="var(--modal)" stroke="var(--accent)"/>
-<text x="410" y="401" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="700" font-family="monospace">results, batched every ~150 ms</text>
-<text x="410" y="418" text-anchor="middle" fill="var(--muted)" font-size="11">stream into the list as they are found; cancel any time</text>
+<text data-i18n="site_diagram_12" data-max-width="296" x="410" y="401" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="700" font-family="monospace">results every ~150 ms</text>
+<text data-i18n="site_diagram_13" data-max-width="296" x="410" y="418" text-anchor="middle" fill="var(--muted)" font-size="11">stream results; cancel any time</text>
 </svg>
 <figcaption data-i18n="t_pipe_cap">The whole search is one streamed pass. Files flow through the filters, each surviving file is tested against every term, and any file with at least one hit is added to the next batch pushed to the results list. Because results are batched about every 150 milliseconds, the list fills in smoothly instead of freezing until the end.</figcaption>
 </figure>
@@ -288,12 +288,25 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <p data-i18n="t_arch_p7">Dragging out of an archive is a copy, always. A move out is an extract plus a delete, two steps with no way to make them one, and a failure between them either loses the file or silently leaves it in place; Explorer treats zip drag-out the same way. Dragging a <i>folder</i> out extracts its whole tree, folders and all, wherever you let go.</p>
 </div>
 
+<div class="tech-sec" id="cli">
+<h2>CLI</h2>
+<p data-i18n="t_cli_p">The read-only CLI returns JSON for files, search, processes, services, events, registry, drives and SHA-256 hashes. Security-log access requires administrator privileges.</p>
+<pre><code>KillerShell.exe --cli list "C:\logs"
+KillerShell.exe --cli search "C:\logs" --content "error"
+KillerShell.exe --cli processes
+KillerShell.exe --cli services
+KillerShell.exe --cli events System
+KillerShell.exe --cli registry "HKLM\SOFTWARE"
+KillerShell.exe --cli drives
+KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
+</div>
+
 <div class="tech-sec" id="terminal">
 <h2 data-i18n="t_term_h">The terminal</h2>
 <h3 id="terminal-host" data-i18n="t_term_host_h">Running a real shell</h3>
-<p data-i18n="t_term_p1">A shell tab starts the host you picked as an ordinary child process with the folder you were looking at as its working directory, then draws its output itself. Nothing about the shell is emulated or wrapped: the process is a real PowerShell, Windows PowerShell or cmd.exe, so your modules, aliases and profile all behave the way they do anywhere else.</p>
+<p data-i18n="t_term_p1">Profiles are saved in local settings and resolved when opened. WSL runs through <code>wsl.exe</code> and Bash; the normal <code>.bashrc</code> and prompt are preserved. KillerShell remains a Windows application.</p>
 <h3 id="terminal-cwd" data-i18n="t_term_cwd_h">Tracking the working directory</h3>
-<p data-i18n="t_term_p2">The working directory shown on the shell's toolbar comes from the shell reporting it, not from KillerShell guessing. Shells emit an OSC 7 escape sequence naming their current directory, which is parsed out of the stream, so the readout stays correct through a <code>cd</code>, a script or a pushd, and clicking it opens that exact folder as a browsing tab.</p>
+<p data-i18n="t_term_p2">PowerShell and WSL Bash report their folder with <code>OSC 9;9</code>; the parser also accepts <code>OSC 7</code>. Linux paths map to <code>\\wsl.localhost\</code> for browsing. Custom shells must report their folder to keep the toolbar current.</p>
 <h3 id="terminal-profile" data-i18n="t_term_profile_h">Finding $PROFILE</h3>
 <p data-i18n="t_term_p3">The <code>$PROFILE</code> path is obtained by launching the shell binary with <code>-NoProfile -NonInteractive</code> and asking it for <code>$PROFILE.CurrentUserCurrentHost</code>, then validating that what came back is a single rooted path ending in .ps1. Assuming <code>Documents\PowerShell\</code> instead would be wrong on any machine where OneDrive Known Folder Move has redirected Documents, which on a managed fleet is most of them, and the assumed path is a file the shell will never load.</p>
 <h3 id="terminal-glyphs" data-i18n="t_term_glyphs_h">Prompt glyphs &amp; fallback fonts</h3>
@@ -326,7 +339,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="themes">
 <h2 data-i18n="t_themes_h">Themes &amp; languages</h2>
-<p data-i18n="t_themes_p">KillerShell ships with thirteen themes: Dark, Light, Black, 98SE, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium and Mourning. Four of them - Dark, Light, Black and 98SE - each carry six accent colors on top of the palette; the other nine are a palette on their own. All of it switches live from the rail, with nothing to restart. The interface is localized in nineteen languages: English, Spanish, German, French, Hungarian, Italian, Turkish, Vietnamese, Polish, Czech, Japanese, Chinese in both Traditional and Simplified, Bengali, Russian, Kazakh, Ukrainian, Norwegian (Bokmål) and Brazilian Portuguese. Every visible string is resolved through a resource lookup, so switching language reflows the whole window with no restart.</p>
+<p data-i18n="t_themes_p">13 themes, 41 looks: Dark, Light, Black and 98SE each have 8 accent colors. The other 9 have fixed palettes. Switch live without restarting.</p>
 <p data-i18n="t_themes_p2">The whole app also scales. Rolling the wheel over the title-bar wordmark drives a layout transform on the content host, roughly 2% a notch between 70% and 250%, remembered between runs. Because it is a layout transform rather than a render transform, text reflows and re-rasterizes at the new size instead of being stretched as a bitmap, and the title bar and footer stay a fixed size so the wordmark never moves out from under the pointer.</p>
 </div>
 
@@ -366,8 +379,8 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>
-<script src="ks-i18n.js?v=5"></script>
-<script src="ks.js?v=6"></script>
+<script src="ks-i18n.js?v=7"></script>
+<script src="ks.js?v=7"></script>
 <script>
 // COLLAPSIBLE OUTLINE. The page has fourteen sections and seven subsections, and listing
 // all twenty-one flat made the sidebar a wall you had to read to navigate.
@@ -408,6 +421,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
       g.el.dataset.manual='1';   // a hand-opened section is not auto-closed by scrolling
     });
     g.head.appendChild(t);
+    if (window.ksLocalizeChrome) window.ksLocalizeChrome();
   });
   // Reading a section opens it. Sections you opened by hand stay open; the rest close, so the
   // sidebar keeps showing where you are rather than growing as you scroll.

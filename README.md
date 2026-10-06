@@ -2,7 +2,7 @@
   <a href="https://killershell.net"><img src="docs/wordmark.png" height="180" alt="KillerShell - one portable Windows exe for managing a computer and everything on it"></a>
 </p>
 
-Free and open-source Windows shell for power users. A file browser, PowerShell or CMD terminal, text editor, search engine, and administration toolkit share one window, one tab strip, and one set of keys.
+Free and open-source Windows shell for power users. A file browser, terminal, text editor, search engine, and administration toolkit share one window, one tab strip, and one set of keys.
 
 KillerShell is one portable EXE with no agent, account, telemetry, or separate runtime installer. Run it from anywhere, install it for your account, or install it machine-wide for every user.
 
@@ -12,7 +12,8 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 
 - Browse folders in list, icon, or details view with tabs, favorites, a folder tree, live filesystem updates, and two panes arranged side by side or stacked
 - Search names with wildcards or stream file contents line by line across every CPU core, with multiple ANY/ALL terms, filters, chained searches, and HTML or CSV export
-- Open PowerShell, Windows PowerShell, or CMD in the current folder; track its working directory live and edit the included prompt or your real PowerShell profile
+- Use saved terminal profiles for PowerShell, CMD, WSL, or custom commands, choose a default shell, and track its working folder live; edit the included prompt or your PowerShell profile
+- Browse installed WSL distributions, pin Linux folders, and open a terminal in the selected Linux directory
 - Edit text with syntax highlighting, find, go to line, undo/redo, encoding and line-ending preservation, indentation controls, and a dedicated font setting
 - Copy, move, rename, recycle, permanently delete, and drag files to or from Explorer, with asynchronous progress and Replace, Skip, or Keep both collision handling
 - Work with ZIP archives, including empty folders and complete folder-tree drag-out, without changing the original when a rewrite is canceled
@@ -20,7 +21,8 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 - Monitor CPU, RAM, disks, networks, and GPUs with live graphs and per-core CPU history
 - Use the built-in Event Viewer, Registry Editor, and Storage Analyzer without leaving the tab strip
 - Keyboard-first operation using familiar Explorer keys plus F4 storage, F7 edit, F8 shell, F9 processes, F10 split, F11 performance, and F1 for the complete shortcut overlay
-- Thirteen themes, including a full 98SE recreation; Dark, Light, Black, and 98SE each have six accent colors for 33 looks in all
+- Read-only JSON CLI queries for files, processes, services, event logs, registry keys, and drives; run `KillerShell --cli --help` for commands
+- Thirteen themes, including a full 98SE recreation; eight accents on Dark, Light, Black, and 98SE give 41 looks
 - Localized in 19 languages, with live switching and English fallback for incomplete translations
 - Runs portable or self-installs per-user without UAC or machine-wide with UAC; `/silent` supports WinGet and managed deployment
 - Local-only: no indexing service, cloud account, advertisements, or telemetry
@@ -58,7 +60,7 @@ choco install killershell
 ```
 
 - Prebuilt binary: <https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe>
-- Source (GPL3 corresponding source for this release): <https://github.com/SteveTheKiller/KillerShell/releases/download/v1.2.6/KillerShell-1.2.6-src.zip>
+- Source (GPL3 corresponding source for each release): <https://github.com/SteveTheKiller/KillerShell/releases/latest>
 
 ## Build from source
 
