@@ -75,6 +75,7 @@
     <sys:String x:Key="Str_TT_Pipe">Chercher dans ces résultats</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Second volet  |  clic droit pour basculer côte à côte / empilé</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Plus d'outils</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Outils système</sys:String>
     <sys:String x:Key="Str_TT_Sort">Trier par</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Ce PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Chercher dans ces résultats</sys:String>

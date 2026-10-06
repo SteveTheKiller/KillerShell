@@ -107,6 +107,7 @@
     <sys:String x:Key="Str_TT_Pipe">Cerca dentro questi risultati</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Secondo pannello  (F10)  |  clic destro per alternare affiancato / impilato</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Altri strumenti</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Strumenti di sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordina per</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Questo PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Cerca dentro questi risultati</sys:String>

@@ -75,6 +75,7 @@
     <sys:String x:Key="Str_TT_Pipe">在這些結果中搜尋</sys:String>
     <sys:String x:Key="Str_TT_DualPane">第二個窗格  |  右鍵切換左右 / 上下</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">更多工具</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">系統工具</sys:String>
     <sys:String x:Key="Str_TT_Sort">排序方式</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">本機</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">在這些結果中搜尋</sys:String>

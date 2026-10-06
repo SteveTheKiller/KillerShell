@@ -94,6 +94,7 @@
     <sys:String x:Key="Str_TT_Pipe">この結果の中を検索</sys:String>
     <sys:String x:Key="Str_TT_DualPane">2 つ目のペイン  |  右クリックで左右 / 上下を切り替え</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">その他のツール</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">システムツール</sys:String>
     <sys:String x:Key="Str_TT_Sort">並べ替え</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">この結果の中を検索</sys:String>

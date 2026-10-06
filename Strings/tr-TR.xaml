@@ -75,6 +75,7 @@
     <sys:String x:Key="Str_TT_Pipe">Bu sonuçların içinde ara</sys:String>
     <sys:String x:Key="Str_TT_DualPane">İkinci bölme  |  yan yana / üst üste için sağ tıklayın</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Diğer araçlar</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Sistem araçları</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Bu bilgisayar</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Bu sonuçların içinde ara</sys:String>

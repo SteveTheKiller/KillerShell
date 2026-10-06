@@ -694,83 +694,47 @@
                             FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
                             MouseRightButtonUp="DualPaneOrient_Click"
                             ToolTip="{DynamicResource Str_TT_DualPane}"/>
-                    <!-- E8FD (ViewAll/list, corrected 2026-08-02 - this comment used to say E9D9,
-                         which was never what the button below actually rendered; E9D9 was always
-                         reserved for the future Performance tab, now built below): opens or
-                         focuses the Task Manager tab - a live, filterable list of every process on
-                         the machine (Shell/ProcessTabs.cs, Tools/ProcessListControl.cs). Left click
-                         is the plain F9 open; right-click offers the Ctrl+F9 elevated relaunch too,
-                         same shape as the Terminal menu above, so the tooltip no longer has to
-                         spell out the elevated path in prose. -->
-                    <Button x:Name="TaskManagerRailBtn" Style="{StaticResource RailButton}" Content="&#xE8FD;"
-                            FontSize="12" Margin="0,0,0,10" Click="TaskManagerRail_Click"
-                            ToolTip="{DynamicResource Str_TT_TaskManager}">
-                        <Button.ContextMenu>
-                            <local:OpaqueContextMenu Placement="Top">
+                    <!-- System tools share one rail button; right-click offers elevated actions. -->
+                    <Button x:Name="SystemToolsRailBtn" Style="{StaticResource RailButton}" Content="&#xE713;"
+                            FontSize="12" Margin="0,0,0,10" Click="SystemToolsRail_Click"
+                            ToolTip="{DynamicResource Str_TT_SystemTools}">
+                        <Button.Resources>
+                            <local:OpaqueContextMenu x:Key="SystemToolsMenu" Placement="Right" HorizontalOffset="4">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesOpen}" Click="RailProcessesOpen_Click" InputGestureText="F9">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8FD;"/></MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Rail_ProcessesAdmin}" Click="RailProcessesAdmin_Click" InputGestureText="Ctrl+F9">
+                                <MenuItem Header="{DynamicResource Str_TabTitle_Performance}" Click="PerformanceRail_Click" InputGestureText="F11">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE9D9;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_Rail_StorageOpen}" Click="RailStorageOpen_Click" InputGestureText="F4">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Header="{DynamicResource Str_TabTitle_RegistryEditor}" Click="RegistryEditorRail_Click" InputGestureText="Ctrl+F11">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_TabTitle_EventViewer}" Click="EventViewerRail_Click" InputGestureText="Ctrl+F12">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                             </local:OpaqueContextMenu>
-                        </Button.ContextMenu>
-                    </Button>
-                    <!-- E9D9 (Processing): opens or focuses the Performance Monitor tab - hardware
-                         info plus live CPU/RAM/network/disk gauges (Shell/PerformanceTabs.cs,
-                         Tools/PerformanceMonitorControl.cs). Plain click only, no elevated variant
-                         - Performance needs none of the extra access an admin relaunch would grant
-                         (PerformanceTabs.cs has the full reasoning). -->
-                    <Button x:Name="PerformanceRailBtn" Style="{StaticResource RailButton}" Content="&#xE9D9;"
-                            FontSize="12" Margin="0,0,0,10" Click="PerformanceRail_Click"
-                            ToolTip="{DynamicResource Str_TT_Performance}"/>
-                    <!-- EDA2 (HardDrive) - already proven to render as the folder picker's drive
-                         glyph, and distinct from Processes' E8FD, Event Viewer's E81C and
-                         Performance's E9D9. Opens or focuses the Storage Analyzer tab - scan a
-                         folder or drive into a WizTree-style treemap (Shell/StorageTabs.cs,
-                         Tools/StorageAnalyzerControl.cs). Right-click offers the elevated scan,
-                         same open/admin pair as Processes above (F4 / Ctrl+F4). -->
-                    <Button x:Name="StorageRailBtn" Style="{StaticResource RailButton}" Content="&#xEDA2;"
-                            FontSize="12" Margin="0,0,0,10" Click="StorageRail_Click"
-                            ToolTip="{DynamicResource Str_TT_Storage}">
+                        </Button.Resources>
                         <Button.ContextMenu>
-                            <local:OpaqueContextMenu Placement="Top">
-                                <MenuItem Header="{DynamicResource Str_Rail_StorageOpen}" Click="RailStorageOpen_Click" InputGestureText="F4">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                            <local:OpaqueContextMenu Placement="Right" HorizontalOffset="4">
+                                <MenuItem Header="{DynamicResource Str_Rail_ProcessesAdmin}" Click="RailProcessesAdmin_Click" InputGestureText="Ctrl+F9">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Rail_StorageAdmin}" Click="RailStorageAdmin_Click" InputGestureText="Ctrl+F4">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_TabTitle_RegistryEditor}" Click="RegistryEditorRail_Click" InputGestureText="Ctrl+F11">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_TabTitle_EventViewer}" Click="EventViewerRail_Click" InputGestureText="Ctrl+F12">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                </MenuItem>
                             </local:OpaqueContextMenu>
                         </Button.ContextMenu>
                     </Button>
-                    <!-- E74C (OEM) - a four-pane window with a corner mark, which reads as the
-                         registry's hive/key structure far better than a plain list did. Went
-                         through E945 (rendered as a lightning bolt, not the intended
-                         database-cylinder glyph), E713 (Settings gear, too generic) and E71D
-                         (List) before landing here (2026-08-08). NOTE: RegistryEditorTabs.cs
-                         RegistryEditorGlyph still carries E71D for the TAB strip - the two used to
-                         match deliberately, so change both or neither. Opens or focuses the
-                         Registry Editor tab - a real
-                         regedit-equivalent browser/editor over the five hives
-                         (Shell/RegistryEditorTabs.cs, Tools/RegistryEditorControl.cs). Ctrl+F11
-                         ONLY - there is no unelevated variant at all (the registry needs admin to
-                         write most of what a registry editor exists to edit), so unlike Processes
-                         above this one gets no context menu; there is nothing to choose between. -->
-                    <Button x:Name="RegistryEditorRailBtn" Style="{StaticResource RailButton}" Content="&#xE74C;"
-                            FontSize="12" Margin="0,0,0,10" Click="RegistryEditorRail_Click"
-                            ToolTip="{DynamicResource Str_TT_RegistryEditor}"/>
-                    <!-- E71D (List): the glyph Registry Editor used to carry, handed over when
-                         Registry moved to E74C (2026-08-08). A list of log lines is what
-                         this tab actually is, and E81C (History) read as a clock, which is not
-                         the same idea. Opens or focuses the Event Viewer tab - a filterable grid
-                         over the Application/System/Security event logs (Shell/EventViewerTabs.cs,
-                         Tools/EventViewerControl.cs). Ctrl+F12 ONLY - same reasoning as Registry
-                         Editor above: the Security log refuses a standard token outright, so there
-                         is no unelevated mode to offer and no context menu here either. -->
-                    <Button x:Name="EventViewerRailBtn" Style="{StaticResource RailButton}" Content="&#xE71D;"
-                            FontSize="12" Margin="0,0,0,10" Click="EventViewerRail_Click"
-                            ToolTip="{DynamicResource Str_TT_EventViewer}"/>
                     <!-- "?" (a literal, in Consolas): the shortcuts card, F1. Sits directly above
                          the globe, which is where KillerNotes and KillerScan put it - the rail
                          order is family furniture, so it has to match. -->

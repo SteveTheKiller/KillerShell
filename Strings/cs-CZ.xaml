@@ -94,6 +94,7 @@
     <sys:String x:Key="Str_TT_Pipe">Hledat uvnitř těchto výsledků</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Druhý panel  |  pravým tlačítkem přepnete vedle sebe / pod sebou</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Další nástroje</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Systémové nástroje</sys:String>
     <sys:String x:Key="Str_TT_Sort">Řadit podle</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Tento počítač</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Hledat uvnitř těchto výsledků</sys:String>

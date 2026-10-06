@@ -107,6 +107,7 @@
   <sys:String x:Key="Str_TT_Pipe">Tìm kiếm trong các kết quả này</sys:String>
   <sys:String x:Key="Str_TT_DualPane">Ngăn thứ hai  (F10)  |  bấm chuột phải để chuyển đổi giữa bố cục cạnh nhau và xếp chồng</sys:String>
   <sys:String x:Key="Str_TT_MoreTools">Công cụ khác</sys:String>
+  <sys:String x:Key="Str_TT_SystemTools">Công cụ hệ thống</sys:String>
   <sys:String x:Key="Str_TT_Sort">Sắp xếp theo</sys:String>
   <sys:String x:Key="Str_Nav_ThisPc">PC này</sys:String>
   <sys:String x:Key="Str_Menu_PipeTab">Tìm kiếm trong các kết quả này</sys:String>

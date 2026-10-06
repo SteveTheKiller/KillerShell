@@ -75,6 +75,7 @@
     <sys:String x:Key="Str_TT_Pipe">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন</sys:String>
     <sys:String x:Key="Str_TT_DualPane">দ্বিতীয় প্যান  |  পাশাপাশি / উপর-নিচ বদলাতে ডান-ক্লিক করুন</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">আরও টুল</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">সিস্টেম টুল</sys:String>
     <sys:String x:Key="Str_TT_Sort">সাজান</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">এই পিসি</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন</sys:String>

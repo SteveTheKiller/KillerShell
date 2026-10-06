@@ -115,6 +115,7 @@
     <sys:String x:Key="Str_TT_Pipe">Pesquisar dentro destes resultados</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Segundo painel  (F10)  |  clique com o botão direito para alternar entre lado a lado e empilhado</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Mais ferramentas</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Ferramentas do sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordenar por</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Este Computador</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Pesquisar dentro destes resultados</sys:String>

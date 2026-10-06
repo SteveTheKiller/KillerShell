@@ -16,6 +16,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Added a silent uninstall, `/uninstall-silent`, registered as the quiet uninstall so WinGet and other package managers can remove KillerShell without a prompt.
 
 ### Changed
+- Processes, Performance, Storage, Registry Editor, and Event Viewer share a System tools rail button, with administrator actions on right-click.
 - The language menu now shows its 19 languages in two columns.
 - Both shortcut views link to the full online guide from an aligned header.
 - Improved menu and selection contrast, softened material-theme footers and 98SE footer text, matched the 98SE About bevel to the sidebar, and used subtle gray Delirium dividers.

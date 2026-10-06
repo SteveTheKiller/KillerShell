@@ -870,11 +870,7 @@ namespace KillerShell.Shell
 
             // null, not "off": the trigger fires on the literal string "on" and treats everything
             // else as the unlit default, and null is what the other rail toggles clear to.
-            TaskManagerRailBtn.Tag    = procs    ? "on" : null;
-            EventViewerRailBtn.Tag    = events   ? "on" : null;
-            PerformanceRailBtn.Tag    = perf     ? "on" : null;
-            RegistryEditorRailBtn.Tag = registry ? "on" : null;
-            StorageRailBtn.Tag        = storage  ? "on" : null;
+            SystemToolsRailBtn.Tag = procs || events || perf || registry || storage ? "on" : null;
         }
 
         private void SwitchToTab(SearchTab t)

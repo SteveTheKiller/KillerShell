@@ -165,6 +165,7 @@
     <sys:String x:Key="Str_TT_Pipe">Szukaj w tych wynikach</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Drugi panel  (F10)  |  kliknij prawym, aby zmienić układ</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Więcej narzędzi</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Narzędzia systemowe</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sortuj według</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Ten komputer</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Szukaj w tych wynikach</sys:String>

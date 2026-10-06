@@ -109,6 +109,7 @@
     <sys:String x:Key="Str_TT_Pipe">Осы нәтижелердің ішінен іздеу</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Екінші тақта  (F10)  |  оң жақ басу қатар / үстіңгі орналасуды ауыстырады</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Басқа құралдар</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Жүйелік құралдар</sys:String>
     <sys:String x:Key="Str_TT_Sort">Бойынша сұрыптау</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Осы компьютер</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Осы нәтижелердің ішінен іздеу</sys:String>

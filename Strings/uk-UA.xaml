@@ -115,6 +115,7 @@
     <sys:String x:Key="Str_TT_Pipe">Шукати в цих результатах</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Друга панель  (F10)  |  клацніть правою кнопкою, щоб перемкнути поруч / одна під одною</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Більше інструментів</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Системні інструменти</sys:String>
     <sys:String x:Key="Str_TT_Sort">Сортувати за</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Цей ПК</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Шукати в цих результатах</sys:String>

@@ -115,6 +115,7 @@
     <sys:String x:Key="Str_TT_Pipe">Keresés ezeken a találatokon belül</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Második ablaktábla (F10) |  jobb gombbal lapozhat egymás mellé / halmozottan</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Több eszköz</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Rendszereszközök</sys:String>
     <sys:String x:Key="Str_TT_Sort">Rendezés</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Ez a PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Keresés ezeken a találatokon belül</sys:String>

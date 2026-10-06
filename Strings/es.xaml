@@ -75,6 +75,7 @@
     <sys:String x:Key="Str_TT_Pipe">Buscar dentro de estos resultados</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Segundo panel  |  clic derecho para alternar lado a lado / apilado</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Más herramientas</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Herramientas del sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordenar por</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Este equipo</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Buscar dentro de estos resultados</sys:String>

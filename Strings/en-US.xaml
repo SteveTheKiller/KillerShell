@@ -115,6 +115,7 @@
     <sys:String x:Key="Str_TT_Pipe">Search within these results</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Second pane  (F10)  |  right-click to flip side-by-side / stacked</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">More tools</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">System tools</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sort by</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">This PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Search within these results</sys:String>

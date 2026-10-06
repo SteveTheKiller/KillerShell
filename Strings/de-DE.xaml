@@ -75,6 +75,7 @@
     <sys:String x:Key="Str_TT_Pipe">In diesen Ergebnissen suchen</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Zweiter Bereich  |  Rechtsklick wechselt nebeneinander / übereinander</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Weitere Werkzeuge</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Systemwerkzeuge</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sortieren nach</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Dieser PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">In diesen Ergebnissen suchen</sys:String>

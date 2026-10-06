@@ -115,6 +115,7 @@
     <sys:String x:Key="Str_TT_Pipe">Søk i disse resultatene</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Andre panel  (F10)  |  høyreklikk for å bytte mellom side ved side og stablet</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Flere verktøy</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">Systemverktøy</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sorter etter</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Denne PC-en</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Søk i disse resultatene</sys:String>
