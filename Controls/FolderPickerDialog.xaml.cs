@@ -27,7 +27,7 @@ namespace KillerShell
         private int  _viewMode;     // 0 list, 1 icons, 2 details
         private int _pickerIconSize = 32;
         private int _pickerWheelDelta;
-        private static readonly int[] PickerIconSizes = { 16, 32, 48, 96 };
+        private static readonly int[] PickerIconSizes = [16, 32, 48, 96];
         private int  _sortKey;      // 0 name, 1 size, 2 modified
         private bool _sortAsc = true;
 
