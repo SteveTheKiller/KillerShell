@@ -1650,6 +1650,10 @@
                                  its own border so the field text never renders through a bitmap effect
                                  (stays ClearType-crisp). Field spacing and sizes match KillerScan. -->
                             <Grid x:Name="AboutInfoGrid">
+                                <Border Panel.ZIndex="20" IsHitTestVisible="False" BorderBrush="{DynamicResource PaneBevelDarkBrush}" BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
+                                <Border Panel.ZIndex="20" IsHitTestVisible="False" BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
+                                <Border Panel.ZIndex="20" IsHitTestVisible="False" Margin="{DynamicResource PaneBevelInnerMargin}" BorderBrush="{DynamicResource PaneBevelDark2Brush}" BorderThickness="{DynamicResource PaneBevel2LightThickness}"/>
+                                <Border Panel.ZIndex="20" IsHitTestVisible="False" Margin="{DynamicResource PaneBevelInnerMargin}" BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
                                 <Border Background="{DynamicResource PaneBrush}" CornerRadius="{DynamicResource ControlCornerRadius}" IsHitTestVisible="False">
                                     <Border.Effect><DropShadowEffect Color="Black" BlurRadius="14" ShadowDepth="2" Direction="270"
                                                                      Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>

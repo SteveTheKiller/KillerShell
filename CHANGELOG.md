@@ -18,7 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Changed
 - The language menu now shows its 19 languages in two columns.
 - Both shortcut views link to the full online guide from an aligned header.
-- Improved menu and selection contrast, softened material-theme footers and 98SE footer text, and used subtle gray Delirium dividers.
+- Improved menu and selection contrast, softened material-theme footers and 98SE footer text, matched the 98SE About bevel to the sidebar, and used subtle gray Delirium dividers.
 
 ### Fixed
 - Ctrl+wheel changes file and folder picker views and icon sizes.
