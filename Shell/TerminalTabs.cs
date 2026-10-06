@@ -231,7 +231,7 @@ namespace KillerShell.Shell
             {
                 tab.CurrentFolder = dir;
                 tab.RootPath = dir;
-                tab.Title = profile.Kind == TerminalShellKind.Wsl && dir != "/" ? dir.TrimEnd('/').Substring(dir.TrimEnd('/').LastIndexOf('/') + 1) : FolderTitle(dir);
+                tab.Title = profile.Kind == TerminalShellKind.Wsl && dir != "/" ? dir.TrimEnd('/')[(dir.TrimEnd('/').LastIndexOf('/') + 1)..] : FolderTitle(dir);
                 SyncTerminalBar(tab);   // TerminalBar.cs - the cwd readout is the shell's own now
             }));
 

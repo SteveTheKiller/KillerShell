@@ -36,7 +36,7 @@ namespace KillerShell.Terminal
             var installed = WslDistributions.Installed();
             foreach (string distro in installed)
                 if (!entries.Any(p => p.Id == "wsl:" + distro)) entries.Add(new() { Id = "wsl:" + distro, Name = distro, Kind = TerminalShellKind.Wsl, Distribution = distro, StartFolder = "~" });
-            return entries.Where(p => p.Kind != TerminalShellKind.Wsl || installed.Contains(p.Distribution, StringComparer.OrdinalIgnoreCase)).ToList();
+            return [.. entries.Where(p => p.Kind != TerminalShellKind.Wsl || installed.Contains(p.Distribution, StringComparer.OrdinalIgnoreCase))];
         }
 
         internal static TerminalProfile Default()

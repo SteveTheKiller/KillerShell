@@ -147,8 +147,7 @@ namespace KillerShell.Terminal
             // one is most of the "why is my profile not loading" in the world. Its rows arrive
             // as it opens; the placeholder child is only what makes WPF draw the arrow and fire
             // SubmenuOpened at all, and it is replaced before it can be seen.
-            var profile = new MenuItem { InputGestureText = "Ctrl+," };
-            profile.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
+            var profile = new MenuItem { InputGestureText = "Ctrl+,", IsEnabled = ShellKind == TerminalShellKind.PowerShell };
             profile.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Prof_Edit");
 
             var profileIcon = new TextBlock { Text = Glyph(0xE70F) };

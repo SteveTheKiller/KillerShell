@@ -8,6 +8,8 @@ namespace KillerShell.Services
 {
     internal static class WslDistributions
     {
+        private static readonly string[] PathPrefixes = [@"\\wsl.localhost\", @"\\wsl$\"];
+
         internal static IReadOnlyList<string> Installed()
         {
             var names = new List<string>();
@@ -23,7 +25,7 @@ namespace KillerShell.Services
             catch (System.Security.SecurityException) { }
             catch (UnauthorizedAccessException) { }
             catch (IOException) { }
-            return names.Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(n => n, StringComparer.OrdinalIgnoreCase).ToArray();
+            return [.. names.Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(n => n, StringComparer.OrdinalIgnoreCase)];
         }
 
         internal static bool ValidName(string name) => name.Length > 0 && name.IndexOfAny(['\\', '/', '"', '\r', '\n', '\0']) < 0;
@@ -33,14 +35,14 @@ namespace KillerShell.Services
         {
             distro = linuxPath = string.Empty;
             string normalized = path.Replace('/', '\\');
-            string? prefix = new[] { @"\\wsl.localhost\", @"\\wsl$\" }
+            string? prefix = PathPrefixes
                 .FirstOrDefault(p => normalized.StartsWith(p, StringComparison.OrdinalIgnoreCase));
             if (prefix == null) return false;
-            string rest = normalized.Substring(prefix.Length);
+            string rest = normalized[prefix.Length..];
             int slash = rest.IndexOf('\\');
-            distro = slash < 0 ? rest : rest.Substring(0, slash);
+            distro = slash < 0 ? rest : rest[..slash];
             if (!ValidName(distro)) return false;
-            linuxPath = slash < 0 ? "/" : rest.Substring(slash).Replace('\\', '/');
+            linuxPath = slash < 0 ? "/" : rest[slash..].Replace('\\', '/');
             return true;
         }
 
@@ -51,7 +53,7 @@ namespace KillerShell.Services
             if (TryParsePath(path, out string owner, out string linux))
                 return string.Equals(owner, distro, StringComparison.OrdinalIgnoreCase) ? linux : "~";
             if (path.Length >= 3 && char.IsLetter(path[0]) && path[1] == ':' && (path[2] == '\\' || path[2] == '/'))
-                return "/mnt/" + char.ToLowerInvariant(path[0]) + path.Substring(2).Replace('\\', '/');
+                return "/mnt/" + char.ToLowerInvariant(path[0]) + path[2..].Replace('\\', '/');
             return "~";
         }
 

@@ -76,7 +76,7 @@ namespace KillerShell.Terminal
 
         internal static TerminalProfile Wsl(string distro)
         {
-            if (!Services.WslDistributions.ValidName(distro)) throw new ArgumentException(nameof(distro));
+            if (!Services.WslDistributions.ValidName(distro)) throw new ArgumentException("Invalid WSL distribution name.", nameof(distro));
             string exe = Path.Combine(Environment.SystemDirectory, "wsl.exe");
             return new(distro, Quote(exe), exe, TerminalSkin.Default, GlyphShell, false)
                 { Id = "wsl:" + distro, Kind = TerminalShellKind.Wsl, Distribution = distro };

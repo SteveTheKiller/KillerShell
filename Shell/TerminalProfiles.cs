@@ -14,8 +14,8 @@ namespace KillerShell.Shell
             foreach (var entry in TerminalProfileStore.Load())
             {
                 if (entry.Hidden) continue;
-                var row = new MenuItem { Header = entry.Name, IsCheckable = true, IsChecked = entry.Id == defaultId };
-                row.InputGestureText = entry.Id == defaultId ? "F8" : entry.Id == "cmd" ? "Shift+F8" : string.Empty;
+                var row = new MenuItem { Header = entry.Name, IsCheckable = true, IsChecked = entry.Id == defaultId,
+                    InputGestureText = entry.Id == defaultId ? "F8" : entry.Id == "cmd" ? "Shift+F8" : string.Empty };
                 row.Click += (_, _) => OpenShell(entry.Resolve(), entry.StartFolder.Length > 0 ? null : folder);
                 parent.Items.Add(row);
             }
