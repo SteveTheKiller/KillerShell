@@ -130,7 +130,17 @@
                             Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                     <ListBox x:Name="PlacesList" Background="Transparent" BorderThickness="0" Padding="2,4"
                              ItemContainerStyle="{StaticResource PickerPlaceRow}" SelectionChanged="Places_SelectionChanged"
+                             ContextMenuOpening="Places_ContextMenuOpening"
+                             PreviewMouseLeftButtonDown="Places_PreviewMouseLeftButtonDown"
+                             PreviewMouseMove="Places_PreviewMouseMove"
+                             PreviewMouseLeftButtonUp="Places_PreviewMouseLeftButtonUp"
+                             LostMouseCapture="Places_LostMouseCapture"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{DynamicResource Str_Menu_UnpinPlace}" Click="UnpinPlace_Click"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Style="{StaticResource PickerRowContent}">
@@ -194,9 +204,16 @@
                                      ItemTemplate="{StaticResource RowTemplate}"
                                      ItemsPanel="{StaticResource PanelStack}"
                                      SelectionChanged="Files_SelectionChanged" MouseDoubleClick="Files_DoubleClick"
+                                     ContextMenuOpening="Files_ContextMenuOpening"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                      ScrollViewer.CanContentScroll="False"
-                                     PreviewMouseWheel="FileList_PreviewMouseWheel"/>
+                                     PreviewMouseWheel="FileList_PreviewMouseWheel">
+                                <ListBox.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{DynamicResource Str_Menu_PinPlace}" Click="FilePin_Click"/>
+                                    </ContextMenu>
+                                </ListBox.ContextMenu>
+                            </ListBox>
                             <TextBlock x:Name="EmptyHint" Text="{DynamicResource Str_Dlg_NoMatchingFiles}" Visibility="Collapsed"
                                        Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="11"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"

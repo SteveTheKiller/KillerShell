@@ -383,11 +383,12 @@ namespace KillerShell
         }
     }
 
-    public sealed class PickerPlace(string glyph, string label, string path)
+    public sealed class PickerPlace(string glyph, string label, string path, bool pinned = false)
     {
         public string Glyph { get; } = glyph;
         public string Label { get; } = label;
         public string Path  { get; } = path;
+        public bool Pinned { get; } = pinned;
     }
 
     // One row in the folder pane: a subfolder or a (dimmed, non-pickable) file.

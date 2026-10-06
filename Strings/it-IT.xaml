@@ -891,4 +891,6 @@
     <sys:String x:Key="Str_Term_ShellType">Tipo di shell</sys:String>
     <sys:String x:Key="Str_Term_Custom">Personalizzato</sys:String>
 
+    <sys:String x:Key="Str_Menu_PinPlace">Aggiungi ai luoghi</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">Rimuovi dai luoghi</sys:String>
 </ResourceDictionary>

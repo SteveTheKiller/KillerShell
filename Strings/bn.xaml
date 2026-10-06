@@ -879,4 +879,6 @@
     <sys:String x:Key="Str_Term_ShellType">শেলের ধরন</sys:String>
     <sys:String x:Key="Str_Term_Custom">কাস্টম</sys:String>
 
+    <sys:String x:Key="Str_Menu_PinPlace">স্থানে পিন করুন</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">স্থান থেকে সরান</sys:String>
 </ResourceDictionary>

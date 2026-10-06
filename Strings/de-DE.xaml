@@ -882,4 +882,6 @@
     <sys:String x:Key="Str_Term_ShellType">Shelltyp</sys:String>
     <sys:String x:Key="Str_Term_Custom">Benutzerdefiniert</sys:String>
 
+    <sys:String x:Key="Str_Menu_PinPlace">An Orte anheften</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">Aus Orten entfernen</sys:String>
 </ResourceDictionary>

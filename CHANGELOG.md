@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.3.0] - Unreleased
 
 ### Added
+- File picker pins can be added, removed, and reordered. Explorer Quick Access appears in the places rail, and Open and Save remember their last successful folder separately.
 - Terminal profiles with a default shell, custom commands, and automatic WSL shortcuts. Browse Linux folders in the sidebar, pin them, and open a terminal there.
 - Added yellow and magenta accents to the neutral and 98SE themes.
 - Ukrainian localization.

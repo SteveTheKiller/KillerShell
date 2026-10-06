@@ -894,4 +894,6 @@
     <sys:String x:Key="Str_Term_ShellType">Тип оболочки</sys:String>
     <sys:String x:Key="Str_Term_Custom">Пользовательский</sys:String>
 
+    <sys:String x:Key="Str_Menu_PinPlace">Закреплять на местах</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">Убрать с мест</sys:String>
 </ResourceDictionary>

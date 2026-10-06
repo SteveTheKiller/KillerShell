@@ -75,11 +75,6 @@ namespace KillerShell
         // Per-filter-entry patterns, parallel to FilterCombo's items. Empty list = show all.
         private readonly List<string[]> _filterPatterns = [];
 
-        private static readonly string GlyphHome      = ((char)0xE80F).ToString();
-        private static readonly string GlyphDesktop   = ((char)0xE7F4).ToString();
-        private static readonly string GlyphDocuments = ((char)0xE8A5).ToString();
-        private static readonly string GlyphDownloads = ((char)0xE896).ToString();
-        private static readonly string GlyphPictures  = ((char)0xE91B).ToString();
         private static readonly string GlyphDrive     = ((char)0xEDA2).ToString();
         private static readonly string ArrowUp        = ((char)0xE70E).ToString();
         private static readonly string ArrowDown      = ((char)0xE70D).ToString();
@@ -182,7 +177,11 @@ namespace KillerShell
                 else seedName = FileName;
             }
             if (string.IsNullOrWhiteSpace(startDir) || !Directory.Exists(startDir))
-                startDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            {
+                string? remembered = Services.ThemeManager.GetSetting(_mode == FileDialogMode.Open ? LastOpenKey : LastSaveKey);
+                startDir = !string.IsNullOrWhiteSpace(remembered) && Directory.Exists(remembered)
+                    ? remembered! : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            }
 
             _built = true;
             NavigateTo(startDir);
@@ -264,30 +263,6 @@ namespace KillerShell
 
         // ── Quick places ─────────────────────────────────────────────────────────
 
-        private void BuildPlaces()
-        {
-            if (Places.Count > 0) return;
-            AddPlace(GlyphHome,      Loc("Str_QA_Home"),      Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-            AddPlace(GlyphDesktop,   Loc("Str_QA_Desktop"),   Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-            AddPlace(GlyphDocuments, Loc("Str_QA_Documents"), Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-            AddPlace(GlyphDownloads, Loc("Str_QA_Downloads"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"));
-            AddPlace(GlyphPictures,  Loc("Str_QA_Pictures"),  Environment.GetFolderPath(Environment.SpecialFolder.MyPictures));
-
-            foreach (var d in DriveInfo.GetDrives().Where(d => d.IsReady))
-            {
-                string label;
-                try { label = string.IsNullOrWhiteSpace(d.VolumeLabel) ? d.DriveType.ToString() : d.VolumeLabel.Trim(); }
-                catch { label = d.DriveType.ToString(); }
-                AddPlace(GlyphDrive, $"{d.Name.TrimEnd('\\')}  {label}", d.RootDirectory.FullName);
-            }
-        }
-
-        private void AddPlace(string glyph, string label, string path)
-        {
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
-                Places.Add(new PickerPlace(glyph, label, path));
-        }
 
         private static string Loc(string key)
             => Application.Current.TryFindResource(key) as string ?? key;
@@ -326,6 +301,7 @@ namespace KillerShell
             UpButton.IsEnabled = Directory.GetParent(dir) != null;
             UpdateInfoSummary();
             _navigating = false;
+            SyncPlacesSelection();
         }
 
         private static DateTime SafeTime(Func<DateTime> get)
@@ -595,6 +571,9 @@ namespace KillerShell
             }
 
             FileName = full;
+            string? acceptedFolder = Path.GetDirectoryName(full);
+            if (!string.IsNullOrEmpty(acceptedFolder))
+                Services.ThemeManager.SetSetting(_mode == FileDialogMode.Open ? LastOpenKey : LastSaveKey, acceptedFolder);
             DialogResult = true;
             Close();
         }

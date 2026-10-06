@@ -928,4 +928,6 @@
     <sys:String x:Key="Str_Term_ShellType">Shell type</sys:String>
     <sys:String x:Key="Str_Term_Custom">Custom</sys:String>
 
+    <sys:String x:Key="Str_Menu_PinPlace">Pin to places</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">Remove from places</sys:String>
 </ResourceDictionary>

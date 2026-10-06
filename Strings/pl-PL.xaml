@@ -797,4 +797,6 @@
     <sys:String x:Key="Str_Term_ShellType">Typ powłoki</sys:String>
     <sys:String x:Key="Str_Term_Custom">Niestandardowy</sys:String>
 
+    <sys:String x:Key="Str_Menu_PinPlace">Przypinaj do miejsc</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">Usuń z miejsc</sys:String>
 </ResourceDictionary>

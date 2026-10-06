@@ -928,4 +928,6 @@
     <sys:String x:Key="Str_Term_ShellType">Тип оболонки</sys:String>
     <sys:String x:Key="Str_Term_Custom">Користувацький</sys:String>
 
+    <sys:String x:Key="Str_Menu_PinPlace">Закріпити в місцях</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">Вилучити з місць</sys:String>
 </ResourceDictionary>

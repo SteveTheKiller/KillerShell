@@ -894,4 +894,6 @@
     <sys:String x:Key="Str_Term_ShellType">Қабық түрі</sys:String>
     <sys:String x:Key="Str_Term_Custom">Теңшелетін</sys:String>
 
+    <sys:String x:Key="Str_Menu_PinPlace">Орындарға бекіту</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">Орындардан жою</sys:String>
 </ResourceDictionary>
