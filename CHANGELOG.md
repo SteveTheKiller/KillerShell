@@ -20,6 +20,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Selected states now use subtle gradients outside 98SE, Light buttons have softer gray borders, and yellow wordmarks match their accent.
 
 ### Fixed
+- Ctrl+wheel changes file and folder picker views and icon sizes.
 - Table header corners follow pane borders and live theme changes, including square 98SE corners.
 - Fixed picker and dialog frame corners and kept the close X white over its red hover background.
 - Linux terminals report their current folder and use the correct clear and folder-change commands. PowerShell profile actions stay scoped to PowerShell.

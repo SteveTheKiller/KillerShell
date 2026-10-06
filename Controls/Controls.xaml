@@ -2129,9 +2129,9 @@
     <!-- ICONS view: 32px icon above a centered, wrapping name. Genuinely different from the
          list view - previously both used RowTemplate and only the panel differed, which read
          as two list modes. -->
-    <DataTemplate x:Key="IconTemplate">
-        <StackPanel Style="{StaticResource PickerRowContent}" Width="84">
-            <Image Source="{Binding IconLarge}" Width="32" Height="32"
+<DataTemplate x:Key="IconTemplate">
+        <StackPanel Style="{StaticResource PickerRowContent}" Width="{DynamicResource PickerIconContentWidth}">
+            <Image Source="{Binding IconLarge}" Width="{DynamicResource PickerIconSize}" Height="{DynamicResource PickerIconSize}"
                    HorizontalAlignment="Center" Margin="0,2,0,4" SnapsToDevicePixels="True"/>
             <TextBlock Text="{Binding Name}" Style="{StaticResource PickerName}"
                        TextWrapping="Wrap" TextAlignment="Center" MaxHeight="30"
@@ -2171,8 +2171,8 @@
     </ItemsPanelTemplate>
 
     <!-- ICONS view: left-to-right, wrapping down, scrolls vertically. -->
-    <ItemsPanelTemplate x:Key="PanelIconGrid">
-        <WrapPanel Orientation="Horizontal" ItemWidth="96" ItemHeight="76"/>
+<ItemsPanelTemplate x:Key="PanelIconGrid">
+        <WrapPanel Orientation="Horizontal" ItemWidth="{DynamicResource PickerIconTileWidth}" ItemHeight="{DynamicResource PickerIconTileHeight}"/>
     </ItemsPanelTemplate>
 
     <!-- ═══════════════════════════════════════════════════════════
