@@ -92,7 +92,7 @@ namespace KillerShell.Terminal
             // believing it had already drawn a prompt, so the next keystroke would paint over
             // nothing. Sending the command brings the prompt back the way the shell wants it,
             // and cls works the same in pwsh, powershell and cmd.
-            Row(m, "Str_Term_Clear", Glyph(0xE894), null, () => Send(ShellKind == TerminalShellKind.Wsl || ShellKind == TerminalShellKind.Custom ? "clear\r" : "cls\r"));
+            Row(m, "Str_Term_Clear", Glyph(0xE894), "Ctrl+Shift+L", () => Send(ShellKind == TerminalShellKind.Wsl || ShellKind == TerminalShellKind.Custom ? "clear\r" : "cls\r"));
 
             m.Items.Add(new Separator());
 
@@ -111,28 +111,28 @@ namespace KillerShell.Terminal
             // folder tab. The buffer tracks the working directory already (OSC 7), so this is
             // free - and after a few minutes of cd-ing around, getting the folder listing to
             // follow is otherwise a copy of the path and a paste into the address bar.
-            Row(m, "Str_Term_OpenFolder", Glyph(0xE8B7), null,
+            Row(m, "Str_Term_OpenFolder", Glyph(0xE8B7), "Ctrl+Shift+T",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.OpenFolder));
 
-            Row(m, "Str_Term_Fonts", Glyph(0xE8D2), null,
+            Row(m, "Str_Term_Fonts", Glyph(0xE8D2), "Ctrl+Shift+,",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.Fonts));
 
             // The prompt is a SCRIPT the user owns, not a setting, so the menu opens the file
             // rather than a dialog of checkboxes over it - anything a dialog could offer, the
             // file already does, and better. Reset is next to it because a script you are
             // encouraged to edit needs a way back.
-            var editPrompt = Row(m, "Str_Term_EditPrompt", Glyph(0xE70F), null,
+            var editPrompt = Row(m, "Str_Term_EditPrompt", Glyph(0xE70F), "Ctrl+Shift+E",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.EditPrompt));
             editPrompt.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
 
-            var resetPrompt = Row(m, "Str_Term_ResetPrompt", Glyph(0xE777), null,
+            var resetPrompt = Row(m, "Str_Term_ResetPrompt", Glyph(0xE777), "Ctrl+Shift+R",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.ResetPrompt));
             resetPrompt.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
 
             // Run inside THIS shell rather than starting a helper process. PowerShell 7 and
             // Windows PowerShell then each resolve their own $PROFILE, and any output, success,
             // or error stays in the terminal where the user asked for the reload.
-            _reloadProfileItem = Row(m, "Str_Prof_Reload", Glyph(0xE895), null, () =>
+            _reloadProfileItem = Row(m, "Str_Prof_Reload", Glyph(0xE895), "Ctrl+Shift+Q", () =>
                 // Doubled apostrophes: the text lands inside a single-quoted PowerShell string, and
                 // several locales spell this message with one.
                 Send("try { . $PROFILE; Write-Host '"
@@ -165,10 +165,32 @@ namespace KillerShell.Terminal
             return m;
         }
 
-        /// <summary>
-        /// One row. The header is a resource reference so a language switch repaints the menu in
-        /// place, the same as every other menu in the app.
-        /// </summary>
+        internal bool HandleMenuShortcut(KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers != (ModifierKeys.Control | ModifierKeys.Shift)) return false;
+            string? gesture = e.Key switch
+            {
+                Key.L => "Ctrl+Shift+L",
+                Key.OemComma => "Ctrl+Shift+,",
+                Key.E => "Ctrl+Shift+E",
+                Key.R => "Ctrl+Shift+R",
+                Key.Q => "Ctrl+Shift+Q",
+                _ => null,
+            };
+            if (gesture == null) return false;
+            _menu ??= BuildMenu();
+            foreach (var entry in _menu.Items)
+                if (entry is MenuItem item && item.InputGestureText == gesture)
+                {
+                    bool powerShellOnly = e.Key is Key.E or Key.R or Key.Q;
+                    if (item.IsEnabled && (!powerShellOnly || ShellKind == TerminalShellKind.PowerShell))
+                        item.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    return true;
+                }
+            return false;
+        }
+
+        /// <summary>Build a menu row whose label follows the active language.</summary>
         private static MenuItem Row(ContextMenu m, string key, string glyph, string? gesture, Action go)
         {
             var item = new MenuItem { InputGestureText = gesture ?? string.Empty };

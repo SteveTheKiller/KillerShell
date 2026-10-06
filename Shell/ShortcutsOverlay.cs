@@ -120,6 +120,7 @@ namespace KillerShell.Shell
 
             new(KsScope.Global, "Tabs",   "Ctrl+N",         "Str_Ks_NewWindow",    KbLayer.Ctrl, "N"),
             new(KsScope.Global, "Tabs",   "Ctrl+T",         "Str_Ks_NewTab",       KbLayer.Ctrl, "T"),
+            new(KsScope.Global, "Tabs",   "Ctrl+Shift+T",   "Str_Term_OpenFolder", KbLayer.CtrlShift, "T"),
             new(KsScope.Global, "Tabs",   "Ctrl+W",         "Str_Ks_CloseTab",     KbLayer.Ctrl, "W"),
             new(KsScope.Global, "Tabs",   "Ctrl+Tab",       "Str_Ks_NextTab",      KbLayer.Ctrl, "Tab"),
             // Ctrl+Shift+Tab is the same action backwards, so it lights the same cap on the
@@ -257,6 +258,12 @@ namespace KillerShell.Shell
             // restated here.
             new(KsScope.Terminal, "Edit", "Ctrl+Shift+C",   "Str_Term_Copy",       KbLayer.CtrlShift, "C"),
             new(KsScope.Terminal, "Edit", "Ctrl+Shift+A",   "Str_Term_SelectAll",  KbLayer.CtrlShift, "A"),
+            new(KsScope.Terminal, "Edit", "Ctrl+Shift+V",   "Str_Term_Paste",      KbLayer.CtrlShift, "V"),
+            new(KsScope.Terminal, "Edit", "Ctrl+Shift+L",   "Str_Term_Clear",      KbLayer.CtrlShift, "L"),
+            new(KsScope.Terminal, "View", "Ctrl+Shift+,",   "Str_Term_Fonts",      KbLayer.CtrlShift, "Comma"),
+            new(KsScope.Terminal, "Edit", "Ctrl+Shift+E",   "Str_Term_EditPrompt", KbLayer.CtrlShift, "E"),
+            new(KsScope.Terminal, "Edit", "Ctrl+Shift+R",   "Str_Term_ResetPrompt", KbLayer.CtrlShift, "R"),
+            new(KsScope.Terminal, "Edit", "Ctrl+Shift+Q",   "Str_Prof_Reload",     KbLayer.CtrlShift, "Q"),
 
             // ══ EDITOR ══════════════════════════════════════════════════════════════════════
             // Reach the document rather than the window (IsEditorChord, EditorTabs.cs): these

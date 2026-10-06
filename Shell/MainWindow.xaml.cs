@@ -742,6 +742,11 @@ namespace KillerShell.Shell
             // The exceptions are the chords that manage the WINDOW rather than the shell, and
             // they are listed rather than inferred: a shell has no opinion about which tab is
             // showing, so those stay with the app.
+            if (TerminalHasFocus && _active.Term?.HandleMenuShortcut(e) == true)
+            {
+                e.Handled = true;
+                return;
+            }
             if (TerminalHasFocus && !IsWindowChord(e, ctrl, shift, alt)) return;
 
             // A FOCUSED DOCUMENT OWNS THE KEYBOARD too, for exactly the same reasons and with
@@ -1130,7 +1135,8 @@ namespace KillerShell.Shell
             }
             else if (ctrl && e.Key == System.Windows.Input.Key.T)
             {
-                NewTab_Click(this, new RoutedEventArgs());
+                if (!alt && shift) OpenCurrentFolderTab();
+                else if (!alt) NewTab_Click(this, new RoutedEventArgs());
                 e.Handled = true;
             }
             else if (ctrl && e.Key == System.Windows.Input.Key.W)

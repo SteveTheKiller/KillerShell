@@ -8,6 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 - Terminal profiles with a default shell, custom commands, and automatic WSL shortcuts. Browse Linux folders in the sidebar, pin them, and open a terminal there.
+- Ctrl+Shift+T opens the current folder in a new browser tab. Terminal actions now have shortcuts shown in their menu, shortcut list, keyboard map, and online guide.
 - File picker pins can be added, removed, and reordered. Explorer Quick Access appears in the places rail, and Open and Save remember their last successful folder separately.
 - Added a silent uninstall, `/uninstall-silent`, registered as the quiet uninstall so WinGet and other package managers can remove KillerShell without a prompt.
 - Ukrainian localization.

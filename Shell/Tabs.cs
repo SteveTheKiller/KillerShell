@@ -924,6 +924,20 @@ namespace KillerShell.Shell
             Pane.TabFadeGhost.BeginAnimation(OpacityProperty, fade);
         }
 
+        private void OpenCurrentFolderTab()
+        {
+            var folder = _active.CurrentFolder;
+            if (_active.Term != null)
+            {
+                OpenFolderTabLeft(_active.LaunchProfile?.BrowsePath(folder) ?? folder);
+                return;
+            }
+            if (string.IsNullOrEmpty(folder)) return;
+            CaptureTab(_active);
+            ActivateTab(CreateTab());
+            _ = NavigateTo(folder);
+        }
+
         private void NewTab_Click(object sender, RoutedEventArgs e)
         {
             CaptureTab(_active);
