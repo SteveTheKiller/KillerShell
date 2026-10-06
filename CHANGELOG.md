@@ -18,7 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Changed
 - Processes, Performance, Storage, Registry Editor, and Event Viewer share a System tools rail button, with administrator actions on right-click; both menus align with the theme and language flyouts.
 - Improved menu and selection contrast, softened material-theme footers and 98SE footer text, matched the 98SE About bevel to the sidebar, and used subtle gray Delirium dividers.
-- Both shortcut views link to the full online guide from an aligned header.
+- Both shortcut views link to the full online guide from an aligned header, with more space beside the close button.
 - The language menu now shows its 19 languages in two columns, with a faint divider that fades at both ends.
 
 ### Fixed

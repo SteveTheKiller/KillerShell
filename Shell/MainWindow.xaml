@@ -2053,7 +2053,7 @@
                              there, and this in-card copy would duplicate it. -->
                         <TextBlock Text="{DynamicResource Str_Help_Shortcuts}" Style="{StaticResource SectionHeader}" FontSize="13" Margin="0" VerticalAlignment="Center"
                                    Visibility="{DynamicResource WordmarkVisibility}"/>
-                        <TextBlock Grid.Column="2" FontSize="11" Margin="12,0,0,0" MaxWidth="210"
+                        <TextBlock Grid.Column="2" FontSize="11" Margin="12,0,24,0" MaxWidth="210"
                                    HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap">
                             <Hyperlink NavigateUri="https://killershell.net/help.html#shortcuts"
                                        RequestNavigate="Hyperlink_RequestNavigate" Focusable="True"
