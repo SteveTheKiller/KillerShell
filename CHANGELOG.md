@@ -7,35 +7,35 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.3.0] - Unreleased
 
 ### Added
-- File picker pins can be added, removed, and reordered. Explorer Quick Access appears in the places rail, and Open and Save remember their last successful folder separately.
 - Terminal profiles with a default shell, custom commands, and automatic WSL shortcuts. Browse Linux folders in the sidebar, pin them, and open a terminal there.
-- Added yellow and magenta accents to the neutral and 98SE themes.
+- File picker pins can be added, removed, and reordered. Explorer Quick Access appears in the places rail, and Open and Save remember their last successful folder separately.
+- Added a silent uninstall, `/uninstall-silent`, registered as the quiet uninstall so WinGet and other package managers can remove KillerShell without a prompt.
 - Ukrainian localization.
 - Norwegian (Bokmål) localization.
 - Brazilian Portuguese localization.
-- Added a silent uninstall, `/uninstall-silent`, registered as the quiet uninstall so WinGet and other package managers can remove KillerShell without a prompt.
+- Added yellow and magenta accents to the neutral and 98SE themes.
 
 ### Changed
 - Processes, Performance, Storage, Registry Editor, and Event Viewer share a System tools rail button, with administrator actions on right-click.
-- The language menu now shows its 19 languages in two columns.
-- Both shortcut views link to the full online guide from an aligned header.
 - Improved menu and selection contrast, softened material-theme footers and 98SE footer text, matched the 98SE About bevel to the sidebar, and used subtle gray Delirium dividers.
+- Both shortcut views link to the full online guide from an aligned header.
+- The language menu now shows its 19 languages in two columns.
 
 ### Fixed
-- Ctrl+wheel changes file and folder picker views and icon sizes.
-- Table header corners follow pane borders and live theme changes, including square 98SE corners.
-- Fixed picker and dialog frame corners and kept the close X white over its red hover background.
 - Linux terminals report their current folder and use the correct clear and folder-change commands. PowerShell profile actions stay scoped to PowerShell.
+- On Greed, Blood and Cyanotic the folder block in the terminal prompt is drawn in the theme's own color, so its text is readable instead of light on white.
+- Improved menu, selection, and footer text contrast, with subtle gray Delirium dividers.
+- Ctrl+wheel changes file and folder picker views and icon sizes.
+- On Dark, Decay, Greed, Blood and Cyanotic the terminal sits on a clearly darker screen than the window around it.
+- On Greed, Blood and Cyanotic, menus and bars sit a clear step darker than the window, and the boxes in About use the content pane color.
+- Fixed picker and dialog frame corners and kept the close X white over its red hover background.
+- The uninstaller has its own taskbar button, labeled "Uninstall KillerShell", with the app icon.
+- Table header corners follow pane borders and live theme changes, including square 98SE corners.
 - Main window and dialog title bar icons use size-matched frames.
 - With one pane open, the active tab's outline fades into the tab at its foot instead of ending in a hard line.
 - Tab icons sit 2px from the tab's left edge instead of behind a wide gap.
-- On Dark, Decay, Greed, Blood and Cyanotic the terminal sits on a clearly darker screen than the window around it.
-- On Greed, Blood and Cyanotic the folder block in the terminal prompt is drawn in the theme's own color, so its text is readable instead of light on white.
-- On Greed, Blood and Cyanotic, menus and bars sit a clear step darker than the window, and the boxes in About use the content pane color.
-- Install and uninstall windows now show the film grain and the app icon in the title bar.
-- The uninstaller has its own taskbar button, labeled "Uninstall KillerShell", with the app icon.
 - The portable footer button reads PORTABLE, like KillerPDF and KillerScan, and its tooltip offers the install.
-- Improved menu, selection, and footer text contrast, with subtle gray Delirium dividers.
+- Install and uninstall windows now show the film grain and the app icon in the title bar.
 
 ## [1.2.6] - 2026-09-27
 
