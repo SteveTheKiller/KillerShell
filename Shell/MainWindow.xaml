@@ -713,10 +713,14 @@
                                                         <Border Style="{StaticResource FlyoutGrain}"/>
                                                     </Grid>
                                                 </Border>
-                                                <Border IsHitTestVisible="False" Margin="0"
-                                                        BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                                                <Border IsHitTestVisible="False" Margin="0"
-                                                        BorderBrush="{DynamicResource BevelDarkBrush}" BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                                                <Border IsHitTestVisible="False" Panel.ZIndex="4"
+                                                        BorderBrush="{DynamicResource MenuBevelLightBrush}" BorderThickness="{DynamicResource MenuBevelLightThickness}"/>
+                                                <Border IsHitTestVisible="False" Panel.ZIndex="4"
+                                                        BorderBrush="{DynamicResource MenuBevelDarkBrush}" BorderThickness="{DynamicResource MenuBevelDarkThickness}"/>
+                                                <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
+                                                        BorderBrush="{DynamicResource MenuBevel2LightBrush}" BorderThickness="{DynamicResource MenuBevel2LightThickness}"/>
+                                                <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
+                                                        BorderBrush="{DynamicResource MenuBevel2DarkBrush}" BorderThickness="{DynamicResource MenuBevel2DarkThickness}"/>
                                             </Grid>
                                         </ControlTemplate>
                                     </Setter.Value>
