@@ -839,6 +839,13 @@ namespace KillerShell.Shell
                 p.TerminalBarRow.SetResourceReference(Border.BackgroundProperty, barBrush);
                 p.EditorBarRow.SetResourceReference(Border.BackgroundProperty, barBrush);
 
+                // Toolbar faces share the pane's 98SE focus color through local resources.
+                // Clear the override on modern themes so their existing brushes remain live.
+                if (retro)
+                    p.Resources["SortButtonBrush"] = p.FindResource(barBrush);
+                else
+                    p.Resources.Remove("SortButtonBrush");
+
                 p.ResultsPane.SetResourceReference(Border.BorderBrushProperty,
                     lit && !retro ? "PrimaryBrush" : "PaneBorderBrush");
 
