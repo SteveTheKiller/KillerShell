@@ -480,18 +480,16 @@
                                                      selected trigger below can flip both at once. -->
                                                 <Setter Property="TextElement.Foreground" Value="{DynamicResource TextBrush}"/>
                                                 <Style.Triggers>
-                                                    <!-- Tag="on" set from code (Bookmarks.cs UpdateBookmarksSelection) when this
-                                                         row is where the active tab actually is. Before IsMouseOver so a hover
-                                                         still reads on top of a selected row rather than being hidden by it. -->
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                                                    </Trigger>
+                                                    <!-- Keep the active folder's selection visible while hovering. -->
                                                     <Trigger Property="Tag" Value="on">
                                                         <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
                                                         <!-- SelectionFg, the color that PAIRS with that fill. The label used to
                                                              be hardcoded to TextBrush, which is black on 98SE - black text on a
                                                              navy selection bar. -->
                                                         <Setter Property="TextElement.Foreground" Value="{DynamicResource SelectionFg}"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>

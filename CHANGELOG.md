@@ -27,6 +27,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On Greed, Blood and Cyanotic the folder block in the terminal prompt is drawn in the theme's own color, so its text is readable instead of light on white.
 - Improved menu, selection, and footer text contrast, with subtle gray Delirium dividers.
 - Inactive 98SE pane toolbar buttons match the dimmed menubar.
+- 98SE rows show a visible hover highlight, and selected bookmarks retain their selection while hovered.
 - Ctrl+wheel changes file and folder picker views and icon sizes.
 - On Dark, Decay, Greed, Blood and Cyanotic the terminal sits on a clearly darker screen than the window around it.
 - On Greed, Blood and Cyanotic, menus and bars sit a clear step darker than the window, and the boxes in About use the content pane color.
