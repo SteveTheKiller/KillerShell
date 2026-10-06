@@ -85,16 +85,17 @@ namespace KillerShell
         {
             string? saved = Services.ThemeManager.GetSetting(PinnedKey);
             if (saved != null)
-                return saved.Split('|').Where(s => s.Length > 0).ToList();
+                return [.. saved.Split('|').Where(s => s.Length > 0)];
 
-            return new List<string>
-            {
+            string[] defaults =
+            [
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
                 Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
-            }.Where(p => !string.IsNullOrEmpty(p)).ToList();
+            ];
+            return [.. defaults.Where(p => !string.IsNullOrEmpty(p))];
         }
 
         /// <summary>Localized label for the five standard folders, plain folder name otherwise.</summary>
