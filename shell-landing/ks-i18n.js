@@ -7712,6 +7712,79 @@ Object.assign(I18N["bn"], {
  "site_ui_collapse": "বিভাগ সংকুচিত করুন",
  "site_ui_family": "অংশ:"
 });
+// CLI heading and the language count on the technical page.
+Object.assign(I18N["vi"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Giao diện được dịch sang mười chín ngôn ngữ và chuyển đổi trực tiếp từ menu quả địa cầu. Chuỗi nào chưa được dịch sẽ hiển thị bằng tiếng Anh."
+});
+Object.assign(I18N["hu"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "A felület tizenkilenc nyelvre van lefordítva, és a földgömb menüből élőben váltható. A még le nem fordított szövegek angolul jelennek meg."
+});
+Object.assign(I18N["pl"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Interfejs jest przetłumaczony na dziewiętnaście języków i przełącza się na żywo z menu globusa. Teksty, których tłumaczenie jeszcze nie obejmuje, wyświetlają się po angielsku."
+});
+Object.assign(I18N["es"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "La interfaz está traducida a diecinueve idiomas y cambia en vivo desde el menú del globo. Cualquier texto que una traducción aún no cubra se muestra en inglés."
+});
+Object.assign(I18N["de"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Die Oberfläche ist in neunzehn Sprachen übersetzt und wechselt live über das Globus-Menü. Texte, die eine Übersetzung noch nicht abdeckt, erscheinen auf Englisch."
+});
+Object.assign(I18N["fr"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "L'interface est traduite en dix-neuf langues et change en direct depuis le menu du globe. Tout texte qu'une traduction ne couvre pas encore s'affiche en anglais."
+});
+Object.assign(I18N["tr"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Arayüz on dokuz dile çevrilmiştir ve küre menüsünden canlı olarak değiştirilir. Bir çevirinin henüz kapsamadığı metinler İngilizce görünür."
+});
+Object.assign(I18N["zh-cn"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "界面已翻译为十九种语言，可从地球菜单实时切换。尚未翻译的文字以英语显示。"
+});
+Object.assign(I18N["zh"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "介面已翻譯為十九種語言，可從地球選單即時切換。尚未翻譯的文字以英文顯示。"
+});
+Object.assign(I18N["cs"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Rozhraní je přeloženo do devatenácti jazyků a přepíná se za běhu z nabídky s glóbem. Texty, které překlad zatím nepokrývá, se zobrazí anglicky."
+});
+Object.assign(I18N["ja"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "インターフェイスは 19 言語に翻訳されており、地球儀メニューからライブで切り替えられます。まだ翻訳されていない文字列は英語で表示されます。"
+});
+Object.assign(I18N["bn"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "ইন্টারফেসটি ঊনিশটি ভাষায় অনূদিত এবং গ্লোব মেনু থেকে লাইভ বদলানো যায়। যে লেখা এখনও অনূদিত হয়নি তা ইংরেজিতে দেখায়।"
+});
+Object.assign(I18N["it"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "L'interfaccia è tradotta in diciannove lingue e si cambia dal vivo dal menu del globo. I testi non ancora coperti da una traduzione compaiono in inglese."
+});
+Object.assign(I18N["ru"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Интерфейс переведён на девятнадцать языков и переключается на лету из меню с глобусом. Строки, которые перевод ещё не охватывает, показываются на английском."
+});
+Object.assign(I18N["kk"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Интерфейс он тоғыз тілге аударылған және глобус мәзірінен бірден ауысады. Әлі аударылмаған мәтіндер ағылшынша көрсетіледі."
+});
+Object.assign(I18N["uk"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Інтерфейс перекладено дев'ятнадцятьма мовами, і він перемикається наживо з меню з глобусом. Рядки, яких переклад ще не охоплює, показуються англійською."
+});
+Object.assign(I18N["nb"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "Grensesnittet er oversatt til nitten språk og byttes live fra globusmenyen. Tekst som en oversettelse ennå ikke dekker, vises på engelsk."
+});
+Object.assign(I18N["pt"], {
+ "t_cli_h": "CLI",
+ "t_themes_p3": "A interface está traduzida para dezenove idiomas e muda ao vivo pelo menu do globo. Qualquer texto que uma tradução ainda não cubra aparece em inglês."
+});
 Object.keys(I18N).forEach(function (locale) {
  I18N[locale].h_profiles_h += '<span class="chev">&#9656;</span>';
 });

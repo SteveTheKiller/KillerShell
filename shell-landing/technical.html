@@ -130,6 +130,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <a href="#export" data-i18n="t_nav_export">Export</a>
 <a href="#fileops" data-i18n="t_nav_fileops">File operations</a>
 <a href="#archives" data-i18n="t_arch_h">Archives</a>
+<a href="#cli" data-i18n="t_cli_h">CLI</a>
 <a href="#terminal" data-i18n="t_nav_terminal">The terminal</a>
 <a href="#editor" data-i18n="t_nav_editor">The editor</a>
 <a href="#admin" data-i18n="t_nav_admin">Processes, storage, performance &amp; registry</a>
@@ -289,7 +290,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 </div>
 
 <div class="tech-sec" id="cli">
-<h2>CLI</h2>
+<h2 data-i18n="t_cli_h">CLI</h2>
 <p data-i18n="t_cli_p">The read-only CLI returns JSON for files, search, processes, services, events, registry, drives and SHA-256 hashes. Security-log access requires administrator privileges.</p>
 <pre><code>KillerShell.exe --cli list "C:\logs"
 KillerShell.exe --cli search "C:\logs" --content "error"
@@ -340,6 +341,7 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
 <div class="tech-sec" id="themes">
 <h2 data-i18n="t_themes_h">Themes &amp; languages</h2>
 <p data-i18n="t_themes_p">13 themes, 41 looks: Dark, Light, Black and 98SE each have 8 accent colors. The other 9 have fixed palettes. Switch live without restarting.</p>
+<p data-i18n="t_themes_p3">The interface is translated into nineteen languages and switches live from the globe menu. Any string a translation does not cover yet appears in English.</p>
 <p data-i18n="t_themes_p2">The whole app also scales. Rolling the wheel over the title-bar wordmark drives a layout transform on the content host, roughly 2% a notch between 70% and 250%, remembered between runs. Because it is a layout transform rather than a render transform, text reflows and re-rasterizes at the new size instead of being stretched as a bitmap, and the title bar and footer stay a fixed size so the wordmark never moves out from under the pointer.</p>
 </div>
 
@@ -382,13 +384,13 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
 <script src="ks-i18n.js?v=7"></script>
 <script src="ks.js?v=7"></script>
 <script>
-// COLLAPSIBLE OUTLINE. The page has fourteen sections and seven subsections, and listing
-// all twenty-one flat made the sidebar a wall you had to read to navigate.
+// COLLAPSIBLE OUTLINE. The page has fifteen sections and seven subsections, and listing
+// all twenty-two flat made the sidebar a wall you had to read to navigate.
 //
-// The grouping is built HERE, at runtime, rather than by nesting the markup: the twenty-one
+// The grouping is built HERE, at runtime, rather than by nesting the markup: the twenty-two
 // links carry t_* keys that must stay byte-identical to the headings they name, so the safest
 // structure is one that never edits them. Wrapping moves the existing nodes, so the scroll-spy
-// below still finds all twenty-one through .outline a, in document order.
+// below still finds all twenty-two through .outline a, in document order.
 (function(){
   var nav=document.querySelector('.outline');
   if(!nav) return;
