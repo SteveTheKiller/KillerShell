@@ -701,19 +701,21 @@
                         <Button.Resources>
                             <Style x:Key="SystemToolsFlyoutStyle" TargetType="{x:Type local:OpaqueContextMenu}"
                                    BasedOn="{StaticResource {x:Type local:OpaqueContextMenu}}">
+                                <Setter Property="HorizontalOffset" Value="22"/>
+                                <Setter Property="VerticalOffset" Value="-26"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type local:OpaqueContextMenu}">
                                             <Grid>
-                                                <Border Style="{StaticResource FlyoutCard}">
+                                                <Border Style="{StaticResource FlyoutCard}" Margin="0" Effect="{x:Null}">
                                                     <Grid>
                                                         <ItemsPresenter/>
                                                         <Border Style="{StaticResource FlyoutGrain}"/>
                                                     </Grid>
                                                 </Border>
-                                                <Border IsHitTestVisible="False" Margin="22,18,22,26"
+                                                <Border IsHitTestVisible="False" Margin="0"
                                                         BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                                                <Border IsHitTestVisible="False" Margin="22,18,22,26"
+                                                <Border IsHitTestVisible="False" Margin="0"
                                                         BorderBrush="{DynamicResource BevelDarkBrush}" BorderThickness="{DynamicResource BevelDarkThickness}"/>
                                             </Grid>
                                         </ControlTemplate>
