@@ -1353,7 +1353,7 @@
              outright on a negative Padding ("'0,0,-2,0' is not a valid value for property
              'Padding'"). The negative pulls the strip out past the frame's
              inner bevel, which only a margin can do. -->
-        <Border Grid.Row="2" Background="{DynamicResource BackgroundBrush}"
+        <Border Grid.Row="2" Background="{DynamicResource FooterBackgroundBrush}"
                 Margin="{DynamicResource FooterPadding}">
           <Grid x:Name="FooterLayout">
           <!-- NO strip-wide bevel here. There was one, and crossing its brushes to make it sunken
