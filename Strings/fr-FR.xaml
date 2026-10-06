@@ -884,4 +884,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Épingler aux emplacements</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Retirer des emplacements</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Guide des raccourcis clavier en ligne</sys:String>
 </ResourceDictionary>

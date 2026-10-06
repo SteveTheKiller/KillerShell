@@ -2055,12 +2055,20 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                    <StackPanel Grid.Row="0" Margin="0,0,0,12">
                         <!-- Hidden on a flat theme - the caption band above carries the title
                              there, and this in-card copy would duplicate it. -->
                         <TextBlock Text="{DynamicResource Str_Help_Shortcuts}" Style="{StaticResource SectionHeader}" FontSize="13" Margin="0" VerticalAlignment="Center"
                                    Visibility="{DynamicResource WordmarkVisibility}"/>
-                    </Grid>
+                        <TextBlock FontSize="11" Margin="0,6,0,0">
+                            <Hyperlink NavigateUri="https://killershell.net/help.html#shortcuts"
+                                       RequestNavigate="Hyperlink_RequestNavigate" Focusable="True"
+                                       Foreground="{DynamicResource PrimaryBrush}"
+                                       ToolTip="https://killershell.net/help.html#shortcuts">
+                                <Run Text="{DynamicResource Str_KS_OnlineHelp}"/>
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
 
                     <!-- LIST / KEYBOARD. Both views are generated from ONE table
                          (ShortcutsOverlay.cs KsAll), so a new binding shows up in both instead

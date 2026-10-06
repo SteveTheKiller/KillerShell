@@ -882,4 +882,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Připnout k místům</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Odebrat z míst</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Online průvodce klávesovými zkratkami</sys:String>
 </ResourceDictionary>

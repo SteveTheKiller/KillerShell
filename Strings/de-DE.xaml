@@ -884,4 +884,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">An Orte anheften</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Aus Orten entfernen</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Online-Anleitung zu Tastenkürzeln</sys:String>
 </ResourceDictionary>

@@ -893,4 +893,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Aggiungi ai luoghi</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Rimuovi dai luoghi</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Guida online alle scorciatoie da tastiera</sys:String>
 </ResourceDictionary>

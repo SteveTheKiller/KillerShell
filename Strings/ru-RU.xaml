@@ -896,4 +896,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Закреплять на местах</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Убрать с мест</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Онлайн-руководство по сочетаниям клавиш</sys:String>
 </ResourceDictionary>
