@@ -884,5 +884,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Yerlere sabitle</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Yerlerden kaldır</sys:String>
-    <sys:String x:Key="Str_KS_OnlineHelp">Çevrimiçi klavye kısayolu kılavuzu</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Tam kılavuz ve çevrimiçi rehber</sys:String>
 </ResourceDictionary>

@@ -880,5 +880,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">場所にピン留め</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">場所から削除</sys:String>
-    <sys:String x:Key="Str_KS_OnlineHelp">オンラインのキーボードショートカットガイド</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">完全ガイド &amp; 使い方 (オンライン)</sys:String>
 </ResourceDictionary>

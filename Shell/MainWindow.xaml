@@ -2051,16 +2051,21 @@
                 <Grid Margin="{DynamicResource ShortcutsContentMargin}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
                         <!-- Hidden on a flat theme - the caption band above carries the title
                              there, and this in-card copy would duplicate it. -->
                         <TextBlock Text="{DynamicResource Str_Help_Shortcuts}" Style="{StaticResource SectionHeader}" FontSize="13" Margin="0" VerticalAlignment="Center"
                                    Visibility="{DynamicResource WordmarkVisibility}"/>
-                        <TextBlock FontSize="11" Margin="0,6,0,0">
+                        <TextBlock Grid.Column="2" FontSize="11" Margin="12,0,0,0" MaxWidth="210"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap">
                             <Hyperlink NavigateUri="https://killershell.net/help.html#shortcuts"
                                        RequestNavigate="Hyperlink_RequestNavigate" Focusable="True"
                                        Foreground="{DynamicResource PrimaryBrush}"
@@ -2068,8 +2073,6 @@
                                 <Run Text="{DynamicResource Str_KS_OnlineHelp}"/>
                             </Hyperlink>
                         </TextBlock>
-                    </StackPanel>
-
                     <!-- LIST / KEYBOARD. Both views are generated from ONE table
                          (ShortcutsOverlay.cs KsAll), so a new binding shows up in both instead
                          of being hand-copied into the card. It really is one table now: the
@@ -2077,7 +2080,7 @@
                          had drifted apart. Each row carries a SCOPE as well as a category, so
                          the list groups by applet and the board can show a keycap's meaning on
                          the tab you are actually on. -->
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,4">
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="12,0" VerticalAlignment="Center">
                         <StackPanel.Resources>
                             <!-- Bare template: a text toggle, no panel chrome. The code-behind
                                  sets Foreground per selection, so nothing here may pin it. -->
@@ -2106,12 +2109,13 @@
                         <Button x:Name="KsViewKeyboardBtn" Content="{DynamicResource Str_Ks_ViewKeyboard}"
                                 Style="{StaticResource KsViewToggle}" Click="KsViewKeyboard_Click"/>
                     </StackPanel>
+                    </Grid>
 
                     <!-- The star row is the viewport. It takes whatever height remains inside the
                          window-bounded card, and this viewer owns every excess row.
                          Both hosts filled in code: BuildShortcutsList (ShortcutsOverlay.cs) and
                          BuildKeyboardView (KeyboardMapOverlay.cs), each once and lazily. -->
-                    <ScrollViewer x:Name="ShortcutScroll" Grid.Row="2" VerticalScrollBarVisibility="Auto"
+                    <ScrollViewer x:Name="ShortcutScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly" Focusable="False">
                     <StackPanel>
                         <StackPanel x:Name="ShortcutListHost"/>
@@ -2119,7 +2123,7 @@
                     </StackPanel>
                     </ScrollViewer>
 
-                    <TextBlock Grid.Row="3" Text="{DynamicResource Str_Ks_Hint}" Foreground="{DynamicResource DimTextBrush}"
+                    <TextBlock Grid.Row="2" Text="{DynamicResource Str_Ks_Hint}" Foreground="{DynamicResource DimTextBrush}"
                                FontSize="10.5" TextWrapping="Wrap" Margin="0,10,0,0"/>
                 </Grid>
                 </Grid>

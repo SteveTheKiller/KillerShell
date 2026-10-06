@@ -930,5 +930,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Закріпити в місцях</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Вилучити з місць</sys:String>
-    <sys:String x:Key="Str_KS_OnlineHelp">Онлайн-посібник із клавіатурних скорочень</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Повний посібник &amp; настанови онлайн</sys:String>
 </ResourceDictionary>

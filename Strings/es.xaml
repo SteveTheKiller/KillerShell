@@ -884,5 +884,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Anclar a lugares</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Quitar de lugares</sys:String>
-    <sys:String x:Key="Str_KS_OnlineHelp">Guía de atajos de teclado en línea</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Guía completa y tutoriales en línea</sys:String>
 </ResourceDictionary>

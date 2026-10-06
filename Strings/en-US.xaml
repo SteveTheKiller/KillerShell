@@ -930,5 +930,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Pin to places</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Remove from places</sys:String>
-    <sys:String x:Key="Str_KS_OnlineHelp">Online shortcut guide</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Full guide &amp; how-to online</sys:String>
 </ResourceDictionary>

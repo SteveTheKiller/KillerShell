@@ -886,5 +886,5 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
 
     <sys:String x:Key="Str_Menu_PinPlace">Ghim vào danh mục</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Xóa khỏi danh mục</sys:String>
-    <sys:String x:Key="Str_KS_OnlineHelp">Hướng dẫn phím tắt trực tuyến</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Hướng dẫn đầy đủ &amp; cách sử dụng trực tuyến</sys:String>
 </ResourceDictionary>

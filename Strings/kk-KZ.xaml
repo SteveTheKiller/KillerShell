@@ -896,5 +896,5 @@
 
     <sys:String x:Key="Str_Menu_PinPlace">Орындарға бекіту</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Орындардан жою</sys:String>
-    <sys:String x:Key="Str_KS_OnlineHelp">Пернетақта тіркесімдерінің онлайн нұсқаулығы</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">Толық нұсқаулық пен онлайн көмек</sys:String>
 </ResourceDictionary>
