@@ -19,7 +19,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Processes, Performance, Storage, Registry Editor, and Event Viewer share a System tools rail button, with administrator actions on right-click; both menus align with the theme and language flyouts.
 - Improved menu and selection contrast, softened material-theme footers and 98SE footer text, matched the 98SE About bevel to the sidebar, and used subtle gray Delirium dividers.
 - Both shortcut views link to the full online guide from an aligned header.
-- The language menu now shows its 19 languages in two columns.
+- The language menu now shows its 19 languages in two columns, with a faint divider that fades at both ends.
 
 ### Fixed
 - Linux terminals report their current folder and use the correct clear and folder-change commands. PowerShell profile actions stay scoped to PowerShell.
