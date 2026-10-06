@@ -4,7 +4,9 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - Unreleased
+## [1.3.0] - 2026-10-06
+
+1.3.0 adds terminal profiles with WSL, file picker pins, a System tools rail flyout, and Ukrainian, Norwegian, and Brazilian Portuguese localization.
 
 ### Added
 - Terminal profiles with a default shell, custom commands, and automatic WSL shortcuts. Browse Linux folders in the sidebar, pin them, and open a terminal there.
