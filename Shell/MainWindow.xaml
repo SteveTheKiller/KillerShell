@@ -268,7 +268,7 @@
                              already say the right thing (FolderTree.cs). On the TreeView itself,
                              not the item template - see the results list for why. -->
                         <TreeView.ContextMenu>
-                            <local:OpaqueContextMenu>
+                            <ContextMenu>
                                 <!-- "Open in new tab", not Str_Tab_New ("new search") - this row
                                      opens the node in a NEW TAB and has done for a long time; the
                                      label was left over from when every tab was a search, and it
@@ -323,7 +323,7 @@
                                 <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}" Click="TreeShellMenu_Click">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
                                 </MenuItem>
-                            </local:OpaqueContextMenu>
+                            </ContextMenu>
                         </TreeView.ContextMenu>
                         <TreeView.ItemContainerStyle>
                             <!-- Inherits the themed template from Controls.xaml and adds the
@@ -503,7 +503,7 @@
                                             </Style>
                                         </Border.Style>
                                         <Border.ContextMenu>
-                                            <local:OpaqueContextMenu>
+                                            <ContextMenu>
                                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}"
                                                           Click="BookmarkTerminal_Click">
                                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
@@ -529,7 +529,7 @@
                                                           Click="BookmarkRemove_Click">
                                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                                                 </MenuItem>
-                                            </local:OpaqueContextMenu>
+                                            </ContextMenu>
                                         </Border.ContextMenu>
                                         <StackPanel Orientation="Horizontal">
                                             <!-- 20 drawn, 16 measured - see the tree's own icon
@@ -654,7 +654,7 @@
                             FontSize="12" Margin="0,0,0,10" Click="TerminalRail_Click"
                             ToolTip="{DynamicResource Str_TT_Terminal}">
                         <Button.ContextMenu>
-                            <local:OpaqueContextMenu Placement="Top">
+                            <ContextMenu Placement="Top">
                                 <MenuItem Header="{DynamicResource Str_Term_Profiles}" SubmenuOpened="LaunchProfiles_Opened">
                                     <MenuItem/>
                                 </MenuItem>
@@ -681,7 +681,7 @@
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE70F;"/></MenuItem.Icon>
                                     <MenuItem/>
                                 </MenuItem>
-                            </local:OpaqueContextMenu>
+                            </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
                     <!-- Open or close the second pane, right-click flips side-by-side / stacked.
@@ -705,34 +705,12 @@
                             FontSize="12" Margin="0,0,0,10" Click="SystemToolsRail_Click"
                             ToolTip="{DynamicResource Str_TT_SystemTools}" ContextMenuOpening="SystemToolsAdmin_Opening">
                         <Button.Resources>
-                            <Style x:Key="SystemToolsFlyoutStyle" TargetType="{x:Type local:OpaqueContextMenu}"
-                                   BasedOn="{StaticResource {x:Type local:OpaqueContextMenu}}">
+                            <Style x:Key="SystemToolsFlyoutStyle" TargetType="{x:Type ContextMenu}"
+                                   BasedOn="{StaticResource {x:Type ContextMenu}}">
                                 <Setter Property="HorizontalOffset" Value="22"/>
                                 <Setter Property="VerticalOffset" Value="-26"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type local:OpaqueContextMenu}">
-                                            <Grid>
-                                                <Border Style="{StaticResource FlyoutCard}" Margin="0" Effect="{x:Null}">
-                                                    <Grid>
-                                                        <ItemsPresenter/>
-                                                        <Border Style="{StaticResource FlyoutGrain}"/>
-                                                    </Grid>
-                                                </Border>
-                                                <Border IsHitTestVisible="False" Panel.ZIndex="4"
-                                                        BorderBrush="{DynamicResource MenuBevelLightBrush}" BorderThickness="{DynamicResource MenuBevelLightThickness}"/>
-                                                <Border IsHitTestVisible="False" Panel.ZIndex="4"
-                                                        BorderBrush="{DynamicResource MenuBevelDarkBrush}" BorderThickness="{DynamicResource MenuBevelDarkThickness}"/>
-                                                <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
-                                                        BorderBrush="{DynamicResource MenuBevel2LightBrush}" BorderThickness="{DynamicResource MenuBevel2LightThickness}"/>
-                                                <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
-                                                        BorderBrush="{DynamicResource MenuBevel2DarkBrush}" BorderThickness="{DynamicResource MenuBevel2DarkThickness}"/>
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
                             </Style>
-                            <local:OpaqueContextMenu x:Key="SystemToolsMenu" Style="{StaticResource SystemToolsFlyoutStyle}">
+                            <ContextMenu x:Key="SystemToolsMenu" Style="{StaticResource SystemToolsFlyoutStyle}">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesOpen}" Click="RailProcessesOpen_Click" InputGestureText="F9">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8FD;"/></MenuItem.Icon>
                                 </MenuItem>
@@ -749,10 +727,10 @@
                                 <MenuItem Header="{DynamicResource Str_TabTitle_EventViewer}" Click="EventViewerRail_Click" InputGestureText="Ctrl+F12">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
-                            </local:OpaqueContextMenu>
+                            </ContextMenu>
                         </Button.Resources>
                         <Button.ContextMenu>
-                            <local:OpaqueContextMenu Style="{StaticResource SystemToolsFlyoutStyle}">
+                            <ContextMenu Style="{StaticResource SystemToolsFlyoutStyle}">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesAdmin}" Click="RailProcessesAdmin_Click" InputGestureText="Ctrl+F9">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
@@ -765,7 +743,7 @@
                                 <MenuItem Header="{DynamicResource Str_TabTitle_EventViewer}" Click="EventViewerRail_Click" InputGestureText="Ctrl+F12">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
-                            </local:OpaqueContextMenu>
+                            </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
                     <!-- "?" (a literal, in Consolas): the shortcuts card, F1. Sits directly above

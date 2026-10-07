@@ -821,59 +821,80 @@
         </Style.Triggers>
     </Style>
 
-    <!-- KillerShell uses OpaqueContextMenu for every menu. Standard WPF ContextMenu hard-codes
-         AllowsTransparency=true on its private host popup, which prevents ClearType even when
-         the visible menu background is solid. The opaque host lets these labels use the same
-         crisp ClearType path as the rest of the window. -->
     <Style TargetType="ContextMenu">
-        <Setter Property="kui:MenuAnimation.OpenImmediately" Value="True"/>
-        <!-- Display plus ClearType is deliberate here. OpaqueContextMenu guarantees the solid
-             surface that subpixel rendering requires. -->
-        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
-        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
-        <!-- The menu can be positioned at a fractional offset, which puts every glyph in it at a
-             subpixel origin however well the text options are set. -->
-        <Setter Property="UseLayoutRounding" Value="True"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="HasDropShadow" Value="False"/>
-        <Setter Property="HorizontalOffset" Value="0"/>
-        <Setter Property="VerticalOffset" Value="0"/>
         <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource MenuFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource MenuFontSize}"/>
+        <Setter Property="Padding" Value="0,4"/>
+        <Setter Property="HasDropShadow" Value="False"/>
+        <!-- Compensates the shadow halo so a menu lands where it did when that halo was 5 (this
+             template) or 6 (FlyoutCard). Those two differ by a pixel, so the rail flyouts sit
+             1px off their old spot; the menus are exact. -->
+        <Setter Property="HorizontalOffset" Value="-17"/>
+        <Setter Property="VerticalOffset" Value="-13"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContextMenu">
-                    <!-- Paint the menu surface immediately. -->
-                    <Grid x:Name="MenuRoot" Opacity="1" Background="{TemplateBinding Background}"
-                          RenderOptions.ClearTypeHint="Enabled">
-                        <!-- Raised menu bevel, two pairs. Nothing on any theme but 98SE, whose
-                             menus are a hard raised box rather than a rounded shadowed card. -->
-                        <Border IsHitTestVisible="False" Panel.ZIndex="4"
-                                BorderBrush="{DynamicResource MenuBevelLightBrush}" BorderThickness="{DynamicResource MenuBevelLightThickness}"/>
-                        <Border IsHitTestVisible="False" Panel.ZIndex="4"
-                                BorderBrush="{DynamicResource MenuBevelDarkBrush}"  BorderThickness="{DynamicResource MenuBevelDarkThickness}"/>
-                        <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
-                                BorderBrush="{DynamicResource MenuBevel2LightBrush}" BorderThickness="{DynamicResource MenuBevel2LightThickness}"/>
-                        <Border IsHitTestVisible="False" Panel.ZIndex="4" Margin="{DynamicResource MenuBevelInnerMargin}"
-                                BorderBrush="{DynamicResource MenuBevel2DarkBrush}"  BorderThickness="{DynamicResource MenuBevel2DarkThickness}"/>
-                        <Border CornerRadius="0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}" Padding="4" SnapsToDevicePixels="True">
+                    <!-- Margin leaves room for the drop shadow to render inside the popup.
+                         FADE IN: a ContextMenu has no PopupAnimation property - it is not a
+                         Popup, it is hosted inside one WPF owns - so the fade is driven from
+                         the template with an EventTrigger on Loaded. The SubPopup below already
+                         sets PopupAnimation="Fade", so a menu appeared instantly while its own
+                         children faded in, which is backwards. 150ms ease-out. -->
+                    <!-- Radius 6 = the family flyout card (FlyoutCard above); the grain overlay
+                         takes 5, the card's 6 minus its 1px border, so the texture stops exactly
+                         inside the frame. -->
+                    <!-- Halo sized to the 22/4 shadow below, the family flyout value: WPF expands
+                         render bounds by the FULL BlurRadius, so 22 each way, less the 4px lift
+                         off the top and plus it on the bottom. The offsets on the style above
+                         hold the card in place against the wider halo. -->
+                    <Grid x:Name="MenuRoot" Opacity="0" Margin="22,18,22,26">
+                        <!-- Shadow-only layer behind, so the menu text stays crisp. -->
+                        <Border Background="{TemplateBinding Background}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="{DynamicResource FlyoutShadowOpacity}"/>
+                            </Border.Effect>
+                        </Border>
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{DynamicResource PanelCornerRadius}">
                             <Grid>
-                                <Border IsHitTestVisible="False" CornerRadius="0" Margin="-4"
-                                        Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                <!-- Film grain on the menu surface, matching the settings panel. -->
+                                <!-- IsSharedSizeScope so every MenuItem's Header/Gesture columns in THIS
+                                     popup align as real columns (see the MenuItem template's SharedSizeGroup
+                                     names) instead of each row sizing its shortcut text independently. -->
+                                <StackPanel IsItemsHost="True" Margin="{TemplateBinding Padding}" KeyboardNavigation.DirectionalNavigation="Cycle"
+                                            Grid.IsSharedSizeScope="True"/>
+                                <Border IsHitTestVisible="False" Opacity="{DynamicResource GrainOpacity}"
+                                        CornerRadius="{DynamicResource PanelCornerRadius}" Background="{DynamicResource GrainTileBrush}"/>
                             </Grid>
                         </Border>
+                        <Border IsHitTestVisible="False" Margin="{DynamicResource MenuBevelInnerMargin}" BorderBrush="{DynamicResource MenuBevelLightBrush}" BorderThickness="{DynamicResource MenuBevelLightThickness}"/>
+                        <Border IsHitTestVisible="False" Margin="{DynamicResource MenuBevelInnerMargin}" BorderBrush="{DynamicResource MenuBevelDarkBrush}" BorderThickness="{DynamicResource MenuBevelDarkThickness}"/>
+                        <Border IsHitTestVisible="False" BorderBrush="{DynamicResource MenuBevel2LightBrush}" BorderThickness="{DynamicResource MenuBevel2LightThickness}"/>
+                        <Border IsHitTestVisible="False" BorderBrush="{DynamicResource MenuBevel2DarkBrush}" BorderThickness="{DynamicResource MenuBevel2DarkThickness}"/>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <EventTrigger RoutedEvent="ContextMenu.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="MenuRoot" Storyboard.TargetProperty="Opacity"
+                                                     From="0" To="1" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type kui:OpaqueContextMenu}"
-           BasedOn="{StaticResource {x:Type ContextMenu}}"/>
 
     <!-- Menu icon glyph: Segoe MDL2 at 12, left-aligned in the 16px gutter. The 2026-08-09
          selection/hover color language: icons rest on the plain text color and go accent with
@@ -906,87 +927,89 @@
              affordance. Both are here now, with the same collapse-when-empty trigger.
            - Submenu popup mirrors the ContextMenu surface, with the same background and grain. -->
     <Style TargetType="MenuItem">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <!-- Restated on the item because submenu content lives in its own opaque popup. -->
-        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
-        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
         <Setter Property="Background" Value="Transparent"/>
-        <!-- TextBrush, not MenuTextBrush: menu items are body text, not secondary labels.
-             Family standard, see KillerUI/README.md surface rules. -->
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-        <Setter Property="FontFamily" Value="Segoe UI"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Padding" Value="8,6,10,6"/>
+        <Setter Property="Padding" Value="{DynamicResource MenuItemPadding}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource MenuFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource MenuFontSize}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="MenuItem">
                     <Border x:Name="MenuBd" Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding Padding}" CornerRadius="{DynamicResource SmallCornerRadius}" SnapsToDevicePixels="True">
+                            Padding="{TemplateBinding Padding}" CornerRadius="{DynamicResource ControlCornerRadius}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="16"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <!-- Header and Gesture are Auto + SharedSizeGroup, not Header="*", so the
+                                     shortcut text starts at the SAME x-offset in every sibling row (a real
+                                     column) instead of hugging the right edge of whichever row is widest. -->
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuHeaderCol"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuGestureCol"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <!-- Icon slot: MenuItem.Icon renders in the same 16px gutter the
-                                 check glyph uses. -->
+                            <!-- Icon slot: MenuItem.Icon renders in the same 16px gutter the check
+                                 glyph uses (MakeMenuItem's glyph parameter fills it with MDL2 icons). -->
                             <ContentPresenter x:Name="IconPresenter" Grid.Column="0" ContentSource="Icon"
                                               VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <!-- check glyph for checkable items (e.g. OCR language multi-select) -->
                             <TextBlock x:Name="Check" Grid.Column="0" Text="&#xE73E;"
                                        FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        Foreground="{DynamicResource PrimaryBrush}"
                                        VerticalAlignment="Center" HorizontalAlignment="Left"
                                        Visibility="Collapsed"/>
-                            <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                            <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center"/>
                             <TextBlock x:Name="Gesture" Grid.Column="2" Text="{TemplateBinding InputGestureText}"
                                        Foreground="{DynamicResource MutedTextBrush}" FontSize="11"
-                                       VerticalAlignment="Center" Margin="24,0,0,0"/>
+                                       VerticalAlignment="Center" Margin="14,0,0,0"/>
+                            <!-- submenu arrow for items that have children -->
                             <TextBlock x:Name="SubArrow" Grid.Column="3" Text="&#xE76C;"
                                        FontFamily="Segoe MDL2 Assets" FontSize="8"
                                        Foreground="{DynamicResource MutedTextBrush}"
                                        VerticalAlignment="Center" Margin="12,0,0,0"
                                        Visibility="Collapsed"/>
-                            <kui:OpaquePopup x:Name="SubPopup" Placement="Right"
-                                             HorizontalOffset="0" VerticalOffset="0" Focusable="False"
-                                             IsOpen="{TemplateBinding IsSubmenuOpen}">
-                                <Grid Background="{DynamicResource MenuBackgroundBrush}"
-                                      RenderOptions.ClearTypeHint="Enabled">
+                            <Popup x:Name="SubPopup" AllowsTransparency="True" Placement="Right"
+                                   HorizontalOffset="-21" VerticalOffset="-13" Focusable="False" PopupAnimation="Fade"
+                                   IsOpen="{TemplateBinding IsSubmenuOpen}">
+                                <!-- Mirrors the ContextMenu template surface so submenus match the parent menu.
+                                     Halo sized to the 22/4 shadow; the offsets above carry the
+                                     -17,-13 compensation (this halo grew from 5) on top of the -4 gap. -->
+                                <Grid Margin="22,18,22,26">
+                                    <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource FlyoutCornerRadius}" IsHitTestVisible="False">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270" Opacity="{DynamicResource FlyoutShadowOpacity}"/>
+                                        </Border.Effect>
+                                    </Border>
                                     <Border Background="{DynamicResource MenuBackgroundBrush}"
                                             BorderBrush="{DynamicResource MenuBorderBrush}"
-                                            BorderThickness="1" CornerRadius="0" Padding="4">
+                                            BorderThickness="1" CornerRadius="{DynamicResource FlyoutCornerRadius}">
                                         <Grid>
+                                            <!-- Own scope, so a submenu's columns align among its own
+                                                 siblings rather than the unrelated parent popup's rows. -->
+                                            <ItemsPresenter Margin="4" Grid.IsSharedSizeScope="True"/>
                                             <Border IsHitTestVisible="False" Opacity="{DynamicResource GrainOpacity}"
-                                                    CornerRadius="0" Margin="-4" Background="{DynamicResource GrainTileBrush}"/>
-                                            <ItemsPresenter/>
+                                                    CornerRadius="{DynamicResource FlyoutCornerRadius}" Background="{DynamicResource GrainTileBrush}"/>
                                         </Grid>
                                     </Border>
+                                    <Border IsHitTestVisible="False" Margin="{DynamicResource MenuBevelInnerMargin}" BorderBrush="{DynamicResource MenuBevelLightBrush}" BorderThickness="{DynamicResource MenuBevelLightThickness}"/>
+                                    <Border IsHitTestVisible="False" Margin="{DynamicResource MenuBevelInnerMargin}" BorderBrush="{DynamicResource MenuBevelDarkBrush}" BorderThickness="{DynamicResource MenuBevelDarkThickness}"/>
+                                    <Border IsHitTestVisible="False" BorderBrush="{DynamicResource MenuBevel2LightBrush}" BorderThickness="{DynamicResource MenuBevel2LightThickness}"/>
+                                    <Border IsHitTestVisible="False" BorderBrush="{DynamicResource MenuBevel2DarkBrush}" BorderThickness="{DynamicResource MenuBevel2DarkThickness}"/>
                                 </Grid>
-                            </kui:OpaquePopup>
+                            </Popup>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <!-- HOVER, not selection: accent text on the neutral MenuHoverBrush wash.
-                             The 2026-08-09 selection/hover color language - SELECTED is white on
-                             the accent-tinted block, HOVER is accent on the neutral wash - and a
-                             hovered menu row is a hover, not a selection. The old SelectionBg
-                             fill was the "accent on accent" surface: it put the accent check
-                             glyph and accent-adjacent icons on an accent-tinted fill.
-                             ComboHighlightTextBrush, NOT PrimaryBrush, for the same reason the
-                             ComboBoxItem trigger above uses it: 98SE's MenuHoverBrush is solid
-                             navy and its PrimaryBrush IS that navy - accent-on-wash would be
-                             invisible there, so the token goes white on 98SE. Check, gesture and
-                             chevron ride the same brush so nothing muted is left to fight the
-                             navy. -->
+                        <!-- Hover uses the menu wash and its contrast text brush. -->
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="MenuBd" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
                             <Setter TargetName="Check" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
                             <Setter TargetName="Gesture" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
                             <Setter TargetName="SubArrow" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+                            <Setter TargetName="IconPresenter" Property="TextElement.Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
                         </Trigger>
-                        <!-- Collapse the shortcut column when there is no gesture, so items
-                             without one do not reserve its 24px left margin as phantom padding. -->
+                        <!-- Collapse the shortcut column when there is no gesture, so items without a
+                             shortcut do not reserve its 24px left margin as phantom right padding. -->
                         <Trigger Property="InputGestureText" Value="">
                             <Setter TargetName="Gesture" Property="Visibility" Value="Collapsed"/>
                         </Trigger>

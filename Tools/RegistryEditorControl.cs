@@ -1311,7 +1311,7 @@ namespace KillerShell.Tools
             if (node == null) { e.Handled = true; return; }
             if (!node.IsSelected) node.IsSelected = true;
 
-            var menu = new OpaqueContextMenu { PlacementTarget = _tree };
+            var menu = new ContextMenu { PlacementTarget = _tree };
 
             var newMenu = new MenuItem();
             newMenu.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Menu_RegNew");
@@ -1354,7 +1354,7 @@ namespace KillerShell.Tools
         {
             if (_selectedNode == null || _grid.SelectedItem is not RegistryValueRow row) { e.Handled = true; return; }
 
-            var menu = new OpaqueContextMenu { PlacementTarget = _grid };
+            var menu = new ContextMenu { PlacementTarget = _grid };
             var node = _selectedNode;
 
             AddMenuItem(menu, "Str_Menu_RegModify", 0xE70F, (_, _) => ModifyValueRow(node, row), gesture: "Enter");

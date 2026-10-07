@@ -32,7 +32,7 @@ namespace KillerShell.Editing
 
         private void BuildMenu()
         {
-            var m = new OpaqueContextMenu();
+            var m = new ContextMenu();
 
             // Wrapped rather than passed as method groups: both return a bool saying whether
             // there was anything to undo, and the row already knows there was - the menu

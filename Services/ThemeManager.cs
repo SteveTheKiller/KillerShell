@@ -918,6 +918,9 @@ namespace KillerShell.Services
                 // template's 12px blur at FlyoutShadowOpacity, and the flyout cards' shared
                 // CardShadowEffect.
                 combined["MenuShadowOpacity"] = flat ? 1.0 : combined["FlyoutShadowOpacity"];
+                if (!combined.Contains("MenuFontFamily")) combined["MenuFontFamily"] = new FontFamily(flat ? "Microsoft Sans Serif" : "Segoe UI");
+                if (!combined.Contains("MenuFontSize")) combined["MenuFontSize"] = flat ? 11.0 : 12.0;
+                if (!combined.Contains("MenuItemPadding")) combined["MenuItemPadding"] = new Thickness(8, 6, 10, 6);
                 if (flat)
                 {
                     // BlurRadius 5, not 0: fully hard-edged read as a black slab with too hard

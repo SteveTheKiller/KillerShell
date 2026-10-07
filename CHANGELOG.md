@@ -14,7 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Ubuntu browsing no longer loops through "Opening..." when folder monitoring is unsupported. Folder loading shows a busy indicator, background refreshes preserve selection, and unreadable folders report an error.
 - Pinned places resize immediately when folders are added or removed.
 - Light wordmarks match the family shadow settings. Only the yellow accent keeps its shadow.
-- Menus prepare their native background before opening and retain their existing closing fades.
+- Context menus match KillerPDF's sharp text, shadows, and opening and closing fades.
 
 ## [1.3.1] - 2026-10-07
 

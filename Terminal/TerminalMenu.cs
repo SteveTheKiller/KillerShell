@@ -74,9 +74,9 @@ namespace KillerShell.Terminal
         // made KillerPDF's release.ps1 PS7-only.
         private static string Glyph(int cp) => ((char)cp).ToString();
 
-        private OpaqueContextMenu BuildMenu()
+        private ContextMenu BuildMenu()
         {
-            var m = new OpaqueContextMenu();
+            var m = new ContextMenu();
 
             _copyItem = Row(m, "Str_Term_Copy", Glyph(0xE8C8), "Ctrl+Shift+C", () =>
             {

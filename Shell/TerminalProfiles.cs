@@ -40,7 +40,7 @@ namespace KillerShell.Shell
         internal void TermProfiles_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not FrameworkElement button) return;
-            var menu = new OpaqueContextMenu { PlacementTarget = button, Placement = PlacementMode.Bottom };
+            var menu = new ContextMenu { PlacementTarget = button, Placement = PlacementMode.Bottom };
             var holder = new MenuItem();
             BuildTerminalProfiles(holder, _active.LaunchProfile?.BrowsePath(_active.CurrentFolder) ?? _active.CurrentFolder);
             while (holder.Items.Count > 0)
