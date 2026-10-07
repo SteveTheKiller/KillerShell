@@ -15,4 +15,7 @@
     <SolidColorBrush x:Key="ScrollThumbBrush"    Color="#88FF2929" po:Freeze="True"/>
     <SolidColorBrush x:Key="TabEdgeBrush"        Color="#66FF2929" po:Freeze="True"/>
     <SolidColorBrush x:Key="ComboHighlightTextBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="AccentLogo"        Color="#FF2929" po:Freeze="True"/>
+    <SolidColorBrush x:Key="SelectionAccent" Color="#FF2929" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RadioAccent"     Color="#FF2929" po:Freeze="True"/>
 </ResourceDictionary>

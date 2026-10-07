@@ -16,4 +16,7 @@
     <SolidColorBrush x:Key="TabEdgeBrush"        Color="#66B829FF" po:Freeze="True"/>
     <SolidColorBrush x:Key="ComboHighlightTextBrush" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="GridSelectedTextBrush" Color="#ffffff" po:Freeze="True"/>
+    <SolidColorBrush x:Key="AccentLogo"        Color="#B829FF" po:Freeze="True"/>
+    <SolidColorBrush x:Key="SelectionAccent" Color="#B829FF" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RadioAccent"     Color="#B829FF" po:Freeze="True"/>
 </ResourceDictionary>

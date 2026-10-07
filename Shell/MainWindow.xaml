@@ -131,7 +131,7 @@
                       Visibility="{DynamicResource WordmarkVisibility}"
                       Cursor="Hand" ToolTip="{DynamicResource Str_TT_AppSize}" Background="Transparent"
                       MouseWheel="LogoBar_MouseWheel" MouseLeftButtonDown="LogoBar_MouseLeftButtonDown">
-                    <!-- Sizes come from the theme: 17/22 by default (the family standard), smaller
+                    <!-- Sizes come from the shared theme resources, with smaller text
                          on a flat theme whose caption bar is far shorter. WordmarkEmbossOpacity is
                          the blurred dark copy behind the crisp text, 0 where an emboss is wrong. -->
                     <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"

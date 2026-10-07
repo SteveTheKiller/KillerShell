@@ -121,7 +121,7 @@
 
     <CornerRadius x:Key="SmallCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">3</CornerRadius>
 
-    <CornerRadius x:Key="FlyoutCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">0,0,4,4</CornerRadius>
+    <CornerRadius x:Key="FlyoutCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">4</CornerRadius>
 
     <CornerRadius x:Key="AccentSwatchCornerRadius" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">9</CornerRadius>
 
@@ -132,4 +132,18 @@
     <SolidColorBrush x:Key="TitleBarBrush" Color="#3b3642" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
     <SolidColorBrush x:Key="GridSelectedTextBrush" Color="#ffffff" po:Freeze="True"/>
+    <SolidColorBrush x:Key="AccentLogo" Color="#ff6f91" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <sys:Double x:Key="WordmarkShadowOpacity" xmlns:sys="clr-namespace:System;assembly=mscorlib">0.45</sys:Double>
+    <sys:Double x:Key="FlyoutShadowOpacity" xmlns:sys="clr-namespace:System;assembly=mscorlib">0.55</sys:Double>
+    <SolidColorBrush x:Key="DialogTitleBarBrush" Color="#FF3B3642" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RadioAccent" Color="#FFFF6F91" po:Freeze="True"/>
+    <sys:Double x:Key="TitleWordmarkSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">16.5</sys:Double>
+    <sys:Double x:Key="BarShadowOpacity" xmlns:sys="clr-namespace:System;assembly=mscorlib">0.38</sys:Double>
+    <sys:Double x:Key="TitleWordmarkBoldSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">21.45</sys:Double>
+    <sys:Double x:Key="TitleBarHeight" xmlns:sys="clr-namespace:System;assembly=mscorlib">36</sys:Double>
+    <SolidColorBrush x:Key="SelectionAccent" Color="#FFFF6F91" po:Freeze="True"/>
+    <sys:Double x:Key="PaneShadowOpacity" xmlns:sys="clr-namespace:System;assembly=mscorlib">0.6</sys:Double>
+    <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#FFA75167" po:Freeze="True"/>
+    <SolidColorBrush x:Key="FooterBackgroundBrush" Color="#FF3B3642" po:Freeze="True"/>
+    <SolidColorBrush x:Key="MenuSeparatorBrush" Color="#FF756B79" po:Freeze="True"/>
 </ResourceDictionary>

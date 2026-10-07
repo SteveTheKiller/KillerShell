@@ -197,7 +197,7 @@
 
     <SolidColorBrush x:Key="DimTextBrush" Color="#606060" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
-    <SolidColorBrush x:Key="RowHoverBrush" Color="#dfdfdf" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="RowHoverBrush" Color="#c0c0c0" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
     <SolidColorBrush x:Key="SelectionBg" Color="#004f00" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
@@ -585,7 +585,7 @@
     <SolidColorBrush x:Key="CaptionGlyphBrush" Color="#000000" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
     <SolidColorBrush x:Key="ElevatedTagBrush" Color="#ffffff" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
-    <sys:Double x:Key="TitleBarHeight" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">18</sys:Double>
+    <sys:Double x:Key="TitleBarHeight" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">22</sys:Double>
 
     <sys:Double x:Key="CaptionButtonWidth" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
 
@@ -641,4 +641,11 @@
 
     <SolidColorBrush x:Key="SortButtonBrush" Color="#c0c0c0" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
+    <LinearGradientBrush x:Key="DialogTitleBarBrush" StartPoint="0,0" EndPoint="1,0" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"><GradientStop Color="#004000" Offset="0"/><GradientStop Color="#3a7d44" Offset="1"/></LinearGradientBrush>
+    <sys:Double x:Key="WordmarkShadowOpacity" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">0</sys:Double>
+    <SolidColorBrush x:Key="FooterBackgroundBrush" Color="#FFC0C0C0" po:Freeze="True"/>
+    <SolidColorBrush x:Key="MenuSeparatorBrush" Color="#FF808080" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RadioAccent" Color="#FF004F00" po:Freeze="True"/>
+    <SolidColorBrush x:Key="SelectionAccent" Color="#FF004F00" po:Freeze="True"/>
+    <SolidColorBrush x:Key="AccentLogo" Color="#FF004F00" po:Freeze="True"/>
 </ResourceDictionary>
