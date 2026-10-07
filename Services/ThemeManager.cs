@@ -246,6 +246,9 @@ namespace KillerShell.Services
                 }
 
             Mirror("FooterBackgroundBrush", "BackgroundBrush");
+            // The wordmark's bold run. Mirrors the accent, so a theme only states it when its
+            // text accent cannot carry the brand color (Light/Yellow: yellow text is unreadable).
+            Mirror("AccentLogo", "PrimaryBrush");
             Mirror("MenuSeparatorBrush", "MenuBorderBrush");
 
             // The keyboard map's key caps. 98SE names its own, white rather than button-face gray.

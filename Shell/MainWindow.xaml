@@ -140,7 +140,7 @@
                         <Run Text="Killer" Foreground="#D8000000"/><Run Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" FontWeight="Bold" Foreground="#D8000000"/>
                     </TextBlock>
                     <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}">
-                        <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}"/>
+                        <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" FontWeight="Bold" Foreground="{DynamicResource AccentLogo}"/>
                     </TextBlock>
                 </Grid>
 
@@ -1626,7 +1626,7 @@
                                              everywhere but 98SE. -->
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" IsHitTestVisible="False"
                                                    Opacity="{DynamicResource AboutEmbossOpacity}"><TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform><Run Text="Killer" FontSize="22" Foreground="#FFFFFF"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#FFFFFF"/></TextBlock>
-                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="22" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}"/></TextBlock>
+                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="22" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
                                     </Grid>
                                     <!-- Tagline is composed here, not in the .xaml string files: GPLv3 and
                                          "Killer Tools" are proper nouns and stay out of the translations
