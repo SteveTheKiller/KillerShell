@@ -306,7 +306,7 @@ namespace KillerShell.Shell
         // family reference for the Win98 swatch row.
         private static readonly (Accent Accent, string Hex)[] SE98StripColors =
             [(Accent.Blue, "#000080"), (Accent.Teal, "#008080"), (Accent.Green, "#006000"),
-             (Accent.Orange, "#A05000"), (Accent.Yellow, "#EAD900"), (Accent.Red, "#800040"), (Accent.Purple, "#5A376E"), (Accent.Magenta, "#750052")];
+             (Accent.Orange, "#A05000"), (Accent.Yellow, "#EAD900"), (Accent.Red, "#800000"), (Accent.Purple, "#5A376E"), (Accent.Magenta, "#750052")];
 
         private static (Accent Accent, string Hex)[] StripColorsFor(Theme family) => family switch
         {
