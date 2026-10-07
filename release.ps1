@@ -400,9 +400,10 @@ function Test-CountClaim {
         # whole release (2026-08-10). The reverse form allows a little punctuation between the two,
         # since the list uses a dash and the CJK locales use a full-width colon.
         $num = '([0-9]+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen)'
+        $numAny = $num.Replace('(', '(?:')
         $patterns = @(
-            "(?i)\b$num\s+(?:killer\s+)?$Noun\b",           # six themes
-            "(?i)\b$Noun\b\s*(?:</b>)?\s*[-:,：]\s*$num\b"   # Themes - six
+            "(?i)(?<!\b(?:on|across|of|in)\s+)\b$num\s+(?:killer\s+)?$Noun\b",           # six themes
+            "(?i)(?<!\b$numAny\s+)\b$Noun\b\s*(?:</b>)?\s*[-:,：]\s*$num\b"   # Themes - six
         )
         foreach ($pat in $patterns) {
             foreach ($m in [regex]::Matches($text, $pat)) {
