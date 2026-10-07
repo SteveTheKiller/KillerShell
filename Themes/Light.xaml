@@ -5,6 +5,8 @@
 
     <sys:Double x:Key="GrainOpacity">0.34</sys:Double>
     <sys:Double x:Key="IconShadowOpacity">0.0</sys:Double>
+    <!-- The emboss sits behind "Shell" alone in light mode, at the dark themes' strength. -->
+    <sys:Double x:Key="WordmarkAccentShadowOpacity">0.9</sys:Double>
 
     <!-- No text-stroke on Light: the Effect rasterizes ClearType and blurs the label,
          and dark text on light surfaces needs no legibility stroke anyway. -->
