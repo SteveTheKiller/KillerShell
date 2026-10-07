@@ -1634,6 +1634,7 @@
                                              everywhere but 98SE. -->
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" IsHitTestVisible="False"
                                                    Opacity="{DynamicResource AboutEmbossOpacity}"><TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform><Run Text="Killer" FontSize="22" Foreground="#FFFFFF"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#FFFFFF"/></TextBlock>
+                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,2,0,0" IsHitTestVisible="False" Opacity="{DynamicResource WordmarkAccentShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect><Run Text="Killer" FontSize="22" Foreground="Transparent"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="#D8000000"/></TextBlock>
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="22" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="28.6" FontWeight="Bold" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
                                     </Grid>
                                     <!-- Tagline is composed here, not in the .xaml string files: GPLv3 and

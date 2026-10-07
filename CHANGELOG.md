@@ -14,8 +14,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - The standalone CLI builds correctly for .NET Framework 4.8.
 - Selected rows in the Registry Editor, Processes and Event Viewer are readable in Light, Ectoplasm and the other themes where the text matched the highlight.
-- Shared theme colors, dropdown highlights, footers, title styling and shadows match the family palette, including cream Blood, Greed and Cyanotic wordmarks.
-- Light wordmark accents have a shadow for readability, and Light/Yellow uses true yellow with neutral dark text instead of olive brown.
+- Shared theme colors, dropdown highlights, footers, title styling and shadows match the family palette, including cream Blood, Greed and Cyanotic wordmarks. Rail flyouts sit 8 pixels from the rail and bottom content edges.
+- Light/Yellow uses true yellow with neutral dark text, and only the yellow wordmark accent has a shadow.
 - 98SE Red is a true maroon again, so it no longer looks like Magenta.
 - Folder tabs show their icon in demo mode.
 - The Close tooltip no longer covers the file toolbar.

@@ -57,28 +57,25 @@ namespace KillerShell.Shell
         {
             menu.PlacementTarget = _pane;
             menu.Placement = PlacementMode.Custom;
+            menu.HorizontalOffset = 0;
+            menu.VerticalOffset = 0;
             menu.CustomPopupPlacementCallback =
                 (popupSize, targetSize, __) => BottomLeftOfPane(popupSize, targetSize);
         }
 
         /// <summary>
-        /// Coordinates are relative to the placement target's top-left - the pane's top-left. So
-        /// x = 0 is the pane's left edge (clear of the rail) and y = pane height - flyout height
-        /// puts the flyout's bottom on the pane's bottom (clear of the footer).
+        /// Coordinates are relative to the pane. Compensate the card's shadow margin so its
+        /// visible left and bottom edges stay eight pixels inside the pane.
         /// </summary>
         private static CustomPopupPlacement[] BottomLeftOfPane(Size popupSize, Size targetSize)
         {
-            // Use the popup's complete bounds, including its transparent shadow room. The shared
-            // ContextMenu offset and FlyoutCard margin intentionally leave the visible card above
-            // the pane's bottom edge and beside the rail buttons. Adding their 39px difference
-            // here pushed both rail menus down against the footer in every theme.
-            double y = targetSize.Height - popupSize.Height;
-
-            // A flyout taller than the pane would otherwise start above it and run over the
-            // toolbar; pin it to the pane's top instead and let it use the height it has.
+            var halo = _pane?.TryFindResource("FlyoutCard") is Style style
+                ? new Border { Style = style }.Margin : new Thickness(22, 18, 22, 26);
+            const double inset = 8;
+            double x = inset - halo.Left;
+            double y = targetSize.Height - popupSize.Height + halo.Bottom - inset;
             if (y < 0) y = 0;
-
-            return [new CustomPopupPlacement(new Point(0, y), PopupPrimaryAxis.None)];
+            return new[] { new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None) };
         }
     }
 }
