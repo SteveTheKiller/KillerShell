@@ -113,9 +113,10 @@ namespace KillerShell.Terminal
         internal string LaunchCommand(string folder)
         {
             if (Kind != TerminalShellKind.Wsl) return CommandLine;
-            // Bash loads the user's normal startup file and keeps its PS1. Only cwd reporting is added.
-            const string rc = "if [ -f ~/.bashrc ]; then . ~/.bashrc; fi\n"
-                + "__killershell_cwd() { printf '\\033]9;9;%s\\007' \"$PWD\"; }\n"
+            // Load the user's startup file before the editable KillerShell prompt.
+            string rc = "if [ -f ~/.bashrc ]; then . ~/.bashrc; fi\n"
+                + MainWindow.BashPromptSetup(Distribution!)
+                + "__killershell_cwd() { local status=$?; printf '\\033]9;9;%s\\007' \"$PWD\"; return \"$status\"; }\n"
                 + "if [[ $(declare -p PROMPT_COMMAND 2>/dev/null) == 'declare -a'* ]]; then PROMPT_COMMAND+=(__killershell_cwd); "
                 + "else PROMPT_COMMAND=\"${PROMPT_COMMAND:+$PROMPT_COMMAND; }__killershell_cwd\"; fi\n";
             string encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(rc));

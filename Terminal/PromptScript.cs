@@ -15,9 +15,7 @@ using System.Text;
 // newer KillerShell drops its version beside it as KillerPrompt.default.ps1, so an upgrade can
 // be diffed and taken deliberately instead of arriving as a silent stomp on a customization.
 //
-// Deliberately PowerShell only. cmd's prompt is a PROMPT environment string with no way to run
-// code per line, so it cannot show a branch, an exit code or a duration - a cmd prompt would be
-// a different, much poorer feature wearing the same name.
+// Bash uses the same ownership model, with a BOM-less script sourced after ~/.bashrc.
 namespace KillerShell.Shell
 {
     public partial class MainWindow
@@ -27,8 +25,12 @@ namespace KillerShell.Shell
         /// <summary>The user's copy, the one the terminal menu opens for editing.</summary>
         internal static string PromptScriptPath => Path.Combine(PromptDir, "KillerPrompt.ps1");
 
+        internal static string PromptPath(Terminal.TerminalShellKind kind) =>
+            kind == Terminal.TerminalShellKind.Wsl ? Path.Combine(PromptDir, "KillerPrompt.bash") : PromptScriptPath;
+
         /// <summary>The shipped copy, refreshed on every launch so it always matches the exe.</summary>
-        private static string PromptDefaultPath => Path.Combine(PromptDir, "KillerPrompt.default.ps1");
+        private static string PromptDefaultPath(Terminal.TerminalShellKind kind) => Path.Combine(PromptDir,
+            kind == Terminal.TerminalShellKind.Wsl ? "KillerPrompt.default.bash" : "KillerPrompt.default.ps1");
 
         private static string PromptDir => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -41,35 +43,36 @@ namespace KillerShell.Shell
         /// Make sure the script is on disk. Safe to call repeatedly; only the reference copy is
         /// rewritten after the first run.
         /// </summary>
-        internal static void EnsurePromptScript()
+        internal static void EnsurePromptScript(Terminal.TerminalShellKind kind = Terminal.TerminalShellKind.PowerShell)
         {
             try
             {
                 Directory.CreateDirectory(PromptDir);
 
-                string shipped = ReadResource();
+                string shipped = ReadResource(kind);
                 if (shipped.Length == 0) return;
 
                 // Always current, so "reset" and "what changed in this version" both have an
                 // answer without needing the exe unpacked again.
-                WriteIfDifferent(PromptDefaultPath, shipped);
+                WriteIfDifferent(PromptDefaultPath(kind), shipped, kind != Terminal.TerminalShellKind.Wsl);
 
                 // The user's copy, only if it is not there. An edit survives every upgrade.
-                if (!File.Exists(PromptScriptPath))
-                    File.WriteAllText(PromptScriptPath, shipped, new UTF8Encoding(true));
+                string path = PromptPath(kind);
+                if (!File.Exists(path))
+                    File.WriteAllText(path, shipped, new UTF8Encoding(kind != Terminal.TerminalShellKind.Wsl));
             }
             catch { /* no prompt is a cosmetic loss; never let it stop a shell opening */ }
         }
 
         /// <summary>Put the shipped script back, replacing the user's copy.</summary>
-        internal static void ResetPromptScript()
+        internal static void ResetPromptScript(Terminal.TerminalShellKind kind = Terminal.TerminalShellKind.PowerShell)
         {
             try
             {
                 Directory.CreateDirectory(PromptDir);
-                string shipped = ReadResource();
+                string shipped = ReadResource(kind);
                 if (shipped.Length > 0)
-                    File.WriteAllText(PromptScriptPath, shipped, new UTF8Encoding(true));
+                    File.WriteAllText(PromptPath(kind), shipped, new UTF8Encoding(kind != Terminal.TerminalShellKind.Wsl));
             }
             catch { }
         }
@@ -77,24 +80,26 @@ namespace KillerShell.Shell
         // A BOM on the way out, unlike everywhere else in this project: PowerShell 5.1 reads a
         // BOM-less file as the system ANSI codepage, which turns every box-drawing and powerline
         // glyph in the script into mojibake. 7 defaults to UTF-8 and does not care either way.
-        private static void WriteIfDifferent(string path, string content)
+        private static void WriteIfDifferent(string path, string content, bool bom)
         {
             try
             {
                 if (File.Exists(path) && File.ReadAllText(path) == content) return;
-                File.WriteAllText(path, content, new UTF8Encoding(true));
+                File.WriteAllText(path, content, new UTF8Encoding(bom));
             }
             catch { }
         }
 
-        private static string ReadResource()
+        private static string ReadResource(Terminal.TerminalShellKind kind)
         {
             try
             {
-                using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream(PromptResource);
+                using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                    kind == Terminal.TerminalShellKind.Wsl ? "KillerShell.Terminal.KillerPrompt.bash" : PromptResource);
                 if (s == null) return string.Empty;
                 using var r = new StreamReader(s, Encoding.UTF8);
-                return r.ReadToEnd();
+                string content = r.ReadToEnd();
+                return kind == Terminal.TerminalShellKind.Wsl ? content.Replace("\r\n", "\n") : content;
             }
             catch { return string.Empty; }
         }
@@ -158,10 +163,10 @@ namespace KillerShell.Shell
         //  THE MENU ROWS
         // ═══════════════════════════════════════════════════════════
         /// <summary>Open the user's copy, unpacking it first if this is the first run.</summary>
-        internal void EditPromptScript()
+        internal void EditPromptScript(Terminal.TerminalShellKind kind = Terminal.TerminalShellKind.PowerShell)
         {
-            EnsurePromptScript();
-            OpenForEditing(PromptScriptPath);   // EditorTabs.cs
+            EnsurePromptScript(kind);
+            OpenForEditing(PromptPath(kind));   // EditorTabs.cs
         }
 
         /// <summary>Put the shipped script back, after asking.</summary>
@@ -175,14 +180,28 @@ namespace KillerShell.Shell
         /// script arrives with the next one. Re-running it in every live shell would mean typing
         /// into sessions the user is in the middle of using.
         /// </remarks>
-        internal void ResetPromptWithConfirm()
+        internal void ResetPromptWithConfirm(Terminal.TerminalShellKind kind = Terminal.TerminalShellKind.PowerShell)
         {
-            var dlg = new ConfirmDialog(Loc("Str_Dlg_ResetPromptMsg"), PromptScriptPath,
+            var dlg = new ConfirmDialog(Loc("Str_Dlg_ResetPromptMsg"), PromptPath(kind),
                                         Loc("Str_Btn_Reset")) { Owner = this };
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
 
-            ResetPromptScript();
+            ResetPromptScript(kind);
+        }
+
+        internal static string BashPromptSetup(string distro)
+        {
+            if (Environment.GetEnvironmentVariable("KS_PROMPT") == "0") return string.Empty;
+            EnsurePromptScript(Terminal.TerminalShellKind.Wsl);
+            string path = PromptPath(Terminal.TerminalShellKind.Wsl);
+            if (!File.Exists(path)) return string.Empty;
+            // Resolve Windows paths inside the distribution, including custom mount roots.
+            string state = Environment.GetEnvironmentVariable("KS_STATE") ?? string.Empty;
+            return "KS_DISTRO=" + Services.WslDistributions.BashQuote(distro) + "\n"
+                + "KS_STATE=$(wslpath -u " + Services.WslDistributions.BashQuote(state) + " 2>/dev/null)\n"
+                + "__ks_script=$(wslpath -u " + Services.WslDistributions.BashQuote(path) + " 2>/dev/null)\n"
+                + "if [[ -r $__ks_script ]]; then . \"$__ks_script\"; fi\n";
         }
     }
 }

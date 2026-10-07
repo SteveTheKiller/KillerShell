@@ -208,10 +208,10 @@ namespace KillerShell.Shell
                         FontsRow_Click(this, new RoutedEventArgs());   // Fonts.cs
                         break;
                     case TerminalMenuCommand.EditPrompt:
-                        EditPromptScript();                            // Terminal/PromptScript.cs
+                        EditPromptScript(profile.Kind);                // Terminal/PromptScript.cs
                         break;
                     case TerminalMenuCommand.ResetPrompt:
-                        ResetPromptWithConfirm();                      // Terminal/PromptScript.cs
+                        ResetPromptWithConfirm(profile.Kind);          // Terminal/PromptScript.cs
                         break;
                     case TerminalMenuCommand.CloseTab:
                         CloseTab(tab);                                 // Tabs.cs

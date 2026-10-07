@@ -123,11 +123,11 @@ namespace KillerShell.Terminal
             // encouraged to edit needs a way back.
             var editPrompt = Row(m, "Str_Term_EditPrompt", Glyph(0xE70F), "Ctrl+Shift+E",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.EditPrompt));
-            editPrompt.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
+            editPrompt.IsEnabled = ShellKind is TerminalShellKind.PowerShell or TerminalShellKind.Wsl;
 
             var resetPrompt = Row(m, "Str_Term_ResetPrompt", Glyph(0xE777), "Ctrl+Shift+R",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.ResetPrompt));
-            resetPrompt.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
+            resetPrompt.IsEnabled = ShellKind is TerminalShellKind.PowerShell or TerminalShellKind.Wsl;
 
             // Run inside THIS shell rather than starting a helper process. PowerShell 7 and
             // Windows PowerShell then each resolve their own $PROFILE, and any output, success,
@@ -138,6 +138,7 @@ namespace KillerShell.Terminal
                 Send("try { . $PROFILE; Write-Host '"
                      + Shell.MainWindow.LocStatic("Str_Term_ProfileReloaded").Replace("'", "''")
                      + "' -ForegroundColor Green } catch { Write-Error $_ }\r"));
+            _reloadProfileItem.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
 
             // The user's $PROFILE, which is a DIFFERENT file from the prompt above it and a far
             // more common thing to want: the prompt script is ours and only runs in here, while
@@ -182,8 +183,7 @@ namespace KillerShell.Terminal
             foreach (var entry in _menu.Items)
                 if (entry is MenuItem item && item.InputGestureText == gesture)
                 {
-                    bool powerShellOnly = e.Key is Key.E or Key.R or Key.Q;
-                    if (item.IsEnabled && (!powerShellOnly || ShellKind == TerminalShellKind.PowerShell))
+                    if (item.IsEnabled && (e.Key != Key.Q || ShellKind == TerminalShellKind.PowerShell))
                         item.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                     return true;
                 }

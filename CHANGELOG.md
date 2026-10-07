@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.3.2] - Unreleased
 
+### Added
+- Bash prompts match the PowerShell style, identify the WSL distribution, and support theme colors, Git status, and prompt editing.
+
 ### Fixed
 - "Open terminal here" launches Ubuntu and other WSL distributions correctly.
 - Ubuntu browsing no longer loops through "Opening..." when folder monitoring is unsupported. Folder loading shows a busy indicator, background refreshes preserve selection, and unreadable folders report an error.

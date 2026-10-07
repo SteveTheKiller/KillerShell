@@ -57,7 +57,7 @@ public sealed class TerminalProfileTests
     }
 
     [Fact]
-    public void WslLaunchKeepsBashPromptAndReportsCwd()
+    public void WslLaunchLoadsBashStartupBeforeEditablePromptAndReportsCwd()
     {
         var profile = TerminalProfile.Wsl("Ubuntu-24.04");
         string command = profile.LaunchCommand("/home/steve/My Project");
@@ -66,6 +66,9 @@ public sealed class TerminalProfileTests
         var encoded = System.Text.RegularExpressions.Regex.Match(command, "printf %s ([A-Za-z0-9+/=]+)").Groups[1].Value;
         string script = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
         Assert.Contains(". ~/.bashrc", script);
+        Assert.Contains("KS_DISTRO='Ubuntu-24.04'", script);
+        Assert.Contains("KillerPrompt.bash", script);
+        Assert.True(script.IndexOf(". ~/.bashrc", StringComparison.Ordinal) < script.IndexOf("KillerPrompt.bash", StringComparison.Ordinal));
         Assert.Contains("PROMPT_COMMAND+=", script);
         Assert.DoesNotContain("PS1=", script);
         Assert.Equal("clear\r", profile.ClearCommand);
@@ -146,6 +149,9 @@ public sealed class TerminalProfileTests
                 Assert.Equal(0, defaultLaunches);
                 var editProfile = menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+,");
                 Assert.False(editProfile.IsEnabled);
+                Assert.True(menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+Shift+E").IsEnabled);
+                Assert.True(menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+Shift+R").IsEnabled);
+                Assert.False(menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+Shift+Q").IsEnabled);
             }
             catch (Exception ex) { failure = ex; }
         });

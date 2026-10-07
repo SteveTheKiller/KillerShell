@@ -91,6 +91,7 @@
        never overwritten there, so the copy the user edits survives an upgrade. -->
   <ItemGroup>
     <EmbeddedResource Include="Terminal\KillerPrompt.ps1" />
+    <EmbeddedResource Include="Terminal\KillerPrompt.bash" />
   </ItemGroup>
 
   <!-- Syntax definitions AvalonEdit does not ship (Editing/KillerHighlighting.cs). Embedded for
