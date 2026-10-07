@@ -419,6 +419,7 @@ namespace KillerShell.Shell
             if (IsBookmarked(path)) return;
 
             _bookmarks.Add(new Bookmark { Path = path! });
+            if (_bookmarksOpen) ApplyBookmarksPanel(animate: false);
             SaveBookmarks();
             UpdateFavoriteStar();
         }
@@ -432,6 +433,7 @@ namespace KillerShell.Shell
             if (hit == null) return;
 
             _bookmarks.Remove(hit);
+            if (_bookmarksOpen) ApplyBookmarksPanel(animate: false);
             SaveBookmarks();
             UpdateFavoriteStar();
         }
