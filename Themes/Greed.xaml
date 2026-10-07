@@ -95,4 +95,5 @@
 
     <SolidColorBrush x:Key="AppBorderBrush" Color="#0f4a30" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
+    <SolidColorBrush x:Key="AccentLogo" Color="#e0d49a"/>
 </ResourceDictionary>
