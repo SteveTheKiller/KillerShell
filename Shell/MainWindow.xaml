@@ -170,7 +170,7 @@
                      has them. The title bar keeps only the window buttons. -->
                 <Button x:Name="MinimizeBtn" Click="MinimizeBtn_Click" Style="{StaticResource ChromeButton}" Content="&#xE921;" ToolTip="{DynamicResource Str_Menu_Minimize}"/>
                 <Button x:Name="MaximizeBtn" Click="MaximizeBtn_Click" Style="{StaticResource ChromeButton}" Content="&#xE922;" ToolTip="{DynamicResource Str_Menu_Maximize}"/>
-                <Button x:Name="CloseBtn"    Click="CloseBtn_Click"    Style="{StaticResource ChromeCloseButton}" Content="&#xE8BB;" ToolTip="{DynamicResource Str_Menu_Close}"/>
+                <Button x:Name="CloseBtn"    Click="CloseBtn_Click"    Style="{StaticResource ChromeCloseButton}" Content="&#xE8BB;" AutomationProperties.Name="{DynamicResource Str_Menu_Close}"/>
             </StackPanel>
 
         </Grid>

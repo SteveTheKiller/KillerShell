@@ -18,6 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Light wordmark accents have a shadow for readability, and Light/Yellow uses true yellow with neutral dark text instead of olive brown.
 - 98SE Red is a true maroon again, so it no longer looks like Magenta.
 - Folder tabs show their icon in demo mode.
+- The Close tooltip no longer covers the file toolbar.
 
 ## [1.3.0] - 2026-10-06
 
