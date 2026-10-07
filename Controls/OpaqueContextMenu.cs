@@ -28,7 +28,7 @@ namespace KillerShell
             if (ParentPopup?.GetValue(this) is Popup popup)
                 popup.AllowsTransparency = false;
 
-            Opened += (_, __) => NativePopupShadow.Apply(this);
+            NativePopupShadow.Watch(this);
         }
     }
 
@@ -41,11 +41,14 @@ namespace KillerShell
         public OpaquePopup()
         {
             AllowsTransparency = false;
-            Opened += (_, __) =>
-            {
-                if (Child is Visual child)
-                    NativePopupShadow.Apply(child);
-            };
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            if (e.Property != ChildProperty) return;
+            if (e.OldValue is UIElement previous) NativePopupShadow.Unwatch(previous);
+            if (e.NewValue is UIElement child) NativePopupShadow.Watch(child);
         }
     }
 
@@ -64,6 +67,57 @@ namespace KillerShell
         private const int DwmwcpDoNotRound = 1;
 
         [StructLayout(LayoutKind.Sequential)]
+        private struct Rect
+        {
+            internal int Left, Top, Right, Bottom;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool GetClientRect(IntPtr hwnd, out Rect rect);
+
+        [DllImport("user32.dll")]
+        private static extern int FillRect(IntPtr dc, ref Rect rect, IntPtr brush);
+
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr CreateSolidBrush(uint color);
+
+        [DllImport("gdi32.dll")]
+        private static extern bool DeleteObject(IntPtr handle);
+
+        internal static void Watch(UIElement element)
+            => PresentationSource.AddSourceChangedHandler(element, OnSourceChanged);
+
+        internal static void Unwatch(UIElement element)
+            => PresentationSource.RemoveSourceChangedHandler(element, OnSourceChanged);
+
+        private static void OnSourceChanged(object sender, SourceChangedEventArgs e)
+        {
+            if (sender is not FrameworkElement element || e.NewSource is not HwndSource source)
+                return;
+
+            // Prepare the native surface before Popup shows its HWND. Opened runs after show.
+            Color color = (element.TryFindResource("MenuBackgroundBrush") as SolidColorBrush)?.Color
+                ?? Colors.Black;
+            source.CompositionTarget.BackgroundColor = color;
+            uint nativeColor = (uint)(color.R | (color.G << 8) | (color.B << 16));
+            source.AddHook((IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) =>
+            {
+                if (msg != 0x0014 || wParam == IntPtr.Zero) return IntPtr.Zero;
+                if (!GetClientRect(hwnd, out Rect rect)) return IntPtr.Zero;
+                IntPtr brush = CreateSolidBrush(nativeColor);
+                if (brush == IntPtr.Zero) return IntPtr.Zero;
+                try
+                {
+                    if (FillRect(wParam, ref rect, brush) == 0) return IntPtr.Zero;
+                    handled = true;
+                    return new IntPtr(1);
+                }
+                finally { _ = DeleteObject(brush); }
+            });
+            Apply(source);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
         private struct Margins
         {
             internal int Left;
@@ -79,12 +133,11 @@ namespace KillerShell
         [DllImport("dwmapi.dll", PreserveSig = true)]
         private static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref Margins margins);
 
-        internal static void Apply(Visual visual)
+        private static void Apply(HwndSource source)
         {
             try
             {
-                if (PresentationSource.FromVisual(visual) is not HwndSource source ||
-                    source.Handle == IntPtr.Zero)
+                if (source.Handle == IntPtr.Zero)
                     return;
 
                 int policy = DwmncrpEnabled;
