@@ -43,7 +43,7 @@
 
     <Style x:Key="PrimaryButton" TargetType="Button">
         <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
-        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryFillBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
         <Setter Property="FontFamily" Value="Consolas"/>
         <Setter Property="FontSize" Value="12.5"/>
@@ -423,7 +423,7 @@
                         <Trigger Property="IsInactive" Value="True"><Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/></Trigger>
                         <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="bg" Property="Background" Value="{DynamicResource MenuHoverBrush}"/></Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource PrimaryFillBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsBlackedOut" Value="True"><Setter Property="Opacity" Value="0.35"/></Trigger>
@@ -450,7 +450,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="bg" Property="Background" Value="{DynamicResource MenuHoverBrush}"/></Trigger>
                         <Trigger Property="HasSelectedDays" Value="True">
-                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource PrimaryFillBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsInactive" Value="True"><Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/></Trigger>
@@ -1973,7 +1973,7 @@
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource PrimaryFillBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>

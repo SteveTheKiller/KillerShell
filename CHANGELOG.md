@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.3.1] - Unreleased
 
+### Changed
+- Filled buttons, hovered outline buttons, selected picker rows, calendar selections and accent picker pills use gradients outside 98SE, and accent swatches lift on hover.
+
 ### Fixed
 - Selected rows in the Registry Editor, Processes and Event Viewer are readable in Light, Ectoplasm and the other themes where the text matched the highlight.
 - Folder tabs show their icon in demo mode.
