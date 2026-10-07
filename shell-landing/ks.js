@@ -91,15 +91,17 @@
     var dict = window.I18N && window.I18N[lang];
     if (!dict) return english;
     var captions = [
-      'Dark: ' + dict.f_fname_t,
+      'Dark: ' + dict.f_themes_t + ', ' + dict.f_browse_t,
       '98SE: ' + dict.f_storage_t + ', ' + dict.f_perf_t,
-      'Cyanotic: ' + dict.f_procsvc_t + ', PowerShell',
-      'Delirium: ' + dict.f_editor_t + ', ' + dict.f_reg_t,
-      'Light: ' + dict.f_browse_t,
-      'Black: ' + dict.h_nav_shortcuts,
-      'Blood: ' + dict.f_panes_t + ', ' + dict.f_fileops_t
+      'Delirium: ' + dict.f_lang_t + ', ' + dict.f_procsvc_t,
+      'Sepulchre: ' + dict.f_fileops_t + ', ' + dict.f_fname_t,
+      'Black: ' + dict.f_reg_t,
+      'Ectoplasm: ' + dict.f_editor_t,
+      'Greed: ' + dict.h_nav_shortcuts
     ];
-    return 'KillerShell ' + (captions[index - 1] || english);
+    // The dictionary values are innerHTML, but captions are set as plain text.
+    var caption = captions[index - 1];
+    return caption ? 'KillerShell ' + caption.replace(/&amp;/g, '&') : english;
   }
   window.ksLocalizeChrome = function () { localizeChrome(); localizeExtras(); };
   var THEMES = ['dark','light','hc','blood','greed','cyanotic','ectoplasm','decay','malaise','sepulchre','delirium','mourning'];
