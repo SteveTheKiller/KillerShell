@@ -826,6 +826,7 @@
          the visible menu background is solid. The opaque host lets these labels use the same
          crisp ClearType path as the rest of the window. -->
     <Style TargetType="ContextMenu">
+        <Setter Property="kui:MenuAnimation.OpenImmediately" Value="True"/>
         <!-- Display plus ClearType is deliberate here. OpaqueContextMenu guarantees the solid
              surface that subpixel rendering requires. -->
         <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
@@ -844,20 +845,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContextMenu">
-                    <!-- FADE IN. A ContextMenu has no PopupAnimation property - it is not a Popup,
-                         it is hosted inside one WPF owns - so the fade is driven from the template
-                         with an EventTrigger on Loaded. Submenus already faded, so a menu appeared
-                         instantly while its own children faded in, which is backwards. 150ms
-                         ease-out, the curve Anim.FadeIn uses. -->
-                    <!-- Opacity 1 as the BASE value, with the fade below set to FillBehavior=Stop.
-                         This was Opacity="0" plus a HoldEnd animation to 1, and a held animation
-                         leaves the property permanently "animated" even sitting at 1.0 - WPF then
-                         keeps compositing this subtree through an intermediate surface, which
-                         disables ClearType and softens every glyph in the menu for as long as it
-                         is open. That is the pixelated, bleeding text, and it is why setting the
-                         text options alone changed nothing (2026-08-09). Stopping the animation
-                         hands the property back to this base value and the menu renders on the
-                         ordinary path. -->
+                    <!-- Paint the menu surface immediately. -->
                     <Grid x:Name="MenuRoot" Opacity="1" Background="{TemplateBinding Background}"
                           RenderOptions.ClearTypeHint="Enabled">
                         <!-- Raised menu bevel, two pairs. Nothing on any theme but 98SE, whose
@@ -879,22 +867,6 @@
                             </Grid>
                         </Border>
                     </Grid>
-                    <ControlTemplate.Triggers>
-                        <EventTrigger RoutedEvent="ContextMenu.Loaded">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <!-- FillBehavior=Stop: the fade releases the property when it
-                                         finishes instead of holding it, so the menu stops being
-                                         composited and its text goes back to being crisp. See the
-                                         note on MenuRoot's base Opacity above. -->
-                                    <DoubleAnimation Storyboard.TargetName="MenuRoot" Storyboard.TargetProperty="Opacity"
-                                                     From="0" To="1" Duration="0:0:0.15" FillBehavior="Stop">
-                                        <DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -932,8 +904,7 @@
            - InputGestureText column and submenu arrow: KillerShell's template had NEITHER, so a
              shortcut hint on a menu item silently rendered nothing and a submenu had no
              affordance. Both are here now, with the same collapse-when-empty trigger.
-           - Submenu popup mirrors the ContextMenu surface and fades (PopupAnimation), which was
-             the one fade KillerPDF had that KillerShell could not match for want of submenus. -->
+           - Submenu popup mirrors the ContextMenu surface, with the same background and grain. -->
     <Style TargetType="MenuItem">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <!-- Restated on the item because submenu content lives in its own opaque popup. -->
