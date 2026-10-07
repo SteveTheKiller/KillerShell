@@ -33,7 +33,7 @@ namespace KillerShell
 
             SourceInitialized += (_, _) =>
             {
-                ApplyRoundedCorners();
+                MainWindow.ApplyWindowCorners(this, rounded: true);
                 MainWindow.ApplyThemeBorder(this);
                 DialogScreenClamp.Apply(this);
             };
@@ -95,21 +95,6 @@ namespace KillerShell
             stack.Children.Add(val);
 
             target.Children.Add(stack);
-        }
-
-        [System.Runtime.InteropServices.DllImport("dwmapi.dll")]
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
-
-        private void ApplyRoundedCorners()
-        {
-            try
-            {
-                var hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
-                if (hwnd == IntPtr.Zero) return;
-                int pref = 2;   // DWMWCP_ROUND
-                _ = DwmSetWindowAttribute(hwnd, 33 /* DWMWA_WINDOW_CORNER_PREFERENCE */, ref pref, sizeof(int));
-            }
-            catch { /* pre-Win11: no rounded-corner API */ }
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();

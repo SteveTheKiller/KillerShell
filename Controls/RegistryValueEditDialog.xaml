@@ -54,6 +54,9 @@
                      real caption band. -->
                 <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}"
                         MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                    <Grid>
+                        <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}"
+                                Opacity="{DynamicResource GrainOpacity}"/>
                     <Grid Margin="14,0">
                         <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" Margin="1,2,0,0"
@@ -89,6 +92,7 @@
                                 </Style>
                             </Button.Style>
                         </Button>
+                    </Grid>
                     </Grid>
                 </Border>
 

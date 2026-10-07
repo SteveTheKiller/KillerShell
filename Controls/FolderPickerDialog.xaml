@@ -51,6 +51,8 @@
                  UseDialogCaption, and ThemeManager then points this key at the accent's
                  TitleBarBrush, which is what gives the dialog a real Win98 caption. -->
             <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <Grid Margin="16,0">
                     <!-- KillerScan-style wordmark: a blurred dark copy behind the crisp text,
                          faded by IconShadowOpacity (0 in light mode = no shadow). -->
@@ -66,6 +68,7 @@
                     <!-- Foreground via Style setter so hover/press triggers can win over it -->
                     <Button Content="&#xE8BB;" Click="Cancel_Click" HorizontalAlignment="Right" Width="30" Height="26" FontSize="10"
                             FontFamily="Segoe MDL2 Assets" Background="Transparent" BorderThickness="0" Cursor="Hand" Style="{StaticResource ChromeCloseButton}"/>
+                </Grid>
                 </Grid>
             </Border>
 
