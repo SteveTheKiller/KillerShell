@@ -4,19 +4,20 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.1] - Unreleased
+## [1.3.1] - 2026-10-06
+
+1.3.1 improves selection contrast, theme consistency and wordmark readability.
 
 ### Changed
 - Filled buttons, hovered outline buttons, selected picker rows, calendar selections and accent picker pills use gradients outside 98SE, and accent swatches lift on hover.
 
 ### Fixed
+- The standalone CLI builds correctly for .NET Framework 4.8.
 - Selected rows in the Registry Editor, Processes and Event Viewer are readable in Light, Ectoplasm and the other themes where the text matched the highlight.
-- Folder tabs show their icon in demo mode.
-- Light/Yellow uses true yellow for the wordmark, accent lines and radio buttons, with neutral dark text instead of olive brown.
-- Dropdown highlight text uses the right color in Dark/Yellow, Light/Purple and Light/Yellow.
+- Shared theme colors, dropdown highlights, footers, title styling and shadows match the family palette, including cream Blood, Greed and Cyanotic wordmarks.
+- Light wordmark accents have a shadow for readability, and Light/Yellow uses true yellow with neutral dark text instead of olive brown.
 - 98SE Red is a true maroon again, so it no longer looks like Magenta.
-- Delirium, Ectoplasm and Sepulchre footers match the window background again.
-- Shared theme colors, control states, title styling and shadows match the family palette, including cream Blood, Greed and Cyanotic wordmarks.
+- Folder tabs show their icon in demo mode.
 
 ## [1.3.0] - 2026-10-06
 
