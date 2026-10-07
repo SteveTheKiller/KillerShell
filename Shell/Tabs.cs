@@ -725,7 +725,8 @@ namespace KillerShell.Shell
         /// </remarks>
         private async System.Threading.Tasks.Task RefreshBrowsingTab(FilePane pane, SearchTab t, bool restoreSelection)
         {
-            await NavigateTo(t.CurrentFolder, record: false, keepSelection: true);   // Browse.cs
+            await NavigateTo(t.CurrentFolder, record: false, keepSelection: true,
+                             backgroundRefresh: true);   // Browse.cs
             if (restoreSelection) RestoreTabSelection(pane, t);
         }
 

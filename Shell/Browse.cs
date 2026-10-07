@@ -31,12 +31,12 @@ namespace KillerShell.Shell
         /// </summary>
         /// <param name="keepSelection">
         /// Carry whatever rows are selected when the listing lands across the refill, matched by
-        /// path. Opt-in, and set by exactly one caller: the silent refresh a browsing tab gets on
-        /// activation (Tabs.cs RefreshBrowsingTab). A move to a DIFFERENT folder has no use for
-        /// it - none of the new rows can share a path with the old selection - and every other
-        /// caller is a move.
+        /// path. Used by tab activation and watcher recovery. A move to a different folder
+        /// has no use for it because none of the new rows can share a path with the old selection.
         /// </param>
-        private async Task NavigateTo(string folder, bool record = true, bool keepSelection = false)
+        /// <param name="backgroundRefresh">Keep the current footer while refreshing the same folder.</param>
+        private async Task NavigateTo(string folder, bool record = true, bool keepSelection = false,
+                                      bool backgroundRefresh = false)
         {
             if (string.IsNullOrWhiteSpace(folder)) return;
 
@@ -72,6 +72,9 @@ namespace KillerShell.Shell
             }
 
             var tab = _active;
+            bool quiet = backgroundRefresh && tab.IsBrowsing
+                         && string.Equals(tab.CurrentFolder, folder, StringComparison.Ordinal)
+                         && tab.StatusKey != "Str_Status_Listing";
 
             if (record && !string.Equals(tab.CurrentFolder, folder, StringComparison.OrdinalIgnoreCase))
             {
@@ -90,6 +93,7 @@ namespace KillerShell.Shell
 
             // Cancel a listing still running for the folder we just left, or a slow network
             // share would land its results on top of the folder you moved to.
+            StopWatching();
             _listCts?.Cancel();
             _listCts = new CancellationTokenSource();
             var ct = _listCts.Token;
@@ -101,9 +105,10 @@ namespace KillerShell.Shell
             Pane.RootPathBox.Text    = shown;
             Pane.ScopePathLabel.Text = shown;
             UpdateNavButtons();
-            SetTabStatusKey(tab, "Str_Status_Listing", shown);
+            if (!quiet) SetTabStatusKey(tab, "Str_Status_Listing", shown);
 
             List<SearchResult> entries;
+            bool listingFailed = false;
             string? archiveError = null;
             if (thisPc) entries = ListDrives();
             else if (archive)
@@ -125,7 +130,16 @@ namespace KillerShell.Shell
             }
             else
             {
-                try { entries = await Task.Run(() => ListFolder(folder, ct), ct); }
+                try
+                {
+                    var listed = await Task.Run(() =>
+                    {
+                        var rows = ListFolder(folder, ct, out bool failed);
+                        return (rows, failed);
+                    }, ct);
+                    entries = listed.rows;
+                    listingFailed = listed.failed;
+                }
                 catch (OperationCanceledException) { return; }
             }
 
@@ -191,7 +205,17 @@ namespace KillerShell.Shell
 
             Pane.ResultsHeader.Text = string.Format(Loc("Str_Lbl_ResultsCount"), tab.Results.Count);
             if (archiveError != null) SetTabStatusKey(tab, "Str_Status_ArchiveFailed", archiveError);
-            else SetTabStatusKey(tab, "Str_Status_Listed", entries.Count.ToString("N0"));
+            else if (listingFailed) SetTabStatusKey(tab, "Str_Status_BadPath", shown);
+            else
+            {
+                SetTabStatusKey(tab, "Str_Status_Listed", entries.Count.ToString("N0"));
+                if (quiet && Pane.ResultsList.SelectedItems.Count == 1
+                          && Pane.ResultsList.SelectedItem is SearchResult selected)
+                    SetFooterStatus(selected.FilePath);
+                else if (quiet && Pane.ResultsList.SelectedItems.Count > 1)
+                    SetFooterStatus(string.Format(Loc("Str_Status_Selected"),
+                        Pane.ResultsList.SelectedItems.Count.ToString("N0")));
+            }
             UpdateTabBar();
 
             UpdateFavoriteStar();   // Bookmarks.cs - a new folder changes what the star means
@@ -204,7 +228,7 @@ namespace KillerShell.Shell
             // Archive locations are deliberately NOT recorded: the recents menu drops any row
             // that fails Directory.Exists, so every one of them would be filtered out on the
             // next open anyway - a list entry that can never appear is worse than none.
-            if (!archive) RecordRecent(folder);   // Recents.cs
+            if (!archive && !listingFailed) RecordRecent(folder);   // Recents.cs
 
             // Point the tree at where we landed, whichever route got us here - the tree's own
             // selection handler is what called this in the first place when it was the route,
@@ -327,8 +351,9 @@ namespace KillerShell.Shell
         // Everything in one pass, each entry stat'd once. Enumerating the FileSystemInfo rather
         // than the path string means Windows hands back size and timestamp with the entry, so the
         // sort keys cost nothing extra - the same trick worth doing in the search engine.
-        private static List<SearchResult> ListFolder(string folder, CancellationToken ct)
+        internal static List<SearchResult> ListFolder(string folder, CancellationToken ct, out bool failed)
         {
+            failed = false;
             var list = new List<SearchResult>();
             int seq = 0;
 
@@ -394,8 +419,8 @@ namespace KillerShell.Shell
                     });
                 }
             }
-            catch (UnauthorizedAccessException) { /* listed what we could see */ }
-            catch (IOException) { }
+            catch (UnauthorizedAccessException) { failed = true; }
+            catch (IOException) { failed = true; }
 
             return list;
         }

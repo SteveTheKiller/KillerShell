@@ -72,6 +72,10 @@ namespace KillerShell.Shell
 
         private void StopWatching()
         {
+            _watchDebounce?.Stop();
+            _touched.Clear();
+            _renamedPairs.Clear();
+            _watchOverflow = false;
             if (_watcher == null) return;
             try
             {
@@ -88,13 +92,14 @@ namespace KillerShell.Shell
         }
 
         // These arrive on a threadpool thread, so nothing here touches the collection directly.
-        private void OnFsEvent(object sender, FileSystemEventArgs e) => QueueChange(e.FullPath);
+        private void OnFsEvent(object sender, FileSystemEventArgs e) => QueueChange(sender, e.FullPath);
 
         private void OnFsRenamed(object sender, RenamedEventArgs e)
         {
             string oldPath = e.OldFullPath, newPath = e.FullPath;
             Dispatcher.InvokeAsync(() =>
             {
+                if (!ReferenceEquals(sender, _watcher)) return;
                 _renamedPairs.Add((oldPath, newPath));
                 _touched.Add(oldPath);
                 _touched.Add(newPath);
@@ -105,18 +110,25 @@ namespace KillerShell.Shell
             }, DispatcherPriority.Background);
         }
 
-        // The watcher's internal buffer overflowed, so an unknown number of events were dropped.
-        // Nothing incremental can be trusted after that - relist.
+        // Recover a lost batch by relisting. A provider that cannot monitor changes must
+        // stop instead: recreating its watcher would repeat the same failure indefinitely.
         private void OnFsError(object sender, ErrorEventArgs e)
         {
-            _watchOverflow = true;
-            QueueChange(string.Empty);
+            if (e.GetException() is InternalBufferOverflowException)
+                QueueChange(sender, string.Empty, overflow: true);
+            else
+                Dispatcher.InvokeAsync(() =>
+                {
+                    if (ReferenceEquals(sender, _watcher)) StopWatching();
+                }, DispatcherPriority.Background);
         }
 
-        private void QueueChange(string path)
+        private void QueueChange(object sender, string path, bool overflow = false)
         {
             Dispatcher.InvokeAsync(() =>
             {
+                if (!ReferenceEquals(sender, _watcher)) return;
+                if (overflow) _watchOverflow = true;
                 if (path.Length > 0) _touched.Add(path);
 
                 _watchDebounce ??= CreateDebounceTimer();
@@ -177,7 +189,11 @@ namespace KillerShell.Shell
             // looking at, and a slow drive must not hold it up.
             _ = RefreshTreeBranch(folder);   // FolderTree.cs
 
-            if (relist) { await NavigateTo(folder, record: false); return; }
+            if (relist)
+            {
+                await NavigateTo(folder, record: false, keepSelection: true, backgroundRefresh: true);
+                return;
+            }
 
             ApplyWatchChanges(tab, paths, pairs);
         }

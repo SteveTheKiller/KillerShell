@@ -1612,10 +1612,14 @@ namespace KillerShell.Shell
 
         private static readonly string[] ErrorKeys =
         [
-            "Str_Status_BadPath", "Str_Status_ShellFailed",
+            "Str_Status_BadPath", "Str_Status_ShellFailed", "Str_Status_ArchiveFailed",
         ];
 
         private void ApplyStatusTone(string? key)
+            => StatusDot.SetResourceReference(System.Windows.Controls.Border.BackgroundProperty,
+                StatusBrushKey(key, _active?.IsSearching == true));
+
+        internal static string StatusBrushKey(string? key, bool searching)
         {
             // A real traffic light: three fixed colors. This used to fall back to PrimaryBrush,
             // which meant "fine" rendered as whatever accent was picked - blue, red, whatever -
@@ -1624,12 +1628,10 @@ namespace KillerShell.Shell
             // A run in flight holds it amber for the whole search, so the light reads as
             // "working" rather than "fine" while it is still going. An error KEY still wins over
             // that: something failing mid-run must not be downgraded to merely busy.
-            string brush = key != null && System.Array.IndexOf(ErrorKeys, key) >= 0 ? "DangerRed"
-                         : _active?.IsSearching == true                             ? "WarnBrush"
-                         : key != null && System.Array.IndexOf(WarnKeys,  key) >= 0 ? "WarnBrush"
-                         : "OkBrush";
-
-            StatusDot.SetResourceReference(System.Windows.Controls.Border.BackgroundProperty, brush);
+            return key != null && System.Array.IndexOf(ErrorKeys, key) >= 0 ? "DangerRed"
+                 : searching || key == "Str_Status_Listing"               ? "WarnBrush"
+                 : key != null && System.Array.IndexOf(WarnKeys, key) >= 0 ? "WarnBrush"
+                 : "OkBrush";
         }
 
         // Key-based variant: stores the resource key + args on the tab so a live
