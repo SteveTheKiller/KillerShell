@@ -61,7 +61,7 @@ public sealed class TerminalProfileTests
     {
         var profile = TerminalProfile.Wsl("Ubuntu-24.04");
         string command = profile.LaunchCommand("/home/steve/My Project");
-        Assert.Contains("--distribution \"Ubuntu-24.04\" --cd \"/home/steve/My Project\" --exec bash", command);
+        Assert.Contains("--distribution Ubuntu-24.04 --cd \"/home/steve/My Project\" --exec bash", command);
         Assert.DoesNotContain("PowerShell", command);
         var encoded = System.Text.RegularExpressions.Regex.Match(command, "printf %s ([A-Za-z0-9+/=]+)").Groups[1].Value;
         string script = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
@@ -92,6 +92,16 @@ public sealed class TerminalProfileTests
         Assert.Null(TerminalProfile.FromHandoffToken("not base64"));
         Assert.False(WslDistributions.TryParsePath(@"\\wsl$\", out _, out _));
         Assert.Throws<ArgumentException>(() => TerminalProfile.Wsl("Ubuntu\";bad"));
+    }
+
+    [Theory]
+    [InlineData("Ubuntu extra")]
+    [InlineData("Ubuntu\t--exec")]
+    [InlineData("Ubuntu\r\n--exec")]
+    public void WslDistributionCannotInjectAnotherLaunchArgument(string name)
+    {
+        Assert.False(WslDistributions.ValidName(name));
+        Assert.Throws<ArgumentException>(() => TerminalProfile.Wsl(name));
     }
 
     [Theory]

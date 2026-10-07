@@ -120,7 +120,9 @@ namespace KillerShell.Terminal
                 + "else PROMPT_COMMAND=\"${PROMPT_COMMAND:+$PROMPT_COMMAND; }__killershell_cwd\"; fi\n";
             string encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(rc));
             string bash = "exec bash --rcfile <(printf %s " + encoded + " | base64 -d) -i";
-            return Quote(ExePath) + " --distribution " + Services.WslDistributions.QuoteArgument(Distribution!)
+            // WSL treats quotes around a distribution name as part of the name. ValidName
+            // rejects whitespace and quotes so this argument can be passed literally.
+            return Quote(ExePath) + " --distribution " + Distribution!
                 + " --cd " + Services.WslDistributions.QuoteArgument(folder)
                 + " --exec bash -c " + Services.WslDistributions.QuoteArgument(bash);
         }

@@ -28,7 +28,8 @@ namespace KillerShell.Services
             return [.. names.Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(n => n, StringComparer.OrdinalIgnoreCase)];
         }
 
-        internal static bool ValidName(string name) => name.Length > 0 && name.IndexOfAny(['\\', '/', '"', '\r', '\n', '\0']) < 0;
+        internal static bool ValidName(string name) => name.Length > 0 && !name.Any(char.IsWhiteSpace)
+            && name.IndexOfAny(['\\', '/', '"', '\0']) < 0;
         internal static string Root(string distro) => @"\\wsl.localhost\" + distro;
 
         internal static bool TryParsePath(string path, out string distro, out string linuxPath)
