@@ -305,7 +305,7 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
 <div class="tech-sec" id="terminal">
 <h2 data-i18n="t_term_h">The terminal</h2>
 <h3 id="terminal-host" data-i18n="t_term_host_h">Running a real shell</h3>
-<p data-i18n="t_term_p1">Profiles are saved in local settings and resolved when opened. WSL runs through <code>wsl.exe</code> and Bash; the normal <code>.bashrc</code> and prompt are preserved. KillerShell remains a Windows application.</p>
+<p data-i18n="t_term_p1">Profiles are saved locally and resolved when opened. WSL uses <code>wsl.exe</code> and Bash. Your <code>.bashrc</code> loads first, then KillerShell's editable prompt shows the distribution, folder, and Git status in the current theme. <code>restore_prompt</code> restores your original prompt; <code>KS_PROMPT=0</code> disables the formatting.</p>
 <h3 id="terminal-cwd" data-i18n="t_term_cwd_h">Tracking the working directory</h3>
 <p data-i18n="t_term_p2">PowerShell and WSL Bash report their folder with <code>OSC 9;9</code>; the parser also accepts <code>OSC 7</code>. Linux paths map to <code>\\wsl.localhost\</code> for browsing. Custom shells must report their folder to keep the toolbar current.</p>
 <h3 id="terminal-profile" data-i18n="t_term_profile_h">Finding $PROFILE</h3>
@@ -381,7 +381,7 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>
-<script src="ks-i18n.js?v=7"></script>
+<script src="ks-i18n.js?v=8"></script>
 <script src="ks.js?v=8"></script>
 <script>
 // COLLAPSIBLE OUTLINE. The page has fifteen sections and seven subsections, and listing

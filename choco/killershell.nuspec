@@ -21,7 +21,7 @@
 
 - Browse folders in list, icon or details view with tabs, favorites, a folder tree, live filesystem updates and two panes arranged side by side or stacked
 - Search names with wildcards or stream file contents line by line across every CPU core, with multiple ANY/ALL terms, filters, chained searches and HTML or CSV export
-- Open PowerShell, Windows PowerShell, CMD, WSL or a custom terminal profile in the current folder, track its working directory live, and edit the included prompt or your real PowerShell profile
+- Open PowerShell, Windows PowerShell, CMD, WSL or a custom terminal profile in the current folder, track its working directory live, and edit the themed PowerShell or Bash prompt, or your real PowerShell profile
 - Edit text with syntax highlighting, find, go to line, undo/redo, encoding and line-ending preservation, indentation controls and a dedicated font setting
 - Copy, move, rename, recycle, permanently delete and drag files to or from Explorer, with asynchronous progress and Replace, Skip or Keep both collision handling
 - Work with ZIP archives, including empty folders and complete folder-tree drag-out, without changing the original when a rewrite is canceled
