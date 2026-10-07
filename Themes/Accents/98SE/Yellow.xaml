@@ -6,4 +6,5 @@
   <SolidColorBrush x:Key="SelectionFg" Color="#24231C"/>
   <SolidColorBrush x:Key="ChromeTextBrush" Color="#24231C"/>
   <SolidColorBrush x:Key="TextSelectionTextBrush" Color="#24231C"/>
+    <SolidColorBrush x:Key="GridSelectedTextBrush" Color="#000000" po:Freeze="True"/>
 </ResourceDictionary>

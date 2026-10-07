@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.3.1] - Unreleased
 
 ### Fixed
+- Selected rows in the Registry Editor, Processes and Event Viewer are readable in Light, Ectoplasm and the other themes where the text matched the highlight.
 - 98SE Red is a true maroon again, so it no longer looks like Magenta.
 
 ## [1.3.0] - 2026-10-06

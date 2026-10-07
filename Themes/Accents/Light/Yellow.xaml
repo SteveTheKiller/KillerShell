@@ -18,4 +18,5 @@
   <SolidColorBrush x:Key="RadioAccent" Color="#C69500"/>
     <SolidColorBrush x:Key="AccentLogo" Color="#C69500" po:Freeze="True"/>
     <StaticResource x:Key="ComboHighlightTextBrush" ResourceKey="PrimaryBrush"/>
+    <SolidColorBrush x:Key="GridSelectedTextBrush" Color="#24231C" po:Freeze="True"/>
 </ResourceDictionary>

@@ -15,4 +15,5 @@
     <SolidColorBrush x:Key="ScrollThumbBrush"    Color="#88B829FF" po:Freeze="True"/>
     <SolidColorBrush x:Key="TabEdgeBrush"        Color="#66B829FF" po:Freeze="True"/>
     <SolidColorBrush x:Key="ComboHighlightTextBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="GridSelectedTextBrush" Color="#ffffff" po:Freeze="True"/>
 </ResourceDictionary>
