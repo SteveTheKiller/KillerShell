@@ -651,10 +651,10 @@
                          would read as clutter, while the pair you actually reach for most is
                          one click and one chord away regardless (F8 / Ctrl+F8). -->
                     <Button x:Name="TerminalRailBtn" Style="{StaticResource RailButton}" Content="&#xE756;"
-                            FontSize="12" Margin="0,0,0,10" Click="TerminalRail_Click"
+                            FontSize="12" Margin="0,0,0,10" Click="TerminalRail_Click" ContextMenuOpening="RailMenu_Opening"
                             ToolTip="{DynamicResource Str_TT_Terminal}">
                         <Button.ContextMenu>
-                            <ContextMenu Placement="Top">
+                            <ContextMenu>
                                 <MenuItem Header="{DynamicResource Str_Term_Profiles}" SubmenuOpened="LaunchProfiles_Opened">
                                     <MenuItem/>
                                 </MenuItem>
@@ -707,8 +707,6 @@
                         <Button.Resources>
                             <Style x:Key="SystemToolsFlyoutStyle" TargetType="{x:Type ContextMenu}"
                                    BasedOn="{StaticResource {x:Type ContextMenu}}">
-                                <Setter Property="HorizontalOffset" Value="22"/>
-                                <Setter Property="VerticalOffset" Value="-26"/>
                             </Style>
                             <ContextMenu x:Key="SystemToolsMenu" Style="{StaticResource SystemToolsFlyoutStyle}">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesOpen}" Click="RailProcessesOpen_Click" InputGestureText="F9">
@@ -757,7 +755,7 @@
                          language button, in preference to the bare E774 globe. Placement="Top" so it
                          opens upward off the rail's bottom rather than off the bottom of the window. -->
                     <Button x:Name="LangButton" Style="{StaticResource RailButton}" Content="&#xF2B7;"
-                            Margin="0,0,0,10" Click="LangButton_Click"
+                            Margin="0,0,0,10" Click="LangButton_Click" ContextMenuOpening="RailMenu_Opening"
                             ToolTip="{DynamicResource Str_TT_Language}">
                         <Button.ContextMenu>
                             <!-- Family flyout standard, ported verbatim from KillerPDF: chrome
@@ -803,7 +801,7 @@
                          File Associations rows kept below the theme picker - those two rows have
                          no equivalent in PDF and were not part of what looked wrong, so they stay. -->
                     <Button x:Name="ThemeButton" Style="{StaticResource RailButton}" Content="&#xE790;"
-                            Click="ThemeButton_Click" ToolTip="{DynamicResource Str_TT_Theme}">
+                            Click="ThemeButton_Click" ContextMenuOpening="RailMenu_Opening" ToolTip="{DynamicResource Str_TT_Theme}">
                         <Button.ContextMenu>
                             <ContextMenu x:Name="ThemeFlyout">
                                 <!-- Same raised bevel pair as LangMenu above - the KillerNotes
