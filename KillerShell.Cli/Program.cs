@@ -225,7 +225,7 @@ namespace KillerShell.Cli
                 output.Append(",\"timeUtc\":").Append(record.TimeCreated.HasValue ? JsonString(record.TimeCreated.Value.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture)) : "null");
                 string message;
                 try { message = record.FormatDescription() ?? string.Empty; } catch { message = string.Empty; }
-                output.Append(",\"message\":").Append(JsonString(message.Length <= 2000 ? message : message[..2000])).Append('}');
+                output.Append(",\"message\":").Append(JsonString(message.Length <= 2000 ? message : message.Substring(0, 2000))).Append('}');
             }
             output.Append("],\"limitReached\":").Append(count == limit ? "true" : "false").Append('}');
             Console.WriteLine(output.ToString());
@@ -297,8 +297,8 @@ namespace KillerShell.Cli
         private static RegistryKey OpenRegistryKey(string path)
         {
             int separator = path.IndexOf('\\');
-            string hive = separator < 0 ? path : path[..separator];
-            string subkey = separator < 0 ? string.Empty : path[(separator + 1)..];
+            string hive = separator < 0 ? path : path.Substring(0, separator);
+            string subkey = separator < 0 ? string.Empty : path.Substring(separator + 1);
             RegistryKey root = hive.ToUpperInvariant() switch
             {
                 "HKEY_CLASSES_ROOT" => Microsoft.Win32.Registry.ClassesRoot,
@@ -320,7 +320,7 @@ namespace KillerShell.Cli
                 string[] strings => string.Join(" | ", strings),
                 _ => Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty,
             };
-            return text.Length <= 4000 ? text : text[..4000];
+            return text.Length <= 4000 ? text : text.Substring(0, 4000);
         }
 
         private static int ReadSingleIntegerOption(string[] args, string option, int defaultValue, int minimum, int maximum, int valueCount = 2)
