@@ -57,7 +57,10 @@ namespace KillerShell
             if (t.IsSearching) return IconCache.Art("search_results_icon");
 
             if (!t.IsBrowsing || string.IsNullOrEmpty(t.CurrentFolder)) return null;
-            if (!Directory.Exists(t.CurrentFolder)) return null;
+            // A --demo folder is fabricated (DemoFileSystem.cs) and not on disk, so ask the demo
+            // table too; IconCache answers demo paths from the same table the folder tree uses.
+            if (!Directory.Exists(t.CurrentFolder)
+                && !(Shell.MainWindow.DemoMode && DemoFs.Has(t.CurrentFolder))) return null;
 
             // Matches the Image's draw size (FilePane.xaml tabFolderIcon). Note the px argument
             // only selects the shell image LIST, and ShilFor buckets everything up to 32 the same
