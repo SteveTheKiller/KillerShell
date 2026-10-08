@@ -967,12 +967,12 @@
                                        Foreground="{DynamicResource MutedTextBrush}"
                                        VerticalAlignment="Center" Margin="12,0,0,0"
                                        Visibility="Collapsed"/>
-                            <Popup x:Name="SubPopup" AllowsTransparency="True" Placement="Right"
-                                   HorizontalOffset="-21" VerticalOffset="-13" Focusable="False" PopupAnimation="Fade"
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Right"
+                                   PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                   HorizontalOffset="-2" VerticalOffset="-3" Focusable="False" PopupAnimation="Fade"
                                    IsOpen="{TemplateBinding IsSubmenuOpen}">
-                                <!-- Mirrors the ContextMenu template surface so submenus match the parent menu.
-                                     Halo sized to the 22/4 shadow; the offsets above carry the
-                                     -17,-13 compensation (this halo grew from 5) on top of the -4 gap. -->
+                                <!-- WPF places the child render bounds; the outer halo needs no offset.
+                                      Native row-relative placement retains handedness and edge flipping. -->
                                 <Grid Margin="22,18,22,26">
                                     <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource FlyoutCornerRadius}" IsHitTestVisible="False">
                                         <Border.Effect>
