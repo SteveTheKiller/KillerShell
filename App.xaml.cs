@@ -224,6 +224,7 @@ namespace KillerShell
             Services.ThemeManager.Elevated = AppMainWindow.IsElevated;
 
             Services.ThemeManager.Initialize();    // restore saved theme before the window is built
+            Services.FilmGrain.Initialize();       // then the Film Grain choice, which outranks it
             Services.LocaleManager.Initialize();   // then the saved language (en-US base + override)
 
             // Keep text-file.ico in sync with whatever THIS build embeds. EnsureFileIcon

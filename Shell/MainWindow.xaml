@@ -930,6 +930,11 @@
                                          the old flyout content - not part of PDF's menu, and not
                                          part of what was reported wrong, so left in place. -->
                                     <Border Height="1" Margin="0,12,0,6" Background="{DynamicResource MenuBorderBrush}"/>
+                                    <!-- Film Grain: one switch for the grain texture on every
+                                         surface (Services/FilmGrain.cs). -->
+                                    <CheckBox x:Name="FilmGrainCheck" Content="{DynamicResource Str_Theme_FilmGrain}"
+                                              Style="{StaticResource ThemeCheck}" Margin="0,0,0,4"
+                                              Click="FilmGrainCheck_Click"/>
                                     <Button x:Name="FontsRowBtn" Click="FontsRow_Click"
                                             Style="{StaticResource MenuRowButton}">
                                         <StackPanel Orientation="Horizontal">

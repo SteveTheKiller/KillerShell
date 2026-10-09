@@ -1218,6 +1218,58 @@
         </Setter>
     </Style>
 
+    <!-- ThemeRadio's square sibling for on/off switches in the theme flyout (Film Grain): the same row, hover and accent, with a box and checkmark in place of the ring and dot. Derived from this file's ThemeRadio, as KillerPDF's ThemeCheck is from its own. -->
+    <Style x:Key="ThemeCheck" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Border x:Name="bd" Background="Transparent"
+                            CornerRadius="3"
+                            Margin="-8,0,2,0" Padding="10,4,10,4">
+                        <DockPanel LastChildFill="True" Background="Transparent">
+                            <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0" DockPanel.Dock="Left">
+                                <Border CornerRadius="{DynamicResource ControlCornerRadius}" Width="14" Height="14" Background="{DynamicResource RadioWellBrush}"/>
+                                <Border CornerRadius="{DynamicResource ControlCornerRadius}" x:Name="ring" Width="14" Height="14"
+                                         BorderBrush="{DynamicResource DimTextBrush}" BorderThickness="1"
+                                         Background="Transparent"/>
+                                <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="10" x:Name="dot"
+                                         Foreground="{DynamicResource PrimaryBrush}" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="dot" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="ring" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ring" Property="BorderBrush" Value="{DynamicResource RadioHoverFgBrush}"/>
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked" Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="ring" Property="BorderBrush" Value="{DynamicResource RadioHoverFgBrush}"/>
+                            <Setter TargetName="dot" Property="Foreground" Value="{DynamicResource RadioHoverFgBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource RadioHoverFgBrush}"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="ThemeSwatch" TargetType="Button">
         <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}"/>
         <Setter Property="Width" Value="15"/>

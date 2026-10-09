@@ -215,6 +215,24 @@ namespace KillerShell.Shell
             => System.Diagnostics.Debug.WriteLine("[theme] " + label + ": "
                 + ms.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " ms");
 
+        /// <summary>
+        /// Film Grain on or off for every surface (Services/FilmGrain.cs), crossfaded like a theme
+        /// switch. Terminals and editors bake their grain into the palette they build, so they are
+        /// rebuilt as the heavy work, the same as on a theme change.
+        /// </summary>
+        private void FilmGrainCheck_Click(object sender, RoutedEventArgs e)
+        {
+            bool enabled = FilmGrainCheck.IsChecked == true;
+            if (enabled == FilmGrain.Enabled) return;
+            bool wasOpen = ThemeFlyout is not null && ThemeFlyout.IsOpen;
+            CrossfadeSwap(() => FilmGrain.Set(enabled),
+                          () => { RefreshTerminalThemes(); RefreshEditorThemes(); },
+                          () => ApplyThemeBorder(this));
+            if (wasOpen)
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                    (Action)(() => { if (ThemeFlyout is not null && !ThemeFlyout.IsOpen) ThemeFlyout.IsOpen = true; }));
+        }
+
         private void SelectTheme(Theme theme)
         {
             bool wasOpen = ThemeFlyout is not null && ThemeFlyout.IsOpen;
@@ -290,6 +308,7 @@ namespace KillerShell.Shell
             ThemeSepulchreRadio.IsChecked = cur == Theme.Sepulchre;
             ThemeDeliriumRadio.IsChecked  = cur == Theme.Delirium;
             ThemeMalaiseRadio.IsChecked   = cur == Theme.Malaise;
+            FilmGrainCheck.IsChecked      = FilmGrain.Enabled;
             if (ThemeFlyout.IsOpen) RingAccentStrip();
         }
 

@@ -28,6 +28,7 @@
     <sys:String x:Key="Str_Theme_Ectoplasm">Ectoplasma</sys:String>
     <sys:String x:Key="Str_Theme_Decay">Decadência</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Luto</sys:String>
+    <sys:String x:Key="Str_Theme_FilmGrain">Granulação de filme</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Sepulcro</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delírio</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Mal-estar</sys:String>

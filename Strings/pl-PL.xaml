@@ -42,6 +42,7 @@
     <sys:String x:Key="Str_Theme_Sepulchre">Grobowiec</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Żałoba</sys:String>
+    <sys:String x:Key="Str_Theme_FilmGrain">Ziarno filmowe</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">pokaż lub ukryj elementy ukryte i foldery z kropką w drzewie</sys:String>
     <sys:String x:Key="Str_Perf_Speed">Szybkość</sys:String>
     <sys:String x:Key="Str_Perf_Processes">Procesy</sys:String>

@@ -28,6 +28,7 @@
     <sys:String x:Key="Str_Theme_Ectoplasm">Ектоплазма</sys:String>
     <sys:String x:Key="Str_Theme_Decay">Тлін</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Жалоба</sys:String>
+    <sys:String x:Key="Str_Theme_FilmGrain">Зернистість плівки</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Гробниця</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Марення</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Нездужання</sys:String>
