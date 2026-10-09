@@ -6,7 +6,7 @@
 theme's background on the very first frame (the browser's default white shows otherwise). */
 (function(){var d=document.documentElement,t=null;try{t=localStorage.getItem('kshell-theme');if(t){d.setAttribute('data-theme',t);if({dark:1,light:1,hc:1}[t]){var v=localStorage.getItem('kshell-av');if(v){var s=v.split('|');d.style.setProperty('--accent',s[0]);d.style.setProperty('--btn',s[1]);}}}}catch(e){}
 var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a5234',cyanotic:'#0a4a6e'};d.style.backgroundColor=bg[t]||bg.dark;})();</script>
-<link rel="preload" href="brand/KillerShell.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="brand/Iceland-Regular.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="brand/FreckleFace-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="darkreader-lock">
 <title>KillerShell - Help</title>
@@ -21,7 +21,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 .help-wm { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 6px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
 .help-hero p { color: var(--muted); margin-top: 6px; font-size: 15px; }
 .help-hero .legend { font-size: 13px; margin-top: 4px; color: var(--text2); }
-.help-cat { font-family: 'KillerShell', 'Courier New', monospace; font-size: 18px; font-weight: normal; letter-spacing: .5px; color: var(--accent); margin: 30px 2px 12px; padding-top: 6px; scroll-margin-top: 74px; text-shadow: 0 2px 5px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.5); }
+.help-cat { font-family: var(--kt-font-section); font-size: 18px; font-weight: normal; letter-spacing: .5px; color: var(--accent); margin: 30px 2px 12px; padding-top: 6px; scroll-margin-top: 74px; text-shadow: 0 2px 5px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.5); }
 .help-cat:first-of-type { margin-top: 18px; }
 .acc-item { border: 1px solid var(--dragline); border-radius: 8px; margin-bottom: 10px; background: var(--modal) url('grain.png') repeat; background-size: 256px 256px; overflow: hidden; }
 .acc-head { width: 100%; text-align: left; background: none; border: 0; color: var(--text); font: inherit; font-size: 15px; font-weight: 600; padding: 15px 18px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -38,11 +38,11 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 .kbd-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 44px; align-items: start; }
 .kbd-col { min-width: 0; }
 .kbd-group { display: grid; grid-template-columns: max-content 1fr; column-gap: 18px; row-gap: 6px; align-items: baseline; margin-bottom: 22px; }
-.kbd-group h4 { grid-column: 1 / -1; font-family: 'KillerShell', 'Courier New', monospace; font-size: 15px; letter-spacing: .5px; color: var(--accent); font-weight: normal; margin-bottom: 4px; text-shadow: 0 2px 5px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.5); }
+.kbd-group h4 { grid-column: 1 / -1; font-family: var(--kt-font-section); font-size: 15px; letter-spacing: .5px; color: var(--accent); font-weight: normal; margin-bottom: 4px; text-shadow: 0 2px 5px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.5); }
 /* Scope heading - the applet a group of bindings belongs to. Plain text color with a rule under
    it, never a category color: in the app the category colors mean "kind of action" in both views,
    so a scope heading borrowing one would read as an eighth category. */
-.kbd-scope { font-family: 'KillerShell', 'Courier New', monospace; font-size: 14px; letter-spacing: .5px; color: var(--text); font-weight: normal; margin: 26px 2px 0; padding-bottom: 4px; border-bottom: 1px solid var(--dragline); }
+.kbd-scope { font-family: var(--kt-font-card-title); font-size: 14px; letter-spacing: .5px; color: var(--text); font-weight: normal; margin: 26px 2px 0; padding-bottom: 4px; border-bottom: 1px solid var(--dragline); }
 .kbd-scope:first-of-type { margin-top: 8px; }
 html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { text-shadow: none; }
 .kbd-row { display: contents; }
