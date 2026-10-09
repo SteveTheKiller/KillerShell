@@ -606,8 +606,9 @@ namespace KillerShell.Shell
         private void PaneSplitV_DragStarted(object sender, DragStartedEventArgs e)
         {
             _paneGutterDragging = true;
-            _paneGutterGrowsWindow = WindowState != WindowState.Maximized
-                                      && MonitorRoomToGrowRightDip() > 0;
+            // The divider always trades width between the two panes and the window keeps its
+            // width, floating or not. Growing the window from the divider read as finicky.
+            _paneGutterGrowsWindow = false;
             PaneSplitV.ResizeBehavior = GridResizeBehavior.PreviousAndNext;
             _gutterAWidthAtLastDelta = PaneColA.ActualWidth;
         }

@@ -10,6 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Kept app icons sharp at fractional display DPI and app zoom by caching exact pixel sizes from a covering source and aligning the final draw to device pixels.
 - Submenus attach consistently to their opening rows, with native direction and screen-edge placement.
 - Opening the folder tree on a floating window grows the window to the left, so the rail and panes stay in place instead of being pushed right.
+- Dragging the dual-pane divider trades width between the two panes and keeps the window the same width.
 
 ## [1.3.2] - 2026-10-07
 
