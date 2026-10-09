@@ -377,6 +377,57 @@ namespace KillerShell.Shell
             }
         }
 
+        /// <summary>The left-hand twin of MonitorRoomToGrowRightDip: how much further this
+        /// window's LEFT edge could move before leaving its monitor's work area, in DIP. The
+        /// folder tree grows the window out to the left (TreePanel.cs), so a window snapped or
+        /// parked against the left edge reads as having no room. Same double.MaxValue-on-failure
+        /// fallback.</summary>
+        internal double MonitorRoomToGrowLeftDip()
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                if (hwnd == IntPtr.Zero) return double.MaxValue;
+                IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+                if (monitor == IntPtr.Zero) return double.MaxValue;
+                var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+                if (!GetMonitorInfo(monitor, ref info)) return double.MaxValue;
+                var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+                double workLeftDip = info.rcWork.left / dpi.DpiScaleX;
+                return Left - workLeftDip;
+            }
+            catch
+            {
+                return double.MaxValue;
+            }
+        }
+
+        /// <summary>Moves the window's left and right edges in ONE native call, keeping its top
+        /// and bottom exactly where they are. Setting Left and Width as two WPF properties moves
+        /// the frame twice per frame, and the right edge visibly shivers between the two calls
+        /// when only the left edge is meant to travel.</summary>
+        internal void SetWindowEdgesDip(double leftDip, double rightDip)
+        {
+            var hwnd = new WindowInteropHelper(this).Handle;
+            if (hwnd == IntPtr.Zero || !GetWindowRect(hwnd, out RECT r)) return;
+            var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+            int x = (int)Math.Round(leftDip * dpi.DpiScaleX);
+            int w = (int)Math.Round(rightDip * dpi.DpiScaleX) - x;
+            SetWindowPos(hwnd, IntPtr.Zero, x, r.top, w, r.bottom - r.top,
+                         SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+        }
+
+        private const uint SWP_NOZORDER = 0x0004;
+        private const uint SWP_NOACTIVATE = 0x0010;
+        private const uint SWP_NOOWNERZORDER = 0x0200;
+
+        [DllImport("user32.dll")]
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+                                                int x, int y, int cx, int cy, uint flags);
+
         private const int WM_NCLBUTTONDOWN = 0x00A1;
         private const int HTBOTTOMRIGHT = 17;
 
