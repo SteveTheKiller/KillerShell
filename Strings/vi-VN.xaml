@@ -46,6 +46,9 @@
   <sys:String x:Key="Str_TT_FoldersTop">Luôn đặt thư mục phía trên tệp</sys:String>
   <sys:String x:Key="Str_Menu_AddFavorite">Thêm vào Dấu trang</sys:String>
   <sys:String x:Key="Str_Menu_RemoveFavorite">Xóa khỏi Dấu trang</sys:String>
+  <sys:String x:Key="Str_Menu_AddNickname">Thêm biệt danh</sys:String>
+  <sys:String x:Key="Str_Menu_ChangeNickname">Đổi biệt danh</sys:String>
+  <sys:String x:Key="Str_Menu_RemoveNickname">Xóa biệt danh</sys:String>
   <sys:String x:Key="Str_Menu_HideMenuBar">Ẩn thanh menu</sys:String>
   <sys:String x:Key="Str_Ks_Bookmarks">hiện hoặc ẩn dấu trang</sys:String>
   <sys:String x:Key="Str_Ks_JumpBookmark">đi đến dấu trang 1-10 (0 = dấu trang thứ mười)</sys:String>
@@ -485,6 +488,7 @@
   <sys:String x:Key="Str_Btn_Rename">Đổi tên</sys:String>
   <sys:String x:Key="Str_Btn_Delete">Xóa</sys:String>
   <sys:String x:Key="Str_Fo_RenameTitle">Tên mới</sys:String>
+  <sys:String x:Key="Str_Fo_NicknameTitle">Biệt danh</sys:String>
   <sys:String x:Key="Str_Fo_NewFolderName">Thư mục mới</sys:String>
   <sys:String x:Key="Str_Dlg_DeleteMsg">Xóa vĩnh viễn {0} mục? Bạn không thể hoàn tác thao tác này. Các mục này sẽ không được chuyển vào Thùng rác.</sys:String>
   <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Chuyển {0} mục vào Thùng rác? Phần đã chọn có chứa một thư mục nên mọi nội dung bên trong cũng sẽ được chuyển vào Thùng rác.</sys:String>

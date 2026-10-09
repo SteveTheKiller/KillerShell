@@ -12,6 +12,23 @@ namespace KillerShell
         public bool   Confirmed { get; private set; }
         public string NewName   => NameBox.Text.Trim();
 
+        // Nickname mode (ForNickname): an empty box is a valid answer, it clears the nickname,
+        // and the whole text is selected because a nickname has no extension to protect.
+        private bool _allowEmpty;
+        private bool _selectAll;
+
+        /// <summary>
+        /// The same prompt, asking for a nickname instead of a new name. Nothing on disk changes;
+        /// the caller stores the answer (Services/Nicknames.cs). Confirming an empty box removes it.
+        /// </summary>
+        internal static RenameDialog ForNickname(string currentNickname)
+        {
+            var dlg = new RenameDialog(currentNickname) { _allowEmpty = true, _selectAll = true };
+            dlg.PromptText.SetResourceReference(System.Windows.Controls.TextBlock.TextProperty, "Str_Fo_NicknameTitle");
+            dlg.OkButton.SetResourceReference(ContentProperty, "Str_Btn_Save");
+            return dlg;
+        }
+
         public RenameDialog(string currentName)
         {
             InitializeComponent();
@@ -24,7 +41,8 @@ namespace KillerShell
                 // Select the STEM, not the whole name: renaming almost never means changing the
                 // extension, and selecting everything means typing one character silently drops
                 // the ".psd" the file needed. Explorer settled this years ago.
-                string stem = Path.GetFileNameWithoutExtension(currentName);
+                // Never for a nickname: it can hold characters Path rejects, and has no extension.
+                string stem = _selectAll ? string.Empty : Path.GetFileNameWithoutExtension(currentName);
                 NameBox.Select(0, stem.Length > 0 ? stem.Length : currentName.Length);
             };
             SourceInitialized += (_, _) => MainWindow.ApplyThemeBorder(this);
@@ -38,7 +56,7 @@ namespace KillerShell
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            if (NewName.Length == 0) return;   // nothing to rename to; leave the box open
+            if (NewName.Length == 0 && !_allowEmpty) return;   // nothing to rename to; leave the box open
             Confirmed = true;
             Close();
         }

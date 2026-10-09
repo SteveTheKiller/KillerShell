@@ -50,6 +50,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Тримати папки над файлами</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Додати до закладок</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Видалити із закладок</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Додати псевдонім</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Змінити псевдонім</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Видалити псевдонім</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Сховати рядок меню</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">показати або сховати закладки</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">перейти до закладки 1-10 (0 = десята)</sys:String>
@@ -519,6 +522,7 @@
     <sys:String x:Key="Str_Btn_Rename">Перейменувати</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Видалити</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Нове ім'я</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Псевдонім</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Нова папка</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Видалити остаточно елементів: {0}? Цю дію не можна скасувати - вони не потраплять до Кошика.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Перемістити до Кошика елементів: {0}? Вибране містить папку, і все всередині неї теж буде переміщено.</sys:String>

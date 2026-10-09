@@ -307,6 +307,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">文件夹置于文件之上</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">添加到收藏夹</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">从收藏夹移除</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">添加昵称</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">更改昵称</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">删除昵称</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">隐藏菜单栏</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">显示或隐藏已保存的位置</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">转到已保存的位置 1-10（0 = 第十个）</sys:String>
@@ -384,6 +387,7 @@
     <sys:String x:Key="Str_Btn_Rename">重命名</sys:String>
     <sys:String x:Key="Str_Btn_Delete">删除</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">新名称</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">昵称</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">新建文件夹</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">要永久删除 {0} 个项目吗？此操作无法撤销，它们不会进入回收站。</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">要将 {0} 个项目移到回收站吗？所选内容包含文件夹，其中的所有内容也会一并移除。</sys:String>

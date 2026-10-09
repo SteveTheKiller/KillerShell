@@ -307,6 +307,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">ফোল্ডার ফাইলের উপরে রাখুন</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">প্রিয় তালিকায় যোগ করুন</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">প্রিয় তালিকা থেকে সরান</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">ডাকনাম যোগ করুন</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">ডাকনাম পরিবর্তন করুন</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">ডাকনাম সরান</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">মেনু বার লুকান</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">সংরক্ষিত অবস্থান দেখান বা লুকান</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">সংরক্ষিত অবস্থান 1-10 এ যান (0 = দশম)</sys:String>
@@ -384,6 +387,7 @@
     <sys:String x:Key="Str_Btn_Rename">নাম পরিবর্তন</sys:String>
     <sys:String x:Key="Str_Btn_Delete">মুছুন</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">নতুন নাম</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">ডাকনাম</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">নতুন ফোল্ডার</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">{0} টি আইটেম স্থায়ীভাবে মুছবেন? এটি ফেরানো যাবে না - এগুলো রিসাইকেল বিনে যাবে না।</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">{0} টি আইটেম রিসাইকেল বিনে পাঠাবেন? নির্বাচনে একটি ফোল্ডার রয়েছে, এবং তার ভেতরের সবকিছুও যাবে।</sys:String>

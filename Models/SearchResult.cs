@@ -11,6 +11,15 @@ namespace KillerShell.Models
         public string FileName  { get; set; } = string.Empty;
         public string Directory { get; set; } = string.Empty;
 
+        /// <summary>What the listing draws for the name: "Nickname (name)" when the item has a
+        /// nickname (Services/Nicknames.cs), otherwise just the name. Sorting, type-ahead and
+        /// Copy name keep using FileName.</summary>
+        public string NameLabel => Services.Nicknames.Label(FilePath, FileName);
+
+        /// <summary>Redraws the name after its nickname was set or removed.</summary>
+        public void NotifyNickname()
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameLabel)));
+
         // Stat'd once by the engine when the file becomes a result (not per scanned
         // file), so the results view can sort by size / date like the HTML report.
         public long     SizeBytes { get; set; }
@@ -99,6 +108,7 @@ namespace KillerShell.Models
             FilePath = newPath;
             FileName = newName;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileName)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameLabel)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilePath)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Icon)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TypeName)));

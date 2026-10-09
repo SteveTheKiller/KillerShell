@@ -50,6 +50,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Tartsa a mappákat a fájlok felett</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Hozzáadás a könyvjelzőkhöz</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Eltávolítás a könyvjelzők közül</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Becenév hozzáadása</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Becenév módosítása</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Becenév eltávolítása</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Menüsor elrejtése</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">könyvjelzők megjelenítése vagy elrejtése</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">lépjen az 1-10. könyvjelzőre (0 = tizedik)</sys:String>
@@ -519,6 +522,7 @@
     <sys:String x:Key="Str_Btn_Rename">Átnevezés</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Törölje</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Új név</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Becenév</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Új mappa</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Véglegesen töröl {0} elemet? Ezt nem lehet visszavonni - nem mennek a Lomtárba.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Elküld {0} elemet a Lomtárba? A kiválasztás tartalmaz egy mappát, és minden benne van.</sys:String>

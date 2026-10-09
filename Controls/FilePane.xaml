@@ -2124,6 +2124,14 @@
                             <MenuItem Header="{DynamicResource Str_Menu_Rename}"        Click="MenuRename_Click"    InputGestureText="F2">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
                             </MenuItem>
+                            <!-- Nickname rows, next to Rename because they read like one: header
+                                 and visibility are set as the menu opens (NicknameCommands.cs). -->
+                            <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="MenuNickname_Click">
+                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="MenuNicknameRemove_Click">
+                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_Delete}"        Click="MenuDelete_Click"    InputGestureText="Delete">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE74D;"/></MenuItem.Icon>
                             </MenuItem>
@@ -2207,7 +2215,7 @@
                                          the default text color. Scoped to this tile template only;
                                          the details/list view's Name column still uses ResultText
                                          and keeps its selected-row-turns-green behavior. -->
-                                    <TextBlock Text="{Binding FileName}" Style="{StaticResource TileResultText}"
+                                    <TextBlock Text="{Binding NameLabel, Mode=OneWay}" Style="{StaticResource TileResultText}"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="10.5"
                                                TextAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                                                MaxHeight="30"
@@ -2243,7 +2251,7 @@
                                            shellns:TileArt.Path="{Binding FilePath}"
                                            shellns:TileArt.IsDirectory="{Binding IsDirectory}"
                                            shellns:TileArt.Size="16"/>
-                                    <TextBlock Text="{Binding FileName}" Style="{StaticResource ResultText}"
+                                    <TextBlock Text="{Binding NameLabel, Mode=OneWay}" Style="{StaticResource ResultText}"
                                                Margin="6,0,0,0" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
@@ -2298,7 +2306,7 @@
                                            shellns:TileArt.Size="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                            HorizontalAlignment="Left" VerticalAlignment="Center"
                                            RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding FileName}" Style="{StaticResource ResultText}"
+                                    <TextBlock Grid.Column="1" Text="{Binding NameLabel, Mode=OneWay}" Style="{StaticResource ResultText}"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
                                     <TextBlock Grid.Column="2" Text="{Binding Directory}" Style="{StaticResource ResultDim}"
@@ -2425,7 +2433,7 @@
                                                    shellns:TileArt.IsDirectory="{Binding IsDirectory}"
                                                    shellns:TileArt.Size="{Binding Tag.CardIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                    Margin="0,0,9,0" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding FileName}" Foreground="{DynamicResource TextBrush}"
+                                            <TextBlock Grid.Column="1" Text="{Binding NameLabel, Mode=OneWay}" Foreground="{DynamicResource TextBrush}"
                                                        FontFamily="{DynamicResource MonoFont}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                             <!-- Size / modified columns so the sort keys are visible -->
                                             <TextBlock Grid.Column="2" Text="{Binding SizeLabel}" Foreground="{DynamicResource MutedTextBrush}"

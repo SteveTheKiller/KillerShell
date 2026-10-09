@@ -100,6 +100,9 @@ namespace KillerShell.Shell
             _shellMenuItem ??= Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
                                         .FirstOrDefault(m => (m.Tag as string) == "shellmenu");
             _shellMenuItem?.Visibility = seed != null ? Visibility.Visible : Visibility.Collapsed;
+
+            // Same rule for the nickname rows: they belong to the item under the pointer.
+            SyncNicknameMenu(Pane.ResultsList.ContextMenu, seed?.FilePath);   // NicknameCommands.cs
         }
 
         private MenuItem? _favMenuItem;

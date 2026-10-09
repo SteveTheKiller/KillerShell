@@ -44,6 +44,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Tieni le cartelle sopra i file</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Aggiungi ai segnalibri</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Rimuovi dai segnalibri</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Aggiungi soprannome</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Cambia soprannome</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Rimuovi soprannome</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Nascondi la barra dei menu</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">mostrare o nascondere i segnalibri</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">andare al segnalibro 1-10 (0 = il decimo)</sys:String>
@@ -495,6 +498,7 @@
     <sys:String x:Key="Str_Btn_Rename">Rinomina</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Elimina</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Nuovo nome</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Soprannome</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Nuova cartella</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Eliminare definitivamente {0} elemento/i? Non si può annullare - non vanno nel Cestino.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Inviare {0} elemento/i al Cestino? La selezione include una cartella, e va anche tutto ciò che contiene.</sys:String>

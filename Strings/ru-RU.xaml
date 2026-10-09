@@ -46,6 +46,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Папки выше файлов</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Добавить в закладки</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Убрать из закладок</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Добавить псевдоним</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Изменить псевдоним</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Удалить псевдоним</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Скрыть строку меню</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">показать или скрыть закладки</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">перейти к закладке 1-10 (0 = десятая)</sys:String>
@@ -497,6 +500,7 @@
     <sys:String x:Key="Str_Btn_Rename">Переименовать</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Удалить</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Новое имя</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Псевдоним</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Новая папка</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Удалить безвозвратно элементов: {0}? Это нельзя отменить - они не попадут в корзину.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Отправить в корзину элементов: {0}? В выделении есть папка, и всё её содержимое отправится тоже.</sys:String>

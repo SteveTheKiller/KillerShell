@@ -46,6 +46,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Қалталарды файлдардан жоғары ұстау</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Бетбелгілерге қосу</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Бетбелгілерден алып тастау</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Лақап ат қосу</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Лақап атты өзгерту</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Лақап атты жою</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Мәзір жолағын жасыру</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">бетбелгілерді көрсету немесе жасыру</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">1-10 бетбелгісіне өту (0 = оныншы)</sys:String>
@@ -497,6 +500,7 @@
     <sys:String x:Key="Str_Btn_Rename">Атын өзгерту</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Жою</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Жаңа атау</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Лақап ат</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Жаңа қалта</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">{0} элемент біржола жойылсын ба? Мұны кері қайтару мүмкін емес - олар себетке түспейді.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">{0} элемент себетке жіберілсін бе? Таңдауда қалта бар, оның ішіндегінің бәрі де кетеді.</sys:String>

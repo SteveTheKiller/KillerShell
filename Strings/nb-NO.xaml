@@ -50,6 +50,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Hold mapper over filer</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Legg til i bokmerker</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Fjern fra bokmerker</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Legg til kallenavn</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Endre kallenavn</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Fjern kallenavn</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Skjul menylinjen</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">vis eller skjul bokmerker</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">gå til bokmerke 1-10 (0 = tiende)</sys:String>
@@ -519,6 +522,7 @@
     <sys:String x:Key="Str_Btn_Rename">Gi nytt navn</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Slett</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Nytt navn</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Kallenavn</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Ny mappe</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Slette {0} element(er) permanent? Dette kan ikke angres - de går ikke til Papirkurven.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Sende {0} element(er) til Papirkurven? Utvalget inneholder en mappe, og alt i den følger med.</sys:String>

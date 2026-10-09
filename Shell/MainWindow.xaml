@@ -317,6 +317,14 @@
                                 <MenuItem Header="{DynamicResource Str_Menu_CopyPath}" Click="TreeCopyPath_Click">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                                 </MenuItem>
+                                <!-- Nickname rows: header and visibility are set as the menu opens
+                                     (NicknameCommands.cs SyncNicknameMenu), found by Tag. -->
+                                <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="TreeNickname_Click">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="TreeNicknameRemove_Click">
+                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                                </MenuItem>
                                 <Separator/>
                                 <MenuItem Header="{DynamicResource Str_Menu_Properties}" Click="TreeProperties_Click">
                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
@@ -356,7 +364,7 @@
                                          FolderTreeItem's selected trigger can turn it white on a
                                          solid selection (98SE) - a local TextBrush here was what
                                          kept selected rows black-on-navy. -->
-                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
+                                    <TextBlock Text="{Binding NameLabel, Mode=OneWay}" VerticalAlignment="Center"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                                TextTrimming="CharacterEllipsis"
                                                ToolTip="{Binding Path}"/>
@@ -479,6 +487,7 @@
                                          the drawer sizes itself from that constant. -->
                                     <Border Padding="4,1" CornerRadius="{DynamicResource SmallCornerRadius}" Cursor="Hand"
                                             ToolTip="{Binding Path}"
+                                            ContextMenuOpening="BookmarkRow_ContextMenuOpening"
                                             PreviewMouseLeftButtonDown="Bookmark_DragDown"
                                             PreviewMouseMove="Bookmark_DragMove"
                                             MouseLeftButtonUp="Bookmark_DragUp">
@@ -522,6 +531,15 @@
                                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                                                 </MenuItem>
                                                 <Separator/>
+                                                <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}"
+                                                          Click="BookmarkNickname_Click">
+                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}"
+                                                          Click="BookmarkNicknameRemove_Click">
+                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                                                </MenuItem>
+                                                <Separator/>
                                                 <MenuItem Header="{DynamicResource Str_Menu_Properties}"
                                                           Click="BookmarkProperties_Click">
                                                     <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
@@ -550,7 +568,7 @@
                                             <!-- No Foreground here: it inherits TextElement.Foreground
                                                  from the row Border, which flips to SelectionFg when
                                                  the row is the active one. -->
-                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
+                                            <TextBlock Text="{Binding NameLabel, Mode=OneWay}" VerticalAlignment="Center"
                                                        FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                                        TextTrimming="CharacterEllipsis"/>
                                         </StackPanel>

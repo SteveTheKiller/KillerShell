@@ -50,6 +50,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Manter as pastas acima dos arquivos</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Adicionar aos Favoritos</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Remover dos Favoritos</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Adicionar apelido</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Alterar apelido</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Remover apelido</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Ocultar barra de menus</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">mostrar ou ocultar os favoritos</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">ir para o favorito 1-10 (0 = décimo)</sys:String>
@@ -519,6 +522,7 @@
     <sys:String x:Key="Str_Btn_Rename">Renomear</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Excluir</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Novo nome</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Apelido</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Nova pasta</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Excluir {0} item(ns) permanentemente? Isso não pode ser desfeito - eles não vão para a Lixeira.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Enviar {0} item(ns) para a Lixeira? A seleção inclui uma pasta, e tudo dentro dela também será enviado.</sys:String>

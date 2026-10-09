@@ -307,6 +307,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Garder les dossiers au-dessus des fichiers</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Ajouter aux favoris</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Retirer des favoris</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Ajouter un surnom</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Modifier le surnom</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Supprimer le surnom</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Masquer la barre de menus</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">afficher ou masquer les emplacements enregistrés</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">aller à l'emplacement enregistré 1-10 (0 = dixième)</sys:String>
@@ -384,6 +387,7 @@
     <sys:String x:Key="Str_Btn_Rename">Renommer</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Supprimer</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Nouveau nom</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Surnom</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Nouveau dossier</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Supprimer définitivement {0} élément(s) ? C'est irréversible : ils ne vont pas à la Corbeille.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Envoyer {0} élément(s) à la Corbeille ? La sélection contient un dossier, et tout son contenu part avec.</sys:String>

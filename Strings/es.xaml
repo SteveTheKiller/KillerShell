@@ -307,6 +307,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Mantener las carpetas encima de los archivos</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Añadir a favoritos</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Quitar de favoritos</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Añadir apodo</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Cambiar apodo</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Quitar apodo</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Ocultar barra de menús</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">mostrar u ocultar las ubicaciones guardadas</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">ir a la ubicación guardada 1-10 (0 = décima)</sys:String>
@@ -384,6 +387,7 @@
     <sys:String x:Key="Str_Btn_Rename">Renombrar</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Eliminar</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Nombre nuevo</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Apodo</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Nueva carpeta</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">¿Eliminar {0} elemento(s) de forma permanente? No se puede deshacer: no van a la Papelera de reciclaje.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">¿Enviar {0} elemento(s) a la Papelera de reciclaje? La selección incluye una carpeta, y todo su contenido va también.</sys:String>

@@ -307,6 +307,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Ordner über Dateien halten</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Zu Favoriten hinzufügen</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Aus Favoriten entfernen</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Spitznamen hinzufügen</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Spitznamen ändern</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Spitznamen entfernen</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Menüleiste ausblenden</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">gespeicherte Orte ein- oder ausblenden</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">zu gespeichertem Ort 1-10 springen (0 = zehnter)</sys:String>
@@ -384,6 +387,7 @@
     <sys:String x:Key="Str_Btn_Rename">Umbenennen</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Löschen</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Neuer Name</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Spitzname</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Neuer Ordner</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">{0} Element(e) endgültig löschen? Das lässt sich nicht rückgängig machen - sie landen nicht im Papierkorb.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">{0} Element(e) in den Papierkorb verschieben? Die Auswahl enthält einen Ordner, und alles darin geht mit.</sys:String>

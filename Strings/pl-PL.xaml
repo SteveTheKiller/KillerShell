@@ -112,6 +112,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Foldery nad plikami</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Dodaj do zakładek</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Usuń z zakładek</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Dodaj pseudonim</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Zmień pseudonim</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Usuń pseudonim</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">pokaż lub ukryj zakładki</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">przejdź do zakładki 1-10 (0 = dziesiąta)</sys:String>
     <sys:String x:Key="Str_TT_Back">Wstecz</sys:String>
@@ -478,6 +481,7 @@
   <sys:String x:Key="Str_Btn_Rename">Zmień nazwę</sys:String>
   <sys:String x:Key="Str_Btn_Delete">Usuń</sys:String>
   <sys:String x:Key="Str_Fo_RenameTitle">Nowa nazwa</sys:String>
+  <sys:String x:Key="Str_Fo_NicknameTitle">Pseudonim</sys:String>
   <sys:String x:Key="Str_Fo_NewFolderName">Nowy folder</sys:String>
   <sys:String x:Key="Str_Dlg_DeleteMsg">Trwale usunąć {0} elementów? Nie można tego cofnąć - nie trafią do Kosza.</sys:String>
   <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Przenieść {0} elementów do Kosza? Zaznaczenie obejmuje folder i całą jego zawartość.</sys:String>

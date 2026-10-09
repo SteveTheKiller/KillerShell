@@ -334,8 +334,12 @@ namespace KillerShell.Shell
             if (!dlg.Confirmed) return;
 
             string? err = FileOps.Rename(path, dlg.NewName);
-            if (err != null) SetTabStatusKey(_active, "Str_Status_RenameFailed", LocReason(err));
-            else RefreshAfterFileOp();
+            if (err != null) { SetTabStatusKey(_active, "Str_Status_RenameFailed", LocReason(err)); return; }
+
+            // A nickname follows its item to the new name (Services/Nicknames.cs).
+            string? dir = Path.GetDirectoryName(path.TrimEnd('\\'));
+            if (dir != null) Services.Nicknames.Move(path, Path.Combine(dir, dlg.NewName));
+            RefreshAfterFileOp();
         }
 
         // ── Shared plumbing ──────────────────────────────────────

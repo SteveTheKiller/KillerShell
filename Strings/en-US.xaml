@@ -50,6 +50,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Keep folders above files</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Add to Bookmarks</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Remove from Bookmarks</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Add nickname</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Change nickname</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Remove nickname</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Hide menu bar</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">show or hide bookmarks</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">go to bookmark 1-10 (0 = tenth)</sys:String>
@@ -519,6 +522,7 @@
     <sys:String x:Key="Str_Btn_Rename">Rename</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Delete</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">New name</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Nickname</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">New folder</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Delete {0} item(s) permanently? This cannot be undone - they do not go to the Recycle Bin.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Send {0} item(s) to the Recycle Bin? The selection includes a folder, and everything inside it goes too.</sys:String>

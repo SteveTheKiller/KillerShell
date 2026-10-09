@@ -20,9 +20,18 @@ namespace KillerShell.Shell
     //
     // Deliberately bare - no header, no close button. The rail star opens and closes it and the
     // rows are the only content, which is the whole point of a shortcut list.
-    public sealed class Bookmark
+    public sealed class Bookmark : System.ComponentModel.INotifyPropertyChanged
     {
         public string Path { get; set; } = string.Empty;
+
+        /// <summary>The row's label: "Nickname (name)" when the folder has a nickname
+        /// (Services/Nicknames.cs). This PC is not a folder and never has one.</summary>
+        public string NameLabel => MainWindow.IsThisPc(Path) ? Name : Services.Nicknames.Label(Path, Name);
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        internal void NotifyNickname()
+            => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(NameLabel)));
 
         public string Name => MainWindow.IsThisPc(Path)             // Browse.cs
                             ? MainWindow.LocStatic("Str_Nav_ThisPc")
@@ -87,6 +96,7 @@ namespace KillerShell.Shell
         private void InitBookmarks()
         {
             BookmarksList.ItemsSource = _bookmarks;
+            HookNicknames();   // NicknameCommands.cs - labels redraw when a nickname changes
 
             // Both edge fades follow the scroll position, the same as the tree's
             // (TreePanel.cs). ScrollChanged is handled at the ListBox rather than dug out of

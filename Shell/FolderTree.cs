@@ -37,7 +37,14 @@ namespace KillerShell.Shell
             if (!IsGroup || Name == name) return;
             Name = name;
             Raise(nameof(Name));
+            Raise(nameof(NameLabel));
         }
+
+        /// <summary>The row's label: "Nickname (name)" when the folder has a nickname
+        /// (Services/Nicknames.cs). Group headers are not folders and never have one.</summary>
+        public string NameLabel => IsGroup ? Name : Services.Nicknames.Label(Path, Name);
+
+        internal void NotifyNickname() => Raise(nameof(NameLabel));
 
         // Drives get their own treatment: they are always expandable, they never disappear
         // mid-session, and their label is "Local Disk (C:)" rather than a bare folder name.
@@ -446,6 +453,8 @@ namespace KillerShell.Shell
             _treeMenuItem?.Header = Loc(IsBookmarked(_treeMenuNode.Path)
                 ? "Str_Menu_RemoveFavorite"
                 : "Str_Menu_AddFavorite");
+
+            SyncNicknameMenu(FolderTree.ContextMenu, _treeMenuNode.Path);   // NicknameCommands.cs
 
             // Read fresh on every open rather than bound once - the same convention
             // ColumnVisibilityMenu and the CPU tile's per-core toggle follow, and it keeps the

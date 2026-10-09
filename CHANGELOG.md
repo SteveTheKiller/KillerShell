@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.3.3] - Unreleased
 
+### Added
+- Files and folders can have a nickname, set from the right-click menu in the folder tree, saved places and listing. It shows as "Nickname (name)" without renaming anything on disk.
+
 ### Changed
 - The website's headings and wordmarks use Iceland and Freckle Face in place of the typewriter font.
 

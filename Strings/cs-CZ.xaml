@@ -31,6 +31,9 @@
     <sys:String x:Key="Str_TT_FoldersTop">Držet složky nad soubory</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Přidat k oblíbeným</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Odebrat z oblíbených</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">Přidat přezdívku</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">Změnit přezdívku</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">Odebrat přezdívku</sys:String>
     <sys:String x:Key="Str_Menu_HideMenuBar">Skrýt panel nabídek</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">zobrazit nebo skrýt uložená místa</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">přejít na uložené místo 1-10 (0 = desáté)</sys:String>
@@ -382,6 +385,7 @@
     <sys:String x:Key="Str_Btn_Rename">Přejmenovat</sys:String>
     <sys:String x:Key="Str_Btn_Delete">Smazat</sys:String>
     <sys:String x:Key="Str_Fo_RenameTitle">Nový název</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">Přezdívka</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Nová složka</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Smazat {0} položek trvale? Nelze vrátit zpět - nepůjdou do koše.</sys:String>
     <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Přesunout {0} položek do koše? Výběr obsahuje složku a půjde i vše, co je v ní.</sys:String>

@@ -549,6 +549,8 @@ namespace KillerShell
         private void MenuCopy_Click(object s, RoutedEventArgs e)           => Owner.MenuCopy_Click(s, e);
         private void MenuPaste_Click(object s, RoutedEventArgs e)          => Owner.MenuPaste_Click(s, e);
         private void MenuRename_Click(object s, RoutedEventArgs e)         => Owner.MenuRename_Click(s, e);
+        private void MenuNickname_Click(object s, RoutedEventArgs e)       => Owner.MenuNickname_Click(s, e);
+        private void MenuNicknameRemove_Click(object s, RoutedEventArgs e) => Owner.MenuNicknameRemove_Click(s, e);
         private void MenuDelete_Click(object s, RoutedEventArgs e)         => Owner.MenuDelete_Click(s, e);
         private void MenuNewFolder_Click(object s, RoutedEventArgs e)      => Owner.MenuNewFolder_Click(s, e);
 
