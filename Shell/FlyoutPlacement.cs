@@ -75,7 +75,7 @@ namespace KillerShell.Shell
             double x = inset - halo.Left;
             double y = targetSize.Height - popupSize.Height + halo.Bottom - inset;
             if (y < 0) y = 0;
-            return new[] { new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None) };
+            return [new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None)];
         }
     }
 }
