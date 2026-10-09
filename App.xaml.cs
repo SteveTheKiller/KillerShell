@@ -100,6 +100,7 @@ namespace KillerShell
             }
 
             base.OnStartup(e);
+            ContextMenuFlip.Register();   // Controls/ContextMenuFlip.cs - menus that open upward
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             AppMainWindow.PublishGrainTile();   // install and uninstall dialogs open before any main window
 

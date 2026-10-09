@@ -4,7 +4,7 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.3] - Unreleased
+## [1.3.3] - Unreleased
 
 ### Changed
 - The website's headings and wordmarks use Iceland and Freckle Face in place of the typewriter font.
@@ -12,6 +12,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - Kept app icons sharp at fractional display DPI and app zoom by caching exact pixel sizes from a covering source and aligning the final draw to device pixels.
 - Submenus attach consistently to their opening rows, with native direction and screen-edge placement.
+- Context menus that open upward or leftward near a screen edge sit at the pointer instead of floating away from it.
 - Opening the folder tree on a floating window grows the window to the left, so the rail and panes stay in place instead of being pushed right.
 - Dragging the dual-pane divider trades width between the two panes and keeps the window the same width.
 
