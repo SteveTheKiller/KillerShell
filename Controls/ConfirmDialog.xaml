@@ -1,6 +1,7 @@
 <Window x:Class="KillerShell.ConfirmDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:icons="clr-namespace:KillerShell.Controls"
         xmlns:picker="clr-namespace:KillerShell"
         Title="KillerShell"
         Width="380" SizeToContent="Height"
@@ -67,10 +68,10 @@
                     <Grid Margin="{DynamicResource DialogTitleBarPadding}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <!-- The app icon leads the caption, as it does in the main title bar. -->
-                        <Image x:Name="TitleIcon" VerticalAlignment="Center"
+                        <icons:AppIcon x:Name="TitleIcon" VerticalAlignment="Center"
                                Width="{DynamicResource TitleIconSize}" Height="{DynamicResource TitleIconSize}"
                                Margin="{DynamicResource TitleIconMargin}"
-                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                               RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                         <Grid VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" Margin="1,2,0,0"
                                         Visibility="{DynamicResource DialogWordmarkVisibility}"

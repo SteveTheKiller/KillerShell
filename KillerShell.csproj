@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\ksh-icon.ico" />
+    <Resource Include="Resources\app-icon-master.png" />
     <!-- The brand icon pack (IconCache.cs), drawn for every directory and every tab kind.
          Generated from brand\icons: each is cropped to its ink, squared and written at 128px,
          which covers the 20px draw size up to the 250% app-scale ceiling and gives folders the

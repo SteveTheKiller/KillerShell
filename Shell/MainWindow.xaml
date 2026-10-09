@@ -1,6 +1,7 @@
 <Window x:Class="KillerShell.Shell.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:icons="clr-namespace:KillerShell.Controls"
         xmlns:local="clr-namespace:KillerShell"
         xmlns:shellns="clr-namespace:KillerShell.Shell"
         xmlns:models="clr-namespace:KillerShell.Models"
@@ -100,10 +101,10 @@
                  typewriter wordmark with a blurred dark copy behind the crisp text
                  (faded by IconShadowOpacity; 0 in light mode = no shadow). -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="{DynamicResource TitleBarPadding}">
-                <Image x:Name="TitleIcon" VerticalAlignment="Center"
+                <icons:AppIcon x:Name="TitleIcon" VerticalAlignment="Center"
                        Width="{DynamicResource TitleIconSize}" Height="{DynamicResource TitleIconSize}"
                        Margin="{DynamicResource TitleIconMargin}"
-                       RenderOptions.BitmapScalingMode="HighQuality"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"
                        shell:WindowChrome.IsHitTestVisibleInChrome="True"
                        MouseWheel="LogoBar_MouseWheel" MouseLeftButtonDown="LogoBar_MouseLeftButtonDown"/>
                 <!-- A Win98 caption has no logotype in it - just the icon and the window's name in
@@ -1593,11 +1594,11 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Image x:Name="AboutIcon" Grid.Column="0" Width="58" Height="58" Margin="0,0,15,0" VerticalAlignment="Center"
-                                       RenderOptions.BitmapScalingMode="HighQuality">
-                                    <Image.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="3" Direction="270"
-                                                                    Opacity="{DynamicResource IconShadowOpacity}"/></Image.Effect>
-                                </Image>
+                                <icons:AppIcon x:Name="AboutIcon" Grid.Column="0" Width="58" Height="58" Margin="0,0,15,0" VerticalAlignment="Center"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor">
+                                    <icons:AppIcon.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="3" Direction="270"
+                                                                    Opacity="{DynamicResource IconShadowOpacity}"/></icons:AppIcon.Effect>
+                                </icons:AppIcon>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                     <Grid Margin="0,0,0,4" HorizontalAlignment="Left" Cursor="Hand" ToolTip="killershell.net"
                                           Background="Transparent" MouseLeftButtonUp="Wordmark_Click">
