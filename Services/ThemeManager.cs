@@ -515,14 +515,14 @@ namespace KillerShell.Services
             // actually behind it: pink against Delirium's purple. Same recurring bug as the
             // picker side columns, the text fields and the tree chevron (BACKLOG.md).
             SetIfAbsent("ToolTreeBrush", Transparent);
-            // The details pane's big filename: the family wordmark face everywhere, Courier New
-            // on 98SE. NOT Mirror(): WordmarkFont lives in App.xaml, not in the theme
+            // The details pane's big filename: the family heading face everywhere, Courier New
+            // on 98SE. NOT Mirror(): BrandSansFont lives in App.xaml, not in the theme
             // dictionaries, so Mirror's missing-source fallback handed every ordinary theme a
             // TRANSPARENT BRUSH as a font - "'#00FFFFFF' is not a valid value for property
             // 'FontFamily'", the Mourning theme-switch crash.
             if (!combined.Contains("DetailsNameFont"))
                 combined["DetailsNameFont"] =
-                    Application.Current?.TryFindResource("WordmarkFont") as System.Windows.Media.FontFamily
+                    Application.Current?.TryFindResource("BrandSansFont") as System.Windows.Media.FontFamily
                     ?? new System.Windows.Media.FontFamily("Consolas");
             // The About card's content inset - 0 like the old AboutCaptionMargin the wrapper
             // borrowed; 98SE adds top room under the caption band.
@@ -829,8 +829,8 @@ namespace KillerShell.Services
             SetIfAbsent("TitleIconMargin", new Thickness(0, 0, 7, 0));
             SetIfAbsent("TitleIconSize", 27.0);
             SetIfAbsent("TitleTextMargin", new Thickness(0));
-            SetIfAbsent("TitleWordmarkBoldSize", 23.4);
-            SetIfAbsent("TitleWordmarkSize", 18.0);
+            SetIfAbsent("TitleWordmarkBoldSize", 22.88);
+            SetIfAbsent("TitleWordmarkSize", 12.8);
             SetIfAbsent("UseDialogCaption", false);
             Mirror("WindowEdgeBrush", "AppBorderBrush");
             SetIfAbsent("WindowEdgeThickness", new Thickness(0));

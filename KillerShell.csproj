@@ -68,7 +68,8 @@
     <Resource Include="Resources\open_hand.cur" />
     <Resource Include="Resources\closed_hand.cur" />
     <Resource Include="Fonts\KillerSans-Regular.ttf" />
-    <Resource Include="Fonts\FreckleFace-Regular.ttf" />
+    <Resource Include="Fonts\Punktype.ttf" />
+    <Resource Include="Fonts\Lacquer-Regular.ttf" />
     <!-- 26 glyphs, 2.9 KB: the handful a stock Windows monospaced font does NOT have but the
          shipped prompt draws - the powerline separators, the git branch mark, the prompt chevron
          and the ahead/behind arrows. The terminal draws a cell from this when the user's chosen

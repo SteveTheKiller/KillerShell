@@ -1313,10 +1313,10 @@
                             <!-- PrimaryBrush, matching ScopePathLabel's treatment of the current
                                  location above (LocationRow) - the family's "this is the title
                                  text" accent, not the plain TextBrush every field value below uses.
-                                 WordmarkFont + a size well above the field rows (10/11 below) - it
+                                 BrandSansFont + a size well above the field rows (10/11 below) - it
                                  is the title of what you're looking at, so it should read as more
                                  prominent. -->
-                            <!-- DetailsNameFont = WordmarkFont everywhere but 98SE, where the
+                            <!-- DetailsNameFont = BrandSansFont everywhere but 98SE, where the
                                  typewriter face gives way to Courier New - the era's monospace. -->
                             <!-- The filename's chrome is theme-split: the family drop shadow
                                  (DetailsNameEffect, null on 98SE - a flat theme casts nothing)

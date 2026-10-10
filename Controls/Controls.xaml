@@ -17,8 +17,12 @@
          and avoid drawing a picture and a character for the same tab. -->
     <kui:TabHasArtConverter x:Key="TabHasArt"/>
 
-    <FontFamily x:Key="WordmarkFont">/KillerShell;component/Fonts/#Killer Sans</FontFamily>
-    <FontFamily x:Key="WordmarkAccentFont">/KillerShell;component/Fonts/#Freckle Face</FontFamily>
+    <!-- Family brand faces, bundled in Fonts/ with their licenses beside them: Punktype
+         (commercial license) for "Killer", Lacquer (OFL) for the app name, and Killer Sans
+         (OFL) for headings and the footer. -->
+    <FontFamily x:Key="WordmarkFont">/KillerShell;component/Fonts/#Punktype</FontFamily>
+    <FontFamily x:Key="WordmarkAccentFont">/KillerShell;component/Fonts/#Lacquer</FontFamily>
+    <FontFamily x:Key="BrandSansFont">/KillerShell;component/Fonts/#Killer Sans</FontFamily>
 
     <Style TargetType="ToolTip">
         <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>

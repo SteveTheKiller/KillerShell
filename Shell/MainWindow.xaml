@@ -1483,10 +1483,10 @@
                     <Border BorderBrush="{DynamicResource FooterBevelLightBrush}" BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                 Margin="{DynamicResource FooterCellPadding}">
-                <TextBlock x:Name="VersionLabel" Text="v0.99" Foreground="{DynamicResource TextFooter}" FontFamily="{DynamicResource WordmarkFont}" FontSize="14.5" VerticalAlignment="Center" Margin="0,0,12,0"
+                <TextBlock x:Name="VersionLabel" Text="v0.99" Foreground="{DynamicResource TextFooter}" FontFamily="{DynamicResource BrandSansFont}" FontSize="16" TextOptions.TextFormattingMode="Ideal" VerticalAlignment="Center" Margin="0,0,12,0"
                            Cursor="Hand" ToolTip="{DynamicResource Str_TT_About}" MouseLeftButtonUp="VersionLabel_Click"/>
                 <!-- 14px trailing margin keeps the copyright clear of the corner grip (family standard) -->
-                <TextBlock FontSize="14.5" VerticalAlignment="Center" FontFamily="{DynamicResource WordmarkFont}" Margin="0,0,14,0">
+                <TextBlock FontSize="16" TextOptions.TextFormattingMode="Ideal" VerticalAlignment="Center" FontFamily="{DynamicResource BrandSansFont}" Margin="0,0,14,0">
                     <Run Text="&#x00A9; 2026 " Foreground="{DynamicResource TextFooter}"/>
                     <Hyperlink NavigateUri="https://thekiller.net" RequestNavigate="Hyperlink_RequestNavigate" Foreground="{DynamicResource TextFooter}" TextDecorations="None">
                         <Run Text="Steve the Killer"/>
@@ -1626,16 +1626,16 @@
                                     <Grid Margin="0,0,0,4" HorizontalAlignment="Left" Cursor="Hand" ToolTip="killershell.net"
                                           Background="Transparent" MouseLeftButtonUp="Wordmark_Click">
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,2,0,0" IsHitTestVisible="False"
-                                                   Opacity="{DynamicResource IconShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="2"/></TextBlock.Effect><Run Text="Killer" FontSize="24.2" Foreground="#C0000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="26.43" Foreground="#C0000000"/></TextBlock>
+                                                   Opacity="{DynamicResource IconShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="2"/></TextBlock.Effect><Run Text="Killer" FontSize="17.21" Foreground="#C0000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="#C0000000"/></TextBlock>
                                         <!-- The 98SE emboss: a hard WHITE copy 1px UP-LEFT, no
                                              blur - light catching the top-left edges of a RAISED
                                              glyph. Down-right was tried first and read as sunken
                                              instead of raised. AboutEmbossOpacity is 0
                                              everywhere but 98SE. -->
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" IsHitTestVisible="False"
-                                                   Opacity="{DynamicResource AboutEmbossOpacity}"><TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform><Run Text="Killer" FontSize="24.2" Foreground="#FFFFFF"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="26.43" Foreground="#FFFFFF"/></TextBlock>
-                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,2,0,0" IsHitTestVisible="False" Opacity="{DynamicResource WordmarkAccentShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect><Run Text="Killer" FontSize="24.2" Foreground="Transparent"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="26.43" Foreground="#D8000000"/></TextBlock>
-                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="24.2" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="26.43" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
+                                                   Opacity="{DynamicResource AboutEmbossOpacity}"><TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform><Run Text="Killer" FontSize="17.21" Foreground="#FFFFFF"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="#FFFFFF"/></TextBlock>
+                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,2,0,0" IsHitTestVisible="False" Opacity="{DynamicResource WordmarkAccentShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect><Run Text="Killer" FontSize="17.21" Foreground="Transparent"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="#D8000000"/></TextBlock>
+                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="17.21" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
                                     </Grid>
                                     <!-- Tagline is composed here, not in the .xaml string files: GPLv3 and
                                          "Killer Tools" are proper nouns and stay out of the translations
