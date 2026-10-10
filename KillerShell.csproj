@@ -67,7 +67,6 @@
          copies, the same arrangement as the icon packs above. -->
     <Resource Include="Resources\open_hand.cur" />
     <Resource Include="Resources\closed_hand.cur" />
-    <Resource Include="Fonts\KillerShell.ttf" />
     <Resource Include="Fonts\Iceland-Regular.ttf" />
     <Resource Include="Fonts\FreckleFace-Regular.ttf" />
     <!-- 26 glyphs, 2.9 KB: the handful a stock Windows monospaced font does NOT have but the
