@@ -37,6 +37,7 @@ namespace KillerShell.Shell
             UpdateThemeSwatchSelection();                        // ThemeFlyout.cs
             UpdateAccentStrip(animate: false);
             SyncTitleBarMetrics();                               // Chrome.cs
+            FitStartupSizeToWorkArea();                          // Chrome.cs
             // ApplyPaneMargins rides along: the pane's window-edge inset is PaneOuterMargin's RIGHT
             // now (8 by default, 0 on 98SE), so without re-running it a theme switch left the old
             // theme's gap down the right of the pane until something else forced a relayout.

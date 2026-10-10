@@ -14,6 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The wordmarks and headings in the app and on the website use Killer Sans and Freckle Face in place of the typewriter font.
 
 ### Fixed
+- On a small screen the window opens sized to fit the desktop instead of running past its edges.
 - Kept app icons sharp at fractional display DPI and app zoom by caching exact pixel sizes from a covering source and aligning the final draw to device pixels.
 - Submenus attach consistently to their opening rows, with native direction and screen-edge placement.
 - Context menus that open upward or leftward near a screen edge sit at the pointer instead of floating away from it.
