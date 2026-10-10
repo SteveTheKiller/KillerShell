@@ -17,7 +17,7 @@
          and avoid drawing a picture and a character for the same tab. -->
     <kui:TabHasArtConverter x:Key="TabHasArt"/>
 
-    <FontFamily x:Key="WordmarkFont">/KillerShell;component/Fonts/#Iceland</FontFamily>
+    <FontFamily x:Key="WordmarkFont">/KillerShell;component/Fonts/#Killer Sans</FontFamily>
     <FontFamily x:Key="WordmarkAccentFont">/KillerShell;component/Fonts/#Freckle Face</FontFamily>
 
     <Style TargetType="ToolTip">
