@@ -59,10 +59,10 @@
                     <Grid VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False">
                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="16.5" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
                             <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
-                            <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="23.25" Foreground="#D8000000"/>
+                            <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="18.02" Foreground="#D8000000"/>
                         </TextBlock>
                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="16.5">
-                            <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="23.25" Foreground="{DynamicResource AccentLogo}"/>
+                            <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="18.02" Foreground="{DynamicResource AccentLogo}"/>
                         </TextBlock>
                     </Grid>
                     <!-- Foreground via Style setter so hover/press triggers can win over it -->
