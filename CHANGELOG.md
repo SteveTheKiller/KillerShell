@@ -20,6 +20,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Context menus that open upward or leftward near a screen edge sit at the pointer instead of floating away from it.
 - Opening the folder tree on a floating window grows the window to the left, so the rail and panes stay in place instead of being pushed right.
 - Dragging the dual-pane divider trades width between the two panes and keeps the window the same width.
+- The accent ring on an administrator window squares its corners when the window is maximized.
 
 ## [1.3.2] - 2026-10-07
 

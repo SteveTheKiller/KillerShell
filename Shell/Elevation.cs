@@ -513,6 +513,30 @@ namespace KillerShell.Shell
             // matching against this process's own copy of that same string, in whatever locale
             // is active, rather than an English word that would only ever match an en-US window.
             Title = "KillerShell " + Loc("Str_Title_Elevated");
+            SyncElevationHaloCorners();
+        }
+
+        /// <summary>
+        /// Squares the admin ring off while the window is maximized and gives it back the theme's
+        /// radii otherwise. The DWM frame already stops rounding on maximize (Chrome.cs
+        /// ApplyWindowCorners), but the ring is ordinary WPF and kept its 7px curve, so a
+        /// maximized admin window showed four rounded accent corners inside a square screen edge.
+        /// A local 0 survives a theme switch while maximized; restoring re-links the resources.
+        /// </summary>
+        internal void SyncElevationHaloCorners()
+        {
+            if (!IsElevated || ElevationHalo == null || ElevationHaloInner == null) return;
+
+            if (WindowState == WindowState.Maximized)
+            {
+                ElevationHalo.CornerRadius      = new CornerRadius(0);
+                ElevationHaloInner.CornerRadius = new CornerRadius(0);
+            }
+            else
+            {
+                ElevationHalo.SetResourceReference(Border.CornerRadiusProperty, "WindowCornerRadius");
+                ElevationHaloInner.SetResourceReference(Border.CornerRadiusProperty, "PanelCornerRadius");
+            }
         }
 
         // ═══════════════════════════════════════════════════════════

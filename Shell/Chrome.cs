@@ -148,6 +148,7 @@ namespace KillerShell.Shell
         {
             base.OnStateChanged(e);
             ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
+            SyncElevationHaloCorners();   // Elevation.cs
             // Segoe MDL2: E923 restore (when maximized) / E922 maximize. Built from a (char)
             // cast, never typed as a literal PUA character - literal glyphs do not survive
             // tooling (family-wide rule).
