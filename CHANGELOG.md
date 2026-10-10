@@ -11,6 +11,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A Film Grain switch in the theme menu turns the grain texture on or off on every surface. It is on by default.
 
 ### Changed
+- The saved places drawer takes at most 40% of the sidebar height and scrolls past that, so a long list leaves the folder tree usable.
 - The wordmarks and headings in the app and on the website use Killer Sans and Freckle Face in place of the typewriter font.
 
 ### Fixed

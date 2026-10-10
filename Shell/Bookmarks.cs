@@ -81,6 +81,11 @@ namespace KillerShell.Shell
         // to. Without this the drawer could swallow the sidebar on a short window.
         private const double TreeMinVisible = 120;
 
+        // The most of the sidebar's height the drawer may take, however many places are saved.
+        // Past this the list scrolls inside the drawer, so a long list never crowds the tree
+        // down to a strip. TreeMinVisible above still applies on a window too short for this.
+        private const double BookmarksMaxShare = 0.4;
+
         // Paths are joined with a character that cannot appear in one, so no escaping is needed.
         private const char BookmarkSep = '|';
 
@@ -108,6 +113,14 @@ namespace KillerShell.Shell
             BookmarksList.SizeChanged  += (_, _) =>
                 { SyncBookmarksEdgeFades(); CorrectBookmarksOverflow(); SyncBookmarksScrollbar(); };
             BookmarksPanel.SizeChanged += (_, _) => { SyncBookmarksEdgeFades(); SyncBookmarksScrollbar(); };
+
+            // The ceiling is a share of the sidebar's height, so it has to follow the window.
+            // Without this it was computed once on open and a resized window kept the old cap,
+            // and on startup it was the fixed max because the sidebar had not laid out yet.
+            TreePanel.SizeChanged += (_, e) =>
+            {
+                if (_bookmarksOpen && e.HeightChanged) BookmarksPanel.MaxHeight = BookmarksCeiling();
+            };
 
             // --demo gets its own fixed set of places and never reads or writes the real one
             // (Shell/DemoMode.cs). Two separate reasons, both of which the saved-list path below
@@ -162,11 +175,15 @@ namespace KillerShell.Shell
         private double BookmarksCeiling()
         {
             double ceiling = BookmarksHeightMax;
+            double sidebar = TreePanel.ActualHeight;
 
             // TreePanel has no height before the first layout pass; fall back to the fixed max
-            // rather than clamping everything to a negative ceiling on startup.
-            if (TreePanel.ActualHeight > TreeMinVisible + BookmarksHeightMin)
-                ceiling = Math.Min(ceiling, TreePanel.ActualHeight - TreeMinVisible);
+            // rather than clamping everything to a negative ceiling on startup. The SizeChanged
+            // hook in InitBookmarks applies the real ceiling once the sidebar has a height.
+            if (sidebar > 0)
+                ceiling = Math.Min(ceiling, Math.Max(BookmarksHeightMin, Math.Floor(sidebar * BookmarksMaxShare)));
+            if (sidebar > TreeMinVisible + BookmarksHeightMin)
+                ceiling = Math.Min(ceiling, sidebar - TreeMinVisible);
 
             return ceiling;
         }
