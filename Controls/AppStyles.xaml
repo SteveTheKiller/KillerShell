@@ -41,14 +41,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="b"
+                    <Grid><Border x:Name="bRing" IsHitTestVisible="False" CornerRadius="{Binding CornerRadius, ElementName=b}" BorderThickness="{Binding BorderThickness, ElementName=b}" BorderBrush="{Binding Background, ElementName=b}" Margin="{Binding Margin, ElementName=b}" Visibility="{Binding Visibility, ElementName=b}" Opacity="{Binding Opacity, ElementName=b}"/><Border x:Name="b"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource OutlineBtnBrush}"
                             BorderThickness="1" CornerRadius="4">
                         <ContentPresenter x:Name="label" HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           Effect="{DynamicResource TextStrokeSoft}"/>
-                    </Border>
+                    </Border></Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="b" Property="Background" Value="{DynamicResource OutlineBtnBrush}"/>

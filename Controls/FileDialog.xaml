@@ -92,10 +92,10 @@
                         <ControlTemplate TargetType="Button">
                             <!-- ControlCornerRadius is 4 on all twelve rounded themes, the
                                  literal this replaces, and 0 on 98SE. -->
-                            <Border x:Name="ub" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource InputBorderBrush}"
+                            <Grid><Border x:Name="ubRing" IsHitTestVisible="False" CornerRadius="{Binding CornerRadius, ElementName=ub}" BorderThickness="{Binding BorderThickness, ElementName=ub}" BorderBrush="{Binding Background, ElementName=ub}" Margin="{Binding Margin, ElementName=ub}" Visibility="{Binding Visibility, ElementName=ub}" Opacity="{Binding Opacity, ElementName=ub}"/><Border x:Name="ub" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource InputBorderBrush}"
                                     BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
+                            </Border></Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ub" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/></Trigger>
                                 <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4"/></Trigger>
