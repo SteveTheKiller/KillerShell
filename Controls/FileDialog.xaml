@@ -60,12 +60,12 @@
                     <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <Grid Margin="16,0">
                     <Grid VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False">
-                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="15" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
+                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="16.5" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
                             <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
-                            <Run Text="Killer" Foreground="#D8000000"/><Run Text="Shell" FontSize="19.5" FontWeight="Bold" Foreground="#D8000000"/>
+                            <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="23.25" Foreground="#D8000000"/>
                         </TextBlock>
-                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="15">
-                            <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run Text="Shell" FontSize="19.5" FontWeight="Bold" Foreground="{DynamicResource AccentLogo}"/>
+                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="16.5">
+                            <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="23.25" Foreground="{DynamicResource AccentLogo}"/>
                         </TextBlock>
                     </Grid>
                     <Button Content="&#xE8BB;" Click="Cancel_Click" HorizontalAlignment="Right" Width="30" Height="26" FontSize="10"
