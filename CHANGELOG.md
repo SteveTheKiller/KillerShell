@@ -12,7 +12,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Changed
 - The saved places drawer takes at most 40% of the sidebar height and scrolls past that, so a long list leaves the folder tree usable.
-- The wordmarks and headings in the app and on the website use Killer Sans and Freckle Face in place of the typewriter font.
+- The wordmarks use Punktype and Lacquer, and the interface text, headings and footers use Killer Sans, in place of the typewriter font in the app and on the website.
 
 ### Fixed
 - On a small screen the window opens sized to fit the desktop instead of running past its edges.
