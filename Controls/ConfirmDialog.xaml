@@ -81,6 +81,8 @@
                                 <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"><Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/></TextBlock>
                             </StackPanel>
                             <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"
+                                       Visibility="{DynamicResource DialogWordmarkVisibility}" Margin="1,2,0,0" IsHitTestVisible="False" Opacity="{DynamicResource WordmarkAccentShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect><Run Text="Killer" Foreground="Transparent"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/></TextBlock>
+                            <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"
                                        Visibility="{DynamicResource DialogWordmarkVisibility}"><Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
                         </Grid>
                             <!-- Outside the wordmark grid so the wordmark's lift and bleed never move it. -->
