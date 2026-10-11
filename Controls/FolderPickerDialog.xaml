@@ -50,19 +50,20 @@
                  keep showing the card's own face here exactly as before. 98SE sets
                  UseDialogCaption, and ThemeManager then points this key at the accent's
                  TitleBarBrush, which is what gives the dialog a real Win98 caption. -->
-            <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Panel.ZIndex="1">
                 <Grid>
                     <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <Grid Margin="16,0">
                     <!-- KillerScan-style wordmark: a blurred dark copy behind the crisp text,
                          faded by IconShadowOpacity (0 in light mode = no shadow). -->
-                    <Grid VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False">
-                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="11.73" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
+                    <Grid VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="0,-18,0,-22">
+                        <Grid.RenderTransform><TranslateTransform Y="-5"/></Grid.RenderTransform>
+                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
                             <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
-                            <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="17.62" Foreground="#D8000000"/>
+                            <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/>
                         </TextBlock>
-                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="11.73">
-                            <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="17.62" Foreground="{DynamicResource AccentLogo}"/>
+                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}">
+                            <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="{DynamicResource AccentLogo}"/>
                         </TextBlock>
                     </Grid>
                     <!-- Foreground via Style setter so hover/press triggers can win over it -->
@@ -73,7 +74,7 @@
             </Border>
 
             <TextBlock Grid.Row="1" Text="{DynamicResource Str_Dlg_SelectFolder}" Margin="16,0,16,8"
-                       Foreground="{DynamicResource MutedTextBrush}" FontFamily="Consolas" FontSize="12"/>
+                       Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="12"/>
 
             <!-- Path row: up one level + current path + view modes -->
             <Grid Grid.Row="2" Margin="16,0,16,8">
@@ -151,7 +152,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="{Binding Label}" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center"
+                                    <TextBlock Text="{Binding Label}" FontFamily="{DynamicResource MonoFont}" FontSize="12" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis" ToolTip="{Binding Label}"/>
                                 </StackPanel>
                             </DataTemplate>
@@ -208,7 +209,7 @@
                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                      ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                             <TextBlock x:Name="EmptyHint" Text="{DynamicResource Str_Dlg_NoSubfolders}" Visibility="Collapsed"
-                                       Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="11"
+                                       Foreground="{DynamicResource DimTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"
                                        TextAlignment="Center" Margin="20"/>
                         </Grid>
@@ -224,9 +225,9 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
-                    <TextBlock x:Name="SelName" FontFamily="Consolas" FontSize="12" Foreground="{DynamicResource TextBrush}"
+                    <TextBlock x:Name="SelName" FontFamily="{DynamicResource MonoFont}" FontSize="12" Foreground="{DynamicResource TextBrush}"
                                TextTrimming="CharacterEllipsis"/>
-                    <TextBlock x:Name="SelMeta" FontFamily="Consolas" FontSize="10" Foreground="{DynamicResource MutedTextBrush}"
+                    <TextBlock x:Name="SelMeta" FontFamily="{DynamicResource MonoFont}" FontSize="10" Foreground="{DynamicResource MutedTextBrush}"
                                TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">

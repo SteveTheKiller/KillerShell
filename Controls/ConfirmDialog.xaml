@@ -61,7 +61,7 @@
                 <!-- Title bar: transparent by default so it shows the card's own face, or the
                      theme's own caption band where one is asked for (98SE). -->
                 <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}"
-                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Panel.ZIndex="1">
                     <Grid>
                         <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}"
                                 Opacity="{DynamicResource GrainOpacity}"/>
@@ -72,19 +72,21 @@
                                Width="{DynamicResource TitleIconSize}" Height="{DynamicResource TitleIconSize}"
                                Margin="{DynamicResource TitleIconMargin}"
                                RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                        <Grid VerticalAlignment="Center">
+                        <Grid VerticalAlignment="Center" Margin="0,-18,0,-22">
+                            <Grid.RenderTransform><TranslateTransform Y="-5"/></Grid.RenderTransform>
                             <StackPanel Orientation="Horizontal" Margin="1,2,0,0"
                                         Visibility="{DynamicResource DialogWordmarkVisibility}"
                                         Opacity="{DynamicResource IconShadowOpacity}">
                                 <StackPanel.Effect><BlurEffect Radius="3"/></StackPanel.Effect>
-                                <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="11.73"><Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="17.62" Foreground="#D8000000"/></TextBlock>
+                                <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"><Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/></TextBlock>
                             </StackPanel>
-                            <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="11.73"
-                                       Visibility="{DynamicResource DialogWordmarkVisibility}"><Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="17.62" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
-                            <TextBlock Text="KillerShell" FontFamily="{DynamicResource ChromeFontFamily}"
+                            <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"
+                                       Visibility="{DynamicResource DialogWordmarkVisibility}"><Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
+                        </Grid>
+                            <!-- Outside the wordmark grid so the wordmark's lift and bleed never move it. -->
+                            <TextBlock Text="KillerShell" FontFamily="{DynamicResource ChromeFontFamily}" VerticalAlignment="Center"
                                        FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"
                                        Visibility="{DynamicResource DialogPlainTitleVisibility}"/>
-                        </Grid>
                         </StackPanel>
                         <Button Content="{DynamicResource AboutCloseGlyph}" Click="Cancel_Click"
                                 HorizontalAlignment="Right" VerticalAlignment="Center"

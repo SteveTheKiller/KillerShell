@@ -23,6 +23,8 @@ namespace KillerShell.Services
     /// </summary>
     public static class ThemeManager
     {
+        /// <summary>Killer Sans UI (Killer Sans scaled to Segoe UI proportions) with the Segoe fallback stack.</summary>
+        internal static readonly FontFamily KillerSansUiStack = new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
         /// <summary>
         /// Read a corner radius out of the live theme. For code-built controls, which cannot use a
         /// DynamicResource and so had their radii as C# literals - the exact bug that kept the
@@ -350,7 +352,7 @@ namespace KillerShell.Services
             Mirror("BgFlyout", "MenuBackgroundBrush");
             Mirror("ButtonEdgeBrush", "CardBorderBrush");
             SetIfAbsent("CaptionButtonBrush", Transparent);
-            SetIfAbsent("CaptionButtonHeight", 36.0);
+            SetIfAbsent("CaptionButtonHeight", 32.0);
             SetIfAbsent("CaptionButtonMargin", new Thickness(0));
             SetIfAbsent("CaptionButtonWidth", 44.0);
             SetIfAbsent("CaptionButtonsMargin", new Thickness(0));
@@ -396,14 +398,14 @@ namespace KillerShell.Services
             // have restyled every secondary button in the app.
             Mirror("ChipFaceBrush", "PaneBrush");
             Mirror("ChipHoverBrush", "RowHoverBrush");
-            SetIfAbsent("ChromeFontFamily", new FontFamily("Segoe UI"));
+            SetIfAbsent("ChromeFontFamily", KillerSansUiStack);
             SetIfAbsent("DialogWordmarkVisibility", Visibility.Visible);
             SetIfAbsent("DialogPlainTitleVisibility", Visibility.Collapsed);
             SetIfAbsent("ContentPaneMargin", new Thickness(0));
             SetIfAbsent("DialogButtonsMargin", new Thickness(0));
             SetIfAbsent("DialogContentMargin", new Thickness(0));
             SetIfAbsent("DialogOuterBorderThickness", new Thickness(1));
-            SetIfAbsent("DialogTitleBarPadding", new Thickness(14, 0, 14, 0));
+            SetIfAbsent("DialogTitleBarPadding", new Thickness(6, 0, 14, 0));
             SetIfAbsent("DialogFieldMargin", new Thickness(0));
             // 10, the halo every dialog already reserved for its drop shadow. 98SE sets 0: it
             // casts no shadow, and an invisible 10px gutter would put the resize grab outside
@@ -419,7 +421,7 @@ namespace KillerShell.Services
             // This stays a DOUBLE: 98SE declares it as <sys:Double> and AboutCaptionHeight below
             // derives from it numerically, and both are assigned to FrameworkElement.Height, which
             // is a double.
-            SetIfAbsent("DialogTitleBarHeight", 36.0);
+            SetIfAbsent("DialogTitleBarHeight", 32.0);
 
             // The SAME height as a GridLength, for the one consumer that is a RowDefinition.
             //
@@ -435,7 +437,7 @@ namespace KillerShell.Services
             // Derived here rather than declared per theme so 98SE's own 20 is picked up too, and
             // so no palette file has to carry the same number twice in two types.
             combined["DialogTitleBarRowHeight"] = new GridLength(
-                combined["DialogTitleBarHeight"] is double dialogCaptionH ? dialogCaptionH : 36.0);
+                combined["DialogTitleBarHeight"] is double dialogCaptionH ? dialogCaptionH : 32.0);
             SetIfAbsent("EdgeFadeOpacity", 1.0);
             // The EDITOR's selection strength (Editing/EditorControl.cs), distinct from
             // TextSelectionOpacity which is the plain TextBox one. 98SE states 0.75 with
@@ -820,17 +822,23 @@ namespace KillerShell.Services
             // needs because its selection is a solid navy fill at full opacity.
             Mirror("TextSelectionTextBrush", "TextBrush");
             SetIfAbsent("TitleBarBleed", new Thickness(0));
-            SetIfAbsent("TitleBarHeight", 36.0);
+            SetIfAbsent("TitleBarHeight", 32.0);
             // These six are the title bar's EXISTING hardcoded numbers, moved into the contract
             // rather than replaced by it. A generic default would have quietly resized the icon
             // and the wordmark on all twelve non-flat themes the moment the markup started
             // binding them; 98SE states its own and is the only theme that changes.
             SetIfAbsent("TitleBarPadding", new Thickness(14, 0, 14, 0));
+            // The main window logo (icon + wordmark) sits 5px off the top-left corner, as in KillerPDF.
+            SetIfAbsent("TitleLogoMargin", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fc && fc
+                ? combined["TitleBarPadding"] : new Thickness(4, 3, 0, 0));
+            // The UI face for everything that is not the app (mono) slot; a flat theme keeps its caption font.
+            SetIfAbsent("UiFont", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fu && fu
+                ? combined["ChromeFontFamily"] : KillerSansUiStack);
             SetIfAbsent("TitleIconMargin", new Thickness(0, 0, 7, 0));
-            SetIfAbsent("TitleIconSize", 27.0);
+            SetIfAbsent("TitleIconSize", 25.0);
             SetIfAbsent("TitleTextMargin", new Thickness(0));
-            SetIfAbsent("TitleWordmarkBoldSize", 22.88);
-            SetIfAbsent("TitleWordmarkSize", 12.8);
+            SetIfAbsent("TitleWordmarkBoldSize", 22.52);
+            SetIfAbsent("TitleWordmarkSize", 15.0);
             SetIfAbsent("UseDialogCaption", false);
             Mirror("WindowEdgeBrush", "AppBorderBrush");
             SetIfAbsent("WindowEdgeThickness", new Thickness(0));

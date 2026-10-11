@@ -68,6 +68,7 @@
     <Resource Include="Resources\open_hand.cur" />
     <Resource Include="Resources\closed_hand.cur" />
     <Resource Include="Fonts\KillerSans-Regular.ttf" />
+    <Resource Include="Fonts\KillerSansUI-Regular.ttf" />
     <Resource Include="Fonts\Punktype.ttf" />
     <Resource Include="Fonts\Lacquer-Regular.ttf" />
     <!-- 26 glyphs, 2.9 KB: the handful a stock Windows monospaced font does NOT have but the

@@ -14,6 +14,7 @@
         Background="{DynamicResource BackgroundBrush}"
         TextOptions.TextFormattingMode="Display"
         TextOptions.TextRenderingMode="ClearType"
+        FontFamily="{DynamicResource UiFont}"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True"
         WindowStartupLocation="CenterScreen"
@@ -21,7 +22,7 @@
         PreviewKeyUp="Window_PreviewKeyUp">
 
     <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="36" ResizeBorderThickness="8" CornerRadius="0"
+        <shell:WindowChrome CaptionHeight="32" ResizeBorderThickness="8" CornerRadius="0"
                             GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
     </shell:WindowChrome.WindowChrome>
 
@@ -87,7 +88,8 @@
         <!-- TitleBarBleed is a negative margin (-1,0,-1,0 on 98SE) that lets the caption run out
              over the frame's inner bevel, the way a Win98 title bar meets its frame with no gap.
              Zero everywhere else. -->
-        <Grid Grid.Row="0" Height="{DynamicResource TitleBarHeight}"
+        <!-- ZIndex 1 so the wordmark's drips can hang into the top of the row below. -->
+        <Grid Grid.Row="0" Height="{DynamicResource TitleBarHeight}" Panel.ZIndex="1"
               Margin="{DynamicResource TitleBarBleed}"
               Background="{DynamicResource TitleBarBrush}">
             <Border IsHitTestVisible="False">
@@ -100,7 +102,7 @@
             <!-- App icon + wordmark, exactly like KillerScan: icon in the corner, then the
                  typewriter wordmark with a blurred dark copy behind the crisp text
                  (faded by IconShadowOpacity; 0 in light mode = no shadow). -->
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="{DynamicResource TitleBarPadding}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="{DynamicResource TitleLogoMargin}">
                 <icons:AppIcon x:Name="TitleIcon" VerticalAlignment="Center"
                        Width="{DynamicResource TitleIconSize}" Height="{DynamicResource TitleIconSize}"
                        Margin="{DynamicResource TitleIconMargin}"
@@ -128,10 +130,13 @@
                      also opts it out of the native caption - so window drag and double-click
                      maximize come back via the LogoBar handlers. Family standard; the website
                      link lives on the About card's wordmark. -->
+                <!-- Negative margins keep Lacquer's deep descent out of the layout so the bar never
+                     clips the drips; the 2px imbalance and the lift match KillerPDF. -->
                 <Grid x:Name="LogoBar" VerticalAlignment="Center" shell:WindowChrome.IsHitTestVisibleInChrome="True"
-                      Visibility="{DynamicResource WordmarkVisibility}"
+                      Margin="0,-18,0,-22" Visibility="{DynamicResource WordmarkVisibility}"
                       Cursor="Hand" ToolTip="{DynamicResource Str_TT_AppSize}" Background="Transparent"
                       MouseWheel="LogoBar_MouseWheel" MouseLeftButtonDown="LogoBar_MouseLeftButtonDown">
+                    <Grid.RenderTransform><TranslateTransform Y="-4"/></Grid.RenderTransform>
                     <!-- Sizes come from the shared theme resources, with smaller text
                          on a flat theme whose caption bar is far shorter. WordmarkEmbossOpacity is
                          the blurred dark copy behind the crisp text, 0 where an emboss is wrong. -->
@@ -157,7 +162,7 @@
                      the scroll-to-zoom target, and widening its hit area with a caption would
                      mean rolling the wheel next to the logo silently resized the app. -->
                 <TextBlock x:Name="ElevatedTag" Visibility="Collapsed" VerticalAlignment="Center"
-                           Margin="9,3,0,0" FontFamily="Consolas" FontSize="11.5"
+                           Margin="9,3,0,0" FontFamily="{DynamicResource MonoFont}" FontSize="11.5"
                            Text="{DynamicResource Str_Title_Elevated}"/>
             </StackPanel>
 
@@ -940,7 +945,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="&#xE8D2;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                        Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{DynamicResource Str_Fonts_Row}" FontFamily="Consolas"
+                                            <TextBlock Text="{DynamicResource Str_Fonts_Row}" FontFamily="{DynamicResource MonoFont}"
                                                        FontSize="11.5" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
@@ -949,7 +954,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                        Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{DynamicResource Str_Assoc_Row}" FontFamily="Consolas"
+                                            <TextBlock Text="{DynamicResource Str_Assoc_Row}" FontFamily="{DynamicResource MonoFont}"
                                                        FontSize="11.5" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
@@ -1174,7 +1179,7 @@
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="hb" Background="Transparent" BorderBrush="{DynamicResource InputBorderBrush}" BorderThickness="1" CornerRadius="8">
-                                            <TextBlock x:Name="ht" Text="?" Foreground="{DynamicResource DimTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Consolas" FontSize="10"/>
+                                            <TextBlock x:Name="ht" Text="?" Foreground="{DynamicResource DimTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
@@ -1438,7 +1443,7 @@
                      re-runs it so a window resize re-cuts the path.
                      11.5 status / 10 corner type is the family footer standard. -->
                 <TextBlock x:Name="StatusText" Grid.Column="2" Text="{DynamicResource Str_Status_Ready}" Foreground="{DynamicResource TextFooter}"
-                           FontFamily="{DynamicResource MonoFont}" FontSize="11.5" VerticalAlignment="Center"
+                           FontFamily="{DynamicResource BrandSansFont}" FontSize="16" TextOptions.TextFormattingMode="Ideal" VerticalAlignment="Center"
                            SizeChanged="StatusText_SizeChanged"/>
             </Grid>
             </Grid>
@@ -1673,23 +1678,23 @@
                                         BorderBrush="{DynamicResource PaneBorderBrush}" BorderThickness="1">
                                     <StackPanel>
                                         <StackPanel Margin="0,0,0,10">
-                                            <TextBlock Text="{DynamicResource Str_About_Version}" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="10"/>
+                                            <TextBlock Text="{DynamicResource Str_About_Version}" Foreground="{DynamicResource DimTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
                                             <!-- One row, two ends: the version in the accent on the left, the
                                                  release date muted and italic hard right against the panel edge.
                                                  Bottom-aligned rather than centered so the two sizes sit on a
                                                  shared baseline. Only the version text is clickable. -->
                                             <Grid Margin="0,1,0,0">
                                                 <TextBlock x:Name="AboutVersionBlock" Foreground="{DynamicResource PrimaryBrush}"
-                                                           FontFamily="Consolas" FontSize="13" Cursor="Hand"
+                                                           FontFamily="{DynamicResource MonoFont}" FontSize="13" Cursor="Hand"
                                                            HorizontalAlignment="Left" VerticalAlignment="Bottom"
                                                            MouseLeftButtonUp="AboutVersion_Click"/>
                                                 <TextBlock x:Name="AboutReleaseDateBlock" Foreground="{DynamicResource MutedTextBrush}"
-                                                           FontFamily="Consolas" FontSize="11" FontStyle="Italic"
+                                                           FontFamily="{DynamicResource MonoFont}" FontSize="11" FontStyle="Italic"
                                                            HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
                                             </Grid>
                                         </StackPanel>
                                         <StackPanel Margin="0,0,0,10">
-                                            <TextBlock Text="{DynamicResource Str_About_Publisher}" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="10"/>
+                                            <TextBlock Text="{DynamicResource Str_About_Publisher}" Foreground="{DynamicResource DimTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
                                             <TextBlock x:Name="AboutPublisherBlock" Foreground="{DynamicResource TextBrush}" FontSize="12" Margin="0,1,0,0"/>
                                             <!-- Shown only on a signed exe, where the certificate subject is the
                                                  legal name - this ties it back to the name people know. The alias
@@ -1700,12 +1705,12 @@
                                                        FontSize="11" Margin="0,3,0,0"><Run Text="AKA "/><Hyperlink NavigateUri="https://thekiller.net" RequestNavigate="AboutLink_Navigate" Foreground="{DynamicResource PrimaryBrush}" TextDecorations="None" ToolTip="thekiller.net"><Run x:Name="AboutAkaRun"/></Hyperlink></TextBlock>
                                         </StackPanel>
                                         <StackPanel Margin="0,0,0,10">
-                                            <TextBlock Text="{DynamicResource Str_About_Thumbprint}" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="10"/>
-                                            <TextBlock x:Name="AboutThumbprintBlock" Foreground="{DynamicResource TextBrush}" FontFamily="Consolas" FontSize="11" TextWrapping="Wrap" Margin="0,1,0,0"/>
+                                            <TextBlock Text="{DynamicResource Str_About_Thumbprint}" Foreground="{DynamicResource DimTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                            <TextBlock x:Name="AboutThumbprintBlock" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11" TextWrapping="Wrap" Margin="0,1,0,0"/>
                                         </StackPanel>
                                         <StackPanel Margin="0,0,0,10">
-                                            <TextBlock Text="{DynamicResource Str_About_Sha}" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas" FontSize="10"/>
-                                            <TextBlock x:Name="AboutSha256Block" Foreground="{DynamicResource TextBrush}" FontFamily="Consolas" FontSize="11" TextWrapping="NoWrap" Margin="0,1,0,0"/>
+                                            <TextBlock Text="{DynamicResource Str_About_Sha}" Foreground="{DynamicResource DimTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
+                                            <TextBlock x:Name="AboutSha256Block" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11" TextWrapping="NoWrap" Margin="0,1,0,0"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>
@@ -1755,7 +1760,7 @@
                                      checkbox keeps its own width and the link stays pinned to the
                                      edge rather than being centered in whatever is left. -->
                                 <DockPanel LastChildFill="False">
-                                    <TextBlock DockPanel.Dock="Right" FontFamily="Consolas" FontSize="10"
+                                    <TextBlock DockPanel.Dock="Right" FontFamily="{DynamicResource MonoFont}" FontSize="10"
                                                VerticalAlignment="Center">
                                         <Hyperlink TextDecorations="None" Cursor="Hand" Click="AboutClearData_Click">
                                             <Hyperlink.Style>
@@ -1809,12 +1814,12 @@
                     </Grid>
 
                     <TextBlock Text="{DynamicResource Str_Fonts_App}" Foreground="{DynamicResource DimTextBrush}"
-                               FontFamily="Consolas" FontSize="10" Margin="0,0,0,4"/>
+                               FontFamily="{DynamicResource MonoFont}" FontSize="10" Margin="0,0,0,4"/>
                     <ComboBox x:Name="FontAppCombo" Height="26" FontSize="12" Margin="0,0,0,14"
                               SelectionChanged="FontCombo_Changed" PreviewMouseWheel="FontCombo_Wheel"/>
 
                     <TextBlock Text="{DynamicResource Str_Fonts_Terminal}" Foreground="{DynamicResource DimTextBrush}"
-                               FontFamily="Consolas" FontSize="10" Margin="0,0,0,4"/>
+                               FontFamily="{DynamicResource MonoFont}" FontSize="10" Margin="0,0,0,4"/>
                     <ComboBox x:Name="FontTermCombo" Height="26" FontSize="12"
                               SelectionChanged="FontCombo_Changed" PreviewMouseWheel="FontCombo_Wheel"/>
 
@@ -1835,14 +1840,14 @@
                         <TextBlock x:Name="FontTermSizeLabel" Grid.Column="1" Margin="10,0,0,0"
                                    MinWidth="26" TextAlignment="Right" VerticalAlignment="Center"
                                    Foreground="{DynamicResource MutedTextBrush}"
-                                   FontFamily="Consolas" FontSize="11"/>
+                                   FontFamily="{DynamicResource MonoFont}" FontSize="11"/>
                     </Grid>
 
                     <!-- Editor text. Fixed-width only, filtered the same way the terminal list
                          is: a proportional face does not merely look wrong over code, it puts
                          every line number and every column of an indented block out of line. -->
                     <TextBlock Text="{DynamicResource Str_Fonts_Editor}" Foreground="{DynamicResource DimTextBrush}"
-                               FontFamily="Consolas" FontSize="10" Margin="0,0,0,4"/>
+                               FontFamily="{DynamicResource MonoFont}" FontSize="10" Margin="0,0,0,4"/>
                     <ComboBox x:Name="FontEditorCombo" Height="26" FontSize="12"
                               SelectionChanged="FontCombo_Changed" PreviewMouseWheel="FontCombo_Wheel"/>
 
@@ -1858,7 +1863,7 @@
                         <TextBlock x:Name="FontEditorSizeLabel" Grid.Column="1" Margin="10,0,0,0"
                                    MinWidth="26" TextAlignment="Right" VerticalAlignment="Center"
                                    Foreground="{DynamicResource MutedTextBrush}"
-                                   FontFamily="Consolas" FontSize="11"/>
+                                   FontFamily="{DynamicResource MonoFont}" FontSize="11"/>
                     </Grid>
 
                     <TextBlock Text="{DynamicResource Str_Fonts_Hint}" Foreground="{DynamicResource DimTextBrush}"
@@ -1895,9 +1900,9 @@
                                FontSize="11.5" TextWrapping="Wrap" Margin="0,0,0,12"/>
 
                     <TextBlock Text="{DynamicResource Str_Assoc_What}" Foreground="{DynamicResource DimTextBrush}"
-                               FontFamily="Consolas" FontSize="10" Margin="0,0,0,4"/>
+                               FontFamily="{DynamicResource MonoFont}" FontSize="10" Margin="0,0,0,4"/>
                     <TextBlock x:Name="AssocExtList" Foreground="{DynamicResource MutedTextBrush}"
-                               FontFamily="Consolas" FontSize="10.5" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                               FontFamily="{DynamicResource MonoFont}" FontSize="10.5" TextWrapping="Wrap" Margin="0,0,0,12"/>
 
                     <TextBlock Text="{DynamicResource Str_Assoc_Safe}" Foreground="{DynamicResource DimTextBrush}"
                                FontSize="10.5" TextWrapping="Wrap" Margin="0,0,0,14"/>
@@ -2087,7 +2092,7 @@
                             <!-- Bare template: a text toggle, no panel chrome. The code-behind
                                  sets Foreground per selection, so nothing here may pin it. -->
                             <Style x:Key="KsViewToggle" TargetType="Button">
-                                <Setter Property="FontFamily" Value="Consolas"/>
+                                <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
                                 <Setter Property="FontSize" Value="10.5"/>
                                 <Setter Property="Background" Value="Transparent"/>
                                 <Setter Property="BorderThickness" Value="0"/>
@@ -2106,7 +2111,7 @@
                         </StackPanel.Resources>
                         <Button x:Name="KsViewListBtn" Content="{DynamicResource Str_Ks_ViewList}"
                                 Style="{StaticResource KsViewToggle}" Click="KsViewList_Click"/>
-                        <TextBlock Text="/" Foreground="{DynamicResource DimTextBrush}" FontFamily="Consolas"
+                        <TextBlock Text="/" Foreground="{DynamicResource DimTextBrush}" FontFamily="{DynamicResource MonoFont}"
                                    FontSize="10.5" Margin="7,0" VerticalAlignment="Center"/>
                         <Button x:Name="KsViewKeyboardBtn" Content="{DynamicResource Str_Ks_ViewKeyboard}"
                                 Style="{StaticResource KsViewToggle}" Click="KsViewKeyboard_Click"/>
@@ -2152,7 +2157,7 @@
                         <TextBlock x:Name="TabDragGhostGlyph" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    Margin="0,0,5,0" VerticalAlignment="Center"
                                    Foreground="{DynamicResource MutedTextBrush}"/>
-                        <TextBlock x:Name="TabDragGhostText" FontFamily="Consolas" FontSize="11.5"
+                        <TextBlock x:Name="TabDragGhostText" FontFamily="{DynamicResource MonoFont}" FontSize="11.5"
                                    FontWeight="Bold" VerticalAlignment="Center"
                                    Foreground="{DynamicResource TextBrush}"/>
                     </StackPanel>

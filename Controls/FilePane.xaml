@@ -313,7 +313,7 @@
                                                        Text="{Binding TabGlyph}" FontFamily="Segoe MDL2 Assets"
                                                        FontSize="12" Margin="0,0,3,0" VerticalAlignment="Center"
                                                        Foreground="{DynamicResource MutedTextBrush}"/>
-                                            <TextBlock x:Name="tabLbl" Text="{Binding Title}" FontFamily="Consolas" FontSize="11"
+                                            <TextBlock x:Name="tabLbl" Text="{Binding Title}" FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                                        Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center"
                                                        TextTrimming="CharacterEllipsis"/>
                                         </DockPanel>
@@ -1001,17 +1001,17 @@
                                                 <TextBlock DockPanel.Dock="Left" Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                            Width="22" VerticalAlignment="Center"/>
                                                 <TextBlock DockPanel.Dock="Right" Text="Ctrl+Alt+Shift+E" Foreground="{DynamicResource DimTextBrush}"
-                                                           FontFamily="Consolas" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
-                                                <TextBlock Text="CSV" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center"/>
+                                                           FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
+                                                <TextBlock Text="CSV" FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center"/>
                                             </DockPanel>
                                         </Button>
                                         <Button Style="{StaticResource ExportRow}" Click="Export_Click">
                                             <DockPanel LastChildFill="True">
-                                                <TextBlock DockPanel.Dock="Left" Text="&lt;&gt;" FontFamily="Consolas" FontSize="11" FontWeight="Bold"
+                                                <TextBlock DockPanel.Dock="Left" Text="&lt;&gt;" FontFamily="{DynamicResource MonoFont}" FontSize="11" FontWeight="Bold"
                                                            Width="22" VerticalAlignment="Center"/>
                                                 <TextBlock DockPanel.Dock="Right" Text="Ctrl+Alt+E" Foreground="{DynamicResource DimTextBrush}"
-                                                           FontFamily="Consolas" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
-                                                <TextBlock Text="HTML" FontFamily="Consolas" FontSize="11" VerticalAlignment="Center"/>
+                                                           FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
+                                                <TextBlock Text="HTML" FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center"/>
                                             </DockPanel>
                                         </Button>
                                     </StackPanel>
@@ -1668,7 +1668,7 @@
                                                              Foreground="{DynamicResource TextBrush}"
                                                              CaretBrush="{DynamicResource PrimaryBrush}"
                                                              BorderBrush="{DynamicResource PrimaryBrush}" BorderThickness="1"
-                                                             FontFamily="Consolas" FontSize="12" Padding="4,1"
+                                                             FontFamily="{DynamicResource MonoFont}" FontSize="12" Padding="4,1"
                                                              VerticalContentAlignment="Center"
                                                              KeyDown="EditorGotoBox_KeyDown"/>
                                                 </StackPanel>
@@ -1720,7 +1720,7 @@
 
                                                     <TextBlock Text="{DynamicResource Str_Ed_OptIndent}" Margin="10,0,0,3"
                                                                Foreground="{DynamicResource DimTextBrush}"
-                                                               FontFamily="Consolas" FontSize="10"/>
+                                                               FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
                                                     <Button x:Name="EdIndent2" CommandParameter="2" Content="2"
                                                             Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdIndent_Click"/>
                                                     <Button x:Name="EdIndent4" CommandParameter="4" Content="4"
@@ -1781,7 +1781,7 @@
                                     <Button x:Name="EditorEncodingBtn" Style="{StaticResource SurfaceButton}"
                                             Background="Transparent" BorderThickness="0" Padding="4,2"
                                             Foreground="{DynamicResource DimTextBrush}"
-                                            FontFamily="Consolas" FontSize="10.5" VerticalAlignment="Center"
+                                            FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"
                                             ToolTip="{DynamicResource Str_TT_EdEncoding}" Click="EditorEncoding_Click"/>
                                     <Popup x:Name="EditorEncodingPopup" PlacementTarget="{Binding ElementName=EditorEncodingBtn}"
                                            Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
@@ -1819,7 +1819,7 @@
                                     </Popup>
                                     <TextBlock x:Name="EditorEolText" Margin="10,0,0,0"
                                                Foreground="{DynamicResource DimTextBrush}"
-                                               FontFamily="Consolas" FontSize="10.5" VerticalAlignment="Center"/>
+                                               FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>
