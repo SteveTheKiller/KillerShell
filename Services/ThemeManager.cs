@@ -835,7 +835,7 @@ namespace KillerShell.Services
             SetIfAbsent("UiFont", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fu && fu
                 ? combined["ChromeFontFamily"] : KillerSansUiStack);
             SetIfAbsent("TitleIconMargin", new Thickness(0, 0, 7, 0));
-            SetIfAbsent("TitleIconSize", 25.0);
+            SetIfAbsent("TitleIconSize", 27.0);
             SetIfAbsent("TitleTextMargin", new Thickness(0));
             SetIfAbsent("TitleWordmarkBoldSize", 22.52);
             SetIfAbsent("TitleWordmarkSize", 15.0);
