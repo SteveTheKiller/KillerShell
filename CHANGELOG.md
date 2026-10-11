@@ -25,6 +25,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Deleting the open folder from another window or computer moves the listing up to its parent and drops the folder from the tree, instead of leaving both showing a folder that is gone.
 - Open branches of the folder tree follow folders added, renamed or deleted by other programs and computers, and a branch reopened after a change shows what is on disk now.
 - Dialog title wordmarks keep the main window's dark halo behind the app name on the Light theme's Yellow accent, so the yellow no longer fades into the title bar.
+- Active and hovered sidebar rail icons show the yellow accent with a dark halo on the Light theme's Yellow accent, instead of near-black.
 
 ## [1.3.2] - 2026-10-07
 
