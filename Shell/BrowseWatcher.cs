@@ -112,6 +112,13 @@ namespace KillerShell.Shell
 
         // Recover a lost batch by relisting. A provider that cannot monitor changes must
         // stop instead: recreating its watcher would repeat the same failure indefinitely.
+        //
+        // Deleting the watched folder ITSELF also lands here. Windows ends the watch with
+        // Access Denied and raises no Deleted event for it, on local disks and SMB shares alike,
+        // so treating every error as a provider failure left the listing standing in a folder
+        // that was gone and the tree still showing it. Once the handle is closed the folder is
+        // checked, and a missing one goes through the flush, which walks up to the nearest
+        // surviving parent and refreshes the tree there.
         private void OnFsError(object sender, ErrorEventArgs e)
         {
             if (e.GetException() is InternalBufferOverflowException)
@@ -119,7 +126,10 @@ namespace KillerShell.Shell
             else
                 Dispatcher.InvokeAsync(() =>
                 {
-                    if (ReferenceEquals(sender, _watcher)) StopWatching();
+                    if (!ReferenceEquals(sender, _watcher)) return;
+                    string? folder = _active?.IsBrowsing == true ? _active.CurrentFolder : null;
+                    StopWatching();
+                    if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder)) FlushWatchChanges();
                 }, DispatcherPriority.Background);
         }
 
