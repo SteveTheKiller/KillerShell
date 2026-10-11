@@ -6,7 +6,7 @@
 theme's background on the very first frame (the browser's default white shows otherwise). */
 (function(){var d=document.documentElement,t=null;try{t=localStorage.getItem('kshell-theme');if(t){d.setAttribute('data-theme',t);if({dark:1,light:1,hc:1}[t]){var v=localStorage.getItem('kshell-av');if(v){var s=v.split('|');d.style.setProperty('--accent',s[0]);d.style.setProperty('--btn',s[1]);}}}}catch(e){}
 var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a5234',cyanotic:'#0a4a6e'};d.style.backgroundColor=bg[t]||bg.dark;})();</script>
-<link rel="preload" href="brand/KillerSans-Regular.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="brand/FreckleFace-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="brand/KillerSans-Regular.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="brand/Punktype.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="brand/Lacquer-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="darkreader-lock">
 <title>KillerShell - Help</title>
@@ -18,7 +18,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <style>
 .content-inner { max-width: 880px; margin: 0 auto; padding: 0 28px 56px; }
 .help-hero { text-align: center; padding: 44px 16px 6px; }
-.help-wm { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 6px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
+.help-wm { height: clamp(55px, 9.5vw, 91px); width: auto; margin: 0 auto 6px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
 .help-hero p { color: var(--muted); margin-top: 6px; font-size: 15px; }
 .help-hero .legend { font-size: 13px; margin-top: 4px; color: var(--text2); }
 .help-cat { font-family: var(--kt-font-section); font-size: 18px; font-weight: normal; letter-spacing: .5px; color: var(--accent); margin: 30px 2px 12px; padding-top: 6px; scroll-margin-top: 74px; text-shadow: 0 2px 5px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.5); }

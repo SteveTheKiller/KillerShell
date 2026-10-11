@@ -6,7 +6,7 @@
 theme's background on the very first frame (the browser's default white shows otherwise). */
 (function(){var d=document.documentElement,t=null;try{t=localStorage.getItem('kshell-theme');if(t){d.setAttribute('data-theme',t);if({dark:1,light:1,hc:1}[t]){var v=localStorage.getItem('kshell-av');if(v){var s=v.split('|');d.style.setProperty('--accent',s[0]);d.style.setProperty('--btn',s[1]);}}}}catch(e){}
 var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a5234',cyanotic:'#0a4a6e'};d.style.backgroundColor=bg[t]||bg.dark;})();</script>
-<link rel="preload" href="brand/KillerSans-Regular.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="brand/FreckleFace-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="brand/KillerSans-Regular.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="brand/Punktype.ttf" as="font" type="font/ttf" crossorigin><link rel="preload" href="brand/Lacquer-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="darkreader-lock">
 <title>KillerShell - About</title>
@@ -17,7 +17,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <link rel="stylesheet" href="ks.css?v=17">
 <style>
 .page-hero { text-align: center; padding: 44px 16px 8px; }
-.page-hero .wm-logo { height: clamp(46px, 8vw, 76px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
+.page-hero .wm-logo { height: clamp(55px, 9.5vw, 91px); width: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.55)); }
 .page-hero p { color: var(--muted); font-size: 15px; margin-top: 4px; }
 .content-inner { max-width: 880px; margin: 0 auto; padding: 0 28px 56px; }
 .sb-tabs .on { border-bottom: 0; }
@@ -36,7 +36,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 /* One height for all of them. Every app's SVG shares a 996-unit viewBox height, so this renders
    "Killer" at the same size in each - no per-app fudge. The old .ks { height: 26px } override
    was papering over the fact that these were mixed PNG and SVG art with different padding. */
-.also-wm { height: 30px; width: auto; display: block; max-width: 100%; object-fit: contain; object-position: left center; }
+.also-wm { height: 36px; width: auto; display: block; max-width: 100%; object-fit: contain; object-position: left center; }
 .also-wm.light { display: none; }
 html[data-theme="light"] .also-wm.dark { display: none; }
 html[data-theme="light"] .also-wm.light { display: block; }
