@@ -233,10 +233,6 @@ namespace KillerShell.Shell
             // would sit on top of the rail.
             TreeResizeGrip.Visibility = _treeOpen ? Visibility.Visible : Visibility.Collapsed;
 
-            // Decided BEFORE the gap column changes, because the follow reads the content's
-            // current offset as its anchor.
-            bool followWindow = animate && BeginTreeWindowFollow(_treeOpen);
-
             TreeGapCol.Width = new GridLength(_treeOpen ? 6 : 0);
 
             // RIGHT, not Left - and that is not a typo for a left-hand panel.
@@ -253,79 +249,6 @@ namespace KillerShell.Shell
             SlideColumn(TreeCol, TreePanel, _treeOpen,
                         _treeWidth, minOpen: TreeWidthMin, maxOpen: TreeWidthMax,
                         freezeAlign: HorizontalAlignment.Right, animate: animate);
-
-            if (followWindow) CompositionTarget.Rendering += TreeWindowFollow_Tick;
-        }
-
-        // ── Window follow ────────────────────────────────────────
-        // On a floating window the tree does not take its width from the content. The window's
-        // LEFT edge moves out by the tree's width as it opens and back in as it closes, so the
-        // rail and everything right of it stay exactly where they are on screen and the tree
-        // comes out of the rail toward the left. Maximized, snapped, or parked against either
-        // side of the monitor, there is no room for that and the plain in-place slide runs.
-        //
-        // Driven every frame off the column's own animated width rather than a second tween,
-        // so the window edge and the column cannot drift apart.
-        private double _treeFollowAnchor;      // window Left + tree column + gap, held constant
-        private double _treeFollowRight;       // window right edge, held constant
-        private DateTime _treeFollowStarted;
-
-        private bool BeginTreeWindowFollow(bool open)
-        {
-            if (!IsLoaded || WindowState != WindowState.Normal) return false;
-
-            // A slide still running from a quick double toggle keeps its anchor.
-            if (_treeFollowStarted != default)
-            {
-                _treeFollowStarted = DateTime.UtcNow;
-                return false;
-            }
-
-            // Column widths are in ScaleHost's zoomed units; the window is in plain DIP.
-            double col = TreeCol.ActualWidth * _appScale;
-            double gap = TreeGapCol.ActualWidth * _appScale;
-
-            // Flush against either side of the work area means snapped or parked there.
-            double roomLeft = MonitorRoomToGrowLeftDip();
-            if (roomLeft <= 1 || MonitorRoomToGrowRightDip() <= 1) return false;
-
-            if (open)
-            {
-                if (roomLeft < (_treeWidth + 6) * _appScale - col - gap) return false;
-            }
-            else if (ActualWidth - col - gap < MinWidth)
-            {
-                return false;
-            }
-
-            // DualPane's F10 grow leaves a held Width animation on the window, which would
-            // pull the frame back to its old size on the next layout pass.
-            double w = ActualWidth;
-            BeginAnimation(WidthProperty, null);
-            Width = w;
-
-            _treeFollowAnchor  = Left + col + gap;
-            _treeFollowRight   = Left + w;
-            _treeFollowStarted = DateTime.UtcNow;
-            return true;
-        }
-
-        private void TreeWindowFollow_Tick(object? sender, EventArgs e)
-        {
-            double col = TreeCol.Width.IsAbsolute ? TreeCol.Width.Value : TreeCol.ActualWidth;
-            double gap = TreeGapCol.Width.Value;
-            double left = _treeFollowAnchor - (col + gap) * _appScale;
-            SetWindowEdgesDip(left, _treeFollowRight);
-
-            // SlideColumn clears the column's animation when it lands; the time check is only
-            // a backstop so the hook can never outlive a slide that was interrupted.
-            bool landed = !TreeCol.HasAnimatedProperties;
-            if (!landed && (DateTime.UtcNow - _treeFollowStarted).TotalMilliseconds < 1000) return;
-
-            CompositionTarget.Rendering -= TreeWindowFollow_Tick;
-            _treeFollowStarted = default;
-            Left  = left;
-            Width = _treeFollowRight - left;
         }
     }
 }
