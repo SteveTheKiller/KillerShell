@@ -23,6 +23,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Dragging the dual-pane divider trades width between the two panes and keeps the window the same width.
 - The accent ring on an administrator window squares its corners when the window is maximized.
 - Deleting the open folder from another window or computer moves the listing up to its parent and drops the folder from the tree, instead of leaving both showing a folder that is gone.
+- Open branches of the folder tree follow folders added, renamed or deleted by other programs and computers, and a branch reopened after a change shows what is on disk now.
 
 ## [1.3.2] - 2026-10-07
 

@@ -141,12 +141,12 @@ namespace KillerShell.Shell
         /// Nodes that were never opened are skipped - there is nothing cached to correct, and
         /// touching them would enumerate the disk for no reason.
         /// </remarks>
-        internal async Task RefreshAsync()
+        internal async Task RefreshAsync(bool deep = true)
         {
             if (!IsLoaded) return;
             if (IsGroup)
             {
-                foreach (var child in Children.ToArray()) await child.RefreshAsync();
+                foreach (var child in Children.ToArray()) await child.RefreshAsync(deep);
                 return;
             }
 
@@ -177,7 +177,9 @@ namespace KillerShell.Shell
                     // and IsExpanded survive; only genuinely new entries get fresh nodes.
                     int at = Children.IndexOf(existing);
                     if (at != i) Children.Move(at, i);
-                    await existing.RefreshAsync();   // its children are stale for the same reason
+                    // Its children are stale for the same reason. A shallow refresh (the tree
+                    // watcher's, TreeWatcher.cs) stops here: every open branch has its own watch.
+                    if (deep) await existing.RefreshAsync();
                 }
                 else Children.Insert(i, fresh[i]);
             }
@@ -423,6 +425,7 @@ namespace KillerShell.Shell
         {
             LoadDriveRoots();
             foreach (var r in _treeRoots.ToList()) await r.RefreshAsync();
+            SyncTreeWatchers();
         }
 
         // ── Context menu ─────────────────────────────────────────
@@ -562,8 +565,13 @@ namespace KillerShell.Shell
         {
             if (e.OriginalSource is not TreeViewItem tvi) return;
             if (tvi.DataContext is not FolderNode node) return;
+            // A collapsed branch is not watched (TreeWatcher.cs), so the children it cached can
+            // be out of date by the time it is opened again.
+            bool reopened = node.IsLoaded && !node.IsGroup;
             await node.LoadChildrenAsync();
+            if (reopened && !_treeRestoring) await node.RefreshAsync(deep: false);
             SaveTreeExpansion();
+            SyncTreeWatchers();
         }
 
         // Only here to record the change. Nothing is unloaded on collapse: the children stay
@@ -573,6 +581,7 @@ namespace KillerShell.Shell
         {
             if (e.OriginalSource is not TreeViewItem) return;
             SaveTreeExpansion();
+            SyncTreeWatchers();
         }
 
         // ── Expansion memory ─────────────────────────────────────
@@ -639,6 +648,7 @@ namespace KillerShell.Shell
                     await ExpandTreePath(p);
             }
             finally { _treeRestoring = false; }
+            SyncTreeWatchers();
         }
 
         /// <summary>

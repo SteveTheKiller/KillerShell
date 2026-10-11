@@ -223,6 +223,8 @@ namespace KillerShell.Shell
         // the window move identically.
         private void ApplyTreePanel(bool animate)
         {
+            SyncTreeWatchers();   // TreeWatcher.cs - a closed tree watches nothing
+
             // Chevron points where the sidebar is going: left to tuck it away, right to bring
             // it back. Codepoints keep the source ASCII, as everywhere else in this project.
             SidebarToggleBtn.Content = ((char)(_treeOpen ? 0xE76B : 0xE76C)).ToString();
