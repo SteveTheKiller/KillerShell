@@ -65,7 +65,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsHitTestVisible="False">
                         <Grid VerticalAlignment="Center" Margin="0,-18,0,-22">
                             <Grid.RenderTransform><TranslateTransform Y="-5"/></Grid.RenderTransform>
-                            <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
+                            <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}" Margin="1,2,0,0" Opacity="{DynamicResource WordmarkShadowOpacity}">
                                 <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
                                 <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/>
                             </TextBlock>

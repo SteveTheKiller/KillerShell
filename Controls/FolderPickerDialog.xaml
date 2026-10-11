@@ -55,10 +55,10 @@
                     <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <Grid Margin="16,0">
                     <!-- KillerScan-style wordmark: a blurred dark copy behind the crisp text,
-                         faded by IconShadowOpacity (0 in light mode = no shadow). -->
+                         faded by WordmarkShadowOpacity (off on 98SE). -->
                     <Grid VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="0,-18,0,-22">
                         <Grid.RenderTransform><TranslateTransform Y="-5"/></Grid.RenderTransform>
-                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}" Margin="1,2,0,0" Opacity="{DynamicResource IconShadowOpacity}">
+                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}" Margin="1,2,0,0" Opacity="{DynamicResource WordmarkShadowOpacity}">
                             <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
                             <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/>
                         </TextBlock>

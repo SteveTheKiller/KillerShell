@@ -101,7 +101,7 @@
 
             <!-- App icon + wordmark, exactly like KillerScan: icon in the corner, then the
                  typewriter wordmark with a blurred dark copy behind the crisp text
-                 (faded by IconShadowOpacity; 0 in light mode = no shadow). -->
+                 (faded by WordmarkEmbossOpacity; off on 98SE). -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="{DynamicResource TitleLogoMargin}">
                 <icons:AppIcon x:Name="TitleIcon" VerticalAlignment="Center"
                        Width="{DynamicResource TitleIconSize}" Height="{DynamicResource TitleIconSize}"
@@ -1631,7 +1631,7 @@
                                     <Grid Margin="0,0,0,4" HorizontalAlignment="Left" Cursor="Hand" ToolTip="killershell.net"
                                           Background="Transparent" MouseLeftButtonUp="Wordmark_Click">
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,2,0,0" IsHitTestVisible="False"
-                                                   Opacity="{DynamicResource IconShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="2"/></TextBlock.Effect><Run Text="Killer" FontSize="17.21" Foreground="#C0000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="#C0000000"/></TextBlock>
+                                                   Opacity="{DynamicResource WordmarkShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="2"/></TextBlock.Effect><Run Text="Killer" FontSize="17.21" Foreground="#C0000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="#C0000000"/></TextBlock>
                                         <!-- The 98SE emboss: a hard WHITE copy 1px UP-LEFT, no
                                              blur - light catching the top-left edges of a RAISED
                                              glyph. Down-right was tried first and read as sunken

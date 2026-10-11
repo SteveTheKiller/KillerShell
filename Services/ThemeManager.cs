@@ -853,13 +853,12 @@ namespace KillerShell.Services
             SetIfAbsent("WindowFrameMargin", new Thickness(0));
             SetIfAbsent("WindowFramePadding", new Thickness(0));
             SetIfAbsent("WindowFrameThickness", new Thickness(0));
-            // Defaults to the theme's own icon-shadow strength, which is what the wordmark's
-            // blurred copy already used. A flat theme states 0 - no emboss behind a Win98
-            // caption. Copied rather than SetIfAbsent(0.0), which would have removed the emboss
-            // from all twelve non-flat themes.
+            // The title bar wordmark's blurred copy. Defaults to the family WordmarkShadowOpacity, the
+            // same strength the dialogs and About card use. A flat theme states 0 - no emboss behind a
+            // Win98 caption. Copied rather than SetIfAbsent(0.0), which would have removed the
+            // emboss from all twelve non-flat themes.
             if (!combined.Contains("WordmarkEmbossOpacity"))
-                combined["WordmarkEmbossOpacity"] = combined.Contains("IconShadowOpacity")
-                    ? combined["IconShadowOpacity"] : 0.9;
+                combined["WordmarkEmbossOpacity"] = combined["WordmarkShadowOpacity"] ?? 0.0;
 
                 // Derived, not defaulted: these follow from whether the theme asked for a flat
                 // Win98 caption at all, so they cannot be a fixed literal.
