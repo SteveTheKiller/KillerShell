@@ -171,7 +171,7 @@
     <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Bir klasörü Geri Dönüşüm Kutusu'na göndermeden önce sor</sys:String>
     <sys:String x:Key="Str_About_ClearData">Tüm verileri temizle</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Bu işlem kaydedilmiş tüm ayarları - tema, dil, yazı tipleri, kayıtlı yerler, son kullanılanlar ve oturum - ve arşivlerden çıkarılan geçici dosyaları siler. Kendi dosyalarınıza dokunulmaz. Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Bu işlem kaydedilmiş tüm ayarları (tema, dil, yazı tipleri, kayıtlı yerler, son kullanılanlar ve oturum) ve arşivlerden çıkarılan geçici dosyaları siler. Kendi dosyalarınıza dokunulmaz. Devam edilsin mi?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Veriler temizlendi - hâlâ kullanımda olanların temizliğini bitirmek için KillerShell'i yeniden başlatın</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  bir saha teknisyeni tarafından yapıldı</sys:String>
 

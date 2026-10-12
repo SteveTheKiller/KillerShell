@@ -254,7 +254,7 @@
     <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Спрашивать перед отправкой папки в корзину</sys:String>
     <sys:String x:Key="Str_About_ClearData">Очистить все данные</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Будут удалены все сохранённые настройки - тема, язык, шрифты, сохранённые места, недавние и сеанс - а также временные файлы, извлечённые из архивов. Ваши собственные файлы не затрагиваются. Продолжить?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Будут удалены все сохранённые настройки (тема, язык, шрифты, сохранённые места, недавние и сеанс), а также временные файлы, извлечённые из архивов. Ваши собственные файлы не затрагиваются. Продолжить?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Данные очищены - перезапустите KillerShell, чтобы удалить всё, что ещё используется</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  сделано выездным техником</sys:String>
 

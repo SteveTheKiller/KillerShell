@@ -266,7 +266,7 @@
     <!-- Clear all Data: the link, its confirm and its result. Kept with the About keys rather than
          split across three sections - one feature, and a translator needs to see them together. -->
     <sys:String x:Key="Str_About_ClearData">Minden adat törlése</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Ezzel törli az összes mentett beállítást - a témát, a nyelvet, a betűtípusokat, a mentett helyeket, a legutóbbi bejegyzéseket és a munkamenetet -, valamint az archívumokból kivont ideiglenes fájlokat. A saját fájljait nem érinti meg. Folytatja?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Ezzel törli az összes mentett beállítást (a témát, a nyelvet, a betűtípusokat, a mentett helyeket, a legutóbbi bejegyzéseket és a munkamenetet), valamint az archívumokból kivont ideiglenes fájlokat. A saját fájljait nem érinti meg. Folytatja?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Adatok törölve - indítsa újra a KillerShell-t a még használatban lévő elemek törlésének befejezéséhez</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3 |  tereptechnika építette</sys:String>
 

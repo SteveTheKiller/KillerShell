@@ -218,7 +218,7 @@
     <sys:String x:Key="Str_About_Sha">SHA-256 SOUBORU EXE</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Zeptat se před přesunutím složky do koše</sys:String>
     <sys:String x:Key="Str_About_ClearData">Vymazat všechna data</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Tímto se smažou všechna uložená nastavení - motiv, jazyk, písma, uložená místa, poslední položky a relace - a dočasné soubory rozbalené z archivů. Vaše vlastní soubory zůstanou nedotčeny. Pokračovat?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Tímto se smažou všechna uložená nastavení (motiv, jazyk, písma, uložená místa, poslední položky a relace) a dočasné soubory rozbalené z archivů. Vaše vlastní soubory zůstanou nedotčeny. Pokračovat?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Data vymazána - restartujte KillerShell, aby se dokončilo mazání souborů, které se stále používají</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  vytvořil terénní technik</sys:String>
 

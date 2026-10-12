@@ -252,7 +252,7 @@
     <sys:String x:Key="Str_About_Sha">SHA-256 DELL'EXE</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Chiedi prima di inviare una cartella al Cestino</sys:String>
     <sys:String x:Key="Str_About_ClearData">Cancella tutti i dati</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Questo elimina ogni impostazione salvata - tema, lingua, font, posizioni salvate, recenti e la sessione - e i file temporanei estratti dagli archivi. I tuoi file non vengono toccati. Continuare?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Questo elimina ogni impostazione salvata (tema, lingua, font, posizioni salvate, recenti e la sessione) e i file temporanei estratti dagli archivi. I tuoi file non vengono toccati. Continuare?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Dati cancellati - riavvia KillerShell per finire di cancellare quanto ancora in uso</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  creato da un tecnico sul campo</sys:String>
 

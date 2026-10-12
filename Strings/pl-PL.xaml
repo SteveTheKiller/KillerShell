@@ -274,7 +274,7 @@
     <sys:String x:Key="Str_About_Sha">SHA-256 PLIKU EXE</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Pytaj przed wysłaniem folderu do Kosza</sys:String>
     <sys:String x:Key="Str_About_ClearData">Wyczyść wszystkie dane</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Spowoduje to usunięcie wszystkich zapisanych ustawień - motywu, języka, czcionek, zapisanych miejsc, ostatnich folderów i sesji - oraz plików tymczasowych wypakowanych z archiwów. Twoje pliki nie zostaną naruszone. Kontynuować?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Spowoduje to usunięcie wszystkich zapisanych ustawień (motywu, języka, czcionek, zapisanych miejsc, ostatnich folderów i sesji) oraz plików tymczasowych wypakowanych z archiwów. Twoje pliki nie zostaną naruszone. Kontynuować?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Dane wyczyszczono - uruchom ponownie KillerShell, aby dokończyć czyszczenie używanych elementów</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  stworzone przez technika terenowego</sys:String>
     <sys:String x:Key="Str_Rpt_Meta">Wygenerowano {0} · pliki: {1} · dopasowania: {2}</sys:String>

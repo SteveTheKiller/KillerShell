@@ -266,7 +266,7 @@
     <!-- Clear all Data: the link, its confirm and its result. Kept with the About keys rather than
          split across three sections - one feature, and a translator needs to see them together. -->
     <sys:String x:Key="Str_About_ClearData">Clear all Data</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">This deletes every saved setting - theme, language, fonts, saved places, recents and the session - and the temporary files extracted from archives. Your own files are not touched. Continue?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">This deletes every saved setting (theme, language, fonts, saved places, recents and the session) and the temporary files extracted from archives. Your own files are not touched. Continue?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Data cleared - restart KillerShell to finish clearing anything still in use</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  built by a field tech</sys:String>
 

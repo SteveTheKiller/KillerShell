@@ -266,7 +266,7 @@
     <!-- Clear all Data: the link, its confirm and its result. Kept with the About keys rather than
          split across three sections - one feature, and a translator needs to see them together. -->
     <sys:String x:Key="Str_About_ClearData">Очистити всі дані</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Це видалить усі збережені налаштування - тему, мову, шрифти, збережені місця, нещодавні елементи та сеанс - а також тимчасові файли, видобуті з архівів. Ваші власні файли не буде зачеплено. Продовжити?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Це видалить усі збережені налаштування (тему, мову, шрифти, збережені місця, нещодавні елементи та сеанс), а також тимчасові файли, видобуті з архівів. Ваші власні файли не буде зачеплено. Продовжити?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Дані очищено - перезапустіть KillerShell, щоб завершити очищення того, що ще використовується</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  створено польовим техніком</sys:String>
 

@@ -254,7 +254,7 @@
     <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Қалтаны себетке жіберер алдында сұрау</sys:String>
     <sys:String x:Key="Str_About_ClearData">Барлық деректерді тазалау</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Бұл барлық сақталған параметрлерді - тақырып, тіл, қаріптер, сақталған орындар, соңғылар және сеанс - әрі мұрағаттардан шығарылған уақытша файлдарды жояды. Өз файлдарыңыз тимейді. Жалғастыру керек пе?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Бұл барлық сақталған параметрлерді (тақырып, тіл, қаріптер, сақталған орындар, соңғылар және сеанс) әрі мұрағаттардан шығарылған уақытша файлдарды жояды. Өз файлдарыңыз тимейді. Жалғастыру керек пе?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Деректер тазаланды - әлі қолданылып жатқанның бәрін тазалау үшін KillerShell-ді қайта іске қосыңыз</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  далалық техник жасаған</sys:String>
 

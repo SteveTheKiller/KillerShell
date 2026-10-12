@@ -31,6 +31,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The title bar icon is 27px and has its own 27px image, so it is a little larger and sharper.
 - Button gradients start at the outline color and darken toward the bottom, so a hovered button no longer looks darker than its border.
 - Long checkbox labels in dialogs wrap instead of running past the edge.
+- Reworded the Clear all data prompt to list what it deletes in parentheses, in every language.
 
 ## [1.3.2] - 2026-10-07
 

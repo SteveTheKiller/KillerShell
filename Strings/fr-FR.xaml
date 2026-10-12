@@ -171,7 +171,7 @@
     <sys:String x:Key="Str_About_Sha">SHA-256 DE L'EXE</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Demander avant d'envoyer un dossier à la Corbeille</sys:String>
     <sys:String x:Key="Str_About_ClearData">Effacer toutes les données</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Ceci supprime tous les réglages enregistrés - thème, langue, polices, dossiers enregistrés, éléments récents et session - ainsi que les fichiers temporaires extraits des archives. Vos propres fichiers ne sont pas touchés. Continuer ?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Ceci supprime tous les réglages enregistrés (thème, langue, polices, dossiers enregistrés, éléments récents et session) ainsi que les fichiers temporaires extraits des archives. Vos propres fichiers ne sont pas touchés. Continuer ?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Données effacées - redémarrez KillerShell pour terminer la suppression de ce qui est encore utilisé</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  créé par un technicien de terrain</sys:String>
 

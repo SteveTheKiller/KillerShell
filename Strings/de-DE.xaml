@@ -171,7 +171,7 @@
     <sys:String x:Key="Str_About_Sha">EXE-SHA-256</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Fragen, bevor ein Ordner in den Papierkorb verschoben wird</sys:String>
     <sys:String x:Key="Str_About_ClearData">Alle Daten löschen</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Damit werden alle gespeicherten Einstellungen gelöscht - Design, Sprache, Schriftarten, gespeicherte Orte, zuletzt verwendete Elemente und die Sitzung - sowie die aus Archiven entpackten temporären Dateien. Ihre eigenen Dateien bleiben unberührt. Fortfahren?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Damit werden alle gespeicherten Einstellungen gelöscht (Design, Sprache, Schriftarten, gespeicherte Orte, zuletzt verwendete Elemente und die Sitzung) sowie die aus Archiven entpackten temporären Dateien. Ihre eigenen Dateien bleiben unberührt. Fortfahren?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Daten gelöscht - starten Sie KillerShell neu, um noch verwendete Dateien vollständig zu entfernen</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  entwickelt von einem Field-Techniker</sys:String>
 

@@ -266,7 +266,7 @@
     <!-- Clear all Data: the link, its confirm and its result. Kept with the About keys rather than
          split across three sections - one feature, and a translator needs to see them together. -->
     <sys:String x:Key="Str_About_ClearData">Fjern alle data</sys:String>
-    <sys:String x:Key="Str_Dlg_ClearDataMsg">Dette sletter alle lagrede innstillinger - tema, språk, skrifttyper, lagrede steder, nylige og økten - og de midlertidige filene som er pakket ut fra arkiver. Dine egne filer berøres ikke. Fortsette?</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">Dette sletter alle lagrede innstillinger (tema, språk, skrifttyper, lagrede steder, nylige og økten) og de midlertidige filene som er pakket ut fra arkiver. Dine egne filer berøres ikke. Fortsette?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Data fjernet - start KillerShell på nytt for å fullføre fjerningen av alt som fortsatt er i bruk</sys:String>
     <sys:String x:Key="Str_About_Footer">GPLv3  |  laget av en felttekniker</sys:String>
 
