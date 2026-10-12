@@ -4,7 +4,7 @@
         xmlns:icons="clr-namespace:KillerShell.Controls"
         xmlns:picker="clr-namespace:KillerShell"
         Title="KillerShell"
-        Width="380" SizeToContent="Height"
+        Width="390" SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -102,12 +102,19 @@
                 <!-- DialogRowMargin is ADDED to the existing inset rather than replacing it: it
                      is 0 on every ordinary theme, and 98SE uses it to pull the body in tight the
                      way a Win98 dialog packs its content. -->
-                <StackPanel Grid.Row="1" Margin="24,20,24,16">
+                <Grid Grid.Row="1" Margin="24,18,24,18">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <!-- Notice ring, as in the family setup dialog: amber "!" on a confirmation, accent "i" on a notice. -->
+                    <Border x:Name="NoticeRing" Width="28" Height="28" CornerRadius="14" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <TextBlock x:Name="NoticeGlyph" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="17" FontWeight="SemiBold"/>
+                    </Border>
+                    <StackPanel Grid.Column="1">
                     <TextBlock x:Name="MsgText" Foreground="{StaticResource TextBrush}"
-                               FontSize="13" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                               FontFamily="{DynamicResource BrandSansFont}" FontSize="18"
+                                               TextOptions.TextFormattingMode="Ideal" TextWrapping="Wrap"/>
                     <TextBlock x:Name="BulletText" Foreground="{StaticResource MutedTextBrush}"
-                               FontSize="12" LineHeight="20" TextWrapping="Wrap"
-                               Visibility="Collapsed" Margin="0,0,0,4"/>
+                               FontSize="12" LineHeight="19" TextWrapping="Wrap"
+                               Visibility="Collapsed" Margin="0,10,0,0"/>
                     <CheckBox x:Name="Check1" Visibility="Collapsed" Margin="0,8,0,0" FontSize="12"/>
                     <CheckBox x:Name="Check2" Visibility="Collapsed" Margin="0,8,0,0" FontSize="12"/>
                     <!-- Explanatory note under Check2, shown by LockCheck2 when the choice is
@@ -117,6 +124,7 @@
                                FontSize="11" LineHeight="16" TextWrapping="Wrap"
                                Margin="22,5,0,0"/>
                 </StackPanel>
+                </Grid>
 
                 <!-- Buttons -->
                 <!-- NOTE: DialogButtonsMargin is deliberately not bound here. It REPLACES this
@@ -128,7 +136,7 @@
                             HorizontalAlignment="Right" Margin="24,0,24,20">
                     <Button x:Name="CancelBtn" Content="{DynamicResource Str_Btn_Cancel}" Click="Cancel_Click"
                             Style="{StaticResource SurfaceButton}"
-                            MinWidth="86" Margin="0,0,8,0"/>
+                            Height="28" MinWidth="80" Padding="12,2" Margin="0,0,8,0"/>
                     <!-- OutlineButton, not PrimaryButton. A solid accent block sits in this card
                          as a painted-on rectangle that never changes - PrimaryButton's hover is
                          a translucent white tint over the accent, which on half the palettes is
@@ -136,7 +144,7 @@
                          family's other confirm treatment and it reads as a button. -->
                     <Button x:Name="OkBtn" Click="OK_Click"
                             Style="{StaticResource OutlineButton}"
-                            MinWidth="86"/>
+                            Height="28" MinWidth="80" Padding="12,2"/>
                 </StackPanel>
             </Grid>
         </Grid>
