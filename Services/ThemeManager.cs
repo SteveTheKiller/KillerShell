@@ -620,14 +620,13 @@ namespace KillerShell.Services
             Mirror("OutlinePressedBrush", "RowSelectedBrush");     // pressed FILL
 
             // Filled buttons and the outline button's hover fill carry the family's soft vertical
-            // gradient (the KillerNotes treatment): 12% lighter at the top, 16% darker at the
-            // bottom. 98SE and any palette that already states a gradient stay as they are.
+            // gradient (the KillerNotes treatment): the outline color itself at the top, 16% darker
+            // at the bottom. 98SE and any palette that already states a gradient stay as they are.
             object ButtonFill(object brush)
             {
                 if (theme == Theme.SE98 || brush is not SolidColorBrush solid) return brush;
                 var c = solid.Color;
-                var top = Color.FromArgb(c.A, (byte)(c.R + (255 - c.R) * 0.12),
-                    (byte)(c.G + (255 - c.G) * 0.12), (byte)(c.B + (255 - c.B) * 0.12));
+                var top = c;
                 var bottom = Color.FromArgb(c.A, (byte)(c.R * 0.84), (byte)(c.G * 0.84), (byte)(c.B * 0.84));
                 var gradient = new LinearGradientBrush(top, bottom, 90);
                 gradient.Freeze();

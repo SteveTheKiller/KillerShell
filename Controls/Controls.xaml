@@ -146,6 +146,7 @@
                              accent overlay, so it clears AA on every theme and every accent. -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource OutlineHoverBrush}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource OutlineHoverBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OutlineHoverTextBrush}"/>
                             <Setter TargetName="label" Property="Effect" Value="{x:Null}"/>
                         </Trigger>

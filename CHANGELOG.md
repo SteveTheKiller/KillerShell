@@ -29,6 +29,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Active and hovered sidebar rail icons show the yellow accent with a dark halo on the Light theme's Yellow accent, instead of near-black.
 - The wordmark has a soft shadow on the Light theme too, so it no longer looks thin on the light title bar, and the dark themes use the same lighter shadow as the rest of the Killer Tools family.
 - The title bar icon is 27px and has its own 27px image, so it is a little larger and sharper.
+- Button gradients start at the outline color and darken toward the bottom, so a hovered button no longer looks darker than its border.
 - Long checkbox labels in dialogs wrap instead of running past the edge.
 
 ## [1.3.2] - 2026-10-07
