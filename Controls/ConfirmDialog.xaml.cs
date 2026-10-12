@@ -54,13 +54,13 @@ namespace KillerShell
             }
             if (!string.IsNullOrEmpty(check1Label))
             {
-                Check1.Content    = check1Label;
+                Check1.Content    = new System.Windows.Controls.TextBlock { Text = check1Label, TextWrapping = TextWrapping.Wrap };
                 Check1.IsChecked  = check1Initial;
                 Check1.Visibility = Visibility.Visible;
             }
             if (!string.IsNullOrEmpty(check2Label))
             {
-                Check2.Content    = check2Label;
+                Check2.Content    = new System.Windows.Controls.TextBlock { Text = check2Label, TextWrapping = TextWrapping.Wrap };
                 Check2.IsChecked  = check2Initial;
                 Check2.Visibility = Visibility.Visible;
             }
@@ -85,6 +85,8 @@ namespace KillerShell
         // notice with a single button. The amber darkens on a light card so it keeps its contrast.
         private void ApplyNotice()
         {
+            FitHeading();
+            FitCheckLabels();
             bool confirmation = CancelBtn.Visibility == Visibility.Visible;
             System.Windows.Media.Brush brush;
             if (confirmation)
@@ -102,6 +104,39 @@ namespace KillerShell
             NoticeGlyph.Text = confirmation ? "!" : "i";
             NoticeGlyph.Foreground = brush;
             NoticeRing.BorderBrush = brush;
+        }
+
+        // Long checkbox labels wrap inside the dialog body instead of running past its edge.
+        private void FitCheckLabels()
+        {
+            foreach (var box in new[] { Check1, Check2 })
+                if (box.Content is System.Windows.Controls.TextBlock label && box.Parent is FrameworkElement body && body.ActualWidth > 0)
+                    label.MaxWidth = System.Math.Max(80, body.ActualWidth - box.Margin.Left - box.Margin.Right - 40);
+        }
+
+        // A heading is one short line. Text after its first line break moves into the detail, and
+        // a first line too long for a heading stays body-sized instead of shouting.
+        private void FitHeading()
+        {
+            string text = MsgText.Text ?? "";
+            int lineBreak = text.IndexOf('\n');
+            if (lineBreak >= 0)
+            {
+                string rest = text.Substring(lineBreak + 1).Trim();
+                MsgText.Text = text.Substring(0, lineBreak).TrimEnd('\r');
+                if (rest.Length > 0)
+                {
+                    string existing = BulletText.Visibility == Visibility.Visible ? BulletText.Text : "";
+                    BulletText.Text = string.IsNullOrEmpty(existing) ? rest : rest + "\n\n" + existing;
+                    BulletText.Visibility = Visibility.Visible;
+                }
+            }
+            if ((MsgText.Text ?? "").Length > 90)
+            {
+                MsgText.ClearValue(System.Windows.Controls.TextBlock.FontFamilyProperty);
+                MsgText.ClearValue(System.Windows.Media.TextOptions.TextFormattingModeProperty);
+                MsgText.FontSize = 13;
+            }
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)
