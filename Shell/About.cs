@@ -260,6 +260,7 @@ namespace KillerShell.Shell
                 {
                     regLines =
                         $"reg add \"{hive}\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{AppDisplayName}\" /v DisplayVersion /t REG_SZ /d \"{newVersion}\" /f >nul 2>&1\r\n" +
+                        $"reg add \"{hive}\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{AppDisplayName}\" /v Publisher /t REG_SZ /d \"Steve the Killer\" /f >nul 2>&1\r\n" +
                         $"reg add \"{hive}\\Software\\{AppDisplayName}\" /v Version /t REG_SZ /d \"{newVersion}\" /f >nul 2>&1\r\n";
                 }
 
