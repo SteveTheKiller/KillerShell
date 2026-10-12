@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://killerscan.net/sitemap.xml
+Sitemap: https://killershell.net/sitemap.xml
