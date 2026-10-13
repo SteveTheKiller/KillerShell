@@ -430,14 +430,18 @@ namespace KillerShell.Shell
             }
         }
 
-        /// <summary>True when Windows has snapped or otherwise arranged this window. Snapped
-        /// windows are not slid by F10. False on Windows versions without IsWindowArranged.</summary>
+        /// <summary>True when the window sits flush against a side of its monitor's work area and
+        /// against its top or bottom, which is where every half and quarter snap puts it. Snapped
+        /// windows are not slid by F10. Judged by position because IsWindowArranged stays true
+        /// after Win+Shift+Arrow moves a floating window to another monitor.</summary>
         internal bool IsWindowSnapped()
         {
             try
             {
-                var hwnd = new WindowInteropHelper(this).Handle;
-                return hwnd != IntPtr.Zero && IsWindowArranged(hwnd);
+                if (!TryGetWindowAndWork(out RECT win, out RECT work)) return false;
+                bool side = win.left == work.left || win.right == work.right;
+                bool edge = win.top == work.top || win.bottom == work.bottom;
+                return side && edge;
             }
             catch
             {
@@ -471,10 +475,6 @@ namespace KillerShell.Shell
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
                                                 int x, int y, int cx, int cy, uint flags);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool IsWindowArranged(IntPtr hWnd);
 
         private const int WM_NCLBUTTONDOWN = 0x00A1;
         private const int HTBOTTOMRIGHT = 17;
