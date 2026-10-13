@@ -72,6 +72,8 @@ namespace KillerShell.Shell
         private bool _paneGutterDragging;
 
         private bool _paneRatioHooked;
+        private double _paneViewportWidth = -1;
+        private double _paneChromeWidth = -1;
 
         /// <summary>One-time wiring for the ratio-keeping resize path. Queued, never run inline:
         /// writing a column width from inside the layout pass that raised SizeChanged re-enters
@@ -80,27 +82,63 @@ namespace KillerShell.Shell
         {
             if (_paneRatioHooked) return;
             _paneRatioHooked = true;
-            PaneHost.SizeChanged += (_, _) =>
+            // PaneHost can overflow without changing size when A is pinned in pixels. Watch
+            // its allocated viewport instead, including sidebar and accessibility changes.
+            ScaleHost.LayoutUpdated += (_, _) =>
+            {
+                if (!DualPane || !_paneSideBySide) return;
+                double chrome = PaneChromeWidth();
+                double viewport = RootGrid.ActualWidth / _appScale - chrome;
+                if (System.Math.Abs(viewport - _paneViewportWidth) <= 0.5
+                    && System.Math.Abs(chrome - _paneChromeWidth) <= 0.5) return;
+                _paneViewportWidth = viewport;
+                _paneChromeWidth = chrome;
                 Dispatcher.BeginInvoke(new System.Action(OnPaneHostResized),
                                        System.Windows.Threading.DispatcherPriority.Background);
+            };
             PaneSplitV.DragCompleted += PaneSplitV_DragCompleted;
         }
 
-        /// <summary>PaneHost.SizeChanged lands here (queued). A size change OUTSIDE an
+        private double PaneChromeWidth()
+        {
+            double width = PaneHost.Margin.Left + PaneHost.Margin.Right;
+            for (int i = 0; i < ScaleHost.ColumnDefinitions.Count; i++)
+                if (i != Grid.GetColumn(PaneHost))
+                    width += ScaleHost.ColumnDefinitions[i].ActualWidth;
+            return width;
+        }
+
+        private void UpdatePaneWindowMinimum()
+        {
+            if (_paneSingleMinWidth < 0) _paneSingleMinWidth = MinWidth;
+            double minimum = _paneSingleMinWidth;
+            if (DualPane && _paneSideBySide)
+                minimum = System.Math.Max(minimum,
+                    (PaneChromeWidth() + PaneMinWidth * 2 + SplitPx) * _appScale
+                    + RootGrid.Margin.Left + RootGrid.Margin.Right
+                    + WindowFrame.BorderThickness.Left + WindowFrame.BorderThickness.Right);
+            if (System.Math.Abs(MinWidth - minimum) > 0.5) MinWidth = minimum;
+        }
+
+        /// <summary>Allocated viewport changes land here (queued). A size change OUTSIDE an
         /// interactive move/resize is a window-state jump - snap, maximize, unmaximize - and
         /// those keep the panes' RATIO; an edge drag keeps pane A fixed so the window edge eats
         /// pane B only (the Pixel/Star invariant already does that on its own).</summary>
         private void OnPaneHostResized()
         {
             if (!DualPane || !_paneSideBySide) return;
+            UpdatePaneWindowMinimum();
             if (_paneSlideSettle != null || _paneGutterDragging) return;
-            double avail = PaneHost.ActualWidth - SplitPx;
+            double avail = RootGrid.ActualWidth / _appScale - PaneChromeWidth() - SplitPx;
             if (avail <= 0) return;
 
             if (_inWindowSizeMove || _paneARatio <= 0)
             {
-                // Edge drag (or nothing remembered yet): A stays fixed; just refresh the share
-                // this layout settled on, so the next state jump restores it.
+                // Keep A fixed until B reaches its minimum. Beyond that, a pinned pixel
+                // column would push B outside the viewport even though dual pane stays on.
+                double maxA = System.Math.Max(PaneMinWidth, avail - PaneMinWidth);
+                if (!PaneColA.Width.IsStar && PaneColA.Width.Value > maxA)
+                    PaneColA.Width = new GridLength(maxA);
                 RememberPaneRatio();
                 return;
             }
@@ -117,9 +155,10 @@ namespace KillerShell.Shell
         private void RememberPaneRatio()
         {
             if (!DualPane || !_paneSideBySide) return;
-            double avail = PaneHost.ActualWidth - SplitPx;
-            if (avail > 0 && PaneColA.ActualWidth > 0)
-                _paneARatio = PaneColA.ActualWidth / avail;
+            double avail = RootGrid.ActualWidth / _appScale - PaneChromeWidth() - SplitPx;
+            double aWidth = PaneColA.Width.IsStar ? PaneColA.ActualWidth : PaneColA.Width.Value;
+            if (avail > 0 && aWidth > 0)
+                _paneARatio = aWidth / avail;
         }
 
         // The channel between two side-by-side panes is the splitter plus this, and the two are
@@ -253,9 +292,7 @@ namespace KillerShell.Shell
             // WM_GETMINMAXINFO clamp (Chrome.cs WmGetMinMaxInfo, which reads this.MinWidth) would
             // let the frame get dragged narrower than A's + B's own MinWidths and start crushing
             // one of them. Captured once so it can be restored exactly when the split closes.
-            if (_paneSingleMinWidth < 0) _paneSingleMinWidth = MinWidth;
-            MinWidth = cols ? System.Math.Max(_paneSingleMinWidth, PaneMinWidth * 2 + SplitPx)
-                             : _paneSingleMinWidth;
+            UpdatePaneWindowMinimum();
 
             PaneColSplit.Width  = new GridLength(cols ? SplitPx : 0);
             PaneColB.MinWidth   = cols ? PaneMinWidth : 0;

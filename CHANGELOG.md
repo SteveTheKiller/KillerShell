@@ -14,13 +14,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The saved places drawer takes at most 40% of the sidebar height and scrolls past that, so a long list leaves the folder tree usable.
 - The wordmarks use Punktype and Lacquer, and the interface text, headings and footers use Killer Sans, in place of the typewriter font in the app and on the website.
 - Confirm, install and uninstall dialogs use the family setup dialog layout, with a notice icon, a larger Killer Sans heading and evenly sized buttons.
+- Malaise file and terminal content use a slightly lighter gray, distinct from menus, pane bars and active tabs.
 
 ### Fixed
 - On a small screen the window opens sized to fit the desktop instead of running past its edges.
+- Resizing a dual-pane window keeps both panes visible, including with sidebars open or enlarged interface text.
+- Dragging the dual-pane divider trades width between the two panes and keeps the window the same width.
 - Kept app icons sharp at fractional display DPI and app zoom by caching exact pixel sizes from a covering source and aligning the final draw to device pixels.
 - Submenus attach consistently to their opening rows, with native direction and screen-edge placement.
 - Context menus that open upward or leftward near a screen edge sit at the pointer instead of floating away from it.
-- Dragging the dual-pane divider trades width between the two panes and keeps the window the same width.
 - The accent ring on an administrator window squares its corners when the window is maximized.
 - Deleting the open folder from another window or computer moves the listing up to its parent and drops the folder from the tree, instead of leaving both showing a folder that is gone.
 - Open branches of the folder tree follow folders added, renamed or deleted by other programs and computers, and a branch reopened after a change shows what is on disk now.
