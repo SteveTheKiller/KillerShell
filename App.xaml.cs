@@ -87,6 +87,7 @@ namespace KillerShell
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            KillerFamily.Accessibility.AccessibleControls.Initialize();
             if (e.Args.Length > 0 && string.Equals(e.Args[0], "--cli", StringComparison.OrdinalIgnoreCase))
             {
                 using var output = new StreamWriter(Console.OpenStandardOutput(), new System.Text.UTF8Encoding(false)) { AutoFlush = true };
@@ -121,8 +122,7 @@ namespace KillerShell
             if (e.Args.Length > 0 &&
                 string.Equals(e.Args[0], "/silent", StringComparison.OrdinalIgnoreCase))
             {
-                DoSilentInstall();
-                Shutdown(0);
+                Shutdown(DoSilentInstall());
                 return;
             }
 
@@ -493,10 +493,11 @@ namespace KillerShell
         // Silent (machine-wide) install -- used by winget / choco / RMM
         // ============================================================
 
-        private static void DoSilentInstall()
+        private static int DoSilentInstall()
         {
             try
             {
+                using var installLease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName);
                 string installDir = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), AppName);
                 string installExe = Path.Combine(installDir, ExeName);
@@ -538,11 +539,12 @@ namespace KillerShell
                 // belongs here rather than only in the interactive caller. Settings survive.
                 RemovePerUserInstall();
                 RegisterAssociations(machine: true, exe: installExe);
+                return KillerFamily.Deployment.InstallerExitCodes.Success;
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Silent install failed: {ex.Message}");
-                Environment.Exit(1);
+                return KillerFamily.Deployment.InstallerExitCodes.FromException(ex);
             }
         }
 

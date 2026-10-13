@@ -17,6 +17,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Malaise file and terminal content use a slightly lighter gray, distinct from menus, pane bars and active tabs.
 
 ### Fixed
+- Silent installs return specific Windows error codes and reject a second concurrent install instead of reporting a general failure.
+- Icon-only buttons give screen readers the name from their tooltip, and controls reached with the keyboard show a dotted focus outline.
 - On a small screen the window opens sized to fit the desktop instead of running past its edges.
 - Resizing a dual-pane window keeps both panes visible, including with sidebars open or enlarged interface text.
 - Dragging the dual-pane divider trades width between the two panes and keeps the window the same width.
