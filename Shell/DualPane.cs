@@ -46,6 +46,10 @@ namespace KillerShell.Shell
         /// drag trades space between A and B like an ordinary split.</summary>
         private bool _paneGutterGrowsWindow;
 
+        /// <summary>How far F10 slid the window left to make room for pane B, in DIP. Closing the
+        /// split slides it back by the same amount once the window has shrunk.</summary>
+        private double _paneShiftLeft;
+
         /// <summary>Pane A's width as of the last DragDelta tick, so PaneSplitV_DragDelta can read
         /// what GridSplitter actually did (which may be less than the raw drag delta, clamped by
         /// A's own MinWidth) instead of trusting the raw mouse delta and overshooting.</summary>
@@ -427,11 +431,21 @@ namespace KillerShell.Shell
                 // parked against the monitor's right edge has nowhere left to grow into even
                 // though its own width comfortably clears the monitor's total work width.
                 double room = MonitorRoomToGrowRightDip();
+                // Not enough room to the right for the pane: slide the window left first, as far
+                // as its own monitor allows. A snapped window stays where Windows put it.
+                double need = System.Math.Max(PaneMinWidth, desiredWidth) + SplitPx;
+                double shift = WindowState == WindowState.Normal && room < need && !IsWindowSnapped()
+                    ? System.Math.Min(need - room, MonitorRoomToGrowLeftDip())
+                    : 0;
+                if (shift <= 0.5) shift = 0;
                 bool canGrow = WindowState != WindowState.Maximized
-                               && room >= PaneMinWidth + SplitPx;
+                               && room + shift >= PaneMinWidth + SplitPx;
 
                 if (canGrow)
                 {
+                    if (shift > 0) ShiftWindowDip(-shift);
+                    _paneShiftLeft = shift;
+                    room += shift;
                     double width = System.Math.Max(PaneMinWidth,
                                                      System.Math.Min(desiredWidth, room - SplitPx));
                     SlidePaneColumnGrow(width + SplitPx);
@@ -479,6 +493,11 @@ namespace KillerShell.Shell
             double closeWidthTarget = Width - (from + SplitPx);
             if (!open && canShrinkWindow) AnimateWindowWidth(closeWidthTarget);
 
+            // The slide F10 made to fit pane B goes back once the window has shrunk (settle,
+            // below), so the wide window never reaches past its monitor on the way.
+            double slideBack = !open && canShrinkWindow ? _paneShiftLeft : 0;
+            if (!open) _paneShiftLeft = 0;
+
             // Maximized only: A has no window to shrink into, so it grows back into B's space
             // instead, in lockstep with B's own collapse below rather than a live Star column
             // (recomputed off B's CURRENT rendered value every frame, which reads as A jumping a
@@ -523,6 +542,11 @@ namespace KillerShell.Shell
                                // assignment made while it is still attached.
                                BeginAnimation(FrameworkElement.WidthProperty, null);
                                Width = closeWidthTarget;
+                               // Queued so the room check reads the window at its new width.
+                               if (slideBack > 0)
+                                   Dispatcher.BeginInvoke(new System.Action(() =>
+                                       ShiftWindowDip(System.Math.Min(slideBack, MonitorRoomToGrowRightDip()))),
+                                       System.Windows.Threading.DispatcherPriority.Loaded);
                            }
 
                            if (!open)

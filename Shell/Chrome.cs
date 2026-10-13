@@ -376,26 +376,105 @@ namespace KillerShell.Shell
         /// the monitor - MonitorWorkAreaWidthDip had no way to know that because it never looked
         /// at Left at all. This measures the ACTUAL gap between the right edge and the work
         /// area's own right edge instead. Same GetMonitorInfo call and DPI conversion as
-        /// MonitorWorkAreaWidthDip, same double.MaxValue-on-failure fallback.</summary>
+        /// MonitorWorkAreaWidthDip, same double.MaxValue-on-failure fallback. Both edges are read
+        /// in native pixels (the window's own rectangle against the work area) and converted
+        /// once, so WPF's Left never mixes with a monitor's native coordinates.</summary>
         internal double MonitorRoomToGrowRightDip()
         {
             try
             {
-                var hwnd = new WindowInteropHelper(this).Handle;
-                if (hwnd == IntPtr.Zero) return double.MaxValue;
-                IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-                if (monitor == IntPtr.Zero) return double.MaxValue;
-                var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
-                if (!GetMonitorInfo(monitor, ref info)) return double.MaxValue;
+                if (!TryGetWindowAndWork(out RECT win, out RECT work)) return double.MaxValue;
                 var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
-                double workRightDip = info.rcWork.right / dpi.DpiScaleX;
-                return workRightDip - (Left + ActualWidth);
+                return (work.right - win.right) / dpi.DpiScaleX;
             }
             catch
             {
                 return double.MaxValue;
             }
         }
+
+        /// <summary>How far this window's LEFT edge could move left before leaving its monitor's
+        /// work area, in DIP. F10 slides the window left by up to this much when there is not
+        /// enough room to the right for the second pane. Returns 0 on failure so a lookup miss
+        /// never moves the window.</summary>
+        internal double MonitorRoomToGrowLeftDip()
+        {
+            try
+            {
+                if (!TryGetWindowAndWork(out RECT win, out RECT work)) return 0;
+                var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+                return Math.Max(0, (win.left - work.left) / dpi.DpiScaleX);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>Moves the window horizontally by <paramref name="dx"/> DIP on its native
+        /// rectangle, without resizing or activating it.</summary>
+        internal void ShiftWindowDip(double dx)
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                if (hwnd == IntPtr.Zero || !GetWindowRect(hwnd, out RECT win)) return;
+                var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+                int x = win.left + (int)Math.Round(dx * dpi.DpiScaleX);
+                SetWindowPos(hwnd, IntPtr.Zero, x, win.top, 0, 0,
+                             SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+            }
+            catch
+            {
+                // A failed move leaves the window where it was; the split still opens.
+            }
+        }
+
+        /// <summary>True when Windows has snapped or otherwise arranged this window. Snapped
+        /// windows are not slid by F10. False on Windows versions without IsWindowArranged.</summary>
+        internal bool IsWindowSnapped()
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                return hwnd != IntPtr.Zero && IsWindowArranged(hwnd);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool TryGetWindowAndWork(out RECT win, out RECT work)
+        {
+            win = default;
+            work = default;
+            var hwnd = new WindowInteropHelper(this).Handle;
+            if (hwnd == IntPtr.Zero || !GetWindowRect(hwnd, out win)) return false;
+            IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            if (monitor == IntPtr.Zero) return false;
+            var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+            if (!GetMonitorInfo(monitor, ref info)) return false;
+            work = info.rcWork;
+            return true;
+        }
+
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOZORDER = 0x0004;
+        private const uint SWP_NOACTIVATE = 0x0010;
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+                                                int x, int y, int cx, int cy, uint flags);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsWindowArranged(IntPtr hWnd);
 
         private const int WM_NCLBUTTONDOWN = 0x00A1;
         private const int HTBOTTOMRIGHT = 17;

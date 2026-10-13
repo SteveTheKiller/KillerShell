@@ -20,6 +20,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On a small screen the window opens sized to fit the desktop instead of running past its edges.
 - Resizing a dual-pane window keeps both panes visible, including with sidebars open or enlarged interface text.
 - Dragging the dual-pane divider trades width between the two panes and keeps the window the same width.
+- Opening the second pane near the right edge of a monitor slides the window left to make room instead of squeezing the panes, and closing it slides the window back.
 - Kept app icons sharp at fractional display DPI and app zoom by caching exact pixel sizes from a covering source and aligning the final draw to device pixels.
 - Submenus attach consistently to their opening rows, with native direction and screen-edge placement.
 - Context menus that open upward or leftward near a screen edge sit at the pointer instead of floating away from it.
