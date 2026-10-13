@@ -50,6 +50,10 @@ namespace KillerShell.Shell
         /// split slides it back by the same amount once the window has shrunk.</summary>
         private double _paneShiftLeft;
 
+        /// <summary>True when the open split grew the window rather than splitting pane A in
+        /// place. A snapped window that did not grow keeps its size on close.</summary>
+        private bool _paneOpenGrewWindow;
+
         /// <summary>Pane A's width as of the last DragDelta tick, so PaneSplitV_DragDelta can read
         /// what GridSplitter actually did (which may be less than the raw drag delta, clamped by
         /// A's own MinWidth) instead of trusting the raw mouse delta and overshooting.</summary>
@@ -414,6 +418,11 @@ namespace KillerShell.Shell
 
             if (open)
             {
+                // A ratio left over from an earlier split must not resize pane A in this one;
+                // the new split remembers its own ratio once it lands.
+                _paneARatio = 0;
+                _paneOpenGrewWindow = false;
+
                 // The pane used to always open at its bare MINIMUM width (PaneMinWidth, 300)
                 // regardless of how much room there actually was, so it always popped out
                 // skinny. Aim instead for something comfortably sized
@@ -445,6 +454,7 @@ namespace KillerShell.Shell
                 {
                     if (shift > 0) ShiftWindowDip(-shift);
                     _paneShiftLeft = shift;
+                    _paneOpenGrewWindow = true;
                     room += shift;
                     double width = System.Math.Max(PaneMinWidth,
                                                      System.Math.Min(desiredWidth, room - SplitPx));
@@ -489,7 +499,11 @@ namespace KillerShell.Shell
             // rather than a cumulative figure nudged by every open and every gutter drag, which
             // is exactly the kind of bookkeeping that produced the earlier "closes repeatedly
             // stretch it further" bug (interrupted toggles leaving it stale).
-            bool canShrinkWindow = WindowState != WindowState.Maximized;
+            // A snapped window that split in place is treated like a maximized one: shrinking it
+            // would pull its edge off the side of the screen it is snapped to.
+            bool canShrinkWindow = WindowState != WindowState.Maximized
+                                   && (_paneOpenGrewWindow || !IsWindowSnapped());
+            if (!open) _paneOpenGrewWindow = false;
             double closeWidthTarget = Width - (from + SplitPx);
             if (!open && canShrinkWindow) AnimateWindowWidth(closeWidthTarget);
 
@@ -498,7 +512,7 @@ namespace KillerShell.Shell
             double slideBack = !open && canShrinkWindow ? _paneShiftLeft : 0;
             if (!open) _paneShiftLeft = 0;
 
-            // Maximized only: A has no window to shrink into, so it grows back into B's space
+            // Maximized or snapped only: A has no window to shrink into, so it grows back into B's space
             // instead, in lockstep with B's own collapse below rather than a live Star column
             // (recomputed off B's CURRENT rendered value every frame, which reads as A jumping a
             // beat ahead of B actually moving) or a pin-then-pop (freezing A for the whole tween
