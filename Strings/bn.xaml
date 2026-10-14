@@ -414,6 +414,9 @@
     <sys:String x:Key="Str_Menu_Rename">নাম পরিবর্তন</sys:String>
     <sys:String x:Key="Str_Menu_Delete">মুছুন  (Shift: স্থায়ীভাবে)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">নতুন ফোল্ডার</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">ZIP-এ সংকুচিত করুন</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">এখানে এক্সট্র্যাক্ট করুন</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">"{0}"-এ এক্সট্র্যাক্ট করুন</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -664,6 +667,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">{0} নামে বদলানো হয়েছে</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0}টি যোগ হয়েছে - বৈধ নাম না থাকায় {1}টি বাদ পড়েছে</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">আর্কাইভ হালনাগাদ করা যায়নি - {0}। মূল ফাইলটি অপরিবর্তিত আছে।</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">{0} তৈরি হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">{0}-এ এক্সট্র্যাক্ট হয়েছে</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">{0} এক্সট্র্যাক্ট করা যায়নি: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">আর্কাইভ এক্সট্র্যাক্ট হচ্ছে</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">এই আর্কাইভ ফাইলটি শুধু পড়ার জন্য চিহ্নিত - সেটি সরিয়ে আবার চেষ্টা করুন</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">এই আর্কাইভটি অন্য প্রোগ্রামে খোলা আছে - সেটি বন্ধ করে আবার চেষ্টা করুন</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">এই আর্কাইভে লেখার অনুমতি নেই</sys:String>

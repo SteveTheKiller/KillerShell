@@ -556,6 +556,9 @@
     <sys:String x:Key="Str_Menu_Rename">Renomear</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Excluir  (Shift: permanentemente)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Nova pasta</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Compactar em ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Extrair aqui</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Extrair para "{0}"</sys:String>
 
 
     <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
@@ -813,6 +816,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Renomeado para {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} adicionados - {1} não puderam receber um nome válido e foram ignorados</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Não foi possível atualizar o arquivo compactado - {0}. O original não foi alterado.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">{0} criado</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Extraído para {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Não foi possível extrair {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Extraindo o arquivo compactado</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Esse arquivo compactado está marcado como somente leitura - remova a marca e tente novamente</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Esse arquivo compactado está aberto em outro programa - feche-o e tente novamente</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Sem permissão para gravar nesse arquivo compactado</sys:String>

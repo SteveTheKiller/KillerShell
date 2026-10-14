@@ -556,6 +556,9 @@
     <sys:String x:Key="Str_Menu_Rename">Gi nytt navn</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Slett  (Shift: permanent)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Ny mappe</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Komprimer til ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Pakk ut her</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Pakk ut til "{0}"</sys:String>
 
 
     <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
@@ -813,6 +816,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Fikk nytt navn: {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">La til {0} - {1} kunne ikke få et gyldig navn og ble hoppet over</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Kunne ikke oppdatere arkivet - {0}. Originalen er uendret.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">Opprettet {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Pakket ut til {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Kunne ikke pakke ut {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Pakker ut arkivet</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Den arkivfilen er skrivebeskyttet - fjern det og prøv igjen</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Det arkivet er åpent i et annet program - lukk det og prøv igjen</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Ingen tillatelse til å skrive til det arkivet</sys:String>

@@ -520,6 +520,9 @@
   <sys:String x:Key="Str_Menu_Rename">Đổi tên</sys:String>
   <sys:String x:Key="Str_Menu_Delete">Xóa  (Shift: xóa vĩnh viễn)</sys:String>
   <sys:String x:Key="Str_Menu_NewFolder">Thư mục mới</sys:String>
+  <sys:String x:Key="Str_Menu_Compress">Nén thành ZIP</sys:String>
+  <sys:String x:Key="Str_Menu_ExtractHere">Giải nén tại đây</sys:String>
+  <sys:String x:Key="Str_Menu_ExtractTo">Giải nén vào "{0}"</sys:String>
   <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
   <sys:String x:Key="Str_Btn_Open">Mở</sys:String>
   <sys:String x:Key="Str_Btn_Save">Lưu</sys:String>
@@ -773,6 +776,10 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Status_ArchiveRenamed">Đã đổi tên thành {0}</sys:String>
   <sys:String x:Key="Str_Status_ArchiveSomeRejected">Đã thêm {0}, có {1} mục không thể được đặt tên hợp lệ nên đã bị bỏ qua</sys:String>
   <sys:String x:Key="Str_Status_ArchiveWriteFailed">Không thể cập nhật tệp nén: {0}. Tệp gốc không thay đổi.</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveCompressed">Đã tạo {0}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveExtracted">Đã giải nén vào {0}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveExtractFailed">Không thể giải nén {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveExtracting">Đang giải nén tệp nén</sys:String>
   <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Tệp nén đó được đánh dấu là chỉ đọc, hãy bỏ thuộc tính này rồi thử lại</sys:String>
   <sys:String x:Key="Str_Status_ArchiveInUse">Tệp nén đó đang được mở trong một chương trình khác, hãy đóng chương trình đó rồi thử lại</sys:String>
   <sys:String x:Key="Str_Status_ArchiveDenied">Không có quyền ghi vào tệp nén đó</sys:String>

@@ -414,6 +414,9 @@
     <sys:String x:Key="Str_Menu_Rename">重命名</sys:String>
     <sys:String x:Key="Str_Menu_Delete">删除  (Shift：永久删除)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">新建文件夹</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">压缩为 ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">解压到此处</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">解压到 "{0}"</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -664,6 +667,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">已重命名为 {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">已添加 {0} 项 - {1} 项无法取得合法名称，已跳过</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">无法更新压缩包 - {0}。原文件未改动。</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">已创建 {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">已解压到 {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">无法解压 {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">正在解压压缩包</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">该压缩包文件被标记为只读 - 请清除该属性后重试</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">该压缩包正在其他程序中打开 - 请关闭后重试</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">没有写入该压缩包的权限</sys:String>

@@ -414,6 +414,9 @@
     <sys:String x:Key="Str_Menu_Rename">重新命名</sys:String>
     <sys:String x:Key="Str_Menu_Delete">刪除  (Shift：永久刪除)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">新資料夾</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">壓縮成 ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">解壓縮到這裡</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">解壓縮到 "{0}"</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -664,6 +667,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">已重新命名為 {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">已加入 {0} 個 - {1} 個無法取得合法名稱，已略過</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">無法更新壓縮檔 - {0}。原始檔案未變動。</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">已建立 {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">已解壓縮到 {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">無法解壓縮 {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">正在解壓縮壓縮檔</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">此壓縮檔標示為唯讀 - 請清除該屬性後再試一次</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">此壓縮檔正在其他程式中開啟 - 請關閉後再試一次</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">沒有寫入此壓縮檔的權限</sys:String>

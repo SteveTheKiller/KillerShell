@@ -556,6 +556,9 @@
     <sys:String x:Key="Str_Menu_Rename">Перейменувати</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Видалити  (Shift: остаточно)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Нова папка</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Стиснути в ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Видобути сюди</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Видобути до "{0}"</sys:String>
 
 
     <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
@@ -813,6 +816,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Перейменовано на {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">Додано {0} - {1} не вдалося дати допустиму назву, їх пропущено</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Не вдалося оновити архів - {0}. Оригінал не змінено.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">Створено {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Видобуто до {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Не вдалося видобути {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Видобування архіву</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Цей архівний файл позначено лише для читання - зніміть позначку та спробуйте знову</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Цей архів відкрито в іншій програмі - закрийте її та спробуйте знову</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Немає дозволу на запис в цей архів</sys:String>

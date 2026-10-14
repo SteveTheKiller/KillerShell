@@ -412,6 +412,9 @@
     <sys:String x:Key="Str_Menu_Rename">Přejmenovat</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Smazat  (Shift: trvale)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Nová složka</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Komprimovat do ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Extrahovat sem</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Extrahovat do "{0}"</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -665,6 +668,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Přejmenováno na {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">Přidáno {0} - {1} bez platného názvu přeskočeno</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Nepodařilo se aktualizovat archiv - {0}. Původní soubor je beze změny.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">Vytvořeno: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Extrahováno do {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Nepodařilo se extrahovat {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Extrahování archivu</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Tento soubor archivu je jen pro čtení - zrušte tento atribut a zkuste to znovu</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Tento archiv je otevřený v jiném programu - zavřete ho a zkuste to znovu</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Chybí oprávnění k zápisu do tohoto archivu</sys:String>

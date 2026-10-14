@@ -532,6 +532,9 @@
     <sys:String x:Key="Str_Menu_Rename">Rinomina</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Elimina  (Shift: definitivamente)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Nuova cartella</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Comprimi in ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Estrai qui</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Estrai in "{0}"</sys:String>
 
     <!-- Themed file dialog -->
     <sys:String x:Key="Str_Btn_Open">Apri</sys:String>
@@ -778,6 +781,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Rinominato in {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">Aggiunti {0} - {1} non hanno potuto ricevere un nome valido e sono stati saltati</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Impossibile aggiornare l'archivio - {0}. L'originale è invariato.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">Creato {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Estratto in {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Impossibile estrarre {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Estrazione dell'archivio</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Quel file di archivio è contrassegnato in sola lettura - togli il contrassegno e riprova</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Quell'archivio è aperto in un altro programma - chiudilo e riprova</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Nessuna autorizzazione a scrivere in quell'archivio</sys:String>

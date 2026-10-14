@@ -414,6 +414,9 @@
     <sys:String x:Key="Str_Menu_Rename">Renommer</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Supprimer  (Maj : définitivement)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Nouveau dossier</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Compresser en ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Extraire ici</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Extraire vers "{0}"</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -667,6 +670,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Renommé en {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} ajouté(s) - {1} ignoré(s) faute de nom valide</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Impossible de mettre à jour l'archive - {0}. L'original est inchangé.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">{0} créé</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Extrait vers {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Impossible d'extraire {0} : {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Extraction de l'archive</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Ce fichier d'archive est en lecture seule - retirez cet attribut et réessayez</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Cette archive est ouverte dans un autre programme - fermez-le et réessayez</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Pas d'autorisation d'écriture sur cette archive</sys:String>

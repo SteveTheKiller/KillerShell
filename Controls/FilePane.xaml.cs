@@ -553,6 +553,9 @@ namespace KillerShell
         private void MenuNicknameRemove_Click(object s, RoutedEventArgs e) => Owner.MenuNicknameRemove_Click(s, e);
         private void MenuDelete_Click(object s, RoutedEventArgs e)         => Owner.MenuDelete_Click(s, e);
         private void MenuNewFolder_Click(object s, RoutedEventArgs e)      => Owner.MenuNewFolder_Click(s, e);
+        private void MenuCompress_Click(object s, RoutedEventArgs e)       => Owner.MenuCompress_Click(s, e);
+        private void MenuExtractHere_Click(object s, RoutedEventArgs e)    => Owner.MenuExtractHere_Click(s, e);
+        private void MenuExtractTo_Click(object s, RoutedEventArgs e)      => Owner.MenuExtractTo_Click(s, e);
 
         // ── Document bar + gear (EditorBar.cs) ───────────────────
         private void EditorSave_Click(object s, RoutedEventArgs e)         => Owner.EditorSave_Click(s, e);

@@ -414,6 +414,9 @@
     <sys:String x:Key="Str_Menu_Rename">Renombrar</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Eliminar  (Mayús: permanentemente)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Nueva carpeta</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Comprimir en ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Extraer aquí</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Extraer en "{0}"</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -667,6 +670,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Renombrado a {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">Se añadieron {0} - se omitieron {1} sin un nombre válido</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">No se pudo actualizar el archivo comprimido - {0}. El original no ha cambiado.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">Se creó {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Extraído en {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">No se pudo extraer {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Extrayendo el archivo comprimido</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Ese archivo comprimido es de solo lectura - quita ese atributo e inténtalo de nuevo</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Ese archivo comprimido está abierto en otro programa - ciérralo e inténtalo de nuevo</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Sin permiso para escribir en ese archivo comprimido</sys:String>

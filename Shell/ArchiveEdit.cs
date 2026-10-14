@@ -252,6 +252,181 @@ namespace KillerShell.Shell
             return [.. extracted];
         }
 
+        // ── Compress and extract, from an ordinary folder ────────
+        // The right-click verbs for archives that sit on disk. Both reuse the safe halves that
+        // already exist: compressing is an add into a new, empty zip (so it inherits the writer's
+        // temp-and-swap and its entry-name hygiene), and extracting walks the same
+        // containment-checked path the folder drag-out uses. Neither ever overwrites anything:
+        // a name that is already taken gets a numbered name, the way Explorer does it.
+
+        /// <summary>Whether the menu's selection is all real archives this build can read,
+        /// for the extract rows.</summary>
+        private List<string> MenuArchives()
+            => [.. MenuFiles().Where(p => System.IO.File.Exists(p) && ArchiveProvider.IsReadable(p))];
+
+        /// <summary>The selection as real files and folders on disk, for Compress. Empty
+        /// inside an archive, where the rows are not on disk at all.</summary>
+        private List<string> MenuDiskItems()
+            => InArchive(Pane) ? [] : [.. MenuFiles().Where(Exists)];
+
+        internal void MenuCompress_Click(object sender, RoutedEventArgs e)
+        {
+            var sources = MenuDiskItems();
+            if (sources.Count == 0) return;
+
+            string first = sources[0].TrimEnd(System.IO.Path.DirectorySeparatorChar);
+            string? folder = System.IO.Path.GetDirectoryName(first);
+            if (string.IsNullOrEmpty(folder)) return;   // a drive root has nowhere beside it
+
+            string stem = System.IO.File.Exists(first)
+                ? System.IO.Path.GetFileNameWithoutExtension(first)
+                : System.IO.Path.GetFileName(first);
+            if (stem.Length == 0) stem = "Archive";
+
+            string zipPath = FreeName(System.IO.Path.Combine(folder, stem + ".zip"));
+            var tab = _active;
+
+            // An empty zip first, so the writer has an archive to add into. It is removed again
+            // if the add fails or is canceled, so a failure never leaves a stray empty zip.
+            try
+            {
+                using var fs = new System.IO.FileStream(zipPath, System.IO.FileMode.CreateNew);
+                using var zip = new System.IO.Compression.ZipArchive(fs, System.IO.Compression.ZipArchiveMode.Create);
+            }
+            catch (Exception ex)
+            {
+                SetTabStatusKey(tab, "Str_Status_ArchiveWriteFailed", ex.Message);
+                return;
+            }
+
+            var r = FileOpDialog.RewriteArchive(this,
+                (progress, ct) => ArchiveWriter.Add(zipPath, "", sources, ArchiveCollision.KeepBoth, progress, ct));
+
+            if (!r.Ok)
+            {
+                try { System.IO.File.Delete(zipPath); } catch { }
+                ReportArchive(tab, r, "Str_Status_ArchiveCompressed", "");
+                return;
+            }
+            SetTabStatusKey(tab, "Str_Status_ArchiveCompressed", System.IO.Path.GetFileName(zipPath));
+        }
+
+        internal void MenuExtractHere_Click(object sender, RoutedEventArgs e) => ExtractArchives(intoOwnFolder: false);
+        internal void MenuExtractTo_Click(object sender, RoutedEventArgs e)   => ExtractArchives(intoOwnFolder: true);
+
+        /// <summary>
+        /// Extracts each selected archive beside itself. "To folder" makes a new folder named
+        /// after the archive. "Here" extracts into a hidden staging folder first and then moves
+        /// each top-level item out, so a failure partway never leaves half an archive mixed in
+        /// with the files already there, and an existing name is never overwritten.
+        /// </summary>
+        private void ExtractArchives(bool intoOwnFolder)
+        {
+            var archives = MenuArchives();
+            if (archives.Count == 0) return;
+            var tab = _active;
+            string? landed = null;
+
+            foreach (string archive in archives)
+            {
+                string? parent = System.IO.Path.GetDirectoryName(archive);
+                if (string.IsNullOrEmpty(parent)) continue;
+
+                string dest = intoOwnFolder
+                    ? FreeName(System.IO.Path.Combine(parent, ArchiveStem(archive)), folder: true)
+                    : System.IO.Path.Combine(parent, ".ksextract-" + Guid.NewGuid().ToString("N")[..8]);
+
+                if (!intoOwnFolder)
+                {
+                    // Hidden so the listing does not flash a staging folder while it fills.
+                    try
+                    {
+                        var stage = System.IO.Directory.CreateDirectory(dest);
+                        stage.Attributes |= System.IO.FileAttributes.Hidden;
+                    }
+                    catch (Exception ex)
+                    {
+                        SetTabStatusKey(tab, "Str_Status_ArchiveExtractFailed", System.IO.Path.GetFileName(archive), ex.Message);
+                        return;
+                    }
+                }
+
+                var r = FileOpDialog.RewriteArchive(this, (_, ct) =>
+                {
+                    var res = new ArchiveWriteResult();
+                    if (ArchiveProvider.ExtractAll(archive, dest, ct, out string? error)) res.Ok = true;
+                    else { res.ErrorKey = "Str_Status_ArchiveExtractFailed"; res.ErrorDetail = error; }
+                    return res;
+                }, "Str_Status_ArchiveExtracting");
+
+                if (r.Ok && !intoOwnFolder) r = MoveOutOfStage(dest, parent!);
+
+                if (!r.Ok)
+                {
+                    // Whatever was half-written is removed: a partial extraction is worse than
+                    // none, because it looks finished.
+                    try { if (System.IO.Directory.Exists(dest)) System.IO.Directory.Delete(dest, recursive: true); } catch { }
+                    SetTabStatusKey(tab, r.ErrorKey ?? "Str_Status_ArchiveExtractFailed",
+                                    System.IO.Path.GetFileName(archive), r.ErrorDetail ?? string.Empty);
+                    return;
+                }
+
+                landed = intoOwnFolder ? System.IO.Path.GetFileName(dest) : parent;
+            }
+
+            if (landed != null) SetTabStatusKey(tab, "Str_Status_ArchiveExtracted", landed);
+        }
+
+        /// <summary>Moves every top-level item out of a staging folder into
+        /// <paramref name="parent"/>, renaming any that would collide, then removes the stage.</summary>
+        private static ArchiveWriteResult MoveOutOfStage(string stage, string parent)
+        {
+            var res = new ArchiveWriteResult();
+            try
+            {
+                foreach (string item in System.IO.Directory.GetFileSystemEntries(stage))
+                {
+                    bool isFolder = System.IO.Directory.Exists(item);
+                    string target = FreeName(System.IO.Path.Combine(parent, System.IO.Path.GetFileName(item)), isFolder);
+                    if (isFolder) System.IO.Directory.Move(item, target);
+                    else System.IO.File.Move(item, target);
+                }
+                System.IO.Directory.Delete(stage, recursive: true);
+                res.Ok = true;
+            }
+            catch (Exception ex)
+            {
+                res.ErrorKey = "Str_Status_ArchiveExtractFailed";
+                res.ErrorDetail = ex.Message;
+            }
+            return res;
+        }
+
+        /// <summary>The archive's name without its archive extension, so "logs.tar.gz" extracts
+        /// to "logs" rather than "logs.tar".</summary>
+        private static string ArchiveStem(string archive)
+        {
+            string name = System.IO.Path.GetFileName(archive);
+            if (name.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase)) return name[..^7];
+            string stem = System.IO.Path.GetFileNameWithoutExtension(name);
+            return stem.Length == 0 ? name : stem;
+        }
+
+        /// <summary>"report.zip" -> "report (2).zip" when the name is taken, numbering the way
+        /// Explorer and FileOps do. A folder keeps its whole name, dots included.</summary>
+        private static string FreeName(string path, bool folder = false)
+        {
+            if (!System.IO.File.Exists(path) && !System.IO.Directory.Exists(path)) return path;
+            string dir  = System.IO.Path.GetDirectoryName(path) ?? string.Empty;
+            string stem = folder ? System.IO.Path.GetFileName(path) : System.IO.Path.GetFileNameWithoutExtension(path);
+            string ext  = folder ? string.Empty : System.IO.Path.GetExtension(path);
+            int n = 2;
+            string candidate;
+            do { candidate = System.IO.Path.Combine(dir, stem + " (" + n++ + ")" + ext); }
+            while (System.IO.File.Exists(candidate) || System.IO.Directory.Exists(candidate));
+            return candidate;
+        }
+
         // ── Shared plumbing ──────────────────────────────────────
         /// <summary>
         /// One place that turns a write result into a status line. Every refusal the writer can

@@ -534,6 +534,9 @@
     <sys:String x:Key="Str_Menu_Rename">Атын өзгерту</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Жою  (Shift: біржола)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Жаңа қалта</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">ZIP-ке сығу</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Осында шығару</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">"{0}" ішіне шығару</sys:String>
 
     <!-- Themed file dialog -->
     <sys:String x:Key="Str_Btn_Open">Ашу</sys:String>
@@ -781,6 +784,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Атауы {0} болып өзгертілді</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} қосылды - {1} үшін жарамды атау берілмеді, олар өткізіліп жіберілді</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Мұрағат жаңартылмады - {0}. Түпнұсқа өзгерген жоқ.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">{0} жасалды</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">{0} ішіне шығарылды</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">{0} шығарылмады: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Мұрағат шығарылуда</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Бұл мұрағат файлы тек оқуға деп белгіленген - белгіні алып, қайталаңыз</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Бұл мұрағат басқа бағдарламада ашық - оны жауып, қайталаңыз</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Бұл мұрағатқа жазуға рұқсат жоқ</sys:String>

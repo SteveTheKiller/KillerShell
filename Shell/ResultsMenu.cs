@@ -103,6 +103,35 @@ namespace KillerShell.Shell
 
             // Same rule for the nickname rows: they belong to the item under the pointer.
             SyncNicknameMenu(Pane.ResultsList.ContextMenu, seed?.FilePath);   // NicknameCommands.cs
+
+            SyncArchiveMenu(Pane.ResultsList.ContextMenu, seed != null);
+        }
+
+        /// <summary>
+        /// Shows the archive rows only where they do something (ArchiveEdit.cs): Compress for
+        /// real files and folders, Extract when every selected row is a readable archive. The
+        /// Extract to header names the folder it will create, so the row says where things land.
+        /// </summary>
+        private void SyncArchiveMenu(ContextMenu? menu, bool onItem)
+        {
+            if (menu == null) return;
+            var items = menu.Items.OfType<FrameworkElement>().ToList();
+            FrameworkElement? Row(string tag) => items.FirstOrDefault(m => (m.Tag as string) == tag);
+
+            var archives = onItem ? MenuArchives() : [];
+            bool extract = archives.Count > 0 && archives.Count == MenuFiles().Count;
+            bool compress = onItem && MenuDiskItems().Count > 0;
+
+            Row("zip")?.Visibility       = compress ? Visibility.Visible : Visibility.Collapsed;
+            Row("unziphere")?.Visibility = extract  ? Visibility.Visible : Visibility.Collapsed;
+            Row("unzipto")?.Visibility   = extract  ? Visibility.Visible : Visibility.Collapsed;
+            Row("zipsep")?.Visibility    = compress || extract ? Visibility.Visible : Visibility.Collapsed;
+
+            if (extract && Row("unzipto") is MenuItem to)
+            {
+                string name = archives.Count == 1 ? ArchiveStem(archives[0]) + "\\" : "*\\";
+                to.Header = string.Format(Loc("Str_Menu_ExtractTo"), name);
+            }
         }
 
         private MenuItem? _favMenuItem;

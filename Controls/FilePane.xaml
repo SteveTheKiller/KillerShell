@@ -2138,6 +2138,20 @@
                             <MenuItem Header="{DynamicResource Str_Menu_NewFolder}"     Click="MenuNewFolder_Click" InputGestureText="Ctrl+Shift+N">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8F4;"/></MenuItem.Icon>
                             </MenuItem>
+                            <!-- Archive verbs (ArchiveEdit.cs). Shown only where they apply:
+                                 Compress on real files and folders, the two Extract rows when the
+                                 selection is archives this build can read. The Extract to row's
+                                 header carries the folder name and is set as the menu opens. -->
+                            <Separator Tag="zipsep"/>
+                            <MenuItem Tag="zip" Header="{DynamicResource Str_Menu_Compress}" Click="MenuCompress_Click">
+                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Tag="unziphere" Header="{DynamicResource Str_Menu_ExtractHere}" Click="MenuExtractHere_Click">
+                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8B7;"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Tag="unzipto" Header="{DynamicResource Str_Menu_ExtractTo}" Click="MenuExtractTo_Click">
+                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8DA;"/></MenuItem.Icon>
+                            </MenuItem>
                             <Separator/>
                             <MenuItem Header="{DynamicResource Str_Menu_Properties}"    Click="MenuProperties_Click" InputGestureText="Alt+Enter">
                                 <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>

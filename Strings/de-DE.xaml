@@ -414,6 +414,9 @@
     <sys:String x:Key="Str_Menu_Rename">Umbenennen</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Löschen  (Umschalt: endgültig)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Neuer Ordner</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Als ZIP komprimieren</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Hier entpacken</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Nach "{0}" entpacken</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -667,6 +670,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Umbenannt in {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} hinzugefügt - {1} ohne gültigen Namen wurden übersprungen</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Archiv konnte nicht aktualisiert werden - {0}. Das Original ist unverändert.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">{0} erstellt</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Nach {0} entpackt</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">{0} konnte nicht entpackt werden: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Archiv wird entpackt</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Diese Archivdatei ist schreibgeschützt - heben Sie den Schutz auf und versuchen Sie es erneut</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Dieses Archiv ist in einem anderen Programm geöffnet - schließen Sie es und versuchen Sie es erneut</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Keine Berechtigung zum Schreiben in dieses Archiv</sys:String>

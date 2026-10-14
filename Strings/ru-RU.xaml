@@ -534,6 +534,9 @@
     <sys:String x:Key="Str_Menu_Rename">Переименовать</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Удалить  (Shift: безвозвратно)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Новая папка</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Сжать в ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Извлечь сюда</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Извлечь в "{0}"</sys:String>
 
     <!-- Themed file dialog -->
     <sys:String x:Key="Str_Btn_Open">Открыть</sys:String>
@@ -781,6 +784,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Переименовано в {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">Добавлено {0} - для {1} не удалось получить допустимое имя, они пропущены</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Не удалось обновить архив - {0}. Оригинал не изменён.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">Создан {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Извлечено в {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Не удалось извлечь {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Извлечение архива</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Этот файл архива помечен только для чтения - снимите отметку и повторите</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Этот архив открыт в другой программе - закройте её и повторите</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Нет прав на запись в этот архив</sys:String>

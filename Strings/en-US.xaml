@@ -556,6 +556,9 @@
     <sys:String x:Key="Str_Menu_Rename">Rename</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Delete  (Shift: permanently)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">New folder</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Compress to ZIP</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Extract here</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Extract to "{0}"</sys:String>
 
 
     <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
@@ -813,6 +816,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Renamed to {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">Added {0} - {1} could not be given a legal name and were skipped</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Could not update the archive - {0}. The original is unchanged.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">Created {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Extracted to {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Could not extract {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Extracting the archive</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">That archive file is marked read-only - clear that and try again</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">That archive is open in another program - close it and try again</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">No permission to write to that archive</sys:String>

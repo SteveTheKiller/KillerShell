@@ -556,6 +556,9 @@
     <sys:String x:Key="Str_Menu_Rename">Átnevezés</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Törlés (Shift: véglegesen)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Új mappa</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">Tömörítés ZIP-be</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Kibontás ide</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">Kibontás ide: "{0}"</sys:String>
 
 
     <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
@@ -813,6 +816,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">Átnevezve erre: {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">A(z) {0} hozzáadva - {1} nem kapott hivatalos nevet, ezért kimaradt</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Nem sikerült frissíteni az archívumot - {0}. Az eredeti változatlan.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">Létrehozva: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">Kibontva ide: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">Nem sikerült kibontani: {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Archívum kibontása</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Az archív fájl írásvédettként van megjelölve - törölje ezt, és próbálja újra</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Az archívum meg van nyitva egy másik programban - zárja be, és próbálja újra</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Nincs engedélye írni az archívumba</sys:String>

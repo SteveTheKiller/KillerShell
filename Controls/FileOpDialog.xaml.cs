@@ -78,9 +78,10 @@ namespace KillerShell
         /// token; ArchiveWriter then deletes its temporary file and leaves the original intact.</summary>
         internal static ArchiveWriteResult RewriteArchive(
             Window owner,
-            Func<Action<int, int, string>, CancellationToken, ArchiveWriteResult> work)
+            Func<Action<int, int, string>, CancellationToken, ArchiveWriteResult> work,
+            string labelKey = "Str_Status_ArchiveWriting")
         {
-            var dlg = new FileOpDialog("Str_Status_ArchiveWriting") { Owner = owner };
+            var dlg = new FileOpDialog(labelKey) { Owner = owner };
             // The status resource contains the live percentage. The progress bar carries that
             // value here, so use a neutral initial value instead of showing a raw {0} token.
             dlg.OpLabel.Text = string.Format(dlg.OpLabel.Text, "0");

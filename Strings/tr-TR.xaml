@@ -414,6 +414,9 @@
     <sys:String x:Key="Str_Menu_Rename">Yeniden adlandır</sys:String>
     <sys:String x:Key="Str_Menu_Delete">Sil  (Shift: kalıcı olarak)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">Yeni klasör</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">ZIP olarak sıkıştır</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">Buraya çıkar</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">"{0}" klasörüne çıkar</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -667,6 +670,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">{0} olarak yeniden adlandırıldı</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} eklendi - geçerli ad verilemeyen {1} atlandı</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Arşiv güncellenemedi - {0}. Özgün dosya değişmedi.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">{0} oluşturuldu</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">{0} klasörüne çıkarıldı</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">{0} çıkarılamadı: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">Arşiv çıkarılıyor</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Bu arşiv dosyası salt okunur olarak işaretli - bunu kaldırıp yeniden deneyin</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">Bu arşiv başka bir programda açık - kapatıp yeniden deneyin</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">Bu arşive yazma izni yok</sys:String>

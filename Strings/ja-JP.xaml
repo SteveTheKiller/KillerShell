@@ -412,6 +412,9 @@
     <sys:String x:Key="Str_Menu_Rename">名前の変更</sys:String>
     <sys:String x:Key="Str_Menu_Delete">削除  (Shift: 完全に)</sys:String>
     <sys:String x:Key="Str_Menu_NewFolder">新しいフォルダー</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">ZIP に圧縮</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">ここに展開</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">"{0}" に展開</sys:String>
 
 
     <!-- 2.0.0: editor tabs, the document and shell bars, and $PROFILE editing -->
@@ -662,6 +665,10 @@
     <sys:String x:Key="Str_Status_ArchiveRenamed">{0} に名前を変更しました</sys:String>
     <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0} 件を追加しました。正しい名前を付けられない {1} 件はスキップしました</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">アーカイブを更新できませんでした - {0}。元のファイルは変更されていません。</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">{0} を作成しました</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">{0} に展開しました</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">{0} を展開できませんでした: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">アーカイブを展開しています</sys:String>
     <sys:String x:Key="Str_Status_ArchiveFileReadOnly">このアーカイブ ファイルは読み取り専用です。属性を解除してからやり直してください</sys:String>
     <sys:String x:Key="Str_Status_ArchiveInUse">このアーカイブは別のプログラムで開かれています。閉じてからやり直してください</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDenied">このアーカイブに書き込む権限がありません</sys:String>

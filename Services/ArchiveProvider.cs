@@ -567,8 +567,29 @@ namespace KillerShell.Services
             }
         }
 
+        /// <summary>Extracts the whole archive into <paramref name="destination"/>, which is
+        /// created if needed. Every target is containment-checked the same way the drag-out
+        /// extraction is, so a traversing entry name cannot write outside it.</summary>
+        internal static bool ExtractAll(string archivePath, string destination,
+                                        System.Threading.CancellationToken ct, out string? error)
+        {
+            error = null;
+            try
+            {
+                Directory.CreateDirectory(destination);
+                return ExtractFolderChildren(archivePath, "", destination, out error, ct);
+            }
+            catch (OperationCanceledException) { throw; }
+            catch (Exception ex)
+            {
+                error ??= ex.Message;
+                return false;
+            }
+        }
+
         private static bool ExtractFolderChildren(string archivePath, string entryPath,
-                                                  string destination, out string? error)
+                                                  string destination, out string? error,
+                                                  System.Threading.CancellationToken ct = default)
         {
             var children = List(archivePath, entryPath, out error);
             if (error != null) return false;
@@ -577,6 +598,7 @@ namespace KillerShell.Services
                           + Path.DirectorySeparatorChar;
             foreach (var child in children)
             {
+                ct.ThrowIfCancellationRequested();
                 string target = Path.GetFullPath(Path.Combine(destination, child.Name));
                 if (!target.StartsWith(root, StringComparison.OrdinalIgnoreCase))
                 {
@@ -587,7 +609,7 @@ namespace KillerShell.Services
                 if (child.IsDirectory)
                 {
                     Directory.CreateDirectory(target);
-                    if (!ExtractFolderChildren(archivePath, child.EntryPath, target, out error))
+                    if (!ExtractFolderChildren(archivePath, child.EntryPath, target, out error, ct))
                         return false;
                 }
                 else

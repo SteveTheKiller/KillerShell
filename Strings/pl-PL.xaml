@@ -511,6 +511,9 @@
   <sys:String x:Key="Str_Menu_Rename">Zmień nazwę</sys:String>
   <sys:String x:Key="Str_Menu_Delete">Usuń  (Shift: trwale)</sys:String>
   <sys:String x:Key="Str_Menu_NewFolder">Nowy folder</sys:String>
+  <sys:String x:Key="Str_Menu_Compress">Kompresuj do ZIP</sys:String>
+  <sys:String x:Key="Str_Menu_ExtractHere">Wyodrębnij tutaj</sys:String>
+  <sys:String x:Key="Str_Menu_ExtractTo">Wyodrębnij do "{0}"</sys:String>
   <sys:String x:Key="Str_Btn_Open">Otwórz</sys:String>
   <sys:String x:Key="Str_Btn_Save">Zapisz</sys:String>
   <sys:String x:Key="Str_Dlg_FileName">Nazwa pliku:</sys:String>
@@ -690,6 +693,10 @@
   <sys:String x:Key="Str_Status_ArchiveRenamed">Zmieniono nazwę na {0}</sys:String>
   <sys:String x:Key="Str_Status_ArchiveSomeRejected">Dodano {0}; nie udało się nadać prawidłowej nazwy {1} elementom, więc je pominięto</sys:String>
   <sys:String x:Key="Str_Status_ArchiveWriteFailed">Nie udało się zaktualizować archiwum - {0}. Oryginał nie został zmieniony.</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveCompressed">Utworzono {0}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveExtracted">Wyodrębniono do {0}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveExtractFailed">Nie udało się wyodrębnić {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Status_ArchiveExtracting">Wyodrębnianie archiwum</sys:String>
   <sys:String x:Key="Str_Status_ArchiveFileReadOnly">Plik archiwum jest oznaczony jako tylko do odczytu - wyłącz to i spróbuj ponownie</sys:String>
   <sys:String x:Key="Str_Status_ArchiveInUse">Archiwum jest otwarte w innym programie - zamknij go i spróbuj ponownie</sys:String>
   <sys:String x:Key="Str_Status_ArchiveDenied">Brak uprawnień do zapisu w archiwum</sys:String>
