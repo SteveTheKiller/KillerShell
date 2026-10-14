@@ -607,6 +607,10 @@ namespace KillerShell.Terminal
             return _palette.Readable(fg, CellBg(cell));
         }
 
+        /// <summary>Opacity of faint (SGR 2) text: low enough that an inline prediction is
+        /// obviously not typed text, high enough to still read.</summary>
+        private const byte FaintAlpha = 0x66;
+
         private void DrawGlyphs(DrawingContext dc, Cell[] line, double y)
         {
             var gt = _glyphs!;
@@ -649,10 +653,13 @@ namespace KillerShell.Terminal
                 if (indices.Count == 0) continue;
 
                 double x = start * _cellW;
-                var brush = new SolidColorBrush(
-                    (flags & CellFlags.Faint) != 0
-                        ? Color.FromArgb(0x99, fg.R, fg.G, fg.B)
-                        : fg);
+
+                // Faint (SGR 2) is how PSReadLine draws its inline prediction, and that text has
+                // to read as a suggestion rather than as something already typed. CellFg has
+                // already lifted the color to full contrast, so faint is applied here, after it,
+                // and strongly enough that it never passes for typed text.
+                bool faint = (flags & CellFlags.Faint) != 0;
+                var brush = new SolidColorBrush(faint ? Color.FromArgb(FaintAlpha, fg.R, fg.G, fg.B) : fg);
                 brush.Freeze();
 
                 // Stretch a BUNDLED-fallback glyph out to the chosen font's cell width, anchored
@@ -668,8 +675,10 @@ namespace KillerShell.Terminal
                 // which is the family rule, and an offset copy reads as bleed anyway.
                 if (_palette.Glow > 0)
                 {
+                    // Faint text bleeds faintly too, or the glow alone would bring it back up.
+                    double glowAlpha = 70 * _palette.Glow * (faint ? FaintAlpha / 255.0 : 1);
                     var glow = new SolidColorBrush(
-                        Color.FromArgb((byte)(70 * _palette.Glow), fg.R, fg.G, fg.B));
+                        Color.FromArgb((byte)glowAlpha, fg.R, fg.G, fg.B));
                     glow.Freeze();
                     var under = MakeRun(face, indices, widths, new Point(x, y + _baseline + 0.7));
                     if (under != null) dc.DrawGlyphRun(glow, under);
