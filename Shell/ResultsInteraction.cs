@@ -339,25 +339,32 @@ namespace KillerShell.Shell
             System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: seed={_dragSeed?.FilePath ?? "null"}, resolvedPaths={paths.Length}");
             if (paths.Length == 0) return;
 
-            // A real native-COM IDataObject, not System.Windows.Forms.DataObject: the WinForms
-            // one's IDataObject.SetData throws NotImplementedException (it is written only to be
-            // read FROM as a drag source, never written TO), so the shell's IDragSourceHelper
-            // cannot write its own drag-image formats onto it and InitializeFromBitmap fails
-            // outright - confirmed here by DragImage's own trace: hr=0x80004001 (E_NOTIMPL),
-            // exactly the HRESULT a NotImplementedException becomes crossing the COM boundary.
-            // Services.NativeDataObject implements SetData for real.
-            var data = new Services.NativeDataObject();
-            try
+            // The shell's own data object, the one Explorer drags with (Services/ShellDataObject.cs).
+            // A hand-built object carrying only CF_HDROP and text satisfied Explorer and most apps
+            // but not Microsoft Teams, which refused every file it was given that way.
+            //
+            // Services.NativeDataObject stays as the fallback for a path the shell cannot parse.
+            // It is a real native-COM IDataObject rather than System.Windows.Forms.DataObject
+            // because the WinForms one's SetData throws NotImplementedException, so the shell's
+            // IDragSourceHelper could not write its drag-image formats onto it (hr=0x80004001).
+            System.Runtime.InteropServices.ComTypes.IDataObject? data = Services.ShellDataObject.Create(paths);
+            Services.NativeDataObject? native = null;
+            if (data == null)
             {
-                data.SetHGlobal(Services.NativeDataObject.CF_HDROP, Services.NativeDataObject.BuildHDrop(paths));
-                data.SetHGlobal(Services.NativeDataObject.CF_UNICODETEXT,
-                    Services.NativeDataObject.BuildUnicodeText(string.Join(Environment.NewLine, paths)));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: BuildHDrop/BuildUnicodeText THREW: {ex}");
-                data.ReleaseAll();   // the first SetHGlobal may already hold a global
-                return;  // Bail BEFORE attaching drag-image so no orphaned shell window is left behind
+                native = new Services.NativeDataObject();
+                try
+                {
+                    native.SetHGlobal(Services.NativeDataObject.CF_HDROP, Services.NativeDataObject.BuildHDrop(paths));
+                    native.SetHGlobal(Services.NativeDataObject.CF_UNICODETEXT,
+                        Services.NativeDataObject.BuildUnicodeText(string.Join(Environment.NewLine, paths)));
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[DragDiag] StartFileDrag: BuildHDrop/BuildUnicodeText THREW: {ex}");
+                    native.ReleaseAll();   // the first SetHGlobal may already hold a global
+                    return;  // Bail BEFORE attaching drag-image so no orphaned shell window is left behind
+                }
+                data = native;
             }
 
             // The file's own icon at half opacity, following the cursor - the same thing Explorer
@@ -370,7 +377,7 @@ namespace KillerShell.Shell
 
             // Native ole32 DoDragDrop, not System.Windows.DragDrop.DoDragDrop: WPF re-wraps
             // whatever it is handed in its own System.Windows.DataObject, which would throw away
-            // the SetData behavior NativeDataObject exists for. Calling ole32 directly keeps the
+            // the shell's data object and its SetData behavior. Calling ole32 directly keeps the
             // shell's drag-image writes and our own data on the exact same object the drag loop
             // uses. Copy AND Move offered: the drop target decides, so holding Shift while
             // dropping into Explorer moves the files instead of copying them. Offering Copy alone
@@ -399,15 +406,16 @@ namespace KillerShell.Shell
             finally
             {
                 // Only after DoDragDrop returns, and in this order. The helper wrapper goes first;
-                // then ReleaseAll drops every medium the shell stored on the data object during
+                // then the data object lets go of every medium the shell stored on it during
                 // the drag, and THAT is what destroys the layered drag-image window - the shell
                 // object that owns the window is referenced through those media's pUnkForRelease,
                 // so until they are released its refcount never reaches zero and the drag icon
                 // sits on screen until the app exits. That was the ghost, on every external drop.
-                // Disposing the helper alone never fixed it because the helper wrapper holds a
-                // different reference from the ones SetData stored (NativeDataObject.ReleaseAll).
+                // For the shell's object, dropping our RCW is that release; a drop target that
+                // still holds its own reference keeps the data readable until it is done.
                 dragHelper?.Dispose();
-                data.ReleaseAll();
+                if (native != null) native.ReleaseAll();
+                else System.Runtime.InteropServices.Marshal.FinalReleaseComObject(data);
                 System.Diagnostics.Debug.WriteLine($"[DragDiag] Disposed drag-image helper and released data object media");
             }
         }
