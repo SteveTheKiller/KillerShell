@@ -38,7 +38,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Button gradients start at the outline color and darken toward the bottom, so a hovered button no longer looks darker than its border.
 - Long checkbox labels in dialogs wrap instead of running past the edge.
 - Reworded the Clear all data prompt to list what it deletes in parentheses, in every language.
-- Centered website logos within the content margins and standardized Lacquer headers and documentation text.
+- Centered website logos and corrected current features, runtime requirements and documentation.
 
 ## [1.3.2] - 2026-10-07
 

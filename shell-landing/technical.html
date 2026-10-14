@@ -160,7 +160,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="stack">
 <h2 data-i18n="t_stack_h">Tech stack</h2>
-<p data-i18n="t_stack_p">KillerShell is a native Windows app. There is no Electron, no browser engine, no runtime to install, and no background service. Everything below ships inside a single .exe that runs on its own:</p>
+<p data-i18n="t_stack_p">Requires .NET Framework 4.8 (x64). The app's other dependencies are packaged in one executable.</p>
 <table class="spec-table"><tr><th data-i18n="t_stack_c">Component</th><th data-i18n="t_stack_d">Detail</th></tr>
 <tr><td data-i18n="t_stack_ui">UI</td><td data-i18n="t_stack_ui_d">WPF on .NET Framework 4.8 (net48), x64, custom window chrome</td></tr>
 <tr><td data-i18n="t_stack_search">Search engine</td><td data-i18n="t_stack_search_d">A parallel engine: one walker feeds a worker per CPU core, and results are pushed to the UI in batches, cancelable at any time</td></tr>
@@ -177,7 +177,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="install">
 <h2 data-i18n="t_install_h">Install &amp; data</h2>
-<p data-i18n="t_install_p1">KillerShell is a single .exe. Put it anywhere and run it as is, or use the built-in installer, which copies the app in, adds a Start Menu shortcut, and registers a normal Windows uninstall entry. Installing for your own account needs no admin rights; installing for every user on the PC asks for permission once and puts it in Program Files, which is the same machine-wide install <code>/silent</code> performs for winget, Chocolatey and RMM tools. Either way there is no .NET runtime and nothing else to install.</p>
+<p data-i18n="t_install_p1">Run the .exe from anywhere and a <b>PORTABLE</b> badge appears in the title bar. Click it to install: for just your account, which needs no admin rights, or for every user on the PC, which asks for permission once and puts KillerShell in Program Files with a Start Menu and Add/Remove Programs entry for everybody. Installing for all users removes an existing per-user copy, so there is only ever one install and one uninstall entry, and your theme, accent, language and tabs are kept. Settings live in the registry under your own account rather than beside the .exe, so the program stays a single file you can move around. Requires .NET Framework 4.8 (x64). The app's other dependencies are packaged in one executable.</p>
 <p data-i18n="t_install_p2">Your settings, such as the last folder you searched and your theme choice, are kept in the registry under your own account rather than in a file next to the .exe, so the program stays a clean single file you can move around. When you run it from outside its installed location, a <b>PORTABLE</b> badge appears so you know which copy you are using.</p>
 </div>
 
@@ -381,7 +381,7 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>
-<script src="ks-i18n.js?v=8"></script>
+<script src="ks-i18n.js?v=9"></script>
 <script src="ks.js?v=8"></script>
 <script>
 // COLLAPSIBLE OUTLINE. The page has fifteen sections and seven subsections, and listing
