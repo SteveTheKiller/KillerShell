@@ -19,7 +19,7 @@ namespace KillerShell
         public TerminalProfilesDialog()
         {
             InitializeComponent();
-            _profiles = new(TerminalProfileStore.Load().Select(p => p.Copy()));
+            _profiles = [.. TerminalProfileStore.Load().Select(p => p.Copy())];
             _defaultId = Services.ThemeManager.GetSetting("DefaultTerminalProfile") ?? "pwsh";
             ProfilesList.ItemsSource = _profiles;
             ProfilesList.SelectedIndex = 0;

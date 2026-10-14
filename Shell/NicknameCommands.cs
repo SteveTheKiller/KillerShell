@@ -28,7 +28,7 @@ namespace KillerShell.Shell
 
         /// <summary>Sets the add/change/remove rows of an item menu for the item it opened on.
         /// A null path (empty pane space) hides both.</summary>
-        private void SyncNicknameMenu(ItemsControl? menu, string? path)
+        private static void SyncNicknameMenu(ItemsControl? menu, string? path)
         {
             if (menu == null) return;
             bool has = !string.IsNullOrEmpty(path) && Services.Nicknames.Get(path).Length > 0;

@@ -64,8 +64,9 @@ namespace KillerShell.Shell
             foreach (string path in wanted)
             {
                 if (_treeWatchers.ContainsKey(path) || _treeWatchFailed.Contains(path)) continue;
-                if (CreateTreeWatcher(path) is { } watcher) _treeWatchers[path] = watcher;
-                else _treeWatchFailed.Add(path);
+                FileSystemWatcher? watcher = CreateTreeWatcher(path);
+                if (watcher == null) _treeWatchFailed.Add(path);
+                else _treeWatchers[path] = watcher;
             }
         }
 

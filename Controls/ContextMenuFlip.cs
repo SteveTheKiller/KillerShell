@@ -65,8 +65,8 @@ namespace KillerShell
 
             // Remember whatever the menu had before, so closing puts exactly that back.
             Saved.Remove(cm);
-            Saved.Add(cm, new[] { cm.ReadLocalValue(ContextMenu.HorizontalOffsetProperty),
-                                  cm.ReadLocalValue(ContextMenu.VerticalOffsetProperty) });
+            Saved.Add(cm, [cm.ReadLocalValue(ContextMenu.HorizontalOffsetProperty),
+                           cm.ReadLocalValue(ContextMenu.VerticalOffsetProperty)]);
 
             // Flipped up: the whole card sits above the pointer. Move it down so its bottom
             // edge meets the pointer tip.

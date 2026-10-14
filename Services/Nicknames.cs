@@ -39,8 +39,8 @@ namespace KillerShell.Services
                 {
                     int tab = line.IndexOf('\t');
                     if (tab <= 0) continue;
-                    string nick = Clean(line.Substring(tab + 1));
-                    if (nick.Length > 0) _map[Key(line.Substring(0, tab))] = nick;
+                    string nick = Clean(line[(tab + 1)..]);
+                    if (nick.Length > 0) _map[Key(line[..tab])] = nick;
                 }
                 return _map;
             }
@@ -55,7 +55,7 @@ namespace KillerShell.Services
         }
 
         private static string Clean(string? nickname)
-            => new string((nickname ?? string.Empty).Select(c => char.IsControl(c) ? ' ' : c).ToArray()).Trim();
+            => new string([.. (nickname ?? string.Empty).Select(c => char.IsControl(c) ? ' ' : c)]).Trim();
 
         /// <summary>The item's nickname, or an empty string when it has none.</summary>
         internal static string Get(string? path)
@@ -103,7 +103,7 @@ namespace KillerShell.Services
             {
                 string nick = Map[k];
                 Map.Remove(k);
-                Map[to + k.Substring(from.Length)] = nick;
+                Map[to + k[from.Length..]] = nick;
             }
             Save();
             Changed?.Invoke(newPath);
