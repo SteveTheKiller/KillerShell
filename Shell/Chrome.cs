@@ -7,6 +7,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using KillerFamily.Windowing;
 
 // KillerUI / Grunge - custom window chrome. Partial of MainWindow.
 // MainWindow.xaml must name: RootGrid (Opacity=0), MinimizeBtn/MaximizeBtn/CloseBtn,
@@ -73,6 +74,9 @@ namespace KillerShell.Shell
         {
             var hwnd = new WindowInteropHelper(this).Handle;
             HwndSource.FromHwnd(hwnd)?.AddHook(WndProc);
+            // Windows 11 snap layouts flyout on the maximize button. Added after WindowChrome's
+            // hook, so it answers WM_NCHITTEST first.
+            SnapLayouts.Attach(this, MaximizeBtn);
             ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
             ApplyThemeBorder(this);
         }

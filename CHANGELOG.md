@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Added
 - Files and folders can have a nickname, set from the right-click menu in the folder tree, saved places and listing. It shows as "Nickname (name)" without renaming anything on disk.
 - A Film Grain switch in the theme menu turns the grain texture on or off on every surface. It is on by default.
+- The maximize button opens the Windows 11 snap layouts menu.
 - The right-click menu can compress files and folders to a new ZIP and extract a .zip, .tar, .tar.gz, .tgz or .gz here or into its own folder. Nothing already there is overwritten.
 
 ### Changed

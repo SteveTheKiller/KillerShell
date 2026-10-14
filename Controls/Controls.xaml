@@ -5,6 +5,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:kui="clr-namespace:KillerShell"
+                    xmlns:snap="clr-namespace:KillerFamily.Windowing"
                     xmlns:cm="clr-namespace:System.ComponentModel;assembly=System">
 
     <ImageBrush x:Key="GrainTileBrush" TileMode="Tile"
@@ -1423,6 +1424,9 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bd" Property="Background" Value="{DynamicResource CaptionHoverBrush}"/></Trigger>
+                        <!-- Snap layouts put the maximize button in the non-client area, where WPF
+                             sees no mouse, so SnapLayouts reports the hover itself. -->
+                        <Trigger Property="snap:SnapLayouts.IsHovered" Value="True"><Setter TargetName="Bd" Property="Background" Value="{DynamicResource CaptionHoverBrush}"/></Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
