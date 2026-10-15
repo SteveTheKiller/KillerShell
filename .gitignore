@@ -1,6 +1,8 @@
 # Build output
 bin/
 obj/
+.wrangler/
+*.tmp
 
 # Visual Studio
 .vs/
