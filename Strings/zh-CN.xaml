@@ -497,11 +497,12 @@
     <!-- Filling a pre-existing gap: these were en-US only. -->
     <sys:String x:Key="Str_Btn_RetryAdmin">以管理员身份重试</sys:String>
     <sys:String x:Key="Str_Btn_Update">更新</sys:String>
-    <sys:String x:Key="Str_Btn_NotNow">以后再说</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">启动时检查更新</sys:String>
-    <sys:String x:Key="Str_Dlg_StartupUpdateMsg">{0} {1} 已发布</sys:String>
-    <sys:String x:Key="Str_Dlg_StartupUpdateBody">是否立即下载并安装？应用将关闭并自动重新打开。</sys:String>
-    <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">启动时始终检查更新</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} 已发布</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateDetail">是否立即下载并安装？应用将关闭并自动重新打开。</sys:String>
+    <sys:String x:Key="Str_About_UpdateNow">更新</sys:String>
+    <sys:String x:Key="Str_About_NotNow">以后再说</sys:String>
+    <sys:String x:Key="Str_About_AlwaysCheckOnStartup">启动时始终检查更新</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows 拒绝删除此项。如果已开启“受控文件夹访问”，以管理员身份重试也无法解决：它按应用而非按权限级别拦截，需要在 Windows 安全中将 KillerShell 添加到其允许的应用列表。仍要以管理员身份重试吗？</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateBullets">应用将自动关闭并重新打开。</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateMsg">下载并安装 KillerShell {0}？</sys:String>

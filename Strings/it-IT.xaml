@@ -142,11 +142,12 @@
     <sys:String x:Key="Str_Dlg_UpdateMsg">Scaricare e installare KillerShell {0}?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateBullets">L'app si chiuderà e si riaprirà automaticamente.</sys:String>
     <sys:String x:Key="Str_Btn_Update">Aggiorna</sys:String>
-    <sys:String x:Key="Str_Btn_NotNow">Non ora</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">All'avvio cerca aggiornamenti</sys:String>
-    <sys:String x:Key="Str_Dlg_StartupUpdateMsg">È disponibile {0} {1}</sys:String>
-    <sys:String x:Key="Str_Dlg_StartupUpdateBody">Vuoi scaricarlo e installarlo ora? L'app si chiuderà e si riaprirà automaticamente.</sys:String>
-    <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">All'avvio controlla sempre aggiornamenti</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateHeading">È disponibile {0} {1}</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateDetail">Vuoi scaricarlo e installarlo ora? L'app si chiuderà e si riaprirà automaticamente.</sys:String>
+    <sys:String x:Key="Str_About_UpdateNow">Aggiorna</sys:String>
+    <sys:String x:Key="Str_About_NotNow">Non ora</sys:String>
+    <sys:String x:Key="Str_About_AlwaysCheckOnStartup">All'avvio controlla sempre aggiornamenti</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">Uscire da KillerShell?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Ricorda le mie schede aperte</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Ricorda la mia scelta</sys:String>

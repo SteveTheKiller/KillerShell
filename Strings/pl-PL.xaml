@@ -28,11 +28,12 @@
     <sys:String x:Key="Str_Btn_DoUpdate">Aktualizuj</sys:String>
     <sys:String x:Key="Str_Btn_Cancel">Anuluj</sys:String>
     <sys:String x:Key="Str_Btn_Update">Aktualizuj</sys:String>
-    <sys:String x:Key="Str_Btn_NotNow">Nie teraz</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Sprawdzaj aktualizacje przy uruchamianiu</sys:String>
-    <sys:String x:Key="Str_Dlg_StartupUpdateMsg">Dostępny jest {0} {1}</sys:String>
-    <sys:String x:Key="Str_Dlg_StartupUpdateBody">Czy chcesz go teraz pobrać i zainstalować? Aplikacja zamknie się i otworzy ponownie automatycznie.</sys:String>
-    <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">Zawsze sprawdzaj aktualizacje przy uruchamianiu</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateHeading">Dostępny jest {0} {1}</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateDetail">Czy chcesz go teraz pobrać i zainstalować? Aplikacja zamknie się i otworzy ponownie automatycznie.</sys:String>
+    <sys:String x:Key="Str_About_UpdateNow">Aktualizuj</sys:String>
+    <sys:String x:Key="Str_About_NotNow">Nie teraz</sys:String>
+    <sys:String x:Key="Str_About_AlwaysCheckOnStartup">Zawsze sprawdzaj aktualizacje przy uruchamianiu</sys:String>
     <sys:String x:Key="Str_Btn_Quit">Zakończ</sys:String>
     <sys:String x:Key="Str_Theme_Dark">Ciemny</sys:String>
     <sys:String x:Key="Str_Theme_Light">Jasny</sys:String>

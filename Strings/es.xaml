@@ -500,11 +500,12 @@
     <!-- Filling a pre-existing gap: these were en-US only. -->
     <sys:String x:Key="Str_Btn_RetryAdmin">Reintentar como administrador</sys:String>
     <sys:String x:Key="Str_Btn_Update">Actualizar</sys:String>
-    <sys:String x:Key="Str_Btn_NotNow">Ahora no</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Buscar actualizaciones al iniciar</sys:String>
-    <sys:String x:Key="Str_Dlg_StartupUpdateMsg">{0} {1} está disponible</sys:String>
-    <sys:String x:Key="Str_Dlg_StartupUpdateBody">¿Quieres descargarlo e instalarlo ahora? La aplicación se cerrará y volverá a abrirse automáticamente.</sys:String>
-    <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">Buscar siempre actualizaciones al iniciar</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} está disponible</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateDetail">¿Quieres descargarlo e instalarlo ahora? La aplicación se cerrará y volverá a abrirse automáticamente.</sys:String>
+    <sys:String x:Key="Str_About_UpdateNow">Actualizar</sys:String>
+    <sys:String x:Key="Str_About_NotNow">Ahora no</sys:String>
+    <sys:String x:Key="Str_About_AlwaysCheckOnStartup">Buscar siempre actualizaciones al iniciar</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows se negó a eliminar esto. Si el Acceso controlado a carpetas está activado, reintentar como administrador NO ayudará: bloquea por aplicación, no por nivel de permisos, y hay que añadir KillerShell a su lista de aplicaciones permitidas en Seguridad de Windows. ¿Reintentar como administrador de todos modos?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateBullets">La aplicación se cerrará y volverá a abrirse automáticamente.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateMsg">¿Descargar e instalar KillerShell {0}?</sys:String>

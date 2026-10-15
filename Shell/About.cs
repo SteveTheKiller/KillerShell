@@ -151,11 +151,11 @@ namespace KillerShell.Shell
             AboutUpdateButton.Visibility = Visibility.Visible;
 
             if (!IsVisible || OwnedWindows.Count > 0) return;
-            var dlg = new ConfirmDialog(string.Format(Loc("Str_Dlg_StartupUpdateMsg"), AppDisplayName, tag),
-                                        Loc("Str_Dlg_StartupUpdateBody"),
-                                        Loc("Str_Btn_Update"),
-                                        Loc("Str_Dlg_AlwaysCheckOnStartup"), StartupUpdateCheckEnabled) { Owner = this };
-            dlg.CancelBtn.Content = Loc("Str_Btn_NotNow");
+            var dlg = new ConfirmDialog(string.Format(Loc("Str_About_StartupUpdateHeading"), AppDisplayName, tag),
+                                        Loc("Str_About_StartupUpdateDetail"),
+                                        Loc("Str_About_UpdateNow"),
+                                        Loc("Str_About_AlwaysCheckOnStartup"), StartupUpdateCheckEnabled) { Owner = this };
+            dlg.CancelBtn.Content = Loc("Str_About_NotNow");
             dlg.ShowDialog();
             StartupUpdateCheckEnabled = dlg.Check1Checked;
             AboutStartupUpdateCheck.IsChecked = dlg.Check1Checked;
