@@ -301,11 +301,11 @@ namespace KillerShell.Cli
             string subkey = separator < 0 ? string.Empty : path[(separator + 1)..];
             RegistryKey root = hive.ToUpperInvariant() switch
             {
-                "HKEY_CLASSES_ROOT" => Microsoft.Win32.Registry.ClassesRoot,
-                "HKEY_CURRENT_USER" => Microsoft.Win32.Registry.CurrentUser,
-                "HKEY_LOCAL_MACHINE" => Microsoft.Win32.Registry.LocalMachine,
-                "HKEY_USERS" => Microsoft.Win32.Registry.Users,
-                "HKEY_CURRENT_CONFIG" => Microsoft.Win32.Registry.CurrentConfig,
+                "HKEY_CLASSES_ROOT" or "HKCR" => Microsoft.Win32.Registry.ClassesRoot,
+                "HKEY_CURRENT_USER" or "HKCU" => Microsoft.Win32.Registry.CurrentUser,
+                "HKEY_LOCAL_MACHINE" or "HKLM" => Microsoft.Win32.Registry.LocalMachine,
+                "HKEY_USERS" or "HKU" => Microsoft.Win32.Registry.Users,
+                "HKEY_CURRENT_CONFIG" or "HKCC" => Microsoft.Win32.Registry.CurrentConfig,
                 _ => throw new ArgumentException("Registry path must begin with a supported hive name"),
             };
             return subkey.Length == 0 ? root : root.OpenSubKey(subkey, false);

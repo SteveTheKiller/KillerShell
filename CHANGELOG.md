@@ -59,6 +59,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Context menus use Killer Sans UI like the rest of the interface instead of Segoe UI.
 - Opening a file in KillerShell from Explorer no longer leaves an empty tab beside it, and a launch whose paths cannot be opened lands at Home.
 - A folder that fails to open reports it on the status line instead of leaving the tab blank.
+- The --cli registry command accepts short hive names such as HKLM and HKCU, so the documented example works.
 
 ## [1.3.2] - 2026-10-07
 

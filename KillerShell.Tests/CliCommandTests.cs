@@ -66,6 +66,18 @@ public sealed class CliCommandTests
         }
     }
 
+    [Theory]
+    [InlineData(@"HKEY_CURRENT_USER\Software\Microsoft")]
+    [InlineData(@"HKCU\Software\Microsoft")]
+    [InlineData(@"hkcu\Software\Microsoft")]
+    [InlineData(@"HKLM\SOFTWARE\Microsoft")]
+    public void RegistryAcceptsFullAndShortHiveNames(string path)
+    {
+        Result key = Run("registry", path, "--limit", "1");
+        Assert.Equal(0, key.ExitCode);
+        Assert.Contains("\"subkeys\":[", key.Output, StringComparison.Ordinal);
+    }
+
     private static Result Run(params string[] arguments)
     {
         string executable = typeof(SearchEngine).Assembly.Location;
