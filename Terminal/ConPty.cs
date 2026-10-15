@@ -130,6 +130,10 @@ namespace KillerShell.Terminal
                 // command line, and handing it a literal would corrupt the intern pool.
                 var cmd = new System.Text.StringBuilder(commandLine);
 
+                // A launcher can start the app with Ctrl+C ignored, and the shell inherits that,
+                // so Ctrl+C would no longer stop a running command. Clear it before the launch.
+                _ = SetConsoleCtrlHandler(IntPtr.Zero, false);
+
                 if (!CreateProcess(null, cmd, IntPtr.Zero, IntPtr.Zero, false,
                         EXTENDED_STARTUPINFO_PRESENT, IntPtr.Zero, workingDir,
                         ref si, out var pi))
@@ -270,6 +274,9 @@ namespace KillerShell.Terminal
                                                  bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment,
                                                  string? lpCurrentDirectory, ref STARTUPINFOEX lpStartupInfo,
                                                  out PROCESS_INFORMATION lpProcessInformation);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool SetConsoleCtrlHandler(IntPtr handlerRoutine, bool add);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
