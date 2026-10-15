@@ -1,0 +1,1363 @@
+﻿Field,Type,English,Bangla,Czech,German,Spanish,Hungarian,Italian,Japanese,Kazakh,Turkish,Ukrainian,Vietnamese (Vietnam),Portuguese (Brazil),Polish,Norwegian (Bokmål),Chinese (Simplified),Chinese (Traditional),French,Russian
+ProductName,Text,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell,KillerShell
+Description,Text,"One portable Windows exe for managing a computer and everything on it. Files, shells, text editing, storage and system admin share one window and one set of keys.
+
+Install or run portable. Free, open source, GPLv3. No agent, no account, no subscription. No telemetry is sent and no ads... ever.
+
+Filename search
+Wildcard patterns like *.log or report_*.xlsx matched against every filename in the tree. Results stream in real time with no pre-indexing.
+
+Content search
+Streams through files line by line without loading them into RAM. Shows matched lines with their line numbers, and skips binary files automatically.
+
+Terminal in a tab
+PowerShell, CMD, WSL and custom commands share one tab strip. Save terminal profiles, choose a default shell, and browse a terminal's current folder.
+
+Editor in a tab
+Open any file with F7. Syntax highlighting, line numbers, find and go to line, with word wrap on by default. Your encoding and line endings are preserved exactly, never invented.
+
+Search within results
+Pipe one search's results into a new tab and search inside just those files. Chain as deep as you like; each pass only touches the survivors of the last.
+
+Two panes
+F10 splits the window side by side or stacked, each pane with its own tabs. Drag files from one to the other, or keep a search on the left and a shell on the right.
+
+Storage analyzer
+F4 draws a treemap of any folder or drive: one rectangle per file, sized by how much space it takes. Zoom into a folder, filter by depth or minimum size, and send what you find to the Recycle Bin.
+
+Processes & services
+F9 opens a live CPU, memory and owner grid you can filter by name, path or user. End or restart a process, or start, stop and restart a service, each behind a confirm dialog.
+
+Performance monitor
+F11 opens a live hardware dashboard: a summary strip, large CPU and RAM panels, a row for every disk and network adapter, and a card per GPU. Every graph keeps a minute of history, and the CPU panel shows a load square for each logical processor.
+
+Registry Editor
+Ctrl+F11 opens a full tree over all five hives with type-aware value editing, create/rename/delete for keys and values, and Ctrl+F to search loaded names.
+
+Event Viewer
+Ctrl+F12 opens the Application, System and Security logs with level and text filtering, full record detail with a raw XML view, and paging through the filtered results.
+
+Real file operations
+Copy, move, rename, new folder, and delete to the Recycle Bin or permanently. Copy and move show real progress and stop to ask on a collision, with both files' size and date in front of you.
+
+Multiple terms
+Run several filename and content searches in a single pass. Each term is tracked independently with its own match count, so you can see which patterns hit.
+
+Include / exclude filters
+Semicolon-separated patterns narrow or limit the scope by extension or directory segment, for example *.txt;*.log or node_modules.
+
+Sort & refine
+Sort results by name, location, size, type, or modified or created date, and press Ctrl+F to filter the list live. Dropdown filters narrow by extension, date, or size.
+
+Tabs
+Each tab is its own search, folder, terminal or open file, with its own history and results. Drag tabs to reorder, and optionally restore your open tabs on the next launch.
+
+Live folder browsing
+List, icon and details views, with a folder tree, an address bar, and back / forward / up on Explorer's own keys. A browsed folder tracks the disk, so a file deleted in another window disappears here too. Give files or folders nicknames from their context menu without renaming them on disk.
+
+HTML & CSV export
+Export results as a self-contained HTML report with matched lines and a built-in theme switcher, or as CSV for spreadsheets. Opens anywhere, no dependencies.
+
+Keyboard driven
+Explorer's conventions where they exist, and single keys rather than chords where they do not. F1 shows every gesture as a list or on a visual keyboard you can hold Ctrl over.
+
+Private by design
+App data is processed locally, with no telemetry or automatic uploads. Update checks, downloads and network features you choose to use make external connections.
+
+Themes & accents
+13 themes, 41 looks: Dark, Light, Black and 98SE each have 8 accent colors. The other 9 have fixed palettes. Switch live without restarting. The theme menu can turn Film Grain on or off.
+
+Nineteen languages
+The interface is localized in nineteen languages (English, Spanish, German, French, Hungarian, Italian, Turkish, Vietnamese, Polish, Czech, Japanese, Chinese Traditional and Simplified, Bengali, Russian, Kazakh, Ukrainian, Norwegian (Bokmål) and Brazilian Portuguese), switchable live from the toolbar.","একটি কম্পিউটার আর তার ভেতরের সবকিছু সামলানোর জন্য একটিমাত্র পোর্টেবল Windows exe। ফাইল, শেল, টেক্সট এডিটিং, স্টোরেজ আর সিস্টেম অ্যাডমিন - সবই এক উইন্ডোতে, এক সেট কি-তে।
+
+ইনস্টল করুন বা পোর্টেবল চালান। ফ্রি, ওপেন সোর্স, GPLv3। কোনো এজেন্ট নেই, অ্যাকাউন্ট নেই, সাবস্ক্রিপশন নেই। কোনো টেলিমেট্রি পাঠানো হয় না, বিজ্ঞাপনও নেই... কখনোই না।
+
+ফাইলনাম সার্চ
+*.log বা report_*.xlsx-এর মতো ওয়াইল্ডকার্ড প্যাটার্ন ট্রির প্রতিটি ফাইলনামের সাথে মেলানো হয়। ফলাফল রিয়েল টাইমে আসে, আগে থেকে ইনডেক্স করা লাগে না।
+
+কনটেন্ট সার্চ
+ফাইল RAM-এ না তুলে লাইন ধরে ধরে পড়ে। মেলা লাইনগুলো লাইন নম্বরসহ দেখায় এবং বাইনারি ফাইল স্বয়ংক্রিয়ভাবে এড়িয়ে যায়।
+
+ট্যাবেই টার্মিনাল
+PowerShell, CMD, WSL ও নিজস্ব কমান্ড একই ট্যাবে চলে। টার্মিনাল প্রোফাইল সংরক্ষণ করুন, ডিফল্ট শেল বেছে নিন ও তার বর্তমান ফোল্ডার দেখুন।
+
+ট্যাবেই এডিটর
+F7 চেপে যেকোনো ফাইল খুলুন। সিনট্যাক্স হাইলাইটিং, লাইন নম্বর, খোঁজা ও নির্দিষ্ট লাইনে যাওয়া, আর ওয়ার্ড র‍্যাপ ডিফল্টে চালু। আপনার এনকোডিং ও লাইন এন্ডিং হুবহু রাখা হয়, কখনো বানিয়ে নেওয়া হয় না।
+
+ফলাফলের ভেতরে সার্চ
+এক সার্চের ফলাফল নতুন ট্যাবে পাঠিয়ে শুধু সেই ফাইলগুলোর ভেতরে খুঁজুন। যত খুশি শৃঙ্খল করুন; প্রতিটি পাস শুধু আগেরটির টিকে থাকা ফাইলগুলো ছোঁয়।
+
+দুই পেন
+F10 উইন্ডোটিকে পাশাপাশি বা উপর-নিচে ভাগ করে, প্রতিটি পেনের নিজস্ব ট্যাবসহ। এক পেন থেকে আরেক পেনে ফাইল টেনে আনুন, বা বাঁয়ে একটি সার্চ আর ডানে একটি শেল খুলে রাখুন।
+
+স্টোরেজ অ্যানালাইজার
+F4 যেকোনো ফোল্ডার বা ড্রাইভের একটি ট্রিম্যাপ আঁকে: প্রতিটি ফাইল একটি আয়তক্ষেত্র, যতটা জায়গা নেয় সেই মাপে। ফোল্ডারে জুম করুন, গভীরতা বা ন্যূনতম আকারে ফিল্টার করুন, আর যা পাবেন তা রিসাইকেল বিনে পাঠান।
+
+প্রসেস ও সার্ভিস
+F9 একটি লাইভ CPU, মেমরি ও মালিক তালিকা খোলে, যা নাম, পাথ বা ব্যবহারকারী দিয়ে ফিল্টার করা যায়। প্রসেস শেষ বা পুনরায় চালু করুন, কিংবা সার্ভিস চালু, বন্ধ ও পুনরায় চালু করুন - প্রতিটি কাজের আগে একটি নিশ্চিতকরণ ডায়ালগ।
+
+পারফরম্যান্স মনিটর
+F11 একটি লাইভ হার্ডওয়্যার ড্যাশবোর্ড খোলে: একটি সারাংশ স্ট্রিপ, বড় CPU ও RAM প্যানেল, প্রতিটি ডিস্ক ও নেটওয়ার্ক অ্যাডাপ্টারের জন্য একটি সারি, আর প্রতিটি GPU-র জন্য একটি কার্ড। প্রতিটি গ্রাফ এক মিনিটের ইতিহাস রাখে, আর CPU প্যানেল প্রতিটি লজিক্যাল প্রসেসরের জন্য একটি লোড-ঘর দেখায়।
+
+রেজিস্ট্রি এডিটর
+Ctrl+F11 পাঁচটি হাইভের ওপর একটি পূর্ণ ট্রি খোলে - টাইপ-সচেতন মান সম্পাদনা, কী ও মানের তৈরি/নাম বদল/মুছে ফেলা, আর লোড হওয়া নামে খুঁজতে Ctrl+F।
+
+ইভেন্ট ভিউয়ার
+Ctrl+F12 অ্যাপ্লিকেশন, সিস্টেম ও সিকিউরিটি লগ খোলে - স্তর ও লেখা দিয়ে ফিল্টার, কাঁচা XML ভিউসহ পূর্ণ রেকর্ড বিবরণ, আর ফিল্টার করা ফলাফলে পাতা ধরে চলাচল।
+
+সত্যিকারের ফাইল অপারেশন
+কপি, মুভ, রিনেম, নতুন ফোল্ডার, আর Recycle Bin-এ বা স্থায়ীভাবে ডিলিট। কপি ও মুভ সত্যিকারের প্রোগ্রেস দেখায় এবং নামের সংঘাত হলে থেমে জিজ্ঞেস করে, দুটি ফাইলেরই আকার ও তারিখ আপনার সামনে রেখে।
+
+একাধিক টার্ম
+এক পাসেই একাধিক ফাইলনাম ও কনটেন্ট সার্চ চালান। প্রতিটি টার্মের নিজস্ব ম্যাচ কাউন্টার আছে, তাই কোন প্যাটার্ন লাগছে তা দেখা যায়।
+
+অন্তর্ভুক্তি / বর্জন ফিল্টার
+সেমিকোলনে আলাদা প্যাটার্ন এক্সটেনশন বা ডিরেক্টরি অংশ দিয়ে পরিসর সীমিত করে, যেমন *.txt;*.log বা node_modules।
+
+সাজানো ও ঝালাই
+নাম, অবস্থান, আকার, ধরন, অথবা পরিবর্তনের বা তৈরির তারিখ অনুযায়ী ফলাফল সাজান, আর Ctrl+F চেপে তালিকা লাইভ ফিল্টার করুন। ড্রপডাউন ফিল্টার এক্সটেনশন, তারিখ বা আকার দিয়ে সীমিত করে।
+
+ট্যাব
+প্রতিটি ট্যাব নিজেই একটি সার্চ, ফোল্ডার, টার্মিনাল বা খোলা ফাইল - নিজস্ব ইতিহাস ও ফলাফলসহ। টেনে এনে ট্যাব সাজান, চাইলে পরের বার চালু করলে খোলা ট্যাবগুলো ফিরে আসবে।
+
+লাইভ ফোল্ডার ব্রাউজিং
+লিস্ট, আইকন ও ডিটেইলস ভিউ, সাথে ফোল্ডার ট্রি, অ্যাড্রেস বার আর Explorer-এর নিজস্ব কি দিয়েই পেছনে / সামনে / উপরে। ব্রাউজ করা ফোল্ডার ডিস্ক অনুসরণ করে, তাই অন্য উইন্ডোতে মুছে ফেলা ফাইল এখান থেকেও মিলিয়ে যায়। ডিস্কে নাম না বদলে কনটেক্সট মেনু থেকে ফাইল বা ফোল্ডারের ডাকনাম দিন।
+
+HTML ও CSV এক্সপোর্ট
+ফলাফল এক্সপোর্ট করুন মেলা লাইন ও বিল্ট-ইন থিম সুইচারসহ স্বয়ংসম্পূর্ণ HTML রিপোর্টে, বা স্প্রেডশিটের জন্য CSV-তে। যেকোনো জায়গায় খোলে, কোনো ডিপেন্ডেন্সি নেই।
+
+কিবোর্ডেই চালিত
+যেখানে Explorer-এর চেনা নিয়ম আছে সেখানে সেটিই, আর যেখানে নেই সেখানে কি-এর জোড়ার বদলে একটিমাত্র কি। F1 প্রতিটি গেসচার দেখায় তালিকা হিসেবে, বা এমন একটি ছবি-কিবোর্ডে যার ওপর Ctrl চেপে ধরে সেই স্তরটি দেখা যায়।
+
+নকশাতেই গোপনীয়
+অ্যাপের ডেটা স্থানীয়ভাবে প্রক্রিয়াকৃত হয়, টেলিমেট্রি বা স্বয়ংক্রিয় আপলোড নেই। আপডেট পরীক্ষা, ডাউনলোড ও আপনার নির্বাচিত নেটওয়ার্ক সুবিধা বাইরের সংযোগ করে।
+
+থিম ও অ্যাকসেন্ট
+13টি থিম, 41টি রূপ: Dark, Light, Black ও 98SE-তে 8টি করে অ্যাকসেন্ট রং আছে। অন্য 9টির স্থির প্যালেট। পুনরায় চালু না করেই বদলান। থিম মেনু থেকে ফিল্ম গ্রেইন চালু বা বন্ধ করা যায়।
+
+ঊনিশটি ভাষা
+ইন্টারফেস ঊনিশটি ভাষায় স্থানীয়কৃত (ইংরেজি, স্প্যানিশ, জার্মান, ফরাসি, হাঙ্গেরীয়, ইতালীয়, তুর্কি, ভিয়েতনামি, পোলিশ, চেক, জাপানি, সনাতন ও সরলীকৃত চীনা, বাংলা, রুশ, কাজাখ, ইউক্রেনীয়, নরওয়েজীয় (বোকমাল) এবং ব্রাজিলীয় পর্তুগিজ), টুলবার থেকে লাইভ বদলানো যায়।","Jedno přenosné exe pro Windows, kterým spravujete počítač a všechno, co je na něm. Soubory, shelly, úpravy textu, úložiště a správa systému sdílejí jedno okno a jednu sadu kláves.
+
+Nainstalujte nebo spusťte přenosně. Zdarma, open source, GPLv3. Žádný agent, žádný účet, žádné předplatné. Žádná telemetrie a žádné reklamy... nikdy.
+
+Hledání podle názvu
+Zástupné vzory jako *.log nebo report_*.xlsx porovnávané s každým názvem souboru ve stromu. Výsledky proudí v reálném čase, bez předchozího indexování.
+
+Hledání v obsahu
+Prochází soubory řádek po řádku, aniž by je načítal do RAM. Nalezené řádky zobrazuje s čísly řádků a binární soubory automaticky přeskakuje.
+
+Terminál na kartě
+PowerShell, CMD, WSL a vlastní příkazy sdílejí karty. Uložte profily terminálu, vyberte výchozí shell a procházejte jeho aktuální složku.
+
+Editor na kartě
+Otevřete libovolný soubor klávesou F7. Zvýraznění syntaxe, čísla řádků, hledání a přejít na řádek, zalamování řádků ve výchozím stavu zapnuté. Vaše kódování a konce řádků zůstávají zachovány přesně, nikdy se nevymýšlejí.
+
+Hledání uvnitř výsledků
+Pošlete výsledky jednoho hledání do nové karty a hledejte jen v těchto souborech. Řetězte, jak hluboko chcete; každý průchod se dotkne jen souborů, které přežily ten minulý.
+
+Dva panely
+F10 rozdělí okno vedle sebe nebo pod sebou, každý panel s vlastními kartami. Přetahujte soubory z jednoho do druhého, nebo mějte vlevo hledání a vpravo shell.
+
+Analyzátor úložiště
+F4 vykreslí treemapu libovolné složky nebo disku: jeden obdélník na soubor, velikostí podle zabraného místa. Přibližte si složku, filtrujte podle hloubky nebo minimální velikosti a pošlete nalezené do Koše.
+
+Procesy a služby
+F9 otevře živou mřížku CPU, paměti a vlastníků, filtrovatelnou podle názvu, cesty nebo uživatele. Ukončete nebo restartujte proces, případně spusťte, zastavte a restartujte službu - každá akce za potvrzovacím dialogem.
+
+Sledování výkonu
+F11 otevře živý přehled hardwaru: souhrnný pruh, velké panely CPU a RAM, řádek pro každý disk a síťový adaptér a kartu pro každé GPU. Každý graf uchovává minutu historie a panel CPU ukazuje čtvereček zátěže pro každý logický procesor.
+
+Editor registru
+Ctrl+F11 otevře úplný strom všech pěti podregistrů s úpravou hodnot podle typu, vytvářením/přejmenováním/mazáním klíčů a hodnot a Ctrl+F pro hledání v načtených názvech.
+
+Prohlížeč událostí
+Ctrl+F12 otevře protokoly Aplikace, Systém a Zabezpečení s filtrováním podle úrovně a textu, plným detailem záznamu se surovým XML a stránkováním filtrovaných výsledků.
+
+Skutečné operace se soubory
+Kopírování, přesun, přejmenování, nová složka a mazání do koše nebo trvale. Kopírování a přesun ukazují skutečný průběh a při kolizi se zastaví a zeptají, s velikostí a datem obou souborů před očima.
+
+Více výrazů
+Několik hledání podle názvu i obsahu v jediném průchodu. Každý výraz se sleduje zvlášť s vlastním počtem shod, takže vidíte, které vzory se trefují.
+
+Filtry zahrnout / vyloučit
+Vzory oddělené středníky zužují nebo omezují rozsah podle přípony nebo části cesty, například *.txt;*.log nebo node_modules.
+
+Řazení & zpřesnění
+Řaďte výsledky podle názvu, umístění, velikosti, typu nebo data změny či vytvoření a klávesami Ctrl+F filtrujte seznam naživo. Rozbalovací filtry zužují podle přípony, data nebo velikosti.
+
+Karty
+Každá karta je vlastní hledání, složka, terminál nebo otevřený soubor, s vlastní historií a výsledky. Karty přeuspořádáte tažením a otevřené karty lze při příštím spuštění volitelně obnovit.
+
+Živé procházení složek
+Zobrazení seznamu, ikon a podrobností, se stromem složek, adresním řádkem a zpět / vpřed / výš na klávesách Průzkumníka. Procházená složka sleduje disk, takže soubor smazaný v jiném okně zmizí i tady. Dejte souborům nebo složkám přezdívky v místní nabídce bez přejmenování na disku.
+
+Export do HTML & CSV
+Exportujte výsledky jako samostatný HTML report s nalezenými řádky a vestavěným přepínačem motivů, nebo jako CSV pro tabulky. Otevře se kdekoli, bez závislostí.
+
+Ovládání klávesnicí
+Konvence Průzkumníka tam, kde existují, a jednotlivé klávesy místo kombinací tam, kde ne. F1 ukáže každé gesto jako seznam nebo na nakreslené klávesnici, nad kterou můžete podržet Ctrl.
+
+Soukromí už v návrhu
+Data aplikace se zpracovávají místně, bez telemetrie a automatického odesílání. Kontroly aktualizací, stahování a zvolené síťové funkce navazují externí spojení.
+
+Motivy & akcenty
+13 motivů, 41 vzhledů: Dark, Light, Black a 98SE mají každý 8 barev akcentu. Ostatních 9 má pevné palety. Přepínejte bez restartu. Nabídka motivů umožňuje zapnout nebo vypnout filmové zrno.
+
+Devatenáct jazyků
+Rozhraní je lokalizováno do devatenácti jazyků (angličtina, španělština, němčina, francouzština, maďarština, italština, turečtina, vietnamština, polština, čeština, japonština, tradiční a zjednodušená čínština, bengálština, ruština, kazaština, ukrajinština, norština (bokmål) a brazilská portugalština) a přepíná se za běhu z panelu nástrojů.","Eine portable Windows-exe, um einen Rechner und alles darauf zu verwalten. Dateien, Shells, Textbearbeitung, Speicher und Systemadministration teilen sich ein Fenster und einen Satz Tasten.
+
+Installieren oder portabel nutzen. Kostenlos, Open Source, GPLv3. Kein Agent, kein Konto, kein Abo. Keine Telemetrie und keine Werbung... niemals.
+
+Namenssuche
+Wildcard-Muster wie *.log oder report_*.xlsx, geprüft gegen jeden Dateinamen im Baum. Ergebnisse streamen in Echtzeit, ohne Vorab-Indexierung.
+
+Inhaltssuche
+Liest Dateien Zeile für Zeile, ohne sie in den RAM zu laden. Zeigt Treffer mit Zeilennummern und überspringt Binärdateien automatisch.
+
+Terminal in einem Tab
+PowerShell, CMD, WSL und eigene Befehle teilen sich die Registerleiste. Speichere Terminalprofile, wähle eine Standardshell und öffne ihren aktuellen Ordner.
+
+Editor in einem Tab
+Öffne jede Datei mit F7. Syntaxhervorhebung, Zeilennummern, Suchen und Gehe zu Zeile, Zeilenumbruch standardmäßig an. Deine Kodierung und deine Zeilenenden bleiben exakt erhalten, sie werden nie erfunden.
+
+In Ergebnissen suchen
+Leite die Ergebnisse einer Suche in einen neuen Tab und suche nur in diesen Dateien. Beliebig tief verkettbar; jeder Durchlauf berührt nur die Überlebenden des letzten.
+
+Zwei Bereiche
+F10 teilt das Fenster, nebeneinander oder übereinander, und jeder Bereich hat eigene Tabs. Ziehe Dateien von einem in den anderen, oder halte links eine Suche und rechts eine Shell.
+
+Speicher-Analysator
+F4 zeichnet eine Treemap eines beliebigen Ordners oder Laufwerks: ein Rechteck je Datei, dimensioniert nach ihrem Platzbedarf. In einen Ordner zoomen, nach Tiefe oder Mindestgröße filtern und Gefundenes in den Papierkorb schicken.
+
+Prozesse & Dienste
+F9 öffnet ein Live-Raster mit CPU, Speicher und Besitzer, filterbar nach Name, Pfad oder Benutzer. Prozess beenden oder neu starten, Dienst starten, stoppen und neu starten - jede Aktion hinter einem Bestätigungsdialog.
+
+Leistungsanzeige
+F11 öffnet ein Live-Dashboard der Hardware: eine Übersichtsleiste, große CPU- und RAM-Bereiche, eine Zeile je Datenträger und Netzwerkadapter und eine Karte je GPU. Jedes Diagramm hält eine Minute Verlauf, und der CPU-Bereich zeigt ein Lastquadrat je logischem Prozessor.
+
+Registrierungs-Editor
+Strg+F11 öffnet einen vollständigen Baum über alle fünf Hives mit typbewusster Wertebearbeitung, Anlegen/Umbenennen/Löschen von Schlüsseln und Werten sowie Strg+F zur Suche in den geladenen Namen.
+
+Ereignisanzeige
+Strg+F12 öffnet die Protokolle Anwendung, System und Sicherheit mit Filterung nach Stufe und Text, vollem Datensatzdetail mit Roh-XML-Ansicht und Blättern durch die gefilterten Ergebnisse.
+
+Echte Dateioperationen
+Kopieren, verschieben, umbenennen, neuer Ordner und Löschen in den Recycle Bin oder endgültig. Kopieren und Verschieben zeigen echten Fortschritt und halten bei einer Kollision an und fragen nach, mit Größe und Datum beider Dateien vor dir.
+
+Mehrere Begriffe
+Mehrere Namens- und Inhaltssuchen in einem einzigen Durchlauf. Jeder Begriff wird separat mit eigenem Trefferzähler geführt, sodass man sieht, welche Muster treffen.
+
+Ein-/Ausschluss-Filter
+Durch Semikolons getrennte Muster begrenzen den Umfang nach Endung oder Pfadsegment, zum Beispiel *.txt;*.log oder node_modules.
+
+Sortieren & verfeinern
+Ergebnisse nach Name, Ort, Größe, Typ, Änderungs- oder Erstelldatum sortieren und mit Ctrl+F live filtern. Dropdown-Filter grenzen nach Endung, Datum oder Größe ein.
+
+Tabs
+Jeder Tab ist eine eigene Suche, ein eigener Ordner, ein eigenes Terminal oder eine eigene geöffnete Datei, mit eigenem Verlauf und eigenen Ergebnissen. Tabs lassen sich per Drag umsortieren und beim nächsten Start optional wiederherstellen.
+
+Live-Ordneransicht
+Listen-, Symbol- und Detailansicht, mit Ordnerbaum, Adressleiste und zurück / vorwärts / aufwärts auf den Tasten des Explorers. Ein durchstöberter Ordner folgt der Platte, eine in einem anderen Fenster gelöschte Datei verschwindet also auch hier. Geben Sie Dateien oder Ordnern im Kontextmenü Spitznamen, ohne sie auf dem Datenträger umzubenennen.
+
+HTML- & CSV-Export
+Ergebnisse als eigenständigen HTML-Bericht mit Trefferzeilen und eingebautem Theme-Umschalter exportieren, oder als CSV für Tabellenkalkulationen. Öffnet überall, ohne Abhängigkeiten.
+
+Über die Tastatur bedient
+Die Konventionen des Explorers, wo es sie gibt, und einzelne Tasten statt Tastenkombinationen, wo nicht. F1 zeigt jeden Handgriff als Liste oder auf einer sichtbaren Tastatur, über der du Ctrl halten kannst.
+
+Privat by Design
+App-Daten werden lokal verarbeitet, ohne Telemetrie oder automatische Uploads. Updateprüfungen, Downloads und gewählte Netzwerkfunktionen stellen externe Verbindungen her.
+
+Themes & Akzente
+13 Designs, 41 Varianten: Dark, Light, Black und 98SE haben jeweils 8 Akzentfarben. Die anderen 9 haben feste Paletten. Wechsel ohne Neustart. Im Themenmenü lässt sich Filmkorn ein- oder ausschalten.
+
+Neunzehn Sprachen
+Die Oberfläche ist in neunzehn Sprachen lokalisiert (Englisch, Spanisch, Deutsch, Französisch, Ungarisch, Italienisch, Türkisch, Vietnamesisch, Polnisch, Tschechisch, Japanisch, Chinesisch traditionell und vereinfacht, Bengalisch, Russisch, Kasachisch, Ukrainisch, Norwegisch (Bokmål) und Portugiesisch (Brasilien)), live umschaltbar aus der Symbolleiste.","Un único .exe portátil de Windows para gestionar un equipo y todo lo que hay en el. Archivos, shells, edición de texto, almacenamiento y administracion del sistema comparten una ventana y un mismo juego de teclas.
+
+Instalalo o úsalo portátil. Gratis, código abierto, GPLv3. Sin agente, sin cuenta, sin suscripción. No se envía telemetría y no hay anuncios... nunca.
+
+Búsqueda por nombre
+Patrones con comodines cómo *.log o report_*.xlsx comparados con cada nombre de archivo del árbol. Los resultados llegan en tiempo real sin indexacion previa.
+
+Búsqueda de contenido
+Lee los archivos línea a línea sin cargarlos en RAM. Muestra las líneas coincidentes con su número de línea y omite automáticamente los archivos binarios.
+
+Terminal en una pestaña
+PowerShell, CMD, WSL y comandos personalizados comparten las pestañas. Guarda perfiles de terminal, elige un shell predeterminado y explora su carpeta actual.
+
+Editor en una pestaña
+Abre cualquier archivo con F7. Resaltado de sintaxis, numeros de línea, buscar e ir a la línea, con el ajuste de línea activado por defecto. Tu codificacion y tus finales de línea se conservan exactamente, nunca se inventan.
+
+Buscar dentro de los resultados
+Canaliza los resultados de una búsqueda a una nueva pestaña y busca sólo dentro de esos archivos. Encadena tanto cómo quieras; cada pasada sólo toca los supervivientes de la anterior.
+
+Dos paneles
+F10 divide la ventana, lado a lado o apilada, y cada panel tiene sus propias pestañas. Arrastra archivos de uno a otro, o mantén una búsqueda a la izquierda y un shell a la derecha.
+
+Analizador de almacenamiento
+F4 dibuja un treemap de cualquier carpeta o unidad: un rectángulo por archivo, dimensionado por el espacio que ocupa. Entra en una carpeta, filtra por profundidad o tamaño mínimo y manda lo que encuentres a la Papelera de reciclaje.
+
+Procesos y servicios
+F9 abre una cuadrícula en vivo de CPU, memoria y propietario, filtrable por nombre, ruta o usuario. Termina o reinicia un proceso, o inicia, detén y reinicia un servicio, cada acción tras un diálogo de confirmación.
+
+Monitor de rendimiento
+F11 abre un panel de hardware en vivo: una franja de resumen, paneles grandes de CPU y RAM, una fila por cada disco y adaptador de red, y una tarjeta por GPU. Cada gráfico conserva un minuto de historial, y el panel de CPU muestra un cuadro de carga por cada procesador lógico.
+
+Editor del Registro
+Ctrl+F11 abre un árbol completo de las cinco ramas con edición de valores según su tipo, crear/renombrar/eliminar claves y valores, y Ctrl+F para buscar en los nombres cargados.
+
+Visor de eventos
+Ctrl+F12 abre los registros de Aplicación, Sistema y Seguridad con filtrado por nivel y texto, detalle completo de cada registro con vista XML en bruto y paginación de los resultados filtrados.
+
+Operaciones de archivo de verdad
+Copiar, mover, renombrar, crear carpeta y eliminar a la Recycle Bin o de forma permanente. Copiar y mover muestran progreso real y se detienen a preguntar ante un conflicto, con el tamaño y la fecha de ambos archivos delante de ti.
+
+Varios terminos
+Ejecuta varias busquedas de nombre y contenido en una sola pasada. Cada término se sigue por separado con su propio contador, asi ves que patrones aciertan.
+
+Filtros incluir / excluir
+Patrones separados por punto y coma acotan el alcance por extensión o por segmento de directorio, por ejemplo *.txt;*.log o node_modules.
+
+Ordenar y refinar
+Ordena los resultados por nombre, ubicación, tamaño, tipo o fecha de modificación o de creación, y pulsa Ctrl+F para filtrar la lista en vivo. Los filtros desplegables acotan por extensión, fecha o tamaño.
+
+Pestañas
+Cada pestaña es su propia búsqueda, carpeta, terminal o archivo abierto, con su propio historial y sus propios resultados. Arrastra las pestañas para reordenarlas y, si quieres, restaura las abiertas en el próximo arranque.
+
+Exploración de carpetas en vivo
+Vistas de lista, iconos y detalles, con árbol de carpetas, barra de direcciones y atrás / adelante / arriba con las mismas teclas de Explorer. Una carpeta explorada sigue al disco, asi que un archivo borrado en otra ventana también desaparece aquí. Asigna apodos a archivos o carpetas desde su menú contextual sin cambiar sus nombres en el disco.
+
+Exportar HTML y CSV
+Exporta los resultados cómo un informe HTML autónomo con las líneas coincidentes y un selector de temas integrado, o cómo CSV para hojas de cálculo. Se abre en cualquier parte, sin dependencias.
+
+Manejado con el teclado
+Las convenciones de Explorer dónde existen, y teclas sueltas en lugar de combinaciones dónde no. F1 muestra cada gesto cómo una lista o sobre un teclado visual en el que puedes mantener Ctrl para ver esa capa.
+
+Privado por diseño
+Los datos se procesan localmente, sin telemetría ni subidas automáticas. Las comprobaciones de actualizaciones, las descargas y las funciones de red que elijas usar hacen conexiones externas.
+
+Temas y acentos
+13 temas, 41 apariencias: Dark, Light, Black y 98SE tienen 8 colores de acento cada uno. Los otros 9 tienen paletas fijas. Cambia sin reiniciar. El menú de temas permite activar o desactivar Grano de película.
+
+Diecinueve idiomas
+La interfaz está localizada en diecinueve idiomas (inglés, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, ucraniano, noruego (bokmål) y portugués brasileño), cambiables en vivo desde la barra de herramientas.","Egy hordozható Windows exe a számítógép és minden rajta lévő összes kezeléséhez. A fájlok, a parancsértelmezők, a szövegszerkesztés, a tárolás és a rendszergazda egy ablakon és egy kulcskészleten osztozik.
+
+Telepítse vagy futtassa a hordozható eszközt. Ingyenes, nyílt forráskódú, GPLv3. Nincs ügynök, nincs fiók, nincs előfizetés. Nem küldenek telemetriát és nincsenek hirdetések... soha.
+
+Fájlnév keresés
+A helyettesítő karakteres minták, például a *.log vagy a report_*.xlsx a fában lévő összes fájlnévhez illeszkedtek. Az eredmények valós időben, előzetes indexelés nélkül.
+
+Tartalom keresése
+Sorról sorra továbbítja a fájlokat anélkül, hogy betöltené őket a RAM-ba. Megjeleníti az egyező sorokat a sorszámukkal, és automatikusan kihagyja a bináris fájlokat.
+
+Terminál egy lapon
+A PowerShell, CMD, WSL és saját parancsok közös lapokat használnak. Ments terminálprofilokat, válassz alapértelmezett parancsértelmezőt, és tallózd az aktuális mappáját.
+
+Szerkesztő egy lapon
+Nyissa meg bármelyik fájlt az F7 billentyűvel. Szintaxis kiemelés, sorszámok, sorkeresés és sorra lépés, alapértelmezés szerint be van kapcsolva a tördelés. A kódolás és a sorvégződések pontosan megőrződnek, soha nem találták ki.
+
+Keresés a találatok között
+Az egyik keresés eredményeit áthelyezheti egy új lapra, és csak ezekben a fájlokban kereshet. Olyan mély lánc, amilyen mélyre tetszik; minden egyes hágó csak az utolsó túlélőit érinti.
+
+Két ablaktábla
+Az F10 az ablakot egymás mellett vagy egymásra rakva osztja fel, mindegyik ablaktáblának saját fülei vannak. Húzza át a fájlokat egyikről a másikra, vagy tartson keresést a bal oldalon, és egy shellt a jobb oldalon.
+
+Tároló elemző
+Az F4 bármely mappáról vagy meghajtóról fatérképet rajzol: fájlonként egy téglalapot, aszerint méretezve, hogy mennyi helyet foglal. Nagyítson rá egy mappára, szűrjön mélység vagy minimális méret szerint, és küldje el a talált tartalmat a Lomtárba.
+
+Folyamatok és szolgáltatások
+Az F9 megnyit egy élő CPU-t, memóriát és tulajdonosi rácsot, amelyet név, elérési út vagy felhasználó szerint szűrhet. Folyamat befejezése vagy újraindítása, vagy szolgáltatás elindítása, leállítása és újraindítása, mindegyik egy megerősítési párbeszédpanel mögött.
+
+Teljesítmény monitor
+Az F11 élő hardver-irányítópultot nyit meg: összesítő sáv, nagy CPU- és RAM-panel, egy sor minden lemezhez és hálózati adapterhez, valamint egy kártya GPU-nként. Minden grafikon egy percnyi előzményt őriz, a CPU-panel pedig minden logikai processzorhoz mutat egy terhelési négyzetet.
+
+Rendszerleíróadatbázis-szerkesztő
+A Ctrl+F11 billentyűkombinációval megnyit egy teljes fát mind az öt kaptáron típus-tudatos értékszerkesztéssel, a kulcsok és értékek létrehozásával/átnevezésével/törlésével, a Ctrl+F pedig a betöltött nevek kereséséhez.
+
+Eseménynéző
+A Ctrl+F12 billentyűkombináció megnyitja az alkalmazás-, rendszer- és biztonsági naplókat szint- és szövegszűréssel, teljes rekordrészletet nyers XML-nézettel, és lapozgat a szűrt eredmények között.
+
+Valódi fájlműveletek
+Másolás, áthelyezés, átnevezés, új mappa és törlés a Lomtárba vagy véglegesen. A másolás és az áthelyezés megmutatja a valódi előrehaladást, és álljon meg, hogy kérdezzen ütközés esetén, mindkét fájl mérete és dátuma előtt.
+
+Több kifejezés
+Futtasson több fájlnév- és tartalomkeresést egyetlen lépésben. Minden kifejezést külön-külön követnek nyomon, saját egyezések számával, így láthatja, hogy mely minták találtak be.
+
+Szűrők felvétele/kizárása
+A pontosvesszővel elválasztott minták kiterjesztéssel vagy könyvtárszegmenssel szűkítik vagy korlátozzák a hatókört, például *.txt;*.log vagy node_modules.
+
+Rendezés és finomítás
+Rendezze az eredményeket név, hely, méret, típus, illetve a módosítás vagy a létrehozás dátuma szerint, majd nyomja meg a Ctrl+F billentyűkombinációt a lista élőben történő szűréséhez. A legördülő szűrők kiterjesztés, dátum vagy méret szerint szűkítik.
+
+Tabs
+Minden lap saját keresés, mappa, terminál vagy megnyitott fájl, saját előzményekkel és eredményekkel. Húzza át a lapokat az átrendezéshez, és opcionálisan állítsa vissza a megnyitott lapokat a következő indításkor.
+
+Élő mappaböngészés
+Lista-, ikon- és részletnézetek, mappafával, címsorral és vissza/előre/fel az Explorer saját billentyűivel. A tallózott mappa követi a lemezt, így egy másik ablakban törölt fájl itt is eltűnik. Adjon becenevet fájloknak vagy mappáknak a helyi menüben anélkül, hogy a lemezen átnevezné őket.
+
+HTML és CSV exportálás
+Exportálhatja az eredményeket önálló HTML-jelentésként egyező sorokkal és beépített témaváltóval, vagy CSV-fájlként táblázatokhoz. Bárhol nyitható, nincs függőség.
+
+Billentyűzet hajtott
+Az Intéző konvenciói ott, ahol léteznek, és egyedi billentyűk, nem pedig akkordok, ahol nincsenek. Az F1 minden mozdulatot listaként vagy vizuális billentyűzeten jelenít meg, amelyen lenyomva tarthatja a Ctrl billentyűt.
+
+Tervezés szerint privát
+Az adatok helyben dolgozódnak fel, telemetria és automatikus feltöltés nélkül. A frissítéskeresés, letöltés és választott hálózati funkciók külső kapcsolatokat létesítenek.
+
+Témák és hangsúlyok
+13 téma, 41 megjelenés: a Dark, Light, Black és 98SE egyenként 8 kiemelőszínt kínál. A többi 9 rögzített palettát használ. Váltás újraindítás nélkül. A témamenüben be- és kikapcsolható a filmszemcsézettség.
+
+Tizenkilenc nyelv
+Az interfész tizenkilenc nyelvre lokalizált (angol, spanyol, német, francia, magyar, olasz, török, vietnámi, lengyel, cseh, japán, hagyományos és egyszerűsített kínai, valamint bengáli, orosz, kazah, ukrán, norvég (bokmål) és brazil portugál), élőben váltható az eszköztárról.","Un solo exe portatile per Windows per gestire un computer e tutto ciò che contiene. File, shell, editor di testo, spazio su disco e amministrazione di sistema condividono una finestra e un solo set di tasti.
+
+Installa o usa in modalità portatile. Gratuito, open source, GPLv3. Nessun agente, nessun account, nessun abbonamento. Nessuna telemetria inviata e niente pubblicità... mai.
+
+Ricerca per nome di file
+Pattern con caratteri jolly come *.log o report_*.xlsx confrontati con ogni nome di file dell'albero. I risultati arrivano in tempo reale, senza indicizzazione preventiva.
+
+Ricerca nei contenuti
+Scorre i file riga per riga senza caricarli in RAM. Mostra le righe corrispondenti con i loro numeri di riga e salta automaticamente i file binari.
+
+Terminale in una scheda
+PowerShell, CMD, WSL e comandi personalizzati condividono le schede. Salva profili di terminale, scegli una shell predefinita e sfoglia la sua cartella corrente.
+
+Editor in una scheda
+Apri qualsiasi file con F7. Evidenziazione della sintassi, numeri di riga, trova e vai alla riga, con a capo automatico attivo per impostazione predefinita. Codifica e fine riga sono preservate esattamente, mai inventate.
+
+Cercare dentro i risultati
+Convoglia i risultati di una ricerca in una nuova scheda e cerca solo dentro quei file. Concatena quanto vuoi; ogni passaggio tocca solo i sopravvissuti del precedente.
+
+Due pannelli
+F10 divide la finestra affiancata o impilata, ogni pannello con le proprie schede. Trascina file dall'uno all'altro, o tieni una ricerca a sinistra e una shell a destra.
+
+Analizzatore di spazio
+F4 disegna una treemap di qualsiasi cartella o unità: un rettangolo per file, dimensionato in base allo spazio che occupa. Entra in una cartella, filtra per profondità o dimensione minima, e manda quello che trovi al Cestino.
+
+Processi e servizi
+F9 apre una griglia dal vivo di CPU, memoria e proprietario filtrabile per nome, percorso o utente. Termina o riavvia un processo, o avvia, arresta e riavvia un servizio, ognuno dietro una finestra di conferma.
+
+Monitor delle prestazioni
+F11 apre una dashboard hardware dal vivo: una striscia di riepilogo, grandi pannelli CPU e RAM, una riga per ogni disco e scheda di rete, e una scheda per GPU. Ogni grafico conserva un minuto di storia, e il pannello CPU mostra un quadrato di carico per ogni processore logico.
+
+Editor del Registro
+Ctrl+F11 apre un albero completo su tutti e cinque gli hive con modifica dei valori consapevole del tipo, crea/rinomina/elimina per chiavi e valori, e Ctrl+F per cercare tra i nomi caricati.
+
+Visualizzatore eventi
+Ctrl+F12 apre i registri Applicazione, Sistema e Sicurezza con filtri per livello e testo, il dettaglio completo dei record con vista XML grezzo, e la paginazione dei risultati filtrati.
+
+Vere operazioni sui file
+Copia, sposta, rinomina, nuova cartella, ed elimina nel Cestino o definitivamente. Copia e spostamento mostrano un progresso reale e si fermano a chiedere in caso di conflitto, con dimensione e data di entrambi i file davanti a te.
+
+Più termini
+Esegui più ricerche su nomi e contenuti in un solo passaggio. Ogni termine è tracciato in modo indipendente con il proprio conteggio, così vedi quali pattern trovano riscontro.
+
+Filtri di inclusione / esclusione
+Pattern separati da punto e virgola restringono o limitano l'ambito per estensione o segmento di directory, per esempio *.txt;*.log o node_modules.
+
+Ordina e raffina
+Ordina i risultati per nome, posizione, dimensione, tipo o data di modifica o di creazione, e premi Ctrl+F per filtrare l'elenco dal vivo. I filtri a tendina restringono per estensione, data o dimensione.
+
+Schede
+Ogni scheda è la propria ricerca, cartella, terminale o file aperto, con la propria cronologia e i propri risultati. Trascina le schede per riordinarle, e facoltativamente ripristina le schede aperte al prossimo avvio.
+
+Esplorazione cartelle in tempo reale
+Viste elenco, icone e dettagli, con un albero delle cartelle, una barra degli indirizzi e indietro / avanti / su con gli stessi tasti di Explorer. Una cartella esplorata segue il disco, quindi un file eliminato in un'altra finestra sparisce anche qui. Assegna soprannomi a file o cartelle dal menu contestuale senza rinominarli sul disco.
+
+Esportazione HTML e CSV
+Esporta i risultati come report HTML autonomo con le righe corrispondenti e un selettore di tema integrato, o come CSV per i fogli di calcolo. Si apre ovunque, senza dipendenze.
+
+Guidato dalla tastiera
+Le convenzioni di Explorer dove esistono, e tasti singoli invece di combinazioni dove non esistono. F1 mostra ogni gesto come elenco o su una tastiera visuale su cui puoi tenere premuto Ctrl.
+
+Privato per progettazione
+I dati sono elaborati localmente, senza telemetria o caricamenti automatici. I controlli degli aggiornamenti, i download e le funzioni di rete scelte effettuano connessioni esterne.
+
+Temi e accenti
+13 temi, 41 aspetti: Dark, Light, Black e 98SE hanno 8 colori di accento ciascuno. Gli altri 9 hanno tavolozze fisse. Cambia senza riavviare. Il menu dei temi permette di attivare o disattivare la grana della pellicola.
+
+Diciannove lingue
+L'interfaccia è localizzata in diciannove lingue (inglese, spagnolo, tedesco, francese, ungherese, italiano, turco, vietnamita, polacco, ceco, giapponese, cinese tradizionale e semplificato, bengalese, russo, kazako, ucraino, norvegese (bokmål) e portoghese brasiliano), commutabili dal vivo dalla barra degli strumenti.","コンピューターとその中のすべてを管理するための、一つのポータブルな Windows exe。ファイル、シェル、テキスト編集、ストレージ、システム管理が、一つのウィンドウと一つのキー体系を共有します。
+
+インストールしてもポータブルでも。無料、オープンソース、GPLv3。エージェントなし、アカウントなし、サブスクリプションなし。テレメトリーは送信せず、広告もありません...この先もずっと。
+
+ファイル名検索
+*.log や report_*.xlsx のようなワイルドカード パターンを、ツリー内のすべてのファイル名と照合します。結果は事前のインデックス作成なしでリアルタイムに流れ込みます。
+
+内容検索
+ファイルを RAM に読み込まずに一行ずつストリーム処理します。一致した行を行番号付きで表示し、バイナリ ファイルは自動的にスキップします。
+
+タブの中のターミナル
+PowerShell、CMD、WSL、カスタムコマンドを同じタブで使えます。端末プロファイルを保存し、既定のシェルを選び、現在のフォルダーを参照できます。
+
+タブの中のエディター
+F7 でどんなファイルでも開けます。構文ハイライト、行番号、検索と指定行へのジャンプ、そして既定でオンの折り返し。エンコーディングと行末は正確に保たれ、勝手に作られることはありません。
+
+結果の中を検索
+ある検索の結果を新しいタブへ渡し、そのファイルの中だけを検索できます。好きなだけ連鎖でき、各回は前回を生き残ったファイルだけに触れます。
+
+二つのペイン
+F10 でウィンドウを左右または上下に分割し、各ペインは自分のタブを持ちます。ファイルを一方から他方へドラッグしたり、左に検索、右にシェルを置いたりできます。
+
+ストレージ アナライザー
+F4 で任意のフォルダーやドライブのツリーマップを描きます。ファイルごとに占有量に応じた大きさの長方形が並び、フォルダーへのズーム、深さや最小サイズでのフィルター、見つけたもののごみ箱送りができます。
+
+プロセスとサービス
+F9 で、名前・パス・ユーザーで絞り込めるライブの CPU・メモリ・所有者一覧が開きます。プロセスの終了や再起動、サービスの開始・停止・再起動ができ、どの操作にも確認ダイアログが挟まります。
+
+パフォーマンス モニター
+F11 でハードウェアのライブ ダッシュボードが開きます。概要ストリップ、大きな CPU と RAM のパネル、ディスクとネットワーク アダプターごとの行、GPU ごとのカードで構成されます。各グラフは 1 分間の履歴を保持し、CPU パネルには論理プロセッサごとの負荷マスが表示されます。
+
+レジストリ エディター
+Ctrl+F11 で全 5 ハイブにわたる完全なツリーが開きます。型を認識した値の編集、キーと値の作成・名前変更・削除、読み込み済みの名前を検索する Ctrl+F を備えます。
+
+イベント ビューアー
+Ctrl+F12 で Application、System、Security の各ログが開きます。レベルとテキストでの絞り込み、生 XML 表示付きの完全なレコード詳細、絞り込み結果のページ送りに対応します。
+
+本物のファイル操作
+コピー、移動、名前の変更、新しいフォルダー、そしてごみ箱への削除も完全な削除も。コピーと移動は実際の進行状況を表示し、衝突があれば両方のファイルのサイズと日付を目の前に見せて、止まって確認します。
+
+複数の検索語
+複数のファイル名検索と内容検索を一回の走査で実行します。各検索語は独自の一致数で個別に追跡されるので、どのパターンが当たっているかが分かります。
+
+含める / 除外フィルター
+セミコロン区切りのパターンで、拡張子やディレクトリ名によって範囲を絞れます。例えば *.txt;*.log や node_modules です。
+
+並べ替えと絞り込み
+結果を名前、場所、サイズ、種類、更新日時、作成日時で並べ替え、Ctrl+F でリストをライブに絞り込めます。ドロップダウン フィルターで拡張子、日付、サイズによって範囲を狭められます。
+
+タブ
+各タブはそれぞれ独立した検索、フォルダー、ターミナル、または開いたファイルで、履歴も結果も個別に持ちます。ドラッグで並べ替えられ、次回起動時に開いていたタブを復元することもできます。
+
+フォルダーをリアルタイム表示
+リスト、アイコン、詳細の各表示に、フォルダー ツリー、アドレスバー、そして Explorer と同じキーでの戻る / 進む / 上へ。表示中のフォルダーはディスクを追従するので、別のウィンドウで削除されたファイルはここからも消えます。 コンテキストメニューからファイルやフォルダーに別名を付けられます。ディスク上の名前は変わりません。
+
+HTML と CSV のエクスポート
+結果を、一致した行とテーマ切り替えを内蔵した自己完結の HTML レポートとして、または表計算向けの CSV としてエクスポートできます。依存なしでどこでも開けます。
+
+キーボード主体
+Explorer の流儀があるところはそれに従い、ないところは組み合わせではなく単独のキーに割り当て。F1 はすべての操作を、一覧として、または Ctrl を押しながら見られるビジュアルなキーボードの上に表示します。
+
+設計からしてプライベート
+データはローカルで処理し、テレメトリや自動アップロードは行いません。更新確認、ダウンロード、選択したネットワーク機能は外部と接続します。
+
+テーマとアクセント
+13 テーマ、41 通りの外観。Dark、Light、Black、98SE は各 8 色のアクセントカラーを持ち、残る 9 テーマは固定パレットです。再起動せずに切り替えられます。 テーマメニューでフィルムグレインをオンまたはオフにできます。
+
+19 言語
+インターフェイスは 19 言語 (英語、スペイン語、ドイツ語、フランス語、ハンガリー語、イタリア語、トルコ語、ベトナム語、ポーランド語、チェコ語、日本語、繁体字と簡体字の中国語、ベンガル語、ロシア語、カザフ語、ウクライナ語、ノルウェー語 (ブークモール)、ブラジルのポルトガル語) にローカライズされ、ツールバーからライブで切り替えられます。","Компьютерді және ондағы барлық нәрсені басқаруға арналған бір тасымалды Windows exe файлы. Файлдар, қабықшалар, мәтін өңдеу, жинақтауыш және жүйелік әкімшілік бір терезе мен бір пернелер жинағын бөліседі.
+
+Орнатыңыз немесе тасымалды түрде іске қосыңыз. Тегін, ашық бастапқы кодты, GPLv3. Агентсіз, тіркелгісіз, жазылымсыз. Телеметрия жіберілмейді және жарнама жоқ... ешқашан.
+
+Файл атауы бойынша іздеу
+*.log немесе report_*.xlsx сияқты қалқалар ағаштағы әрбір файл атауымен салыстырылады. Нәтижелер алдын ала индекстеусіз нақты уақытта ағып келеді.
+
+Мазмұн бойынша іздеу
+Файлдарды RAM-ға жүктемей, жол-жолмен оқиды. Табылған жолдарды нөмірлерімен көрсетеді және екілік файлдарды автоматты түрде өткізіп жібереді.
+
+Қойындыдағы терминал
+PowerShell, CMD, WSL және жеке пәрмендер ортақ қойындыларда жұмыс істейді. Терминал профильдерін сақтап, әдепкі қабықты таңдап, оның ағымдағы қалтасын шолыңыз.
+
+Қойындыдағы өңдегіш
+Кез келген файлды F7 арқылы ашыңыз. Синтаксисті бөлектеу, жол нөмірлері, табу және жолға өту, сөз бойынша тасымалдау әдепкіде қосулы. Кодтауыңыз бен жол аяқтауларыңыз дәл сол күйінде сақталады, ешқашан ойдан шығарылмайды.
+
+Нәтижелердің ішінен іздеу
+Бір іздеудің нәтижелерін жаңа қойындыға беріп, тек сол файлдардың ішінен іздеңіз. Тізбекті қалағаныңызша тереңдетіңіз; әрбір өту тек алдыңғысынан аман қалғандарын ғана қозғайды.
+
+Екі тақта
+F10 терезені қатар немесе үстіңгі-астыңғы етіп бөледі, әр тақтаның өз қойындылары болады. Файлдарды бірінен екіншісіне сүйреңіз немесе солда іздеуді, оңда қабықшаны ұстаңыз.
+
+Жинақтауыш талдағышы
+F4 кез келген қалтаның немесе дискінің картасын салады: әр файлға бір тіктөртбұрыш, өлшемі алатын орнына сай. Қалтаға тереңдеп кіріңіз, тереңдігі немесе ең аз өлшемі бойынша сүзіңіз және тапқаныңызды себетке жіберіңіз.
+
+Процестер және қызметтер
+F9 атауы, жолы немесе пайдаланушысы бойынша сүзуге болатын тірі CPU, жады және иесі кестесін ашады. Процесті аяқтаңыз немесе қайта іске қосыңыз, не қызметті іске қосыңыз, тоқтатыңыз және қайта іске қосыңыз, әрқайсысы растау терезесі арқылы.
+
+Өнімділік мониторы
+F11 жабдықтың тірі бақылау тақтасын ашады: жиынтық жолағы, үлкен CPU және RAM панельдері, әр диск пен желі адаптеріне бір жол және әр GPU-ға бір карта. Әр график бір минуттық тарихты сақтайды, ал CPU панелі әр логикалық процессор үшін жүктеме шаршысын көрсетеді.
+
+Тізілім өңдегіші
+Ctrl+F11 бес ұяның бәрін қамтитын толық ағашты ашады, түрін ескеретін мән өңдеуімен, бөлімдер мен параметрлерді жасау, атын өзгерту және жоюмен, сондай-ақ жүктелген атаулардан іздеуге арналған Ctrl+F пернесімен.
+
+Оқиғаларды қарау
+Ctrl+F12 Қолданба, Жүйе және Қауіпсіздік журналдарын деңгей мен мәтін бойынша сүзумен, бастапқы XML көрінісі бар толық жазба мәліметтерімен және сүзілген нәтижелерді беттеп қараумен ашады.
+
+Нағыз файл операциялары
+Көшіру, жылжыту, атын өзгерту, жаңа қалта және себетке немесе біржола жою. Көшіру мен жылжыту нақты барысты көрсетеді және атаулар қақтығысқанда екі файлдың да өлшемі мен күнін көрсете отырып сұрақ қояды.
+
+Бірнеше сөз
+Атаулар мен мазмұн бойынша бірнеше іздеуді бір өтуде орындаңыз. Әрбір сөз өз сәйкестік санауышымен бөлек бақыланады, сондықтан қай үлгі сәйкес келгені көрінеді.
+
+Қосу / шығару сүзгілері
+Нүктелі үтірмен бөлінген үлгілер ауқымды кеңейтім немесе жол бөлігі бойынша тарылтады, мысалы *.txt;*.log немесе node_modules.
+
+Сұрыптау және нақтылау
+Нәтижелерді атауы, орналасуы, өлшемі, түрі, өзгертілген немесе жасалған күні бойынша сұрыптаңыз және тізімді бірден сүзу үшін Ctrl+F басыңыз. Ашылмалы сүзгілер кеңейтім, күн немесе өлшем бойынша тарылтады.
+
+Қойындылар
+Әрбір қойынды - өз тарихы мен нәтижелері бар жеке іздеу, қалта, терминал немесе ашық файл. Қойындыларды сүйреп ретін өзгертуге болады, ал ашық қойындыларды келесі іске қосуда қалауыңызша қалпына келтіруге болады.
+
+Қалталарды нақты уақытта шолу
+Тізім, таңбаша және кесте көріністері, қалталар ағашы, мекенжай жолағы және Explorer-дің өз пернелеріндегі артқа / алға / жоғары батырмалары. Ашылған қалта дискіні бақылайды, сондықтан басқа терезеде жойылған файл мұнда да жоғалады. Файлдар мен қалталарға контекстік мәзірден лақап ат беріңіз; дискідегі атаулары өзгермейді.
+
+HTML және CSV экспорты
+Нәтижелерді табылған жолдары және кірістірілген тақырып ауыстырғышы бар дербес HTML есебі ретінде немесе кестелерге арналған CSV ретінде экспорттаңыз. Кез келген жерде ашылады, тәуелділіктерсіз.
+
+Пернетақтамен басқару
+Explorer-дің дағдылары бар жерде солар, ал жоқ жерде тіркесімнің орнына жалғыз пернелер. F1 әрбір қимылды тізім түрінде немесе Ctrl басып тұрып қарауға болатын көрнекі пернетақтада көрсетеді.
+
+Жобалау бойынша құпия
+Қолданба деректері телеметриясыз және автоматты жүктеп жіберусіз жергілікті өңделеді. Жаңарту тексерулері, жүктеп алулар және таңдалған желілік мүмкіндіктер сыртқы байланыстар орнатады.
+
+Тақырыптар және акценттер
+13 тақырып, 41 көрініс: Dark, Light, Black және 98SE әрқайсысында 8 екпін түсі бар. Қалған 9 тақырыптың палитрасы тұрақты. Қайта іске қоспай ауыстырыңыз. Тақырыптар мәзірінде пленка түйіршігін қосуға немесе өшіруге болады.
+
+Он тоғыз тіл
+Интерфейс он тоғыз тілге аударылған (ағылшын, испан, неміс, француз, венгр, итальян, түрік, вьетнам, поляк, чех, жапон, дәстүрлі және жеңілдетілген қытай, бенгал, орыс, қазақ, украин, норвег (букмол) және португал (Бразилия)) және құралдар тақтасынан бірден ауысады.","Bir bilgisayari ve icindeki her şeyi yönetmek için tek bir taşinabİlİr Windows exe. Dosyalar, kabuklar, metin düzenleme, depolama ve sistem yonetimi tek bir pencereyi ve tek bir tus takimini paylasir.
+
+Kurun ya da taşinabİlİr calistirin. Ücretsiz, acik kaynak, GPLv3. Ajan yok, hesap yok, abonelik yok. Telemetri gönderilmez, reklam da yok... asla.
+
+Ad aramasi
+*.log veya report_*.xlsx gibi joker desenler agactaki her dosya adiyla karsilastirilir. Sonuçlar on dizinleme olmadan gerçek zamanli akar.
+
+Icerik aramasi
+Dosyalari RAM'e yuklemeden satir satir okur. Eşleşen satirlari numaralariyla gösterir ve ikili dosyalari otomatik atlar.
+
+Sekmede terminal
+PowerShell, CMD, WSL ve özel komutlar aynı sekmeleri kullanır. Terminal profillerini kaydedin, varsayılan kabuğu seçin ve geçerli klasörünü açın.
+
+Sekmede duzenleyici
+F7 ile herhangi bir dosyayi acin. Sözdizimi vurgulama, satir numaralari, bulma ve satira gitme; sözcük kaydirma varsayilan olarak acik. Kodlamaniz ve satir sonlariniz aynen korunur, asla uydurulmaz.
+
+Sonuclarin icinde arama
+Bir aramanin sonuclarini yeni bir sekmeye aktarin ve yalnizca o dosyalarin icinde arayin. Istediğiniz kadar zincirleyin; her geçiş yalnizca oncekinden sag kalanlara dokunur.
+
+Iki bölme
+F10 pencereyi yan yana ya da ust üste boler; her bolmenin kendi sekmeleri olur. Dosyalari birinden digerine sürükleyin ya da solda bir arama, sağda bir kabuk tutun.
+
+Depolama Çözümleyici
+F4, herhangi bir klasörün veya sürücünün ağaç haritasını çizer: dosya başına, kapladığı yere göre boyutlanan bir dikdörtgen. Bir klasöre yakınlaşın, derinliğe veya en küçük boyuta göre filtreleyin ve bulduklarınızı Geri Dönüşüm Kutusuna gönderin.
+
+İşlemler ve hizmetler
+F9, ada, yola veya kullanıcıya göre filtrelenebilen canlı bir CPU, bellek ve sahip tablosu açar. Bir işlemi sonlandırın veya yeniden başlatın; bir hizmeti başlatın, durdurun ve yeniden başlatın - her biri bir onay penceresinin arkasında.
+
+Performans İzleyicisi
+F11 canlı bir donanım panosu açar: bir özet şeridi, büyük CPU ve RAM panelleri, her disk ve ağ bağdaştırıcısı için bir satır ve her GPU için bir kart. Her grafik bir dakikalık geçmiş tutar; CPU paneli her mantıksal işlemci için bir yük karesi gösterir.
+
+Kayıt Defteri Düzenleyicisi
+Ctrl+F11, beş kovanın tamamı üzerinde tür bilinçli değer düzenleme, anahtar ve değerler için oluşturma/yeniden adlandırma/silme ve yüklü adlarda arama için Ctrl+F ile tam bir ağaç açar.
+
+Olay Görüntüleyicisi
+Ctrl+F12; Uygulama, Sistem ve Güvenlik günlüklerini düzey ve metin filtreleme, ham XML görünümlü tam kayıt ayrıntısı ve filtrelenmiş sonuçlar arasında sayfalama ile açar.
+
+Gerçek dosya İşlemleri
+Kopyalama, tasima, yeniden adlandirma, yeni klasör ve Recycle Bin'e ya da kalici olarak silme. Kopyalama ve tasima gerçek ilerleme gösterir; bir cakismada durup sorar ve iki dosyanin da boyutunu ve tarihini onunuze koyar.
+
+Birden fazla terim
+Tek geciste birden fazla ad ve icerik aramasi calistirin. Her terim kendi eşleşme sayaciyla ayri izlenir; hangi desenlerin tuttugunu görürsünüz.
+
+Dahil et / hariç tut filtreleri
+Noktali virgülle ayrilan desenler kapsami uzantiya veya dizin parcasina göre daraltir; ornegin *.txt;*.log ya da node_modules.
+
+Sirala ve incelt
+Sonuclari ada, konuma, boyuta, türe, değiştirilme veya oluşturulma tarihine göre siralayin; Ctrl+F ile listeyi canli filtreleyin. Acilir filtreler uzanti, tarih veya boyuta göre daraltir.
+
+Sekmeler
+Her sekme kendi geçmişi ve sonuclariyla ayri bir arama, klasör, terminal ya da acik dosyadir. Sekmeleri sürükleyerek siralayin; isterseniz acik sekmeler sonraki başlatmada geri gelsin.
+
+Canlı klasör gezintisi
+Klasör agaci, adres çubuğu ve Explorer'in kendi tuslariyla geri / ileri / yukari islevleri esliginde liste, simge ve ayrinti görünümleri. Gezilen bir klasör diski izler; başka bir pencerede silinen bir dosya burada da kaybolur. Dosya veya klasörlere bağlam menüsünden takma ad verin; diskteki adları değişmez.
+
+HTML ve CSV disa aktarma
+Sonuclari eşleşen satirlar ve yerleşik tema secicisiyle bagimsiz bir HTML rapor olarak, ya da tablolar için CSV olarak disa aktarin. Her yerde acilir, bagimlilik yok.
+
+Klavyeyle surulur
+Var olduğu yerde Explorer'in alisilmis tuslari, olmadigi yerde tus bilesimi yerine tek tuşlar. F1, her hareketi bir liste halinde ya da Ctrl'yi basili tutabileceginiz görsel bir klavye üzerinde gösterir.
+
+Tasarim geregi özel
+Uygulama verileri telemetri ve otomatik yükleme olmadan yerel olarak işlenir. Güncelleme kontrolleri, indirmeler ve seçtiğiniz ağ özellikleri dış bağlantılar kurar.
+
+Temalar ve vurgular
+13 tema, 41 görünüm: Dark, Light, Black ve 98SE için 8'er vurgu rengi vardır. Diğer 9 tema sabit palet kullanır. Yeniden başlatmadan değiştirin. Tema menüsünden Film Tanesi açılıp kapatılabilir.
+
+On dokuz dil
+Arayuz on dokuz dilde yerellestirildi (Ingilizce, Ispanyolca, Almanca, Fransizca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Cekce, Japonca, Geleneksel ve Basitlestirilmis Çince, Bengalce, Rusça, Kazakça, Ukraynaca, Norveççe (Bokmål) ve Brezilya Portekizcesi) ve araç çubuğundan canli değiştirilebilir.","Один портативний exe для Windows, щоб керувати комп'ютером і всім, що на ньому є. Файли, оболонки, редагування тексту, сховище та системне адміністрування в одному вікні з єдиним набором клавіш.
+
+Установіть або запускайте портативно. Безкоштовно, з відкритим кодом, GPLv3. Без агента, без облікового запису, без підписки. Жодної телеметрії та жодної реклами... ніколи.
+
+Пошук за назвою файлу
+Шаблони з символами підстановки, як-от *.log або report_*.xlsx, зіставляються з кожною назвою файлу в дереві. Результати надходять у реальному часі без попередньої індексації.
+
+Пошук за вмістом
+Читає файли рядок за рядком, не завантажуючи їх у RAM. Показує знайдені рядки з їхніми номерами та автоматично пропускає двійкові файли.
+
+Термінал у вкладці
+PowerShell, CMD, WSL і власні команди працюють у спільних вкладках. Зберігайте профілі термінала, обирайте типову оболонку й переглядайте її поточну папку.
+
+Редактор у вкладці
+Відкривайте будь-який файл клавішею F7. Підсвічування синтаксису, номери рядків, пошук і перехід до рядка, перенесення слів увімкнено за замовчуванням. Кодування та кінці рядків зберігаються точно, нічого не вигадується.
+
+Пошук у результатах
+Передайте результати одного пошуку в нову вкладку й шукайте лише серед цих файлів. Ланцюжок може бути як завгодно глибоким: кожен прохід зачіпає лише те, що лишилося після попереднього.
+
+Дві панелі
+F10 розділяє вікно поруч або одну під одною, кожна панель має власні вкладки. Перетягуйте файли з однієї в іншу або тримайте пошук ліворуч, а оболонку праворуч.
+
+Аналізатор сховища
+F4 малює карту будь-якої папки чи диска: один прямокутник на файл, розміром відповідно до зайнятого місця. Наближайте папку, фільтруйте за глибиною або мінімальним розміром і надсилайте знайдене до Кошика.
+
+Процеси & служби
+F9 відкриває живу таблицю CPU, пам'яті та власників, яку можна фільтрувати за назвою, шляхом або користувачем. Завершуйте чи перезапускайте процес, або запускайте, зупиняйте й перезапускайте службу, кожну дію після діалогу підтвердження.
+
+Монітор продуктивності
+F11 відкриває живу панель апаратного забезпечення: зведену смугу, великі панелі CPU та RAM, рядок для кожного диска й мережевого адаптера та картку на кожен GPU. Кожен графік зберігає хвилину історії, а панель CPU показує квадрат навантаження для кожного логічного процесора.
+
+Редактор реєстру
+Ctrl+F11 відкриває повне дерево по всіх п'яти кущах з редагуванням значень з урахуванням типу, створенням, перейменуванням і видаленням розділів і значень та Ctrl+F для пошуку по завантажених назвах.
+
+Перегляд подій
+Ctrl+F12 відкриває журнали «Програма», «Система» та «Безпека» з фільтрацією за рівнем і текстом, повними відомостями про запис із поданням необробленого XML і розбиттям відфільтрованих результатів на сторінки.
+
+Справжні файлові операції
+Копіювання, переміщення, перейменування, нова папка та видалення до Кошика або остаточно. Копіювання й переміщення показують реальний перебіг і зупиняються із запитанням при конфлікті, показуючи розмір і дату обох файлів.
+
+Кілька умов
+Запускайте кілька пошуків за назвою та вмістом за один прохід. Кожна умова відстежується окремо з власним лічильником збігів, тож видно, які шаблони спрацювали.
+
+Фільтри включення / виключення
+Шаблони, розділені крапкою з комою, звужують або обмежують область пошуку за розширенням чи сегментом каталогу, наприклад *.txt;*.log або node_modules.
+
+Сортування & уточнення
+Сортуйте результати за назвою, розташуванням, розміром, типом, датою зміни або створення, а Ctrl+F фільтрує список наживо. Випадні фільтри звужують за розширенням, датою чи розміром.
+
+Вкладки
+Кожна вкладка - це окремий пошук, папка, термінал або відкритий файл зі своєю історією та результатами. Перетягуйте вкладки, щоб змінити порядок, і за бажання відновлюйте відкриті вкладки під час наступного запуску.
+
+Перегляд папок наживо
+Режими списку, значків і таблиці, дерево папок, адресний рядок і кнопки назад / вперед / вгору на звичних клавішах Провідника. Переглянута папка стежить за диском, тому файл, видалений в іншому вікні, зникає й тут. Надавайте файлам або папкам псевдоніми через контекстне меню без перейменування на диску.
+
+Експорт у HTML & CSV
+Експортуйте результати як самодостатній звіт HTML зі знайденими рядками та вбудованим перемикачем тем або як CSV для таблиць. Відкривається будь-де, без залежностей.
+
+Керування з клавіатури
+Звичні клавіші Провідника там, де вони є, і одиничні клавіші замість комбінацій там, де їх немає. F1 показує кожен жест списком або на візуальній клавіатурі, над якою можна утримувати Ctrl.
+
+Приватність за задумом
+Дані обробляються локально, без телеметрії й автоматичного надсилання. Перевірки оновлень, завантаження й вибрані мережеві функції створюють зовнішні з'єднання.
+
+Теми & акценти
+13 тем, 41 вигляд: Dark, Light, Black і 98SE мають по 8 кольорів акценту. Інші 9 мають фіксовані палітри. Перемикайте без перезапуску. У меню тем можна ввімкнути або вимкнути зернистість плівки.
+
+Дев'ятнадцять мов
+Інтерфейс локалізовано дев'ятнадцятьма мовами (англійська, іспанська, німецька, французька, угорська, італійська, турецька, в'єтнамська, польська, чеська, японська, китайська традиційна та спрощена, бенгальська, російська, казахська, українська, норвезька (букмол) та бразильська португальська), перемикання наживо на панелі інструментів.","Một tệp exe Windows di động để quản lý máy tính và mọi thứ trên đó. Tệp, shell, chỉnh sửa văn bản, lưu trữ và quản trị hệ thống cùng nằm trong một cửa sổ và dùng chung một bộ phím.
+
+Cài đặt hoặc chạy ở chế độ di động. Miễn phí, mã nguồn mở, GPLv3. Không tác nhân, không tài khoản, không thuê bao. Không gửi dữ liệu đo từ xa và không bao giờ có quảng cáo.
+
+Tìm kiếm tên tệp
+Các mẫu ký tự đại diện như *.log hoặc report_*.xlsx được đối chiếu với mọi tên tệp trong cây thư mục. Kết quả xuất hiện liên tục theo thời gian thực mà không cần lập chỉ mục trước.
+
+Tìm kiếm nội dung
+Đọc lần lượt từng dòng trong các tệp mà không nạp toàn bộ vào RAM. Hiển thị các dòng khớp cùng số dòng và tự động bỏ qua tệp nhị phân.
+
+Terminal trong một tab
+PowerShell, CMD, WSL và lệnh tùy chỉnh dùng chung các tab. Lưu hồ sơ terminal, chọn shell mặc định và duyệt thư mục hiện tại của shell.
+
+Trình soạn thảo trong một tab
+Mở bất kỳ tệp nào bằng F7. Có tô sáng cú pháp, số dòng, tìm kiếm và chuyển đến dòng, đồng thời ngắt dòng được bật theo mặc định. Kiểu mã hóa và ký tự kết thúc dòng của bạn được giữ nguyên hoàn toàn, không bao giờ bị tự ý thay đổi.
+
+Tìm kiếm trong kết quả
+Chuyển kết quả của một lượt tìm kiếm sang tab mới rồi chỉ tìm kiếm bên trong những tệp đó. Bạn có thể nối chuỗi sâu tùy ý; mỗi lượt chỉ xử lý các tệp còn lại sau lượt trước.
+
+Hai khung
+F10 chia cửa sổ thành hai khung nằm cạnh nhau hoặc xếp chồng, mỗi khung có các tab riêng. Kéo tệp từ khung này sang khung kia hoặc giữ kết quả tìm kiếm ở bên trái và shell ở bên phải.
+
+Trình phân tích lưu trữ
+F4 vẽ sơ đồ cây của bất kỳ thư mục hoặc ổ đĩa nào: mỗi tệp là một hình chữ nhật có kích thước tương ứng với dung lượng tệp chiếm dụng. Phóng to một thư mục, lọc theo độ sâu hoặc kích thước tối thiểu rồi chuyển nội dung tìm được vào Recycle Bin.
+
+Tiến trình & dịch vụ
+F9 mở một bảng trực tiếp về CPU, bộ nhớ và chủ sở hữu mà bạn có thể lọc theo tên, đường dẫn hoặc người dùng. Kết thúc hoặc khởi động lại tiến trình, hay khởi động, dừng và khởi động lại dịch vụ; mỗi thao tác đều có hộp thoại xác nhận.
+
+Trình giám sát hiệu suất
+F11 mở bảng điều khiển phần cứng trực tiếp: một dải thông tin tổng quan, các bảng CPU và RAM lớn, một hàng cho mỗi ổ đĩa và bộ điều hợp mạng, cùng một thẻ cho mỗi GPU. Mỗi biểu đồ lưu lại một phút lịch sử và bảng CPU hiển thị một ô tải cho từng bộ xử lý logic.
+
+Trình chỉnh sửa Registry
+Ctrl+F11 mở cây đầy đủ của cả năm hive, hỗ trợ chỉnh sửa giá trị theo từng kiểu, tạo, đổi tên hoặc xóa khóa và giá trị, cùng Ctrl+F để tìm kiếm các tên đã tải.
+
+Trình xem sự kiện
+Ctrl+F12 mở nhật ký Application, System và Security với chức năng lọc theo cấp độ và văn bản, hiển thị đầy đủ chi tiết bản ghi kèm chế độ xem XML thô, đồng thời hỗ trợ phân trang trong các kết quả đã lọc.
+
+Thao tác tệp thực tế
+Sao chép, di chuyển, đổi tên, tạo thư mục mới và xóa vào Recycle Bin hoặc xóa vĩnh viễn. Các thao tác sao chép và di chuyển hiển thị tiến độ thực tế và dừng lại để hỏi khi xảy ra xung đột, với kích thước và ngày của cả hai tệp được trình bày ngay trước mắt.
+
+Nhiều từ khóa
+Chạy nhiều lượt tìm kiếm theo tên tệp và nội dung cùng lúc. Mỗi cụm từ được theo dõi độc lập với số kết quả khớp riêng, giúp bạn biết mẫu nào có kết quả.
+
+Bộ lọc bao gồm / loại trừ
+Các mẫu phân tách bằng dấu chấm phẩy giúp thu hẹp hoặc giới hạn phạm vi theo phần mở rộng hay đoạn thư mục, ví dụ *.txt;*.log hoặc node_modules.
+
+Sắp xếp & tinh chỉnh
+Sắp xếp kết quả theo tên, vị trí, kích thước, loại, ngày sửa đổi hoặc ngày tạo, rồi nhấn Ctrl+F để lọc danh sách theo thời gian thực. Các bộ lọc thả xuống giúp thu hẹp kết quả theo phần mở rộng, ngày hoặc kích thước.
+
+Thẻ
+Mỗi thẻ là một lượt tìm kiếm, thư mục, cửa sổ dòng lệnh hoặc tệp đang mở riêng, với lịch sử và kết quả riêng. Kéo các thẻ để sắp xếp lại và tùy chọn khôi phục những thẻ đang mở trong lần khởi chạy tiếp theo.
+
+Duyệt thư mục theo thời gian thực
+Các chế độ xem danh sách, biểu tượng và chi tiết, kèm cây thư mục, thanh địa chỉ cùng chức năng quay lại / tiến tới / lên trên bằng chính các phím của Explorer. Thư mục đang duyệt luôn đồng bộ với ổ đĩa, vì vậy tệp bị xóa trong cửa sổ khác cũng biến mất tại đây. Đặt biệt danh cho tệp hoặc thư mục từ menu ngữ cảnh mà không đổi tên trên đĩa.
+
+Xuất HTML & CSV
+Xuất kết quả thành báo cáo HTML độc lập, có các dòng khớp và trình chuyển đổi giao diện tích hợp, hoặc thành CSV để dùng với bảng tính. Có thể mở ở bất cứ đâu mà không cần phần phụ thuộc.
+
+Điều khiển bằng bàn phím
+Áp dụng các quy ước của Explorer khi có sẵn và dùng phím đơn thay cho tổ hợp phím trong những trường hợp còn lại. F1 hiển thị mọi thao tác dưới dạng danh sách hoặc trên bàn phím trực quan mà bạn có thể giữ Ctrl để xem.
+
+Riêng tư ngay từ thiết kế
+Dữ liệu được xử lý cục bộ, không có đo từ xa hay tự động tải lên. Kiểm tra cập nhật, tải xuống và các tính năng mạng bạn chọn sử dụng sẽ kết nối ra bên ngoài.
+
+Giao diện & màu nhấn
+13 giao diện, 41 kiểu: Dark, Light, Black và 98SE có 8 màu nhấn mỗi giao diện. 9 giao diện còn lại có bảng màu cố định. Chuyển ngay không cần khởi động lại. Menu chủ đề cho phép bật hoặc tắt hạt phim.
+
+Mười chín ngôn ngữ
+Giao diện được bản địa hóa sang mười chín ngôn ngữ (tiếng Anh, tiếng Tây Ban Nha, tiếng Đức, tiếng Pháp, tiếng Hungary, tiếng Ý, tiếng Thổ Nhĩ Kỳ, tiếng Việt, tiếng Ba Lan, tiếng Séc, tiếng Nhật, tiếng Trung Phồn thể và Giản thể, tiếng Bengal, tiếng Nga, tiếng Kazakh, tiếng Ukraina, tiếng Na Uy (Bokmål) và tiếng Bồ Đào Nha (Brazil)), có thể chuyển đổi theo thời gian thực từ thanh công cụ.","Um único executável portátil do Windows para gerenciar um computador e tudo o que há nele. Arquivos, shells, edição de texto, armazenamento e administração do sistema compartilham uma só janela e um só conjunto de teclas.
+
+Instale ou execute como portátil. Gratuito, código aberto, GPLv3. Sem agente, sem conta, sem assinatura. Nenhuma telemetria é enviada e nenhum anúncio... nunca.
+
+Pesquisa por nome de arquivo
+Padrões com curingas como *.log ou report_*.xlsx comparados com cada nome de arquivo da árvore. Os resultados chegam em tempo real, sem indexação prévia.
+
+Pesquisa por conteúdo
+Percorre os arquivos linha por linha sem carregá-los na RAM. Mostra as linhas encontradas com seus números e ignora arquivos binários automaticamente.
+
+Terminal em uma aba
+PowerShell, CMD, WSL e comandos personalizados compartilham as abas. Salve perfis de terminal, escolha o shell padrão e navegue pela pasta atual dele.
+
+Editor em uma aba
+Abra qualquer arquivo com F7. Realce de sintaxe, números de linha, localizar e ir para a linha, com quebra de linha ativada por padrão. A codificação e as quebras de linha são preservadas exatamente, nunca inventadas.
+
+Pesquisar nos resultados
+Envie os resultados de uma pesquisa para uma nova aba e pesquise apenas dentro desses arquivos. Encadeie quantas vezes quiser; cada passagem toca apenas os sobreviventes da anterior.
+
+Dois painéis
+F10 divide a janela lado a lado ou empilhada, cada painel com suas próprias abas. Arraste arquivos de um para o outro, ou mantenha uma pesquisa à esquerda e um shell à direita.
+
+Analisador de armazenamento
+F4 desenha um treemap de qualquer pasta ou unidade: um retângulo por arquivo, dimensionado pelo espaço que ocupa. Aproxime uma pasta, filtre por profundidade ou tamanho mínimo e envie o que encontrar para a Lixeira.
+
+Processos & serviços
+F9 abre uma grade ao vivo de CPU, memória e proprietário que você pode filtrar por nome, caminho ou usuário. Encerre ou reinicie um processo, ou inicie, pare e reinicie um serviço, cada um atrás de uma caixa de confirmação.
+
+Monitor de desempenho
+F11 abre um painel de hardware ao vivo: uma faixa de resumo, grandes painéis de CPU e RAM, uma linha para cada disco e adaptador de rede e um cartão por GPU. Cada gráfico guarda um minuto de histórico, e o painel de CPU mostra um quadrado de carga para cada processador lógico.
+
+Editor do Registro
+Ctrl+F11 abre uma árvore completa sobre as cinco chaves raiz, com edição de valores sensível ao tipo, criar/renomear/excluir para chaves e valores e Ctrl+F para pesquisar nomes carregados.
+
+Visualizador de Eventos
+Ctrl+F12 abre os logs de Aplicativo, Sistema e Segurança com filtragem por nível e texto, detalhes completos do registro com uma visão em XML bruto e paginação dos resultados filtrados.
+
+Operações reais com arquivos
+Copiar, mover, renomear, nova pasta e excluir para a Lixeira ou em definitivo. Copiar e mover mostram o progresso real e param para perguntar em caso de conflito, com o tamanho e a data dos dois arquivos à sua frente.
+
+Vários termos
+Execute várias pesquisas por nome e por conteúdo em uma única passagem. Cada termo é acompanhado de forma independente, com sua própria contagem de ocorrências, para você ver quais padrões acertaram.
+
+Filtros de inclusão / exclusão
+Padrões separados por ponto e vírgula ampliam ou restringem o escopo por extensão ou segmento de diretório, por exemplo *.txt;*.log ou node_modules.
+
+Ordenar & refinar
+Ordene os resultados por nome, local, tamanho, tipo ou data de modificação ou criação, e pressione Ctrl+F para filtrar a lista ao vivo. Filtros suspensos restringem por extensão, data ou tamanho.
+
+Abas
+Cada aba é sua própria pesquisa, pasta, terminal ou arquivo aberto, com histórico e resultados próprios. Arraste as abas para reordená-las e, se quiser, restaure as abas abertas na próxima inicialização.
+
+Navegação de pastas ao vivo
+Visualizações em lista, ícones e detalhes, com árvore de pastas, barra de endereço e voltar / avançar / subir nas teclas do próprio Explorador de Arquivos. Uma pasta aberta acompanha o disco, então um arquivo excluído em outra janela some aqui também. Dê apelidos a arquivos ou pastas pelo menu de contexto sem renomeá-los no disco.
+
+Exportação HTML & CSV
+Exporte os resultados como um relatório HTML autônomo com as linhas encontradas e um seletor de temas embutido, ou como CSV para planilhas. Abre em qualquer lugar, sem dependências.
+
+Controle pelo teclado
+As convenções do Explorador de Arquivos onde elas existem e teclas simples em vez de combinações onde não existem. F1 mostra cada gesto como lista ou em um teclado visual sobre o qual você pode segurar Ctrl.
+
+Privado por princípio
+Os dados são processados localmente, sem telemetria nem envios automáticos. Verificações de atualização, downloads e funções de rede escolhidas fazem conexões externas.
+
+Temas & destaques
+13 temas, 41 visuais: Dark, Light, Black e 98SE têm 8 cores de destaque cada. Os outros 9 têm paletas fixas. Troque sem reiniciar. O menu de temas permite ativar ou desativar o grão de filme.
+
+Dezenove idiomas
+A interface está localizada em dezenove idiomas (inglês, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tradicional e simplificado, bengali, russo, cazaque, ucraniano, norueguês bokmål e português do Brasil), com troca ao vivo pela barra de ferramentas.","Jeden przenośny plik .exe dla Windows do zarządzania komputerem i wszystkim, co się na nim znajduje. Pliki, powłoki, edycja tekstu, pamięć masowa i administracja systemem dzielą jedno okno i jeden zestaw klawiszy.
+
+Zainstaluj lub uruchom w trybie przenośnym. Bezpłatny, otwartoźródłowy, GPLv3. Bez agenta, bez konta, bez subskrypcji. Bez telemetrii i bez reklam... nigdy.
+
+Wyszukiwanie po nazwie
+Wzorce z symbolami wieloznacznymi, jak *.log czy report_*.xlsx, porównywane z każdą nazwą pliku w drzewie. Wyniki spływają w czasie rzeczywistym, bez wcześniejszego indeksowania.
+
+Wyszukiwanie w zawartości
+Czyta pliki wiersz po wierszu, nie ładując ich do pamięci RAM. Pokazuje pasujące wiersze z ich numerami i automatycznie pomija pliki binarne.
+
+Terminal w karcie
+PowerShell, CMD, WSL i własne polecenia korzystają ze wspólnych kart. Zapisuj profile terminala, wybierz domyślną powłokę i przeglądaj jej bieżący folder.
+
+Edytor w karcie
+Otwórz dowolny plik klawiszem F7. Podświetlanie składni, numery wierszy, wyszukiwanie i przejście do wiersza, z domyślnie włączonym zawijaniem tekstu. Twoje kodowanie i końce wierszy są zachowywane dokładnie, nigdy nie są zgadywane.
+
+Wyszukiwanie w wynikach
+Przekaż wyniki jednego wyszukiwania do nowej karty i szukaj tylko w tych plikach. Łącz w łańcuch tak głęboko, jak chcesz; każdy przebieg dotyka wyłącznie plików, które przetrwały poprzedni.
+
+Dwa panele
+F10 dzieli okno obok siebie lub jeden panel nad drugim, a każdy panel ma własne karty. Przeciągaj pliki z jednego do drugiego albo trzymaj wyszukiwanie po lewej i powłokę po prawej.
+
+Analizator pamięci masowej
+F4 rysuje mapę drzewa dowolnego folderu lub dysku: jeden prostokąt na plik, wielkości zajmowanego miejsca. Wejdź w folder, filtruj po głębokości lub minimalnym rozmiarze i wyślij znalezione do Kosza.
+
+Procesy i usługi
+F9 otwiera żywą siatkę CPU, pamięci i właścicieli, filtrowaną po nazwie, ścieżce lub użytkowniku. Zakończ lub uruchom ponownie proces, albo uruchom, zatrzymaj i zrestartuj usługę - każde za dialogiem potwierdzenia.
+
+Monitor wydajności
+F11 otwiera żywy pulpit sprzętu: pasek podsumowania, duże panele CPU i RAM, wiersz dla każdego dysku i karty sieciowej oraz kartę dla każdego GPU. Każdy wykres przechowuje minutę historii, a panel CPU pokazuje kwadrat obciążenia dla każdego procesora logicznego.
+
+Edytor rejestru
+Ctrl+F11 otwiera pełne drzewo pięciu gałęzi z edycją wartości świadomą typów, tworzeniem, zmianą nazwy i usuwaniem kluczy i wartości oraz Ctrl+F do przeszukiwania załadowanych nazw.
+
+Podgląd zdarzeń
+Ctrl+F12 otwiera dzienniki Aplikacja, System i Zabezpieczenia z filtrowaniem po poziomie i tekście, pełnymi szczegółami rekordu z surowym widokiem XML oraz stronicowaniem przefiltrowanych wyników.
+
+Prawdziwe operacje na plikach
+Kopiowanie, przenoszenie, zmiana nazwy, nowy folder oraz usuwanie do Kosza lub trwałe. Kopiowanie i przenoszenie pokazują prawdziwy postęp i zatrzymują się z pytaniem przy konflikcie, z rozmiarem i datą obu plików przed oczami.
+
+Wiele haseł
+Uruchamiaj kilka wyszukiwań po nazwie i zawartości w jednym przebiegu. Każde hasło jest śledzone osobno z własnym licznikiem trafień, więc widać, które wzorce trafiają.
+
+Filtry uwzględniania / wykluczania
+Wzorce rozdzielone średnikami zawężają zakres według rozszerzenia lub segmentu ścieżki, na przykład *.txt;*.log albo node_modules.
+
+Sortowanie i zawężanie
+Sortuj wyniki według nazwy, lokalizacji, rozmiaru, typu albo daty modyfikacji lub utworzenia i naciśnij Ctrl+F, aby filtrować listę na żywo. Filtry rozwijane zawężają według rozszerzenia, daty lub rozmiaru.
+
+Karty
+Każda karta to osobne wyszukiwanie, folder, terminal lub otwarty plik, z własną historią i własnymi wynikami. Przeciągaj karty, aby zmienić ich kolejność, i opcjonalnie przywracaj otwarte karty przy następnym uruchomieniu.
+
+Przeglądanie folderów na żywo
+Widok listy, ikon i szczegółów, z drzewem folderów, paskiem adresu oraz wstecz / dalej / w górę na klawiszach znanych z Eksploratora. Przeglądany folder śledzi dysk, więc plik usunięty w innym oknie znika także tutaj. Nadaj plikom lub folderom pseudonimy w menu kontekstowym bez zmiany ich nazw na dysku.
+
+Eksport HTML i CSV
+Eksportuj wyniki jako samodzielny raport HTML z pasującymi wierszami i wbudowanym przełącznikiem motywów albo jako CSV do arkuszy kalkulacyjnych. Otwiera się wszędzie, bez zależności.
+
+Sterowany klawiaturą
+Konwencje Eksploratora tam, gdzie istnieją, a pojedyncze klawisze zamiast kombinacji tam, gdzie ich nie ma. F1 pokazuje każdy gest jako listę albo na rysowanej klawiaturze, nad którą możesz przytrzymać Ctrl.
+
+Prywatny z założenia
+Dane są przetwarzane lokalnie, bez telemetrii i automatycznego wysyłania. Sprawdzanie aktualizacji, pobieranie i wybrane funkcje sieciowe nawiązują połączenia zewnętrzne.
+
+Motywy i akcenty
+13 motywów, 41 wyglądów: Dark, Light, Black i 98SE mają po 8 kolorów akcentu. Pozostałe 9 ma stałe palety. Zmieniaj bez restartu. Menu motywów pozwala włączyć lub wyłączyć ziarno filmowe.
+
+Dziewiętnaście języków
+Interfejs jest przetłumaczony na dziewiętnaście języków (angielski, hiszpański, niemiecki, francuski, węgierski, włoski, turecki, wietnamski, polski, czeski, japoński, chiński tradycyjny i uproszczony, bengalski, rosyjski, kazachski, ukraiński, norweski (bokmål) oraz portugalski brazylijski), przełączanych na żywo z paska narzędzi.","Én portabel Windows-exe for å administrere en datamaskin og alt på den. Filer, skall, tekstredigering, lagring og systemadministrasjon deler ett vindu og ett sett med taster.
+
+Installer eller kjør portabelt. Gratis, åpen kildekode, GPLv3. Ingen agent, ingen konto, intet abonnement. Ingen telemetri sendes og ingen annonser... aldri.
+
+Filnavnsøk
+Jokertegnmønstre som *.log eller report_*.xlsx sammenlignes med hvert filnavn i treet. Resultatene strømmer inn i sanntid uten forhåndsindeksering.
+
+Innholdssøk
+Strømmer gjennom filer linje for linje uten å laste dem inn i RAM. Viser samsvarende linjer med linjenumre, og hopper automatisk over binærfiler.
+
+Terminal i en fane
+PowerShell, CMD, WSL og egne kommandoer deler fanene. Lagre terminalprofiler, velg et standardskall og bla i den gjeldende mappen.
+
+Redigering i en fane
+Åpne en hvilken som helst fil med F7. Syntaksutheving, linjenumre, søk og gå til linje, med tekstbryting på som standard. Tegnkodingen og linjeskiftene dine bevares nøyaktig, aldri funnet på.
+
+Søk i resultater
+Send resultatene fra ett søk til en ny fane og søk bare i disse filene. Kjed så dypt du vil; hvert gjennomløp rører bare de som overlevde det forrige.
+
+To ruter
+F10 deler vinduet side ved side eller stablet, hver rute med egne faner. Dra filer fra den ene til den andre, eller ha et søk til venstre og et skall til høyre.
+
+Lagringsanalyse
+F4 tegner et trekart over en hvilken som helst mappe eller stasjon: ett rektangel per fil, dimensjonert etter hvor mye plass den tar. Zoom inn i en mappe, filtrer etter dybde eller minstestørrelse, og send det du finner til Papirkurven.
+
+Prosesser & tjenester
+F9 åpner et levende rutenett med CPU, minne og eier som du kan filtrere etter navn, sti eller bruker. Avslutt eller start en prosess på nytt, eller start, stopp og start en tjeneste på nytt, hver bak en bekreftelsesdialog.
+
+Ytelsesovervåker
+F11 åpner et levende maskinvaredashbord: en oppsummeringsstripe, store CPU- og RAM-paneler, en rad for hver disk og nettverksadapter, og et kort per GPU. Hver graf beholder ett minutts historikk, og CPU-panelet viser et belastningsfirkant for hver logiske prosessor.
+
+Registerredigering
+Ctrl+F11 åpner et fullt tre over alle fem hivene med typebevisst verdiredigering, opprett/gi nytt navn/slett for nøkler og verdier, og Ctrl+F for å søke i innlastede navn.
+
+Hendelsesliste
+Ctrl+F12 åpner loggene Application, System og Security med filtrering på nivå og tekst, full postdetalj med en rå XML-visning, og blaing gjennom de filtrerte resultatene.
+
+Ekte filoperasjoner
+Kopier, flytt, gi nytt navn, ny mappe, og slett til Papirkurven eller permanent. Kopiering og flytting viser ekte fremdrift og stopper for å spørre ved en kollisjon, med begge filenes størrelse og dato foran deg.
+
+Flere søkeord
+Kjør flere filnavn- og innholdssøk i ett enkelt gjennomløp. Hvert søkeord telles uavhengig med sitt eget antall treff, så du ser hvilke mønstre som treffer.
+
+Filtre for å ta med / utelate
+Mønstre atskilt med semikolon begrenser omfanget etter filtype eller mappesegment, for eksempel *.txt;*.log eller node_modules.
+
+Sorter & avgrens
+Sorter resultatene etter navn, plassering, størrelse, type, eller endrings- eller opprettelsesdato, og trykk Ctrl+F for å filtrere listen live. Rullegardinfiltre avgrenser etter filtype, dato eller størrelse.
+
+Faner
+Hver fane er sitt eget søk, sin egen mappe, terminal eller åpne fil, med egen historikk og egne resultater. Dra faner for å endre rekkefølgen, og gjenopprett eventuelt de åpne fanene ved neste oppstart.
+
+Levende mappeutforsking
+Liste-, ikon- og detaljvisning, med mappetre, adressefelt og tilbake / fremover / opp på Filutforskerens egne taster. En mappe du blar i følger disken, så en fil som slettes i et annet vindu forsvinner her også. Gi filer eller mapper kallenavn fra hurtigmenyen uten å endre navnene på disken.
+
+HTML- & CSV-eksport
+Eksporter resultatene som en selvstendig HTML-rapport med samsvarende linjer og en innebygd temavelger, eller som CSV for regneark. Åpnes overalt, uten avhengigheter.
+
+Styrt med tastaturet
+Filutforskerens konvensjoner der de finnes, og enkelttaster i stedet for akkorder der de ikke finnes. F1 viser hver bevegelse som en liste eller på et visuelt tastatur du kan holde Ctrl over.
+
+Personvern fra grunnen av
+Appdata behandles lokalt, uten telemetri eller automatisk opplasting. Oppdateringssjekker, nedlastinger og nettverksfunksjoner du velger å bruke, oppretter eksterne forbindelser.
+
+Temaer & aksenter
+13 temaer, 41 uttrykk: Dark, Light, Black og 98SE har 8 aksentfarger hver. De andre 9 har faste paletter. Bytt uten omstart. Temamenyen kan slå filmkorn av eller på.
+
+Nitten språk
+Grensesnittet er lokalisert til nitten språk (engelsk, spansk, tysk, fransk, ungarsk, italiensk, tyrkisk, vietnamesisk, polsk, tsjekkisk, japansk, tradisjonell og forenklet kinesisk, bengali, russisk, kasakhisk, ukrainsk, norsk bokmål og brasiliansk portugisisk), og kan byttes live fra verktøylinjen.","一个便携的 Windows exe，用来管理一台电脑和它上面的一切。文件、shell、文本编辑、存储和系统管理共用一个窗口、一套按键。
+
+可安装也可便携运行。免费、开源、GPLv3。无代理、无账户、无订阅。不发送任何遥测，也没有广告……永远没有。
+
+文件名搜索
+像 *.log 或 report_*.xlsx 这样的通配符模式会与树中每个文件名比对。结果实时流入，无需预先索引。
+
+内容搜索
+逐行流式读取文件，不把文件载入内存。显示匹配行及行号，并自动跳过二进制文件。
+
+标签页里的终端
+PowerShell、CMD、WSL 和自定义命令共用标签栏。保存终端配置，选择默认 Shell，并浏览其当前文件夹。
+
+标签页里的编辑器
+按 F7 打开任何文件。有语法高亮、行号、查找和跳转到行，默认开启自动换行。你的编码和行尾会被原样保留，绝不臆造。
+
+在结果中搜索
+把一次搜索的结果导入新标签页，只在这些文件里继续搜索。想串多深就串多深；每一轮只处理上一轮的幸存者。
+
+双面板
+F10 把窗口左右并排或上下堆叠地分成两半，每个面板有自己的标签页。可以把文件从一边拖到另一边，也可以左边放搜索、右边放一个 shell。
+
+存储分析器
+F4 为任意文件夹或驱动器绘制矩形树图：每个文件一个矩形，按占用空间定大小。可缩放进文件夹，按深度或最小尺寸筛选，并把找到的东西送进回收站。
+
+进程与服务
+F9 打开一张实时的 CPU、内存和所有者表格，可按名称、路径或用户筛选。结束或重启进程，启动、停止和重启服务，每个操作都有确认对话框把关。
+
+性能监视器
+F11 打开实时硬件仪表板：顶部一条摘要栏，大幅的 CPU 和内存面板，每个磁盘和网络适配器各占一行，每个 GPU 一张卡片。每张图保留一分钟历史，CPU 面板为每个逻辑处理器显示一个负载方块。
+
+注册表编辑器
+Ctrl+F11 打开覆盖全部五个配置单元的完整树，支持按类型编辑值、创建/重命名/删除键和值，以及用 Ctrl+F 在已加载的名称中搜索。
+
+事件查看器
+Ctrl+F12 打开“应用程序”“系统”和“安全”日志，支持按级别和文本筛选、带原始 XML 视图的完整记录详情，以及对筛选结果分页浏览。
+
+真正的文件操作
+复制、移动、重命名、新建文件夹，以及删除到回收站或彻底删除。复制和移动会显示真实进度，遇到重名会停下来询问，两个文件的大小和日期都摆在你面前。
+
+多个搜索词
+一次遍历同时运行多个文件名和内容搜索。每个词独立计数，一眼看出哪些模式命中了。
+
+包含 / 排除过滤器
+分号分隔的模式按扩展名或目录段收窄范围，例如 *.txt;*.log 或 node_modules。
+
+排序与精筛
+按名称、位置、大小、类型、修改日期或创建日期排序结果，按 Ctrl+F 实时筛选列表。下拉过滤器可按扩展名、日期或大小收窄。
+
+标签页
+每个标签页都是自己的搜索、文件夹、终端或打开的文件，各有各的历史和结果。拖动标签页可重新排序，还可选择在下次启动时恢复。
+
+实时文件夹浏览
+列表、图标和详细信息三种视图，配上文件夹树、地址栏，以及和资源管理器同样的后退 / 前进 / 向上按键。浏览中的文件夹会跟踪磁盘，在别的窗口里删掉的文件，这边也会消失。 从右键菜单为文件或文件夹设置昵称，不会更改磁盘上的名称。
+
+HTML 与 CSV 导出
+把结果导出为带匹配行和内置主题切换器的独立 HTML 报告，或导出 CSV 用于表格软件。随处可打开，零依赖。
+
+键盘驱动
+有资源管理器约定的地方就照它来，没有的地方用单键而不是组合键。F1 会把每个操作列成清单，或画在一张虚拟键盘上，按住 Ctrl 就能看那一层。
+
+隐私优先的设计
+数据在本地处理，不发送遥测数据，也不会自动上传。更新检查、下载和您选用的网络功能会建立外部连接。
+
+主题与强调色
+13 种主题，41 种外观：Dark、Light、Black 和 98SE 各有 8 种强调色，其他 9 种主题使用固定调色板。无需重启即可切换。 主题菜单可开启或关闭胶片颗粒。
+
+十九种语言
+界面已本地化为十九种语言（英语、西班牙语、德语、法语、匈牙利语、意大利语、土耳其语、越南语、波兰语、捷克语、日语、繁简中文、孟加拉语、俄语、哈萨克语、乌克兰语、挪威语（博克马尔语）和巴西葡萄牙语），可从工具栏实时切换。","一個可攜的 Windows exe，用來管理一台電腦和它上面的一切。檔案、shell、文字編輯、儲存空間和系統管理共用一個視窗、一套按鍵。
+
+可安裝也可攜帶執行。免費、開源、GPLv3。無代理程式、無帳號、無訂閱。不傳送任何遙測，也沒有廣告……永遠沒有。
+
+檔名搜尋
+像 *.log 或 report_*.xlsx 這樣的萬用字元樣式會與樹中每個檔名比對。結果即時串流，無須預先建立索引。
+
+內容搜尋
+逐行串流讀取檔案，不把檔案載入記憶體。顯示符合的行及行號，並自動略過二進位檔。
+
+分頁裡的終端機
+PowerShell、CMD、WSL 與自訂命令共用分頁列。儲存終端設定檔，選擇預設 Shell，並瀏覽其目前資料夾。
+
+分頁裡的編輯器
+按 F7 開啟任何檔案。有語法標示、行號、尋找和跳到指定行，並預設開啟自動換行。你的編碼和行尾會原樣保留，絕不臆造。
+
+在結果中搜尋
+把一次搜尋的結果導入新分頁，只在這些檔案裡繼續搜尋。要串多深都行；每一輪只處理上一輪的倖存者。
+
+雙窗格
+F10 把視窗左右並排或上下堆疊地分成兩半，每個窗格有自己的分頁。可以把檔案從一邊拖到另一邊，也可以左邊放搜尋、右邊放一個 shell。
+
+儲存分析器
+F4 為任何資料夾或磁碟機繪製矩形樹狀圖：每個檔案一個矩形，依佔用空間定大小。可縮放進資料夾，依深度或最小尺寸篩選，並把找到的東西送進資源回收筒。
+
+處理程序與服務
+F9 開啟一張即時的 CPU、記憶體和擁有者表格，可依名稱、路徑或使用者篩選。結束或重新啟動處理程序，啟動、停止和重新啟動服務，每個動作都有確認對話方塊把關。
+
+效能監視器
+F11 開啟即時硬體儀表板：頂端一條摘要列，大幅的 CPU 和 RAM 面板，每個磁碟和網路介面卡各佔一列，每個 GPU 一張卡片。每張圖保留一分鐘歷史，CPU 面板為每個邏輯處理器顯示一個負載方塊。
+
+登錄編輯程式
+Ctrl+F11 開啟涵蓋全部五個登錄區的完整樹狀結構，支援依類型編輯值、建立/重新命名/刪除機碼和值，以及用 Ctrl+F 在已載入的名稱中搜尋。
+
+事件檢視器
+Ctrl+F12 開啟「應用程式」「系統」和「安全性」記錄檔，支援依層級和文字篩選、帶原始 XML 檢視的完整記錄詳情，以及對篩選結果分頁瀏覽。
+
+真正的檔案操作
+複製、移動、重新命名、新增資料夾，以及刪除到資源回收筒或永久刪除。複製和移動會顯示真實進度，遇到同名檔案會停下來詢問，兩個檔案的大小和日期都擺在你面前。
+
+多個搜尋詞
+一次走訪同時執行多個檔名與內容搜尋。每個詞獨立計數，一眼看出哪些樣式命中。
+
+包含 / 排除篩選器
+以分號分隔的樣式依副檔名或目錄片段縮小範圍，例如 *.txt;*.log 或 node_modules。
+
+排序與精篩
+依名稱、位置、大小、類型、修改日期或建立日期排序結果，按 Ctrl+F 即時篩選清單。下拉篩選器可依副檔名、日期或大小縮小範圍。
+
+分頁
+每個分頁都是自己的搜尋、資料夾、終端機或開啟的檔案，各有各的歷史與結果。拖曳分頁可重新排列，還可選擇在下次啟動時還原。
+
+即時資料夾瀏覽
+清單、圖示和詳細資料三種檢視，配上資料夾樹、位址列，以及和檔案總管相同的上一頁 / 下一頁 / 上一層按鍵。瀏覽中的資料夾會追蹤磁碟，在別的視窗裡刪掉的檔案，這邊也會跟著消失。 從快顯選單替檔案或資料夾設定暱稱，不會變更磁碟上的名稱。
+
+HTML 與 CSV 匯出
+把結果匯出為帶符合行與內建主題切換器的獨立 HTML 報告，或匯出 CSV 供試算表使用。到處都能開，零相依。
+
+鍵盤驅動
+有檔案總管慣例的地方就照它來，沒有的地方就用單鍵而不是組合鍵。F1 會把每個操作列成清單，或畫在一張虛擬鍵盤上，按住 Ctrl 就能看那一層。
+
+隱私優先的設計
+資料在本機處理，不傳送遙測資料，也不會自動上傳。更新檢查、下載和您選用的網路功能會建立外部連線。
+
+主題與強調色
+13 種主題，41 種外觀：Dark、Light、Black 和 98SE 各有 8 種強調色，其他 9 種主題使用固定調色盤。不必重新啟動即可切換。 主題選單可開啟或關閉膠片顆粒。
+
+十九種語言
+介面已在地化為十九種語言（英語、西班牙語、德語、法語、匈牙利語、義大利語、土耳其語、越南語、波蘭語、捷克語、日語、繁簡中文、孟加拉語、俄語、哈薩克語、烏克蘭語、挪威語（博克馬爾語）與巴西葡萄牙語），可從工具列即時切換。","Un seul exe portable Windows pour gérer un ordinateur et tout ce qu'il contient. Fichiers, shells, édition de texte, stockage et administration système partagent une fenêtre et un meme jeu de touches.
+
+Installez-le ou utilisez-le en portable. Gratuit, open source, GPLv3. Pas d'agent, pas de compte, pas d'abonnement. Aucune télémétrie envoyée et aucune pub... jamais.
+
+Recherché par nom
+Des motifs a jokers comme *.log ou report_*.xlsx testes contre chaque nom de fichier de l'arbre. Les résultats arrivent en temps réel, sans pre-indexation.
+
+Recherché de contenu
+Parcourt les fichiers ligne par ligne sans les charger en RAM. Affiche les lignes trouvees avec leur numero et sauté automatiquement les fichiers binaires.
+
+Terminal dans un onglet
+PowerShell, CMD, WSL et les commandes personnalisées partagent les onglets. Enregistrez des profils, choisissez un shell par défaut et parcourez son dossier courant.
+
+Éditeur dans un onglet
+Ouvrez n'importe quel fichier avec F7. Coloration syntaxique, numeros de ligne, recherché et accès direct a une ligne, avec le retour a la ligne actif par défaut. Vôtre encodage et vos fins de ligne sont conserves a l'identique, jamais inventes.
+
+Rechercher dans les résultats
+Envoyez les résultats d'une recherché vers un nouvel onglet et cherchez uniquement dans ces fichiers. Enchainez autant que nécessaire ; chaque passé ne touché que les survivants de la precedente.
+
+Deux volets
+F10 divise la fenêtre cote a cote ou l'un au-dessus de l'autre, chaque volet avec ses propres onglets. Glissez les fichiers de l'un a l'autre, ou gardez une recherché a gauche et un shell a droite.
+
+Analyseur de stockage
+F4 dessine un treemap de n'importe quel dossier ou lecteur : un rectangle par fichier, dimensionné selon la place qu'il occupe. Zoomez dans un dossier, filtrez par profondeur ou taille minimale, et envoyez ce que vous trouvez à la Corbeille.
+
+Processus & services
+F9 ouvre une grille en direct de CPU, mémoire et propriétaire, filtrable par nom, chemin ou utilisateur. Terminez ou redémarrez un processus, ou démarrez, arrêtez et redémarrez un service, chaque action derrière un dialogue de confirmation.
+
+Moniteur de performances
+F11 ouvre un tableau de bord matériel en direct : une bande de synthèse, de grands panneaux CPU et RAM, une ligne par disque et par carte réseau, et une carte par GPU. Chaque graphique garde une minute d'historique, et le panneau CPU affiche un carré de charge par processeur logique.
+
+Éditeur du Registre
+Ctrl+F11 ouvre un arbre complet sur les cinq ruches avec édition des valeurs selon leur type, création/renommage/suppression des clés et des valeurs, et Ctrl+F pour chercher dans les noms chargés.
+
+Observateur d'événements
+Ctrl+F12 ouvre les journaux Application, Système et Sécurité avec filtrage par niveau et par texte, le détail complet de chaque enregistrement avec une vue XML brute, et la pagination des résultats filtrés.
+
+De vraies opérations sur les fichiers
+Copier, déplacer, renommer, créer un dossier, et supprimer vers la Recycle Bin ou définitivement. La copie et le déplacement affichent une vraie progression et s'arretent pour vous demander en cas de conflit, avec la taille et la date des deux fichiers sous les yeux.
+
+Plusieurs termes
+Lancez plusieurs recherches de nom et de contenu en une seule passé. Chaque terme est suivi séparément avec son propre compteur, pour voir quels motifs touchent.
+
+Filtres inclure / exclure
+Des motifs séparés par des points-virgules limitent la portée par extension ou segment de dossier, par exemple *.txt;*.log ou node_modules.
+
+Trier & affiner
+Triez les résultats par nom, emplacement, taille, type ou date de modification ou de création, et filtrez la liste en direct avec Ctrl+F. Les filtres deroulants restreignent par extension, date ou taille.
+
+Onglets
+Chaque onglet est sa propre recherché, son dossier, son terminal ou son fichier ouvert, avec son historique et ses résultats. Reorganisez les onglets par glisser, et restaurez si vous voulez les onglets ouverts au prochain lancement.
+
+Navigation dans les dossiers en direct
+Vues liste, icônes et détails, avec un arbre de dossiers, une barré d'adresse, et précédent / suivant / dossier parent sur les memes touches qu'Explorer. Un dossier explore suit le disque : un fichier supprime dans une autre fenêtre disparait aussi ici. Donnez des surnoms aux fichiers ou dossiers depuis leur menu contextuel sans les renommer sur le disque.
+
+Export HTML & CSV
+Exportez les résultats en rapport HTML autonome avec les lignes trouvees et un sélecteur de thèmes integre, ou en CSV pour les tableurs. S'ouvre partout, sans dependances.
+
+Pilote au clavier
+Les conventions d'Explorer la ou elles existent, et des touches uniques plutôt que des combinaisons la ou elles n'existent pas. F1 montre chaque geste sous forme de liste ou sur un clavier visuel ou vous pouvez maintenir Ctrl.
+
+Privé par conception
+Les données sont traitées localement, sans télémétrie ni envoi automatique. Les recherches de mises à jour, téléchargements et fonctions réseau choisies établissent des connexions externes.
+
+Thèmes & accents
+13 thèmes, 41 apparences : Dark, Light, Black et 98SE ont chacun 8 couleurs d'accent. Les 9 autres ont une palette fixe. Changez sans redémarrer. Le menu des thèmes permet d'activer ou de désactiver le grain de film.
+
+Dix-neuf langues
+L'interface est localisée en dix-neuf langues (anglais, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, ukrainien, norvégien (bokmål) et portugais brésilien), commutables en direct depuis la barre d'outils.","Одна портативная Windows-программа в виде exe для управления компьютером и всем, что на нём есть. Файлы, оболочки, редактирование текста, хранилище и системное администрирование делят одно окно и один набор клавиш.
+
+Установите или запускайте портативно. Бесплатно, с открытым исходным кодом, GPLv3. Без агента, без учётной записи, без подписки. Телеметрия не отправляется, и рекламы нет... никогда.
+
+Поиск по именам файлов
+Маски вроде *.log или report_*.xlsx сопоставляются с каждым именем файла в дереве. Результаты идут потоком в реальном времени, без предварительной индексации.
+
+Поиск по содержимому
+Читает файлы строка за строкой, не загружая их в RAM. Показывает найденные строки с их номерами и автоматически пропускает двоичные файлы.
+
+Терминал во вкладке
+PowerShell, CMD, WSL и пользовательские команды работают в общих вкладках. Сохраняйте профили терминала, выбирайте оболочку по умолчанию и открывайте её текущую папку.
+
+Редактор во вкладке
+Откройте любой файл клавишей F7. Подсветка синтаксиса, номера строк, поиск и переход к строке, перенос по словам включён по умолчанию. Ваша кодировка и переводы строк сохраняются в точности, а не выдумываются.
+
+Поиск внутри результатов
+Передайте результаты одного поиска в новую вкладку и ищите только внутри этих файлов. Стройте цепочку любой глубины; каждый проход касается только того, что уцелело в предыдущем.
+
+Две панели
+F10 делит окно по горизонтали или вертикали, и у каждой панели свои вкладки. Перетаскивайте файлы из одной в другую или держите поиск слева, а оболочку справа.
+
+Анализатор хранилища
+F4 рисует карту любой папки или диска: по прямоугольнику на файл, размером в занятое место. Углубляйтесь в папку, фильтруйте по глубине или минимальному размеру и отправляйте найденное в корзину.
+
+Процессы и службы
+F9 открывает живую таблицу CPU, памяти и владельца, которую можно фильтровать по имени, пути или пользователю. Завершите или перезапустите процесс либо запустите, остановите и перезапустите службу, каждое действие через диалог подтверждения.
+
+Монитор быстродействия
+F11 открывает живую панель оборудования: полоса сводки, большие панели CPU и RAM, строка на каждый диск и сетевой адаптер и карточка на каждый GPU. Каждый график хранит минуту истории, а панель CPU показывает квадрат нагрузки для каждого логического процессора.
+
+Редактор реестра
+Ctrl+F11 открывает полное дерево по всем пяти кустам с редактированием значений с учётом типа, созданием, переименованием и удалением разделов и параметров, а также Ctrl+F для поиска по загруженным именам.
+
+Просмотр событий
+Ctrl+F12 открывает журналы Приложение, Система и Безопасность с фильтрацией по уровню и тексту, полными сведениями о записи и просмотром исходного XML, а также постраничным пролистыванием отфильтрованных результатов.
+
+Настоящие файловые операции
+Копирование, перемещение, переименование, новая папка и удаление в корзину или безвозвратно. Копирование и перемещение показывают реальный прогресс и останавливаются с вопросом при совпадении имён, показывая размер и дату обоих файлов.
+
+Несколько запросов
+Выполняйте несколько поисков по именам и содержимому за один проход. Каждый запрос отслеживается отдельно, со своим счётчиком совпадений, поэтому видно, какие шаблоны сработали.
+
+Фильтры включения / исключения
+Шаблоны через точку с запятой сужают или ограничивают область по расширению либо по части пути, например *.txt;*.log или node_modules.
+
+Сортировка и уточнение
+Сортируйте результаты по имени, расположению, размеру, типу, дате изменения или создания и нажмите Ctrl+F, чтобы фильтровать список на лету. Выпадающие фильтры сужают выборку по расширению, дате или размеру.
+
+Вкладки
+Каждая вкладка - это свой поиск, папка, терминал или открытый файл, со своей историей и результатами. Вкладки можно перетаскивать, а открытые вкладки при желании восстанавливаются при следующем запуске.
+
+Просмотр папок в реальном времени
+Список, значки и таблица, с деревом папок, адресной строкой и кнопками назад / вперёд / вверх на тех же клавишах, что и в Проводнике. Открытая папка следит за диском, поэтому файл, удалённый в другом окне, исчезает и здесь. Задавайте файлам или папкам псевдонимы через контекстное меню без переименования на диске.
+
+Экспорт в HTML и CSV
+Экспортируйте результаты как самодостаточный HTML-отчёт с найденными строками и встроенным переключателем тем или как CSV для таблиц. Открывается где угодно, без зависимостей.
+
+Управление с клавиатуры
+Соглашения Проводника там, где они есть, и одиночные клавиши вместо сочетаний там, где их нет. F1 показывает каждый жест списком или на визуальной клавиатуре, над которой можно удерживать Ctrl.
+
+Приватность по замыслу
+Данные обрабатываются локально, без телеметрии и автоматической отправки. Проверки обновлений, загрузки и выбранные сетевые функции создают внешние соединения.
+
+Темы и акценты
+13 тем, 41 вариант: Dark, Light, Black и 98SE имеют по 8 акцентных цветов. Остальные 9 используют фиксированные палитры. Переключение без перезапуска. В меню тем можно включить или выключить зернистость плёнки.
+
+Девятнадцать языков
+Интерфейс переведён на девятнадцать языков (английский, испанский, немецкий, французский, венгерский, итальянский, турецкий, вьетнамский, польский, чешский, японский, китайский традиционный и упрощённый, бенгальский, русский, казахский, украинский, норвежский (букмол) и португальский (Бразилия)) и переключается на лету с панели инструментов."
+WhatsNew,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures1,Text,"Browse - list, icon and details views","ব্রাউজ - লিস্ট, আইকন ও ডিটেইলস ভিউ","Procházení - zobrazení seznamu, ikon a podrobností","Blättern - Listen-, Symbol- und Detailansicht","Explorar - vistas de lista, iconos y detalles","Tallózás - lista-, ikon- és részletek nézetek","Esplora - viste elenco, icone e dettagli",ブラウズ：リスト、アイコン、詳細の各表示,"Шолу - тізім, таңбаша және кесте көріністері","Gezin - liste, simge ve ayrinti görünümü","Перегляд - режими списку, значків і таблиці","Duyệt - chế độ xem danh sách, biểu tượng và chi tiết","Navegar - visualizações em lista, ícones e detalhes","Przeglądanie - widok listy, ikon i szczegółów","Bla gjennom - liste-, ikon- og detaljvisning",浏览：列表、图标和详细信息视图,瀏覽：清單、圖示和詳細資料檢視,"Parcourir - vues liste, icônes et détails","Обзор - список, значки и таблица"
+ProductFeatures2,Text,"Search - names or contents, with no index","সার্চ - নাম বা লেখা, ইনডেক্স ছাড়াই","Hledání - názvy nebo obsah, bez indexu","Suchen - Namen oder Inhalt, ohne Index","Buscar - nombres o contenido, sin índice",Keresés - nevek vagy tartalom index nélkül,"Cerca - nomi o contenuti, senza indice",検索：名前でも内容でも、インデックス不要,"Іздеу - атаулар немесе мазмұн бойынша, индекссіз","Arayin - ad ya da icerik, dizin yok","Пошук - за назвами або вмістом, без індексу","Tìm kiếm - theo tên hoặc nội dung, không cần chỉ mục","Pesquisar - por nomes ou conteúdo, sem índice","Wyszukiwanie - nazwy lub zawartość, bez indeksu","Søk - navn eller innhold, uten indeks",搜索：按文件名或内容，无需索引,搜尋：依檔名或內容，不必建索引,"Chercher - noms ou contenu, sans index","Поиск - по именам или содержимому, без индекса"
+ProductFeatures3,Text,"Terminal: PowerShell, CMD, WSL and custom profiles","টার্মিনাল - ট্যাবে PowerShell, CMD, WSL","Terminál - PowerShell, CMD, WSL","Terminal - PowerShell, CMD, WSL","Terminal - PowerShell, CMD, WSL","Terminál - PowerShell, CMD, WSL","Terminale - PowerShell, CMD, WSL","ターミナル：タブの中の PowerShell, CMD, WSL","Терминал - қойындыдағы PowerShell, CMD, WSL","Terminal - sekmede PowerShell, CMD, WSL","Термінал - PowerShell, CMD, WSL","Terminal - PowerShell, CMD, WSL","Terminal - PowerShell, CMD, WSL","Terminal - PowerShell, CMD, WSL","Terminal - PowerShell, CMD, WSL","终端：标签页里的 PowerShell, CMD, WSL","終端機：分頁裡的 PowerShell, CMD, WSL","Terminal - PowerShell, CMD, WSL","Терминал - PowerShell, CMD, WSL"
+ProductFeatures4,Text,"Editor - F7, with syntax highlighting","এডিটর - F7, সিনট্যাক্স হাইলাইটিংসহ","Editor - F7, se zvýrazněním syntaxe","Editor - F7, mit Syntaxhervorhebung","Editor - F7, con resaltado de sintaxis","Szerkesztő - F7, szintaktikai kiemeléssel","Editor - F7, con evidenziazione della sintassi",エディター：F7 で開く、構文ハイライト付き,"Өңдегіш - F7, синтаксисті бөлектеумен","Duzenleyici - F7, sözdizimi vurgulu","Редактор - F7, з підсвічуванням синтаксису","Trình soạn thảo - F7, có tô sáng cú pháp","Editor - F7, com realce de sintaxe","Edytor - F7, z podświetlaniem składni","Redigering - F7, med syntaksutheving",编辑器：按 F7，带语法高亮,編輯器：按 F7，附語法標示,"Éditeur - F7, avec coloration syntaxique","Редактор - F7, с подсветкой синтаксиса"
+ProductFeatures5,Text,"Files - copy, move, rename, delete","ফাইল - কপি, সরানো, রিনেম, ডিলিট","Soubory - kopírování, přesun, přejmenování, mazání","Dateien - kopieren, verschieben, umbenennen, löschen","Archivos - copiar, mover, renombrar, borrar","Fájlok - másolás, áthelyezés, átnevezés, törlés","File - copia, sposta, rinomina, elimina",ファイル：コピー、移動、名前の変更、削除,"Файлдар - көшіру, жылжыту, атын өзгерту, жою","Dosyalar - kopyala, tasi, adlandir, sil","Файли - копіювання, переміщення, перейменування, видалення","Tệp - sao chép, di chuyển, đổi tên, xóa","Arquivos - copiar, mover, renomear, excluir","Pliki - kopiuj, przenoś, zmieniaj nazwy, usuwaj","Filer - kopier, flytt, gi nytt navn, slett",文件：复制、移动、重命名、删除,檔案：複製、搬移、重新命名、刪除,"Fichiers - copier, déplacer, renommer, supprimer","Файлы - копирование, перемещение, переименование, удаление"
+ProductFeatures6,Text,"Tabs - folders, searches, shells, files","ট্যাব - ফোল্ডার, সার্চ, শেল, ফাইল","Karty - složky, hledání, shelly, soubory","Tabs - Ordner, Suchen, Shells, Dateien","Pestañas - carpetas, busquedas, shells, archivos","Lapok - mappák, keresések, parancsértelmezők, fájlok","Schede - cartelle, ricerche, shell, file",タブ：フォルダー、検索、シェル、ファイル,"Қойындылар - қалталар, іздеулер, қабықшалар, файлдар","Sekmeler - klasörler, aramalar, kabuklar, dosyalar","Вкладки - папки, пошуки, оболонки, файли","Tab - thư mục, tìm kiếm, shell, tệp","Abas - pastas, pesquisas, shells, arquivos","Karty - foldery, wyszukiwania, powłoki, pliki","Faner - mapper, søk, skall, filer",标签页：文件夹、搜索、shell、文件,分頁：資料夾、搜尋、shell、檔案,"Onglets - dossiers, recherches, shells, fichiers","Вкладки - папки, поиски, оболочки, файлы"
+ProductFeatures7,Text,Export - HTML report or CSV,এক্সপোর্ট - HTML রিপোর্ট বা CSV,Export - HTML report nebo CSV,Export - HTML-Bericht oder CSV,Exportar - informe HTML o CSV,Exportálás - HTML-jelentés vagy CSV,Esporta - report HTML o CSV,エクスポート：HTML レポートまたは CSV,Экспорт - HTML есебі немесе CSV,Disa aktarin - HTML rapor ya da CSV,Експорт - звіт HTML або CSV,Xuất - báo cáo HTML hoặc CSV,Exportar - relatório HTML ou CSV,Eksport - raport HTML lub CSV,Eksport - HTML-rapport eller CSV,导出：HTML 报告或 CSV,匯出：HTML 報告或 CSV,Export - rapport HTML ou CSV,Экспорт - HTML-отчёт или CSV
+ProductFeatures8,Text,"Processes - F9, with services and live CPU/RAM","প্রসেস - F9, সার্ভিস ও লাইভ CPU/RAM সহ","Procesy - F9, se službami a živým CPU/RAM","Prozesse - F9, mit Diensten und Live-CPU/RAM","Procesos - F9, con servicios y CPU/RAM en vivo","Folyamatok - F9, szolgáltatásokkal és élő CPU/RAM-mal","Processi - F9, con servizi e CPU/RAM in tempo reale",プロセス：F9 で、サービスとライブな CPU/RAM 付き,"Процестер - F9, қызметтермен және тірі CPU/RAM көрсеткішімен","Surecler - F9, hizmetler ve canli CPU/RAM ile","Процеси - F9, зі службами та живим CPU/RAM","Tiến trình - F9, kèm dịch vụ và CPU/RAM trực tiếp","Processos - F9, com serviços e CPU/RAM ao vivo","Procesy - F9, z usługami i CPU/RAM na żywo","Prosesser - F9, med tjenester og levende CPU/RAM",进程：按 F9，含服务和实时 CPU/RAM,處理程序：按 F9，含服務和即時 CPU/RAM,"Processus - F9, avec services et CPU/RAM en direct","Процессы - F9, со службами и живыми CPU/RAM"
+ProductFeatures9,Text,"Registry - Ctrl+F11, lazy-loaded tree with search","রেজিস্ট্রি - Ctrl+F11, সার্চসহ প্রয়োজনমতো লোড হওয়া ট্রি","Registr - Ctrl+F11, líně načítaný strom s hledáním","Registry - Ctrl+F11, verzögert geladener Baum mit Suche","Registro - Ctrl+F11, árbol de carga diferida con búsqueda","Regisztráció - Ctrl+F11, lustán betöltött fa kereséssel","Registro - Ctrl+F11, albero a caricamento pigro con ricerca",レジストリ：Ctrl+F11 で、検索付きの遅延読み込みツリー,"Тізілім - Ctrl+F11, іздеуі бар кешіктіріп жүктелетін ағаш","Kayit defteri - Ctrl+F11, aramali tembel yuklenen ağaç","Реєстр - Ctrl+F11, дерево з поступовим завантаженням і пошуком","Registry - Ctrl+F11, cây tải theo nhu cầu có chức năng tìm kiếm","Registro - Ctrl+F11, árvore com carregamento sob demanda e pesquisa","Rejestr - Ctrl+F11, leniwie ładowane drzewo z wyszukiwaniem","Register - Ctrl+F11, tre med lat innlasting og søk",注册表：按 Ctrl+F11，按需加载的树，带搜索,登錄檔：按 Ctrl+F11，依需載入的樹，附搜尋,"Registre - Ctrl+F11, arbre chargé a la demande avec recherché","Реестр - Ctrl+F11, лениво загружаемое дерево с поиском"
+ProductFeatures10,Text,"Storage - F4, a treemap of where the space went","স্টোরেজ - F4, জায়গা কোথায় গেল তার ট্রিম্যাপ","Úložiště - F4, stromová mapa toho, kam zmizelo místo","Speicher - F4, eine Treemap, die zeigt, wo der Platz geblieben ist","Almacenamiento - F4, un mapą de árbol de dónde se fue el espacio","Tárhely - F4, fatérkép arról, hová került a hely","Spazio - F4, una treemap di dove è finito lo spazio",ストレージ：F4 で、容量の行き先をツリーマップ表示,"Жинақтауыш - F4, орынның қайда кеткенін көрсететін карта","Depolama - F4, alanin nereye gittigini gosteren ağaç haritasi","Сховище - F4, карта того, куди поділося місце","Lưu trữ - F4, sơ đồ cây thể hiện dung lượng đã được dùng ở đâu","Armazenamento - F4, um treemap de onde o espaço foi parar","Pamięć masowa - F4, mapa drzewa pokazująca, gdzie zniknęło miejsce","Lagring - F4, et trekart over hvor plassen gikk",存储：按 F4，用树状图看空间去哪了,儲存空間：按 F4，用樹狀圖看空間去哪了,"Stockage - F4, un treemap qui montre ou est passé l'espace","Хранилище - F4, карта того, куда ушло место"
+ProductFeatures11,Text,"Themes: 13 themes, 8 accents on four themes (41 looks)","থিম - তেরোটি, লাইভ অ্যাকসেন্ট রংসহ","Motivy - třináct, s živými akcentovými barvami","Themes - dreizehn, mit Live-Akzentfarben","Temas - trece, con acentos en vivo","13 téma, 41 megjelenés: a Dark, Light, Black és 98SE egyenként 8 kiemelőszínt kínál. A többi 9 rögzített palettát használ. Váltás újraindítás nélkül.","13 temi, 41 aspetti: Dark, Light, Black e 98SE hanno 8 colori di accento ciascuno. Gli altri 9 hanno tavolozze fisse. Cambia senza riavviare.",テーマ：13 種、ライブなアクセントカラー付き,"13 тақырып, 41 көрініс: Dark, Light, Black және 98SE әрқайсысында 8 екпін түсі бар. Қалған 9 тақырыптың палитрасы тұрақты. Қайта іске қоспай ауыстырыңыз.","Temalar - on uc tane, canli vurgu rengi","13 тем, 41 вигляд: Dark, Light, Black і 98SE мають по 8 кольорів акценту. Інші 9 мають фіксовані палітри. Перемикайте без перезапуску.","13 giao diện, 41 kiểu: Dark, Light, Black và 98SE có 8 màu nhấn mỗi giao diện. 9 giao diện còn lại có bảng màu cố định. Chuyển ngay không cần khởi động lại.","13 temas, 41 visuais: Dark, Light, Black e 98SE têm 8 cores de destaque cada. Os outros 9 têm paletas fixas. Troque sem reiniciar.","Motywy - trzynaście, z kolorami akcentu na żywo","13 temaer, 41 uttrykk: Dark, Light, Black og 98SE har 8 aksentfarger hver. De andre 9 har faste paletter. Bytt uten omstart.",主题：十三套，带实时强调色,主題：十三套，附即時強調色,"Thèmes - treize, avec accents en direct","13 тем, 41 вариант: Dark, Light, Black и 98SE имеют по 8 акцентных цветов. Остальные 9 используют фиксированные палитры. Переключение без перезапуска."
+ProductFeatures12,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures13,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures14,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures15,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures16,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures17,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures18,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures19,Text,,,,,,,,,,,,,,,,,,,
+ProductFeatures20,Text,,,,,,,,,,,,,,,,,,,
+ShortDescription,Text,"One portable Windows exe for managing a computer and everything on it. Files, shells, text editing, storage and system admin share one window and one set of keys.","একটি কম্পিউটার আর তার ভেতরের সবকিছু সামলানোর জন্য একটিমাত্র পোর্টেবল Windows exe। ফাইল, শেল, টেক্সট এডিটিং, স্টোরেজ আর সিস্টেম অ্যাডমিন - সবই এক উইন্ডোতে, এক সেট কি-তে।","Jedno přenosné exe pro Windows, kterým spravujete počítač a všechno, co je na něm. Soubory, shelly, úpravy textu, úložiště a správa systému sdílejí jedno okno a jednu sadu kláves.","Eine portable Windows-exe, um einen Rechner und alles darauf zu verwalten. Dateien, Shells, Textbearbeitung, Speicher und Systemadministration teilen sich ein Fenster und einen Satz Tasten.","Un único .exe portátil de Windows para gestionar un equipo y todo lo que hay en el. Archivos, shells, edición de texto, almacenamiento y administracion del sistema comparten una ventana y un mismo juego de teclas.","Egy hordozható Windows exe a számítógép és minden rajta lévő összes kezeléséhez. A fájlok, a parancsértelmezők, a szövegszerkesztés, a tárolás és a rendszergazda egy ablakon és egy kulcskészleten osztozik.","Un solo exe portatile per Windows per gestire un computer e tutto ciò che contiene. File, shell, editor di testo, spazio su disco e amministrazione di sistema condividono una finestra e un solo set di tasti.",コンピューターとその中のすべてを管理するための、一つのポータブルな Windows exe。ファイル、シェル、テキスト編集、ストレージ、システム管理が、一つのウィンドウと一つのキー体系を共有します。,"Компьютерді және ондағы барлық нәрсені басқаруға арналған бір тасымалды Windows exe файлы. Файлдар, қабықшалар, мәтін өңдеу, жинақтауыш және жүйелік әкімшілік бір терезе мен бір пернелер жинағын бөліседі.","Bir bilgisayari ve icindeki her şeyi yönetmek için tek bir taşinabİlİr Windows exe. Dosyalar, kabuklar, metin düzenleme, depolama ve sistem yonetimi tek bir pencereyi ve tek bir tus takimini paylasir.","Один портативний exe для Windows, щоб керувати комп'ютером і всім, що на ньому є. Файли, оболонки, редагування тексту, сховище та системне адміністрування в одному вікні з єдиним набором клавіш.","Một tệp exe Windows di động để quản lý máy tính và mọi thứ trên đó. Tệp, shell, chỉnh sửa văn bản, lưu trữ và quản trị hệ thống cùng nằm trong một cửa sổ và dùng chung một bộ phím.","Um único executável portátil do Windows para gerenciar um computador e tudo o que há nele. Arquivos, shells, edição de texto, armazenamento e administração do sistema compartilham uma só janela e um só conjunto de teclas.","Jeden przenośny plik .exe dla Windows do zarządzania komputerem i wszystkim, co się na nim znajduje. Pliki, powłoki, edycja tekstu, pamięć masowa i administracja systemem dzielą jedno okno i jeden zestaw klawiszy.","Én portabel Windows-exe for å administrere en datamaskin og alt på den. Filer, skall, tekstredigering, lagring og systemadministrasjon deler ett vindu og ett sett med taster.",一个便携的 Windows exe，用来管理一台电脑和它上面的一切。文件、shell、文本编辑、存储和系统管理共用一个窗口、一套按键。,一個可攜的 Windows exe，用來管理一台電腦和它上面的一切。檔案、shell、文字編輯、儲存空間和系統管理共用一個視窗、一套按鍵。,"Un seul exe portable Windows pour gérer un ordinateur et tout ce qu'il contient. Fichiers, shells, édition de texte, stockage et administration système partagent une fenêtre et un meme jeu de touches.","Одна портативная Windows-программа в виде exe для управления компьютером и всем, что на нём есть. Файлы, оболочки, редактирование текста, хранилище и системное администрирование делят одно окно и один набор клавиш."
+SearchTerms1,Text,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager,file manager
+SearchTerms2,Text,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search,file search
+SearchTerms3,Text,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal,terminal
+SearchTerms4,Text,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor,text editor
+SearchTerms5,Text,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer,file explorer
+SearchTerms6,Text,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell,PowerShell
+SearchTerms7,Text,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools,system tools
+Applicable license terms,Text,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell,GNU General Public License v3.0 (GPLv3). Source code: https://github.com/SteveTheKiller/KillerShell
+Copyright,Text,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer,© 2026 Steve the Killer
+DevelopedBy,Text,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer,Steve the Killer
+RequirementsMinimum1,Text,.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows),.NET Framework 4.8 or newer (included with Windows)
+RequirementsMinimum2,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum3,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum4,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum5,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum6,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum7,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum8,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum9,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum10,Text,,,,,,,,,,,,,,,,,,,
+RequirementsMinimum11,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended1,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended2,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended3,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended4,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended5,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended6,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended7,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended8,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended9,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended10,Text,,,,,,,,,,,,,,,,,,,
+RequirementsRecommended11,Text,,,,,,,,,,,,,,,,,,,
+StoreLogos1,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png,StoreLogo-1080.png
+StoreLogos2,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,,,,,,,,,,,,,,,,,,,
+Screenshots1,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png,screenshots/01.png
+Screenshots2,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png,screenshots/02.png
+Screenshots3,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png,screenshots/03.png
+Screenshots4,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png,screenshots/04.png
+Screenshots5,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png,screenshots/05.png
+Screenshots6,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png,screenshots/06.png
+Screenshots7,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png,screenshots/07.png
+Screenshots8,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,,,,,,,,,,,,,,,,,,,
+Screenshots9,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,,,,,,,,,,,,,,,,,,,
+Screenshots10,Provide the file name only if it is in the same folder. Provide relative path to image starting with the subfolder name otherwise,,,,,,,,,,,,,,,,,,,
+HeroArts,Text,,,,,,,,,,,,,,,,,,,
+Trailers,Text,,,,,,,,,,,,,,,,,,,
