@@ -1770,12 +1770,19 @@
                                             <Run Text="{DynamicResource Str_About_ClearData}"/>
                                         </Hyperlink>
                                     </TextBlock>
-                                    <CheckBox x:Name="AboutConfirmFolderDelete" DockPanel.Dock="Left"
-                                              Checked="AboutConfirmFolderDelete_Changed"
-                                              Unchecked="AboutConfirmFolderDelete_Changed">
-                                        <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
-                                                   TextWrapping="Wrap"/>
-                                    </CheckBox>
+                                    <StackPanel DockPanel.Dock="Left">
+                                        <CheckBox x:Name="AboutStartupUpdateCheck"
+                                                  Click="AboutStartupUpdateCheck_Click">
+                                            <TextBlock Text="{DynamicResource Str_About_StartupUpdateCheck}"
+                                                       TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="AboutConfirmFolderDelete" Margin="0,6,0,0"
+                                                  Checked="AboutConfirmFolderDelete_Changed"
+                                                  Unchecked="AboutConfirmFolderDelete_Changed">
+                                            <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
+                                                       TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                    </StackPanel>
                                 </DockPanel>
                             </Border>
                         </StackPanel>

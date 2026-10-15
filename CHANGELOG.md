@@ -11,6 +11,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A Film Grain switch in the theme menu turns the grain texture on or off on every surface. It is on by default.
 - The maximize button opens the Windows 11 snap layouts menu.
 - The right-click menu can compress files and folders to a new ZIP and extract a .zip, .tar, .tar.gz, .tgz or .gz here or into its own folder. Nothing already there is overwritten.
+- KillerShell checks for updates on startup and offers a newer release in a dialog with an Always check on startup box. A Check for updates on startup checkbox on the About card turns the check back on.
 
 ### Changed
 - The saved places drawer takes at most 40% of the sidebar height and scrolls past that, so a long list leaves the folder tree usable.

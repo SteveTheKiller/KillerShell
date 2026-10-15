@@ -30,6 +30,21 @@ namespace KillerShell.Shell
 
         private string? _updateTag;
 
+        /// <summary>Set once a download has started, so a second update or a late check cannot
+        /// start another one or relabel the button under it.</summary>
+        private bool _updating;
+
+        /// <summary>The startup check runs once per process.</summary>
+        private static bool _startupCheckStarted;
+
+        /// <summary>Check for updates on startup. On unless turned off from the update prompt's
+        /// "Always check on startup" box or the About card's checkbox.</summary>
+        internal static bool StartupUpdateCheckEnabled
+        {
+            get => Services.ThemeManager.GetSetting("CheckForUpdatesOnStartup") != "0";
+            set => Services.ThemeManager.SetSetting("CheckForUpdatesOnStartup", value ? "1" : "0");
+        }
+
         // The certificate subject is the legal name ("Open Source Developer Stephen Riley"),
         // so the About card ties it back to the name people know. Gated on the subject actually
         // matching that name: a fork signed by somebody else must not claim the alias, and an
@@ -94,6 +109,7 @@ namespace KillerShell.Shell
             // assignment writes back the value it just read. Harmless, and cheaper than a guard
             // flag that would have to be threaded through both handlers.
             AboutConfirmFolderDelete.IsChecked = ConfirmFolderDelete;   // FileCommands.cs
+            AboutStartupUpdateCheck.IsChecked  = StartupUpdateCheckEnabled;
 
             FadeOverlayIn(AboutOverlay);
 
@@ -112,6 +128,39 @@ namespace KillerShell.Shell
         /// </summary>
         private void AboutConfirmFolderDelete_Changed(object sender, RoutedEventArgs e)
             => ConfirmFolderDelete = AboutConfirmFolderDelete.IsChecked == true;   // FileCommands.cs
+
+        /// <summary>The way back after the update prompt's "Always check on startup" box was
+        /// cleared, and the first of the card's checkboxes.</summary>
+        private void AboutStartupUpdateCheck_Click(object sender, RoutedEventArgs e)
+            => StartupUpdateCheckEnabled = AboutStartupUpdateCheck.IsChecked == true;
+
+        /// <summary>
+        /// Once per process, after the first window has loaded: when a newer release exists, offers
+        /// it with an "Always check on startup" box so the check can be turned off right there.
+        /// Skipped in an elevated window and under --demo, and never stacked on an open dialog.
+        /// </summary>
+        private async void CheckForUpdatesOnStartup()
+        {
+            if (_startupCheckStarted || DemoMode || IsElevated || !StartupUpdateCheckEnabled) return;
+            _startupCheckStarted = true;
+            var tag = await FetchUpdateTagAsync(Assembly.GetExecutingAssembly().GetName().Version);
+            if (tag is null || _updating) return;
+
+            _updateTag = tag;
+            AboutUpdateText.Text = string.Format(Loc("Str_About_UpdateAvailable"), tag);
+            AboutUpdateButton.Visibility = Visibility.Visible;
+
+            if (!IsVisible || OwnedWindows.Count > 0) return;
+            var dlg = new ConfirmDialog(string.Format(Loc("Str_Dlg_StartupUpdateMsg"), AppDisplayName, tag),
+                                        Loc("Str_Dlg_StartupUpdateBody"),
+                                        Loc("Str_Btn_Update"),
+                                        Loc("Str_Dlg_AlwaysCheckOnStartup"), StartupUpdateCheckEnabled) { Owner = this };
+            dlg.CancelBtn.Content = Loc("Str_Btn_NotNow");
+            dlg.ShowDialog();
+            StartupUpdateCheckEnabled = dlg.Check1Checked;
+            AboutStartupUpdateCheck.IsChecked = dlg.Check1Checked;
+            if (dlg.Confirmed) await InstallUpdateAsync(tag);
+        }
 
         /// <summary>
         /// Clear all Data, the footer's destructive link. Wipes every saved preference and the
@@ -170,7 +219,7 @@ namespace KillerShell.Shell
         private async void DoSelfUpdateAsync()
         {
             var tag = _updateTag;
-            if (string.IsNullOrEmpty(tag)) return;
+            if (string.IsNullOrEmpty(tag) || _updating) return;
 
             // The themed dialog, not MessageBox. This was the last stock Windows box left in the
             // app, and it appeared at the one moment the About card is on screen - so the theme
@@ -180,7 +229,15 @@ namespace KillerShell.Shell
                                         Loc("Str_Btn_Update")) { Owner = this };
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
+            await InstallUpdateAsync(tag!);
+        }
 
+        /// <summary>Downloads and verifies the release, then hands off to the batch that swaps the exe
+        /// and relaunches. Shared by the About card's button and the startup prompt.</summary>
+        private async Task InstallUpdateAsync(string tag)
+        {
+            if (_updating) return;
+            _updating = true;
             AboutUpdateButton.IsEnabled = false;
             AboutUpdateText.Text = Loc("Str_About_Downloading");
 
@@ -220,6 +277,7 @@ namespace KillerShell.Shell
             }
             catch
             {
+                _updating = false;
                 AboutUpdateButton.IsEnabled = true;
                 AboutUpdateText.Text = string.Format(Loc("Str_About_UpdateAvailable"), tag);
                 OpenUrl($"https://github.com/{GitHubRepo}/releases/latest");
@@ -303,6 +361,7 @@ namespace KillerShell.Shell
             catch
             {
                 try { if (newExe is not null && File.Exists(newExe)) File.Delete(newExe); } catch { }
+                _updating = false;
                 AboutUpdateButton.IsEnabled = true;
                 AboutUpdateText.Text = string.Format(Loc("Str_About_UpdateAvailable"), tag);
             }
@@ -325,7 +384,18 @@ namespace KillerShell.Shell
 
         private async void CheckForUpdateAsync(Version? current)
         {
-            if (current is null) return;
+            var tag = await FetchUpdateTagAsync(current);
+            if (tag is null || _updating) return;
+            _updateTag = tag;
+            AboutUpdateText.Text = string.Format(Loc("Str_About_UpdateAvailable"), tag);
+            AboutUpdateButton.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>The newer release's tag, or null when this is current, offline or the API
+        /// failed.</summary>
+        private static async Task<string?> FetchUpdateTagAsync(Version? current)
+        {
+            if (current is null) return null;
             try
             {
                 System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
@@ -335,21 +405,14 @@ namespace KillerShell.Shell
                     $"https://api.github.com/repos/{GitHubRepo}/releases/latest").ConfigureAwait(false);
 
                 var m = System.Text.RegularExpressions.Regex.Match(json, "\"tag_name\"\\s*:\\s*\"([^\"]+)\"");
-                if (!m.Success) return;
-                if (!Version.TryParse(m.Groups[1].Value.TrimStart('v', 'V').Trim(), out var latest)) return;
+                if (!m.Success) return null;
+                if (!Version.TryParse(m.Groups[1].Value.TrimStart('v', 'V').Trim(), out var latest)) return null;
 
                 var cur = new Version(current.Major, current.Minor, current.Build < 0 ? 0 : current.Build);
                 var lat = new Version(latest.Major, latest.Minor, latest.Build < 0 ? 0 : latest.Build);
-                if (lat <= cur) return;
-
-                await Dispatcher.BeginInvoke((Action)(() =>
-                {
-                    _updateTag = $"v{lat.ToString(3)}";
-                    AboutUpdateText.Text = string.Format(Loc("Str_About_UpdateAvailable"), _updateTag);
-                    AboutUpdateButton.Visibility = Visibility.Visible;
-                }));
+                return lat > cur ? $"v{lat.ToString(3)}" : null;
             }
-            catch { /* offline or API error - silently ignore */ }
+            catch { return null; /* offline or API error - silently ignore */ }
         }
 
         private static void OpenUrl(string url)

@@ -149,6 +149,11 @@
     <sys:String x:Key="Str_Dlg_UpdateMsg">Laste ned og installere KillerShell {0}?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateBullets">Appen lukkes og åpnes på nytt automatisk.</sys:String>
     <sys:String x:Key="Str_Btn_Update">Oppdater</sys:String>
+    <sys:String x:Key="Str_Btn_NotNow">Ikke nå</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateCheck">Se etter oppdateringer ved oppstart</sys:String>
+    <sys:String x:Key="Str_Dlg_StartupUpdateMsg">{0} {1} er tilgjengelig</sys:String>
+    <sys:String x:Key="Str_Dlg_StartupUpdateBody">Vil du laste den ned og installere den nå? Appen lukkes og åpnes på nytt automatisk.</sys:String>
+    <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">Se alltid etter ved oppstart</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">Avslutte KillerShell?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Husk fanene mine</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Husk valget mitt</sys:String>

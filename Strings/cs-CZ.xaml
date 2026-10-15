@@ -497,6 +497,11 @@
     <!-- Filling a pre-existing gap: these were en-US only. -->
     <sys:String x:Key="Str_Btn_RetryAdmin">Zkusit znovu jako správce</sys:String>
     <sys:String x:Key="Str_Btn_Update">Aktualizovat</sys:String>
+    <sys:String x:Key="Str_Btn_NotNow">Teď ne</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateCheck">Kontrolovat aktualizace při spuštění</sys:String>
+    <sys:String x:Key="Str_Dlg_StartupUpdateMsg">Je k dispozici {0} {1}</sys:String>
+    <sys:String x:Key="Str_Dlg_StartupUpdateBody">Chcete jej nyní stáhnout a nainstalovat? Aplikace se zavře a automaticky znovu otevře.</sys:String>
+    <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">Vždy kontrolovat aktualizace při spuštění</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows odmítl toto smazat. Pokud je zapnutý Řízený přístup ke složkám, opakování jako správce NEPOMŮZE - blokuje podle aplikace, nikoli podle úrovně oprávnění, a KillerShell je nutné přidat do seznamu povolených aplikací v Zabezpečení Windows. Zkusit přesto znovu jako správce?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateBullets">Aplikace se automaticky zavře a znovu otevře.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateMsg">Stáhnout a nainstalovat KillerShell {0}?</sys:String>

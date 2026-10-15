@@ -139,6 +139,11 @@
   <sys:String x:Key="Str_Dlg_UpdateMsg">Tải xuống và cài đặt KillerShell {0}?</sys:String>
   <sys:String x:Key="Str_Dlg_UpdateBullets">Ứng dụng sẽ tự động đóng và mở lại.</sys:String>
   <sys:String x:Key="Str_Btn_Update">Cập nhật</sys:String>
+  <sys:String x:Key="Str_Btn_NotNow">Để sau</sys:String>
+  <sys:String x:Key="Str_About_StartupUpdateCheck">Kiểm tra cập nhật khi khởi động</sys:String>
+  <sys:String x:Key="Str_Dlg_StartupUpdateMsg">Phiên bản {0} {1} đã có sẵn</sys:String>
+  <sys:String x:Key="Str_Dlg_StartupUpdateBody">Bạn có muốn tải xuống và cài đặt ngay bây giờ không? Ứng dụng sẽ tự động đóng và mở lại.</sys:String>
+  <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">Luôn kiểm tra khi khởi động</sys:String>
   <sys:String x:Key="Str_Dlg_QuitMsg">Thoát KillerShell?</sys:String>
   <sys:String x:Key="Str_Chk_RememberTabs">Ghi nhớ các tab đang mở của tôi</sys:String>
   <sys:String x:Key="Str_Chk_RememberChoice">Ghi nhớ lựa chọn của tôi</sys:String>

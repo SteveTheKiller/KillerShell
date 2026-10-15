@@ -209,6 +209,10 @@ namespace KillerShell.Shell
                 ApplyElevationHalo();   // Elevation.cs - mark an admin window before it shows
                 ApplyStartupShell();    // and open the shell an elevated relaunch asked for
                 ApplyStartupTearOut();  // TabTearOut.cs - or the Processes/document tab a tear-out asked for
+
+                // After the first paint and any startup dialog, so an update offer never stacks on one.
+                Dispatcher.BeginInvoke(new System.Action(CheckForUpdatesOnStartup),   // About.cs
+                    System.Windows.Threading.DispatcherPriority.Background);
             };
             Closing += (_, _) =>
             {

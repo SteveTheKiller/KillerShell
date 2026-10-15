@@ -143,6 +143,11 @@
     <sys:String x:Key="Str_Dlg_UpdateMsg">KillerShell {0} жүктеп алынып орнатылсын ба?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateBullets">Қолданба жабылып, автоматты түрде қайта ашылады.</sys:String>
     <sys:String x:Key="Str_Btn_Update">Жаңарту</sys:String>
+    <sys:String x:Key="Str_Btn_NotNow">Қазір емес</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateCheck">Іске қосылғанда жаңартуларды тексеру</sys:String>
+    <sys:String x:Key="Str_Dlg_StartupUpdateMsg">{0} {1} қолжетімді</sys:String>
+    <sys:String x:Key="Str_Dlg_StartupUpdateBody">Оны қазір жүктеп, орнатқыңыз келе ме? Қолданба автоматты түрде жабылып, қайта ашылады.</sys:String>
+    <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">Іске қосылғанда жаңартуларды әрдайым тексеру</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell-ден шығу керек пе?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Ашық қойындыларымды есте сақтау</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Таңдауымды есте сақтау</sys:String>

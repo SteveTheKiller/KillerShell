@@ -143,6 +143,11 @@
     <sys:String x:Key="Str_Dlg_UpdateMsg">Скачать и установить KillerShell {0}?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateBullets">Приложение закроется и откроется снова автоматически.</sys:String>
     <sys:String x:Key="Str_Btn_Update">Обновить</sys:String>
+    <sys:String x:Key="Str_Btn_NotNow">Не сейчас</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateCheck">Проверять обновления при запуске</sys:String>
+    <sys:String x:Key="Str_Dlg_StartupUpdateMsg">Доступен {0} {1}</sys:String>
+    <sys:String x:Key="Str_Dlg_StartupUpdateBody">Хотите скачать и установить его сейчас? Приложение закроется и снова откроется автоматически.</sys:String>
+    <sys:String x:Key="Str_Dlg_AlwaysCheckOnStartup">Всегда проверять обновления при запуске</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">Выйти из KillerShell?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Запомнить открытые вкладки</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Запомнить мой выбор</sys:String>
