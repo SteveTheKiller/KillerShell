@@ -77,7 +77,6 @@ namespace KillerShell.Shell
 
             if (sv.Template.FindName("ViewportFadeHost", sv) is not System.Windows.Controls.Border viewport) return;
             _treeEdgeMask ??= ((LinearGradientBrush)TreeFadeHost.Resources["TreeEdgeMask"]).Clone();
-            viewport.OpacityMask = _treeEdgeMask;
             double h = viewport.ActualHeight;
             if (h <= 1) return;                       // not laid out yet; a later pass covers it
 
@@ -88,6 +87,11 @@ namespace KillerShell.Shell
 
             double top = Ramp(sv.VerticalOffset, TopFadePx, 18) * fade;
             double bot = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset, BotFadePx, 22) * fade;
+
+            // The mask only while an edge actually fades. A masked viewport renders its rows
+            // through an intermediate layer, and text drawn there loses ClearType and goes soft
+            // gray, which on 98SE (no fades at all) was every row all the time.
+            viewport.OpacityMask = top > 0 || bot > 0 ? _treeEdgeMask : null;
 
             // The mask is on the viewport, so a stop's ALPHA is how much content survives there:
             // 0 at the outer edge means that row has dissolved and the window shows through.

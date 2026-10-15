@@ -194,6 +194,8 @@ namespace KillerShell.Shell
         /// reasoning as TreePanel.SyncTreeEdgeFades. Uses the ScrollViewer's own numbers - the
         /// fade only needs to be roughly right while actively scrolling, not exact.
         /// </summary>
+        private Brush? _bookmarksEdgeMask;
+
         private void SyncBookmarksEdgeFades()
         {
             var sv = FindDescendant<System.Windows.Controls.ScrollViewer>(BookmarksList);
@@ -203,8 +205,15 @@ namespace KillerShell.Shell
             // BmFade*): the outer stop's ALPHA drops toward transparent as rows slide past
             // that edge, and the inner offsets track the list's live height so the band stays
             // roughly 18/22px whatever the drawer's height is. Same ramp inputs as before.
-            double top    = Ramp(sv.VerticalOffset, 18, 18);
-            double bottom = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset, 22, 22);
+            // EdgeFadeOpacity scales the ramp to nothing on a flat theme, as it does for the tree.
+            double fade   = Application.Current.TryFindResource("EdgeFadeOpacity") is double e ? e : 1.0;
+            double top    = Ramp(sv.VerticalOffset, 18, 18) * fade;
+            double bottom = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset, 22, 22) * fade;
+
+            // The mask only while an edge actually fades, for the tree's reason: masked rows
+            // render through an intermediate layer and their text loses ClearType.
+            _bookmarksEdgeMask ??= BookmarksList.OpacityMask;
+            BookmarksList.OpacityMask = top > 0 || bottom > 0 ? _bookmarksEdgeMask : null;
 
             BmFadeTopOuter.Color = System.Windows.Media.Color.FromArgb(
                 (byte)(255 - (int)(top * 255)), 0, 0, 0);

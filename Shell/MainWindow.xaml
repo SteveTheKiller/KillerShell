@@ -357,9 +357,9 @@
                                          would let a tall icon overlap its neighbors. Same trick
                                          the recents menu uses to fit a 20px icon in a fixed 16px
                                          gutter. -->
-                                    <Image Source="{Binding Icon}" Width="20" Height="20"
-                                           VerticalAlignment="Center" Margin="-2,-2,4,-2"
-                                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Image Source="{Binding Icon}" Width="{DynamicResource SidebarIconSize}" Height="{DynamicResource SidebarIconSize}"
+                                           VerticalAlignment="Center" Margin="{DynamicResource SidebarIconMargin}"
+                                           RenderOptions.BitmapScalingMode="{DynamicResource SidebarIconScaling}"/>
                                     <!-- No pinned Foreground: it inherits from the TreeViewItem so
                                          FolderTreeItem's selected trigger can turn it white on a
                                          solid selection (98SE) - a local TextBrush here was what
@@ -562,9 +562,9 @@
                                                  own contents - a permanent scrollbar (2026-08-09).
                                                  2px of bleed each way sits inside the row's own
                                                  padding, so nothing overlaps its neighbor. -->
-                                            <Image Source="{Binding Icon}" Width="20" Height="20"
-                                                   VerticalAlignment="Center" Margin="-2,-2,4,-2"
-                                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            <Image Source="{Binding Icon}" Width="{DynamicResource SidebarIconSize}" Height="{DynamicResource SidebarIconSize}"
+                                                   VerticalAlignment="Center" Margin="{DynamicResource SidebarIconMargin}"
+                                                   RenderOptions.BitmapScalingMode="{DynamicResource SidebarIconScaling}"/>
                                             <!-- No Foreground here: it inherits TextElement.Foreground
                                                  from the row Border, which flips to SelectionFg when
                                                  the row is the active one. -->

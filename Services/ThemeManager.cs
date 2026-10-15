@@ -932,6 +932,13 @@ namespace KillerShell.Services
                 // the accent instead (Elevation.cs).
                 combined["ElevationHaloVisibility"] = flat ? Visibility.Collapsed : Visibility.Visible;
 
+                // Folder tree and places icons. An ordinary theme draws them smoothed at 20 in a
+                // 16px slot. The 98SE pack is 32px pixel art, which a 20px draw smears, so a flat
+                // theme draws it at 16 with nearest-neighbor sampling, the way Win98 drew small icons.
+                combined["SidebarIconSize"]    = flat ? 16.0 : 20.0;
+                combined["SidebarIconMargin"]  = flat ? new Thickness(0, 0, 4, 0) : new Thickness(-2, -2, 4, -2);
+                combined["SidebarIconScaling"] = flat ? BitmapScalingMode.NearestNeighbor : BitmapScalingMode.HighQuality;
+
                 // Menu and flyout shadows. Win98 context menus cast a HARD solid drop shadow -
                 // the one shadow this otherwise-flat theme keeps - while
                 // every ordinary theme keeps exactly the soft treatment it had: the ContextMenu
