@@ -81,14 +81,18 @@ namespace KillerShell.Shell
                     case Key.L:
                         LangButton_Click(this, new RoutedEventArgs());    // Language.cs
                         e.Handled = true; return true;
-                    case Key.G:
-                        FilmGrainCheck.IsChecked = !Services.FilmGrain.Enabled;
-                        FilmGrainCheck_Click(this, new RoutedEventArgs()); // ThemeFlyout.cs
-                        e.Handled = true; return true;
                     case Key.H:
                         ToggleTreeHidden();   // FolderTree.cs
                         e.Handled = true; return true;
                 }
+            }
+
+            // Alt+Shift+G, the family Film Grain chord.
+            if (alt && shift && !ctrl && key == Key.G)
+            {
+                FilmGrainCheck.IsChecked = !Services.FilmGrain.Enabled;
+                FilmGrainCheck_Click(this, new RoutedEventArgs()); // ThemeFlyout.cs
+                e.Handled = true; return true;
             }
 
             // Alt+Z wraps the document while one is showing, and compresses the selection on a

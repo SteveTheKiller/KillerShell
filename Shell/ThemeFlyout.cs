@@ -309,6 +309,7 @@ namespace KillerShell.Shell
             ThemeDeliriumRadio.IsChecked  = cur == Theme.Delirium;
             ThemeMalaiseRadio.IsChecked   = cur == Theme.Malaise;
             FilmGrainCheck.IsChecked      = FilmGrain.Enabled;
+            FilmGrainCheck.ToolTip        = $"{Loc("Str_Theme_FilmGrain")}  (Alt+Shift+G)";
             if (ThemeFlyout.IsOpen) RingAccentStrip();
         }
 

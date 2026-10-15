@@ -200,7 +200,7 @@ namespace KillerShell.Shell
             new(KsScope.Global, "View",   "Alt+H",          "Str_Ks_TreeHidden",   KbLayer.Alt, "H"),
             new(KsScope.Global, "View",   "Ctrl+Shift +/- / 0", "Str_Ks_AppSize",  KbLayer.CtrlShift, "Equals", "Minus", "D0"),
             new(KsScope.Global, "View",   "Alt+T",          "Str_Ks_Theme",        KbLayer.Alt, "T"),
-            new(KsScope.Global, "View",   "Alt+G",          "Str_Ks_FilmGrain",    KbLayer.Alt, "G"),
+            new(KsScope.Global, "View",   "Alt+Shift+G",    "Str_Ks_FilmGrain",    KbLayer.AltShift, "G"),
             new(KsScope.Global, "View",   "Alt+L",          "Str_Ks_Language",     KbLayer.Alt, "L"),
 
             // Ctrl+Alt has no layer on the board and is not worth one for two rows, so these
