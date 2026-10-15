@@ -147,9 +147,8 @@
     <sys:String x:Key="Str_Chk_AllUsers">Instalar para todos os usuários (requer administrador)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">O KillerShell já está instalado para todos os usuários neste PC, então esta ação atualizará essa cópia. O Windows pedirá permissão.</sys:String>
     <sys:String x:Key="Str_St_InstallCanceled">Instalação cancelada</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">Baixar e instalar o KillerShell {0}?</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">O app será fechado e reaberto automaticamente.</sys:String>
-    <sys:String x:Key="Str_Btn_Update">Atualizar</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">Baixar e instalar {0} {1}?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">O app será fechado e reaberto automaticamente.</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Verificar atualizações ao iniciar</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">O {0} {1} está disponível</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Deseja baixá-lo e instalá-lo agora? O aplicativo será fechado e reaberto automaticamente.</sys:String>
@@ -728,7 +727,6 @@
     <sys:String x:Key="Str_About_Computing">calculando...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Baixando...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Atualização disponível: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(não assinado)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(não assinado ou falha na cadeia)</sys:String>
     <sys:String x:Key="Str_About_None">(nenhum)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(indisponível)</sys:String>

@@ -147,9 +147,8 @@
     <sys:String x:Key="Str_Chk_AllUsers">Установити для всіх користувачів (потрібні права адміністратора)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell уже встановлено для всіх користувачів на цьому ПК, тому буде оновлено цю копію. Windows запитає дозвіл.</sys:String>
     <sys:String x:Key="Str_St_InstallCanceled">Установлення скасовано</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">Завантажити та встановити KillerShell {0}?</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">Застосунок закриється та автоматично відкриється знову.</sys:String>
-    <sys:String x:Key="Str_Btn_Update">Оновити</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">Завантажити й установити {0} {1}?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">Застосунок закриється та автоматично відкриється знову.</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Перевіряти оновлення під час запуску</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">Доступний {0} {1}</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Завантажити та встановити зараз? Програма закриється та відкриється знову автоматично.</sys:String>
@@ -728,7 +727,6 @@
     <sys:String x:Key="Str_About_Computing">обчислення...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Завантаження...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Доступне оновлення: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(не підписано)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(не підписано або помилка ланцюжка)</sys:String>
     <sys:String x:Key="Str_About_None">(немає)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(недоступно)</sys:String>

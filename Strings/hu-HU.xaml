@@ -147,9 +147,8 @@
     <sys:String x:Key="Str_Chk_AllUsers">Telepítés minden felhasználó számára (rendszergazda szükséges)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">A KillerShell már telepítve van ezen a számítógépen minden felhasználó számára, így ez frissíti a másolatot. A Windows engedélyt fog kérni.</sys:String>
     <sys:String x:Key="Str_St_InstallCanceled">Telepítés megszakítva</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">Letölti és telepíti a KillerShell {0} alkalmazást?</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">Az alkalmazás automatikusan bezárul, majd újra megnyílik.</sys:String>
-    <sys:String x:Key="Str_Btn_Update">Frissítés</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">Letölti és telepíti a következőt: {0} {1}?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">Az alkalmazás automatikusan bezárul, majd újra megnyílik.</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Frissítések keresése indításkor</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">Elérhető a {0} {1}</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Szeretnéd most letölteni és telepíteni? Az alkalmazás automatikusan bezárul és újraindul.</sys:String>
@@ -728,7 +727,6 @@
     <sys:String x:Key="Str_About_Computing">számítás...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Letöltés...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Frissítés érhető el: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(nincs aláírva)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(nincs aláírva, vagy a tanúsítványlánc hibás)</sys:String>
     <sys:String x:Key="Str_About_None">(nincs)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(nem érhető el)</sys:String>

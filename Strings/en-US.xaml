@@ -147,9 +147,8 @@
     <sys:String x:Key="Str_Chk_AllUsers">Install for all users (Admin required)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell is already installed for all users on this PC, so this will update that copy. Windows will ask for permission.</sys:String>
     <sys:String x:Key="Str_St_InstallCanceled">Install canceled</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">Download and install KillerShell {0}?</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">The app will close and reopen automatically.</sys:String>
-    <sys:String x:Key="Str_Btn_Update">Update</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">Download and install {0} {1}?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">The app will close and reopen automatically.</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Check for updates on startup</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} is available</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Would you like to download and install it now? The app will close and reopen automatically.</sys:String>
@@ -728,7 +727,6 @@
     <sys:String x:Key="Str_About_Computing">computing...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Downloading...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Update available: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(not signed)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(not signed or chain failed)</sys:String>
     <sys:String x:Key="Str_About_None">(none)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(unavailable)</sys:String>

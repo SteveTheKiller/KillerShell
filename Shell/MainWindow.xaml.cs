@@ -29,6 +29,7 @@ namespace KillerShell.Shell
         public MainWindow()
         {
             InitializeComponent();
+            _about = new Features.About.AboutController(this);   // Features/About
 
             // KillerUI / Grunge shell wiring.
             SourceInitialized += MainWindow_SourceInitialized;   // Chrome.cs

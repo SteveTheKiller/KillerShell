@@ -27,7 +27,6 @@
     <sys:String x:Key="Str_Btn_DoInstall">Zainstaluj</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">Aktualizuj</sys:String>
     <sys:String x:Key="Str_Btn_Cancel">Anuluj</sys:String>
-    <sys:String x:Key="Str_Btn_Update">Aktualizuj</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Sprawdzaj aktualizacje przy uruchamianiu</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">Dostępny jest {0} {1}</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Czy chcesz go teraz pobrać i zainstalować? Aplikacja zamknie się i otworzy ponownie automatycznie.</sys:String>
@@ -58,7 +57,6 @@
     <sys:String x:Key="Str_About_Computing">obliczanie...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Pobieranie...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Dostępna aktualizacja: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(niepodpisany)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(niepodpisany lub błąd łańcucha certyfikatów)</sys:String>
     <sys:String x:Key="Str_About_None">(brak)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(niedostępne)</sys:String>
@@ -197,8 +195,8 @@
     <sys:String x:Key="Str_Chk_AllUsers">Zainstaluj dla wszystkich użytkowników (wymaga administratora)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell jest już zainstalowany dla wszystkich użytkowników tego komputera, więc ta kopia zostanie zaktualizowana. System Windows poprosi o pozwolenie.</sys:String>
     <sys:String x:Key="Str_St_InstallCanceled">Instalacja anulowana</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">Pobrać i zainstalować KillerShell {0}?</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">Aplikacja zamknie się i automatycznie uruchomi ponownie.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">Pobrać i zainstalować {0} {1}?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">Aplikacja zamknie się i automatycznie uruchomi ponownie.</sys:String>
     <sys:String x:Key="Str_Dlg_QuitMsg">Zakończyć KillerShell?</sys:String>
     <sys:String x:Key="Str_Chk_RememberTabs">Zapamiętaj otwarte karty</sys:String>
     <sys:String x:Key="Str_Chk_RememberChoice">Zapamiętaj mój wybór</sys:String>

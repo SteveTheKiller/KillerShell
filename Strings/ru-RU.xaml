@@ -141,9 +141,8 @@
     <sys:String x:Key="Str_Chk_AllUsers">Установить для всех пользователей (нужны права администратора)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell уже установлен на этом компьютере для всех пользователей, поэтому будет обновлена именно эта копия. Windows запросит разрешение.</sys:String>
     <sys:String x:Key="Str_St_InstallCanceled">Установка отменена</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">Скачать и установить KillerShell {0}?</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">Приложение закроется и откроется снова автоматически.</sys:String>
-    <sys:String x:Key="Str_Btn_Update">Обновить</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">Загрузить и установить {0} {1}?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">Приложение закроется и откроется снова автоматически.</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Проверять обновления при запуске</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">Доступен {0} {1}</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Хотите скачать и установить его сейчас? Приложение закроется и снова откроется автоматически.</sys:String>
@@ -697,7 +696,6 @@
     <sys:String x:Key="Str_About_Computing">вычисление...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Загрузка...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Доступно обновление: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(не подписано)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(не подписано или ошибка цепочки сертификатов)</sys:String>
     <sys:String x:Key="Str_About_None">(нет)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(недоступно)</sys:String>

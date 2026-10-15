@@ -499,7 +499,6 @@
 
     <!-- Filling a pre-existing gap: these were en-US only. -->
     <sys:String x:Key="Str_Btn_RetryAdmin">Yönetici olarak yeniden dene</sys:String>
-    <sys:String x:Key="Str_Btn_Update">Güncelle</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Başlangıçta güncellemeleri denetle</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} kullanılabilir</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Şimdi indirip yüklemek ister misiniz? Uygulama kapanacak ve otomatik olarak yeniden açılacak.</sys:String>
@@ -507,8 +506,8 @@
     <sys:String x:Key="Str_About_NotNow">Şimdi değil</sys:String>
     <sys:String x:Key="Str_About_AlwaysCheckOnStartup">Başlangıçta her zaman güncellemeleri denetle</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows bunu silmeyi reddetti. Denetimli Klasör Erişimi açıksa yönetici olarak yeniden denemek YARDIMCI OLMAZ - izin düzeyine göre değil uygulamaya göre engeller ve KillerShell'in Windows Güvenliği'ndeki izin verilen uygulamalar listesine eklenmesi gerekir. Yine de yönetici olarak denensin mi?</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">Uygulama otomatik olarak kapanıp yeniden açılacak.</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">KillerShell {0} indirilip kurulsun mu?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">Uygulama otomatik olarak kapanıp yeniden açılacak.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">{0} {1} indirilip yüklensin mi?</sys:String>
     <sys:String x:Key="Str_Status_DeleteDenied">Silme reddedildi - izin verilmedi</sys:String>
     <sys:String x:Key="Str_Status_ElevatedDeleteFailed">Yükseltilmiş yetkiyle silme de reddedildi - Windows Güvenliği'nde Denetimli Klasör Erişimi'ni kontrol edin</sys:String>
     <sys:String x:Key="Str_Status_Selected">{0} öğe seçildi</sys:String>
@@ -802,7 +801,6 @@
     <sys:String x:Key="Str_About_Computing">hesaplanıyor...</sys:String>
     <sys:String x:Key="Str_About_Downloading">İndiriliyor...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Güncelleme var: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(imzalı değil)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(imzalı değil veya sertifika zinciri başarısız)</sys:String>
     <sys:String x:Key="Str_About_None">(yok)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(kullanılamıyor)</sys:String>

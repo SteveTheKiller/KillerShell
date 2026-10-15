@@ -147,9 +147,8 @@
     <sys:String x:Key="Str_Chk_AllUsers">Installer for alle brukere (krever administrator)</sys:String>
     <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell er allerede installert for alle brukere på denne PC-en, så dette oppdaterer den kopien. Windows ber om tillatelse.</sys:String>
     <sys:String x:Key="Str_St_InstallCanceled">Installasjonen ble avbrutt</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">Laste ned og installere KillerShell {0}?</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">Appen lukkes og åpnes på nytt automatisk.</sys:String>
-    <sys:String x:Key="Str_Btn_Update">Oppdater</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">Laste ned og installere {0} {1}?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">Appen lukkes og åpnes på nytt automatisk.</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Se etter oppdateringer ved oppstart</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} er tilgjengelig</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Vil du laste den ned og installere den nå? Appen lukkes og åpnes på nytt automatisk.</sys:String>
@@ -728,7 +727,6 @@
     <sys:String x:Key="Str_About_Computing">beregner...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Laster ned...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Oppdatering tilgjengelig: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(ikke signert)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(ikke signert eller kjedekontroll mislyktes)</sys:String>
     <sys:String x:Key="Str_About_None">(ingen)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(utilgjengelig)</sys:String>

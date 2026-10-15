@@ -496,7 +496,6 @@
 
     <!-- Filling a pre-existing gap: these were en-US only. -->
     <sys:String x:Key="Str_Btn_RetryAdmin">以系統管理員身分重試</sys:String>
-    <sys:String x:Key="Str_Btn_Update">更新</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">啟動時檢查更新</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} 已推出</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">要立即下載並安裝嗎？應用程式將關閉並自動重新開啟。</sys:String>
@@ -504,8 +503,8 @@
     <sys:String x:Key="Str_About_NotNow">稍後再說</sys:String>
     <sys:String x:Key="Str_About_AlwaysCheckOnStartup">啟動時一律檢查更新</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows 拒絕刪除此項。若已開啟「受控資料夾存取」，以系統管理員身分重試也無法解決：它依應用程式而非權限層級進行阻擋，需要在 Windows 安全性中將 KillerShell 加入其允許的應用程式清單。仍要以系統管理員身分重試嗎？</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateBullets">應用程式將自動關閉並重新開啟。</sys:String>
-    <sys:String x:Key="Str_Dlg_UpdateMsg">下載並安裝 KillerShell {0}？</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">應用程式將自動關閉並重新開啟。</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">下載並安裝 {0} {1}？</sys:String>
     <sys:String x:Key="Str_Status_DeleteDenied">刪除遭拒 - 權限不足</sys:String>
     <sys:String x:Key="Str_Status_ElevatedDeleteFailed">使用提升權限刪除也遭拒 - 請檢查 Windows 安全性中的受控資料夾存取</sys:String>
     <sys:String x:Key="Str_Status_Selected">已選取 {0} 項</sys:String>
@@ -799,7 +798,6 @@
     <sys:String x:Key="Str_About_Computing">正在計算...</sys:String>
     <sys:String x:Key="Str_About_Downloading">正在下載...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">有可用更新: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSigned">(未簽署)</sys:String>
     <sys:String x:Key="Str_About_NotSignedChain">(未簽署或憑證鏈驗證失敗)</sys:String>
     <sys:String x:Key="Str_About_None">(無)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(無法使用)</sys:String>
