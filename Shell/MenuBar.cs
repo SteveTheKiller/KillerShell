@@ -96,9 +96,9 @@ namespace KillerShell.Shell
         {
             bool hidden = pane.MenuBarHidden;
             SetLocationRow(pane, hidden, animate);   // keeps its own listing-only guard
-            // 32 is these bars' fixed height in FilePane.xaml (matched to the location row's
-            // natural height) - the slide has to hand back exactly that, not NaN.
-            if (pane.TerminalBarRow != null) SetBarRow(pane.TerminalBarRow, hidden, animate, 32);
+            // The terminal path can occupy a second row, so restore its measured height.
+            // The editor still has its fixed 32px bar.
+            if (pane.TerminalBarRow != null) SetBarRow(pane.TerminalBarRow, hidden, animate, double.NaN);
             if (pane.EditorBarRow   != null) SetBarRow(pane.EditorBarRow,   hidden, animate, 32);
         }
 

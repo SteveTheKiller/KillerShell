@@ -674,6 +674,10 @@
                       Background="{DynamicResource PaneBrush}"
                       ContextMenu="{StaticResource BarMenu}"
                       Margin="{DynamicResource BarPadding}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" MinHeight="32"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -683,7 +687,7 @@
                          opaque PaneBrush above covers it and the bar came out as the one flat,
                          textureless strip in the window. Spans every column
                          and is declared first, so it sits under the buttons and the path. -->
-                    <Border Grid.ColumnSpan="3" IsHitTestVisible="False"
+                    <Border Grid.ColumnSpan="3" Grid.RowSpan="2" IsHitTestVisible="False"
                             Background="{DynamicResource GrainTileBrush}"
                             Opacity="{DynamicResource GrainOpacity}"/>
                     <!-- The tab band's segmented join supplies the top highlight and leaves it
@@ -691,10 +695,10 @@
                     <!-- RAISED: the pair goes by NAME here - light on the LightThickness. That is
                          the opposite of the content well below, which crosses them to read as
                          pressed in. Menu bar raised, content sunken. -->
-                    <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
+                    <Border Grid.ColumnSpan="3" Grid.RowSpan="2" IsHitTestVisible="False" Panel.ZIndex="3"
                             BorderBrush="{DynamicResource BarEdgeBrush}"
                             BorderThickness="{DynamicResource LocationBarEdgeThickness}"/>
-                    <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
+                    <Border Grid.ColumnSpan="3" Grid.RowSpan="2" IsHitTestVisible="False" Panel.ZIndex="3"
                             BorderBrush="{DynamicResource BarEdgeDarkBrush}"
                             BorderThickness="{DynamicResource BarEdgeDarkThickness}"/>
                     <!-- The divider between the menu bar and the content, the same
@@ -703,7 +707,7 @@
                          into the listing at the active tab's left edge with nothing to divide
                          the menubar from the content. 0 on 98SE,
                          where the raised/sunken bevels are the divider. -->
-                    <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Panel.ZIndex="3"
+                    <Border Grid.ColumnSpan="3" Grid.RowSpan="2" IsHitTestVisible="False" Panel.ZIndex="3"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}"/>
                     <!-- Back / forward / up. Browser order and browser glyphs, because that is
@@ -760,7 +764,7 @@
                             </Button.Style>
                         </Button>
                     </StackPanel>
-                    <Border Grid.Column="1" x:Name="ScopeBar" CornerRadius="5,0,0,0" Padding="6,7,8,5"
+                    <Border Grid.Column="1" x:Name="ScopeBar" CornerRadius="5,0,0,0" Padding="6,7,8,5" MinHeight="22"
                             Cursor="Hand" ToolTip="{DynamicResource Str_TT_Scope}" MouseLeftButtonUp="ScopeBar_Click">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -778,7 +782,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>   <!-- recents chevron -->
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{DynamicResource Str_Lbl_In}" Foreground="{DynamicResource MutedTextBrush}"
+                            <TextBlock x:Name="ScopePrefixText" Grid.Column="0" Text="{DynamicResource Str_Lbl_In}" Foreground="{DynamicResource MutedTextBrush}" SizeChanged="ToolStrip_SizeChanged"
                                        FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBlock x:Name="ScopePathLabel" Grid.Column="1" Text="{DynamicResource Str_Scope_Empty}"
                                        Foreground="{DynamicResource PrimaryBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="12"
@@ -834,7 +838,7 @@
                          and its lit/unlit Tag with no second copy to keep in step.
                          SizeChanged drives it; the chevron only appears once something is shed. -->
                     <StackPanel Grid.Column="2" x:Name="ToolStrip" Orientation="Horizontal"
-                                VerticalAlignment="Center" Margin="8,4,8,2">
+                                VerticalAlignment="Center" Margin="8,4,8,2" SizeChanged="ToolStrip_SizeChanged">
                         <!-- View modes: cards / tile grid / flat rows under sortable columns.
                              Folded up from the row below, so this strip now carries everything
                              that acts on the listing. -->
@@ -1466,13 +1470,9 @@
                     <!-- BarUnderlineThickness, not a literal 0,0,0,1: this rule is the line under
                          the menu bar that had to go on 98SE (2026-08-09). The token defaults
                          to exactly the literal it replaced, so the twelve rounded themes keep it. -->
-                    <!-- Height 32, NOT 26: 32 is the folder LocationRow's natural height (the
-                         ScopeBar's 20px recents button plus its 12,7,8,5 padding), and this bar
-                         being shorter made the content pane start at a different height on a shell
-                         tab than on a folder tab - jarring on every tab switch.
-                         If ScopeBar's padding or button size ever changes, keep this
-                         and the editor bar below in step. -->
-                    <Border x:Name="TerminalBarRow" Grid.Row="0" Height="32" Background="{DynamicResource PaneBrush}"
+                    <!-- A wide bar stays 32px tall. A narrow pane moves the same cwd controls
+                         below the buttons; auto height also lets Alt+M restore that second row. -->
+                    <Border x:Name="TerminalBarRow" Grid.Row="0" Background="{DynamicResource PaneBrush}"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
                             ContextMenu="{StaticResource BarMenu}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}">
@@ -1491,14 +1491,22 @@
                             <Border IsHitTestVisible="False" Panel.ZIndex="3"
                                     BorderBrush="{DynamicResource BarEdgeDarkBrush}"
                                     BorderThickness="{DynamicResource BarEdgeDarkThickness}"/>
-                            <Grid Margin="8,0,8,0">
+                            <Grid x:Name="TermBarLayout" Margin="8,0,8,0" SizeChanged="TerminalBar_SizeChanged">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" MinHeight="31"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Column="0" Text="{DynamicResource Str_Lbl_In}"
+                                <Grid x:Name="TermPathHost" Grid.Column="0" MinHeight="22">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="TermPrefixText" Grid.Column="0" Text="{DynamicResource Str_Lbl_In}" SizeChanged="TerminalBar_SizeChanged"
                                            Foreground="{DynamicResource MutedTextBrush}"
                                            FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                            VerticalAlignment="Center" Margin="0,0,8,0"/>
@@ -1515,11 +1523,13 @@
                                            MouseLeftButtonUp="TermCwd_Click"/>
                                 <TextBox x:Name="TermCwdBox" Grid.Column="1" Visibility="Collapsed"
                                          FontFamily="{DynamicResource MonoFont}" FontSize="12"
+                                         Padding="4,1" VerticalAlignment="Center"
                                          VerticalContentAlignment="Center"
                                          PreviewKeyDown="TermCwdBox_KeyDown"
                                          LostFocus="TermCwdBox_LostFocus"/>
+                                </Grid>
 
-                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+                                <StackPanel x:Name="TermToolStrip" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
                                     <Button x:Name="TermNewBtn" Content="&#xE756;" Width="24" Height="20" Padding="0"
                                             FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                             ToolTip="{DynamicResource Str_TT_TermNew}" Click="TermNew_Click"/>

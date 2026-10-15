@@ -3,136 +3,134 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-// The pane toolbar's overflow. Partial of MainWindow.
-//
-// The location row is nav buttons, the folder path, then a strip of eight icon buttons. The path
-// column is the star, so it gives up its width first and then the button strip simply ran off the
-// edge of a narrow pane - which is what dual pane made obvious, because half a window is narrow.
-//
-// Buttons are MOVED between the strip and the overflow popup, never duplicated. A copy would need
-// its own handler and its own lit/unlit state, and the two would drift the first time one of them
-// changed; moving keeps exactly one button that happens to be parented somewhere else.
-//
-// Takes the pane as an argument rather than going through `Pane`: this is driven by a layout
-// event on a specific pane, which is not necessarily the focused one - the unfocused pane resizes
-// too, and reflowing the wrong pane's strip would be worse than not reflowing at all.
+// Responsive path rows and the existing file toolbar overflow. Partial of MainWindow.
+// The same path/editor controls change grid cells; commands are never copied.
 namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        // Shed order, least useful first. Sort and the three view toggles are deliberately absent:
-        // they are the controls you reach for constantly, and the strip is not worth having if
-        // those are the ones that vanish. The chevron itself is excluded too - it must never be
-        // able to push itself out.
         private static readonly string[] ShedOrder =
         [
             "ExportBtn", "FoldersTopBtn", "ShowHiddenBtn", "DetailsPaneBtn",
             "ExpandAllButton", "SortDirButton",
         ];
 
-        /// <summary>
-        /// Width the path is never squeezed below. The strip may take everything else the row
-        /// has; only what is left over after this counts as an overrun.
-        /// </summary>
-        private const double MinPathWidth = 150;
+        // About 36 characters at the existing 12px monospace size, excluding the
+        // localized prefix, padding and recents button. App scaling is applied by WPF.
+        private const double MinFilenameWidth = 260;
+        private const double PathRowHysteresis = 24;
+        private readonly HashSet<FilePane> _reflowingToolbars = [];
 
         internal void ToolStrip_SizeChanged(FilePane pane) => ReflowToolStrip(pane);
 
-        /// <summary>
-        /// Move buttons between the strip and the overflow popup until the strip fits.
-        ///
-        /// The budget is measured from the ROW, never from the strip's own ActualWidth. The strip
-        /// sits in an Auto column, so shedding a button shrinks its ActualWidth - measuring
-        /// against that fed back on itself: shed once, next layout pass sees a narrower strip,
-        /// sheds again, and the row emptied into the overflow menu on a window with plenty of
-        /// room. The re-entrancy guard does not catch it because the follow-up SizeChanged is a
-        /// separate layout pass, not recursion.
-        ///
-        /// Row width minus the nav buttons minus a floor for the path is stable: it does not
-        /// move when a button is shed, so the decision converges instead of cascading.
-        /// </summary>
-        private bool _reflowing;
+        private static double MeasuredWidth(FrameworkElement element)
+        {
+            element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            return element.DesiredSize.Width;
+        }
+
+        private static bool NeedsSecondPathRow(double width, double required, bool wasCompact)
+            => width < required + (wasCompact ? PathRowHysteresis : 0);
 
         private void ReflowToolStrip(FilePane pane)
         {
-            if (_reflowing || pane?.ToolStrip == null || pane.LocationRow == null) return;
-            _reflowing = true;
+            if (pane?.ToolStrip == null || pane.LocationRow.ActualWidth <= 0
+                || !_reflowingToolbars.Add(pane)) return;
             try
             {
-                double avail = pane.LocationRow.ActualWidth
-                             - pane.NavStrip.ActualWidth
-                             - MinPathWidth
-                             - pane.ToolStrip.Margin.Left - pane.ToolStrip.Margin.Right;
-                if (avail <= 0) return;
+                double nav = MeasuredWidth(pane.NavStrip);
+                double margins = pane.ToolStrip.Margin.Left + pane.ToolStrip.Margin.Right;
+                double fullTools = pane.ToolStrip.Children.OfType<FrameworkElement>()
+                    .Where(el => el != pane.OverflowBtn).Concat(pane.OverflowPanel.Children.OfType<FrameworkElement>())
+                    .Sum(MeasuredWidth);
+                double path = MinFilenameWidth + MeasuredWidth(pane.ScopePrefixText)
+                    + MeasuredWidth(pane.RecentsBtn) + pane.ScopeBar.Padding.Left + pane.ScopeBar.Padding.Right;
+                bool wasCompact = Grid.GetRow(pane.ScopeBar) == 1;
+                bool compact = NeedsSecondPathRow(pane.LocationRow.ActualWidth, nav + fullTools + margins + path, wasCompact);
+                if (compact != wasCompact)
+                {
+                    // Close anchored flyouts before their buttons change rows.
+                    pane.RecentsMenu.IsOpen = pane.SortPopup.IsOpen = pane.ExportPopup.IsOpen = pane.OverflowPopup.IsOpen = false;
+                    Grid.SetRow(pane.ScopeBar, compact ? 1 : 0);
+                    Grid.SetColumn(pane.ScopeBar, compact ? 0 : 1);
+                    Grid.SetColumnSpan(pane.ScopeBar, compact ? 3 : 1);
+                    pane.ScopeBar.Padding = compact ? new Thickness(6, 1, 8, 1) : new Thickness(6, 7, 8, 5);
+                }
 
-                // Everything back in the strip first, in the declared order, so the decision is
-                // made from a known state rather than from wherever the last pass left things.
+                // In compact mode the buttons have the entire first row. Compute from
+                // the expanded button extent, never the strip's current ActualWidth.
+                double avail = pane.LocationRow.ActualWidth - nav - margins - (compact ? 0 : path);
+                double remaining = fullTools;
+                double chevron = MeasuredWidth(pane.OverflowBtn);
+                // Collapsed controls measure to zero, but the visible chevron is 20px.
+                if (chevron == 0) chevron = pane.OverflowBtn.Width + pane.OverflowBtn.Margin.Left + pane.OverflowBtn.Margin.Right;
+                var shed = new HashSet<string>();
+                foreach (var name in ShedOrder)
+                {
+                    if (remaining + (shed.Count > 0 ? chevron : 0) <= avail) break;
+                    if (Named(pane, name) is not FrameworkElement el || el.Visibility == Visibility.Collapsed) continue;
+                    shed.Add(name);
+                    remaining -= MeasuredWidth(el);
+                }
+
+                // Move only buttons whose membership changed. Reparenting every layout
+                // pass would disturb keyboard focus and open flyout anchors.
                 foreach (var name in ShedOrder.Reverse())
                 {
                     if (Named(pane, name) is not FrameworkElement el) continue;
-                    if (pane.OverflowPanel.Children.Contains(el))
+                    bool inOverflow = pane.OverflowPanel.Children.Contains(el);
+                    if (shed.Contains(name) == inOverflow) continue;
+                    pane.OverflowPopup.IsOpen = false;
+                    if (inOverflow)
                     {
                         pane.OverflowPanel.Children.Remove(el);
                         InsertBack(pane, el, name);
                     }
+                    else
+                    {
+                        pane.ToolStrip.Children.Remove(el);
+                        pane.OverflowPanel.Children.Insert(0, el);
+                    }
                 }
-                pane.OverflowBtn.Visibility = Visibility.Collapsed;
-
-                // Shed until it fits. Measuring at infinity gives what the strip WANTS; the
-                // chevron's own width has to be paid for as soon as anything is shed.
-                for (int i = 0; i < ShedOrder.Length && Wanted(pane) > avail; i++)
-                {
-                    if (Named(pane, ShedOrder[i]) is not FrameworkElement el) continue;
-                    if (el.Visibility == Visibility.Collapsed) continue;   // already hidden by a view mode
-
-                    pane.ToolStrip.Children.Remove(el);
-                    pane.OverflowPanel.Children.Insert(0, el);
-                    pane.OverflowBtn.Visibility = Visibility.Visible;
-                }
-
-                // One shed button is not worth a chevron. The chevron is as wide as the narrowest
-                // thing it can hide, so shedding exactly one buys almost no room and costs a click
-                // to reach a single icon. Overflow only earns its place at two or more.
-                if (pane.OverflowPanel.Children.Count == 1
-                    && pane.OverflowPanel.Children[0] is FrameworkElement only && only.Name != null)
-                {
-                    pane.OverflowPanel.Children.Remove(only);
-                    InsertBack(pane, only, only.Name);
-                    pane.OverflowBtn.Visibility = Visibility.Collapsed;
-                }
+                pane.OverflowBtn.Visibility = shed.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
             }
-            finally { _reflowing = false; }
+            finally { _reflowingToolbars.Remove(pane); }
         }
 
-        private static double Wanted(FilePane pane)
+        internal void TerminalBar_SizeChanged(FilePane pane)
         {
-            pane.ToolStrip.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            return pane.ToolStrip.DesiredSize.Width;
+            if (pane?.TermBarLayout == null || pane.TermBarLayout.ActualWidth <= 0
+                || !_reflowingToolbars.Add(pane)) return;
+            try
+            {
+                double required = MeasuredWidth(pane.TermToolStrip) + MeasuredWidth(pane.TermPrefixText) + MinFilenameWidth;
+                bool wasCompact = Grid.GetRow(pane.TermPathHost) == 1;
+                bool compact = NeedsSecondPathRow(pane.TermBarLayout.ActualWidth, required, wasCompact);
+                if (compact == wasCompact) return;
+                Grid.SetRow(pane.TermPathHost, compact ? 1 : 0);
+                Grid.SetColumnSpan(pane.TermPathHost, compact ? 2 : 1);
+                Grid.SetColumn(pane.TermToolStrip, compact ? 0 : 1);
+                Grid.SetColumnSpan(pane.TermToolStrip, compact ? 2 : 1);
+                pane.TermToolStrip.HorizontalAlignment = compact ? HorizontalAlignment.Right : HorizontalAlignment.Stretch;
+            }
+            finally { _reflowingToolbars.Remove(pane); }
         }
 
         private static object? Named(FilePane pane, string name) => pane.FindName(name);
 
-        /// <summary>
-        /// Put a button back where it belongs. The strip's declared order is the source of truth,
-        /// so a button returning from overflow lands next to the same neighbors it left - it
-        /// cannot end up shuffled to the end of the row after a few resizes.
-        /// </summary>
         private static void InsertBack(FilePane pane, FrameworkElement el, string name)
         {
-            var order = StripOrder;
-            int want = System.Array.IndexOf(order, name);
+            int want = System.Array.IndexOf(StripOrder, name);
             int at = pane.ToolStrip.Children.Count;
-
             for (int i = 0; i < pane.ToolStrip.Children.Count; i++)
             {
-                if (pane.ToolStrip.Children[i] is not FrameworkElement c || c.Name == null) continue;
-                int idx = System.Array.IndexOf(order, c.Name);
+                if (pane.ToolStrip.Children[i] is not FrameworkElement c) continue;
+                int idx = System.Array.IndexOf(StripOrder, c.Name);
                 if (idx > want) { at = i; break; }
             }
             pane.ToolStrip.Children.Insert(at, el);
         }
 
-        // Declared left-to-right order of everything in the strip, used to restore position.
         private static readonly string[] StripOrder =
         [
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "SortBtn", "SortDirButton",
@@ -144,7 +142,7 @@ namespace KillerShell.Shell
         {
             var p = pane.OverflowPopup;
             p.IsOpen = !p.IsOpen;
-            if (p.IsOpen && p.Child is UIElement child) Anim.FadeIn(child);   // Anim.cs
+            if (p.IsOpen && p.Child is UIElement child) Anim.FadeIn(child);
         }
     }
 }
