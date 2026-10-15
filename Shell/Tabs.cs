@@ -682,7 +682,10 @@ namespace KillerShell.Shell
             // the incoming tab gets a silent refresh to catch anything that changed on disk while
             // it sat in the background.
             StopWatching();
-            if (t.IsBrowsing && System.IO.Directory.Exists(t.CurrentFolder))
+            // A --demo folder is fabricated (DemoFileSystem.cs), so ask the demo table too, or a demo
+            // tab switch would skip the refresh and the tree would never follow it.
+            if (t.IsBrowsing && (System.IO.Directory.Exists(t.CurrentFolder)
+                                || (DemoMode && Services.DemoFs.Has(t.CurrentFolder))))
                 _ = RefreshBrowsingTab(Pane, t, restoreSelection: rebound);
 
             UpdateTabBar();       // corner rounding follows which tab is active
