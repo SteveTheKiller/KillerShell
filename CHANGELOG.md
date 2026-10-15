@@ -18,6 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Confirm, install and uninstall dialogs use the family setup dialog layout, with a notice icon, a larger Killer Sans heading and evenly sized buttons.
 - Malaise file and terminal content use a slightly lighter gray, distinct from menus, pane bars and active tabs.
 - The scroll edge shadows in the file list and Performance run underneath the scrollbar out to the pane edges, as in KillerScan.
+- On the 98SE theme, the Open, Save and folder picker dialogs show the selected item in a status bar with a resize grip, as Windows 98 does, and their rows use the classic narrow spacing.
 
 ### Fixed
 - Files dragged out of KillerShell drop into Microsoft Teams and other apps that refused them, because the drag now carries the same shell data Explorer sends.

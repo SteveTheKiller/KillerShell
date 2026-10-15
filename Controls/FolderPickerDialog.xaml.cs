@@ -396,6 +396,19 @@ namespace KillerShell
         // ── Chrome / confirm ─────────────────────────────────────────────────────
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
 
+        // The status bar's size grip (98SE): hand the drag to Windows as a bottom-right resize,
+        // the same as the main window footer's grip (Chrome.cs).
+        private void ResizeGrip_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (WindowState != WindowState.Normal) return;
+            e.Handled = true;
+            SendMessage(new System.Windows.Interop.WindowInteropHelper(this).Handle,
+                        0x00A1 /* WM_NCLBUTTONDOWN */, new IntPtr(17 /* HTBOTTOMRIGHT */), IntPtr.Zero);
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
         private void Cancel_Click(object sender, RoutedEventArgs e) => Close();
 
         private void OK_Click(object sender, RoutedEventArgs e)

@@ -402,17 +402,20 @@ namespace KillerShell.Services
             SetIfAbsent("DialogWordmarkVisibility", Visibility.Visible);
             SetIfAbsent("DialogPlainTitleVisibility", Visibility.Collapsed);
             SetIfAbsent("ContentPaneMargin", new Thickness(0));
-            SetIfAbsent("DialogButtonsMargin", new Thickness(0));
+            // The file and folder pickers' button row, field rows and list rows. 98SE states its
+            // own tight Win98 insets; these defaults are the 16px inset the pickers always had.
+            SetIfAbsent("DialogButtonsMargin", new Thickness(16, 12, 16, 16));
             SetIfAbsent("DialogContentMargin", new Thickness(0));
             SetIfAbsent("DialogOuterBorderThickness", new Thickness(1));
             SetIfAbsent("DialogTitleBarPadding", new Thickness(6, 0, 14, 0));
-            SetIfAbsent("DialogFieldMargin", new Thickness(0));
+            SetIfAbsent("DialogFieldMargin", new Thickness(16, 12, 16, 0));
             // 10, the halo every dialog already reserved for its drop shadow. 98SE sets 0: it
             // casts no shadow, and an invisible 10px gutter would put the resize grab outside
             // the visible window.
             SetIfAbsent("DialogHaloMargin", new Thickness(10));
-            SetIfAbsent("DialogInlineSelVisibility", Visibility.Collapsed);
-            SetIfAbsent("DialogRowMargin", new Thickness(0));
+            // The selection shown beside the picker buttons. 98SE moves it into the status bar.
+            SetIfAbsent("DialogInlineSelVisibility", Visibility.Visible);
+            SetIfAbsent("DialogRowMargin", new Thickness(16, 0, 16, 0));
             SetIfAbsent("DialogStatusBarHeight", 0.0);
             SetIfAbsent("DialogStatusBarVisibility", Visibility.Collapsed);
             // 36, the caption row height every dialog already used. 98SE states its own short

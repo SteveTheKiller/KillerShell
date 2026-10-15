@@ -28,10 +28,11 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>  <!-- status bar, 98SE only -->
             </Grid.RowDefinitions>
 
             <!-- Shared film grain over the whole dialog surface -->
-            <Border Grid.RowSpan="5" IsHitTestVisible="False"
+            <Border Grid.RowSpan="6" IsHitTestVisible="False"
                     Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
 
             <!-- Raised dialog bevel, the same pair ConfirmDialog and ProcessDetailsDialog carry.
@@ -39,9 +40,9 @@
                  this is inert on the twelve rounded ones and draws the full Win98 raised frame on
                  98SE. This picker was the last window in the app still missing it, so it came up
                  as a modern card while everything behind it was flat. -->
-            <Border Grid.RowSpan="5" IsHitTestVisible="False" Panel.ZIndex="6"
+            <Border Grid.RowSpan="6" IsHitTestVisible="False" Panel.ZIndex="6"
                     BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
-            <Border Grid.RowSpan="5" IsHitTestVisible="False" Panel.ZIndex="6"
+            <Border Grid.RowSpan="6" IsHitTestVisible="False" Panel.ZIndex="6"
                     BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
 
             <!-- Title bar -->
@@ -76,11 +77,15 @@
                 </Grid>
             </Border>
 
-            <TextBlock Grid.Row="1" Text="{DynamicResource Str_Dlg_SelectFolder}" Margin="16,0,16,8"
-                       Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="12"/>
+            <!-- DialogRowMargin: the 16px side inset, 3 on 98SE. -->
+            <Border Grid.Row="1" Padding="{DynamicResource DialogRowMargin}">
+                <TextBlock Text="{DynamicResource Str_Dlg_SelectFolder}" Margin="0,0,0,8"
+                           Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="12"/>
+            </Border>
 
             <!-- Path row: up one level + current path + view modes -->
-            <Grid Grid.Row="2" Margin="16,0,16,8">
+            <Border Grid.Row="2" Padding="{DynamicResource DialogRowMargin}">
+            <Grid Margin="0,0,0,8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -112,9 +117,10 @@
                     <Button x:Name="ViewDetailsBtn" Style="{StaticResource PickerViewBtn}" Content="&#xE700;" ToolTip="{DynamicResource Str_TT_ViewDetails}" Click="ViewDetails_Click"/>
                 </StackPanel>
             </Grid>
+            </Border>
 
             <!-- Main: quick places on the left, folder contents on the right -->
-            <Grid Grid.Row="3" Margin="16,0">
+            <Grid Grid.Row="3" Margin="{DynamicResource DialogRowMargin}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="170"/>
                     <ColumnDefinition Width="8"/>
@@ -221,13 +227,15 @@
                 </Border>
             </Grid>
 
-            <!-- Footer: selection details on the left, actions on the right -->
-            <Grid Grid.Row="4" Margin="16,12,16,16">
+            <!-- Buttons: selection details on the left, actions on the right. On 98SE the
+                 selection moves into the status bar below and this row is just the actions. -->
+            <Grid Grid.Row="4" Margin="{DynamicResource DialogButtonsMargin}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
+                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0"
+                            Visibility="{DynamicResource DialogInlineSelVisibility}">
                     <TextBlock x:Name="SelName" FontFamily="{DynamicResource MonoFont}" FontSize="12" Foreground="{DynamicResource TextBrush}"
                                TextTrimming="CharacterEllipsis"/>
                     <TextBlock x:Name="SelMeta" FontFamily="{DynamicResource MonoFont}" FontSize="10" Foreground="{DynamicResource MutedTextBrush}"
@@ -238,6 +246,80 @@
                     <Button Content="{DynamicResource Str_Btn_Select}" Style="{StaticResource OutlineButton}" Width="90" Click="OK_Click"/>
                 </StackPanel>
             </Grid>
+
+            <!-- ==== Status bar, 98SE only ====
+                 A Win32 file dialog shows the selection in a status bar at the bottom; the
+                 family's floating card shows it beside the buttons. DialogStatusBarHeight and
+                 DialogStatusBarVisibility are 0 and Collapsed on the other twelve themes, so this
+                 row does not exist there and SelName / SelMeta stay in the button row. The cells
+                 mirror SelName / SelMeta by binding, so the code keeps one pair to write to.
+                 Cell margins, padding and bevels are the main window footer's Footer* keys. -->
+            <Border Grid.Row="5" Height="{DynamicResource DialogStatusBarHeight}"
+                    Visibility="{DynamicResource DialogStatusBarVisibility}"
+                    Background="{DynamicResource BackgroundBrush}">
+                <Grid Margin="{DynamicResource FooterPadding}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Cell 1: the selected entry's name. -->
+                    <Grid Grid.Column="0" Margin="{DynamicResource FooterCellMargin}">
+                        <Border Panel.ZIndex="2" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource FooterBevelDarkBrush}"
+                                BorderThickness="{DynamicResource FooterCellLightThickness}"/>
+                        <Border Panel.ZIndex="2" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource FooterBevelLightBrush}"
+                                BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
+                        <TextBlock Text="{Binding Text, ElementName=SelName}"
+                                   Margin="{DynamicResource FooterCellPadding}"
+                                   FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </Grid>
+
+                    <!-- Cell 2: its size and date, with the resize grip in its bottom-right
+                         corner, where Win98 draws it. -->
+                    <Grid Grid.Column="1" MinWidth="160" Margin="{DynamicResource FooterCellMargin}">
+                        <Border Panel.ZIndex="2" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource FooterBevelDarkBrush}"
+                                BorderThickness="{DynamicResource FooterCellLightThickness}"/>
+                        <Border Panel.ZIndex="2" IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource FooterBevelLightBrush}"
+                                BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
+                        <TextBlock Text="{Binding Text, ElementName=SelMeta}"
+                                   Margin="{DynamicResource FooterCellPadding}" Padding="0,0,14,0"
+                                   FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource MutedTextBrush}"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <!-- The same two grips as the main window footer, on the same keys. -->
+                        <Canvas Panel.ZIndex="3" Width="13" Height="13"
+                                Visibility="{DynamicResource GripDotsVisibility}"
+                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,1,1"
+                                Background="Transparent" Cursor="SizeNWSE"
+                                MouseLeftButtonDown="ResizeGrip_MouseDown">
+                            <Rectangle Canvas.Left="10" Canvas.Top="2"  Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
+                            <Rectangle Canvas.Left="6"  Canvas.Top="6"  Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
+                            <Rectangle Canvas.Left="10" Canvas.Top="6"  Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
+                            <Rectangle Canvas.Left="2"  Canvas.Top="10" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
+                            <Rectangle Canvas.Left="6"  Canvas.Top="10" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
+                            <Rectangle Canvas.Left="10" Canvas.Top="10" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
+                        </Canvas>
+                        <Canvas Panel.ZIndex="3" Width="13" Height="13"
+                                Visibility="{DynamicResource GripLinesVisibility}"
+                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,1,1"
+                                Background="Transparent" Cursor="SizeNWSE" SnapsToDevicePixels="True"
+                                MouseLeftButtonDown="ResizeGrip_MouseDown">
+                            <Line X1="12" Y1="1"  X2="1"  Y2="12" Stroke="{DynamicResource FrameOuterDarkBrush}"  StrokeThickness="1"/>
+                            <Line X1="11" Y1="1"  X2="1"  Y2="11" Stroke="{DynamicResource FrameOuterLightBrush}" StrokeThickness="1"/>
+                            <Line X1="12" Y1="5"  X2="5"  Y2="12" Stroke="{DynamicResource FrameOuterDarkBrush}"  StrokeThickness="1"/>
+                            <Line X1="11" Y1="5"  X2="5"  Y2="11" Stroke="{DynamicResource FrameOuterLightBrush}" StrokeThickness="1"/>
+                            <Line X1="12" Y1="9"  X2="9"  Y2="12" Stroke="{DynamicResource FrameOuterDarkBrush}"  StrokeThickness="1"/>
+                            <Line X1="11" Y1="9"  X2="9"  Y2="11" Stroke="{DynamicResource FrameOuterLightBrush}" StrokeThickness="1"/>
+                        </Canvas>
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
     </picker:PickerBorder>
 </Window>
