@@ -49,6 +49,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Reworded the Clear all data prompt to list what it deletes in parentheses, in every language.
 - Centered website logos with space above and below and corrected current features, runtime requirements and documentation.
 - Menu separators draw their divider line instead of leaving an empty gap.
+- The Select, OK and Save buttons in the folder picker, rename and terminal profile dialogs use the family outline button, as in KillerPDF, instead of a solid dark block.
 
 ## [1.3.2] - 2026-10-07
 

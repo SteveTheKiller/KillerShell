@@ -55,7 +55,7 @@
                     <TextBlock x:Name="ErrorText" Foreground="{DynamicResource PrimaryBrush}" TextWrapping="Wrap" Margin="0,0,0,8"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="{DynamicResource Str_Btn_Cancel}" Click="Cancel_Click" Style="{StaticResource SurfaceButton}" MinWidth="86" Margin="0,0,8,0"/>
-                        <Button Content="{DynamicResource Str_Term_ProfileSave}" Click="Save_Click" Style="{StaticResource PrimaryButton}" MinWidth="86"/>
+                        <Button Content="{DynamicResource Str_Term_ProfileSave}" Click="Save_Click" Style="{StaticResource OutlineButton}" MinWidth="86"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

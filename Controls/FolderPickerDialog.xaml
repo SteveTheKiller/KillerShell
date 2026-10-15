@@ -235,7 +235,7 @@
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="{DynamicResource Str_Btn_Cancel}" Style="{StaticResource SurfaceButton}" Width="90" Margin="0,0,8,0" Click="Cancel_Click"/>
-                    <Button Content="{DynamicResource Str_Btn_Select}" Style="{StaticResource PrimaryButton}" Width="90" Click="OK_Click"/>
+                    <Button Content="{DynamicResource Str_Btn_Select}" Style="{StaticResource OutlineButton}" Width="90" Click="OK_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
