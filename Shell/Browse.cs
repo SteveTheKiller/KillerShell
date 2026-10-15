@@ -38,6 +38,22 @@ namespace KillerShell.Shell
         private async Task NavigateTo(string folder, bool record = true, bool keepSelection = false,
                                       bool backgroundRefresh = false)
         {
+            // Most callers start a navigation and move on (_ = NavigateTo(...)), so nothing ever
+            // observes a fault. Without this, an exception partway through left the tab on its
+            // placeholder with no folder and no message. Report it on the tab's status line.
+            var tab = _active;
+            try { await NavigateToCore(folder, record, keepSelection, backgroundRefresh); }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+                SetTabStatusKey(tab, "Str_Status_BadPath", folder);
+            }
+        }
+
+        private async Task NavigateToCore(string folder, bool record, bool keepSelection,
+                                          bool backgroundRefresh)
+        {
             if (string.IsNullOrWhiteSpace(folder)) return;
 
             // This PC is a listing, not a directory, so it skips the path checks entirely.

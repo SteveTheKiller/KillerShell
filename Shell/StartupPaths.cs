@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using KillerShell.Models;
 
 // Paths handed to us on the command line, by Explorer's "Open in KillerShell" verbs or by a
 // file association (both registered in Associations.cs). Parsed in App.OnStartup, opened
@@ -24,6 +26,9 @@ namespace KillerShell.Shell
         {
             if (StartupPaths.Count == 0) return;
 
+            // The tab the window opened with. It is still blank when nothing was restored, and
+            // the first-run Home navigation in Loaded skips it because these paths are pending.
+            var startTab = _active;
             bool first = true;
             foreach (string raw in StartupPaths)
             {
@@ -41,13 +46,28 @@ namespace KillerShell.Shell
                 else if (File.Exists(path))
                 {
                     OpenForEditing(path);      // EditorTabs.cs
+                    // A first file takes the blank tab's place, as a first folder reuses it,
+                    // so opening one file does not leave an empty tab beside it.
+                    if (first && !ReferenceEquals(_active, startTab) && IsBlankTab(startTab))
+                        FinishCloseTab(startTab);   // Tabs.cs
                     first = false;
                 }
             }
+
+            // Nothing on the command line could be opened: land at Home rather than leave the
+            // blank tab sitting on an empty pane.
+            if (first && IsBlankTab(startTab)) _ = NavigateTo(HomeFolder);   // Browse.cs
 
             // Consumed once. A second window opened later from the rail must not re-open
             // whatever the first one was launched with.
             StartupPaths.Clear();
         }
+
+        /// <summary>A tab nothing has been put in yet: no folder, search, document or tool.</summary>
+        private static bool IsBlankTab(SearchTab t) =>
+            !t.IsBrowsing && string.IsNullOrEmpty(t.CurrentFolder) && t.PipeFiles == null
+            && !t.IsTerminal && !t.IsEditor && !t.IsProcessList && !t.IsEventViewer
+            && !t.IsPerformanceMonitor && !t.IsRegistryEditor && !t.IsStorageAnalyzer
+            && !t.Groups.Any(g => g.Terms.Any(x => !string.IsNullOrWhiteSpace(x.Pattern)));
     }
 }

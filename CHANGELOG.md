@@ -57,6 +57,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Menu separators draw their divider line instead of leaving an empty gap.
 - The Select, OK and Save buttons in the folder picker, rename and terminal profile dialogs use the family outline button instead of a solid dark block.
 - Context menus use Killer Sans UI like the rest of the interface instead of Segoe UI.
+- Opening a file in KillerShell from Explorer no longer leaves an empty tab beside it, and a launch whose paths cannot be opened lands at Home.
+- A folder that fails to open reports it on the status line instead of leaving the tab blank.
 
 ## [1.3.2] - 2026-10-07
 
