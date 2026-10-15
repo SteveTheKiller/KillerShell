@@ -24,6 +24,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Files dragged out of KillerShell drop into Microsoft Teams and other apps that refused them, because the drag now carries the same shell data Explorer sends.
 - Terminal autocomplete suggestions are drawn clearly faded, so they no longer look like typed text.
 - Silent installs refuse an exe without a valid signature, return specific Windows error codes and reject a second concurrent install instead of reporting a general failure.
+- A silent install started without admin rights asks for them through UAC instead of failing, so standard users and the Microsoft Store can install it machine-wide.
 - Chocolatey uninstalls run the silent uninstaller and fail with its exit code instead of opening the uninstall prompt.
 - Icon-only buttons give screen readers the name from their tooltip, and controls reached with the keyboard show a dotted focus outline.
 - On a small screen the window opens sized to fit the desktop instead of running past its edges.
