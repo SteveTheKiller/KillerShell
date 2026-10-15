@@ -25,6 +25,7 @@ namespace KillerShell.Services
     {
         /// <summary>Killer Sans UI (Killer Sans scaled to Segoe UI proportions) with the Segoe fallback stack.</summary>
         internal static readonly FontFamily KillerSansUiStack = new(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
+        internal static readonly FontFamily LacquerHeadingStack = new(new Uri("pack://application:,,,/"), "./Fonts/#Lacquer, ./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
         /// <summary>
         /// Read a corner radius out of the live theme. For code-built controls, which cannot use a
         /// DynamicResource and so had their radii as C# literals - the exact bug that kept the
@@ -836,6 +837,11 @@ namespace KillerShell.Services
             // The UI face for everything that is not the app (mono) slot; a flat theme keeps its caption font.
             SetIfAbsent("UiFont", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fu && fu
                 ? combined["ChromeFontFamily"] : KillerSansUiStack);
+            // Primary headings (dialog headings, page and period titles): Lacquer, the app-name face of
+            // the wordmark, falling back to Killer Sans UI for scripts Lacquer does not cover. 98SE keeps
+            // Killer Sans. Secondary headings, the footer and the interface stay Killer Sans.
+            SetIfAbsent("HeadingFont", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fh && fh
+                ? new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans") : LacquerHeadingStack);
             // The app (mono) slot: Killer Sans UI, the family UI face, over the Segoe stack. It is
             // completed here rather than in AppStyles.xaml so 98SE can state its own face; a font
             // picked in Fonts still overrides it from the top-level application dictionary.

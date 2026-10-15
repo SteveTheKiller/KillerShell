@@ -19,8 +19,8 @@
     <kui:TabHasArtConverter x:Key="TabHasArt"/>
 
     <!-- Family brand faces, bundled in Fonts/ with their licenses beside them: Punktype
-         (commercial license) for "Killer", Lacquer (OFL) for the app name, and Killer Sans
-         (OFL) for headings and the footer. -->
+         (commercial license) for "Killer", Lacquer (OFL) for the app name and primary headings, and
+         Killer Sans (OFL) for secondary headings and the footer. -->
     <FontFamily x:Key="WordmarkFont">/KillerShell;component/Fonts/#Punktype</FontFamily>
     <FontFamily x:Key="WordmarkAccentFont">/KillerShell;component/Fonts/#Lacquer</FontFamily>
     <FontFamily x:Key="BrandSansFont">/KillerShell;component/Fonts/#Killer Sans</FontFamily>

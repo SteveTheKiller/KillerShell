@@ -110,7 +110,7 @@
                     </Border>
                     <StackPanel Grid.Column="1">
                     <TextBlock x:Name="MsgText" Foreground="{StaticResource TextBrush}"
-                               FontFamily="{DynamicResource BrandSansFont}" FontSize="18"
+                               FontFamily="{DynamicResource HeadingFont}" FontSize="18"
                                                TextOptions.TextFormattingMode="Ideal" TextWrapping="Wrap"/>
                     <TextBlock x:Name="BulletText" Foreground="{StaticResource MutedTextBrush}"
                                FontSize="12" LineHeight="19" TextWrapping="Wrap"
