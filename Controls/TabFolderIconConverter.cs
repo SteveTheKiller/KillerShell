@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
 using KillerShell.Models;
@@ -21,6 +22,10 @@ namespace KillerShell
     // additional values so WPF reruns this converter when navigation or terminal state changes.
     public sealed class TabFolderIconConverter : IValueConverter, IMultiValueConverter
     {
+        private static bool IsSearchTab(SearchTab t) =>
+            t.PipeFiles != null || t.Filters.Count > 0
+            || t.Groups.Any(g => g.Terms.Any(x => !string.IsNullOrWhiteSpace(x.Pattern)));
+
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is not SearchTab t) return null;
@@ -54,7 +59,9 @@ namespace KillerShell
             // also not browsing, and keying off that would have stamped the search icon on every
             // empty tab. A search tab carries a CurrentFolder too - its last-clicked result's
             // folder - which is why this has to come before the folder branch.
-            if (t.IsSearching) return IconCache.Art("search_results_icon");
+            // IsSearching is only true while the engine runs, so a finished search, a piped tab
+            // and a restored or --demo search tab are recognized by what they hold instead.
+            if (t.IsSearching || (!t.IsBrowsing && IsSearchTab(t))) return IconCache.Art("search_results_icon");
 
             if (!t.IsBrowsing || string.IsNullOrEmpty(t.CurrentFolder)) return null;
             // A --demo folder is fabricated (DemoFileSystem.cs) and not on disk, so ask the demo

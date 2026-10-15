@@ -61,6 +61,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A folder that fails to open reports it on the status line instead of leaving the tab blank.
 - The --cli registry command accepts short hive names such as HKLM and HKCU, so the documented example works.
 - Opening the second pane from a terminal, editor or tool tab starts it at Home instead of an empty tab.
+- Search and piped tabs keep their search icon after the search finishes.
 
 ## [1.3.2] - 2026-10-07
 
