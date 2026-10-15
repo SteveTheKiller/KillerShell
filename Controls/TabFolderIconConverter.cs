@@ -61,7 +61,7 @@ namespace KillerShell
             // folder - which is why this has to come before the folder branch.
             // IsSearching is only true while the engine runs, so a finished search, a piped tab
             // and a restored or --demo search tab are recognized by what they hold instead.
-            if (t.IsSearching || (!t.IsBrowsing && IsSearchTab(t))) return IconCache.Art("search_results_icon");
+            if (t.IsSearching || (!t.IsBrowsing && (t.HasSearch || IsSearchTab(t)))) return IconCache.Art("search_results_icon");
 
             if (!t.IsBrowsing || string.IsNullOrEmpty(t.CurrentFolder)) return null;
             // A --demo folder is fabricated (DemoFileSystem.cs) and not on disk, so ask the demo

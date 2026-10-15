@@ -22,7 +22,24 @@ namespace KillerShell.Models
         // Each tab owns its engine so searches on different tabs never share state.
         public SearchEngine Engine { get; } = new();
         public CancellationTokenSource? Cts;
-        public bool IsSearching;
+        // Notifying, so the tab strip's icon (TabFolderIconConverter) re-evaluates when a search
+        // starts and ends. A plain field never repainted the tab, so a search tab kept whatever
+        // the converter answered when the tab was first drawn, which was usually nothing.
+        private bool _isSearching;
+        public bool IsSearching
+        {
+            get => _isSearching;
+            set { _isSearching = value; Notify(); }
+        }
+
+        // True once this tab has run a search, so a finished search keeps its search icon even
+        // while its terms still live in the left panel rather than in Groups.
+        private bool _hasSearch;
+        public bool HasSearch
+        {
+            get => _hasSearch;
+            set { _hasSearch = value; Notify(); }
+        }
 
         // ── Shell (Terminal/) ────────────────────────────────────
         // A terminal tab owns its control, and the control owns the pty. Held here rather than

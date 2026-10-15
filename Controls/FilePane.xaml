@@ -303,6 +303,8 @@
                                                         <Binding Path="CurrentFolder"/>
                                                         <Binding Path="IsBrowsing"/>
                                                         <Binding Path="TabGlyph"/>
+                                                        <Binding Path="IsSearching"/>
+                                                        <Binding Path="HasSearch"/>
                                                     </MultiBinding>
                                                 </Image.Source>
                                             </Image>
@@ -335,6 +337,8 @@
                                                 <Binding Path="CurrentFolder"/>
                                                 <Binding Path="IsBrowsing"/>
                                                 <Binding Path="TabGlyph"/>
+                                                <Binding Path="IsSearching"/>
+                                                <Binding Path="HasSearch"/>
                                             </MultiBinding>
                                         </DataTrigger.Binding>
                                         <Setter TargetName="tabFolderIcon" Property="Visibility" Value="Collapsed"/>
@@ -348,6 +352,8 @@
                                                 <Binding Path="CurrentFolder"/>
                                                 <Binding Path="IsBrowsing"/>
                                                 <Binding Path="TabGlyph"/>
+                                                <Binding Path="IsSearching"/>
+                                                <Binding Path="HasSearch"/>
                                             </MultiBinding>
                                         </DataTrigger.Binding>
                                         <Setter TargetName="tabGlyph" Property="Visibility" Value="Collapsed"/>

@@ -530,6 +530,7 @@ namespace KillerShell.Shell
             tab.ScannedLabel = string.Empty;
             tab.StatsLabel   = string.Empty;
             tab.QueryLabel   = BuildQueryLabel(activeGroups, activeFilters);
+            tab.HasSearch    = true;
             tab.IsSearching  = true;
             ApplySort(tab);   // strips the view sort for the run - see ApplySort
             if (tab == _active)

@@ -193,6 +193,7 @@ namespace KillerShell.Shell
 
         private static void FinishDemoTab(SearchTab t, int scanned, double seconds)
         {
+            t.HasSearch     = true;   // the tab strip draws the search icon (TabFolderIconConverter)
             t.ScannedCount  = scanned;
             t.StatusKey     = "Str_Status_Done";
             t.StatusArgs    = [seconds.ToString("0.00"), t.Results.Count];

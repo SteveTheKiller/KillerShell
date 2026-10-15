@@ -328,6 +328,12 @@ namespace KillerShell.Shell
                         if (long.TryParse(fp[3], out long ticks)) f.Date = new DateTime(ticks);
                         t.Filters.Add(f);
                     }
+
+                    // Set once the terms and filters are back, so the tab strip redraws a restored
+                    // search with its search icon. TabFolderIconConverter reruns on HasSearch; it
+                    // never sees the terms change.
+                    t.HasSearch = !t.IsBrowsing
+                        && (g.Terms.Any(x => !string.IsNullOrWhiteSpace(x.Pattern)) || t.Filters.Count > 0);
                 }
                 catch
                 {
