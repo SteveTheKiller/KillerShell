@@ -89,14 +89,6 @@ namespace KillerShell
         internal void ResetScrollChrome()
         {
             SetPaneScroller(null);
-            // Reset scroll cues while discovering the incoming viewport. SyncShadowCues
-            // shows them, and only the file browser and Performance use it, so leaving them alone
-            // here stranded a dark gradient band over any tab that has no ScrollViewer to
-            // re-evaluate them - the terminal, which draws its own scrollback and never creates
-            // one. Switching from the browser to a shell tab left its bottom cue lying over the
-            // terminal at ZIndex 99, reading as a shadow inside the pane.
-            PaneScrollTopCue.Visibility = Visibility.Collapsed;
-            PaneScrollBottomCue.Visibility = Visibility.Collapsed;
         }
 
         internal void RefreshScrollChrome()
@@ -174,15 +166,10 @@ namespace KillerShell
 
             // The file browser and Performance read better with the original dark edge shadow:
             // those are spacious, graphical surfaces and the shadow establishes the viewport.
+            // Their ShadowScrollViewer draws it under the scrollbars, so nothing is done here.
             // Dense table tools such as Processes keep the subtler content dissolve below.
-            if (_paneUsesShadow)
-            {
-                SyncShadowCues(scroller, hasAbove, hasBelow);
-                return;
-            }
+            if (_paneUsesShadow) return;
 
-            PaneScrollTopCue.Visibility = Visibility.Collapsed;
-            PaneScrollBottomCue.Visibility = Visibility.Collapsed;
             if (_paneFadeMask == null) return;
 
             // The mask is on the FULL ScrollViewer, so it naturally reaches through the vertical
@@ -235,31 +222,6 @@ namespace KillerShell
                 current = VisualTreeHelper.GetParent(current);
             }
             return false;
-        }
-
-        private void SyncShadowCues(ScrollViewer scroller, bool hasAbove, bool hasBelow)
-        {
-            Point origin;
-            try { origin = scroller.TransformToVisual(PaneContent).Transform(new Point(0, 0)); }
-            catch { return; }
-
-            double left = Math.Max(0, origin.X);
-            double right = Math.Min(PaneContent.ActualWidth, origin.X + scroller.ActualWidth);
-            double width = Math.Max(0, right - left);
-            if (width <= 1) return;
-
-            PaneScrollTopCue.HorizontalAlignment = HorizontalAlignment.Left;
-            PaneScrollTopCue.Width = width;
-            PaneScrollTopCue.Margin = new Thickness(left, Math.Max(0, origin.Y - 2), 0, 0);
-
-            double below = Math.Max(0,
-                PaneContent.ActualHeight - (origin.Y + scroller.ActualHeight));
-            PaneScrollBottomCue.HorizontalAlignment = HorizontalAlignment.Left;
-            PaneScrollBottomCue.Width = width;
-            PaneScrollBottomCue.Margin = new Thickness(left, 0, 0, below);
-
-            PaneScrollTopCue.Visibility = hasAbove ? Visibility.Visible : Visibility.Collapsed;
-            PaneScrollBottomCue.Visibility = hasBelow ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static void BuildVerticalFade(LinearGradientBrush brush, double height,

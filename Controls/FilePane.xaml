@@ -613,34 +613,8 @@
                         BorderThickness="{DynamicResource PaneEdgeBottomThickness}"
                         CornerRadius="{DynamicResource PanelCornerRadius}"/>
                 <!-- Hybrid scroll treatment: dense table tools dissolve their actual content;
-                     the graphical file browser and Performance retain the stronger viewport
-                     shadows. FilePane positions these over the full viewer, scrollbar included. -->
-                <Grid x:Name="PaneScrollTopCue" Height="24" VerticalAlignment="Top"
-                      Visibility="Collapsed" IsHitTestVisible="False" Panel.ZIndex="99"
-                      Opacity="{DynamicResource EdgeFadeOpacity}">
-                    <Border>
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Color="#50000000" Offset="0"/>
-                                <GradientStop Color="#22000000" Offset="0.35"/>
-                                <GradientStop Color="#00000000" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                    </Border>
-                    <Border Height="1" VerticalAlignment="Top"
-                            Background="{DynamicResource PaneBorderBrush}"/>
-                </Grid>
-                <Border x:Name="PaneScrollBottomCue" Height="28" VerticalAlignment="Bottom"
-                        Visibility="Collapsed" IsHitTestVisible="False" Panel.ZIndex="99"
-                        Opacity="{DynamicResource EdgeFadeOpacity}">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#00000000" Offset="0"/>
-                            <GradientStop Color="#22000000" Offset="0.65"/>
-                            <GradientStop Color="#50000000" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                </Border>
+                     the graphical file browser and Performance keep the stronger edge shadows,
+                     which their ShadowScrollViewer (Controls.xaml) draws under the scrollbars. -->
                 <!-- THE TAB PAGE BEVEL. A Win98 tab control's page is a RAISED panel - white down
                      the top and left, gray along the bottom and right - and the selected tab's own
                      white left edge is the SAME line continuing upward. That continuity is what
@@ -2354,6 +2328,22 @@
 
                         <svc:DateGroupNameConverter x:Key="DateGroupName"/>
                     </ListBox.Resources>
+
+                    <!-- The stock ListBox template on ShadowScrollViewer, without its 1px inner
+                         padding, so the edge shadows reach the pane edges under the scrollbar.
+                         The 8px side inset is the ScrollViewer's Padding, inside the scrolling
+                         content. -->
+                    <ListBox.Template>
+                        <ControlTemplate TargetType="ListBox">
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                <ScrollViewer Style="{StaticResource ShadowScrollViewer}" Focusable="False"
+                                              Padding="{TemplateBinding Padding}">
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </ScrollViewer>
+                            </Border>
+                        </ControlTemplate>
+                    </ListBox.Template>
 
                     <!-- DATE GROUPS. Details view, sorted by Modified or Created (Results.cs
                          ApplySort puts the group description on and takes it off; with none on

@@ -17,6 +17,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The wordmarks use Punktype and Lacquer, and the interface text, headings and footers use Killer Sans, in place of the typewriter font in the app and on the website.
 - Confirm, install and uninstall dialogs use the family setup dialog layout, with a notice icon, a larger Killer Sans heading and evenly sized buttons.
 - Malaise file and terminal content use a slightly lighter gray, distinct from menus, pane bars and active tabs.
+- The scroll edge shadows in the file list and Performance run underneath the scrollbar out to the pane edges, as in KillerScan.
 
 ### Fixed
 - Files dragged out of KillerShell drop into Microsoft Teams and other apps that refused them, because the drag now carries the same shell data Explorer sends.
