@@ -122,6 +122,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Rendszereszközök</sys:String>
     <sys:String x:Key="Str_TT_Sort">Rendezés (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Ez a PC</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Lomtár</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Keresés ezeken a találatokon belül</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} találat innen: {1} |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Még nincs kereshető találat.</sys:String>

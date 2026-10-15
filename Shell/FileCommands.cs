@@ -227,6 +227,17 @@ namespace KillerShell.Shell
 
             var paths = SelectedPaths();
             if (paths.Count == 0) return;
+            DeletePaths(paths, permanent);
+        }
+
+        /// <summary>
+        /// Recycles the given items, or deletes them for good when <paramref name="permanent"/>,
+        /// with the same prompts as the Delete key. Also what a drop on the Recycle Bin place
+        /// does (ResultsInteraction.cs).
+        /// </summary>
+        internal void DeletePaths(List<string> paths, bool permanent)
+        {
+            if (paths.Count == 0) return;
 
             // A recycled FOLDER asks first, unless that has been turned off. Windows does not,
             // and for a single file that is right - it is one undo away in the bin. A folder is

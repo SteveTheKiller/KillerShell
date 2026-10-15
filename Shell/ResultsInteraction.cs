@@ -528,7 +528,16 @@ namespace KillerShell.Shell
             // Shift forces move, Ctrl forces copy, and with neither it follows the volume: a
             // move within one drive, a copy across drives, which is Explorer's rule.
             string? overTarget = DropTarget(e);                // FileCommands.cs / below
-            if (overTarget != null)
+            var overPlace = BookmarkUnder(e.OriginalSource as DependencyObject);
+
+            // A saved place always MOVES what is dropped on it, whatever drive it is on, and the
+            // Recycle Bin place recycles it. A place that is not a folder (This PC) takes nothing.
+            // A source that does not allow a move (another app offering only a copy) still copies.
+            if (overPlace != null)
+                e.Effects = (e.AllowedEffects & DragDropEffects.Move) != 0
+                              ? (IsRecycleBin(overPlace.Path) || overTarget != null ? DragDropEffects.Move : DragDropEffects.None)
+                              : (overTarget != null ? DragDropEffects.Copy : DragDropEffects.None);
+            else if (overTarget != null)
             {
                 bool ctrl  = (e.KeyStates & DragDropKeyStates.ControlKey) != 0;
                 bool shift = (e.KeyStates & DragDropKeyStates.ShiftKey)   != 0;
@@ -580,7 +589,7 @@ namespace KillerShell.Shell
             // pointer was never over. Checked FIRST, because a tree node and a bookmark row are
             // more specific than "whatever pane this is inside".
             if (FolderNodeUnder(src) is { } node && Directory.Exists(node.Path)) return node.Path;
-            if (BookmarkUnder(src) is { } bm && Directory.Exists(bm.Path)) return bm.Path;
+            if (BookmarkUnder(src) is { } bm) return Directory.Exists(bm.Path) ? bm.Path : null;
 
             if (DataFor(ItemUnder(src)) is { } sr &&
                 sr.IsDirectory && Directory.Exists(sr.FilePath))
@@ -663,8 +672,22 @@ namespace KillerShell.Shell
                 return;
             }
 
+            // The Recycle Bin place recycles what lands on it, through the Delete key's own
+            // path and prompts (FileCommands.cs DeletePaths). Shift deletes for good, as it does
+            // on Explorer's Recycle Bin.
+            var place = BookmarkUnder(e.OriginalSource as DependencyObject);
+            if (place != null && IsRecycleBin(place.Path))
+            {
+                if ((e.AllowedEffects & DragDropEffects.Move) == 0) return;   // the source keeps its files
+                bool forever = (e.KeyStates & DragDropKeyStates.ShiftKey) != 0;
+                DeletePaths([.. dropped.Where(p => File.Exists(p) || Directory.Exists(p))], forever);
+                await RefreshSourcePaneIfStale(_dragSourcePane);
+                return;
+            }
+
             // Browsing? Then this is a file operation, not a search gesture (FileCommands.cs).
             string? target = DropTarget(e);
+            if (place != null && target == null) return;   // This PC: nowhere to put anything
             System.Diagnostics.Debug.WriteLine($"[DragDiag] Window_Drop: dropped.Length={dropped.Length}, target={target ?? "null"}");
             if (target != null)
             {
@@ -688,6 +711,10 @@ namespace KillerShell.Shell
 
                 bool ctrl  = (e.KeyStates & DragDropKeyStates.ControlKey) != 0;
                 bool shift = (e.KeyStates & DragDropKeyStates.ShiftKey)   != 0;
+
+                // A saved place is always a move, across drives too - you drop something on a
+                // place to put it there, not to leave a copy behind.
+                if (place != null && (e.AllowedEffects & DragDropEffects.Move) != 0) { ctrl = false; shift = true; }
 
                 // Awaited in sequence, not run concurrently: DropOntoFolder's own post-move
                 // refresh (RunCopyMove -> NavigateToAndSelectAll) reads/writes the FOCUSED pane,

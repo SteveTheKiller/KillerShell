@@ -122,6 +122,7 @@
     <sys:String x:Key="Str_TT_SystemTools">System tools</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sort by  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">This PC</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Recycle Bin</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Search within these results</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} results from {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">No results to search within yet.</sys:String>

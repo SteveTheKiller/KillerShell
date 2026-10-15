@@ -78,6 +78,7 @@
     <sys:String x:Key="Str_TT_SystemTools">সিস্টেম টুল</sys:String>
     <sys:String x:Key="Str_TT_Sort">সাজান  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">এই পিসি</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">রিসাইকেল বিন</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{1} থেকে {0}টি ফলাফল  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">অনুসন্ধানের জন্য এখনও কোনো ফলাফল নেই।</sys:String>

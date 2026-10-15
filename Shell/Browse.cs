@@ -307,6 +307,16 @@ namespace KillerShell.Shell
 
         internal static bool IsThisPc(string? path) => string.Equals(path, ThisPc, StringComparison.Ordinal);
 
+        // The Recycle Bin as a saved place (Bookmarks.cs). A sentinel like This PC, but never
+        // navigated to: clicking it opens Explorer's Recycle Bin, and dropping files on it
+        // recycles them.
+        internal const string RecycleBin = ":RecycleBin:";
+
+        internal static bool IsRecycleBin(string? path) => string.Equals(path, RecycleBin, StringComparison.Ordinal);
+
+        /// <summary>A saved place that is not a folder on disk.</summary>
+        internal static bool IsPlaceSentinel(string? path) => IsThisPc(path) || IsRecycleBin(path);
+
         /// <summary>
         /// The drives, as browse entries. Not off the UI thread like ListFolder: this is a
         /// handful of rows, and DriveInfo.GetDrives does not touch the volumes themselves.

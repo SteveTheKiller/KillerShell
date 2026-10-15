@@ -26,7 +26,11 @@ namespace KillerShell.Shell
 
         /// <summary>The row's label: "Nickname (name)" when the folder has a nickname
         /// (Services/Nicknames.cs). This PC is not a folder and never has one.</summary>
-        public string NameLabel => MainWindow.IsThisPc(Path) ? Name : Services.Nicknames.Label(Path, Name);
+        public string NameLabel => MainWindow.IsPlaceSentinel(Path) ? Name : Services.Nicknames.Label(Path, Name);
+
+        /// <summary>The row's tooltip: the folder's path, or the place's name when it has no
+        /// path to show (This PC, the Recycle Bin).</summary>
+        public string Tip => MainWindow.IsPlaceSentinel(Path) ? Name : Path;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
 
@@ -35,6 +39,8 @@ namespace KillerShell.Shell
 
         public string Name => MainWindow.IsThisPc(Path)             // Browse.cs
                             ? MainWindow.LocStatic("Str_Nav_ThisPc")
+                            : MainWindow.IsRecycleBin(Path)
+                            ? MainWindow.LocStatic("Str_Nav_RecycleBin")
                             : System.IO.Path.GetFileName(Path.TrimEnd('\\')) is { Length: > 0 } n
                                 ? n
                                 : Path.TrimEnd('\\');   // a drive root has no file name part
@@ -43,6 +49,8 @@ namespace KillerShell.Shell
         // imageres. Everything else is a real folder and answers for itself.
         public ImageSource? Icon => MainWindow.IsThisPc(Path)
                                   ? Services.IconCache.ForComputer(16)
+                                  : MainWindow.IsRecycleBin(Path)
+                                  ? Services.IconCache.ForRecycleBin(16)
                                   : Services.IconCache.For(Path, 16, isDirectory: true);
     }
 
@@ -152,8 +160,21 @@ namespace KillerShell.Shell
                     // Somewhere that no longer exists is dropped rather than shown as a dead
                     // row - a favorite that cannot be opened is worse than one that quietly
                     // went away. This PC is not a directory, so it is exempt from that check.
-                    if (IsThisPc(p) || Services.WslDistributions.TryParsePath(p, out _, out _) || Directory.Exists(p)) _bookmarks.Add(new Bookmark { Path = p });
+                    if (IsPlaceSentinel(p) || Services.WslDistributions.TryParsePath(p, out _, out _) || Directory.Exists(p)) _bookmarks.Add(new Bookmark { Path = p });
                 }
+
+            // The Recycle Bin joined the places in 1.4.1. Added once to a list saved before then,
+            // after This PC, and never again - so removing it sticks.
+            if (Services.ThemeManager.GetSetting("BookmarksRecycleBinAdded") != "1")
+            {
+                if (!_bookmarks.Any(b => IsRecycleBin(b.Path)))
+                {
+                    int at = _bookmarks.ToList().FindIndex(b => IsThisPc(b.Path)) + 1;
+                    _bookmarks.Insert(at, new Bookmark { Path = RecycleBin });
+                    SaveBookmarks();
+                }
+                Services.ThemeManager.SetSetting("BookmarksRecycleBinAdded", "1");
+            }
 
             // Whether the drawer itself was left open - same "1"/not-"1" convention as
             // ShowHidden/FoldersTop/DetailsPaneOpen, so a drawer left open survives a restart
@@ -388,6 +409,7 @@ namespace KillerShell.Shell
         private void SeedBookmarks()
         {
             _bookmarks.Add(new Bookmark { Path = ThisPc });        // Browse.cs
+            _bookmarks.Add(new Bookmark { Path = RecycleBin });
             if (Directory.Exists(HomeFolder))                      // AddressBar.cs
                 _bookmarks.Add(new Bookmark { Path = HomeFolder });
 
@@ -419,6 +441,7 @@ namespace KillerShell.Shell
             void Place(string path) => _bookmarks.Add(new Bookmark { Path = path });
 
             Place(ThisPc);                                 // my_pc_icon
+            Place(RecycleBin);                             // the shell's own Recycle Bin icon
             Place(@"C:\Users\Demo");                       // home_folder_icon
             Place(@"C:\Users\Demo\Desktop");               // desktop_folder_icon
             Place(@"C:\Users\Demo\Documents");             // documents_folder_icon
@@ -450,7 +473,7 @@ namespace KillerShell.Shell
             // dead control everywhere in --demo, on the one screen whose saved places are the
             // thing being demonstrated.
             if (string.IsNullOrEmpty(path)) return;
-            if (!IsThisPc(path) && !Services.WslDistributions.TryParsePath(path!, out _, out _) && !Directory.Exists(path)
+            if (!IsPlaceSentinel(path) && !Services.WslDistributions.TryParsePath(path!, out _, out _) && !Directory.Exists(path)
                 && !(DemoMode && Services.DemoFs.Has(path!))) return; // Browse.cs, DemoFileSystem.cs
             if (IsBookmarked(path)) return;
 
@@ -544,7 +567,7 @@ namespace KillerShell.Shell
         internal void JumpToBookmark(int oneBased)
         {
             if (oneBased < 1 || oneBased > _bookmarks.Count) return;
-            _ = NavigateTo(_bookmarks[oneBased - 1].Path);   // Browse.cs
+            OpenBookmark(_bookmarks[oneBased - 1]);
         }
 
         private void ApplyBookmarksPanel(bool animate)
@@ -601,7 +624,18 @@ namespace KillerShell.Shell
         /// the style of tab that was focused" instead of the file browser). So when the focused
         /// tab is either one, a bookmark opens a new browse tab instead of hijacking it.
         /// </remarks>
-        private void OpenBookmark(Bookmark b) => GoToFolder(b.Path);
+        private void OpenBookmark(Bookmark b)
+        {
+            // The Recycle Bin is the shell's, not a folder this app can list, so it opens in
+            // Explorer the way Windows' own shortcut to it does.
+            if (IsRecycleBin(b.Path))
+            {
+                try { System.Diagnostics.Process.Start("explorer.exe", "shell:RecycleBinFolder"); }
+                catch { /* explorer refusing to start is not this list's problem to explain */ }
+                return;
+            }
+            GoToFolder(b.Path);
+        }
 
         /// <summary>
         /// Show a folder, making somewhere to show it if the current tab cannot. The one route

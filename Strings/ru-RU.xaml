@@ -116,6 +116,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Системные инструменты</sys:String>
     <sys:String x:Key="Str_TT_Sort">Сортировать по  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Этот компьютер</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Корзина</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Искать внутри этих результатов</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} результатов из {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Пока нет результатов, внутри которых можно искать.</sys:String>

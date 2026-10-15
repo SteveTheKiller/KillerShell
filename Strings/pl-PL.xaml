@@ -177,6 +177,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Narzędzia systemowe</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sortuj według  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Ten komputer</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Kosz</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Szukaj w tych wynikach</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} wyników z {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Nie ma jeszcze wyników do przeszukania.</sys:String>

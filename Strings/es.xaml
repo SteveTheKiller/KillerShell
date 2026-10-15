@@ -78,6 +78,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Herramientas del sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordenar por  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Este equipo</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Papelera de reciclaje</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Buscar dentro de estos resultados</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} resultados de {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Aún no hay resultados donde buscar.</sys:String>

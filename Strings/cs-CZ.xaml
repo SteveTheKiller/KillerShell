@@ -100,6 +100,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Systémové nástroje</sys:String>
     <sys:String x:Key="Str_TT_Sort">Řadit podle  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Tento počítač</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Koš</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Hledat uvnitř těchto výsledků</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} výsledků z {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Zatím nejsou žádné výsledky k prohledání.</sys:String>

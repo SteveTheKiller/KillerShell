@@ -78,6 +78,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Sistem araçları</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Bu bilgisayar</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Geri Dönüşüm Kutusu</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Bu sonuçların içinde ara</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{1} içinden {0} sonuç  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">İçinde aranacak sonuç yok.</sys:String>

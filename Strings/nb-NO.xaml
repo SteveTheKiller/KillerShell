@@ -122,6 +122,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Systemverktøy</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sorter etter  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Denne PC-en</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Papirkurv</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Søk i disse resultatene</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} resultater fra {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Ingen resultater å søke i ennå.</sys:String>

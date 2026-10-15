@@ -97,8 +97,16 @@ namespace KillerShell.Shell
         // The saved-place menu lives in the row template, so it is set up per row as it opens.
         private void BookmarkRow_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if (sender is FrameworkElement { DataContext: Bookmark b } row)
-                SyncNicknameMenu(row.ContextMenu, IsThisPc(b.Path) ? null : b.Path);
+            if (sender is not FrameworkElement { DataContext: Bookmark b } row) return;
+
+            // This PC and the Recycle Bin are places, not folders: a terminal, a scan or a
+            // Properties sheet has nowhere to point, so they keep only Remove.
+            bool sentinel = IsPlaceSentinel(b.Path);   // Browse.cs
+            if (row.ContextMenu != null)
+                foreach (var item in row.ContextMenu.Items.OfType<Control>())
+                    item.Visibility = sentinel && item.Tag as string != "remove" ? Visibility.Collapsed : Visibility.Visible;
+
+            SyncNicknameMenu(row.ContextMenu, sentinel ? null : b.Path);
         }
 
         // The listing acts on the item the menu opened on (the seed), not the whole selection:

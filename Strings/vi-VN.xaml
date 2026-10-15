@@ -114,6 +114,7 @@
   <sys:String x:Key="Str_TT_SystemTools">Công cụ hệ thống</sys:String>
   <sys:String x:Key="Str_TT_Sort">Sắp xếp theo  (Alt+S)</sys:String>
   <sys:String x:Key="Str_Nav_ThisPc">PC này</sys:String>
+  <sys:String x:Key="Str_Nav_RecycleBin">Thùng rác</sys:String>
   <sys:String x:Key="Str_Menu_PipeTab">Tìm kiếm trong các kết quả này</sys:String>
   <sys:String x:Key="Str_Pipe_Scope">{0} kết quả từ {1}  |  {2}</sys:String>
   <sys:String x:Key="Str_Status_NoPipe">Chưa có kết quả để tìm kiếm bên trong.</sys:String>

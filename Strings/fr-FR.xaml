@@ -78,6 +78,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Outils système</sys:String>
     <sys:String x:Key="Str_TT_Sort">Trier par  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Ce PC</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">Corbeille</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Chercher dans ces résultats</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} résultats de {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Aucun résultat où chercher pour l'instant.</sys:String>

@@ -396,6 +396,51 @@ namespace KillerShell.Services
         private static extern int ExtractIconEx(string file, int index,
                                                 out IntPtr large, out IntPtr small, int count);
 
+        /// <summary>The Recycle Bin's own shell icon, for its saved place (Bookmarks.cs). The
+        /// brand and 98SE packs have no art for it, so both draw what Windows draws.</summary>
+        public static ImageSource? ForRecycleBin(int px)
+        {
+            string key = ":recyclebin:|" + px;
+            lock (Cache)
+                if (Cache.TryGetValue(key, out var hit)) return hit;
+
+            ImageSource? img = null;
+            var info = new SHSTOCKICONINFO { cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO)) };
+            try
+            {
+                uint size = px <= 16 ? SHGSI_SMALLICON : SHGSI_LARGEICON;
+                if (SHGetStockIconInfo(SIID_RECYCLER, SHGSI_ICON | size, ref info) == 0 && info.hIcon != IntPtr.Zero)
+                    img = FromHIcon(info.hIcon, crop: false);
+            }
+            catch { /* an unusual or locked-down shell: no icon rather than a wrong one */ }
+            finally
+            {
+                if (info.hIcon != IntPtr.Zero) DestroyIcon(info.hIcon);
+            }
+
+            lock (Cache) Cache[key] = img;
+            return img;
+        }
+
+        private const uint SIID_RECYCLER   = 31;
+        private const uint SHGSI_ICON      = 0x000000100;
+        private const uint SHGSI_LARGEICON = 0x000000000;
+        private const uint SHGSI_SMALLICON = 0x000000001;
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct SHSTOCKICONINFO
+        {
+            public uint   cbSize;
+            public IntPtr hIcon;
+            public int    iSysImageIndex;
+            public int    iIcon;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szPath;
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern int SHGetStockIconInfo(uint siid, uint uFlags, ref SHSTOCKICONINFO psii);
+
         // ── "does this app handle that type?" ────────────────────
         //
         // One shell query per extension, cached, so a folder of ten thousand .ps1 files costs one.
