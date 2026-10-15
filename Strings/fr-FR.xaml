@@ -206,7 +206,7 @@
     <sys:String x:Key="Str_Ks_Run">lancer la recherche</sys:String>
     <sys:String x:Key="Str_Ks_Esc">fermer les fenêtres, arrêter la recherche, puis proposer de quitter</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">filtrer les résultats</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">nouvel onglet de recherche</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">ouvrir un nouvel onglet dans le dossier personnel</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">fermer l'onglet actuel</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">onglet suivant (Shift : précédent)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">aller à l'onglet 1-9 (9 = dernier)</sys:String>

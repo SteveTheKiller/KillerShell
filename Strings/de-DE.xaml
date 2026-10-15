@@ -206,7 +206,7 @@
     <sys:String x:Key="Str_Ks_Run">Suche starten</sys:String>
     <sys:String x:Key="Str_Ks_Esc">Popups schließen, Suche stoppen, dann Beenden anbieten</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">Ergebnisse filtern</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">neuer Suchtab</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">neuen Tab im Home-Ordner öffnen</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">aktuellen Tab schließen</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">nächster Tab (Shift: voriger)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">zu Tab 1-9 springen (9 = letzter)</sys:String>

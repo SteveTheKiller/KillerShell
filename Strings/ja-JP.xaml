@@ -253,7 +253,7 @@
     <sys:String x:Key="Str_Ks_Run">検索を実行</sys:String>
     <sys:String x:Key="Str_Ks_Esc">ポップアップを閉じ、検索を止め、次に終了を確認</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">結果を絞り込む</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">新しい検索タブ</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">ホームで新しいタブを開く</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">現在のタブを閉じる</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">次のタブ (Shift: 前へ)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">タブ 1-9 へ移動 (9 = 最後)</sys:String>

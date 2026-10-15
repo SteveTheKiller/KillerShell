@@ -16,7 +16,7 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         private SearchTab CreateTab()
         {
-            var tab = new SearchTab(FolderTitle(HomeFolder));   // named for the folder it opens on
+            var tab = new SearchTab(FolderTitle(NewTabFolder));   // named for the folder it opens on (AddressBar.cs)
             var group = new TermGroup();
             group.Terms.Add(new SearchTerm());
             tab.Groups.Add(group);
@@ -949,7 +949,7 @@ namespace KillerShell.Shell
 
             // A tab is a place now, not a blank search form. Opening at Home means the location
             // row is never empty and the results pane never starts as a prompt (AddressBar.cs).
-            _ = NavigateTo(HomeFolder);   // Browse.cs
+            _ = NavigateTo(NewTabFolder);   // Browse.cs, AddressBar.cs
         }
 
         internal void Tab_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -206,7 +206,7 @@
     <sys:String x:Key="Str_Ks_Run">ejecutar la búsqueda</sys:String>
     <sys:String x:Key="Str_Ks_Esc">cerrar ventanas, detener la búsqueda, luego ofrecer salir</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">filtrar los resultados</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">nueva pestaña de búsqueda</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">abrir una pestaña nueva en Inicio</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">cerrar la pestaña actual</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">pestaña siguiente (Shift: anterior)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">ir a la pestaña 1-9 (9 = última)</sys:String>

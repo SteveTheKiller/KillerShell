@@ -253,7 +253,7 @@
     <sys:String x:Key="Str_Ks_Run">spustit hledání</sys:String>
     <sys:String x:Key="Str_Ks_Esc">zavřít vyskakovací okna, zastavit hledání, pak nabídnout ukončení</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">filtrovat výsledky</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">nová karta hledání</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">otevřít novou kartu ve složce Domů</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">zavřít aktuální kartu</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">další karta (Shift: předchozí)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">skok na kartu 1-9 (9 = poslední)</sys:String>

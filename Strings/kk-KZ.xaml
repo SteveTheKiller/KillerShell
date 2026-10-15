@@ -294,7 +294,7 @@
     <sys:String x:Key="Str_Ks_Run">іздеуді іске қосу</sys:String>
     <sys:String x:Key="Str_Ks_Esc">қалқымалы терезелерді жабу, іздеуді тоқтату, содан соң шығуды ұсыну</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">нәтижелерді сүзу</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">жаңа іздеу қойындысы</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">Басты қалтада жаңа қойынды ашу</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">ағымдағы қойындыны жабу</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">келесі қойынды (Shift: алдыңғы)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">1-9 қойындысына өту (9 = соңғы)</sys:String>

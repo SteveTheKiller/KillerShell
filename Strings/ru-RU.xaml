@@ -294,7 +294,7 @@
     <sys:String x:Key="Str_Ks_Run">запустить поиск</sys:String>
     <sys:String x:Key="Str_Ks_Esc">закрыть всплывающие окна, остановить поиск, затем предложить выход</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">отфильтровать результаты</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">новая вкладка поиска</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">открыть новую вкладку в домашней папке</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">закрыть текущую вкладку</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">следующая вкладка (Shift: предыдущая)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">перейти к вкладке 1-9 (9 = последняя)</sys:String>

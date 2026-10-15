@@ -308,7 +308,7 @@
     <sys:String x:Key="Str_Ks_Run">запустити пошук</sys:String>
     <sys:String x:Key="Str_Ks_Esc">закрити спливні вікна, зупинити пошук, а потім запропонувати вийти</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">фільтрувати результати</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">нова вкладка пошуку</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">відкрити нову вкладку в Домівці</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">закрити поточну вкладку</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">наступна вкладка (Shift: попередня)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">перейти до вкладки 1-9 (9 = остання)</sys:String>

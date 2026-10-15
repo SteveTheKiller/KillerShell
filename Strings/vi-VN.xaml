@@ -291,7 +291,7 @@
   <sys:String x:Key="Str_Ks_Run">chạy tìm kiếm</sys:String>
   <sys:String x:Key="Str_Ks_Esc">đóng cửa sổ bật lên, dừng tìm kiếm, sau đó hỏi có muốn thoát không</sys:String>
   <sys:String x:Key="Str_Ks_FilterResults">lọc kết quả</sys:String>
-  <sys:String x:Key="Str_Ks_NewTab">mở tab tìm kiếm mới</sys:String>
+  <sys:String x:Key="Str_Ks_NewTab">mở tab mới tại Trang chủ</sys:String>
   <sys:String x:Key="Str_Ks_CloseTab">đóng tab hiện tại</sys:String>
   <sys:String x:Key="Str_Ks_NextTab">chuyển đến tab tiếp theo (Shift: tab trước)</sys:String>
   <sys:String x:Key="Str_Ks_JumpTab">chuyển đến tab 1-9 (9 = tab cuối)</sys:String>

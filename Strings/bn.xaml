@@ -206,7 +206,7 @@
     <sys:String x:Key="Str_Ks_Run">সার্চ চালান</sys:String>
     <sys:String x:Key="Str_Ks_Esc">পপআপ বন্ধ, সার্চ থামানো, তারপর বেরোনোর প্রস্তাব</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">ফলাফল ফিল্টার করুন</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">নতুন সার্চ ট্যাব</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">হোম-এ একটি নতুন ট্যাব খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">বর্তমান ট্যাব বন্ধ করুন</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">পরের ট্যাব (Shift: আগেরটি)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">ট্যাব 1-9 এ যান (9 = শেষ)</sys:String>

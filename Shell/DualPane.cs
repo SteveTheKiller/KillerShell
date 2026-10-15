@@ -956,6 +956,11 @@ namespace KillerShell.Shell
         // pane. The tab is therefore created NOT browsing (so ActivateTab's own fire-and-forget
         // `_ = NavigateTo(...)` never triggers) and the navigation is done here, awaited, with
         // focus still pointed at the target pane.
+        // A --demo folder only exists in the fabricated table (DemoFileSystem.cs), so ask it too.
+        private static bool FolderIsThere(string? folder)
+            => !string.IsNullOrEmpty(folder)
+               && (System.IO.Directory.Exists(folder) || (DemoMode && Services.DemoFs.Has(folder!)));
+
         private async void SeedPane(FilePane pane, string? folder, bool restoreFocus = true)
         {
             var keep = Pane;
@@ -965,8 +970,11 @@ namespace KillerShell.Shell
                 var t = CreateTab();       // Tabs.cs - not browsing yet, so no async nav fires
                 ActivateTab(t);            // Tabs.cs - wires the pane's lists at this focus
 
-                if (!string.IsNullOrEmpty(folder) && System.IO.Directory.Exists(folder))
-                    await NavigateTo(folder!, record: true);   // Browse.cs - awaited, focus held
+                // From a tab with no folder (a terminal, a tool, an editor) the pane opens at Home,
+                // where a new tab opens, so its tab never carries a folder name it is not showing.
+                string target = FolderIsThere(folder) ? folder! : NewTabFolder;   // AddressBar.cs
+                if (FolderIsThere(target))
+                    await NavigateTo(target, record: true);   // Browse.cs - awaited, focus held
             }
             finally
             {

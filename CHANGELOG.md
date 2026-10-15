@@ -21,7 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The scroll edge shadows in the file list and Performance run underneath the scrollbar out to the pane edges, as in KillerScan.
 - On the 98SE theme, the Open, Save and folder picker dialogs show the selected item in a status bar with a resize grip, as Windows 98 does, and their rows use the classic narrow spacing.
 - The Light theme draws a softer shadow under the toolbars.
-- A new tab is named for the folder it opens on instead of "new search", and the new tab button reads "New tab".
+- A new tab is named for the folder it opens on instead of "new search", the new tab button reads "New tab", and the shortcut list says Ctrl+T opens a new tab at Home.
 
 ### Fixed
 - Files dragged out of KillerShell drop into Microsoft Teams and other apps that refused them, because the drag now carries the same shell data Explorer sends.
@@ -60,6 +60,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Opening a file in KillerShell from Explorer no longer leaves an empty tab beside it, and a launch whose paths cannot be opened lands at Home.
 - A folder that fails to open reports it on the status line instead of leaving the tab blank.
 - The --cli registry command accepts short hive names such as HKLM and HKCU, so the documented example works.
+- Opening the second pane from a terminal, editor or tool tab starts it at Home instead of an empty tab.
 
 ## [1.3.2] - 2026-10-07
 

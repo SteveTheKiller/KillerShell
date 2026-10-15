@@ -206,7 +206,7 @@
     <sys:String x:Key="Str_Ks_Run">aramayı çalıştır</sys:String>
     <sys:String x:Key="Str_Ks_Esc">pencereleri kapat, aramayı durdur, sonra çıkmayı öner</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">sonuçları filtrele</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">yeni arama sekmesi</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">ana klasörde yeni sekme aç</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">geçerli sekmeyi kapat</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">sonraki sekme (Shift: önceki)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">1-9 sekmesine git (9 = son)</sys:String>

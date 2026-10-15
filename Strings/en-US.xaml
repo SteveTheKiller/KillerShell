@@ -308,7 +308,7 @@
     <sys:String x:Key="Str_Ks_Run">run the search</sys:String>
     <sys:String x:Key="Str_Ks_Esc">close popups, stop the search, then offer to quit</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">filter the results</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">new search tab</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">open a new tab at Home</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">close the current tab</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">next tab (Shift: previous)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">jump to tab 1-9 (9 = last)</sys:String>

@@ -22,6 +22,11 @@ namespace KillerShell.Shell
         internal static string HomeFolder { get; private set; } =
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
+        // Where a new tab and a newly opened second pane land. --demo browses a fabricated profile
+        // (DemoFileSystem.cs), so there it is that profile and a tab is never named for the real
+        // account running the capture. Terminals and other real processes keep HomeFolder.
+        internal static string NewTabFolder => DemoMode ? @"C:\Users\Demo" : HomeFolder;
+
         private static void InitHomeFolder()
         {
             string saved = Services.ThemeManager.GetSetting("HomeFolder") ?? string.Empty;

@@ -308,7 +308,7 @@
     <sys:String x:Key="Str_Ks_Run">executar a pesquisa</sys:String>
     <sys:String x:Key="Str_Ks_Esc">fechar pop-ups, interromper a pesquisa e depois oferecer a opção de sair</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">filtrar os resultados</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">nova guia de pesquisa</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">abrir uma nova guia em Início</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">fechar a guia atual</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">próxima guia (Shift: anterior)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">ir para a guia 1-9 (9 = última)</sys:String>

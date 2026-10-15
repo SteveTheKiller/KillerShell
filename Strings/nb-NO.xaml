@@ -308,7 +308,7 @@
     <sys:String x:Key="Str_Ks_Run">kjør søket</sys:String>
     <sys:String x:Key="Str_Ks_Esc">lukk hurtigvinduer, stopp søket, og tilby deretter å avslutte</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">filtrer resultatene</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">ny søkefane</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">åpne en ny fane i Hjem</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">lukk gjeldende fane</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">neste fane (Shift: forrige)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">gå til fane 1-9 (9 = siste)</sys:String>

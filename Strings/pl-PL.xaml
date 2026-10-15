@@ -308,7 +308,7 @@
     <sys:String x:Key="Str_Ks_Run">uruchom wyszukiwanie</sys:String>
     <sys:String x:Key="Str_Ks_Esc">zamknij okna podręczne, zatrzymaj wyszukiwanie, a następnie zaproponuj wyjście</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">filtruj wyniki</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">nowa karta wyszukiwania</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">otwórz nową kartę w folderze domowym</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">zamknij bieżącą kartę</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">następna karta (Shift: poprzednia)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">przejdź do karty 1-9 (9 = ostatnia)</sys:String>

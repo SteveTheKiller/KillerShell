@@ -206,7 +206,7 @@
     <sys:String x:Key="Str_Ks_Run">執行搜尋</sys:String>
     <sys:String x:Key="Str_Ks_Esc">關閉彈窗、停止搜尋，然後詢問是否離開</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">篩選結果</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">新增搜尋分頁</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">在主資料夾中開啟新分頁</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">關閉目前分頁</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">下一個分頁（Shift：上一個）</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">跳到分頁 1-9（9 = 最後）</sys:String>

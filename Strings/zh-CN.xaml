@@ -206,7 +206,7 @@
     <sys:String x:Key="Str_Ks_Run">运行搜索</sys:String>
     <sys:String x:Key="Str_Ks_Esc">关闭弹窗、停止搜索，然后询问是否退出</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">筛选结果</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">新建搜索标签页</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">在主文件夹中打开新标签页</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">关闭当前标签页</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">下一个标签页（Shift：上一个）</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">跳到标签页 1-9（9 = 最后）</sys:String>

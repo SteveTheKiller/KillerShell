@@ -292,7 +292,7 @@
     <sys:String x:Key="Str_Ks_Run">eseguire la ricerca</sys:String>
     <sys:String x:Key="Str_Ks_Esc">chiudere i popup, fermare la ricerca, poi proporre di uscire</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">filtrare i risultati</sys:String>
-    <sys:String x:Key="Str_Ks_NewTab">nuova scheda di ricerca</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">aprire una nuova scheda in Home</sys:String>
     <sys:String x:Key="Str_Ks_CloseTab">chiudere la scheda corrente</sys:String>
     <sys:String x:Key="Str_Ks_NextTab">scheda successiva (Shift: precedente)</sys:String>
     <sys:String x:Key="Str_Ks_JumpTab">andare alla scheda 1-9 (9 = ultima)</sys:String>
