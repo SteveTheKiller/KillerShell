@@ -31,12 +31,12 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 
 <table>
 <tr>
-<td width="50%"><img src="shell-landing/screenshots/02.png" alt="Storage Analyzer and Performance Monitor open side by side in the 98SE theme"><br><sub>Storage Analyzer and live performance graphs share one workspace, including disks, networks, GPUs, RAM, and per-core CPU history.</sub></td>
-<td width="50%"><img src="shell-landing/screenshots/03.png" alt="Windows folder beside the live Processes table with the language picker open in the Delirium theme"><br><sub>Browse beside a live Processes table, and switch between nineteen languages without restarting.</sub></td>
+<td width="50%"><img src="shell-landing/screenshots/04.png" alt="Documents open side by side in list and details views in the Malaise theme"><br><sub>Give each pane its own tabs and view, with list and details views side by side.</sub></td>
+<td width="50%"><img src="shell-landing/screenshots/05.png" alt="PowerShell script open in the editor beside a file listing in the Ectoplasm theme"><br><sub>Edit a PowerShell script with syntax highlighting while keeping files in the other pane.</sub></td>
 </tr>
 <tr>
-<td><img src="shell-landing/screenshots/04.png" alt="File actions menu open beside filename search results in the Sepulchre theme"><br><sub>Every file action sits in one menu with its shortcut, next to a search tab that keeps its results.</sub></td>
-<td><img src="shell-landing/screenshots/06.png" alt="PowerShell script open in the editor in an elevated window in the Ectoplasm theme"><br><sub>Edit a PowerShell script with syntax highlighting in an ordinary tab, elevated when the job needs it.</sub></td>
+<td><img src="shell-landing/screenshots/08.png" alt="PowerShell terminal showing network checks and a patching preview in the Decay theme"><br><sub>Run PowerShell in a tab, with a themed prompt and room to read command output.</sub></td>
+<td><img src="shell-landing/screenshots/09.png" alt="Performance Monitor showing CPU, RAM, disk and network graphs in the Mourning theme"><br><sub>Watch CPU, RAM, disk and network activity together in the built-in Performance Monitor.</sub></td>
 </tr>
 </table>
 

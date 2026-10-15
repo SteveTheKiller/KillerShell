@@ -92,12 +92,17 @@
     if (!dict) return english;
     var captions = [
       'Dark: ' + dict.f_themes_t + ', ' + dict.f_browse_t,
-      '98SE: ' + dict.f_storage_t + ', ' + dict.f_perf_t,
-      'Delirium: ' + dict.f_lang_t + ', ' + dict.f_procsvc_t,
-      'Sepulchre: ' + dict.f_fileops_t + ', ' + dict.f_fname_t,
-      'Black: ' + dict.f_reg_t,
-      'Ectoplasm: ' + dict.f_editor_t,
-      'Greed: ' + dict.h_nav_shortcuts
+      'Light: ' + dict.f_fname_t,
+      '98SE: ' + dict.f_storage_t,
+      'Malaise: ' + dict.f_panes_t + ', ' + dict.f_browse_t,
+      'Ectoplasm: ' + dict.f_editor_t + ', ' + dict.f_panes_t,
+      'Delirium: ' + dict.f_procsvc_t + ', ' + dict.f_lang_t,
+      'Sepulchre: ' + dict.f_evt_t + ', ' + dict.f_panes_t,
+      'Decay: ' + dict.f_term_t,
+      'Mourning: ' + dict.f_perf_t,
+      'Light: ' + dict.f_browse_t,
+      'Black: ' + dict.f_browse_t,
+      'Dark: ' + dict.f_browse_t
     ];
     // The dictionary values are innerHTML, but captions are set as plain text.
     var caption = captions[index - 1];
