@@ -116,8 +116,48 @@ finally { $root.Dispatcher.Hooks.remove_OperationPosted($hook) }
 Check ($posted -eq 0) "Unchanged layouts posted $posted resize callbacks"
 Set-Dual $false
 Call 'FocusPaneQuiet' @((Field 'RightPane'))
-Call 'CreateDemoTerminalTab' @('C:\Users\Demo', "Pane regression fixture`r`n") | Out-Null
+$terminalTab = Call 'CreateDemoTerminalTab' @('C:\Users\Demo', "Pane regression fixture`r`n")
+$right = Field 'RightPane'
+$strip = $right.GetType().GetField('TabStrip', $flags).GetValue($right)
+$strip.ItemsSource = $right.GetType().GetProperty('Tabs', $flags).GetValue($right, $null)
+Call 'ActivateTab' @($terminalTab)
 Call 'FocusPane' @((Field 'LeftPane'))
+Set-Dual $true
+Call 'UpdateTabBar'
+Layout 1000
+$page = $right.GetType().GetField('ResultsPane', $flags).GetValue($right)
+Check ($page.CornerRadius.TopLeft -eq 6) 'A hidden tab strip left the terminal corner square'
+Check (-not $page.Child.Clip.FillContains([Windows.Point]::new(0.25, 0.25))) 'Terminal content escaped the rounded corner'
+function Check-RoundedPixels($element) {
+    $effect = $element.Effect
+    $element.Effect = $null
+    try {
+        $width = [int][Math]::Ceiling($element.ActualWidth)
+        $height = [int][Math]::Ceiling($element.ActualHeight)
+        $visual = [Windows.Media.DrawingVisual]::new()
+        $drawing = $visual.RenderOpen()
+        $drawing.DrawRectangle([Windows.Media.VisualBrush]::new($element), $null, [Windows.Rect]::new(0, 0, $width, $height))
+        $drawing.Close()
+        $bitmap = [Windows.Media.Imaging.RenderTargetBitmap]::new($width, $height, 96, 96, [Windows.Media.PixelFormats]::Pbgra32)
+        $bitmap.Render($visual)
+        $pixels = [byte[]]::new($width * $height * 4)
+        $bitmap.CopyPixels($pixels, $width * 4, 0)
+        Check ($pixels[3] -lt 64) 'The rendered top-left corner was filled square'
+        Check ($pixels[(10 * $width + 10) * 4 + 3] -gt 192) 'The corner render was empty'
+    } finally { $element.Effect = $effect }
+}
+Check-RoundedPixels $page
+Call 'CreateTab' | Out-Null
+Call 'UpdateTabBar'
+Layout 1000
+$band = $right.GetType().GetField('TabBar', $flags).GetValue($right)
+Check ($strip.Items.Count -eq 1 -and $band.ActualHeight -gt 0) 'The single terminal tab was not rendered beside multiple file tabs'
+$container = $strip.ItemContainerGenerator.ContainerFromIndex(0)
+$tabBorder = $strip.ItemTemplate.FindName('tabBd', $container)
+Check ($tabBorder.CornerRadius.TopLeft -gt 0) 'The visible terminal tab lost its rounded top-left corner'
+Check-RoundedPixels $tabBorder
+Set-Dual $false
+Call 'UpdateTabBar'
 $window.Width = 1000
 Layout 1000
 function Pump($milliseconds) {
@@ -142,5 +182,5 @@ Check ([double]::IsNaN((Field 'RightPane').Width)) 'Interrupted close left pane 
 Check ($window.MinWidth -eq 600) 'Interrupted close retained the dual minimum'
 Check ($null -eq (Field '_paneSlideSettle')) 'Interrupted close never settled'
 Call 'DisposeShellEnv'
-Write-Output 'PASS: Malaise surfaces, 48 sizing cases, extreme restore ratios, focus, scale and margin bounds, stacked/single restoration, queued callbacks, unchanged-layout scheduling, and eight interrupted animated toggles.'
+Write-Output 'PASS: Malaise surfaces, 48 sizing cases, extreme restore ratios, focus, scale and margin bounds, stacked/single restoration, queued callbacks, unchanged-layout scheduling, rounded terminal pixels with hidden/visible tabs, and eight interrupted animated toggles.'
 [Environment]::Exit(0)

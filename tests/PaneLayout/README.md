@@ -9,4 +9,6 @@ powershell.exe -NoProfile -NonInteractive -STA -ExecutionPolicy Bypass -File tes
 
 The fixture uses demo state without showing a native window or launching a terminal process. It checks Malaise surface separation, both extreme pane ratios, sidebar widths, accessibility scale, frame and host margins, focus switching, single and stacked minima, queued resize callbacks, unchanged-layout scheduling, and interrupted open/close animations through the WPF dispatcher.
 
+The second pane's demo tab strip is bound exactly as it is when opened by the app. Pixel and child-clip checks cover rounded terminal corners with the tab strip hidden and the rounded terminal tab when the neighboring pane has multiple tabs. Isolated pixel checks temporarily exclude the shadow so they measure the corner silhouette.
+
 This verifies compiled layout and animation state. Native mouse resizing, monitor transitions, and the reported intermittent divider pixels still require visual confirmation.
