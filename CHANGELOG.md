@@ -48,6 +48,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Long checkbox labels in dialogs wrap instead of running past the edge.
 - Reworded the Clear all data prompt to list what it deletes in parentheses, in every language.
 - Centered website logos with space above and below and corrected current features, runtime requirements and documentation.
+- Menu separators draw their divider line instead of leaving an empty gap.
 
 ## [1.3.2] - 2026-10-07
 
