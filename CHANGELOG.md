@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.4.1] - Unreleased
 
+### Fixed
+- The website top bar no longer leaves extra space under the wordmark and buttons.
+
 ## [1.4.0] - 2026-10-15
 
 ### Added
