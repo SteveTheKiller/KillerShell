@@ -30,6 +30,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Closing the second pane on a snapped window keeps the window snapped and gives the space back to the first pane, and a later split no longer closes to the wrong width.
 - The folder tree's scrollbar thumbs grow on hover, stay easy to grab while dragging, and remain clear of the content fades.
 - In a narrow pane the folder path and the terminal's working folder move to their own row below the buttons, so they stay readable instead of being squeezed.
+- On the 98SE theme, the interface, menus and dialog captions use Microsoft Sans Serif, as in KillerPDF, instead of Killer Sans and Tahoma.
 - Kept app icons sharp at fractional display DPI and app zoom by caching exact pixel sizes from a covering source and aligning the final draw to device pixels.
 - Submenus attach consistently to their opening rows, with native direction and screen-edge placement.
 - Context menus that open upward or leftward near a screen edge sit at the pointer instead of floating away from it.

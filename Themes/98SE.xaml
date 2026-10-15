@@ -605,7 +605,13 @@
 
     <sys:Double x:Key="WordmarkEmbossOpacity" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">1</sys:Double>
 
-    <FontFamily x:Key="ChromeFontFamily" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Tahoma</FontFamily>
+    <FontFamily x:Key="ChromeFontFamily" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Microsoft Sans Serif</FontFamily>
+    <FontFamily x:Key="UiFont" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Microsoft Sans Serif</FontFamily>
+    <FontFamily x:Key="MonoFont" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Microsoft Sans Serif</FontFamily>
+    <FontFamily x:Key="MenuFontFamily" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Microsoft Sans Serif</FontFamily>
+    <sys:Double x:Key="MenuFontSize" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">11</sys:Double>
+    <FontFamily x:Key="FooterStatusFont" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Consolas</FontFamily>
+    <FontFamily x:Key="FooterMetaFont" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Consolas</FontFamily>
 
     <sys:Double x:Key="TitleIconSize" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">16</sys:Double>
 

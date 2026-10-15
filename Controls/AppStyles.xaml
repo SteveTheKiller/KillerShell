@@ -8,9 +8,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- The app face used throughout the search/results UI: Killer Sans UI, the family UI face
-         (Killer Sans at Segoe UI proportions, hinted), over the Segoe stack. Overridable from Fonts. -->
-    <FontFamily x:Key="MonoFont">/KillerShell;component/Fonts/#Killer Sans UI, Segoe UI</FontFamily>
+    <!-- MonoFont, the app face used throughout the search/results UI, is completed by
+         ThemeManager so 98SE can state its own face. Overridable from Fonts. -->
 
     <!-- Small caps-y section label ("FILTERS", "SEARCH TERMS", "RESULTS"). -->
     <Style x:Key="SectionHeader" TargetType="TextBlock">

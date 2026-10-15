@@ -24,7 +24,7 @@ namespace KillerShell.Services
     public static class ThemeManager
     {
         /// <summary>Killer Sans UI (Killer Sans scaled to Segoe UI proportions) with the Segoe fallback stack.</summary>
-        internal static readonly FontFamily KillerSansUiStack = new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
+        internal static readonly FontFamily KillerSansUiStack = new(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
         /// <summary>
         /// Read a corner radius out of the live theme. For code-built controls, which cannot use a
         /// DynamicResource and so had their radii as C# literals - the exact bug that kept the
@@ -833,6 +833,11 @@ namespace KillerShell.Services
             // The UI face for everything that is not the app (mono) slot; a flat theme keeps its caption font.
             SetIfAbsent("UiFont", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fu && fu
                 ? combined["ChromeFontFamily"] : KillerSansUiStack);
+            // The app (mono) slot: Killer Sans UI, the family UI face, over the Segoe stack. It is
+            // completed here rather than in AppStyles.xaml so 98SE can state its own face; a font
+            // picked in Fonts still overrides it from the top-level application dictionary.
+            SetIfAbsent("MonoFont", new FontFamily(new Uri("pack://application:,,,/"),
+                "/KillerShell;component/Fonts/#Killer Sans UI, Segoe UI"));
             SetIfAbsent("TitleIconMargin", new Thickness(0, 0, 7, 0));
             SetIfAbsent("TitleIconSize", 27.0);
             SetIfAbsent("TitleTextMargin", new Thickness(0));
