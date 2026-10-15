@@ -14,6 +14,7 @@ namespace KillerShell.Shell
     public partial class MainWindow
     {
         private bool _treeOpen = true;
+        private LinearGradientBrush? _treeEdgeMask;
 
         // Where the panel opens to. Seeded from the last drag, so a resize survives collapsing
         // the sidebar and restarting the app.
@@ -39,36 +40,15 @@ namespace KillerShell.Shell
 
             ApplyTreePanel(animate: false);   // startup should not slide
 
-            // The fade has to track the horizontal scrollbar, and the scrollbar appears and
-            // disappears as folders expand and the widest label changes - so this is driven off
-            // layout rather than set once.
+            // Layout and extent changes can move the viewport without changing the tree's size.
             FolderTree.SizeChanged += (_, _) => SyncTreeFade();
             FolderTree.Loaded      += (_, _) => SyncTreeFade();
 
-            // Both edge fades follow the scroll position. ScrollChanged is handled at the
-            // TreeView rather than dug out of its template: it bubbles, so the inner ScrollViewer
-            // is reached without needing to have found it first. Loaded and SizeChanged are
-            // covered too, for the passes where nothing scrolled but the extent moved.
-            // SyncTreeFade rides this too, not just SizeChanged above. The horizontal scrollbar
-            // appears when the tree's CONTENT gets wider - expand a deep folder and the widest
-            // label grows - which changes the ScrollViewer's ExtentWidth but NOT the TreeView's
-            // own size, so SizeChanged never fired and the lift was never recomputed. The bottom
-            // fade then sat straight over the scrollbar and grayed it out (2026-08-08).
-            // ScrollChanged carries extent changes as well as scroll-position ones, which is
-            // exactly the event that was missing.
+            // ScrollChanged bubbles from the tree's inner ScrollViewer, including extent changes.
             FolderTree.AddHandler(System.Windows.Controls.ScrollViewer.ScrollChangedEvent,
-                new System.Windows.Controls.ScrollChangedEventHandler((_, _) =>
-                {
-                    SyncTreeEdgeFades();
-                    SyncTreeFade();
-                }));
+                new System.Windows.Controls.ScrollChangedEventHandler((_, _) => SyncTreeFade()));
 
-            FolderTree.SizeChanged += (_, _) => SyncTreeEdgeFades();
-            FolderTree.Loaded      += (_, _) => SyncTreeEdgeFades();
-
-            // The existing host mask handles rows clipped above and below. This companion mask
-            // handles long, horizontally clipped paths and fades them immediately before the
-            // vertical scrollbar while leaving the scrollbar itself crisp.
+            // Both masks belong to the content viewport, outside either scrollbar's subtree.
             KillerShell.Controls.TreeSideFade.Attach(FolderTree);
         }
 
@@ -95,7 +75,10 @@ namespace KillerShell.Shell
             var sv = FindDescendant<System.Windows.Controls.ScrollViewer>(FolderTree);
             if (sv == null || TreeFadeHost == null) return;
 
-            double h = TreeFadeHost.ActualHeight;
+            if (sv.Template.FindName("ViewportFadeHost", sv) is not System.Windows.Controls.Border viewport) return;
+            _treeEdgeMask ??= ((LinearGradientBrush)TreeFadeHost.Resources["TreeEdgeMask"]).Clone();
+            viewport.OpacityMask = _treeEdgeMask;
+            double h = viewport.ActualHeight;
             if (h <= 1) return;                       // not laid out yet; a later pass covers it
 
             // EdgeFadeOpacity is 0 on a FLAT theme: 98SE has no soft edges anywhere - a list ends
@@ -106,23 +89,15 @@ namespace KillerShell.Shell
             double top = Ramp(sv.VerticalOffset, TopFadePx, 18) * fade;
             double bot = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset, BotFadePx, 22) * fade;
 
-            // The mask is on the TREE, so a stop's ALPHA is how much of the tree survives there:
+            // The mask is on the viewport, so a stop's ALPHA is how much content survives there:
             // 0 at the outer edge means that row has dissolved and the window shows through.
             // Fully opaque when there is nothing past the edge, so an unscrolled tree is untouched.
-            TreeFadeTopOuter.Color = Alpha(1 - top);
-            TreeFadeBotOuter.Color = Alpha(1 - bot);
+            _treeEdgeMask.GradientStops[0].Color = Alpha(1 - top);
+            _treeEdgeMask.GradientStops[3].Color = Alpha(1 - bot);
 
-            // Where each ramp finishes, as a fraction of the host. The bottom one is lifted by the
-            // horizontal scrollbar (SyncTreeFade below) so it dissolves the last ROW, not the bar.
-            // The scrollbar sits inside this host, so the ramp has to END above it and full
-            // opacity has to be restored below - otherwise the fade dissolves the scrollbar too.
-            double bar = ScrollBarHeight();
-            double barFrac = Math.Min(0.4, bar / h);
-
-            TreeFadeTopInner.Offset = Math.Min(0.45, TopFadePx / h);
-            TreeFadeBotInner.Offset = Math.Max(0.5, 1 - (BotFadePx + bar) / h);
-            TreeFadeBotOuter.Offset = Math.Max(TreeFadeBotInner.Offset + 0.001, 1 - barFrac);
-            TreeFadeBotRestore.Offset = Math.Min(1, TreeFadeBotOuter.Offset + 0.001);
+            // The viewport excludes both bars and the outer tree padding at every size.
+            _treeEdgeMask.GradientStops[1].Offset = Math.Min(0.45, TopFadePx / h);
+            _treeEdgeMask.GradientStops[2].Offset = Math.Max(0.5, 1 - BotFadePx / h);
         }
 
         private static Color Alpha(double a) =>
@@ -134,48 +109,8 @@ namespace KillerShell.Shell
             return Math.Min(1, Math.Max(0, distance) / h);
         }
 
-        /// <summary>
-        /// Keep the bottom edge fade sitting on the tree's last visible ROW rather than on the
-        /// horizontal scrollbar underneath it.
-        /// </summary>
-        /// <remarks>
-        /// The scrollbar's real height is measured rather than taken from SystemParameters: the
-        /// tree uses the app's own themed scrollbar template, which is not the system metric, and
-        /// on a scaled window (AppScale.cs) it is not that metric times anything predictable
-        /// either. Measuring is the only version that stays right.
-        /// </remarks>
-        private double ScrollBarHeight()
-        {
-            var sv = FindDescendant<System.Windows.Controls.ScrollViewer>(FolderTree);
-            if (sv == null || sv.ComputedHorizontalScrollBarVisibility != Visibility.Visible) return 0;
-            var bar = FindHorizontalBar(sv);
-            return bar?.ActualHeight ?? SystemParameters.HorizontalScrollBarHeight;
-        }
-
-        /// <summary>
-        /// Kept as the name the layout events call. It used to shorten the host by the scrollbar
-        /// height so a separate fade Border sat above the bar; the fade is an OpacityMask on the
-        /// host now, so shortening it would just crop the tree. The measurement moved into
-        /// ScrollBarHeight above and the mask ends its ramp there instead.
-        /// </summary>
+        // Keep the existing layout-event entry point; the viewport now supplies the exact bounds.
         private void SyncTreeFade() => SyncTreeEdgeFades();
-
-        // FindDescendant takes the FIRST match of a type, and a ScrollViewer has two scrollbars,
-        // so the orientation has to be checked rather than assumed.
-        private static System.Windows.Controls.Primitives.ScrollBar? FindHorizontalBar(DependencyObject root)
-        {
-            int n = System.Windows.Media.VisualTreeHelper.GetChildrenCount(root);
-            for (int i = 0; i < n; i++)
-            {
-                var c = System.Windows.Media.VisualTreeHelper.GetChild(root, i);
-                if (c is System.Windows.Controls.Primitives.ScrollBar b
-                    && b.Orientation == System.Windows.Controls.Orientation.Horizontal) return b;
-
-                var deeper = FindHorizontalBar(c);
-                if (deeper != null) return deeper;
-            }
-            return null;
-        }
 
         private static double Clamp(double w)
             => Math.Max(TreeWidthMin, Math.Min(TreeWidthMax, w));

@@ -251,20 +251,14 @@
                      Win98 list well is filled edge to edge, so the flat theme zeroes the top,
                      bottom and right; every other theme keeps the literal it had. -->
                 <Border x:Name="TreeFadeHost" Background="Transparent" Padding="{DynamicResource TreePanePadding}">
-                    <Border.OpacityMask>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop x:Name="TreeFadeTopOuter" Color="#FF000000" Offset="0"/>
-                            <GradientStop x:Name="TreeFadeTopInner" Color="#FF000000" Offset="0.08"/>
-                            <GradientStop x:Name="TreeFadeBotInner" Color="#FF000000" Offset="0.92"/>
-                            <GradientStop x:Name="TreeFadeBotOuter" Color="#FF000000" Offset="0.995"/>
-                            <!-- Full opacity again below the ramp. The horizontal scrollbar lives
-                                 INSIDE this masked host, so without restoring alpha here the fade
-                                 dissolved the scrollbar along with the last row - a stop's color
-                                 carries on past it to the end of the brush. -->
-                            <GradientStop x:Name="TreeFadeBotRestore" Color="#FF000000" Offset="0.996"/>
+                    <Border.Resources>
+                        <LinearGradientBrush x:Key="TreeEdgeMask" StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#FF000000" Offset="0"/>
+                            <GradientStop Color="#FF000000" Offset="0.08"/>
+                            <GradientStop Color="#FF000000" Offset="0.92"/>
                             <GradientStop Color="#FF000000" Offset="1"/>
                         </LinearGradientBrush>
-                    </Border.OpacityMask>
+                    </Border.Resources>
                     <TreeView x:Name="FolderTree" Style="{StaticResource FolderTreeView}"
                               TreeViewItem.Expanded="FolderTree_Expanded"
                               TreeViewItem.Collapsed="FolderTree_Collapsed"

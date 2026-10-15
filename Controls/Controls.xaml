@@ -744,7 +744,7 @@
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Thumb">
-                                                        <Grid>
+                                                        <Grid Background="Transparent">
                                                         <Border x:Name="thumbBorder" Background="{DynamicResource ScrollThumbBrush}"
                                                                 CornerRadius="{DynamicResource ScrollThumbRadius}"
                                                                 Margin="{DynamicResource ScrollThumbMargin}"/>
@@ -771,6 +771,11 @@
                                                                  under its own bevel ring and glowed on a shadowless theme.
                                                                  Defaults are exactly the old literals. -->
                                                             <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="thumbBorder" Property="Background" Value="{DynamicResource ScrollThumbHoverBrush}"/>
+                                                                <Setter TargetName="thumbBorder" Property="Margin" Value="{DynamicResource ScrollThumbHoverMargin}"/>
+                                                                <Setter TargetName="thumbBorder" Property="Effect" Value="{DynamicResource ScrollThumbHoverEffect}"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsDragging" Value="True">
                                                                 <Setter TargetName="thumbBorder" Property="Background" Value="{DynamicResource ScrollThumbHoverBrush}"/>
                                                                 <Setter TargetName="thumbBorder" Property="Margin" Value="{DynamicResource ScrollThumbHoverMargin}"/>
                                                                 <Setter TargetName="thumbBorder" Property="Effect" Value="{DynamicResource ScrollThumbHoverEffect}"/>
@@ -1933,11 +1938,13 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <ScrollContentPresenter Grid.Row="0" Grid.Column="0"
-                                                Margin="{TemplateBinding Padding}"
-                                                CanContentScroll="{TemplateBinding CanContentScroll}"
-                                                CanHorizontallyScroll="False"
-                                                CanVerticallyScroll="False"/>
+                        <Border x:Name="ViewportFadeHost" Grid.Row="0" Grid.Column="0">
+                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                    Margin="{TemplateBinding Padding}"
+                                                    CanContentScroll="{TemplateBinding CanContentScroll}"
+                                                    CanHorizontallyScroll="False"
+                                                    CanVerticallyScroll="False"/>
+                        </Border>
 
                         <!-- The PART_ names are what ScrollViewer wires its own scrolling to, so
                              Value binds one-way and the control drives it from there. -->

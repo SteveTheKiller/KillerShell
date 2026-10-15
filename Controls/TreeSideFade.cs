@@ -1,15 +1,13 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace KillerShell.Controls
 {
     /// <summary>
-    /// Dissolves horizontally clipped tree content just before the viewport edge. The vertical
-    /// scrollbar is deliberately restored to full opacity, so the fade reads as a cue on the
-    /// rows rather than as a shadow painted over the control chrome.
+    /// Dissolves horizontally clipped tree content inside the viewport. Both scrollbars remain
+    /// outside the mask, so only rows fade.
     /// </summary>
     internal static class TreeSideFade
     {
@@ -43,14 +41,17 @@ namespace KillerShell.Controls
                     EndPoint = new Point(1, 0),
                     MappingMode = BrushMappingMode.RelativeToBoundingBox
                 };
-                _tree.OpacityMask = _mask;
             }
 
             internal void Sync()
             {
                 ScrollViewer? scroller = FindDescendant<ScrollViewer>(_tree);
-                double width = _tree.ActualWidth;
-                if (scroller == null || width <= 1) return;
+                if (scroller == null) return;
+                if (scroller.Template.FindName("PART_ScrollContentPresenter", scroller)
+                    is not ScrollContentPresenter viewport) return;
+                double width = viewport.ActualWidth;
+                if (width <= 1) return;
+                viewport.OpacityMask = _mask;
 
                 double themeFade = Application.Current.TryFindResource("EdgeFadeOpacity") is double e
                     ? e : 1.0;
@@ -59,15 +60,9 @@ namespace KillerShell.Controls
                     scroller.ExtentWidth - scroller.ViewportWidth - scroller.HorizontalOffset,
                     FadeWidth) * themeFade;
 
-                double barWidth = 0;
-                if (scroller.ComputedVerticalScrollBarVisibility == Visibility.Visible)
-                    barWidth = FindVerticalBar(scroller)?.ActualWidth
-                        ?? SystemParameters.VerticalScrollBarWidth;
-
                 double leftInner = Offset(FadeWidth, width);
-                double rightOuter = Offset(Math.Max(0, width - barWidth), width);
-                double rightInner = Offset(Math.Max(0, width - barWidth - FadeWidth), width);
-                double restore = Math.Min(1, rightOuter + 0.001);
+                double rightOuter = 1;
+                double rightInner = Offset(Math.Max(0, width - FadeWidth), width);
 
                 _mask.GradientStops.Clear();
                 _mask.GradientStops.Add(new GradientStop(Alpha(1 - left), 0));
@@ -77,9 +72,6 @@ namespace KillerShell.Controls
                 _mask.GradientStops.Add(new GradientStop(Alpha(1 - right * 0.35),
                     rightInner + (rightOuter - rightInner) * 0.55));
                 _mask.GradientStops.Add(new GradientStop(Alpha(1 - right), rightOuter));
-                if (barWidth > 0.5)
-                    _mask.GradientStops.Add(new GradientStop(Colors.Black, restore));
-                _mask.GradientStops.Add(new GradientStop(Colors.Black, 1));
             }
 
             private static double Offset(double x, double width) =>
@@ -100,20 +92,6 @@ namespace KillerShell.Controls
                 DependencyObject child = VisualTreeHelper.GetChild(root, i);
                 if (child is T match) return match;
                 T? nested = FindDescendant<T>(child);
-                if (nested != null) return nested;
-            }
-            return null;
-        }
-
-        private static ScrollBar? FindVerticalBar(DependencyObject root)
-        {
-            int count = VisualTreeHelper.GetChildrenCount(root);
-            for (int i = 0; i < count; i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(root, i);
-                if (child is ScrollBar bar && bar.Orientation == Orientation.Vertical)
-                    return bar;
-                ScrollBar? nested = FindVerticalBar(child);
                 if (nested != null) return nested;
             }
             return null;
