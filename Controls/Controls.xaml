@@ -834,6 +834,9 @@
     </Style>
 
     <Style TargetType="ContextMenu">
+        <!-- Display + Grayscale on the menu itself, as KillerPDF sets on every menu it builds. The window's ClearType is inherited into a menu otherwise, and a menu lives in a transparent popup where ClearType cannot render, so the labels are left to a fallback instead of asking for antialiasing. -->
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale"/>
         <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
