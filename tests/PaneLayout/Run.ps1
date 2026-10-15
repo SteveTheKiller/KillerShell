@@ -3,8 +3,17 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
 $assembly = [Reflection.Assembly]::LoadFrom($AssemblyPath)
 [Windows.Application].GetField('_resourceAssembly', [Reflection.BindingFlags]'Static,NonPublic').SetValue($null, $assembly)
-$app = [Activator]::CreateInstance($assembly.GetType('KillerShell.App'))
-$app.InitializeComponent()
+# A plain Application with App.xaml's dictionaries, not KillerShell.App: App queues OnStartup,
+# which builds and shows a real main window and reads and writes the user's saved settings.
+$app = New-Object System.Windows.Application
+$appXaml = [xml](Get-Content -Raw (Join-Path $PSScriptRoot '..\..\App.xaml'))
+$appNs = New-Object System.Xml.XmlNamespaceManager($appXaml.NameTable)
+$appNs.AddNamespace('p', 'http://schemas.microsoft.com/winfx/2006/xaml/presentation')
+$appResources = New-Object System.Windows.ResourceDictionary
+foreach ($source in $appXaml.SelectNodes('//p:ResourceDictionary.MergedDictionaries/p:ResourceDictionary/@Source', $appNs)) {
+    $appResources.MergedDictionaries.Add([Windows.Application]::LoadComponent([Uri]::new('/KillerShell;component/' + $source.Value, [UriKind]::Relative)))
+}
+$app.Resources = $appResources
 $app.ShutdownMode = [Windows.ShutdownMode]::OnExplicitShutdown
 $manager = $assembly.GetType('KillerShell.Services.ThemeManager')
 $themeType = $assembly.GetType('KillerShell.Services.Theme')
