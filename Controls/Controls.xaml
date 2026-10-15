@@ -1189,7 +1189,8 @@
                              width, letting a right-aligned column (e.g. language codes) reach the
                              right edge. -->
                         <DockPanel LastChildFill="True" Background="Transparent">
-                            <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0" DockPanel.Dock="Left">
+                            <!-- One pixel down (0,1,8,-1) so the indicator centers on the label's capital height; Killer Sans sits low in its line box. The row height does not change. -->
+                            <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="0,1,8,-1" DockPanel.Dock="Left">
                                 <Ellipse Width="14" Height="14" Fill="{DynamicResource RadioWellBrush}"/>
                                 <Ellipse x:Name="ring" Width="14" Height="14"
                                          Stroke="{DynamicResource DimTextBrush}" StrokeThickness="1.5"
@@ -1246,7 +1247,8 @@
                             CornerRadius="3"
                             Margin="-8,0,2,0" Padding="10,4,10,4">
                         <DockPanel LastChildFill="True" Background="Transparent">
-                            <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0" DockPanel.Dock="Left">
+                            <!-- One pixel down (0,1,8,-1) so the indicator centers on the label's capital height; Killer Sans sits low in its line box. The row height does not change. -->
+                            <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="0,1,8,-1" DockPanel.Dock="Left">
                                 <Border CornerRadius="{DynamicResource ControlCornerRadius}" Width="14" Height="14" Background="{DynamicResource RadioWellBrush}"/>
                                 <Border CornerRadius="{DynamicResource ControlCornerRadius}" x:Name="ring" Width="14" Height="14"
                                          BorderBrush="{DynamicResource DimTextBrush}" BorderThickness="1"

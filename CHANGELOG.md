@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - The website top bar no longer leaves extra space under the wordmark and buttons.
 
+- Theme and language radio buttons and the Film Grain checkbox line up with their labels again.
 ## [1.4.0] - 2026-10-15
 
 ### Added
