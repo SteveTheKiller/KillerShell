@@ -267,7 +267,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <h2 data-i18n="t_fops_h">File operations</h2>
 <p data-i18n="t_fops_p1">Copy and move run on a background worker with a progress card showing the current file and a real byte count, so a large copy never freezes the window. A name collision at the destination stops the worker and asks, showing both files' size and date, with Replace, Skip or Keep both and a "do the same for the rest" checkbox. The worker genuinely waits on that answer rather than copying ahead of it, so nothing is overwritten while the question is still on screen.</p>
 <p data-i18n="t_fops_p2">A move within one volume is performed as a rename, which is a directory-entry change rather than a data copy, so it is instant whatever the size. Across volumes it copies first and deletes the source only once the copy has landed. Sending to the Recycle Bin is the one operation that goes through the Windows shell, because there is no other way in, and that is also what puts it on Explorer's undo stack, so <code>Ctrl+Z</code> in Explorer brings the files back.</p>
-<p data-i18n="t_fops_p3">Drops onto a browsed folder follow Explorer's modifier rules exactly: Shift moves, Ctrl copies, and neither means move within a drive and copy across drives. Files already sitting in the target folder are ignored rather than raising a collision with themselves, and a folder cannot be dropped into its own child.</p>
+<p data-i18n="t_fops_p3">Drops onto a browsed folder follow Explorer's modifier rules exactly: Shift moves, Ctrl copies, and neither means move within a drive and copy across drives. Files already sitting in the target folder are ignored rather than raising a collision with themselves, and a folder cannot be dropped into its own child.</p><p data-i18n="drop_place_p">Bookmarks are the exception: a drop onto one always moves, across drives too, because you drop something on a saved place to put it there. A drop onto the Recycle Bin bookmark recycles the files the way <b>Delete</b> does, and holding <b>Shift</b> deletes them permanently, as <b>Shift+Delete</b> does.</p>
 </div>
 
 <div class="tech-sec" id="archives">
@@ -293,6 +293,8 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <h2 data-i18n="t_cli_h">CLI</h2>
 <p data-i18n="t_cli_p">The read-only CLI returns JSON for files, search, processes, services, events, registry, drives and SHA-256 hashes. Security-log access requires administrator privileges.</p>
 <pre><code>KillerShell.exe --cli list "C:\logs"
+KillerShell.exe --cli info "C:\logs\today.log"
+KillerShell.exe --cli read "C:\logs\today.log" --max-chars 4096
 KillerShell.exe --cli search "C:\logs" --content "error"
 KillerShell.exe --cli processes
 KillerShell.exe --cli services
@@ -342,7 +344,7 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
 <h2 data-i18n="t_themes_h">Themes &amp; languages</h2>
 <p data-i18n="t_themes_p">13 themes, 41 looks: Dark, Light, Black and 98SE each have 8 accent colors. The other 9 have fixed palettes. Switch live without restarting.</p>
 <p data-i18n="t_themes_p3">The interface is translated into nineteen languages and switches live from the globe menu. Any string a translation does not cover yet appears in English.</p>
-<p data-i18n="t_themes_p2">The whole app also scales. Rolling the wheel over the title-bar wordmark drives a layout transform on the content host, roughly 2% a notch between 70% and 250%, remembered between runs. Because it is a layout transform rather than a render transform, text reflows and re-rasterizes at the new size instead of being stretched as a bitmap, and the title bar and footer stay a fixed size so the wordmark never moves out from under the pointer.</p>
+<p data-i18n="t_themes_p2">The whole app also scales. Rolling the wheel over the title-bar wordmark drives a layout transform on the content host, roughly 2% a notch between 70% and 250%, remembered between runs. Because it is a layout transform rather than a render transform, text reflows and re-rasterizes at the new size instead of being stretched as a bitmap, and the title bar and footer stay a fixed size so the wordmark never moves out from under the pointer.</p><p data-i18n="appsize_keys_p">From the keyboard, <b>Ctrl+Shift+Plus</b> and <b>Ctrl+Shift+Minus</b> change the size 5% at a time, and <b>Ctrl+Shift+0</b> puts it back to 100%.</p>
 </div>
 
 <div class="tech-sec" id="glossary">
@@ -381,7 +383,7 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>
-<script src="ks-i18n.js?v=9"></script>
+<script src="ks-i18n.js?v=10"></script>
 <script src="ks.js?v=8"></script>
 <script>
 // COLLAPSIBLE OUTLINE. The page has fifteen sections and seven subsections, and listing

@@ -16,6 +16,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - Screen readers no longer read toolbar, menu and title bar icons as unreadable symbols, and file list items read as their names instead of a type name.
 - The website top bar no longer leaves extra space under the wordmark and buttons.
+- The website's Help and Technical pages match the app on bookmark drops, the bookmark star, the Event Viewer, Storage Analyzer and app size keys, and the CLI commands, in every language.
 - Theme and language radio buttons and the Film Grain checkbox line up with their labels again.
 - Search, piped, restored and demo search tabs show their search icon in the tab strip again.
 - Context menus ask for antialiased labels the same way KillerPDF menus do.
