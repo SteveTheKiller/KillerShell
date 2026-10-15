@@ -99,7 +99,7 @@
     <sys:String x:Key="Str_Tab_New">nytt søk</sys:String>
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
     <sys:String x:Key="Str_Tab_Dropped">slippet ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Ny søkefane  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Ny fane  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Lukk fane</sys:String>
 
     <!-- Folder picker -->

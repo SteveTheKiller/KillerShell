@@ -21,6 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The scroll edge shadows in the file list and Performance run underneath the scrollbar out to the pane edges, as in KillerScan.
 - On the 98SE theme, the Open, Save and folder picker dialogs show the selected item in a status bar with a resize grip, as Windows 98 does, and their rows use the classic narrow spacing.
 - The Light theme draws a softer shadow under the toolbars.
+- A new tab is named for the folder it opens on instead of "new search", and the new tab button reads "New tab".
 
 ### Fixed
 - Files dragged out of KillerShell drop into Microsoft Teams and other apps that refused them, because the drag now carries the same shell data Explorer sends.

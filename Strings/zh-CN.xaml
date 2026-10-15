@@ -55,7 +55,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">新搜索</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">新建搜索标签页</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">新建标签页</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">关闭标签页</sys:String>
 
     <!-- Folder picker -->

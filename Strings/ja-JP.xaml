@@ -77,7 +77,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">新しい検索</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">ドロップ ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">新しい検索タブ</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">新しいタブ</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">タブを閉じる</sys:String>
 
     <!-- Folder picker -->

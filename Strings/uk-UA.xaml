@@ -99,7 +99,7 @@
     <sys:String x:Key="Str_Tab_New">новий пошук</sys:String>
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
     <sys:String x:Key="Str_Tab_Dropped">перетягнуто ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Нова вкладка пошуку  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Нова вкладка  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Закрити вкладку</sys:String>
 
     <!-- Folder picker -->

@@ -93,7 +93,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">жаңа іздеу</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">тасталған ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Жаңа іздеу қойындысы  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Жаңа қойынды  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Қойындыны жабу</sys:String>
 
     <!-- Folder picker -->

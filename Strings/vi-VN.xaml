@@ -92,7 +92,7 @@
   <sys:String x:Key="Str_Tab_New">tìm kiếm mới</sys:String>
   <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
   <sys:String x:Key="Str_Tab_Dropped">đã thả ({0})</sys:String>
-  <sys:String x:Key="Str_TT_NewTab">Tab tìm kiếm mới  (Ctrl+T)</sys:String>
+  <sys:String x:Key="Str_TT_NewTab">Tab mới  (Ctrl+T)</sys:String>
   <sys:String x:Key="Str_TT_CloseTab">Đóng tab</sys:String>
   <!-- Folder picker -->
   <sys:String x:Key="Str_Btn_Cancel">Hủy</sys:String>

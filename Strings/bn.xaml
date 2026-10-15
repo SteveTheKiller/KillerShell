@@ -55,7 +55,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">নতুন অনুসন্ধান</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">নতুন অনুসন্ধান ট্যাব</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">নতুন ট্যাব</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">ট্যাব বন্ধ করুন</sys:String>
 
     <!-- Folder picker -->

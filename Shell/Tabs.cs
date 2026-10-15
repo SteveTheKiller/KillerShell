@@ -16,7 +16,7 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         private SearchTab CreateTab()
         {
-            var tab = new SearchTab(Loc("Str_Tab_New"));
+            var tab = new SearchTab(FolderTitle(HomeFolder));   // named for the folder it opens on
             var group = new TermGroup();
             group.Terms.Add(new SearchTerm());
             tab.Groups.Add(group);

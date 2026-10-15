@@ -93,7 +93,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">новый поиск</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">перетащено ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Новая вкладка поиска  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Новая вкладка  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Закрыть вкладку</sys:String>
 
     <!-- Folder picker -->

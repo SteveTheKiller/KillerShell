@@ -99,7 +99,7 @@
     <sys:String x:Key="Str_Tab_New">új keresés</sys:String>
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
     <sys:String x:Key="Str_Tab_Dropped">leesett ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Új keresési lap (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Új lap (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Lap bezárása</sys:String>
 
     <!-- Folder picker -->

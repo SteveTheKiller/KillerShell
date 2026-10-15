@@ -157,7 +157,7 @@
     <sys:String x:Key="Str_Help_Exclude">wykluczenie pomija też całe foldery o podanej nazwie</sys:String>
     <sys:String x:Key="Str_Tab_New">nowe wyszukiwanie</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">upuszczone ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Nowa karta wyszukiwania  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Nowa karta  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Zamknij kartę</sys:String>
     <sys:String x:Key="Str_Btn_Select">Wybierz</sys:String>
     <sys:String x:Key="Str_QA_Home">Folder domowy</sys:String>

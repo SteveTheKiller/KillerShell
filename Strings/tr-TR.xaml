@@ -55,7 +55,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">yeni arama</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Yeni arama sekmesi</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Yeni sekme</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Sekmeyi kapat</sys:String>
 
     <!-- Folder picker -->

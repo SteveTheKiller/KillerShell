@@ -99,7 +99,7 @@
     <sys:String x:Key="Str_Tab_New">nova pesquisa</sys:String>
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
     <sys:String x:Key="Str_Tab_Dropped">soltos ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Nova guia de pesquisa  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Nova guia  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Fechar guia</sys:String>
 
     <!-- Folder picker -->
