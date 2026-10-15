@@ -1,6 +1,7 @@
 <Window x:Class="KillerShell.Shell.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:a11y="clr-namespace:KillerFamily.Accessibility"
         xmlns:icons="clr-namespace:KillerShell.Controls"
         xmlns:local="clr-namespace:KillerShell"
         xmlns:shellns="clr-namespace:KillerShell.Shell"
@@ -274,13 +275,13 @@
                                      label was left over from when every tab was a search, and it
                                      described the old app rather than what the row does. -->
                                 <MenuItem Header="{DynamicResource Str_Menu_OpenInNewTab}" Click="TreeOpenNewTab_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE710;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE710;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Menu_ShowExplorer}" Click="TreeShowInExplorer_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE838;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE838;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Menu_SearchHere}" Click="TreeSearchHere_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
                                 <!-- The same two terminal rows the saved places carry, and the
@@ -288,13 +289,13 @@
                                      wherever it is shown, so the tree, the places and the
                                      listing all offer the same verbs. -->
                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}" Click="TreeTerminal_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="TreeTerminalAdmin_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="TreeAnalyze_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
                                 <!-- The tree's OWN hidden switch, not the listing's Ctrl+H. Checked
@@ -310,26 +311,26 @@
                                           Click="TreeHidden_Click"/>
                                 <Separator/>
                                 <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}" Click="TreeFavorite_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <!-- E8C8 (Copy, two documents), not E71B (Link, a chain). -->
                                 <MenuItem Header="{DynamicResource Str_Menu_CopyPath}" Click="TreeCopyPath_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <!-- Nickname rows: header and visibility are set as the menu opens
                                      (NicknameCommands.cs SyncNicknameMenu), found by Tag. -->
                                 <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="TreeNickname_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="TreeNicknameRemove_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
                                 <MenuItem Header="{DynamicResource Str_Menu_Properties}" Click="TreeProperties_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}" Click="TreeShellMenu_Click">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>
                         </TreeView.ContextMenu>
@@ -515,7 +516,7 @@
                                             <ContextMenu>
                                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}"
                                                           Click="BookmarkTerminal_Click">
-                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
+                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
                                                 </MenuItem>
                                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}"
                                                           Click="BookmarkTerminalAdmin_Click">
@@ -523,29 +524,29 @@
                                                          rows used to carry - two identical icons on
                                                          two different actions is a menu that reads
                                                          as one repeated item. -->
-                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                                 </MenuItem>
                                                 <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}"
                                                           Click="BookmarkAnalyze_Click">
-                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                                                 </MenuItem>
                                                 <Separator/>
                                                 <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}"
                                                           Click="BookmarkNickname_Click">
-                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
+                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
                                                 </MenuItem>
                                                 <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}"
                                                           Click="BookmarkNicknameRemove_Click">
-                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                                                 </MenuItem>
                                                 <Separator/>
                                                 <MenuItem Header="{DynamicResource Str_Menu_Properties}"
                                                           Click="BookmarkProperties_Click">
-                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
+                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
                                                 </MenuItem>
                                                 <MenuItem Header="{DynamicResource Str_Menu_RemoveFavorite}"
                                                           Click="BookmarkRemove_Click">
-                                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                                                 </MenuItem>
                                             </ContextMenu>
                                         </Border.ContextMenu>
@@ -678,14 +679,14 @@
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Term_ManageProfiles}" Click="ManageTerminalProfiles_Click"/>
                                 <MenuItem Header="{DynamicResource Str_Term_PowerShellAdmin}" Click="RailShellPsAdmin_Click" InputGestureText="Ctrl+F8">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
                                 <MenuItem Header="{DynamicResource Str_Term_Cmd}" Click="RailShellCmd_Click" InputGestureText="Shift+F8">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Term_CmdAdmin}" Click="RailShellCmdAdmin_Click" InputGestureText="Ctrl+Shift+F8">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
                                 <!-- Rows are built as the submenu OPENS (ProfileMenu.cs), from
@@ -696,7 +697,7 @@
                                      SubmenuOpened at all; it is replaced before it is seen. -->
                                 <MenuItem Header="{DynamicResource Str_Prof_Edit}" InputGestureText="Ctrl+,"
                                           SubmenuOpened="RailProfileMenu_Opened">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE70F;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE70F;"/></MenuItem.Icon>
                                     <MenuItem/>
                                 </MenuItem>
                             </ContextMenu>
@@ -728,36 +729,36 @@
                             </Style>
                             <ContextMenu x:Key="SystemToolsMenu" Style="{StaticResource SystemToolsFlyoutStyle}">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesOpen}" Click="RailProcessesOpen_Click" InputGestureText="F9">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8FD;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8FD;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_TabTitle_Performance}" Click="PerformanceRail_Click" InputGestureText="F11">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE9D9;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE9D9;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Rail_StorageOpen}" Click="RailStorageOpen_Click" InputGestureText="F4">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
                                 <MenuItem Header="{DynamicResource Str_TabTitle_RegistryEditor}" Click="RegistryEditorRail_Click" InputGestureText="Ctrl+F11">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_TabTitle_EventViewer}" Click="EventViewerRail_Click" InputGestureText="Ctrl+F12">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>
                         </Button.Resources>
                         <Button.ContextMenu>
                             <ContextMenu Style="{StaticResource SystemToolsFlyoutStyle}">
                                 <MenuItem Header="{DynamicResource Str_Rail_ProcessesAdmin}" Click="RailProcessesAdmin_Click" InputGestureText="Ctrl+F9">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_Rail_StorageAdmin}" Click="RailStorageAdmin_Click" InputGestureText="Ctrl+F4">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_TabTitle_RegistryEditor}" Click="RegistryEditorRail_Click" InputGestureText="Ctrl+F11">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource Str_TabTitle_EventViewer}" Click="EventViewerRail_Click" InputGestureText="Ctrl+F12">
-                                    <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>
                         </Button.ContextMenu>
@@ -937,7 +938,7 @@
                                     <Button x:Name="FontsRowBtn" Click="FontsRow_Click"
                                             Style="{StaticResource MenuRowButton}">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="&#xE8D2;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                            <a11y:Glyph Text="&#xE8D2;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                        Margin="0,0,8,0" VerticalAlignment="Center"/>
                                             <TextBlock Text="{DynamicResource Str_Fonts_Row}" FontFamily="{DynamicResource MonoFont}"
                                                        FontSize="11.5" VerticalAlignment="Center"/>
@@ -946,7 +947,7 @@
                                     <Button x:Name="AssocRowBtn" Click="AssocRow_Click"
                                             Style="{StaticResource MenuRowButton}">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                            <a11y:Glyph Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                        Margin="0,0,8,0" VerticalAlignment="Center"/>
                                             <TextBlock Text="{DynamicResource Str_Assoc_Row}" FontFamily="{DynamicResource MonoFont}"
                                                        FontSize="11.5" VerticalAlignment="Center"/>
@@ -1158,7 +1159,7 @@
                           <StackPanel>
                             <Border Background="Transparent" Cursor="Hand" MouseLeftButtonUp="AdvancedToggle_Click">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock x:Name="AdvancedChevron" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="9"
+                                    <a11y:Glyph x:Name="AdvancedChevron" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="9"
                                                Foreground="{DynamicResource DimTextBrush}" VerticalAlignment="Center" Margin="0,1,7,0"/>
                                     <TextBlock Text="{DynamicResource Str_Lbl_Advanced}" Foreground="{DynamicResource DimTextBrush}"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center"/>

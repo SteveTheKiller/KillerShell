@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using KillerFamily.Accessibility;
 
 // The terminal's right-click menu. Part of TerminalControl.
 //
@@ -100,7 +101,7 @@ namespace KillerShell.Terminal
             // raised rather than carried out here. The control does not know it is in a tab.
             var launches = new MenuItem { InputGestureText = "F8" };
             launches.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Term_NewShell");
-            var launchIcon = new TextBlock { Text = Glyph(0xE756) };
+            var launchIcon = new Glyph { Text = Glyph(0xE756) };
             launchIcon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             launches.Icon = launchIcon;
             m.Items.Add(launches);
@@ -151,7 +152,7 @@ namespace KillerShell.Terminal
             var profile = new MenuItem { InputGestureText = "Ctrl+,", IsEnabled = ShellKind == TerminalShellKind.PowerShell };
             profile.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Prof_Edit");
 
-            var profileIcon = new TextBlock { Text = Glyph(0xE70F) };
+            var profileIcon = new Glyph { Text = Glyph(0xE70F) };
             profileIcon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             profile.Icon = profileIcon;
 
@@ -196,7 +197,7 @@ namespace KillerShell.Terminal
             var item = new MenuItem { InputGestureText = gesture ?? string.Empty };
             item.SetResourceReference(HeaderedItemsControl.HeaderProperty, key);
 
-            var icon = new TextBlock { Text = glyph };
+            var icon = new Glyph { Text = glyph };
             icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             item.Icon = icon;
 

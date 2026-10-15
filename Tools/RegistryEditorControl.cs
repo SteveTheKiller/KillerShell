@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using KillerShell.Shell;
+using KillerFamily.Accessibility;
 
 // The control behind the Registry Editor tab: a real, working regedit-equivalent - browse the
 // five hives, view and edit values, create/rename/delete keys and values, search - built entirely
@@ -1296,7 +1297,7 @@ namespace KillerShell.Tools
         {
             var item = new MenuItem { IsEnabled = enabled, InputGestureText = gesture };
             item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-            var icon = new TextBlock { Text = ((char)glyph).ToString() };
+            var icon = new Glyph { Text = ((char)glyph).ToString() };
             icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             var iconBox = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = icon };
             item.Icon = iconBox;
@@ -1315,7 +1316,7 @@ namespace KillerShell.Tools
 
             var newMenu = new MenuItem();
             newMenu.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Menu_RegNew");
-            var newIcon = new TextBlock { Text = ((char)0xE710).ToString() };
+            var newIcon = new Glyph { Text = ((char)0xE710).ToString() };
             newIcon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             newMenu.Icon = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = newIcon };
 

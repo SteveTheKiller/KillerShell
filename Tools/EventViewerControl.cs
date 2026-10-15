@@ -17,6 +17,7 @@ using System.Windows.Threading;
 
 using KillerShell.Models;
 using KillerShell.Shell;
+using KillerFamily.Accessibility;
 
 // The control behind an Event Viewer tab: a filterable, sortable grid over the three classic
 // Windows Event Logs. Partial to nothing - same stand-alone shape as ProcessListControl.cs, and
@@ -876,7 +877,7 @@ namespace KillerShell.Tools
             {
                 var item = new MenuItem();
                 item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-                var icon = new TextBlock { Text = glyph };
+                var icon = new Glyph { Text = glyph };
                 icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
                 var iconBox = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = icon };
                 item.Icon = iconBox;

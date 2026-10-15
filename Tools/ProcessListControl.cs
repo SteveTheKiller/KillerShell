@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 using KillerShell.Models;
 using KillerShell.Shell;
+using KillerFamily.Accessibility;
 
 // The control behind a Processes/Services tab: a live, filterable, sortable list, toggling
 // between every process on the machine and every Windows service. Partial to nothing - this is a
@@ -1210,7 +1211,7 @@ namespace KillerShell.Tools
         {
             var item = new MenuItem { IsEnabled = enabled, InputGestureText = gesture };
             item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-            var icon = new TextBlock { Text = glyph };
+            var icon = new Glyph { Text = glyph };
             icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             var iconBox = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = icon };
             item.Icon = iconBox;

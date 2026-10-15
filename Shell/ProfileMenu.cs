@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using KillerShell.Terminal;
+using KillerFamily.Accessibility;
 
 // Editing your PowerShell $PROFILE. Partial of MainWindow.
 //
@@ -54,7 +55,7 @@ namespace KillerShell.Shell
                 // row stop matching what the user sees everywhere else.
                 var item = new MenuItem { Header = host.Name };
 
-                var icon = new TextBlock { Text = ((char)0xE756).ToString() };
+                var icon = new Glyph { Text = ((char)0xE756).ToString() };
                 icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
                 item.Icon = icon;
 

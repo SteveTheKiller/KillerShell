@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using KillerShell.Shell;
+using KillerFamily.Accessibility;
 
 // The control behind a Storage Analyzer tab: pick a folder or drive, scan it, and see every
 // byte as a WizTree/WinDirStat-style treemap - a rectangle per file, area proportional to
@@ -416,7 +417,7 @@ namespace KillerShell.Tools
         /// </summary>
         private static Border MakeFilterButton(int glyph, string tipKey, out TextBlock badge, Func<ContextMenu> buildMenu)
         {
-            var g = new TextBlock
+            var g = new Glyph
             {
                 FontFamily = new FontFamily("Segoe MDL2 Assets"),
                 FontSize = 12,
@@ -524,7 +525,7 @@ namespace KillerShell.Tools
         /// the family's own selected-toggle convention.</summary>
         private Border MakeColorToggle(int glyph, string tipKey, bool byFolder)
         {
-            var text = new TextBlock
+            var text = new Glyph
             {
                 FontFamily = new FontFamily("Segoe MDL2 Assets"),
                 FontSize = 12,
@@ -1330,7 +1331,7 @@ namespace KillerShell.Tools
         {
             var item = new MenuItem();
             item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-            var icon = new TextBlock { Text = ((char)glyph).ToString() };
+            var icon = new Glyph { Text = ((char)glyph).ToString() };
             icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             item.Icon = icon;
             return item;

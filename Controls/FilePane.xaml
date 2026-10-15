@@ -12,6 +12,7 @@
 <UserControl x:Class="KillerShell.FilePane"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:a11y="clr-namespace:KillerFamily.Accessibility"
              xmlns:local="clr-namespace:KillerShell"
              xmlns:svc="clr-namespace:KillerShell.Services"
              xmlns:shellns="clr-namespace:KillerShell.Shell"
@@ -26,7 +27,7 @@
                 <ContextMenu x:Key="BarMenu">
                     <MenuItem Header="{DynamicResource Str_Menu_HideMenuBar}" InputGestureText="Alt+M"
                               Click="BarHideMenu_Click">
-                        <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7B3;"/></MenuItem.Icon>
+                        <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7B3;"/></MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
             </UserControl.Resources>
@@ -884,7 +885,7 @@
                         <Button x:Name="ExpandAllButton" Style="{StaticResource SurfaceButton}"
                                 Width="26" Height="24" Padding="0" Margin="0,0,2,0" VerticalAlignment="Center"
                                 ToolTip="{DynamicResource Str_Btn_ExpandAll}" Click="ExpandAll_Click">
-                            <TextBlock x:Name="ExpandAllGlyph" Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                            <a11y:Glyph x:Name="ExpandAllGlyph" Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
                         <!-- View options (ViewOptions.cs). Both accent while on, via the
@@ -900,9 +901,9 @@
                                 Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_FoldersTop}" Click="FoldersTop_Click">
                             <Grid>
-                                <TextBlock Text="&#xF12B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                <a11y:Glyph Text="&#xF12B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <TextBlock Text="&#xEDDB;" FontFamily="Segoe MDL2 Assets" FontSize="7"
+                                <a11y:Glyph Text="&#xEDDB;" FontFamily="Segoe MDL2 Assets" FontSize="7"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0"/>
                             </Grid>
                         </Button>
@@ -976,7 +977,7 @@
                                              the same way the old two buttons were. -->
                                         <Button Style="{StaticResource ExportRow}" Margin="0,0,0,2" Click="ExportCsv_Click">
                                             <DockPanel LastChildFill="True">
-                                                <TextBlock DockPanel.Dock="Left" Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                                <a11y:Glyph DockPanel.Dock="Left" Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                            Width="22" VerticalAlignment="Center"/>
                                                 <TextBlock DockPanel.Dock="Right" Text="Ctrl+Alt+Shift+E" Foreground="{DynamicResource DimTextBrush}"
                                                            FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
@@ -1992,7 +1993,7 @@
                      loosest density) plus TilePad's 8 on top, so the first row still has room.
                      The 8 left and right stays - horizontal scrolling is disabled, so a permanent
                      side inset is exactly what is wanted there. -->
-                <ListBox x:Name="ResultsList" Background="Transparent" BorderThickness="0" Padding="8,0,8,0" Focusable="True"
+                <ListBox x:Name="ResultsList" AutomationProperties.Name="{DynamicResource Str_Ks_ScopeFiles}" Background="Transparent" BorderThickness="0" Padding="8,0,8,0" Focusable="True"
                          FocusVisualStyle="{x:Null}" SelectionMode="Extended"
                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                          VirtualizingPanel.ScrollUnit="Pixel"
@@ -2016,26 +2017,26 @@
                              nesting the six Copy items is on the table if this list grows. -->
                         <ContextMenu x:Key="ResultMenu">
                             <MenuItem Header="{DynamicResource Str_Menu_OpenFile}"      Click="MenuOpen_Click"           InputGestureText="Enter">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8E5;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8E5;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Edit opens the file in a TAB rather than through its association,
                                  which is the point on a script: opening a .ps1 the normal way
                                  runs it (ResultsMenu.cs MenuEdit_Click). -->
                             <MenuItem Header="{DynamicResource Str_Menu_Edit}"          Click="MenuEdit_Click"           InputGestureText="F7">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE70F;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE70F;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_OpenWith}"      Click="MenuOpenWith_Click"       InputGestureText="Ctrl+Shift+O">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7AC;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7AC;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_OpenAdmin}"     Click="MenuOpenAdmin_Click"      InputGestureText="Ctrl+Shift+Enter">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                             </MenuItem>
                             <Separator/>
                             <MenuItem Header="{DynamicResource Str_Menu_ShowExplorer}"  Click="MenuShowInExplorer_Click" InputGestureText="F6">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE838;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE838;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_SearchHere}"    Click="MenuSearchHere_Click"     InputGestureText="F3">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Shells, grouped with the other "act on this folder" verbs above
                                  rather than with the file commands: a terminal opens ON a folder,
@@ -2043,26 +2044,26 @@
                                  The keyboard had these from the start (F8 / Ctrl+F8) and the
                                  menu did not, which made the whole feature keyboard-only. -->
                             <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}"  Click="MenuTerminal_Click"       InputGestureText="F8">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="MenuTerminalAdmin_Click" InputGestureText="Ctrl+F8">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Another "act on this folder" verb, so it sits with the shells
                                  rather than with the file commands. The same row appears on a
                                  tree node and a saved place - a folder offers the same verbs
                                  wherever it is drawn. -->
                             <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="MenuAnalyze_Click">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_ExcludeFolder}" Click="MenuExcludeFolder_Click"  InputGestureText="Ctrl+Shift+E">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Header swaps between add and remove as the menu opens, so one
                                  item covers both directions (ResultsMenu.cs). -->
                             <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}"
                                       Click="MenuFavorite_Click" InputGestureText="Ctrl+D">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
                             </MenuItem>
                             <Separator/>
                             <!-- E8C8 is MDL2's Copy (two stacked documents). This was E71B, which
@@ -2070,22 +2071,22 @@
                                  "copy". E8C8 is what Copy below already uses, and the editor,
                                  terminal, Registry Editor and Storage Analyzer menus too. -->
                             <MenuItem Header="{DynamicResource Str_Menu_CopyPath}"      Click="MenuCopyPath_Click"   InputGestureText="Ctrl+Shift+C">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_CopyName}"      Click="MenuCopyName_Click"   InputGestureText="Ctrl+Shift+M">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_CopyFolder}"    Click="MenuCopyFolder_Click" InputGestureText="Ctrl+Shift+D">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8B7;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8B7;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_CopyLines}"     Click="MenuCopyLines_Click"  InputGestureText="Ctrl+Shift+Y">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8A5;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8A5;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- "Copy file" used to sit here. It was PutFilesOnClipboard(Copy)
                                  written twice - same CF_HDROP, same Preferred DropEffect blob,
                                  same status key as Ctrl+C / Copy below. Removed as redundant. -->
                             <MenuItem Header="{DynamicResource Str_Menu_CopyHash}"      Click="MenuCopyHash_Click"   InputGestureText="Ctrl+Shift+H">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE72E;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE72E;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- File operations (FileCommands.cs). Cut / Copy / Paste sit above
                                  the destructive pair, and New folder last, so Delete never lands
@@ -2097,30 +2098,30 @@
                                  that really exists in Window_PreviewKeyDown - an item showing a
                                  shortcut that does nothing is worse than showing none. -->
                             <MenuItem Header="{DynamicResource Str_Menu_Cut}"           Click="MenuCut_Click"       InputGestureText="Ctrl+X">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8C6;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C6;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_Copy}"          Click="MenuCopy_Click"      InputGestureText="Ctrl+C">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_Paste}"         Click="MenuPaste_Click"     InputGestureText="Ctrl+V">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE77F;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE77F;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_Rename}"        Click="MenuRename_Click"    InputGestureText="F2">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Nickname rows, next to Rename because they read like one: header
                                  and visibility are set as the menu opens (NicknameCommands.cs). -->
                             <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="MenuNickname_Click">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="MenuNicknameRemove_Click">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_Delete}"        Click="MenuDelete_Click"    InputGestureText="Delete">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE74D;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE74D;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_NewFolder}"     Click="MenuNewFolder_Click" InputGestureText="Ctrl+Shift+N">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8F4;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8F4;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Archive verbs (ArchiveEdit.cs). Shown only where they apply:
                                  Compress on real files and folders, the two Extract rows when the
@@ -2128,20 +2129,20 @@
                                  header carries the folder name and is set as the menu opens. -->
                             <Separator Tag="zipsep"/>
                             <MenuItem Tag="zip" Header="{DynamicResource Str_Menu_Compress}" Click="MenuCompress_Click">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Tag="unziphere" Header="{DynamicResource Str_Menu_ExtractHere}" Click="MenuExtractHere_Click">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8B7;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8B7;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Tag="unzipto" Header="{DynamicResource Str_Menu_ExtractTo}" Click="MenuExtractTo_Click">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE8DA;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8DA;"/></MenuItem.Icon>
                             </MenuItem>
                             <Separator/>
                             <MenuItem Header="{DynamicResource Str_Menu_Properties}"    Click="MenuProperties_Click" InputGestureText="Alt+Enter">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}"     Click="MenuShell_Click"      InputGestureText="Shift+F10" Tag="shellmenu">
-                                <MenuItem.Icon><TextBlock Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>
 
@@ -2539,7 +2540,7 @@
                               <Rectangle Canvas.Left="0" Canvas.Top="12" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
                               <Rectangle Canvas.Left="5" Canvas.Top="12" Width="2" Height="2" Fill="{DynamicResource DimTextBrush}"/>
                           </Canvas>
-                          <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                          <a11y:Glyph Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                      Foreground="{DynamicResource DimTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                           <TextBox x:Name="ResultFilterBox" Width="280" Height="28" FontSize="13" VerticalContentAlignment="Center"
                                    ToolTip="{DynamicResource Str_TT_FilterResults}" TextChanged="ResultFilterBox_TextChanged"/>

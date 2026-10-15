@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using KillerFamily.Accessibility;
 
 // The document's right-click menu. Part of EditorControl.
 //
@@ -90,7 +91,7 @@ namespace KillerShell.Editing
             var item = new MenuItem { InputGestureText = gesture ?? string.Empty };
             item.SetResourceReference(HeaderedItemsControl.HeaderProperty, key);
 
-            var icon = new TextBlock { Text = glyph };
+            var icon = new Glyph { Text = glyph };
             icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             item.Icon = icon;
 

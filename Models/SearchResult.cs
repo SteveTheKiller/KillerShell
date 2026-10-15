@@ -16,6 +16,9 @@ namespace KillerShell.Models
         /// Copy name keep using FileName.</summary>
         public string NameLabel => Services.Nicknames.Label(FilePath, FileName);
 
+        /// <summary>The list item's accessible name, which UI Automation takes from the item.</summary>
+        public override string ToString() => NameLabel;
+
         /// <summary>Redraws the name after its nickname was set or removed.</summary>
         public void NotifyNickname()
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NameLabel)));
