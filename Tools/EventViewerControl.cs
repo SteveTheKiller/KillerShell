@@ -294,6 +294,7 @@ namespace KillerShell.Tools
 
             grid.ContextMenuOpening += Grid_ContextMenuOpening;
             grid.MouseDoubleClick += Grid_MouseDoubleClick;
+            grid.PreviewKeyDown += Grid_PreviewKeyDown;
             return grid;
         }
 
@@ -855,7 +856,29 @@ namespace KillerShell.Tools
         /// the dialog the FULL ordered list straight off the view (its current sort/filter, not a
         /// stale unsorted copy of _items) plus the clicked row's index into it, so the dialog's
         /// own Previous/Next buttons page through exactly what the grid was showing.</summary>
-        private void Grid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void Grid_MouseDoubleClick(object sender, MouseButtonEventArgs e) => OpenDetails();
+
+        /// <summary>The row's keys, the same verbs as its menu: Enter opens the details card,
+        /// Ctrl+C copies the details block and Ctrl+Shift+C copies just the message. On the grid
+        /// only, so the filter box keeps Ctrl+C for its own text. Handled here rather than left to
+        /// the DataGrid, whose own Enter moves down a row and whose own Ctrl+C copies cells.</summary>
+        private void Grid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (_grid.SelectedItem is not EventLogEntryInfo entry) return;
+            var mods = Keyboard.Modifiers;
+
+            if (e.Key == Key.Enter && mods == ModifierKeys.None)
+                OpenDetails();
+            else if (e.Key == Key.C && mods == ModifierKeys.Control)
+                CopyToClipboard(FormatDetails(entry), "Str_Evt_DetailsCopied");
+            else if (e.Key == Key.C && mods == (ModifierKeys.Control | ModifierKeys.Shift))
+                CopyToClipboard(entry.Message, "Str_Evt_MessageCopied");
+            else
+                return;
+            e.Handled = true;
+        }
+
+        private void OpenDetails()
         {
             if (_grid.SelectedItem is not EventLogEntryInfo entry) return;
 
@@ -873,9 +896,9 @@ namespace KillerShell.Tools
 
             var menu = new ContextMenu { PlacementTarget = _grid };
 
-            MenuItem Item(string headerKey, string glyph, RoutedEventHandler click)
+            MenuItem Item(string headerKey, string glyph, string gesture, RoutedEventHandler click)
             {
-                var item = new MenuItem();
+                var item = new MenuItem { InputGestureText = gesture };
                 item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
                 var icon = new Glyph { Text = glyph };
                 icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
@@ -889,9 +912,9 @@ namespace KillerShell.Tools
             // E8C8: MDL2's Copy, two stacked documents - the glyph every copy action in the app
             // uses (the folder tree's Copy full path, the editor, the terminal, the Registry
             // Editor, the Storage Analyzer). It was E71B, which is LINK - a chain.
-            Item("Str_Menu_EvtCopyMessage", ((char)0xE8C8).ToString(),
+            Item("Str_Menu_EvtCopyMessage", ((char)0xE8C8).ToString(), "Ctrl+Shift+C",
                  (_, _) => CopyToClipboard(entry.Message, "Str_Evt_MessageCopied"));
-            Item("Str_Menu_EvtCopyDetails", ((char)0xE8C8).ToString(),
+            Item("Str_Menu_EvtCopyDetails", ((char)0xE8C8).ToString(), "Ctrl+C",
                  (_, _) => CopyToClipboard(FormatDetails(entry), "Str_Evt_DetailsCopied"));
 
             menu.IsOpen = true;

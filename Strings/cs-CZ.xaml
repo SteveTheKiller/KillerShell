@@ -10,9 +10,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Jazyk</sys:String>
-    <sys:String x:Key="Str_TT_Theme">Motiv</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">Kolečkem nad logem změníte velikost aplikace</sys:String>
+    <sys:String x:Key="Str_TT_Language">Jazyk  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Motiv  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Kolečkem nad logem změníte velikost aplikace  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">Velikost aplikace {0} %</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">motiv</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">akcent</sys:String>
@@ -21,14 +21,14 @@
     <sys:String x:Key="Str_Lbl_In">v:</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(není vybrána žádná složka - vyberte kliknutím)</sys:String>
     <sys:String x:Key="Str_Scope_Dropped">přetažené soubory</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Kliknutím změníte prohledávanou složku</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Kliknutím změníte prohledávanou složku  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">Zobrazit nebo skrýt panel hledání  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Zobrazit nebo skrýt strom složek</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Sbalit boční panely</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Sbalit boční panely  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">Uložená místa  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Uložit tuto složku</sys:String>
-    <sys:String x:Key="Str_TT_ShowHidden">Zobrazit skryté a systémové položky</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Držet složky nad soubory</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Zobrazit skryté a systémové položky  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Držet složky nad soubory  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Přidat k oblíbeným</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Odebrat z oblíbených</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Přidat přezdívku</sys:String>
@@ -37,8 +37,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Skrýt panel nabídek</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">zobrazit nebo skrýt uložená místa</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">přejít na uložené místo 1-10 (0 = desáté)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Zpět</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Vpřed</sys:String>
+    <sys:String x:Key="Str_TT_Back">Zpět  (Alt+Šipka vlevo)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Vpřed  (Alt+Šipka vpravo)</sys:String>
     <sys:String x:Key="Str_Status_Listing">Otevírám {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} položek</sys:String>
     <sys:String x:Key="Str_Status_BadPath">Nelze otevřít {0}</sys:String>
@@ -78,7 +78,7 @@
     <sys:String x:Key="Str_Tab_New">nové hledání</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">přetaženo ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Nová karta</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Zavřít kartu</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Zavřít kartu  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Zrušit</sys:String>
@@ -94,11 +94,11 @@
     <sys:String x:Key="Str_Col_Folder">umístění</sys:String>
     <sys:String x:Key="Str_Sort_Found">v pořadí nalezení</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrovat tyto výsledky (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Hledat uvnitř těchto výsledků</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Druhý panel  |  pravým tlačítkem přepnete vedle sebe / pod sebou</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Hledat uvnitř těchto výsledků  (Ctrl+Shift+F)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Druhý panel  (F10)  |  pravým tlačítkem přepnete vedle sebe / pod sebou</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Další nástroje</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systémové nástroje</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Řadit podle</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Řadit podle  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Tento počítač</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Hledat uvnitř těchto výsledků</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} výsledků z {1}  |  {2}</sys:String>
@@ -310,12 +310,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">otevřít nové okno</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">Naposledy navštívené složky</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Naposledy navštívené složky  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">Zatím žádné nedávné složky</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Vymazat seznam</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">Hustota výsledků - klikem přepnete, kolečkem odstupňujete</sys:String>
+    <sys:String x:Key="Str_TT_Density">Hustota výsledků - klikem přepnete, kolečkem odstupňujete  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Hustota: prostorná</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Hustota: pohodlná</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Hustota: kompaktní</sys:String>
@@ -433,7 +433,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Znovu  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Najít  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Přejít na řádek  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">Zalamování řádků</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Zalamování řádků  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Nastavení editoru</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">řádek</sys:String>
 
@@ -460,9 +460,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Otevřít tuto složku na kartě</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Nový terminál  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nový terminál jako správce  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Otevřít tuto složku na kartě</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Vymazat</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Písma...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Otevřít tuto složku na kartě  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Vymazat  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Písma...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Zalamování řádků zapnuto.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Zalamování řádků vypnuto - dlouhé řádky zobrazíte posunutím.</sys:String>
@@ -856,6 +856,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">oddálit o jednu úroveň (Analýza úložiště)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">zpět ke kořeni analýzy (Analýza úložiště)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">přesunout vybranou položku do Koše (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">přiblížit nebo oddálit celou aplikaci (0 obnoví velikost)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">zobrazit nebo skrýt boční panely</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">otevřít výběr motivu a barvy zvýraznění</sys:String>
+    <sys:String x:Key="Str_Ks_Language">otevřít výběr jazyka</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">zapnout nebo vypnout filmové zrno</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">otevřít nebo zavřít druhý panel</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">zobrazit nebo skrýt skryté a systémové položky</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">zobrazit nebo skrýt podrobnosti souboru</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">zobrazení seznamu, ikon nebo podrobností</sys:String>
+    <sys:String x:Key="Str_Ks_Density">přepnout hustotu výsledků</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">větší nebo menší ikony, stejně jako Ctrl+kolečko</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">vybrat řazení</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">obrátit pořadí řazení</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">držet složky nad soubory</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">zobrazit naposledy navštívené složky</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">extrahovat každý archiv do vlastní složky</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">nový dokument, opakovat uložení jako správce</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">větší, menší nebo výchozí velikost textu</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">posunout výstup o řádek nebo stránku</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">posunout na začátek nebo konec výstupu</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">otevřít kartu podrobností</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">znovu načíst vybraný klíč z disku</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">zastavit probíhající analýzu (Analýza úložiště)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">Obrátit pořadí řazení  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Analyzovat</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Zastavit</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Vyberte složku nebo jednotku k analýze</sys:String>

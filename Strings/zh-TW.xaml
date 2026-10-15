@@ -10,9 +10,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">語言</sys:String>
-    <sys:String x:Key="Str_TT_Theme">佈景主題</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">在標誌上捲動滾輪可調整應用程式大小</sys:String>
+    <sys:String x:Key="Str_TT_Language">語言  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">佈景主題  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">在標誌上捲動滾輪可調整應用程式大小  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">應用程式大小 {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">佈景主題</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">強調色</sys:String>
@@ -20,7 +20,7 @@
     <!-- Scope bar -->
     <sys:String x:Key="Str_Lbl_In">位置：</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(未選取資料夾 - 按一下以選擇)</sys:String>
-    <sys:String x:Key="Str_TT_Scope">按一下以變更搜尋資料夾</sys:String>
+    <sys:String x:Key="Str_TT_Scope">按一下以變更搜尋資料夾  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFolder">選取根搜尋資料夾</sys:String>
 
     <!-- Search config -->
@@ -56,7 +56,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">新搜尋</sys:String>
     <sys:String x:Key="Str_TT_NewTab">新增分頁</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">關閉分頁</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">關閉分頁  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">取消</sys:String>
@@ -72,11 +72,11 @@
     <sys:String x:Key="Str_Col_Folder">位置</sys:String>
     <sys:String x:Key="Str_Sort_Found">預設順序</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">篩選這些結果（Ctrl+F）</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">在這些結果中搜尋</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">第二個窗格  |  右鍵切換左右 / 上下</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">在這些結果中搜尋  (Ctrl+Shift+F)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">第二個窗格  (F10)  |  右鍵切換左右 / 上下</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">更多工具</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">系統工具</sys:String>
-    <sys:String x:Key="Str_TT_Sort">排序方式</sys:String>
+    <sys:String x:Key="Str_TT_Sort">排序方式  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">本機</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">在這些結果中搜尋</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">來自 {1} 的 {0} 個結果  |  {2}</sys:String>
@@ -263,12 +263,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">開啟新視窗</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">最近造訪的資料夾</sys:String>
+    <sys:String x:Key="Str_TT_Recents">最近造訪的資料夾  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">尚無最近的資料夾</sys:String>
     <sys:String x:Key="Str_Recents_Clear">清除清單</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">結果密度 - 按一下切換，滾輪調整</sys:String>
+    <sys:String x:Key="Str_TT_Density">結果密度 - 按一下切換，滾輪調整  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">密度：寬敞</sys:String>
     <sys:String x:Key="Str_St_DensityFull">密度：寬鬆</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">密度：緊湊</sys:String>
@@ -300,11 +300,11 @@
     <sys:String x:Key="Str_Tab_Dropped">拖入 ({0})</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">顯示或隱藏搜尋面板  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">顯示或隱藏資料夾樹狀結構</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">摺疊側邊面板</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">摺疊側邊面板  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">已儲存的位置  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">儲存此資料夾</sys:String>
-    <sys:String x:Key="Str_TT_ShowHidden">顯示隱藏和系統項目</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">資料夾置於檔案之上</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">顯示隱藏和系統項目  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">資料夾置於檔案之上  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">加入我的最愛</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">從我的最愛移除</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">新增暱稱</sys:String>
@@ -313,8 +313,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">隱藏功能表列</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">顯示或隱藏已儲存的位置</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">前往已儲存的位置 1-10（0 = 第十個）</sys:String>
-    <sys:String x:Key="Str_TT_Back">上一頁</sys:String>
-    <sys:String x:Key="Str_TT_Forward">下一頁</sys:String>
+    <sys:String x:Key="Str_TT_Back">上一頁  (Alt+向左鍵)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">下一頁  (Alt+向右鍵)</sys:String>
     <sys:String x:Key="Str_Status_Listing">正在開啟 {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} 個項目</sys:String>
     <sys:String x:Key="Str_Status_BadPath">無法開啟 {0}</sys:String>
@@ -435,7 +435,7 @@
     <sys:String x:Key="Str_TT_EdRedo">重做  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">尋找  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">移至行  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">自動換行</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">自動換行  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">編輯器設定</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">行</sys:String>
 
@@ -462,9 +462,9 @@
     <sys:String x:Key="Str_TT_TermCwd">在分頁中開啟此資料夾</sys:String>
     <sys:String x:Key="Str_TT_TermNew">新增終端機  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">以系統管理員身分新增終端機  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">在分頁中開啟此資料夾</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">清除</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">字型...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">在分頁中開啟此資料夾  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">清除  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">字型...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">自動換行已開啟。</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">自動換行已關閉 - 捲動以檢視較長的行。</sys:String>
@@ -855,6 +855,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">縮小一層（儲存空間分析器）</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">返回掃描根目錄（儲存空間分析器）</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">將選取項目移到資源回收筒（儲存空間分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">縮放整個應用程式（0 恢復預設）</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">顯示或隱藏側邊面板</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">開啟佈景主題與強調色選擇器</sys:String>
+    <sys:String x:Key="Str_Ks_Language">開啟語言選擇器</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">開啟或關閉底片顆粒</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">開啟或關閉第二個窗格</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">顯示或隱藏隱藏和系統項目</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">顯示或隱藏檔案詳細資料</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">清單、圖示或詳細資料檢視</sys:String>
+    <sys:String x:Key="Str_Ks_Density">切換結果密度</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">放大或縮小圖示，與 Ctrl+滾輪相同</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">選擇排序方式</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">反轉排序順序</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">資料夾置於檔案之上</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">顯示最近造訪的資料夾</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">將每個壓縮檔解壓縮到各自的資料夾</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">新增文件，以系統管理員身分重試儲存</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">放大、縮小或還原預設文字大小</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">逐行或逐頁捲動輸出</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">捲動到輸出的頂端或底端</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">開啟詳細資料卡片</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">從磁碟重新載入所選的機碼</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">停止進行中的掃描（儲存空間分析器）</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">反轉排序順序  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">掃描</sys:String>
     <sys:String x:Key="Str_Storage_Stop">停止</sys:String>
     <sys:String x:Key="Str_Storage_Browse">選擇要掃描的資料夾或磁碟機</sys:String>

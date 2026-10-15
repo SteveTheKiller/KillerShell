@@ -431,6 +431,13 @@ namespace KillerShell.Shell
                 // terminal's own scrollback paging (Windows Terminal's binding), so the shift
                 // variant has to be let through rather than swallowed here.
                 System.Windows.Input.Key.PageUp or System.Windows.Input.Key.PageDown => !shift,
+                // Ctrl+Shift +/- and 0 size the whole app, and Ctrl+Shift+B shows or hides the
+                // side panels (KeyCommands.cs). The window's from inside any tab; the shell's own
+                // text size is the unshifted Ctrl +/- and 0, which still pass through.
+                System.Windows.Input.Key.OemPlus or System.Windows.Input.Key.Add
+                    or System.Windows.Input.Key.OemMinus or System.Windows.Input.Key.Subtract
+                    or System.Windows.Input.Key.D0 or System.Windows.Input.Key.NumPad0
+                    or System.Windows.Input.Key.B => shift,
                 // Ctrl+1-9 jumps to a tab by number.
                 System.Windows.Input.Key.D1 or System.Windows.Input.Key.D2 or System.Windows.Input.Key.D3 or System.Windows.Input.Key.D4 or System.Windows.Input.Key.D5 or System.Windows.Input.Key.D6 or System.Windows.Input.Key.D7 or System.Windows.Input.Key.D8 or System.Windows.Input.Key.D9 => !shift,
                 _ => false,

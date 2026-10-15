@@ -10,9 +10,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">语言</sys:String>
-    <sys:String x:Key="Str_TT_Theme">主题</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">在标志上滚动滚轮可调整应用大小</sys:String>
+    <sys:String x:Key="Str_TT_Language">语言  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">主题  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">在标志上滚动滚轮可调整应用大小  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">应用大小 {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">主题</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">强调色</sys:String>
@@ -20,7 +20,7 @@
     <!-- Scope bar -->
     <sys:String x:Key="Str_Lbl_In">范围：</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(未选择文件夹 - 点击以选择)</sys:String>
-    <sys:String x:Key="Str_TT_Scope">点击以更改搜索文件夹</sys:String>
+    <sys:String x:Key="Str_TT_Scope">点击以更改搜索文件夹  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFolder">选择根搜索文件夹</sys:String>
 
     <!-- Search config -->
@@ -56,7 +56,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">新搜索</sys:String>
     <sys:String x:Key="Str_TT_NewTab">新建标签页</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">关闭标签页</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">关闭标签页  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">取消</sys:String>
@@ -72,11 +72,11 @@
     <sys:String x:Key="Str_Col_Folder">位置</sys:String>
     <sys:String x:Key="Str_Sort_Found">默认顺序</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">筛选这些结果（Ctrl+F）</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">在这些结果中搜索</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">第二个窗格  |  右键切换左右 / 上下</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">在这些结果中搜索  (Ctrl+Shift+F)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">第二个窗格  (F10)  |  右键切换左右 / 上下</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">更多工具</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">系统工具</sys:String>
-    <sys:String x:Key="Str_TT_Sort">排序方式</sys:String>
+    <sys:String x:Key="Str_TT_Sort">排序方式  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">此电脑</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">在这些结果中搜索</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">来自 {1} 的 {0} 个结果  |  {2}</sys:String>
@@ -263,12 +263,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">打开新窗口</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">最近访问的文件夹</sys:String>
+    <sys:String x:Key="Str_TT_Recents">最近访问的文件夹  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">暂无最近的文件夹</sys:String>
     <sys:String x:Key="Str_Recents_Clear">清除列表</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">结果密度 - 单击切换，滚轮调节</sys:String>
+    <sys:String x:Key="Str_TT_Density">结果密度 - 单击切换，滚轮调节  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">密度：宽敞</sys:String>
     <sys:String x:Key="Str_St_DensityFull">密度：宽松</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">密度：紧凑</sys:String>
@@ -300,11 +300,11 @@
     <sys:String x:Key="Str_Tab_Dropped">拖入 ({0})</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">显示或隐藏搜索面板  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">显示或隐藏文件夹树</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">折叠侧边面板</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">折叠侧边面板  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">已保存的位置  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">保存此文件夹</sys:String>
-    <sys:String x:Key="Str_TT_ShowHidden">显示隐藏和系统项目</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">文件夹置于文件之上</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">显示隐藏和系统项目  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">文件夹置于文件之上  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">添加到收藏夹</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">从收藏夹移除</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">添加昵称</sys:String>
@@ -313,8 +313,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">隐藏菜单栏</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">显示或隐藏已保存的位置</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">转到已保存的位置 1-10（0 = 第十个）</sys:String>
-    <sys:String x:Key="Str_TT_Back">后退</sys:String>
-    <sys:String x:Key="Str_TT_Forward">前进</sys:String>
+    <sys:String x:Key="Str_TT_Back">后退  (Alt+左箭头键)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">前进  (Alt+右箭头键)</sys:String>
     <sys:String x:Key="Str_Status_Listing">正在打开 {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} 个项目</sys:String>
     <sys:String x:Key="Str_Status_BadPath">无法打开 {0}</sys:String>
@@ -435,7 +435,7 @@
     <sys:String x:Key="Str_TT_EdRedo">重做  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">查找  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">转到行  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">自动换行</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">自动换行  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">编辑器设置</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">行</sys:String>
 
@@ -462,9 +462,9 @@
     <sys:String x:Key="Str_TT_TermCwd">在标签页中打开此文件夹</sys:String>
     <sys:String x:Key="Str_TT_TermNew">新建终端  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">以管理员身份新建终端  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">在标签页中打开此文件夹</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">清屏</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">字体...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">在标签页中打开此文件夹  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">清屏  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">字体...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">自动换行已开启。</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">自动换行已关闭 - 滚动以查看较长的行。</sys:String>
@@ -855,6 +855,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">缩小一级（存储分析器）</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">返回扫描根目录（存储分析器）</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">将所选项目移到回收站（存储分析器）</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">缩放整个应用（0 恢复默认）</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">显示或隐藏侧边面板</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">打开主题和强调色选择器</sys:String>
+    <sys:String x:Key="Str_Ks_Language">打开语言选择器</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">开启或关闭胶片颗粒</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">打开或关闭第二个窗格</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">显示或隐藏隐藏和系统项目</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">显示或隐藏文件详细信息</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">列表、图标或详细信息视图</sys:String>
+    <sys:String x:Key="Str_Ks_Density">切换结果密度</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">放大或缩小图标，与 Ctrl+滚轮相同</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">选择排序方式</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">反转排序顺序</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">文件夹置于文件之上</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">显示最近访问的文件夹</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">将每个压缩包解压到各自的文件夹</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">新建文档，以管理员身份重试保存</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">放大、缩小或恢复默认文字大小</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">按行或按页滚动输出</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">滚动到输出的顶部或底部</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">打开详细信息卡片</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">从磁盘重新加载所选的项</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">停止正在进行的扫描（存储分析器）</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">反转排序顺序  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">扫描</sys:String>
     <sys:String x:Key="Str_Storage_Stop">停止</sys:String>
     <sys:String x:Key="Str_Storage_Browse">选择要扫描的文件夹或驱动器</sys:String>

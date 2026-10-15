@@ -9,9 +9,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Lingua</sys:String>
-    <sys:String x:Key="Str_TT_Theme">Tema</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">Ruota la rotellina sul logo per ridimensionare l'app</sys:String>
+    <sys:String x:Key="Str_TT_Language">Lingua  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Tema  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Ruota la rotellina sul logo per ridimensionare l'app  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">Dimensione app {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">tema</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">accento</sys:String>
@@ -34,15 +34,15 @@
     <sys:String x:Key="Str_Lbl_In">in:</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(nessuna cartella selezionata - clicca per scegliere)</sys:String>
     <sys:String x:Key="Str_Scope_Dropped">file trascinati</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Clicca per cambiare la cartella di ricerca</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Clicca per cambiare la cartella di ricerca  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">Mostra o nascondi il pannello di ricerca  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Mostra o nascondi l'albero delle cartelle</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Comprimi i pannelli laterali</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Comprimi i pannelli laterali  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">Segnalibri  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Aggiungi questa cartella ai segnalibri  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Mostra elementi nascosti e di sistema  (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Mostra i dettagli del file  (Alt+P)</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Tieni le cartelle sopra i file</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Tieni le cartelle sopra i file  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Aggiungi ai segnalibri</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Rimuovi dai segnalibri</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Aggiungi soprannome</sys:String>
@@ -51,8 +51,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Nascondi la barra dei menu</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">mostrare o nascondere i segnalibri</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">andare al segnalibro 1-10 (0 = il decimo)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Indietro</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Avanti</sys:String>
+    <sys:String x:Key="Str_TT_Back">Indietro  (Alt+Freccia sinistra)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Avanti  (Alt+Freccia destra)</sys:String>
     <sys:String x:Key="Str_Status_Listing">Apertura di {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} elemento/i</sys:String>
     <sys:String x:Key="Str_Status_BadPath">Impossibile aprire {0}</sys:String>
@@ -92,7 +92,7 @@
     <sys:String x:Key="Str_Tab_New">nuova ricerca</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">trascinati ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Nuova scheda  (Ctrl+T)</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Chiudi scheda</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Chiudi scheda  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Annulla</sys:String>
@@ -108,11 +108,11 @@
     <sys:String x:Key="Str_Col_Folder">posizione</sys:String>
     <sys:String x:Key="Str_Sort_Found">come trovati</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtra questi risultati (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Cerca dentro questi risultati</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Cerca dentro questi risultati  (Ctrl+Shift+F)</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Secondo pannello  (F10)  |  clic destro per alternare affiancato / impilato</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Altri strumenti</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Strumenti di sistema</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Ordina per</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Ordina per  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Questo PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Cerca dentro questi risultati</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} risultati da {1}  |  {2}</sys:String>
@@ -357,12 +357,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">aprire una nuova finestra</sys:String>
 
     <!-- Recently visited folders -->
-    <sys:String x:Key="Str_TT_Recents">Cartelle visitate di recente</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Cartelle visitate di recente  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">Ancora nessuna cartella recente</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Svuota l'elenco</sys:String>
 
     <!-- Results density -->
-    <sys:String x:Key="Str_TT_Density">Densità dei risultati - clic per ciclare, rotellina per regolare</sys:String>
+    <sys:String x:Key="Str_TT_Density">Densità dei risultati - clic per ciclare, rotellina per regolare  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Densità: ariosa</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Densità: comoda</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Densità: compatta</sys:String>
@@ -398,7 +398,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Ripeti  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Trova  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Vai alla riga  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">A capo automatico</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">A capo automatico  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Impostazioni editor</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Clicca per cambiare la codifica del prossimo salvataggio</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">riga</sys:String>
@@ -434,9 +434,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Clicca per modificare - digita una cartella e premi Enter per fare cd lì</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Nuovo terminale  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nuovo terminale come amministratore  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Apri questa cartella in una scheda</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Pulisci</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Font...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Apri questa cartella in una scheda  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Pulisci  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Font...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Clicca per modificare - digita un percorso e premi Enter per rinominare/spostare il file</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">A capo automatico attivo.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">A capo automatico disattivato - scorri per vedere le righe lunghe.</sys:String>
@@ -750,6 +750,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">uscire di un livello (Analizzatore di spazio)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">tornare alla radice della scansione (Analizzatore di spazio)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">inviare l'elemento selezionato al Cestino (Analizzatore di spazio)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">zoom dell'intera app (0 la ripristina)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">mostrare o nascondere i pannelli laterali</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">aprire la scelta del tema e del colore d'accento</sys:String>
+    <sys:String x:Key="Str_Ks_Language">aprire la scelta della lingua</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">attivare o disattivare la grana pellicola</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">aprire o chiudere il secondo pannello</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">mostrare o nascondere gli elementi nascosti e di sistema</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">mostrare o nascondere i dettagli del file</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">vista elenco, icone o dettagli</sys:String>
+    <sys:String x:Key="Str_Ks_Density">cambiare la densità dei risultati</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">icone più grandi o più piccole, come Ctrl+rotellina</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">scegliere l'ordinamento</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">invertire l'ordinamento</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">tenere le cartelle sopra i file</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">mostrare le cartelle visitate di recente</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">estrarre ogni archivio nella propria cartella</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">nuovo documento, con nuovo tentativo di salvataggio da admin</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">testo più grande, più piccolo o dimensione predefinita</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">scorrere l'output di una riga o di una pagina</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">scorrere all'inizio o alla fine dell'output</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">aprire la scheda dei dettagli</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">ricaricare la chiave selezionata dal disco</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">fermare la scansione in corso (Analizzatore di spazio)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">Invertire l'ordinamento  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Scansiona</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Ferma</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Scegli una cartella o un'unità da scansionare</sys:String>

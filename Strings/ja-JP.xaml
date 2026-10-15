@@ -10,9 +10,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">言語</sys:String>
-    <sys:String x:Key="Str_TT_Theme">テーマ</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">ワードマーク上でスクロールするとアプリのサイズを変更できます</sys:String>
+    <sys:String x:Key="Str_TT_Language">言語  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">テーマ  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">ワードマーク上でスクロールするとアプリのサイズを変更できます  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">アプリサイズ {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">テーマ</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">アクセント</sys:String>
@@ -21,14 +21,14 @@
     <sys:String x:Key="Str_Lbl_In">場所:</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(フォルダーが未選択です - クリックして選択)</sys:String>
     <sys:String x:Key="Str_Scope_Dropped">ドロップされたファイル</sys:String>
-    <sys:String x:Key="Str_TT_Scope">クリックして検索フォルダーを変更</sys:String>
+    <sys:String x:Key="Str_TT_Scope">クリックして検索フォルダーを変更  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">検索パネルの表示・非表示  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">フォルダー ツリーの表示・非表示</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">サイドパネルを折りたたむ</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">サイドパネルを折りたたむ  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">保存した場所  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">このフォルダーを保存</sys:String>
-    <sys:String x:Key="Str_TT_ShowHidden">隠しファイルとシステム項目を表示</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">フォルダーをファイルより上に表示</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">隠しファイルとシステム項目を表示  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">フォルダーをファイルより上に表示  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">お気に入りに追加</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">お気に入りから削除</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">ニックネームを追加</sys:String>
@@ -37,8 +37,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">メニューバーを非表示</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">保存した場所の表示を切り替え</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">保存した場所 1-10 へ移動 (0 = 10 番目)</sys:String>
-    <sys:String x:Key="Str_TT_Back">戻る</sys:String>
-    <sys:String x:Key="Str_TT_Forward">進む</sys:String>
+    <sys:String x:Key="Str_TT_Back">戻る  (Alt+左矢印キー)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">進む  (Alt+右矢印キー)</sys:String>
     <sys:String x:Key="Str_Status_Listing">{0} を開いています...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} 個の項目</sys:String>
     <sys:String x:Key="Str_Status_BadPath">{0} を開けません</sys:String>
@@ -78,7 +78,7 @@
     <sys:String x:Key="Str_Tab_New">新しい検索</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">ドロップ ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">新しいタブ</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">タブを閉じる</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">タブを閉じる  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">キャンセル</sys:String>
@@ -94,11 +94,11 @@
     <sys:String x:Key="Str_Col_Folder">場所</sys:String>
     <sys:String x:Key="Str_Sort_Found">検出順</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">この結果を絞り込む (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">この結果の中を検索</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">2 つ目のペイン  |  右クリックで左右 / 上下を切り替え</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">この結果の中を検索  (Ctrl+Shift+F)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">2 つ目のペイン  (F10)  |  右クリックで左右 / 上下を切り替え</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">その他のツール</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">システムツール</sys:String>
-    <sys:String x:Key="Str_TT_Sort">並べ替え</sys:String>
+    <sys:String x:Key="Str_TT_Sort">並べ替え  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">この結果の中を検索</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{1} からの {0} 件  |  {2}</sys:String>
@@ -310,12 +310,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">新しいウィンドウを開く</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">最近開いたフォルダー</sys:String>
+    <sys:String x:Key="Str_TT_Recents">最近開いたフォルダー  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">最近のフォルダーはまだありません</sys:String>
     <sys:String x:Key="Str_Recents_Clear">履歴を消去</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">結果の表示密度 - クリックで切り替え、ホイールで調整</sys:String>
+    <sys:String x:Key="Str_TT_Density">結果の表示密度 - クリックで切り替え、ホイールで調整  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">密度: 広め</sys:String>
     <sys:String x:Key="Str_St_DensityFull">密度: ゆったり</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">密度: コンパクト</sys:String>
@@ -433,7 +433,7 @@
     <sys:String x:Key="Str_TT_EdRedo">やり直し  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">検索  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">指定行へ移動  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">折り返し</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">折り返し  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">エディターの設定</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">行</sys:String>
 
@@ -460,9 +460,9 @@
     <sys:String x:Key="Str_TT_TermCwd">このフォルダーをタブで開く</sys:String>
     <sys:String x:Key="Str_TT_TermNew">新しいターミナル  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">管理者として新しいターミナル  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">このフォルダーをタブで開く</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">クリア</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">フォント...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">このフォルダーをタブで開く  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">クリア  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">フォント...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">折り返しオン。</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">折り返しオフ - 長い行はスクロールして表示します。</sys:String>
@@ -854,6 +854,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">1 階層戻る（ストレージ分析）</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">スキャンのルートに戻る（ストレージ分析）</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">選択項目をごみ箱へ移動（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">アプリ全体をズーム (0 で元に戻す)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">サイドパネルの表示を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">テーマとアクセントの選択を開く</sys:String>
+    <sys:String x:Key="Str_Ks_Language">言語の選択を開く</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">フィルムグレインのオン/オフ</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">2 つ目のペインを開く/閉じる</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">隠しファイルとシステム項目の表示を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">ファイルの詳細の表示を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">一覧、アイコン、詳細表示</sys:String>
+    <sys:String x:Key="Str_Ks_Density">結果の表示密度を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">アイコンを大きく/小さく (Ctrl+ホイールと同じ)</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">並べ替えの基準を選ぶ</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">並べ替えの順序を逆にする</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">フォルダーをファイルより上に表示</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">最近開いたフォルダーを表示</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">各アーカイブを専用のフォルダーに展開</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">新しいドキュメント、管理者権限で保存を再試行</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">文字サイズを大きく/小さく/既定に戻す</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">出力を 1 行または 1 ページずつスクロール</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">出力の先頭または末尾へスクロール</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">詳細カードを開く</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">選択したキーをディスクから再読み込み</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">実行中のスキャンを停止（ストレージ分析）</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">並べ替えの順序を逆にする  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">スキャン</sys:String>
     <sys:String x:Key="Str_Storage_Stop">停止</sys:String>
     <sys:String x:Key="Str_Storage_Browse">スキャンするフォルダーまたはドライブを選択</sys:String>

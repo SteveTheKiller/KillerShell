@@ -11,9 +11,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Язык</sys:String>
-    <sys:String x:Key="Str_TT_Theme">Тема</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">Прокрутите колесо над логотипом, чтобы изменить размер приложения</sys:String>
+    <sys:String x:Key="Str_TT_Language">Язык  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Тема  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Прокрутите колесо над логотипом, чтобы изменить размер приложения  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">Размер приложения {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">тема</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">акцент</sys:String>
@@ -36,15 +36,15 @@
     <sys:String x:Key="Str_Lbl_In">в:</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(папка не выбрана - нажмите, чтобы выбрать)</sys:String>
     <sys:String x:Key="Str_Scope_Dropped">перетащенные файлы</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Нажмите, чтобы сменить папку поиска</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Нажмите, чтобы сменить папку поиска  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">Показать или скрыть панель поиска  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Показать или скрыть дерево папок</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Свернуть боковые панели</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Свернуть боковые панели  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">Закладки  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Добавить эту папку в закладки  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Показывать скрытые и системные элементы  (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Показать сведения о файле  (Alt+P)</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Папки выше файлов</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Папки выше файлов  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Добавить в закладки</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Убрать из закладок</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Добавить псевдоним</sys:String>
@@ -53,8 +53,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Скрыть строку меню</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">показать или скрыть закладки</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">перейти к закладке 1-10 (0 = десятая)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Назад</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Вперёд</sys:String>
+    <sys:String x:Key="Str_TT_Back">Назад  (Alt+Стрелка влево)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Вперёд  (Alt+Стрелка вправо)</sys:String>
     <sys:String x:Key="Str_Status_Listing">Открытие {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">Элементов: {0}</sys:String>
     <sys:String x:Key="Str_Status_BadPath">Не удалось открыть {0}</sys:String>
@@ -94,7 +94,7 @@
     <sys:String x:Key="Str_Tab_New">новый поиск</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">перетащено ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Новая вкладка  (Ctrl+T)</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Закрыть вкладку</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Закрыть вкладку  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Отмена</sys:String>
@@ -110,11 +110,11 @@
     <sys:String x:Key="Str_Col_Folder">расположение</sys:String>
     <sys:String x:Key="Str_Sort_Found">как найдено</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Отфильтровать эти результаты (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Искать внутри этих результатов</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Искать внутри этих результатов  (Ctrl+Shift+F)</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Вторая панель  (F10)  |  правый клик переключает рядом / друг над другом</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Другие инструменты</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Системные инструменты</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Сортировать по</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Сортировать по  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Этот компьютер</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Искать внутри этих результатов</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} результатов из {1}  |  {2}</sys:String>
@@ -359,12 +359,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">открыть новое окно</sys:String>
 
     <!-- Recently visited folders -->
-    <sys:String x:Key="Str_TT_Recents">Недавно посещённые папки</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Недавно посещённые папки  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">Недавних папок пока нет</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Очистить список</sys:String>
 
     <!-- Results density -->
-    <sys:String x:Key="Str_TT_Density">Плотность результатов - клик переключает по кругу, колесо шагает</sys:String>
+    <sys:String x:Key="Str_TT_Density">Плотность результатов - клик переключает по кругу, колесо шагает  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Плотность: просторная</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Плотность: обычная</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Плотность: компактная</sys:String>
@@ -400,7 +400,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Вернуть  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Найти  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Перейти к строке  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">Перенос по словам</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Перенос по словам  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Настройки редактора</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Нажмите, чтобы изменить кодировку следующего сохранения</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">строка</sys:String>
@@ -436,9 +436,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Нажмите, чтобы изменить - введите папку и нажмите Enter для перехода</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Новый терминал  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Новый терминал от имени администратора  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Открыть эту папку во вкладке</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Очистить</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Шрифты...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Открыть эту папку во вкладке  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Очистить  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Шрифты...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Нажмите, чтобы изменить - введите путь и нажмите Enter, чтобы переименовать или переместить файл</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Перенос по словам включён.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Перенос по словам выключен - прокручивайте, чтобы видеть длинные строки.</sys:String>
@@ -753,6 +753,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">уменьшить на один уровень (Анализатор хранилища)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">вернуться к корню сканирования (Анализатор хранилища)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">отправить выбранный элемент в корзину (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">масштаб всего приложения (0 сбрасывает)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">показать или скрыть боковые панели</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">открыть выбор темы и акцентного цвета</sys:String>
+    <sys:String x:Key="Str_Ks_Language">открыть выбор языка</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">включить или выключить зернистость плёнки</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">открыть или закрыть вторую панель</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">показать или скрыть скрытые и системные элементы</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">показать или скрыть сведения о файле</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">вид: список, значки или таблица</sys:String>
+    <sys:String x:Key="Str_Ks_Density">переключить плотность результатов</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">крупнее или мельче значки, как Ctrl+колесо</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">выбрать сортировку</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">обратить порядок сортировки</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">папки выше файлов</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">показать недавно посещённые папки</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">извлечь каждый архив в отдельную папку</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">новый документ, повтор сохранения с правами администратора</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">крупнее, мельче или стандартный размер текста</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">прокрутить вывод на строку или страницу</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">прокрутить к началу или концу вывода</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">открыть карточку сведений</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">перечитать выбранный раздел с диска</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">остановить идущее сканирование (Анализатор хранилища)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">Обратить порядок сортировки  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Сканировать</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Остановить</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Выберите папку или диск для сканирования</sys:String>

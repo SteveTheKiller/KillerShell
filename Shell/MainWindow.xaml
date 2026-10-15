@@ -274,13 +274,13 @@
                                      opens the node in a NEW TAB and has done for a long time; the
                                      label was left over from when every tab was a search, and it
                                      described the old app rather than what the row does. -->
-                                <MenuItem Header="{DynamicResource Str_Menu_OpenInNewTab}" Click="TreeOpenNewTab_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_OpenInNewTab}" Click="TreeOpenNewTab_Click" InputGestureText="Ctrl+Enter">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE710;"/></MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_ShowExplorer}" Click="TreeShowInExplorer_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_ShowExplorer}" Click="TreeShowInExplorer_Click" InputGestureText="F6">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE838;"/></MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_SearchHere}" Click="TreeSearchHere_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_SearchHere}" Click="TreeSearchHere_Click" InputGestureText="F3">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
@@ -288,13 +288,13 @@
                                      Storage Analyzer aimed at this folder. A folder is a folder
                                      wherever it is shown, so the tree, the places and the
                                      listing all offer the same verbs. -->
-                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}" Click="TreeTerminal_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}" Click="TreeTerminal_Click" InputGestureText="F8">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="TreeTerminalAdmin_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="TreeTerminalAdmin_Click" InputGestureText="Ctrl+F8">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="TreeAnalyze_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="TreeAnalyze_Click" InputGestureText="Shift+F4">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
@@ -302,34 +302,32 @@
                                      state is set as the menu opens (FolderTree.cs
                                      FolderTree_ContextMenuOpening) rather than bound, matching how
                                      the favorite row above flips its own header. -->
-                                <!-- NO InputGestureText yet: Ctrl+Shift+H, the obvious pick, is
-                                     already Copy SHA-256 (MainWindow.xaml.cs, and it is printed
-                                     on that row in the results menu). Awaiting a free key rather
-                                     than quietly taking a bound one. -->
+                                <!-- Alt+H (KeyCommands.cs): Ctrl+Shift+H, the obvious pick, is
+                                     Copy SHA-256, and Ctrl+H is the listing's own hidden switch. -->
                                 <MenuItem x:Name="TreeHiddenItem" IsCheckable="True"
                                           Header="{DynamicResource Str_Menu_TreeShowHidden}"
-                                          Click="TreeHidden_Click"/>
+                                          Click="TreeHidden_Click" InputGestureText="Alt+H"/>
                                 <Separator/>
-                                <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}" Click="TreeFavorite_Click">
+                                <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}" Click="TreeFavorite_Click" InputGestureText="Ctrl+D">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <!-- E8C8 (Copy, two documents), not E71B (Link, a chain). -->
-                                <MenuItem Header="{DynamicResource Str_Menu_CopyPath}" Click="TreeCopyPath_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_CopyPath}" Click="TreeCopyPath_Click" InputGestureText="Ctrl+Shift+C">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <!-- Nickname rows: header and visibility are set as the menu opens
                                      (NicknameCommands.cs SyncNicknameMenu), found by Tag. -->
-                                <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="TreeNickname_Click">
+                                <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="TreeNickname_Click" InputGestureText="Alt+N">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="TreeNicknameRemove_Click">
+                                <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="TreeNicknameRemove_Click" InputGestureText="Alt+Shift+N">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <Separator/>
-                                <MenuItem Header="{DynamicResource Str_Menu_Properties}" Click="TreeProperties_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_Properties}" Click="TreeProperties_Click" InputGestureText="Alt+Enter">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}" Click="TreeShellMenu_Click">
+                                <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}" Click="TreeShellMenu_Click" InputGestureText="Shift+F10">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>
@@ -768,7 +766,10 @@
                          order is family furniture, so it has to match. -->
                     <Button Style="{StaticResource RailButton}" Content="?"
                             FontFamily="Consolas" FontSize="18" Margin="0,0,0,10"
-                            Click="Shortcuts_Click" ToolTip="{DynamicResource Str_Help_Shortcuts}"/>
+                            Click="Shortcuts_Click">
+                        <!-- Str_Help_Shortcuts is also the card's heading, so F1 is appended here. -->
+                        <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Help_Shortcuts}"/><Run Text="  (F1)"/></TextBlock></Button.ToolTip>
+                    </Button>
                     <!-- F2B7 (LocaleLanguage - globe with characters in front): the locale menu,
                          filled on click by BuildLanguageMenu (Language.cs). Family standard for the
                          language button, in preference to the bare E774 globe. Placement="Top" so it

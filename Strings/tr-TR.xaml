@@ -10,9 +10,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Dil</sys:String>
-    <sys:String x:Key="Str_TT_Theme">Tema</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">Uygulama boyutunu değiştirmek için logo üzerinde tekerleği kaydırın</sys:String>
+    <sys:String x:Key="Str_TT_Language">Dil  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Tema  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Uygulama boyutunu değiştirmek için logo üzerinde tekerleği kaydırın  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">Uygulama boyutu %{0}</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">tema</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">vurgu</sys:String>
@@ -20,7 +20,7 @@
     <!-- Scope bar -->
     <sys:String x:Key="Str_Lbl_In">konum:</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(klasör seçilmedi - seçmek için tıklayın)</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Arama klasörünü değiştirmek için tıklayın</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Arama klasörünü değiştirmek için tıklayın  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFolder">Kök arama klasörünü seçin</sys:String>
 
     <!-- Search config -->
@@ -56,7 +56,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">yeni arama</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Yeni sekme</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Sekmeyi kapat</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Sekmeyi kapat  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">İptal</sys:String>
@@ -72,11 +72,11 @@
     <sys:String x:Key="Str_Col_Folder">konum</sys:String>
     <sys:String x:Key="Str_Sort_Found">bulunma sırası</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Bu sonuçları filtrele (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Bu sonuçların içinde ara</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">İkinci bölme  |  yan yana / üst üste için sağ tıklayın</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Bu sonuçların içinde ara  (Ctrl+Shift+F)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">İkinci bölme  (F10)  |  yan yana / üst üste için sağ tıklayın</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Diğer araçlar</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Sistem araçları</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Bu bilgisayar</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Bu sonuçların içinde ara</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{1} içinden {0} sonuç  |  {2}</sys:String>
@@ -263,12 +263,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">yeni pencere aç</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">Son ziyaret edilen klasörler</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Son ziyaret edilen klasörler  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">Henüz son klasör yok</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Listeyi temizle</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">Sonuç yoğunluğu - tıklayarak değiştirin, tekerlekle ayarlayın</sys:String>
+    <sys:String x:Key="Str_TT_Density">Sonuç yoğunluğu - tıklayarak değiştirin, tekerlekle ayarlayın  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Yoğunluk: geniş</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Yoğunluk: rahat</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Yoğunluk: sıkışık</sys:String>
@@ -300,11 +300,11 @@
     <sys:String x:Key="Str_Tab_Dropped">bırakılan ({0})</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">Arama panelini göster veya gizle  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Klasör ağacını göster veya gizle</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Yan panelleri daralt</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Yan panelleri daralt  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">Kayıtlı konumlar  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Bu klasörü kaydet</sys:String>
-    <sys:String x:Key="Str_TT_ShowHidden">Gizli ve sistem öğelerini göster</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Klasörleri dosyaların üstünde tut</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Gizli ve sistem öğelerini göster  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Klasörleri dosyaların üstünde tut  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Favorilere ekle</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Favorilerden kaldır</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Takma ad ekle</sys:String>
@@ -313,8 +313,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Menü çubuğunu gizle</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">kayıtlı konumları göster veya gizle</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">kayıtlı konum 1-10'a git (0 = onuncu)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Geri</sys:String>
-    <sys:String x:Key="Str_TT_Forward">İleri</sys:String>
+    <sys:String x:Key="Str_TT_Back">Geri  (Alt+Sol ok)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">İleri  (Alt+Sağ ok)</sys:String>
     <sys:String x:Key="Str_Status_Listing">{0} açılıyor...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} öğe</sys:String>
     <sys:String x:Key="Str_Status_BadPath">{0} açılamıyor</sys:String>
@@ -435,7 +435,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Yinele  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Bul  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Satıra git  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">Sözcük kaydırma</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Sözcük kaydırma  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Düzenleyici ayarları</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">satır</sys:String>
 
@@ -462,9 +462,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Bu klasörü bir sekmede aç</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Yeni terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Yönetici olarak yeni terminal  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Bu klasörü bir sekmede aç</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Temizle</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Yazı tipleri...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Bu klasörü bir sekmede aç  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Temizle  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Yazı tipleri...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Sözcük kaydırma açık.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Sözcük kaydırma kapalı - uzun satırları görmek için kaydırın.</sys:String>
@@ -858,6 +858,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">bir düzey uzaklaştır (Depolama Çözümleyicisi)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">tarama köküne dön (Depolama Çözümleyicisi)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">seçili öğeyi Geri Dönüşüm Kutusu'na gönder (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">tüm uygulamayı yakınlaştır veya uzaklaştır (0 sıfırlar)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">yan panelleri göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">tema ve vurgu rengi seçicisini aç</sys:String>
+    <sys:String x:Key="Str_Ks_Language">dil seçicisini aç</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">film grenini aç veya kapat</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">ikinci bölmeyi aç veya kapat</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">gizli ve sistem öğelerini göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">dosya ayrıntılarını göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">liste, simge veya ayrıntı görünümü</sys:String>
+    <sys:String x:Key="Str_Ks_Density">sonuç yoğunluğunu değiştir</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">simgeleri büyüt veya küçült, Ctrl+tekerlek gibi</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">sıralama ölçütünü seç</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">sıralama yönünü tersine çevir</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">klasörleri dosyaların üstünde tut</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">son ziyaret edilen klasörleri göster</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">her arşivi kendi klasörüne çıkar</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">yeni belge, yönetici olarak kaydetmeyi yeniden dene</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">metni büyüt, küçült veya varsayılan boyuta döndür</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">çıktıyı bir satır veya bir sayfa kaydır</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">çıktının başına veya sonuna kaydır</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">ayrıntılar kartını aç</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">seçili anahtarı diskten yeniden yükle</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">süren taramayı durdur (Depolama Çözümleyicisi)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">Sıralama yönünü tersine çevir  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Tara</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Durdur</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Taranacak klasör veya sürücüyü seçin</sys:String>

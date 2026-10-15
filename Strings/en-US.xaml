@@ -10,10 +10,10 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Language</sys:String>
-    <sys:String x:Key="Str_TT_Theme">Theme</sys:String>
+    <sys:String x:Key="Str_TT_Language">Language  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Theme  (Alt+T)</sys:String>
     <!-- App-wide accessibility zoom: wheel over the title-bar wordmark (AppScale.cs) -->
-    <sys:String x:Key="Str_TT_AppSize">Scroll over the wordmark to resize the app</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Scroll over the wordmark to resize the app  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">App size {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">theme</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">accent</sys:String>
@@ -38,17 +38,17 @@
     <sys:String x:Key="Str_Scope_Empty">(no folder selected - click to choose)</sys:String>
     <!-- Source name in the scope breadcrumb when a tab was made by dropping files on the window -->
     <sys:String x:Key="Str_Scope_Dropped">dropped files</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Click to change search folder</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Click to change search folder  (Ctrl+L)</sys:String>
     <!-- Browsing (Browse.cs) -->
     <sys:String x:Key="Str_TT_SearchPanel">Show or hide the search panel  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Show or hide the folder tree</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Collapse the side panels</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Collapse the side panels  (Ctrl+Shift+B)</sys:String>
     <!-- Bookmarks (Bookmarks.cs) -->
     <sys:String x:Key="Str_TT_Bookmarks">Bookmarks  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Bookmark this folder  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Show hidden and system items  (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Show file details  (Alt+P)</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Keep folders above files</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Keep folders above files  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Add to Bookmarks</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Remove from Bookmarks</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Add nickname</sys:String>
@@ -57,8 +57,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Hide menu bar</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">show or hide bookmarks</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">go to bookmark 1-10 (0 = tenth)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Back</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Forward</sys:String>
+    <sys:String x:Key="Str_TT_Back">Back  (Alt+Left arrow)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Forward  (Alt+Right arrow)</sys:String>
     <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
     <sys:String x:Key="Str_Status_Listing">Opening {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} item(s)</sys:String>
@@ -100,7 +100,7 @@
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
     <sys:String x:Key="Str_Tab_Dropped">dropped ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">New tab  (Ctrl+T)</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Close tab</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Close tab  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Cancel</sys:String>
@@ -116,11 +116,11 @@
     <sys:String x:Key="Str_Col_Folder">location</sys:String>
     <sys:String x:Key="Str_Sort_Found">as found</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filter these results (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Search within these results</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Search within these results  (Ctrl+Shift+F)</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Second pane  (F10)  |  right-click to flip side-by-side / stacked</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">More tools</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">System tools</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Sort by</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Sort by  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">This PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Search within these results</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} results from {1}  |  {2}</sys:String>
@@ -375,12 +375,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">open a new window</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">Recently visited folders</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Recently visited folders  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">No recent folders yet</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Clear the list</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">Results density - click to cycle, wheel to step</sys:String>
+    <sys:String x:Key="Str_TT_Density">Results density - click to cycle, wheel to step  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Density: roomy</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Density: comfortable</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Density: compact</sys:String>
@@ -416,7 +416,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Redo  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Find  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Go to line  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">Word wrap</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Word wrap  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Editor settings</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Click to change the encoding the next save writes</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">line</sys:String>
@@ -452,9 +452,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Click to edit - type a folder and press Enter to cd there</sys:String>
     <sys:String x:Key="Str_TT_TermNew">New terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">New terminal as administrator  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Open this folder in a tab</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Clear</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Fonts...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Open this folder in a tab  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Clear  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Fonts...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Click to edit - type a path and press Enter to rename/move the file</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Word wrap on.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Word wrap off - scroll to see long lines.</sys:String>
@@ -785,6 +785,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">zoom out one level (Storage Analyzer)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">back to the scan root (Storage Analyzer)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">send the selected item to the Recycle Bin (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">zoom the whole app (0 resets it)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">show or hide the side panels</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">open the theme and accent picker</sys:String>
+    <sys:String x:Key="Str_Ks_Language">open the language picker</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">turn film grain on or off</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">open or close the second pane</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">show or hide hidden and system items</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">show or hide file details</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">list, icon or details view</sys:String>
+    <sys:String x:Key="Str_Ks_Density">cycle the results density</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">larger or smaller icons, like Ctrl+wheel</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">choose the sort order</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">reverse the sort order</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">keep folders above files</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">show recently visited folders</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">extract each archive into its own folder</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">new document, admin-save retry</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">larger, smaller or default text size</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">scroll the output a line or a page</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">scroll to the top or bottom of the output</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">open the details card</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">reload the selected key from disk</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">stop a running scan (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">Reverse the sort order  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Scan</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Stop</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Choose a folder or drive to scan</sys:String>

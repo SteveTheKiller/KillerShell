@@ -871,7 +871,13 @@ namespace KillerShell.Shell
             if ((System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == 0) return;
 
             e.Handled = true;   // do not also scroll the list
-            int dir  = e.Delta > 0 ? +1 : -1;
+            StepResultsSize(e.Delta > 0 ? +1 : -1);
+        }
+
+        /// <summary>One step of the Ctrl+wheel ladder above, +1 larger and -1 smaller. Ctrl+= and
+        /// Ctrl+- drive the same step from the keyboard (KeyCommands.cs).</summary>
+        private void StepResultsSize(int dir)
+        {
             int mode = Pane.ViewMode;
             var state = Pane.ViewState;
 

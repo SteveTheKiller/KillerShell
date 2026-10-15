@@ -10,9 +10,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">ভাষা</sys:String>
-    <sys:String x:Key="Str_TT_Theme">থিম</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">অ্যাপের আকার বদলাতে লোগোর উপর স্ক্রোল করুন</sys:String>
+    <sys:String x:Key="Str_TT_Language">ভাষা  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">থিম  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">অ্যাপের আকার বদলাতে লোগোর উপর স্ক্রোল করুন  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">অ্যাপের আকার {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">থিম</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">অ্যাকসেন্ট</sys:String>
@@ -20,7 +20,7 @@
     <!-- Scope bar -->
     <sys:String x:Key="Str_Lbl_In">যেখানে:</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(কোনো ফোল্ডার নির্বাচন করা হয়নি - বেছে নিতে ক্লিক করুন)</sys:String>
-    <sys:String x:Key="Str_TT_Scope">অনুসন্ধানের ফোল্ডার পরিবর্তন করতে ক্লিক করুন</sys:String>
+    <sys:String x:Key="Str_TT_Scope">অনুসন্ধানের ফোল্ডার পরিবর্তন করতে ক্লিক করুন  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFolder">অনুসন্ধানের মূল ফোল্ডার নির্বাচন করুন</sys:String>
 
     <!-- Search config -->
@@ -56,7 +56,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">নতুন অনুসন্ধান</sys:String>
     <sys:String x:Key="Str_TT_NewTab">নতুন ট্যাব</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">ট্যাব বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">ট্যাব বন্ধ করুন  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">বাতিল</sys:String>
@@ -72,11 +72,11 @@
     <sys:String x:Key="Str_Col_Folder">অবস্থান</sys:String>
     <sys:String x:Key="Str_Sort_Found">যেমন পাওয়া</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">এই ফলাফলগুলি ফিল্টার করুন (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">দ্বিতীয় প্যান  |  পাশাপাশি / উপর-নিচ বদলাতে ডান-ক্লিক করুন</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন  (Ctrl+Shift+F)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">দ্বিতীয় প্যান  (F10)  |  পাশাপাশি / উপর-নিচ বদলাতে ডান-ক্লিক করুন</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">আরও টুল</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">সিস্টেম টুল</sys:String>
-    <sys:String x:Key="Str_TT_Sort">সাজান</sys:String>
+    <sys:String x:Key="Str_TT_Sort">সাজান  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">এই পিসি</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{1} থেকে {0}টি ফলাফল  |  {2}</sys:String>
@@ -263,12 +263,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">নতুন উইন্ডো খুলুন</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">সম্প্রতি দেখা ফোল্ডার</sys:String>
+    <sys:String x:Key="Str_TT_Recents">সম্প্রতি দেখা ফোল্ডার  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">এখনো কোনো সাম্প্রতিক ফোল্ডার নেই</sys:String>
     <sys:String x:Key="Str_Recents_Clear">তালিকা মুছুন</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">ফলাফলের ঘনত্ব - ক্লিকে বদলান, হুইলে ধাপে ধাপে</sys:String>
+    <sys:String x:Key="Str_TT_Density">ফলাফলের ঘনত্ব - ক্লিকে বদলান, হুইলে ধাপে ধাপে  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">ঘনত্ব: প্রশস্ত</sys:String>
     <sys:String x:Key="Str_St_DensityFull">ঘনত্ব: আরামদায়ক</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">ঘনত্ব: সংক্ষিপ্ত</sys:String>
@@ -300,11 +300,11 @@
     <sys:String x:Key="Str_Tab_Dropped">ড্রপ করা ({0})</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">সার্চ প্যানেল দেখান বা লুকান  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">ফোল্ডার ট্রি দেখান বা লুকান</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">পাশের প্যানেলগুলো বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">পাশের প্যানেলগুলো বন্ধ করুন  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">সংরক্ষিত অবস্থান  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">এই ফোল্ডার সংরক্ষণ করুন</sys:String>
-    <sys:String x:Key="Str_TT_ShowHidden">লুকানো ও সিস্টেম আইটেম দেখান</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">ফোল্ডার ফাইলের উপরে রাখুন</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">লুকানো ও সিস্টেম আইটেম দেখান  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">ফোল্ডার ফাইলের উপরে রাখুন  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">প্রিয় তালিকায় যোগ করুন</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">প্রিয় তালিকা থেকে সরান</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">ডাকনাম যোগ করুন</sys:String>
@@ -313,8 +313,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">মেনু বার লুকান</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">সংরক্ষিত অবস্থান দেখান বা লুকান</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">সংরক্ষিত অবস্থান 1-10 এ যান (0 = দশম)</sys:String>
-    <sys:String x:Key="Str_TT_Back">পেছনে</sys:String>
-    <sys:String x:Key="Str_TT_Forward">সামনে</sys:String>
+    <sys:String x:Key="Str_TT_Back">পেছনে  (Alt+বাম তীর)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">সামনে  (Alt+ডান তীর)</sys:String>
     <sys:String x:Key="Str_Status_Listing">{0} খোলা হচ্ছে...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} টি আইটেম</sys:String>
     <sys:String x:Key="Str_Status_BadPath">{0} খোলা যাচ্ছে না</sys:String>
@@ -435,7 +435,7 @@
     <sys:String x:Key="Str_TT_EdRedo">পুনরায় করুন  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">খুঁজুন  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">লাইনে যান  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">ওয়ার্ড র‍্যাপ</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">ওয়ার্ড র‍্যাপ  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">এডিটর সেটিংস</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">লাইন</sys:String>
 
@@ -462,9 +462,9 @@
     <sys:String x:Key="Str_TT_TermCwd">এই ফোল্ডারটি একটি ট্যাবে খুলুন</sys:String>
     <sys:String x:Key="Str_TT_TermNew">নতুন টার্মিনাল  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">প্রশাসক হিসেবে নতুন টার্মিনাল  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">এই ফোল্ডারটি একটি ট্যাবে খুলুন</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">পরিষ্কার করুন</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">ফন্ট...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">এই ফোল্ডারটি একটি ট্যাবে খুলুন  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">পরিষ্কার করুন  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">ফন্ট...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">ওয়ার্ড র‍্যাপ চালু।</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">ওয়ার্ড র‍্যাপ বন্ধ - লম্বা লাইন দেখতে স্ক্রোল করুন।</sys:String>
@@ -855,6 +855,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">এক স্তর জুম আউট করুন (স্টোরেজ বিশ্লেষক)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">স্ক্যানের মূলে ফিরুন (স্টোরেজ বিশ্লেষক)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">নির্বাচিত আইটেম রিসাইকেল বিনে পাঠান (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">পুরো অ্যাপ জুম করুন (0 চাপলে আগের মাপে ফেরে)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">পাশের প্যানেলগুলো দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">থিম ও অ্যাকসেন্ট বেছে নেওয়ার প্যানেল খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_Language">ভাষা বেছে নেওয়ার তালিকা খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">ফিল্ম গ্রেইন চালু বা বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">দ্বিতীয় প্যান খুলুন বা বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">লুকানো ও সিস্টেম আইটেম দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">ফাইলের বিবরণ দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">তালিকা, আইকন বা বিস্তারিত ভিউ</sys:String>
+    <sys:String x:Key="Str_Ks_Density">ফলাফলের ঘনত্ব বদলান</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">আইকন বড় বা ছোট করুন, Ctrl+হুইলের মতো</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">সাজানোর ক্রম বেছে নিন</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">সাজানোর ক্রম উল্টে দিন</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">ফোল্ডার ফাইলের উপরে রাখুন</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">সম্প্রতি দেখা ফোল্ডার দেখান</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">প্রতিটি আর্কাইভ তার নিজের ফোল্ডারে এক্সট্র্যাক্ট করুন</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">নতুন নথি, অ্যাডমিন-সংরক্ষণ পুনঃচেষ্টা</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">লেখা বড়, ছোট বা ডিফল্ট মাপে</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">আউটপুট এক লাইন বা এক পাতা স্ক্রল করুন</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">আউটপুটের শুরুতে বা শেষে যান</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">বিস্তারিত কার্ড খুলুন</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">নির্বাচিত Key ডিস্ক থেকে আবার লোড করুন</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">চলমান স্ক্যান থামান (স্টোরেজ বিশ্লেষক)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">সাজানোর ক্রম উল্টে দিন  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">স্ক্যান</sys:String>
     <sys:String x:Key="Str_Storage_Stop">থামান</sys:String>
     <sys:String x:Key="Str_Storage_Browse">স্ক্যানের জন্য ফোল্ডার বা ড্রাইভ বেছে নিন</sys:String>

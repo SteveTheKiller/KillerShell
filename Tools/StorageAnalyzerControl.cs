@@ -352,10 +352,27 @@ namespace KillerShell.Tools
                 return;
             }
 
+            // The menu's other verbs on the selected rectangle: Shift+Enter opens it in a new tab,
+            // F6 shows it in Explorer (the results list's key for that), Ctrl+Shift+C copies its
+            // path (Windows' Copy as path).
+            if (_selected != null && e.Key == Key.Return && mods == ModifierKeys.Shift)
+            {
+                OpenNodeInTab(_selected);
+                e.Handled = true;
+                return;
+            }
+            if (_selected != null && e.Key == Key.C && mods == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                CopyNodePath(_selected);
+                e.Handled = true;
+                return;
+            }
+
             if (!plain) return;
 
             switch (e.Key)
             {
+                case Key.F6:     if (_selected != null) RevealNode(_selected); else return; break;
                 case Key.D:      SetDepth(NextChoice(DepthChoices, _depthLimit)); break;
                 case Key.M:      SetMinSize(NextChoice(MinSizeChoices, _minSize)); break;
                 case Key.C:      SetColorMode(!_colorByFolder); break;
@@ -1274,29 +1291,21 @@ namespace KillerShell.Tools
             {
                 string path = FullPath(n);
 
-                var openTab = MakeItem("Str_Storage_OpenInTab", 0xE8DA);
-                openTab.Click += (_, _) => OpenFolderInNewTab?.Invoke(n.IsDir ? path : (Path.GetDirectoryName(path) ?? path));
+                var openTab = MakeItem("Str_Storage_OpenInTab", 0xE8DA, "Shift+Enter");
+                openTab.Click += (_, _) => OpenNodeInTab(n);
                 menu.Items.Add(openTab);
 
-                var reveal = MakeItem("Str_Storage_RevealExplorer", 0xE838);
-                reveal.Click += (_, _) =>
-                {
-                    try
-                    {
-                        if (n.IsDir) System.Diagnostics.Process.Start("explorer.exe", "\"" + path + "\"");
-                        else System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + path + "\"");
-                    }
-                    catch { /* explorer refusing to start is not this tab's problem to explain */ }
-                };
+                var reveal = MakeItem("Str_Storage_RevealExplorer", 0xE838, "F6");
+                reveal.Click += (_, _) => RevealNode(n);
                 menu.Items.Add(reveal);
 
-                var copy = MakeItem("Str_Storage_CopyPath", 0xE8C8);
-                copy.Click += (_, _) => { try { Clipboard.SetText(path); } catch { } };
+                var copy = MakeItem("Str_Storage_CopyPath", 0xE8C8, "Ctrl+Shift+C");
+                copy.Click += (_, _) => CopyNodePath(n);
                 menu.Items.Add(copy);
 
                 menu.Items.Add(new Separator());
 
-                var del = MakeItem("Str_Storage_Delete", 0xE74D);
+                var del = MakeItem("Str_Storage_Delete", 0xE74D, "Del");
                 del.Click += (_, _) => RecycleNode(n, path);
                 menu.Items.Add(del);
 
@@ -1305,12 +1314,13 @@ namespace KillerShell.Tools
 
             // The color-mode toggle lives here per the design decision - checked radios, so the
             // current mode is visible at a glance.
-            var byType = new MenuItem { IsCheckable = true, IsChecked = !_colorByFolder };
+            // C flips between the two, so both rows carry it.
+            var byType = new MenuItem { IsCheckable = true, IsChecked = !_colorByFolder, InputGestureText = "C" };
             byType.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Storage_ColorByType");
             byType.Click += (_, _) => SetColorMode(byFolder: false);
             menu.Items.Add(byType);
 
-            var byFolder = new MenuItem { IsCheckable = true, IsChecked = _colorByFolder };
+            var byFolder = new MenuItem { IsCheckable = true, IsChecked = _colorByFolder, InputGestureText = "C" };
             byFolder.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Storage_ColorByFolder");
             byFolder.Click += (_, _) => SetColorMode(byFolder: true);
             menu.Items.Add(byFolder);
@@ -1318,7 +1328,7 @@ namespace KillerShell.Tools
             if (_root != null)
             {
                 menu.Items.Add(new Separator());
-                var rescan = MakeItem("Str_Storage_Rescan", 0xE72C);
+                var rescan = MakeItem("Str_Storage_Rescan", 0xE72C, "F5");
                 rescan.Click += (_, _) => { if (!_scanning) StartScan(); };
                 menu.Items.Add(rescan);
             }
@@ -1327,9 +1337,31 @@ namespace KillerShell.Tools
             menu.IsOpen = true;
         }
 
-        private static MenuItem MakeItem(string headerKey, int glyph)
+        private void OpenNodeInTab(FsNode n)
         {
-            var item = new MenuItem();
+            string path = FullPath(n);
+            OpenFolderInNewTab?.Invoke(n.IsDir ? path : (Path.GetDirectoryName(path) ?? path));
+        }
+
+        private void RevealNode(FsNode n)
+        {
+            string path = FullPath(n);
+            try
+            {
+                if (n.IsDir) System.Diagnostics.Process.Start("explorer.exe", "\"" + path + "\"");
+                else System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + path + "\"");
+            }
+            catch { /* explorer refusing to start is not this tab's problem to explain */ }
+        }
+
+        private void CopyNodePath(FsNode n)
+        {
+            try { Clipboard.SetText(FullPath(n)); } catch { }
+        }
+
+        private static MenuItem MakeItem(string headerKey, int glyph, string gesture)
+        {
+            var item = new MenuItem { InputGestureText = gesture };
             item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
             var icon = new Glyph { Text = ((char)glyph).ToString() };
             icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");

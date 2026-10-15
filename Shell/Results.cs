@@ -65,7 +65,8 @@ namespace KillerShell.Shell
         private void SetExpandAllLabel(bool showCollapse)
         {
             Pane.ExpandAllGlyph.Text     = ((char)(showCollapse ? 0xE73F : 0xE740)).ToString();
-            Pane.ExpandAllButton.ToolTip = Loc(showCollapse ? "Str_Btn_CollapseAll" : "Str_Btn_ExpandAll");
+            Pane.ExpandAllButton.ToolTip = Loc(showCollapse ? "Str_Btn_CollapseAll" : "Str_Btn_ExpandAll")
+                                         + (showCollapse ? "  (Ctrl+Left)" : "  (Ctrl+Right)");
         }
 
         // ═══════════════════════════════════════════════════════════

@@ -54,7 +54,7 @@ namespace KillerShell.Editing
             Row(m, "Str_Ed_Goto", Glyph(0xE8A1), "Ctrl+G",
                 () => MenuCommand?.Invoke(EditorMenuCommand.GoToLine));
 
-            _wrapItem = Row(m, "Str_Ed_OptWrap", Glyph(0x21B5), null,
+            _wrapItem = Row(m, "Str_Ed_OptWrap", Glyph(0x21B5), "Alt+Z",
                 () => MenuCommand?.Invoke(EditorMenuCommand.ToggleWrap));
 
             m.Items.Add(new Separator());

@@ -10,10 +10,10 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Nyelv</sys:String>
-    <sys:String x:Key="Str_TT_Theme">téma</sys:String>
+    <sys:String x:Key="Str_TT_Language">Nyelv (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">téma (Alt+T)</sys:String>
     <!-- App-wide accessibility zoom: wheel over the title-bar wordmark (AppScale.cs) -->
-    <sys:String x:Key="Str_TT_AppSize">Az alkalmazás átméretezéséhez görgessen a szójel fölé</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Az alkalmazás átméretezéséhez görgessen a szójel fölé (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">Alkalmazás mérete {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">téma</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">akcentussal</sys:String>
@@ -38,17 +38,17 @@
     <sys:String x:Key="Str_Scope_Empty">(nincs mappa kiválasztva - kattintson a kiválasztáshoz)</sys:String>
     <!-- Source name in the scope breadcrumb when a tab was made by dropping files on the window -->
     <sys:String x:Key="Str_Scope_Dropped">elejtett fájlokat</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Kattintson a keresési mappa megváltoztatásához</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Kattintson a keresési mappa megváltoztatásához (Ctrl+L)</sys:String>
     <!-- Browsing (Browse.cs) -->
     <sys:String x:Key="Str_TT_SearchPanel">A keresőpanel megjelenítése vagy elrejtése (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">A mappafa megjelenítése vagy elrejtése</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Hajtsa össze az oldalsó paneleket</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Hajtsa össze az oldalsó paneleket (Ctrl+Shift+B)</sys:String>
     <!-- Bookmarks (Bookmarks.cs) -->
     <sys:String x:Key="Str_TT_Bookmarks">Könyvjelzők (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Könyvjelzők közé sorolja ezt a mappát (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Rejtett és rendszerelemek megjelenítése (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Fájl részleteinek megjelenítése (Alt+P)</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Tartsa a mappákat a fájlok felett</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Tartsa a mappákat a fájlok felett (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Hozzáadás a könyvjelzőkhöz</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Eltávolítás a könyvjelzők közül</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Becenév hozzáadása</sys:String>
@@ -57,8 +57,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Menüsor elrejtése</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">könyvjelzők megjelenítése vagy elrejtése</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">lépjen az 1-10. könyvjelzőre (0 = tizedik)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Vissza</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Előre</sys:String>
+    <sys:String x:Key="Str_TT_Back">Vissza (Alt+Balra nyíl)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Előre (Alt+Jobbra nyíl)</sys:String>
     <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
     <sys:String x:Key="Str_Status_Listing">Megnyitás: {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} elem</sys:String>
@@ -100,7 +100,7 @@
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
     <sys:String x:Key="Str_Tab_Dropped">leesett ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Új lap (Ctrl+T)</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Lap bezárása</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Lap bezárása (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Mégse</sys:String>
@@ -116,11 +116,11 @@
     <sys:String x:Key="Str_Col_Folder">helyen</sys:String>
     <sys:String x:Key="Str_Sort_Found">ahogy találták</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Az eredmények szűrése (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Keresés ezeken a találatokon belül</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Keresés ezeken a találatokon belül (Ctrl+Shift+F)</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Második ablaktábla (F10) |  jobb gombbal lapozhat egymás mellé / halmozottan</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Több eszköz</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Rendszereszközök</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Rendezés</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Rendezés (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Ez a PC</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Keresés ezeken a találatokon belül</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} találat innen: {1} |  {2}</sys:String>
@@ -375,12 +375,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">nyisson meg egy új ablakot</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">Nemrég látogatott mappák</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Nemrég látogatott mappák (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">Még nincsenek legutóbbi mappák</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Törölje a listát</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">Eredménysűrűség - kattintás a ciklushoz, kerék a lépéshez</sys:String>
+    <sys:String x:Key="Str_TT_Density">Eredménysűrűség - kattintás a ciklushoz, kerék a lépéshez (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Sűrűség: tágas</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Sűrűség: kényelmes</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Sűrűség: kompakt</sys:String>
@@ -416,7 +416,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Újra (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Keresés (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Ugrás a sorra (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">Szótördelés</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Szótördelés (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Szerkesztő beállításai</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Kattintson ide, hogy módosítsa a kódolást a következő mentéskor</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">vonalat</sys:String>
@@ -452,9 +452,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Kattintson a szerkesztéshez - írjon be egy mappát, és nyomja meg az Enter billentyűt a CD-hez</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Új terminál (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Új terminál rendszergazdaként (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Nyissa meg ezt a mappát egy lapon</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Világos</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Betűtípusok...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Nyissa meg ezt a mappát egy lapon (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Világos (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Betűtípusok... (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Kattintson a szerkesztéshez - írjon be egy elérési utat, és nyomja meg az Enter billentyűt a fájl átnevezéséhez/áthelyezéséhez</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Szótördelés tovább.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Szótördelés - görgessen a hosszú sorok megtekintéséhez.</sys:String>
@@ -785,6 +785,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">kicsinyítés egy szinttel (Storage Analyzer)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">vissza a szkennelési gyökérhez (Storage Analyzer)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">küldje el a kiválasztott elemet a Lomtárba (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">az egész alkalmazás nagyítása (0 visszaállítja)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">az oldalsó panelek megjelenítése vagy elrejtése</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">a téma- és kiemelőszín-választó megnyitása</sys:String>
+    <sys:String x:Key="Str_Ks_Language">a nyelvválasztó megnyitása</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">a filmszemcse be- vagy kikapcsolása</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">a második ablaktábla megnyitása vagy bezárása</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">rejtett és rendszerelemek megjelenítése vagy elrejtése</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">a fájl részleteinek megjelenítése vagy elrejtése</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">lista, ikon vagy részletek nézet</sys:String>
+    <sys:String x:Key="Str_Ks_Density">az eredménysűrűség váltása</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">nagyobb vagy kisebb ikonok, mint a Ctrl+görgő</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">a rendezés kiválasztása</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">a rendezési irány megfordítása</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">mappák a fájlok felett</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">a nemrég látogatott mappák megjelenítése</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">minden archívum kibontása a saját mappájába</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">új dokumentum, adminisztrátori mentési újrapróbálkozás</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">nagyobb, kisebb vagy alapértelmezett szövegméret</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">a kimenet görgetése egy sorral vagy oldallal</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">görgetés a kimenet elejére vagy végére</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">a részletek kártya megnyitása</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">a kiválasztott kulcs újratöltése a lemezről</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">a futó vizsgálat leállítása (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">A rendezési irány megfordítása (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Scan</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Állj</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Válasszon egy mappát vagy meghajtót a vizsgálathoz</sys:String>

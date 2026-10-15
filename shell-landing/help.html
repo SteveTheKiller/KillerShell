@@ -323,10 +323,11 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <div class="kbd-group"><h4>TABS</h4>
 <div class="kbd-row"><span class="k">Ctrl+N</span><span class="d">open a new window</span></div>
 <div class="kbd-row"><span class="k">Ctrl+T</span><span class="d">open a new tab at Home</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+T</span><span class="d">Open folder here</span></div>
 <div class="kbd-row"><span class="k">Ctrl+W</span><span class="d">close the current tab</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Tab</span><span class="d">next tab (Shift: previous)</span></div>
 <div class="kbd-row"><span class="k">Ctrl+1-9</span><span class="d">jump to tab 1-9 (9 = last)</span></div>
-<div class="kbd-row"><span class="k">F8 / Ctrl+`</span><span class="d">open a PowerShell tab in this folder</span></div>
+<div class="kbd-row"><span class="k">F8 / Ctrl+`</span><span class="d">open a terminal using the default profile</span></div>
 <div class="kbd-row"><span class="k">Shift+F8</span><span class="d">open a CMD tab in this folder</span></div>
 <div class="kbd-row"><span class="k">Ctrl+F8 / Ctrl+Alt+`</span><span class="d">open PowerShell as administrator</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+F8</span><span class="d">open CMD as administrator</span></div>
@@ -339,24 +340,27 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <div class="kbd-row"><span class="k">Ctrl+F11</span><span class="d">open the Registry Editor tab (always elevated)</span></div>
 </div>
 
-</div>
-<div class="kbd-col">
-
 <div class="kbd-group"><h4>VIEW</h4>
 <div class="kbd-row"><span class="k">F5</span><span class="d">refresh - re-list the folder, or re-run the search</span></div>
 <div class="kbd-row"><span class="k">Alt+M</span><span class="d">hide or show the pane menubar</span></div>
-<div class="kbd-row"><span class="k">F10 / Ctrl+Shift+P</span><span class="d">second pane - right-click to flip side-by-side / stacked</span></div>
-<div class="kbd-row"><span class="k">Ctrl+H</span><span class="d">show hidden and system items</span></div>
-<div class="kbd-row"><span class="k">Alt+P</span><span class="d">show file details</span></div>
+<div class="kbd-row"><span class="k">F10 / Ctrl+Shift+P</span><span class="d">open or close the second pane</span></div>
+<div class="kbd-row"><span class="k">Ctrl+H</span><span class="d">show or hide hidden and system items</span></div>
+<div class="kbd-row"><span class="k">Alt+P</span><span class="d">show or hide file details</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+S</span><span class="d">show or hide the search panel</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Right</span><span class="d">expand every result</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Left</span><span class="d">collapse every result</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+B</span><span class="d">show or hide the side panels</span></div>
+<div class="kbd-row"><span class="k">Alt+H</span><span class="d">show or hide hidden and dotfolders in the tree</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift +/- / 0</span><span class="d">zoom the whole app (0 resets it)</span></div>
+<div class="kbd-row"><span class="k">Alt+T</span><span class="d">open the theme and accent picker</span></div>
+<div class="kbd-row"><span class="k">Alt+G</span><span class="d">turn film grain on or off</span></div>
+<div class="kbd-row"><span class="k">Alt+L</span><span class="d">open the language picker</span></div>
 </div>
 
 <div class="kbd-group"><h4>FILE</h4>
 <div class="kbd-row"><span class="k">Ctrl+Alt+E</span><span class="d">export the results as HTML</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Alt+Shift+E</span><span class="d">export the results as CSV</span></div>
-<div class="kbd-row"><span class="k">Ctrl+,</span><span class="d">edit PowerShell profile</span></div>
+<div class="kbd-row"><span class="k">Ctrl+,</span><span class="d">Edit PowerShell profile</span></div>
 </div>
 
 <div class="kbd-group"><h4>EDITING</h4>
@@ -375,22 +379,34 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <div class="kbd-cols">
 <div class="kbd-col">
 
-<div class="kbd-group"><h4>FILE</h4>
-<div class="kbd-row"><span class="k">Enter</span><span class="d">open file</span></div>
-<div class="kbd-row"><span class="k">F7</span><span class="d">edit the selected file</span></div>
-<div class="kbd-row"><span class="k">Ctrl+F7</span><span class="d">new document, admin-save retry</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+O</span><span class="d">open with...</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+Enter</span><span class="d">open as administrator</span></div>
-<div class="kbd-row"><span class="k">F6</span><span class="d">show in Explorer</span></div>
-<div class="kbd-row"><span class="k">F3</span><span class="d">search inside this folder</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+E</span><span class="d">exclude this folder</span></div>
-<div class="kbd-row"><span class="k">Ctrl+D</span><span class="d">add to bookmarks</span></div>
-<div class="kbd-row"><span class="k">Alt+Enter</span><span class="d">properties</span></div>
-<div class="kbd-row"><span class="k">Shift+F10</span><span class="d">more Windows options</span></div>
+<div class="kbd-group"><h4>NAVIGATION</h4>
+<div class="kbd-row"><span class="k">Alt+R</span><span class="d">show recently visited folders</span></div>
 </div>
 
+<div class="kbd-group"><h4>VIEW</h4>
+<div class="kbd-row"><span class="k">Ctrl+Shift+1 / 2 / 3</span><span class="d">list, icon or details view</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+4</span><span class="d">cycle the results density</span></div>
+<div class="kbd-row"><span class="k">Ctrl +/-</span><span class="d">larger or smaller icons, like Ctrl+wheel</span></div>
+<div class="kbd-row"><span class="k">Alt+S</span><span class="d">choose the sort order</span></div>
+<div class="kbd-row"><span class="k">Alt+Shift+S</span><span class="d">reverse the sort order</span></div>
+<div class="kbd-row"><span class="k">Alt+O</span><span class="d">keep folders above files</span></div>
 </div>
-<div class="kbd-col">
+
+<div class="kbd-group"><h4>FILE</h4>
+<div class="kbd-row"><span class="k">Enter</span><span class="d">Open file</span></div>
+<div class="kbd-row"><span class="k">F7</span><span class="d">Edit</span></div>
+<div class="kbd-row"><span class="k">Ctrl+F7</span><span class="d">new document, admin-save retry</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+O</span><span class="d">Open with...</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+Enter</span><span class="d">Open as administrator</span></div>
+<div class="kbd-row"><span class="k">F6</span><span class="d">Show in Explorer</span></div>
+<div class="kbd-row"><span class="k">F3</span><span class="d">Search inside this folder</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+E</span><span class="d">Exclude this folder</span></div>
+<div class="kbd-row"><span class="k">Ctrl+D</span><span class="d">Add to Bookmarks</span></div>
+<div class="kbd-row"><span class="k">Alt+Enter</span><span class="d">Properties</span></div>
+<div class="kbd-row"><span class="k">Shift+F10</span><span class="d">More Windows options...</span></div>
+<div class="kbd-row"><span class="k">Shift+F4</span><span class="d">Analyze storage</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Enter</span><span class="d">Open in new tab</span></div>
+</div>
 
 <div class="kbd-group"><h4>EDITING</h4>
 <div class="kbd-row"><span class="k">Ctrl+A</span><span class="d">select every result</span></div>
@@ -400,11 +416,16 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <div class="kbd-row"><span class="k">Shift+Delete</span><span class="d">delete permanently</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+N</span><span class="d">new folder</span></div>
 <div class="kbd-row"><span class="k">Ctrl+Shift+L</span><span class="d">clear the results</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+C</span><span class="d">copy full path</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+M</span><span class="d">copy file name</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+D</span><span class="d">copy folder path</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+Y</span><span class="d">copy matched lines</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+H</span><span class="d">copy SHA-256</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+C</span><span class="d">Copy full path</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+M</span><span class="d">Copy file name</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+D</span><span class="d">Copy folder path</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+Y</span><span class="d">Copy matched lines</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+H</span><span class="d">Copy SHA-256</span></div>
+<div class="kbd-row"><span class="k">Alt+N</span><span class="d">Add nickname</span></div>
+<div class="kbd-row"><span class="k">Alt+Shift+N</span><span class="d">Remove nickname</span></div>
+<div class="kbd-row"><span class="k">Alt+Z</span><span class="d">Compress to ZIP</span></div>
+<div class="kbd-row"><span class="k">Alt+X</span><span class="d">Extract here</span></div>
+<div class="kbd-row"><span class="k">Alt+Shift+X</span><span class="d">extract each archive into its own folder</span></div>
 </div>
 
 </div>
@@ -414,44 +435,86 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <div class="kbd-cols">
 <div class="kbd-col">
 
+<div class="kbd-group"><h4>NAVIGATION</h4>
+<div class="kbd-row"><span class="k">Ctrl+Shift+Up / Down / PgUp / PgDn</span><span class="d">scroll the output a line or a page</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+Home / End</span><span class="d">scroll to the top or bottom of the output</span></div>
+</div>
+
+<div class="kbd-group"><h4>VIEW</h4>
+<div class="kbd-row"><span class="k">Ctrl+Shift+,</span><span class="d">Fonts...</span></div>
+<div class="kbd-row"><span class="k">Ctrl +/- / 0</span><span class="d">larger, smaller or default text size</span></div>
+</div>
+
 <div class="kbd-group"><h4>EDITING</h4>
-<div class="kbd-row"><span class="k">Ctrl+Shift+C</span><span class="d">copy</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+A</span><span class="d">select all</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+C</span><span class="d">Copy</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+A</span><span class="d">Select all</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+V / Ctrl+V</span><span class="d">Paste</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+L</span><span class="d">Clear</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+E</span><span class="d">Edit prompt...</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+R</span><span class="d">Reset prompt</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+Q</span><span class="d">Reload PowerShell profile</span></div>
 </div>
 
 </div>
-<div class="kbd-col"></div>
 </div>
 
 <h3 class="kbd-scope">Editor</h3>
 <div class="kbd-cols">
 <div class="kbd-col">
 
+<div class="kbd-group"><h4>SEARCH</h4>
+<div class="kbd-row"><span class="k">Ctrl+F</span><span class="d">Find...</span></div>
+</div>
+
+<div class="kbd-group"><h4>VIEW</h4>
+<div class="kbd-row"><span class="k">Alt+Z</span><span class="d">Word wrap</span></div>
+</div>
+
 <div class="kbd-group"><h4>EDITING</h4>
-<div class="kbd-row"><span class="k">Ctrl+G</span><span class="d">go to line</span></div>
-<div class="kbd-row"><span class="k">Ctrl+S</span><span class="d">save</span></div>
+<div class="kbd-row"><span class="k">Ctrl+G</span><span class="d">Go to line...</span></div>
+<div class="kbd-row"><span class="k">Ctrl+S</span><span class="d">Save</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Z</span><span class="d">Undo</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Y</span><span class="d">Redo</span></div>
 </div>
 
 </div>
-<div class="kbd-col"></div>
 </div>
 
 <h3 class="kbd-scope">Processes/Services</h3>
 <div class="kbd-cols">
 <div class="kbd-col">
 
+<div class="kbd-group"><h4>VIEW</h4>
+<div class="kbd-row"><span class="k">Enter</span><span class="d">open the details card</span></div>
+</div>
+
 <div class="kbd-group"><h4>EDITING</h4>
-<div class="kbd-row"><span class="k">Del</span><span class="d">end process</span></div>
-<div class="kbd-row"><span class="k">Del</span><span class="d">stop (in Services mode)</span></div>
-<div class="kbd-row"><span class="k">Ctrl+R</span><span class="d">restart</span></div>
-<div class="kbd-row"><span class="k">Ctrl+O</span><span class="d">open file location</span></div>
-<div class="kbd-row"><span class="k">Ctrl+Shift+A</span><span class="d">restart as administrator</span></div>
-<div class="kbd-row"><span class="k">Ctrl+S</span><span class="d">start</span></div>
+<div class="kbd-row"><span class="k">Del</span><span class="d">End process</span></div>
+<div class="kbd-row"><span class="k">Del</span><span class="d">Stop</span></div>
+<div class="kbd-row"><span class="k">Ctrl+R</span><span class="d">Restart</span></div>
+<div class="kbd-row"><span class="k">Ctrl+O</span><span class="d">Open file location</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+A</span><span class="d">Restart as administrator</span></div>
+<div class="kbd-row"><span class="k">Ctrl+S</span><span class="d">Start</span></div>
 <div class="kbd-row"><span class="k">Ctrl+.</span><span class="d">switch between Processes and Services</span></div>
 </div>
 
 </div>
-<div class="kbd-col"></div>
+</div>
+
+<h3 class="kbd-scope">Event Viewer</h3>
+<div class="kbd-cols">
+<div class="kbd-col">
+
+<div class="kbd-group"><h4>VIEW</h4>
+<div class="kbd-row"><span class="k">Enter</span><span class="d">open the details card</span></div>
+</div>
+
+<div class="kbd-group"><h4>EDITING</h4>
+<div class="kbd-row"><span class="k">Ctrl+C</span><span class="d">Copy details</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+C</span><span class="d">Copy message</span></div>
+</div>
+
+</div>
 </div>
 
 <h3 class="kbd-scope">Registry Editor</h3>
@@ -459,19 +522,18 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <div class="kbd-col">
 
 <div class="kbd-group"><h4>SEARCH</h4>
-<div class="kbd-row"><span class="k">Ctrl+F</span><span class="d">find a key or value name</span></div>
+<div class="kbd-row"><span class="k">Ctrl+F</span><span class="d">find a key or value name (Registry Editor tab)</span></div>
 </div>
 
 <div class="kbd-group"><h4>VIEW</h4>
 <div class="kbd-row"><span class="k">F5</span><span class="d">reload the selected key from disk</span></div>
 </div>
 
-</div>
-<div class="kbd-col">
-
 <div class="kbd-group"><h4>EDITING</h4>
-<div class="kbd-row"><span class="k">Ctrl+C</span><span class="d">copy full path</span></div>
-<div class="kbd-row"><span class="k">Enter</span><span class="d">modify a value</span></div>
+<div class="kbd-row"><span class="k">Ctrl+C</span><span class="d">Copy full path</span></div>
+<div class="kbd-row"><span class="k">Enter</span><span class="d">Modify...</span></div>
+<div class="kbd-row"><span class="k">F2</span><span class="d">Rename</span></div>
+<div class="kbd-row"><span class="k">Del</span><span class="d">Delete</span></div>
 </div>
 
 </div>
@@ -482,26 +544,31 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <div class="kbd-col">
 
 <div class="kbd-group"><h4>SEARCH</h4>
-<div class="kbd-row"><span class="k">Ctrl+Enter</span><span class="d">start the scan</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Enter</span><span class="d">start the scan (Storage Analyzer)</span></div>
+<div class="kbd-row"><span class="k">F5</span><span class="d">Rescan</span></div>
+<div class="kbd-row"><span class="k">Esc</span><span class="d">stop a running scan (Storage Analyzer)</span></div>
 </div>
 
 <div class="kbd-group"><h4>NAVIGATION</h4>
-<div class="kbd-row"><span class="k">Enter</span><span class="d">zoom into the selected folder</span></div>
-<div class="kbd-row"><span class="k">Backspace</span><span class="d">zoom out one level</span></div>
-<div class="kbd-row"><span class="k">Home</span><span class="d">back to the scan root</span></div>
+<div class="kbd-row"><span class="k">Enter</span><span class="d">zoom into the selected folder (Storage Analyzer)</span></div>
+<div class="kbd-row"><span class="k">Backspace</span><span class="d">zoom out one level (Storage Analyzer)</span></div>
+<div class="kbd-row"><span class="k">Home</span><span class="d">back to the scan root (Storage Analyzer)</span></div>
+<div class="kbd-row"><span class="k">Shift+Enter</span><span class="d">Open in new tab</span></div>
 </div>
-
-</div>
-<div class="kbd-col">
 
 <div class="kbd-group"><h4>VIEW</h4>
-<div class="kbd-row"><span class="k">D</span><span class="d">cycle treemap depth</span></div>
-<div class="kbd-row"><span class="k">M</span><span class="d">cycle the minimum size shown</span></div>
-<div class="kbd-row"><span class="k">C</span><span class="d">switch coloring by type or folder</span></div>
+<div class="kbd-row"><span class="k">D</span><span class="d">cycle treemap depth (Storage Analyzer)</span></div>
+<div class="kbd-row"><span class="k">M</span><span class="d">cycle the minimum size shown (Storage Analyzer)</span></div>
+<div class="kbd-row"><span class="k">C</span><span class="d">switch coloring by type or folder (Storage Analyzer)</span></div>
+</div>
+
+<div class="kbd-group"><h4>FILE</h4>
+<div class="kbd-row"><span class="k">F6</span><span class="d">Open in Explorer</span></div>
 </div>
 
 <div class="kbd-group"><h4>EDITING</h4>
-<div class="kbd-row"><span class="k">Del</span><span class="d">send the selected item to the Recycle Bin</span></div>
+<div class="kbd-row"><span class="k">Del</span><span class="d">send the selected item to the Recycle Bin (Storage Analyzer)</span></div>
+<div class="kbd-row"><span class="k">Ctrl+Shift+C</span><span class="d">Copy path</span></div>
 </div>
 
 </div>
@@ -542,7 +609,7 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <script src="ks-i18n.js?v=9"></script>
-<script src="shortcuts.generated.js?v=5"></script>
+<script src="shortcuts.generated.js?v=6"></script>
 <script src="ks.js?v=8"></script>
 <script>
 /* Replace the checked-in fallback with the table generated from the app's KsAll source. */

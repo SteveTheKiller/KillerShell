@@ -6,6 +6,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.4.1] - Unreleased
 
+### Added
+- Keyboard shortcuts for the view buttons, icon size, density, sort, folders on top, recents, the side panels, app size, theme, language, film grain, nicknames, compress and extract, and Analyze storage, plus the folder tree's menu, the Event Viewer rows and the Storage Analyzer's menu. Every key is on the F1 card, its menu row, its button's tooltip and the website.
+
 ### Fixed
 - Screen readers no longer read toolbar, menu and title bar icons as unreadable symbols, and file list items read as their names instead of a type name.
 - The website top bar no longer leaves extra space under the wordmark and buttons.

@@ -783,6 +783,11 @@ namespace KillerShell.Shell
             // above already use (StorageTabs.cs).
             if (StorageAnalyzerHasFocus && !IsWindowChord(e, ctrl, shift, alt)) return;
 
+            // Commands that had no key before 1.4.1, and the folder tree's own menu keys
+            // (KeyCommands.cs). Ahead of the chain below so a focused tree can claim F3, F6,
+            // Ctrl+D and the rest for its selected node rather than for the listing's selection.
+            if (HandleCommandKey(e, ctrl, shift, alt)) return;
+
             // Alt+1-0 jumps to a saved location. Alt chords arrive as Key.System with the real
             // key parked in SystemKey, so they have to be unwrapped before anything can match -
             // and they are checked first, ahead of every e.Key test below, which would all see

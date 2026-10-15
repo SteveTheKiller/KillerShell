@@ -210,7 +210,7 @@
                                         <ContextMenu>
                                             <MenuItem Header="{DynamicResource Str_Menu_PipeTab}"
                                                       Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                      Click="PipeTab_Click"/>
+                                                      Click="PipeTab_Click" InputGestureText="Ctrl+Shift+F"/>
                                         </ContextMenu>
                                     </Border.ContextMenu>
                                     <Grid>
@@ -702,8 +702,13 @@
                                 ToolTip="{DynamicResource Str_TT_Back}" Click="NavBack_Click"/>
                         <Button x:Name="NavForwardBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE72A;" Margin="2,0"
                                 ToolTip="{DynamicResource Str_TT_Forward}" Click="NavForward_Click"/>
+                        <!-- Str_TT_Up is shared with the file dialogs, which have no Alt+Up, so the
+                             key is appended here rather than in the string. Same for the three
+                             view buttons below. -->
                         <Button x:Name="NavUpBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE74A;"
-                                ToolTip="{DynamicResource Str_TT_Up}" Click="NavUp_Click"/>
+                                Click="NavUp_Click">
+                            <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_Up}"/><Run Text="  (Alt+Up)"/></TextBlock></Button.ToolTip>
+                        </Button>
                         <!-- Favorite: sits immediately LEFT of the address, the way a browser
                              puts its bookmark star next to the URL, so saving where you are is
                              one reach from the path you are reading rather than across the row.
@@ -824,11 +829,17 @@
                              Folded up from the row below, so this strip now carries everything
                              that acts on the listing. -->
                         <Button x:Name="ViewListBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE8FD;"
-                                VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_ViewList}" Click="ViewList_Click"/>
+                                VerticalAlignment="Center" Click="ViewList_Click">
+                            <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_ViewList}"/><Run Text="  (Ctrl+Shift+1)"/></TextBlock></Button.ToolTip>
+                        </Button>
                         <Button x:Name="ViewIconsBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE80A;" Margin="2,0"
-                                VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_ViewIcons}" Click="ViewIcons_Click"/>
+                                VerticalAlignment="Center" Click="ViewIcons_Click">
+                            <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_ViewIcons}"/><Run Text="  (Ctrl+Shift+2)"/></TextBlock></Button.ToolTip>
+                        </Button>
                         <Button x:Name="ViewDetailsBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE700;" Margin="0,0,2,0"
-                                VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_ViewDetails}" Click="ViewDetails_Click"/>
+                                VerticalAlignment="Center" Click="ViewDetails_Click">
+                            <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_ViewDetails}"/><Run Text="  (Ctrl+Shift+3)"/></TextBlock></Button.ToolTip>
+                        </Button>
                         <!-- The one group separator in the strip, between the view modes and the
                              sort controls. Same BarSep* pair, zero width off 98SE. -->
                         <Border Width="{DynamicResource BarSepWidth}" Margin="2,3,4,3"
@@ -885,12 +896,15 @@
                         </Popup>
                         <Button x:Name="SortDirButton" Content="&#xE70E;" Width="24" Height="24" Padding="0" Margin="0,0,2,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="10" Style="{StaticResource SurfaceButton}"
-                                VerticalAlignment="Center" Click="SortDir_Click"/>
+                                VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_SortDir}" Click="SortDir_Click"/>
                         <!-- Expand/collapse all: one glyph button, no words to shift width.
                              Hidden (not collapsed) outside list view - see ResultsView.cs. -->
                         <Button x:Name="ExpandAllButton" Style="{StaticResource SurfaceButton}"
                                 Width="26" Height="24" Padding="0" Margin="0,0,2,0" VerticalAlignment="Center"
-                                ToolTip="{DynamicResource Str_Btn_ExpandAll}" Click="ExpandAll_Click">
+                                Click="ExpandAll_Click">
+                            <!-- The key follows the glyph: SetExpandAllLabel (Results.cs) swaps
+                                 this for the collapse wording and Ctrl+Left. -->
+                            <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Btn_ExpandAll}"/><Run Text="  (Ctrl+Right)"/></TextBlock></Button.ToolTip>
                             <a11y:Glyph x:Name="ExpandAllGlyph" Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
@@ -2059,7 +2073,7 @@
                                  rather than with the file commands. The same row appears on a
                                  tree node and a saved place - a folder offers the same verbs
                                  wherever it is drawn. -->
-                            <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="MenuAnalyze_Click">
+                            <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="MenuAnalyze_Click" InputGestureText="Shift+F4">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_ExcludeFolder}" Click="MenuExcludeFolder_Click"  InputGestureText="Ctrl+Shift+E">
@@ -2117,10 +2131,10 @@
                             </MenuItem>
                             <!-- Nickname rows, next to Rename because they read like one: header
                                  and visibility are set as the menu opens (NicknameCommands.cs). -->
-                            <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="MenuNickname_Click">
+                            <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="MenuNickname_Click" InputGestureText="Alt+N">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="MenuNicknameRemove_Click">
+                            <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="MenuNicknameRemove_Click" InputGestureText="Alt+Shift+N">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_Delete}"        Click="MenuDelete_Click"    InputGestureText="Delete">
@@ -2134,13 +2148,13 @@
                                  selection is archives this build can read. The Extract to row's
                                  header carries the folder name and is set as the menu opens. -->
                             <Separator Tag="zipsep"/>
-                            <MenuItem Tag="zip" Header="{DynamicResource Str_Menu_Compress}" Click="MenuCompress_Click">
+                            <MenuItem Tag="zip" Header="{DynamicResource Str_Menu_Compress}" Click="MenuCompress_Click" InputGestureText="Alt+Z">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Tag="unziphere" Header="{DynamicResource Str_Menu_ExtractHere}" Click="MenuExtractHere_Click">
+                            <MenuItem Tag="unziphere" Header="{DynamicResource Str_Menu_ExtractHere}" Click="MenuExtractHere_Click" InputGestureText="Alt+X">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8B7;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Tag="unzipto" Header="{DynamicResource Str_Menu_ExtractTo}" Click="MenuExtractTo_Click">
+                            <MenuItem Tag="unzipto" Header="{DynamicResource Str_Menu_ExtractTo}" Click="MenuExtractTo_Click" InputGestureText="Alt+Shift+X">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8DA;"/></MenuItem.Icon>
                             </MenuItem>
                             <Separator/>

@@ -10,9 +10,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Idioma</sys:String>
-    <sys:String x:Key="Str_TT_Theme">Tema</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">Desplaza la rueda sobre el logotipo para cambiar el tamaño de la aplicación</sys:String>
+    <sys:String x:Key="Str_TT_Language">Idioma  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Tema  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Desplaza la rueda sobre el logotipo para cambiar el tamaño de la aplicación  (Ctrl+Mayús +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">Tamaño de la aplicación {0} %</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">tema</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">acento</sys:String>
@@ -20,7 +20,7 @@
     <!-- Scope bar -->
     <sys:String x:Key="Str_Lbl_In">en:</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(ninguna carpeta seleccionada - haz clic para elegir)</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Haz clic para cambiar la carpeta de búsqueda</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Haz clic para cambiar la carpeta de búsqueda  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFolder">Selecciona la carpeta raíz de búsqueda</sys:String>
 
     <!-- Search config -->
@@ -56,7 +56,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">nueva búsqueda</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Nueva pestaña</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Cerrar pestaña</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Cerrar pestaña  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Cancelar</sys:String>
@@ -72,11 +72,11 @@
     <sys:String x:Key="Str_Col_Folder">ubicación</sys:String>
     <sys:String x:Key="Str_Sort_Found">sin ordenar</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrar estos resultados (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Buscar dentro de estos resultados</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Segundo panel  |  clic derecho para alternar lado a lado / apilado</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Buscar dentro de estos resultados  (Ctrl+Mayús+F)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Segundo panel  (F10)  |  clic derecho para alternar lado a lado / apilado</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Más herramientas</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Herramientas del sistema</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Ordenar por</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Ordenar por  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Este equipo</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Buscar dentro de estos resultados</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} resultados de {1}  |  {2}</sys:String>
@@ -263,12 +263,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">abrir una ventana nueva</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">Carpetas visitadas recientemente</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Carpetas visitadas recientemente  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">Aún no hay carpetas recientes</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Borrar la lista</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">Densidad de resultados - clic para cambiar, rueda para ajustar</sys:String>
+    <sys:String x:Key="Str_TT_Density">Densidad de resultados - clic para cambiar, rueda para ajustar  (Ctrl+Mayús+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Densidad: amplia</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Densidad: cómoda</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Densidad: compacta</sys:String>
@@ -300,11 +300,11 @@
     <sys:String x:Key="Str_Tab_Dropped">soltados ({0})</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">Mostrar u ocultar el panel de búsqueda  (Ctrl+Mayús+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Mostrar u ocultar el árbol de carpetas</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Contraer los paneles laterales</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Contraer los paneles laterales  (Ctrl+Mayús+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">Ubicaciones guardadas  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Guardar esta carpeta</sys:String>
-    <sys:String x:Key="Str_TT_ShowHidden">Mostrar elementos ocultos y del sistema</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Mantener las carpetas encima de los archivos</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">Mostrar elementos ocultos y del sistema  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Mantener las carpetas encima de los archivos  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Añadir a favoritos</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Quitar de favoritos</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Añadir apodo</sys:String>
@@ -313,8 +313,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Ocultar barra de menús</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">mostrar u ocultar las ubicaciones guardadas</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">ir a la ubicación guardada 1-10 (0 = décima)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Atrás</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Adelante</sys:String>
+    <sys:String x:Key="Str_TT_Back">Atrás  (Alt+Flecha izquierda)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Adelante  (Alt+Flecha derecha)</sys:String>
     <sys:String x:Key="Str_Status_Listing">Abriendo {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} elemento(s)</sys:String>
     <sys:String x:Key="Str_Status_BadPath">No se puede abrir {0}</sys:String>
@@ -435,7 +435,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Rehacer  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Buscar  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Ir a la línea  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">Ajuste de línea</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Ajuste de línea  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Ajustes del editor</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">línea</sys:String>
 
@@ -462,9 +462,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Abrir esta carpeta en una pestaña</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Nueva terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nueva terminal como administrador  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Abrir esta carpeta en una pestaña</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Limpiar</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Fuentes...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Abrir esta carpeta en una pestaña  (Ctrl+Mayús+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Limpiar  (Ctrl+Mayús+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Fuentes...  (Ctrl+Mayús+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Ajuste de línea activado.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Ajuste de línea desactivado - desplácese para ver las líneas largas.</sys:String>
@@ -858,6 +858,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">alejar un nivel (Analizador de almacenamiento)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">volver a la raíz del análisis (Analizador de almacenamiento)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">enviar el elemento seleccionado a la Papelera (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">zoom de toda la aplicación (0 la restablece)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">mostrar u ocultar los paneles laterales</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">abrir el selector de tema y color de acento</sys:String>
+    <sys:String x:Key="Str_Ks_Language">abrir el selector de idioma</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">activar o desactivar el grano de película</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">abrir o cerrar el segundo panel</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">mostrar u ocultar elementos ocultos y del sistema</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">mostrar u ocultar los detalles del archivo</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">vista de lista, iconos o detalles</sys:String>
+    <sys:String x:Key="Str_Ks_Density">cambiar la densidad de resultados</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">iconos más grandes o más pequeños, como Ctrl+rueda</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">elegir el orden</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">invertir el orden</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">mantener las carpetas encima de los archivos</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">mostrar las carpetas visitadas recientemente</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">extraer cada archivo comprimido en su propia carpeta</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">documento nuevo, reintentar guardado como administrador</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">texto más grande, más pequeño o tamaño predeterminado</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">desplazar la salida una línea o una página</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">desplazarse al principio o al final de la salida</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">abrir la tarjeta de detalles</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">recargar la clave seleccionada desde el disco</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">detener el análisis en curso (Analizador de almacenamiento)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">Invertir el orden  (Alt+Mayús+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Analizar</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Detener</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Elige una carpeta o unidad para analizar</sys:String>

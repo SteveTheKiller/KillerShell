@@ -10,10 +10,10 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Språk</sys:String>
-    <sys:String x:Key="Str_TT_Theme">Tema</sys:String>
+    <sys:String x:Key="Str_TT_Language">Språk  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Tema  (Alt+T)</sys:String>
     <!-- App-wide accessibility zoom: wheel over the title-bar wordmark (AppScale.cs) -->
-    <sys:String x:Key="Str_TT_AppSize">Rull over ordmerket for å endre størrelsen på appen</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Rull over ordmerket for å endre størrelsen på appen  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">Appstørrelse {0} %</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">tema</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">aksent</sys:String>
@@ -38,17 +38,17 @@
     <sys:String x:Key="Str_Scope_Empty">(ingen mappe valgt - klikk for å velge)</sys:String>
     <!-- Source name in the scope breadcrumb when a tab was made by dropping files on the window -->
     <sys:String x:Key="Str_Scope_Dropped">slippede filer</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Klikk for å endre søkemappe</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Klikk for å endre søkemappe  (Ctrl+L)</sys:String>
     <!-- Browsing (Browse.cs) -->
     <sys:String x:Key="Str_TT_SearchPanel">Vis eller skjul søkepanelet  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Vis eller skjul mappetreet</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Skjul sidepanelene</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Skjul sidepanelene  (Ctrl+Shift+B)</sys:String>
     <!-- Bookmarks (Bookmarks.cs) -->
     <sys:String x:Key="Str_TT_Bookmarks">Bokmerker  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Legg til bokmerke for denne mappen  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Vis skjulte elementer og systemelementer  (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Vis fildetaljer  (Alt+P)</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Hold mapper over filer</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Hold mapper over filer  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Legg til i bokmerker</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Fjern fra bokmerker</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Legg til kallenavn</sys:String>
@@ -57,8 +57,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Skjul menylinjen</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">vis eller skjul bokmerker</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">gå til bokmerke 1-10 (0 = tiende)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Tilbake</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Fremover</sys:String>
+    <sys:String x:Key="Str_TT_Back">Tilbake  (Alt+Venstrepil)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Fremover  (Alt+Høyrepil)</sys:String>
     <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
     <sys:String x:Key="Str_Status_Listing">Åpner {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">{0} element(er)</sys:String>
@@ -100,7 +100,7 @@
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
     <sys:String x:Key="Str_Tab_Dropped">slippet ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Ny fane  (Ctrl+T)</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Lukk fane</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Lukk fane  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Avbryt</sys:String>
@@ -116,11 +116,11 @@
     <sys:String x:Key="Str_Col_Folder">plassering</sys:String>
     <sys:String x:Key="Str_Sort_Found">som funnet</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrer disse resultatene  (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Søk i disse resultatene</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Søk i disse resultatene  (Ctrl+Shift+F)</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Andre panel  (F10)  |  høyreklikk for å bytte mellom side ved side og stablet</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Flere verktøy</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systemverktøy</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Sorter etter</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Sorter etter  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Denne PC-en</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Søk i disse resultatene</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} resultater fra {1}  |  {2}</sys:String>
@@ -375,12 +375,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">åpne et nytt vindu</sys:String>
 
     <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-    <sys:String x:Key="Str_TT_Recents">Nylig besøkte mapper</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Nylig besøkte mapper  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">Ingen nylige mapper ennå</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Tøm listen</sys:String>
 
     <!-- Results density, on the rail (Density.cs) -->
-    <sys:String x:Key="Str_TT_Density">Resultattetthet - klikk for å bla gjennom, bruk hjulet for å justere trinnvis</sys:String>
+    <sys:String x:Key="Str_TT_Density">Resultattetthet - klikk for å bla gjennom, bruk hjulet for å justere trinnvis  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Tetthet: romslig</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Tetthet: komfortabel</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Tetthet: kompakt</sys:String>
@@ -416,7 +416,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Gjør om  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Finn  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Gå til linje  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">Tekstbryting</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Tekstbryting  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Redigeringsinnstillinger</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Klikk for å endre kodingen neste lagring bruker</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">linje</sys:String>
@@ -452,9 +452,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Klikk for å redigere - skriv en mappe og trykk Enter for å bytte dit med cd</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Ny terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Ny terminal som administrator  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Åpne denne mappen i en fane</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Tøm</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Skrifttyper...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Åpne denne mappen i en fane  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Tøm  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Skrifttyper...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Klikk for å redigere - skriv en sti og trykk Enter for å gi filen nytt navn eller flytte den</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Tekstbryting på.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Tekstbryting av - rull for å se lange linjer.</sys:String>
@@ -785,6 +785,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">zoom ut ett nivå (Lagringsanalyse)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">tilbake til skannerot (Lagringsanalyse)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">send valgt element til Papirkurven (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">zoom hele appen (0 tilbakestiller)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">vis eller skjul sidepanelene</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">åpne valg av tema og aksentfarge</sys:String>
+    <sys:String x:Key="Str_Ks_Language">åpne språkvalget</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">slå filmkorn på eller av</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">åpne eller lukk det andre panelet</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">vis eller skjul skjulte elementer og systemelementer</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">vis eller skjul fildetaljer</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">liste-, ikon- eller detaljvisning</sys:String>
+    <sys:String x:Key="Str_Ks_Density">bla gjennom resultattettheten</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">større eller mindre ikoner, som Ctrl+hjul</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">velg sortering</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">snu sorteringsrekkefølgen</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">hold mapper over filer</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">vis nylig besøkte mapper</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">pakk ut hvert arkiv til en egen mappe</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">nytt dokument, ny administratorlagring</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">større, mindre eller standard tekststørrelse</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">rull utdataene en linje eller en side</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">rull til toppen eller bunnen av utdataene</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">åpne detaljkortet</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">last inn valgt nøkkel på nytt fra disk</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">stopp skanningen som kjører (Lagringsanalyse)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">Snu sorteringsrekkefølgen  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Skann</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Stopp</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Velg en mappe eller stasjon å skanne</sys:String>

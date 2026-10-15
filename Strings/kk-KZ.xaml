@@ -11,9 +11,9 @@
          ================================================================ -->
 
     <!-- Title bar / flyout -->
-    <sys:String x:Key="Str_TT_Language">Тіл</sys:String>
-    <sys:String x:Key="Str_TT_Theme">Тақырып</sys:String>
-    <sys:String x:Key="Str_TT_AppSize">Қолданба өлшемін өзгерту үшін логотип үстінде тінтуір дөңгелегін айналдырыңыз</sys:String>
+    <sys:String x:Key="Str_TT_Language">Тіл  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">Тақырып  (Alt+T)</sys:String>
+    <sys:String x:Key="Str_TT_AppSize">Қолданба өлшемін өзгерту үшін логотип үстінде тінтуір дөңгелегін айналдырыңыз  (Ctrl+Shift +/- / 0)</sys:String>
     <sys:String x:Key="Str_St_AppSize">Қолданба өлшемі {0}%</sys:String>
     <sys:String x:Key="Str_Lbl_Theme">тақырып</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">акцент</sys:String>
@@ -36,15 +36,15 @@
     <sys:String x:Key="Str_Lbl_In">мұнда:</sys:String>
     <sys:String x:Key="Str_Scope_Empty">(қалта таңдалмаған - таңдау үшін басыңыз)</sys:String>
     <sys:String x:Key="Str_Scope_Dropped">тасталған файлдар</sys:String>
-    <sys:String x:Key="Str_TT_Scope">Іздеу қалтасын ауыстыру үшін басыңыз</sys:String>
+    <sys:String x:Key="Str_TT_Scope">Іздеу қалтасын ауыстыру үшін басыңыз  (Ctrl+L)</sys:String>
     <sys:String x:Key="Str_TT_SearchPanel">Іздеу тақтасын көрсету немесе жасыру  (Ctrl+Shift+S)</sys:String>
     <sys:String x:Key="Str_TT_TreePanel">Қалталар ағашын көрсету немесе жасыру</sys:String>
-    <sys:String x:Key="Str_TT_CollapseSidebar">Бүйір тақталарды жию</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">Бүйір тақталарды жию  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">Бетбелгілер  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Бұл қалтаны бетбелгіге қосу  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Жасырын және жүйелік элементтерді көрсету  (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Файл мәліметтерін көрсету  (Alt+P)</sys:String>
-    <sys:String x:Key="Str_TT_FoldersTop">Қалталарды файлдардан жоғары ұстау</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">Қалталарды файлдардан жоғары ұстау  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Бетбелгілерге қосу</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Бетбелгілерден алып тастау</sys:String>
     <sys:String x:Key="Str_Menu_AddNickname">Лақап ат қосу</sys:String>
@@ -53,8 +53,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Мәзір жолағын жасыру</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">бетбелгілерді көрсету немесе жасыру</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">1-10 бетбелгісіне өту (0 = оныншы)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Артқа</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Алға</sys:String>
+    <sys:String x:Key="Str_TT_Back">Артқа  (Alt+Сол жақ көрсеткі)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Алға  (Alt+Оң жақ көрсеткі)</sys:String>
     <sys:String x:Key="Str_Status_Listing">{0} ашылуда...</sys:String>
     <sys:String x:Key="Str_Status_Listed">Элементтер: {0}</sys:String>
     <sys:String x:Key="Str_Status_BadPath">{0} ашылмады</sys:String>
@@ -94,7 +94,7 @@
     <sys:String x:Key="Str_Tab_New">жаңа іздеу</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">тасталған ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Жаңа қойынды  (Ctrl+T)</sys:String>
-    <sys:String x:Key="Str_TT_CloseTab">Қойындыны жабу</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">Қойындыны жабу  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Болдырмау</sys:String>
@@ -110,11 +110,11 @@
     <sys:String x:Key="Str_Col_Folder">орналасуы</sys:String>
     <sys:String x:Key="Str_Sort_Found">табылғандай</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Осы нәтижелерді сүзу (Ctrl+F)</sys:String>
-    <sys:String x:Key="Str_TT_Pipe">Осы нәтижелердің ішінен іздеу</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">Осы нәтижелердің ішінен іздеу  (Ctrl+Shift+F)</sys:String>
     <sys:String x:Key="Str_TT_DualPane">Екінші тақта  (F10)  |  оң жақ басу қатар / үстіңгі орналасуды ауыстырады</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Басқа құралдар</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Жүйелік құралдар</sys:String>
-    <sys:String x:Key="Str_TT_Sort">Бойынша сұрыптау</sys:String>
+    <sys:String x:Key="Str_TT_Sort">Бойынша сұрыптау  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Осы компьютер</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Осы нәтижелердің ішінен іздеу</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{1} ішінен {0} нәтиже  |  {2}</sys:String>
@@ -359,12 +359,12 @@
     <sys:String x:Key="Str_Ks_NewWindow">жаңа терезе ашу</sys:String>
 
     <!-- Recently visited folders -->
-    <sys:String x:Key="Str_TT_Recents">Жақында ашылған қалталар</sys:String>
+    <sys:String x:Key="Str_TT_Recents">Жақында ашылған қалталар  (Alt+R)</sys:String>
     <sys:String x:Key="Str_Recents_Empty">Жақындағы қалталар әзірге жоқ</sys:String>
     <sys:String x:Key="Str_Recents_Clear">Тізімді тазалау</sys:String>
 
     <!-- Results density -->
-    <sys:String x:Key="Str_TT_Density">Нәтиже тығыздығы - басу шеңбер бойынша ауыстырады, дөңгелек қадамдап жылжытады</sys:String>
+    <sys:String x:Key="Str_TT_Density">Нәтиже тығыздығы - басу шеңбер бойынша ауыстырады, дөңгелек қадамдап жылжытады  (Ctrl+Shift+4)</sys:String>
     <sys:String x:Key="Str_St_DensityRoomy">Тығыздық: кең</sys:String>
     <sys:String x:Key="Str_St_DensityFull">Тығыздық: қалыпты</sys:String>
     <sys:String x:Key="Str_St_DensityCompact">Тығыздық: ықшам</sys:String>
@@ -400,7 +400,7 @@
     <sys:String x:Key="Str_TT_EdRedo">Қайталау  (Ctrl+Y)</sys:String>
     <sys:String x:Key="Str_TT_EdFind">Табу  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_EdGoto">Жолға өту  (Ctrl+G)</sys:String>
-    <sys:String x:Key="Str_TT_EdWrap">Сөз бойынша тасымалдау</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">Сөз бойынша тасымалдау  (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Өңдегіш параметрлері</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Келесі сақтау жазатын кодтауды өзгерту үшін басыңыз</sys:String>
     <sys:String x:Key="Str_Ed_GotoLabel">жол</sys:String>
@@ -436,9 +436,9 @@
     <sys:String x:Key="Str_TT_TermCwd">Өзгерту үшін басыңыз - қалтаны теріп, өту үшін Enter басыңыз</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Жаңа терминал  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Әкімші атынан жаңа терминал  (Ctrl+F8)</sys:String>
-    <sys:String x:Key="Str_TT_TermFolder">Осы қалтаны қойындыда ашу</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Тазалау</sys:String>
-    <sys:String x:Key="Str_TT_TermFonts">Қаріптер...</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">Осы қалтаны қойындыда ашу  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Тазалау  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">Қаріптер...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Өзгерту үшін басыңыз - файлдың атын өзгерту немесе жылжыту үшін жолды теріп, Enter басыңыз</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Сөз бойынша тасымалдау қосулы.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Сөз бойынша тасымалдау өшірулі - ұзын жолдарды көру үшін айналдырыңыз.</sys:String>
@@ -753,6 +753,30 @@
     <sys:String x:Key="Str_Ks_StorageZoomOut">бір деңгей кішірейту (Жинақтауыш талдағышы)</sys:String>
     <sys:String x:Key="Str_Ks_StorageHome">қарау түбіріне оралу (Жинақтауыш талдағышы)</sys:String>
     <sys:String x:Key="Str_Ks_StorageRecycle">таңдалған элементті себетке жіберу (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">бүкіл қолданбаны масштабтау (0 бастапқы өлшемге қайтарады)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">бүйір тақталарды көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">тақырып пен екпін түсін таңдауды ашу</sys:String>
+    <sys:String x:Key="Str_Ks_Language">тіл таңдауды ашу</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">пленка түйіршігін қосу немесе өшіру</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">екінші тақтаны ашу немесе жабу</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">жасырын және жүйелік элементтерді көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">файл мәліметтерін көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">тізім, таңбашалар немесе кесте көрінісі</sys:String>
+    <sys:String x:Key="Str_Ks_Density">нәтиже тығыздығын ауыстыру</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">таңбашаларды үлкейту немесе кішірейту, Ctrl+дөңгелек сияқты</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">сұрыптау тәртібін таңдау</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">сұрыптау ретін кері ауыстыру</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">қалталарды файлдардан жоғары ұстау</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">жақында ашылған қалталарды көрсету</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">әр мұрағатты өз қалтасына шығару</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">жаңа құжат, әкімші атынан сақтауды қайталау</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">мәтін өлшемін үлкейту, кішірейту немесе әдепкіге қайтару</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">шығысты бір жолға немесе бір бетке айналдыру</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">шығыстың басына немесе соңына айналдыру</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">мәліметтер картасын ашу</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">таңдалған бөлімді дискіден қайта оқу</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">жүріп жатқан қарауды тоқтату (Жинақтауыш талдағышы)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">Сұрыптау ретін кері ауыстыру  (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Қарау</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Тоқтату</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Қарайтын қалтаны немесе дискіні таңдаңыз</sys:String>

@@ -7,10 +7,10 @@
          app - keep them.
          ================================================================ -->
   <!-- Title bar / flyout -->
-  <sys:String x:Key="Str_TT_Language">Ngôn ngữ</sys:String>
-  <sys:String x:Key="Str_TT_Theme">Giao diện</sys:String>
+  <sys:String x:Key="Str_TT_Language">Ngôn ngữ  (Alt+L)</sys:String>
+  <sys:String x:Key="Str_TT_Theme">Giao diện  (Alt+T)</sys:String>
   <!-- App-wide accessibility zoom: wheel over the title-bar wordmark (AppScale.cs) -->
-  <sys:String x:Key="Str_TT_AppSize">Cuộn chuột trên biểu trưng để thay đổi kích thước ứng dụng</sys:String>
+  <sys:String x:Key="Str_TT_AppSize">Cuộn chuột trên biểu trưng để thay đổi kích thước ứng dụng  (Ctrl+Shift +/- / 0)</sys:String>
   <sys:String x:Key="Str_St_AppSize">Kích thước ứng dụng {0}%</sys:String>
   <sys:String x:Key="Str_Lbl_Theme">giao diện</sys:String>
   <sys:String x:Key="Str_Lbl_Accent">màu nhấn</sys:String>
@@ -34,17 +34,17 @@
   <sys:String x:Key="Str_Scope_Empty">(chưa chọn thư mục, bấm để chọn)</sys:String>
   <!-- Source name in the scope breadcrumb when a tab was made by dropping files on the window -->
   <sys:String x:Key="Str_Scope_Dropped">các tệp đã thả</sys:String>
-  <sys:String x:Key="Str_TT_Scope">Bấm để đổi thư mục tìm kiếm</sys:String>
+  <sys:String x:Key="Str_TT_Scope">Bấm để đổi thư mục tìm kiếm  (Ctrl+L)</sys:String>
   <!-- Browsing (Browse.cs) -->
   <sys:String x:Key="Str_TT_SearchPanel">Hiện hoặc ẩn bảng tìm kiếm  (Ctrl+Shift+S)</sys:String>
   <sys:String x:Key="Str_TT_TreePanel">Hiện hoặc ẩn cây thư mục</sys:String>
-  <sys:String x:Key="Str_TT_CollapseSidebar">Thu gọn các bảng bên</sys:String>
+  <sys:String x:Key="Str_TT_CollapseSidebar">Thu gọn các bảng bên  (Ctrl+Shift+B)</sys:String>
   <!-- Bookmarks (Bookmarks.cs) -->
   <sys:String x:Key="Str_TT_Bookmarks">Dấu trang  (Ctrl+B)</sys:String>
   <sys:String x:Key="Str_TT_Favorite">Đánh dấu thư mục này  (Ctrl+D)</sys:String>
   <sys:String x:Key="Str_TT_ShowHidden">Hiện các mục ẩn và mục hệ thống  (Ctrl+H)</sys:String>
   <sys:String x:Key="Str_TT_DetailsPane">Hiện thông tin chi tiết về tệp  (Alt+P)</sys:String>
-  <sys:String x:Key="Str_TT_FoldersTop">Luôn đặt thư mục phía trên tệp</sys:String>
+  <sys:String x:Key="Str_TT_FoldersTop">Luôn đặt thư mục phía trên tệp  (Alt+O)</sys:String>
   <sys:String x:Key="Str_Menu_AddFavorite">Thêm vào Dấu trang</sys:String>
   <sys:String x:Key="Str_Menu_RemoveFavorite">Xóa khỏi Dấu trang</sys:String>
   <sys:String x:Key="Str_Menu_AddNickname">Thêm biệt danh</sys:String>
@@ -53,8 +53,8 @@
   <sys:String x:Key="Str_Menu_HideMenuBar">Ẩn thanh menu</sys:String>
   <sys:String x:Key="Str_Ks_Bookmarks">hiện hoặc ẩn dấu trang</sys:String>
   <sys:String x:Key="Str_Ks_JumpBookmark">đi đến dấu trang 1-10 (0 = dấu trang thứ mười)</sys:String>
-  <sys:String x:Key="Str_TT_Back">Quay lại</sys:String>
-  <sys:String x:Key="Str_TT_Forward">Tiến</sys:String>
+  <sys:String x:Key="Str_TT_Back">Quay lại  (Alt+Mũi tên trái)</sys:String>
+  <sys:String x:Key="Str_TT_Forward">Tiến  (Alt+Mũi tên phải)</sys:String>
   <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
   <sys:String x:Key="Str_Status_Listing">Đang mở {0}...</sys:String>
   <sys:String x:Key="Str_Status_Listed">{0} mục</sys:String>
@@ -93,7 +93,7 @@
   <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
   <sys:String x:Key="Str_Tab_Dropped">đã thả ({0})</sys:String>
   <sys:String x:Key="Str_TT_NewTab">Tab mới  (Ctrl+T)</sys:String>
-  <sys:String x:Key="Str_TT_CloseTab">Đóng tab</sys:String>
+  <sys:String x:Key="Str_TT_CloseTab">Đóng tab  (Ctrl+W)</sys:String>
   <!-- Folder picker -->
   <sys:String x:Key="Str_Btn_Cancel">Hủy</sys:String>
   <sys:String x:Key="Str_Btn_Select">Chọn</sys:String>
@@ -108,11 +108,11 @@
   <sys:String x:Key="Str_Col_Folder">vị trí</sys:String>
   <sys:String x:Key="Str_Sort_Found">theo thứ tự tìm thấy</sys:String>
   <sys:String x:Key="Str_TT_FilterResults">Lọc các kết quả này (Ctrl+F)</sys:String>
-  <sys:String x:Key="Str_TT_Pipe">Tìm kiếm trong các kết quả này</sys:String>
+  <sys:String x:Key="Str_TT_Pipe">Tìm kiếm trong các kết quả này  (Ctrl+Shift+F)</sys:String>
   <sys:String x:Key="Str_TT_DualPane">Ngăn thứ hai  (F10)  |  bấm chuột phải để chuyển đổi giữa bố cục cạnh nhau và xếp chồng</sys:String>
   <sys:String x:Key="Str_TT_MoreTools">Công cụ khác</sys:String>
   <sys:String x:Key="Str_TT_SystemTools">Công cụ hệ thống</sys:String>
-  <sys:String x:Key="Str_TT_Sort">Sắp xếp theo</sys:String>
+  <sys:String x:Key="Str_TT_Sort">Sắp xếp theo  (Alt+S)</sys:String>
   <sys:String x:Key="Str_Nav_ThisPc">PC này</sys:String>
   <sys:String x:Key="Str_Menu_PipeTab">Tìm kiếm trong các kết quả này</sys:String>
   <sys:String x:Key="Str_Pipe_Scope">{0} kết quả từ {1}  |  {2}</sys:String>
@@ -354,11 +354,11 @@
   <sys:String x:Key="Str_Ks_MenuBar">ẩn hoặc hiện thanh menu của ngăn</sys:String>
   <sys:String x:Key="Str_Ks_NewWindow">mở cửa sổ mới</sys:String>
   <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
-  <sys:String x:Key="Str_TT_Recents">Các thư mục đã truy cập gần đây</sys:String>
+  <sys:String x:Key="Str_TT_Recents">Các thư mục đã truy cập gần đây  (Alt+R)</sys:String>
   <sys:String x:Key="Str_Recents_Empty">Chưa có thư mục nào được truy cập gần đây</sys:String>
   <sys:String x:Key="Str_Recents_Clear">Xóa danh sách</sys:String>
   <!-- Results density, on the rail (Density.cs) -->
-  <sys:String x:Key="Str_TT_Density">Mật độ kết quả: bấm để chuyển đổi, cuộn để điều chỉnh từng mức</sys:String>
+  <sys:String x:Key="Str_TT_Density">Mật độ kết quả: bấm để chuyển đổi, cuộn để điều chỉnh từng mức  (Ctrl+Shift+4)</sys:String>
   <sys:String x:Key="Str_St_DensityRoomy">Mật độ: rộng rãi</sys:String>
   <sys:String x:Key="Str_St_DensityFull">Mật độ: thoải mái</sys:String>
   <sys:String x:Key="Str_St_DensityCompact">Mật độ: thu gọn</sys:String>
@@ -391,7 +391,7 @@
   <sys:String x:Key="Str_TT_EdRedo">Làm lại  (Ctrl+Y)</sys:String>
   <sys:String x:Key="Str_TT_EdFind">Tìm  (Ctrl+F)</sys:String>
   <sys:String x:Key="Str_TT_EdGoto">Đi đến dòng  (Ctrl+G)</sys:String>
-  <sys:String x:Key="Str_TT_EdWrap">Ngắt dòng theo từ</sys:String>
+  <sys:String x:Key="Str_TT_EdWrap">Ngắt dòng theo từ  (Alt+Z)</sys:String>
   <sys:String x:Key="Str_TT_EdSettings">Cài đặt trình soạn thảo</sys:String>
   <sys:String x:Key="Str_TT_EdEncoding">Bấm để thay đổi bảng mã dùng cho lần lưu tiếp theo</sys:String>
   <sys:String x:Key="Str_Ed_GotoLabel">dòng</sys:String>
@@ -424,9 +424,9 @@
   <sys:String x:Key="Str_TT_TermCwd">Bấm để chỉnh sửa, nhập một thư mục rồi nhấn Enter để cd đến đó</sys:String>
   <sys:String x:Key="Str_TT_TermNew">Terminal mới  (F8)</sys:String>
   <sys:String x:Key="Str_TT_TermAdmin">Terminal mới với quyền quản trị viên  (Ctrl+F8)</sys:String>
-  <sys:String x:Key="Str_TT_TermFolder">Mở thư mục này trong một tab</sys:String>
-  <sys:String x:Key="Str_TT_TermClear">Xóa</sys:String>
-  <sys:String x:Key="Str_TT_TermFonts">Phông chữ...</sys:String>
+  <sys:String x:Key="Str_TT_TermFolder">Mở thư mục này trong một tab  (Ctrl+Shift+T)</sys:String>
+  <sys:String x:Key="Str_TT_TermClear">Xóa  (Ctrl+Shift+L)</sys:String>
+  <sys:String x:Key="Str_TT_TermFonts">Phông chữ...  (Ctrl+Shift+,)</sys:String>
   <sys:String x:Key="Str_TT_EdPath">Bấm để chỉnh sửa, nhập đường dẫn rồi nhấn Enter để đổi tên hoặc di chuyển tệp</sys:String>
   <sys:String x:Key="Str_Ed_WrapOn">Đã bật ngắt dòng.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOff">Đã tắt ngắt dòng. Hãy cuộn để xem các dòng dài.</sys:String>
@@ -747,6 +747,30 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Ks_StorageZoomOut">thu nhỏ ra một cấp (Trình phân tích lưu trữ)</sys:String>
   <sys:String x:Key="Str_Ks_StorageHome">trở về thư mục gốc quét (Trình phân tích lưu trữ)</sys:String>
   <sys:String x:Key="Str_Ks_StorageRecycle">chuyển mục đã chọn vào Thùng rác (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_Ks_AppSize">thu phóng toàn bộ ứng dụng (0 để đặt lại)</sys:String>
+  <sys:String x:Key="Str_Ks_Sidebar">hiển thị hoặc ẩn các bảng bên</sys:String>
+  <sys:String x:Key="Str_Ks_Theme">mở bộ chọn giao diện và màu nhấn</sys:String>
+  <sys:String x:Key="Str_Ks_Language">mở bộ chọn ngôn ngữ</sys:String>
+  <sys:String x:Key="Str_Ks_FilmGrain">bật hoặc tắt hạt phim</sys:String>
+  <sys:String x:Key="Str_Ks_DualPane">mở hoặc đóng ngăn thứ hai</sys:String>
+  <sys:String x:Key="Str_Ks_ShowHidden">hiện hoặc ẩn các mục ẩn và mục hệ thống</sys:String>
+  <sys:String x:Key="Str_Ks_DetailsPane">hiện hoặc ẩn thông tin chi tiết về tệp</sys:String>
+  <sys:String x:Key="Str_Ks_ResultsViews">dạng xem danh sách, biểu tượng hoặc chi tiết</sys:String>
+  <sys:String x:Key="Str_Ks_Density">chuyển đổi mật độ kết quả</sys:String>
+  <sys:String x:Key="Str_Ks_IconSize">biểu tượng lớn hơn hoặc nhỏ hơn, như Ctrl+cuộn chuột</sys:String>
+  <sys:String x:Key="Str_Ks_Sort">chọn cách sắp xếp</sys:String>
+  <sys:String x:Key="Str_Ks_SortDir">đảo ngược thứ tự sắp xếp</sys:String>
+  <sys:String x:Key="Str_Ks_FoldersTop">luôn đặt thư mục phía trên tệp</sys:String>
+  <sys:String x:Key="Str_Ks_Recents">hiện các thư mục đã truy cập gần đây</sys:String>
+  <sys:String x:Key="Str_Ks_ExtractTo">giải nén mỗi tệp nén vào thư mục riêng</sys:String>
+  <sys:String x:Key="Str_Ks_NewDocAdmin">tài liệu mới, thử lưu lại với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Ks_TermTextSize">chữ lớn hơn, nhỏ hơn hoặc cỡ mặc định</sys:String>
+  <sys:String x:Key="Str_Ks_TermScroll">cuộn đầu ra một dòng hoặc một trang</sys:String>
+  <sys:String x:Key="Str_Ks_TermScrollEnds">cuộn lên đầu hoặc xuống cuối đầu ra</sys:String>
+  <sys:String x:Key="Str_Ks_OpenDetails">mở thẻ chi tiết</sys:String>
+  <sys:String x:Key="Str_Ks_RegRefresh">tải lại khóa đã chọn từ đĩa</sys:String>
+  <sys:String x:Key="Str_Ks_StorageCancel">dừng lần quét đang chạy (Trình phân tích lưu trữ)</sys:String>
+  <sys:String x:Key="Str_TT_SortDir">Đảo ngược thứ tự sắp xếp  (Alt+Shift+S)</sys:String>
   <sys:String x:Key="Str_Storage_Scan">Quét</sys:String>
   <sys:String x:Key="Str_Storage_Stop">Dừng</sys:String>
   <sys:String x:Key="Str_Storage_Browse">Chọn thư mục hoặc ổ đĩa để quét</sys:String>

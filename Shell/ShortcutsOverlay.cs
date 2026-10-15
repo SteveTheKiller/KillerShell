@@ -187,13 +187,21 @@ namespace KillerShell.Shell
 
             new(KsScope.Global, "View",   "F5",             "Str_Ks_Refresh",      KbLayer.Base, "F5"),
             new(KsScope.Global, "View",   "Alt+M",          "Str_Ks_MenuBar",      KbLayer.Alt, "M"),
-            new(KsScope.Global, "View",   "F10 / Ctrl+Shift+P", "Str_TT_DualPane", KbLayer.Base, "F10"),
-            new(KsScope.Global, "View",   "",               "Str_TT_DualPane",     KbLayer.CtrlShift, "P"),
-            new(KsScope.Global, "View",   "Ctrl+H",         "Str_TT_ShowHidden",   KbLayer.Ctrl, "H"),
-            new(KsScope.Global, "View",   "Alt+P",          "Str_TT_DetailsPane",  KbLayer.Alt, "P"),
+            new(KsScope.Global, "View",   "F10 / Ctrl+Shift+P", "Str_Ks_DualPane", KbLayer.Base, "F10"),
+            new(KsScope.Global, "View",   "",               "Str_Ks_DualPane",     KbLayer.CtrlShift, "P"),
+            new(KsScope.Global, "View",   "Ctrl+H",         "Str_Ks_ShowHidden",   KbLayer.Ctrl, "H"),
+            new(KsScope.Global, "View",   "Alt+P",          "Str_Ks_DetailsPane",  KbLayer.Alt, "P"),
             new(KsScope.Global, "View",   "Ctrl+Shift+S",   "Str_Ks_SearchPanel",  KbLayer.CtrlShift, "S"),
             new(KsScope.Global, "View",   "Ctrl+Right",     "Str_Ks_ExpandAll",    KbLayer.Ctrl, "Right"),
             new(KsScope.Global, "View",   "Ctrl+Left",      "Str_Ks_CollapseAll",  KbLayer.Ctrl, "Left"),
+            // The window's own appearance (KeyCommands.cs). App size is the family chord that
+            // KillerPDF, KillerNotes and KillerScan already use.
+            new(KsScope.Global, "View",   "Ctrl+Shift+B",   "Str_Ks_Sidebar",      KbLayer.CtrlShift, "B"),
+            new(KsScope.Global, "View",   "Alt+H",          "Str_Ks_TreeHidden",   KbLayer.Alt, "H"),
+            new(KsScope.Global, "View",   "Ctrl+Shift +/- / 0", "Str_Ks_AppSize",  KbLayer.CtrlShift, "Equals", "Minus", "D0"),
+            new(KsScope.Global, "View",   "Alt+T",          "Str_Ks_Theme",        KbLayer.Alt, "T"),
+            new(KsScope.Global, "View",   "Alt+G",          "Str_Ks_FilmGrain",    KbLayer.Alt, "G"),
+            new(KsScope.Global, "View",   "Alt+L",          "Str_Ks_Language",     KbLayer.Alt, "L"),
 
             // Ctrl+Alt has no layer on the board and is not worth one for two rows, so these
             // print on the list and light nothing.
@@ -222,7 +230,7 @@ namespace KillerShell.Shell
             new(KsScope.Files, "File",   "Enter",           "Str_Menu_OpenFile",   KbLayer.Base),
             // Bare F7 edits the selected file, or opens a blank document with nothing selected.
             new(KsScope.Files, "File",   "F7",              "Str_Menu_Edit",       KbLayer.Base, "F7"),
-            new(KsScope.Files, "File",   "Ctrl+F7",         "Str_TT_NewDocAdmin",  KbLayer.Ctrl, "F7"),
+            new(KsScope.Files, "File",   "Ctrl+F7",         "Str_Ks_NewDocAdmin",  KbLayer.Ctrl, "F7"),
             new(KsScope.Files, "File",   "Ctrl+Shift+O",    "Str_Menu_OpenWith",   KbLayer.CtrlShift, "O"),
             new(KsScope.Files, "File",   "Ctrl+Shift+Enter","Str_Menu_OpenAdmin",  KbLayer.CtrlShift, "Enter"),
             new(KsScope.Files, "File",   "F6",              "Str_Menu_ShowExplorer", KbLayer.Base, "F6"),
@@ -231,6 +239,20 @@ namespace KillerShell.Shell
             new(KsScope.Files, "File",   "Ctrl+D",          "Str_Menu_AddFavorite", KbLayer.Ctrl, "D"),
             new(KsScope.Files, "File",   "Alt+Enter",       "Str_Menu_Properties", KbLayer.Alt, "Enter"),
             new(KsScope.Files, "File",   "Shift+F10",       "Str_Menu_ShellMenu",  KbLayer.Shift, "F10"),
+            new(KsScope.Files, "File",   "Shift+F4",        "Str_Menu_AnalyzeStorage", KbLayer.Shift, "F4"),
+            // The folder tree takes the same keys for its selected node while it has focus, plus
+            // Ctrl+Enter, which only its menu offers (KeyCommands.cs HandleTreeKey).
+            new(KsScope.Files, "File",   "Ctrl+Enter",      "Str_Menu_OpenInNewTab", KbLayer.Ctrl, "Enter"),
+
+            // The pane's view buttons (KeyCommands.cs). Ctrl +/- walks the same ladder as
+            // Ctrl+wheel over the list.
+            new(KsScope.Files, "View",   "Ctrl+Shift+1 / 2 / 3", "Str_Ks_ResultsViews", KbLayer.CtrlShift, "D1", "D2", "D3"),
+            new(KsScope.Files, "View",   "Ctrl+Shift+4",    "Str_Ks_Density",      KbLayer.CtrlShift, "D4"),
+            new(KsScope.Files, "View",   "Ctrl +/-",        "Str_Ks_IconSize",     KbLayer.Ctrl, "Equals", "Minus"),
+            new(KsScope.Files, "View",   "Alt+S",           "Str_Ks_Sort",         KbLayer.Alt, "S"),
+            new(KsScope.Files, "View",   "Alt+Shift+S",     "Str_Ks_SortDir",      KbLayer.Base),
+            new(KsScope.Files, "View",   "Alt+O",           "Str_Ks_FoldersTop",   KbLayer.Alt, "O"),
+            new(KsScope.Files, "Nav",    "Alt+R",           "Str_Ks_Recents",      KbLayer.Alt, "R"),
 
             new(KsScope.Files, "Edit",   "Ctrl+A",          "Str_Ks_SelectAll",    KbLayer.Ctrl, "A"),
             new(KsScope.Files, "Edit",   "Ctrl+X / C / V",  "Str_Ks_CutCopyPaste", KbLayer.Ctrl, "X", "C", "V"),
@@ -248,6 +270,11 @@ namespace KillerShell.Shell
             new(KsScope.Files, "Edit",   "Ctrl+Shift+D",    "Str_Menu_CopyFolder", KbLayer.CtrlShift, "D"),
             new(KsScope.Files, "Edit",   "Ctrl+Shift+Y",    "Str_Menu_CopyLines",  KbLayer.CtrlShift, "Y"),
             new(KsScope.Files, "Edit",   "Ctrl+Shift+H",    "Str_Menu_CopyHash",   KbLayer.CtrlShift, "H"),
+            new(KsScope.Files, "Edit",   "Alt+N",           "Str_Menu_AddNickname", KbLayer.Alt, "N"),
+            new(KsScope.Files, "Edit",   "Alt+Shift+N",     "Str_Menu_RemoveNickname", KbLayer.Base),
+            new(KsScope.Files, "Edit",   "Alt+Z",           "Str_Menu_Compress",   KbLayer.Alt, "Z"),
+            new(KsScope.Files, "Edit",   "Alt+X",           "Str_Menu_ExtractHere", KbLayer.Alt, "X"),
+            new(KsScope.Files, "Edit",   "Alt+Shift+X",     "Str_Ks_ExtractTo",    KbLayer.Base),
 
             // ══ TERMINAL ════════════════════════════════════════════════════════════════════
             // Local to a live shell (Terminal/TerminalControl.cs HandleTerminalChord), reachable
@@ -258,18 +285,28 @@ namespace KillerShell.Shell
             // restated here.
             new(KsScope.Terminal, "Edit", "Ctrl+Shift+C",   "Str_Term_Copy",       KbLayer.CtrlShift, "C"),
             new(KsScope.Terminal, "Edit", "Ctrl+Shift+A",   "Str_Term_SelectAll",  KbLayer.CtrlShift, "A"),
-            new(KsScope.Terminal, "Edit", "Ctrl+Shift+V",   "Str_Term_Paste",      KbLayer.CtrlShift, "V"),
+            new(KsScope.Terminal, "Edit", "Ctrl+Shift+V / Ctrl+V", "Str_Term_Paste", KbLayer.CtrlShift, "V"),
+            new(KsScope.Terminal, "Edit", "",               "Str_Term_Paste",      KbLayer.Ctrl, "V"),
             new(KsScope.Terminal, "Edit", "Ctrl+Shift+L",   "Str_Term_Clear",      KbLayer.CtrlShift, "L"),
             new(KsScope.Terminal, "View", "Ctrl+Shift+,",   "Str_Term_Fonts",      KbLayer.CtrlShift, "Comma"),
             new(KsScope.Terminal, "Edit", "Ctrl+Shift+E",   "Str_Term_EditPrompt", KbLayer.CtrlShift, "E"),
             new(KsScope.Terminal, "Edit", "Ctrl+Shift+R",   "Str_Term_ResetPrompt", KbLayer.CtrlShift, "R"),
             new(KsScope.Terminal, "Edit", "Ctrl+Shift+Q",   "Str_Prof_Reload",     KbLayer.CtrlShift, "Q"),
+            // The view's own keys (TerminalControl.cs HandleTerminalChord), Windows Terminal's.
+            new(KsScope.Terminal, "View", "Ctrl +/- / 0",   "Str_Ks_TermTextSize", KbLayer.Ctrl, "Equals", "Minus", "D0"),
+            new(KsScope.Terminal, "Nav",  "Ctrl+Shift+Up / Down / PgUp / PgDn", "Str_Ks_TermScroll", KbLayer.CtrlShift, "Up", "Down", "PgUp", "PgDn"),
+            new(KsScope.Terminal, "Nav",  "Ctrl+Shift+Home / End", "Str_Ks_TermScrollEnds", KbLayer.CtrlShift, "Home", "End"),
 
             // ══ EDITOR ══════════════════════════════════════════════════════════════════════
             // Reach the document rather than the window (IsEditorChord, EditorTabs.cs): these
             // two are the exceptions the window keeps hold of even while a document has focus.
-            new(KsScope.Editor, "Edit",  "Ctrl+G",          "Str_TT_EdGoto",       KbLayer.Ctrl, "G"),
-            new(KsScope.Editor, "Edit",  "Ctrl+S",          "Str_TT_EdSave",       KbLayer.Ctrl, "S"),
+            new(KsScope.Editor, "Edit",  "Ctrl+G",          "Str_Ed_Goto",         KbLayer.Ctrl, "G"),
+            new(KsScope.Editor, "Edit",  "Ctrl+S",          "Str_Ed_Save",         KbLayer.Ctrl, "S"),
+            // The document's own keys, the rows its right-click menu prints (EditorMenu.cs).
+            new(KsScope.Editor, "Search", "Ctrl+F",         "Str_Ed_Find",         KbLayer.Ctrl, "F"),
+            new(KsScope.Editor, "Edit",  "Ctrl+Z",          "Str_Ed_Undo",         KbLayer.Ctrl, "Z"),
+            new(KsScope.Editor, "Edit",  "Ctrl+Y",          "Str_Ed_Redo",         KbLayer.Ctrl, "Y"),
+            new(KsScope.Editor, "View",  "Alt+Z",           "Str_Ed_OptWrap",      KbLayer.Alt, "Z"),
 
             // ══ PROCESSES / SERVICES ════════════════════════════════════════════════════════
             // Local to the grid (ProcessListControl.cs Grid_PreviewKeyDown), reachable only
@@ -290,25 +327,26 @@ namespace KillerShell.Shell
             new(KsScope.Processes, "Edit", "Ctrl+Shift+A",  "Str_Menu_ProcRunAsAdmin", KbLayer.CtrlShift, "A"),
             new(KsScope.Processes, "Edit", "Ctrl+S",        "Str_Menu_SvcStart",   KbLayer.Ctrl, "S"),
             new(KsScope.Processes, "Edit", "Ctrl+.",        "Str_Ks_ProcToggle",   KbLayer.Ctrl, "Period"),
+            new(KsScope.Processes, "View", "Enter",         "Str_Ks_OpenDetails",  KbLayer.Base, "Enter"),
 
             // ══ EVENT VIEWER ════════════════════════════════════════════════════════════════
-            // No rows: the tab has no keys of its own (EventViewerControl.cs has no key handler)
-            // and everything that works on it is the global set. The scope is declared anyway so
-            // that the day it grows one there is a place to put it, and so KsActiveScope has a
-            // value to return for that tab instead of pretending it is the file browser. An empty
-            // scope prints no heading on the list at all (BuildShortcutsList skips it) and falls
-            // back to Global on the board, which is exactly what is true there.
+            // Local to the grid (EventViewerControl.cs Grid_PreviewKeyDown): the row menu's two
+            // copies and the details card a double-click opens.
+            new(KsScope.Events, "View", "Enter",            "Str_Ks_OpenDetails",  KbLayer.Base, "Enter"),
+            new(KsScope.Events, "Edit", "Ctrl+C",           "Str_Menu_EvtCopyDetails", KbLayer.Ctrl, "C"),
+            new(KsScope.Events, "Edit", "Ctrl+Shift+C",     "Str_Menu_EvtCopyMessage", KbLayer.CtrlShift, "C"),
 
             // ══ REGISTRY EDITOR ═════════════════════════════════════════════════════════════
             // Local to the tree/grid (RegistryEditorControl.cs PreviewKeyDown), reachable only
             // while the tab has focus, same convention as the Processes rows above: reuse the
-            // context menu's own Str_Menu_* strings as labels. F2 and Del are omitted since they
-            // duplicate the file browser's F2 (rename) and Del (recycle) rows, and the Registry
-            // Editor's own key handlers override those bindings when that tab has focus.
+            // context menu's own Str_Menu_* strings as labels. F2 and Del are this tab's own rename
+            // and delete, which is a different scope from the file browser's.
             new(KsScope.Registry, "Search", "Ctrl+F",       "Str_Ks_RegFind",      KbLayer.Ctrl, "F"),
             new(KsScope.Registry, "Edit",   "Ctrl+C",       "Str_Menu_RegCopyPath", KbLayer.Ctrl, "C"),
             new(KsScope.Registry, "Edit",   "Enter",        "Str_Menu_RegModify",  KbLayer.Base, "Enter"),
-            new(KsScope.Registry, "View",   "F5",           "Str_TT_RegRefresh",   KbLayer.Base, "F5"),
+            new(KsScope.Registry, "Edit",   "F2",           "Str_Menu_RegRename",  KbLayer.Base, "F2"),
+            new(KsScope.Registry, "Edit",   "Del",          "Str_Menu_RegDelete",  KbLayer.Base, "Del"),
+            new(KsScope.Registry, "View",   "F5",           "Str_Ks_RegRefresh",   KbLayer.Base, "F5"),
 
             // ══ STORAGE ANALYZER ════════════════════════════════════════════════════════════
             // Local to the treemap (StorageAnalyzerControl.OnPreviewKeyDown), reachable only
@@ -326,6 +364,11 @@ namespace KillerShell.Shell
             new(KsScope.Storage, "Nav",    "Backspace",     "Str_Ks_StorageZoomOut", KbLayer.Base, "Back"),
             new(KsScope.Storage, "Nav",    "Home",          "Str_Ks_StorageHome",  KbLayer.Base, "Home"),
             new(KsScope.Storage, "Edit",   "Del",           "Str_Ks_StorageRecycle", KbLayer.Base, "Del"),
+            new(KsScope.Storage, "Search", "F5",            "Str_Storage_Rescan",  KbLayer.Base, "F5"),
+            new(KsScope.Storage, "Search", "Esc",           "Str_Ks_StorageCancel", KbLayer.Base, "Esc"),
+            new(KsScope.Storage, "Nav",    "Shift+Enter",   "Str_Storage_OpenInTab", KbLayer.Shift, "Enter"),
+            new(KsScope.Storage, "File",   "F6",            "Str_Storage_RevealExplorer", KbLayer.Base, "F6"),
+            new(KsScope.Storage, "Edit",   "Ctrl+Shift+C",  "Str_Storage_CopyPath", KbLayer.CtrlShift, "C"),
         ];
 
         // Display order of the SCOPE sections. Global first because it is what is true wherever
