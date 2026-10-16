@@ -900,7 +900,7 @@ namespace KillerShell.Services
                 // every other theme's card at the exact layout it already had.
                 combined["AboutCaptionHeight"] = flat ? combined["DialogTitleBarHeight"] : 0.0;
 
-                // The About card's close X, now the shared ChromeCloseButton style: on a flat
+                // The About card's close X, the shared OverlayCloseButton style: on a flat
                 // theme a small Win98 caption button sitting inside the 20px band (16x14 with a
                 // 3px gap, next to the band's 2,2,2 inset), elsewhere the 28x26 corner slot the
                 // bare glyph always occupied (matching KillerNotes' card).

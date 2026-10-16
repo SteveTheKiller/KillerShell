@@ -70,9 +70,11 @@
                             <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="{DynamicResource AccentLogo}"/>
                         </TextBlock>
                     </Grid>
-                    <!-- Foreground via Style setter so hover/press triggers can win over it -->
-                    <Button Content="&#xE8BB;" Click="Cancel_Click" HorizontalAlignment="Right" Width="30" Height="26" FontSize="10"
-                            FontFamily="Segoe MDL2 Assets" Background="Transparent" BorderThickness="0" Cursor="Hand" Style="{StaticResource ChromeCloseButton}"/>
+                    <!-- The family overlay and dialog close (Controls.xaml, OverlayCloseButton). -->
+                    <Button Content="{DynamicResource AboutCloseGlyph}" Click="Cancel_Click" HorizontalAlignment="Right" VerticalAlignment="Center"
+                            Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
+                            ToolTip="{DynamicResource Str_Sys_Close}" AutomationProperties.Name="{DynamicResource Str_Sys_Close}"
+                            Style="{StaticResource OverlayCloseButton}"/>
                 </Grid>
                 </Grid>
             </Border>

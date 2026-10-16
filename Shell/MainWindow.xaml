@@ -1577,13 +1577,12 @@
                                 Margin="{DynamicResource FrameInnerMargin}"
                                 BorderBrush="{DynamicResource FrameInnerDarkBrush}" BorderThickness="{DynamicResource FrameInnerDarkThickness}"/>
 
-                        <!-- Close X: ChromeCloseButton, the SAME style as the title bar's close, so
-                             every X in the app is the same X (the KillerNotes
-                             rule). On 98SE that makes it a real beveled caption button
-                             that sinks on press; elsewhere it is the bare glyph with the red
-                             hover fill the main window has. Size and margin come from the
-                             AboutClose* tokens (ThemeManager): a small Win98 button inside the
-                             caption band on a flat theme, the old 28x26 corner slot otherwise. -->
+                        <!-- Close X: OverlayCloseButton, the family close for every overlay and
+                             dialog (KillerUI). Only the glyph reddens on hover; a filled red block
+                             is the title bar's own close. On 98SE it is a real beveled caption
+                             button that sinks on press. Size and margin come from the AboutClose*
+                             tokens (ThemeManager): a small Win98 button inside the caption band on
+                             a flat theme, the 28x26 corner slot otherwise. -->
                         <Button Content="{DynamicResource AboutCloseGlyph}" Click="AboutClose_Click" Style="{StaticResource OverlayCloseButton}"
                                 HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="2"
                                 Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
@@ -2044,8 +2043,8 @@
                 <Border IsHitTestVisible="False" Panel.ZIndex="6"
                         BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
                 <!-- Caption band + shared close X, the About card's exact treatment: band and
-                     title only exist on a flat theme (height 0 / transparent elsewhere), the X is
-                     ChromeCloseButton everywhere so every X in the app is the same X. -->
+                     title only exist on a flat theme (height 0 / transparent elsewhere), and the X
+                     is OverlayCloseButton, the same close as every other overlay and dialog. -->
                 <Border VerticalAlignment="Top" ClipToBounds="True"
                         Height="{DynamicResource AboutCaptionHeight}"
                         Margin="{DynamicResource AboutCaptionMargin}"
