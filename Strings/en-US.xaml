@@ -973,4 +973,12 @@
     <sys:String x:Key="Str_Menu_PinPlace">Pin to places</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Remove from places</sys:String>
     <sys:String x:Key="Str_KS_OnlineHelp">Full guide &amp; how-to online</sys:String>
+    <sys:String x:Key="Str_Scroll_Up">Scroll up</sys:String>
+    <sys:String x:Key="Str_Scroll_Down">Scroll down</sys:String>
+    <sys:String x:Key="Str_Scroll_Left">Scroll left</sys:String>
+    <sys:String x:Key="Str_Scroll_Right">Scroll right</sys:String>
+    <sys:String x:Key="Str_Scroll_PageUp">Page up</sys:String>
+    <sys:String x:Key="Str_Scroll_PageDown">Page down</sys:String>
+    <sys:String x:Key="Str_Scroll_PageLeft">Page left</sys:String>
+    <sys:String x:Key="Str_Scroll_PageRight">Page right</sys:String>
 </ResourceDictionary>

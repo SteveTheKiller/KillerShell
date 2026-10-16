@@ -673,7 +673,7 @@
                              (unlike MS Sans Serif). Aliased, because the real thing was: a 5px
                              triangle drawn through ClearType smears into color. Only 98SE ever
                              sees these buttons (ScrollArrowSize is 0 everywhere else). -->
-                        <RepeatButton x:Name="ArrowUp" Grid.Row="0" Grid.Column="1" Command="ScrollBar.LineUpCommand"
+                        <RepeatButton x:Name="ArrowUp" Grid.Row="0" Grid.Column="1" Command="ScrollBar.LineUpCommand" AutomationProperties.Name="{DynamicResource Str_Scroll_Up}"
                                       Focusable="False" IsTabStop="False"
                                       Width="{DynamicResource ScrollArrowSize}"
                                       Height="{DynamicResource ScrollArrowSize}"
@@ -695,7 +695,7 @@
                             </RepeatButton.Template>
                         </RepeatButton>
 
-                        <RepeatButton x:Name="ArrowDown" Grid.Row="2" Grid.Column="1" Command="ScrollBar.LineDownCommand"
+                        <RepeatButton x:Name="ArrowDown" Grid.Row="2" Grid.Column="1" Command="ScrollBar.LineDownCommand" AutomationProperties.Name="{DynamicResource Str_Scroll_Down}"
                                       Focusable="False" IsTabStop="False"
                                       Width="{DynamicResource ScrollArrowSize}"
                                       Height="{DynamicResource ScrollArrowSize}"
@@ -730,12 +730,12 @@
                                 </MultiBinding>
                             </Track.ViewportSize>
                             <Track.DecreaseRepeatButton>
-                                <RepeatButton x:Name="PageBack" Command="ScrollBar.PageUpCommand" Focusable="False" IsTabStop="False">
+                                <RepeatButton x:Name="PageBack" Command="ScrollBar.PageUpCommand" AutomationProperties.Name="{DynamicResource Str_Scroll_PageUp}" Focusable="False" IsTabStop="False">
                                     <RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Background="Transparent"/></ControlTemplate></RepeatButton.Template>
                                 </RepeatButton>
                             </Track.DecreaseRepeatButton>
                             <Track.IncreaseRepeatButton>
-                                <RepeatButton x:Name="PageForward" Command="ScrollBar.PageDownCommand" Focusable="False" IsTabStop="False">
+                                <RepeatButton x:Name="PageForward" Command="ScrollBar.PageDownCommand" AutomationProperties.Name="{DynamicResource Str_Scroll_PageDown}" Focusable="False" IsTabStop="False">
                                     <RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Background="Transparent"/></ControlTemplate></RepeatButton.Template>
                                 </RepeatButton>
                             </Track.IncreaseRepeatButton>
@@ -802,7 +802,9 @@
                         <Trigger Property="Orientation" Value="Horizontal">
                             <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
                             <Setter TargetName="PageBack"    Property="Command" Value="ScrollBar.PageLeftCommand"/>
+                            <Setter TargetName="PageBack"    Property="AutomationProperties.Name" Value="{DynamicResource Str_Scroll_PageLeft}"/>
                             <Setter TargetName="PageForward" Property="Command" Value="ScrollBar.PageRightCommand"/>
+                            <Setter TargetName="PageForward" Property="AutomationProperties.Name" Value="{DynamicResource Str_Scroll_PageRight}"/>
                             <!-- The steppers MOVE rather than hiding. They used to be Collapsed
                                  here because the template only had rows, so a horizontal bar would
                                  have put its arrows above and below the track; with the columns
@@ -814,10 +816,12 @@
                             <Setter TargetName="ArrowUp"   Property="Grid.Column" Value="0"/>
                             <Setter TargetName="ArrowUp"   Property="Content"     Value="3"/>
                             <Setter TargetName="ArrowUp"   Property="Command"     Value="ScrollBar.LineLeftCommand"/>
+                            <Setter TargetName="ArrowUp"   Property="AutomationProperties.Name" Value="{DynamicResource Str_Scroll_Left}"/>
                             <Setter TargetName="ArrowDown" Property="Grid.Row"    Value="1"/>
                             <Setter TargetName="ArrowDown" Property="Grid.Column" Value="2"/>
                             <Setter TargetName="ArrowDown" Property="Content"     Value="4"/>
                             <Setter TargetName="ArrowDown" Property="Command"     Value="ScrollBar.LineRightCommand"/>
+                            <Setter TargetName="ArrowDown" Property="AutomationProperties.Name" Value="{DynamicResource Str_Scroll_Right}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

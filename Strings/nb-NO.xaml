@@ -973,4 +973,12 @@
     <sys:String x:Key="Str_Menu_PinPlace">Fest til steder</sys:String>
     <sys:String x:Key="Str_Menu_UnpinPlace">Fjern fra steder</sys:String>
     <sys:String x:Key="Str_KS_OnlineHelp">Full veiledning &amp; fremgangsmåter på nett</sys:String>
+    <sys:String x:Key="Str_Scroll_Up">Rull opp</sys:String>
+    <sys:String x:Key="Str_Scroll_Down">Rull ned</sys:String>
+    <sys:String x:Key="Str_Scroll_Left">Rull til venstre</sys:String>
+    <sys:String x:Key="Str_Scroll_Right">Rull til høyre</sys:String>
+    <sys:String x:Key="Str_Scroll_PageUp">Side opp</sys:String>
+    <sys:String x:Key="Str_Scroll_PageDown">Side ned</sys:String>
+    <sys:String x:Key="Str_Scroll_PageLeft">Side til venstre</sys:String>
+    <sys:String x:Key="Str_Scroll_PageRight">Side til høyre</sys:String>
 </ResourceDictionary>
