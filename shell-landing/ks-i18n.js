@@ -7974,7 +7974,7 @@ Object.assign(I18N["pt"], {
 /* 1.4.1: bookmark drops always move, the Recycle Bin bookmark, the Event Viewer and Storage Analyzer keys,
    the app size keys, and the location bar star. Later blocks win, so these replace the older wording. */
 Object.assign(window.I18N["vi"], {
-  "h_browse_p4": "<b>Ctrl+B</b> mở ngăn dấu trang bên dưới cây thư mục. Thả một thư mục vào đó để lưu, hoặc dùng ngôi sao bên cạnh thanh địa chỉ để lưu thư mục hiện tại. Sau đó, bạn có thể chuyển nhanh đến mười dấu trang đầu tiên bằng <b>Alt+1</b> đến <b>Alt+0</b>.",
+  "h_browse_p4": "Ngôi sao trên dải nút, hoặc <b>Ctrl+B</b>, hiện hoặc ẩn ngăn dấu trang bên dưới cây thư mục. Để lưu một thư mục, hãy thả nó vào ngăn, chọn <b>Thêm vào Dấu trang</b> trong menu chuột phải của nó (<b>Ctrl+D</b>), hoặc nhấp vào ngôi sao bên cạnh địa chỉ để lưu thư mục hiện tại. Sau đó chuyển nhanh đến mười dấu trang đầu tiên bằng <b>Alt+1</b> đến <b>Alt+0</b>.",
   "hx_025": "Bạn có thể kéo dấu trang để sắp xếp lại. Nhấp chuột phải vào một dấu trang để mở cửa sổ dòng lệnh tại đó, với quyền quản trị nếu bạn yêu cầu, hoặc hướng Trình phân tích lưu trữ đến vị trí ấy. Tệp thả vào dấu trang luôn được di chuyển đến đó, kể cả giữa các ổ đĩa. Dấu trang Thùng rác mở Thùng rác của Windows, và mọi thứ thả vào đó sẽ được đưa vào Thùng rác, hoặc bị xóa vĩnh viễn nếu bạn giữ <b>Shift</b>. Thư mục trong cây cũng nhận tệp thả vào, theo đúng quy tắc của thư mục đó trong danh sách.",
   "drop_place_p": "Dấu trang là ngoại lệ: thả vào dấu trang luôn là di chuyển, kể cả giữa các ổ đĩa, vì bạn thả thứ gì đó vào một vị trí đã lưu là để đặt nó ở đó. Thả vào dấu trang Thùng rác sẽ đưa tệp vào Thùng rác giống như phím <b>Delete</b>, còn giữ <b>Shift</b> sẽ xóa vĩnh viễn, giống như <b>Shift+Delete</b>.",
   "hx_097b": "<b>Shift+Enter</b> mở mục đang chọn trong một tab mới, <b>F6</b> hiển thị nó trong Explorer và <b>Ctrl+Shift+C</b> sao chép đường dẫn của nó.",
@@ -7983,7 +7983,7 @@ Object.assign(window.I18N["vi"], {
   "appsize_keys_p": "Từ bàn phím, <b>Ctrl+Shift+Plus</b> và <b>Ctrl+Shift+Minus</b> thay đổi kích thước mỗi lần 5%, còn <b>Ctrl+Shift+0</b> đưa về 100%."
 });
 Object.assign(window.I18N["hu"], {
-  "h_browse_p4": "A <b>Ctrl+B</b> megnyitja a könyvjelzőfiókot a fa alatt. Húzzon rá egy mappát a mentéséhez, vagy használja a címsor melletti csillagot az aktuális mappához, majd ugorjon az első tízre az <b>Alt+1</b> - <b>Alt+0</b> billentyűkkel.",
+  "h_browse_p4": "A sínen lévő csillag vagy a <b>Ctrl+B</b> megjeleníti vagy elrejti a könyvjelzőfiókot a fa alatt. Egy mappa mentéséhez húzza a fiókra, válassza a jobb gombos menüjében a <b>Hozzáadás a könyvjelzőkhöz</b> parancsot (<b>Ctrl+D</b>), vagy kattintson a cím melletti csillagra az aktuális mappához. Ezután az első tízre az <b>Alt+1</b> - <b>Alt+0</b> billentyűkkel ugorhat.",
   "hx_025": "A könyvjelzők húzással átrendezhetők, és a jobb gombos menüjükből ott nyitható terminál (kérésre rendszergazdaként), vagy rájuk irányítható a Tároláselemző. A könyvjelzőre ejtett fájlok mindig oda kerülnek át, meghajtók között is. A Lomtár könyvjelző a Windows Lomtárát nyitja meg, és ami rákerül, a Lomtárba kerül, vagy a <b>Shift</b> nyomva tartásával véglegesen törlődik. A fa mappái is fogadnak ejtést, ugyanazokkal a szabályokkal, mint az a mappa a listában.",
   "drop_place_p": "A könyvjelzők a kivételek: a rájuk ejtett elem mindig áthelyeződik, meghajtók között is, hiszen egy mentett helyre azért ejt valamit, hogy oda kerüljön. A Lomtár könyvjelzőre ejtett fájlok úgy kerülnek a Lomtárba, mint a <b>Delete</b> billentyűvel, a <b>Shift</b> nyomva tartásával pedig véglegesen törlődnek, mint a <b>Shift+Delete</b> esetén.",
   "hx_097b": "A <b>Shift+Enter</b> új lapon nyitja meg a kijelölt elemet, az <b>F6</b> megmutatja az Intézőben, a <b>Ctrl+Shift+C</b> pedig a vágólapra másolja az elérési útját.",
@@ -7992,7 +7992,7 @@ Object.assign(window.I18N["hu"], {
   "appsize_keys_p": "Billentyűzetről a <b>Ctrl+Shift+Plus</b> és a <b>Ctrl+Shift+Minus</b> 5%-onként változtatja a méretet, a <b>Ctrl+Shift+0</b> pedig visszaállítja 100%-ra."
 });
 Object.assign(window.I18N["pl"], {
-  "h_browse_p4": "<b>Ctrl+B</b> otwiera szufladę zakładek pod drzewem. Upuść na nią folder, aby go zapisać, albo użyj gwiazdki obok paska adresu dla folderu, w którym jesteś, a potem skacz do pierwszych dziesięciu klawiszami <b>Alt+1</b> do <b>Alt+0</b>.",
+  "h_browse_p4": "Gwiazdka na pasku bocznym lub <b>Ctrl+B</b> pokazuje albo ukrywa szufladę zakładek pod drzewem. Aby zapisać folder, upuść go na szufladę, wybierz <b>Dodaj do zakładek</b> z jego menu kontekstowego (<b>Ctrl+D</b>) albo kliknij gwiazdkę obok adresu dla folderu, w którym jesteś. Potem skacz do pierwszych dziesięciu klawiszami <b>Alt+1</b> do <b>Alt+0</b>.",
   "hx_025": "Zakładki można przeciągać, aby zmienić ich kolejność, a kliknięcie jednej prawym przyciskiem otwiera tam terminal (z podwyższonymi uprawnieniami, jeśli o to poprosisz) lub kieruje na nią Analizator miejsca. Pliki upuszczone na zakładkę zawsze są do niej przenoszone, także między dyskami. Zakładka Kosz otwiera Kosz systemu Windows, a wszystko, co na nią upuścisz, trafia do Kosza albo zostaje trwale usunięte, jeśli przytrzymasz <b>Shift</b>. Foldery w drzewie też przyjmują upuszczone pliki, na tych samych zasadach co ten folder na liście.",
   "drop_place_p": "Wyjątkiem są zakładki: upuszczenie na zakładkę zawsze przenosi, także między dyskami, bo upuszczasz coś na zapisane miejsce po to, żeby tam trafiło. Upuszczenie na zakładkę Kosz przenosi pliki do Kosza tak jak klawisz <b>Delete</b>, a przytrzymanie <b>Shift</b> usuwa je trwale, tak jak <b>Shift+Delete</b>.",
   "hx_097b": "<b>Shift+Enter</b> otwiera zaznaczony element w nowej karcie, <b>F6</b> pokazuje go w Eksploratorze, a <b>Ctrl+Shift+C</b> kopiuje jego ścieżkę.",
@@ -8001,7 +8001,7 @@ Object.assign(window.I18N["pl"], {
   "appsize_keys_p": "Z klawiatury <b>Ctrl+Shift+Plus</b> i <b>Ctrl+Shift+Minus</b> zmieniają rozmiar o 5% naraz, a <b>Ctrl+Shift+0</b> przywraca 100%."
 });
 Object.assign(window.I18N["es"], {
-  "h_browse_p4": "<b>Ctrl+B</b> abre el cajón de favoritos bajo el árbol. Suelta una carpeta encima para guardarla, o usa la estrella junto a la barra de direcciones para la carpeta en la que estás, y luego salta a las diez primeras con <b>Alt+1</b> hasta <b>Alt+0</b>.",
+  "h_browse_p4": "La estrella de la barra lateral, o <b>Ctrl+B</b>, muestra u oculta el cajón de favoritos bajo el árbol. Para guardar una carpeta, suéltala en el cajón, elige <b>Añadir a favoritos</b> en su menú contextual (<b>Ctrl+D</b>) o haz clic en la estrella junto a la dirección para la carpeta en la que estás. Después salta a las diez primeras con <b>Alt+1</b> hasta <b>Alt+0</b>.",
   "hx_025": "Los favoritos se arrastran para reordenarlos, y al hacer clic derecho en uno se abre allí un terminal (elevado si lo pides) o se apunta el Analizador de almacenamiento hacia él. Los archivos que sueltas sobre un favorito siempre se mueven allí, incluso entre unidades. El favorito Papelera de reciclaje abre la Papelera de reciclaje de Windows, y lo que sueltes sobre él se envía a la papelera, o se elimina de forma permanente si mantienes <b>Shift</b>. Las carpetas del árbol también aceptan archivos soltados, con las mismas reglas que esa carpeta en la lista.",
   "drop_place_p": "Los favoritos son la excepción: soltar sobre uno siempre mueve, también entre unidades, porque sueltas algo en un lugar guardado para dejarlo allí. Soltar sobre el favorito Papelera de reciclaje envía los archivos a la papelera igual que <b>Supr</b>, y mantener <b>Shift</b> los elimina de forma permanente, como <b>Shift+Supr</b>.",
   "hx_097b": "<b>Shift+Enter</b> abre el elemento seleccionado en una pestaña nueva, <b>F6</b> lo muestra en el Explorador y <b>Ctrl+Shift+C</b> copia su ruta.",
@@ -8010,7 +8010,7 @@ Object.assign(window.I18N["es"], {
   "appsize_keys_p": "Desde el teclado, <b>Ctrl+Shift+Más</b> y <b>Ctrl+Shift+Menos</b> cambian el tamaño un 5% cada vez, y <b>Ctrl+Shift+0</b> lo devuelve al 100%."
 });
 Object.assign(window.I18N["de"], {
-  "h_browse_p4": "<b>Ctrl+B</b> öffnet die Favoritenschublade unter dem Baum. Lege einen Ordner darauf ab, um ihn zu speichern, oder nutze den Stern neben der Adressleiste für den Ordner, in dem du gerade bist, und springe dann mit <b>Alt+1</b> bis <b>Alt+0</b> zu den ersten zehn.",
+  "h_browse_p4": "Der Stern in der Leiste oder <b>Ctrl+B</b> blendet die Favoritenschublade unter dem Baum ein oder aus. Um einen Ordner zu speichern, lege ihn auf der Schublade ab, wähle <b>Zu Favoriten hinzufügen</b> in seinem Kontextmenü (<b>Ctrl+D</b>) oder klicke für den Ordner, in dem du gerade bist, auf den Stern neben der Adresse. Mit <b>Alt+1</b> bis <b>Alt+0</b> springst du dann zu den ersten zehn.",
   "hx_025": "Favoriten lassen sich per Ziehen neu ordnen, und ein Rechtsklick auf einen öffnet dort ein Terminal (mit erhöhten Rechten, wenn du darum bittest) oder richtet die Speicheranalyse darauf. Dateien, die du auf einem Favoriten ablegst, werden immer dorthin verschoben, auch über Laufwerke hinweg. Der Favorit Papierkorb öffnet den Windows-Papierkorb, und alles, was du darauf ablegst, wandert in den Papierkorb oder wird mit gedrückter <b>Shift</b>-Taste endgültig gelöscht. Ordner im Baum nehmen ebenfalls Dateien an, mit denselben Regeln wie dieser Ordner in der Liste.",
   "drop_place_p": "Favoriten sind die Ausnahme: Ablegen auf einem Favoriten verschiebt immer, auch über Laufwerke hinweg, denn wer etwas auf einen gespeicherten Ort zieht, will es dort haben. Ablegen auf dem Favoriten Papierkorb verschiebt die Dateien so in den Papierkorb wie <b>Entf</b>, und mit gedrückter <b>Shift</b>-Taste werden sie endgültig gelöscht, wie mit <b>Shift+Entf</b>.",
   "hx_097b": "<b>Shift+Enter</b> öffnet das ausgewählte Element in einem neuen Tab, <b>F6</b> zeigt es im Explorer, und <b>Ctrl+Shift+C</b> kopiert seinen Pfad.",
@@ -8019,7 +8019,7 @@ Object.assign(window.I18N["de"], {
   "appsize_keys_p": "Über die Tastatur ändern <b>Ctrl+Shift+Plus</b> und <b>Ctrl+Shift+Minus</b> die Größe in Schritten von 5%, und <b>Ctrl+Shift+0</b> setzt sie auf 100% zurück."
 });
 Object.assign(window.I18N["fr"], {
-  "h_browse_p4": "<b>Ctrl+B</b> ouvre le tiroir des favoris sous l'arbre. Déposez-y un dossier pour l'enregistrer, ou utilisez l'étoile à côté de la barre d'adresse pour le dossier où vous êtes, puis sautez aux dix premiers avec <b>Alt+1</b> à <b>Alt+0</b>.",
+  "h_browse_p4": "L'étoile de la bande latérale, ou <b>Ctrl+B</b>, affiche ou masque le tiroir des favoris sous l'arbre. Pour enregistrer un dossier, déposez-le sur le tiroir, choisissez <b>Ajouter aux favoris</b> dans son menu contextuel (<b>Ctrl+D</b>), ou cliquez sur l'étoile à côté de l'adresse pour le dossier où vous êtes. Sautez ensuite aux dix premiers avec <b>Alt+1</b> à <b>Alt+0</b>.",
   "hx_025": "Les favoris se réorganisent par glisser-déposer, et un clic droit sur l'un d'eux y ouvre un terminal (élevé si vous le demandez) ou y pointe l'Analyseur de stockage. Les fichiers déposés sur un favori y sont toujours déplacés, même d'un lecteur à l'autre. Le favori Corbeille ouvre la Corbeille de Windows, et tout ce que vous y déposez part à la corbeille, ou est supprimé définitivement si vous maintenez <b>Shift</b>. Les dossiers de l'arbre acceptent aussi les dépôts, avec les mêmes règles que ce dossier dans la liste.",
   "drop_place_p": "Les favoris font exception : un dépôt sur un favori déplace toujours, même d'un lecteur à l'autre, car on dépose quelque chose sur un emplacement enregistré pour l'y mettre. Un dépôt sur le favori Corbeille envoie les fichiers à la corbeille comme <b>Suppr</b>, et maintenir <b>Shift</b> les supprime définitivement, comme <b>Shift+Suppr</b>.",
   "hx_097b": "<b>Shift+Entrée</b> ouvre l'élément sélectionné dans un nouvel onglet, <b>F6</b> l'affiche dans l'Explorateur et <b>Ctrl+Shift+C</b> copie son chemin.",
@@ -8028,7 +8028,7 @@ Object.assign(window.I18N["fr"], {
   "appsize_keys_p": "Au clavier, <b>Ctrl+Shift+Plus</b> et <b>Ctrl+Shift+Moins</b> changent la taille de 5% à la fois, et <b>Ctrl+Shift+0</b> la ramène à 100%."
 });
 Object.assign(window.I18N["tr"], {
-  "h_browse_p4": "<b>Ctrl+B</b>, ağacın altındaki sık kullanılanlar çekmecesini açar. Bir klasörü kaydetmek için üzerine bırakın ya da bulunduğunuz klasör için adres çubuğunun yanındaki yıldızı kullanın; sonra ilk ona <b>Alt+1</b> ile <b>Alt+0</b> arasındaki tuşlarla atlayın.",
+  "h_browse_p4": "Kenar şeridindeki yıldız ya da <b>Ctrl+B</b>, ağacın altındaki sık kullanılanlar çekmecesini gösterir veya gizler. Bir klasörü kaydetmek için onu çekmeceye bırakın, sağ tık menüsünden <b>Favorilere ekle</b> komutunu seçin (<b>Ctrl+D</b>) ya da bulunduğunuz klasör için adresin yanındaki yıldıza tıklayın. Sonra ilk ona <b>Alt+1</b> ile <b>Alt+0</b> arasındaki tuşlarla atlayın.",
   "hx_025": "Sık kullanılanlar sürüklenerek yeniden sıralanır; birine sağ tıklamak orada bir terminal açar (isterseniz yönetici olarak) ya da Depolama Çözümleyicisi'ni oraya yöneltir. Bir sık kullanılana bırakılan dosyalar her zaman oraya taşınır, sürücüler arasında bile. Geri Dönüşüm Kutusu sık kullanılanı Windows Geri Dönüşüm Kutusu'nu açar; üzerine bırakılan her şey geri dönüşüm kutusuna gider ya da <b>Shift</b> basılıyken kalıcı olarak silinir. Ağaçtaki klasörler de bırakılan dosyaları kabul eder, listedeki aynı klasörle aynı kurallarla.",
   "drop_place_p": "Sık kullanılanlar istisnadır: birine bırakmak her zaman taşır, sürücüler arasında da, çünkü kayıtlı bir yere bir şey bırakmanın amacı onu oraya koymaktır. Geri Dönüşüm Kutusu sık kullanılanına bırakmak dosyaları <b>Delete</b> gibi geri dönüşüm kutusuna gönderir; <b>Shift</b> basılı tutmak ise onları <b>Shift+Delete</b> gibi kalıcı olarak siler.",
   "hx_097b": "<b>Shift+Enter</b> seçili öğeyi yeni bir sekmede açar, <b>F6</b> onu Dosya Gezgini'nde gösterir ve <b>Ctrl+Shift+C</b> yolunu kopyalar.",
@@ -8037,7 +8037,7 @@ Object.assign(window.I18N["tr"], {
   "appsize_keys_p": "Klavyeden <b>Ctrl+Shift+Artı</b> ve <b>Ctrl+Shift+Eksi</b> boyutu her seferinde %5 değiştirir, <b>Ctrl+Shift+0</b> ise %100'e geri döndürür."
 });
 Object.assign(window.I18N["zh-cn"], {
-  "h_browse_p4": "<b>Ctrl+B</b> 在文件夹树下方打开收藏抽屉。把文件夹拖到上面即可保存，也可以用地址栏旁边的星标收藏当前文件夹，然后用 <b>Alt+1</b> 到 <b>Alt+0</b> 跳到前十个。",
+  "h_browse_p4": "左侧按钮栏的星标或 <b>Ctrl+B</b> 用于显示或隐藏文件夹树下方的收藏抽屉。要保存文件夹，可以把它拖到抽屉上，在它的右键菜单中选择<b>添加到收藏夹</b>（<b>Ctrl+D</b>），或者点击地址旁边的星标收藏当前文件夹。然后用 <b>Alt+1</b> 到 <b>Alt+0</b> 跳到前十个。",
   "hx_025": "收藏可以拖动来调整顺序；右键单击某个收藏可以在那里打开终端（需要时以管理员身份），或让存储分析器指向它。拖放到收藏上的文件总是移动到那里，跨驱动器也一样。“回收站”收藏会打开 Windows 回收站，拖放到它上面的内容会进入回收站，按住 <b>Shift</b> 则永久删除。文件夹树中的文件夹也接受拖放，规则与列表中的同一文件夹相同。",
   "drop_place_p": "收藏是例外：拖放到收藏上总是移动，跨驱动器也一样，因为把东西拖到已保存的位置就是要把它放到那里。拖放到“回收站”收藏会像 <b>Delete</b> 一样把文件送进回收站，按住 <b>Shift</b> 则像 <b>Shift+Delete</b> 一样永久删除。",
   "hx_097b": "<b>Shift+Enter</b> 在新标签页中打开所选项目，<b>F6</b> 在资源管理器中显示它，<b>Ctrl+Shift+C</b> 复制它的路径。",
@@ -8046,7 +8046,7 @@ Object.assign(window.I18N["zh-cn"], {
   "appsize_keys_p": "用键盘时，<b>Ctrl+Shift+加号</b>和 <b>Ctrl+Shift+减号</b>每次将大小调整 5%，<b>Ctrl+Shift+0</b> 恢复为 100%。"
 });
 Object.assign(window.I18N["zh"], {
-  "h_browse_p4": "<b>Ctrl+B</b> 在資料夾樹下方開啟我的最愛抽屜。把資料夾拖到上面即可儲存，也可以用網址列旁的星號收藏目前資料夾，然後用 <b>Alt+1</b> 到 <b>Alt+0</b> 跳到前十個。",
+  "h_browse_p4": "左側按鈕列的星號或 <b>Ctrl+B</b> 用於顯示或隱藏資料夾樹下方的我的最愛抽屜。要儲存資料夾，可以把它拖到抽屜上，在它的右鍵選單中選擇<b>加入我的最愛</b>（<b>Ctrl+D</b>），或者按一下網址旁的星號收藏目前資料夾。然後用 <b>Alt+1</b> 到 <b>Alt+0</b> 跳到前十個。",
   "hx_025": "我的最愛可以拖曳來調整順序；在某個項目上按右鍵，可以在那裡開啟終端機（需要時以系統管理員身分），或讓儲存空間分析器指向它。拖放到我的最愛上的檔案一律移動到那裡，跨磁碟機也一樣。「資源回收筒」項目會開啟 Windows 資源回收筒，拖放到上面的內容會送進資源回收筒，按住 <b>Shift</b> 則永久刪除。資料夾樹中的資料夾也接受拖放，規則與清單中的同一個資料夾相同。",
   "drop_place_p": "我的最愛是例外：拖放到我的最愛上一律是移動，跨磁碟機也一樣，因為把東西拖到已儲存的位置，就是要把它放到那裡。拖放到「資源回收筒」項目會像 <b>Delete</b> 一樣把檔案送進資源回收筒，按住 <b>Shift</b> 則像 <b>Shift+Delete</b> 一樣永久刪除。",
   "hx_097b": "<b>Shift+Enter</b> 在新索引標籤中開啟所選項目，<b>F6</b> 在檔案總管中顯示它，<b>Ctrl+Shift+C</b> 複製它的路徑。",
@@ -8055,7 +8055,7 @@ Object.assign(window.I18N["zh"], {
   "appsize_keys_p": "用鍵盤時，<b>Ctrl+Shift+加號</b>和 <b>Ctrl+Shift+減號</b>每次將大小調整 5%，<b>Ctrl+Shift+0</b> 恢復為 100%。"
 });
 Object.assign(window.I18N["cs"], {
-  "h_browse_p4": "<b>Ctrl+B</b> otevře zásuvku oblíbených pod stromem. Složku uložíte tak, že ji na ni pustíte, nebo použijte hvězdičku vedle adresního řádku pro složku, ve které právě jste, a pak skočte na prvních deset pomocí <b>Alt+1</b> až <b>Alt+0</b>.",
+  "h_browse_p4": "Hvězdička na liště nebo <b>Ctrl+B</b> zobrazí nebo skryje zásuvku oblíbených pod stromem. Složku uložíte tak, že ji pustíte na zásuvku, v její místní nabídce zvolíte <b>Přidat k oblíbeným</b> (<b>Ctrl+D</b>) nebo kliknete na hvězdičku vedle adresy pro složku, ve které právě jste. Pak skočte na prvních deset pomocí <b>Alt+1</b> až <b>Alt+0</b>.",
   "hx_025": "Oblíbené lze přetažením přeskládat a kliknutím pravým tlačítkem na jednu z nich tam otevřete terminál (se zvýšenými oprávněními, pokud o to požádáte) nebo na ni namíříte Analýzu úložiště. Soubory puštěné na oblíbenou položku se tam vždy přesunou, i mezi jednotkami. Oblíbená položka Koš otevře Koš systému Windows a vše, co na ni pustíte, putuje do koše, nebo se při podržení <b>Shift</b> trvale odstraní. Složky ve stromu také přijímají puštěné soubory, se stejnými pravidly jako tatáž složka v seznamu.",
   "drop_place_p": "Výjimkou jsou oblíbené: puštění na oblíbenou položku vždy přesouvá, i mezi jednotkami, protože na uložené místo něco pouštíte proto, aby to tam bylo. Puštění na oblíbenou položku Koš přesune soubory do koše stejně jako <b>Delete</b> a podržení <b>Shift</b> je trvale odstraní, stejně jako <b>Shift+Delete</b>.",
   "hx_097b": "<b>Shift+Enter</b> otevře vybranou položku na nové kartě, <b>F6</b> ji ukáže v Průzkumníkovi a <b>Ctrl+Shift+C</b> zkopíruje její cestu.",
@@ -8064,7 +8064,7 @@ Object.assign(window.I18N["cs"], {
   "appsize_keys_p": "Z klávesnice <b>Ctrl+Shift+Plus</b> a <b>Ctrl+Shift+Minus</b> mění velikost po 5% a <b>Ctrl+Shift+0</b> ji vrátí na 100%."
 });
 Object.assign(window.I18N["ja"], {
-  "h_browse_p4": "<b>Ctrl+B</b> はツリーの下のお気に入りドロワーを開きます。フォルダーをドロップして保存するか、今いるフォルダーにはアドレスバーの横の星を使い、<b>Alt+1</b> から <b>Alt+0</b> で最初の 10 件へジャンプします。",
+  "h_browse_p4": "レールの星、または <b>Ctrl+B</b> で、ツリーの下のお気に入りドロワーを表示したり隠したりします。フォルダーを保存するには、ドロワーにドロップするか、右クリック メニューの<b>お気に入りに追加</b> (<b>Ctrl+D</b>) を選ぶか、今いるフォルダーならアドレスの横の星をクリックします。その後、<b>Alt+1</b> から <b>Alt+0</b> で最初の 10 件へジャンプします。",
   "hx_025": "お気に入りはドラッグで並べ替えられ、右クリックするとそこでターミナルを開いたり (必要なら管理者として)、ストレージ分析をそこに向けたりできます。お気に入りにドロップしたファイルは、ドライブをまたいでも常にそこへ移動します。「ごみ箱」のお気に入りは Windows のごみ箱を開き、そこにドロップしたものはごみ箱へ送られます。<b>Shift</b> を押しながらなら完全に削除されます。ツリーのフォルダーもドロップを受け付け、一覧の同じフォルダーと同じルールで動きます。",
   "drop_place_p": "お気に入りは例外です。お気に入りへのドロップは、ドライブをまたいでも常に移動になります。保存した場所に何かをドロップするのは、そこへ置くためだからです。「ごみ箱」のお気に入りへのドロップは <b>Delete</b> と同じようにファイルをごみ箱へ送り、<b>Shift</b> を押しながらなら <b>Shift+Delete</b> と同じように完全に削除します。",
   "hx_097b": "<b>Shift+Enter</b> は選択した項目を新しいタブで開き、<b>F6</b> はエクスプローラーで表示し、<b>Ctrl+Shift+C</b> はそのパスをコピーします。",
@@ -8073,7 +8073,7 @@ Object.assign(window.I18N["ja"], {
   "appsize_keys_p": "キーボードでは、<b>Ctrl+Shift+プラス</b>と <b>Ctrl+Shift+マイナス</b>でサイズを 5% ずつ変え、<b>Ctrl+Shift+0</b> で 100% に戻します。"
 });
 Object.assign(window.I18N["bn"], {
-  "h_browse_p4": "<b>Ctrl+B</b> ট্রির নিচে পছন্দের জায়গার ড্রয়ার খোলে। কোনো ফোল্ডার সেখানে ফেলে সেভ করুন, বা আপনি যে ফোল্ডারে আছেন তার জন্য ঠিকানা বারের পাশের তারা বোতামটি ব্যবহার করুন, তারপর <b>Alt+1</b> থেকে <b>Alt+0</b> দিয়ে প্রথম দশটিতে লাফিয়ে যান।",
+  "h_browse_p4": "সারির তারা বোতাম, বা <b>Ctrl+B</b>, ট্রির নিচে পছন্দের জায়গার ড্রয়ার দেখায় বা লুকায়। কোনো ফোল্ডার সেভ করতে সেটি ড্রয়ারে ফেলুন, তার ডান-ক্লিক মেনু থেকে <b>প্রিয় তালিকায় যোগ করুন</b> বেছে নিন (<b>Ctrl+D</b>), বা আপনি যে ফোল্ডারে আছেন তার জন্য ঠিকানার পাশের তারাটি ক্লিক করুন। তারপর <b>Alt+1</b> থেকে <b>Alt+0</b> দিয়ে প্রথম দশটিতে লাফিয়ে যান।",
   "hx_025": "পছন্দের জায়গাগুলো টেনে ক্রম বদলানো যায়, আর কোনোটিতে ডান-ক্লিক করলে সেখানে একটি টার্মিনাল খোলে (চাইলে অ্যাডমিন হিসেবে) বা স্টোরেজ বিশ্লেষককে সেদিকে নির্দেশ করে। কোনো পছন্দের জায়গায় ফেলা ফাইল সবসময় সেখানে সরে যায়, এক ড্রাইভ থেকে অন্য ড্রাইভেও। রিসাইকেল বিন পছন্দটি Windows-এর রিসাইকেল বিন খোলে, আর তার ওপর ফেলা সবকিছু রিসাইকেল বিনে যায়, বা <b>Shift</b> চেপে রাখলে স্থায়ীভাবে মুছে যায়। ট্রির ফোল্ডারও ফেলা ফাইল নেয়, তালিকায় সেই ফোল্ডারের একই নিয়মে।",
   "drop_place_p": "পছন্দের জায়গাগুলো ব্যতিক্রম: সেখানে ফেললে সবসময় সরানো হয়, এক ড্রাইভ থেকে অন্য ড্রাইভেও, কারণ সেভ করা জায়গায় কিছু ফেলার উদ্দেশ্যই সেটি সেখানে রাখা। রিসাইকেল বিন পছন্দে ফেললে ফাইলগুলো <b>Delete</b>-এর মতোই রিসাইকেল বিনে যায়, আর <b>Shift</b> চেপে রাখলে <b>Shift+Delete</b>-এর মতো স্থায়ীভাবে মুছে যায়।",
   "hx_097b": "<b>Shift+Enter</b> নির্বাচিত আইটেমটি নতুন ট্যাবে খোলে, <b>F6</b> সেটি এক্সপ্লোরারে দেখায় এবং <b>Ctrl+Shift+C</b> তার পাথ কপি করে।",
@@ -8082,7 +8082,7 @@ Object.assign(window.I18N["bn"], {
   "appsize_keys_p": "কীবোর্ড থেকে <b>Ctrl+Shift+Plus</b> ও <b>Ctrl+Shift+Minus</b> প্রতিবার আকার 5% করে বদলায়, আর <b>Ctrl+Shift+0</b> সেটি 100%-এ ফিরিয়ে আনে।"
 });
 Object.assign(window.I18N["it"], {
-  "h_browse_p4": "<b>Ctrl+B</b> apre il cassetto dei segnalibri sotto l'albero. Rilascia una cartella su di esso per salvarla, o usa la stella accanto alla barra degli indirizzi per la cartella in cui ti trovi, poi salta ai primi dieci con <b>Alt+1</b> fino ad <b>Alt+0</b>.",
+  "h_browse_p4": "La stella sulla barra laterale, o <b>Ctrl+B</b>, mostra o nasconde il cassetto dei segnalibri sotto l'albero. Per salvare una cartella, rilasciala sul cassetto, scegli <b>Aggiungi ai segnalibri</b> dal suo menu contestuale (<b>Ctrl+D</b>) o fai clic sulla stella accanto all'indirizzo per la cartella in cui ti trovi. Poi salta ai primi dieci con <b>Alt+1</b> fino ad <b>Alt+0</b>.",
   "hx_025": "I segnalibri si trascinano per riordinarli, e cliccarne uno col tasto destro apre un terminale lì (elevato se lo chiedi) o ci punta l'Analizzatore di spazio. I file rilasciati su un segnalibro vengono sempre spostati lì, anche tra unità diverse. Il segnalibro Cestino apre il Cestino di Windows, e tutto ciò che vi rilasci finisce nel cestino, o viene eliminato definitivamente se tieni premuto <b>Shift</b>. Anche le cartelle nell'albero accettano i rilasci, con le stesse regole di quella cartella nell'elenco.",
   "drop_place_p": "I segnalibri sono l'eccezione: un rilascio su un segnalibro sposta sempre, anche tra unità diverse, perché si rilascia qualcosa su un posto salvato per metterlo lì. Un rilascio sul segnalibro Cestino manda i file nel cestino come fa <b>Canc</b>, e tenendo premuto <b>Shift</b> li elimina definitivamente, come <b>Shift+Canc</b>.",
   "hx_097b": "<b>Shift+Invio</b> apre l'elemento selezionato in una nuova scheda, <b>F6</b> lo mostra in Esplora file e <b>Ctrl+Shift+C</b> ne copia il percorso.",
@@ -8091,7 +8091,7 @@ Object.assign(window.I18N["it"], {
   "appsize_keys_p": "Da tastiera, <b>Ctrl+Shift+Più</b> e <b>Ctrl+Shift+Meno</b> cambiano la dimensione del 5% alla volta, e <b>Ctrl+Shift+0</b> la riporta al 100%."
 });
 Object.assign(window.I18N["ru"], {
-  "h_browse_p4": "<b>Ctrl+B</b> открывает ящик закладок под деревом. Перетащите на него папку, чтобы сохранить её, или используйте звёздочку рядом с адресной строкой для папки, в которой вы находитесь, а затем переходите к первым десяти клавишами от <b>Alt+1</b> до <b>Alt+0</b>.",
+  "h_browse_p4": "Звёздочка на боковой полосе или <b>Ctrl+B</b> показывает или скрывает ящик закладок под деревом. Чтобы сохранить папку, перетащите её на ящик, выберите <b>Добавить в закладки</b> в её контекстном меню (<b>Ctrl+D</b>) или щёлкните звёздочку рядом с адресом для папки, в которой вы находитесь. Затем переходите к первым десяти клавишами от <b>Alt+1</b> до <b>Alt+0</b>.",
   "hx_025": "Закладки можно перетаскивать, меняя порядок, а щелчок правой кнопкой по одной из них открывает там терминал (с повышенными правами, если попросите) или направляет на неё Анализатор хранилища. Файлы, брошенные на закладку, всегда перемещаются туда, даже между дисками. Закладка «Корзина» открывает Корзину Windows, а всё, что на неё брошено, отправляется в корзину или удаляется навсегда, если удерживать <b>Shift</b>. Папки в дереве тоже принимают файлы, по тем же правилам, что и эта папка в списке.",
   "drop_place_p": "Исключение составляют закладки: бросок на закладку всегда перемещает, даже между дисками, потому что что-то бросают на сохранённое место, чтобы положить это туда. Бросок на закладку «Корзина» отправляет файлы в корзину так же, как <b>Delete</b>, а с зажатым <b>Shift</b> удаляет их навсегда, как <b>Shift+Delete</b>.",
   "hx_097b": "<b>Shift+Enter</b> открывает выбранный элемент в новой вкладке, <b>F6</b> показывает его в Проводнике, а <b>Ctrl+Shift+C</b> копирует его путь.",
@@ -8100,7 +8100,7 @@ Object.assign(window.I18N["ru"], {
   "appsize_keys_p": "С клавиатуры <b>Ctrl+Shift+Плюс</b> и <b>Ctrl+Shift+Минус</b> меняют размер на 5% за раз, а <b>Ctrl+Shift+0</b> возвращает 100%."
 });
 Object.assign(window.I18N["kk"], {
-  "h_browse_p4": "<b>Ctrl+B</b> ағаштың астындағы бетбелгілер тартпасын ашады. Қалтаны сақтау үшін оны сол жерге тастаңыз немесе өзіңіз тұрған қалта үшін мекенжай жолағының жанындағы жұлдызшаны пайдаланыңыз, содан кейін алғашқы онына <b>Alt+1</b> мен <b>Alt+0</b> арқылы өтіңіз.",
+  "h_browse_p4": "Жолақтағы жұлдызша немесе <b>Ctrl+B</b> ағаштың астындағы бетбелгілер тартпасын көрсетеді не жасырады. Қалтаны сақтау үшін оны тартпаға тастаңыз, оның оң батырма мәзірінен <b>Бетбелгілерге қосу</b> пәрменін таңдаңыз (<b>Ctrl+D</b>) немесе өзіңіз тұрған қалта үшін мекенжайдың жанындағы жұлдызшаны басыңыз. Содан кейін алғашқы онына <b>Alt+1</b> мен <b>Alt+0</b> арқылы өтіңіз.",
   "hx_025": "Бетбелгілерді сүйреп ретін өзгертуге болады, ал біреуін оң батырмамен бассаңыз, сол жерде терминал ашылады (сұрасаңыз жоғары құқықпен) немесе Жинақтауыш талдағышы соған бағытталады. Бетбелгіге тасталған файлдар әрқашан сонда жылжытылады, тіпті дискілер арасында да. Себет бетбелгісі Windows себетін ашады, ал оған тасталғанның бәрі себетке жіберіледі немесе <b>Shift</b> басулы тұрса, біржола жойылады. Ағаштағы қалталар да тасталған файлдарды қабылдайды, тізімдегі сол қалтаның ережелерімен.",
   "drop_place_p": "Бетбелгілер ерекше жағдай: бетбелгіге тастау әрқашан жылжытады, дискілер арасында да, өйткені сақталған орынға бір нәрсені сол жерге қою үшін тастайсыз. Себет бетбелгісіне тастау файлдарды <b>Delete</b> сияқты себетке жібереді, ал <b>Shift</b> басулы тұрса, оларды <b>Shift+Delete</b> сияқты біржола жояды.",
   "hx_097b": "<b>Shift+Enter</b> таңдалған элементті жаңа қойындыда ашады, <b>F6</b> оны Explorer-де көрсетеді, ал <b>Ctrl+Shift+C</b> оның жолын көшіреді.",
@@ -8109,7 +8109,7 @@ Object.assign(window.I18N["kk"], {
   "appsize_keys_p": "Пернетақтадан <b>Ctrl+Shift+Plus</b> және <b>Ctrl+Shift+Minus</b> өлшемді бір рет басқанда 5%-ға өзгертеді, ал <b>Ctrl+Shift+0</b> оны 100%-ға қайтарады."
 });
 Object.assign(window.I18N["uk"], {
-  "h_browse_p4": "<b>Ctrl+B</b> відкриває шухляду закладок під деревом. Киньте на неї папку, щоб зберегти, або скористайтеся зіркою біля адресного рядка для поточної папки, а потім переходьте до перших десяти клавішами від <b>Alt+1</b> до <b>Alt+0</b>.",
+  "h_browse_p4": "Зірка на боковій смузі або <b>Ctrl+B</b> показує чи ховає шухляду закладок під деревом. Щоб зберегти папку, киньте її на шухляду, виберіть <b>Додати до закладок</b> у її контекстному меню (<b>Ctrl+D</b>) або клацніть зірку біля адреси для поточної папки. Потім переходьте до перших десяти клавішами від <b>Alt+1</b> до <b>Alt+0</b>.",
   "hx_025": "Закладки можна перетягувати для зміни порядку, а правий клац по одній відкриває там термінал (з підвищеними правами, якщо попросити) або націлює на неї Аналізатор сховища. Файли, кинуті на закладку, завжди переміщуються туди, навіть між дисками. Закладка «Кошик» відкриває Кошик Windows, а все, що на неї кинуто, йде до кошика або видаляється назавжди, якщо утримувати <b>Shift</b>. Папки в дереві теж приймають файли, за тими самими правилами, що й ця папка у списку.",
   "drop_place_p": "Винятком є закладки: кидок на закладку завжди переміщує, навіть між дисками, бо щось кидають на збережене місце, щоб покласти його туди. Кидок на закладку «Кошик» відправляє файли до кошика так само, як <b>Delete</b>, а з утриманим <b>Shift</b> видаляє їх назавжди, як <b>Shift+Delete</b>.",
   "hx_097b": "<b>Shift+Enter</b> відкриває вибраний елемент у новій вкладці, <b>F6</b> показує його в Провіднику, а <b>Ctrl+Shift+C</b> копіює його шлях.",
@@ -8118,7 +8118,7 @@ Object.assign(window.I18N["uk"], {
   "appsize_keys_p": "З клавіатури <b>Ctrl+Shift+Плюс</b> і <b>Ctrl+Shift+Мінус</b> змінюють розмір на 5% за раз, а <b>Ctrl+Shift+0</b> повертає 100%."
 });
 Object.assign(window.I18N["nb"], {
-  "h_browse_p4": "<b>Ctrl+B</b> åpner bokmerkeskuffen under treet. Slipp en mappe på den for å lagre den, eller bruk stjernen ved siden av adressefeltet for mappen du står i, og hopp deretter til de ti første med <b>Alt+1</b> til <b>Alt+0</b>.",
+  "h_browse_p4": "Stjernen i rekken, eller <b>Ctrl+B</b>, viser eller skjuler bokmerkeskuffen under treet. For å lagre en mappe kan du slippe den på skuffen, velge <b>Legg til i bokmerker</b> på høyreklikkmenyen (<b>Ctrl+D</b>), eller klikke stjernen ved siden av adressen for mappen du står i. Hopp deretter til de ti første med <b>Alt+1</b> til <b>Alt+0</b>.",
   "hx_025": "Bokmerker kan dras for å endre rekkefølgen, og høyreklikk på ett åpner en terminal der (forhøyet hvis du ber om det) eller peker Lagringsanalyse på det. Filer du slipper på et bokmerke, flyttes alltid dit, også mellom stasjoner. Bokmerket Papirkurv åpner papirkurven i Windows, og alt du slipper på det, havner i papirkurven, eller slettes permanent hvis du holder <b>Shift</b>. Mapper i treet tar også imot filer, med de samme reglene som den mappen i listen.",
   "drop_place_p": "Bokmerker er unntaket: å slippe på et bokmerke flytter alltid, også mellom stasjoner, fordi du slipper noe på et lagret sted for å legge det der. Å slippe på bokmerket Papirkurv sender filene til papirkurven slik <b>Delete</b> gjør, og holder du <b>Shift</b>, slettes de permanent, slik <b>Shift+Delete</b> gjør.",
   "hx_097b": "<b>Shift+Enter</b> åpner det valgte elementet i en ny fane, <b>F6</b> viser det i Filutforsker, og <b>Ctrl+Shift+C</b> kopierer banen.",
@@ -8127,7 +8127,7 @@ Object.assign(window.I18N["nb"], {
   "appsize_keys_p": "Fra tastaturet endrer <b>Ctrl+Shift+Pluss</b> og <b>Ctrl+Shift+Minus</b> størrelsen med 5% om gangen, og <b>Ctrl+Shift+0</b> setter den tilbake til 100%."
 });
 Object.assign(window.I18N["pt"], {
-  "h_browse_p4": "<b>Ctrl+B</b> abre a gaveta de favoritos sob a árvore. Solte uma pasta nela para salvá-la, ou use a estrela ao lado da barra de endereço para a pasta em que você está, e depois pule para as dez primeiras com <b>Alt+1</b> a <b>Alt+0</b>.",
+  "h_browse_p4": "A estrela na barra lateral, ou <b>Ctrl+B</b>, mostra ou oculta a gaveta de favoritos sob a árvore. Para salvar uma pasta, solte-a na gaveta, escolha <b>Adicionar aos Favoritos</b> no menu de contexto dela (<b>Ctrl+D</b>) ou clique na estrela ao lado do endereço para a pasta em que você está. Depois pule para as dez primeiras com <b>Alt+1</b> a <b>Alt+0</b>.",
   "hx_025": "Os favoritos podem ser arrastados para reordenar, e clicar com o botão direito em um abre um terminal ali (elevado, se você pedir) ou aponta o Analisador de Armazenamento para ele. Arquivos soltos sobre um favorito sempre são movidos para lá, mesmo entre unidades. O favorito Lixeira abre a Lixeira do Windows, e tudo o que você soltar nele vai para a lixeira, ou é excluído permanentemente se você segurar <b>Shift</b>. As pastas da árvore também aceitam arquivos soltos, com as mesmas regras dessa pasta na listagem.",
   "drop_place_p": "Os favoritos são a exceção: soltar sobre um favorito sempre move, também entre unidades, porque você solta algo num local salvo para colocá-lo lá. Soltar sobre o favorito Lixeira envia os arquivos para a lixeira como <b>Delete</b> faz, e segurar <b>Shift</b> os exclui permanentemente, como <b>Shift+Delete</b>.",
   "hx_097b": "<b>Shift+Enter</b> abre o item selecionado em uma nova guia, <b>F6</b> o mostra no Explorador de Arquivos e <b>Ctrl+Shift+C</b> copia o caminho dele.",
