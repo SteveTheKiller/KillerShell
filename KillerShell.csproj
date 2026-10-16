@@ -17,6 +17,8 @@
     <Version>1.4.1</Version>
     <FileVersion>1.4.1.0</FileVersion>
     <AssemblyVersion>1.4.1.0</AssemblyVersion>
+    <Authors>Steve the Killer</Authors>
+    <Copyright>Copyright (c) 2026 Steve the Killer</Copyright>
     <!-- Displayed semantic version, matching Version. -->
     <InformationalVersion>1.4.1</InformationalVersion>
     <!-- Shown in the About card next to the version so a user can tell how old their build

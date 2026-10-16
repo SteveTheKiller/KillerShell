@@ -16,6 +16,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - On the Light theme's Yellow accent, buttons, links, tabs and accent icons stay yellow with a thin gray outline around yellow text and icons, instead of turning near-black.
 - On the website's Light theme with the Yellow accent, links, headings and labels stay yellow with a thin gray outline instead of turning olive brown.
+- The exe's file properties show Steve the Killer as the copyright holder instead of leaving it blank.
 - Screen readers no longer read toolbar, menu and title bar icons as unreadable symbols, and file list items read as their names instead of a type name.
 - The website top bar no longer leaves extra space under the wordmark and buttons.
 - The website's Help and Technical pages match the app on bookmark drops, the bookmark star, the Event Viewer, Storage Analyzer and app size keys, and the CLI commands, in every language.
