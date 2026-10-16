@@ -41,6 +41,14 @@
 
   function localizeExtras() {
     document.querySelectorAll('.ol-chev').forEach(function (button) { button.setAttribute('aria-label', chromeText('site_ui_expand')); });
+    // The release script rewrites the hero facts by matching the plain English label spans,
+    // so those labels carry no data-i18n and are translated here instead.
+    document.querySelectorAll('.hero-info .row .k').forEach(function (label) {
+      if (!label.hasAttribute('data-en-label')) label.setAttribute('data-en-label', label.textContent.trim());
+      var english = label.getAttribute('data-en-label');
+      var text = chromeText('ui_' + english);
+      label.textContent = text != null ? text : english;
+    });
     [['data-i18n-title', 'title'], ['data-i18n-aria', 'aria-label']].forEach(function (pair) {
       document.querySelectorAll('[' + pair[0] + ']').forEach(function (element) {
         var english = 'data-en-' + pair[1];
