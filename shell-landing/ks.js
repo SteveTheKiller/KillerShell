@@ -41,6 +41,14 @@
 
   function localizeExtras() {
     document.querySelectorAll('.ol-chev').forEach(function (button) { button.setAttribute('aria-label', chromeText('site_ui_expand')); });
+    [['data-i18n-title', 'title'], ['data-i18n-aria', 'aria-label']].forEach(function (pair) {
+      document.querySelectorAll('[' + pair[0] + ']').forEach(function (element) {
+        var english = 'data-en-' + pair[1];
+        if (!element.hasAttribute(english)) element.setAttribute(english, element.getAttribute(pair[1]) || '');
+        var text = chromeText(element.getAttribute(pair[0]));
+        element.setAttribute(pair[1], text != null ? String(text).replace(/&amp;/g, '&') : element.getAttribute(english));
+      });
+    });
     document.querySelectorAll('.statusbar .left').forEach(function (footer) {
       var sourceLink = footer.querySelector('a[href*="github.com/SteveTheKiller/KillerShell"]');
       if (sourceLink) sourceLink.textContent = chromeText('footer_src');

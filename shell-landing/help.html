@@ -157,16 +157,16 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <a href="#windows" data-i18n="h_nav_windows">Windows integration</a>
 <a href="#start" data-i18n="h_nav_start">Getting started</a>
 <a href="#browse" data-i18n="h_nav_browse">Browsing folders</a>
-<a href="#archives">Archives</a>
+<a href="#archives" data-i18n="hx_028">Archives</a>
 <a href="#search" data-i18n="h_nav_search">Searching</a>
 <a href="#patterns" data-i18n="h_nav_patterns">Patterns &amp; filters</a>
 <a href="#results" data-i18n="h_nav_results">Working with results</a>
 <a href="#files" data-i18n="h_nav_files">Moving files around</a>
 <a href="#tabs" data-i18n="h_nav_tabs">Tabs &amp; panes</a>
-<a href="#details">File details pane</a>
+<a href="#details" data-i18n="hx_065">File details pane</a>
 <a href="#terminal" data-i18n="h_nav_terminal">The terminal</a>
 <a href="#editor" data-i18n="h_nav_editor">The editor</a>
-<a href="#admin">The tool tabs</a>
+<a href="#admin" data-i18n="hx_085">The tool tabs</a>
 <a href="#shortcuts" data-i18n="h_nav_shortcuts">Every shortcut</a>
 <a href="#looks" data-i18n="h_nav_looks">Themes &amp; fonts</a>
 </nav>
@@ -228,7 +228,7 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_043">Case sensitivity &amp; clearing<span class="kbd">Alt+C</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_search_p4"><b>Alt+C</b> toggles case-sensitive matching, which is off by default. <b>Ctrl+E</b> puts the caret back in the search box, <b>Ctrl+Shift+L</b> clears the results, and <b>F5</b> runs the search again.</p></div></div></div>
 
 <h2 class="help-cat" id="patterns" data-i18n="h_nav_patterns">Patterns &amp; filters</h2>
-<div class="acc-item"><button class="acc-head" data-i18n="hx_044">Wildcard patterns<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_pat_p1">A name term is a wildcard pattern, the same shorthand Windows itself uses. An asterisk stands for any run of characters and a question mark for exactly one. Plain text with no wildcards in it is treated as "contains", so typing <code>log</code> finds every name with log anywhere in it.</p><div class="codeblock">*.log          <span class="cm">// any name ending in .log</span><br>report_*.xlsx  <span class="cm">// report_ then anything, then .xlsx</span><br>?.tmp          <span class="cm">// one character, then .tmp</span><br>2024           <span class="cm">// any name containing 2024</span><br>*.txt;*.log    <span class="cm">// several patterns, separated by ;</span></div></div></div></div>
+<div class="acc-item"><button class="acc-head" data-i18n="hx_044">Wildcard patterns<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_pat_p1">A name term is a wildcard pattern, the same shorthand Windows itself uses. An asterisk stands for any run of characters and a question mark for exactly one. Plain text with no wildcards in it is treated as "contains", so typing <code>log</code> finds every name with log anywhere in it.</p><div class="codeblock">*.log          <span class="cm" data-i18n="cm_log">// any name ending in .log</span><br>report_*.xlsx  <span class="cm" data-i18n="cm_xlsx">// report_ then anything, then .xlsx</span><br>?.tmp          <span class="cm" data-i18n="cm_tmp1">// one character, then .tmp</span><br>2024           <span class="cm" data-i18n="cm_2024">// any name containing 2024</span><br>*.txt;*.log    <span class="cm" data-i18n="cm_multi">// several patterns, separated by ;</span></div></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_045">Include &amp; exclude<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_pat_p2">Include and exclude take the same patterns, several at a time separated by semicolons. Include narrows the pass: with <code>*.txt;*.log</code> set, only text and log files are looked at at all. Exclude drops things, and does double duty. A pattern that matches a folder name anywhere in the path, like <code>node_modules</code>, skips that whole subtree, while <code>*.min.js</code> skips those files wherever they sit.</p></div></div></div>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_046">Filters<span class="kbd">Shift+F7</span><span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_pat_p3"><b>Shift+F7</b> in the search panel adds a filter row: extension, date modified or size, with is / is not, before / after, over / under. Filters are AND-ed with the terms, so a file has to clear every active filter before any term is tested against it.</p></div></div></div>
 
@@ -608,9 +608,9 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre></div></div></div>
 <span class="right"><span id="verEgg" title="click me">v1.4.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
-<script src="ks-i18n.js?v=10"></script>
+<script src="ks-i18n.js?v=11"></script>
 <script src="shortcuts.generated.js?v=7"></script>
-<script src="ks.js?v=11"></script>
+<script src="ks.js?v=12"></script>
 <script>
 /* Replace the checked-in fallback with the table generated from the app's KsAll source. */
 (function () {

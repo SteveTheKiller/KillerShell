@@ -231,7 +231,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <h3 id="names" data-i18n="t_match_names_h">Name terms: wildcards</h3>
 <p data-i18n="t_match_names_p">A name term is a wildcard pattern tested against the filename. An asterisk stands for any run of characters and a question mark stands for a single character, the same shorthand Windows itself uses. The pattern is turned into an anchored regular expression once, so <code>*.log</code> matches any name ending in ".log" and <code>report_?.txt</code> matches "report_1.txt" but not "report_final.txt".</p>
-<div class="codeblock">*.log        <span class="cm">// any name ending in .log</span><br>report_*.xlsx <span class="cm">// report_ then anything, then .xlsx</span><br>?.tmp        <span class="cm">// a single character, then .tmp</span></div>
+<div class="codeblock">*.log        <span class="cm" data-i18n="cm_log">// any name ending in .log</span><br>report_*.xlsx <span class="cm" data-i18n="cm_xlsx">// report_ then anything, then .xlsx</span><br>?.tmp        <span class="cm" data-i18n="cm_tmp2">// a single character, then .tmp</span></div>
 
 <h3 id="contents" data-i18n="t_match_content_h">Text terms: reading inside files</h3>
 <p data-i18n="t_match_content_p1">A text term looks for a run of characters inside the file. Before reading, KillerShell checks the first few kilobytes for a null byte, which almost never appears in text but is common in programs, images, and archives. If it finds one, the file is treated as binary and skipped, so a content search does not waste time scanning a photo or an .exe.</p>
@@ -383,8 +383,8 @@ KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>
-<script src="ks-i18n.js?v=10"></script>
-<script src="ks.js?v=11"></script>
+<script src="ks-i18n.js?v=11"></script>
+<script src="ks.js?v=12"></script>
 <script>
 // COLLAPSIBLE OUTLINE. The page has fifteen sections and seven subsections, and listing
 // all twenty-two flat made the sidebar a wall you had to read to navigate.

@@ -27,6 +27,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A selected tile no longer shows its name in white on the yellow accent while hovered, and a selected month outside the calendar's range keeps readable text.
 - On the website, text on accent-colored buttons, tabs and highlights switches to white or near-black for contrast, so it is never white on yellow.
 - Theme names, the install, export and new document tooltips, and the other labels that were still in English are translated in every language.
+- The website's MCP page, release details, contact cards, pattern comments and feature carousel controls are translated, and the Help and Technical pages were retranslated so they read naturally in every language.
 
 ## [1.4.0] - 2026-10-15
 
