@@ -25,6 +25,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Context menus ask for antialiased labels the same way KillerPDF menus do.
 - On 98SE the folder tree and places list draw crisp text and pixel-sharp icons instead of soft gray text and smeared icons, and the places list no longer fades at its edges.
 - A selected tile no longer shows its name in white on the yellow accent while hovered, and a selected month outside the calendar's range keeps readable text.
+- On the website, text on accent-colored buttons, tabs and highlights switches to white or near-black for contrast, so it is never white on yellow.
 
 ## [1.4.0] - 2026-10-15
 
