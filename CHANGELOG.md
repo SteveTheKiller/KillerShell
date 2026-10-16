@@ -26,6 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On 98SE the folder tree and places list draw crisp text and pixel-sharp icons instead of soft gray text and smeared icons, and the places list no longer fades at its edges.
 - A selected tile no longer shows its name in white on the yellow accent while hovered, and a selected month outside the calendar's range keeps readable text.
 - On the website, text on accent-colored buttons, tabs and highlights switches to white or near-black for contrast, so it is never white on yellow.
+- Theme names, the install, export and new document tooltips, and the other labels that were still in English are translated in every language.
 
 ## [1.4.0] - 2026-10-15
 

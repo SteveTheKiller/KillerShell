@@ -31,7 +31,7 @@
     <sys:String x:Key="Str_Theme_FilmGrain">Filmszemcse</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Sír</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delírium</sys:String>
-    <sys:String x:Key="Str_Theme_Malaise">rosszullét</sys:String>
+    <sys:String x:Key="Str_Theme_Malaise">Rosszullét</sys:String>
 
     <!-- Scope bar -->
     <sys:String x:Key="Str_Lbl_In">itt:</sys:String>
@@ -190,11 +190,11 @@
     <sys:String x:Key="Str_Lbl_SearchTerms">KERESÉSI FELTÉTELEK</sys:String>
     <sys:String x:Key="Str_Btn_AddTerm">+ kifejezés hozzáadása</sys:String>
     <sys:String x:Key="Str_Btn_AddGroup">+ csoport hozzáadása</sys:String>
-    <sys:String x:Key="Str_Btn_Clear">CLEAR</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">TÖRLÉS</sys:String>
 
     <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
     <sys:String x:Key="Str_Btn_Search">KERESÉS</sys:String>
-    <sys:String x:Key="Str_Btn_Stop">STOP</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">LEÁLLÍTÁS</sys:String>
 
     <!-- Results -->
     <sys:String x:Key="Str_Lbl_Results">EREDMÉNYEK</sys:String>
@@ -336,13 +336,13 @@
     <sys:String x:Key="Str_Ks_ProcToggle">válthat a folyamatok és a szolgáltatások között</sys:String>
     <sys:String x:Key="Str_Ks_EventViewer">nyissa meg az Eseménynéző lapot (mindig emelve)</sys:String>
     <sys:String x:Key="Str_Ks_RegistryEditor">nyissa meg a Rendszerleíróadatbázis-szerkesztő lapot (mindig emelt szinten)</sys:String>
-    <sys:String x:Key="Str_Ks_RegFind">kulcs vagy érték nevének megkeresése (Registry Editor lap)</sys:String>
+    <sys:String x:Key="Str_Ks_RegFind">kulcs vagy érték nevének keresése (Rendszerleíróadatbázis-szerkesztő lap)</sys:String>
     <sys:String x:Key="Str_Ks_Hint">A parancsikonok bárhol működnek az ablakban. A megnyitott legördülő menük, a dátum mező és az eredményszűrő megtartja az Entert.</sys:String>
 
     <!-- Font dialog, reached from the row under the theme flyout -->
     <sys:String x:Key="Str_Fonts_Row">Betűtípusok...</sys:String>
-    <sys:String x:Key="Str_Fonts_Title">FONTS</sys:String>
-    <sys:String x:Key="Str_Fonts_App">APP</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">BETŰTÍPUSOK</sys:String>
+    <sys:String x:Key="Str_Fonts_App">ALKALMAZÁS</sys:String>
     <sys:String x:Key="Str_Fonts_Terminal">TERMINÁL</sys:String>
     <sys:String x:Key="Str_Fonts_Editor">SZERKESZTŐ SZÖVEG</sys:String>
     <sys:String x:Key="Str_Fonts_Default">Alapértelmezett</sys:String>
@@ -397,10 +397,10 @@
     <sys:String x:Key="Str_Term_OpenFolder">Nyissa meg a mappát itt</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Betűtípusok...</sys:String>
     <sys:String x:Key="Str_Term_EditPrompt">Üzenet szerkesztése...</sys:String>
-    <sys:String x:Key="Str_Term_ResetPrompt">Reset prompt</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">Prompt visszaállítása</sys:String>
     <sys:String x:Key="Str_Term_Close">Zárja be a terminált</sys:String>
     <sys:String x:Key="Str_Dlg_ResetPromptMsg">Visszahelyezi a szállított prompt szkriptet? A fájl módosításai elvesznek.</sys:String>
-    <sys:String x:Key="Str_Btn_Reset">Reset</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">Visszaállítás</sys:String>
 
     <!-- PowerShell $PROFILE (ProfileMenu.cs, Terminal/ShellProfiles.cs) -->
     <sys:String x:Key="Str_Prof_Reload">PowerShell-profil újratöltése</sys:String>
@@ -450,7 +450,7 @@
     <sys:String x:Key="Str_Ed_CloseTab">Fájl bezárása</sys:String>
 
     <!-- Shell bar (TerminalBar.cs) -->
-    <sys:String x:Key="Str_TT_TermCwd">Kattintson a szerkesztéshez - írjon be egy mappát, és nyomja meg az Enter billentyűt a CD-hez</sys:String>
+    <sys:String x:Key="Str_TT_TermCwd">Kattintson a szerkesztéshez: írjon be egy mappát, és az Enterrel cd paranccsal oda vált</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Új terminál (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Új terminál rendszergazdaként (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Nyissa meg ezt a mappát egy lapon (Ctrl+Shift+T)</sys:String>
@@ -486,12 +486,12 @@
     <sys:String x:Key="Str_Ks_About">mutasd meg a névjegykártyát</sys:String>
     <sys:String x:Key="Str_Ks_CatSearch">KERESÉS</sys:String>
     <sys:String x:Key="Str_Ks_CatNav">NAVIGÁCIÓ</sys:String>
-    <sys:String x:Key="Str_Ks_CatTabs">TABS</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">LAPOK</sys:String>
     <sys:String x:Key="Str_Ks_CatView">NÉZET</sys:String>
     <sys:String x:Key="Str_Ks_CatFile">FÁJL</sys:String>
     <sys:String x:Key="Str_Ks_CatEdit">SZERKESZTÉS</sys:String>
     <sys:String x:Key="Str_Ks_CatHelp">SEGÍTSÉG</sys:String>
-    <sys:String x:Key="Str_Ks_ViewList">LIST</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">LISTA</sys:String>
     <sys:String x:Key="Str_Ks_ViewKeyboard">BILLENTYŰZET</sys:String>
     <sys:String x:Key="Str_Ks_HoldHint">tartsa lenyomva a Ctrl, Shift vagy Alt billentyűt a réteg előnézetéhez</sys:String>
     <!-- Shortcuts card: SCOPE section headings. A binding belongs to one applet or to the whole
@@ -777,14 +777,14 @@
     <sys:String x:Key="Str_Ks_Storage">Tároláselemző</sys:String>
     <sys:String x:Key="Str_Ks_StorageAdmin">Tároláselemző, emelt szkennelés</sys:String>
     <!-- Local to the Storage Analyzer tab, only while it has focus -->
-    <sys:String x:Key="Str_Ks_StorageScan">indítsa el a vizsgálatot (Storage Analyzer)</sys:String>
-    <sys:String x:Key="Str_Ks_StorageDepth">ciklus fatérkép mélysége (Storage Analyzer)</sys:String>
-    <sys:String x:Key="Str_Ks_StorageMin">állítsa be a megjelenített minimális méretet (Storage Analyzer)</sys:String>
-    <sys:String x:Key="Str_Ks_StorageColor">színváltás típus vagy mappa szerint (Storage Analyzer)</sys:String>
-    <sys:String x:Key="Str_Ks_StorageZoomIn">nagyítás a kiválasztott mappára (Storage Analyzer)</sys:String>
-    <sys:String x:Key="Str_Ks_StorageZoomOut">kicsinyítés egy szinttel (Storage Analyzer)</sys:String>
-    <sys:String x:Key="Str_Ks_StorageHome">vissza a szkennelési gyökérhez (Storage Analyzer)</sys:String>
-    <sys:String x:Key="Str_Ks_StorageRecycle">küldje el a kiválasztott elemet a Lomtárba (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageScan">a vizsgálat indítása (Tároláselemző)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">a fatérkép mélységének váltása (Tároláselemző)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">a megjelenített minimális méret beállítása (Tároláselemző)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">színezés típus vagy mappa szerint (Tároláselemző)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">nagyítás a kijelölt mappára (Tároláselemző)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">kicsinyítés egy szinttel (Tároláselemző)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">vissza a vizsgálat gyökeréhez (Tároláselemző)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">a kijelölt elem áthelyezése a Lomtárba (Tároláselemző)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">az egész alkalmazás nagyítása (0 visszaállítja)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">az oldalsó panelek megjelenítése vagy elrejtése</sys:String>
     <sys:String x:Key="Str_Ks_Theme">a téma- és kiemelőszín-választó megnyitása</sys:String>
@@ -807,9 +807,9 @@
     <sys:String x:Key="Str_Ks_TermScrollEnds">görgetés a kimenet elejére vagy végére</sys:String>
     <sys:String x:Key="Str_Ks_OpenDetails">a részletek kártya megnyitása</sys:String>
     <sys:String x:Key="Str_Ks_RegRefresh">a kiválasztott kulcs újratöltése a lemezről</sys:String>
-    <sys:String x:Key="Str_Ks_StorageCancel">a futó vizsgálat leállítása (Storage Analyzer)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">a futó vizsgálat leállítása (Tároláselemző)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">A rendezési irány megfordítása (Alt+Shift+S)</sys:String>
-    <sys:String x:Key="Str_Storage_Scan">Scan</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">Vizsgálat</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Állj</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Válasszon egy mappát vagy meghajtót a vizsgálathoz</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">Válasszon ki egy mappát vagy meghajtót, majd a Beolvasást</sys:String>
@@ -826,7 +826,7 @@
     <sys:String x:Key="Str_Storage_Depth">Mélység</sys:String>
     <sys:String x:Key="Str_Storage_DepthAll">Mind</sys:String>
     <sys:String x:Key="Str_Storage_DepthTip">Hány mappaszint kap saját téglalapot - az alsó a térképet a nagy mappákra simítja</sys:String>
-    <sys:String x:Key="Str_Storage_Min">Min</sys:String>
+    <sys:String x:Key="Str_Storage_Min">Min.</sys:String>
     <sys:String x:Key="Str_Storage_MinAll">Mind</sys:String>
     <sys:String x:Key="Str_Storage_MinSizeTip">Rejtsen el minden ennél kisebbet - a bájtok továbbra is számítanak az őket tároló mappában</sys:String>
     <sys:String x:Key="Str_Storage_Total">összesen</sys:String>
@@ -937,7 +937,7 @@
     <sys:String x:Key="Str_Evt_ThreadId">Szál azonosítója</sys:String>
     <sys:String x:Key="Str_Evt_ActivityId">Tevékenységazonosító</sys:String>
     <sys:String x:Key="Str_Evt_RecordId">Eseményrekord azonosítója</sys:String>
-    <sys:String x:Key="Str_Evt_Opcode">Opcode</sys:String>
+    <sys:String x:Key="Str_Evt_Opcode">Műveletkód</sys:String>
     <sys:String x:Key="Str_Evt_ViewXml">Nyers XML megtekintése</sys:String>
     <sys:String x:Key="Str_Evt_ViewFormatted">Megtekintés formázott</sys:String>
     <sys:String x:Key="Str_Evt_SearchOnline">Keresse az eseményt online</sys:String>
@@ -967,7 +967,7 @@
     <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
     <sys:String x:Key="Str_Term_ProfileSave">Mentés</sys:String>
     <sys:String x:Key="Str_Term_ProfileHint">A PowerShell és a Parancssor be van építve. A telepített WSL-disztribúciók automatikusan megjelennek, és Bash-t használnak.</sys:String>
-    <sys:String x:Key="Str_Term_ShellType">Shell típusa</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">Parancsértelmező típusa</sys:String>
     <sys:String x:Key="Str_Term_Custom">Egyéni</sys:String>
 
     <sys:String x:Key="Str_Menu_PinPlace">Rögzítés a helyekhez</sys:String>

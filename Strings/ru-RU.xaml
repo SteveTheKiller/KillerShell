@@ -316,8 +316,8 @@
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">открыть CMD от имени администратора</sys:String>
     <sys:String x:Key="Str_Ks_ExportHtml">экспортировать результаты в HTML</sys:String>
     <sys:String x:Key="Str_Ks_ExportCsv">экспортировать результаты в CSV</sys:String>
-    <sys:String x:Key="Str_Ks_TaskManager">открыть вкладку Processes/Services</sys:String>
-    <sys:String x:Key="Str_Ks_TaskManagerAdmin">открыть вкладку Processes/Services от имени администратора</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManager">открыть вкладку Процессы/Службы</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManagerAdmin">открыть вкладку Процессы/Службы от имени администратора</sys:String>
     <sys:String x:Key="Str_Ks_Performance">открыть вкладку Быстродействие</sys:String>
     <sys:String x:Key="Str_Ks_ProcToggle">переключаться между процессами и службами</sys:String>
     <sys:String x:Key="Str_Ks_EventViewer">открыть вкладку Просмотр событий (всегда с повышенными правами)</sys:String>
@@ -556,12 +556,12 @@
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Заменить {0}?</sys:String>
 
     <!-- Processes/Services tab -->
-    <sys:String x:Key="Str_TT_TaskManager">Processes/Services  (F9)  -  правый клик для выбора</sys:String>
-    <sys:String x:Key="Str_TabTitle_TaskManager">Processes/Services</sys:String>
+    <sys:String x:Key="Str_TT_TaskManager">Процессы/Службы  (F9)  -  правый клик для выбора</sys:String>
+    <sys:String x:Key="Str_TabTitle_TaskManager">Процессы/Службы</sys:String>
     <sys:String x:Key="Str_TabTitle_Processes">Процессы</sys:String>
     <sys:String x:Key="Str_TabTitle_Services">Службы</sys:String>
-    <sys:String x:Key="Str_Rail_ProcessesOpen">Processes/Services</sys:String>
-    <sys:String x:Key="Str_Rail_ProcessesAdmin">Processes/Services от имени администратора</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesOpen">Процессы/Службы</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesAdmin">Процессы/Службы от имени администратора</sys:String>
     <sys:String x:Key="Str_TT_ProcFilter">Фильтр по имени, пути или пользователю</sys:String>
     <sys:String x:Key="Str_Col_ProcName">Имя</sys:String>
     <sys:String x:Key="Str_Col_ProcPid">PID</sys:String>

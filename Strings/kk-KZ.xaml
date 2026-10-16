@@ -316,8 +316,8 @@
     <sys:String x:Key="Str_Ks_ShellCmdAdmin">CMD-ны әкімші атынан ашу</sys:String>
     <sys:String x:Key="Str_Ks_ExportHtml">нәтижелерді HTML етіп экспорттау</sys:String>
     <sys:String x:Key="Str_Ks_ExportCsv">нәтижелерді CSV етіп экспорттау</sys:String>
-    <sys:String x:Key="Str_Ks_TaskManager">Processes/Services қойындысын ашу</sys:String>
-    <sys:String x:Key="Str_Ks_TaskManagerAdmin">Processes/Services қойындысын әкімші атынан ашу</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManager">Процестер/Қызметтер қойындысын ашу</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManagerAdmin">Процестер/Қызметтер қойындысын әкімші атынан ашу</sys:String>
     <sys:String x:Key="Str_Ks_Performance">Өнімділік қойындысын ашу</sys:String>
     <sys:String x:Key="Str_Ks_ProcToggle">процестер мен қызметтер арасында ауысу</sys:String>
     <sys:String x:Key="Str_Ks_EventViewer">Оқиғаларды қарау қойындысын ашу (әрқашан жоғары құқықпен)</sys:String>
@@ -556,12 +556,12 @@
     <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} ауыстырылсын ба?</sys:String>
 
     <!-- Processes/Services tab -->
-    <sys:String x:Key="Str_TT_TaskManager">Processes/Services  (F9)  -  таңдау үшін оң жақ басу</sys:String>
-    <sys:String x:Key="Str_TabTitle_TaskManager">Processes/Services</sys:String>
+    <sys:String x:Key="Str_TT_TaskManager">Процестер/Қызметтер  (F9)  -  таңдау үшін оң жақ басу</sys:String>
+    <sys:String x:Key="Str_TabTitle_TaskManager">Процестер/Қызметтер</sys:String>
     <sys:String x:Key="Str_TabTitle_Processes">Процестер</sys:String>
     <sys:String x:Key="Str_TabTitle_Services">Қызметтер</sys:String>
-    <sys:String x:Key="Str_Rail_ProcessesOpen">Processes/Services</sys:String>
-    <sys:String x:Key="Str_Rail_ProcessesAdmin">Processes/Services әкімші атынан</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesOpen">Процестер/Қызметтер</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesAdmin">Процестер/Қызметтер әкімші атынан</sys:String>
     <sys:String x:Key="Str_TT_ProcFilter">Атауы, жолы немесе пайдаланушысы бойынша сүзу</sys:String>
     <sys:String x:Key="Str_Col_ProcName">Атауы</sys:String>
     <sys:String x:Key="Str_Col_ProcPid">PID</sys:String>

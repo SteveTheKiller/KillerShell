@@ -448,8 +448,8 @@
   <sys:String x:Key="Str_TT_Terminal">Mở terminal  (F8), bấm chuột phải để chọn</sys:String>
   <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
   <sys:String x:Key="Str_Term_PowerShellAdmin">PowerShell với quyền quản trị viên</sys:String>
-  <sys:String x:Key="Str_Term_Cmd">Command Prompt</sys:String>
-  <sys:String x:Key="Str_Term_CmdAdmin">Command Prompt với quyền quản trị viên</sys:String>
+  <sys:String x:Key="Str_Term_Cmd">Dấu nhắc Lệnh</sys:String>
+  <sys:String x:Key="Str_Term_CmdAdmin">Dấu nhắc Lệnh với quyền quản trị viên</sys:String>
   <!-- Shortcuts card: category headings, the LIST / KEYBOARD toggle, and the keyboard's hint -->
   <sys:String x:Key="Str_Ks_About">hiển thị thẻ giới thiệu</sys:String>
   <sys:String x:Key="Str_Ks_CatSearch">TÌM KIẾM</sys:String>
@@ -577,7 +577,7 @@
   <sys:String x:Key="Str_Proc_DetailsParentPid">PID tiến trình mẹ</sys:String>
   <sys:String x:Key="Str_Proc_DetailsStartTime">Thời gian bắt đầu</sys:String>
   <sys:String x:Key="Str_TT_ProcPrev">Tiến trình trước  (Left arrow)</sys:String>
-  <sys:String x:Key="Str_TT_ProcNext">Tiến trình tiếp theo  (Right arrow)</sys:String>
+  <sys:String x:Key="Str_TT_ProcNext">Tiến trình tiếp theo  (Mũi tên phải)</sys:String>
   <sys:String x:Key="Str_TT_ProcCopyDetails">Sao chép chi tiết  (Ctrl+C)</sys:String>
   <sys:String x:Key="Str_TT_ProcClose">Đóng  (Esc)</sys:String>
   <!-- The Processes/Services mode toggle above the filter box: one icon button, its glyph the
@@ -608,12 +608,12 @@
   <sys:String x:Key="Str_Svc_Loading">Đang tải danh sách dịch vụ...</sys:String>
   <sys:String x:Key="Str_Svc_DetailsTitle">Chi tiết dịch vụ</sys:String>
   <sys:String x:Key="Str_TT_SvcPrev">Dịch vụ trước  (Left arrow)</sys:String>
-  <sys:String x:Key="Str_TT_SvcNext">Dịch vụ tiếp theo  (Right arrow)</sys:String>
+  <sys:String x:Key="Str_TT_SvcNext">Dịch vụ tiếp theo  (Mũi tên phải)</sys:String>
   <sys:String x:Key="Str_TT_SvcCopyDetails">Sao chép chi tiết  (Ctrl+C)</sys:String>
   <sys:String x:Key="Str_TT_SvcClose">Đóng  (Esc)</sys:String>
   <!-- Event Viewer tab (Shell/EventViewerTabs.cs, Tools/EventViewerControl.cs) -->
-  <sys:String x:Key="Str_TT_EventViewer">Event Viewer  (Ctrl+F12)</sys:String>
-  <sys:String x:Key="Str_TabTitle_EventViewer">Event Viewer</sys:String>
+  <sys:String x:Key="Str_TT_EventViewer">Trình xem sự kiện  (Ctrl+F12)</sys:String>
+  <sys:String x:Key="Str_TabTitle_EventViewer">Trình xem sự kiện</sys:String>
   <sys:String x:Key="Str_TT_EvtFilter">Lọc theo nguồn, thông báo, danh mục hoặc ID sự kiện</sys:String>
   <sys:String x:Key="Str_TT_EvtLogPicker">Nhật ký cần đọc</sys:String>
   <sys:String x:Key="Str_TT_EvtLevelPicker">Các mức cần hiển thị</sys:String>
@@ -922,7 +922,7 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Term_ProfileInvalid">Nhập tên và tệp thực thi. Mỗi hồ sơ phải có tên riêng.</sys:String>
     <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
     <sys:String x:Key="Str_Term_ProfileSave">Lưu</sys:String>
-    <sys:String x:Key="Str_Term_ProfileHint">PowerShell và Command Prompt được tích hợp sẵn. Các bản phân phối WSL đã cài đặt tự động xuất hiện và dùng Bash.</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell và Dấu nhắc Lệnh được tích hợp sẵn. Các bản phân phối WSL đã cài đặt tự động xuất hiện và dùng Bash.</sys:String>
     <sys:String x:Key="Str_Term_ShellType">Loại shell</sys:String>
     <sys:String x:Key="Str_Term_Custom">Tùy chỉnh</sys:String>
 

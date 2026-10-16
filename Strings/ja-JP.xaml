@@ -26,7 +26,7 @@
     <sys:String x:Key="Str_TT_TreePanel">フォルダー ツリーの表示・非表示</sys:String>
     <sys:String x:Key="Str_TT_CollapseSidebar">サイドパネルを折りたたむ  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">保存した場所  (Ctrl+B)</sys:String>
-    <sys:String x:Key="Str_TT_Favorite">このフォルダーを保存</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">このフォルダーを保存  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">隠しファイルとシステム項目を表示  (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">フォルダーをファイルより上に表示  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">お気に入りに追加</sys:String>
@@ -113,7 +113,7 @@
     <sys:String x:Key="Str_Btn_DoInstall">インストール</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">更新</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell をユーザープロファイルにインストールしますか?</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallBullets">- スタートメニューのショートカット&#x0A;- 「アプリと機能」に表示されます</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">ポータブル版アプリが Programs フォルダーにコピーされ、スタート メニューのショートカットと「プログラムの追加と削除」の項目が追加されます。このポータブル ファイルはその後、残しても削除してもかまいません。</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">既存の KillerShell を更新しますか?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">このアカウントにインストール済みのコピーを置き換えます。設定と保存済みセッションは維持されます。その後、このポータブルファイルは保持または削除できます。</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateMachineMsg">すべてのユーザー向けにインストール済みの KillerShell を更新しますか?</sys:String>
@@ -155,7 +155,7 @@
     <!-- Results -->
     <sys:String x:Key="Str_Lbl_Results">結果</sys:String>
     <sys:String x:Key="Str_Lbl_ResultsCount">結果  ({0})</sys:String>
-    <sys:String x:Key="Str_Btn_Export">結果を書き出し</sys:String>
+    <sys:String x:Key="Str_Btn_Export">結果を書き出し  (Ctrl+Alt+E)  |  CSV は Ctrl+Alt+Shift+E</sys:String>
     <sys:String x:Key="Str_TT_Result">クリックで展開  |  ダブルクリックでエクスプローラーに表示  |  右クリックでその他</sys:String>
     <sys:String x:Key="Str_Btn_ExpandAll">すべて展開</sys:String>
     <sys:String x:Key="Str_Btn_CollapseAll">すべて折りたたむ</sys:String>
@@ -289,7 +289,7 @@
     <!-- Associations card (Associations.cs, AssociationsCard.cs) -->
     <sys:String x:Key="Str_Assoc_Row">ファイルの関連付け...</sys:String>
     <sys:String x:Key="Str_Assoc_Title">ファイルの関連付け</sys:String>
-    <sys:String x:Key="Str_Assoc_Intro">KillerShell を Windows に登録すると、「プログラムから開く」、Settings の既定のアプリ、そしてすべてのフォルダーとドライブの右クリック メニューに表示されます。</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">KillerShell を Windows に登録すると、「プログラムから開く」、設定 の既定のアプリ、そしてすべてのフォルダーとドライブの右クリック メニューに表示されます。</sys:String>
     <sys:String x:Key="Str_Assoc_What">テキストの種類</sys:String>
     <sys:String x:Key="Str_Assoc_Safe">.bat、.cmd、.reg には代わりに「KillerShell で編集」の項目が付きます。ダブルクリックはこれまでどおり実行または結合のままです。ここを黙って変えると、誰かの午後がまるごと消えるからです。</sys:String>
     <sys:String x:Key="Str_Assoc_AllUsers">この PC のすべてのユーザーに登録する</sys:String>
@@ -298,8 +298,8 @@
     <sys:String x:Key="Str_Assoc_Remove">登録を解除</sys:String>
     <sys:String x:Key="Str_Assoc_OpenSettings">Windows の既定のアプリを開く...</sys:String>
     <sys:String x:Key="Str_Assoc_StateNone">未登録です。Windows はまだどのファイル形式でも KillerShell を候補に出しません。</sys:String>
-    <sys:String x:Key="Str_Assoc_StateUser">お使いのアカウントに登録済みです。Windows が既定を切り替えることはありません。Settings でファイル形式ごとに KillerShell をご自分で選んでください。</sys:String>
-    <sys:String x:Key="Str_Assoc_StateMachine">この PC のすべてのユーザーに登録済みです。Windows が既定を切り替えることはありません。Settings でファイル形式ごとに KillerShell をご自分で選んでください。</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">お使いのアカウントに登録済みです。Windows が既定を切り替えることはありません。設定 でファイル形式ごとに KillerShell をご自分で選んでください。</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">この PC のすべてのユーザーに登録済みです。Windows が既定を切り替えることはありません。設定 でファイル形式ごとに KillerShell をご自分で選んでください。</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">このコピーはポータブル版です。関連付けは今この .exe がある場所を指すため、移動したり削除したりすると壊れます。</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Windows に登録しました</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">登録を解除しました</sys:String>
@@ -471,7 +471,7 @@
     <sys:String x:Key="Str_Ed_SaveFailed">{0} を保存できませんでした: {1}</sys:String>
     <sys:String x:Key="Str_TT_TabOverflow">すべてのタブ</sys:String>
     <sys:String x:Key="Str_TT_ColResize">ドラッグで幅を変更  -  ダブルクリックでリセット</sys:String>
-    <sys:String x:Key="Str_TT_NewDoc">新しいドキュメント</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">新しいドキュメント  (F7)  |  保存が拒否されたときは Ctrl+F7 で管理者として再試行</sys:String>
     <sys:String x:Key="Str_Ed_Untitled">無題</sys:String>
     <sys:String x:Key="Str_Ed_SaveAs">名前を付けて保存</sys:String>
     <sys:String x:Key="Str_Ed_AllFiles">すべてのファイル</sys:String>

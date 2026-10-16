@@ -91,7 +91,7 @@
     <sys:String x:Key="Str_Btn_DoInstall">Instalar</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">Actualizar</sys:String>
     <sys:String x:Key="Str_Dlg_InstallMsg">¿Instalar KillerShell en tu perfil de usuario?</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallBullets">- Acceso directo en el menú Inicio&#x0A;- Aparece en Agregar o quitar programas</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">La aplicación portátil se copia a su carpeta Programas. Se añaden un acceso directo en el menú Inicio y una entrada en Agregar o quitar programas. Después puede conservar o eliminar este archivo portátil.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">¿Actualizar la instalación existente de KillerShell?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">Esto reemplaza la copia instalada para tu cuenta. Se conservan tus ajustes y la sesión guardada. Después puedes conservar o eliminar este archivo portátil.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateMachineMsg">¿Actualizar la instalación existente de KillerShell para todos los usuarios?</sys:String>
@@ -133,7 +133,7 @@
     <!-- Results -->
     <sys:String x:Key="Str_Lbl_Results">RESULTADOS</sys:String>
     <sys:String x:Key="Str_Lbl_ResultsCount">RESULTADOS  ({0})</sys:String>
-    <sys:String x:Key="Str_Btn_Export">Exportar resultados</sys:String>
+    <sys:String x:Key="Str_Btn_Export">Exportar resultados  (Ctrl+Alt+E)  |  Ctrl+Alt+Shift+E para CSV</sys:String>
     <sys:String x:Key="Str_TT_Result">Clic para expandir  |  Doble clic para mostrar en Explorer  |  Clic derecho para más opciones</sys:String>
     <sys:String x:Key="Str_Btn_ExpandAll">EXPANDIR TODO</sys:String>
     <sys:String x:Key="Str_Btn_CollapseAll">CONTRAER TODO</sys:String>
@@ -242,7 +242,7 @@
     <!-- Associations card (Associations.cs, AssociationsCard.cs) -->
     <sys:String x:Key="Str_Assoc_Row">Asociaciones de archivo...</sys:String>
     <sys:String x:Key="Str_Assoc_Title">ASOCIACIONES DE ARCHIVO</sys:String>
-    <sys:String x:Key="Str_Assoc_Intro">Registre KillerShell en Windows para que aparezca en «Abrir con», en Settings dentro de Aplicaciones predeterminadas, y en el menú del clic derecho de cualquier carpeta y unidad.</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">Registre KillerShell en Windows para que aparezca en «Abrir con», en Configuración dentro de Aplicaciones predeterminadas, y en el menú del clic derecho de cualquier carpeta y unidad.</sys:String>
     <sys:String x:Key="Str_Assoc_What">TIPOS DE TEXTO</sys:String>
     <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd y .reg reciben en su lugar una fila «Editar con KillerShell». El doble clic sigue ejecutándolos o combinándolos, porque cambiar eso en silencio es como alguien pierde una tarde.</sys:String>
     <sys:String x:Key="Str_Assoc_AllUsers">Registrar para todos los usuarios de este equipo</sys:String>
@@ -251,8 +251,8 @@
     <sys:String x:Key="Str_Assoc_Remove">Quitar el registro</sys:String>
     <sys:String x:Key="Str_Assoc_OpenSettings">Abrir las aplicaciones predeterminadas de Windows...</sys:String>
     <sys:String x:Key="Str_Assoc_StateNone">Sin registrar. Windows todavía no ofrece KillerShell para ningún tipo de archivo.</sys:String>
-    <sys:String x:Key="Str_Assoc_StateUser">Registrado para su cuenta. Windows no cambiará ninguna aplicación predeterminada por usted: elija KillerShell para cada tipo de archivo en Settings.</sys:String>
-    <sys:String x:Key="Str_Assoc_StateMachine">Registrado para todos los usuarios de este equipo. Windows no cambiará ninguna aplicación predeterminada por usted: elija KillerShell para cada tipo de archivo en Settings.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">Registrado para su cuenta. Windows no cambiará ninguna aplicación predeterminada por usted: elija KillerShell para cada tipo de archivo en Configuración.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">Registrado para todos los usuarios de este equipo. Windows no cambiará ninguna aplicación predeterminada por usted: elija KillerShell para cada tipo de archivo en Configuración.</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Esta copia es portátil. Las asociaciones apuntarán al lugar donde está ahora este .exe y dejarán de funcionar si lo mueve o lo elimina.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registrado en Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registro eliminado</sys:String>
@@ -303,7 +303,7 @@
     <sys:String x:Key="Str_TT_TreePanel">Mostrar u ocultar el árbol de carpetas</sys:String>
     <sys:String x:Key="Str_TT_CollapseSidebar">Contraer los paneles laterales  (Ctrl+Mayús+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">Ubicaciones guardadas  (Ctrl+B)</sys:String>
-    <sys:String x:Key="Str_TT_Favorite">Guardar esta carpeta</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Guardar esta carpeta  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Mostrar elementos ocultos y del sistema  (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Mantener las carpetas encima de los archivos  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Añadir a favoritos</sys:String>
@@ -476,7 +476,7 @@
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
     <sys:String x:Key="Str_TT_TabOverflow">Todas las pestañas</sys:String>
     <sys:String x:Key="Str_TT_ColResize">Arrastra para redimensionar  -  doble clic para restablecer</sys:String>
-    <sys:String x:Key="Str_TT_NewDoc">Nuevo documento</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">Nuevo documento  (F7)  |  Ctrl+F7 reintenta el guardado como administrador si se rechaza</sys:String>
     <sys:String x:Key="Str_Ed_Untitled">sin título</sys:String>
     <sys:String x:Key="Str_Ed_SaveAs">Guardar como</sys:String>
     <sys:String x:Key="Str_Ed_AllFiles">Todos los archivos</sys:String>
