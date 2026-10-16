@@ -456,11 +456,13 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="bg" Property="Background" Value="{DynamicResource MenuHoverBrush}"/></Trigger>
+                        <!-- Inactive before selected, so a selected month outside the range keeps its
+                             on-accent text instead of dim text on the accent fill. -->
+                        <Trigger Property="IsInactive" Value="True"><Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/></Trigger>
                         <Trigger Property="HasSelectedDays" Value="True">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource PrimaryFillBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
                         </Trigger>
-                        <Trigger Property="IsInactive" Value="True"><Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/></Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
