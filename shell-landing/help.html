@@ -48,6 +48,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 .kbd-row { display: contents; }
 .kbd-row .k { font-family: Consolas, monospace; font-size: 12px; color: var(--text2); }
 .kbd-row .d { font-size: 13px; color: var(--text); }
+@media (max-width: 560px) { .kbd-group { grid-template-columns: minmax(100px, 130px) minmax(0, 1fr); } .kbd-row .k { overflow-wrap: anywhere; } }
 /* Category colors are the app's own KsCat* theme brushes (Themes/Dark.xaml), copied verbatim so
    a category means the same color on the site as it does in the in-app F1 overlay. */
 :root { --kc-search:#00b3ff; --kc-nav:#8c1eff; --kc-tabs:#ffd319; --kc-view:#f222ff; --kc-file:#00fff9; --kc-edit:#ff2975; --kc-help:#39ff14; }
@@ -93,6 +94,7 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <img class="wm-logo tb-wm" src="brand/killershell-logo-dark-blue.svg" alt="KillerShell">
 </a>
 <a class="tb-dl" href="https://github.com/SteveTheKiller/KillerShell/releases/latest/download/KillerShell.exe"><svg viewBox="0 0 24 24"><path d="M11 4h2v7h3l-4 5-4-5h3V4zM5 18h14v2H5z"/></svg><span data-i18n="nav_dl">Download</span></a>
+<a class="tb-store" href="https://apps.microsoft.com/search?query=KillerShell" target="_blank" rel="noopener" title="Get KillerShell from the Microsoft Store"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M3 7h18v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7zm5.5 3v3h3v-3h-3zm4 0v3h3v-3h-3zm-4 4v3h3v-3h-3zm4 0v3h3v-3h-3zM8 7V5.5a4 4 0 0 1 8 0V7h-2V5.5a2 2 0 0 0-4 0V7H8z"/></svg><span>Microsoft Store</span></a>
 <a class="tb-mcp-link" href="mcp.html" aria-label="KillerMCP"><img src="mcp.png" alt="" aria-hidden="true"><span class="tb-mcp-wordmark"><span>Killer</span><span class="tb-mcp-accent">MCP</span></span></a>
 <span class="tb-spacer"></span>
 <nav class="tb-nav">

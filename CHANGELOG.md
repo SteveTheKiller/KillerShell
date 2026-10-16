@@ -9,9 +9,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Added
 - Keyboard shortcuts for the view buttons, icon size, density, sort, folders on top, recents, the side panels, app size, theme, language, film grain, nicknames, compress and extract, and Analyze storage, plus the folder tree's menu, the Event Viewer rows and the Storage Analyzer's menu. Every key is on the F1 card, its menu row, its button's tooltip and the website.
 - The Recycle Bin is one of the saved places. Clicking it opens it, and files dropped on it are recycled (Shift deletes them for good).
+- The website's top bar has a Microsoft Store button on every page, and the MCP page has a Microsoft Store button for KillerMCP.
 
 ### Changed
 - Dropping files on a saved place always moves them, across drives too.
+- The website's top bar Download button uses the same font and height as the other top bar buttons.
 
 ### Fixed
 - On the Light theme's Yellow accent, buttons, links, tabs and accent icons stay yellow with a thin gray outline around yellow text and icons, instead of turning near-black.
@@ -30,6 +32,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Theme names, the install, export and new document tooltips, and the other labels that were still in English are translated in every language.
 - The website's MCP page, release details, contact cards, pattern comments and feature carousel controls are translated, and the Help and Technical pages were retranslated so they read naturally in every language.
 - Spanish, French and Turkish text on the website that had lost or misplaced its accents reads correctly again.
+- On phones, the website's logo, download hash, Help shortcut list and Technical CLI commands fit the screen instead of making the page scroll sideways.
 
 ## [1.4.0] - 2026-10-15
 
