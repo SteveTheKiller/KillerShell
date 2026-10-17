@@ -15,6 +15,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Changed
 - Dropping files on a saved place always moves them, across drives too.
 - The website's top bar Download button uses the same font and height as the other top bar buttons.
+- The keyboard focus outline is a thin solid ring in the theme accent instead of a thick dotted line, and uses the text color where the accent would be too faint to see.
 
 ### Fixed
 - On the Light theme's Yellow and Orange accents, buttons, links, tabs and accent icons keep their color with a thin gray outline around accent text and icons, instead of turning near-black or brown.
