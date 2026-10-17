@@ -55,7 +55,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">nueva búsqueda</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Nueva pestaña</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Nueva pestaña  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Cerrar pestaña  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
@@ -90,7 +90,7 @@
     <sys:String x:Key="Str_Btn_Install">Instalar KillerShell</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Instalar</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">Actualizar</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallMsg">¿Instalar KillerShell en tu perfil de usuario?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">¿Instalar KillerShell en este equipo?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">La aplicación portátil se copia a su carpeta Programas. Se añaden un acceso directo en el menú Inicio y una entrada en Agregar o quitar programas. Después puede conservar o eliminar este archivo portátil.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">¿Actualizar la instalación existente de KillerShell?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">Esto reemplaza la copia instalada para tu cuenta. Se conservan tus ajustes y la sesión guardada. Después puedes conservar o eliminar este archivo portátil.</sys:String>
@@ -164,7 +164,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">Acerca de KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Tamaño del texto: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Una app portátil para gestionar un equipo y sus archivos. El explorador de archivos, la terminal, el editor de texto y las herramientas de administración comparten una ventana y un mismo teclado. Instalación opcional, sin entorno de ejecución, sin cuenta. Una utilidad de </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Una app portátil para gestionar un equipo y sus archivos. El explorador de archivos, la terminal, el editor de texto, el analizador de almacenamiento y las herramientas de administración comparten una ventana. Una utilidad de </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSIÓN</sys:String>
     <sys:String x:Key="Str_About_Publisher">EDITOR</sys:String>
@@ -194,9 +194,9 @@
     <sys:String x:Key="Str_Mode_Content">texto</sys:String>
     <sys:String x:Key="Str_TT_ModeName">Nombre de archivo / comodines  (ej. *.log)</sys:String>
     <sys:String x:Key="Str_TT_ModeContent">Búsqueda de contenido  (texto dentro de archivos)</sys:String>
-    <sys:String x:Key="Str_Group_Any">UNO</sys:String>
+    <sys:String x:Key="Str_Group_Any">CUALQUIERA</sys:String>
     <sys:String x:Key="Str_Group_All">TODOS</sys:String>
-    <sys:String x:Key="Str_TT_GroupAny">UNO: un archivo coincide si cualquier término de este grupo acierta</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">CUALQUIERA: un archivo coincide si cualquier término de este grupo acierta</sys:String>
     <sys:String x:Key="Str_TT_GroupAll">TODOS: un archivo debe coincidir con cada término de este grupo</sys:String>
     <sys:String x:Key="Str_Join_And">Y</sys:String>
     <sys:String x:Key="Str_Join_Or">O</sys:String>
@@ -460,7 +460,7 @@
     <sys:String x:Key="Str_Ed_Settings">Ajustes...</sys:String>
     <sys:String x:Key="Str_Ed_CloseTab">Cerrar el archivo</sys:String>
 
-    <sys:String x:Key="Str_TT_TermCwd">Abrir esta carpeta en una pestaña</sys:String>
+    <sys:String x:Key="Str_TT_TermCwd">Haz clic para editar: escribe una carpeta y pulsa Entrar para ir a ella con cd</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Nueva terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nueva terminal como administrador  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Abrir esta carpeta en una pestaña  (Ctrl+Mayús+T)</sys:String>

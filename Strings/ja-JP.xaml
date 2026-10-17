@@ -77,7 +77,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">新しい検索</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">ドロップ ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">新しいタブ</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">新しいタブ  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">タブを閉じる  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
@@ -112,7 +112,7 @@
     <sys:String x:Key="Str_Btn_Install">KillerShell をインストール</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">インストール</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">更新</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell をユーザープロファイルにインストールしますか?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell をこのコンピューターにインストールしますか?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">ポータブル版アプリが Programs フォルダーにコピーされ、スタート メニューのショートカットと「プログラムの追加と削除」の項目が追加されます。このポータブル ファイルはその後、残しても削除してもかまいません。</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">既存の KillerShell を更新しますか?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">このアカウントにインストール済みのコピーを置き換えます。設定と保存済みセッションは維持されます。その後、このポータブルファイルは保持または削除できます。</sys:String>
@@ -458,7 +458,7 @@
     <sys:String x:Key="Str_Ed_Settings">設定...</sys:String>
     <sys:String x:Key="Str_Ed_CloseTab">ファイルを閉じる</sys:String>
 
-    <sys:String x:Key="Str_TT_TermCwd">このフォルダーをタブで開く</sys:String>
+    <sys:String x:Key="Str_TT_TermCwd">クリックして編集 - フォルダーを入力して Enter を押すと、そこへ cd します</sys:String>
     <sys:String x:Key="Str_TT_TermNew">新しいターミナル  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">管理者として新しいターミナル  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">このフォルダーをタブで開く  (Ctrl+Shift+T)</sys:String>

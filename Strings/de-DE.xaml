@@ -55,7 +55,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">Neue Suche</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Neuer Tab</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Neuer Tab  (Strg+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Tab schließen  (Strg+W)</sys:String>
 
     <!-- Folder picker -->
@@ -83,14 +83,14 @@
     <sys:String x:Key="Str_Pipe_Scope">{0} Ergebnisse aus {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Noch keine Ergebnisse zum Durchsuchen.</sys:String>
 
-    <sys:String x:Key="Str_Status_ElevateFailed">Erhöhte Eingabeaufforderung konnte nicht gestartet werden: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ElevateFailed">Eine Shell mit erhöhten Rechten konnte nicht gestartet werden: {0}</sys:String>
 
     <!-- Portable install + quit dialog -->
     <sys:String x:Key="Str_Portable">PORTABEL</sys:String>
     <sys:String x:Key="Str_Btn_Install">KillerShell installieren</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Installieren</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">Aktualisieren</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell im Benutzerprofil installieren?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell auf diesem Computer installieren?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">Die portable App wird in Ihren Programme-Ordner kopiert. Eine Startmenü-Verknüpfung und ein Eintrag unter „Programme hinzufügen oder entfernen“ werden angelegt. Diese portable Datei können Sie danach behalten oder löschen.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">Vorhandene KillerShell-Installation aktualisieren?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">Die installierte Kopie für Ihr Konto wird ersetzt. Einstellungen und gespeicherte Sitzung bleiben erhalten. Diese portable Datei können Sie anschließend behalten oder löschen.</sys:String>
@@ -164,7 +164,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">Über KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Textgröße: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Eine portable App zur Verwaltung eines Computers und seiner Dateien. Dateimanager, Terminal, Texteditor und Admin-Werkzeuge teilen sich ein Fenster und einen Satz Tasten. Installation optional, keine Laufzeitumgebung, kein Konto. Ein Dienstprogramm von </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Eine portable App zur Verwaltung eines Computers und seiner Dateien. Dateimanager, Terminal, Texteditor, Speicheranalyse und Admin-Werkzeuge teilen sich ein Fenster. Ein Dienstprogramm von </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSION</sys:String>
     <sys:String x:Key="Str_About_Publisher">HERAUSGEBER</sys:String>
@@ -194,7 +194,7 @@
     <sys:String x:Key="Str_Mode_Content">Inhalt</sys:String>
     <sys:String x:Key="Str_TT_ModeName">Dateiname / Wildcards  (z. B. *.log)</sys:String>
     <sys:String x:Key="Str_TT_ModeContent">Inhaltssuche  (Text in Dateien)</sys:String>
-    <sys:String x:Key="Str_Group_Any">EINE</sys:String>
+    <sys:String x:Key="Str_Group_Any">BELIEBIGE</sys:String>
     <sys:String x:Key="Str_Group_All">ALLE</sys:String>
     <sys:String x:Key="Str_TT_GroupAny">EINE: eine Datei passt, wenn irgendein Begriff dieser Gruppe trifft</sys:String>
     <sys:String x:Key="Str_TT_GroupAll">ALLE: eine Datei muss jeden Begriff dieser Gruppe treffen</sys:String>
@@ -460,7 +460,7 @@
     <sys:String x:Key="Str_Ed_Settings">Einstellungen...</sys:String>
     <sys:String x:Key="Str_Ed_CloseTab">Datei schließen</sys:String>
 
-    <sys:String x:Key="Str_TT_TermCwd">Diesen Ordner in einem Tab öffnen</sys:String>
+    <sys:String x:Key="Str_TT_TermCwd">Klicken zum Bearbeiten - Ordner eingeben und Eingabetaste drücken, um mit cd dorthin zu wechseln</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Neues Terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Neues Terminal als Administrator  (Strg+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Diesen Ordner in einem Tab öffnen  (Strg+Umschalt+T)</sys:String>
@@ -572,7 +572,7 @@
     <sys:String x:Key="Str_EvtLog_Application">Anwendung</sys:String>
     <sys:String x:Key="Str_EvtLog_Security">Sicherheit</sys:String>
     <sys:String x:Key="Str_EvtLog_System">System</sys:String>
-    <sys:String x:Key="Str_Evt_AccessDenied">Das Sicherheitsprotokoll erfordert ein erhöhtes Fenster zum Lesen - einige Einträge fehlen möglicherweise</sys:String>
+    <sys:String x:Key="Str_Evt_AccessDenied">Zum Lesen des Sicherheitsprotokolls ist ein Fenster mit erhöhten Rechten erforderlich - einige Einträge fehlen möglicherweise</sys:String>
     <sys:String x:Key="Str_Evt_ActivityId">Aktivitäts-ID</sys:String>
     <sys:String x:Key="Str_Evt_Computer">Computer</sys:String>
     <sys:String x:Key="Str_Evt_CopyFailed">Kopieren in die Zwischenablage nicht möglich - {0}</sys:String>
@@ -662,7 +662,7 @@
     <sys:String x:Key="Str_Proc_Restarted">{0} neu gestartet</sys:String>
     <sys:String x:Key="Str_Rail_ProcessesAdmin">Prozesse/Dienste als Administrator</sys:String>
     <sys:String x:Key="Str_Rail_ProcessesOpen">Prozesse/Dienste</sys:String>
-    <sys:String x:Key="Str_RegEd_AccessDenied">Zugriff verweigert - dieser Schlüssel erfordert eine höhere Zugriffsebene, als selbst dieses erhöhte Fenster hat</sys:String>
+    <sys:String x:Key="Str_RegEd_AccessDenied">Zugriff verweigert - dieser Schlüssel erfordert eine höhere Zugriffsebene, als selbst dieses Fenster mit erhöhten Rechten hat</sys:String>
     <sys:String x:Key="Str_RegEd_Base">Basis:</sys:String>
     <sys:String x:Key="Str_RegEd_BinaryHint">Hex-Bytepaare, durch Leerzeichen getrennt (z. B. 01 A4 FF 00)</sys:String>
     <sys:String x:Key="Str_Status_Extracting">{0} wird extrahiert...</sys:String>
@@ -724,7 +724,7 @@
     <sys:String x:Key="Str_RegEd_ValueDeleted">„{0}" wurde gelöscht</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">„{0}" gespeichert</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} ist kein vorhandener Ort</sys:String>
-    <sys:String x:Key="Str_Status_ElevatedSaveFailed">Auch das erhöhte Speichern von {0} wurde verweigert - prüfen Sie den Überwachten Ordnerzugriff in Windows-Sicherheit</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedSaveFailed">Auch das Speichern von {0} mit erhöhten Rechten wurde verweigert - prüfen Sie den Überwachten Ordnerzugriff in Windows-Sicherheit</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Speichern Sie das Dokument, bevor Sie es in ein anderes Fenster ziehen</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} ist kein vorhandener Ordner</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Dienstdetails</sys:String>

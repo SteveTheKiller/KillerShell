@@ -55,7 +55,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">nouvelle recherche</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Nouvel onglet</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Nouvel onglet  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Fermer l'onglet  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
@@ -90,7 +90,7 @@
     <sys:String x:Key="Str_Btn_Install">Installer KillerShell</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Installer</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">Mettre à jour</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallMsg">Installer KillerShell dans votre profil utilisateur ?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">Installer KillerShell sur cet ordinateur ?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">L'application portable est copiée dans votre dossier Programmes. Un raccourci du menu Démarrer et une entrée dans Ajouter/Supprimer des programmes sont ajoutés. Vous pouvez ensuite conserver ou supprimer ce fichier portable.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">Mettre à jour votre installation existante de KillerShell ?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">Cette opération remplace la copie installée pour votre compte. Vos paramètres et votre session enregistrée sont conservés. Vous pouvez ensuite garder ou supprimer ce fichier portable.</sys:String>
@@ -164,7 +164,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">À propos de KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Taille du texte : {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Une application portable pour gérer un ordinateur et ses fichiers. Un explorateur de fichiers, un terminal, un éditeur de texte et des outils d'administration partagent une fenêtre et un même clavier. Installation facultative, aucun environnement d'exécution, aucun compte. Un utilitaire </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Une application portable pour gérer un ordinateur et ses fichiers. Un explorateur de fichiers, un terminal, un éditeur de texte, un analyseur de stockage et des outils d'administration partagent une même fenêtre. Un utilitaire </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSION</sys:String>
     <sys:String x:Key="Str_About_Publisher">ÉDITEUR</sys:String>
@@ -196,7 +196,7 @@
     <sys:String x:Key="Str_TT_ModeContent">Recherche de contenu  (texte dans les fichiers)</sys:String>
     <sys:String x:Key="Str_Group_Any">UN</sys:String>
     <sys:String x:Key="Str_Group_All">TOUS</sys:String>
-    <sys:String x:Key="Str_TT_GroupAny">UN : un fichier correspond si un terme de ce groupe touche</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">AU MOINS UN : un fichier correspond si au moins un terme de ce groupe correspond</sys:String>
     <sys:String x:Key="Str_TT_GroupAll">TOUS : un fichier doit correspondre à chaque terme de ce groupe</sys:String>
     <sys:String x:Key="Str_Join_And">ET</sys:String>
     <sys:String x:Key="Str_Join_Or">OU</sys:String>
@@ -460,7 +460,7 @@
     <sys:String x:Key="Str_Ed_Settings">Paramètres...</sys:String>
     <sys:String x:Key="Str_Ed_CloseTab">Fermer le fichier</sys:String>
 
-    <sys:String x:Key="Str_TT_TermCwd">Ouvrir ce dossier dans un onglet</sys:String>
+    <sys:String x:Key="Str_TT_TermCwd">Cliquez pour modifier - saisissez un dossier et appuyez sur Entrée pour y accéder avec cd</sys:String>
     <sys:String x:Key="Str_TT_TermNew">Nouveau terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nouveau terminal en tant qu'administrateur  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Ouvrir ce dossier dans un onglet  (Ctrl+Maj+T)</sys:String>

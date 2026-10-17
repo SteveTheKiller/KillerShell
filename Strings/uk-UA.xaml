@@ -305,7 +305,7 @@
     <sys:String x:Key="Str_Chk_CloseTabs">Закрити мої відкриті вкладки</sys:String>
 
     <!-- Help card: keyboard shortcuts section (F1) -->
-    <sys:String x:Key="Str_Help_Shortcuts">Скорочення</sys:String>
+    <sys:String x:Key="Str_Help_Shortcuts">Комбінації клавіш</sys:String>
     <sys:String x:Key="Str_Ks_Run">запустити пошук</sys:String>
     <sys:String x:Key="Str_Ks_Esc">закрити спливні вікна, зупинити пошук, а потім запропонувати вийти</sys:String>
     <sys:String x:Key="Str_Ks_FilterResults">фільтрувати результати</sys:String>

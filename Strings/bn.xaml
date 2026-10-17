@@ -55,7 +55,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">নতুন অনুসন্ধান</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">নতুন ট্যাব</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">নতুন ট্যাব  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">ট্যাব বন্ধ করুন  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
@@ -90,7 +90,7 @@
     <sys:String x:Key="Str_Btn_Install">KillerShell ইনস্টল করুন</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">ইনস্টল</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">আপডেট</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallMsg">আপনার ইউজার প্রোফাইলে KillerShell ইনস্টল করবেন?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">এই কম্পিউটারে KillerShell ইনস্টল করবেন?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">পোর্টেবল অ্যাপটি আপনার Programs ফোল্ডারে কপি করা হয়। একটি স্টার্ট মেনু শর্টকাট এবং প্রোগ্রাম যোগ/সরান তালিকায় একটি এন্ট্রি যোগ হয়। এরপর এই পোর্টেবল ফাইলটি রাখতে বা মুছে ফেলতে পারেন।</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">আপনার বিদ্যমান KillerShell ইনস্টলেশন আপডেট করবেন?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">এটি আপনার অ্যাকাউন্টের ইনস্টল করা কপিটি প্রতিস্থাপন করবে। আপনার সেটিংস ও সংরক্ষিত সেশন রাখা হবে। এরপর এই পোর্টেবল ফাইলটি রাখতে বা মুছে ফেলতে পারেন।</sys:String>
@@ -164,7 +164,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">KillerShell সম্পর্কে</sys:String>
     <sys:String x:Key="Str_Status_TextSize">টেক্সটের আকার: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">একটি কম্পিউটার ও তার ফাইল পরিচালনার জন্য একটিমাত্র পোর্টেবল অ্যাপ। ফাইল ব্রাউজার, টার্মিনাল, টেক্সট এডিটর ও অ্যাডমিন টুল একটি উইন্ডো ও একই কীবোর্ড ভাগ করে নেয়। ইনস্টল ঐচ্ছিক, কোনো রানটাইম নেই, কোনো অ্যাকাউন্ট নেই। একটি </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">একটি কম্পিউটার ও তার ফাইল পরিচালনার জন্য একটিমাত্র পোর্টেবল অ্যাপ। ফাইল ব্রাউজার, টার্মিনাল, টেক্সট এডিটর, স্টোরেজ অ্যানালাইজার ও অ্যাডমিন টুল একটি উইন্ডো ভাগ করে নেয়। একটি </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> ইউটিলিটি।</sys:String>
     <sys:String x:Key="Str_About_Version">সংস্করণ</sys:String>
     <sys:String x:Key="Str_About_Publisher">প্রকাশক</sys:String>
@@ -460,7 +460,7 @@
     <sys:String x:Key="Str_Ed_Settings">সেটিংস...</sys:String>
     <sys:String x:Key="Str_Ed_CloseTab">ফাইল বন্ধ করুন</sys:String>
 
-    <sys:String x:Key="Str_TT_TermCwd">এই ফোল্ডারটি একটি ট্যাবে খুলুন</sys:String>
+    <sys:String x:Key="Str_TT_TermCwd">সম্পাদনা করতে ক্লিক করুন - একটি ফোল্ডার টাইপ করে Enter চাপলে সেখানে cd হবে</sys:String>
     <sys:String x:Key="Str_TT_TermNew">নতুন টার্মিনাল  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">প্রশাসক হিসেবে নতুন টার্মিনাল  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">এই ফোল্ডারটি একটি ট্যাবে খুলুন  (Ctrl+Shift+T)</sys:String>
@@ -491,7 +491,7 @@
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">বর্তমান ফাইলের ধরনের সঙ্গে মিলে এমন কিছু নেই।</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">ওই ফোল্ডারটি নেই।</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">ওই ফাইলটি নেই।</sys:String>
-    <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} পরিবর্তন করবেন?</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} প্রতিস্থাপন করবেন?</sys:String>
 
 
     <!-- Filling a pre-existing gap: these were en-US only. -->
@@ -503,9 +503,9 @@
     <sys:String x:Key="Str_About_NotNow">এখন নয়</sys:String>
     <sys:String x:Key="Str_About_AlwaysCheckOnStartup">অ্যাপ চালু হলে সর্বদা আপডেট পরীক্ষা করুন</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows এটি মুছতে অস্বীকার করেছে। নিয়ন্ত্রিত ফোল্ডার অ্যাক্সেস চালু থাকলে অ্যাডমিন হিসেবে আবার চেষ্টা করলেও কাজ হবে না: এটি অনুমতির স্তর নয়, অ্যাপ দেখে বাধা দেয়, তাই Windows সিকিউরিটিতে KillerShell-কে অনুমোদিত অ্যাপের তালিকায় যোগ করতে হবে। তবুও অ্যাডমিন হিসেবে চেষ্টা করবেন?</sys:String>
-    <sys:String x:Key="Str_About_UpdateDetail">অ্যাপটি স্বয়ংক্রিয়বাবে বন্ধ হয়ে আবার খুলবে।</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">অ্যাপটি স্বয়ংক্রিয়ভাবে বন্ধ হয়ে আবার খুলবে।</sys:String>
     <sys:String x:Key="Str_About_UpdateHeading">{0} {1} ডাউনলোড করে ইনস্টল করবেন?</sys:String>
-    <sys:String x:Key="Str_Status_DeleteDenied">মুছতে অস্বিকার - অনুমতি নেই</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">মুছতে অস্বীকৃতি - অনুমতি নেই</sys:String>
     <sys:String x:Key="Str_Status_ElevatedDeleteFailed">অ্যাডমিন অনুমতিতেও মুছতে অস্বীকার করা হয়েছে - Windows সিকিউরিটিতে নিয়ন্ত্রিত ফোল্ডার অ্যাক্সেস দেখুন</sys:String>
     <sys:String x:Key="Str_Status_Selected">{0} টি আইটেম নির্বাচিত</sys:String>
 

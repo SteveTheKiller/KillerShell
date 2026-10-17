@@ -18,7 +18,7 @@
     <sys:String x:Key="Str_Lbl_Theme">téma</sys:String>
     <sys:String x:Key="Str_Lbl_Accent">akcentussal</sys:String>
     <sys:String x:Key="Str_Theme_Dark">Sötét</sys:String>
-    <sys:String x:Key="Str_Theme_Light">Fény</sys:String>
+    <sys:String x:Key="Str_Theme_Light">Világos</sys:String>
     <sys:String x:Key="Str_Theme_Black">Fekete</sys:String>
     <sys:String x:Key="Str_Theme_Blood">Vér</sys:String>
     <sys:String x:Key="Str_Theme_Greed">Kapzsiság</sys:String>
@@ -81,7 +81,7 @@
     <sys:String x:Key="Str_Cond_IsNot">nem</sys:String>
     <sys:String x:Key="Str_Cond_Before">előtt</sys:String>
     <sys:String x:Key="Str_Cond_After">után</sys:String>
-    <sys:String x:Key="Str_Cond_Larger">vége</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">felett</sys:String>
     <sys:String x:Key="Str_Cond_Smaller">alatt</sys:String>
 
     <!-- Pattern help card -->
@@ -91,22 +91,22 @@
     <sys:String x:Key="Str_Help_Prefix">jelentéssel kezdődő nevek</sys:String>
     <sys:String x:Key="Str_Help_Middle">2024-et tartalmazó nevek</sys:String>
     <sys:String x:Key="Str_Help_Q">? pontosan egy karaktert jelöl</sys:String>
-    <sys:String x:Key="Str_Help_List">soroljon fel több mintát a -val; közöttük</sys:String>
+    <sys:String x:Key="Str_Help_List">soroljon fel több mintát, ; jellel elválasztva</sys:String>
     <sys:String x:Key="Str_Help_Plain">a sima szöveg is működik - megfelel az azt tartalmazó neveknek</sys:String>
-    <sys:String x:Key="Str_Help_Exclude">Az kizárás a teljes mappákat is kihagyja név szerint</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">A kizárás a teljes mappákat is kihagyja név szerint</sys:String>
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">új keresés</sys:String>
     <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
-    <sys:String x:Key="Str_Tab_Dropped">leesett ({0})</sys:String>
+    <sys:String x:Key="Str_Tab_Dropped">elejtett ({0})</sys:String>
     <sys:String x:Key="Str_TT_NewTab">Új lap (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Lap bezárása (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
     <sys:String x:Key="Str_Btn_Cancel">Mégse</sys:String>
     <sys:String x:Key="Str_Btn_Select">Válassza ki</sys:String>
-    <sys:String x:Key="Str_QA_Home">Otthon</sys:String>
-    <sys:String x:Key="Str_QA_Desktop">Asztali</sys:String>
+    <sys:String x:Key="Str_QA_Home">Kezdőmappa</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">Asztal</sys:String>
     <sys:String x:Key="Str_QA_Documents">Dokumentumok</sys:String>
     <sys:String x:Key="Str_QA_Downloads">Letöltések</sys:String>
     <sys:String x:Key="Str_QA_Pictures">Képek</sys:String>
@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">ahogy találták</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Az eredmények szűrése (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Keresés ezeken a találatokon belül (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Második ablaktábla (F10) |  jobb gombbal lapozhat egymás mellé / halmozottan</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Második ablaktábla (F10) |  jobb gombbal válthat az egymás melletti / egymás alatti elrendezés között</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Több eszköz</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Rendszereszközök</sys:String>
     <sys:String x:Key="Str_TT_Sort">Rendezés (Alt+S)</sys:String>
@@ -201,7 +201,7 @@
     <sys:String x:Key="Str_Lbl_ResultsCount">EREDMÉNYEK ({0})</sys:String>
     <sys:String x:Key="Str_Btn_Export">Eredmények exportálása (Ctrl+Alt+E) |  Ctrl+Alt+Shift+E CSV esetén</sys:String>
     <sys:String x:Key="Str_TT_Result">Kattintson a kibontáshoz |  Kattintson duplán a megjelenítéshez az Intézőben |  Továbbiakért kattintson a jobb gombbal</sys:String>
-    <sys:String x:Key="Str_Btn_ExpandAll">ÖSSZES KITERJESZTÉSE</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">ÖSSZES KIBONTÁSA</sys:String>
     <sys:String x:Key="Str_Btn_CollapseAll">ÖSSZES ÖSSZECSUKÁSA</sys:String>
     <sys:String x:Key="Str_Menu_OpenFile">Nyissa meg a fájlt</sys:String>
     <sys:String x:Key="Str_Menu_OpenWith">Megnyitás a következővel:</sys:String>
@@ -234,7 +234,7 @@
     <sys:String x:Key="Str_Status_Hashing">{0} kivonatolása...</sys:String>
     <sys:String x:Key="Str_Status_HashCopied">SHA-256/{0} másolva</sys:String>
     <sys:String x:Key="Str_Status_HashFailed">Nem sikerült beolvasni a fájlt a kivonatoláshoz</sys:String>
-    <sys:String x:Key="Str_Status_ElevationDeclined">A magasság csökkent</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">A jogosultság-emelés elutasítva</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Ez a parancs csak fájlokon működik, mappákon nem</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">A Windows nem nyitja meg</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} kizárása - az alkalmazáshoz futtassa újra a keresést</sys:String>
@@ -248,7 +248,7 @@
     <sys:String x:Key="Str_Status_Ready">Kész</sys:String>
     <sys:String x:Key="Str_Status_InvalidRoot">Érvénytelen vagy hiányzó gyökérútvonal.</sys:String>
     <sys:String x:Key="Str_Status_NoTerms">Adjon hozzá legalább egy keresőkifejezést vagy szűrőt.</sys:String>
-    <sys:String x:Key="Str_Status_Done">{0} másodperc múlva elkészült - {1} fájl egyezik.</sys:String>
+    <sys:String x:Key="Str_Status_Done">{0} másodperc alatt elkészült - {1} fájl egyezik.</sys:String>
     <sys:String x:Key="Str_Status_Stopped">Megállt.</sys:String>
     <sys:String x:Key="Str_Status_Cleared">Törölve.</sys:String>
     <sys:String x:Key="Str_Status_NothingExport">Még nincs exportálandó.</sys:String>
@@ -263,7 +263,7 @@
     <sys:String x:Key="Str_About_Title">A KillerShellről</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Szövegméret: {0}%</sys:String>
     <sys:String x:Key="Str_About_DescA" xml:space="preserve">Egy hordozható alkalmazás a számítógép és fájljainak kezelésére. A fájlböngésző, terminál, szövegszerkesztő, tárolóelemző és adminisztrációs eszközök egy ablakon osztoznak. A </sys:String>
-    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> hasznosság.</sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> segédprogram.</sys:String>
     <sys:String x:Key="Str_About_Version">VERZIÓ</sys:String>
     <sys:String x:Key="Str_About_Publisher">KIADÓ</sys:String>
     <sys:String x:Key="Str_About_Thumbprint">ujjlenyomat</sys:String>
@@ -274,14 +274,14 @@
     <sys:String x:Key="Str_About_ClearData">Minden adat törlése</sys:String>
     <sys:String x:Key="Str_Dlg_ClearDataMsg">Ezzel törli az összes mentett beállítást (a témát, a nyelvet, a betűtípusokat, a mentett helyeket, a legutóbbi bejegyzéseket és a munkamenetet), valamint az archívumokból kivont ideiglenes fájlokat. A saját fájljait nem érinti meg. Folytatja?</sys:String>
     <sys:String x:Key="Str_Status_DataCleared">Adatok törölve - indítsa újra a KillerShell-t a még használatban lévő elemek törlésének befejezéséhez</sys:String>
-    <sys:String x:Key="Str_About_Footer">GPLv3 |  tereptechnika építette</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3 |  tereptechnikus építette</sys:String>
 
     <!-- HTML report (exported in the app's current language) -->
     <sys:String x:Key="Str_Rpt_Meta">Létrehozva {0} · {1} fájl · {2} találat</sys:String>
     <!-- Browsing export: a folder listing counts items and has no matches or query -->
     <sys:String x:Key="Str_Rpt_MetaList">{0} · {1} elem generált</sys:String>
     <sys:String x:Key="Str_Rpt_Listing">A(z) {0} listája.</sys:String>
-    <sys:String x:Key="Str_Rpt_Query">Keresés a következőre: {0}: {1}.</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">{0} átkeresve erre: {1}.</sys:String>
     <sys:String x:Key="Str_Rpt_TermName">a következőt tartalmazó fájlnevek: {0}</sys:String>
     <sys:String x:Key="Str_Rpt_TermContent">a következőt tartalmazó fájl tartalma: {0}</sys:String>
     <sys:String x:Key="Str_Rpt_Everything">mindent</sys:String>
@@ -323,7 +323,7 @@
     <sys:String x:Key="Str_Ks_Pipe">keressen ezeken a találatokon, egy új lapon</sys:String>
     <sys:String x:Key="Str_Ks_SearchPanel">a keresőpanel megjelenítése vagy elrejtése</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">bővítse ki az összes eredményt</sys:String>
-    <sys:String x:Key="Str_Ks_CollapseAll">összeomlik minden eredményt</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">csukja össze az összes eredményt</sys:String>
     <sys:String x:Key="Str_Ks_Shell">terminál megnyitása az alapértelmezett profillal</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">nyisson meg egy CMD lapot ebben a mappában</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">nyissa meg a PowerShellt rendszergazdaként</sys:String>
@@ -346,14 +346,14 @@
     <sys:String x:Key="Str_Fonts_Terminal">TERMINÁL</sys:String>
     <sys:String x:Key="Str_Fonts_Editor">SZERKESZTŐ SZÖVEG</sys:String>
     <sys:String x:Key="Str_Fonts_Default">Alapértelmezett</sys:String>
-    <sys:String x:Key="Str_Fonts_Hint">Az arcok közötti böngészéshez forgassa a görgőt egy listán. Minden változás azonnal érvényesül.</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">A betűtípusok közötti böngészéshez forgassa a görgőt egy listán. Minden változás azonnal érvényesül.</sys:String>
     <sys:String x:Key="Str_Fonts_Unreadable">A(z) {0} nem tartalmaz olvasható betűket - megtartja az előző betűtípust</sys:String>
 
     <!-- Associations card (Associations.cs, AssociationsCard.cs). Registering is something we
          can do; DEFAULTING is the user's call in Settings, and the wording has to keep those
          two apart or the card is promising something Windows will not let it deliver. -->
     <sys:String x:Key="Str_Assoc_Row">Fájltársítások...</sys:String>
-    <sys:String x:Key="Str_Assoc_Title">FÁJLÁS SZÖVETSÉGEK</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">FÁJLTÁRSÍTÁSOK</sys:String>
     <sys:String x:Key="Str_Assoc_Intro">Regisztrálja a KillerShellt a Windows rendszeren, hogy az megjelenjen a „Megnyitás ezzel”, a Beállítások alatt az Alapértelmezett alkalmazások alatt, és a jobb gombbal kattintva bármely mappa és meghajtó menüjében.</sys:String>
     <sys:String x:Key="Str_Assoc_What">SZÖVEGTÍPUSOK</sys:String>
     <sys:String x:Key="Str_Assoc_Safe">A .bat, .cmd és .reg ehelyett egy &quot;Szerkesztés KillerShell-lel&quot; sort kap. A dupla kattintásuk továbbra is futtatja vagy összevonja őket, mert csendesen változtatva így veszít valaki egy délutánt.</sys:String>
@@ -371,7 +371,7 @@
     <sys:String x:Key="Str_Assoc_Failed">A Windows nem fogadja el ezt a változtatást</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Eszkalált privilégiumok</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">- Emelt szintű jogosultságok</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">a panel menüsor elrejtése vagy megjelenítése</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">nyisson meg egy új ablakot</sys:String>
 
@@ -392,11 +392,11 @@
     <sys:String x:Key="Str_Term_Copy">Másolás</sys:String>
     <sys:String x:Key="Str_Term_Paste">Beillesztés</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Válassza ki az összeset</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Világos</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Törlés</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Új terminál</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Nyissa meg a mappát itt</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Betűtípusok...</sys:String>
-    <sys:String x:Key="Str_Term_EditPrompt">Üzenet szerkesztése...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">Prompt szerkesztése...</sys:String>
     <sys:String x:Key="Str_Term_ResetPrompt">Prompt visszaállítása</sys:String>
     <sys:String x:Key="Str_Term_Close">Zárja be a terminált</sys:String>
     <sys:String x:Key="Str_Dlg_ResetPromptMsg">Visszahelyezi a szállított prompt szkriptet? A fájl módosításai elvesznek.</sys:String>
@@ -420,9 +420,9 @@
     <sys:String x:Key="Str_TT_EdWrap">Szótördelés (Alt+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdSettings">Szerkesztő beállításai</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Kattintson ide, hogy módosítsa a kódolást a következő mentéskor</sys:String>
-    <sys:String x:Key="Str_Ed_GotoLabel">vonalat</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">sort</sys:String>
     <sys:String x:Key="Str_Ed_EncUtf8">UTF-8</sys:String>
-    <sys:String x:Key="Str_Ed_EncUtf8Bom">UTF-8 anyagjegyzékkel</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8Bom">UTF-8 BOM-mal</sys:String>
     <sys:String x:Key="Str_Ed_EncUtf16Le">UTF-16 LE</sys:String>
     <sys:String x:Key="Str_Ed_EncUtf16Be">UTF-16 BE</sys:String>
     <sys:String x:Key="Str_Ed_EncAnsi">ANSI (Windows-1252)</sys:String>
@@ -439,11 +439,11 @@
     <!-- Right-click menu (Editing/EditorMenu.cs) -->
     <sys:String x:Key="Str_Ed_Undo">Visszavonás</sys:String>
     <sys:String x:Key="Str_Ed_Redo">Újra</sys:String>
-    <sys:String x:Key="Str_Ed_Cut">Vágás</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">Kivágás</sys:String>
     <sys:String x:Key="Str_Ed_Copy">Másolás</sys:String>
     <sys:String x:Key="Str_Ed_Paste">Beillesztés</sys:String>
     <sys:String x:Key="Str_Ed_SelectAll">Válassza ki az összeset</sys:String>
-    <sys:String x:Key="Str_Ed_Find">Találd meg...</sys:String>
+    <sys:String x:Key="Str_Ed_Find">Keresés...</sys:String>
     <sys:String x:Key="Str_Ed_Goto">Ugrás a sorra...</sys:String>
     <sys:String x:Key="Str_Ed_Save">Mentés</sys:String>
     <sys:String x:Key="Str_Ed_Settings">Beállítások...</sys:String>
@@ -454,11 +454,11 @@
     <sys:String x:Key="Str_TT_TermNew">Új terminál (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Új terminál rendszergazdaként (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Nyissa meg ezt a mappát egy lapon (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Világos (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Törlés (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Betűtípusok... (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Kattintson a szerkesztéshez - írjon be egy elérési utat, és nyomja meg az Enter billentyűt a fájl átnevezéséhez/áthelyezéséhez</sys:String>
-    <sys:String x:Key="Str_Ed_WrapOn">Szótördelés tovább.</sys:String>
-    <sys:String x:Key="Str_Ed_WrapOff">Szótördelés - görgessen a hosszú sorok megtekintéséhez.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOn">Szótördelés bekapcsolva.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">Szótördelés kikapcsolva - görgessen a hosszú sorok megtekintéséhez.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Mentve: {0}.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Nem sikerült menteni a következőt: {0}: {1}</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Nem sikerült megnyitni a következőt: {0}: {1}</sys:String>
@@ -483,7 +483,7 @@
     <sys:String x:Key="Str_Term_CmdAdmin">Parancssor rendszergazdaként</sys:String>
 
     <!-- Shortcuts card: category headings, the LIST / KEYBOARD toggle, and the keyboard's hint -->
-    <sys:String x:Key="Str_Ks_About">mutasd meg a névjegykártyát</sys:String>
+    <sys:String x:Key="Str_Ks_About">mutasd meg a Névjegy kártyát</sys:String>
     <sys:String x:Key="Str_Ks_CatSearch">KERESÉS</sys:String>
     <sys:String x:Key="Str_Ks_CatNav">NAVIGÁCIÓ</sys:String>
     <sys:String x:Key="Str_Ks_CatTabs">LAPOK</sys:String>
@@ -512,11 +512,11 @@
     <sys:String x:Key="Str_Ks_Up">menj fel egy mappával</sys:String>
     <sys:String x:Key="Str_Ks_Refresh">frissítés - listázza újra a mappát, vagy futtassa újra a keresést</sys:String>
     <sys:String x:Key="Str_Ks_SelectAll">válassza ki az összes eredményt</sys:String>
-    <sys:String x:Key="Str_Ks_FocusSearch">tedd be a keresőt a keresőmezőbe</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">tedd a kurzort a keresőmezőbe</sys:String>
 
     <!-- File operations: progress, conflicts, and their buttons -->
     <sys:String x:Key="Str_Fo_Copying">Másolás...</sys:String>
-    <sys:String x:Key="Str_Fo_Moving">Mozgás...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">Áthelyezés...</sys:String>
     <sys:String x:Key="Str_Fo_Deleting">Törlés...</sys:String>
     <sys:String x:Key="Str_Fo_OfCount">{0}/{1}</sys:String>
     <sys:String x:Key="Str_Fo_ConflictTitle">{0} már létezik itt. Melyiket szeretnéd megtartani?</sys:String>
@@ -532,9 +532,9 @@
     <sys:String x:Key="Str_Fo_NicknameTitle">Becenév</sys:String>
     <sys:String x:Key="Str_Fo_NewFolderName">Új mappa</sys:String>
     <sys:String x:Key="Str_Dlg_DeleteMsg">Véglegesen töröl {0} elemet? Ezt nem lehet visszavonni - nem mennek a Lomtárba.</sys:String>
-    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Elküld {0} elemet a Lomtárba? A kiválasztás tartalmaz egy mappát, és minden benne van.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">Elküld {0} elemet a Lomtárba? A kiválasztás tartalmaz egy mappát, és a benne lévő összes elem is oda kerül.</sys:String>
     <sys:String x:Key="Str_Chk_DontAskAgain">Ne kérdezz többet</sys:String>
-    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">A Windows nem volt hajlandó ezt törölni. Ha a Controlled Folder Access be van kapcsolva, az újrapróbálkozás rendszergazdaként NEM segít - alkalmazás szerint blokkol, nem engedélyszint szerint, és a KillerShellt hozzá kell adni a Windows Security engedélyezett alkalmazások listájához. Mégis megpróbálja újra rendszergazdaként?</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">A Windows nem volt hajlandó ezt törölni. Ha az Ellenőrzött mappahozzáférés be van kapcsolva, az újrapróbálkozás rendszergazdaként NEM segít - alkalmazás szerint blokkol, nem engedélyszint szerint, és a KillerShellt hozzá kell adni a Windows-biztonság engedélyezett alkalmazások listájához. Mégis megpróbálja újra rendszergazdaként?</sys:String>
     <sys:String x:Key="Str_Btn_RetryAdmin">Próbálja újra rendszergazdaként</sys:String>
     <sys:String x:Key="Str_Status_DeleteDenied">A törlés elutasítva - az engedély megtagadva</sys:String>
     <sys:String x:Key="Str_Status_Selected">{0} elem kiválasztva</sys:String>
@@ -550,13 +550,13 @@
     <sys:String x:Key="Str_Status_PasteNeedsFolder">Először nyisson meg egy mappát - nincs hová tenni ezeket a keresési lapon</sys:String>
     <sys:String x:Key="Str_Status_DropIntoSelf">A mappát nem lehet önmagába dobni</sys:String>
     <sys:String x:Key="Str_Status_OpDone">Kész - {0} elem</sys:String>
-    <sys:String x:Key="Str_Status_OpCanceled">Törölve {0} elem után</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">Megszakítva {0} elem után</sys:String>
     <sys:String x:Key="Str_Status_OpPartial">{0} kész, {1} sikertelen</sys:String>
     <sys:String x:Key="Str_Status_OpFailed">Ez nem működött</sys:String>
     <sys:String x:Key="Str_Status_RenameFailed">Nem sikerült átnevezni - {0}</sys:String>
 
     <!-- File-operation context menu -->
-    <sys:String x:Key="Str_Menu_Cut">Vágás</sys:String>
+    <sys:String x:Key="Str_Menu_Cut">Kivágás</sys:String>
     <sys:String x:Key="Str_Menu_Copy">Másolás</sys:String>
     <sys:String x:Key="Str_Menu_Paste">Beillesztés</sys:String>
     <sys:String x:Key="Str_Menu_Rename">Átnevezés</sys:String>
@@ -604,7 +604,7 @@
     <sys:String x:Key="Str_Menu_ProcKill">A folyamat befejezése</sys:String>
     <sys:String x:Key="Str_Menu_ProcRestart">Indítsa újra</sys:String>
     <sys:String x:Key="Str_Menu_ProcRunAsAdmin">Indítsa újra rendszergazdaként</sys:String>
-    <sys:String x:Key="Str_Dlg_ProcKillMsg">Vége {0} (PID {1})? A folyamat során nem mentett munka elveszik.</sys:String>
+    <sys:String x:Key="Str_Dlg_ProcKillMsg">Befejezi a következőt: {0} (PID {1})? A folyamat során nem mentett munka elveszik.</sys:String>
     <sys:String x:Key="Str_Proc_Killed">{0} véget ért</sys:String>
     <sys:String x:Key="Str_Proc_AlreadyExited">{0} már kilépett</sys:String>
     <sys:String x:Key="Str_Proc_KillFailed">Nem lehet befejezni a következőt: {0} - {1}</sys:String>
@@ -635,7 +635,7 @@
     <sys:String x:Key="Str_Col_SvcPath">Útvonal</sys:String>
     <sys:String x:Key="Str_Col_SvcDescription">Leírás</sys:String>
     <sys:String x:Key="Str_Menu_SvcStart">Indítsa el</sys:String>
-    <sys:String x:Key="Str_Menu_SvcStop">Állj</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStop">Leállítás</sys:String>
     <sys:String x:Key="Str_Dlg_SvcStartMsg">Elkezdi a következőt: {0} ({1})?</sys:String>
     <sys:String x:Key="Str_Dlg_SvcStopMsg">Leállítja a következőt: {0} ({1})? Bármi, ami attól függ, leállhat.</sys:String>
     <sys:String x:Key="Str_Dlg_SvcRestartMsg">Újraindítja a következőt: {0} ({1})? Bármi, ami attól függ, rövid időre elérhetetlen lesz.</sys:String>
@@ -649,7 +649,7 @@
     <sys:String x:Key="Str_Svc_Loading">Szolgáltatáslista betöltése...</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Szolgáltatás részletei</sys:String>
     <sys:String x:Key="Str_TT_SvcPrev">Előző szolgáltatás (balra nyíl)</sys:String>
-    <sys:String x:Key="Str_TT_SvcNext">Következő szerviz (jobbra nyíl)</sys:String>
+    <sys:String x:Key="Str_TT_SvcNext">Következő szolgáltatás (jobbra nyíl)</sys:String>
     <sys:String x:Key="Str_TT_SvcCopyDetails">Részletek másolása (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_SvcClose">Bezárás (Esc)</sys:String>
 
@@ -715,7 +715,7 @@
     <sys:String x:Key="Str_Perf_SharedMemory">Megosztott GPU memória</sys:String>
     <sys:String x:Key="Str_Perf_InUse">Használatban</sys:String>
     <sys:String x:Key="Str_Perf_Available">Elérhető</sys:String>
-    <sys:String x:Key="Str_Perf_Committed">Elkötelezett</sys:String>
+    <sys:String x:Key="Str_Perf_Committed">Véglegesített</sys:String>
     <sys:String x:Key="Str_Perf_Cores">Magok</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Logikai processzorok</sys:String>
     <sys:String x:Key="Str_Perf_BaseSpeed">Alapsebesség</sys:String>
@@ -810,7 +810,7 @@
     <sys:String x:Key="Str_Ks_StorageCancel">a futó vizsgálat leállítása (Tároláselemző)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">A rendezési irány megfordítása (Alt+Shift+S)</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Vizsgálat</sys:String>
-    <sys:String x:Key="Str_Storage_Stop">Állj</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">Leállítás</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Válasszon egy mappát vagy meghajtót a vizsgálathoz</sys:String>
     <sys:String x:Key="Str_Storage_Prompt">Válasszon ki egy mappát vagy meghajtót, majd a Beolvasást</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">Ez a mappa nem létezik</sys:String>
@@ -843,7 +843,7 @@
     <sys:String x:Key="Str_Status_ArchiveAdded">{0} hozzáadva az archívumhoz</sys:String>
     <sys:String x:Key="Str_Status_ArchiveDeleted">{0} eltávolítva az archívumból</sys:String>
     <sys:String x:Key="Str_Status_ArchiveRenamed">Átnevezve erre: {0}</sys:String>
-    <sys:String x:Key="Str_Status_ArchiveSomeRejected">A(z) {0} hozzáadva - {1} nem kapott hivatalos nevet, ezért kimaradt</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">A(z) {0} hozzáadva - {1} nem kapott érvényes nevet, ezért kimaradt</sys:String>
     <sys:String x:Key="Str_Status_ArchiveWriteFailed">Nem sikerült frissíteni az archívumot - {0}. Az eredeti változatlan.</sys:String>
     <sys:String x:Key="Str_Status_ArchiveCompressed">Létrehozva: {0}</sys:String>
     <sys:String x:Key="Str_Status_ArchiveExtracted">Kibontva ide: {0}</sys:String>
@@ -864,7 +864,7 @@
     <sys:String x:Key="Str_Chk_ArchiveReplace">Cserélje ki őket ahelyett, hogy mindkettőt megtartaná</sys:String>
     <sys:String x:Key="Str_Btn_ArchiveAdd">Hozzáadás</sys:String>
 
-    <sys:String x:Key="Str_Storage_Free">ingyenes</sys:String>
+    <sys:String x:Key="Str_Storage_Free">szabad</sys:String>
 
     <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Tools/RegistryEditorControl.cs) -->
     <sys:String x:Key="Str_TT_RegistryEditor">Rendszerleíróadatbázis-szerkesztő (Ctrl+F11)</sys:String>
@@ -894,7 +894,7 @@
     <sys:String x:Key="Str_RegEd_PathCopied">Útvonal másolva</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Nem sikerült a vágólapra másolni - {0}</sys:String>
     <sys:String x:Key="Str_Col_RegName">Név</sys:String>
-    <sys:String x:Key="Str_Col_RegType">Írja be</sys:String>
+    <sys:String x:Key="Str_Col_RegType">Típus</sys:String>
     <sys:String x:Key="Str_Col_RegData">Adatok</sys:String>
     <sys:String x:Key="Str_Menu_RegNew">Új</sys:String>
     <sys:String x:Key="Str_Menu_RegNewKey">Kulcs</sys:String>
@@ -925,7 +925,7 @@
     <sys:String x:Key="Str_RegEd_Hexadecimal">Hexadecimális</sys:String>
     <sys:String x:Key="Str_RegEd_Decimal">Tizedes</sys:String>
     <sys:String x:Key="Str_RegEd_InvalidNumber">Ez nem érvényes szám a kiválasztott bázishoz</sys:String>
-    <sys:String x:Key="Str_RegEd_OutOfRangeDword">Ez az érték túl nagy egy 32 bites duplaszóhoz</sys:String>
+    <sys:String x:Key="Str_RegEd_OutOfRangeDword">Ez az érték túl nagy egy 32 bites DWORD-hoz</sys:String>
     <sys:String x:Key="Str_RegEd_InvalidByte">A „{0}” nem érvényes hexadecimális bájt</sys:String>
 
     <!-- Event details dialog (Controls/EventDetailsDialog.xaml) - double-click a row -->
@@ -939,7 +939,7 @@
     <sys:String x:Key="Str_Evt_RecordId">Eseményrekord azonosítója</sys:String>
     <sys:String x:Key="Str_Evt_Opcode">Műveletkód</sys:String>
     <sys:String x:Key="Str_Evt_ViewXml">Nyers XML megtekintése</sys:String>
-    <sys:String x:Key="Str_Evt_ViewFormatted">Megtekintés formázott</sys:String>
+    <sys:String x:Key="Str_Evt_ViewFormatted">Formázott megtekintés</sys:String>
     <sys:String x:Key="Str_Evt_SearchOnline">Keresse az eseményt online</sys:String>
     <sys:String x:Key="Str_Btn_Close">Bezárás</sys:String>
     <sys:String x:Key="Str_TT_EvtPrev">Előző esemény (balra nyíl)</sys:String>

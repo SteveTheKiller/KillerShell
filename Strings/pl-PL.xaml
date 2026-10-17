@@ -185,7 +185,7 @@
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} nie jest istniejącym folderem</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} nie jest istniejącą lokalizacją</sys:String>
     <sys:String x:Key="Str_Portable">PRZENOŚNY</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallMsg">Zainstalować KillerShell w Twoim profilu użytkownika?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">Zainstalować KillerShell na tym komputerze?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">Aplikacja przenośna zostanie skopiowana do folderu Programs. Zostaną dodane skrót w menu Start i pozycja w Dodaj/usuń programy. Ten przenośny plik możesz potem zachować lub usunąć.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">Zaktualizować istniejącą instalację KillerShell?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">Zainstalowana kopia dla Twojego konta zostanie zastąpiona. Ustawienia i zapisana sesja zostaną zachowane. Ten plik przenośny możesz później zachować lub usunąć.</sys:String>
@@ -773,8 +773,8 @@
   <sys:String x:Key="Str_Menu_RegNew">Nowy</sys:String>
   <sys:String x:Key="Str_Menu_RegNewKey">Klucz</sys:String>
   <sys:String x:Key="Str_Menu_RegNewString">Wartość ciągu</sys:String>
-  <sys:String x:Key="Str_Menu_RegNewExpandString">Wartość ciągu rozwijalnego</sys:String>
-  <sys:String x:Key="Str_Menu_RegNewMultiString">Wartość wielociągu</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewExpandString">Wartość ciągu rozszerzalnego</sys:String>
+  <sys:String x:Key="Str_Menu_RegNewMultiString">Wartość wielociągowa</sys:String>
   <sys:String x:Key="Str_Menu_RegNewBinary">Wartość binarna</sys:String>
   <sys:String x:Key="Str_Menu_RegNewDWord">Wartość DWORD</sys:String>
   <sys:String x:Key="Str_Menu_RegNewQWord">Wartość QWORD</sys:String>

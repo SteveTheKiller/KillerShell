@@ -55,7 +55,7 @@
 
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">yeni arama</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Yeni sekme</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Yeni sekme  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Sekmeyi kapat  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
@@ -90,7 +90,7 @@
     <sys:String x:Key="Str_Btn_Install">KillerShell'i yükle</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Yükle</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">Güncelle</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell kullanıcı profilinize yüklensin mi?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">KillerShell bu bilgisayara yüklensin mi?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">Taşınabilir uygulama Programs klasörünüze kopyalanır. Başlat menüsüne bir kısayol ve Program Ekle/Kaldır listesine bir giriş eklenir. Bu taşınabilir dosyayı daha sonra saklayabilir veya silebilirsiniz.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">Mevcut KillerShell yüklemeniz güncellensin mi?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">Hesabınız için yüklenmiş kopya değiştirilir. Ayarlarınız ve kaydedilmiş oturumunuz korunur. Daha sonra bu taşınabilir dosyayı saklayabilir veya silebilirsiniz.</sys:String>
@@ -164,7 +164,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">KillerShell Hakkında</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Metin boyutu: %{0}</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Bir bilgisayarı ve dosyalarını yönetmek için tek bir taşınabilir uygulama. Dosya tarayıcısı, terminal, metin düzenleyici ve yönetim araçları tek pencereyi ve tek tuş takımını paylaşır. Kurulum isteğe bağlı, çalışma zamanı yok, hesap yok. Bir </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Bir bilgisayarı ve dosyalarını yönetmek için tek bir taşınabilir uygulama. Dosya tarayıcısı, terminal, metin düzenleyici, depolama çözümleyicisi ve yönetim araçları tek bir pencereyi paylaşır. Bir </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> aracı.</sys:String>
     <sys:String x:Key="Str_About_Version">SÜRÜM</sys:String>
     <sys:String x:Key="Str_About_Publisher">YAYINCI</sys:String>
@@ -303,7 +303,7 @@
     <sys:String x:Key="Str_TT_TreePanel">Klasör ağacını göster veya gizle</sys:String>
     <sys:String x:Key="Str_TT_CollapseSidebar">Yan panelleri daralt  (Ctrl+Shift+B)</sys:String>
     <sys:String x:Key="Str_TT_Bookmarks">Kayıtlı konumlar  (Ctrl+B)</sys:String>
-    <sys:String x:Key="Str_TT_Favorite">Bu klasörü kaydet  (Ctrl+D)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">Bu klasörü favorilere ekle  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Gizli ve sistem öğelerini göster  (Ctrl+H)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Klasörleri dosyaların üstünde tut  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Favorilere ekle</sys:String>

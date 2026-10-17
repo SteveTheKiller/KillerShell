@@ -262,7 +262,7 @@
          GPLv3 and the product name stay out of the translatable text (family standard). -->
     <sys:String x:Key="Str_About_Title">Om KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Tekststørrelse: {0} %</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Én portabel app for å administrere en datamaskin og filene på den. Filleser, terminal, tekstredigering, lagringsanalyse og administratorverktøy deler ett vindu. Et </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Én portabel app for å administrere en datamaskin og filene på den. Filutforsker, terminal, tekstredigering, lagringsanalyse og administratorverktøy deler ett vindu. Et </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> verktøy.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSJON</sys:String>
     <sys:String x:Key="Str_About_Publisher">UTGIVER</sys:String>
@@ -323,7 +323,7 @@
     <sys:String x:Key="Str_Ks_Pipe">søk i disse resultatene, i en ny fane</sys:String>
     <sys:String x:Key="Str_Ks_SearchPanel">vis eller skjul søkepanelet</sys:String>
     <sys:String x:Key="Str_Ks_ExpandAll">utvid alle resultater</sys:String>
-    <sys:String x:Key="Str_Ks_CollapseAll">slå sammen alle resultater</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">fold sammen alle resultater</sys:String>
     <sys:String x:Key="Str_Ks_Shell">åpne en terminal med standardprofilen</sys:String>
     <sys:String x:Key="Str_Ks_ShellCmd">åpne en CMD-fane i denne mappen</sys:String>
     <sys:String x:Key="Str_Ks_ShellAdmin">åpne PowerShell som administrator</sys:String>

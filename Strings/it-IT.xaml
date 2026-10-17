@@ -254,7 +254,7 @@
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSIONE</sys:String>
     <sys:String x:Key="Str_About_Publisher">EDITORE</sys:String>
-    <sys:String x:Key="Str_About_Thumbprint">IDENTIFICAZIONE</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">IMPRONTA CERTIFICATO</sys:String>
     <sys:String x:Key="Str_About_Sha">SHA-256 DELL'EXE</sys:String>
     <sys:String x:Key="Str_About_ConfirmFolderDelete">Chiedi prima di inviare una cartella al Cestino</sys:String>
     <sys:String x:Key="Str_About_ClearData">Cancella tutti i dati</sys:String>

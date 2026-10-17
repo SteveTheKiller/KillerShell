@@ -280,7 +280,7 @@
     <!-- Term/group chips + tooltips -->
     <sys:String x:Key="Str_Mode_Name">атауы</sys:String>
     <sys:String x:Key="Str_Mode_Content">мазмұны</sys:String>
-    <sys:String x:Key="Str_TT_ModeName">Файл атауы / қалқа  (мысалы, *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">Файл атауы / орынбасар таңба  (мысалы, *.log)</sys:String>
     <sys:String x:Key="Str_TT_ModeContent">Мазмұн бойынша іздеу  (файлдардың ішіндегі мәтін)</sys:String>
     <sys:String x:Key="Str_Group_Any">КЕЗ КЕЛГЕН</sys:String>
     <sys:String x:Key="Str_Group_All">БАРЛЫҒЫ</sys:String>
@@ -449,7 +449,7 @@
 
     <!-- New blank document -->
     <sys:String x:Key="Str_TT_TabOverflow">Барлық қойындылар</sys:String>
-    <sys:String x:Key="Str_TT_ColResize">Енін өзгерту үшін сүйреңіз  -  қос басу ысырады</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">Енін өзгерту үшін сүйреңіз  -  қалпына келтіру үшін қос басыңыз</sys:String>
     <sys:String x:Key="Str_TT_NewDoc">Жаңа құжат  (F7)  |  сақтау қабылданбаса, Ctrl+F7 әкімші атынан қайталайды</sys:String>
     <sys:String x:Key="Str_TT_NewDocAdmin">Жаңа құжат, әкімші атынан сақтауды қайталау  (Ctrl+F7)</sys:String>
     <sys:String x:Key="Str_Ed_Untitled">атаусыз</sys:String>

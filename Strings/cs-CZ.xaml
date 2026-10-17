@@ -77,7 +77,7 @@
     <!-- Tabs -->
     <sys:String x:Key="Str_Tab_New">nové hledání</sys:String>
     <sys:String x:Key="Str_Tab_Dropped">přetaženo ({0})</sys:String>
-    <sys:String x:Key="Str_TT_NewTab">Nová karta</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">Nová karta  (Ctrl+T)</sys:String>
     <sys:String x:Key="Str_TT_CloseTab">Zavřít kartu  (Ctrl+W)</sys:String>
 
     <!-- Folder picker -->
@@ -112,7 +112,7 @@
     <sys:String x:Key="Str_Btn_Install">Nainstalovat KillerShell</sys:String>
     <sys:String x:Key="Str_Btn_DoInstall">Nainstalovat</sys:String>
     <sys:String x:Key="Str_Btn_DoUpdate">Aktualizovat</sys:String>
-    <sys:String x:Key="Str_Dlg_InstallMsg">Nainstalovat KillerShell do vašeho uživatelského profilu?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">Nainstalovat KillerShell do tohoto počítače?</sys:String>
     <sys:String x:Key="Str_Dlg_InstallBullets">Přenosná aplikace se zkopíruje do vaší složky Programs. Přidá se zástupce v nabídce Start a položka v seznamu Přidat nebo odebrat programy. Tento přenosný soubor si pak můžete ponechat nebo smazat.</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserMsg">Aktualizovat stávající instalaci KillerShell?</sys:String>
     <sys:String x:Key="Str_Dlg_UpdateUserBullets">Tím se nahradí nainstalovaná kopie pro váš účet. Nastavení a uložená relace zůstanou zachovány. Tento přenosný soubor pak můžete ponechat nebo odstranit.</sys:String>
@@ -211,7 +211,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">O aplikaci KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Velikost textu: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Jedna přenosná aplikace pro správu počítače a jeho souborů. Správce souborů, terminál, textový editor a nástroje pro správu sdílejí jedno okno a jednu sadu kláves. Instalace volitelná, žádné běhové prostředí, žádný účet. Nástroj </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Jedna přenosná aplikace pro správu počítače a jeho souborů. Správce souborů, terminál, textový editor, analyzátor úložiště a nástroje pro správu sdílejí jedno okno. Nástroj </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERZE</sys:String>
     <sys:String x:Key="Str_About_Publisher">VYDAVATEL</sys:String>
@@ -347,7 +347,7 @@
     <sys:String x:Key="Str_Ks_About">zobrazit kartu O aplikaci</sys:String>
     <sys:String x:Key="Str_Ks_CatSearch">HLEDÁNÍ</sys:String>
     <sys:String x:Key="Str_Ks_CatNav">NAVIGACE</sys:String>
-    <sys:String x:Key="Str_Ks_CatTabs">PANELY</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">KARTY</sys:String>
     <sys:String x:Key="Str_Ks_CatView">ZOBRAZENÍ</sys:String>
     <sys:String x:Key="Str_Ks_CatFile">SOUBOR</sys:String>
     <sys:String x:Key="Str_Ks_CatEdit">ÚPRAVY</sys:String>
@@ -617,7 +617,7 @@
     <sys:String x:Key="Str_Menu_RegNewDWord">Hodnota DWORD</sys:String>
     <sys:String x:Key="Str_Menu_RegNewExpandString">Rozšiřitelný řetězec</sys:String>
     <sys:String x:Key="Str_Menu_RegNewKey">Klíč</sys:String>
-    <sys:String x:Key="Str_Menu_RegNewMultiString">Vícořádkový řetězec</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewMultiString">Hodnota s více řetězci</sys:String>
     <sys:String x:Key="Str_Menu_RegNewQWord">Hodnota QWORD</sys:String>
     <sys:String x:Key="Str_Menu_RegNewString">Řetězec</sys:String>
     <sys:String x:Key="Str_Menu_RegRename">Přejmenovat</sys:String>
@@ -626,7 +626,7 @@
     <sys:String x:Key="Str_Perf_ActiveTime">Doba aktivity</sys:String>
     <sys:String x:Key="Str_Perf_Available">K dispozici</sys:String>
     <sys:String x:Key="Str_Perf_BaseSpeed">Základní rychlost</sys:String>
-    <sys:String x:Key="Str_Perf_Committed">Vyhrazeno</sys:String>
+    <sys:String x:Key="Str_Perf_Committed">Potvrzeno</sys:String>
     <sys:String x:Key="Str_Perf_Cores">Jádra</sys:String>
     <sys:String x:Key="Str_Perf_CountersUnavailable">Čítače výkonu nejsou k dispozici - {0}</sys:String>
     <sys:String x:Key="Str_Perf_Cpu">CPU</sys:String>
