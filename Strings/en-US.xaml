@@ -809,6 +809,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">reload the selected key from disk</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">stop a running scan (Storage Analyzer)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Reverse the sort order  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Ascending</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Descending</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Scan</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Stop</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Choose a folder or drive to scan</sys:String>

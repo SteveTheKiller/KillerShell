@@ -882,6 +882,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">den ausgewählten Schlüssel von der Festplatte neu laden</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">laufenden Scan stoppen (Speicheranalyse)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Sortierreihenfolge umkehren  (Alt+Umschalt+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Aufsteigend</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Absteigend</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Scannen</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Stopp</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Ordner oder Laufwerk zum Scannen auswählen</sys:String>

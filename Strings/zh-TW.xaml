@@ -879,6 +879,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">從磁碟重新載入所選的機碼</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">停止進行中的掃描（儲存空間分析器）</sys:String>
     <sys:String x:Key="Str_TT_SortDir">反轉排序順序  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">遞增</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">遞減</sys:String>
     <sys:String x:Key="Str_Storage_Scan">掃描</sys:String>
     <sys:String x:Key="Str_Storage_Stop">停止</sys:String>
     <sys:String x:Key="Str_Storage_Browse">選擇要掃描的資料夾或磁碟機</sys:String>

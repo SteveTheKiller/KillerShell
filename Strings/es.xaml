@@ -882,6 +882,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">recargar la clave seleccionada desde el disco</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">detener el análisis en curso (Analizador de almacenamiento)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Invertir el orden  (Alt+Mayús+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Ascendente</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Descendente</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Analizar</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Detener</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Elige una carpeta o unidad para analizar</sys:String>

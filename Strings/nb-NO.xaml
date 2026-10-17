@@ -809,6 +809,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">last inn valgt nøkkel på nytt fra disk</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">stopp skanningen som kjører (Lagringsanalyse)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Snu sorteringsrekkefølgen  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Stigende</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Synkende</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Skann</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Stopp</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Velg en mappe eller stasjon å skanne</sys:String>

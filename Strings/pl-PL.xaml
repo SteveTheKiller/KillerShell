@@ -690,6 +690,8 @@
   <sys:String x:Key="Str_Ks_RegRefresh">załaduj ponownie wybrany klucz z dysku</sys:String>
   <sys:String x:Key="Str_Ks_StorageCancel">zatrzymaj trwające skanowanie (Analizator miejsca)</sys:String>
   <sys:String x:Key="Str_TT_SortDir">Odwróć kolejność sortowania  (Alt+Shift+S)</sys:String>
+  <sys:String x:Key="Str_A11y_SortAsc">Rosnąco</sys:String>
+  <sys:String x:Key="Str_A11y_SortDesc">Malejąco</sys:String>
   <sys:String x:Key="Str_Storage_Scan">Skanuj</sys:String>
   <sys:String x:Key="Str_Storage_Stop">Zatrzymaj</sys:String>
   <sys:String x:Key="Str_Storage_Browse">Wybierz folder lub dysk do przeskanowania</sys:String>

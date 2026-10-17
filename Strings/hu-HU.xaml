@@ -809,6 +809,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">a kiválasztott kulcs újratöltése a lemezről</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">a futó vizsgálat leállítása (Tároláselemző)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">A rendezési irány megfordítása (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Növekvő</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Csökkenő</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Vizsgálat</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Leállítás</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Válasszon egy mappát vagy meghajtót a vizsgálathoz</sys:String>

@@ -777,6 +777,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">таңдалған бөлімді дискіден қайта оқу</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">жүріп жатқан қарауды тоқтату (Жинақтауыш талдағышы)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Сұрыптау ретін кері ауыстыру  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Өсу ретімен</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Кему ретімен</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Қарау</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Тоқтату</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Қарайтын қалтаны немесе дискіні таңдаңыз</sys:String>

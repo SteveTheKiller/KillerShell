@@ -878,6 +878,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">選択したキーをディスクから再読み込み</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">実行中のスキャンを停止（ストレージ分析）</sys:String>
     <sys:String x:Key="Str_TT_SortDir">並べ替えの順序を逆にする  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">昇順</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">降順</sys:String>
     <sys:String x:Key="Str_Storage_Scan">スキャン</sys:String>
     <sys:String x:Key="Str_Storage_Stop">停止</sys:String>
     <sys:String x:Key="Str_Storage_Browse">スキャンするフォルダーまたはドライブを選択</sys:String>

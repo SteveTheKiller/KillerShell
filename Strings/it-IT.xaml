@@ -774,6 +774,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">ricaricare la chiave selezionata dal disco</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">fermare la scansione in corso (Analizzatore di spazio)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Invertire l'ordinamento  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Crescente</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Decrescente</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Scansiona</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Ferma</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Scegli una cartella o un'unità da scansionare</sys:String>

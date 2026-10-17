@@ -145,6 +145,9 @@ namespace KillerShell.Shell
             if (t == _active)
             {
                 Pane.SortDirButton.Content = ((char)(t.SortAsc ? 0xE70E : 0xE70D)).ToString();
+                // The glyph alone does not tell a screen reader which way the list runs.
+                Pane.SortDirButton.SetResourceReference(System.Windows.Automation.AutomationProperties.ItemStatusProperty,
+                    t.SortAsc ? "Str_A11y_SortAsc" : "Str_A11y_SortDesc");
                 UpdateColumnArrows();   // ResultsView.cs
             }
 

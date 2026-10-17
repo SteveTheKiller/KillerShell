@@ -880,6 +880,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">znovu načíst vybraný klíč z disku</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">zastavit probíhající analýzu (Analýza úložiště)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Obrátit pořadí řazení  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Vzestupně</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Sestupně</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Analyzovat</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Zastavit</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Vyberte složku nebo jednotku k analýze</sys:String>

@@ -879,6 +879,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">নির্বাচিত কী ডিস্ক থেকে আবার লোড করুন</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">চলমান স্ক্যান থামান (স্টোরেজ বিশ্লেষক)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">সাজানোর ক্রম উল্টে দিন  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">ঊর্ধ্বক্রম</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">অধঃক্রম</sys:String>
     <sys:String x:Key="Str_Storage_Scan">স্ক্যান</sys:String>
     <sys:String x:Key="Str_Storage_Stop">থামান</sys:String>
     <sys:String x:Key="Str_Storage_Browse">স্ক্যানের জন্য ফোল্ডার বা ড্রাইভ বেছে নিন</sys:String>

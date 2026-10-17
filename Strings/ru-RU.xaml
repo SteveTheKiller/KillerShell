@@ -777,6 +777,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">перечитать выбранный раздел с диска</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">остановить идущее сканирование (Анализатор хранилища)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Обратить порядок сортировки  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">По возрастанию</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">По убыванию</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Сканировать</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Остановить</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Выберите папку или диск для сканирования</sys:String>

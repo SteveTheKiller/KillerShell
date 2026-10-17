@@ -771,6 +771,8 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Ks_RegRefresh">tải lại khóa đã chọn từ đĩa</sys:String>
   <sys:String x:Key="Str_Ks_StorageCancel">dừng lần quét đang chạy (Trình phân tích lưu trữ)</sys:String>
   <sys:String x:Key="Str_TT_SortDir">Đảo ngược thứ tự sắp xếp  (Alt+Shift+S)</sys:String>
+  <sys:String x:Key="Str_A11y_SortAsc">Tăng dần</sys:String>
+  <sys:String x:Key="Str_A11y_SortDesc">Giảm dần</sys:String>
   <sys:String x:Key="Str_Storage_Scan">Quét</sys:String>
   <sys:String x:Key="Str_Storage_Stop">Dừng</sys:String>
   <sys:String x:Key="Str_Storage_Browse">Chọn thư mục hoặc ổ đĩa để quét</sys:String>

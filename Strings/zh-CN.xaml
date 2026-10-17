@@ -879,6 +879,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">从磁盘重新加载所选的项</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">停止正在进行的扫描（存储分析器）</sys:String>
     <sys:String x:Key="Str_TT_SortDir">反转排序顺序  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">升序</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">降序</sys:String>
     <sys:String x:Key="Str_Storage_Scan">扫描</sys:String>
     <sys:String x:Key="Str_Storage_Stop">停止</sys:String>
     <sys:String x:Key="Str_Storage_Browse">选择要扫描的文件夹或驱动器</sys:String>

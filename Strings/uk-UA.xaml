@@ -809,6 +809,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">перезавантажити вибраний розділ з диска</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">зупинити поточне сканування (Аналізатор сховища)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Обернути порядок сортування  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">За зростанням</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">За спаданням</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Сканувати</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Зупинити</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Виберіть папку або диск для сканування</sys:String>

@@ -882,6 +882,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">seçili anahtarı diskten yeniden yükle</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">süren taramayı durdur (Depolama Çözümleyicisi)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Sıralama yönünü tersine çevir  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Artan</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Azalan</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Tara</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Durdur</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Taranacak klasör veya sürücüyü seçin</sys:String>

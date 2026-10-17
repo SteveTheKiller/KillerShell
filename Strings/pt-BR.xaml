@@ -809,6 +809,8 @@
     <sys:String x:Key="Str_Ks_RegRefresh">recarregar a chave selecionada do disco</sys:String>
     <sys:String x:Key="Str_Ks_StorageCancel">parar a verificação em andamento (Analisador de Armazenamento)</sys:String>
     <sys:String x:Key="Str_TT_SortDir">Inverter a ordem  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">Crescente</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">Decrescente</sys:String>
     <sys:String x:Key="Str_Storage_Scan">Verificar</sys:String>
     <sys:String x:Key="Str_Storage_Stop">Parar</sys:String>
     <sys:String x:Key="Str_Storage_Browse">Escolha uma pasta ou unidade para verificar</sys:String>
