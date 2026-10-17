@@ -91,6 +91,7 @@ namespace KillerShell
             KillerFamily.Theming.AccentShadow.Initialize();
             if (e.Args.Length > 0 && string.Equals(e.Args[0], "--cli", StringComparison.OrdinalIgnoreCase))
             {
+                Services.CliConsole.AttachToParent();
                 using var output = new StreamWriter(Console.OpenStandardOutput(), new System.Text.UTF8Encoding(false)) { AutoFlush = true };
                 using var error = new StreamWriter(Console.OpenStandardError(), new System.Text.UTF8Encoding(false)) { AutoFlush = true };
                 Console.SetOut(output);
@@ -407,6 +408,7 @@ namespace KillerShell
             UnregisterAssociations(machine: true);
             try { if (Directory.Exists(common)) Directory.Delete(common, true); } catch { }
             try { if (Directory.Exists(MachineInstallDir)) Directory.Delete(MachineInstallDir, true); } catch { }
+            Services.CommandLinePath.Unregister(MachineInstallDir, machine: true);
         }
 
         /// <summary>Installs KillerShell, then relaunches from the installed location.
@@ -471,6 +473,7 @@ namespace KillerShell
             try { if (Directory.Exists(StartMenuDir)) Directory.Delete(StartMenuDir, true); } catch { }
             try { if (File.Exists(DesktopLnk)) File.Delete(DesktopLnk); } catch { }
             try { if (Directory.Exists(InstallDir)) Directory.Delete(InstallDir, true); } catch { }
+            Services.CommandLinePath.Unregister(InstallDir, machine: false);
             try
             {
                 using var key = Registry.CurrentUser.OpenSubKey(RegKey, writable: true);
@@ -528,6 +531,7 @@ namespace KillerShell
                 Directory.CreateDirectory(installDir);
                 string src = Process.GetCurrentProcess().MainModule!.FileName;
                 File.Copy(src, installExe, overwrite: true);
+                Services.CommandLinePath.Register(installDir, machine: true);
 
                 Directory.CreateDirectory(startMenuDir);
                 CreateShortcut(startMenuLnk, installExe);
@@ -596,6 +600,7 @@ namespace KillerShell
             Directory.CreateDirectory(InstallDir);
             string src = Process.GetCurrentProcess().MainModule!.FileName;
             File.Copy(src, InstallExe, overwrite: true);
+            Services.CommandLinePath.Register(InstallDir, machine: false);
 
             Directory.CreateDirectory(StartMenuDir);
             CreateShortcut(StartMenuLnk, InstallExe);
@@ -715,6 +720,7 @@ namespace KillerShell
             // Interactive all-users installs create this shortcut only for the account that
             // requested it, so that same account's uninstall should remove it as well.
             try { File.Delete(DesktopLnk); } catch { }
+            Services.CommandLinePath.Unregister(targetDir, machine);
 
             // Associations first, while the keys they hang off still exist. Both scopes are
             // attempted: the HKLM half is a no-op unless this uninstall was launched elevated
