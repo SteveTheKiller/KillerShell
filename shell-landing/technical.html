@@ -294,17 +294,17 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="cli">
 <h2 data-i18n="t_cli_h">CLI</h2>
-<p data-i18n="t_cli_p">The read-only CLI returns JSON for files, search, processes, services, events, registry, drives and SHA-256 hashes. Security-log access requires administrator privileges.</p>
-<pre><code>KillerShell.exe --cli list "C:\logs"
-KillerShell.exe --cli info "C:\logs\today.log"
-KillerShell.exe --cli read "C:\logs\today.log" --max-chars 4096
-KillerShell.exe --cli search "C:\logs" --content "error"
-KillerShell.exe --cli processes
-KillerShell.exe --cli services
-KillerShell.exe --cli events System
-KillerShell.exe --cli registry "HKLM\SOFTWARE"
-KillerShell.exe --cli drives
-KillerShell.exe --cli hash "C:\logs\today.log"</code></pre>
+<p data-i18n="t_cli_p">The read-only CLI returns JSON for files, search, processes, services, events, registry, drives and SHA-256 hashes. Security-log access requires administrator privileges. An installed copy is on PATH, so it can be run from any new terminal. A portable copy is not, so run it by its file name instead.</p>
+<pre><code>killershell --cli list "C:\logs"
+killershell --cli info "C:\logs\today.log"
+killershell --cli read "C:\logs\today.log" --max-chars 4096
+killershell --cli search "C:\logs" --content "error"
+killershell --cli processes
+killershell --cli services
+killershell --cli events System
+killershell --cli registry "HKLM\SOFTWARE"
+killershell --cli drives
+killershell --cli hash "C:\logs\today.log"</code></pre>
 </div>
 
 <div class="tech-sec" id="terminal">
