@@ -27,6 +27,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On the website's Light theme with the Yellow or Orange accent, links, headings and labels keep their color with a thin gray outline instead of turning olive or brown.
 - The exe's file properties show Steve the Killer as the copyright holder instead of leaving it blank.
 - Screen readers no longer read toolbar, menu and title bar icons as unreadable symbols, file list items read as their names instead of a type name, the sort direction button says whether the list is ascending or descending, and every part of each scroll bar has a name.
+- Opening the shortcuts, About or another card over the window moves keyboard focus into it, Tab stays inside the card, and closing it returns focus to where it was.
 - The website top bar no longer leaves extra space under the wordmark and buttons.
 - The website's Help and Technical pages match the app on bookmark drops, the bookmark star, the Event Viewer, Storage Analyzer and app size keys, and the CLI commands, in every language.
 - Theme and language radio buttons and the Film Grain checkbox line up with their labels again.

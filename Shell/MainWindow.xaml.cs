@@ -29,6 +29,8 @@ namespace KillerShell.Shell
         public MainWindow()
         {
             InitializeComponent();
+            new KillerFamily.Accessibility.OverlayFocus(this)
+                .Track(ShortcutsOverlay, AboutOverlay, FontsOverlay, AssocOverlay, PatternHelpOverlay);
             _about = new Features.About.AboutController(this);   // Features/About
 
             // KillerUI / Grunge shell wiring.
