@@ -636,7 +636,8 @@ namespace KillerShell.Services
                 gradient.Freeze();
                 return gradient;
             }
-            combined["PrimaryFillBrush"] = ButtonFill(combined["PrimaryBrush"]);
+            // A palette can fill buttons with a deeper shade than its accent text (PrimaryFillBaseBrush).
+            combined["PrimaryFillBrush"] = ButtonFill(combined.Contains("PrimaryFillBaseBrush") ? combined["PrimaryFillBaseBrush"] : combined["PrimaryBrush"]);
             combined["OutlineHoverBrush"] = ButtonFill(combined["OutlineHoverBrush"]);
             SetIfAbsent("PaneBevel2DarkThickness", new Thickness(0));
             SetIfAbsent("PaneBevel2LightThickness", new Thickness(0));
@@ -842,6 +843,19 @@ namespace KillerShell.Services
             // Killer Sans. Secondary headings, the footer and the interface stay Killer Sans.
             SetIfAbsent("HeadingFont", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fh && fh
                 ? new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans") : LacquerHeadingStack);
+            // The titlebar text beside the wordmark (the elevated caption) sits on the wordmark
+            // baseline in Killer Sans, as KillerPDF's filename and KillerScan's subtitle do. A flat
+            // theme keeps its caption font beside its plain title.
+            bool flatTitle = combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool ft && ft;
+            SetIfAbsent("FileNameFont", flatTitle ? combined["ChromeFontFamily"]
+                : new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans"));
+            SetIfAbsent("FileNameFontSize", flatTitle ? 11.0 : 18.0);
+            if (!combined.Contains("FileNameTransform"))
+            {
+                var fileNameShift = new TranslateTransform(0, flatTitle ? 0 : 3);
+                fileNameShift.Freeze();
+                combined["FileNameTransform"] = fileNameShift;
+            }
             // The app (mono) slot: Killer Sans UI, the family UI face, over the Segoe stack. It is
             // completed here rather than in AppStyles.xaml so 98SE can state its own face; a font
             // picked in Fonts still overrides it from the top-level application dictionary.

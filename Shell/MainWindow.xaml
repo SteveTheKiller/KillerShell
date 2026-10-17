@@ -161,9 +161,11 @@
 
                 <!-- Elevated only (Elevation.cs). OUTSIDE LogoBar on purpose: the wordmark is
                      the scroll-to-zoom target, and widening its hit area with a caption would
-                     mean rolling the wheel next to the logo silently resized the app. -->
+                     mean rolling the wheel next to the logo silently resized the app.
+                     On the wordmark baseline in Killer Sans, like KillerPDF's titlebar filename. -->
                 <TextBlock x:Name="ElevatedTag" Visibility="Collapsed" VerticalAlignment="Center"
-                           Margin="9,3,0,0" FontFamily="{DynamicResource MonoFont}" FontSize="11.5"
+                           Margin="16,0,0,0" FontFamily="{DynamicResource FileNameFont}" FontSize="{DynamicResource FileNameFontSize}"
+                           RenderTransform="{DynamicResource FileNameTransform}" TextOptions.TextFormattingMode="Ideal"
                            Text="{DynamicResource Str_Title_Elevated}"/>
             </StackPanel>
 
