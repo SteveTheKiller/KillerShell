@@ -22,9 +22,9 @@
 
     <!-- Resting accent edge: the accent at 40%, for a lip that reads as accent-colored
          without claiming to be the live thing. The active tab of the UNFOCUSED pane. -->
-    <SolidColorBrush x:Key="TabEdgeBrush"          Color="#66b8aa7c" po:Freeze="True"/>
-    <SolidColorBrush x:Key="ScrollThumbBrush"      Color="#55b8aa7c" po:Freeze="True"/>
-    <SolidColorBrush x:Key="ScrollThumbHoverBrush" Color="#b8aa7c" po:Freeze="True"/>
+    <SolidColorBrush x:Key="TabEdgeBrush"          Color="#66d1c8aa" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ScrollThumbBrush"      Color="#55d1c8aa" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ScrollThumbHoverBrush" Color="#d1c8aa" po:Freeze="True"/>
 
     <!-- Traffic light. Three FIXED colors on purpose: the status dot sits in the footer
          permanently, and using the accent made "all fine" mean whatever accent was picked. -->
@@ -58,7 +58,7 @@
     <SolidColorBrush x:Key="KsCatTabs"      Color="#ffd319" po:Freeze="True"/>
     <SolidColorBrush x:Key="KsCatHelp"      Color="#39ff14" po:Freeze="True"/>
 
-    <SolidColorBrush x:Key="PrimaryBrush" Color="#b8aa7c" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="PrimaryBrush" Color="#d1c8aa" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
     <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#c2b280" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
@@ -68,7 +68,7 @@
 
     <SolidColorBrush x:Key="OnPrimaryBrush" Color="#202321" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
-    <SolidColorBrush x:Key="OutlineBtnBrush" Color="#b8aa7c" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="OutlineBtnBrush" Color="#d1c8aa" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
     <SolidColorBrush x:Key="InputHoverBrush" Color="#c2b280" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
@@ -92,7 +92,7 @@
 
     <SolidColorBrush x:Key="ChromeTextBrush" Color="#f2f4f3" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
-    <SolidColorBrush x:Key="DimTextBrush" Color="#b5ad9e" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="DimTextBrush" Color="#cdc7bd" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
     <SolidColorBrush x:Key="RowHoverBrush" Color="#5f6258" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
@@ -129,12 +129,12 @@
     <SolidColorBrush x:Key="AccentLogo" Color="#FFB8AA7C" po:Freeze="True"/>
     <sys:Double x:Key="FlyoutShadowOpacity" xmlns:sys="clr-namespace:System;assembly=mscorlib">0.55</sys:Double>
     <LinearGradientBrush x:Key="DialogTitleBarBrush" StartPoint="0,0.5" EndPoint="1,0.5" MappingMode="RelativeToBoundingBox" SpreadMethod="Pad" ColorInterpolationMode="SRgbLinearInterpolation" po:Freeze="True"><GradientStop Color="#FF3B3F46" Offset="0"/><GradientStop Color="#FF50564B" Offset="1"/></LinearGradientBrush>
-    <SolidColorBrush x:Key="RadioAccent" Color="#FFB8AA7C" po:Freeze="True"/>
+    <SolidColorBrush x:Key="RadioAccent" Color="#FFD1C8AA" po:Freeze="True"/>
     <sys:Double x:Key="TitleWordmarkSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">15</sys:Double>
     <sys:Double x:Key="BarShadowOpacity" xmlns:sys="clr-namespace:System;assembly=mscorlib">0.38</sys:Double>
     <sys:Double x:Key="TitleWordmarkBoldSize" xmlns:sys="clr-namespace:System;assembly=mscorlib">22.52</sys:Double>
     <sys:Double x:Key="TitleBarHeight" xmlns:sys="clr-namespace:System;assembly=mscorlib">32</sys:Double>
-    <SolidColorBrush x:Key="SelectionAccent" Color="#FFB8AA7C" po:Freeze="True"/>
+    <SolidColorBrush x:Key="SelectionAccent" Color="#FFD1C8AA" po:Freeze="True"/>
     <sys:Double x:Key="PaneShadowOpacity" xmlns:sys="clr-namespace:System;assembly=mscorlib">0.6</sys:Double>
     <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#FF5F6258" po:Freeze="True"/>
     <LinearGradientBrush x:Key="FooterBackgroundBrush" StartPoint="0,0.5" EndPoint="1,0.5" MappingMode="RelativeToBoundingBox" SpreadMethod="Pad" ColorInterpolationMode="SRgbLinearInterpolation" po:Freeze="True"><GradientStop Color="#FF3B3F46" Offset="0"/><GradientStop Color="#FF50564B" Offset="1"/></LinearGradientBrush>
