@@ -13,6 +13,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The Recycle Bin is one of the saved places. Clicking it opens it, and files dropped on it are recycled (Shift deletes them for good).
 - The website's top bar has a Microsoft Store button on every page, and the MCP page has a Microsoft Store button for KillerMCP.
 - Added the install folder to PATH for installed copies, so `killershell --cli` runs from any new terminal and prints its results there. Uninstalling removes it again.
+- The website's About page lists KillerBench and KillerShot under Also try.
 
 ### Changed
 - Dropping files on a saved place always moves them, across drives too.
