@@ -8,12 +8,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 - Added a right-hand position for the folder tree and its rail, picked from the rail's right-click menu or with Alt+Shift+Left and Alt+Shift+Right. The search panel moves to the left edge, and the arrow of the side the tree is already on opens or closes it.
-- Added Start with Windows to the About card. It starts KillerShell minimized on the taskbar when you sign in, and stays off until you turn it on.
-- Added Close to system tray to the About card. With it on, closing the window keeps KillerShell running in the notification area, where its icon brings the window back or exits; it stays off until you turn it on.
+- Installed copies add their folder to PATH, so commands such as `killershell list` run from any new terminal. `killershell --help` lists commands, and `--cli` stays compatible. Portable copies run from their folder or full path. Uninstalling removes the installed PATH entry.
 - Keyboard shortcuts for the view buttons, icon size, density, sort, folders on top, recents, the side panels, app size, theme, language, film grain, nicknames, compress and extract, and Analyze storage, plus the folder tree's menu, the Event Viewer rows and the Storage Analyzer's menu. Every key is on the F1 card, its menu row, its button's tooltip and the website.
 - The Recycle Bin is one of the saved places. Clicking it opens it, and files dropped on it are recycled (Shift deletes them for good).
+- Added Start with Windows to the About card. It starts KillerShell minimized on the taskbar when you sign in, and stays off until you turn it on.
+- Added Close to system tray to the About card. With it on, closing the window keeps KillerShell running in the notification area, where its icon brings the window back or exits; it stays off until you turn it on.
 - The website's top bar has a Microsoft Store button on every page, and the MCP page has a Microsoft Store button for KillerMCP.
-- Added the install folder to PATH for installed copies, so `killershell --cli` runs from any new terminal and prints its results there. Uninstalling removes it again.
 - The website's About page lists KillerBench and KillerShot under Also try, with larger app icons.
 
 ### Changed

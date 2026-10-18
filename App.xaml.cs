@@ -89,15 +89,16 @@ namespace KillerShell
         {
             KillerFamily.Accessibility.AccessibleControls.Initialize();
             KillerFamily.Theming.AccentShadow.Initialize();
-            if (e.Args.Length > 0 && string.Equals(e.Args[0], "--cli", StringComparison.OrdinalIgnoreCase))
+            var cliArgs = KillerFamily.CommandLine.CommandLineEntry.GetArguments(e.Args,
+                ["search", "list", "info", "read", "processes", "services", "events", "registry", "drives", "hash", "version", "--version"]);
+            if (cliArgs != null)
             {
                 Services.CliConsole.AttachToParent();
                 using var output = new StreamWriter(Console.OpenStandardOutput(), new System.Text.UTF8Encoding(false)) { AutoFlush = true };
                 using var error = new StreamWriter(Console.OpenStandardError(), new System.Text.UTF8Encoding(false)) { AutoFlush = true };
                 Console.SetOut(output);
                 Console.SetError(error);
-                var cliArgs = new string[e.Args.Length - 1];
-                Array.Copy(e.Args, 1, cliArgs, 0, cliArgs.Length);
+                if (cliArgs.Length > 0 && cliArgs[0] == "version") cliArgs[0] = "--version";
                 Shutdown(KillerShell.Cli.Program.Main(cliArgs));
                 return;
             }

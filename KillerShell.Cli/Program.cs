@@ -414,17 +414,17 @@ namespace KillerShell.Cli
 
         private static void PrintUsage()
         {
-            Console.WriteLine("KillerShell.Cli search <folder> --name <pattern> [--content <text>] [--limit 1..500]");
-            Console.WriteLine("KillerShell.Cli search <folder> --content <text> [--limit 1..500]");
-            Console.WriteLine("KillerShell.Cli list <folder> [--limit 1..500]");
-            Console.WriteLine("KillerShell.Cli info <path>");
-            Console.WriteLine("KillerShell.Cli read <file> [--max-chars 1..65536]");
-            Console.WriteLine("KillerShell.Cli processes [--limit 1..500]");
-            Console.WriteLine("KillerShell.Cli services [--limit 1..500]");
-            Console.WriteLine("KillerShell.Cli events <Application|System|Security> [--limit 1..100]");
-            Console.WriteLine("KillerShell.Cli registry <hive\\key> [--limit 1..100]");
-            Console.WriteLine("KillerShell.Cli drives");
-            Console.WriteLine("KillerShell.Cli hash <file>");
+            Console.WriteLine("killershell search <folder> --name <pattern> [--content <text>] [--limit 1..500]");
+            Console.WriteLine("killershell search <folder> --content <text> [--limit 1..500]");
+            Console.WriteLine("killershell list <folder> [--limit 1..500]");
+            Console.WriteLine("killershell info <path>");
+            Console.WriteLine("killershell read <file> [--max-chars 1..65536]");
+            Console.WriteLine("killershell processes [--limit 1..500]");
+            Console.WriteLine("killershell services [--limit 1..500]");
+            Console.WriteLine("killershell events <Application|System|Security> [--limit 1..100]");
+            Console.WriteLine("killershell registry <hive\\key> [--limit 1..100]");
+            Console.WriteLine("killershell drives");
+            Console.WriteLine("killershell hash <file>");
         }
 
         private sealed class DisposableList<T> : IDisposable where T : IDisposable
