@@ -497,6 +497,7 @@
     <!-- Filling a pre-existing gap: these were en-US only. -->
     <sys:String x:Key="Str_Btn_RetryAdmin">অ্যাডমিন হিসাবে পুনরায় চেষ্টা</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">অ্যাপ চালু হলে আপডেট পরীক্ষা করুন</sys:String>
+    <sys:String x:Key="Str_About_StartWithWindows">Windows চালু হলে চালু করুন</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} উপলব্ধ</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">এখনই এটি ডাউনলোড করে ইনস্টল করবেন? অ্যাপটি বন্ধ হয়ে স্বয়ংক্রিয়ভাবে আবার খুলবে।</sys:String>
     <sys:String x:Key="Str_About_UpdateNow">আপডেট</sys:String>

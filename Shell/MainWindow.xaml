@@ -1779,6 +1779,11 @@
                                             <TextBlock Text="{DynamicResource Str_About_StartupUpdateCheck}"
                                                        TextWrapping="Wrap"/>
                                         </CheckBox>
+                                        <CheckBox x:Name="AboutStartWithWindows" Margin="0,6,0,0"
+                                                  Click="AboutStartWithWindows_Click">
+                                            <TextBlock Text="{DynamicResource Str_About_StartWithWindows}"
+                                                       TextWrapping="Wrap"/>
+                                        </CheckBox>
                                         <CheckBox x:Name="AboutConfirmFolderDelete" Margin="0,6,0,0"
                                                   Checked="AboutConfirmFolderDelete_Changed"
                                                   Unchecked="AboutConfirmFolderDelete_Changed">

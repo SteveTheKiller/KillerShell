@@ -251,9 +251,14 @@ namespace KillerShell
                 EnsureFileIcon(ExePath);
 
             OfferInstallConflictRepair();
+            // Start with Windows (About card): keep the Run value pointing at this exe.
+            KillerFamily.Deployment.StartupRegistration.Refresh(Services.AppInfo.DisplayName);
 
             ShutdownMode = ShutdownMode.OnLastWindowClose;
             MainWindow = new MainWindow();
+            // Started from the Run value: open minimized on the taskbar.
+            if (KillerFamily.Deployment.StartupRegistration.HasMinimizedArgument(e.Args))
+                KillerFamily.Deployment.StartupRegistration.StartMinimized(MainWindow);
             MainWindow.Show();
         }
 
@@ -721,6 +726,7 @@ namespace KillerShell
             // requested it, so that same account's uninstall should remove it as well.
             try { File.Delete(DesktopLnk); } catch { }
             Services.CommandLinePath.Unregister(targetDir, machine);
+            KillerFamily.Deployment.StartupRegistration.Remove(Services.AppInfo.DisplayName);
 
             // Associations first, while the keys they hang off still exist. Both scopes are
             // attempted: the HKLM half is a no-op unless this uninstall was launched elevated

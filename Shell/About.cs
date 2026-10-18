@@ -74,6 +74,7 @@ namespace KillerShell.Shell
         bool IAboutHost.UpdateEnabled { set => AboutUpdateButton.IsEnabled = value; }
 
         bool IAboutHost.StartupUpdateCheck { set => AboutStartupUpdateCheck.IsChecked = value; }
+        bool IAboutHost.StartWithWindows   { set => AboutStartWithWindows.IsChecked = value; }
 
         bool IAboutHost.DemoPreview => DemoMode;
 
@@ -93,6 +94,9 @@ namespace KillerShell.Shell
         /// cleared, and the first of the card's checkboxes.</summary>
         private void AboutStartupUpdateCheck_Click(object sender, RoutedEventArgs e)
             => _about.SetStartupCheck(AboutStartupUpdateCheck.IsChecked == true);
+
+        private void AboutStartWithWindows_Click(object sender, RoutedEventArgs e)
+            => _about.SetStartWithWindows(AboutStartWithWindows.IsChecked == true);
 
         /// <summary>
         /// Clear all Data, the footer's destructive link. Wipes every saved preference and the

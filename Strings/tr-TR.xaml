@@ -500,6 +500,7 @@
     <!-- Filling a pre-existing gap: these were en-US only. -->
     <sys:String x:Key="Str_Btn_RetryAdmin">Yönetici olarak yeniden dene</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Başlangıçta güncellemeleri denetle</sys:String>
+    <sys:String x:Key="Str_About_StartWithWindows">Windows ile başlat</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} kullanılabilir</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Şimdi indirip yüklemek ister misiniz? Uygulama kapanacak ve otomatik olarak yeniden açılacak.</sys:String>
     <sys:String x:Key="Str_About_UpdateNow">Güncelle</sys:String>

@@ -144,6 +144,7 @@
     <sys:String x:Key="Str_About_UpdateHeading">{0} {1} жүктеп орнату керек пе?</sys:String>
     <sys:String x:Key="Str_About_UpdateDetail">Қолданба жабылып, автоматты түрде қайта ашылады.</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">Іске қосылғанда жаңартуларды тексеру</sys:String>
+    <sys:String x:Key="Str_About_StartWithWindows">Windows-пен бірге іске қосу</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} қолжетімді</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">Оны қазір жүктеп, орнатқыңыз келе ме? Қолданба автоматты түрде жабылып, қайта ашылады.</sys:String>
     <sys:String x:Key="Str_About_UpdateNow">Жаңарту</sys:String>

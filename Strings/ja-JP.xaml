@@ -495,6 +495,7 @@
     <!-- Filling a pre-existing gap: these were en-US only. -->
     <sys:String x:Key="Str_Btn_RetryAdmin">管理者として再試行</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateCheck">起動時に更新を確認する</sys:String>
+    <sys:String x:Key="Str_About_StartWithWindows">Windows の起動時に起動する</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1} が利用可能です</sys:String>
     <sys:String x:Key="Str_About_StartupUpdateDetail">今すぐダウンロードしてインストールしますか？アプリは終了し、自動的に再起動します。</sys:String>
     <sys:String x:Key="Str_About_UpdateNow">更新</sys:String>
