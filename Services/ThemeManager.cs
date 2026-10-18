@@ -401,6 +401,7 @@ namespace KillerShell.Services
             Mirror("ChipHoverBrush", "RowHoverBrush");
             SetIfAbsent("ChromeFontFamily", KillerSansUiStack);
             SetIfAbsent("DialogWordmarkVisibility", Visibility.Visible);
+            Mirror("DialogFrameBrush", "AppBorderBrush");
             SetIfAbsent("DialogPlainTitleVisibility", Visibility.Collapsed);
             SetIfAbsent("ContentPaneMargin", new Thickness(0));
             // The file and folder pickers' button row, field rows and list rows. 98SE states its
