@@ -29,6 +29,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Screen readers no longer read toolbar, menu and title bar icons as unreadable symbols, file list items read as their names instead of a type name, the sort direction button says whether the list is ascending or descending, and every part of each scroll bar has a name.
 - Opening the shortcuts, About or another card over the window moves keyboard focus into it, Tab stays inside the card, and closing it returns focus to where it was.
 - Tab no longer stops on hidden links, which screen readers announced as the window.
+- Screen readers and accessibility checkers no longer report empty text or the hidden parts of scroll bars as items on screen.
 - Tab no longer stops on the tab strip itself, which drew a dotted outline around every tab.
 - The website top bar no longer leaves extra space under the wordmark and buttons.
 - The website's Help and Technical pages match the app on bookmark drops, the bookmark star, the Event Viewer, Storage Analyzer and app size keys, and the CLI commands, in every language.
