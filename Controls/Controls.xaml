@@ -2487,8 +2487,8 @@
                 <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
-                <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
+                <Setter Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -2507,8 +2507,12 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
+            <!-- GridSelectedTextBrush mirrors PrimaryBrush - exactly the accent this trigger
+                 always set, so nothing changes on the ordinary themes. 98SE states WHITE: its
+                 selected row is a solid navy block and PrimaryBrush IS that navy, which is what
+                 made selected text unreadable in the Registry/Events/Processes tables. -->
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource SelectionFg}"/>
+                <Setter Property="Foreground" Value="{DynamicResource GridSelectedTextBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

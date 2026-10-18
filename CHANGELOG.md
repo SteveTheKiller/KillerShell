@@ -17,7 +17,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The website's About page lists KillerBench and KillerShot under Also try, with larger app icons.
 
 ### Changed
-- The shortcut card's scrollbar sits at the card edge while its text keeps the existing inset.
 - Rail buttons and the collapse arrow sit centered across the rail on either side, with the same space toward the tree and the edge, and the arrow is larger. The side choices in the rail's right-click menu show a picture of each position.
 - Dropping files on a saved place always moves them, across drives too.
 - The website's top bar Download button uses the same font and height as the other top bar buttons.
@@ -25,9 +24,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
-- Dialog and file-picker outlines follow the app frame color and stay black on 98SE.
-- Demo terminal tabs have distinct names for screen readers.
-- Selected table rows keep readable text in every theme and accent.
 - The window opens sized for the monitor it starts on instead of the main monitor, so a smaller or higher-scaling second screen shows all of it.
 - On the Light theme's Yellow and Orange accents, buttons, links, tabs and accent icons keep their color with a thin gray outline around accent text and icons, instead of turning near-black or brown.
 - Gray, menu and accent text reads at 4.5:1 contrast or better in every theme and accent, and the footer's version and copyright are slightly dimmed.

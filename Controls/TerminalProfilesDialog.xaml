@@ -5,7 +5,7 @@
         Title="KillerShell" Width="720" SizeToContent="Height" WindowStartupLocation="CenterOwner"
         WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False"
         UseLayoutRounding="True" SnapsToDevicePixels="True">
-<picker:PickerBorder x:Name="RootBorder" Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource DialogFrameBrush}"
+    <picker:PickerBorder x:Name="RootBorder" Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Margin="{DynamicResource DialogHaloMargin}">
         <Grid>
             <Border IsHitTestVisible="False" Opacity="{DynamicResource GrainOpacity}" Background="{DynamicResource GrainTileBrush}"/>

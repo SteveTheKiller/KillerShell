@@ -2137,9 +2137,9 @@
                          window-bounded card, and this viewer owns every excess row.
                          Both hosts filled in code: BuildShortcutsList (ShortcutsOverlay.cs) and
                          BuildKeyboardView (KeyboardMapOverlay.cs), each once and lazily. -->
-                    <ScrollViewer x:Name="ShortcutScroll" Grid.Row="1" Margin="0,0,-24,0" VerticalScrollBarVisibility="Auto"
+                    <ScrollViewer x:Name="ShortcutScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly" Focusable="False">
-                    <StackPanel Margin="0,0,24,0">
+                    <StackPanel>
                         <StackPanel x:Name="ShortcutListHost"/>
                         <StackPanel x:Name="ShortcutKeyboardHost" Visibility="Collapsed"/>
                     </StackPanel>

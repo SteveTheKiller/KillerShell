@@ -24,9 +24,9 @@
         SnapsToDevicePixels="True"
         ShowInTaskbar="False">
 
-<picker:PickerBorder x:Name="RootBorder" Opacity="0"
+    <picker:PickerBorder x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
-            BorderBrush="{DynamicResource DialogFrameBrush}"
+            BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="1"
             CornerRadius="{DynamicResource PanelCornerRadius}"
             Margin="{DynamicResource DialogHaloMargin}">

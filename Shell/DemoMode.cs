@@ -116,7 +116,7 @@ namespace KillerShell.Shell
                             DemoScript());                                 // EditorTabs.cs
 
             // ── Tab 8: a second shell, canned - network triage rather than a repo ─
-            CreateDemoTerminalTab(@"C:\Users\Demo", DemoTerminalSessionNetwork()).Title = "PowerShell (Network)";
+            CreateDemoTerminalTab(@"C:\Users\Demo", DemoTerminalSessionNetwork());  // TerminalTabs.cs
 
             // ── Tabs 9-11: the admin tools, each backed by its own fabricated data
             // (RegistryEditorControl/EventViewerControl/ProcessListControl all branch on
