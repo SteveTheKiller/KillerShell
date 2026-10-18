@@ -25,8 +25,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 - Windows contrast themes now use system colors for text, icons, panels and selections, without decorative grain or shadows.
-- The command line accepts an optional trailing --json while keeping its existing JSON output.
 - The window opens sized for the monitor it starts on instead of the main monitor, so a smaller or higher-scaling second screen shows all of it.
+- The command line accepts an optional trailing --json while keeping its existing JSON output.
 - On the Light theme's Yellow and Orange accents, buttons, links, tabs and accent icons keep their color with a thin gray outline around accent text and icons, instead of turning near-black or brown.
 - Gray, menu and accent text reads at 4.5:1 contrast or better in every theme and accent, and the footer's version and copyright are slightly dimmed.
 - The Dark theme's Red accent stays a true red on buttons, lines, scroll bars and the website's accent swatches, and only small red text uses a lighter red.
