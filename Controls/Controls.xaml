@@ -14,6 +14,7 @@
     <kui:ThumbViewportFloorConverter x:Key="ThumbFloor"/>
     <kui:LastChildConverter x:Key="IsLastChild"/>
     <kui:TabFolderIconConverter x:Key="TabFolderIcon"/>
+    <kui:CloseTabNameConverter x:Key="CloseTabName"/>
     <!-- True when TabFolderIcon resolves to art, so the tab template can hide the MDL2 glyph
          and avoid drawing a picture and a character for the same tab. -->
     <kui:TabHasArtConverter x:Key="TabHasArt"/>

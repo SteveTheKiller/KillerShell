@@ -281,7 +281,14 @@
                                                  which the term and filter x's also use. -->
                                             <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Style="{StaticResource DangerButton}" Width="18" Height="18" Margin="4,0,0,0"
                                                     FocusVisualStyle="{x:Null}"
-                                                    ToolTip="{DynamicResource Str_TT_CloseTab}" Tag="{Binding}" Click="CloseTab_Click"/>
+                                                    ToolTip="{DynamicResource Str_TT_CloseTab}" Tag="{Binding}" Click="CloseTab_Click">
+                                                <AutomationProperties.Name>
+                                                    <MultiBinding Converter="{StaticResource CloseTabName}">
+                                                        <Binding Path="ToolTip" RelativeSource="{RelativeSource Self}"/>
+                                                        <Binding Path="Title"/>
+                                                    </MultiBinding>
+                                                </AutomationProperties.Name>
+                                            </Button>
                                             <!-- A browsing tab's real Windows folder icon
                                                  (TabFolderIconConverter) - the same source the
                                                  overflow dropdown already uses. Width/Height
