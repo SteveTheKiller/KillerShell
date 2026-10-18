@@ -41,6 +41,22 @@ public sealed class CliCommandTests
     }
 
     [Fact]
+    public void ExplicitJsonKeepsTheExistingOutput()
+    {
+        string file = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(file, "JSON compatibility");
+            Result original = Run("info", file);
+            Result explicitJson = Run("info", file, "--json");
+            Assert.Equal(0, original.ExitCode);
+            Assert.True(explicitJson.ExitCode == 0, explicitJson.Error);
+            Assert.Equal(original.Output, explicitJson.Output);
+        }
+        finally { File.Delete(file); }
+    }
+
+    [Fact]
     public void SystemInspectionCommandsReturnBoundedJson()
     {
         string file = Path.GetTempFileName();

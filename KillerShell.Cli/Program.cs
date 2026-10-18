@@ -24,6 +24,8 @@ namespace KillerShell.Cli
 
         internal static int Main(string[] args)
         {
+            if (args.Length > 1 && args[args.Length - 1] == "--json")
+                args = args.Take(args.Length - 1).ToArray();
             try { Console.OutputEncoding = new UTF8Encoding(false); }
             catch (IOException) { /* A GUI process with redirected output can lack a console handle. */ }
             if (args.Length == 1 && args[0] == "--version")
@@ -425,6 +427,7 @@ namespace KillerShell.Cli
             Console.WriteLine("killershell registry <hive\\key> [--limit 1..100]");
             Console.WriteLine("killershell drives");
             Console.WriteLine("killershell hash <file>");
+            Console.WriteLine("Output is JSON by default; an optional trailing --json is accepted.");
         }
 
         private sealed class DisposableList<T> : IDisposable where T : IDisposable
