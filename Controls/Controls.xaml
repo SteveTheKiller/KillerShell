@@ -6,7 +6,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:kui="clr-namespace:KillerShell"
                     xmlns:snap="clr-namespace:KillerFamily.Windowing"
-                    xmlns:cm="clr-namespace:System.ComponentModel;assembly=System">
+                    xmlns:cm="clr-namespace:System.ComponentModel;assembly=System"
+                    xmlns:kl="clr-namespace:KillerFamily.Layout"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <ImageBrush x:Key="GrainTileBrush" TileMode="Tile"
                 ViewportUnits="Absolute" Viewport="0,0,256,256" Stretch="None"/>
@@ -26,7 +28,9 @@
     <FontFamily x:Key="WordmarkAccentFont">/KillerShell;component/Fonts/#Lacquer</FontFamily>
     <FontFamily x:Key="BrandSansFont">/KillerShell;component/Fonts/#Killer Sans</FontFamily>
 
+    <kl:TooltipTextConverter x:Key="TooltipTextConverter"/>
     <Style TargetType="ToolTip">
+        <Setter Property="kl:TooltipTextConverter.WrapContent" Value="True"/>
         <Setter Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
@@ -38,10 +42,21 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToolTip">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource ControlCornerRadius}" Padding="{TemplateBinding Padding}">
-                        <Border.Effect><DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="2" Direction="270" Opacity="0.45"/></Border.Effect>
-                        <ContentPresenter/>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="2" Direction="270" Opacity="{DynamicResource FlyoutShadowOpacity}"/>
+                        </Border.Effect>
+                        <ContentPresenter>
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type sys:String}">
+                                    <TextBlock Text="{Binding Converter={StaticResource TooltipTextConverter}}" MaxWidth="300" TextWrapping="Wrap"/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
