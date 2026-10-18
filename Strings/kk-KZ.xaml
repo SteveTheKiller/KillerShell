@@ -760,6 +760,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">таңдалған элементті себетке жіберу (Жинақтауыш талдағышы)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">бүкіл қолданбаны масштабтау (0 бастапқы өлшемге қайтарады)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">бүйір тақталарды көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_Sidebar">БҮЙІРЛІК ПАНЕЛЬ</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Сол</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Оң</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">қалталар ағашын солға немесе оңға жылжыту</sys:String>
     <sys:String x:Key="Str_Ks_Theme">тақырып пен екпін түсін таңдауды ашу</sys:String>
     <sys:String x:Key="Str_Ks_Language">тіл таңдауды ашу</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">пленка түйіршігін қосу немесе өшіру</sys:String>

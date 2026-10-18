@@ -792,6 +792,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">a kijelölt elem áthelyezése a Lomtárba (Tároláselemző)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">az egész alkalmazás nagyítása (0 visszaállítja)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">az oldalsó panelek megjelenítése vagy elrejtése</sys:String>
+    <sys:String x:Key="Str_Sidebar">OLDALSÁV</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Bal</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Jobb</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">a mappafa áthelyezése balra vagy jobbra</sys:String>
     <sys:String x:Key="Str_Ks_Theme">a téma- és kiemelőszín-választó megnyitása</sys:String>
     <sys:String x:Key="Str_Ks_Language">a nyelvválasztó megnyitása</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">a filmszemcse be- vagy kikapcsolása</sys:String>

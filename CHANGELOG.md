@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.1] - Unreleased
 
 ### Added
+- Added a right-hand position for the folder tree and its rail, picked from the rail's right-click menu or with Alt+Shift+Left and Alt+Shift+Right. The search panel moves to the left edge, and the arrow of the side the tree is already on opens or closes it.
 - Added Start with Windows to the About card. It starts KillerShell minimized on the taskbar when you sign in, and stays off until you turn it on.
 - Added Close to system tray to the About card. With it on, closing the window keeps KillerShell running in the notification area, where its icon brings the window back or exits; it stays off until you turn it on.
 - Keyboard shortcuts for the view buttons, icon size, density, sort, folders on top, recents, the side panels, app size, theme, language, film grain, nicknames, compress and extract, and Analyze storage, plus the folder tree's menu, the Event Viewer rows and the Storage Analyzer's menu. Every key is on the F1 card, its menu row, its button's tooltip and the website.
@@ -16,6 +17,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The website's About page lists KillerBench and KillerShot under Also try, with larger app icons.
 
 ### Changed
+- Rail buttons and the collapse arrow sit centered across the rail on either side, with the same space toward the tree and the edge, and the arrow is larger. The side choices in the rail's right-click menu show a picture of each position.
 - Dropping files on a saved place always moves them, across drives too.
 - The website's top bar Download button uses the same font and height as the other top bar buttons.
 - The keyboard focus outline is a thin solid ring in the theme accent instead of a thick dotted line, and uses the text color where the accent would be too faint to see.

@@ -45,6 +45,10 @@ namespace KillerShell.Shell
 
         internal static void UsePane(FrameworkElement pane) => _pane = pane;
 
+        /// <summary>True when the tree docks right: the rail is then on the pane's right edge,
+        /// so flyouts take the bottom-right corner instead (TreeDock.cs).</summary>
+        internal static bool RailOnRight { get; set; }
+
         internal static void Attach(Popup popup, UIElement _)
         {
             popup.PlacementTarget = _pane;
@@ -72,7 +76,9 @@ namespace KillerShell.Shell
             var halo = _pane?.TryFindResource("FlyoutCard") is Style style
                 ? new Border { Style = style }.Margin : new Thickness(22, 18, 22, 26);
             const double inset = 8;
-            double x = inset - halo.Left;
+            double x = RailOnRight
+                ? targetSize.Width - popupSize.Width + halo.Right - inset
+                : inset - halo.Left;
             double y = targetSize.Height - popupSize.Height + halo.Bottom - inset;
             if (y < 0) y = 0;
             return [new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None)];

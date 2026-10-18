@@ -792,6 +792,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">перемістити вибраний елемент до Кошика (Аналізатор сховища)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">масштаб усього застосунку (0 скидає)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">показати або сховати бічні панелі</sys:String>
+    <sys:String x:Key="Str_Sidebar">БІЧНА ПАНЕЛЬ</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Ліворуч</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Праворуч</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">перемістити дерево папок ліворуч або праворуч</sys:String>
     <sys:String x:Key="Str_Ks_Theme">відкрити вибір теми та акцентного кольору</sys:String>
     <sys:String x:Key="Str_Ks_Language">відкрити вибір мови</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">увімкнути або вимкнути зернистість плівки</sys:String>

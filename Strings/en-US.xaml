@@ -792,6 +792,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">send the selected item to the Recycle Bin (Storage Analyzer)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">zoom the whole app (0 resets it)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">show or hide the side panels</sys:String>
+    <sys:String x:Key="Str_Sidebar">SIDEBAR</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Left</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Right</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">move the folder tree left or right</sys:String>
     <sys:String x:Key="Str_Ks_Theme">open the theme and accent picker</sys:String>
     <sys:String x:Key="Str_Ks_Language">open the language picker</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">turn film grain on or off</sys:String>

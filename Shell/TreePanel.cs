@@ -141,7 +141,9 @@ namespace KillerShell.Shell
         {
             if (!_treeOpen) return;
 
-            double next = Clamp(TreeCol.ActualWidth + e.HorizontalChange);
+            // On a right-hand tree the grip is on its left edge, so dragging left widens it.
+            double change = _treeRight ? -e.HorizontalChange : e.HorizontalChange;
+            double next = Clamp(TreeCol.ActualWidth + change);
             if (Math.Abs(next - _treeWidth) < 0.5) return;
 
             _treeWidth = next;
@@ -164,15 +166,15 @@ namespace KillerShell.Shell
         {
             SyncTreeWatchers();   // TreeWatcher.cs - a closed tree watches nothing
 
-            // Chevron points where the sidebar is going: left to tuck it away, right to bring
-            // it back. Codepoints keep the source ASCII, as everywhere else in this project.
-            SidebarToggleBtn.Content = ((char)(_treeOpen ? 0xE76B : 0xE76C)).ToString();
+            UpdateTreeChevron();
 
             // Nothing to grab while the panel is a zero-width column, and a live grip there
             // would sit on top of the rail.
             TreeResizeGrip.Visibility = _treeOpen ? Visibility.Visible : Visibility.Collapsed;
 
-            TreeGapCol.Width = new GridLength(_treeOpen ? 6 : 0);
+            // No gap between the rail and the panes, open or shut: the rail's glyphs keep the same
+            // space to the grab handle as to the pane, and never move when the tree opens.
+            TreeGapCol.Width = new GridLength(0);
 
             // RIGHT, not Left - and that is not a typo for a left-hand panel.
             //
@@ -185,9 +187,21 @@ namespace KillerShell.Shell
             // the window's own frame - the direction the panel is actually going, and the
             // direction the chevron points. The overflow now runs off the left of the window,
             // where it is clipped for free instead of landing on the rail and the pane.
+            //
+            // A right-hand tree (TreeDock.cs) has its inner edge on the LEFT, so it freezes there.
             SlideColumn(TreeCol, TreePanel, _treeOpen,
                         _treeWidth, minOpen: TreeWidthMin, maxOpen: TreeWidthMax,
-                        freezeAlign: HorizontalAlignment.Right, animate: animate);
+                        freezeAlign: _treeRight ? HorizontalAlignment.Left : HorizontalAlignment.Right,
+                        animate: animate);
+        }
+
+        /// <summary>The chevron points where the tree is going: toward the window edge to tuck
+        /// it away, back toward the results to bring it out, on whichever side it docks.
+        /// Codepoints keep the source ASCII, as everywhere else in this project.</summary>
+        private void UpdateTreeChevron()
+        {
+            bool pointRight = _treeOpen == _treeRight;
+            SidebarToggleBtn.Content = ((char)(pointRight ? 0xE76C : 0xE76B)).ToString();
         }
     }
 }

@@ -131,6 +131,9 @@ namespace KillerShell.Shell
             // tabs, since applying the view reads _active to redraw the sort arrows.
             InitResultsView();
 
+            // Which side the tree docks to (TreeDock.cs), before either side panel lays out.
+            InitTreeSide();
+
             // Search is an optional panel now, closed unless it was left open (SearchPanel.cs).
             InitSearchPanel();
 

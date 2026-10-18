@@ -198,7 +198,7 @@
                      content rather than on the window's outer edge. -->
                 <ColumnDefinition x:Name="TreeCol" Width="240" MinWidth="0" MaxWidth="420"/>
                 <ColumnDefinition x:Name="RailCol" Width="24"/>
-                <ColumnDefinition x:Name="TreeGapCol" Width="6"/>
+                <ColumnDefinition x:Name="TreeGapCol" Width="0"/>
                 <ColumnDefinition Width="*" MinWidth="220"/>
                 <ColumnDefinition x:Name="SearchGapCol" Width="0"/>
                 <ColumnDefinition x:Name="SearchCol" Width="0" MinWidth="0" MaxWidth="380"/>
@@ -625,19 +625,19 @@
                  next to the results whether the tree is open or shut and never move when it
                  collapses. Putting the rail on the window's outer edge instead makes them jump.
                  Layout is the family standard: ONE chevron pinned at the top that collapses the
-                 sidebars, and a bottom stack of feature toggles. The 2px left margin on
-                 centered elements is a 1px shift toward the pane, so the icons read as
-                 centered on the strip. -->
-            <Grid Grid.Column="1">
+                 sidebars, and a bottom stack of feature toggles. Everything is centered with
+                 no lean, so each glyph has the same space to the grab handle as to the pane. With the tree on the right the row mirrors and the rail
+                 stays on the tree's lip (TreeDock.cs); right-click picks the side. -->
+            <Grid Grid.Column="1" Background="Transparent" MouseRightButtonUp="Rail_MouseRightButtonUp">
                 <!-- Collapses THIS sidebar - the tree - and nothing else, exactly like
                      KillerNotes. The tree is the sidebar's default content, so it needs no
                      separate rail icon; the search panel on the far right is not this
                      chevron's business and has its own toggle below. -->
                 <Button x:Name="SidebarToggleBtn" Style="{StaticResource RailButton}"
-                        Content="&#xE76B;" FontSize="12"
-                        VerticalAlignment="Top" HorizontalAlignment="Center" Margin="2,10,0,0"
+                        Content="&#xE76B;" FontSize="16"
+                        VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0"
                         ToolTip="{DynamicResource Str_TT_CollapseSidebar}" Click="TreePanel_Click"/>
-                <StackPanel x:Name="RailBottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="2,0,0,6">
+                <StackPanel x:Name="RailBottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,6">
                     <!-- E721 (magnifier): the search panel, out on the right edge. Glyph never
                          changes - RailButton draws it in TextBrush and switches to the accent
                          on Tag="on", which is the open/shut tell. -->

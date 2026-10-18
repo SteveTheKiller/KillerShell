@@ -862,6 +862,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">নির্বাচিত আইটেম রিসাইকেল বিনে পাঠান (স্টোরেজ বিশ্লেষক)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">পুরো অ্যাপ জুম করুন (0 চাপলে আগের মাপে ফেরে)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">পাশের প্যানেলগুলো দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Sidebar">সাইডবার</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">বাঁ দিকে</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">ডান দিকে</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">ফোল্ডার ট্রি বাঁয়ে বা ডানে সরান</sys:String>
     <sys:String x:Key="Str_Ks_Theme">থিম ও অ্যাকসেন্ট বেছে নেওয়ার প্যানেল খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_Language">ভাষা বেছে নেওয়ার তালিকা খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">ফিল্ম গ্রেইন চালু বা বন্ধ করুন</sys:String>

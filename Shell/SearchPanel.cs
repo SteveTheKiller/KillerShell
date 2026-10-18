@@ -67,9 +67,12 @@ namespace KillerShell.Shell
             // panel and freezes Right (see SlideColumn's freezeAlign doc in PanelSlide.cs).
             // This froze Right, the OUTER edge, so the panel stood still while the results pane
             // wiped across the top of it - the mirror image of the sidebar bug fixed 2026-08-10.
+            // With the tree on the right (TreeDock.cs) this panel is on the left edge and its
+            // inner edge is the right one.
             SlideColumn(SearchCol, SearchPanel, _searchOpen,
                         SearchPanelWidth, minOpen: 200, maxOpen: 380,
-                        freezeAlign: HorizontalAlignment.Left, animate: animate);
+                        freezeAlign: _treeRight ? HorizontalAlignment.Right : HorizontalAlignment.Left,
+                        animate: animate);
         }
 
         /// <summary>

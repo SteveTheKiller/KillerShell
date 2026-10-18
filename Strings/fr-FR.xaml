@@ -865,6 +865,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">envoyer l'élément sélectionné à la Corbeille (Analyseur de stockage)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">zoomer toute l'application (0 la réinitialise)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">afficher ou masquer les panneaux latéraux</sys:String>
+    <sys:String x:Key="Str_Sidebar">PANNEAU LATÉRAL</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Gauche</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Droite</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">déplacer l'arborescence des dossiers à gauche ou à droite</sys:String>
     <sys:String x:Key="Str_Ks_Theme">ouvrir le choix du thème et de la couleur d'accent</sys:String>
     <sys:String x:Key="Str_Ks_Language">ouvrir le choix de la langue</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">activer ou désactiver le grain de film</sys:String>

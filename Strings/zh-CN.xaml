@@ -862,6 +862,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">将所选项目移到回收站（存储分析器）</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">缩放整个应用（0 恢复默认）</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">显示或隐藏侧边面板</sys:String>
+    <sys:String x:Key="Str_Sidebar">侧边栏</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">左侧</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">右侧</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">将文件夹树移到左侧或右侧</sys:String>
     <sys:String x:Key="Str_Ks_Theme">打开主题和强调色选择器</sys:String>
     <sys:String x:Key="Str_Ks_Language">打开语言选择器</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">开启或关闭胶片颗粒</sys:String>

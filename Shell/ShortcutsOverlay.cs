@@ -197,6 +197,7 @@ namespace KillerShell.Shell
             // The window's own appearance (KeyCommands.cs). App size is the family chord that
             // KillerPDF, KillerNotes and KillerScan already use.
             new(KsScope.Global, "View",   "Ctrl+Shift+B",   "Str_Ks_Sidebar",      KbLayer.CtrlShift, "B"),
+            new(KsScope.Global, "View",   "Alt+Shift+Left / Right", "Str_Ks_TreeSide", KbLayer.AltShift, "Left", "Right"),
             new(KsScope.Global, "View",   "Alt+H",          "Str_Ks_TreeHidden",   KbLayer.Alt, "H"),
             new(KsScope.Global, "View",   "Ctrl+Shift +/- / 0", "Str_Ks_AppSize",  KbLayer.CtrlShift, "Equals", "Minus", "D0"),
             new(KsScope.Global, "View",   "Alt+T",          "Str_Ks_Theme",        KbLayer.Alt, "T"),

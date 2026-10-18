@@ -673,6 +673,10 @@
   <sys:String x:Key="Str_Ks_StorageRecycle">przenieś zaznaczony element do Kosza (Analizator miejsca)</sys:String>
   <sys:String x:Key="Str_Ks_AppSize">powiększ lub pomniejsz całą aplikację (0 przywraca)</sys:String>
   <sys:String x:Key="Str_Ks_Sidebar">pokaż lub ukryj panele boczne</sys:String>
+  <sys:String x:Key="Str_Sidebar">PASEK BOCZNY</sys:String>
+  <sys:String x:Key="Str_Sidebar_Left">Lewa</sys:String>
+  <sys:String x:Key="Str_Sidebar_Right">Prawa</sys:String>
+  <sys:String x:Key="Str_Ks_TreeSide">przenieś drzewo folderów w lewo lub w prawo</sys:String>
   <sys:String x:Key="Str_Ks_Theme">otwórz wybór motywu i koloru akcentu</sys:String>
   <sys:String x:Key="Str_Ks_Language">otwórz wybór języka</sys:String>
   <sys:String x:Key="Str_Ks_FilmGrain">włącz lub wyłącz ziarno filmowe</sys:String>

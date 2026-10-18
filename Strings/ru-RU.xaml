@@ -760,6 +760,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">отправить выбранный элемент в корзину (Анализатор хранилища)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">масштаб всего приложения (0 сбрасывает)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">показать или скрыть боковые панели</sys:String>
+    <sys:String x:Key="Str_Sidebar">БОКОВАЯ ПАНЕЛЬ</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Слева</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Справа</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">переместить дерево папок влево или вправо</sys:String>
     <sys:String x:Key="Str_Ks_Theme">открыть выбор темы и акцентного цвета</sys:String>
     <sys:String x:Key="Str_Ks_Language">открыть выбор языка</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">включить или выключить зернистость плёнки</sys:String>

@@ -865,6 +865,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">ausgewähltes Element in den Papierkorb verschieben (Speicheranalyse)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">die ganze App zoomen (0 setzt zurück)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">Seitenbereiche ein- oder ausblenden</sys:String>
+    <sys:String x:Key="Str_Sidebar">SEITENLEISTE</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Links</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Rechts</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">Ordnerbaum nach links oder rechts verschieben</sys:String>
     <sys:String x:Key="Str_Ks_Theme">Design- und Akzentauswahl öffnen</sys:String>
     <sys:String x:Key="Str_Ks_Language">Sprachauswahl öffnen</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">Filmkorn ein- oder ausschalten</sys:String>

@@ -863,6 +863,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">přesunout vybranou položku do Koše (Analýza úložiště)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">přiblížit nebo oddálit celou aplikaci (0 obnoví velikost)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">zobrazit nebo skrýt boční panely</sys:String>
+    <sys:String x:Key="Str_Sidebar">POSTRANNÍ PANEL</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Vlevo</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Vpravo</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">přesunout strom složek doleva nebo doprava</sys:String>
     <sys:String x:Key="Str_Ks_Theme">otevřít výběr motivu a barvy zvýraznění</sys:String>
     <sys:String x:Key="Str_Ks_Language">otevřít výběr jazyka</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">zapnout nebo vypnout filmové zrno</sys:String>

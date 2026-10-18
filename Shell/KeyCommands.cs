@@ -87,6 +87,14 @@ namespace KillerShell.Shell
                 }
             }
 
+            // Alt+Shift+Left / Right: which side the folder tree docks to (TreeDock.cs). The arrow
+            // of the side it is already on opens or closes it instead.
+            if (alt && shift && !ctrl && key is Key.Left or Key.Right)
+            {
+                if (!e.IsRepeat) TreeSideShortcut(key == Key.Right);
+                e.Handled = true; return true;
+            }
+
             // Alt+Shift+G, the family Film Grain chord.
             if (alt && shift && !ctrl && key == Key.G)
             {

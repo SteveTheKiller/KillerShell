@@ -792,6 +792,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">enviar o item selecionado para a Lixeira (Analisador de Armazenamento)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">ampliar ou reduzir todo o aplicativo (0 restaura)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">mostrar ou ocultar os painéis laterais</sys:String>
+    <sys:String x:Key="Str_Sidebar">BARRA LATERAL</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Esquerda</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Direita</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">mover a árvore de pastas para a esquerda ou a direita</sys:String>
     <sys:String x:Key="Str_Ks_Theme">abrir o seletor de tema e cor de destaque</sys:String>
     <sys:String x:Key="Str_Ks_Language">abrir o seletor de idioma</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">ativar ou desativar a granulação de filme</sys:String>

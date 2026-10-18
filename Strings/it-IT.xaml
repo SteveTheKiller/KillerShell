@@ -757,6 +757,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">inviare l'elemento selezionato al Cestino (Analizzatore di spazio)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">zoom dell'intera app (0 la ripristina)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">mostrare o nascondere i pannelli laterali</sys:String>
+    <sys:String x:Key="Str_Sidebar">BARRA LATERALE</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">A sinistra</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">A destra</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">sposta l'albero delle cartelle a sinistra o a destra</sys:String>
     <sys:String x:Key="Str_Ks_Theme">aprire la scelta del tema e del colore d'accento</sys:String>
     <sys:String x:Key="Str_Ks_Language">aprire la scelta della lingua</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">attivare o disattivare la grana pellicola</sys:String>

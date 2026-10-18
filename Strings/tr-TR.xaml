@@ -865,6 +865,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">seçili öğeyi Geri Dönüşüm Kutusu'na gönder (Depolama Çözümleyicisi)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">tüm uygulamayı yakınlaştır veya uzaklaştır (0 sıfırlar)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">yan panelleri göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Sidebar">KENAR ÇUBUĞU</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Sol</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Sağ</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">klasör ağacını sola veya sağa taşı</sys:String>
     <sys:String x:Key="Str_Ks_Theme">tema ve vurgu rengi seçicisini aç</sys:String>
     <sys:String x:Key="Str_Ks_Language">dil seçicisini aç</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">film grenini aç veya kapat</sys:String>

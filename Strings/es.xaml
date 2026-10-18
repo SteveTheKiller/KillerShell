@@ -865,6 +865,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">enviar el elemento seleccionado a la Papelera (Analizador de almacenamiento)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">zoom de toda la aplicación (0 la restablece)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">mostrar u ocultar los paneles laterales</sys:String>
+    <sys:String x:Key="Str_Sidebar">BARRA LATERAL</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Izquierda</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Derecha</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">mover el árbol de carpetas a la izquierda o a la derecha</sys:String>
     <sys:String x:Key="Str_Ks_Theme">abrir el selector de tema y color de acento</sys:String>
     <sys:String x:Key="Str_Ks_Language">abrir el selector de idioma</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">activar o desactivar el grano de película</sys:String>

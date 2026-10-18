@@ -860,8 +860,12 @@ namespace KillerShell.Shell
             double edge = _searchOpen ? 0 : om.Right;      // SearchPanel.cs
             bool cols = DualPane && _paneSideBySide;
 
-            SetPaneMargin(LeftPane, cols ? PaneGutter : edge);
-            SetPaneMargin(RightPane, edge);
+            // With the tree on the right (TreeDock.cs) the window edge is on the panes' left and
+            // the rail gap on their right, so the two outer slots trade places.
+            double outerLeft  = _treeRight ? edge : om.Left;
+            double outerRight = _treeRight ? om.Left : edge;
+            SetPaneMargin(LeftPane, outerLeft, cols ? PaneGutter : outerRight);
+            SetPaneMargin(RightPane, cols ? om.Left : outerLeft, outerRight);
         }
 
         // The -1 top tucks the pane's top border under the tab strip, so the active tab and the
@@ -871,7 +875,7 @@ namespace KillerShell.Shell
         // so with one tab the row above is zero high and -1 puts the pane's top border one pixel
         // outside the control, where it is clipped away - the ring came out open along its top
         // edge. Nothing to tuck under means nothing to pull up by.
-        private static void SetPaneMargin(FilePane p, double right)
+        private static void SetPaneMargin(FilePane p, double left, double right)
         {
             // Top/left/bottom come from PaneOuterMargin and TabBarMargin, NOT from literals. The
             // -1 that used to be hardcoded here is what left a persistent line under the
@@ -880,8 +884,8 @@ namespace KillerShell.Shell
             // 1px of that white ran edge to edge under the tab. The tab cannot break a full-width
             // Border, so the pane has to ride far enough up for the tab's own opaque fill to cover
             // it - which is a per-theme number and therefore a token. 98SE states -2.
-            // Only the RIGHT slot stays computed: it is the dual-pane gutter, decided by the
-            // caller, not by the palette.
+            // The left and right slots are computed: the dual-pane gutter and the window-edge
+            // inset are decided by the caller, which knows which side the tree is on.
             var om = Application.Current?.TryFindResource("PaneOuterMargin") as Thickness?
                      ?? new Thickness(0, -1, 8, 0);
             var tm = Application.Current?.TryFindResource("TabBarMargin") as Thickness?
@@ -889,9 +893,9 @@ namespace KillerShell.Shell
 
             double top = p.TabBar.Visibility == Visibility.Visible ? om.Top : 0;
 
-            p.ResultsPane.Margin  = new Thickness(om.Left, top, right, om.Bottom);
+            p.ResultsPane.Margin  = new Thickness(left, top, right, om.Bottom);
             p.TabFadeGhost.Margin = p.ResultsPane.Margin;
-            p.TabBar.Margin       = new Thickness(tm.Left, tm.Top, right, tm.Bottom);
+            p.TabBar.Margin       = new Thickness(tm.Left + left - om.Left, tm.Top, right, tm.Bottom);
         }
 
         // ═══════════════════════════════════════════════════════════

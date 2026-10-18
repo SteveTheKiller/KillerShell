@@ -792,6 +792,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">send valgt element til Papirkurven (Lagringsanalyse)</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">zoom hele appen (0 tilbakestiller)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">vis eller skjul sidepanelene</sys:String>
+    <sys:String x:Key="Str_Sidebar">SIDEPANEL</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">Venstre</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">Høyre</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">flytt mappetreet til venstre eller høyre</sys:String>
     <sys:String x:Key="Str_Ks_Theme">åpne valg av tema og aksentfarge</sys:String>
     <sys:String x:Key="Str_Ks_Language">åpne språkvalget</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">slå filmkorn på eller av</sys:String>

@@ -862,6 +862,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">將選取項目移到資源回收筒（儲存空間分析器）</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">縮放整個應用程式（0 恢復預設）</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">顯示或隱藏側邊面板</sys:String>
+    <sys:String x:Key="Str_Sidebar">側邊欄</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">左側</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">右側</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">將資料夾樹狀結構移到左側或右側</sys:String>
     <sys:String x:Key="Str_Ks_Theme">開啟佈景主題與強調色選擇器</sys:String>
     <sys:String x:Key="Str_Ks_Language">開啟語言選擇器</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">開啟或關閉底片顆粒</sys:String>

@@ -861,6 +861,10 @@
     <sys:String x:Key="Str_Ks_StorageRecycle">選択項目をごみ箱へ移動（ストレージ分析）</sys:String>
     <sys:String x:Key="Str_Ks_AppSize">アプリ全体をズーム (0 で元に戻す)</sys:String>
     <sys:String x:Key="Str_Ks_Sidebar">サイドパネルの表示を切り替え</sys:String>
+    <sys:String x:Key="Str_Sidebar">サイドバー</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">左</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">右</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">フォルダー ツリーを左右に移動</sys:String>
     <sys:String x:Key="Str_Ks_Theme">テーマとアクセントの選択を開く</sys:String>
     <sys:String x:Key="Str_Ks_Language">言語の選択を開く</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">フィルムグレインのオン/オフ</sys:String>

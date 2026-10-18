@@ -754,6 +754,10 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Ks_StorageRecycle">chuyển mục đã chọn vào Thùng rác (Trình phân tích lưu trữ)</sys:String>
   <sys:String x:Key="Str_Ks_AppSize">thu phóng toàn bộ ứng dụng (0 để đặt lại)</sys:String>
   <sys:String x:Key="Str_Ks_Sidebar">hiển thị hoặc ẩn các bảng bên</sys:String>
+  <sys:String x:Key="Str_Sidebar">THANH BÊN</sys:String>
+  <sys:String x:Key="Str_Sidebar_Left">Trái</sys:String>
+  <sys:String x:Key="Str_Sidebar_Right">Phải</sys:String>
+  <sys:String x:Key="Str_Ks_TreeSide">di chuyển cây thư mục sang trái hoặc phải</sys:String>
   <sys:String x:Key="Str_Ks_Theme">mở bộ chọn giao diện và màu nhấn</sys:String>
   <sys:String x:Key="Str_Ks_Language">mở bộ chọn ngôn ngữ</sys:String>
   <sys:String x:Key="Str_Ks_FilmGrain">bật hoặc tắt hạt phim</sys:String>
