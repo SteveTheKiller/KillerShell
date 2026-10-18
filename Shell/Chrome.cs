@@ -51,25 +51,6 @@ namespace KillerShell.Shell
             chrome?.CaptionHeight = h;
         }
 
-        /// <summary>
-        /// Fits the XAML default size (1140 x 710) to a small desktop before the window is first
-        /// shown. Each side is capped at 90% of the work area, so on a desktop big enough to hold
-        /// the default with that margin nothing changes, and on a small one (a 1024 x 768 VM, a
-        /// netbook) the window opens fully on screen instead of running off the edges. Never
-        /// smaller than MinWidth / MinHeight unless the work area itself is smaller than those.
-        /// Reads the primary monitor's work area, which is where a fresh CenterScreen window
-        /// lands in the common case; called from the ctor, before WindowStartupLocation centers.
-        /// </summary>
-        private void FitStartupSizeToWorkArea()
-        {
-            const double fill = 0.9;
-            var wa = SystemParameters.WorkArea;
-            if (wa.Width <= 0 || wa.Height <= 0) return;
-
-            Width  = Math.Max(Math.Min(MinWidth,  wa.Width),  Math.Min(Width,  Math.Floor(wa.Width  * fill)));
-            Height = Math.Max(Math.Min(MinHeight, wa.Height), Math.Min(Height, Math.Floor(wa.Height * fill)));
-        }
-
         private void MainWindow_SourceInitialized(object? sender, EventArgs e)
         {
             var hwnd = new WindowInteropHelper(this).Handle;
@@ -77,6 +58,10 @@ namespace KillerShell.Shell
             // Windows 11 snap layouts flyout on the maximize button. Added after WindowChrome's
             // hook, so it answers WM_NCHITTEST first.
             SnapLayouts.Attach(this, MaximizeBtn);
+            // Before the first show: the XAML default size (1140 x 710) is capped at 90% of the
+            // work area of the monitor the window opens on, so a small desktop (a 1024 x 768 VM,
+            // a netbook, a laptop at high scaling) gets the whole window on screen.
+            WorkAreaFit.Fit(this);
             ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
             ApplyThemeBorder(this);
         }
