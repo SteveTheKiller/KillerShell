@@ -21,7 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Rail buttons and the collapse arrow sit centered across the rail on either side, with the same space toward the tree and the edge, and the arrow is larger. The side choices in the rail's right-click menu show a picture of each position.
 - Dropping files on a saved place always moves them, across drives too.
 - The website's top bar Download button uses the same font and height as the other top bar buttons.
-- The keyboard focus outline is a thin solid ring in the theme accent instead of a thick dotted line, and uses the text color where the accent would be too faint to see.
+- The keyboard focus outline is a thin one-pixel dotted ring in the theme accent instead of a thick dotted line, and uses the text color where the accent would be too faint to see.
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
