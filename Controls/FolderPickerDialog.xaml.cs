@@ -428,6 +428,8 @@ namespace KillerShell
         public string Glyph { get; } = glyph;
         public string Label { get; } = label;
         public string Path  { get; } = path;
+
+        public override string ToString() => Label;
         public bool Pinned { get; } = pinned;
     }
 
@@ -442,6 +444,8 @@ namespace KillerShell
         public bool     IsFolder  { get; } = isFolder;
         public long     SizeBytes { get; } = sizeBytes;
         public DateTime Modified  { get; } = modified;
+
+        public override string ToString() => Name;
 
         public string Glyph         => IsFolder ? GlyphFolder : GlyphFile;
 
