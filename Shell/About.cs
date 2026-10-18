@@ -75,6 +75,7 @@ namespace KillerShell.Shell
 
         bool IAboutHost.StartupUpdateCheck { set => AboutStartupUpdateCheck.IsChecked = value; }
         bool IAboutHost.StartWithWindows   { set => AboutStartWithWindows.IsChecked = value; }
+        bool IAboutHost.CloseToTray        { set => AboutCloseToTray.IsChecked = value; }
 
         bool IAboutHost.DemoPreview => DemoMode;
 
@@ -97,6 +98,9 @@ namespace KillerShell.Shell
 
         private void AboutStartWithWindows_Click(object sender, RoutedEventArgs e)
             => _about.SetStartWithWindows(AboutStartWithWindows.IsChecked == true);
+
+        private void AboutCloseToTray_Click(object sender, RoutedEventArgs e)
+            => _about.SetCloseToTray(AboutCloseToTray.IsChecked == true);
 
         /// <summary>
         /// Clear all Data, the footer's destructive link. Wipes every saved preference and the

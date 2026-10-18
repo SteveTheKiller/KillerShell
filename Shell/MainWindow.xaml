@@ -1784,6 +1784,12 @@
                                             <TextBlock Text="{DynamicResource Str_About_StartWithWindows}"
                                                        TextWrapping="Wrap"/>
                                         </CheckBox>
+                                        <CheckBox x:Name="AboutCloseToTray" Margin="0,6,0,0"
+                                                  ToolTip="{DynamicResource Str_About_CloseToTrayHint}"
+                                                  Click="AboutCloseToTray_Click">
+                                            <TextBlock Text="{DynamicResource Str_About_CloseToTray}"
+                                                       TextWrapping="Wrap"/>
+                                        </CheckBox>
                                         <CheckBox x:Name="AboutConfirmFolderDelete" Margin="0,6,0,0"
                                                   Checked="AboutConfirmFolderDelete_Changed"
                                                   Unchecked="AboutConfirmFolderDelete_Changed">

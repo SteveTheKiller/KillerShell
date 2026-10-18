@@ -26,9 +26,17 @@ namespace KillerShell.Shell
         // FilePane.Active), reached through the same-named shims in Panes.cs so every call site
         // reads unchanged. Two panes each own their own strip and their own active search.
 
+        /// <summary>Close to system tray (Shell/CloseToTray.cs): hides the window to the notification
+        /// area from the first line of OnClosing when the About option is on.</summary>
+        private readonly KillerFamily.Shell.CloseToTray _tray;
+
+        /// <summary>A second launch brings the window back, from the notification area too.</summary>
+        internal void ShowFromTray() => _tray.ShowWindow();
+
         public MainWindow()
         {
             InitializeComponent();
+            _tray = KillerFamily.Shell.CloseToTray.Attach(this, Services.AppInfo.DisplayName, Loc, () => Features.About.AboutController.CloseToTrayEnabled);
             new KillerFamily.Accessibility.OverlayFocus(this)
                 .Track(ShortcutsOverlay, AboutOverlay, FontsOverlay, AssocOverlay, PatternHelpOverlay);
             _about = new Features.About.AboutController(this);   // Features/About

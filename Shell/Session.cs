@@ -85,6 +85,9 @@ namespace KillerShell.Shell
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            // Close to system tray: hide before the quit prompt, the tab save or the fade.
+            if (_tray.HideInstead(e)) return;
+
             // Stage 1: the quit prompt (unless confirmed, remembered, demo, or ELEVATED).
             //
             // The admin window never prompts. Both checkboxes are about the session - "close my
