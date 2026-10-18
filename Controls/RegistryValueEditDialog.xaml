@@ -21,9 +21,9 @@
          four input panels below is visible at a time. Requires an explicit Save click; there is
          no auto-save on focus-lost anywhere in this dialog (CLAUDE.md safety rule for this
          feature) - tabbing away from a half-typed edit must never silently write bad data. -->
-    <picker:PickerBorder x:Name="RootBorder" Opacity="0"
+<picker:PickerBorder x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
-            BorderBrush="{DynamicResource CardBorderBrush}"
+            BorderBrush="{DynamicResource DialogFrameBrush}"
             BorderThickness="1"
             CornerRadius="{DynamicResource PanelCornerRadius}"
             Margin="{DynamicResource DialogHaloMargin}">

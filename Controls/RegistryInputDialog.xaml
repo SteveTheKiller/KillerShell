@@ -19,9 +19,9 @@
          one input shape ConfirmDialog itself does not carry (message + optional checkboxes only),
          so this is its sibling rather than a reused instance. Used for renaming a key/value and
          for naming a freshly created key/value (RegistryEditorControl.cs). -->
-    <picker:PickerBorder x:Name="RootBorder" Opacity="0"
+<picker:PickerBorder x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
-            BorderBrush="{DynamicResource CardBorderBrush}"
+            BorderBrush="{DynamicResource DialogFrameBrush}"
             BorderThickness="1"
             CornerRadius="{DynamicResource PanelCornerRadius}"
             Margin="{DynamicResource DialogHaloMargin}">

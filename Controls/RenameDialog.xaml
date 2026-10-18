@@ -20,9 +20,9 @@
         SnapsToDevicePixels="True"
         ShowInTaskbar="False">
 
-    <picker:PickerBorder x:Name="RootBorder" Opacity="0"
+<picker:PickerBorder x:Name="RootBorder" Opacity="0"
             Background="{DynamicResource BackgroundBrush}"
-            BorderBrush="{DynamicResource CardBorderBrush}"
+            BorderBrush="{DynamicResource DialogFrameBrush}"
             BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}"
             Margin="{DynamicResource DialogHaloMargin}">
         <Border.Effect>
