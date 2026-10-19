@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -14,10 +15,11 @@ namespace KillerShell.Services
     // exists, and it means everything the shell would have done for free is done here instead:
     // recursive enumeration, per-byte progress, conflict resolution, cancellation.
     //
-    // ONE EXCEPTION: the Recycle Bin. There is no managed route to it and no documented file
+    // File bytes and metadata use CopyFileEx, with our progress and cancellation callbacks.
+    // The Recycle Bin has no managed route and no documented file
     // format to write - a "deleted" file is a rename plus an entry in a per-volume index that
     // only the shell maintains. Recycling therefore calls SHFileOperation with FOF_ALLOWUNDO,
-    // which is also what gives you Ctrl+Z in Explorer afterwards. Everything else is ours.
+    // which is also what gives you Ctrl+Z in Explorer afterwards.
     //
     // All of this runs OFF the UI thread. Copying a folder is an unbounded amount of work and
     // the callbacks below are the only things that touch the caller, so the caller is
@@ -73,10 +75,7 @@ namespace KillerShell.Services
 
     public static class FileOps
     {
-        // Big enough that the syscall overhead disappears on a network share, small enough that
-        // the progress bar still moves inside a single large file. A whole-file File.Copy would
-        // be marginally faster and would freeze the bar for the length of an ISO.
-        private const int CopyBufferSize = 1 << 20;   // 1 MB
+        private const int CopyProgressInterval = 4 << 20;
 
         /// <summary>
         /// One unit of work: a single FILE to copy or move. Directories are not units - they are
@@ -330,35 +329,60 @@ namespace KillerShell.Services
                                        ".KillerShell-copy-" + Guid.NewGuid().ToString("N") + ".tmp");
             try
             {
-                using (var input = new FileStream(src, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, CopyBufferSize))
-                using (var output = new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None, CopyBufferSize))
+                ct.ThrowIfCancellationRequested();
+                long size = SafeSize(src);
+                long initialBytes = progress.BytesDone;
+                long reportedBytes = 0;
+                FileOpProgress current = progress;
+                Exception? callbackError = null;
+                CopyProgressRoutine callback = (total, transferred, streamSize, streamTransferred,
+                    streamNumber, reason, sourceHandle, targetHandle, data) =>
                 {
-                    var buffer = new byte[CopyBufferSize];
-                    int read;
-                    long sinceReport = 0;
-
-                    while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                    if (ct.IsCancellationRequested) return 1;
+                    try
                     {
-                        ct.ThrowIfCancellationRequested();
-                        output.Write(buffer, 0, read);
-
-                        progress.BytesDone += read;
-                        sinceReport += read;
-
-                        if (sinceReport >= 4 * CopyBufferSize) { sinceReport = 0; onProgress(progress); }
+                        // The manifest counts the main stream. CopyFileEx also copies named
+                        // streams, including Windows download provenance, without inflating it.
+                        long copied = Math.Min(size, transferred);
+                        current.BytesDone = initialBytes + copied;
+                        if (copied - reportedBytes >= CopyProgressInterval || transferred == total)
+                        {
+                            reportedBytes = copied;
+                            onProgress(current);
+                        }
                     }
-                }
+                    catch (Exception ex) { callbackError = ex; return 1; }
+                    return ct.IsCancellationRequested ? 1u : 0u;
+                };
+
+                bool copiedFile = CopyFileEx(src, temp, callback, IntPtr.Zero, IntPtr.Zero, 1);
+                int error = Marshal.GetLastWin32Error();
+                if (callbackError != null) throw callbackError;
+                ct.ThrowIfCancellationRequested();
+                if (!copiedFile) throw new IOException(new Win32Exception(error).Message);
+                progress.BytesDone = initialBytes + size;
 
                 ct.ThrowIfCancellationRequested();
-                try { File.SetLastWriteTimeUtc(temp, File.GetLastWriteTimeUtc(src)); } catch { }
                 if (File.Exists(dst)) File.Replace(temp, dst, null);
                 else File.Move(temp, dst);
             }
             finally
             {
-                if (File.Exists(temp)) File.Delete(temp);
+                if (File.Exists(temp))
+                {
+                    File.SetAttributes(temp, File.GetAttributes(temp) & ~FileAttributes.ReadOnly);
+                    File.Delete(temp);
+                }
             }
         }
+
+        private delegate uint CopyProgressRoutine(long total, long transferred, long streamSize,
+            long streamTransferred, uint streamNumber, uint reason, IntPtr source, IntPtr target, IntPtr data);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CopyFileEx(string source, string destination, CopyProgressRoutine progress,
+            IntPtr data, IntPtr cancel, uint flags);
 
         private static void MoveFile(string src, string dst, ref FileOpProgress progress,
                                      Action<FileOpProgress> onProgress, CancellationToken ct)

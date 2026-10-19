@@ -26,6 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
+- File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark.
 - Content search recognizes UTF-16 and UTF-32 text with byte order marks instead of skipping it as binary.
 - Terminal folder and title updates accept standard escape sequence terminators, including sequences split across reads.
 - Editing a ZIP preserves file permissions and folder attributes on entries kept in the archive.

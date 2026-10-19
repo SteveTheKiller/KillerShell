@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.Win32.SafeHandles;
 using KillerShell.Services;
 using Xunit;
 
@@ -8,6 +10,65 @@ namespace KillerShell.Tests.Services
 {
     public sealed class FileOpsTests
     {
+        [Theory]
+        [InlineData(false, false, false)]
+        [InlineData(true, false, false)]
+        [InlineData(false, true, false)]
+        [InlineData(true, true, false)]
+        [InlineData(false, false, true)]
+        [InlineData(true, false, true)]
+        public void CopyOrCopyThenDelete_PreservesAlternateStreams(bool replace, bool empty, bool move)
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Path.Combine(root, "download.txt");
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                string destination = Path.Combine(target, "download.txt");
+                File.WriteAllText(source, empty ? "" : "download contents");
+                WriteStream(source, "Zone.Identifier", "[ZoneTransfer]\r\nZoneId=3\r\n");
+                WriteStream(source, "review-metadata", "preserve this metadata");
+                Assert.Equal("preserve this metadata", ReadStream(source, "review-metadata"));
+                if (replace) File.WriteAllText(destination, "old content");
+
+                // An extended source spelling takes the same copy/delete route as a different drive.
+                string input = move ? @"\\?\" + source : source;
+                FileOpResult result = FileOps.CopyOrMove([input], target, move,
+                    _ => ConflictChoice.Replace, _ => { }, CancellationToken.None);
+
+                Assert.Empty(result.Failed);
+                Assert.Equal(1, result.Succeeded);
+                Assert.Equal(empty ? "" : "download contents", File.ReadAllText(destination));
+                Assert.Equal("[ZoneTransfer]\r\nZoneId=3\r\n", ReadStream(destination, "Zone.Identifier"));
+                Assert.Equal("preserve this metadata", ReadStream(destination, "review-metadata"));
+                Assert.Equal(!move, File.Exists(source));
+                Assert.Single(Directory.GetFiles(target));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        private static void WriteStream(string path, string name, string contents)
+        {
+            using var handle = OpenStream(path + ":" + name, 0x40000000, 3, IntPtr.Zero, 2, 0, IntPtr.Zero);
+            Assert.False(handle.IsInvalid, "Cannot create alternate stream: " + Marshal.GetLastWin32Error());
+            using var stream = new FileStream(handle, FileAccess.Write);
+            using var writer = new StreamWriter(stream);
+            writer.Write(contents);
+        }
+
+        private static string ReadStream(string path, string name)
+        {
+            using var handle = OpenStream(path + ":" + name, 0x80000000, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
+            Assert.False(handle.IsInvalid, "Cannot read alternate stream: " + Marshal.GetLastWin32Error());
+            using var stream = new FileStream(handle, FileAccess.Read);
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
+
+        [DllImport("kernel32.dll", EntryPoint = "CreateFileW", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern SafeFileHandle OpenStream(string name, uint access, uint share,
+            IntPtr security, uint creation, uint flags, IntPtr template);
+
         [Fact]
         public void CopyMoveRenameAndDelete_StayInsideTemporaryFolders()
         {
