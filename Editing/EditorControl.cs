@@ -259,8 +259,9 @@ namespace KillerShell.Editing
             try
             {
                 // The encoding instance carries its own preamble, so a file that arrived with a
-                // BOM keeps it and one that arrived without stays without.
-                File.WriteAllText(FilePath, Text, _encoding);
+                // BOM keeps it and one that arrived without stays without. Written whole beside
+                // the file and swapped in, so a failed save leaves the old file as it was.
+                Services.SafeFileWrite.Write(FilePath, EncodedBytes());
                 IsModified = false;
                 ReportDirty();
 

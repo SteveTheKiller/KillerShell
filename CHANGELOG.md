@@ -26,6 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
+- A save that fails, such as on a full disk or a file another program has locked, leaves the previous file intact and the document marked unsaved, for normal and administrator saves. Saving keeps the file's permissions, attributes, alternate streams, hard links and symbolic links.
 - Closing and reopening restores both panes, including hidden tabs, and skips missing documents or damaged session entries without moving other tabs. Opening or switching panes preserves each tab's search options.
 - Storage scans enumerate network shares and extended-length paths correctly. Canceled scans cannot overwrite newer results or stop their progress, and scan resources are released when the tab or app closes.
 - A text file whose bytes do not match its UTF-8, UTF-16 or UTF-32 byte order mark is no longer opened with replacement characters that the next save would write over it. It stays closed with a message, and UTF-32 files now open and save unchanged.

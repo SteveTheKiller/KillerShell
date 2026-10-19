@@ -34,15 +34,15 @@ namespace KillerShell.Services
         }
 
         /// <summary>Copies a staged file over <paramref name="target"/> only if it still hashes to
-        /// <paramref name="expectedSha256"/>. The target is untouched on any refusal.</summary>
+        /// <paramref name="expectedSha256"/>. The target is untouched on any refusal or failed
+        /// write (<see cref="SafeFileWrite"/>).</summary>
         internal static bool TryCopy(string stagedPath, string expectedSha256, string target)
         {
             byte[]? data = ReadVerified(stagedPath, expectedSha256);
             if (data == null) return false;
             try
             {
-                using var fs = new FileStream(target, FileMode.Create, FileAccess.Write, FileShare.None);
-                fs.Write(data, 0, data.Length);
+                SafeFileWrite.Write(target, data);
                 return true;
             }
             catch { return false; }

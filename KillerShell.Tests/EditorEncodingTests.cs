@@ -40,7 +40,15 @@ namespace KillerShell.Tests
         [InlineData("bad-utf16be")]
         [InlineData("bad-utf32le")]
         [InlineData("bad-utf32be")]
-        public async Task UnchangedFilesRoundTripAndMalformedFilesAreRefused(string scenario)
+        public Task UnchangedFilesRoundTripAndMalformedFilesAreRefused(string scenario) => RunIsolated(scenario);
+
+        [Theory]
+        [InlineData("save-locked")]
+        [InlineData("save-denied")]
+        [InlineData("save-new-file")]
+        public Task FailedSavesKeepTheFileAndTheEdits(string scenario) => RunIsolated(scenario);
+
+        private static async Task RunIsolated(string scenario)
         {
             string assembly = typeof(EditorEncodingTests).Assembly.Location.Replace("'", "''");
             string application = typeof(MainWindow).Assembly.Location.Replace("'", "''");
@@ -132,9 +140,81 @@ namespace KillerShell.Tests
                     break;
                 case "bad-utf32le": Refused(path, Bytes("FF FE 00 00 00 00 11 00 00 DC 00 00"), "UTF-32 LE"); break;
                 case "bad-utf32be": Refused(path, Bytes("00 00 FE FF 00 00 00 41 00 00 D8 00"), "UTF-32 BE"); break;
+                case "save-locked":
+                {
+                    // A byte-range lock held elsewhere lets a truncating write open the file and
+                    // then refuses the write, which used to leave the file empty.
+                    byte[] original = new UTF8Encoding(false).GetBytes(Sample);
+                    File.WriteAllBytes(path, original);
+                    var editor = Loaded(path);
+                    editor.Document.Insert(0, "edited ");
+                    using (var other = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        other.Lock(0, 4096);
+                        Assert.False(editor.SaveFile(out string error, out bool denied), "Save reported success over a locked file.");
+                        Assert.False(denied);
+                        Assert.False(string.IsNullOrWhiteSpace(error));
+                        Assert.True(editor.IsModified, "A failed save cleared the unsaved mark.");
+                        Assert.Equal(original.Length, new FileInfo(path).Length);   // the locked bytes cannot be read until unlocked
+                        other.Unlock(0, 4096);
+                    }
+                    Assert.Equal(Hex(original), Hex(File.ReadAllBytes(path)));
+                    AssertOnlyFile(path);
+                    break;
+                }
+                case "save-denied":
+                {
+                    File.WriteAllText(path, "protected");
+                    var me = System.Security.Principal.WindowsIdentity.GetCurrent().User!;
+                    var deny = new System.Security.AccessControl.FileSystemAccessRule(me,
+                        System.Security.AccessControl.FileSystemRights.WriteData | System.Security.AccessControl.FileSystemRights.AppendData,
+                        System.Security.AccessControl.AccessControlType.Deny);
+                    var acl = File.GetAccessControl(path);
+                    acl.AddAccessRule(deny);
+                    File.SetAccessControl(path, acl);
+                    try
+                    {
+                        var editor = Loaded(path);
+                        editor.Document.Insert(0, "edited ");
+                        Assert.False(editor.SaveFile(out _, out bool denied));
+                        Assert.True(denied, "Access denied must still be reported so the elevated retry can be offered.");
+                        Assert.True(editor.IsModified);
+                        Assert.Equal("protected", File.ReadAllText(path));
+                        AssertOnlyFile(path);
+                    }
+                    finally
+                    {
+                        acl = File.GetAccessControl(path);
+                        acl.RemoveAccessRule(deny);
+                        File.SetAccessControl(path, acl);
+                    }
+                    break;
+                }
+                case "save-new-file":
+                {
+                    var editor = new EditorControl(string.Empty);
+                    editor.LoadEmpty();
+                    editor.Text = "brand new";
+                    editor.AdoptPath(path, new UTF8Encoding(false));
+                    Assert.True(editor.SaveFile(out string error, out _), "Save failed: " + error);
+                    Assert.False(editor.IsModified);
+                    Assert.Equal("brand new", File.ReadAllText(path));
+                    AssertOnlyFile(path);
+                    break;
+                }
                 default: throw new ArgumentException("Unknown scenario " + scenario);
             }
         }
+
+        private static EditorControl Loaded(string path)
+        {
+            var editor = new EditorControl(path);
+            Assert.True(editor.LoadFile(out string error), "Load failed: " + error);
+            return editor;
+        }
+
+        private static void AssertOnlyFile(string path) =>
+            Assert.Equal(new[] { Path.GetFileName(path) }, Directory.GetFiles(Path.GetDirectoryName(path)!).Select(Path.GetFileName).ToArray());
 
         private static void RoundTrip(string path, byte[] original, string label, string? text)
         {
