@@ -78,6 +78,12 @@ namespace KillerShell.Tools
         private CancellationTokenSource? _loadCts;
         private bool _loadedOnce;
 
+        // Which load owns the grid and the status line. Bumped on every Reload and on Shutdown,
+        // only on the UI thread, and checked there when each queued callback finally runs: a
+        // read that was canceled after it queued rows must not add them to the view that
+        // replaced it, whatever order the dispatcher gets to them in.
+        private int _loadGeneration;
+
         internal EventViewerControl()
         {
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -139,6 +145,7 @@ namespace KillerShell.Tools
         {
             _statusClearTimer.Stop();
             CancelLoad();
+            _loadGeneration++;
         }
 
         /// <summary>Focus the filter box. Called after a tab switch lands on this control.</summary>
@@ -412,6 +419,7 @@ namespace KillerShell.Tools
         private void Reload()
         {
             CancelLoad();
+            int generation = ++_loadGeneration;
             _items.Clear();
 
             // --demo has no real machine to read a log from (Shell/DemoMode.cs), so this never
@@ -440,10 +448,29 @@ namespace KillerShell.Tools
 
             // LongRunning, same reasoning as ProcessListControl's WMI work: EventLogReader holds
             // a native handle, and a pooled ThreadPool thread being reused mid-read is exactly
-            // the kind of thing that class of bug comes from.
-            Task.Factory.StartNew(() => RunLoad(logs, level, cts.Token),
-                cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            // the kind of thing that class of bug comes from. The token source is released on
+            // the UI thread once its reader is done, after any Cancel that thread may still make.
+            Task.Factory.StartNew(() =>
+            {
+                try { RunLoad(logs, level, cts.Token, generation); }
+                finally
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (ReferenceEquals(_loadCts, cts)) _loadCts = null;
+                        cts.Dispose();
+                    }));
+                }
+            }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
+
+        /// <summary>Runs <paramref name="action"/> on the UI thread only if
+        /// <paramref name="generation"/> still owns the view when it gets there.</summary>
+        private void PostForLoad(int generation, Action action) =>
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (generation == _loadGeneration) action();
+            }));
 
         private void CancelLoad()
         {
@@ -645,7 +672,7 @@ namespace KillerShell.Tools
         /// ProcessListControl's Refresh/BuildSamples pair uses, adapted to a one-shot load
         /// instead of a repeating tick.
         /// </summary>
-        private void RunLoad(string[] logs, LevelFilter level, CancellationToken token)
+        private void RunLoad(string[] logs, LevelFilter level, CancellationToken token, int generation)
         {
             int totalApplied = 0;
             bool firstBatchDone = false;
@@ -659,23 +686,14 @@ namespace KillerShell.Tools
                 var batch = new List<EventLogEntryInfo>(ApplyBatchSize);
                 try
                 {
-                    var query = new EventLogQuery(logName, PathType.LogName, xpath)
+                    foreach (EventLogEntryInfo entry in ReadLog(logName, xpath, token))
                     {
-                        ReverseDirection = true,   // newest first - what a viewer wants to see
-                    };
-                    using var reader = new EventLogReader(query);
-
-                    int readForThisLog = 0;
-                    EventRecord? rec;
-                    while (!token.IsCancellationRequested && readForThisLog < PerLogCap
-                           && (rec = reader.ReadEvent()) != null)
-                    {
-                        using (rec) batch.Add(ToEntry(logName, rec));
-                        readForThisLog++;
+                        batch.Add(entry);
+                        if (token.IsCancellationRequested) break;
 
                         if (batch.Count >= ApplyBatchSize)
                         {
-                            ApplyBatch(batch, ref totalApplied, ref firstBatchDone);
+                            ApplyBatch(generation, batch, ref totalApplied, ref firstBatchDone);
                             batch = new List<EventLogEntryInfo>(ApplyBatchSize);
                         }
                     }
@@ -698,29 +716,55 @@ namespace KillerShell.Tools
                     errorText = string.Format(MainWindow.LocStatic("Str_Evt_RefreshFailed"), ex.Message);
                 }
 
-                if (batch.Count > 0) ApplyBatch(batch, ref totalApplied, ref firstBatchDone);
+                // A canceled read stops here: its partial last batch and its final status belong
+                // to a view that has already been replaced or closed.
+                if (token.IsCancellationRequested) return;
+                if (batch.Count > 0) ApplyBatch(generation, batch, ref totalApplied, ref firstBatchDone);
             }
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            if (token.IsCancellationRequested) return;
+            PostForLoad(generation, () =>
             {
                 if (errorText != null) ShowStatus(errorText, error: true);
                 else ShowStatus(string.Empty, error: false);
-            }));
+            });
         }
 
-        private void ApplyBatch(List<EventLogEntryInfo> batch, ref int totalApplied, ref bool firstBatchDone)
+        /// <summary>Reads one log newest first, given its name and the level XPath. The Windows
+        /// event log is the boundary; tests stand in for it here.</summary>
+        internal Func<string, string, CancellationToken, IEnumerable<EventLogEntryInfo>> ReadLog { get; set; } = ReadWindowsLog;
+
+        private static IEnumerable<EventLogEntryInfo> ReadWindowsLog(string logName, string xpath, CancellationToken token)
+        {
+            var query = new EventLogQuery(logName, PathType.LogName, xpath)
+            {
+                ReverseDirection = true,   // newest first - what a viewer wants to see
+            };
+            using var reader = new EventLogReader(query);
+
+            int readForThisLog = 0;
+            EventRecord? rec;
+            while (!token.IsCancellationRequested && readForThisLog < PerLogCap
+                   && (rec = reader.ReadEvent()) != null)
+            {
+                using (rec) yield return ToEntry(logName, rec);
+                readForThisLog++;
+            }
+        }
+
+        private void ApplyBatch(int generation, List<EventLogEntryInfo> batch, ref int totalApplied, ref bool firstBatchDone)
         {
             var captured = batch;
-            Dispatcher.BeginInvoke(new Action(() =>
+            PostForLoad(generation, () =>
             {
                 foreach (var e in captured) _items.Add(e);
-            }));
+            });
 
             totalApplied += captured.Count;
             if (!firstBatchDone && totalApplied >= FastFirstBatch)
             {
                 firstBatchDone = true;
-                Dispatcher.BeginInvoke(new Action(() => ShowStatus(string.Empty, error: false)));
+                PostForLoad(generation, () => ShowStatus(string.Empty, error: false));
             }
         }
 
