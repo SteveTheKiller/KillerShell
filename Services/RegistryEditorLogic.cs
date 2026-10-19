@@ -139,13 +139,11 @@ namespace KillerShell.Services
             {
                 if (parent.GetSubKeyNames().Any(name => string.Equals(name, newName, StringComparison.OrdinalIgnoreCase)))
                     return new RegistryEditResult(RegistryEditStatus.AlreadyExists);
-                using var source = parent.OpenSubKey(oldName, writable: false);
-                using var destination = parent.CreateSubKey(newName);
-                if (source == null || destination == null)
-                    return new RegistryEditResult(RegistryEditStatus.AccessDenied);
-                CopyKeyContents(source, destination);
-                parent.DeleteSubKeyTree(oldName);
-                return new RegistryEditResult(RegistryEditStatus.Success);
+                int error = RegRenameKey(parent.Handle, oldName, newName);
+                return error == 0
+                    ? new RegistryEditResult(RegistryEditStatus.Success)
+                    : new RegistryEditResult(error == 5 ? RegistryEditStatus.AccessDenied : RegistryEditStatus.Failed,
+                        new System.ComponentModel.Win32Exception(error).Message);
             });
 
         internal static RegistryEditResult DeleteKey(string parentPath, string name)
@@ -228,17 +226,8 @@ namespace KillerShell.Services
         private static extern int RegSetValueEx(Microsoft.Win32.SafeHandles.SafeRegistryHandle key, string name,
                                                 int reserved, uint type, byte[] data, int size);
 
-        private static void CopyKeyContents(RegistryKey source, RegistryKey destination)
-        {
-            foreach (string valueName in source.GetValueNames())
-                if (!CopyValueRaw(source, valueName, destination, valueName))
-                    throw new System.IO.IOException("could not copy value " + valueName);
-            foreach (string subKeyName in source.GetSubKeyNames())
-            {
-                using var sourceChild = source.OpenSubKey(subKeyName, writable: false);
-                using var destinationChild = destination.CreateSubKey(subKeyName);
-                if (sourceChild != null && destinationChild != null) CopyKeyContents(sourceChild, destinationChild);
-            }
-        }
+        [System.Runtime.InteropServices.DllImport("advapi32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern int RegRenameKey(Microsoft.Win32.SafeHandles.SafeRegistryHandle key,
+            string subkey, string newName);
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using KillerShell.Services;
 using Microsoft.Win32;
 using Xunit;
@@ -7,6 +9,43 @@ namespace KillerShell.Tests.Services
 {
     public sealed class RegistryEditorLogicTests
     {
+        [Fact]
+        public void RenameKey_PreservesProtectedPermissionsAndOpenHandles()
+        {
+            string subkey = "Software\\KillerShell.Tests." + Guid.NewGuid().ToString("N");
+            try
+            {
+                using var parent = Registry.CurrentUser.CreateSubKey(subkey);
+                using var source = parent.CreateSubKey("Original");
+                using var child = source.CreateSubKey("Child");
+                var security = new RegistrySecurity();
+                security.SetAccessRuleProtection(true, false);
+                security.AddAccessRule(new RegistryAccessRule(WindowsIdentity.GetCurrent().User!,
+                    RegistryRights.FullControl, InheritanceFlags.ContainerInherit,
+                    PropagationFlags.None, AccessControlType.Allow));
+                source.SetAccessControl(security);
+                child.SetAccessControl(security);
+                source.SetValue("Value", "original");
+                child.SetValue("Value", "child");
+                const AccessControlSections sections = AccessControlSections.Access | AccessControlSections.Owner | AccessControlSections.Group;
+                string sourceSecurity = source.GetAccessControl(sections).GetSecurityDescriptorSddlForm(sections);
+                string childSecurity = child.GetAccessControl(sections).GetSecurityDescriptorSddlForm(sections);
+
+                RegistryEditResult result = RegistryEditorLogic.RenameKey("HKEY_CURRENT_USER\\" + subkey, "Original", "Renamed");
+
+                Assert.True(result.Succeeded, result.Error);
+                Assert.Null(parent.OpenSubKey("Original"));
+                using var renamed = parent.OpenSubKey("Renamed");
+                using var renamedChild = renamed!.OpenSubKey("Child");
+                Assert.Equal(sourceSecurity, renamed.GetAccessControl(sections).GetSecurityDescriptorSddlForm(sections));
+                Assert.Equal(childSecurity, renamedChild!.GetAccessControl(sections).GetSecurityDescriptorSddlForm(sections));
+                Assert.Equal("child", renamedChild.GetValue("Value"));
+                source.SetValue("Value", "through existing handle");
+                Assert.Equal("through existing handle", renamed.GetValue("Value"));
+            }
+            finally { Registry.CurrentUser.DeleteSubKeyTree(subkey, false); }
+        }
+
         [Theory]
         [InlineData("", 1)]
         [InlineData("   ", 1)]
