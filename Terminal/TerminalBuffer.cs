@@ -685,8 +685,35 @@ namespace KillerShell.Terminal
         private void SetDir(string path)
         {
             if (string.IsNullOrWhiteSpace(path) || path == WorkingDirectory) return;
+            if (IsRemotePath(path)) return;
             WorkingDirectory = path;
             DirectoryChanged?.Invoke(path);
+        }
+
+        /// <summary>
+        /// A network share reported by terminal output. Any program can print these sequences,
+        /// including a file shown with type or cat, so a report naming \\some-server\share
+        /// would make the tab's folder and its folder button point at a machine the user never
+        /// chose, and opening it hands that machine the user's sign-in hash. Local folders and
+        /// WSL's own \\wsl$ and \\wsl.localhost paths are kept; a real cd into a share leaves
+        /// the tab on the last local folder.
+        /// </summary>
+        internal static bool IsRemotePath(string path)
+        {
+            string p = path.Replace('/', '\\');
+            if (!p.StartsWith(@"\\", StringComparison.Ordinal)) return false;
+
+            string rest = p.Substring(2);
+            if (rest.StartsWith(@"?\UNC\", StringComparison.OrdinalIgnoreCase)) rest = rest.Substring(6);
+            else if (rest.StartsWith(@"?\", StringComparison.Ordinal) || rest.StartsWith(@".\", StringComparison.Ordinal))
+                return !(rest.Length > 3 && rest[3] == ':');   // \\?\C:\ is local; device paths are not folders
+
+            int slash = rest.IndexOf('\\');
+            string host = slash < 0 ? rest : rest.Substring(0, slash);
+            return !(host.Equals("wsl$", StringComparison.OrdinalIgnoreCase)
+                     || host.Equals("wsl.localhost", StringComparison.OrdinalIgnoreCase)
+                     || host.Equals("localhost", StringComparison.OrdinalIgnoreCase)
+                     || host == "127.0.0.1");
         }
     }
 }

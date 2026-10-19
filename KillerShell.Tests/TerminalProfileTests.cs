@@ -126,6 +126,38 @@ public sealed class TerminalProfileTests
         Assert.Equal("/home/steve/My Project", cwd);
     }
 
+    [Theory]
+    [InlineData("\u001b]7;file://attacker/share/x\u0007")]
+    [InlineData("\u001b]9;9;\\\\attacker\\share\u0007")]
+    [InlineData("\u001b]9;9;//attacker/share\u0007")]
+    [InlineData("\u001b]9;9;\\\\?\\UNC\\attacker\\share\u0007")]
+    public void PrintedNetworkPathsDoNotBecomeTheTabFolder(string output)
+    {
+        var buffer = new TerminalBuffer(80, 25);
+        var parser = new VtParser(buffer);
+        string? cwd = null;
+        buffer.DirectoryChanged += directory => cwd = directory;
+        byte[] data = Encoding.UTF8.GetBytes(output);
+        parser.Feed(data, data.Length);
+        Assert.Null(cwd);
+    }
+
+    [Theory]
+    [InlineData("\u001b]7;file:///C:/Users/steve\u0007", "C:\\Users\\steve")]
+    [InlineData("\u001b]9;9;C:\\Users\\steve\u0007", "C:\\Users\\steve")]
+    [InlineData("\u001b]9;9;\\\\wsl.localhost\\Ubuntu\\home\u0007", "\\\\wsl.localhost\\Ubuntu\\home")]
+    [InlineData("\u001b]9;9;\\\\wsl$\\Ubuntu\\home\u0007", "\\\\wsl$\\Ubuntu\\home")]
+    public void LocalAndWslFoldersStillFollowTheShell(string output, string expected)
+    {
+        var buffer = new TerminalBuffer(80, 25);
+        var parser = new VtParser(buffer);
+        string? cwd = null;
+        buffer.DirectoryChanged += directory => cwd = directory;
+        byte[] data = Encoding.UTF8.GetBytes(output);
+        parser.Feed(data, data.Length);
+        Assert.Equal(expected, cwd);
+    }
+
     [Fact]
     public void ChoosingProfileDoesNotAlsoLaunchDefaultThroughParentMenu()
     {
