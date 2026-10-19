@@ -25,6 +25,12 @@ namespace KillerShell
 
         private readonly RegistryValueKind _kind;
 
+        /// <summary>The base NumberBox's text is written in. The radios report the base the user
+        /// asked for; this is the base the text is actually in, so a switch can read the old text
+        /// in its own base before writing it out in the new one.</summary>
+        private bool _textIsHex = true;
+        private bool _revertingBase;
+
         public RegistryValueEditDialog(string displayName, RegistryValueKind kind, object? currentValue)
         {
             InitializeComponent();
@@ -73,23 +79,43 @@ namespace KillerShell
 
         /// <summary>Re-renders the number box's text when the base radio changes, keeping the same
         /// numeric value - so switching Hex/Decimal never silently changes what will be saved.</summary>
+        /// <remarks>
+        /// Checked fires after the radio has already flipped, so the text is read in the base it
+        /// was written in (_textIsHex), not the newly selected one. Text that base cannot read
+        /// keeps the old base selected and says why: moving "ff" from Decimal to Hex must not
+        /// quietly turn it into 255. Empty text has nothing to reinterpret and just switches.
+        /// </remarks>
         private void NumberBase_Changed(object sender, RoutedEventArgs e)
         {
-            if (NumberBox == null) return;   // fires once during InitializeComponent, before load
-            if (!TryParseNumber(out ulong value, out _)) return;
-            NumberBox.Text = HexRadio.IsChecked == true
+            if (NumberBox == null || _revertingBase) return;   // fires once during InitializeComponent, before load
+            bool toHex = HexRadio.IsChecked == true;
+            if (toHex == _textIsHex) return;
+
+            if (NumberBox.Text.Trim().Length == 0) { _textIsHex = toHex; return; }
+
+            if (!TryParseNumber(out ulong value, out string error))
+            {
+                Fail(error);
+                _revertingBase = true;
+                try { (_textIsHex ? HexRadio : DecRadio).IsChecked = true; }
+                finally { _revertingBase = false; }
+                return;
+            }
+
+            ErrorText.Visibility = Visibility.Collapsed;
+            NumberBox.Text = toHex
                 ? value.ToString("x", CultureInfo.InvariantCulture)
                 : value.ToString(CultureInfo.InvariantCulture);
+            _textIsHex = toHex;
         }
 
         private bool TryParseNumber(out ulong value, out string error)
         {
             error = string.Empty;
             string text = NumberBox.Text.Trim();
-            var style = HexRadio.IsChecked == true ? NumberStyles.HexNumber : NumberStyles.Integer;
-            // The box always holds whichever base is currently selected - NumberBase_Changed
-            // rewrites it the moment the radio flips, so there is only ever one interpretation
-            // live at a time.
+            // Always the base the text is written in. Outside a switch that is also the selected
+            // radio, because a switch either converts the text or puts the radio back.
+            var style = _textIsHex ? NumberStyles.HexNumber : NumberStyles.Integer;
             if (ulong.TryParse(text, style, CultureInfo.InvariantCulture, out value)) return true;
             error = MainWindow.LocStatic("Str_RegEd_InvalidNumber");
             return false;
