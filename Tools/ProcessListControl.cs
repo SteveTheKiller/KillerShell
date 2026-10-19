@@ -1391,6 +1391,9 @@ namespace KillerShell.Tools
         {
             string msg = string.Format(MainWindow.LocStatic("Str_Dlg_ProcKillMsg"), p.Name, p.Pid);
             var owner = Window.GetWindow(this);
+
+            // Held open across the dialog so the id still means this process when it closes.
+            using var pinned = Services.ProcessListLogic.PinProcess(p.Pid);
             var dlg = new ConfirmDialog(msg, p.HasPath ? p.Path : null,
                                         MainWindow.LocStatic("Str_Menu_ProcKill")) { Owner = owner };
             dlg.ShowDialog();
@@ -1398,8 +1401,9 @@ namespace KillerShell.Tools
 
             try
             {
-                using var proc = Process.GetProcessById(p.Pid);
-                proc.Kill();
+                if (pinned != null && pinned.HasExited) throw new ArgumentException();
+                using var looked = pinned == null ? Process.GetProcessById(p.Pid) : null;
+                (pinned ?? looked!).Kill();
                 ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_Killed"), p.Name), error: false);
             }
             catch (ArgumentException)

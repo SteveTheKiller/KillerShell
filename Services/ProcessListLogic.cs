@@ -61,6 +61,27 @@ namespace KillerShell.Services
             return rest.Trim();
         }
 
+        /// <summary>
+        /// Opens the process and holds its handle, so the id cannot be handed to a new process
+        /// while a confirm dialog is up. Windows only reuses an id once every handle to the old
+        /// process is closed. Null when it is gone or cannot be opened (a protected process).
+        /// </summary>
+        internal static System.Diagnostics.Process? PinProcess(int pid)
+        {
+            System.Diagnostics.Process? proc = null;
+            try
+            {
+                proc = System.Diagnostics.Process.GetProcessById(pid);
+                _ = proc.Handle;   // opened now and cached by the Process object for Kill
+                return proc;
+            }
+            catch
+            {
+                proc?.Dispose();
+                return null;
+            }
+        }
+
         private static bool Contains(string value, string query)
             => value.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0;
     }
