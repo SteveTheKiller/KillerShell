@@ -431,6 +431,7 @@
 
     <sys:String x:Key="Str_Menu_Edit">Modifier</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} est trop volumineux pour être modifié ({1} Mo).</sys:String>
+    <sys:String x:Key="Str_Ed_BadEncoding">ses octets ne forment pas un texte {0} valide. Le fichier n'a pas été modifié.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Enregistrer  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Annuler  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Rétablir  (Ctrl+Y)</sys:String>

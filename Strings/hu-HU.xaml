@@ -417,6 +417,7 @@
     <!-- Editor tabs (EditorTabs.cs, Editing/EditorControl.cs) -->
     <sys:String x:Key="Str_Menu_Edit">Szerkesztés</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">A(z) {0} túl nagy a szerkesztéshez ({1} MB).</sys:String>
+    <sys:String x:Key="Str_Ed_BadEncoding">a bájtjai nem érvényes {0} szöveget alkotnak. A fájl nem változott.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Mentés (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Visszavonás (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Újra (Ctrl+Y)</sys:String>

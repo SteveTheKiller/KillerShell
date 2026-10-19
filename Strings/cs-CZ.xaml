@@ -429,6 +429,7 @@
 
     <sys:String x:Key="Str_Menu_Edit">Upravit</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} je příliš velký na úpravy ({1} MB).</sys:String>
+    <sys:String x:Key="Str_Ed_BadEncoding">jeho bajty nejsou platný text {0}. Soubor nebyl změněn.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Uložit  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Zpět  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Znovu  (Ctrl+Y)</sys:String>

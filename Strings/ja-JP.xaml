@@ -429,6 +429,7 @@
 
     <sys:String x:Key="Str_Menu_Edit">編集</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} は大きすぎて編集できません ({1} MB)。</sys:String>
+    <sys:String x:Key="Str_Ed_BadEncoding">バイト列が有効な {0} テキストではありません。ファイルは変更されていません。</sys:String>
     <sys:String x:Key="Str_TT_EdSave">保存  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">元に戻す  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">やり直し  (Ctrl+Y)</sys:String>

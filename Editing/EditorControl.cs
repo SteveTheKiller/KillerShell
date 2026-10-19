@@ -135,8 +135,15 @@ namespace KillerShell.Editing
             try
             {
                 byte[] bytes = File.ReadAllBytes(FilePath);
-                _encoding = Detect(bytes, out int skip);
-                Text = _encoding.GetString(bytes, skip, bytes.Length - skip);
+                if (!TryDecode(bytes, out Encoding encoding, out string text, out string badLabel))
+                {
+                    // Refused rather than opened with replacement characters: an unchanged save
+                    // would then write different bytes over the file. No tab is created.
+                    error = string.Format(MainWindow.LocStatic("Str_Ed_BadEncoding"), badLabel);
+                    return false;
+                }
+                _encoding = encoding;
+                Text = text;
 
                 EncodingLabel = Describe(_encoding);
                 NewLineLabel  = DescribeNewLine(Text);
@@ -281,38 +288,88 @@ namespace KillerShell.Editing
         }
 
         /// <summary>
-        /// How to read these bytes, and how many bytes of byte order mark to step over.
+        /// Decode these bytes in the encoding their byte order mark names, or as UTF-8 or ANSI
+        /// when there is none. False, with the claimed encoding's label, when the bytes are not
+        /// valid in the encoding the mark claims.
         /// </summary>
         /// <remarks>
-        /// The UTF-8 test uses a THROWING decoder, which is the whole point of it: a lenient one
-        /// would swap every byte it did not understand for U+FFFD and the next save would write
-        /// that corruption back over the user's file. Encoding.Default is the system ANSI
-        /// codepage on net48 - which is what a .bat or a .reg written by an older tool actually
-        /// is - and it is only ever reached when the bytes are not valid UTF-8, so plain ASCII
-        /// never lands there.
+        /// Every decoder here THROWS, which is the whole point of it: a lenient one would swap
+        /// every byte it did not understand for U+FFFD and the next save would write that
+        /// corruption back over the user's file. Valid text decoded strictly writes back to the
+        /// same bytes, so the encoding kept for saving is a non-throwing twin.
+        ///
+        /// FF FE 00 00 starts both a UTF-32 LE mark and a UTF-16 LE mark followed by NUL. It is
+        /// UTF-32 when the rest decodes as UTF-32, otherwise UTF-16 when that decodes; either
+        /// way the bytes come back unchanged on save.
+        ///
+        /// Encoding.Default is the system ANSI codepage on net48 - which is what a .bat or a .reg
+        /// written by an older tool actually is - and it is only ever reached when there is no
+        /// mark and the bytes are not valid UTF-8, so plain ASCII never lands there.
         /// </remarks>
-        private static Encoding Detect(byte[] bytes, out int skip)
+        private static bool TryDecode(byte[] bytes, out Encoding encoding, out string text, out string badLabel)
         {
-            if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
-            { skip = 3; return new UTF8Encoding(true); }
+            badLabel = string.Empty;
 
-            if (bytes.Length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xFE)
-            { skip = 2; return new UnicodeEncoding(false, true); }
+            if (StartsWith(bytes, 0xEF, 0xBB, 0xBF))
+                return Strict(bytes, 3, new UTF8Encoding(true, true), new UTF8Encoding(true), out encoding, out text, ref badLabel);
 
-            if (bytes.Length >= 2 && bytes[0] == 0xFE && bytes[1] == 0xFF)
-            { skip = 2; return new UnicodeEncoding(true, true); }
+            if (StartsWith(bytes, 0x00, 0x00, 0xFE, 0xFF))
+                return Strict(bytes, 4, new UTF32Encoding(true, true, true), new UTF32Encoding(true, true), out encoding, out text, ref badLabel);
 
-            skip = 0;
+            if (StartsWith(bytes, 0xFF, 0xFE, 0x00, 0x00))
+            {
+                if (Strict(bytes, 4, new UTF32Encoding(false, true, true), new UTF32Encoding(false, true), out encoding, out text, ref badLabel))
+                    return true;
+                string utf32Label = badLabel;
+                if (Strict(bytes, 2, new UnicodeEncoding(false, true, true), new UnicodeEncoding(false, true), out encoding, out text, ref badLabel))
+                    return true;
+                badLabel = utf32Label;
+                return false;
+            }
+
+            if (StartsWith(bytes, 0xFF, 0xFE))
+                return Strict(bytes, 2, new UnicodeEncoding(false, true, true), new UnicodeEncoding(false, true), out encoding, out text, ref badLabel);
+
+            if (StartsWith(bytes, 0xFE, 0xFF))
+                return Strict(bytes, 2, new UnicodeEncoding(true, true, true), new UnicodeEncoding(true, true), out encoding, out text, ref badLabel);
+
+            if (Strict(bytes, 0, new UTF8Encoding(false, true), new UTF8Encoding(false), out encoding, out text, ref badLabel))
+                return true;
+            badLabel = string.Empty;
+            encoding = Encoding.Default;
+            text = encoding.GetString(bytes);
+            return true;
+        }
+
+        private static bool Strict(byte[] bytes, int skip, Encoding decoder, Encoding writer,
+                                   out Encoding encoding, out string text, ref string badLabel)
+        {
+            encoding = writer;
             try
             {
-                new UTF8Encoding(false, true).GetString(bytes);
-                return new UTF8Encoding(false);   // a non-throwing twin, for the write back
+                text = decoder.GetString(bytes, skip, bytes.Length - skip);
+                return true;
             }
-            catch (DecoderFallbackException) { return Encoding.Default; }
+            catch (DecoderFallbackException)
+            {
+                text = string.Empty;
+                badLabel = Describe(writer);
+                return false;
+            }
+        }
+
+        private static bool StartsWith(byte[] bytes, params byte[] mark)
+        {
+            if (bytes.Length < mark.Length) return false;
+            for (int i = 0; i < mark.Length; i++)
+                if (bytes[i] != mark[i]) return false;
+            return true;
         }
 
         private static string Describe(Encoding encoding)
         {
+            if (encoding is UTF32Encoding u32) return u32.GetPreamble().Length > 0 && u32.GetPreamble()[0] == 0x00
+                ? "UTF-32 BE" : "UTF-32 LE";
             if (encoding is UnicodeEncoding u) return u.GetPreamble().Length > 0 && u.GetPreamble()[0] == 0xFE
                 ? "UTF-16 BE" : "UTF-16 LE";
             if (encoding is UTF8Encoding utf8) return utf8.GetPreamble().Length > 0 ? "UTF-8 BOM" : "UTF-8";

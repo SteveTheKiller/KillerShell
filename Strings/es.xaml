@@ -431,6 +431,7 @@
 
     <sys:String x:Key="Str_Menu_Edit">Editar</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} es demasiado grande para editarlo ({1} MB).</sys:String>
+    <sys:String x:Key="Str_Ed_BadEncoding">sus bytes no son texto {0} válido. El archivo no se modificó.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Guardar  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Deshacer  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Rehacer  (Ctrl+Y)</sys:String>

@@ -399,6 +399,7 @@
     <!-- Editor tabs -->
     <sys:String x:Key="Str_Menu_Edit">Modifica</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} è troppo grande per essere modificato ({1} MB).</sys:String>
+    <sys:String x:Key="Str_Ed_BadEncoding">i suoi byte non sono testo {0} valido. Il file non è stato modificato.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Salva  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Annulla  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Ripeti  (Ctrl+Y)</sys:String>

@@ -1,0 +1,167 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using KillerShell.Editing;
+using KillerShell.Services;
+using KillerShell.Shell;
+using Xunit;
+
+namespace KillerShell.Tests
+{
+    /// <summary>
+    /// Opens real files through the editor's own load and save. A file with no edits must save
+    /// back byte for byte, and a file whose bytes do not match the encoding its byte order mark
+    /// claims must be refused instead of opened with replacement characters that the next save
+    /// would write over the original.
+    /// </summary>
+    public sealed class EditorEncodingTests
+    {
+        [Theory]
+        [InlineData("utf8")]
+        [InlineData("utf8-bom")]
+        [InlineData("utf16le")]
+        [InlineData("utf16be")]
+        [InlineData("utf32le")]
+        [InlineData("utf32be")]
+        [InlineData("utf16le-leading-nul")]
+        [InlineData("utf32le-mark-on-utf16")]
+        [InlineData("ansi")]
+        [InlineData("empty")]
+        [InlineData("bom-only")]
+        [InlineData("bad-utf8-bom")]
+        [InlineData("bad-utf16le-odd")]
+        [InlineData("bad-utf16le-lone-surrogate")]
+        [InlineData("bad-utf16be")]
+        [InlineData("bad-utf32le")]
+        [InlineData("bad-utf32be")]
+        public async Task UnchangedFilesRoundTripAndMalformedFilesAreRefused(string scenario)
+        {
+            string assembly = typeof(EditorEncodingTests).Assembly.Location.Replace("'", "''");
+            string application = typeof(MainWindow).Assembly.Location.Replace("'", "''");
+            string assertions = typeof(Assert).Assembly.Location.Replace("'", "''");
+            string script = "$ErrorActionPreference = 'Stop'; try { " +
+                "[Reflection.Assembly]::LoadFrom('" + application + "') | Out-Null; " +
+                "[Reflection.Assembly]::LoadFrom('" + assertions + "') | Out-Null; " +
+                "[Reflection.Assembly]::LoadFrom('" + assembly + "') | Out-Null; " +
+                "[KillerShell.Tests.EditorEncodingScenario]::Run('" + scenario + "'); exit 0 " +
+                "} catch { [Console]::Error.WriteLine($_.Exception.ToString()); exit 1 }";
+            using var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = "-NoProfile -NonInteractive -STA -EncodedCommand " +
+                    Convert.ToBase64String(Encoding.Unicode.GetBytes(script)),
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            })!;
+            var output = process.StandardOutput.ReadToEndAsync();
+            var errors = process.StandardError.ReadToEndAsync();
+            if (!process.WaitForExit(60000))
+            {
+                process.Kill();
+                Assert.Fail("The editor encoding scenario did not finish.");
+            }
+            Assert.True(process.ExitCode == 0, $"Scenario {scenario} exited with {process.ExitCode}.\n" + await output + await errors);
+        }
+    }
+
+    public static class EditorEncodingScenario
+    {
+        private const string Sample = "Café über 日本 \U0001F600\r\nline two\r\n";
+
+        // Called by the isolated STA process through its public test entry point.
+        public static void Run(string scenario)
+        {
+            var settings = new Dictionary<string, string>();
+            ThemeManager.GetSetting = key => settings.TryGetValue(key, out string value) ? value : null;
+            ThemeManager.SetSetting = (key, value) => settings[key] = value;
+            Application.ResourceAssembly = typeof(MainWindow).Assembly;
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+            foreach (string resource in new[] { "Themes/Dark.xaml", "Controls/Controls.xaml", "Controls/AppStyles.xaml", "Strings/en-US.xaml" })
+                app.Resources.MergedDictionaries.Add(new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/KillerShell;component/" + resource)
+                });
+            string folder = Path.Combine(Path.GetTempPath(), "ks-editor-encoding-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(folder);
+            try { Check(scenario, Path.Combine(folder, "fixture.txt")); }
+            finally
+            {
+                try { Directory.Delete(folder, true); } catch (IOException) { }
+                app.Shutdown();
+            }
+        }
+
+        private static void Check(string scenario, string path)
+        {
+            switch (scenario)
+            {
+                case "utf8": RoundTrip(path, new UTF8Encoding(false).GetBytes(Sample), "UTF-8", Sample); break;
+                case "utf8-bom": RoundTrip(path, WithBom(new UTF8Encoding(true)), "UTF-8 BOM", Sample); break;
+                case "utf16le": RoundTrip(path, WithBom(new UnicodeEncoding(false, true)), "UTF-16 LE", Sample); break;
+                case "utf16be": RoundTrip(path, WithBom(new UnicodeEncoding(true, true)), "UTF-16 BE", Sample); break;
+                case "utf32le": RoundTrip(path, WithBom(new UTF32Encoding(false, true)), "UTF-32 LE", Sample); break;
+                case "utf32be": RoundTrip(path, WithBom(new UTF32Encoding(true, true)), "UTF-32 BE", Sample); break;
+                case "utf16le-leading-nul":
+                    // FF FE 00 00 also starts a UTF-32 LE mark. A UTF-16 file whose first
+                    // character is NUL and whose length does not fit UTF-32 stays UTF-16.
+                    RoundTrip(path, Bytes("FF FE 00 00 41 00"), "UTF-16 LE", "\0A");
+                    break;
+                case "ansi":
+                    // Not valid UTF-8, so it is read with the system code page as before.
+                    RoundTrip(path, Bytes("48 E9 6C 6C 6F 0D 0A"), "ANSI", null);
+                    break;
+                case "empty": RoundTrip(path, Array.Empty<byte>(), "UTF-8", ""); break;
+                case "bom-only": RoundTrip(path, Bytes("EF BB BF"), "UTF-8 BOM", ""); break;
+                case "bad-utf8-bom": Refused(path, Bytes("EF BB BF C3 28"), "UTF-8"); break;
+                case "bad-utf16le-odd": Refused(path, Bytes("FF FE 41 00 FF"), "UTF-16 LE"); break;
+                case "bad-utf16le-lone-surrogate": Refused(path, Bytes("FF FE 41 00 00 DC 42 00"), "UTF-16 LE"); break;
+                case "bad-utf16be": Refused(path, Bytes("FE FF 00 41 D8 00"), "UTF-16 BE"); break;
+                case "utf32le-mark-on-utf16":
+                    // Starts like UTF-32 LE but is not valid UTF-32. It is valid UTF-16 LE, which
+                    // reads and writes these exact bytes, so it opens as that.
+                    RoundTrip(path, Bytes("FF FE 00 00 41 00 00 00 00 00 11 00"), "UTF-16 LE", "\0A\0\0\u0011");
+                    break;
+                case "bad-utf32le": Refused(path, Bytes("FF FE 00 00 00 00 11 00 00 DC 00 00"), "UTF-32 LE"); break;
+                case "bad-utf32be": Refused(path, Bytes("00 00 FE FF 00 00 00 41 00 00 D8 00"), "UTF-32 BE"); break;
+                default: throw new ArgumentException("Unknown scenario " + scenario);
+            }
+        }
+
+        private static void RoundTrip(string path, byte[] original, string label, string? text)
+        {
+            File.WriteAllBytes(path, original);
+            var editor = new EditorControl(path);
+            Assert.True(editor.LoadFile(out string error), "Load failed: " + error);
+            Assert.Equal(label, editor.EncodingLabel);
+            if (text != null) Assert.Equal(text, editor.Text);
+            Assert.True(editor.SaveFile(out string saveError, out _), "Save failed: " + saveError);
+            Assert.Equal(Hex(original), Hex(File.ReadAllBytes(path)));
+        }
+
+        private static void Refused(string path, byte[] original, string label)
+        {
+            File.WriteAllBytes(path, original);
+            var editor = new EditorControl(path);
+            Assert.False(editor.LoadFile(out string error), "A malformed " + label + " file opened with text: " + Hex(Encoding.Unicode.GetBytes(editor.Text)));
+            Assert.Contains(label, error);
+            Assert.Equal(Hex(original), Hex(File.ReadAllBytes(path)));
+        }
+
+        private static byte[] WithBom(Encoding encoding) =>
+            encoding.GetPreamble().Concat(encoding.GetBytes(Sample)).ToArray();
+
+        private static byte[] Bytes(string hex) =>
+            hex.Split(' ').Select(b => Convert.ToByte(b, 16)).ToArray();
+
+        private static string Hex(byte[] bytes) => BitConverter.ToString(bytes);
+    }
+}

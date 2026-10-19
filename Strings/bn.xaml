@@ -431,6 +431,7 @@
 
     <sys:String x:Key="Str_Menu_Edit">সম্পাদনা</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} সম্পাদনা করার জন্য অত্যধিক বড় ({1} MB)।</sys:String>
+    <sys:String x:Key="Str_Ed_BadEncoding">এর বাইটগুলো বৈধ {0} টেক্সট নয়। ফাইলটি পরিবর্তন করা হয়নি।</sys:String>
     <sys:String x:Key="Str_TT_EdSave">সংরক্ষণ  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">পূর্বাবস্থা  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">পুনরায় করুন  (Ctrl+Y)</sys:String>
