@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,10 +10,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit;
 using KillerShell.Services;
+using KillerShell.Models;
 using KillerShell.Shell;
 using Xunit;
 
@@ -29,6 +32,7 @@ public sealed class WindowCloseTests
     [InlineData("clean")]
     [InlineData("generic")]
     [InlineData("generic-cancel")]
+    [InlineData("generic-cancel-watcher")]
     [InlineData("session-ending")]
     public async Task ClosingRespectsUnsavedDocuments(string scenario)
     {
@@ -114,7 +118,7 @@ public static class WindowCloseScenario
                 bool discard = ((TextBlock)dialog.FindName("MsgText")).Text == (string)app.FindResource("Str_Dlg_DiscardMsg");
                 if (discard) discardPrompts++;
                 bool accept = finishing || acceptClose || (twoPanes && discardPrompts == 1)
-                    || (!discard && scenario != "generic-cancel");
+                    || (!discard && !scenario.StartsWith("generic-cancel", StringComparison.Ordinal));
                 Click(dialog, accept ? "OkBtn" : "CancelBtn");
             }
         };
@@ -125,6 +129,13 @@ public static class WindowCloseScenario
             window.Closing += (_, _) => blockedEditsDuringFade |= !window.IsEnabled;
             window.Show();
             Pump(TimeSpan.FromMilliseconds(200));
+            if (scenario == "generic-cancel-watcher")
+            {
+                timer.Start();
+                VerifyCanceledCloseKeepsLiveState(window);
+                Assert.False(closed);
+                return;
+            }
             editors.Add(NewDocument(window, "LeftPane"));
             if (twoPanes)
             {
@@ -193,6 +204,45 @@ public static class WindowCloseScenario
 
     private static void Click(FrameworkElement root, string name) =>
         ((Button)root.FindName(name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+    private static void VerifyCanceledCloseKeepsLiveState(MainWindow window)
+    {
+        string folder = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(folder);
+        try
+        {
+            var pane = (FrameworkElement)window.FindName("LeftPane");
+            var address = (TextBox)pane.FindName("AddressBox");
+            var results = (ItemsControl)pane.FindName("ResultsList");
+            File.WriteAllText(Path.Combine(folder, "before.txt"), "before close");
+            address.Text = folder;
+            address.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window), 0, Key.Enter)
+                { RoutedEvent = Keyboard.KeyDownEvent });
+            WaitFor(() => results.Items.OfType<SearchResult>().Any(item => item.FileName == "before.txt"));
+            string state = Environment.GetEnvironmentVariable("KS_STATE")!;
+            Assert.True(File.Exists(state));
+            string oldPalette = File.ReadAllText(state);
+
+            window.Close();
+            Pump(TimeSpan.FromMilliseconds(300));
+
+            Assert.True(window.IsVisible);
+            Assert.True(File.Exists(state), "Cancel must preserve the shell state file.");
+            ThemeManager.ApplyAccent(ThemeManager.Current,
+                ThemeManager.AccentChoiceFor(ThemeManager.Current) == Accent.Red ? Accent.Blue : Accent.Red);
+            Assert.NotEqual(oldPalette, File.ReadAllText(state));
+            File.WriteAllText(Path.Combine(folder, "after.txt"), "after canceled close");
+            WaitFor(() => results.Items.OfType<SearchResult>().Any(item => item.FileName == "after.txt"));
+        }
+        finally { Directory.Delete(folder, true); }
+    }
+
+    private static void WaitFor(Func<bool> condition)
+    {
+        var watch = Stopwatch.StartNew();
+        while (!condition() && watch.Elapsed < TimeSpan.FromSeconds(5)) Pump(TimeSpan.FromMilliseconds(50));
+        Assert.True(condition(), "The live folder listing did not update.");
+    }
 
     private static TextEditor NewDocument(MainWindow window, string paneName)
     {
