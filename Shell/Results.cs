@@ -373,7 +373,7 @@ namespace KillerShell.Shell
         {
             // FrameworkElement, not MenuItem: the inline row buttons share this handler.
             if (sender is FrameworkElement fe && fe.Tag is string path && System.IO.File.Exists(path))
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path) { UseShellExecute = true });
+                ReportShellOpen(_active, Services.ShellOpen.Open(path));
         }
 
         private void OpenWith_Click(object sender, RoutedEventArgs e)

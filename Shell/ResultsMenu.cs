@@ -199,7 +199,14 @@ namespace KillerShell.Shell
                 return;
             }
 
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(p!) { UseShellExecute = true });
+            ReportShellOpen(_active, Services.ShellOpen.Open(p!));
+        }
+
+        /// <summary>Puts a declined or refused open on the tab's status line.</summary>
+        internal void ReportShellOpen(SearchTab t, Services.ShellOpenResult result)
+        {
+            if (result == Services.ShellOpenResult.Declined) SetTabStatusKey(t, "Str_Status_ElevationDeclined");
+            else if (result == Services.ShellOpenResult.Failed) SetTabStatusKey(t, "Str_Status_ShellFailed");
         }
 
         // Opens the file in an editor TAB (EditorTabs.cs), never through its association. That
@@ -236,19 +243,9 @@ namespace KillerShell.Shell
         {
             string? p = MenuFile();
             if (p == null || !File.Exists(p)) { SetTabStatusKey(_active, "Str_Status_FileOnly"); return; }
-            try
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(p)
-                {
-                    UseShellExecute = true,
-                    Verb            = "runas",
-                });
-            }
-            catch (System.ComponentModel.Win32Exception)
-            {
-                // The user declined the UAC prompt. That is an answer, not a failure.
-                SetTabStatusKey(_active, "Str_Status_ElevationDeclined");
-            }
+            // A declined UAC prompt is an answer, not a failure; anything else Windows refused
+            // is reported as a refusal rather than as a decline.
+            ReportShellOpen(_active, Services.ShellOpen.Open(p, "runas"));
         }
 
         // /select works for a folder too - it opens the parent with the folder highlighted,

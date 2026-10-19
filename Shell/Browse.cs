@@ -578,14 +578,12 @@ namespace KillerShell.Shell
                     return;
                 }
                 SetTabStatus(tab, string.Empty);
-                System.Diagnostics.Process.Start(
-                    new System.Diagnostics.ProcessStartInfo(temp) { UseShellExecute = true });
+                ReportShellOpen(tab, Services.ShellOpen.Open(temp));
                 return;
             }
 
             if (File.Exists(r.FilePath))
-                System.Diagnostics.Process.Start(
-                    new System.Diagnostics.ProcessStartInfo(r.FilePath) { UseShellExecute = true });
+                ReportShellOpen(_active, Services.ShellOpen.Open(r.FilePath));
         }
     }
 }
