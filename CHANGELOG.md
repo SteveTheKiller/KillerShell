@@ -62,6 +62,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The website's MCP page, release details, contact cards, pattern comments and feature carousel controls are translated, and the Help and Technical pages were retranslated so they read naturally in every language.
 - Spanish, French and Turkish text on the website that had lost or misplaced its accents reads correctly again.
 - On phones, the website's logo, download hash, Help shortcut list and Technical CLI commands fit the screen instead of making the page scroll sideways.
+- The footer copyright sits a few pixels further from the corner grip instead of running into it.
 
 ## [1.4.0] - 2026-10-15
 
