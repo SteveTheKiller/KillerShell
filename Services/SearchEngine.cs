@@ -315,11 +315,13 @@ namespace KillerShell.Services
                 using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read,
                                               FileShare.Read, bufferSize: 65536);
 
-                // Skip likely binary files - null byte in first 4 KB
+                // Check decoded characters so UTF-16/32 padding bytes are not mistaken
+                // for binary content. Keep the probe bounded to the first 4 KB.
                 var buf  = new byte[Math.Min(4096, fs.Length)];
                 int read = fs.Read(buf, 0, buf.Length);
-                for (int i = 0; i < read; i++)
-                    if (buf[i] == 0) return matches;
+                using (var sample = new StreamReader(new MemoryStream(buf, 0, read), Encoding.UTF8,
+                                                     detectEncodingFromByteOrderMarks: true))
+                    if (sample.ReadToEnd().IndexOf('\0') >= 0) return matches;
                 fs.Seek(0, SeekOrigin.Begin);
 
                 // Stream line-by-line - never loads the whole file into memory

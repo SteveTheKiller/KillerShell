@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using KillerShell.Models;
@@ -55,6 +56,121 @@ namespace KillerShell.Tests.Services
             {
                 Directory.Delete(root, true);
             }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task SearchAsync_FindsContentInUtf16BomFiles(bool bigEndian)
+        {
+            string file = Path.GetTempFileName();
+            try
+            {
+                File.WriteAllText(file, "needle", new UnicodeEncoding(bigEndian, byteOrderMark: true));
+                var group = new TermGroup { Mode = TermGroup.GroupMode.And };
+                group.Terms.Add(new SearchTerm { Mode = SearchTerm.SearchMode.Content, Pattern = "needle" });
+                var found = new List<SearchResult>();
+                var engine = new SearchEngine();
+                engine.ResultsBatch += batch => found.AddRange(batch);
+
+                await engine.SearchAsync(Path.GetTempPath(), [group], [], string.Empty, string.Empty,
+                    false, CancellationToken.None, [file]);
+
+                SearchResult result = Assert.Single(found);
+                Assert.Equal(file, result.FilePath);
+                LineMatch line = Assert.Single(Assert.Single(result.Matches).Lines);
+                Assert.Equal(1, line.LineNumber);
+                Assert.Equal("needle", line.LineText);
+            }
+            finally
+            {
+                File.Delete(file);
+            }
+        }
+
+        [Theory]
+        [InlineData(65001, 0)]
+        [InlineData(65001, 4092)]
+        [InlineData(1200, 2046)]
+        [InlineData(1201, 2046)]
+        [InlineData(12000, 0)]
+        [InlineData(12001, 0)]
+        [InlineData(12000, 1023)]
+        [InlineData(12001, 1023)]
+        [InlineData(1200, 40000)]
+        public async Task SearchAsync_DecodesBomTextAcrossReadBoundaries(int codePage, int paddingLength)
+        {
+            string file = Path.GetTempFileName();
+            try
+            {
+                string prefix = paddingLength == 0 ? string.Empty : new string('x', paddingLength) + "\U0001F600\r\n";
+                File.WriteAllText(file, prefix + "needle caf\u00E9", Encoding.GetEncoding(codePage));
+
+                SearchResult result = Assert.Single(await SearchContentAsync(file));
+                LineMatch line = Assert.Single(Assert.Single(result.Matches).Lines);
+                Assert.Equal(paddingLength == 0 ? 1 : 2, line.LineNumber);
+                Assert.Equal("needle caf\u00E9", line.LineText);
+            }
+            finally
+            {
+                File.Delete(file);
+            }
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(65001)]
+        [InlineData(1200)]
+        [InlineData(1201)]
+        [InlineData(12000)]
+        [InlineData(12001)]
+        public async Task SearchAsync_SkipsFilesWithNullCharacters(int codePage)
+        {
+            string file = Path.GetTempFileName();
+            try
+            {
+                Encoding encoding = codePage == 0 ? new UTF8Encoding(false) : Encoding.GetEncoding(codePage);
+                File.WriteAllText(file, "needle\0tail", encoding);
+
+                Assert.Empty(await SearchContentAsync(file));
+            }
+            finally
+            {
+                File.Delete(file);
+            }
+        }
+
+        [Fact]
+        public async Task SearchAsync_EmptyAndPreambleOnlyFilesHaveNoContentMatches()
+        {
+            string file = Path.GetTempFileName();
+            try
+            {
+                byte[][] samples = [[], [0xFF], [0xFF, 0xFE], [0xFE, 0xFF], [0xEF, 0xBB, 0xBF]];
+                foreach (byte[] sample in samples)
+                {
+                    File.WriteAllBytes(file, sample);
+                    Assert.Empty(await SearchContentAsync(file));
+                }
+            }
+            finally
+            {
+                File.Delete(file);
+            }
+        }
+
+        private static async Task<List<SearchResult>> SearchContentAsync(string file)
+        {
+            var group = new TermGroup { Mode = TermGroup.GroupMode.And };
+            group.Terms.Add(new SearchTerm { Mode = SearchTerm.SearchMode.Content, Pattern = "needle" });
+            var found = new List<SearchResult>();
+            var engine = new SearchEngine();
+            engine.ResultsBatch += batch => found.AddRange(batch);
+
+            await engine.SearchAsync(Path.GetTempPath(), [group], [], string.Empty, string.Empty,
+                false, CancellationToken.None, [file]);
+
+            return found;
         }
 
         [Fact]
