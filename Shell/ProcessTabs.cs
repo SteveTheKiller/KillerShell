@@ -161,6 +161,13 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
+        /// Shows the outcome of a service action whose Processes tab closed while it ran. A
+        /// restart keeps going after its tab closes (Services/ServiceControlService.cs), so its
+        /// result, and above all a failure that leaves the service stopped, goes to the footer.
+        /// </summary>
+        internal void ShowClosedToolResult(string message) => SetTabStatus(_active, message);
+
+        /// <summary>
         /// Shutdown() every open Processes tab's control without closing the tabs themselves -
         /// called once from Session.cs OnClosing, right as the window really is going away
         /// (there is no per-tab FinishCloseTab pass on a plain window close, only when a tab is

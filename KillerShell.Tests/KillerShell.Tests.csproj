@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.ServiceProcess" />
     <ProjectReference Include="..\KillerShell.csproj" />
   </ItemGroup>
 </Project>

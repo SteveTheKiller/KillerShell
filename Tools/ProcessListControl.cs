@@ -1520,20 +1520,28 @@ namespace KillerShell.Tools
         /// disposed by the time an action runs) on a background thread, waits for the target
         /// status, then reports back and pulls a fresh row rather than waiting for the next
         /// 1.5-second tick.</summary>
+        /// <remarks>A restart outlives this tab once Stop is accepted. When the tab has closed by
+        /// the time the result arrives, the result goes to the window's footer instead of this
+        /// tab's hidden status line, so a service left stopped is never reported to no one.</remarks>
         private async Task RunServiceActionAsync(ServiceInfo s, Services.ServiceControlAction action,
                                                  string successKey, string failKey)
         {
+            var owner = Window.GetWindow(this) as MainWindow;
             Services.ServiceControlResult result = await Services.ServiceControlService.ExecuteAsync(
                 s.Name, action, _ownerCts.Token);
             if (result.Canceled) return;
-            if (!result.Succeeded)
+
+            string message = result.Succeeded
+                ? string.Format(MainWindow.LocStatic(successKey), s.DisplayName)
+                : string.Format(MainWindow.LocStatic(failKey), s.DisplayName, result.Error);
+            if (_ownerCts.IsCancellationRequested)
             {
-                ShowStatus(string.Format(MainWindow.LocStatic(failKey), s.DisplayName, result.Error), error: true);
+                owner?.ShowClosedToolResult(message);
                 return;
             }
 
-            ShowStatus(string.Format(MainWindow.LocStatic(successKey), s.DisplayName), error: false);
-            await RefreshServicesAsync();
+            ShowStatus(message, error: !result.Succeeded);
+            if (result.Succeeded) await RefreshServicesAsync();
         }
     }
 }
