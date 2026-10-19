@@ -61,6 +61,52 @@ namespace KillerShell.Tests.Terminal
             Assert.Equal(new[] { (int)'X' }, handler.Codepoints);
         }
 
+        [Theory]
+        [InlineData(9, "9;C:\\caf\u00e9", "\u0007", false)]
+        [InlineData(0, "9;C:\\caf\u00e9", "\u0007", false)]
+        [InlineData(9, "9;C:\\caf\u00e9\\\U0001f4c1", "\u0007", false)]
+        [InlineData(9, "9;C:\\caf\u00e9\\\U0001f4c1", "\u0007", true)]
+        [InlineData(9, "9;C:\\caf\u00e9\\\U0001f4c1", "\u001b\\", false)]
+        [InlineData(9, "9;C:\\caf\u00e9\\\U0001f4c1", "\u001b\\", true)]
+        public void Feed_DecodesUtf8OscPayload(int command, string payload, string terminator, bool splitBytes)
+        {
+            var handler = new RecordingHandler();
+            var parser = new VtParser(handler);
+            byte[] bytes = Encoding.UTF8.GetBytes("\u001b]" + command + ";" + payload + terminator);
+
+            if (splitBytes)
+            {
+                foreach (byte b in bytes)
+                    parser.Feed(new[] { b }, 1);
+            }
+            else
+                parser.Feed(bytes, bytes.Length);
+
+            var call = Assert.Single(handler.OscCalls);
+            Assert.Equal(command, call.Command);
+            Assert.Equal(payload, call.Data);
+            Assert.Empty(handler.Codepoints);
+        }
+
+        [Theory]
+        [InlineData("\u0007")]
+        [InlineData("\u001b\\")]
+        public void Feed_RecoversFromMalformedUtf8OscPayload(string terminator)
+        {
+            var handler = new RecordingHandler();
+            var parser = new VtParser(handler);
+            byte[] prefix = Encoding.UTF8.GetBytes("\u001b]0;");
+            parser.Feed(prefix, prefix.Length);
+            foreach (byte b in new byte[] { 0xc3, (byte)'X', 0xf0, 0x9f })
+                parser.Feed(new[] { b }, 1);
+
+            byte[] rest = Encoding.UTF8.GetBytes(terminator + "Y\u001b]9;9;C:\\caf\u00e9" + terminator);
+            parser.Feed(rest, rest.Length);
+
+            Assert.Equal(new[] { (0, "\ufffdX\ufffd"), (9, "9;C:\\caf\u00e9") }, handler.OscCalls);
+            Assert.Equal(new[] { (int)'Y' }, handler.Codepoints);
+        }
+
         private sealed class RecordingHandler : IVtHandler
         {
             internal readonly List<int> Codepoints = [];
