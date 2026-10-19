@@ -87,6 +87,7 @@ namespace KillerShell
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            HookCrashLogging();   // CrashLog.cs - first, so it covers startup itself
             KillerFamily.Accessibility.AccessibleControls.Initialize();
             KillerFamily.Theming.AccentShadow.Initialize();
             var cliArgs = KillerFamily.CommandLine.CommandLineEntry.GetArguments(e.Args,
