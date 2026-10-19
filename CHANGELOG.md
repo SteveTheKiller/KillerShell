@@ -59,7 +59,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Tab no longer stops on the tab strip itself, which drew a dotted outline around every tab.
 - The website top bar no longer leaves extra space under the wordmark and buttons.
 - The website's Help and Technical pages match the app on bookmark drops, the bookmark star, the Event Viewer, Storage Analyzer and app size keys, and the CLI commands, in every language.
-- Theme and language radio buttons and the Film Grain checkbox line up with their labels again.
+- Radio buttons and checkboxes line up with their labels in every theme, 98SE included, at every app size, and the selected radio dot sits in the middle of its ring.
 - The file picker and folder picker close buttons turn red on hover without filling a red block, like the About card and the shortcuts card, and keep the classic caption button on 98SE.
 - Search, piped, restored and demo search tabs show their search icon in the tab strip again.
 - Context menus ask for antialiased labels the same way KillerPDF menus do.
