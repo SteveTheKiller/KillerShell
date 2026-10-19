@@ -28,6 +28,7 @@ namespace KillerShell.Shell
         internal void FocusPane(FilePane pane)
         {
             if (_focus == pane) return;
+            CaptureTab(_active);
             _focus = pane;
 
             // The window chrome - search panel, footer line, nav buttons - shows the focused

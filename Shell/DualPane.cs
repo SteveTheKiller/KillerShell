@@ -219,6 +219,7 @@ namespace KillerShell.Shell
 
             if (RightPane.Tabs.Count == 0)
             {
+                CaptureTab(_active);
                 RightPane.TabStrip.ItemsSource = RightPane.Tabs;
                 // restoreFocus:false - SeedPane would otherwise quietly hand focus BACK to
                 // LeftPane once its awaited navigation lands, which is what "opens but stays on

@@ -34,8 +34,15 @@ public sealed class SessionPersistenceTests
     [Fact]
     public Task LegacyRowsAndSavedDocumentsStillReopen() => RunScenario("legacy");
 
+    [Fact]
+    public Task SearchOptionsSurvivePaneFocusChangesAndReopen() => RunScenario("options");
+
+    [Fact]
+    public Task SearchOptionsSurviveOpeningSecondPane() => RunScenario("first-open");
+
     private static async Task RunScenario(string scenario)
     {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell-session-test-" + Guid.NewGuid().ToString("N"));
         string assembly = typeof(SessionPersistenceTests).Assembly.Location.Replace("'", "''");
         string application = typeof(MainWindow).Assembly.Location.Replace("'", "''");
         string assertions = typeof(Assert).Assembly.Location.Replace("'", "''");
@@ -43,7 +50,7 @@ public sealed class SessionPersistenceTests
             "[Reflection.Assembly]::LoadFrom('" + application + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + assertions + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + assembly + "') | Out-Null; " +
-            "[KillerShell.Tests.Shell.SessionPersistenceScenario]::Run('" + scenario + "'); exit 0 " +
+            "[KillerShell.Tests.Shell.SessionPersistenceScenario]::Run('" + scenario + "', '" + root.Replace("'", "''") + "'); exit 0 " +
             "} catch { [Console]::Error.WriteLine($_.Exception.ToString()); exit 1 }";
         using var process = Process.Start(new ProcessStartInfo
         {
@@ -57,21 +64,29 @@ public sealed class SessionPersistenceTests
         })!;
         var output = process.StandardOutput.ReadToEndAsync();
         var errors = process.StandardError.ReadToEndAsync();
-        if (!process.WaitForExit(60000))
+        try
         {
-            process.Kill();
-            Assert.Fail("The session-persistence scenario did not finish.");
+            if (!process.WaitForExit(60000))
+            {
+                process.Kill();
+                process.WaitForExit();
+                Assert.Fail("The session-persistence scenario did not finish.");
+            }
+            Assert.True(process.ExitCode == 0, $"Scenario {scenario} exited with {process.ExitCode}.\n" + await output + await errors);
         }
-        Assert.True(process.ExitCode == 0, $"Scenario {scenario} exited with {process.ExitCode}.\n" + await output + await errors);
+        finally
+        {
+            // Process exit releases native directory handles before the fixture is removed.
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
     }
 }
 
 public static class SessionPersistenceScenario
 {
-    public static void Run(string scenario)
+    public static void Run(string scenario, string root)
     {
         SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
-        string root = Path.Combine(Path.GetTempPath(), "KillerShell-session-test-" + Guid.NewGuid().ToString("N"));
         string[] folders = new[] { "left-one", "left-two", "right-one", "right-two" }
             .Select(name => Directory.CreateDirectory(Path.Combine(root, name)).FullName).ToArray();
         foreach (string folder in folders) File.WriteAllText(Path.Combine(folder, "fixture.txt"), "session fixture");
@@ -102,6 +117,20 @@ public static class SessionPersistenceScenario
         ThemeManager.Initialize();
         try
         {
+            if (scenario == "first-open")
+            {
+                var original = ShowWindow();
+                SetSearchOptions(original, "*.before", "*.before-tmp", true);
+                Click(original, "DualPaneRailBtn");
+                FocusPane(original, "LeftPane");
+                Pump(TimeSpan.FromMilliseconds(300));
+                AssertSearchOptions(original, "*.before", "*.before-tmp", true);
+                CloseWindow(original);
+                var restored = ShowWindow();
+                AssertSearchOptions(restored, "*.before", "*.before-tmp", true);
+                CloseWindow(restored);
+                return;
+            }
             if (scenario == "legacy")
             {
                 settings["Tabs"] = "Legacy|" + Uri.EscapeDataString(folders[0]) + "|*.txt|*.tmp|1|2|0|1~needle|";
@@ -137,6 +166,15 @@ public static class SessionPersistenceScenario
             Navigate(window, "RightPane", folders[2]);
             NewTab(window);
             Navigate(window, "RightPane", folders[3]);
+            if (scenario == "options")
+            {
+                SetSearchOptions(window, "*.right", "*.right-tmp", false);
+                FocusPane(window, "LeftPane");
+                SetSearchOptions(window, "*.left", "*.left-tmp", true);
+                FocusPane(window, "RightPane");
+                Click(window, "DualPaneRailBtn");
+                Pump(TimeSpan.FromMilliseconds(300));
+            }
             if (scenario == "left") FocusPane(window, "LeftPane");
             if (scenario == "hidden") Click(window, "DualPaneRailBtn");
             if (scenario == "opt-out") settings["RememberTabs"] = "0";
@@ -156,10 +194,29 @@ public static class SessionPersistenceScenario
             Assert.Equal(folders.Take(2), Tabs(reopened, "LeftPane").Select(tab => tab.RootPath));
             Assert.Equal(folders.Skip(2), Tabs(reopened, "RightPane").Select(tab => tab.RootPath));
             Assert.False(((FrameworkElement)reopened.FindName("RightPane")).IsVisible);
+            if (scenario == "options")
+            {
+                Assert.Equal("*.left", Tabs(reopened, "LeftPane")[1].IncludePatterns);
+                Assert.Equal("*.right", Tabs(reopened, "RightPane")[1].IncludePatterns);
+                SelectTab(reopened, "LeftPane", 1);
+                AssertSearchOptions(reopened, "*.left", "*.left-tmp", true);
+            }
             Click(reopened, "DualPaneRailBtn");
             Pump(TimeSpan.FromMilliseconds(300));
             Assert.Equal(folders.Skip(2), Tabs(reopened, "RightPane").Select(tab => tab.CurrentFolder));
             Assert.Equal(folders[2], ((TextBlock)Pane(reopened, "RightPane").FindName("ScopePathLabel")).Text);
+            if (scenario == "options")
+            {
+                SelectTab(reopened, "RightPane", 1);
+                AssertSearchOptions(reopened, "*.right", "*.right-tmp", false);
+                SelectTab(reopened, "RightPane", 0);
+                AssertSearchOptions(reopened, "*.*", "", false);
+                SelectTab(reopened, "RightPane", 1);
+                AssertSearchOptions(reopened, "*.right", "*.right-tmp", false);
+                FocusPane(reopened, "LeftPane");
+                Pump(TimeSpan.FromMilliseconds(300));
+                AssertSearchOptions(reopened, "*.left", "*.left-tmp", true);
+            }
             CloseWindow(reopened);
         }
         finally
@@ -167,7 +224,6 @@ public static class SessionPersistenceScenario
             foreach (Window window in app.Windows.OfType<MainWindow>().ToArray()) window.Close();
             Pump(TimeSpan.FromMilliseconds(300));
             app.Shutdown();
-            Directory.Delete(root, true);
             if (dispatcherFailure != null) throw new InvalidOperationException("The window dispatcher failed.", dispatcherFailure);
         }
     }
@@ -218,6 +274,47 @@ public static class SessionPersistenceScenario
         var button = Descendants(window).OfType<Button>().Single(candidate => Equals(candidate.ToolTip, window.FindResource("Str_TT_NewTab")));
         button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         Pump(TimeSpan.FromMilliseconds(300));
+    }
+
+    private static void SetSearchOptions(MainWindow window, string include, string exclude, bool caseSensitive)
+    {
+        ((TextBox)window.FindName("IncludePatternsBox")).Text = include;
+        ((TextBox)window.FindName("ExcludePatternsBox")).Text = exclude;
+        ((CheckBox)window.FindName("CaseSensitiveCheck")).IsChecked = caseSensitive;
+    }
+
+    private static void AssertSearchOptions(MainWindow window, string include, string exclude, bool caseSensitive)
+    {
+        Assert.Equal(include, ((TextBox)window.FindName("IncludePatternsBox")).Text);
+        Assert.Equal(exclude, ((TextBox)window.FindName("ExcludePatternsBox")).Text);
+        Assert.Equal(caseSensitive, ((CheckBox)window.FindName("CaseSensitiveCheck")).IsChecked);
+    }
+
+    private static void SelectTab(MainWindow window, string paneName, int index)
+    {
+        FocusPane(window, paneName);
+        var tab = Tabs(window, paneName)[index];
+        var pane = Pane(window, paneName);
+        // A narrow tab band exposes the overflow menu, whose click does not depend on mouse capture.
+        ((FrameworkElement)pane.FindName("TabBar")).Width = 200;
+        window.UpdateLayout();
+        var button = (Button)pane.FindName("TabOverflowBtn");
+        Assert.True(button.IsVisible);
+        Assert.False(tab.IsStripVisible);
+        button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        var menu = PresentationSource.CurrentSources.Cast<PresentationSource>()
+            .Where(source => source.RootVisual != null)
+            .SelectMany(source => Descendants(source.RootVisual)).OfType<ContextMenu>()
+            .Single(candidate => ReferenceEquals(candidate.PlacementTarget, button));
+        try
+        {
+            var item = menu.Items.OfType<MenuItem>().Single(candidate =>
+                ((DockPanel)candidate.Header).Children.OfType<TextBlock>().Single().Text == tab.Title.Replace("_", "__"));
+            item.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        }
+        finally { menu.IsOpen = false; }
+        Pump(TimeSpan.FromMilliseconds(300));
+        Assert.True(tab.IsActive);
     }
 
     private static void Click(FrameworkElement root, string name) =>
