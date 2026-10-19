@@ -224,7 +224,7 @@ namespace KillerShell.Services
                 return result;
             }
 
-            var replaced = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var replaced = new HashSet<string>(StringComparer.Ordinal);
             foreach (var a in adds)
             {
                 if (taken.Add(a.EntryName)) continue;
@@ -338,7 +338,7 @@ namespace KillerShell.Services
             {
                 var existing = ExistingNames(archivePath);
                 if (existing.Contains(full)
-                    || existing.Any(n => n.StartsWith(full + "/", StringComparison.OrdinalIgnoreCase)))
+                    || existing.Any(n => n.StartsWith(full + "/", StringComparison.Ordinal)))
                 {
                     result.ErrorKey = "Str_Status_ArchiveNameTaken";
                     return result;
@@ -390,8 +390,8 @@ namespace KillerShell.Services
             {
                 string norm = NormalizeExisting(raw);
                 foreach (string t in targets)
-                    if (norm.Equals(t, StringComparison.OrdinalIgnoreCase)
-                        || norm.StartsWith(t + "/", StringComparison.OrdinalIgnoreCase))
+                    if (norm.Equals(t, StringComparison.Ordinal)
+                        || norm.StartsWith(t + "/", StringComparison.Ordinal))
                     { dropped++; return null; }
                 return raw;
             }, null, progress, result, ct);
@@ -449,15 +449,13 @@ namespace KillerShell.Services
                 return result;
             }
 
-            bool caseOnly = string.Equals(newPath, oldPath, StringComparison.OrdinalIgnoreCase);
-            if (!caseOnly)
-                foreach (string n in existing)
-                    if (n.Equals(newPath, StringComparison.OrdinalIgnoreCase)
-                        || n.StartsWith(newPath + "/", StringComparison.OrdinalIgnoreCase))
-                    {
-                        result.ErrorKey = "Str_Status_ArchiveNameTaken";
-                        return result;
-                    }
+            foreach (string n in existing)
+                if (n.Equals(newPath, StringComparison.Ordinal)
+                    || n.StartsWith(newPath + "/", StringComparison.Ordinal))
+                {
+                    result.ErrorKey = "Str_Status_ArchiveNameTaken";
+                    return result;
+                }
 
             int moved = 0;
             var ok = Rebuild(archivePath, raw =>
@@ -465,12 +463,12 @@ namespace KillerShell.Services
                 string norm = NormalizeExisting(raw);
                 bool trailing = raw.EndsWith("/", StringComparison.Ordinal);
 
-                if (norm.Equals(oldPath, StringComparison.OrdinalIgnoreCase))
+                if (norm.Equals(oldPath, StringComparison.Ordinal))
                 {
                     moved++;
                     return trailing ? newPath + "/" : newPath;
                 }
-                if (norm.StartsWith(oldPath + "/", StringComparison.OrdinalIgnoreCase))
+                if (norm.StartsWith(oldPath + "/", StringComparison.Ordinal))
                 {
                     moved++;
                     string tail = norm[oldPath.Length..];   // keeps its leading '/'
@@ -676,11 +674,11 @@ namespace KillerShell.Services
         }
 
         // ── Shared helpers ───────────────────────────────────────
-        /// <summary>Every entry name already in the archive, normalized and case-insensitive, so
-        /// a collision test matches the way the listing and Windows both do.</summary>
+        /// <summary>Every normalized archive entry name. Names that differ by case identify
+        /// separate entries, regardless of the host filesystem.</summary>
         private static HashSet<string> ExistingNames(string archivePath)
         {
-            var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var set = new HashSet<string>(StringComparer.Ordinal);
             using var zip = ZipFile.OpenRead(archivePath);
             foreach (var e in zip.Entries)
             {

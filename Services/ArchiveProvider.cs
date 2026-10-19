@@ -159,14 +159,14 @@ namespace KillerShell.Services
 
                 // Folder name -> rolled-up size and newest timestamp, so a folder row can show
                 // what it holds rather than a blank.
-                var dirs = new Dictionary<string, ArchiveEntryInfo>(StringComparer.OrdinalIgnoreCase);
+                var dirs = new Dictionary<string, ArchiveEntryInfo>(StringComparer.Ordinal);
 
                 foreach (var raw in ReadEntries(archivePath))
                 {
                     string full = raw.EntryPath;
                     if (prefix.Length > 0)
                     {
-                        if (!full.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
+                        if (!full.StartsWith(prefix, StringComparison.Ordinal)) continue;
                         full = full[prefix.Length..];
                     }
                     if (full.Length == 0) continue;
@@ -602,7 +602,7 @@ namespace KillerShell.Services
                 using (var zip = ZipFile.OpenRead(archivePath))
                 {
                     var entry = zip.Entries.FirstOrDefault(
-                        x => string.Equals(Normalize(x.FullName), entryPath.Trim('/'), StringComparison.OrdinalIgnoreCase));
+                        x => string.Equals(Normalize(x.FullName), entryPath.Trim('/'), StringComparison.Ordinal));
                     if (entry == null) { error = "entry not found"; return false; }
                     entry.ExtractToFile(dest, overwrite: true);
                 }
@@ -673,6 +673,9 @@ namespace KillerShell.Services
 
             string root = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar)
                           + Path.DirectorySeparatorChar;
+            // Archive names are case-sensitive, but Windows output paths can collide.
+            // Validate every sibling destination before writing any of them.
+            var targets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var child in children)
             {
                 ct.ThrowIfCancellationRequested();
@@ -682,7 +685,17 @@ namespace KillerShell.Services
                     error = "entry escaped extraction folder";
                     return false;
                 }
+                if (!targets.Add(target))
+                {
+                    error = "archive entries map to the same output path";
+                    return false;
+                }
+            }
 
+            foreach (var child in children)
+            {
+                ct.ThrowIfCancellationRequested();
+                string target = Path.GetFullPath(Path.Combine(destination, child.Name));
                 if (child.IsDirectory)
                 {
                     Directory.CreateDirectory(target);
@@ -735,7 +748,7 @@ namespace KillerShell.Services
                     continue;
                 }
 
-                bool match = string.Equals(Normalize(name), want, StringComparison.OrdinalIgnoreCase)
+                bool match = string.Equals(Normalize(name), want, StringComparison.Ordinal)
                              && (type == '0' || type == '\0');
 
                 if (match)
