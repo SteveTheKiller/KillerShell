@@ -100,6 +100,44 @@ namespace KillerShell.Tests.Services
         public void SafeEntryName_RejectsEmptyOrInvalidNames(string input)
             => Assert.Null(ArchiveWriter.SafeEntryName(input));
 
+        [Fact]
+        public void ExtractAll_LeavesNoStagingFoldersInTemp()
+        {
+            string work = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+            string path = Path.Combine(work, "sample.tar");
+            string dest = Path.Combine(work, "out");
+            string staging = Path.Combine(Path.GetTempPath(), "KillerShell", "archive");
+            Directory.CreateDirectory(work);
+            try
+            {
+                using (var archive = File.Create(path))
+                {
+                    WriteTarFile(archive, "one.txt", "first");
+                    WriteTarFile(archive, "two.txt", "second");
+                }
+                int before = Directory.Exists(staging) ? Directory.GetDirectories(staging).Length : 0;
+
+                Assert.True(ArchiveProvider.ExtractAll(path, dest, System.Threading.CancellationToken.None, out string? error), error);
+
+                Assert.Equal("first", File.ReadAllText(Path.Combine(dest, "one.txt")));
+                Assert.Equal("second", File.ReadAllText(Path.Combine(dest, "two.txt")));
+                int after = Directory.Exists(staging) ? Directory.GetDirectories(staging).Length : 0;
+                Assert.Equal(before, after);
+            }
+            finally
+            {
+                Directory.Delete(work, true);
+            }
+        }
+
+        private static void WriteTarFile(Stream archive, string name, string content)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(content);
+            WriteTarHeader(archive, name, bytes.Length, '0');
+            archive.Write(bytes, 0, bytes.Length);
+            archive.Write(new byte[512 - bytes.Length % 512], 0, 512 - bytes.Length % 512);
+        }
+
         private static void WriteTarHeader(Stream archive, string name, long size, char type)
         {
             var header = new byte[512];

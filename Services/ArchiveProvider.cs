@@ -498,22 +498,42 @@ namespace KillerShell.Services
         internal static string? ExtractToTemp(string archivePath, string entryPath, out string? error)
         {
             error = null;
+            string? dir = null;
             try
             {
                 string safeName = Path.GetFileName(entryPath.Replace('/', Path.DirectorySeparatorChar));
                 if (string.IsNullOrEmpty(safeName)) { error = "no file name"; return null; }
 
-                string dir = Path.Combine(Path.GetTempPath(), "KillerShell", "archive",
-                                          Guid.NewGuid().ToString("N")[..8]);
+                dir = Path.Combine(Path.GetTempPath(), "KillerShell", "archive",
+                                   Guid.NewGuid().ToString("N")[..8]);
                 Directory.CreateDirectory(dir);
                 string dest = Path.Combine(dir, safeName);
+                if (ExtractEntryTo(archivePath, entryPath, dest, out error)) return dest;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
 
+            try { if (dir != null && Directory.Exists(dir)) Directory.Delete(dir, recursive: true); } catch { }
+            return null;
+        }
+
+        /// <summary>
+        /// Writes one file entry to <paramref name="dest"/>. Extract All uses this directly so
+        /// each file lands at its destination without a staging copy left in temp.
+        /// </summary>
+        private static bool ExtractEntryTo(string archivePath, string entryPath, string dest, out string? error)
+        {
+            error = null;
+            try
+            {
                 if (archivePath.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase)
                     || archivePath.EndsWith(".tgz", StringComparison.OrdinalIgnoreCase)
                     || archivePath.EndsWith(".tar", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!ExtractFromTar(archivePath, entryPath, dest)) { error = "entry not found"; return null; }
-                    return dest;
+                    if (!ExtractFromTar(archivePath, entryPath, dest)) { error = "entry not found"; return false; }
+                    return true;
                 }
 
                 if (archivePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase))
@@ -522,22 +542,22 @@ namespace KillerShell.Services
                     using var gz = new GZipStream(fs, CompressionMode.Decompress);
                     using var outFs = File.Create(dest);
                     gz.CopyTo(outFs);
-                    return dest;
+                    return true;
                 }
 
                 using (var zip = ZipFile.OpenRead(archivePath))
                 {
                     var entry = zip.Entries.FirstOrDefault(
                         x => string.Equals(Normalize(x.FullName), entryPath.Trim('/'), StringComparison.OrdinalIgnoreCase));
-                    if (entry == null) { error = "entry not found"; return null; }
+                    if (entry == null) { error = "entry not found"; return false; }
                     entry.ExtractToFile(dest, overwrite: true);
                 }
-                return dest;
+                return true;
             }
             catch (Exception ex)
             {
                 error = ex.Message;
-                return null;
+                return false;
             }
         }
 
@@ -617,9 +637,7 @@ namespace KillerShell.Services
                 }
                 else
                 {
-                    string? temp = ExtractToTemp(archivePath, child.EntryPath, out error);
-                    if (temp == null) return false;
-                    File.Copy(temp, target, overwrite: true);
+                    if (!ExtractEntryTo(archivePath, child.EntryPath, target, out error)) return false;
                 }
             }
             return true;
