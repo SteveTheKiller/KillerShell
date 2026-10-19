@@ -301,6 +301,7 @@ namespace KillerShell.Services
         // dependency. Layout: a 512-byte header per member, then its content padded up to the
         // next 512-byte boundary. Two zeroed headers end the archive.
         private const int TarBlock = 512;
+        private const long MaxTarMetadataSize = 8L * 1024 * 1024;
 
         private static List<ArchiveEntryInfo> ReadTar(string archivePath, bool gzip)
         {
@@ -344,6 +345,8 @@ namespace KillerShell.Services
                 // path in one would not name the next entry, so its content is skipped.
                 if (type == 'L' || type == 'x' || type == 'X' || type == 'g')
                 {
+                    if (size < 0 || size > MaxTarMetadataSize)
+                        throw new InvalidDataException("tar metadata size exceeds the supported limit");
                     var metaBuf = new byte[size];
                     if (!ReadExactly(s, metaBuf, (int)size)) break;
                     if (type == 'L') longName = Encoding.UTF8.GetString(metaBuf).TrimEnd('\0');
@@ -650,6 +653,8 @@ namespace KillerShell.Services
 
                 if (type == 'L' || type == 'x' || type == 'X' || type == 'g')
                 {
+                    if (size < 0 || size > MaxTarMetadataSize)
+                        throw new InvalidDataException("tar metadata size exceeds the supported limit");
                     var metaBuf = new byte[size];
                     if (!ReadExactly(s, metaBuf, (int)size)) return false;
                     if (type == 'L') longName = Encoding.UTF8.GetString(metaBuf).TrimEnd('\0');

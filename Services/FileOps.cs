@@ -174,6 +174,12 @@ namespace KillerShell.Services
                                               Func<ConflictInfo, ConflictChoice> onConflict,
                                               Action<FileOpProgress> onProgress,
                                               CancellationToken ct)
+            => CopyOrMoveCore(sources, targetDir, move, onConflict, onProgress, ct, true);
+
+        private static FileOpResult CopyOrMoveCore(IEnumerable<string> sources, string targetDir, bool move,
+                                                   Func<ConflictInfo, ConflictChoice> onConflict,
+                                                   Action<FileOpProgress> onProgress,
+                                                   CancellationToken ct, bool allowFastMove)
         {
             var result = new FileOpResult();
             var dirsToCreate = new List<string>();
@@ -185,7 +191,7 @@ namespace KillerShell.Services
             // A same-volume MOVE of a whole directory is a rename: one call, no walk, no byte
             // copying. Worth catching before the per-file loop, because moving a 40 GB folder
             // across the same disk should be instant rather than a progress bar.
-            if (move && TryFastMoveDirectories(sources, targetDir, onConflict, result, ct))
+            if (move && allowFastMove && TryFastMoveDirectories(sources, targetDir, onConflict, onProgress, result, ct))
                 return result;
 
             foreach (string d in dirsToCreate)
@@ -238,37 +244,62 @@ namespace KillerShell.Services
         }
 
         /// <summary>
-        /// Same-volume directory moves, done as renames. Returns true only if EVERY source was
-        /// handled this way - a mixed batch falls back to the general path rather than doing half
-        /// the work here and half there.
+        /// Same-volume directory moves, done as renames when possible. A Replace choice merges
+        /// only that directory through the general path after all choices have been collected.
         /// </summary>
         private static bool TryFastMoveDirectories(IEnumerable<string> sources, string targetDir,
                                                    Func<ConflictInfo, ConflictChoice> onConflict,
+                                                   Action<FileOpProgress> onProgress,
                                                    FileOpResult result, CancellationToken ct)
         {
             var list = new List<string>(sources);
             foreach (string s in list)
                 if (!Directory.Exists(s) || !SameVolume(s, targetDir)) return false;
 
+            var moves = new List<(string Source, string Target, ConflictChoice Choice)>();
+            var plannedTargets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             foreach (string s in list)
             {
                 if (ct.IsCancellationRequested) { result.Canceled = true; return true; }
 
                 string target = Path.Combine(targetDir, Path.GetFileName(s.TrimEnd(Path.DirectorySeparatorChar)));
 
-                if (Directory.Exists(target) || File.Exists(target))
+                bool exists = Directory.Exists(target) || File.Exists(target);
+                if (exists || plannedTargets.TryGetValue(target, out _))
                 {
-                    var choice = onConflict(BuildConflictInfo(s, target));
+                    ConflictInfo info = BuildConflictInfo(s, exists ? target : plannedTargets[target]);
+                    info.TargetPath = target;
+                    var choice = onConflict(info);
                     if (choice == ConflictChoice.Cancel) { result.Canceled = true; return true; }
-                    if (choice == ConflictChoice.Skip)   { result.Skipped++; continue; }
-                    if (choice == ConflictChoice.KeepBoth) target = UniqueName(target);
-                    // Replace on a DIRECTORY is a merge, which a rename cannot express - bail to
-                    // the general path and let the per-file loop resolve it file by file.
-                    else return false;
+                    if (choice == ConflictChoice.KeepBoth) target = UniqueName(target, plannedTargets);
+                    moves.Add((s, target, choice));
+                    if (choice != ConflictChoice.Skip && choice != ConflictChoice.Replace)
+                        plannedTargets[target] = s;
                 }
+                else
+                {
+                    moves.Add((s, target, ConflictChoice.KeepBoth));
+                    plannedTargets[target] = s;
+                }
+            }
 
-                try { Directory.Move(s, target); result.Succeeded++; result.SucceededTargets.Add(target); }
-                catch (Exception ex) { result.Failed.Add((s, ex.Message)); }
+            foreach (var item in moves)
+            {
+                if (ct.IsCancellationRequested) { result.Canceled = true; return true; }
+                if (item.Choice == ConflictChoice.Skip) { result.Skipped++; continue; }
+                if (item.Choice == ConflictChoice.Replace)
+                {
+                    FileOpResult merged = CopyOrMoveCore([item.Source], targetDir, true,
+                                                         onConflict, onProgress, ct, false);
+                    result.Succeeded += merged.Succeeded;
+                    result.Skipped += merged.Skipped;
+                    result.Failed.AddRange(merged.Failed);
+                    result.SucceededTargets.AddRange(merged.SucceededTargets);
+                    if (merged.Canceled) { result.Canceled = true; return true; }
+                    continue;
+                }
+                try { Directory.Move(item.Source, item.Target); result.Succeeded++; result.SucceededTargets.Add(item.Target); }
+                catch (Exception ex) { result.Failed.Add((item.Source, ex.Message)); }
             }
 
             return true;
@@ -277,30 +308,38 @@ namespace KillerShell.Services
         private static void CopyFile(string src, string dst, ref FileOpProgress progress,
                                      Action<FileOpProgress> onProgress, CancellationToken ct)
         {
-            using var input  = new FileStream(src, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, CopyBufferSize);
-            using var output = new FileStream(dst, FileMode.Create, FileAccess.Write, FileShare.None, CopyBufferSize);
-
-            var buffer = new byte[CopyBufferSize];
-            int read;
-            long sinceReport = 0;
-
-            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            string temp = Path.Combine(Path.GetDirectoryName(dst) ?? string.Empty,
+                                       ".KillerShell-copy-" + Guid.NewGuid().ToString("N") + ".tmp");
+            try
             {
+                using (var input = new FileStream(src, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, CopyBufferSize))
+                using (var output = new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None, CopyBufferSize))
+                {
+                    var buffer = new byte[CopyBufferSize];
+                    int read;
+                    long sinceReport = 0;
+
+                    while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        output.Write(buffer, 0, read);
+
+                        progress.BytesDone += read;
+                        sinceReport += read;
+
+                        if (sinceReport >= 4 * CopyBufferSize) { sinceReport = 0; onProgress(progress); }
+                    }
+                }
+
                 ct.ThrowIfCancellationRequested();
-                output.Write(buffer, 0, read);
-
-                progress.BytesDone += read;
-                sinceReport += read;
-
-                // Report every few MB rather than every buffer: a dispatcher hop per megabyte on
-                // a fast NVMe drive is thousands of UI callbacks a second, which costs more than
-                // the copy does.
-                if (sinceReport >= 4 * CopyBufferSize) { sinceReport = 0; onProgress(progress); }
+                try { File.SetLastWriteTimeUtc(temp, File.GetLastWriteTimeUtc(src)); } catch { }
+                if (File.Exists(dst)) File.Replace(temp, dst, null);
+                else File.Move(temp, dst);
             }
-
-            // Timestamps should survive a copy - it is the same file as far as anyone reading it
-            // is concerned. Failure here is not worth failing the copy over.
-            try { File.SetLastWriteTimeUtc(dst, File.GetLastWriteTimeUtc(src)); } catch { }
+            finally
+            {
+                if (File.Exists(temp)) File.Delete(temp);
+            }
         }
 
         private static void MoveFile(string src, string dst, ref FileOpProgress progress,
@@ -311,15 +350,20 @@ namespace KillerShell.Services
             // delete only happens once the copy has actually landed.
             if (SameVolume(src, dst))
             {
-                if (File.Exists(dst)) File.Delete(dst);   // Replace was already agreed above
-                File.Move(src, dst);
-                progress.BytesDone += SafeSize(src);
+                long size = SafeSize(src);
+                ct.ThrowIfCancellationRequested();
+                if (File.Exists(dst)) File.Replace(src, dst, null);
+                else File.Move(src, dst);
+                progress.BytesDone += size;
                 return;
             }
 
             CopyFile(src, dst, ref progress, onProgress, ct);
             try { File.Delete(src); }
-            catch { /* copy landed; a locked source is not worth undoing it for */ }
+            catch (Exception ex)
+            {
+                throw new IOException("Copied to '" + dst + "' but could not remove source '" + src + "': " + ex.Message, ex);
+            }
         }
 
         private static void RemoveEmptySourceDirs(IEnumerable<string> sources)
@@ -474,7 +518,7 @@ namespace KillerShell.Services
         // ── Helpers ──────────────────────────────────────────────
 
         /// <summary>"report.txt" -> "report (2).txt", skipping any number already taken.</summary>
-        private static string UniqueName(string path)
+        private static string UniqueName(string path, IReadOnlyDictionary<string, string>? reserved = null)
         {
             string dir  = Path.GetDirectoryName(path) ?? string.Empty;
             string stem = Path.GetFileNameWithoutExtension(path);
@@ -483,7 +527,8 @@ namespace KillerShell.Services
             int n = 2;
             string candidate;
             do { candidate = Path.Combine(dir, stem + " (" + n++ + ")" + ext); }
-            while (File.Exists(candidate) || Directory.Exists(candidate));
+            while (File.Exists(candidate) || Directory.Exists(candidate)
+                   || (reserved != null && reserved.ContainsKey(candidate)));
 
             return candidate;
         }

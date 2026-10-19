@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Text;
 using KillerShell.Services;
 using Xunit;
 
@@ -5,6 +8,65 @@ namespace KillerShell.Tests.Services
 {
     public sealed class ArchiveTests
     {
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void OversizedTarMetadata_IsRejected(bool extract)
+        {
+            string path = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N") + ".tar");
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            try
+            {
+                var header = new byte[512];
+                header[156] = (byte)'x';
+                byte[] size = Encoding.ASCII.GetBytes(Convert.ToString(8 * 1024 * 1024 + 1, 8).PadLeft(11, '0') + "\0");
+                Array.Copy(size, 0, header, 124, size.Length);
+                File.WriteAllBytes(path, header);
+
+                string? error;
+                if (extract) Assert.Null(ArchiveProvider.ExtractToTemp(path, "entry.txt", out error));
+                else ArchiveProvider.List(path, "", out error);
+                Assert.Contains("metadata", error, StringComparison.OrdinalIgnoreCase);
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        [Fact]
+        public void TarMetadataAtLimit_CanBeListedAndExtracted()
+        {
+            string path = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N") + ".tar");
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            string? extracted = null;
+            try
+            {
+                using (var archive = File.Create(path))
+                {
+                    WriteTarHeader(archive, "././@LongLink", 8 * 1024 * 1024, 'L');
+                    var metadata = new byte[8 * 1024 * 1024];
+                    Encoding.UTF8.GetBytes("entry.txt\0").CopyTo(metadata, 0);
+                    archive.Write(metadata, 0, metadata.Length);
+                    WriteTarHeader(archive, "short.txt", 5, '0');
+                    archive.Write(Encoding.UTF8.GetBytes("hello"), 0, 5);
+                    archive.Write(new byte[507], 0, 507);
+                }
+
+                var entries = ArchiveProvider.List(path, "", out string? listError);
+                Assert.Null(listError);
+                Assert.Equal("entry.txt", Assert.Single(entries).Name);
+                extracted = ArchiveProvider.ExtractToTemp(path, "entry.txt", out string? extractError);
+                Assert.Null(extractError);
+                Assert.Equal("hello", File.ReadAllText(extracted!));
+            }
+            finally
+            {
+                if (extracted != null) Directory.Delete(Path.GetDirectoryName(extracted)!, true);
+                File.Delete(path);
+            }
+        }
+
         [Theory]
         [InlineData("paper.zip", 1)]
         [InlineData("backup.tar.gz", 1)]
@@ -37,5 +99,16 @@ namespace KillerShell.Tests.Services
         [InlineData("bad?.txt")]
         public void SafeEntryName_RejectsEmptyOrInvalidNames(string input)
             => Assert.Null(ArchiveWriter.SafeEntryName(input));
+
+        private static void WriteTarHeader(Stream archive, string name, long size, char type)
+        {
+            var header = new byte[512];
+            byte[] nameBytes = Encoding.ASCII.GetBytes(name);
+            Array.Copy(nameBytes, header, nameBytes.Length);
+            byte[] sizeBytes = Encoding.ASCII.GetBytes(Convert.ToString(size, 8).PadLeft(11, '0') + "\0");
+            Array.Copy(sizeBytes, 0, header, 124, sizeBytes.Length);
+            header[156] = (byte)type;
+            archive.Write(header, 0, header.Length);
+        }
     }
 }

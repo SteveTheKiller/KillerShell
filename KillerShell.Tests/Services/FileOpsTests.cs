@@ -47,6 +47,216 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void SuccessfulReplacement_PutsNewContentAtDestination(bool move)
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Directory.CreateDirectory(Path.Combine(root, "source")).FullName;
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                string original = Path.Combine(source, "sample.txt");
+                string destination = Path.Combine(target, "sample.txt");
+                File.WriteAllText(original, "new content");
+                File.WriteAllText(destination, "old content");
+
+                FileOpResult result = FileOps.CopyOrMove([original], target, move,
+                    _ => ConflictChoice.Replace, _ => { }, CancellationToken.None);
+
+                Assert.Empty(result.Failed);
+                Assert.Equal(1, result.Succeeded);
+                Assert.Equal("new content", File.ReadAllText(destination));
+                Assert.Equal(!move, File.Exists(original));
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
+        }
+
+        [Fact]
+        public void CanceledReplacementCopy_PreservesExistingDestination()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Directory.CreateDirectory(Path.Combine(root, "source")).FullName;
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                string original = Path.Combine(source, "sample.bin");
+                string destination = Path.Combine(target, "sample.bin");
+                File.WriteAllBytes(original, new byte[8 * 1024 * 1024]);
+                File.WriteAllText(destination, "keep this file");
+                using var cancellation = new CancellationTokenSource();
+
+                FileOpResult result = FileOps.CopyOrMove([original], target, false,
+                    _ => ConflictChoice.Replace,
+                    progress => { if (progress.BytesDone >= 4 * 1024 * 1024) cancellation.Cancel(); },
+                    cancellation.Token);
+
+                Assert.True(result.Canceled);
+                Assert.Equal("keep this file", File.ReadAllText(destination));
+                Assert.Equal(0, result.Succeeded);
+                Assert.Single(Directory.GetFiles(target));
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
+        }
+
+        [Fact]
+        public void FailedReplacementMove_PreservesExistingDestination()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Directory.CreateDirectory(Path.Combine(root, "source")).FullName;
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                string original = Path.Combine(source, "sample.txt");
+                string destination = Path.Combine(target, "sample.txt");
+                File.WriteAllText(original, "new content");
+                File.WriteAllText(destination, "old content");
+
+                using (new FileStream(original, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    FileOpResult result = FileOps.CopyOrMove([original], target, true,
+                        _ => ConflictChoice.Replace, _ => { }, CancellationToken.None);
+                    Assert.Single(result.Failed);
+                    Assert.Equal(0, result.Succeeded);
+                    Assert.Equal("old content", File.ReadAllText(destination));
+                }
+                Assert.Equal("new content", File.ReadAllText(original));
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
+        }
+
+        [Fact]
+        public void DirectoryBatchWithLaterMerge_MovesEverySourceOnce()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Directory.CreateDirectory(Path.Combine(root, "source")).FullName;
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                string first = Directory.CreateDirectory(Path.Combine(source, "first")).FullName;
+                string second = Directory.CreateDirectory(Path.Combine(source, "second")).FullName;
+                string existing = Directory.CreateDirectory(Path.Combine(target, "second")).FullName;
+                File.WriteAllText(Path.Combine(first, "first.txt"), "first content");
+                File.WriteAllText(Path.Combine(second, "second.txt"), "second content");
+                File.WriteAllText(Path.Combine(existing, "existing.txt"), "existing content");
+
+                FileOpResult result = FileOps.CopyOrMove([first, second], target, true,
+                    _ => ConflictChoice.Replace, _ => { }, CancellationToken.None);
+
+                Assert.Empty(result.Failed);
+                Assert.Equal(2, result.Succeeded);
+                Assert.Equal("first content", File.ReadAllText(Path.Combine(target, "first", "first.txt")));
+                Assert.Equal("second content", File.ReadAllText(Path.Combine(existing, "second.txt")));
+                Assert.Equal("existing content", File.ReadAllText(Path.Combine(existing, "existing.txt")));
+                Assert.False(Directory.Exists(first));
+                Assert.False(Directory.Exists(second));
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
+        }
+
+        [Fact]
+        public void DirectoryBatch_PreservesSkipBeforeLaterMerge()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Directory.CreateDirectory(Path.Combine(root, "source")).FullName;
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                string skipped = Directory.CreateDirectory(Path.Combine(source, "skipped")).FullName;
+                string merged = Directory.CreateDirectory(Path.Combine(source, "merged")).FullName;
+                string existingSkip = Directory.CreateDirectory(Path.Combine(target, "skipped")).FullName;
+                string existingMerge = Directory.CreateDirectory(Path.Combine(target, "merged")).FullName;
+                File.WriteAllText(Path.Combine(skipped, "new.txt"), "do not move");
+                File.WriteAllText(Path.Combine(merged, "new.txt"), "move this");
+                File.WriteAllText(Path.Combine(existingSkip, "old.txt"), "keep this");
+
+                FileOpResult result = FileOps.CopyOrMove([skipped, merged], target, true,
+                    conflict => conflict.TargetPath == existingSkip ? ConflictChoice.Skip : ConflictChoice.Replace,
+                    _ => { }, CancellationToken.None);
+
+                Assert.Empty(result.Failed);
+                Assert.Equal(1, result.Skipped);
+                Assert.Equal("do not move", File.ReadAllText(Path.Combine(skipped, "new.txt")));
+                Assert.False(File.Exists(Path.Combine(existingSkip, "new.txt")));
+                Assert.Equal("move this", File.ReadAllText(Path.Combine(existingMerge, "new.txt")));
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
+        }
+
+        [Fact]
+        public void DirectoryBatchWithMatchingNames_KeepsBothDestinations()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string left = Directory.CreateDirectory(Path.Combine(root, "left", "same")).FullName;
+                string right = Directory.CreateDirectory(Path.Combine(root, "right", "same")).FullName;
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                File.WriteAllText(Path.Combine(left, "left.txt"), "left content");
+                File.WriteAllText(Path.Combine(right, "right.txt"), "right content");
+
+                FileOpResult result = FileOps.CopyOrMove([left, right], target, true,
+                    _ => ConflictChoice.KeepBoth, _ => { }, CancellationToken.None);
+
+                Assert.Empty(result.Failed);
+                Assert.Equal(2, result.Succeeded);
+                Assert.Equal("left content", File.ReadAllText(Path.Combine(target, "same", "left.txt")));
+                Assert.Equal("right content", File.ReadAllText(Path.Combine(target, "same (2)", "right.txt")));
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
+        }
+
+        [Fact]
+        public void CopyThenDeleteFailure_ReportsPartialMoveWithBothPaths()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Directory.CreateDirectory(Path.Combine(root, "source")).FullName;
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                string original = Path.Combine(source, "sample.txt");
+                string destination = Path.Combine(target, "sample.txt");
+                File.WriteAllText(original, "sample content");
+                string extendedSource = @"\\?\" + original;
+
+                using (new FileStream(original, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    FileOpResult result = FileOps.CopyOrMove([extendedSource], target, true,
+                        _ => ConflictChoice.Replace, _ => { }, CancellationToken.None);
+                    Assert.Equal(0, result.Succeeded);
+                    Assert.Empty(result.SucceededTargets);
+                    Assert.Single(result.Failed);
+                    Assert.Contains(extendedSource, result.Failed[0].Error);
+                    Assert.Contains(destination, result.Failed[0].Error);
+                    Assert.Equal("sample content", File.ReadAllText(destination));
+                }
+                Assert.Equal("sample content", File.ReadAllText(original));
+            }
+            finally
+            {
+                Directory.Delete(root, true);
+            }
+        }
+
         [Fact]
         public void NewFolder_ChoosesAUniqueName()
         {
