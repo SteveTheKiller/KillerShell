@@ -278,7 +278,7 @@ namespace KillerShell.Shell
         /// window exists to BE the one thing it was launched with, this window already has a
         /// life of its own - a merge lands beside what is already open, not instead of it.
         /// </summary>
-        private void ApplyHandoff(string args)
+        private void ApplyHandoff(string args, bool restoringSession = false)
         {
             var tok = TokenizeArgs(args);   // TabTearOut.cs
 
@@ -317,6 +317,10 @@ namespace KillerShell.Shell
                 int cwdI  = tok.FindIndex(a => string.Equals(a, "--cwd", StringComparison.OrdinalIgnoreCase));
                 string cwd = cwdI >= 0 && cwdI + 1 < tok.Count ? tok[cwdI + 1] : HomeFolder;
 
+                if (restoringSession && edit >= 0 &&
+                    (edit + 1 >= tok.Count || !System.IO.File.Exists(tok[edit + 1])))
+                    return;
+
                 if (edit >= 0 && edit + 1 < tok.Count && System.IO.File.Exists(tok[edit + 1]))
                     OpenForEditing(tok[edit + 1]);   // EditorTabs.cs
                 else if (profileI >= 0 && profileI + 1 < tok.Count)
@@ -327,7 +331,7 @@ namespace KillerShell.Shell
                 else if (shell >= 0 && shell + 1 < tok.Count)
                     OpenShell(string.Equals(tok[shell + 1], "cmd", StringComparison.OrdinalIgnoreCase)
                               ? TerminalProfile.Cmd() : TerminalProfile.PowerShell(), cwd);
-                else
+                else if (!restoringSession)
                     OpenFolderTabLeft(cwd);   // TerminalTabs.cs
             }
 

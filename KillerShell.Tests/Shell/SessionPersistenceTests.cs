@@ -40,9 +40,42 @@ public sealed class SessionPersistenceTests
     [Fact]
     public Task SearchOptionsSurviveOpeningSecondPane() => RunScenario("first-open");
 
+    [Theory]
+    [InlineData("missing-first")]
+    [InlineData("missing-middle")]
+    public Task MissingDocumentDoesNotMoveLaterTabsToOtherPane(string scenario) => RunScenario(scenario);
+
+    [Theory]
+    [InlineData("corrupt-empty")]
+    [InlineData("corrupt-edit")]
+    [InlineData("corrupt-shell")]
+    [InlineData("corrupt-unknown")]
+    public Task CorruptHandoffDoesNotMoveLaterTabsToOtherPane(string scenario) => RunScenario(scenario);
+
     private static async Task RunScenario(string scenario)
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell-session-test-" + Guid.NewGuid().ToString("N"));
+        bool missingDocument = scenario.StartsWith("missing-");
+        bool recovery = missingDocument || scenario.StartsWith("corrupt-");
+        try
+        {
+            int stages = missingDocument ? 3 : recovery ? 2 : 1;
+            for (int stage = 0; stage < stages; stage++)
+            {
+                await RunChildScenario(scenario, root, recovery ? stage : -1);
+                if (missingDocument && stage == 0)
+                    File.Delete(Path.Combine(root, "right-one", "fixture.txt"));
+            }
+        }
+        finally
+        {
+            // Process exit releases native directory handles before the fixture is removed.
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    private static async Task RunChildScenario(string scenario, string root, int stage)
+    {
         string assembly = typeof(SessionPersistenceTests).Assembly.Location.Replace("'", "''");
         string application = typeof(MainWindow).Assembly.Location.Replace("'", "''");
         string assertions = typeof(Assert).Assembly.Location.Replace("'", "''");
@@ -50,7 +83,7 @@ public sealed class SessionPersistenceTests
             "[Reflection.Assembly]::LoadFrom('" + application + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + assertions + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + assembly + "') | Out-Null; " +
-            "[KillerShell.Tests.Shell.SessionPersistenceScenario]::Run('" + scenario + "', '" + root.Replace("'", "''") + "'); exit 0 " +
+            "[KillerShell.Tests.Shell.SessionPersistenceScenario]::Run('" + scenario + "', '" + root.Replace("'", "''") + "', " + stage + "); exit 0 " +
             "} catch { [Console]::Error.WriteLine($_.Exception.ToString()); exit 1 }";
         using var process = Process.Start(new ProcessStartInfo
         {
@@ -64,32 +97,25 @@ public sealed class SessionPersistenceTests
         })!;
         var output = process.StandardOutput.ReadToEndAsync();
         var errors = process.StandardError.ReadToEndAsync();
-        try
+        if (!process.WaitForExit(60000))
         {
-            if (!process.WaitForExit(60000))
-            {
-                process.Kill();
-                process.WaitForExit();
-                Assert.Fail("The session-persistence scenario did not finish.");
-            }
-            Assert.True(process.ExitCode == 0, $"Scenario {scenario} exited with {process.ExitCode}.\n" + await output + await errors);
+            process.Kill();
+            process.WaitForExit();
+            Assert.Fail($"Scenario {scenario}, stage {stage} did not finish.\n" + await output + await errors);
         }
-        finally
-        {
-            // Process exit releases native directory handles before the fixture is removed.
-            if (Directory.Exists(root)) Directory.Delete(root, true);
-        }
+        Assert.True(process.ExitCode == 0, $"Scenario {scenario}, stage {stage} exited with {process.ExitCode}.\n" + await output + await errors);
     }
 }
 
 public static class SessionPersistenceScenario
 {
-    public static void Run(string scenario, string root)
+    public static void Run(string scenario, string root, int stage)
     {
         SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         string[] folders = new[] { "left-one", "left-two", "right-one", "right-two" }
             .Select(name => Directory.CreateDirectory(Path.Combine(root, name)).FullName).ToArray();
-        foreach (string folder in folders) File.WriteAllText(Path.Combine(folder, "fixture.txt"), "session fixture");
+        if (stage <= 0)
+            foreach (string folder in folders) File.WriteAllText(Path.Combine(folder, "fixture.txt"), "session fixture");
         var settings = new Dictionary<string, string>
         {
             ["EscQuit"] = "quit",
@@ -98,6 +124,17 @@ public static class SessionPersistenceScenario
             ["CheckForUpdatesOnStartup"] = "0",
             ["CloseToTray"] = "0"
         };
+        string savedSettings = Path.Combine(root, "saved-settings.txt");
+        if (stage > 0)
+        {
+            settings.Clear();
+            foreach (string line in File.ReadAllLines(savedSettings))
+            {
+                string[] fields = line.Split(':');
+                settings.Add(Encoding.UTF8.GetString(Convert.FromBase64String(fields[0])),
+                    Encoding.UTF8.GetString(Convert.FromBase64String(fields[1])));
+            }
+        }
         ThemeManager.GetSetting = key => settings.TryGetValue(key, out string value) ? value : null;
         ThemeManager.SetSetting = (key, value) => settings[key] = value;
         Application.ResourceAssembly = typeof(MainWindow).Assembly;
@@ -117,6 +154,51 @@ public static class SessionPersistenceScenario
         ThemeManager.Initialize();
         try
         {
+            if (scenario.StartsWith("missing-") || scenario.StartsWith("corrupt-"))
+            {
+                bool missingDocument = scenario.StartsWith("missing-");
+                string document = Path.Combine(folders[2], "fixture.txt");
+                string handoff = scenario switch
+                {
+                    "corrupt-empty" => "",
+                    "corrupt-edit" => "--edit",
+                    "corrupt-shell" => "--shell",
+                    "corrupt-unknown" => "--unknown",
+                    _ => "--edit \"" + document + "\""
+                };
+                if (stage == 0)
+                {
+                    var rightRows = new List<string> { BrowseRow(folders[2]), BrowseRow(folders[3]) };
+                    rightRows.Insert(scenario == "missing-first" ? 0 : 1, "\u0001" + handoff);
+                    settings["Tabs"] = BrowseRow(folders[0]);
+                    settings["TabsRight"] = string.Join("\n", rightRows);
+                }
+                if (missingDocument && stage == 0)
+                {
+                    var original = ShowWindow();
+                    Assert.Single(Tabs(original, "RightPane"), tab => tab.IsEditor);
+                    CloseWindow(original);
+                }
+                else
+                {
+                    var restored = ShowWindow();
+                    Assert.Equal(2, Tabs(restored, "RightPane").Length);
+                    Assert.Equal(folders[0], Assert.Single(Tabs(restored, "LeftPane")).CurrentFolder);
+                    Assert.Equal(folders.Skip(2), Tabs(restored, "RightPane").Select(tab => tab.CurrentFolder));
+                    Assert.DoesNotContain(Tabs(restored, "RightPane"), tab => tab.IsEditor);
+                    Assert.False(Pane(restored, "RightPane").IsVisible);
+                    Click(restored, "DualPaneRailBtn");
+                    Pump(TimeSpan.FromMilliseconds(300));
+                    Assert.True(Tabs(restored, "RightPane")[0].IsActive);
+                    Assert.Equal(folders[2], ((TextBlock)Pane(restored, "RightPane").FindName("ScopePathLabel")).Text);
+                    if (missingDocument) Assert.False(File.Exists(document));
+                    CloseWindow(restored);
+                }
+                File.WriteAllLines(savedSettings, settings.Select(pair =>
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes(pair.Key)) + ":" +
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes(pair.Value))));
+                return;
+            }
             if (scenario == "first-open")
             {
                 var original = ShowWindow();
@@ -246,6 +328,10 @@ public static class SessionPersistenceScenario
     }
 
     private static FrameworkElement Pane(MainWindow window, string paneName) => (FrameworkElement)window.FindName(paneName);
+
+    private static string BrowseRow(string folder) =>
+        Uri.EscapeDataString(Path.GetFileName(folder)) + "|" + Uri.EscapeDataString(folder) +
+        "|*.*||0|0|1|||" + Uri.EscapeDataString(folder) + "|1";
 
     private static SearchTab[] Tabs(MainWindow window, string paneName) =>
         ((ItemsControl)Pane(window, paneName).FindName("TabStrip")).Items.OfType<SearchTab>().ToArray();

@@ -26,7 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
-- Closing and reopening remembers tabs in both panes, including a hidden right pane, regardless of which pane had focus. Opening or switching panes preserves each tab's search options.
+- Closing and reopening restores both panes, including hidden tabs, and skips missing documents or damaged session entries without moving other tabs. Opening or switching panes preserves each tab's search options.
 - Storage scans enumerate network shares and extended-length paths correctly. Canceled scans cannot overwrite newer results or stop their progress, and scan resources are released when the tab or app closes.
 - Renaming registry keys preserves their permissions, child keys, and existing open handles.
 - File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark. Copying a read-only source can still replace an existing file.

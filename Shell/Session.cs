@@ -332,6 +332,7 @@ namespace KillerShell.Shell
             // blank pane, No item selected" shape that got reported.
             foreach (var line in raw!.Split('\n'))
             {
+                FocusPaneQuiet(pane);
                 SearchTab? t = null;
                 try
                 {
@@ -342,7 +343,7 @@ namespace KillerShell.Shell
                     // restore is just a merge into the window that is about to be itself.
                     if (line.Length > 0 && line[0] == '\x01')
                     {
-                        ApplyHandoff(line[1..]);   // TabHandoff.cs
+                        ApplyHandoff(line[1..], restoringSession: true);   // TabHandoff.cs
                         continue;
                     }
 
@@ -408,11 +409,12 @@ namespace KillerShell.Shell
                     // This one line is corrupt - drop it, and drop the half-built tab it may
                     // already have registered, rather than lose every tab after it (or worse,
                     // leave a "nothing" tab behind for ActivateTab to land on).
-                    if (t != null) _tabs.Remove(t);
+                    if (t != null) pane.Tabs.Remove(t);
                 }
             }
 
-            if (_tabs.Count > 0) ActivateTab(_tabs[0]);
+            FocusPaneQuiet(pane);
+            if (pane.Tabs.Count > 0) ActivateTab(pane.Tabs[0]);
         }
     }
 }
