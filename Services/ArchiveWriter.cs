@@ -10,9 +10,8 @@ using System.Threading;
 // transliterated and tested against real archives the way the read half was.
 //
 // ── WHAT IS WRITABLE, AND WHY IT IS ONLY ZIP ─────────────────────────────
-//   .zip           WRITABLE. ZipArchive is part of .NET Framework itself, an entry list
-//                  round-trips through it without anything being invented, and the format
-//                  stores nothing this code cannot reproduce.
+//   .zip           WRITABLE. ZipArchive streams retained entries into a replacement;
+//                  creator-platform metadata is restored before the replacement is published.
 //   .tar .tar.gz   READ-ONLY, deliberately, not for lack of time. The tar reader in
 //   .tgz           ArchiveProvider lists regular files and directories and SKIPS links,
 //                  devices, FIFOs, sparse members and pax records - correct for a listing and
@@ -511,8 +510,11 @@ namespace KillerShell.Services
 
             try
             {
-                using (var src = ZipFile.OpenRead(archivePath))
+                var retainedPlatforms = new List<byte>();
+                using (var sourceStream = new FileStream(archivePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var src = new ZipArchive(sourceStream, ZipArchiveMode.Read))
                 {
+                    byte[] platforms = ZipCreatorPlatforms.Read(sourceStream, src.Entries.Count, ct);
                     int total = src.Entries.Count + (adds?.Count ?? 0);
                     int done  = 0;
 
@@ -530,6 +532,7 @@ namespace KillerShell.Services
 
                         string? name = mapName(e.FullName);
                         if (name == null) continue;                 // dropped
+                        retainedPlatforms.Add(platforms[done - 1]);
 
                         progress?.Invoke(done, total, name);
 
@@ -582,6 +585,8 @@ namespace KillerShell.Services
                         written++;
                     }
                 }
+
+                ZipCreatorPlatforms.Restore(temp, retainedPlatforms, written, ct);
 
                 // Prove it before anything replaces the original. An archive that cannot be
                 // reopened, or that lost entries on the way through, must never reach the user's
