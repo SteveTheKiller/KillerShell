@@ -1819,8 +1819,9 @@
                                                  Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                <StackPanel Margin="24,20">
-                    <Grid Margin="0,0,0,14">
+                <Grid Margin="0,20">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <Grid Margin="24,0,24,14">
                         <TextBlock Text="{DynamicResource Str_Fonts_Title}" Style="{StaticResource SectionHeader}"
                                    FontSize="13" Margin="0" VerticalAlignment="Center"/>
                         <Button Content="&#xE8BB;" Click="FontsClose_Click" HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -1828,6 +1829,9 @@
                                 Style="{StaticResource DangerButton}" BorderThickness="0"/>
                     </Grid>
 
+                    <ScrollViewer Grid.Row="1" Style="{StaticResource ShadowScrollViewer}" Padding="24,0"
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
                     <TextBlock Text="{DynamicResource Str_Fonts_App}" Foreground="{DynamicResource DimTextBrush}"
                                FontFamily="{DynamicResource MonoFont}" FontSize="10" Margin="0,0,0,4"/>
                     <ComboBox x:Name="FontAppCombo" Height="26" FontSize="12" Margin="0,0,0,14"
@@ -1883,7 +1887,9 @@
 
                     <TextBlock Text="{DynamicResource Str_Fonts_Hint}" Foreground="{DynamicResource DimTextBrush}"
                                FontSize="10.5" TextWrapping="Wrap" Margin="0,14,0,0"/>
-                </StackPanel>
+                    </StackPanel>
+                    </ScrollViewer>
+                </Grid>
                 </Grid>
             </Border>
         </Grid>
@@ -1902,8 +1908,9 @@
                                                  Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                <StackPanel Margin="24,20">
-                    <Grid Margin="0,0,0,14">
+                <Grid Margin="0,20">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <Grid Margin="24,0,24,14">
                         <TextBlock Text="{DynamicResource Str_Assoc_Title}" Style="{StaticResource SectionHeader}"
                                    FontSize="13" Margin="0" VerticalAlignment="Center"/>
                         <Button Content="&#xE8BB;" Click="AssocClose_Click" HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -1911,6 +1918,9 @@
                                 Style="{StaticResource DangerButton}" BorderThickness="0"/>
                     </Grid>
 
+                    <ScrollViewer Grid.Row="1" Style="{StaticResource ShadowScrollViewer}" Padding="24,0"
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
                     <TextBlock Text="{DynamicResource Str_Assoc_Intro}" Foreground="{DynamicResource MutedTextBrush}"
                                FontSize="11.5" TextWrapping="Wrap" Margin="0,0,0,12"/>
 
@@ -1937,7 +1947,9 @@
                     <Button x:Name="AssocSettingsBtn" Click="AssocSettings_Click"
                             Style="{StaticResource OutlineButton}" Height="30"
                             Content="{DynamicResource Str_Assoc_OpenSettings}"/>
-                </StackPanel>
+                    </StackPanel>
+                    </ScrollViewer>
+                </Grid>
                 </Grid>
             </Border>
         </Grid>
@@ -2138,7 +2150,8 @@
                          Both hosts filled in code: BuildShortcutsList (ShortcutsOverlay.cs) and
                          BuildKeyboardView (KeyboardMapOverlay.cs), each once and lazily. -->
                     <ScrollViewer x:Name="ShortcutScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly" Focusable="False">
+                                  HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly" Focusable="False"
+                                  Style="{StaticResource ShadowScrollViewer}" Margin="-24,0,-24,0" Padding="24,0,24,0">
                     <StackPanel>
                         <StackPanel x:Name="ShortcutListHost"/>
                         <StackPanel x:Name="ShortcutKeyboardHost" Visibility="Collapsed"/>
