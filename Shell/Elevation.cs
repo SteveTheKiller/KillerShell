@@ -296,6 +296,13 @@ namespace KillerShell.Shell
             if (string.IsNullOrEmpty(exe) || t.Editor == null) return;
 
             string tempFile;
+
+            // What was staged, so a success only clears the edits it actually wrote. The UAC
+            // prompt does not block this window, and typing or an encoding change made while it
+            // is up must stay dirty.
+            string stagedText = t.Editor.Text;
+            string stagedEncoding = t.Editor.EncodingLabel;
+            string stagedPath = t.Editor.FilePath;
             try
             {
                 tempFile = Path.GetTempFileName();
@@ -333,7 +340,10 @@ namespace KillerShell.Shell
                     {
                         if (code == 0)
                         {
-                            t.Editor.IsModified = false;
+                            if (string.Equals(t.Editor.Text, stagedText, StringComparison.Ordinal)
+                                && t.Editor.EncodingLabel == stagedEncoding
+                                && string.Equals(t.Editor.FilePath, stagedPath, StringComparison.OrdinalIgnoreCase))
+                                t.Editor.IsModified = false;
                             SetTabStatusKey(t, "Str_Ed_Saved", name);
                         }
                         else
