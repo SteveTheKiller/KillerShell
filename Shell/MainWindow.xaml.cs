@@ -1631,6 +1631,8 @@ namespace KillerShell.Shell
         private static readonly string[] ErrorKeys =
         [
             "Str_Status_BadPath", "Str_Status_ShellFailed", "Str_Status_ArchiveFailed",
+            // A service action that failed after its Services tab closed (ProcessTabs.cs).
+            "Str_Svc_StartFailed", "Str_Svc_StopFailed", "Str_Svc_RestartFailed",
         ];
 
         private void ApplyStatusTone(string? key)

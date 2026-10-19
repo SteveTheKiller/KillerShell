@@ -165,7 +165,10 @@ namespace KillerShell.Shell
         /// restart keeps going after its tab closes (Services/ServiceControlService.cs), so its
         /// result, and above all a failure that leaves the service stopped, goes to the footer.
         /// </summary>
-        internal void ShowClosedToolResult(string message) => SetTabStatus(_active, message);
+        internal void ShowClosedToolResult(string key, params object[] args)
+        {
+            if (_active != null) SetTabStatusKey(_active, key, args);
+        }
 
         /// <summary>
         /// Shutdown() every open Processes tab's control without closing the tabs themselves -

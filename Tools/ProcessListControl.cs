@@ -1531,15 +1531,16 @@ namespace KillerShell.Tools
                 s.Name, action, _ownerCts.Token);
             if (result.Canceled) return;
 
-            string message = result.Succeeded
-                ? string.Format(MainWindow.LocStatic(successKey), s.DisplayName)
-                : string.Format(MainWindow.LocStatic(failKey), s.DisplayName, result.Error);
             if (_ownerCts.IsCancellationRequested)
             {
-                owner?.ShowClosedToolResult(message);
+                if (result.Succeeded) owner?.ShowClosedToolResult(successKey, s.DisplayName);
+                else owner?.ShowClosedToolResult(failKey, s.DisplayName, result.Error);
                 return;
             }
 
+            string message = result.Succeeded
+                ? string.Format(MainWindow.LocStatic(successKey), s.DisplayName)
+                : string.Format(MainWindow.LocStatic(failKey), s.DisplayName, result.Error);
             ShowStatus(message, error: !result.Succeeded);
             if (result.Succeeded) await RefreshServicesAsync();
         }
