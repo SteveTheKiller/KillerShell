@@ -89,6 +89,21 @@ namespace KillerShell.Tests.Services
         }
 
         [Fact]
+        public void DirectoryReader_AcceptsExtendedLocalPaths()
+        {
+            string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests." + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(root);
+            try
+            {
+                File.WriteAllBytes(Path.Combine(root, "sample.bin"), new byte[17]);
+                StorageDirectoryReadResult result = StorageDirectoryReader.Read(@"\\?\" + root, CancellationToken.None);
+                Assert.False(result.Skipped);
+                Assert.Equal("sample.bin", Assert.Single(result.Entries).Name);
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
         public void MftParser_ReadsVersionTwoRecordFields()
         {
             const int RecordOffset = 8;

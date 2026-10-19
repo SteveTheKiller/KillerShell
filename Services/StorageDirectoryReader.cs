@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -35,7 +36,15 @@ namespace KillerShell.Services
     {
         internal static StorageDirectoryReadResult Read(string path, CancellationToken cancellationToken)
         {
-            IntPtr handle = FindFirstFileExW("\\\\?\\" + path + "\\*", 1, out Win32FindData data,
+            string extendedPath = path;
+            if (!extendedPath.StartsWith(@"\\?\", StringComparison.Ordinal))
+            {
+                extendedPath = Path.GetFullPath(extendedPath);
+                extendedPath = extendedPath.StartsWith(@"\\", StringComparison.Ordinal)
+                    ? @"\\?\UNC\" + extendedPath.Substring(2)
+                    : @"\\?\" + extendedPath;
+            }
+            IntPtr handle = FindFirstFileExW(extendedPath.TrimEnd('\\') + @"\*", 1, out Win32FindData data,
                 0, IntPtr.Zero, 2);
             if (handle == new IntPtr(-1))
                 return new StorageDirectoryReadResult([], true);
