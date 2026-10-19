@@ -25,10 +25,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
+- Copying or moving over a file preserves the old file if the operation fails or is canceled. Folder moves keep each conflict choice, failed cross-drive moves report the leftover source, and oversized tar metadata is rejected. Moving a folder that holds a junction or folder link moves the link instead of emptying the folder it points to. Extract All no longer leaves a second copy of every file in the temp folder. Edits made while the administrator save prompt is open stay marked unsaved.
 - Files opened, dragged or extracted from a downloaded archive keep its downloaded-from-the-internet mark, as in Explorer, so Windows still warns before running them.
 - Ending a process from the Processes tab can no longer end a different program that was given the same process ID while the confirmation was open.
 - Saying No at the administrator prompt when opening a file, or Windows refusing to open it, shows a status message instead of closing KillerShell.
-- Copying or moving over a file preserves the old file if the operation fails or is canceled. Folder moves keep each conflict choice, failed cross-drive moves report the leftover source, and oversized tar metadata is rejected. Moving a folder that holds a junction or folder link moves the link instead of emptying the folder it points to. Extract All no longer leaves a second copy of every file in the temp folder. Edits made while the administrator save prompt is open stay marked unsaved.
 - Windows contrast themes now use system colors for text, icons, panels and selections, without decorative grain or shadows.
 - The window opens sized for the monitor it starts on instead of the main monitor, so a smaller or higher-scaling second screen shows all of it.
 - The command line accepts an optional trailing --json while keeping its existing JSON output. `read --max-chars` no longer cuts an emoji in half, and odd characters in file names and registry text come out as valid JSON.
