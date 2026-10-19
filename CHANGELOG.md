@@ -34,6 +34,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Switching a registry number between hexadecimal and decimal keeps its value instead of saving a different number. Text the old base cannot read keeps that base and shows an error.
 - Renaming registry keys preserves their permissions, child keys, and existing open handles.
 - File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark. Copying a read-only source can still replace an existing file.
+- CSV export writes a file or folder name that starts with =, +, - or @ with a leading apostrophe, so a spreadsheet shows it as text instead of running it as a formula.
 - Switching the Event Viewer's log or level, refreshing it, or closing its tab while events are still loading no longer adds rows or an error from the earlier load to the new view.
 - Stopping a search whose name, include or exclude pattern has many `*` wildcards returns within a second, and such patterns no longer stall the search on long file names.
 - Content search recognizes UTF-16 and UTF-32 text with byte order marks instead of skipping it as binary.

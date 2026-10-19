@@ -41,17 +41,7 @@ namespace KillerShell.Shell
 
             try
             {
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine("Name,Folder,SizeBytes,Modified,Found");
-                foreach (var r in tab.Results)
-                {
-                    string found = string.Join("; ", r.Matches.Select(m =>
-                        m.Lines.Count > 0 ? $"{m.Term.ModeName} ({m.Lines.Count})" : m.Term.ModeName));
-                    sb.AppendLine(string.Join(",",
-                        Csv(r.FileName), Csv(r.Directory), r.SizeBytes.ToString(),
-                        Csv(r.ModifiedLabel), Csv(found)));
-                }
-                File.WriteAllText(dlg.FileName, sb.ToString(), System.Text.Encoding.UTF8);
+                File.WriteAllText(dlg.FileName, Services.CsvExport.Build(tab.Results), System.Text.Encoding.UTF8);
                 SetTabStatusKey(tab, "Str_Status_Exported", dlg.FileName);
             }
             catch (Exception ex)
@@ -59,8 +49,6 @@ namespace KillerShell.Shell
                 SetTabStatusKey(tab, "Str_Status_ExportFailed", ex.Message);
             }
         }
-
-        private static string Csv(string s) => $"\"{s.Replace("\"", "\"\"")}\"";
 
         internal void Export_Click(object sender, RoutedEventArgs e)
         {
