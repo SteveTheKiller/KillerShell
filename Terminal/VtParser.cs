@@ -41,7 +41,7 @@ namespace KillerShell.Terminal
         {
             Ground, Escape, EscInt,
             CsiEntry, CsiParam, CsiInt, CsiIgnore,
-            OscString,
+            OscString, OscEscape,
             DcsEntry, DcsParam, DcsInt, DcsPass, DcsIgnore,
             SosPmApc,
         }
@@ -95,9 +95,16 @@ namespace KillerShell.Terminal
                 // fall through and handle b normally
             }
 
-            // ESC and CAN/SUB abort whatever is in flight, from any state. This is what stops a
+            // An ESC inside OSC may start ST. Keep the payload until the next byte confirms it.
+            if (_state == S.OscEscape)
+            {
+                if (b == '\\') { FlushOsc(); return; }
+                _state = S.Escape;
+            }
+
+            // Other ESC sequences and CAN/SUB abort whatever is in flight. This stops a
             // malformed sequence from swallowing everything after it.
-            if (b == 0x1B) { Clear(); _state = S.Escape; return; }
+            if (b == 0x1B) { Clear(); _state = _state == S.OscString ? S.OscEscape : S.Escape; return; }
             if (b == 0x18 || b == 0x1A) { _state = S.Ground; _h.Execute(b); return; }
 
             switch (_state)
@@ -153,9 +160,7 @@ namespace KillerShell.Terminal
                     break;
 
                 case S.OscString:
-                    // BEL is the old terminator, ST (ESC \) the standard one. ESC is caught
-                    // above and lands us in Escape, where '\' dispatches nothing - so the
-                    // string ends either way, which is what we want.
+                    // BEL terminates immediately; ST (ESC \) is completed above.
                     if (b == 0x07) { FlushOsc(); break; }
                     if (!_oscCmdDone)
                     {
