@@ -303,10 +303,13 @@ namespace KillerShell.Shell
             string stagedText = t.Editor.Text;
             string stagedEncoding = t.Editor.EncodingLabel;
             string stagedPath = t.Editor.FilePath;
+            string stagedHash;
             try
             {
+                byte[] payload = t.Editor.EncodedBytes();
+                stagedHash = Services.VerifiedFile.Sha256(payload);
                 tempFile = Path.GetTempFileName();
-                t.Editor.ExportTextTo(tempFile);
+                File.WriteAllBytes(tempFile, payload);
             }
             catch (Exception ex)
             {
@@ -319,7 +322,7 @@ namespace KillerShell.Shell
                 UseShellExecute = true,          // required for the runas verb
                 Verb = "runas",
                 Arguments = "--elevated-save \"" + TrimForArg(tempFile) + "\" \""
-                          + TrimForArg(t.Editor.FilePath) + "\"",
+                          + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash,
             };
 
             try

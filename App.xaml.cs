@@ -172,24 +172,32 @@ namespace KillerShell
             }
 
             // Elevated retry of a document save Ctrl+F7's tab was refused, access-denied:
-            // KillerShell.exe --elevated-save "<tempfile>" "<destpath>". Started by
+            // KillerShell.exe --elevated-save "<tempfile>" "<destpath>" <sha256>. Started by
             // RetrySaveElevated (Elevation.cs) with the runas verb. It does the one job and
             // exits WITHOUT a window - the window that asked is still open behind it and picks
             // the result up from this process's exit code, exactly like --recycle above.
-            if (e.Args.Length > 2 &&
+            // The staged file is in the user's temp folder, so only bytes that still match the
+            // hash taken when it was staged are written (Services/VerifiedFile.cs).
+            if (e.Args.Length > 3 &&
                 string.Equals(e.Args[0], "--elevated-save", StringComparison.OrdinalIgnoreCase))
             {
-                try
-                {
-                    File.Copy(e.Args[1], e.Args[2], overwrite: true);
-                    Shutdown(0);
-                }
-                catch
-                {
-                    Shutdown(1);
-                }
+                Shutdown(Services.VerifiedFile.TryCopy(e.Args[1], e.Args[3], e.Args[2]) ? 0 : 1);
                 return;
             }
+
+            // Elevated half of an update to a machine-wide install:
+            // KillerShell.exe --apply-update "<download>" <sha256> <pid> "<version>".
+            // Started by UpdateService.StartSwap from the installed exe, so the code running
+            // elevated is the copy only an administrator could have placed. No window.
+            if (e.Args.Length > 4 &&
+                string.Equals(e.Args[0], Services.UpdateService.ApplyUpdateArgument, StringComparison.OrdinalIgnoreCase))
+            {
+                Shutdown(ApplyElevatedUpdate(e.Args[1], e.Args[2], e.Args[3], e.Args[4]));
+                return;
+            }
+
+            // An update leaves the replaced image set aside while it is still running.
+            try { Services.VerifiedFile.DeleteSetAside(Process.GetCurrentProcess().MainModule!.FileName); } catch { }
 
             // Demo / screenshot mode: KillerShell.exe --demo fills tabs with fabricated
             // results so marketing screenshots never leak real file names. It also shows
@@ -699,6 +707,59 @@ namespace KillerShell
                 else new ConfirmDialog(message, null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notification: true).ShowDialog();
             }
             return true;
+        }
+
+        /// <summary>
+        /// The elevated update swap (see the --apply-update branch in OnStartup). Reads the
+        /// download once, checks it against the hash the unelevated window verified, waits for
+        /// that window to close, then puts exactly the checked bytes in place of this exe.
+        /// </summary>
+        private static int ApplyElevatedUpdate(string download, string sha256, string pidText, string version)
+        {
+            string curExe = Process.GetCurrentProcess().MainModule!.FileName;
+            byte[]? data = Services.VerifiedFile.ReadVerified(download, sha256);
+            try { File.Delete(download); } catch { }
+            if (data == null) { OpenReleasesUnelevated(); return 1; }
+
+            if (int.TryParse(pidText, out int pid))
+            {
+                // Already closed (ArgumentException), or not ours to wait on: either way, go on.
+                try { using var p = Process.GetProcessById(pid); p.WaitForExit(60_000); }
+                catch (Exception ex) when (ex is ArgumentException or InvalidOperationException
+                                                 or System.ComponentModel.Win32Exception) { }
+            }
+
+            try { Services.VerifiedFile.ReplaceImage(curExe, data); }
+            catch { OpenReleasesUnelevated(); return 1; }
+
+            // Keep Add/Remove Programs on the version actually on disk; a portable copy has no keys.
+            string hive = Services.UpdateService.RegistryHiveFor(curExe);
+            if (hive.Length > 0 && version.Length > 0)
+            {
+                RegistryKey root = hive == "HKLM" ? Registry.LocalMachine : Registry.CurrentUser;
+                try
+                {
+                    using (var k = root.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\" + Services.AppInfo.DisplayName))
+                    {
+                        k?.SetValue("DisplayVersion", version);
+                        k?.SetValue("Publisher", "Steve the Killer");
+                    }
+                    using (var k = root.CreateSubKey(@"Software\" + Services.AppInfo.DisplayName))
+                        k?.SetValue("Version", version);
+                }
+                catch { }
+            }
+
+            // Back at the user's own integrity level, not this elevated token.
+            try { using (Process.Start("explorer.exe", "\"" + curExe + "\"")) { } } catch { }
+            return 0;
+        }
+
+        /// <summary>A failed swap sends the user to the releases page. Through explorer.exe, so the
+        /// browser does not inherit this process's administrator token.</summary>
+        private static void OpenReleasesUnelevated()
+        {
+            try { using (Process.Start("explorer.exe", "\"" + Services.UpdateService.ReleasesUrl + "\"")) { } } catch { }
         }
 
         private static void Uninstall(bool silent)

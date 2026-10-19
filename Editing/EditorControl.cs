@@ -265,12 +265,20 @@ namespace KillerShell.Editing
         }
 
         /// <summary>
-        /// Write the current text, in this document's own encoding, to an arbitrary path rather
-        /// than <see cref="FilePath"/>. Used only to stage the payload for an elevated save
-        /// retry (Elevation.cs RetrySaveElevated) - the elevated helper process then copies that
-        /// staged file over the real, permission-denied destination.
+        /// The current text as the bytes a save would write, preamble included, in this
+        /// document's own encoding. Used only to stage the payload for an elevated save retry
+        /// (Elevation.cs RetrySaveElevated): the hash of exactly these bytes goes to the elevated
+        /// helper, which refuses a staged file that no longer matches.
         /// </summary>
-        internal void ExportTextTo(string path) => File.WriteAllText(path, Text, _encoding);
+        internal byte[] EncodedBytes()
+        {
+            byte[] preamble = _encoding.GetPreamble();
+            byte[] body = _encoding.GetBytes(Text);
+            var all = new byte[preamble.Length + body.Length];
+            Buffer.BlockCopy(preamble, 0, all, 0, preamble.Length);
+            Buffer.BlockCopy(body, 0, all, preamble.Length, body.Length);
+            return all;
+        }
 
         /// <summary>
         /// How to read these bytes, and how many bytes of byte order mark to step over.

@@ -98,8 +98,18 @@ namespace KillerShell.Services
             var path = Path.Combine(Path.GetTempPath(),
                                     $"{AppInfo.DisplayName}_update_{Guid.NewGuid():N}.exe");
             File.WriteAllBytes(path, exeBytes);
+            lock (VerifiedHashes) VerifiedHashes[path] = actual;
             return path;
         }
+
+        /// <summary>
+        /// The hash each download was verified against, kept in this process rather than read back
+        /// from the temp file: the file sits in a folder anything running as this user can write.
+        /// </summary>
+        private static readonly System.Collections.Generic.Dictionary<string, string> VerifiedHashes =
+            new(StringComparer.OrdinalIgnoreCase);
+
+        internal const string ApplyUpdateArgument = "--apply-update";
 
         /// <summary>Starts a helper batch that waits for this process to exit, swaps
         /// <paramref name="newExe"/> over the running exe and relaunches it. Throws if the helper
@@ -118,6 +128,26 @@ namespace KillerShell.Services
                                       $"{AppInfo.DisplayName}_update_{Guid.NewGuid():N}.bat");
 
             bool needsElevation = !CanWriteTo(Path.GetDirectoryName(curExe)!);
+
+            // Elevated swaps never run a batch from temp: the batch and the download both sit in
+            // a folder the user can write, so another program could rewrite either between the
+            // check and the elevated copy. The installed exe is in a folder only an administrator
+            // can write, so IT is what runs elevated, handed the verified hash to check the
+            // download against before writing a byte (App.xaml.cs ApplyElevatedUpdate).
+            if (needsElevation)
+            {
+                string hash;
+                lock (VerifiedHashes)
+                    if (!VerifiedHashes.TryGetValue(newExe, out hash!)) throw new InvalidOperationException("update was not verified");
+                var elevated = new ProcessStartInfo(curExe,
+                    $"{ApplyUpdateArgument} \"{newExe}\" {hash} {pid} \"{newVersion ?? string.Empty}\"")
+                {
+                    UseShellExecute = true,
+                    Verb = "runas",
+                };
+                using (Process.Start(elevated)) { }
+                return;
+            }
 
             // Keep Add/Remove Programs honest: the swap replaces the exe but the install keys
             // still carry the old version, which is how a machine ends up with an ARP entry
@@ -176,7 +206,7 @@ namespace KillerShell.Services
         /// <summary>"HKCU" when <paramref name="exePath"/> is the per-user install,
         /// "HKLM" when it is the machine-wide install, "" for a portable copy - which has no
         /// install keys and must not gain any from an update.</summary>
-        private static string RegistryHiveFor(string exePath)
+        internal static string RegistryHiveFor(string exePath)
         {
             try
             {
