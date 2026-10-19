@@ -148,7 +148,10 @@ namespace KillerShell.Cli
             int count;
             using (var reader = new StreamReader(path, Encoding.UTF8, true))
                 count = reader.ReadBlock(buffer, 0, buffer.Length);
-            string text = new(buffer, 0, Math.Min(count, maximum));
+            int keep = Math.Min(count, maximum);
+            // Never end on half of a surrogate pair: the lone half is not valid UTF-8 output.
+            if (count > maximum && keep > 0 && char.IsHighSurrogate(buffer[keep - 1])) keep--;
+            string text = new(buffer, 0, keep);
             if (text.IndexOf('\0') >= 0)
                 throw new ArgumentException("File does not appear to contain text");
 
@@ -405,10 +408,16 @@ namespace KillerShell.Cli
         private static string JsonString(string value)
         {
             var output = new StringBuilder("\"");
-            foreach (char character in value)
+            for (int i = 0; i < value.Length; i++)
             {
+                char character = value[i];
                 if (character == '"' || character == '\\') output.Append('\\').Append(character);
                 else if (character < 0x20) output.Append("\\u").Append(((int)character).ToString("x4", CultureInfo.InvariantCulture));
+                else if (char.IsHighSurrogate(character) && i + 1 < value.Length && char.IsLowSurrogate(value[i + 1]))
+                    output.Append(character).Append(value[++i]);
+                // A lone surrogate (legal in NTFS names and registry strings) has no UTF-8 form,
+                // so it goes out as a \u escape instead of a replacement character.
+                else if (char.IsSurrogate(character)) output.Append("\\u").Append(((int)character).ToString("x4", CultureInfo.InvariantCulture));
                 else output.Append(character);
             }
             return output.Append('"').ToString();

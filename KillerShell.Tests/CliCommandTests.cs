@@ -41,6 +41,28 @@ public sealed class CliCommandTests
     }
 
     [Fact]
+    public void ReadNeverSplitsASurrogatePair()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            string file = Path.Combine(root, "emoji.txt");
+            File.WriteAllText(file, "ab\U0001F600cd");
+
+            Result read = Run("read", file, "--max-chars", "3");
+
+            Assert.Equal(0, read.ExitCode);
+            Assert.Contains("\"text\":\"ab\"", read.Output, StringComparison.Ordinal);
+            Assert.DoesNotContain(((char)0xFFFD).ToString(), read.Output, StringComparison.Ordinal);
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
+    }
+
+    [Fact]
     public void ExplicitJsonKeepsTheExistingOutput()
     {
         string file = Path.GetTempFileName();
@@ -105,6 +127,7 @@ public sealed class CliCommandTests
             CreateNoWindow = true,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
+            StandardOutputEncoding = System.Text.Encoding.UTF8,
         };
         using var process = Process.Start(start) ?? throw new InvalidOperationException("KillerShell did not start.");
         string output = process.StandardOutput.ReadToEnd();

@@ -30,7 +30,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Copying or moving over a file preserves the old file if the operation fails or is canceled. Folder moves keep each conflict choice, failed cross-drive moves report the leftover source, and oversized tar metadata is rejected. Moving a folder that holds a junction or folder link moves the link instead of emptying the folder it points to. Extract All no longer leaves a second copy of every file in the temp folder. Edits made while the administrator save prompt is open stay marked unsaved.
 - Windows contrast themes now use system colors for text, icons, panels and selections, without decorative grain or shadows.
 - The window opens sized for the monitor it starts on instead of the main monitor, so a smaller or higher-scaling second screen shows all of it.
-- The command line accepts an optional trailing --json while keeping its existing JSON output.
+- The command line accepts an optional trailing --json while keeping its existing JSON output. `read --max-chars` no longer cuts an emoji in half, and odd characters in file names and registry text come out as valid JSON.
 - On the Light theme's Yellow and Orange accents, buttons, links, tabs and accent icons keep their color with a thin gray outline around accent text and icons, instead of turning near-black or brown.
 - Gray, menu and accent text reads at 4.5:1 contrast or better in every theme and accent, and the footer's version and copyright are slightly dimmed.
 - The Dark theme's Red accent stays a true red on buttons, lines, scroll bars and the website's accent swatches, and only small red text uses a lighter red.
