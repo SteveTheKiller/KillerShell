@@ -17,7 +17,8 @@ namespace KillerShell.Services
     /// The normal path writes the new bytes to a temporary file beside the target, flushes them
     /// to disk and then swaps it in with File.Replace (ReplaceFile), which keeps the old file's
     /// attributes, permissions, creation time and alternate streams such as the
-    /// downloaded-from-the-internet mark. ReplaceFile leaves the old file in place when it fails.
+    /// downloaded-from-the-internet mark. The swap names a backup, so a failed swap always keeps
+    /// the old file (see Write).
     ///
     /// Some targets must keep their file identity: a file with more than one name (hard links)
     /// would be split from its other names, and a symbolic link would be replaced by a plain
@@ -61,17 +62,44 @@ namespace KillerShell.Services
                 return;
             }
 
+            // Always swapped with a backup name. ReplaceFile documents that without one, failing
+            // to rename the new file into place (ERROR_UNABLE_TO_MOVE_REPLACEMENT) leaves the old
+            // file already gone; with one, every failure keeps the old file under its own name or
+            // the backup name. Nothing that may be the only copy is deleted until the target is
+            // back in place.
+            string backup = SiblingName(path, ".bak");
             try
             {
-                File.Replace(temp, path, null, ignoreMetadataErrors: false);
+                File.Replace(temp, path, backup, ignoreMetadataErrors: false);
+                TryDelete(backup);
                 return;
             }
             catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
             {
-                // ReplaceFile keeps the old file under its own name when it fails.
+                if (!File.Exists(path))
+                {
+                    if (TryMove(backup, path)) { /* the old file is back; write in place below */ }
+                    else if (TryMove(temp, path)) { TryDelete(backup); return; }   // the new file is in place
+                    else throw;   // both copies stay beside the target for the user to recover
+                }
                 TryDelete(temp);
             }
             WriteInPlace(path, data);
+        }
+
+        private static string SiblingName(string path, string extension) =>
+            Path.Combine(Path.GetDirectoryName(path) ?? ".",
+                "." + Path.GetFileName(path) + "." + Guid.NewGuid().ToString("N").Substring(0, 8) + extension);
+
+        private static bool TryMove(string from, string to)
+        {
+            try
+            {
+                if (!File.Exists(from)) return false;
+                File.Move(from, to);
+                return true;
+            }
+            catch { return false; }
         }
 
         private static void WriteNew(string path, byte[] data)
@@ -89,8 +117,7 @@ namespace KillerShell.Services
         /// flushes it to disk. Returns its path; nothing is left behind when this throws.</summary>
         private static string WriteTemp(string path, byte[] data)
         {
-            string dir = Path.GetDirectoryName(path) ?? ".";
-            string temp = Path.Combine(dir, "." + Path.GetFileName(path) + "." + Guid.NewGuid().ToString("N").Substring(0, 8) + ".tmp");
+            string temp = SiblingName(path, ".tmp");
             try
             {
                 using var fs = new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough);
