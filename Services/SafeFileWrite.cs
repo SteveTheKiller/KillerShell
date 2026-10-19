@@ -22,11 +22,11 @@ namespace KillerShell.Services
     ///
     /// Some targets must keep their file identity: a file with more than one name (hard links)
     /// would be split from its other names, and a symbolic link would be replaced by a plain
-    /// file. Those, a folder that refuses new files, and a swap Windows refuses (another program
-    /// has the file open without delete sharing) are written in place instead. In place, the
-    /// whole range is locked and the space is reserved before any byte changes, so another
-    /// program's lock or a full disk fails without touching the file; a failure during the write
-    /// itself puts the original bytes back.
+    /// file. Those, a folder that refuses new files, a disk without room for a second full copy,
+    /// and a swap Windows refuses (another program has the file open without delete sharing) are
+    /// written in place instead. In place, the whole range is locked and the space is reserved
+    /// before any byte changes, so another program's lock or a full disk fails without touching
+    /// the file; a failure during the write itself puts the original bytes back.
     /// </remarks>
     internal static class SafeFileWrite
     {
@@ -61,6 +61,14 @@ namespace KillerShell.Services
                 WriteInPlace(path, data);
                 return;
             }
+            catch (IOException ex) when (IsOutOfSpace(ex))
+            {
+                // Not enough room for a second full copy. Writing in place only needs the space
+                // the file grows by, which it reserves before changing anything, so a save that
+                // fits by reusing the old file's space still succeeds.
+                WriteInPlace(path, data);
+                return;
+            }
 
             // Always swapped with a backup name. ReplaceFile documents that without one, failing
             // to rename the new file into place (ERROR_UNABLE_TO_MOVE_REPLACEMENT) leaves the old
@@ -90,6 +98,10 @@ namespace KillerShell.Services
         private static string SiblingName(string path, string extension) =>
             Path.Combine(Path.GetDirectoryName(path) ?? ".",
                 "." + Path.GetFileName(path) + "." + Guid.NewGuid().ToString("N").Substring(0, 8) + extension);
+
+        // ERROR_HANDLE_DISK_FULL, ERROR_DISK_FULL and ERROR_DISK_QUOTA_EXCEEDED.
+        private static bool IsOutOfSpace(IOException ex) =>
+            (ex.HResult & 0xFFFF) is 0x27 or 0x70 or 0x50F;
 
         private static bool TryMove(string from, string to)
         {
