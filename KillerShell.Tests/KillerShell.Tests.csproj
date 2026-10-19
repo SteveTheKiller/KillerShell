@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="System.IO.Compression" />
     <ProjectReference Include="..\KillerShell.csproj" />
   </ItemGroup>
 </Project>

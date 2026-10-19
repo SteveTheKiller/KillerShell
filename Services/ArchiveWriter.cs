@@ -537,8 +537,8 @@ namespace KillerShell.Services
 
                         if (name.EndsWith("/", StringComparison.Ordinal))
                         {
-                            // A stored folder: a name and a timestamp, no content.
-                            CopyTime(dst.CreateEntry(name), e);
+                            // A stored folder has metadata but no content.
+                            CopyMetadata(dst.CreateEntry(name), e);
                             written++;
                             continue;
                         }
@@ -549,8 +549,8 @@ namespace KillerShell.Services
                         // freezes an entry's header the instant it is first opened for writing
                         // and throws IOException on any later change to it, so a copy that set
                         // the timestamp afterwards would lose the modified date of every entry
-                        // in the archive - swallowed by CopyTime's catch, so silently.
-                        CopyTime(ne, e);
+                        // in the archive - swallowed by CopyMetadata's catch, so silently.
+                        CopyMetadata(ne, e);
 
                         using (var input  = e.Open())
                         using (var output = ne.Open())
@@ -667,8 +667,9 @@ namespace KillerShell.Services
             }
         }
 
-        private static void CopyTime(ZipArchiveEntry dst, ZipArchiveEntry src)
+        private static void CopyMetadata(ZipArchiveEntry dst, ZipArchiveEntry src)
         {
+            dst.ExternalAttributes = src.ExternalAttributes;
             // Both halves throw on their own: reading a zeroed DOS timestamp raises, and setting
             // one before 1980 raises too. A timestamp is not worth failing a rewrite over.
             try { dst.LastWriteTime = src.LastWriteTime; } catch { }

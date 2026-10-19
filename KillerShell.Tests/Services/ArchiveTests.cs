@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
+using System.Threading;
 using KillerShell.Services;
 using Xunit;
 
@@ -8,6 +10,60 @@ namespace KillerShell.Tests.Services
 {
     public sealed class ArchiveTests
     {
+        [Theory]
+        [InlineData("add")]
+        [InlineData("delete")]
+        [InlineData("rename")]
+        [InlineData("createFolder")]
+        public void ZipRewrites_PreserveRetainedEntryAttributes(string operation)
+        {
+            string work = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+            string path = Path.Combine(work, "metadata.zip");
+            const int fileAttributes = unchecked((int)0x81ed0000);
+            const int directoryAttributes = 0x41ed0010;
+            var modified = new DateTimeOffset(2024, 5, 6, 7, 8, 10, TimeSpan.Zero);
+            Directory.CreateDirectory(work);
+            try
+            {
+                using (var archive = ZipFile.Open(path, ZipArchiveMode.Create))
+                {
+                    var directory = archive.CreateEntry("tools/");
+                    directory.ExternalAttributes = directoryAttributes;
+                    directory.LastWriteTime = modified;
+                    var entry = archive.CreateEntry("tools/run.sh");
+                    entry.ExternalAttributes = fileAttributes;
+                    entry.LastWriteTime = modified;
+                    using (var writer = new StreamWriter(entry.Open())) writer.Write("echo example");
+                    archive.CreateEntry("remove.txt");
+                }
+                string added = Path.Combine(work, "added.txt");
+                File.WriteAllText(added, "added");
+
+                ArchiveWriteResult result = operation switch
+                {
+                    "add" => ArchiveWriter.Add(path, "", new[] { added }, ArchiveCollision.Report, null, CancellationToken.None),
+                    "delete" => ArchiveWriter.Delete(path, new[] { "remove.txt" }, null, CancellationToken.None),
+                    "rename" => ArchiveWriter.Rename(path, "tools", "scripts", null, CancellationToken.None),
+                    _ => ArchiveWriter.CreateFolder(path, "", "new", null, CancellationToken.None),
+                };
+
+                Assert.True(result.Ok, result.ErrorDetail ?? result.ErrorKey);
+                using var rewritten = ZipFile.OpenRead(path);
+                string folder = operation == "rename" ? "scripts/" : "tools/";
+                var retainedFile = rewritten.GetEntry(folder + "run.sh")!;
+                Assert.Equal(fileAttributes, retainedFile.ExternalAttributes);
+                Assert.Equal(modified.DateTime, retainedFile.LastWriteTime.DateTime);
+                using (var reader = new StreamReader(retainedFile.Open())) Assert.Equal("echo example", reader.ReadToEnd());
+                var retainedDirectory = rewritten.GetEntry(folder)!;
+                Assert.Equal(directoryAttributes, retainedDirectory.ExternalAttributes);
+                Assert.Equal(modified.DateTime, retainedDirectory.LastWriteTime.DateTime);
+            }
+            finally
+            {
+                Directory.Delete(work, true);
+            }
+        }
+
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
