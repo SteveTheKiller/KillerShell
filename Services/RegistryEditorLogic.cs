@@ -176,10 +176,7 @@ namespace KillerShell.Services
             {
                 if (key.GetValueNames().Any(existing => string.Equals(existing, newName, StringComparison.OrdinalIgnoreCase)))
                     return new RegistryEditResult(RegistryEditStatus.AlreadyExists);
-                RegistryValueKind kind = key.GetValueKind(oldName);
-                object? value = key.GetValue(oldName, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
-                if (value == null) return new RegistryEditResult(RegistryEditStatus.Failed);
-                key.SetValue(newName, value, kind);
+                if (!CopyValueRaw(key, oldName, key, newName)) return new RegistryEditResult(RegistryEditStatus.Failed);
                 key.DeleteValue(oldName);
                 return new RegistryEditResult(RegistryEditStatus.Success);
             });
@@ -207,14 +204,35 @@ namespace KillerShell.Services
             }
         }
 
+        /// <summary>
+        /// Copies one value as its exact type and bytes. RegistryKey only understands the common
+        /// types; anything else (REG_NONE, the hardware resource lists, REG_LINK) reads back as
+        /// Unknown and cannot be written again, so a rename would fail or change the type.
+        /// </summary>
+        private static bool CopyValueRaw(RegistryKey source, string sourceName, RegistryKey destination, string destinationName)
+        {
+            int size = 0;
+            int rc = RegQueryValueEx(source.Handle, sourceName, IntPtr.Zero, out uint type, null, ref size);
+            if (rc != 0) return false;
+            var data = new byte[size];
+            rc = RegQueryValueEx(source.Handle, sourceName, IntPtr.Zero, out type, data, ref size);
+            if (rc != 0) return false;
+            return RegSetValueEx(destination.Handle, destinationName, 0, type, data, size) == 0;
+        }
+
+        [System.Runtime.InteropServices.DllImport("advapi32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern int RegQueryValueEx(Microsoft.Win32.SafeHandles.SafeRegistryHandle key, string name,
+                                                  IntPtr reserved, out uint type, byte[]? data, ref int size);
+
+        [System.Runtime.InteropServices.DllImport("advapi32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern int RegSetValueEx(Microsoft.Win32.SafeHandles.SafeRegistryHandle key, string name,
+                                                int reserved, uint type, byte[] data, int size);
+
         private static void CopyKeyContents(RegistryKey source, RegistryKey destination)
         {
             foreach (string valueName in source.GetValueNames())
-            {
-                RegistryValueKind kind = source.GetValueKind(valueName);
-                object? value = source.GetValue(valueName, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
-                if (value != null) destination.SetValue(valueName, value, kind);
-            }
+                if (!CopyValueRaw(source, valueName, destination, valueName))
+                    throw new System.IO.IOException("could not copy value " + valueName);
             foreach (string subKeyName in source.GetSubKeyNames())
             {
                 using var sourceChild = source.OpenSubKey(subKeyName, writable: false);
