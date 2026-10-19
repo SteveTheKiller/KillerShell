@@ -55,12 +55,51 @@ namespace KillerShell.Tools
         private int _gen;
 
         // ── Scan machinery ───────────────────────────────────────
-        private CancellationTokenSource? _cts;
-        private ConcurrentQueue<(string Path, FsNode Node)>? _queue;
-        private int _pending;                    // directories queued but not fully processed
-        private long _pFiles, _pDirs, _pBytes, _pSkipped;
+        private sealed class ScanState
+        {
+            internal readonly string Path;
+            internal FsNode Root;
+            private readonly CancellationTokenSource _cancellation = new();
+            private bool _finished;
+            internal readonly CancellationToken Token;
+            internal readonly ConcurrentQueue<(string Path, FsNode Node)> Queue = new();
+            internal int Pending = 1;           // directories queued but not fully processed
+            internal int WorkersRemaining;
+            internal long Files, Directories, Bytes, Skipped;
+
+            internal ScanState(string path)
+            {
+                Path = path;
+                Token = _cancellation.Token;
+                Root = new FsNode { Name = path, IsDir = true, Children = [] };
+                Queue.Enqueue((path, Root));
+            }
+
+            internal void Cancel()
+            {
+                lock (_cancellation)
+                    if (!_finished) _cancellation.Cancel();
+            }
+
+            internal void Complete()
+            {
+                // Worker cleanup must still run after the dispatcher stops, while a late
+                // Stop request must never cancel an already disposed token source.
+                lock (_cancellation)
+                {
+                    if (_finished) return;
+                    _finished = true;
+                    _cancellation.Dispose();
+                }
+            }
+        }
+
+        private ScanState? _scan;
         private bool _scanning;
         private readonly DispatcherTimer _progressTimer;
+        private readonly Func<string, CancellationToken, Services.StorageDirectoryReadResult> _readDirectory;
+        private readonly Func<string, bool> _canUseMft;
+        private readonly Func<string, CancellationToken, Services.StorageMftReadResult?> _readMft;
 
         // ── UI ───────────────────────────────────────────────────
         private readonly TextBox _targetBox;
@@ -108,8 +147,14 @@ namespace KillerShell.Tools
         private readonly Border _minSizeBtn = null!;
         private readonly TextBlock _minBadge = null!;
 
-        internal StorageAnalyzerControl(string? initialPath)
+        internal StorageAnalyzerControl(string? initialPath,
+            Func<string, CancellationToken, Services.StorageDirectoryReadResult>? readDirectory = null,
+            Func<string, bool>? canUseMft = null,
+            Func<string, CancellationToken, Services.StorageMftReadResult?>? readMft = null)
         {
+            _readDirectory = readDirectory ?? Services.StorageDirectoryReader.Read;
+            _canUseMft = canUseMft ?? CanUseMftFastPath;
+            _readMft = readMft ?? ReadMft;
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // target + scan bar
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // breadcrumb
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // the map
@@ -612,6 +657,7 @@ namespace KillerShell.Tools
         internal void Shutdown()
         {
             CancelScan();
+            _scan = null;
             _progressTimer.Stop();
             Services.ThemeManager.ThemeChanged -= OnThemeChanged;
         }
@@ -640,15 +686,12 @@ namespace KillerShell.Tools
             _rootPath = target.TrimEnd('\\');
             if (_rootPath.EndsWith(":", StringComparison.Ordinal)) _rootPath += "\\";   // drive root stays rooted
 
-            _root = new FsNode { Name = _rootPath, IsDir = true, Children = [] };
+            var scan = new ScanState(_rootPath);
+            _scan = scan;
+            _root = scan.Root;
             _zoomRoot = _root;
             _hover = null; _selected = null;
-            _pFiles = 0; _pDirs = 0; _pBytes = 0; _pSkipped = 0;
-            _pending = 1;
             _scanning = true;
-            _cts = new CancellationTokenSource();
-            _queue = new ConcurrentQueue<(string, FsNode)>();
-            _queue.Enqueue((_rootPath, _root));
 
             _scanBtn.SetResourceReference(ContentControl.ContentProperty, "Str_Storage_Stop");
             _progressTimer.Start();
@@ -657,11 +700,9 @@ namespace KillerShell.Tools
             _map.InvalidateOverlay();
             UpdateFooterRight();
 
-            var token = _cts.Token;
-            var root = _root;
-            if (CanUseMftFastPath(_rootPath))
+            if (_canUseMft(scan.Path))
             {
-                var mft = new Thread(() => MftScanWorker(root, token))
+                var mft = new Thread(() => MftScanWorker(scan))
                 {
                     IsBackground = true,
                     Name = "StorageMftScan"
@@ -670,15 +711,16 @@ namespace KillerShell.Tools
                 return;
             }
 
-            StartDirectoryWorkers(root, token);
+            StartDirectoryWorkers(scan);
         }
 
-        private void StartDirectoryWorkers(FsNode root, CancellationToken token)
+        private void StartDirectoryWorkers(ScanState scan)
         {
             int workers = Math.Max(2, Environment.ProcessorCount);
+            scan.WorkersRemaining = workers;
             for (int i = 0; i < workers; i++)
             {
-                var t = new Thread(() => ScanWorker(root, token)) { IsBackground = true, Name = "StorageScan" };
+                var t = new Thread(() => ScanWorker(scan)) { IsBackground = true, Name = "StorageScan" };
                 t.Start();
             }
         }
@@ -686,45 +728,42 @@ namespace KillerShell.Tools
         private static bool CanUseMftFastPath(string target)
             => Services.StorageMftReader.CanUse(target, MainWindow.IsElevated);
 
+        private static Services.StorageMftReadResult? ReadMft(string target, CancellationToken token)
+            => Services.StorageMftReader.TryRead(target, token, out var scan) ? scan : null;
+
         /// <summary>The fast route is deliberately fail-open. It builds into a private tree and
         /// publishes nothing until the complete MFT graph is valid; an unsupported driver,
         /// inaccessible record, or malformed response simply starts the normal walker.</summary>
-        private void MftScanWorker(FsNode publishedRoot, CancellationToken token)
+        private void MftScanWorker(ScanState state)
         {
-            var privateRoot = new FsNode { Name = _rootPath, IsDir = true, Children = [] };
-            if (TryScanMft(_rootPath, privateRoot, token))
+            var token = state.Token;
+            var privateRoot = new FsNode { Name = state.Path, IsDir = true, Children = [] };
+            if (TryScanMft(state, privateRoot, token))
             {
-                if (token.IsCancellationRequested) FinishScan(privateRoot, aborted: true);
-                else
-                {
-                    _root = privateRoot;
-                    _zoomRoot = privateRoot;
-                    FinishScan(privateRoot, aborted: false);
-                }
+                if (!token.IsCancellationRequested) state.Root = privateRoot;
+                FinishScan(state, aborted: token.IsCancellationRequested);
                 return;
             }
 
             if (token.IsCancellationRequested)
             {
-                FinishScan(publishedRoot, aborted: true);
+                FinishScan(state, aborted: true);
                 return;
             }
 
             // Reset counters because a partially read MFT never becomes visible or contributes
             // to the fallback summary.
-            _pFiles = 0; _pDirs = 0; _pBytes = 0; _pSkipped = 0;
-            publishedRoot.Children!.Clear();
-            _pending = 1;
-            _queue = new ConcurrentQueue<(string, FsNode)>();
-            _queue.Enqueue((_rootPath, publishedRoot));
-            StartDirectoryWorkers(publishedRoot, token);
+            state.Files = 0; state.Directories = 0; state.Bytes = 0; state.Skipped = 0;
+            StartDirectoryWorkers(state);
         }
 
-        private bool TryScanMft(string target, FsNode rootNode, CancellationToken token)
+        private bool TryScanMft(ScanState state, FsNode rootNode, CancellationToken token)
         {
             try
             {
-                if (!Services.StorageMftReader.TryRead(target, token, out var scan)) return false;
+                var result = _readMft(state.Path, token);
+                if (!result.HasValue) return false;
+                var scan = result.Value;
 
                 var byParent = new Dictionary<ulong, List<Services.StorageMftEntry>>();
                 foreach (var entry in scan.Entries.Values)
@@ -749,24 +788,24 @@ namespace KillerShell.Tools
                         {
                             var child = new FsNode { Name = entry.Name, IsDir = true, Parent = node, Children = [] };
                             node.Children!.Add(child);
-                            Interlocked.Increment(ref _pDirs);
+                            Interlocked.Increment(ref state.Directories);
                             pending.Enqueue((entry.Id, child));
                         }
                         else
                         {
                             candidateFiles++;
                             long size = entry.Size;
-                            if (size < 0) { Interlocked.Increment(ref _pSkipped); continue; }
+                            if (size < 0) { Interlocked.Increment(ref state.Skipped); continue; }
                             node.Children!.Add(new FsNode { Name = entry.Name, Size = size, Parent = node });
-                            Interlocked.Increment(ref _pFiles);
-                            Interlocked.Add(ref _pBytes, size);
+                            Interlocked.Increment(ref state.Files);
+                            Interlocked.Add(ref state.Bytes, size);
                         }
                     }
                 }
                 // A volume with files but no openable file IDs means this driver accepted the
                 // enumeration call without supporting the lookup half of the contract. An empty
                 // map would be a lie, so hand the target to the directory walker instead.
-                if (candidateFiles > 0 && Interlocked.Read(ref _pFiles) == 0) return false;
+                if (candidateFiles > 0 && Interlocked.Read(ref state.Files) == 0) return false;
                 return true;
             }
             catch (OperationCanceledException) { return true; }
@@ -775,42 +814,40 @@ namespace KillerShell.Tools
 
         private void CancelScan()
         {
-            _cts?.Cancel();
-            // FinishScan(aborted) runs from the worker that notices; nothing else to do here.
+            if (_scanning) _scan?.Cancel();
+            // The last worker finishes after every directory read has left the tree.
         }
 
-        private void ScanWorker(FsNode root, CancellationToken token)
+        private void ScanWorker(ScanState scan)
         {
-            var queue = _queue!;
-            while (true)
+            var token = scan.Token;
+            try
             {
-                if (token.IsCancellationRequested)
+                while (!token.IsCancellationRequested)
                 {
-                    // First worker to notice ends the scan; the rest fall out on the empty queue.
-                    if (Interlocked.Exchange(ref _pending, 0) > 0) FinishScan(root, aborted: true);
-                    return;
+                    if (!scan.Queue.TryDequeue(out var item))
+                    {
+                        if (Volatile.Read(ref scan.Pending) == 0) return;
+                        Thread.Sleep(1);
+                        continue;
+                    }
+
+                    ScanDirectory(scan, item.Path, item.Node, token);
+                    Interlocked.Decrement(ref scan.Pending);
                 }
-
-                if (!queue.TryDequeue(out var item))
-                {
-                    if (Volatile.Read(ref _pending) == 0) return;
-                    Thread.Sleep(1);
-                    continue;
-                }
-
-                ScanDirectory(item.Path, item.Node, queue, token);
-
-                // The LAST directory out finishes the scan - aggregation runs on this worker,
-                // off the UI thread, and only the finished result is dispatched.
-                if (Interlocked.Decrement(ref _pending) == 0)
-                    FinishScan(root, aborted: false);
+            }
+            finally
+            {
+                // Cancellation must also wait for readers still changing this scan's tree.
+                if (Interlocked.Decrement(ref scan.WorkersRemaining) == 0)
+                    FinishScan(scan, aborted: token.IsCancellationRequested);
             }
         }
 
-        private void ScanDirectory(string path, FsNode node, ConcurrentQueue<(string, FsNode)> queue, CancellationToken token)
+        private void ScanDirectory(ScanState scan, string path, FsNode node, CancellationToken token)
         {
-            Services.StorageDirectoryReadResult result = Services.StorageDirectoryReader.Read(path, token);
-            if (result.Skipped) { Interlocked.Increment(ref _pSkipped); return; }
+            Services.StorageDirectoryReadResult result = _readDirectory(path, token);
+            if (result.Skipped) { Interlocked.Increment(ref scan.Skipped); return; }
             var children = node.Children!;
             foreach (Services.StorageDirectoryEntry entry in result.Entries)
             {
@@ -819,28 +856,34 @@ namespace KillerShell.Tools
                 {
                     var child = new FsNode { Name = entry.Name, IsDir = true, Parent = node, Children = [] };
                     lock (children) children.Add(child);
-                    Interlocked.Increment(ref _pDirs);
-                    Interlocked.Increment(ref _pending);
-                    queue.Enqueue((path + "\\" + entry.Name, child));
+                    Interlocked.Increment(ref scan.Directories);
+                    Interlocked.Increment(ref scan.Pending);
+                    scan.Queue.Enqueue((path + "\\" + entry.Name, child));
                 }
                 else
                 {
                     var child = new FsNode { Name = entry.Name, Size = entry.Size, Parent = node };
                     lock (children) children.Add(child);
-                    Interlocked.Increment(ref _pFiles);
-                    Interlocked.Add(ref _pBytes, entry.Size);
+                    Interlocked.Increment(ref scan.Files);
+                    Interlocked.Add(ref scan.Bytes, entry.Size);
                 }
             }
         }
 
-        private void FinishScan(FsNode root, bool aborted)
+        private void FinishScan(ScanState scan, bool aborted)
         {
             // Aggregate + sort on the worker, so a million-node tree never stalls the UI.
-            Aggregate(root);
+            Aggregate(scan.Root);
+            scan.Complete();
+            if (Dispatcher.HasShutdownStarted) return;
 
             Dispatcher.BeginInvoke((Action)(() =>
             {
+                if (!ReferenceEquals(_scan, scan)) return;
+
                 _scanning = false;
+                _root = scan.Root;
+                _zoomRoot = scan.Root;
                 _progressTimer.Stop();
                 _scanBtn.SetResourceReference(ContentControl.ContentProperty, "Str_Storage_Scan");
                 ReportStatus?.Invoke(aborted
@@ -861,12 +904,18 @@ namespace KillerShell.Tools
         private void UpdateProgressText() => ReportStatus?.Invoke(ProgressSummary());
 
         private string ProgressSummary()
-            => Interlocked.Read(ref _pDirs).ToString("N0", CultureInfo.InvariantCulture) + " dirs  " +
-               Interlocked.Read(ref _pFiles).ToString("N0", CultureInfo.InvariantCulture) + " files  " +
-               FormatSize(Interlocked.Read(ref _pBytes)) +
-               (Interlocked.Read(ref _pSkipped) > 0
-                   ? "  (" + Interlocked.Read(ref _pSkipped).ToString("N0", CultureInfo.InvariantCulture) + " " + MainWindow.LocStatic("Str_Storage_Skipped") + ")"
-                   : "");
+        {
+            var scan = _scan;
+            long dirs = scan == null ? 0 : Interlocked.Read(ref scan.Directories);
+            long files = scan == null ? 0 : Interlocked.Read(ref scan.Files);
+            long bytes = scan == null ? 0 : Interlocked.Read(ref scan.Bytes);
+            long skipped = scan == null ? 0 : Interlocked.Read(ref scan.Skipped);
+            return dirs.ToString("N0", CultureInfo.InvariantCulture) + " dirs  " +
+                   files.ToString("N0", CultureInfo.InvariantCulture) + " files  " + FormatSize(bytes) +
+                   (skipped > 0
+                       ? "  (" + skipped.ToString("N0", CultureInfo.InvariantCulture) + " " + MainWindow.LocStatic("Str_Storage_Skipped") + ")"
+                       : "");
+        }
 
         // ═══════════════════════════════════════════════════════════
         //  TREEMAP - layout + paint

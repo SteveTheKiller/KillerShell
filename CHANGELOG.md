@@ -27,7 +27,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 - Closing and reopening remembers tabs in both panes, including a hidden right pane, regardless of which pane had focus.
-- Storage scans enumerate network shares and extended-length paths correctly.
+- Storage scans enumerate network shares and extended-length paths correctly. Canceled scans cannot overwrite newer results or stop their progress, and scan resources are released when the tab or app closes.
 - Renaming registry keys preserves their permissions, child keys, and existing open handles.
 - File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark. Copying a read-only source can still replace an existing file.
 - Content search recognizes UTF-16 and UTF-32 text with byte order marks instead of skipping it as binary.
