@@ -28,7 +28,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 - Storage scans enumerate network shares and extended-length paths correctly.
 - Renaming registry keys preserves their permissions, child keys, and existing open handles.
-- File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark.
+- File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark. Copying a read-only source can still replace an existing file.
 - Content search recognizes UTF-16 and UTF-32 text with byte order marks instead of skipping it as binary.
 - Terminal folder and title updates preserve Unicode text and accept standard escape sequence terminators, including sequences split across reads.
 - Editing a ZIP preserves file permissions and folder attributes on retained entries. Archive browsing, extraction, and edits distinguish names that differ by case, and bulk extraction reports conflicting Windows output paths.

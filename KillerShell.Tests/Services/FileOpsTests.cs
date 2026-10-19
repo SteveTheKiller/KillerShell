@@ -47,6 +47,50 @@ namespace KillerShell.Tests.Services
             finally { Directory.Delete(root, true); }
         }
 
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void CopyReadOnlySource_PreservesStreamsAndCancellation(bool replace, bool cancel)
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Path.Combine(root, "source.bin");
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                string destination = Path.Combine(target, "source.bin");
+                File.WriteAllBytes(source, new byte[8 * 1024 * 1024]);
+                WriteStream(source, "Zone.Identifier", "ZoneId=3");
+                File.SetAttributes(source, File.GetAttributes(source) | FileAttributes.ReadOnly);
+                if (replace) File.WriteAllText(destination, "old content");
+                using var cancellation = new CancellationTokenSource();
+
+                FileOpResult result = FileOps.CopyOrMove([source], target, false,
+                    _ => ConflictChoice.Replace,
+                    progress => { if (cancel && progress.BytesDone >= 4 * 1024 * 1024) cancellation.Cancel(); },
+                    cancellation.Token);
+
+                Assert.Empty(result.Failed);
+                Assert.Equal(cancel, result.Canceled);
+                Assert.Single(Directory.GetFiles(target));
+                Assert.True((File.GetAttributes(source) & FileAttributes.ReadOnly) != 0);
+                if (cancel) Assert.Equal("old content", File.ReadAllText(destination));
+                else
+                {
+                    Assert.Equal(1, result.Succeeded);
+                    Assert.Equal(new FileInfo(source).Length, new FileInfo(destination).Length);
+                    Assert.False((File.GetAttributes(destination) & FileAttributes.ReadOnly) != 0);
+                    Assert.Equal("ZoneId=3", ReadStream(destination, "Zone.Identifier"));
+                }
+            }
+            finally
+            {
+                foreach (string file in Directory.GetFiles(root, "*", SearchOption.AllDirectories))
+                    File.SetAttributes(file, FileAttributes.Normal);
+                Directory.Delete(root, true);
+            }
+        }
+
         private static void WriteStream(string path, string name, string contents)
         {
             using var handle = OpenStream(path + ":" + name, 0x40000000, 3, IntPtr.Zero, 2, 0, IntPtr.Zero);

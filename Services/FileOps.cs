@@ -363,6 +363,9 @@ namespace KillerShell.Services
                 progress.BytesDone = initialBytes + size;
 
                 ct.ThrowIfCancellationRequested();
+                // Copies were writable before native stream preservation. Keep that behavior:
+                // File.Replace needs write access to staging even when the source is read-only.
+                File.SetAttributes(temp, File.GetAttributes(temp) & ~FileAttributes.ReadOnly);
                 if (File.Exists(dst)) File.Replace(temp, dst, null);
                 else File.Move(temp, dst);
             }
