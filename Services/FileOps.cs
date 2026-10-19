@@ -88,6 +88,13 @@ namespace KillerShell.Services
             public string Source = string.Empty;
             public string Target = string.Empty;
             public long   Size;
+
+            /// <summary>
+            /// A junction or directory symlink met during a MOVE. It moves as the link itself and
+            /// is never walked: walking it would move the files out of the folder it points at,
+            /// which lives somewhere else entirely and is not part of what was selected.
+            /// </summary>
+            public bool   IsLink;
         }
 
         // ── Planning ─────────────────────────────────────────────
@@ -97,7 +104,7 @@ namespace KillerShell.Services
         /// no directories yet. Runs before anything is written so the total is known up front -
         /// a progress bar that discovers its own length as it goes is not a progress bar.
         /// </summary>
-        private static List<WorkItem> Plan(IEnumerable<string> sources, string targetDir,
+        private static List<WorkItem> Plan(IEnumerable<string> sources, string targetDir, bool move,
                                            List<string> dirsToCreate, CancellationToken ct)
         {
             var work = new List<WorkItem>();
@@ -120,8 +127,13 @@ namespace KillerShell.Services
                 else if (Directory.Exists(src))
                 {
                     string root = Path.Combine(targetDir, Path.GetFileName(src.TrimEnd(Path.DirectorySeparatorChar)));
+                    if (move && IsLink(src))
+                    {
+                        work.Add(new WorkItem { Source = src, Target = root, IsLink = true });
+                        continue;
+                    }
                     dirsToCreate.Add(root);
-                    WalkDirectory(src, root, work, dirsToCreate, ct);
+                    WalkDirectory(src, root, move, work, dirsToCreate, ct);
                 }
                 // Vanished between selection and the drop: nothing to do, and not an error worth
                 // stopping a batch of fifty for.
@@ -130,7 +142,7 @@ namespace KillerShell.Services
             return work;
         }
 
-        private static void WalkDirectory(string srcDir, string dstDir, List<WorkItem> work,
+        private static void WalkDirectory(string srcDir, string dstDir, bool move, List<WorkItem> work,
                                           List<string> dirsToCreate, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
@@ -140,8 +152,13 @@ namespace KillerShell.Services
                 foreach (var d in Directory.EnumerateDirectories(srcDir))
                 {
                     string sub = Path.Combine(dstDir, Path.GetFileName(d));
+                    if (move && IsLink(d))
+                    {
+                        work.Add(new WorkItem { Source = d, Target = sub, IsLink = true });
+                        continue;
+                    }
                     dirsToCreate.Add(sub);
-                    WalkDirectory(d, sub, work, dirsToCreate, ct);
+                    WalkDirectory(d, sub, move, work, dirsToCreate, ct);
                 }
 
                 foreach (var f in Directory.EnumerateFiles(srcDir))
@@ -185,7 +202,7 @@ namespace KillerShell.Services
             var dirsToCreate = new List<string>();
             List<WorkItem> work;
 
-            try { work = Plan(sources, targetDir, dirsToCreate, ct); }
+            try { work = Plan(sources, targetDir, move, dirsToCreate, ct); }
             catch (OperationCanceledException) { result.Canceled = true; return result; }
 
             // A same-volume MOVE of a whole directory is a rename: one call, no walk, no byte
@@ -225,7 +242,8 @@ namespace KillerShell.Services
 
                 try
                 {
-                    if (move) MoveFile(item.Source, target, ref progress, onProgress, ct);
+                    if (item.IsLink) MoveLink(item.Source, target);
+                    else if (move) MoveFile(item.Source, target, ref progress, onProgress, ct);
                     else      CopyFile(item.Source, target, ref progress, onProgress, ct);
                     result.Succeeded++;
                     result.SucceededTargets.Add(target);
@@ -366,6 +384,24 @@ namespace KillerShell.Services
             }
         }
 
+        /// <summary>
+        /// Moves a junction or directory symlink as the link. Same volume is a rename of the link
+        /// entry; across volumes there is no way to carry it, so it stays where it is and is
+        /// reported rather than being emptied of someone else's files.
+        /// </summary>
+        private static void MoveLink(string src, string dst)
+        {
+            if (!SameVolume(src, dst))
+                throw new IOException("'" + src + "' is a link to another folder and was not moved to a different drive.");
+            Directory.Move(src, dst);
+        }
+
+        private static bool IsLink(string dir)
+        {
+            try { return (File.GetAttributes(dir) & FileAttributes.ReparsePoint) != 0; }
+            catch { return false; }
+        }
+
         private static void RemoveEmptySourceDirs(IEnumerable<string> sources)
         {
             foreach (string s in sources)
@@ -386,7 +422,9 @@ namespace KillerShell.Services
         {
             try
             {
-                foreach (var d in Directory.EnumerateDirectories(dir)) PruneEmpty(d);
+                // Never through a link: an empty folder on the far side of a junction is not ours.
+                foreach (var d in Directory.EnumerateDirectories(dir))
+                    if (!IsLink(d)) PruneEmpty(d);
                 if (Directory.GetFileSystemEntries(dir).Length == 0) Directory.Delete(dir);
             }
             catch { }

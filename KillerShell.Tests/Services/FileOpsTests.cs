@@ -274,6 +274,58 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        [Fact]
+        public void MovingAFolderWithAJunction_LeavesTheJunctionTargetIntact()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string victim = Directory.CreateDirectory(Path.Combine(root, "victim")).FullName;
+                string victimFile = Path.Combine(victim, "keep.txt");
+                File.WriteAllText(victimFile, "keep");
+
+                string source = Directory.CreateDirectory(Path.Combine(root, "source")).FullName;
+                File.WriteAllText(Path.Combine(source, "own.txt"), "own");
+                string link = Path.Combine(source, "link");
+                CreateJunction(link, victim);
+                string loose = Path.Combine(root, "loose.txt");
+                File.WriteAllText(loose, "loose");
+                string dest = Directory.CreateDirectory(Path.Combine(root, "dest")).FullName;
+
+                // A file in the batch forces the per-file path rather than the directory rename.
+                FileOps.CopyOrMove([source, loose], dest, true,
+                    _ => ConflictChoice.Replace, _ => { }, CancellationToken.None);
+
+                Assert.True(File.Exists(victimFile));
+                Assert.Equal("keep", File.ReadAllText(victimFile));
+                Assert.True(File.Exists(Path.Combine(dest, "source", "own.txt")));
+            }
+            finally
+            {
+                RemoveJunctions(root);
+                Directory.Delete(root, true);
+            }
+        }
+
+        private static void CreateJunction(string link, string target)
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe",
+                "/c mklink /J \"" + link + "\" \"" + target + "\"")
+            { CreateNoWindow = true, UseShellExecute = false };
+            using var p = System.Diagnostics.Process.Start(psi)!;
+            p.WaitForExit();
+            Assert.True(Directory.Exists(link), "junction was not created");
+        }
+
+        private static void RemoveJunctions(string root)
+        {
+            foreach (string d in Directory.GetDirectories(root, "*", SearchOption.AllDirectories))
+            {
+                if (Directory.Exists(d) && (File.GetAttributes(d) & FileAttributes.ReparsePoint) != 0)
+                    Directory.Delete(d);
+            }
+        }
+
         private static string NewTempDirectory()
         {
             string path = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
