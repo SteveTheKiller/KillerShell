@@ -26,6 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
+- Closing and reopening remembers tabs in both panes, including a hidden right pane, regardless of which pane had focus.
 - Storage scans enumerate network shares and extended-length paths correctly.
 - Renaming registry keys preserves their permissions, child keys, and existing open handles.
 - File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark. Copying a read-only source can still replace an existing file.

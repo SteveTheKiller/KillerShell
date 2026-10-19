@@ -195,7 +195,7 @@ namespace KillerShell.Shell
 
         // ═══════════════════════════════════════════════════════════
         //  TAB SESSION PERSISTENCE
-        //  Tabs persist as one registry string: one line per tab, fields | separated,
+        //  Each pane persists as a registry string: one line per tab, fields | separated,
         //  free-text fields URI-escaped so user patterns can't break the format.
         // ═══════════════════════════════════════════════════════════
         private void SaveTabsOnExit()
@@ -205,11 +205,22 @@ namespace KillerShell.Shell
             if (Services.ThemeManager.GetSetting("RememberTabs") == "0")
             {
                 Services.ThemeManager.SetSetting("Tabs", string.Empty);
+                Services.ThemeManager.SetSetting("TabsRight", string.Empty);
                 return;
             }
+            // Only the focused tab owns the window-wide search fields. Each pane keeps its
+            // own root box, including the right pane while it is hidden.
             CaptureTab(_active);
+            foreach (var pane in new[] { LeftPane, RightPane })
+                if (pane.Active != null) pane.Active.RootPath = pane.RootPathBox.Text;
+            Services.ThemeManager.SetSetting("Tabs", SerializeTabs(LeftPane.Tabs));
+            Services.ThemeManager.SetSetting("TabsRight", SerializeTabs(RightPane.Tabs));
+        }
+
+        private string SerializeTabs(IEnumerable<SearchTab> tabs)
+        {
             var lines = new List<string>();
-            foreach (var t in _tabs)
+            foreach (var t in tabs)
             {
                 // A shell, a document, a Processes tab, an Event Viewer tab and a Performance tab
                 // all have LIVE state - a pty, an open buffer, a refresh timer, a loaded log, a
@@ -262,7 +273,7 @@ namespace KillerShell.Shell
                     terms, filters,
                     Uri.EscapeDataString(t.CurrentFolder), t.IsBrowsing ? "1" : "0"));
             }
-            Services.ThemeManager.SetSetting("Tabs", string.Join("\n", lines));
+            return string.Join("\n", lines);
         }
 
         private bool TryRestoreTabs()
@@ -283,12 +294,27 @@ namespace KillerShell.Shell
             if (Services.ThemeManager.GetSetting("SessionSchema") != "2")
             {
                 Services.ThemeManager.SetSetting("Tabs", string.Empty);
+                Services.ThemeManager.SetSetting("TabsRight", string.Empty);
                 Services.ThemeManager.SetSetting("SessionSchema", "2");
                 return false;
             }
 
-            var raw = Services.ThemeManager.GetSetting("Tabs");
-            if (string.IsNullOrEmpty(raw)) return false;
+            // The row schema and fresh-reopen path are shared by both panes. Restore the
+            // hidden right pane first so startup still finishes on the left pane.
+            try
+            {
+                RestoreTabsInPane(RightPane, Services.ThemeManager.GetSetting("TabsRight"));
+                RestoreTabsInPane(LeftPane, Services.ThemeManager.GetSetting("Tabs"));
+            }
+            finally { FocusPaneQuiet(LeftPane); }
+            return LeftPane.Tabs.Count > 0;
+        }
+
+        private void RestoreTabsInPane(FilePane pane, string? raw)
+        {
+            if (string.IsNullOrEmpty(raw)) return;
+            FocusPaneQuiet(pane);
+            pane.TabStrip.ItemsSource = pane.Tabs;
 
             // Each LINE gets its own try/catch (2026-08-03 - a corrupted session restored as an
             // empty folder rather than the previously open tabs). This used to be one catch
@@ -386,9 +412,7 @@ namespace KillerShell.Shell
                 }
             }
 
-            if (_tabs.Count == 0) return false;
-            ActivateTab(_tabs[0]);
-            return true;
+            if (_tabs.Count > 0) ActivateTab(_tabs[0]);
         }
     }
 }
