@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using KillerShell.Models;
@@ -13,7 +12,7 @@ namespace KillerShell.Services
 {
     // Multicore search: one producer walks the directory tree into a bounded queue,
     // one worker per core evaluates files, and the calling task pumps result batches
-    // to the UI every ~150ms. Wildcard regexes are compiled ONCE per term/pattern
+    // to the UI every ~150ms. Wildcard patterns are prepared ONCE per term/pattern
     // (the old code built a Regex per file per term). Cancellation stays graceful:
     // Stop drains quietly via ct.IsCancellationRequested - no exceptions escape.
     public class SearchEngine
@@ -57,16 +56,16 @@ namespace KillerShell.Services
 
             // ---- One-time plan: patterns compiled up front, never per file ----
             var excludeNames = ParsePatterns(excludePatterns);
-            var excludeRx    = excludeNames.Select(p => WildcardRegex(p, false)).ToList();
+            var excludeRx    = excludeNames.Select(p => new WildcardPattern(p, false)).ToList();
 
             var includeNames = ParsePatterns(includePatterns);
             // Idiot-proofing: "*.*" / "*" mean "everything" - same as an empty include box.
             includeNames.RemoveAll(p => p == "*.*" || p == "*");
-            var includeRx = includeNames.Select(p => WildcardRegex(LoosenPattern(p), false)).ToList();
+            var includeRx = includeNames.Select(p => new WildcardPattern(LoosenPattern(p), false)).ToList();
 
             var activeFilters = (filters ?? []).Where(f => f.IsActive).ToList();
 
-            // Term plan: per group, the AND/OR mode plus each term's compiled name regex
+            // Term plan: per group, the AND/OR mode plus each term's prepared name pattern
             // (null for content terms, which stream the file instead).
             var groupPlans = groups
                 .Select(g => (And: g.Mode == TermGroup.GroupMode.And,
@@ -74,7 +73,7 @@ namespace KillerShell.Services
                                   .Where(t => !string.IsNullOrWhiteSpace(t.Pattern))
                                   .Select(t => (Term: t,
                                                 NameRx: t.Mode == SearchTerm.SearchMode.FileName
-                                                    ? WildcardRegex(LoosenPattern(t.Pattern.Trim()), caseSensitive)
+                                                    ? new WildcardPattern(LoosenPattern(t.Pattern.Trim()), caseSensitive)
                                                     : null))
                                   .ToList()))
                 .Where(p => p.Terms.Count > 0)
@@ -356,9 +355,9 @@ namespace KillerShell.Services
         }
 
         // Excludes match two ways: as a whole path segment ("bin", "node_modules")
-        // or as a wildcard against the filename (precompiled regexes).
+        // or as a wildcard against the filename (prepared patterns).
         private static bool IsExcluded(string filePath, string fileName,
-                                       List<string> excludeNames, List<Regex> excludeRx)
+                                       List<string> excludeNames, List<WildcardPattern> excludeRx)
         {
             for (int i = 0; i < excludeNames.Count; i++)
             {
@@ -381,24 +380,65 @@ namespace KillerShell.Services
             return "*" + p + "*";
         }
 
-        // Compiled once per pattern; the workers only call IsMatch.
-        private static Regex WildcardRegex(string pattern, bool caseSensitive)
-        {
-            string rx = "^" + Regex.Escape(pattern)
-                            .Replace("\\*", ".*")
-                            .Replace("\\?", ".") + "$";
-            var opts = RegexOptions.Compiled | (caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
-            return new Regex(rx, opts);
-        }
-
         /// <summary>One-off wildcard test (kept for callers outside the hot loop).</summary>
         public static bool MatchesWildcard(string input, string pattern, bool caseSensitive)
+            => new WildcardPattern(pattern, caseSensitive).IsMatch(input);
+
+        /// <summary>
+        /// A whole-name pattern where * is any run of characters and ? is exactly one; every
+        /// other character is literal.
+        /// </summary>
+        /// <remarks>
+        /// Not a regex. Each * used to become .* in an unbounded regex, and a name that cannot
+        /// match a pattern with many stars backtracked for longer than anyone would wait, inside
+        /// a single IsMatch that cancellation cannot interrupt. This two-pointer matcher only ever
+        /// returns to the most recent star, so a name is matched in at most (name length x
+        /// pattern length) steps. Case-insensitive matching folds each character with the
+        /// current culture, as RegexOptions.IgnoreCase did.
+        /// </remarks>
+        private sealed class WildcardPattern
         {
-            string regex = "^" + Regex.Escape(pattern)
-                               .Replace("\\*", ".*")
-                               .Replace("\\?", ".") + "$";
-            var opts = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-            return Regex.IsMatch(input, regex, opts);
+            private readonly string _pattern;
+            private readonly bool _caseSensitive;
+            private readonly System.Globalization.CultureInfo _culture;
+
+            internal WildcardPattern(string pattern, bool caseSensitive)
+            {
+                _caseSensitive = caseSensitive;
+                _culture = System.Globalization.CultureInfo.CurrentCulture;
+                if (caseSensitive) { _pattern = pattern; return; }
+                var folded = new char[pattern.Length];
+                for (int i = 0; i < pattern.Length; i++) folded[i] = char.ToLower(pattern[i], _culture);
+                _pattern = new string(folded);
+            }
+
+            internal bool IsMatch(string input)
+            {
+                int p = 0, i = 0, star = -1, resume = 0;
+                while (i < input.Length)
+                {
+                    char c = _caseSensitive ? input[i] : char.ToLower(input[i], _culture);
+                    if (p < _pattern.Length && _pattern[p] != '*' && (_pattern[p] == '?' || _pattern[p] == c))
+                    {
+                        p++;
+                        i++;
+                    }
+                    else if (p < _pattern.Length && _pattern[p] == '*')
+                    {
+                        star = p++;
+                        resume = i;
+                    }
+                    else if (star >= 0)
+                    {
+                        // Let the most recent star take one more character and try again.
+                        p = star + 1;
+                        i = ++resume;
+                    }
+                    else return false;
+                }
+                while (p < _pattern.Length && _pattern[p] == '*') p++;
+                return p == _pattern.Length;
+            }
         }
     }
 }

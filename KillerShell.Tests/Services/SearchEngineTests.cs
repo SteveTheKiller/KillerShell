@@ -19,9 +19,62 @@ namespace KillerShell.Tests.Services
         [InlineData("ERROR.LOG", "*.log", true, false)]
         [InlineData("notes.txt", "n?tes.*", true, true)]
         [InlineData("notes.txt", "*.log", false, false)]
+        [InlineData("", "*", true, true)]
+        [InlineData("", "?", true, false)]
+        [InlineData("abc", "abc*", true, true)]
+        [InlineData("abc", "ab", true, false)]
+        [InlineData("ab", "abc", true, false)]
+        [InlineData("abc", "a*?c", true, true)]
+        [InlineData("ac", "a*?c", true, false)]
+        [InlineData("axbxc", "a*b*c", true, true)]
+        [InlineData("axbx", "a*b*c", true, false)]
+        [InlineData("a+b(1).txt", "a+b(?).txt", true, true)]
+        [InlineData("[x].log", "[x].*", true, true)]
+        [InlineData("x.log", "[x].*", true, false)]
+        [InlineData("ÄBC.txt", "äbc.*", false, true)]
+        [InlineData("ÄBC.txt", "äbc.*", true, false)]
+        [InlineData("日本.txt", "?本.*", true, true)]
         public void MatchesWildcard_UsesExpectedCaseAndWildcardRules(
             string input, string pattern, bool caseSensitive, bool expected)
             => Assert.Equal(expected, SearchEngine.MatchesWildcard(input, pattern, caseSensitive));
+
+        [Theory]
+        [InlineData("name-term")]
+        [InlineData("include")]
+        [InlineData("exclude")]
+        [InlineData("one-off")]
+        public async Task PathologicalWildcards_StopPromptlyWhenCanceled(string scenario)
+        {
+            // Run in its own process: the old regex matcher never finished these patterns, and a
+            // runaway match would otherwise keep spinning inside the test host.
+            string assembly = typeof(SearchEngineTests).Assembly.Location.Replace("'", "''");
+            string application = typeof(SearchEngine).Assembly.Location.Replace("'", "''");
+            string assertions = typeof(Assert).Assembly.Location.Replace("'", "''");
+            string script = "$ErrorActionPreference = 'Stop'; try { " +
+                "[Reflection.Assembly]::LoadFrom('" + application + "') | Out-Null; " +
+                "[Reflection.Assembly]::LoadFrom('" + assertions + "') | Out-Null; " +
+                "[Reflection.Assembly]::LoadFrom('" + assembly + "') | Out-Null; " +
+                "[KillerShell.Tests.Services.WildcardCancelScenario]::Run('" + scenario + "'); exit 0 " +
+                "} catch { [Console]::Error.WriteLine($_.Exception.ToString()); exit 1 }";
+            using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = "-NoProfile -NonInteractive -EncodedCommand " +
+                    Convert.ToBase64String(Encoding.Unicode.GetBytes(script)),
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            })!;
+            var output = process.StandardOutput.ReadToEndAsync();
+            var errors = process.StandardError.ReadToEndAsync();
+            if (!process.WaitForExit(20000))
+            {
+                process.Kill();
+                Assert.Fail("The wildcard scenario was still running after 20 seconds.");
+            }
+            Assert.True(process.ExitCode == 0, $"Scenario {scenario} exited with {process.ExitCode}.\n" + await output + await errors);
+        }
 
         [Fact]
         public async Task SearchAsync_AppliesNameContentAndExtensionFilters()
@@ -193,6 +246,66 @@ namespace KillerShell.Tests.Services
             finally
             {
                 File.Delete(file);
+            }
+        }
+    }
+
+    public static class WildcardCancelScenario
+    {
+        // Every * used to become .* in an unbounded regex. Twenty of them against a long name
+        // that cannot match backtracks for longer than anyone will wait, and cancellation is only
+        // checked between files, never inside a match.
+        private static readonly string Pathological = string.Concat(Enumerable.Repeat("*a", 20)) + "*b";
+
+        // Called by the isolated process through its public test entry point.
+        public static void Run(string scenario)
+        {
+            if (scenario == "one-off")
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                Assert.False(SearchEngine.MatchesWildcard(new string('a', 34) + ".txt", Pathological, false));
+                Assert.True(watch.Elapsed < TimeSpan.FromSeconds(1), "One wildcard test took " + watch.Elapsed);
+                return;
+            }
+
+            string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(root);
+            try
+            {
+                var files = new List<string>();
+                for (int i = 0; i < 6; i++)
+                {
+                    string file = Path.Combine(root, new string('a', 30 + i) + ".txt");
+                    File.WriteAllText(file, "x");
+                    files.Add(file);
+                }
+
+                // Twice, so a match left running by the first cancel would show up in the second.
+                for (int round = 0; round < 2; round++)
+                {
+                    var groups = new List<TermGroup>();
+                    string include = string.Empty, exclude = string.Empty;
+                    if (scenario == "name-term")
+                    {
+                        var group = new TermGroup { Mode = TermGroup.GroupMode.And };
+                        group.Terms.Add(new SearchTerm { Mode = SearchTerm.SearchMode.FileName, Pattern = Pathological });
+                        groups.Add(group);
+                    }
+                    else if (scenario == "include") include = Pathological;
+                    else if (scenario == "exclude") exclude = Pathological;
+
+                    using var cts = new CancellationTokenSource();
+                    Task search = new SearchEngine().SearchAsync(root, groups, new List<SearchFilter>(), include, exclude, false, cts.Token, files);
+                    search.Wait(300);
+                    cts.Cancel();
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
+                    Assert.True(search.Wait(TimeSpan.FromSeconds(1)),
+                        $"Search was still running {watch.Elapsed.TotalSeconds:0.0}s after cancellation (round {round + 1}).");
+                }
+            }
+            finally
+            {
+                try { Directory.Delete(root, true); } catch (IOException) { }
             }
         }
     }
