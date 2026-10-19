@@ -525,6 +525,60 @@ namespace KillerShell.Services
         /// </summary>
         private static bool ExtractEntryTo(string archivePath, string entryPath, string dest, out string? error)
         {
+            if (!ExtractEntryCore(archivePath, entryPath, dest, out error)) return false;
+            CopyDownloadMark(archivePath, dest);
+            return true;
+        }
+
+        /// <summary>
+        /// Carries the archive's Mark of the Web (its Zone.Identifier stream) onto an extracted
+        /// file, as Explorer does, so an exe inside a downloaded zip still gets SmartScreen and
+        /// the download warning when it is opened. An unmarked archive leaves the file unmarked.
+        /// Best-effort: a volume without alternate streams (FAT, some shares) just has no mark.
+        /// </summary>
+        private static void CopyDownloadMark(string archivePath, string dest)
+        {
+            try
+            {
+                byte[]? mark = ReadStream(archivePath + ":Zone.Identifier");
+                if (mark == null || mark.Length == 0) return;
+                using var handle = CreateFileW(dest + ":Zone.Identifier", GENERIC_WRITE, 0, IntPtr.Zero,
+                                               CREATE_ALWAYS, 0, IntPtr.Zero);
+                if (handle.IsInvalid) return;
+                using var fs = new FileStream(handle, FileAccess.Write);
+                fs.Write(mark, 0, mark.Length);
+            }
+            catch { }
+        }
+
+        private static byte[]? ReadStream(string streamPath)
+        {
+            using var handle = CreateFileW(streamPath, GENERIC_READ, FILE_SHARE_READ, IntPtr.Zero,
+                                           OPEN_EXISTING, 0, IntPtr.Zero);
+            if (handle.IsInvalid) return null;
+            using var fs = new FileStream(handle, FileAccess.Read);
+            if (fs.Length > 64 * 1024) return null;   // a zone record is a few lines
+            var data = new byte[fs.Length];
+            int read = 0;
+            while (read < data.Length)
+            {
+                int n = fs.Read(data, read, data.Length - read);
+                if (n <= 0) break;
+                read += n;
+            }
+            return data;
+        }
+
+        // .NET Framework rejects ':' in paths, so the named stream is opened natively.
+        private const uint GENERIC_READ = 0x80000000, GENERIC_WRITE = 0x40000000;
+        private const uint FILE_SHARE_READ = 0x1, OPEN_EXISTING = 3, CREATE_ALWAYS = 2;
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
+        private static extern Microsoft.Win32.SafeHandles.SafeFileHandle CreateFileW(
+            string name, uint access, uint share, IntPtr security, uint disposition, uint flags, IntPtr template);
+
+        private static bool ExtractEntryCore(string archivePath, string entryPath, string dest, out string? error)
+        {
             error = null;
             try
             {

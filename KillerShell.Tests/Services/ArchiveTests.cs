@@ -130,6 +130,70 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        [Fact]
+        public void ExtractedEntries_KeepTheArchivesDownloadMark()
+        {
+            string work = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+            string path = Path.Combine(work, "download.tar");
+            string dest = Path.Combine(work, "out");
+            Directory.CreateDirectory(work);
+            string? temp = null;
+            try
+            {
+                using (var archive = File.Create(path))
+                    WriteTarFile(archive, "run.txt", "payload");
+                Cmd("echo [ZoneTransfer]>\"" + path + ":Zone.Identifier\" & echo ZoneId=3 >>\"" + path + ":Zone.Identifier\"");
+                Assert.Contains("ZoneId=3", ReadZone(path));
+
+                temp = ArchiveProvider.ExtractToTemp(path, "run.txt", out string? error);
+                Assert.Null(error);
+                Assert.Contains("ZoneId=3", ReadZone(temp!));
+
+                Assert.True(ArchiveProvider.ExtractAll(path, dest, System.Threading.CancellationToken.None, out error), error);
+                Assert.Contains("ZoneId=3", ReadZone(Path.Combine(dest, "run.txt")));
+            }
+            finally
+            {
+                if (temp != null) Directory.Delete(Path.GetDirectoryName(temp)!, true);
+                Directory.Delete(work, true);
+            }
+        }
+
+        [Fact]
+        public void ExtractedEntries_FromAnUnmarkedArchive_StayUnmarked()
+        {
+            string work = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+            string path = Path.Combine(work, "local.tar");
+            Directory.CreateDirectory(work);
+            string? temp = null;
+            try
+            {
+                using (var archive = File.Create(path))
+                    WriteTarFile(archive, "run.txt", "payload");
+
+                temp = ArchiveProvider.ExtractToTemp(path, "run.txt", out string? error);
+                Assert.Null(error);
+                Assert.Equal("", ReadZone(temp!));
+            }
+            finally
+            {
+                if (temp != null) Directory.Delete(Path.GetDirectoryName(temp)!, true);
+                Directory.Delete(work, true);
+            }
+        }
+
+        private static string Cmd(string command)
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe", "/c " + command)
+            { CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
+            using var p = System.Diagnostics.Process.Start(psi)!;
+            string output = p.StandardOutput.ReadToEnd();
+            p.WaitForExit();
+            return output;
+        }
+
+        private static string ReadZone(string file) => Cmd("more < \"" + file + ":Zone.Identifier\"").Trim();
+
         private static void WriteTarFile(Stream archive, string name, string content)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(content);
