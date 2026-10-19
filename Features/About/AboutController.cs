@@ -187,6 +187,15 @@ namespace KillerShell.Features.About
 
             try
             {
+                // Check after the download: documents can change while it is in progress.
+                if (!_host.ConfirmShutdown())
+                {
+                    UpdateService.DiscardDownload(newExe);
+                    _updating = false;
+                    _host.UpdateEnabled = true;
+                    _host.UpdateText = string.Format(_host.Loc("Str_About_UpdateAvailable"), tag);
+                    return;
+                }
                 // Declining UAC throws Win32Exception 1223, so the shutdown only happens once the
                 // helper is actually running - otherwise the app would close without updating.
                 UpdateService.StartSwap(newExe, tag!.TrimStart('v', 'V'));
@@ -194,6 +203,7 @@ namespace KillerShell.Features.About
             }
             catch
             {
+                _host.CancelShutdown();
                 UpdateService.DiscardDownload(newExe);
                 _updating           = false;
                 _host.UpdateEnabled = true;

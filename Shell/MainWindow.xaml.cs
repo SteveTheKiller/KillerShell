@@ -36,7 +36,8 @@ namespace KillerShell.Shell
         public MainWindow()
         {
             InitializeComponent();
-            _tray = KillerFamily.Shell.CloseToTray.Attach(this, Services.AppInfo.DisplayName, Loc, () => Features.About.AboutController.CloseToTrayEnabled);
+            _tray = KillerFamily.Shell.CloseToTray.Attach(this, Services.AppInfo.DisplayName, Loc,
+                () => Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown);
             new KillerFamily.Accessibility.OverlayFocus(this)
                 .Track(ShortcutsOverlay, AboutOverlay, FontsOverlay, AssocOverlay, PatternHelpOverlay);
             _about = new Features.About.AboutController(this);   // Features/About
@@ -227,12 +228,9 @@ namespace KillerShell.Shell
                 Dispatcher.BeginInvoke(new System.Action(CheckForUpdatesOnStartup),   // About.cs
                     System.Windows.Threading.DispatcherPriority.Background);
             };
-            Closing += (_, _) =>
+            Closed += (_, _) =>
             {
-                // No fade here: Session.cs's OnClosing override already does it (stage 2), and
-                // it runs BEFORE this handler because raising Closing is the last thing that
-                // override does. A second fade started from here re-canceled a close the
-                // override had already taken charge of.
+                // A canceled close must keep watchers, shell state and the session alive.
                 StopWatching();                            // BrowseWatcher.cs
                 DisposeShellEnv();                         // Terminal/ShellEnv.cs
 

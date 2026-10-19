@@ -26,6 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
+- Closing, installing, updating, or signing out asks before discarding unsaved documents in either pane, even when a pane is hidden. Cancel keeps the window running and its session intact.
 - Copying or moving over a file preserves the old file if the operation fails or is canceled. Folder moves keep each conflict choice, failed cross-drive moves report the leftover source, and oversized tar metadata is rejected. Moving a folder that holds a junction or folder link moves the link instead of emptying the folder it points to. Extract All no longer leaves a second copy of every file in the temp folder. Edits made while the administrator save prompt is open stay marked unsaved. Renaming a registry key or value keeps every value with its exact type, instead of failing or dropping values of uncommon types.
 - Updating an all-users install and saving a protected file as administrator check the staged download or document against its verified hash just before writing, so another program cannot swap it in on the way. The update runs from the installed copy instead of a script in the temp folder.
 - Text printed in a terminal can no longer point the tab's folder at a network share, which could send your Windows sign-in to that machine when the folder was opened. Local and WSL folders still follow the shell.

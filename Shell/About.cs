@@ -80,6 +80,8 @@ namespace KillerShell.Shell
         bool IAboutHost.DemoPreview => DemoMode;
 
         void IAboutHost.ShowCard() => FadeOverlayIn(AboutOverlay);
+        bool IAboutHost.ConfirmShutdown() => ConfirmShutdown();
+        void IAboutHost.CancelShutdown() => CancelShutdown();
 
         // ---- The card's settings ----
 

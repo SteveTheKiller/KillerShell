@@ -51,5 +51,11 @@ namespace KillerShell.Features.About
 
         /// <summary>Fades the About card in.</summary>
         void ShowCard();
+
+        /// <summary>Checks unsaved documents before starting a relaunch that cannot be canceled.</summary>
+        bool ConfirmShutdown();
+
+        /// <summary>Restores close prompts when a relaunch fails or is canceled.</summary>
+        void CancelShutdown();
     }
 }

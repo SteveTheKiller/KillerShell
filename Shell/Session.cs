@@ -34,26 +34,26 @@ namespace KillerShell.Shell
             if (machineWide) dlg.LockCheck2(Loc("Str_Dlg_AlreadyAllUsers"));
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
+            if (!ConfirmShutdown()) return;
 
             PortableBadge.Visibility = Visibility.Collapsed;
             SaveTabsOnExit();
 
-            // InstallAndRelaunch ends in Application.Current.Shutdown(), and OnClosing VETOES that
-            // unless the close is already confirmed: stage 1 sets e.Cancel and queues the quit
-            // dialog, so clicking Install popped an unexpected "quit? close my tabs?" prompt and
-            // left the portable window open instead of handing over to the installed copy. The
-            // session was already written by SaveTabsOnExit above, so there is nothing left to ask
-            // about - confirm the close up front, exactly as the IsElevated guard does on the same
-            // two stages. Stage 2's 140ms fade still runs, so the hand-off keeps its usual look.
-            _closeConfirmed = true;
-
             // An all-users install needs UAC. If that is declined the app carries on running as
             // it was, so put the badge back rather than leaving the UI mid-install.
-            if (!App.InstallAndRelaunch(wantDesktop: dlg.Check1Checked, allUsers: dlg.Check2Checked))
+            bool installed = false;
+            try
             {
-                _closeConfirmed = false;   // still running: the quit prompt must come back
-                PortableBadge.Visibility = Visibility.Visible;
-                SetStatus(Loc("Str_St_InstallCanceled"));
+                installed = App.InstallAndRelaunch(wantDesktop: dlg.Check1Checked, allUsers: dlg.Check2Checked);
+            }
+            finally
+            {
+                if (!installed)
+                {
+                    CancelShutdown();
+                    PortableBadge.Visibility = Visibility.Visible;
+                    SetStatus(Loc("Str_St_InstallCanceled"));
+                }
             }
         }
 
@@ -61,13 +61,48 @@ namespace KillerShell.Shell
         //  SMART QUIT (Esc key AND the window close button)
         // ═══════════════════════════════════════════════════════════
         private bool _closeConfirmed;
+        private bool _editorCloseConfirmed;
+        private bool _confirmingEditorClose;
+
+        private bool ConfirmShutdown()
+        {
+            if (!ConfirmEditorClose()) return false;
+            _closeConfirmed = true;
+            return true;
+        }
+
+        private void CancelShutdown()
+        {
+            _editorCloseConfirmed = false;
+            _closeConfirmed = false;
+        }
+
+        private bool ConfirmEditorClose()
+        {
+            if (_editorCloseConfirmed) return true;
+            // A modal discard dialog pumps the dispatcher. Another exit must wait for it.
+            if (_confirmingEditorClose) return false;
+            _confirmingEditorClose = true;
+            try
+            {
+                foreach (var tab in LeftPane.Tabs.Concat(RightPane.Tabs).ToArray())
+                    if (!ConfirmDiscard(tab))
+                    {
+                        _closeConfirmed = false;
+                        return false;
+                    }
+                _editorCloseConfirmed = true;
+                return true;
+            }
+            finally { _confirmingEditorClose = false; }
+        }
 
         private void ConfirmedClose() { _closeConfirmed = true; Close(); }
 
         // Esc path: a remembered "stay" swallows the key, a remembered "quit" closes.
         private void RequestQuit()
         {
-            // An elevated window just goes. See the note on the same guard in OnClosing.
+            // Elevated windows skip the session prompt, but still check unsaved documents.
             if (IsElevated) { ConfirmedClose(); return; }   // Elevation.cs
 
             string remembered = Services.ThemeManager.GetSetting("EscQuit") ?? string.Empty;
@@ -90,12 +125,8 @@ namespace KillerShell.Shell
 
             // Stage 1: the quit prompt (unless confirmed, remembered, demo, or ELEVATED).
             //
-            // The admin window never prompts. Both checkboxes are about the session - "close my
-            // open tabs" and "remember this choice" - and an elevated window does not write the
-            // session back at all (see the guard in MainWindow's Closing handler), so every
-            // answer it could give is discarded. Asking a question whose answer is thrown away
-            // is worse than not asking: it implies the tabs in front of you will be remembered,
-            // and they will not. It is also a window you opened to run one command and close.
+            // Elevated windows skip this session prompt because they do not persist tabs.
+            // They still ask about unsaved documents below.
             if (!_closeConfirmed && !DemoMode && !IsElevated &&
                 string.IsNullOrEmpty(Services.ThemeManager.GetSetting("EscQuit")))
             {
@@ -108,11 +139,19 @@ namespace KillerShell.Shell
                 return;
             }
 
+            if (!ConfirmEditorClose())
+            {
+                e.Cancel = true;
+                base.OnClosing(e);
+                return;
+            }
+
             // Stage 2: fade the window out once, then really close.
             if (!_fadeOutDone)
             {
                 e.Cancel        = true;
                 _closeConfirmed = true;   // never re-prompt after the fade starts
+                IsEnabled = false;       // no edits after discard approval while the fade runs
 
                 // Give any open Processes tab's background owner-lookup thread, and any open
                 // Event Viewer tab's background log read, a chance to stop cleanly before the
