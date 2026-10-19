@@ -131,5 +131,31 @@ namespace KillerShell.Tests.Services
             Assert.Equal(name, entry.Name);
             Assert.False(entry.IsDirectory);
         }
+
+        [Fact]
+        public void MftParser_KeepsTheFullFileReferenceForLookups()
+        {
+            // NTFS file references carry a sequence number in their top 16 bits. Matching parents
+            // and children ignores it, but OpenFileById refuses a reference without it, which left
+            // every file size unknown on a real volume.
+            const ulong Reference = 0x0002_0000_0002_B60FUL;
+            const int RecordOffset = 8;
+            const int NameOffset = 60;
+            byte[] nameBytes = Encoding.Unicode.GetBytes("notepad.exe");
+            int recordLength = NameOffset + nameBytes.Length;
+            var buffer = new byte[RecordOffset + recordLength];
+            BitConverter.GetBytes(recordLength).CopyTo(buffer, RecordOffset);
+            BitConverter.GetBytes((ushort)2).CopyTo(buffer, RecordOffset + 4);
+            BitConverter.GetBytes(Reference).CopyTo(buffer, RecordOffset + 8);
+            BitConverter.GetBytes(0x0005_0000_0000_0005UL).CopyTo(buffer, RecordOffset + 16);
+            BitConverter.GetBytes((ushort)nameBytes.Length).CopyTo(buffer, RecordOffset + 56);
+            BitConverter.GetBytes((ushort)NameOffset).CopyTo(buffer, RecordOffset + 58);
+            nameBytes.CopyTo(buffer, RecordOffset + NameOffset);
+
+            StorageMftEntry entry = Assert.Single(StorageMftReader.ParseRecords(buffer, buffer.Length)!).Value;
+            Assert.Equal(0x2B60FUL, entry.Id);
+            Assert.Equal(5UL, entry.ParentId);
+            Assert.Equal(Reference, entry.FileReference);
+        }
     }
 }

@@ -725,8 +725,14 @@ namespace KillerShell.Tools
             }
         }
 
-        private static bool CanUseMftFastPath(string target)
-            => Services.StorageMftReader.CanUse(target, MainWindow.IsElevated);
+        /// <summary>Off until the MFT path can count hard links. Its enumeration gives each file
+        /// one parent, so a file whose other name lives in another folder (most Windows components
+        /// in Program Files are second names of WinSxS files) is missing from the folder being
+        /// scanned: on a clean Windows 11, Program Files read 1 GB short of the directory walk. It
+        /// also opens every file on the volume, which made a single-folder scan slower than the
+        /// walk. Before file sizes were looked up correctly this path always fell back to the walk,
+        /// so the walk is what scans have been showing.</summary>
+        private static bool CanUseMftFastPath(string target) => false;
 
         private static Services.StorageMftReadResult? ReadMft(string target, CancellationToken token)
             => Services.StorageMftReader.TryRead(target, token, out var scan) ? scan : null;

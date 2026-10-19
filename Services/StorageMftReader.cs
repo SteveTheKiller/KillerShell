@@ -12,6 +12,10 @@ namespace KillerShell.Services
     {
         internal ulong Id { get; set; }
         internal ulong ParentId { get; set; }
+
+        /// <summary>The record's full file reference, sequence number included. Id and ParentId
+        /// drop the sequence number so parents and children match; OpenFileById needs it.</summary>
+        internal ulong FileReference { get; set; }
         internal string Name { get; set; } = string.Empty;
         internal uint Attributes { get; set; }
         internal long Size { get; set; } = -1;
@@ -93,7 +97,7 @@ namespace KillerShell.Services
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     if (!entry.IsDirectory && !entry.IsReparsePoint)
-                        entry.Size = GetFileSizeById(volume, entry.Id);
+                        entry.Size = GetFileSizeById(volume, entry.FileReference);
                 }
 
                 result = new StorageMftReadResult(targetId, entries);
@@ -126,10 +130,12 @@ namespace KillerShell.Services
                     ushort nameOffset = BitConverter.ToUInt16(buffer, offset + 58);
                     if (nameOffset + nameLength <= length)
                     {
-                        ulong id = NormalizeFileId(BitConverter.ToUInt64(buffer, offset + 8));
+                        ulong reference = BitConverter.ToUInt64(buffer, offset + 8);
+                        ulong id = NormalizeFileId(reference);
                         records[id] = new StorageMftEntry
                         {
                             Id = id,
+                            FileReference = reference,
                             ParentId = NormalizeFileId(BitConverter.ToUInt64(buffer, offset + 16)),
                             Attributes = BitConverter.ToUInt32(buffer, offset + 52),
                             Name = Encoding.Unicode.GetString(buffer, offset + nameOffset, nameLength),
@@ -172,6 +178,8 @@ namespace KillerShell.Services
             }
         }
 
+        /// <summary>Size of the file with this full reference (sequence number included; OpenFileById
+        /// rejects a reference without it), or -1 when it cannot be opened.</summary>
         private static long GetFileSizeById(SafeFileHandle volume, ulong id)
         {
             var descriptor = new FileIdDescriptor
