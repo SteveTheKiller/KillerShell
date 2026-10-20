@@ -98,9 +98,15 @@ namespace KillerShell.Tools
         // Filled once by GatherStaticInfo on a background thread; RAM total is also read into
         // this so the live RAM percent has something to divide against.
         private double _totalRamGb;
+        private readonly Func<CancellationToken, Task<Services.PerformanceHardwareInfo>> _discoverHardware;
 
-        internal PerformanceMonitorControl()
+        internal bool IsSampling => _timer.IsEnabled;
+
+        internal PerformanceMonitorControl(Func<CancellationToken, Task<Services.PerformanceHardwareInfo>>? discoverHardware = null)
         {
+            _discoverHardware = discoverHardware ?? (token => Task.Factory.StartNew(
+                () => Services.PerformanceHardwareService.Gather(token), token,
+                TaskCreationOptions.LongRunning, TaskScheduler.Default));
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // summary strip
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // the panels
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
@@ -146,16 +152,22 @@ namespace KillerShell.Tools
             // is: the control is MOVED between the visual tree and nowhere as tabs switch, so a
             // Performance tab sitting in the background costs nothing until it is looked at again.
             Loaded   += Control_Loaded;
-            Unloaded += (_, _) => _timer.Stop();
+            Unloaded += (_, _) => { _loadVersion++; _timer.Stop(); };
         }
 
-        private bool _staticGathered;
+        private bool _staticApplied;
+        private Task<Services.PerformanceHardwareInfo>? _discoveryTask;
+        private int _loadVersion;
+
+        private bool IsActiveLoad(int version)
+            => !_lifetimeCts.IsCancellationRequested && IsLoaded && version == _loadVersion;
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!_staticGathered)
+            if (_lifetimeCts.IsCancellationRequested) return;
+            int version = ++_loadVersion;
+            if (!_staticApplied)
             {
-                _staticGathered = true;
                 ShowStatus(MainWindow.LocStatic("Str_Perf_Gathering"), error: false, sticky: true);
 
                 Services.PerformanceHardwareInfo info;
@@ -168,9 +180,7 @@ namespace KillerShell.Tools
                     // ProcessListControl.cs Refresh() - it is the exact crash this app already hit
                     // once for real).
                     CancellationToken token = _lifetimeCts.Token;
-                    info = await Task.Factory.StartNew(
-                        () => Services.PerformanceHardwareService.Gather(token), token,
-                        TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                    info = await (_discoveryTask ??= _discoverHardware(token));
                 }
                 catch (OperationCanceledException)
                 {
@@ -178,14 +188,18 @@ namespace KillerShell.Tools
                 }
                 catch (Exception ex)
                 {
+                    if (!IsActiveLoad(version)) return;
                     ShowStatus(string.Format(MainWindow.LocStatic("Str_Perf_GatherFailed"), ex.Message), error: true);
                     info = Services.PerformanceHardwareInfo.Empty;
                 }
 
+                if (!IsActiveLoad(version)) return;
                 ApplyStaticInfo(info);
+                _staticApplied = true;
                 ShowStatus(string.Empty, error: false);
             }
 
+            if (!IsActiveLoad(version)) return;
             SetUpCountersIfNeeded();
             SampleLiveMetrics();
             _timer.Start();
@@ -198,6 +212,7 @@ namespace KillerShell.Tools
         /// </summary>
         internal void Shutdown()
         {
+            _loadVersion++;
             _lifetimeCts.Cancel();
             _timer.Stop();
             _statusClearTimer.Stop();
