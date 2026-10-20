@@ -88,6 +88,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Saved-places fades leave the scrollbar clear and disappear at the start and end of the list. Sidebar fades turn off immediately when switching to 98SE.
 - The footer copyright sits a few pixels further from the corner grip instead of running into it.
 - A silent install or update that finds KillerShell running exits with 1618, which Intune, Configuration Manager and RMM tools retry, instead of a general failure.
+- Chocolatey validation no longer reports success when its last known result remains failed after a retry.
 
 ## [1.4.0] - 2026-10-15
 
