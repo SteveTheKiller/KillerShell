@@ -251,7 +251,7 @@ namespace KillerShell.Shell
             new(KsScope.Files, "View",   "Ctrl+Shift+4",    "Str_Ks_Density",      KbLayer.CtrlShift, "D4"),
             new(KsScope.Files, "View",   "Ctrl +/-",        "Str_Ks_IconSize",     KbLayer.Ctrl, "Equals", "Minus"),
             new(KsScope.Files, "View",   "Alt+S",           "Str_Ks_Sort",         KbLayer.Alt, "S"),
-            new(KsScope.Files, "View",   "Alt+Shift+S",     "Str_Ks_SortDir",      KbLayer.Base),
+            new(KsScope.Files, "View",   "Alt+Shift+S",     "Str_Ks_SortDir",      KbLayer.AltShift, "S"),
             new(KsScope.Files, "View",   "Alt+O",           "Str_Ks_FoldersTop",   KbLayer.Alt, "O"),
             new(KsScope.Files, "Nav",    "Alt+R",           "Str_Ks_Recents",      KbLayer.Alt, "R"),
 
@@ -272,10 +272,10 @@ namespace KillerShell.Shell
             new(KsScope.Files, "Edit",   "Ctrl+Shift+Y",    "Str_Menu_CopyLines",  KbLayer.CtrlShift, "Y"),
             new(KsScope.Files, "Edit",   "Ctrl+Shift+H",    "Str_Menu_CopyHash",   KbLayer.CtrlShift, "H"),
             new(KsScope.Files, "Edit",   "Alt+N",           "Str_Menu_AddNickname", KbLayer.Alt, "N"),
-            new(KsScope.Files, "Edit",   "Alt+Shift+N",     "Str_Menu_RemoveNickname", KbLayer.Base),
+            new(KsScope.Files, "Edit",   "Alt+Shift+N",     "Str_Menu_RemoveNickname", KbLayer.AltShift, "N"),
             new(KsScope.Files, "Edit",   "Alt+Z",           "Str_Menu_Compress",   KbLayer.Alt, "Z"),
             new(KsScope.Files, "Edit",   "Alt+X",           "Str_Menu_ExtractHere", KbLayer.Alt, "X"),
-            new(KsScope.Files, "Edit",   "Alt+Shift+X",     "Str_Ks_ExtractTo",    KbLayer.Base),
+            new(KsScope.Files, "Edit",   "Alt+Shift+X",     "Str_Ks_ExtractTo",    KbLayer.AltShift, "X"),
 
             // ══ TERMINAL ════════════════════════════════════════════════════════════════════
             // Local to a live shell (Terminal/TerminalControl.cs HandleTerminalChord), reachable
