@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
@@ -26,6 +27,7 @@ public sealed class StorageAccessibilityTests
     [Theory]
     [InlineData("keyboard")]
     [InlineData("automation")]
+    [InlineData("scan-shortcut")]
     public async Task StorageNodesExposeKeyboardAndAutomationSelection(string scenario)
     {
         string script = "$ErrorActionPreference='Stop'; try { " +
@@ -64,11 +66,41 @@ public static class StorageAccessibilityScenario
         File.WriteAllBytes(Path.Combine(folder, "small.bin"), new byte[7]);
         File.WriteAllBytes(Path.Combine(root, "other.bin"), new byte[5]);
         var statuses = new List<string>();
-        var control = new StorageAnalyzerControl(root, canUseMft: _ => false) { ReportStatus = statuses.Add };
+        ModifierKeys modifiers = ModifierKeys.None;
+        int scanStarts = 0;
+        using var readStarted = new ManualResetEventSlim();
+        var control = new StorageAnalyzerControl(root, (path, token) =>
+        {
+            if (path == root) { Interlocked.Increment(ref scanStarts); readStarted.Set(); }
+            return StorageDirectoryReader.Read(path, token);
+        }, canUseMft: _ => false, keyboardModifiers: () => modifiers) { ReportStatus = statuses.Add };
         var window = new Window { Content = control, Width = 900, Height = 600, Opacity = 0, ShowInTaskbar = false, ShowActivated = false };
         try
         {
             window.Show();
+            if (scenario == "scan-shortcut")
+            {
+                var target = Descendants(control).OfType<TextBox>().Single();
+                target.Focus();
+                Assert.Same(target, Keyboard.FocusedElement);
+                modifiers = ModifierKeys.Control;
+                SendKey(target, Key.Return);
+                SendKey(target, Key.Return);
+                Assert.True(readStarted.Wait(TimeSpan.FromSeconds(3)), "Ctrl+Enter in the focused target must start the real scan.");
+                PumpUntil(() => control.CreateReport()?.TotalSize == 23);
+                Assert.Equal(1, Volatile.Read(ref scanStarts));
+                modifiers = ModifierKeys.None;
+                foreach (var key in new[] { Key.D, Key.M, Key.C })
+                {
+                    var input = SendKey(target, key);
+                    Assert.False(input.Handled);
+                }
+                target.CaretIndex = target.Text.Length;
+                TextCompositionManager.StartComposition(new TextComposition(InputManager.Current, target, "dmc"));
+                Assert.EndsWith("dmc", target.Text);
+                Assert.Equal(1, Volatile.Read(ref scanStarts));
+                return;
+            }
             control.ScanFolder(root);
             PumpUntil(() => control.CreateReport()?.TotalSize == 23);
             if (scenario == "keyboard")
@@ -134,8 +166,13 @@ public static class StorageAccessibilityScenario
         }
     }
 
-    private static void SendKey(UIElement element, Key key) => element.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice,
-        PresentationSource.FromVisual(element), Environment.TickCount, key) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
+    private static KeyEventArgs SendKey(UIElement element, Key key)
+    {
+        var input = new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(element), Environment.TickCount, key)
+            { RoutedEvent = Keyboard.PreviewKeyDownEvent };
+        element.RaiseEvent(input);
+        return input;
+    }
 
     private static IEnumerable<DependencyObject> Descendants(DependencyObject root)
     {

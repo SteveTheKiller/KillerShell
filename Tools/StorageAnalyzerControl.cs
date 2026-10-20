@@ -100,6 +100,7 @@ namespace KillerShell.Tools
         private readonly Func<string, CancellationToken, Services.StorageDirectoryReadResult> _readDirectory;
         private readonly Func<string, bool> _canUseMft;
         private readonly Func<string, CancellationToken, Services.StorageMftReadResult?> _readMft;
+        private readonly Func<ModifierKeys> _keyboardModifiers;
 
         // ── UI ───────────────────────────────────────────────────
         private readonly TextBox _targetBox;
@@ -150,11 +151,13 @@ namespace KillerShell.Tools
         internal StorageAnalyzerControl(string? initialPath,
             Func<string, CancellationToken, Services.StorageDirectoryReadResult>? readDirectory = null,
             Func<string, bool>? canUseMft = null,
-            Func<string, CancellationToken, Services.StorageMftReadResult?>? readMft = null)
+            Func<string, CancellationToken, Services.StorageMftReadResult?>? readMft = null,
+            Func<ModifierKeys>? keyboardModifiers = null)
         {
             _readDirectory = readDirectory ?? Services.StorageDirectoryReader.Read;
             _canUseMft = canUseMft ?? CanUseMftFastPath;
             _readMft = readMft ?? ReadMft;
+            _keyboardModifiers = keyboardModifiers ?? (() => Keyboard.Modifiers);
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // target + scan bar
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // breadcrumb
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // the map
@@ -382,20 +385,21 @@ namespace KillerShell.Tools
         {
             base.OnPreviewKeyDown(e);
             if (e.Handled) return;
-            if (Keyboard.FocusedElement is TextBox) return;
 
-            var mods = Keyboard.Modifiers;
+            var mods = _keyboardModifiers();
             bool plain = mods == ModifierKeys.None;
 
             // Ctrl+Enter starts a scan from anywhere in the tab, including the target box, so
-            // typing a path and running it never needs the mouse. Checked before the plain
-            // keys, and deliberately NOT gated on the TextBox return above - it is a chord.
+            // typing a path and running it never needs the mouse. Handle this chord before
+            // preserving ordinary target-box text input below.
             if (e.Key == Key.Return && mods == ModifierKeys.Control)
             {
                 if (!_scanning) StartScan();
                 e.Handled = true;
                 return;
             }
+
+            if (Keyboard.FocusedElement is TextBox) return;
 
             // The menu's other verbs on the selected rectangle: Shift+Enter opens it in a new tab,
             // F6 shows it in Explorer (the results list's key for that), Ctrl+Shift+C copies its
