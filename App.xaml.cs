@@ -173,16 +173,18 @@ namespace KillerShell
             }
 
             // Elevated retry of a document save Ctrl+F7's tab was refused, access-denied:
-            // KillerShell.exe --elevated-save "<tempfile>" "<destpath>" <sha256>. Started by
+            // KillerShell.exe --elevated-save "<tempfile>" "<destpath>" <sha256> [reply-pipe]. Started by
             // RetrySaveElevated (Elevation.cs) with the runas verb. It does the one job and
             // exits WITHOUT a window - the window that asked is still open behind it and picks
-            // the result up from this process's exit code, exactly like --recycle above.
+            // the result up from this process's exit code and optional private diagnostic pipe.
             // The staged file is in the user's temp folder, so only bytes that still match the
             // hash taken when it was staged are written (Services/VerifiedFile.cs).
             if (e.Args.Length > 3 &&
                 string.Equals(e.Args[0], "--elevated-save", StringComparison.OrdinalIgnoreCase))
             {
-                Shutdown(Services.VerifiedFile.TryCopy(e.Args[1], e.Args[3], e.Args[2]) ? 0 : 1);
+                bool saved = Services.VerifiedFile.TryCopy(e.Args[1], e.Args[3], e.Args[2], out string error);
+                if (e.Args.Length > 4) Services.ElevatedSaveResponse.Send(e.Args[4], error);
+                Shutdown(saved ? 0 : 1);
                 return;
             }
 

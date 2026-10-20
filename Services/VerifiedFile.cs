@@ -37,7 +37,11 @@ namespace KillerShell.Services
         /// <paramref name="expectedSha256"/>. The target is untouched on any refusal or failed
         /// write (<see cref="SafeFileWrite"/>).</summary>
         internal static bool TryCopy(string stagedPath, string expectedSha256, string target)
+            => TryCopy(stagedPath, expectedSha256, target, out _);
+
+        internal static bool TryCopy(string stagedPath, string expectedSha256, string target, out string error)
         {
+            error = string.Empty;
             byte[]? data = ReadVerified(stagedPath, expectedSha256);
             if (data == null) return false;
             try
@@ -45,7 +49,7 @@ namespace KillerShell.Services
                 SafeFileWrite.Write(target, data);
                 return true;
             }
-            catch { return false; }
+            catch (Exception ex) { error = ex.Message; return false; }
         }
 
         /// <summary>

@@ -294,8 +294,10 @@ namespace KillerShell.Shell
         {
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe) || t.Editor == null) return;
+            var originalEditor = t.Editor;
 
-            string tempFile;
+            string tempFile = string.Empty;
+            Services.ElevatedSaveResponse? response = null;
 
             // What was staged, so a success only clears the edits it actually wrote. The UAC
             // prompt does not block this window, and typing or an encoding change made while it
@@ -313,62 +315,100 @@ namespace KillerShell.Shell
             }
             catch (Exception ex)
             {
+                try { File.Delete(tempFile); } catch { }
                 SetTabStatusKey(t, "Str_Ed_SaveFailed", name, ex.Message);
                 return;
             }
 
-            var psi = new ProcessStartInfo(exe)
-            {
-                UseShellExecute = true,          // required for the runas verb
-                Verb = "runas",
-                Arguments = "--elevated-save \"" + TrimForArg(tempFile) + "\" \""
-                          + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash,
-            };
-
+            bool handedOff = false;
             try
             {
+                response = new Services.ElevatedSaveResponse();
+                var psi = new ProcessStartInfo(exe)
+                {
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    Arguments = "--elevated-save \"" + TrimForArg(tempFile) + "\" \""
+                              + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash + " " + response.Name,
+                };
                 var proc = Process.Start(psi);
                 if (proc == null) return;
-
-                // Same reasoning as RecycleElevated: the exit code is the only channel back, so
-                // a refused write does not silently read as a successful save.
-                proc.EnableRaisingEvents = true;
-                proc.Exited += (_, _) =>
-                {
-                    int code = proc.ExitCode;
-                    proc.Dispose();
-                    try { File.Delete(tempFile); } catch { /* best-effort cleanup */ }
-
-                    Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        if (code == 0)
-                        {
-                            if (string.Equals(t.Editor.Text, stagedText, StringComparison.Ordinal)
-                                && t.Editor.EncodingLabel == stagedEncoding
-                                && string.Equals(t.Editor.FilePath, stagedPath, StringComparison.OrdinalIgnoreCase))
-                                t.Editor.IsModified = false;
-                            SetTabStatusKey(t, "Str_Ed_Saved", name);
-                        }
-                        else
-                        {
-                            SetTabStatusKey(t, "Str_Status_ElevatedSaveFailed", name);
-                        }
-                        SetEditorTitle(t);
-                        SyncEditorBar(t);
-                    }));
-                };
+                _ = CompleteSaveAsync(proc, response);
+                response = null;
+                handedOff = true;
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
             {
-                // ERROR_CANCELLED: declined at the prompt. Same as above, that is an answer -
-                // nothing was written, so the tab stays exactly as dirty as it was.
-                try { File.Delete(tempFile); } catch { }
+                // Declining elevation leaves the document dirty and does not write the target.
             }
             catch (Exception ex)
             {
-                try { File.Delete(tempFile); } catch { }
                 SetTabStatusKey(t, "Str_Status_ElevateFailed", ex.Message);
             }
+            finally
+            {
+                response?.Dispose();
+                if (!handedOff) try { File.Delete(tempFile); } catch { }
+            }
+
+            async System.Threading.Tasks.Task CompleteSaveAsync(Process proc, Services.ElevatedSaveResponse reply)
+            {
+                int code = 1;
+                string? diagnostic = null;
+                try
+                {
+                    // Waiting also handles a helper that exited before event registration.
+                    await System.Threading.Tasks.Task.Run(() => proc.WaitForExit()).ConfigureAwait(false);
+                    code = proc.ExitCode;
+                    diagnostic = await reply.ReadAfterExitAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex) { diagnostic = ex.Message; }
+                finally
+                {
+                    proc.Dispose();
+                    reply.Dispose();
+                    try { File.Delete(tempFile); } catch { }
+                }
+
+                if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished) return;
+                try
+                {
+                    _ = Dispatcher.BeginInvoke((Action)(() =>
+                        CompleteElevatedSave(t, originalEditor, name, stagedText, stagedEncoding, stagedPath, code, diagnostic)));
+                }
+                catch (InvalidOperationException) { /* The dispatcher closed before delivery. */ }
+            }
+        }
+
+        internal void CompleteElevatedSave(SearchTab t, Editing.EditorControl originalEditor, string name,
+            string stagedText, string stagedEncoding, string stagedPath, int code, string? diagnostic)
+        {
+            if (!ReferenceEquals(t.Editor, originalEditor)
+                || (!LeftPane.Tabs.Contains(t) && !RightPane.Tabs.Contains(t)))
+            {
+                if (code != 0)
+                {
+                    if (string.IsNullOrEmpty(diagnostic)) ShowClosedToolResult("Str_Status_ElevatedSaveFailed", name);
+                    else ShowClosedToolResult("Str_Ed_SaveFailed", name, diagnostic!);
+                }
+                return;
+            }
+            if (code == 0)
+            {
+                if (string.Equals(originalEditor.Text, stagedText, StringComparison.Ordinal)
+                    && originalEditor.EncodingLabel == stagedEncoding
+                    && string.Equals(originalEditor.FilePath, stagedPath, StringComparison.OrdinalIgnoreCase))
+                    originalEditor.IsModified = false;
+                SetTabStatusKey(t, "Str_Ed_Saved", name);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(diagnostic))
+                    SetTabStatusKey(t, "Str_Status_ElevatedSaveFailed", name);
+                else SetTabStatusKey(t, "Str_Ed_SaveFailed", name, diagnostic!);
+            }
+            SetEditorTitle(t);
+            SyncEditorBar(t);
         }
 
         /// <summary>
