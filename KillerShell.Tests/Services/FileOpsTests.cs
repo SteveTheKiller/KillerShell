@@ -33,7 +33,7 @@ namespace KillerShell.Tests.Services
                         if (backup == null) File.Delete(old);
                         else { File.Move(old, backup); retainedBackup = backup; }
                         if (obstructRecovery) Directory.CreateDirectory(old);
-                        throw new IOException("Controlled replacement failure after old-name removal (1176).");
+                        throw new IOException("Controlled replacement failure after old-name removal.");
                     });
                 Assert.Single(result.Failed);
                 Assert.Equal(0, result.Succeeded);
