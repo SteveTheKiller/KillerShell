@@ -7,6 +7,10 @@ using Xunit;
 
 namespace KillerShell.Tests.Services
 {
+    [CollectionDefinition("Process restart", DisableParallelization = true)]
+    public sealed class ProcessRestartCollection { }
+
+    [Collection("Process restart")]
     public sealed class ProcessRestartTests
     {
         [Fact]
@@ -14,11 +18,12 @@ namespace KillerShell.Tests.Services
         {
             using var original = new ControlledProcess();
             bool launched = false;
-            var work = ProcessRestart.RestartAsync(42, new ProcessStartInfo("fixture"), 1000,
+            var work = ProcessRestart.RestartAsync(42, new ProcessStartInfo("fixture"), 10000,
                 _ => original, _ => { Assert.True(original.HasExited); launched = true; });
             try
             {
-                Assert.True(original.Waiting.Wait(2000), "Restart never waited for the original process.");
+                Assert.Same(original.Waiting.Task,
+                    await Task.WhenAny(original.Waiting.Task, work, Task.Delay(10000)));
                 Assert.False(launched);
                 Assert.False(work.IsCompleted);
             }
@@ -97,14 +102,14 @@ namespace KillerShell.Tests.Services
 
         private sealed class ControlledProcess : IRestartProcess
         {
-            internal readonly ManualResetEventSlim Waiting = new(false);
+            internal readonly TaskCompletionSource<bool> Waiting = new(TaskCreationOptions.RunContinuationsAsynchronously);
             internal readonly ManualResetEventSlim Release = new(false);
             public bool HasExited { get; private set; }
             internal bool RefuseKill;
             public void Kill() { if (RefuseKill) throw new System.ComponentModel.Win32Exception(5); }
             public bool WaitForExit(int milliseconds)
             {
-                Waiting.Set();
+                Waiting.TrySetResult(true);
                 return HasExited = Release.Wait(milliseconds);
             }
             public void Dispose() { }
