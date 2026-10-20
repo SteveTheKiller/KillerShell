@@ -57,6 +57,12 @@ namespace KillerShell.Services
                 || ex is IOException || ex is InvalidOperationException) { }
         }
 
+        internal static void UnregisterRequired(string installDirectory, bool machine)
+        {
+            using (RegistryKey key = OpenEnvironment(machine))
+                if (RemoveFrom(key, installDirectory)) BroadcastEnvironmentChange();
+        }
+
         private static RegistryKey OpenEnvironment(bool machine) => machine
             ? Registry.LocalMachine.OpenSubKey(MachineEnvironmentKey, writable: true)
                 ?? throw new InvalidOperationException("The machine environment is unavailable.")

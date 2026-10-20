@@ -138,8 +138,7 @@ namespace KillerShell
                  string.Equals(e.Args[0], "/uninstall-silent", StringComparison.OrdinalIgnoreCase)))
             {
                 TaskbarIdentity.UseUninstall();
-                Uninstall(string.Equals(e.Args[0], "/uninstall-silent", StringComparison.OrdinalIgnoreCase));
-                Shutdown();
+                Shutdown(Uninstall(string.Equals(e.Args[0], "/uninstall-silent", StringComparison.OrdinalIgnoreCase), e.Args));
                 return;
             }
 
@@ -682,34 +681,44 @@ namespace KillerShell
         // Uninstall
         // ============================================================
 
-        private static bool RelaunchMachineUninstallElevatedIfNeeded(bool machine, bool silent)
+        private static int? RelaunchMachineUninstallElevatedIfNeeded(bool machine, bool silent)
         {
-            if (!machine) return false;
+            if (!machine) return null;
             try
             {
                 using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
                 var principal = new System.Security.Principal.WindowsPrincipal(identity);
                 if (principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator))
-                    return false;
+                    return null;
 
-                Process.Start(new ProcessStartInfo(
-                    Process.GetCurrentProcess().MainModule!.FileName, silent ? "/uninstall-silent" : "/uninstall")
+                Services.UninstallRemoval.ValidateMachineImage(MachineInstallExe);
+                using var relay = new Services.UninstallRelay();
+                using var child = Process.Start(new ProcessStartInfo(
+                    MachineInstallExe, (silent ? "/uninstall-silent" : "/uninstall") + " --uninstall-relay " + relay.Name)
                 {
                     UseShellExecute = true,
                     Verb = "runas",
                 });
+                if (child == null) return KillerFamily.Deployment.InstallerExitCodes.Failure;
+                if (!relay.AuthenticateChild(child))
+                    return KillerFamily.Deployment.InstallerExitCodes.SecurityRejected;
+                if (!child.WaitForExit(120000)) return KillerFamily.Deployment.InstallerExitCodes.Busy;
+                if (child.ExitCode == 0 && Directory.Exists(MachineInstallDir))
+                    return KillerFamily.Deployment.InstallerExitCodes.Failure;
+                return child.ExitCode;
             }
             catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223)
             {
                 // UAC was declined. Leave the installation untouched.
+                return KillerFamily.Deployment.InstallerExitCodes.Cancelled;
             }
             catch (Exception ex)
             {
                 string message = string.Format(AppMainWindow.LocStatic("Str_Dlg_UninstallElevateFailed"), ex.Message);
                 if (silent) Console.Error.WriteLine(message);
                 else new ConfirmDialog(message, null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notification: true).ShowDialog();
+                return KillerFamily.Deployment.InstallerExitCodes.FromException(ex);
             }
-            return true;
         }
 
         /// <summary>
@@ -780,58 +789,85 @@ namespace KillerShell
             try { using (Process.Start("explorer.exe", "\"" + Services.UpdateService.ReleasesUrl + "\"")) { } } catch { }
         }
 
-        private static void Uninstall(bool silent)
+        private static int Uninstall(bool silent, string[] arguments)
         {
-            bool machine = string.Equals(Process.GetCurrentProcess().MainModule?.FileName,
-                                         MachineInstallExe, StringComparison.OrdinalIgnoreCase);
-            if (RelaunchMachineUninstallElevatedIfNeeded(machine, silent)) return;
-
-            if (!silent)
+            try
             {
-                var confirm = new ConfirmDialog(
-                    AppMainWindow.LocStatic("Str_Dlg_UninstallConfirm"),
-                    null,
-                    AppMainWindow.LocStatic("Str_Btn_Uninstall"), installer: true);
-                confirm.ShowDialog();
-                if (!confirm.Confirmed) return;
-            }
+                bool machine = string.Equals(Process.GetCurrentProcess().MainModule?.FileName,
+                                             MachineInstallExe, StringComparison.OrdinalIgnoreCase);
+                bool relayed = arguments.Length == 3 && arguments[1] == "--uninstall-relay";
+                if (arguments.Length != 1 && !relayed)
+                    return KillerFamily.Deployment.InstallerExitCodes.SecurityRejected;
+                if (relayed && (!machine || !KillerFamily.Deployment.InstallerExitCodes.IsElevated()))
+                    return KillerFamily.Deployment.InstallerExitCodes.SecurityRejected;
+                if (machine) Services.UninstallRemoval.ValidateMachineImage(MachineInstallExe);
+                using var coordinator = relayed
+                    ? Services.UninstallRelay.ConnectCoordinator(arguments[2], MachineInstallExe) : null;
+                int? forwarded = RelaunchMachineUninstallElevatedIfNeeded(machine, silent);
+                if (forwarded.HasValue) return forwarded.Value;
+                using var uninstallLease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName);
 
-            try { Services.UninstallRemoval.Remove(machine); }
+                if (!silent)
+                {
+                    var confirm = new ConfirmDialog(
+                        AppMainWindow.LocStatic("Str_Dlg_UninstallConfirm"), null,
+                        AppMainWindow.LocStatic("Str_Btn_Uninstall"), installer: true);
+                    confirm.ShowDialog();
+                    if (!confirm.Confirmed) return KillerFamily.Deployment.InstallerExitCodes.Cancelled;
+                }
+
+                const string uninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell";
+                var hive = machine ? Registry.LocalMachine : Registry.CurrentUser;
+                var metadata = new Services.UninstallMetadata(hive, RegKey, uninstallKey);
+                using var removal = Services.UninstallRemoval.Begin(machine, coordinator);
+                try
+                {
+                    string startMenuDir = machine
+                        ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), AppName)
+                        : StartMenuDir;
+                    string targetDir = machine ? MachineInstallDir : InstallDir;
+                    File.Delete(Path.Combine(startMenuDir, $"{AppName}.lnk"));
+                    if (Directory.Exists(startMenuDir) && Directory.GetFileSystemEntries(startMenuDir).Length == 0)
+                        Directory.Delete(startMenuDir, recursive: false);
+                    File.Delete(DesktopLnk);
+                    Services.CommandLinePath.UnregisterRequired(targetDir, machine);
+                    if (!KillerFamily.Deployment.StartupRegistration.Set(Services.AppInfo.DisplayName, false))
+                        throw new UnauthorizedAccessException();
+                    if (!UnregisterAssociations(machine)) throw new UnauthorizedAccessException();
+                    if (machine) UnregisterAssociations(machine: false);
+                    hive.DeleteSubKeyTree(RegKey, throwOnMissingSubKey: false);
+                    hive.DeleteSubKeyTree(uninstallKey, throwOnMissingSubKey: false);
+                    removal.Commit();
+                }
+                catch (Exception failure)
+                {
+                    var errors = new System.Collections.Generic.List<Exception> { failure };
+                    try { removal.Rollback(failure); } catch (Exception error) { errors.Add(error); }
+                    try
+                    {
+                        metadata.Restore();
+                        if (removal.RecoveryImagePath is string recovery)
+                        {
+                            using var install = hive.CreateSubKey(RegKey);
+                            install.SetValue("RecoveryImagePath", recovery);
+                            using var entry = hive.CreateSubKey(uninstallKey);
+                            entry.SetValue("RecoveryImagePath", recovery);
+                        }
+                    }
+                    catch (Exception error) { errors.Add(error); }
+                    if (errors.Count > 1) throw new AggregateException("Uninstall failed; recovery details follow.", errors);
+                    throw;
+                }
+                SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
+                return KillerFamily.Deployment.InstallerExitCodes.Success;
+            }
             catch (Exception ex)
             {
                 string message = string.Format(AppMainWindow.LocStatic("Str_Dlg_UninstallElevateFailed"), ex.Message);
                 if (silent) Console.Error.WriteLine(message);
                 else new ConfirmDialog(message, null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notification: true).ShowDialog();
-                return;
+                return KillerFamily.Deployment.InstallerExitCodes.FromException(ex);
             }
-
-            string startMenuDir = machine
-                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), AppName)
-                : StartMenuDir;
-            string targetDir = machine ? MachineInstallDir : InstallDir;
-            try { File.Delete(Path.Combine(startMenuDir, $"{AppName}.lnk")); } catch { }
-            try { Directory.Delete(startMenuDir, recursive: false); } catch { }
-            // Interactive all-users installs create this shortcut only for the account that
-            // requested it, so that same account's uninstall should remove it as well.
-            try { File.Delete(DesktopLnk); } catch { }
-            Services.CommandLinePath.Unregister(targetDir, machine);
-            KillerFamily.Deployment.StartupRegistration.Remove(Services.AppInfo.DisplayName);
-
-            // Associations first, while the keys they hang off still exist. Both scopes are
-            // attempted: the HKLM half is a no-op unless this uninstall was launched elevated
-            // from Add/Remove Programs, which is the only way a machine-wide install goes.
-            // (Associations.cs)
-            UnregisterAssociations(machine: false);
-            UnregisterAssociations(machine: true);
-
-            var hive = machine ? Registry.LocalMachine : Registry.CurrentUser;
-            try { hive.DeleteSubKeyTree(RegKey, throwOnMissingSubKey: false); } catch { }
-            try { hive.DeleteSubKeyTree(
-                @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell",
-                throwOnMissingSubKey: false); } catch { }
-
-            SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
-
         }
     }
 }
