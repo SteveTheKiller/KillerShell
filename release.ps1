@@ -6,7 +6,7 @@
 # Usage:
 #   .\release.ps1              # full release for the version in the csproj
 #   .\release.ps1 -DryRun      # everything except the site push, tag push and gh release
-#   .\release.ps1 -SkipSign    # local test build only - never release unsigned
+#   .\release.ps1 -SkipSign -DryRun # local test build only
 #   .\release.ps1 -Choco       # also pack/push the Chocolatey package after the release
 #
 # winget is NOT submitted from here. Like KillerScan, this repo has
@@ -31,11 +31,24 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-Set-Location -Path $PSScriptRoot
 
 function Fail([string]$Message) {
     Write-Host "ERROR: $Message" -ForegroundColor Red
     exit 1
+}
+
+if ($SkipSign -and -not $DryRun) {
+    Fail 'SkipSign requires DryRun. Unsigned builds cannot be published.'
+}
+Set-Location -Path $PSScriptRoot
+
+function Assert-PublishableArtifact {
+    if ($SkipSign -or $DryRun) { Fail 'Local-only builds cannot be published.' }
+    $signature = Get-AuthenticodeSignature -LiteralPath $exe
+    if ($signature.Status -ne 'Valid') { Fail 'The final executable does not have a valid trusted signature.' }
+    if ((Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash -ne $exeHash) {
+        Fail 'The final executable changed after its release checksum was recorded.'
+    }
 }
 
 function Step([string]$Message) {
@@ -358,6 +371,7 @@ if ($DryRun) {
     Write-Host "  README   : source zip link -> $Tag$(if ($readmeNew -eq $readmeRaw) { ' (already current)' })"
     Write-Host "DryRun: working tree left untouched." -ForegroundColor Yellow
 } else {
+    Assert-PublishableArtifact
     if ($indexNew -ne $indexRaw) { [System.IO.File]::WriteAllText($indexPath, $indexNew) }
 
     foreach ($page in 'index.html', 'about.html', 'technical.html', 'help.html') {
@@ -436,6 +450,7 @@ if ($DryRun) {
     if ($siteDirty) {
         git add shell-landing README.md
         git commit -m "v${Version}: site and README release info" --quiet
+        Assert-PublishableArtifact
         git push origin $defaultBranch --quiet
         if ($LASTEXITCODE -ne 0) { Fail 'Landing page / README commit failed to push' }
         Write-Host "shell-landing and README updated to v$Version and pushed"
@@ -471,7 +486,9 @@ if ($DryRun) {
 
 # --- 9. Tag and push ---
 Step "Tagging $Tag"
+Assert-PublishableArtifact
 git tag -a $Tag -m "KillerShell $Tag"
+Assert-PublishableArtifact
 git push origin $Tag
 if ($LASTEXITCODE -ne 0) { Fail 'Tag push failed' }
 
@@ -481,10 +498,12 @@ if ($LASTEXITCODE -ne 0) { Fail 'Tag push failed' }
 # That workflow uses `komac update`, which only works once the package already exists in
 # winget-pkgs; the very first submission has to be `komac new` by hand (see the workflow).
 Step "Creating GitHub release"
+Assert-PublishableArtifact
 gh release create $Tag $exe $srcZip $sumsFile --title "KillerShell $Tag" --notes-file $notesFile --verify-tag
 if ($LASTEXITCODE -ne 0) { Fail 'gh release create failed' }
 
 Step "Refreshing thekiller.net software page"
+Assert-PublishableArtifact
 gh workflow run deploy.yml --repo SteveTheKiller/thekiller-site
 if ($LASTEXITCODE -ne 0) {
     Write-Warning 'The release is published, but thekiller.net refresh could not be started. Run: gh workflow run deploy.yml --repo SteveTheKiller/thekiller-site'
@@ -523,6 +542,7 @@ if ($Choco) {
 
         if ($nupkg -and $ChocoApiKey) {
             Step "Pushing to the Chocolatey community repo"
+            Assert-PublishableArtifact
             choco push $nupkg --source https://push.chocolatey.org --api-key $ChocoApiKey
             if ($LASTEXITCODE -ne 0) { Write-Warning 'choco push failed - push it by hand.' }
             else { Write-Host 'Pushed OK' -ForegroundColor Green }
