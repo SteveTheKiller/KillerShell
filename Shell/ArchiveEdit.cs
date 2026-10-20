@@ -354,7 +354,11 @@ namespace KillerShell.Shell
                 var r = FileOpDialog.RewriteArchive(this, (_, ct) =>
                 {
                     var res = new ArchiveWriteResult();
-                    if (ArchiveProvider.ExtractAll(archive, dest, ct, out string? error)) res.Ok = true;
+                    if (ArchiveProvider.ExtractAll(archive, dest, ct, out string? error))
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        res.Ok = true;
+                    }
                     else { res.ErrorKey = "Str_Status_ArchiveExtractFailed"; res.ErrorDetail = error; }
                     return res;
                 }, "Str_Status_ArchiveExtracting");

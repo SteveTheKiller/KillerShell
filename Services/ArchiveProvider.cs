@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 // Reading INSIDE an archive as if it were a folder. Pure: no WPF, no window, no UI state -
 // paths in, entries out - so the listing, the tree and any future test can all drive it.
@@ -149,7 +150,8 @@ namespace KillerShell.Services
         /// <paramref name="error"/>, because a corrupt zip in a folder listing must not take
         /// the pane down with it.
         /// </remarks>
-        internal static List<ArchiveEntryInfo> List(string archivePath, string entryPath, out string? error)
+        internal static List<ArchiveEntryInfo> List(string archivePath, string entryPath, out string? error,
+                                                   CancellationToken ct = default)
         {
             error = null;
             var result = new List<ArchiveEntryInfo>();
@@ -161,8 +163,9 @@ namespace KillerShell.Services
                 // what it holds rather than a blank.
                 var dirs = new Dictionary<string, ArchiveEntryInfo>(StringComparer.Ordinal);
 
-                foreach (var raw in ReadEntries(archivePath))
+                foreach (var raw in ReadEntries(archivePath, ct))
                 {
+                    ct.ThrowIfCancellationRequested();
                     string full = raw.EntryPath;
                     if (prefix.Length > 0)
                     {
@@ -205,6 +208,7 @@ namespace KillerShell.Services
 
                 result.AddRange(dirs.Values);
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 error = ex.Message;
@@ -214,14 +218,14 @@ namespace KillerShell.Services
 
         /// <summary>Every entry in the archive, flat, paths normalized to forward slashes with
         /// no leading slash. Directory entries keep IsDirectory and lose their trailing slash.</summary>
-        private static IEnumerable<ArchiveEntryInfo> ReadEntries(string archivePath)
+        private static IEnumerable<ArchiveEntryInfo> ReadEntries(string archivePath, CancellationToken ct = default)
         {
             if (archivePath.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase)
                 || archivePath.EndsWith(".tgz", StringComparison.OrdinalIgnoreCase))
-                return ReadTar(archivePath, gzip: true);
+                return ReadTar(archivePath, gzip: true, ct);
 
             string ext = Path.GetExtension(archivePath);
-            if (ext.Equals(".tar", StringComparison.OrdinalIgnoreCase)) return ReadTar(archivePath, gzip: false);
+            if (ext.Equals(".tar", StringComparison.OrdinalIgnoreCase)) return ReadTar(archivePath, gzip: false, ct);
             if (ext.Equals(".gz", StringComparison.OrdinalIgnoreCase))  return ReadSingleGzip(archivePath);
             return ReadZip(archivePath);
         }
@@ -303,7 +307,7 @@ namespace KillerShell.Services
         private const int TarBlock = 512;
         private const long MaxTarMetadataSize = 8L * 1024 * 1024;
 
-        private static List<ArchiveEntryInfo> ReadTar(string archivePath, bool gzip)
+        private static List<ArchiveEntryInfo> ReadTar(string archivePath, bool gzip, CancellationToken ct = default)
         {
             var list = new List<ArchiveEntryInfo>();
 
@@ -317,7 +321,7 @@ namespace KillerShell.Services
 
             while (true)
             {
-                if (!ReadExactly(s, header, TarBlock)) break;
+                if (!ReadExactly(s, header, TarBlock, ct)) break;
 
                 // Two consecutive zero blocks mark the end; one is enough to stop on.
                 bool allZero = true;
@@ -348,10 +352,10 @@ namespace KillerShell.Services
                     if (size < 0 || size > MaxTarMetadataSize)
                         throw new InvalidDataException("tar metadata size exceeds the supported limit");
                     var metaBuf = new byte[size];
-                    if (!ReadExactly(s, metaBuf, (int)size)) break;
+                    if (!ReadExactly(s, metaBuf, (int)size, ct)) break;
                     if (type == 'L') longName = Encoding.UTF8.GetString(metaBuf).TrimEnd('\0');
                     else if (type != 'g') longName = PaxPath(metaBuf) ?? longName;
-                    SkipPadding(s, size, skip);
+                    SkipPadding(s, size, skip, ct);
                     continue;
                 }
 
@@ -380,29 +384,31 @@ namespace KillerShell.Services
                 while (remaining > 0)
                 {
                     int want = (int)Math.Min(skip.Length, remaining);
-                    if (!ReadExactly(s, skip, want)) return list;
+                    if (!ReadExactly(s, skip, want, ct)) return list;
                     remaining -= want;
                 }
-                SkipPadding(s, size, skip);
+                SkipPadding(s, size, skip, ct);
             }
             return list;
         }
 
-        private static void SkipPadding(Stream s, long size, byte[] scratch)
+        private static void SkipPadding(Stream s, long size, byte[] scratch, CancellationToken ct = default)
         {
             int pad = (int)(size % TarBlock);
             if (pad == 0) return;
-            ReadExactly(s, scratch, TarBlock - pad);
+            ReadExactly(s, scratch, TarBlock - pad, ct);
         }
 
         /// <summary>Reads exactly <paramref name="count"/> bytes, looping because a GZipStream
         /// returns short reads freely. False means the stream ended early.</summary>
-        private static bool ReadExactly(Stream s, byte[] buffer, int count)
+        private static bool ReadExactly(Stream s, byte[] buffer, int count, CancellationToken ct = default)
         {
             int got = 0;
             while (got < count)
             {
+                ct.ThrowIfCancellationRequested();
                 int n = s.Read(buffer, got, count - got);
+                ct.ThrowIfCancellationRequested();
                 if (n <= 0) return false;
                 got += n;
             }
@@ -523,9 +529,19 @@ namespace KillerShell.Services
         /// Writes one file entry to <paramref name="dest"/>. Extract All uses this directly so
         /// each file lands at its destination without a staging copy left in temp.
         /// </summary>
-        private static bool ExtractEntryTo(string archivePath, string entryPath, string dest, out string? error)
+        private static bool ExtractEntryTo(string archivePath, string entryPath, string dest, out string? error,
+                                            Func<string, Stream>? outputFactory = null, CancellationToken ct = default)
         {
-            if (!ExtractEntryCore(archivePath, entryPath, dest, out error)) return false;
+            try
+            {
+                if (!ExtractEntryCore(archivePath, entryPath, dest, out error, outputFactory, ct)) return false;
+                ct.ThrowIfCancellationRequested();
+            }
+            catch (OperationCanceledException)
+            {
+                try { File.Delete(dest); } catch { }
+                throw;
+            }
             CopyDownloadMark(archivePath, dest);
             return true;
         }
@@ -577,7 +593,8 @@ namespace KillerShell.Services
         private static extern Microsoft.Win32.SafeHandles.SafeFileHandle CreateFileW(
             string name, uint access, uint share, IntPtr security, uint disposition, uint flags, IntPtr template);
 
-        private static bool ExtractEntryCore(string archivePath, string entryPath, string dest, out string? error)
+        private static bool ExtractEntryCore(string archivePath, string entryPath, string dest, out string? error,
+                                              Func<string, Stream>? outputFactory = null, CancellationToken ct = default)
         {
             error = null;
             try
@@ -586,7 +603,7 @@ namespace KillerShell.Services
                     || archivePath.EndsWith(".tgz", StringComparison.OrdinalIgnoreCase)
                     || archivePath.EndsWith(".tar", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!ExtractFromTar(archivePath, entryPath, dest)) { error = "entry not found"; return false; }
+                    if (!ExtractFromTar(archivePath, entryPath, dest, outputFactory, ct)) { error = "entry not found"; return false; }
                     return true;
                 }
 
@@ -594,8 +611,8 @@ namespace KillerShell.Services
                 {
                     using var fs = File.OpenRead(archivePath);
                     using var gz = new GZipStream(fs, CompressionMode.Decompress);
-                    using var outFs = File.Create(dest);
-                    gz.CopyTo(outFs);
+                    using var outFs = (outputFactory ?? CreateExtractionOutput)(dest);
+                    CopyExtraction(gz, outFs, ct);
                     return true;
                 }
 
@@ -604,15 +621,34 @@ namespace KillerShell.Services
                     var entry = zip.Entries.FirstOrDefault(
                         x => string.Equals(Normalize(x.FullName), entryPath.Trim('/'), StringComparison.Ordinal));
                     if (entry == null) { error = "entry not found"; return false; }
-                    entry.ExtractToFile(dest, overwrite: true);
+                    using var input = entry.Open();
+                    using var output = (outputFactory ?? CreateExtractionOutput)(dest);
+                    CopyExtraction(input, output, ct);
                 }
                 return true;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 error = ex.Message;
                 return false;
             }
+        }
+
+        private static Stream CreateExtractionOutput(string path) => File.Create(path);
+
+        private static void CopyExtraction(Stream input, Stream output, CancellationToken ct)
+        {
+            var buffer = new byte[81920];
+            while (true)
+            {
+                ct.ThrowIfCancellationRequested();
+                int count = input.Read(buffer, 0, buffer.Length);
+                ct.ThrowIfCancellationRequested();
+                if (count == 0) break;
+                output.Write(buffer, 0, count);
+            }
+            ct.ThrowIfCancellationRequested();
         }
 
         /// <summary>Recreates one archive subtree under a private temp directory for CF_HDROP
@@ -648,13 +684,14 @@ namespace KillerShell.Services
         /// created if needed. Every target is containment-checked the same way the drag-out
         /// extraction is, so a traversing entry name cannot write outside it.</summary>
         internal static bool ExtractAll(string archivePath, string destination,
-                                        System.Threading.CancellationToken ct, out string? error)
+                                        System.Threading.CancellationToken ct, out string? error,
+                                        Func<string, Stream>? outputFactory = null)
         {
             error = null;
             try
             {
                 Directory.CreateDirectory(destination);
-                return ExtractFolderChildren(archivePath, "", destination, out error, ct);
+                return ExtractFolderChildren(archivePath, "", destination, out error, ct, outputFactory);
             }
             catch (OperationCanceledException) { throw; }
             catch (Exception ex)
@@ -666,9 +703,11 @@ namespace KillerShell.Services
 
         private static bool ExtractFolderChildren(string archivePath, string entryPath,
                                                   string destination, out string? error,
-                                                  System.Threading.CancellationToken ct = default)
+                                                  System.Threading.CancellationToken ct = default,
+                                                  Func<string, Stream>? outputFactory = null)
         {
-            var children = List(archivePath, entryPath, out error);
+            ct.ThrowIfCancellationRequested();
+            var children = List(archivePath, entryPath, out error, ct);
             if (error != null) return false;
 
             string root = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar)
@@ -699,18 +738,20 @@ namespace KillerShell.Services
                 if (child.IsDirectory)
                 {
                     Directory.CreateDirectory(target);
-                    if (!ExtractFolderChildren(archivePath, child.EntryPath, target, out error, ct))
+                    if (!ExtractFolderChildren(archivePath, child.EntryPath, target, out error, ct, outputFactory))
                         return false;
                 }
                 else
                 {
-                    if (!ExtractEntryTo(archivePath, child.EntryPath, target, out error)) return false;
+                    if (!ExtractEntryTo(archivePath, child.EntryPath, target, out error, outputFactory, ct)) return false;
                 }
             }
+            ct.ThrowIfCancellationRequested();
             return true;
         }
 
-        private static bool ExtractFromTar(string archivePath, string entryPath, string dest)
+        private static bool ExtractFromTar(string archivePath, string entryPath, string dest,
+                                            Func<string, Stream>? outputFactory = null, CancellationToken ct = default)
         {
             string want = entryPath.Trim('/');
             using FileStream file = File.OpenRead(archivePath);
@@ -722,7 +763,7 @@ namespace KillerShell.Services
             var buf = new byte[81920];
             string longName = "";
 
-            while (ReadExactly(s, header, TarBlock))
+            while (ReadExactly(s, header, TarBlock, ct))
             {
                 bool allZero = true;
                 for (int i = 0; i < TarBlock && allZero; i++) if (header[i] != 0) allZero = false;
@@ -741,10 +782,10 @@ namespace KillerShell.Services
                     if (size < 0 || size > MaxTarMetadataSize)
                         throw new InvalidDataException("tar metadata size exceeds the supported limit");
                     var metaBuf = new byte[size];
-                    if (!ReadExactly(s, metaBuf, (int)size)) return false;
+                    if (!ReadExactly(s, metaBuf, (int)size, ct)) return false;
                     if (type == 'L') longName = Encoding.UTF8.GetString(metaBuf).TrimEnd('\0');
                     else if (type != 'g') longName = PaxPath(metaBuf) ?? longName;
-                    SkipPadding(s, size, buf);
+                    SkipPadding(s, size, buf, ct);
                     continue;
                 }
 
@@ -753,13 +794,14 @@ namespace KillerShell.Services
 
                 if (match)
                 {
-                    using var outFs = File.Create(dest);
+                    using var outFs = (outputFactory ?? CreateExtractionOutput)(dest);
                     long remaining = size;
                     while (remaining > 0)
                     {
                         int n = (int)Math.Min(buf.Length, remaining);
-                        if (!ReadExactly(s, buf, n)) return false;
+                        if (!ReadExactly(s, buf, n, ct)) return false;
                         outFs.Write(buf, 0, n);
+                        ct.ThrowIfCancellationRequested();
                         remaining -= n;
                     }
                     return true;
@@ -769,10 +811,10 @@ namespace KillerShell.Services
                 while (skipLeft > 0)
                 {
                     int n = (int)Math.Min(buf.Length, skipLeft);
-                    if (!ReadExactly(s, buf, n)) return false;
+                    if (!ReadExactly(s, buf, n, ct)) return false;
                     skipLeft -= n;
                 }
-                SkipPadding(s, size, buf);
+                SkipPadding(s, size, buf, ct);
             }
             return false;
         }

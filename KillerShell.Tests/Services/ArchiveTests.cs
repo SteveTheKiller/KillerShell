@@ -12,6 +12,49 @@ namespace KillerShell.Tests.Services
     public sealed class ArchiveTests
     {
         [Theory]
+        [InlineData(".zip")]
+        [InlineData(".tar")]
+        [InlineData(".tar.gz")]
+        [InlineData(".gz")]
+        public void CancellationDuringFinalOutputWriteIsNotSuccess(string extension)
+        {
+            string path = CreateCaseArchive(extension == ".zip" ? ".zip" : ".tar", "final.txt");
+            string root = Path.GetDirectoryName(path)!;
+            using var cancel = new CancellationTokenSource();
+            try
+            {
+                if (extension.EndsWith("gz", StringComparison.Ordinal))
+                {
+                    byte[] bytes = extension == ".gz" ? Encoding.UTF8.GetBytes("final content") : File.ReadAllBytes(path);
+                    path = Path.Combine(root, "fixture" + extension);
+                    using var file = File.Create(path);
+                    using var compressed = new GZipStream(file, CompressionMode.Compress);
+                    compressed.Write(bytes, 0, bytes.Length);
+                }
+                string output = Path.Combine(root, "out");
+                var clock = System.Diagnostics.Stopwatch.StartNew();
+                Assert.ThrowsAny<OperationCanceledException>(() =>
+                    ArchiveProvider.ExtractAll(path, output, cancel.Token, out _,
+                        target => new CancelingOutput(target, cancel)));
+                Assert.True(cancel.IsCancellationRequested);
+                Assert.True(clock.Elapsed < TimeSpan.FromSeconds(1), "Controlled cancellation exceeded one second.");
+                Assert.Empty(Directory.GetFiles(output, "*", SearchOption.AllDirectories));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        private sealed class CancelingOutput : FileStream
+        {
+            private readonly CancellationTokenSource _cancel;
+            internal CancelingOutput(string path, CancellationTokenSource cancel)
+                : base(path, FileMode.Create, FileAccess.Write) { _cancel = cancel; }
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                base.Write(buffer, offset, count);
+                _cancel.Cancel();
+            }
+        }
+        [Theory]
         [InlineData(false, "", 0)]
         [InlineData(false, "", 1)]
         [InlineData(false, "", 2)]

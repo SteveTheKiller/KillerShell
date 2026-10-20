@@ -85,7 +85,8 @@ namespace KillerShell
             // The status resource contains the live percentage. The progress bar carries that
             // value here, so use a neutral initial value instead of showing a raw {0} token.
             dlg.OpLabel.Text = string.Format(dlg.OpLabel.Text, "0");
-            dlg.StartArchive(() => work(dlg.ReportArchiveProgress, dlg._cts.Token));
+            dlg.StartArchive(() => work(dlg.ReportArchiveProgress, dlg._cts.Token),
+                labelKey == "Str_Status_ArchiveExtracting");
             return dlg.ArchiveResult;
         }
 
@@ -123,7 +124,7 @@ namespace KillerShell
             });
         }
 
-        private void StartArchive(Func<ArchiveWriteResult> work)
+        private void StartArchive(Func<ArchiveWriteResult> work, bool cancelBeforePublication)
         {
             Loaded += (_, _) => Task.Run(() =>
             {
@@ -144,6 +145,8 @@ namespace KillerShell
 
                 Dispatcher.Invoke(() =>
                 {
+                    if (cancelBeforePublication && _cts.IsCancellationRequested && r.Ok)
+                        r = new ArchiveWriteResult { ErrorKey = "Str_Status_ArchiveCanceled" };
                     ArchiveResult = r;
                     _finished = true;
                     Close();
