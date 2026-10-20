@@ -8,13 +8,13 @@ namespace KillerShell.Services
 {
     internal static class ProcessListQueryService
     {
-        internal static Dictionary<int, (string CommandLine, string Path, string ParentPid)> QueryProcesses()
+        internal static Dictionary<int, (string Name, string CommandLine, string Path, string ParentPid, long? CreatedUtcTicks)> QueryProcesses()
         {
-            var result = new Dictionary<int, (string, string, string)>();
+            var result = new Dictionary<int, (string, string, string, string, long?)>();
             try
             {
                 using var searcher = new ManagementObjectSearcher(
-                    "SELECT ProcessId, ParentProcessId, CommandLine, ExecutablePath FROM Win32_Process");
+                    "SELECT ProcessId, Name, ParentProcessId, CommandLine, ExecutablePath, CreationDate FROM Win32_Process");
                 using var rows = searcher.Get();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
@@ -26,7 +26,14 @@ namespace KillerShell.Services
                         string parentPid = row["ParentProcessId"] is { } parent
                             ? Convert.ToInt32(parent).ToString(CultureInfo.InvariantCulture)
                             : "-";
-                        result[pid] = (commandLine, path, parentPid);
+                        long? created = null;
+                        try
+                        {
+                            if (row["CreationDate"] is string creationDate)
+                                created = ManagementDateTimeConverter.ToDateTime(creationDate).ToUniversalTime().Ticks;
+                        }
+                        catch (ArgumentException) { }
+                        result[pid] = (row["Name"] as string ?? string.Empty, commandLine, path, parentPid, created);
                     }
                 }
             }

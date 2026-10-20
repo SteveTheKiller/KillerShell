@@ -617,7 +617,7 @@ namespace KillerShell.Tools
             // throws Win32Exception for an elevated/protected process when this app is not
             // elevated). ParentProcessId rides along on the SAME query - it costs nothing extra
             // to ask WMI for one more column, unlike a second per-row lookup would.
-            Dictionary<int, (string CommandLine, string Path, string ParentPid)> wmi =
+            var wmi =
                 Services.ProcessListQueryService.QueryProcesses();
 
             // Process.GetProcesses() hands back live handles, not a snapshot struct - each one
@@ -682,18 +682,30 @@ namespace KillerShell.Tools
                     // running as - read defensively, per-process, no WMI round trip needed since
                     // Process already exposes it directly (unlike ParentProcessId).
                     string startTime = "-";
+                    long? startTimeUtcTicks = null;
                     if (readable)
                     {
-                        try { startTime = proc.StartTime.ToString("yyyy-MM-dd HH:mm:ss"); }
+                        try
+                        {
+                            _ = proc.Handle;
+                            DateTime created = proc.StartTime;
+                            startTime = created.ToString("yyyy-MM-dd HH:mm:ss");
+                            startTimeUtcTicks = created.ToUniversalTime().Ticks;
+                        }
                         catch { _unreadablePids.Add(pid); }
                     }
 
                     string cmd = string.Empty, path = string.Empty, parentPid = "-";
-                    if (wmi.TryGetValue(pid, out var info))
+                    long? actionableStartTimeUtcTicks = null;
+                    if (wmi.TryGetValue(pid, out var info) &&
+                        Services.ProcessListLogic.VerifySampleMetadata(startTimeUtcTicks, info.CreatedUtcTicks,
+                            info.Name, info.CommandLine, info.Path, info.ParentPid) is { } verified)
                     {
-                        cmd       = info.CommandLine ?? string.Empty;
-                        path      = info.Path        ?? string.Empty;
-                        parentPid = info.ParentPid   ?? "-";
+                        name = verified.Name;
+                        cmd = verified.CommandLine;
+                        path = verified.Path;
+                        parentPid = verified.ParentPid;
+                        actionableStartTimeUtcTicks = verified.StartTimeUtcTicks;
                     }
 
                     // Owner is the one field NOT worth waiting on here (see EnrichOwners) - a
@@ -704,7 +716,7 @@ namespace KillerShell.Tools
                     string owner = _ownerCache.TryGetValue(pid, out string? cached) ? cached : "-";
                     if (cached == null && _ownerPending.TryAdd(pid, 0)) needOwner.Add(pid);
 
-                    samples.Add(new ProcessSample(pid, name, mem, cpuPercent, cmd, path, owner, parentPid, startTime));
+                    samples.Add(new ProcessSample(pid, name, mem, cpuPercent, cmd, path, owner, parentPid, startTime, actionableStartTimeUtcTicks));
                 }
                 finally { proc.Dispose(); }
             }
@@ -760,8 +772,9 @@ namespace KillerShell.Tools
         {
             foreach (var s in samples)
             {
-                if (!_byPid.TryGetValue(s.Pid, out var row))
+                if (!_byPid.TryGetValue(s.Pid, out var row) || row.StartTimeUtcTicks != s.StartTimeUtcTicks)
                 {
+                    if (row != null) _items.Remove(row);
                     row = new ProcessInfo(s.Pid);
                     _byPid[s.Pid] = row;
                     _items.Add(row);
@@ -774,6 +787,7 @@ namespace KillerShell.Tools
                 row.User           = s.User;
                 row.ParentPid      = s.ParentPid;
                 row.StartTimeLabel = s.StartTimeLabel;
+                row.StartTimeUtcTicks = s.StartTimeUtcTicks;
             }
 
             // Drop rows for processes that exited since the last tick, and their per-pid
@@ -819,14 +833,16 @@ namespace KillerShell.Tools
             internal readonly string User;
             internal readonly string ParentPid;
             internal readonly string StartTimeLabel;
+            internal readonly long? StartTimeUtcTicks;
 
             internal ProcessSample(int pid, string name, long memoryBytes, double cpuPercent,
                                    string commandLine, string path, string user,
-                                   string parentPid, string startTimeLabel)
+                                   string parentPid, string startTimeLabel, long? startTimeUtcTicks)
             {
                 Pid = pid; Name = name; MemoryBytes = memoryBytes; CpuPercent = cpuPercent;
                 CommandLine = commandLine; Path = path; User = user;
                 ParentPid = parentPid; StartTimeLabel = startTimeLabel;
+                StartTimeUtcTicks = startTimeUtcTicks;
             }
         }
 
@@ -1393,7 +1409,13 @@ namespace KillerShell.Tools
             var owner = Window.GetWindow(this);
 
             // Held open across the dialog so the id still means this process when it closes.
-            using var pinned = Services.ProcessListLogic.PinProcess(p.Pid);
+            using var pinned = Services.ProcessListLogic.PinProcess(p.Pid, p.StartTimeUtcTicks);
+            if (pinned == null)
+            {
+                ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_KillFailed"), p.Name,
+                    new InvalidOperationException().Message), error: true);
+                return;
+            }
             var dlg = new ConfirmDialog(msg, p.HasPath ? p.Path : null,
                                         MainWindow.LocStatic("Str_Menu_ProcKill")) { Owner = owner };
             dlg.ShowDialog();
@@ -1401,9 +1423,8 @@ namespace KillerShell.Tools
 
             try
             {
-                if (pinned != null && pinned.HasExited) throw new ArgumentException();
-                using var looked = pinned == null ? Process.GetProcessById(p.Pid) : null;
-                (pinned ?? looked!).Kill();
+                if (pinned.HasExited) throw new ArgumentException();
+                pinned.Kill();
                 ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_Killed"), p.Name), error: false);
             }
             catch (ArgumentException)
@@ -1442,7 +1463,7 @@ namespace KillerShell.Tools
             {
                 var psi = new ProcessStartInfo(path, args) { UseShellExecute = true };
                 if (elevated) psi.Verb = "runas";
-                await Services.ProcessRestart.RestartAsync(p.Pid, psi);
+                await Services.ProcessRestart.RestartAsync(p.Pid, psi, expectedStartTimeUtcTicks: p.StartTimeUtcTicks);
                 ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_Restarted"), p.Name), error: false);
             }
             catch (Exception ex) when (ex is Win32Exception

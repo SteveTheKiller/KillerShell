@@ -7,6 +7,7 @@ namespace KillerShell.Services
     // A held process handle keeps termination and exit observation on the same instance.
     internal interface IRestartProcess : IDisposable
     {
+        long StartTimeUtcTicks { get; }
         bool HasExited { get; }
         void Kill();
         bool WaitForExit(int milliseconds);
@@ -15,12 +16,16 @@ namespace KillerShell.Services
     internal static class ProcessRestart
     {
         internal static Task RestartAsync(int pid, ProcessStartInfo replacement, int timeoutMilliseconds = 10000,
-            Func<int, IRestartProcess?>? open = null, Action<ProcessStartInfo>? start = null)
+            Func<int, IRestartProcess?>? open = null, Action<ProcessStartInfo>? start = null,
+            long? expectedStartTimeUtcTicks = null)
         {
             return Task.Run(() =>
             {
                 using var original = (open ?? Open)(pid);
-                if (original != null && !original.HasExited)
+                if (original == null || original.HasExited || !expectedStartTimeUtcTicks.HasValue ||
+                    original.StartTimeUtcTicks != expectedStartTimeUtcTicks.Value)
+                    throw new InvalidOperationException();
+                if (!original.HasExited)
                 {
                     try { original.Kill(); }
                     catch (InvalidOperationException) when (original.HasExited) { }
@@ -53,6 +58,7 @@ namespace KillerShell.Services
                 catch { process.Dispose(); throw; }
             }
             public bool HasExited => _process.HasExited;
+            public long StartTimeUtcTicks => _process.StartTime.ToUniversalTime().Ticks;
             public void Kill() => _process.Kill();
             public bool WaitForExit(int milliseconds) => _process.WaitForExit(milliseconds);
             public void Dispose() => _process.Dispose();

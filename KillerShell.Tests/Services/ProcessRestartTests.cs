@@ -19,7 +19,7 @@ namespace KillerShell.Tests.Services
             using var original = new ControlledProcess();
             bool launched = false;
             var work = ProcessRestart.RestartAsync(42, new ProcessStartInfo("fixture"), 10000,
-                _ => original, _ => { Assert.True(original.HasExited); launched = true; });
+                _ => original, _ => { Assert.True(original.HasExited); launched = true; }, expectedStartTimeUtcTicks: 123);
             try
             {
                 Assert.Same(original.Waiting.Task,
@@ -38,7 +38,7 @@ namespace KillerShell.Tests.Services
             using var original = new ControlledProcess();
             bool launched = false;
             await Assert.ThrowsAsync<TimeoutException>(() => ProcessRestart.RestartAsync(42,
-                new ProcessStartInfo("fixture"), 1, _ => original, _ => launched = true));
+                new ProcessStartInfo("fixture"), 1, _ => original, _ => launched = true, expectedStartTimeUtcTicks: 123));
             Assert.False(launched);
         }
 
@@ -48,19 +48,18 @@ namespace KillerShell.Tests.Services
             using var original = new ControlledProcess { RefuseKill = true };
             bool launched = false;
             await Assert.ThrowsAsync<System.ComponentModel.Win32Exception>(() => ProcessRestart.RestartAsync(42,
-                new ProcessStartInfo("fixture"), 1, _ => original, _ => launched = true));
+                new ProcessStartInfo("fixture"), 1, _ => original, _ => launched = true, expectedStartTimeUtcTicks: 123));
             Assert.False(launched);
         }
 
         [Fact]
-        public async Task AlreadyExitedCanRelaunchAndLaunchFailurePropagates()
+        public async Task MissingOriginalCannotLaunchReplacement()
         {
             bool launched = false;
-            await ProcessRestart.RestartAsync(int.MaxValue, new ProcessStartInfo("fixture"),
-                open: _ => null, start: _ => launched = true);
-            Assert.True(launched);
-            await Assert.ThrowsAsync<System.ComponentModel.Win32Exception>(() => ProcessRestart.RestartAsync(
-                int.MaxValue, new ProcessStartInfo("ks-missing-" + Guid.NewGuid().ToString("N")) { UseShellExecute = false }));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ProcessRestart.RestartAsync(
+                int.MaxValue, new ProcessStartInfo("fixture"), open: _ => null,
+                start: _ => launched = true, expectedStartTimeUtcTicks: 123));
+            Assert.False(launched);
         }
 
         [Fact]
@@ -79,7 +78,7 @@ namespace KillerShell.Tests.Services
                 var ready = original.StandardOutput.ReadLineAsync();
                 Assert.Same(ready, await Task.WhenAny(ready, Task.Delay(10000)));
                 Assert.Equal("ready", await ready);
-                await ProcessRestart.RestartAsync(original.Id, info, start: next =>
+                await ProcessRestart.RestartAsync(original.Id, info, expectedStartTimeUtcTicks: original.StartTime.ToUniversalTime().Ticks, start: next =>
                 {
                     Assert.True(original.HasExited);
                     replacement = Process.Start(next);
@@ -102,6 +101,7 @@ namespace KillerShell.Tests.Services
 
         private sealed class ControlledProcess : IRestartProcess
         {
+            public long StartTimeUtcTicks => 123;
             internal readonly TaskCompletionSource<bool> Waiting = new(TaskCreationOptions.RunContinuationsAsynchronously);
             internal readonly ManualResetEventSlim Release = new(false);
             public bool HasExited { get; private set; }

@@ -66,13 +66,19 @@ namespace KillerShell.Services
         /// while a confirm dialog is up. Windows only reuses an id once every handle to the old
         /// process is closed. Null when it is gone or cannot be opened (a protected process).
         /// </summary>
-        internal static System.Diagnostics.Process? PinProcess(int pid)
+        internal static System.Diagnostics.Process? PinProcess(int pid, long? expectedStartTimeUtcTicks)
         {
+            if (!expectedStartTimeUtcTicks.HasValue) return null;
             System.Diagnostics.Process? proc = null;
             try
             {
                 proc = System.Diagnostics.Process.GetProcessById(pid);
                 _ = proc.Handle;   // opened now and cached by the Process object for Kill
+                if (proc.HasExited || proc.StartTime.ToUniversalTime().Ticks != expectedStartTimeUtcTicks.Value)
+                {
+                    proc.Dispose();
+                    return null;
+                }
                 return proc;
             }
             catch
@@ -80,6 +86,19 @@ namespace KillerShell.Services
                 proc?.Dispose();
                 return null;
             }
+        }
+
+        // WMI's datetime format records microseconds; the held process time has 100 ns ticks.
+        internal static bool MatchesCreationTime(long? sampledUtcTicks, long? metadataUtcTicks)
+            => sampledUtcTicks.HasValue && metadataUtcTicks.HasValue &&
+               sampledUtcTicks.Value / 10 == metadataUtcTicks.Value / 10;
+
+        internal static (string Name, string CommandLine, string Path, string ParentPid, long StartTimeUtcTicks)?
+            VerifySampleMetadata(long? heldUtcTicks, long? metadataUtcTicks, string name,
+                                 string commandLine, string path, string parentPid)
+        {
+            if (name.Length == 0 || !MatchesCreationTime(heldUtcTicks, metadataUtcTicks)) return null;
+            return (System.IO.Path.GetFileNameWithoutExtension(name), commandLine, path, parentPid, heldUtcTicks!.Value);
         }
 
         private static bool Contains(string value, string query)

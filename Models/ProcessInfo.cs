@@ -18,6 +18,8 @@ namespace KillerShell.Models
     {
         public int Pid { get; } = pid;
 
+        public long? StartTimeUtcTicks { get; set; }
+
         private string _name = string.Empty;
         public string Name
         {

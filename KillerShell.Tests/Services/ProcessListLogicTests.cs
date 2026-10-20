@@ -40,7 +40,7 @@ namespace KillerShell.Tests.Services
             using var child = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
                 "ping.exe", "-n 30 127.0.0.1") { CreateNoWindow = true, UseShellExecute = false })!;
 
-            using var pinned = ProcessListLogic.PinProcess(child.Id);
+            using var pinned = ProcessListLogic.PinProcess(child.Id, child.StartTime.ToUniversalTime().Ticks);
             Assert.NotNull(pinned);
 
             child.Kill();
@@ -53,6 +53,6 @@ namespace KillerShell.Tests.Services
 
         [Fact]
         public void PinProcess_ReturnsNullForAMissingId()
-            => Assert.Null(ProcessListLogic.PinProcess(int.MaxValue - 3));
+            => Assert.Null(ProcessListLogic.PinProcess(int.MaxValue - 3, 123));
     }
 }
