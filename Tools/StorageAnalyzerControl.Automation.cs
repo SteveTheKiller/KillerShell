@@ -12,6 +12,7 @@ namespace KillerShell.Tools
     internal sealed partial class StorageAnalyzerControl
     {
         private bool _accessibilityClosed;
+        private bool HasStorageNodeFocus => IsKeyboardFocused || _map.IsKeyboardFocusWithin;
         private void SelectNode(FsNode? node)
         {
             var previous = _selected;
@@ -109,7 +110,7 @@ namespace KillerShell.Tools
                     var current = Node(selected);
                     current.RaisePropertyChangedEvent(SelectionItemPatternIdentifiers.IsSelectedProperty, false, true);
                     current.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementSelected);
-                    if (_control.IsKeyboardFocusWithin) current.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
+                    if (_control.HasStorageNodeFocus) current.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
                 }
             }
             internal void ViewChanged(FsNode? previousRoot)
@@ -167,7 +168,7 @@ namespace KillerShell.Tools
             protected override string GetItemStatusCore() => _node.Size.ToString(CultureInfo.CurrentCulture);
             protected override bool IsRequiredForFormCore() => false;
             protected override bool IsKeyboardFocusableCore() => _control.IsCurrentNode(_node);
-            protected override bool HasKeyboardFocusCore() => IsSelected && _control.IsKeyboardFocusWithin;
+            protected override bool HasKeyboardFocusCore() => IsSelected && _control.HasStorageNodeFocus;
             protected override bool IsEnabledCore() => _control.IsEnabled && _control.IsCurrentNode(_node);
             protected override bool IsPasswordCore() => false;
             protected override string GetAutomationIdCore() => FullPath(_node);

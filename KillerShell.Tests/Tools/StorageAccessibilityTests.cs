@@ -152,6 +152,12 @@ public static class StorageAccessibilityScenario
             Assert.True(bigSelection.IsSelected);
             expand.Collapse();
             Assert.Equal(root, control.CreateReport()!.ViewRoot);
+            big.SetFocus();
+            Assert.True(big.HasKeyboardFocus());
+            var targetInput = Descendants(control).OfType<TextBox>().Single();
+            targetInput.Focus();
+            Assert.Same(targetInput, Keyboard.FocusedElement);
+            Assert.False(big.HasKeyboardFocus());
             control.ScanFolder(root);
             PumpUntil(() => control.CreateReport()?.TotalSize == 23);
             Assert.Empty(selection.GetSelection());
