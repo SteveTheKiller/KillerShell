@@ -3,6 +3,7 @@
 (function () {
   var root = document.documentElement;
   var chromeEnglish = {"site_ui_theme":"Theme","site_ui_choose_theme":"Choose theme","site_ui_accent":"Accent color","site_ui_close":"Close","site_ui_language":"Language","site_ui_copy":"Copy to clipboard","site_ui_copied":"Copied","site_ui_click":"Click me","site_ui_home":"Home","site_ui_shortcuts":"Shortcut view","site_ui_screenshot":"Screenshot","site_ui_red":"Red","site_ui_orange":"Orange","site_ui_yellow":"Yellow","site_ui_green":"Green","site_ui_teal":"Teal","site_ui_blue":"Blue","site_ui_purple":"Purple","site_ui_magenta":"Magenta","site_ui_expand":"Expand section","site_ui_collapse":"Collapse section","site_ui_family":"Part of","footer_src":"Source on GitHub"};
+  chromeEnglish.site_ui_more = 'More';
   function chromeText(key) {
     var lang = root.getAttribute('lang') || 'en';
     if (lang === 'zh-Hant') lang = 'zh';
@@ -453,6 +454,7 @@
   btn.setAttribute('aria-haspopup', 'true');
   btn.setAttribute('aria-expanded', 'false');
   btn.setAttribute('aria-label', 'More');
+  btn.setAttribute('data-i18n-aria', 'site_ui_more');
   btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
   var menu = document.createElement('div');
   menu.className = 'lang-menu tb-more-menu';
@@ -460,6 +462,7 @@
   more.appendChild(btn);
   more.appendChild(menu);
   if (nav && nav.parentNode === bar) bar.insertBefore(more, nav.nextSibling); else bar.appendChild(more);
+  if (window.ksLocalizeChrome) window.ksLocalizeChrome();
 
   function mark(el) {
     if (!el) return null;

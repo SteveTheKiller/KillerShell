@@ -7390,6 +7390,11 @@ Object.assign(I18N["bn"], {
  "site_egg_4": "নাম KillerShell, কারণ FileManagerButAlsoATerminalAndAlsoAnEditor.exe আইকনে ধরেনি।",
  "site_egg_5": "একটি exe, ইনস্টলার নেই, সাবস্ক্রিপশন নেই। মরছে শুধু আপনার Explorer.exe ব্যবহারের অভ্যাস।"
 });
+// Accessible name for the dynamically created navigation overflow button.
+(function () {
+  var moreLabels = { hu: 'Továbbiak', pl: 'Więcej', es: 'Más', de: 'Mehr', fr: 'Plus', tr: 'Daha fazla', vi: 'Thêm', 'zh-cn': '更多', zh: '更多', cs: 'Další', ja: 'その他', bn: 'আরও', it: 'Altro', ru: 'Ещё', kk: 'Қосымша', uk: 'Більше', nb: 'Mer', pt: 'Mais' };
+  Object.keys(moreLabels).forEach(function (lang) { I18N[lang].site_ui_more = moreLabels[lang]; });
+})();
 // Search diagram and footer accessibility labels.
 Object.assign(I18N["es"], {
  "site_diagram_0": "carpeta + términos + filtros",

@@ -61,7 +61,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Gray, menu and accent text reads at 4.5:1 contrast or better in every theme and accent, and the footer's version and copyright are slightly dimmed.
 - The Dark theme's Red accent stays a true red on buttons, lines, scroll bars and the website's accent swatches, and only small red text uses a lighter red.
 - When KillerShell runs as administrator, the Administrator caption beside the title bar wordmark sits on the wordmark's baseline in Killer Sans, like KillerPDF's filename.
-- The website's text and accent colors read at 4.5:1 contrast or better in every theme, and a narrow top bar shrinks the Microsoft Store and MCP buttons to their logos and moves links into a More menu instead of wrapping.
+- The website's text and accent colors read at 4.5:1 contrast or better in every theme, and a narrow top bar shrinks the Microsoft Store and MCP buttons to their logos and moves links into a More menu instead of wrapping. The More button's accessible name follows the selected language.
 - On the website's Light theme with the Yellow or Orange accent, links, headings and labels keep their color with a thin gray outline instead of turning olive or brown.
 - The exe's file properties show Steve the Killer as the copyright holder instead of leaving it blank.
 - Screen readers no longer read toolbar, menu and title bar icons as unreadable symbols, file list items read as their names instead of a type name, the sort direction button says whether the list is ascending or descending, and every part of each scroll bar has a name. File-picker rows announce folder and file names.
