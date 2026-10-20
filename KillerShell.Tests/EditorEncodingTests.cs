@@ -49,6 +49,9 @@ namespace KillerShell.Tests
         [InlineData("save-lossy-ansi")]
         public Task FailedSavesKeepTheFileAndTheEdits(string scenario) => RunIsolated(scenario);
 
+        [Fact]
+        public Task EncodingChangesSurviveTextUndo() => RunIsolated("encoding-undo");
+
         private static async Task RunIsolated(string scenario)
         {
             string assembly = typeof(EditorEncodingTests).Assembly.Location.Replace("'", "''");
@@ -113,6 +116,35 @@ namespace KillerShell.Tests
         {
             switch (scenario)
             {
+                case "encoding-undo":
+                {
+                    File.WriteAllBytes(path, Encoding.UTF8.GetBytes("original"));
+                    var editor = Loaded(path);
+                    int dirtyChanges = 0;
+                    editor.DirtyChanged += () => dirtyChanges++;
+                    editor.Document.Insert(0, "edit ");
+                    editor.SetEncoding(new UnicodeEncoding(false, true));
+                    editor.Undo();
+                    Assert.Equal("original", editor.Text);
+                    Assert.True(editor.Dirty, "Undo hid the pending encoding change.");
+                    editor.SetEncoding(new UTF8Encoding(false));
+                    Assert.False(editor.Dirty);
+                    editor.Redo();
+                    Assert.True(editor.Dirty);
+                    editor.Undo();
+                    Assert.False(editor.Dirty);
+                    editor.SetEncoding(new UTF8Encoding(true));
+                    Assert.True(editor.Dirty);
+                    Assert.True(editor.SaveFile(out string error, out _), error);
+                    Assert.False(editor.Dirty);
+                    Assert.Equal(Bytes("EF BB BF 6F 72 69 67 69 6E 61 6C"), File.ReadAllBytes(path));
+                    editor.SetEncoding(new UTF8Encoding(false));
+                    Assert.True(editor.Dirty);
+                    editor.SetEncoding(new UTF8Encoding(true));
+                    Assert.False(editor.Dirty);
+                    Assert.Equal(8, dirtyChanges);
+                    break;
+                }
                 case "save-lossy-ansi":
                 {
                     byte[] original = Encoding.ASCII.GetBytes("original");
@@ -174,6 +206,7 @@ namespace KillerShell.Tests
                     File.WriteAllBytes(path, original);
                     var editor = Loaded(path);
                     editor.Document.Insert(0, "edited ");
+                    editor.SetEncoding(new UTF8Encoding(true));
                     using (var other = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
                         other.Lock(0, 4096);
@@ -181,6 +214,8 @@ namespace KillerShell.Tests
                         Assert.False(denied);
                         Assert.False(string.IsNullOrWhiteSpace(error));
                         Assert.True(editor.IsModified, "A failed save cleared the unsaved mark.");
+                        editor.Undo();
+                        Assert.True(editor.Dirty, "A failed save lost its pending encoding change.");
                         Assert.Equal(original.Length, new FileInfo(path).Length);   // the locked bytes cannot be read until unlocked
                         other.Unlock(0, 4096);
                     }

@@ -303,7 +303,7 @@ namespace KillerShell.Shell
             // prompt does not block this window, and typing or an encoding change made while it
             // is up must stay dirty.
             string stagedText = t.Editor.Text;
-            string stagedEncoding = t.Editor.EncodingLabel;
+            var stagedEncoding = t.Editor.CurrentEncoding;
             string stagedPath = t.Editor.FilePath;
             string stagedHash;
             try
@@ -381,7 +381,7 @@ namespace KillerShell.Shell
         }
 
         internal void CompleteElevatedSave(SearchTab t, Editing.EditorControl originalEditor, string name,
-            string stagedText, string stagedEncoding, string stagedPath, int code, string? diagnostic)
+            string stagedText, System.Text.Encoding stagedEncoding, string stagedPath, int code, string? diagnostic)
         {
             if (!ReferenceEquals(t.Editor, originalEditor)
                 || (!LeftPane.Tabs.Contains(t) && !RightPane.Tabs.Contains(t)))
@@ -395,10 +395,8 @@ namespace KillerShell.Shell
             }
             if (code == 0)
             {
-                if (string.Equals(originalEditor.Text, stagedText, StringComparison.Ordinal)
-                    && originalEditor.EncodingLabel == stagedEncoding
-                    && string.Equals(originalEditor.FilePath, stagedPath, StringComparison.OrdinalIgnoreCase))
-                    originalEditor.IsModified = false;
+                if (string.Equals(originalEditor.FilePath, stagedPath, StringComparison.OrdinalIgnoreCase))
+                    originalEditor.CompleteSave(stagedEncoding, stagedText);
                 SetTabStatusKey(t, "Str_Ed_Saved", name);
             }
             else

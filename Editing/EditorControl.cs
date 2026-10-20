@@ -59,6 +59,14 @@ namespace KillerShell.Editing
 
         /// <summary>Encoding as it was found on disk, written back unchanged on save.</summary>
         private Encoding _encoding = new UTF8Encoding(false);
+        private Encoding _savedEncoding = new UTF8Encoding(false);
+        private string? _savedTextOverride;
+
+        static EditorControl()
+        {
+            IsModifiedProperty.OverrideMetadata(typeof(EditorControl),
+                new FrameworkPropertyMetadata(false, (d, _) => ((EditorControl)d).ReportDirty()));
+        }
 
         /// <summary>
         /// This document's encoding, for a caller that has to hand it back through AdoptPath -
@@ -143,6 +151,8 @@ namespace KillerShell.Editing
                     return false;
                 }
                 _encoding = encoding;
+                _savedEncoding = encoding;
+                _savedTextOverride = null;
                 Text = text;
 
                 EncodingLabel = Describe(_encoding);
@@ -171,6 +181,8 @@ namespace KillerShell.Editing
         internal void LoadDemo(string text)
         {
             _encoding     = new UTF8Encoding(false);
+            _savedEncoding = _encoding;
+            _savedTextOverride = null;
             Text          = text;
             EncodingLabel = Describe(_encoding);
             NewLineLabel  = DescribeNewLine(Text);
@@ -189,6 +201,8 @@ namespace KillerShell.Editing
         internal void LoadEmpty()
         {
             _encoding     = new UTF8Encoding(false);
+            _savedEncoding = _encoding;
+            _savedTextOverride = null;
             EncodingLabel = Describe(_encoding);
             NewLineLabel  = DescribeNewLine(Text);
             Document.UndoStack.ClearAll();
@@ -228,21 +242,20 @@ namespace KillerShell.Editing
         /// half of what VS Code offers as two separate menus. The in-memory text is not
         /// re-decoded from disk, so switching away from a lossy detection (ANSI on bytes that
         /// were not really UTF-8) does not un-corrupt anything already read wrong - it only
-        /// changes what gets written from here on. A no-op pick (the label would come out the
-        /// same, e.g. clicking UTF-8 while already on UTF-8) leaves Dirty untouched, the same way
+        /// changes what gets written from here on. A pick with the same code page and BOM
+        /// leaves Dirty untouched, the same way
         /// every other bar toggle only marks dirty on a real change.
         /// </remarks>
         internal void SetEncoding(Encoding encoding)
         {
             string label = Describe(encoding);
-            if (label == EncodingLabel) return;
+            if (SameEncoding(encoding, _encoding)) return;
 
             _encoding     = encoding;
             EncodingLabel = label;
 
             // An unsaved encoding change is a real pending change - the next save writes
             // different bytes than the ones on disk even if not one character of text moved.
-            IsModified = true;
             ReportDirty();
         }
 
@@ -262,8 +275,7 @@ namespace KillerShell.Editing
                 // BOM keeps it and one that arrived without stays without. Written whole beside
                 // the file and swapped in, so a failed save leaves the old file as it was.
                 Services.SafeFileWrite.Write(FilePath, EncodedBytes());
-                IsModified = false;
-                ReportDirty();
+                CompleteSave(_encoding, Text);
 
                 error = string.Empty;
                 return true;
@@ -424,14 +436,37 @@ namespace KillerShell.Editing
         //  DIRTY STATE
         // ═══════════════════════════════════════════════════════════
         /// <summary>True while the document differs from what is on disk.</summary>
-        internal bool Dirty => IsModified;
+        internal bool Dirty => (_savedTextOverride == null ? IsModified
+            : !string.Equals(Text, _savedTextOverride, StringComparison.Ordinal))
+            || !SameEncoding(_encoding, _savedEncoding);
+
+        internal void CompleteSave(Encoding encoding, string savedText)
+        {
+            _savedEncoding = encoding;
+            // A helper may finish after newer edits. Its text is now the disk baseline,
+            // while the undo marker still refers to the previous save.
+            bool textUnchanged = string.Equals(Text, savedText, StringComparison.Ordinal);
+            _savedTextOverride = textUnchanged ? null : savedText;
+            if (textUnchanged) IsModified = false;
+            ReportDirty();
+        }
+
+        private static bool SameEncoding(Encoding left, Encoding right)
+        {
+            if (left.CodePage != right.CodePage) return false;
+            byte[] a = left.GetPreamble(), b = right.GetPreamble();
+            if (a.Length != b.Length) return false;
+            for (int i = 0; i < a.Length; i++)
+                if (a[i] != b[i]) return false;
+            return true;
+        }
 
         // Edge-triggered. TextChanged fires on every keystroke and the tab title only has two
         // states, so raising it per character would repaint the strip for nothing.
         private void ReportDirty()
         {
-            if (IsModified == _wasDirty) return;
-            _wasDirty = IsModified;
+            if (Dirty == _wasDirty) return;
+            _wasDirty = Dirty;
             DirtyChanged?.Invoke();
         }
 

@@ -25,6 +25,7 @@ public sealed class ElevatedSaveCompletionTests
     [InlineData("closed-failure")]
     [InlineData("unchanged")]
     [InlineData("text-changed")]
+    [InlineData("text-undo-baseline")]
     [InlineData("encoding-changed")]
     [InlineData("path-changed")]
     [InlineData("replacement-editor")]
@@ -83,18 +84,22 @@ public static class ElevatedSaveCompletionScenario
             var tabs = (ItemsControl)pane.FindName("TabStrip");
             var owner = tabs.Items.OfType<SearchTab>().Single(tab => tab.IsEditor);
             var editor = owner.Editor!;
-            editor.Text = "staged";
-            string stagedText = editor.Text, stagedEncoding = editor.EncodingLabel, stagedPath = editor.FilePath;
+            editor.Document.Replace(0, editor.Document.TextLength, "staged");
+            editor.SetEncoding(new UTF8Encoding(true));
+            string stagedText = editor.Text, stagedPath = editor.FilePath;
+            Encoding stagedEncoding = editor.CurrentEncoding;
             if (scenario.StartsWith("closed", StringComparison.Ordinal))
             {
-                editor.IsModified = false; // Close through the real tab command without a modal discard prompt.
+                // Close through the real tab command without a modal discard prompt.
+                editor.CompleteSave(editor.CurrentEncoding, editor.Text);
                 window.CloseTab_Click(new Button { Tag = owner }, new RoutedEventArgs());
                 Pump();
                 Assert.Null(owner.Editor);
                 Assert.DoesNotContain(owner, tabs.Items.OfType<SearchTab>());
                 editor.IsModified = true;
             }
-            else if (scenario == "text-changed") editor.Text = "newer edit";
+            else if (scenario == "text-changed" || scenario == "text-undo-baseline")
+                editor.Document.Replace(0, editor.Document.TextLength, "newer edit");
             else if (scenario == "encoding-changed") editor.SetEncoding(new UnicodeEncoding(false, true));
             else if (scenario == "path-changed") editor.AdoptPath(Path.Combine(root, "renamed.txt"), new UTF8Encoding(false));
             else if (scenario == "replacement-editor")
@@ -125,7 +130,31 @@ public static class ElevatedSaveCompletionScenario
                     Assert.Contains(diagnostic, ((TextBlock)window.FindName("StatusText")).Text);
                 }
             }
-            else Assert.Equal(scenario != "unchanged", editor.IsModified);
+            else Assert.Equal(scenario != "unchanged", editor.Dirty);
+            if (scenario == "unchanged")
+            {
+                editor.SetEncoding(new UTF8Encoding(false));
+                Assert.True(editor.Dirty);
+                editor.SetEncoding(new UTF8Encoding(true));
+                Assert.False(editor.Dirty);
+            }
+            if (scenario == "encoding-changed")
+            {
+                editor.SetEncoding(new UTF8Encoding(true));
+                Assert.False(editor.Dirty);
+            }
+            if (scenario == "text-undo-baseline")
+            {
+                editor.Undo();
+                Assert.Equal("staged", editor.Text);
+                Assert.False(editor.Dirty, "The text written by the helper must be clean.");
+                editor.Undo();
+                Assert.Equal("original", editor.Text);
+                Assert.True(editor.Dirty, "Undo to the old disk text must stay dirty after helper save.");
+                editor.Redo();
+                Assert.Equal("staged", editor.Text);
+                Assert.False(editor.Dirty);
+            }
         }
         finally
         {
@@ -133,7 +162,7 @@ public static class ElevatedSaveCompletionScenario
             {
                 var pane = (FrameworkElement)window.FindName("LeftPane");
                 foreach (var tab in ((ItemsControl)pane.FindName("TabStrip")).Items.OfType<SearchTab>())
-                    if (tab.Editor != null) tab.Editor.IsModified = false;
+                    if (tab.Editor != null) tab.Editor.CompleteSave(tab.Editor.CurrentEncoding, tab.Editor.Text);
                 window.Close();
                 Pump();
             }
