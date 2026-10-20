@@ -13,6 +13,49 @@ namespace KillerShell.Tests.Services
         [Theory]
         [InlineData(false, false)]
         [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        public void PartialReplacementFailureRetainsBothContents(bool move, bool obstructRecovery)
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string source = Path.Combine(Directory.CreateDirectory(Path.Combine(root, "src")).FullName, "same.txt");
+                string target = Directory.CreateDirectory(Path.Combine(root, "dst")).FullName;
+                string destination = Path.Combine(target, "same.txt");
+                File.WriteAllText(source, "incoming");
+                File.WriteAllText(destination, "previous destination");
+                string? retainedBackup = null;
+                var result = FileOps.CopyOrMove(new[] { source }, target, move, _ => ConflictChoice.Replace,
+                    _ => { }, CancellationToken.None, (incoming, old, backup) =>
+                    {
+                        // Model the documented partial native failure after the old name moves.
+                        if (backup == null) File.Delete(old);
+                        else { File.Move(old, backup); retainedBackup = backup; }
+                        if (obstructRecovery) Directory.CreateDirectory(old);
+                        throw new IOException("Controlled replacement failure after old-name removal (1176).");
+                    });
+                Assert.Single(result.Failed);
+                Assert.Equal(0, result.Succeeded);
+                Assert.Equal("incoming", File.ReadAllText(source));
+                Assert.NotNull(retainedBackup);
+                if (!obstructRecovery) Assert.Equal("previous destination", File.ReadAllText(destination));
+                else
+                {
+                    Assert.Equal("previous destination", File.ReadAllText(retainedBackup!));
+                    Assert.Contains(retainedBackup!, result.Failed[0].Error);
+                }
+                if (!move)
+                {
+                    string staged = Assert.Single(Directory.GetFiles(target, ".KillerShell-copy-*.tmp"));
+                    Assert.Equal("incoming", File.ReadAllText(staged));
+                }
+            }
+            finally { Directory.Delete(root, true); }
+        }
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
         [InlineData(true, true)]
         public void UnreadableSubtreeIsReportedUnlessWholeDirectoryWasMoved(bool move, bool fast)
         {

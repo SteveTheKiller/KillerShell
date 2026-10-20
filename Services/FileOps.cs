@@ -192,10 +192,16 @@ namespace KillerShell.Services
                                               CancellationToken ct)
             => CopyOrMoveCore(sources, targetDir, move, onConflict, onProgress, ct, true);
 
+        internal static FileOpResult CopyOrMove(IEnumerable<string> sources, string targetDir, bool move,
+            Func<ConflictInfo, ConflictChoice> onConflict, Action<FileOpProgress> onProgress,
+            CancellationToken ct, Action<string, string, string?> replace)
+            => CopyOrMoveCore(sources, targetDir, move, onConflict, onProgress, ct, true, replace);
+
         private static FileOpResult CopyOrMoveCore(IEnumerable<string> sources, string targetDir, bool move,
                                                    Func<ConflictInfo, ConflictChoice> onConflict,
                                                    Action<FileOpProgress> onProgress,
-                                                   CancellationToken ct, bool allowFastMove)
+                                                   CancellationToken ct, bool allowFastMove,
+                                                   Action<string, string, string?>? replace = null)
         {
             var result = new FileOpResult();
             var dirsToCreate = new List<string>();
@@ -205,7 +211,7 @@ namespace KillerShell.Services
             // copying. Worth catching before the per-file loop, because moving a 40 GB folder
             // across the same disk should be instant rather than a progress bar.
             sources = new List<string>(sources);
-            if (move && allowFastMove && TryFastMoveDirectories(sources, targetDir, onConflict, onProgress, result, ct))
+            if (move && allowFastMove && TryFastMoveDirectories(sources, targetDir, onConflict, onProgress, result, ct, replace))
                 return result;
 
             try { work = Plan(sources, targetDir, move, dirsToCreate, result, ct); }
@@ -243,8 +249,8 @@ namespace KillerShell.Services
                 try
                 {
                     if (item.IsLink) MoveLink(item.Source, target);
-                    else if (move) MoveFile(item.Source, target, ref progress, onProgress, ct);
-                    else      CopyFile(item.Source, target, ref progress, onProgress, ct);
+                    else if (move) MoveFile(item.Source, target, ref progress, onProgress, ct, replace);
+                    else      CopyFile(item.Source, target, ref progress, onProgress, ct, replace);
                     result.Succeeded++;
                     result.SucceededTargets.Add(target);
                 }
@@ -268,7 +274,8 @@ namespace KillerShell.Services
         private static bool TryFastMoveDirectories(IEnumerable<string> sources, string targetDir,
                                                    Func<ConflictInfo, ConflictChoice> onConflict,
                                                    Action<FileOpProgress> onProgress,
-                                                   FileOpResult result, CancellationToken ct)
+                                                   FileOpResult result, CancellationToken ct,
+                                                   Action<string, string, string?>? replace = null)
         {
             var list = new List<string>(sources);
             foreach (string s in list)
@@ -308,7 +315,7 @@ namespace KillerShell.Services
                 if (item.Choice == ConflictChoice.Replace)
                 {
                     FileOpResult merged = CopyOrMoveCore([item.Source], targetDir, true,
-                                                         onConflict, onProgress, ct, false);
+                                                         onConflict, onProgress, ct, false, replace);
                     result.Succeeded += merged.Succeeded;
                     result.Skipped += merged.Skipped;
                     result.Failed.AddRange(merged.Failed);
@@ -324,10 +331,12 @@ namespace KillerShell.Services
         }
 
         private static void CopyFile(string src, string dst, ref FileOpProgress progress,
-                                     Action<FileOpProgress> onProgress, CancellationToken ct)
+                                     Action<FileOpProgress> onProgress, CancellationToken ct,
+                                     Action<string, string, string?>? replace = null)
         {
             string temp = Path.Combine(Path.GetDirectoryName(dst) ?? string.Empty,
                                        ".KillerShell-copy-" + Guid.NewGuid().ToString("N") + ".tmp");
+            bool keepRecovery = false;
             try
             {
                 ct.ThrowIfCancellationRequested();
@@ -367,17 +376,39 @@ namespace KillerShell.Services
                 // Copies were writable before native stream preservation. Keep that behavior:
                 // File.Replace needs write access to staging even when the source is read-only.
                 File.SetAttributes(temp, File.GetAttributes(temp) & ~FileAttributes.ReadOnly);
-                if (File.Exists(dst)) File.Replace(temp, dst, null);
+                if (File.Exists(dst))
+                {
+                    keepRecovery = true;
+                    ReplaceFileWithRecovery(temp, dst, replace);
+                    keepRecovery = false;
+                }
                 else File.Move(temp, dst);
             }
             finally
             {
-                if (File.Exists(temp))
+                if (!keepRecovery && File.Exists(temp))
                 {
                     File.SetAttributes(temp, File.GetAttributes(temp) & ~FileAttributes.ReadOnly);
                     File.Delete(temp);
                 }
             }
+        }
+
+        private static void ReplaceFileWithRecovery(string incoming, string destination,
+                                                      Action<string, string, string?>? replace)
+        {
+            string backup = destination + ".KillerShell-backup-" + Guid.NewGuid().ToString("N");
+            try { (replace ?? File.Replace)(incoming, destination, backup); }
+            catch (Exception ex)
+            {
+                Exception? restoration = null;
+                if (!File.Exists(destination) && File.Exists(backup))
+                    try { File.Move(backup, destination); } catch (Exception restoreError) { restoration = restoreError; }
+                throw new IOException($"Replacement failed. Destination: {destination}. Incoming: {incoming}. Backup: {backup}. "
+                    + ex.Message + (restoration == null ? "" : " Recovery failed: " + restoration.Message), ex);
+            }
+            // Publication succeeded. Backup cleanup must not turn a completed move into failure.
+            try { File.Delete(backup); } catch { }
         }
 
         private delegate uint CopyProgressRoutine(long total, long transferred, long streamSize,
@@ -389,7 +420,8 @@ namespace KillerShell.Services
             IntPtr data, IntPtr cancel, uint flags);
 
         private static void MoveFile(string src, string dst, ref FileOpProgress progress,
-                                     Action<FileOpProgress> onProgress, CancellationToken ct)
+                                     Action<FileOpProgress> onProgress, CancellationToken ct,
+                                     Action<string, string, string?>? replace = null)
         {
             // Same volume: a rename, instantaneous whatever the size. Different volume: there is
             // no such thing as a cross-volume move, so it is a copy followed by a delete, and the
@@ -398,13 +430,13 @@ namespace KillerShell.Services
             {
                 long size = SafeSize(src);
                 ct.ThrowIfCancellationRequested();
-                if (File.Exists(dst)) File.Replace(src, dst, null);
+                if (File.Exists(dst)) ReplaceFileWithRecovery(src, dst, replace);
                 else File.Move(src, dst);
                 progress.BytesDone += size;
                 return;
             }
 
-            CopyFile(src, dst, ref progress, onProgress, ct);
+            CopyFile(src, dst, ref progress, onProgress, ct, replace);
             try { File.Delete(src); }
             catch (Exception ex)
             {
