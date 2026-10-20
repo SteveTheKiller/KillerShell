@@ -187,7 +187,7 @@ namespace KillerShell.Shell
             _kbLayerBtns.Clear();
 
             // Layer captions row.
-            var layerRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 10) };
+            var layerRow = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 10) };
             foreach (var (layer, caption) in KbLayerButtons)
             {
                 var b = new Button
