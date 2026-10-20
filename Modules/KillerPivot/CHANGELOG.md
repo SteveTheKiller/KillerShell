@@ -2,4 +2,4 @@
 
 ## 1.0.2 (Unreleased)
 
-- Disconnect sessions when connection or tenant validation fails, and report incomplete cleanup.
+- Validate the exact new Exchange connection, preserve older connections with KeepExisting, and report incomplete cleanup after failed validation.

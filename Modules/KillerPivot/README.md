@@ -59,6 +59,13 @@ pivot acme
 
 The key tab-completes from your saved tenants.
 
+`-KeepExisting` requires Exchange support for targeted disconnects. It creates
+a unique command prefix and prints it after verification. Use that prefix for
+imported commands, such as `Get-Pivot...Mailbox`. The new connection ID, its
+prefix and the connection selected for built-in EXO commands must agree.
+Reused or ambiguous connections are refused. Failed validation removes this
+invocation's prefixed connection while preserving older REST connections.
+
 ---
 
 ## Commands

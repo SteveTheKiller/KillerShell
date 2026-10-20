@@ -439,7 +439,23 @@ function Connect-PivotTenant {
         throw "PIVOT: ExchangeOnlineManagement not found. Check with Get-Module -ListAvailable ExchangeOnlineManagement."
     }
 
-    if (-not $KeepExisting) {
+    $beforeIds = @()
+    $connectionPrefix = $null
+    if ($KeepExisting) {
+        $connectCommand = Get-Command Connect-ExchangeOnline -ErrorAction Stop
+        $disconnectCommand = Get-Command Disconnect-ExchangeOnline -ErrorAction Stop
+        if (-not $connectCommand.Parameters.ContainsKey('Prefix') -or
+            -not $disconnectCommand.Parameters.ContainsKey('ModulePrefix') -or
+            -not $disconnectCommand.Parameters.ContainsKey('ConnectionId')) {
+            throw 'PIVOT: KeepExisting requires Exchange connection identity and targeted cleanup support. Update ExchangeOnlineManagement.'
+        }
+        $before = @(Get-ConnectionInformation -ErrorAction Stop | Where-Object { $_.State -eq 'Connected' })
+        if (@($before | Where-Object { [string]::IsNullOrWhiteSpace($_.ConnectionId) }).Count) {
+            throw 'PIVOT: existing Exchange connection identity is unavailable. Nothing connected.'
+        }
+        $beforeIds = @($before | ForEach-Object { $_.ConnectionId })
+        $connectionPrefix = 'Pivot' + [guid]::NewGuid().ToString('N')
+    } else {
         Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
     }
 
@@ -452,14 +468,27 @@ function Connect-PivotTenant {
     }
     $exoCmd = Get-Command Connect-ExchangeOnline -ErrorAction Stop
     if ($exoCmd.Parameters.ContainsKey('DisableWAM')) { $exoParams['DisableWAM'] = $true }
+    if ($connectionPrefix) { $exoParams['Prefix'] = $connectionPrefix }
 
     Write-Host "[*] Exchange : $($t.name)" -NoNewline -ForegroundColor $LineCol
     $graphStarted = $false
     try {
         Connect-ExchangeOnline @exoParams
 
-        $ci = Get-ConnectionInformation -ErrorAction Stop |
-              Where-Object { $_.State -eq 'Connected' } | Select-Object -First 1
+        $connections = @(Get-ConnectionInformation -ErrorAction Stop | Where-Object { $_.State -eq 'Connected' })
+        if ($KeepExisting) {
+            $created = @($connections | Where-Object { $_.ConnectionId -notin $beforeIds })
+            $selected = @($connections | Where-Object { $_.ConnectionUsedForInbuiltCmdlets -eq $true })
+            if ($created.Count -ne 1 -or [string]::IsNullOrWhiteSpace($created[0].ConnectionId) -or
+                $created[0].ModulePrefix -ne $connectionPrefix -or $selected.Count -ne 1 -or
+                $selected[0].ConnectionId -ne $created[0].ConnectionId) {
+                throw 'PIVOT: cannot identify the newly selected Exchange connection. Reused or ambiguous connections are not verified.'
+            }
+            $ci = $created[0]
+        } else {
+            if ($connections.Count -gt 1) { throw 'PIVOT: multiple Exchange connections returned after reconnect. State is ambiguous.' }
+            $ci = $connections | Select-Object -First 1
+        }
 
         if (-not $ci) {
             Write-StatusTag "[NO SESSION INFO]" "Red"
@@ -474,8 +503,6 @@ function Connect-PivotTenant {
             Write-HLine -Style "solid"
             throw "PIVOT: tenant mismatch on Exchange connect."
         }
-
-        Write-StatusTag "[VERIFIED]" $MainCol
 
         if ($Graph) {
             if (-not (Get-Module -ListAvailable -Name Microsoft.Graph.Authentication)) {
@@ -502,7 +529,10 @@ function Connect-PivotTenant {
                 throw "PIVOT: tenant mismatch on Graph connect."
             }
 
-            Write-StatusTag "[VERIFIED]" $MainCol
+        }
+        Write-StatusTag "[VERIFIED]" $MainCol
+        if ($connectionPrefix) {
+            Write-Host "    Exchange command prefix: $connectionPrefix (for example Get-${connectionPrefix}Mailbox)." -ForegroundColor $DimCol
         }
     } catch {
         $failure = $_
@@ -511,7 +541,13 @@ function Connect-PivotTenant {
             try { Disconnect-MgGraph -ErrorAction Stop | Out-Null }
             catch { $cleanupErrors += "Graph teardown failed: $($_.Exception.Message)" }
         }
-        try { Disconnect-ExchangeOnline -Confirm:$false -ErrorAction Stop }
+        try {
+            if ($connectionPrefix) {
+                Disconnect-ExchangeOnline -ModulePrefix $connectionPrefix -Confirm:$false -ErrorAction Stop
+            } else {
+                Disconnect-ExchangeOnline -Confirm:$false -ErrorAction Stop
+            }
+        }
         catch { $cleanupErrors += "Exchange teardown failed: $($_.Exception.Message)" }
         if ($cleanupErrors.Count) {
             throw "PIVOT: $($failure.Exception.Message) Cleanup incomplete. $($cleanupErrors -join '; ') Close this PowerShell session before running tenant commands."
