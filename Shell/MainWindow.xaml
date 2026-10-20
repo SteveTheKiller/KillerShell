@@ -638,6 +638,11 @@
                         VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0"
                         ToolTip="{DynamicResource Str_TT_CollapseSidebar}" Click="TreePanel_Click"/>
                 <StackPanel x:Name="RailBottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,6">
+                    <!-- Workspace layout comes before the content and tool controls. -->
+                    <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE89F;"
+                            FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
+                            MouseRightButtonUp="DualPaneOrient_Click"
+                            ToolTip="{DynamicResource Str_TT_DualPane}"/>
                     <!-- E721 (magnifier): the search panel, out on the right edge. Glyph never
                          changes - RailButton draws it in TextBrush and switches to the accent
                          on Tag="on", which is the open/shut tell. -->
@@ -703,22 +708,6 @@
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
-                    <!-- Open or close the second pane, right-click flips side-by-side / stacked.
-                         On the rail rather than in a pane toolbar because it acts on the WINDOW -
-                         in the toolbar there were two of them, one per pane, doing the identical
-                         thing, and either could be shed into the overflow chevron on a narrow
-                         split. Accents while open, like the search and bookmarks toggles above.
-                         ClosePane/OpenPane (E89F/E8A0), the dedicated glyph pair picked for this
-                         (2026-08-02) - the glyph itself is kept in sync from code (DualPane.cs
-                         ApplyPaneLayout) on every open/close/orientation change, so E89F here is
-                         only the closed starting glyph before the first toggle ever runs.
-                         Moved ABOVE the tool tabs so the admin tools sit together
-                         - dual pane is a VIEW verb, so it rides with the view block
-                         and the four admin/tool tabs below sit as one contiguous group. -->
-                    <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE89F;"
-                            FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
-                            MouseRightButtonUp="DualPaneOrient_Click"
-                            ToolTip="{DynamicResource Str_TT_DualPane}"/>
                     <!-- System tools share one rail button; right-click offers elevated actions. -->
                     <Button x:Name="SystemToolsRailBtn" Style="{StaticResource RailButton}" Content="&#xE713;"
                             FontSize="12" Margin="0,0,0,10" Click="SystemToolsRail_Click"
