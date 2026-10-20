@@ -17,6 +17,42 @@ namespace KillerShell.Tests.Services;
 public sealed class ServiceFailureReportTests
 {
     [Fact]
+    public async Task NativeReportWriteCanFinishAfterTheBoundedCallerTimeout()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell-delayed-report-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        string report = Path.Combine(root, "service-actions.log");
+        File.WriteAllText(report, "existing report" + Environment.NewLine);
+        ServiceControlResult result;
+        var elapsed = Stopwatch.StartNew();
+        try
+        {
+            using (var held = new NativeOplock(report))
+            {
+                var pending = ServiceControlService.ExecuteAsync("DelayedFixture", () => throw new InvalidOperationException("service unavailable"),
+                    ServiceControlAction.Restart, CancellationToken.None, report);
+                Assert.True(held.BreakRequested.WaitOne(5000), "Writer did not reach the controlled native open.");
+                result = await pending;
+                Assert.Empty(result.ReportPath);
+                Assert.Contains("Timed out writing", result.ReportError);
+                Assert.Equal("service unavailable", result.Error);
+            }
+            bool completed = false;
+            var deadline = Stopwatch.StartNew();
+            while (deadline.Elapsed < TimeSpan.FromSeconds(10))
+            {
+                try { completed = File.ReadAllText(report).Contains("DelayedFixture"); }
+                catch (IOException) { }
+                if (completed) break;
+                await Task.Delay(20);
+            }
+            Assert.True(completed, "The background writer did not persist the failure after native I/O was released.");
+            await AssertPersistedFailureAsync(result, report, "DelayedFixture", elapsed, 0);
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
+    [Fact]
     public void NativeReportOpenStallCannotHoldServiceResultOrProcessExit()
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell-service-report-" + Guid.NewGuid().ToString("N"));
@@ -88,11 +124,10 @@ public sealed class ServiceFailureReportTests
             string error = "broken\r\nforged\t" + new string('X', 12000);
             for (int i = 0; i < 30; i++)
             {
+                var elapsed = Stopwatch.StartNew();
                 var result = await ServiceControlService.ExecuteAsync("Fixture" + i, () => throw new InvalidOperationException(error),
                     ServiceControlAction.Restart, CancellationToken.None, report);
-                Assert.Equal(report, result.ReportPath);
-                Assert.Empty(result.ReportError);
-                Assert.InRange(new FileInfo(report).Length, 1, 65536);
+                await AssertPersistedFailureAsync(result, report, "Fixture" + i, elapsed, i);
             }
             string text = File.ReadAllText(report);
             Assert.Contains("Fixture29", text);
@@ -101,6 +136,39 @@ public sealed class ServiceFailureReportTests
             Assert.Contains("[truncated]", text);
         }
         finally { Directory.Delete(root, true); }
+    }
+
+    private static async Task AssertPersistedFailureAsync(ServiceControlResult result, string report,
+        string serviceName, Stopwatch elapsed, int iteration)
+    {
+        const string deferredError = "Timed out writing the service failure report. The background write may finish later.";
+        TimeSpan callerElapsed = elapsed.Elapsed;
+        var completionWait = Stopwatch.StartNew();
+        bool deferred = result.ReportPath.Length == 0 && result.ReportError == deferredError;
+        bool writerCompleted = false;
+        string readError = string.Empty;
+        string Diagnostic() => $"iteration={iteration}; service={serviceName}; ReportPath={result.ReportPath}; ReportError={result.ReportError}; "
+            + $"callerElapsed={callerElapsed}; writerCompleted={writerCompleted}; completionWait={completionWait.Elapsed}; readError={readError}; "
+            + $"fileExists={File.Exists(report)}; fileLength={(File.Exists(report) ? new FileInfo(report).Length : -1)}";
+        Assert.False(result.Succeeded, Diagnostic());
+        Assert.False(result.Canceled, Diagnostic());
+        Assert.NotEmpty(result.Error);
+        Assert.True(deferred || (string.Equals(report, result.ReportPath, StringComparison.Ordinal)
+            && result.ReportError.Length == 0), Diagnostic());
+        do
+        {
+            try
+            {
+                writerCompleted = File.ReadAllText(report).Contains("\tservice=" + serviceName + "\t");
+                readError = string.Empty;
+            }
+            catch (IOException ex) { readError = ex.Message; }
+            catch (UnauthorizedAccessException ex) { readError = ex.Message; }
+            if (writerCompleted || !deferred || completionWait.Elapsed >= TimeSpan.FromSeconds(10)) break;
+            await Task.Delay(20);
+        } while (true);
+        Assert.True(writerCompleted, Diagnostic());
+        Assert.InRange(new FileInfo(report).Length, 1, 65536);
     }
 
     [Fact]
