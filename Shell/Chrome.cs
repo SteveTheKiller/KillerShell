@@ -313,6 +313,8 @@ namespace KillerShell.Shell
                 mmi.ptMaxSize.y = Math.Abs(work.bottom - work.top);
                 mmi.ptMaxTrackSize.x = mmi.ptMaxSize.x;
                 mmi.ptMaxTrackSize.y = mmi.ptMaxSize.y;
+                mmi.ptMinTrackSize.x = Math.Min(mmi.ptMinTrackSize.x, mmi.ptMaxSize.x);
+                mmi.ptMinTrackSize.y = Math.Min(mmi.ptMinTrackSize.y, mmi.ptMaxSize.y);
             }
 
             // Written back unconditionally. It used to happen only inside the monitor branch, so
