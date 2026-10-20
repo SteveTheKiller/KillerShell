@@ -251,6 +251,13 @@ namespace KillerShell.Services
                 return result;
             }
 
+            if (collision == ArchiveCollision.Replace)
+            {
+                // Last source wins, in source order, before any archive bytes are written.
+                var winners = new Dictionary<string, ArchiveAddItem>(StringComparer.Ordinal);
+                foreach (var item in adds) winners[item.EntryName] = item;
+                adds = adds.Where(item => ReferenceEquals(winners[item.EntryName], item)).ToList();
+            }
             int changed = adds.Count;
             var ok = Rebuild(archivePath, raw =>
             {

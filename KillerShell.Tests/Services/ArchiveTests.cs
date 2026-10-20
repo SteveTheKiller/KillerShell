@@ -12,6 +12,53 @@ namespace KillerShell.Tests.Services
     public sealed class ArchiveTests
     {
         [Theory]
+        [InlineData(false, "", 0)]
+        [InlineData(false, "", 1)]
+        [InlineData(false, "", 2)]
+        [InlineData(true, "", 0)]
+        [InlineData(true, "", 1)]
+        [InlineData(true, "", 2)]
+        [InlineData(true, "nested", 1)]
+        public void IncomingDuplicateNamesResolveBeforeWriting(bool exists, string folder, int policy)
+        {
+            string path = CreateCaseArchive(".zip", exists ? "same.txt" : "unrelated.txt");
+            string root = Path.GetDirectoryName(path)!;
+            try
+            {
+                var sources = new[] { "left", "middle", "right" }.Select(name =>
+                {
+                    string file = Path.Combine(Directory.CreateDirectory(Path.Combine(root, name)).FullName, "same.txt");
+                    File.WriteAllText(file, name);
+                    return file;
+                }).ToArray();
+                byte[] original = File.ReadAllBytes(path);
+                var result = ArchiveWriter.Add(path, folder, sources, (ArchiveCollision)policy, null, CancellationToken.None);
+                if ((ArchiveCollision)policy == ArchiveCollision.Report)
+                {
+                    Assert.False(result.Ok);
+                    Assert.NotEmpty(result.Collisions);
+                    Assert.Equal(original, File.ReadAllBytes(path));
+                    return;
+                }
+                Assert.True(result.Ok, result.ErrorDetail);
+                using (var zip = ZipFile.OpenRead(path))
+                {
+                    Assert.Equal(zip.Entries.Count, zip.Entries.Select(e => e.FullName).Distinct().Count());
+                    string prefix = folder.Length == 0 ? "" : folder + "/";
+                    if ((ArchiveCollision)policy == ArchiveCollision.Replace)
+                    {
+                        Assert.Equal(1, result.Changed);
+                        using var reader = new StreamReader(zip.GetEntry(prefix + "same.txt")!.Open());
+                        Assert.Equal("right", reader.ReadToEnd());
+                    }
+                    else Assert.Equal(3, result.Changed);
+                }
+                string output = Path.Combine(root, "out");
+                Assert.True(ArchiveProvider.ExtractAll(path, output, CancellationToken.None, out string? error), error);
+            }
+            finally { Directory.Delete(root, true); }
+        }
+        [Theory]
         [InlineData(".zip", false)]
         [InlineData(".zip", true)]
         [InlineData(".tar", false)]
