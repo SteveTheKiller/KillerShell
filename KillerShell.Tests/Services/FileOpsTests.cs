@@ -11,6 +11,57 @@ namespace KillerShell.Tests.Services
     public sealed class FileOpsTests
     {
         [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void UnreadableSubtreeIsReportedUnlessWholeDirectoryWasMoved(bool move, bool fast)
+        {
+            string root = NewTempDirectory();
+            string source = Directory.CreateDirectory(Path.Combine(root, "source")).FullName;
+            string denied = Directory.CreateDirectory(Path.Combine(source, "denied")).FullName;
+            string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+            string output = Path.Combine(target, "source");
+            File.WriteAllText(Path.Combine(denied, "hidden.txt"), "preserve");
+            File.WriteAllText(Path.Combine(source, "visible.txt"), "copy me");
+            if (move && !fast) Directory.CreateDirectory(output);
+            var acl = Directory.GetAccessControl(denied);
+            var denyRule = new System.Security.AccessControl.FileSystemAccessRule(
+                System.Security.Principal.WindowsIdentity.GetCurrent().User!,
+                System.Security.AccessControl.FileSystemRights.ListDirectory,
+                System.Security.AccessControl.AccessControlType.Deny);
+            acl.AddAccessRule(denyRule);
+            Directory.SetAccessControl(denied, acl);
+            try
+            {
+                Assert.Throws<UnauthorizedAccessException>(() => Directory.GetFiles(denied));
+                var result = FileOps.CopyOrMove(new[] { source }, target, move,
+                    _ => ConflictChoice.Replace, _ => { }, CancellationToken.None);
+                Assert.False(result.Canceled);
+                Assert.Equal("copy me", File.ReadAllText(Path.Combine(output, "visible.txt")));
+                if (fast)
+                {
+                    Assert.Empty(result.Failed);
+                    Assert.False(Directory.Exists(source));
+                }
+                else
+                {
+                    var failure = Assert.Single(result.Failed);
+                    Assert.Equal(denied, failure.Path);
+                    Assert.False(string.IsNullOrWhiteSpace(failure.Error));
+                    Assert.Equal("preserve", File.ReadAllText(Path.Combine(denied, "hidden.txt")));
+                    Assert.Equal(1, result.Succeeded);
+                }
+            }
+            finally
+            {
+                string remaining = Directory.Exists(denied) ? denied : Path.Combine(output, "denied");
+                var cleanupAcl = Directory.GetAccessControl(remaining);
+                cleanupAcl.RemoveAccessRuleSpecific(denyRule);
+                Directory.SetAccessControl(remaining, cleanupAcl);
+                Directory.Delete(root, true);
+            }
+        }
+        [Theory]
         [InlineData(false, false, false)]
         [InlineData(true, false, false)]
         [InlineData(false, true, false)]

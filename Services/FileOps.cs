@@ -104,7 +104,7 @@ namespace KillerShell.Services
         /// a progress bar that discovers its own length as it goes is not a progress bar.
         /// </summary>
         private static List<WorkItem> Plan(IEnumerable<string> sources, string targetDir, bool move,
-                                           List<string> dirsToCreate, CancellationToken ct)
+                                           List<string> dirsToCreate, FileOpResult result, CancellationToken ct)
         {
             var work = new List<WorkItem>();
 
@@ -132,7 +132,7 @@ namespace KillerShell.Services
                         continue;
                     }
                     dirsToCreate.Add(root);
-                    WalkDirectory(src, root, move, work, dirsToCreate, ct);
+                    WalkDirectory(src, root, move, work, dirsToCreate, result, ct);
                 }
                 // Vanished between selection and the drop: nothing to do, and not an error worth
                 // stopping a batch of fifty for.
@@ -142,7 +142,7 @@ namespace KillerShell.Services
         }
 
         private static void WalkDirectory(string srcDir, string dstDir, bool move, List<WorkItem> work,
-                                          List<string> dirsToCreate, CancellationToken ct)
+                                          List<string> dirsToCreate, FileOpResult result, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
 
@@ -157,7 +157,7 @@ namespace KillerShell.Services
                         continue;
                     }
                     dirsToCreate.Add(sub);
-                    WalkDirectory(d, sub, move, work, dirsToCreate, ct);
+                    WalkDirectory(d, sub, move, work, dirsToCreate, result, ct);
                 }
 
                 foreach (var f in Directory.EnumerateFiles(srcDir))
@@ -172,8 +172,8 @@ namespace KillerShell.Services
                     });
                 }
             }
-            catch (UnauthorizedAccessException) { /* walked what we could see */ }
-            catch (IOException) { }
+            catch (UnauthorizedAccessException ex) { result.Failed.Add((srcDir, ex.Message)); }
+            catch (IOException ex) { result.Failed.Add((srcDir, ex.Message)); }
         }
 
         // ── Copy / move ──────────────────────────────────────────
@@ -201,14 +201,15 @@ namespace KillerShell.Services
             var dirsToCreate = new List<string>();
             List<WorkItem> work;
 
-            try { work = Plan(sources, targetDir, move, dirsToCreate, ct); }
-            catch (OperationCanceledException) { result.Canceled = true; return result; }
-
             // A same-volume MOVE of a whole directory is a rename: one call, no walk, no byte
             // copying. Worth catching before the per-file loop, because moving a 40 GB folder
             // across the same disk should be instant rather than a progress bar.
+            sources = new List<string>(sources);
             if (move && allowFastMove && TryFastMoveDirectories(sources, targetDir, onConflict, onProgress, result, ct))
                 return result;
+
+            try { work = Plan(sources, targetDir, move, dirsToCreate, result, ct); }
+            catch (OperationCanceledException) { result.Canceled = true; return result; }
 
             foreach (string d in dirsToCreate)
             {
