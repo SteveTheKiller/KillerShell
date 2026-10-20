@@ -31,6 +31,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Updates verify a complete replacement before publishing it, retain recovery images after failure, and change installed version metadata only after publication succeeds.
 - Copies and moves report unreadable source folders as partial failures while continuing accessible work. Whole-folder renames still report success when they complete.
 - Canceling extraction stops between decompression chunks, including the final entry, and prevents canceled output from being accepted as complete.
+- Restarting a process waits for the original to exit before launching its replacement and reports termination, timeout, or launch failures.
 - Replacing duplicate incoming ZIP names keeps the last source once, so successful additions remain extractable.
 - Closing and reopening restores both panes, including hidden tabs, and skips missing documents or damaged session entries without moving other tabs. Opening or switching panes preserves each tab's search options.
 - Storage scans enumerate network shares and extended-length paths correctly. Canceled scans cannot overwrite newer results or stop their progress, and scan resources are released when the tab or app closes.

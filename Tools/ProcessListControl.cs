@@ -1431,7 +1431,7 @@ namespace KillerShell.Tools
         /// API to hand an existing process a higher token, so the only honest meaning of
         /// "run this as admin" in a task manager is "end it and start it again, elevated".
         /// </remarks>
-        private void RestartProcess(ProcessInfo p, bool elevated)
+        private async void RestartProcess(ProcessInfo p, bool elevated)
         {
             if (!p.HasPath) return;
 
@@ -1440,27 +1440,15 @@ namespace KillerShell.Tools
 
             try
             {
-                using var proc = Process.GetProcessById(p.Pid); proc.Kill();
-            }
-            catch (ArgumentException) { /* already gone - fine, still relaunch */ }
-            catch (Exception ex) when (ex is Win32Exception
-                                             or InvalidOperationException
-                                             or NotSupportedException)
-            {
-                ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_KillFailed"), p.Name, ex.Message),
-                           error: true);
-                return;
-            }
-
-            try
-            {
                 var psi = new ProcessStartInfo(path, args) { UseShellExecute = true };
                 if (elevated) psi.Verb = "runas";
-                Process.Start(psi);
+                await Services.ProcessRestart.RestartAsync(p.Pid, psi);
                 ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_Restarted"), p.Name), error: false);
             }
             catch (Exception ex) when (ex is Win32Exception
-                                             or InvalidOperationException)
+                                             or InvalidOperationException
+                                             or NotSupportedException
+                                             or System.TimeoutException)
             {
                 // Covers a canceled UAC prompt (ERROR_CANCELLED, Win32Exception) as well as a
                 // launch failure - both land here rather than crashing the refresh loop.
