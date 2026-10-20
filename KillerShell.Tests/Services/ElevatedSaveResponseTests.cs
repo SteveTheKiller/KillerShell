@@ -5,6 +5,7 @@ using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using KillerShell.Services;
 using Xunit;
@@ -28,34 +29,48 @@ namespace KillerShell.Tests.Services
                 string pipeName = "KillerShell-save-" + Guid.NewGuid().ToString("N");
                 using var server = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1,
                     PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-                Task connected = server.WaitForConnectionAsync();
-                Task<string> response = Task.Run(async () =>
+                var connection = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                var received = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+                Task connected = connection.Task;
+                Task<string> response = received.Task;
+                // The helper has a short deadline. Read independently of other parallel tests.
+                var reader = new Thread(() =>
                 {
-                    await connected.ConfigureAwait(false);
-                    using var header = new BinaryReader(server, Encoding.UTF8, leaveOpen: true);
-                    int length = header.ReadInt32();
-                    Assert.InRange(length, 1, 1024 * 1024);
-                    string message = Encoding.UTF8.GetString(header.ReadBytes(length));
-                    bool impersonated = ImpersonateNamedPipeClient(server.SafePipeHandle.DangerousGetHandle());
-                    bool tokenOpened = false;
-                    int tokenError = 0;
-                    if (impersonated)
+                    try
                     {
-                        try
+                        server.WaitForConnection();
+                        connection.TrySetResult(true);
+                        using var header = new BinaryReader(server, Encoding.UTF8, leaveOpen: true);
+                        int length = header.ReadInt32();
+                        Assert.InRange(length, 1, 1024 * 1024);
+                        string message = Encoding.UTF8.GetString(header.ReadBytes(length));
+                        bool impersonated = ImpersonateNamedPipeClient(server.SafePipeHandle.DangerousGetHandle());
+                        bool tokenOpened = false;
+                        int tokenError = 0;
+                        if (impersonated)
                         {
-                            tokenOpened = OpenThreadToken(GetCurrentThread(), 0x0008, true, out IntPtr token);
-                            tokenError = Marshal.GetLastWin32Error();
-                            if (tokenOpened) CloseHandle(token);
+                            try
+                            {
+                                tokenOpened = OpenThreadToken(GetCurrentThread(), 0x0008, true, out IntPtr token);
+                                tokenError = Marshal.GetLastWin32Error();
+                                if (tokenOpened) CloseHandle(token);
+                            }
+                            finally { RevertToSelf(); }
+                            // Anonymous impersonation may succeed, but Windows refuses access to its
+                            // token. An unrestricted helper identity would yield a queryable token.
+                            Assert.False(tokenOpened, "The diagnostic server obtained the save helper's token.");
+                            Assert.Equal(1347, tokenError); // ERROR_CANT_OPEN_ANONYMOUS
                         }
-                        finally { RevertToSelf(); }
-                        // Anonymous impersonation may succeed, but Windows refuses access to its
-                        // token. An unrestricted helper identity would yield a queryable token.
-                        Assert.False(tokenOpened, "The diagnostic server obtained the save helper's token.");
-                        Assert.Equal(1347, tokenError); // ERROR_CANT_OPEN_ANONYMOUS
+                        server.WriteByte(1);
+                        received.TrySetResult(message);
                     }
-                    server.WriteByte(1);
-                    return message;
-                });
+                    catch (Exception error)
+                    {
+                        connection.TrySetException(error);
+                        received.TrySetException(error);
+                    }
+                }) { IsBackground = true };
+                reader.Start();
                 using var helper = Process.Start(new ProcessStartInfo(typeof(VerifiedFile).Assembly.Location)
                 {
                     UseShellExecute = false,
