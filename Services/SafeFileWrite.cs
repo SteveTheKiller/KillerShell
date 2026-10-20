@@ -6,8 +6,8 @@ using Microsoft.Win32.SafeHandles;
 namespace KillerShell.Services
 {
     /// <summary>
-    /// Writes a whole file so that a failure at any point leaves the file that was there before
-    /// exactly as it was. Used by the editor's Save and the elevated save helper.
+    /// Writes a whole file, restoring the original after a failed write or retaining an emergency
+    /// copy when restoration also fails. Used by the editor's Save and the elevated save helper.
     /// </summary>
     /// <remarks>
     /// A plain File.WriteAllText or FileMode.Create truncates the old file first and writes
@@ -26,11 +26,15 @@ namespace KillerShell.Services
     /// and a swap Windows refuses (another program has the file open without delete sharing) are
     /// written in place instead. In place, the whole range is locked and the space is reserved
     /// before any byte changes, so another program's lock or a full disk fails without touching
-    /// the file; a failure during the write itself puts the original bytes back.
+    /// the file; a failure during the write itself puts the original bytes back. If restoration
+    /// also fails, an emergency copy is attempted in the user's temp folder and its result reported.
     /// </remarks>
     internal static class SafeFileWrite
     {
         internal static void Write(string target, byte[] data)
+            => Write(target, data, OpenInPlace);
+
+        internal static void Write(string target, byte[] data, Func<string, FileStream> openInPlace)
         {
             string path = Path.GetFullPath(target);
             if (!File.Exists(path))
@@ -49,7 +53,7 @@ namespace KillerShell.Services
             bool reparse = (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0;
             if (links > 1 || reparse)
             {
-                WriteInPlace(path, data);
+                WriteInPlace(path, data, openInPlace);
                 return;
             }
 
@@ -58,7 +62,7 @@ namespace KillerShell.Services
             catch (UnauthorizedAccessException)
             {
                 // The folder refuses new files but the file itself is writable.
-                WriteInPlace(path, data);
+                WriteInPlace(path, data, openInPlace);
                 return;
             }
             catch (IOException ex) when (IsOutOfSpace(ex))
@@ -66,7 +70,7 @@ namespace KillerShell.Services
                 // Not enough room for a second full copy. Writing in place only needs the space
                 // the file grows by, which it reserves before changing anything, so a save that
                 // fits by reusing the old file's space still succeeds.
-                WriteInPlace(path, data);
+                WriteInPlace(path, data, openInPlace);
                 return;
             }
 
@@ -92,7 +96,7 @@ namespace KillerShell.Services
                 }
                 TryDelete(temp);
             }
-            WriteInPlace(path, data);
+            WriteInPlace(path, data, openInPlace);
         }
 
         private static string SiblingName(string path, string extension) =>
@@ -144,9 +148,24 @@ namespace KillerShell.Services
             }
         }
 
-        private static void WriteInPlace(string path, byte[] data)
+        private static FileStream OpenInPlace(string path) =>
+            new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.WriteThrough);
+
+        private static void WriteInPlace(string path, byte[] data, Func<string, FileStream> openInPlace)
         {
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.WriteThrough);
+            var fs = openInPlace(path);
+            try { WriteInPlaceCore(path, data, fs); }
+            catch
+            {
+                // A failed buffered write can also make Dispose throw. Keep the recovery result.
+                try { fs.Dispose(); } catch { }
+                throw;
+            }
+            fs.Dispose();
+        }
+
+        private static void WriteInPlaceCore(string path, byte[] data, FileStream fs)
+        {
             long oldLength = fs.Length;
             long span = Math.Max(Math.Max(oldLength, data.Length), 1);
 
@@ -160,7 +179,7 @@ namespace KillerShell.Services
                 while (read < original.Length)
                 {
                     int n = fs.Read(original, read, original.Length - read);
-                    if (n == 0) break;
+                    if (n == 0) throw new EndOfStreamException("Could not read the complete original before saving.");
                     read += n;
                 }
 
@@ -174,7 +193,7 @@ namespace KillerShell.Services
                     fs.Flush(true);
                     if (data.Length < oldLength) fs.SetLength(data.Length);
                 }
-                catch
+                catch (Exception writeError)
                 {
                     try
                     {
@@ -183,7 +202,10 @@ namespace KillerShell.Services
                         fs.SetLength(read);
                         fs.Flush(true);
                     }
-                    catch { /* the original error is the one to report */ }
+                    catch (Exception restoreError)
+                    {
+                        throw PreserveOriginal(path, original, writeError, restoreError);
+                    }
                     throw;
                 }
             }
@@ -191,6 +213,32 @@ namespace KillerShell.Services
             {
                 try { fs.Unlock(0, span); } catch { }
             }
+        }
+
+        private static IOException PreserveOriginal(string path, byte[] original, Exception writeError, Exception restoreError)
+        {
+            string? recovery = null;
+            try
+            {
+                recovery = Path.Combine(Path.GetTempPath(), "KillerShell-recovery-" + Guid.NewGuid().ToString("N") + ".original");
+                using (var copy = new FileStream(recovery, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
+                {
+                    copy.Write(original, 0, original.Length);
+                    copy.Flush(true);
+                }
+            }
+            catch (Exception recoveryError)
+            {
+                return new IOException("Save failed for '" + path + "': " + writeError.Message
+                    + " Restoration failed: " + restoreError.Message + " Emergency recovery failed: " + recoveryError.Message
+                    + (recovery == null ? "" : " Attempted recovery path (not a complete backup): " + recovery),
+                    new AggregateException(writeError, restoreError, recoveryError));
+            }
+            var error = new IOException("Save failed for '" + path + "': " + writeError.Message
+                + " Restoration failed: " + restoreError.Message + " Complete original saved to: " + recovery,
+                new AggregateException(writeError, restoreError));
+            error.Data["RecoveryPath"] = recovery;
+            return error;
         }
 
         private static int LinkCount(SafeFileHandle handle) =>

@@ -27,7 +27,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 - Saving refuses text the selected encoding cannot represent, keeps the document unsaved, and explains how to save it as UTF-8.
-- A save that fails, such as on a full disk or a file another program has locked, leaves the previous file intact and the document marked unsaved, for normal and administrator saves. Saving keeps the file's permissions, attributes, alternate streams, hard links and symbolic links.
+- Failed saves preserve the previous content and keep the document unsaved. If restoring an in-place write also fails, KillerShell attempts a recovery copy of the original. Saving keeps the file's permissions, attributes, alternate streams, hard links and symbolic links.
 - Updates verify a complete replacement before publishing it, retain recovery images after failure, and change installed version metadata only after publication succeeds.
 - Copies and moves preserve recovery copies if replacing a destination fails, and report unreadable source folders as partial failures while continuing accessible work. Whole-folder renames still report success when they complete.
 - Canceling extraction stops between decompression chunks, including the final entry, and prevents canceled output from being accepted as complete.

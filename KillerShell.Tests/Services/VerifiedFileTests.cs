@@ -13,6 +13,64 @@ namespace KillerShell.Tests.Services
 {
     public sealed class VerifiedFileTests
     {
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void FailedInPlaceRestorationRetainsCompleteOriginalAndReportsBothErrors(bool disposeFails)
+        {
+            string root = NewTempDirectory();
+            string? recovery = null;
+            try
+            {
+                string target = Path.Combine(root, "target.txt");
+                string second = Path.Combine(root, "second.txt");
+                byte[] original = Encoding.ASCII.GetBytes(new string('O', 16384));
+                File.WriteAllBytes(target, original);
+                Assert.True(CreateHardLink(second, target, IntPtr.Zero));
+                var error = Assert.Throws<IOException>(() => SafeFileWrite.Write(target,
+                    Encoding.ASCII.GetBytes(new string('N', 16384)), path => new FailedRestorationStream(path, disposeFails)));
+                Assert.Contains("INITIAL_WRITE_FAILED", error.Message);
+                Assert.Contains("RESTORATION_FAILED", error.Message);
+                recovery = error.Data["RecoveryPath"] as string;
+                Assert.False(string.IsNullOrEmpty(recovery));
+                Assert.Contains(recovery!, error.Message);
+                Assert.Equal(original, File.ReadAllBytes(recovery!));
+                Assert.StartsWith(Path.GetFullPath(Path.GetTempPath()), Path.GetFullPath(recovery!), StringComparison.OrdinalIgnoreCase);
+                Assert.Equal(new string('N', 4096) + new string('O', 12288), File.ReadAllText(target));
+                Assert.Equal(File.ReadAllBytes(target), File.ReadAllBytes(second));
+                AssertNoLeftovers(root, "target.txt", "second.txt");
+            }
+            finally
+            {
+                if (recovery != null && File.Exists(recovery)) File.Delete(recovery);
+                Directory.Delete(root, true);
+            }
+        }
+
+        private sealed class FailedRestorationStream : FileStream
+        {
+            private int _writes;
+            private readonly bool _disposeFails;
+            internal FailedRestorationStream(string path, bool disposeFails)
+                : base(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.WriteThrough)
+                => _disposeFails = disposeFails;
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                if (++_writes == 1)
+                {
+                    base.Write(buffer, offset, 4096);
+                    base.Flush(true);
+                    throw new IOException("INITIAL_WRITE_FAILED");
+                }
+                throw new IOException("RESTORATION_FAILED");
+            }
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                if (disposing && _disposeFails) throw new IOException("DISPOSE_FAILED");
+            }
+        }
+
         [Fact]
         public void FailedImagePublicationRetainsCompleteReplacementAndOriginal()
         {
