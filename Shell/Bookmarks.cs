@@ -221,12 +221,11 @@ namespace KillerShell.Shell
         {
             var sv = FindDescendant<System.Windows.Controls.ScrollViewer>(BookmarksList);
             if (sv == null) return;
+            if (sv.Template.FindName("PART_ScrollContentPresenter", sv)
+                    is not ScrollContentPresenter viewport) return;
 
-            // The fades are the list's own OpacityMask stops now (MainWindow.xaml,
-            // BmFade*): the outer stop's ALPHA drops toward transparent as rows slide past
-            // that edge, and the inner offsets track the list's live height so the band stays
-            // roughly 18/22px whatever the drawer's height is. Same ramp inputs as before.
-            // EdgeFadeOpacity scales the ramp to nothing on a flat theme, as it does for the tree.
+            // Fade only the content viewport, outside the scrollbar's subtree.
+            // Keep the existing named stops and theme-controlled fade strength.
             double fade   = Application.Current.TryFindResource("EdgeFadeOpacity") is double e ? e : 1.0;
             double top    = Ramp(sv.VerticalOffset, 18, 18) * fade;
             double bottom = Ramp(sv.ExtentHeight - sv.ViewportHeight - sv.VerticalOffset, 22, 22) * fade;
@@ -234,14 +233,20 @@ namespace KillerShell.Shell
             // The mask only while an edge actually fades, for the tree's reason: masked rows
             // render through an intermediate layer and their text loses ClearType.
             _bookmarksEdgeMask ??= BookmarksList.OpacityMask;
-            BookmarksList.OpacityMask = top > 0 || bottom > 0 ? _bookmarksEdgeMask : null;
+            BookmarksList.OpacityMask = null;
+            if (_bookmarksEdgeMask is LinearGradientBrush mask)
+            {
+                mask.MappingMode = BrushMappingMode.Absolute;
+                mask.EndPoint = new Point(0, viewport.ActualHeight);
+            }
+            viewport.OpacityMask = top > 0 || bottom > 0 ? _bookmarksEdgeMask : null;
 
             BmFadeTopOuter.Color = System.Windows.Media.Color.FromArgb(
                 (byte)(255 - (int)(top * 255)), 0, 0, 0);
             BmFadeBotOuter.Color = System.Windows.Media.Color.FromArgb(
                 (byte)(255 - (int)(bottom * 255)), 0, 0, 0);
 
-            double h = BookmarksList.ActualHeight;
+            double h = viewport.ActualHeight;
             if (h > 40)
             {
                 BmFadeTopInner.Offset = 18.0 / h;
