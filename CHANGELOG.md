@@ -79,6 +79,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On phones, the website's logo, download hash, Help shortcut list and Technical CLI commands fit the screen instead of making the page scroll sideways.
 - The shortcuts, font and file association cards put scroll bars at their edges, show when more content is out of view, and keep Close reachable in short windows.
 - The footer copyright sits a few pixels further from the corner grip instead of running into it.
+- A silent install or update that finds KillerShell running exits with 1618, which Intune, Configuration Manager and RMM tools retry, instead of a general failure.
 
 ## [1.4.0] - 2026-10-15
 
