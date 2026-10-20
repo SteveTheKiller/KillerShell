@@ -106,6 +106,9 @@ namespace KillerShell.Terminal
         {
             var si = new STARTUPINFOEX();
             si.StartupInfo.cb = Marshal.SizeOf<STARTUPINFOEX>();
+            // Null standard handles make the child use its pseudoconsole even when this
+            // process was launched with redirected output or error handles.
+            si.StartupInfo.dwFlags = 0x00000100; // STARTF_USESTDHANDLES
 
             // Called twice on purpose: the first call fails with INSUFFICIENT_BUFFER and fills
             // in the size, which is the documented way to learn it.
