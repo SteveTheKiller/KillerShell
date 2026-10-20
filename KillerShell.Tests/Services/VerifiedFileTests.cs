@@ -14,6 +14,26 @@ namespace KillerShell.Tests.Services
     public sealed class VerifiedFileTests
     {
         [Fact]
+        public void FailedImagePublicationRetainsCompleteReplacementAndOriginal()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Path.Combine(root, "App.exe");
+                File.WriteAllText(target, "original");
+                using (new FileStream(target, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    var error = Assert.ThrowsAny<IOException>(() =>
+                        VerifiedFile.ReplaceImage(target, Encoding.UTF8.GetBytes("replacement")));
+                    Assert.Equal("original", File.ReadAllText(target));
+                    string recovery = Assert.Single(Directory.GetFiles(root, "App.exe.new*"));
+                    Assert.Equal("replacement", File.ReadAllText(recovery));
+                    Assert.Contains(recovery, error.Message);
+                }
+            }
+            finally { Directory.Delete(root, true); }
+        }
+        [Fact]
         public void MatchingHash_WritesTheVerifiedBytes()
         {
             string root = NewTempDirectory();

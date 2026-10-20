@@ -50,31 +50,35 @@ namespace KillerShell.Services
 
         /// <summary>
         /// Replaces an exe that may be running. A running image cannot be overwritten but can be
-        /// renamed, so the new bytes go to a sibling file, the current image is renamed aside and
-        /// the new file takes its name. The old image is deleted when possible and otherwise
-        /// left for <see cref="DeleteSetAside"/> at the next start. Throws on failure, with the
-        /// original restored when it had already been moved.
+        /// renamed. Flush and verify a unique sibling before replacing with a backup. Failed
+        /// publication retains recovery images and reports their paths.
         /// </summary>
         internal static void ReplaceImage(string target, byte[] data)
         {
-            string fresh = target + ".new";
+            string fresh = target + ".new-" + Guid.NewGuid().ToString("N");
             string aside = target + OldMark + Guid.NewGuid().ToString("N")[..8];
 
-            File.WriteAllBytes(fresh, data);
-            bool movedAside = false;
             try
             {
-                if (File.Exists(target)) { File.Move(target, aside); movedAside = true; }
-                File.Move(fresh, target);
+                using (var stream = new FileStream(fresh, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                {
+                    stream.Write(data, 0, data.Length);
+                    stream.Flush(true);
+                }
+                if (ReadVerified(fresh, Sha256(data)) == null)
+                    throw new IOException("Replacement verification failed.");
+                if (File.Exists(target)) File.Replace(fresh, target, aside);
+                else File.Move(fresh, target);
             }
-            catch
+            catch (Exception ex)
             {
-                if (movedAside && !File.Exists(target)) { try { File.Move(aside, target); } catch { } }
-                try { File.Delete(fresh); } catch { }
-                throw;
+                Exception? rollback = null;
+                if (!File.Exists(target) && File.Exists(aside))
+                    try { File.Copy(aside, target); } catch (Exception restoreError) { rollback = restoreError; }
+                throw new IOException($"Image publication failed. Target: {target}. Replacement: {fresh}. Backup: {aside}. "
+                    + ex.Message + (rollback == null ? "" : " Recovery failed: " + rollback.Message), ex);
             }
-
-            if (movedAside) { try { File.Delete(aside); } catch { /* still running; next start */ } }
+            // Keep the old image until the replacement starts successfully.
         }
 
         /// <summary>Removes images set aside by an earlier <see cref="ReplaceImage"/>.</summary>

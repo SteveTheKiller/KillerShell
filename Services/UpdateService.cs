@@ -111,96 +111,25 @@ namespace KillerShell.Services
 
         internal const string ApplyUpdateArgument = "--apply-update";
 
-        /// <summary>Starts a helper batch that waits for this process to exit, swaps
-        /// <paramref name="newExe"/> over the running exe and relaunches it. Throws if the helper
-        /// cannot be started, including when the user declines the UAC prompt (Win32 1223) - the
-        /// caller must only shut down once this returns.
-        ///
-        /// A machine-wide install (Program Files, from a /silent path, winget, choco or an RMM) is
-        /// not writable by a normal user, so the swap has to run elevated. The copy result is
-        /// checked: without that, an unelevated swap fails silently and relaunches the OLD exe, and
-        /// the app appears to update to the same version with no error.</summary>
+        /// <summary>Starts the installed helper, which verifies and publishes the update after
+        /// this process exits. Only protected installations require elevation.</summary>
         internal static void StartSwap(string newExe, string? newVersion = null)
         {
-            var curExe = Process.GetCurrentProcess().MainModule!.FileName;
-            var pid    = Process.GetCurrentProcess().Id;
-            var bat    = Path.Combine(Path.GetTempPath(),
-                                      $"{AppInfo.DisplayName}_update_{Guid.NewGuid():N}.bat");
-
-            bool needsElevation = !CanWriteTo(Path.GetDirectoryName(curExe)!);
-
-            // Elevated swaps never run a batch from temp: the batch and the download both sit in
-            // a folder the user can write, so another program could rewrite either between the
-            // check and the elevated copy. The installed exe is in a folder only an administrator
-            // can write, so IT is what runs elevated, handed the verified hash to check the
-            // download against before writing a byte (App.xaml.cs ApplyElevatedUpdate).
-            if (needsElevation)
+            string curExe = Process.GetCurrentProcess().MainModule!.FileName;
+            int pid = Process.GetCurrentProcess().Id;
+            string hash;
+            lock (VerifiedHashes)
+                if (!VerifiedHashes.TryGetValue(newExe, out hash!))
+                    throw new InvalidOperationException("update was not verified");
+            var helper = new ProcessStartInfo(curExe,
+                $"{ApplyUpdateArgument} \"{newExe}\" {hash} {pid} \"{newVersion ?? string.Empty}\"")
             {
-                string hash;
-                lock (VerifiedHashes)
-                    if (!VerifiedHashes.TryGetValue(newExe, out hash!)) throw new InvalidOperationException("update was not verified");
-                var elevated = new ProcessStartInfo(curExe,
-                    $"{ApplyUpdateArgument} \"{newExe}\" {hash} {pid} \"{newVersion ?? string.Empty}\"")
-                {
-                    UseShellExecute = true,
-                    Verb = "runas",
-                };
-                using (Process.Start(elevated)) { }
-                return;
-            }
-
-            // Keep Add/Remove Programs honest: the swap replaces the exe but the install keys
-            // still carry the old version, which is how a machine ends up with an ARP entry
-            // describing a version that is not on disk. The batch already runs elevated exactly
-            // when the target is the machine-wide install, so it is the one place that can write
-            // whichever hive matches. A portable exe writes nothing.
-            string regLines = "";
-            if (!string.IsNullOrEmpty(newVersion))
-            {
-                string hive = RegistryHiveFor(curExe);
-                if (hive.Length > 0)
-                {
-                    string uninstall = hive + @"\Software\Microsoft\Windows\CurrentVersion\Uninstall\" + AppInfo.DisplayName;
-                    string appKey    = hive + @"\Software\" + AppInfo.DisplayName;
-                    regLines =
-                        $"reg add \"{uninstall}\" /v DisplayVersion /t REG_SZ /d \"{newVersion}\" /f >nul 2>&1\r\n" +
-                        $"reg add \"{uninstall}\" /v Publisher /t REG_SZ /d \"Steve the Killer\" /f >nul 2>&1\r\n" +
-                        $"reg add \"{appKey}\" /v Version /t REG_SZ /d \"{newVersion}\" /f >nul 2>&1\r\n";
-                }
-            }
-
-            // When elevated, relaunch through explorer.exe so the app comes back at the user's
-            // normal integrity level instead of inheriting the elevated token.
-            string relaunch = needsElevation
-                ? $"start \"\" explorer.exe \"{curExe}\""
-                : $"start \"\" \"{curExe}\"";
-
-            File.WriteAllText(bat,
-                "@echo off\r\n" +
-                ":wait\r\n" +
-                $"tasklist /fi \"PID eq {pid}\" 2>nul | find \"{pid}\" >nul\r\n" +
-                "if not errorlevel 1 ( ping -n 2 127.0.0.1 >nul & goto wait )\r\n" +
-                $"copy /y \"{newExe}\" \"{curExe}\" >nul 2>&1\r\n" +
-                "if errorlevel 1 goto failed\r\n" +
-                regLines +
-                relaunch + "\r\n" +
-                "goto cleanup\r\n" +
-                ":failed\r\n" +
-                // Do not relaunch a stale exe and call it an update: send the user to the releases
-                // page so the failure is visible and fixable by hand.
-                $"start \"\" \"{ReleasesUrl}\"\r\n" +
-                ":cleanup\r\n" +
-                $"del \"{newExe}\" >nul 2>&1\r\n" +
-                "del \"%~f0\" >nul 2>&1\r\n");
-
-            var psi = new ProcessStartInfo("cmd.exe", $"/c \"{bat}\"")
-            {
+                UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
-                UseShellExecute = true
             };
-            if (needsElevation) psi.Verb = "runas";   // triggers the UAC prompt
-
-            Process.Start(psi);
+            if (!CanWriteTo(Path.GetDirectoryName(curExe)!)) helper.Verb = "runas";
+            using var process = Process.Start(helper);
+            if (process == null) throw new IOException("The update helper could not start.");
         }
 
         /// <summary>"HKCU" when <paramref name="exePath"/> is the per-user install,

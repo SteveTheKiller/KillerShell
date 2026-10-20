@@ -719,19 +719,34 @@ namespace KillerShell
         {
             string curExe = Process.GetCurrentProcess().MainModule!.FileName;
             byte[]? data = Services.VerifiedFile.ReadVerified(download, sha256);
-            try { File.Delete(download); } catch { }
             if (data == null) { OpenReleasesUnelevated(); return 1; }
 
             if (int.TryParse(pidText, out int pid))
             {
-                // Already closed (ArgumentException), or not ours to wait on: either way, go on.
-                try { using var p = Process.GetProcessById(pid); p.WaitForExit(60_000); }
-                catch (Exception ex) when (ex is ArgumentException or InvalidOperationException
-                                                 or System.ComponentModel.Win32Exception) { }
+                try
+                {
+                    using var p = Process.GetProcessById(pid);
+                    if (!p.WaitForExit(60_000)) { OpenReleasesUnelevated(); return 1; }
+                }
+                catch (ArgumentException) { /* already exited */ }
+                catch { OpenReleasesUnelevated(); return 1; }
             }
 
             try { Services.VerifiedFile.ReplaceImage(curExe, data); }
-            catch { OpenReleasesUnelevated(); return 1; }
+            catch (Exception ex)
+            {
+                // Retain both the verified download and any sibling recovery images.
+                string report = download + ".recovery.txt";
+                try
+                {
+                    File.WriteAllText(report, ex.Message + Environment.NewLine + "Download: " + download);
+                    using (Process.Start("explorer.exe", "/select,\"" + report + "\"")) { }
+                }
+                catch { }
+                OpenReleasesUnelevated();
+                return 1;
+            }
+            try { File.Delete(download); } catch { }
 
             // Keep Add/Remove Programs on the version actually on disk; a portable copy has no keys.
             string hive = Services.UpdateService.RegistryHiveFor(curExe);
