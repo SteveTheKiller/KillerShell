@@ -70,6 +70,9 @@ namespace KillerShell.Shell
             {
                 UpdateThemeSwatchSelection(); UpdateAccentStrip(animate: false); SyncTitleBarMetrics();
                 UpdateTabBar(); LeftPane?.RefreshPaneClip(); RightPane?.RefreshPaneClip();
+                SyncTreeFade();
+                Controls.TreeSideFade.Refresh(FolderTree);
+                SyncBookmarksEdgeFades();
                 // Timed so one theme click prints this next to CrossfadeSwap's heavy work and the
                 // slow half of the pause before the fade can be identified instead of guessed at
                 // (ThemeFlyout.cs TimedStep). DEBUG only; a release build prints nothing.

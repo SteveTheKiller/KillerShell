@@ -11,20 +11,22 @@ namespace KillerShell.Controls
     /// </summary>
     internal static class TreeSideFade
     {
-        private static readonly DependencyProperty IsAttachedProperty =
-            DependencyProperty.RegisterAttached("IsAttached", typeof(bool), typeof(TreeSideFade));
+        private static readonly DependencyProperty StateProperty =
+            DependencyProperty.RegisterAttached("State", typeof(State), typeof(TreeSideFade));
 
         internal static void Attach(TreeView tree)
         {
-            if ((bool)tree.GetValue(IsAttachedProperty)) return;
-            tree.SetValue(IsAttachedProperty, true);
-
+            if (tree.GetValue(StateProperty) is State) return;
             var state = new State(tree);
+            tree.SetValue(StateProperty, state);
             tree.Loaded += (_, _) => state.Sync();
             tree.SizeChanged += (_, _) => state.Sync();
             tree.AddHandler(ScrollViewer.ScrollChangedEvent,
                 new ScrollChangedEventHandler((_, _) => state.Sync()), handledEventsToo: true);
         }
+
+        internal static void Refresh(TreeView tree) =>
+            (tree.GetValue(StateProperty) as State)?.Sync();
 
         private sealed class State
         {
