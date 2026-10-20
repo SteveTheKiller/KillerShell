@@ -785,11 +785,13 @@ namespace KillerShell.Services
             // the swap a rename on the same volume. A folder that cannot be written to has to
             // fail here rather than after the work.
             string dir = Path.GetDirectoryName(archivePath) ?? ".";
-            string probePath = Path.Combine(dir, Path.GetFileName(archivePath) + TempMark + "probe.tmp");
+            string probePath = Path.Combine(dir, Path.GetFileName(archivePath) + TempMark + Guid.NewGuid().ToString("N") + ".probe.tmp");
             try
             {
-                using (var f = new FileStream(probePath, FileMode.Create, FileAccess.Write, FileShare.None)) { }
-                TryDelete(probePath);
+                // CreateNew never opens somebody else's file. DeleteOnClose removes only
+                // the file owned by this handle, including when disposal follows an error.
+                using var probe = new FileStream(probePath, FileMode.CreateNew, FileAccess.Write,
+                    FileShare.None, 4096, FileOptions.DeleteOnClose);
             }
             catch (UnauthorizedAccessException)
             {
@@ -798,7 +800,6 @@ namespace KillerShell.Services
             }
             catch (Exception ex)
             {
-                TryDelete(probePath);
                 result.ErrorKey = "Str_Status_ArchiveWriteFailed";
                 result.ErrorDetail = ex.Message;
                 return false;

@@ -12,6 +12,36 @@ namespace KillerShell.Tests.Services
     public sealed class ArchiveTests
     {
         [Theory]
+        [InlineData("add")]
+        [InlineData("rename")]
+        [InlineData("delete")]
+        [InlineData("folder")]
+        public void EditingPreservesUnrelatedLegacyProbeFile(string operation)
+        {
+            string path = CreateCaseArchive(".zip", "original.txt");
+            string root = Path.GetDirectoryName(path)!;
+            string sibling = path + ".kswrite-probe.tmp";
+            byte[] original = Encoding.UTF8.GetBytes("Unrelated document. Preserve these exact bytes.");
+            try
+            {
+                File.WriteAllBytes(sibling, original);
+                string incoming = Path.Combine(root, "incoming.txt");
+                File.WriteAllText(incoming, "new content");
+                var result = operation switch
+                {
+                    "add" => ArchiveWriter.Add(path, "", new[] { incoming }, ArchiveCollision.Report, null, CancellationToken.None),
+                    "rename" => ArchiveWriter.Rename(path, "original.txt", "renamed.txt", null, CancellationToken.None),
+                    "delete" => ArchiveWriter.Delete(path, new[] { "original.txt" }, null, CancellationToken.None),
+                    _ => ArchiveWriter.CreateFolder(path, "", "folder", null, CancellationToken.None)
+                };
+                Assert.True(result.Ok, result.ErrorDetail);
+                Assert.True(File.Exists(sibling), "Archive precheck deleted an unrelated sibling.");
+                Assert.Equal(original, File.ReadAllBytes(sibling));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Theory]
         [InlineData(".zip")]
         [InlineData(".tar")]
         [InlineData(".tar.gz")]

@@ -26,6 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ### Fixed
+- Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.
 - Release builds refuse unsigned publication and recheck the executable's trusted signature and checksum before publishing.
 - Failed saves preserve the previous content and keep the document unsaved. If restoring an in-place write also fails, KillerShell attempts a recovery copy of the original. Administrator retries report recovery paths and safely handle a closed editor. Saving keeps the file's permissions, attributes, alternate streams, hard links and symbolic links.
 - Saving refuses text the selected encoding cannot represent, keeps the document unsaved, and explains how to save it as UTF-8.
