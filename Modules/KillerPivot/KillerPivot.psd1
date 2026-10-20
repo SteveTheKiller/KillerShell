@@ -1,6 +1,6 @@
 ﻿@{
     RootModule           = 'KillerPivot.psm1'
-    ModuleVersion        = '1.0.1'
+    ModuleVersion        = '1.0.2'
     GUID                 = '0f10d13f-93b6-4bbc-b0ba-9cccf574c630'
     Author               = 'SteveTheKiller'
     CompanyName          = 'Steve the Killer'
@@ -25,7 +25,7 @@
         PSData = @{
             Tags         = @('MSP', 'Microsoft365', 'ExchangeOnline', 'Graph', 'MultiTenant', 'Sysadmin', 'Windows')
             ProjectUri    = 'https://github.com/SteveTheKiller/killer-modules/tree/main/KillerPivot'
-            ReleaseNotes = 'Initial release. Tenant switching for Exchange Online and Microsoft Graph with post-connect tenant ID verification, interactive tenant onboarding with automatic tenant GUID lookup, and tab completion on saved tenant keys.'
+            ReleaseNotes = 'Disconnect sessions when connection or tenant validation fails, and report incomplete cleanup.'
         }
     }
 }

@@ -454,56 +454,69 @@ function Connect-PivotTenant {
     if ($exoCmd.Parameters.ContainsKey('DisableWAM')) { $exoParams['DisableWAM'] = $true }
 
     Write-Host "[*] Exchange : $($t.name)" -NoNewline -ForegroundColor $LineCol
-    Connect-ExchangeOnline @exoParams
+    $graphStarted = $false
+    try {
+        Connect-ExchangeOnline @exoParams
 
-    $ci = Get-ConnectionInformation -ErrorAction SilentlyContinue |
-          Where-Object { $_.State -eq 'Connected' } | Select-Object -First 1
+        $ci = Get-ConnectionInformation -ErrorAction Stop |
+              Where-Object { $_.State -eq 'Connected' } | Select-Object -First 1
 
-    if (-not $ci) {
-        Write-StatusTag "[NO SESSION INFO]" "Red"
-        throw "PIVOT: connected but no session info returned. State unknown, nothing assumed."
-    }
-
-    if ($ci.TenantID -ne $t.tenantId) {
-        Write-StatusTag "[WRONG TENANT]" "Red"
-        Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
-        Write-HLine -Style "solid"
-        Write-Host "[!] Expected : $($t.tenantId)  ($($t.name))" -ForegroundColor Red
-        Write-Host "[!] Received : $($ci.TenantID)  ($($ci.Organization))" -ForegroundColor Red
-        Write-Host "[!] Session torn down. Nothing was run." -ForegroundColor Red
-        Write-HLine -Style "solid"
-        throw "PIVOT: tenant mismatch on Exchange connect."
-    }
-
-    Write-StatusTag "[VERIFIED]" $MainCol
-
-    if ($Graph) {
-        if (-not (Get-Module -ListAvailable -Name Microsoft.Graph.Authentication)) {
-            throw "PIVOT: Microsoft.Graph.Authentication not found. Check with Get-Module -ListAvailable Microsoft.Graph.Authentication."
-        }
-        if (Get-MgContext -ErrorAction SilentlyContinue) {
-            Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null
+        if (-not $ci) {
+            Write-StatusTag "[NO SESSION INFO]" "Red"
+            throw "PIVOT: connected but no session info returned. State unknown, nothing assumed."
         }
 
-        $mgParams = @{ TenantId = $t.tenantId; Scopes = $Scopes; ErrorAction = 'Stop' }
-        $mgCmd = Get-Command Connect-MgGraph -ErrorAction Stop
-        if ($mgCmd.Parameters.ContainsKey('NoWelcome')) { $mgParams['NoWelcome'] = $true }
-
-        Write-Host "[*] Graph    : $($t.name)" -NoNewline -ForegroundColor $LineCol
-        Connect-MgGraph @mgParams
-
-        $mg = Get-MgContext -ErrorAction SilentlyContinue
-        if (-not $mg -or $mg.TenantId -ne $t.tenantId) {
+        if ($ci.TenantID -ne $t.tenantId) {
             Write-StatusTag "[WRONG TENANT]" "Red"
-            Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null
-            Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
             Write-HLine -Style "solid"
-            Write-Host "[!] Graph landed in the wrong tenant. Both sessions torn down." -ForegroundColor Red
+            Write-Host "[!] Expected : $($t.tenantId)  ($($t.name))" -ForegroundColor Red
+            Write-Host "[!] Received : $($ci.TenantID)  ($($ci.Organization))" -ForegroundColor Red
             Write-HLine -Style "solid"
-            throw "PIVOT: tenant mismatch on Graph connect."
+            throw "PIVOT: tenant mismatch on Exchange connect."
         }
 
         Write-StatusTag "[VERIFIED]" $MainCol
+
+        if ($Graph) {
+            if (-not (Get-Module -ListAvailable -Name Microsoft.Graph.Authentication)) {
+                throw "PIVOT: Microsoft.Graph.Authentication not found. Check with Get-Module -ListAvailable Microsoft.Graph.Authentication."
+            }
+            if (Get-MgContext -ErrorAction SilentlyContinue) {
+                Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null
+            }
+
+            $mgParams = @{ TenantId = $t.tenantId; Scopes = $Scopes; ErrorAction = 'Stop' }
+            $mgCmd = Get-Command Connect-MgGraph -ErrorAction Stop
+            if ($mgCmd.Parameters.ContainsKey('NoWelcome')) { $mgParams['NoWelcome'] = $true }
+
+            Write-Host "[*] Graph    : $($t.name)" -NoNewline -ForegroundColor $LineCol
+            $graphStarted = $true
+            Connect-MgGraph @mgParams
+
+            $mg = Get-MgContext -ErrorAction Stop
+            if (-not $mg -or $mg.TenantId -ne $t.tenantId) {
+                Write-StatusTag "[WRONG TENANT]" "Red"
+                Write-HLine -Style "solid"
+                Write-Host "[!] Graph landed in the wrong tenant." -ForegroundColor Red
+                Write-HLine -Style "solid"
+                throw "PIVOT: tenant mismatch on Graph connect."
+            }
+
+            Write-StatusTag "[VERIFIED]" $MainCol
+        }
+    } catch {
+        $failure = $_
+        $cleanupErrors = @()
+        if ($graphStarted) {
+            try { Disconnect-MgGraph -ErrorAction Stop | Out-Null }
+            catch { $cleanupErrors += "Graph teardown failed: $($_.Exception.Message)" }
+        }
+        try { Disconnect-ExchangeOnline -Confirm:$false -ErrorAction Stop }
+        catch { $cleanupErrors += "Exchange teardown failed: $($_.Exception.Message)" }
+        if ($cleanupErrors.Count) {
+            throw "PIVOT: $($failure.Exception.Message) Cleanup incomplete. $($cleanupErrors -join '; ') Close this PowerShell session before running tenant commands."
+        }
+        throw $failure
     }
 }
 
