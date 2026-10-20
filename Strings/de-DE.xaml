@@ -432,6 +432,7 @@
     <sys:String x:Key="Str_Menu_Edit">Bearbeiten</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} ist zu groß zum Bearbeiten ({1} MB).</sys:String>
     <sys:String x:Key="Str_Ed_BadEncoding">Die Bytes sind kein gültiger {0}-Text. Die Datei wurde nicht geändert.</sys:String>
+    <sys:String x:Key="Str_Ed_LossyEncoding">Die gewählte Kodierung kann nicht alle Zeichen speichern. Wählen Sie UTF-8 und speichern Sie erneut.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Speichern  (Strg+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Rückgängig  (Strg+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Wiederholen  (Strg+Y)</sys:String>

@@ -418,6 +418,7 @@
     <sys:String x:Key="Str_Menu_Edit">Редагувати</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} завеликий для редагування ({1} МБ).</sys:String>
     <sys:String x:Key="Str_Ed_BadEncoding">його байти не є коректним текстом {0}. Файл не змінено.</sys:String>
+    <sys:String x:Key="Str_Ed_LossyEncoding">Вибране кодування не підтримує всі символи. Виберіть UTF-8 і збережіть знову.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Зберегти  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Скасувати  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Повторити  (Ctrl+Y)</sys:String>

@@ -393,6 +393,7 @@
   <sys:String x:Key="Str_Menu_Edit">Chỉnh sửa</sys:String>
   <sys:String x:Key="Str_Ed_TooBig">{0} quá lớn để chỉnh sửa ({1} MB).</sys:String>
   <sys:String x:Key="Str_Ed_BadEncoding">các byte của tệp không phải là văn bản {0} hợp lệ. Tệp không bị thay đổi.</sys:String>
+    <sys:String x:Key="Str_Ed_LossyEncoding">Bảng mã đã chọn không thể biểu diễn tất cả ký tự. Chọn UTF-8 rồi lưu lại.</sys:String>
   <sys:String x:Key="Str_TT_EdSave">Lưu  (Ctrl+S)</sys:String>
   <sys:String x:Key="Str_TT_EdUndo">Hoàn tác  (Ctrl+Z)</sys:String>
   <sys:String x:Key="Str_TT_EdRedo">Làm lại  (Ctrl+Y)</sys:String>

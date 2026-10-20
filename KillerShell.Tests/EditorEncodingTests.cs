@@ -46,6 +46,7 @@ namespace KillerShell.Tests
         [InlineData("save-locked")]
         [InlineData("save-denied")]
         [InlineData("save-new-file")]
+        [InlineData("save-lossy-ansi")]
         public Task FailedSavesKeepTheFileAndTheEdits(string scenario) => RunIsolated(scenario);
 
         private static async Task RunIsolated(string scenario)
@@ -112,6 +113,31 @@ namespace KillerShell.Tests
         {
             switch (scenario)
             {
+                case "save-lossy-ansi":
+                {
+                    byte[] original = Encoding.ASCII.GetBytes("original");
+                    File.WriteAllBytes(path, original);
+                    var editor = Loaded(path);
+                    editor.SetEncoding(Encoding.GetEncoding(1252));
+                    editor.Text = "CJK \u65e5\u672c";
+                    Assert.False(editor.SaveFile(out string error, out bool denied));
+                    Assert.False(denied);
+                    Assert.Contains("UTF-8", error);
+                    Assert.True(editor.IsModified);
+                    Assert.Equal("CJK \u65e5\u672c", editor.Text);
+                    Assert.Equal(original, File.ReadAllBytes(path));
+                    Assert.Throws<InvalidOperationException>(() => editor.EncodedBytes());
+                    editor.Text = "Caf\u00e9";
+                    Assert.True(editor.SaveFile(out _, out _));
+                    Assert.Equal(Bytes("43 61 66 E9"), File.ReadAllBytes(path));
+                    editor.Text = "CJK \u65e5\u672c";
+                    editor.SetEncoding(new UTF8Encoding(false));
+                    Assert.True(editor.SaveFile(out _, out _));
+                    Assert.Equal(Bytes("43 4A 4B 20 E6 97 A5 E6 9C AC"), File.ReadAllBytes(path));
+                    Assert.False(editor.IsModified);
+                    AssertOnlyFile(path);
+                    break;
+                }
                 case "utf8": RoundTrip(path, new UTF8Encoding(false).GetBytes(Sample), "UTF-8", Sample); break;
                 case "utf8-bom": RoundTrip(path, WithBom(new UTF8Encoding(true)), "UTF-8 BOM", Sample); break;
                 case "utf16le": RoundTrip(path, WithBom(new UnicodeEncoding(false, true)), "UTF-16 LE", Sample); break;

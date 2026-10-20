@@ -281,7 +281,14 @@ namespace KillerShell.Editing
         internal byte[] EncodedBytes()
         {
             byte[] preamble = _encoding.GetPreamble();
-            byte[] body = _encoding.GetBytes(Text);
+            var strict = (Encoding)_encoding.Clone();
+            strict.EncoderFallback = EncoderFallback.ExceptionFallback;
+            byte[] body;
+            try { body = strict.GetBytes(Text); }
+            catch (EncoderFallbackException ex)
+            {
+                throw new InvalidOperationException(MainWindow.LocStatic("Str_Ed_LossyEncoding"), ex);
+            }
             var all = new byte[preamble.Length + body.Length];
             Buffer.BlockCopy(preamble, 0, all, 0, preamble.Length);
             Buffer.BlockCopy(body, 0, all, preamble.Length, body.Length);

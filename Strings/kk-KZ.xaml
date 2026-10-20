@@ -402,6 +402,7 @@
     <sys:String x:Key="Str_Menu_Edit">Өңдеу</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} өңдеу үшін тым үлкен ({1} МБ).</sys:String>
     <sys:String x:Key="Str_Ed_BadEncoding">оның байттары жарамды {0} мәтіні емес. Файл өзгертілмеді.</sys:String>
+    <sys:String x:Key="Str_Ed_LossyEncoding">Таңдалған кодтау барлық таңбаларды сақтай алмайды. UTF-8 таңдап, қайта сақтаңыз.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Сақтау  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Болдырмау  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Қайталау  (Ctrl+Y)</sys:String>

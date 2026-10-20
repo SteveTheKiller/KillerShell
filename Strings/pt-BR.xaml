@@ -418,6 +418,7 @@
     <sys:String x:Key="Str_Menu_Edit">Editar</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} é grande demais para editar ({1} MB).</sys:String>
     <sys:String x:Key="Str_Ed_BadEncoding">seus bytes não são texto {0} válido. O arquivo não foi alterado.</sys:String>
+    <sys:String x:Key="Str_Ed_LossyEncoding">A codificação selecionada não pode representar todos os caracteres. Escolha UTF-8 e salve novamente.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Salvar  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Desfazer  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Refazer  (Ctrl+Y)</sys:String>

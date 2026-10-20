@@ -418,6 +418,7 @@
     <sys:String x:Key="Str_Menu_Edit">Rediger</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} er for stor til å redigere ({1} MB).</sys:String>
     <sys:String x:Key="Str_Ed_BadEncoding">byttene er ikke gyldig {0}-tekst. Filen ble ikke endret.</sys:String>
+    <sys:String x:Key="Str_Ed_LossyEncoding">Den valgte kodingen kan ikke lagre alle tegnene. Velg UTF-8 og lagre på nytt.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Lagre  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Angre  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">Gjør om  (Ctrl+Y)</sys:String>

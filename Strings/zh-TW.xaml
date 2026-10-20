@@ -432,6 +432,7 @@
     <sys:String x:Key="Str_Menu_Edit">編輯</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} 太大，無法編輯（{1} MB）。</sys:String>
     <sys:String x:Key="Str_Ed_BadEncoding">其位元組不是有效的 {0} 文字。檔案未變更。</sys:String>
+    <sys:String x:Key="Str_Ed_LossyEncoding">所選編碼無法表示所有字元。請選擇 UTF-8，然後重新儲存。</sys:String>
     <sys:String x:Key="Str_TT_EdSave">儲存  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">復原  (Ctrl+Z)</sys:String>
     <sys:String x:Key="Str_TT_EdRedo">重做  (Ctrl+Y)</sys:String>
