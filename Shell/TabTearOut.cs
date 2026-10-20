@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using KillerShell.Models;
 using KillerShell.Terminal;
 
@@ -56,7 +57,7 @@ namespace KillerShell.Shell
             var psi = new ProcessStartInfo(exe)
             {
                 UseShellExecute = true,
-                Arguments = "--new-window " + flags,
+                Arguments = ProcessRelaunchArgs("--new-window " + flags),
                 WorkingDirectory = Directory.Exists(cwd) ? cwd : (Path.GetDirectoryName(exe) ?? string.Empty),
             };
 
@@ -129,6 +130,11 @@ namespace KillerShell.Shell
 
             return "--cwd \"" + TrimForArg(cwd) + "\"";
         }
+
+        // WM_COPYDATA/session strings use the existing transport grammar. Only the
+        // process boundary needs Windows argv escaping, including trailing separators.
+        internal static string ProcessRelaunchArgs(string handoff) =>
+            string.Join(" ", TokenizeArgs(handoff).Select(Services.WslDistributions.QuoteArgument));
 
         /// <summary>
         /// Splits a "--flag value" string the way BuildRelaunchArgs writes it - quoted segments

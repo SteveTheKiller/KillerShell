@@ -78,7 +78,7 @@ namespace KillerShell.Shell
             {
                 UseShellExecute = true,          // required for the runas verb
                 Verb = "runas",
-                Arguments = flags,
+                Arguments = ProcessRelaunchArgs(flags),
                 WorkingDirectory = profile.Kind == TerminalShellKind.Wsl ? HomeFolder : folder,
             };
 
@@ -251,7 +251,7 @@ namespace KillerShell.Shell
             {
                 UseShellExecute = true,          // required for the runas verb
                 Verb = "runas",
-                Arguments = args.ToString(),
+                Arguments = ProcessRelaunchArgs(args.ToString()),
             };
 
             try
@@ -328,8 +328,8 @@ namespace KillerShell.Shell
                 {
                     UseShellExecute = true,
                     Verb = "runas",
-                    Arguments = "--elevated-save \"" + TrimForArg(tempFile) + "\" \""
-                              + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash + " " + response.Name,
+                    Arguments = ProcessRelaunchArgs("--elevated-save \"" + TrimForArg(tempFile) + "\" \""
+                              + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash + " " + response.Name),
                 };
                 var proc = Process.Start(psi);
                 if (proc == null) return;

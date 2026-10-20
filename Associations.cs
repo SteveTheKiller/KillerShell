@@ -217,7 +217,7 @@ namespace KillerShell
                 v.SetValue("", "Open in KillerShell");
                 v.SetValue("Icon", exe + ",0");
                 using var c = v.CreateSubKey("command");
-                c.SetValue("", "\"" + exe + "\" \"%1\"");
+                c.SetValue("", "\"" + exe + "\" \"%1\\.\"");
             }
 
             using (var v = root.CreateSubKey(@"Software\Classes\Directory\Background\shell\" + VerbOpen))
@@ -225,7 +225,7 @@ namespace KillerShell
                 v.SetValue("", "Open in KillerShell");
                 v.SetValue("Icon", exe + ",0");
                 using var c = v.CreateSubKey("command");
-                c.SetValue("", "\"" + exe + "\" \"%V\"");
+                c.SetValue("", "\"" + exe + "\" \"%V\\.\"");
             }
 
             // The shell verb is the cheap 90% of "default terminal". The real thing on
@@ -237,7 +237,7 @@ namespace KillerShell
                 v.SetValue("", "Open KillerShell terminal here");
                 v.SetValue("Icon", exe + ",0");
                 using var c = v.CreateSubKey("command");
-                c.SetValue("", "\"" + exe + "\" --shell pwsh --cwd \"" + token + "\"");
+                c.SetValue("", "\"" + exe + "\" --shell pwsh --cwd \"" + token + "\\.\"");
             }
         }
 

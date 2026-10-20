@@ -54,7 +54,7 @@ namespace KillerShell.Shell
                 // --new-window suppresses the session restore in the new process. Without it a
                 // second window came up carrying every tab from the last session, which is not
                 // what Ctrl+N means anywhere: a new window is one tab, here or at home.
-                Arguments = real ? "--new-window --cwd \"" + TrimForArg(here!) + "\"" : "--new-window",
+                Arguments = real ? ProcessRelaunchArgs("--new-window --cwd \"" + TrimForArg(here!) + "\"") : "--new-window",
                 WorkingDirectory = real ? here! : System.IO.Path.GetDirectoryName(exe) ?? string.Empty,
             };
 
