@@ -33,7 +33,7 @@ using KillerFamily.Accessibility;
 // scan result is the state, and a rebuild would throw a whole scan away on a tab switch.
 namespace KillerShell.Tools
 {
-    internal sealed class StorageAnalyzerControl : Grid
+    internal sealed partial class StorageAnalyzerControl : Grid
     {
         // ── The scanned tree ─────────────────────────────────────
         private sealed class FsNode
@@ -417,6 +417,19 @@ namespace KillerShell.Tools
 
             switch (e.Key)
             {
+                case Key.Down: SelectSibling(1); break;
+                case Key.Up: SelectSibling(-1); break;
+                case Key.Right:
+                    if (_selected?.IsDir == true) SelectChild(_selected);
+                    else if (_selected == null && _zoomRoot != null) SelectChild(_zoomRoot);
+                    break;
+                case Key.Left:
+                    if (_selected?.Parent is { } selectedParent)
+                    {
+                        if (selectedParent.Parent != null) ZoomTo(selectedParent.Parent);
+                        SelectNode(selectedParent);
+                    }
+                    break;
                 case Key.F6:     if (_selected != null) RevealNode(_selected); else return; break;
                 case Key.D:      SetDepth(NextChoice(DepthChoices, _depthLimit)); break;
                 case Key.M:      SetMinSize(NextChoice(MinSizeChoices, _minSize)); break;
@@ -427,13 +440,18 @@ namespace KillerShell.Tools
                 // Zooming, mirroring the browse pane's own navigation keys: Backspace climbs
                 // one level, Home jumps to the scan root, Enter descends into what is selected.
                 case Key.Back:
-                    if (_zoomRoot?.Parent is { } up) ZoomTo(up);
+                    if (_zoomRoot?.Parent is { } up)
+                    {
+                        var previous = _zoomRoot;
+                        ZoomTo(up);
+                        SelectNode(previous);
+                    }
                     break;
                 case Key.Home:
-                    if (_root != null && !ReferenceEquals(_zoomRoot, _root)) ZoomTo(_root);
+                    if (_root != null) { ZoomTo(_root); SelectChild(_root); }
                     break;
                 case Key.Return:
-                    if (_selected is { IsDir: true } dir) ZoomTo(dir);
+                    if (_selected is { IsDir: true } dir) SelectChild(dir);
                     else if (_selected?.Parent is { } parent && !ReferenceEquals(parent, _zoomRoot)) ZoomTo(parent);
                     break;
 
@@ -656,6 +674,8 @@ namespace KillerShell.Tools
         /// <summary>Torn down when the tab closes (StorageTabs.cs) and on window close.</summary>
         internal void Shutdown()
         {
+            _accessibilityClosed = true;
+            StorageAutomationChanged();
             CancelScan();
             _scan = null;
             _progressTimer.Stop();
@@ -692,6 +712,7 @@ namespace KillerShell.Tools
             _zoomRoot = _root;
             _hover = null; _selected = null;
             _scanning = true;
+            StorageAutomationChanged();
 
             _scanBtn.SetResourceReference(ContentControl.ContentProperty, "Str_Storage_Stop");
             _progressTimer.Start();
@@ -900,6 +921,7 @@ namespace KillerShell.Tools
                 UpdateFooterLeft();
                 _map.InvalidateMap();
                 _map.InvalidateOverlay();
+                StorageAutomationChanged();
             }));
         }
 
@@ -932,7 +954,7 @@ namespace KillerShell.Tools
         /// each invalidate on their own - a full 200k-rect repaint per mouse move would not
         /// keep up.
         /// </summary>
-        private sealed class TreemapSurface : Grid
+        private sealed partial class TreemapSurface : Grid
         {
             private readonly StorageAnalyzerControl _owner;
             private readonly MapLayer _mapLayer;
@@ -941,6 +963,8 @@ namespace KillerShell.Tools
             internal TreemapSurface(StorageAnalyzerControl owner)
             {
                 _owner = owner;
+                Focusable = true;
+                FocusVisualStyle = null;
                 ClipToBounds = true;
                 Background = Brushes.Transparent;   // hit-testable everywhere, including pruned areas
                 _mapLayer = new MapLayer(owner);
@@ -1234,10 +1258,7 @@ namespace KillerShell.Tools
                 if (dir != null && !ReferenceEquals(dir, _zoomRoot)) ZoomTo(dir);
                 return;
             }
-            _selected = n;
-            UpdateFooterLeft();
-            PinSelectionToWindowStatus(n);
-            _map.InvalidateOverlay();
+            SelectNode(n);
         }
 
         // How long a clicked path stays in the window's status bar before the scan summary
@@ -1282,11 +1303,14 @@ namespace KillerShell.Tools
 
         private void ZoomTo(FsNode dir)
         {
+            var previousRoot = _zoomRoot;
             _zoomRoot = dir;
             _hover = null;
+            if (_selected != null && !ContainsNode(dir, _selected)) SelectNode(dir);
             RebuildBreadcrumb();
             _map.InvalidateMap();
             _map.InvalidateOverlay();
+            StorageAutomationViewChanged(previousRoot);
         }
 
         private void RebuildBreadcrumb()
@@ -1338,7 +1362,7 @@ namespace KillerShell.Tools
         private void Map_RightClick(MouseButtonEventArgs e)
         {
             var n = NodeAt(e.GetPosition(_map));
-            if (n != null) { _selected = n; UpdateFooterLeft(); _map.InvalidateOverlay(); }
+            if (n != null) SelectNode(n);
 
             var menu = new ContextMenu();
 
