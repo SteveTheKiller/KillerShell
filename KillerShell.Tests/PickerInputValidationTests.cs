@@ -23,7 +23,7 @@ public sealed class PickerInputValidationTests
             "[Reflection.Assembly]::LoadFrom('" + application + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + assertions + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + assembly + "') | Out-Null; " +
-            "[KillerShell.Tests.PickerInputValidationTests]::Run(); exit 0 " +
+            "[KillerShell.Tests.PickerInputValidationScenario]::Run(); exit 0 " +
             "} catch { [Console]::Error.WriteLine($_.Exception.ToString()); exit 1 }";
         using var process = Process.Start(new ProcessStartInfo
         {
@@ -36,7 +36,10 @@ public sealed class PickerInputValidationTests
         if (!process.WaitForExit(60000)) { process.Kill(); Assert.Fail("Picker validation did not finish."); }
         Assert.True(process.ExitCode == 0, await output + await errors);
     }
+}
 
+public static class PickerInputValidationScenario
+{
     public static void Run()
     {
         Exception? failure = null;
