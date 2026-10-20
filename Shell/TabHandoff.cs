@@ -189,7 +189,8 @@ namespace KillerShell.Shell
         //  SENDING
         // ═══════════════════════════════════════════════════════════
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        private static extern IntPtr SendMessage(IntPtr hwnd, int msg, IntPtr wParam, ref COPYDATASTRUCT lParam);
+        private static extern IntPtr SendMessageTimeout(IntPtr hwnd, int msg, IntPtr wParam,
+            ref COPYDATASTRUCT lParam, uint flags, uint timeout, out IntPtr result);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct COPYDATASTRUCT
@@ -213,7 +214,7 @@ namespace KillerShell.Shell
             string? args = BuildRelaunchArgs(t, out _);   // TabTearOut.cs
             if (args == null) return;   // needs a save first - BuildRelaunchArgs already set the status
 
-            SendHandoffArgs(args, targetHwnd);
+            if (!SendHandoffArgs(args, targetHwnd)) return;
 
             // Same rule TearOutTab follows: only close it here once the handoff is actually on
             // its way, and never leave a pane with zero tabs behind - CloseTab would just spawn
@@ -231,8 +232,10 @@ namespace KillerShell.Shell
         /// receiving end in the exact same place, ApplyHandoff below, so a window on the other
         /// side of either call cannot tell which one sent it.
         /// </summary>
-        private static void SendHandoffArgs(string args, IntPtr targetHwnd)
+        internal static bool SendHandoffArgs(string args, IntPtr targetHwnd)
         {
+            if (targetHwnd == IntPtr.Zero || targetHwnd == new IntPtr(0xffff) || !IsWindow(targetHwnd)
+                || args.Length > 32766 || args.IndexOf('\0') >= 0) return false;
             var bytes = System.Text.Encoding.Unicode.GetBytes(args + "\0");
             var buf = Marshal.AllocHGlobal(bytes.Length);
             try
@@ -244,11 +247,16 @@ namespace KillerShell.Shell
                     cbData = bytes.Length,
                     lpData = buf,
                 };
-                SendMessage(targetHwnd, WM_COPYDATA, IntPtr.Zero, ref cds);   // Chrome.cs - WM_COPYDATA
+                // Keep UIPI intact. A refused, rejected or stalled handoff is not delivery;
+                // elevated callers can then use their normal consent-based launch path.
+                if (SendMessageTimeout(targetHwnd, WM_COPYDATA, IntPtr.Zero, ref cds,
+                    0x0001 | 0x0002 | 0x0020, 1500, out IntPtr accepted) == IntPtr.Zero
+                    || accepted != new IntPtr(1)) return false;
             }
             finally { Marshal.FreeHGlobal(buf); }
 
             if (IsWindow(targetHwnd)) SetForegroundWindow(targetHwnd);
+            return true;
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -260,15 +268,18 @@ namespace KillerShell.Shell
             try
             {
                 var cds = Marshal.PtrToStructure<COPYDATASTRUCT>(lParam);
-                if (cds.dwData.ToInt64() != HandoffTag || cds.lpData == IntPtr.Zero) return IntPtr.Zero;
+                if (cds.dwData.ToInt64() != HandoffTag || cds.lpData == IntPtr.Zero
+                    || cds.cbData < 2 || cds.cbData > 65534 || cds.cbData % 2 != 0
+                    || Marshal.ReadInt16(cds.lpData, cds.cbData - 2) != 0) return IntPtr.Zero;
 
-                string args = Marshal.PtrToStringUni(cds.lpData) ?? string.Empty;
+                string args = Marshal.PtrToStringUni(cds.lpData, cds.cbData / 2 - 1) ?? string.Empty;
+                if (args.IndexOf('\0') >= 0 || Dispatcher.HasShutdownStarted) return IntPtr.Zero;
                 HideIncomingDropCaret();   // the drop landed - stop showing where it MIGHT go
                 // Off the message pump before touching tabs/panes - WM_COPYDATA is delivered
                 // synchronously and SendMessage on the OTHER end is blocked waiting for us.
                 Dispatcher.BeginInvoke(new Action(() => ApplyHandoff(args)));
             }
-            catch { /* malformed payload - ignore rather than crash on someone else's message */ }
+            catch { return IntPtr.Zero; }
             return new IntPtr(1);
         }
 

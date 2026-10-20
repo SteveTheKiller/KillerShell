@@ -69,7 +69,7 @@ namespace KillerShell.Shell
             // already-elevated window gets the shell tab handed to it instead of a fresh UAC
             // prompt and another window.
             IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero) { SendHandoffArgs(flags, existing); return; }
+            if (existing != IntPtr.Zero && SendHandoffArgs(flags, existing)) return;
 
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
@@ -117,7 +117,7 @@ namespace KillerShell.Shell
             // heartbeat apart (TabHandoff.cs SendHandoffArgs / FindElevatedKillerShellWindow
             // above).
             IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero) { SendHandoffArgs("--processes", existing); return; }
+            if (existing != IntPtr.Zero && SendHandoffArgs("--processes", existing)) return;
 
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
@@ -158,7 +158,7 @@ namespace KillerShell.Shell
 
             // Reuse an already-elevated window if one is open, rather than prompting UAC again.
             IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero) { SendHandoffArgs("--storage", existing); return; }
+            if (existing != IntPtr.Zero && SendHandoffArgs("--storage", existing)) return;
 
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
@@ -207,7 +207,7 @@ namespace KillerShell.Shell
             // Same reuse as RelaunchElevatedProcesses above: an already-elevated window gets the
             // Event Viewer tab handed to it instead of a fresh UAC prompt and another window.
             IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero) { SendHandoffArgs("--eventviewer", existing); return; }
+            if (existing != IntPtr.Zero && SendHandoffArgs("--eventviewer", existing)) return;
 
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
@@ -435,7 +435,7 @@ namespace KillerShell.Shell
             // already-elevated window gets the Registry Editor tab handed to it instead of a
             // fresh UAC prompt and another window.
             IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero) { SendHandoffArgs("--registry", existing); return; }
+            if (existing != IntPtr.Zero && SendHandoffArgs("--registry", existing)) return;
 
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
