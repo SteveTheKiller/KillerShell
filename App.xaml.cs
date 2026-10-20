@@ -796,6 +796,15 @@ namespace KillerShell
                 if (!confirm.Confirmed) return;
             }
 
+            try { Services.UninstallRemoval.Remove(machine); }
+            catch (Exception ex)
+            {
+                string message = string.Format(AppMainWindow.LocStatic("Str_Dlg_UninstallElevateFailed"), ex.Message);
+                if (silent) Console.Error.WriteLine(message);
+                else new ConfirmDialog(message, null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notification: true).ShowDialog();
+                return;
+            }
+
             string startMenuDir = machine
                 ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), AppName)
                 : StartMenuDir;
@@ -822,19 +831,6 @@ namespace KillerShell
                 throwOnMissingSubKey: false); } catch { }
 
             SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
-
-            // Self-delete: deferred via cmd batch so the EXE can exit first
-            string bat = Path.Combine(Path.GetTempPath(), "killershell_uninstall.bat");
-            File.WriteAllText(bat,
-                "@echo off\r\n" +
-                "ping -n 3 127.0.0.1 >nul\r\n" +
-                $"rmdir /s /q \"{targetDir}\"\r\n" +
-                "del \"%~f0\"\r\n");
-            Process.Start(new ProcessStartInfo("cmd.exe", $"/c \"{bat}\"")
-            {
-                WindowStyle     = ProcessWindowStyle.Hidden,
-                UseShellExecute = true
-            });
 
         }
     }
