@@ -17,12 +17,17 @@ namespace KillerShell.Services
         internal bool Succeeded { get; }
         internal bool Canceled { get; }
         internal string Error { get; }
+        internal string ReportPath { get; }
+        internal string ReportError { get; }
 
-        internal ServiceControlResult(bool succeeded, bool canceled, string error)
+        internal ServiceControlResult(bool succeeded, bool canceled, string error,
+            string reportPath = "", string reportError = "")
         {
             Succeeded = succeeded;
             Canceled = canceled;
             Error = error;
+            ReportPath = reportPath;
+            ReportError = reportError;
         }
     }
 
@@ -55,7 +60,7 @@ namespace KillerShell.Services
 
         internal static Task<ServiceControlResult> ExecuteAsync(
             string serviceName, ServiceControlAction action, CancellationToken cancellationToken)
-            => ExecuteAsync(() => new ControllerHandle(serviceName), action, cancellationToken);
+            => ExecuteAsync(serviceName, () => new ControllerHandle(serviceName), action, cancellationToken, null);
 
         /// <summary>
         /// Runs a service action. <paramref name="cancellationToken"/> belongs to the tab that
@@ -71,9 +76,24 @@ namespace KillerShell.Services
         /// </remarks>
         internal static Task<ServiceControlResult> ExecuteAsync(
             Func<IServiceHandle> open, ServiceControlAction action, CancellationToken cancellationToken)
+            => ExecuteAsync("unknown", open, action, cancellationToken, null);
+
+        internal static Task<ServiceControlResult> ExecuteAsync(string serviceName,
+            Func<IServiceHandle> open, ServiceControlAction action, CancellationToken cancellationToken,
+            string? reportPath)
         {
             var done = new TaskCompletionSource<ServiceControlResult>(TaskCreationOptions.RunContinuationsAsynchronously);
-            var thread = new Thread(() => done.SetResult(Execute(open, action, cancellationToken)))
+            var thread = new Thread(() =>
+            {
+                var result = Execute(open, action, cancellationToken);
+                if (!result.Succeeded && !result.Canceled)
+                {
+                    ServiceFailureReport.TryWrite(serviceName, action, result.Error, reportPath,
+                        out string savedPath, out string reportError);
+                    result = new ServiceControlResult(false, false, result.Error, savedPath, reportError);
+                }
+                done.SetResult(result);
+            })
             {
                 IsBackground = false,
                 Name = "KillerShell service control",

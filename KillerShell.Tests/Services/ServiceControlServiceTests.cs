@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,8 +14,11 @@ namespace KillerShell.Tests.Services
     /// boundary these tests replace. Closing the tab that asked for a restart cancels its token;
     /// once Stop has been accepted, the restart must still finish with Start.
     /// </summary>
-    public sealed class ServiceControlServiceTests
+    public sealed class ServiceControlServiceTests : IDisposable
     {
+        private readonly string _reportRoot = Path.Combine(Path.GetTempPath(), "KillerShell-service-tests-" + Guid.NewGuid().ToString("N"));
+        private string ReportPath => Path.Combine(_reportRoot, "service-actions.log");
+        public void Dispose() { if (Directory.Exists(_reportRoot)) Directory.Delete(_reportRoot, true); }
         [Fact]
         public async Task Restart_StartsTheServiceEvenWhenCanceledAfterStop()
         {
@@ -40,10 +44,13 @@ namespace KillerShell.Tests.Services
             using var cts = new CancellationTokenSource();
             cts.Cancel();
 
-            ServiceControlResult result = await WithTimeout(ServiceControlService.ExecuteAsync(() => service, ServiceControlAction.Restart, cts.Token));
+            ServiceControlResult result = await WithTimeout(ServiceControlService.ExecuteAsync("Fixture", () => service, ServiceControlAction.Restart, cts.Token, ReportPath));
             Assert.True(result.Canceled);
             Assert.Empty(service.Calls);
             Assert.Equal(ServiceControllerStatus.Running, service.Status);
+            Assert.False(File.Exists(ReportPath));
+            Assert.Empty(result.ReportPath);
+            Assert.Empty(result.ReportError);
         }
 
         [Fact]
@@ -52,7 +59,7 @@ namespace KillerShell.Tests.Services
             var service = new FakeService(ServiceControllerStatus.Running) { HoldStop = true, FailStart = true };
             using var cts = new CancellationTokenSource();
 
-            Task<ServiceControlResult> run = ServiceControlService.ExecuteAsync(() => service, ServiceControlAction.Restart, cts.Token);
+            Task<ServiceControlResult> run = ServiceControlService.ExecuteAsync("Fixture", () => service, ServiceControlAction.Restart, cts.Token, ReportPath);
             Assert.True(service.StopIssued.Wait(5000));
             cts.Cancel();
             service.ReleaseStop.Set();
@@ -61,13 +68,16 @@ namespace KillerShell.Tests.Services
             Assert.False(result.Succeeded);
             Assert.False(result.Canceled, "A failed start after an accepted stop was reported as a cancellation.");
             Assert.Contains("start refused", result.Error);
+            Assert.Equal(ReportPath, result.ReportPath);
+            Assert.Empty(result.ReportError);
+            Assert.Contains("start refused", File.ReadAllText(ReportPath));
         }
 
         [Fact]
         public async Task StopTimeout_IsReportedAndStartIsNotAttempted()
         {
             var service = new FakeService(ServiceControllerStatus.Running) { StopNeverFinishes = true };
-            ServiceControlResult result = await WithTimeout(ServiceControlService.ExecuteAsync(() => service, ServiceControlAction.Restart, CancellationToken.None));
+            ServiceControlResult result = await WithTimeout(ServiceControlService.ExecuteAsync("Fixture", () => service, ServiceControlAction.Restart, CancellationToken.None, ReportPath));
             Assert.False(result.Succeeded);
             Assert.False(result.Canceled);
             Assert.Equal(new[] { "Stop" }, service.Calls);
