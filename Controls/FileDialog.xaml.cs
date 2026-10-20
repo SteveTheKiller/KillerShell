@@ -367,7 +367,7 @@ namespace KillerShell
             // Win32 dialogs, and is how people paste a path in.
             if (typed.Length > 0)
             {
-                var asDir = Path.IsPathRooted(typed) ? typed : Path.Combine(_currentDir, typed);
+                if (!TryResolveName(typed, true, out var asDir)) return;
                 if (Directory.Exists(asDir)) { NavigateTo(asDir); FileNameBox.Clear(); return; }
             }
 
@@ -543,6 +543,35 @@ namespace KillerShell
 
         private void OK_Click(object sender, RoutedEventArgs e) => Accept();
 
+        private bool TryResolveName(string typed, bool allowWildcard, out string full)
+        {
+            full = "";
+            try
+            {
+                // A pasted quoted path is supported; quotes inside a name are invalid.
+                if (typed.Length >= 2 && typed[0] == '"' && typed[typed.Length - 1] == '"')
+                    typed = typed.Substring(1, typed.Length - 2);
+                full = Path.GetFullPath(Path.IsPathRooted(typed) ? typed : Path.Combine(_currentDir, typed));
+                string relative = full.Substring(Path.GetPathRoot(full).Length);
+                foreach (string component in relative.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar))
+                {
+                    if (component.Length > 255) throw new PathTooLongException();
+                    foreach (char character in component)
+                        if (Array.IndexOf(Path.GetInvalidFileNameChars(), character) >= 0 &&
+                            !(allowWildcard && (character == '*' || character == '?')))
+                            throw new ArgumentException();
+                }
+                return true;
+            }
+            catch (Exception error) when (error is ArgumentException || error is NotSupportedException ||
+                                          error is PathTooLongException || error is System.Security.SecurityException)
+            {
+                SelMeta.Text = Loc("Str_Err_InvalidChars");
+                FileNameBox.Focus();
+                return false;
+            }
+        }
+
         /// <summary>
         /// Resolves the name box to a full path and applies the mode's rules. Anything that fails
         /// leaves the dialog OPEN with focus back in the name box - a file dialog that closes on a
@@ -550,7 +579,7 @@ namespace KillerShell
         /// </summary>
         private void Accept()
         {
-            var typed = FileNameBox.Text?.Trim().Trim('"') ?? "";
+            var typed = FileNameBox.Text?.Trim() ?? "";
             if (typed.Length == 0)
             {
                 // Nothing typed but a file is highlighted: take that.
@@ -558,7 +587,7 @@ namespace KillerShell
                 else { FileNameBox.Focus(); return; }
             }
 
-            var full = Path.IsPathRooted(typed) ? typed : Path.Combine(_currentDir, typed);
+            if (!TryResolveName(typed, false, out var full)) return;
 
             if (_mode == FileDialogMode.Save)
             {
