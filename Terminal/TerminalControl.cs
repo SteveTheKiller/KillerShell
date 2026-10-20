@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -42,6 +44,11 @@ namespace KillerShell.Terminal
 
         private readonly Queue<byte[]> _incoming = new();
         private readonly object _gate = new();
+        private const int OutputReadSize = 8192;
+        private const int PendingOutputLimit = 1024 * 1024;
+        private const int OutputDispatchBudget = 65536;
+        private int _pendingOutputBytes;
+        private bool _closing;
         private DispatcherTimer? _pump;
         private int _drawnVersion = -1;
 
@@ -340,14 +347,19 @@ namespace KillerShell.Terminal
 
             _pty.Exited += code => Dispatcher.BeginInvoke(new Action(() =>
             {
+                if (_closing) return;
                 WriteLocal("\r\n" + string.Format(MainWindow.LocStatic("Str_Term_Exited"), code) + "\r\n");
                 Exited?.Invoke(code);
             }));
 
-            var stream = _pty.Output;
+            ReadOutput(_pty.Output);
+        }
+
+        internal void ReadOutput(Stream stream)
+        {
             var reader = new Thread(() =>
             {
-                var buf = new byte[8192];
+                var buf = new byte[OutputReadSize];
                 try
                 {
                     int n;
@@ -355,7 +367,17 @@ namespace KillerShell.Terminal
                     {
                         var chunk = new byte[n];
                         Array.Copy(buf, chunk, n);
-                        lock (_gate) _incoming.Enqueue(chunk);
+                        lock (_gate)
+                        {
+                            // Reserve the reader buffer and its copied chunk. Count the parser's
+                            // current chunk until parsing completes, so it stays in this budget.
+                            while (!_closing && (_pendingOutputBytes + n > PendingOutputLimit - 2 * OutputReadSize ||
+                                                  _incoming.Count >= 128))
+                                Monitor.Wait(_gate);
+                            if (_closing) continue; // Disposal still needs the pipe drained.
+                            _incoming.Enqueue(chunk);
+                            _pendingOutputBytes += n;
+                        }
                     }
                 }
                 catch { /* the pipe closing is the normal way out */ }
@@ -365,7 +387,7 @@ namespace KillerShell.Terminal
 
             _pump = new DispatcherTimer(DispatcherPriority.Render)
             { Interval = TimeSpan.FromMilliseconds(16) };
-            _pump.Tick += (_, _) => Drain();
+            _pump.Tick += (_, _) => ProcessOutput();
             _pump.Start();
 
             _blink = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(530) };
@@ -414,22 +436,34 @@ namespace KillerShell.Terminal
             _blink.Start();
         }
 
-        private void Drain()
+        internal int ProcessOutput()
         {
+            int consumed = 0;
             bool any = false;
-            while (true)
+            var clock = Stopwatch.StartNew();
+            while (consumed < OutputDispatchBudget && (consumed == 0 || clock.ElapsedMilliseconds < 8))
             {
                 byte[] chunk;
                 lock (_gate)
                 {
-                    if (_incoming.Count == 0) break;
+                    if (_closing || _incoming.Count == 0) break;
                     chunk = _incoming.Dequeue();
                 }
-                _parser.Feed(chunk, chunk.Length);
+                try { _parser.Feed(chunk, chunk.Length); }
+                finally
+                {
+                    lock (_gate)
+                    {
+                        _pendingOutputBytes -= chunk.Length;
+                        Monitor.PulseAll(_gate);
+                    }
+                }
+                consumed += chunk.Length;
                 any = true;
             }
             if (any) _scroll = 0;               // new output jumps back to the bottom
             if (_buf.Version != _drawnVersion) InvalidateVisual();
+            return consumed;
         }
 
         /// <summary>Feed text to our own parser without sending it to the shell.</summary>
@@ -456,6 +490,13 @@ namespace KillerShell.Terminal
         {
             _pump?.Stop();
             _blink?.Stop();
+            lock (_gate)
+            {
+                _closing = true;
+                _incoming.Clear();
+                _pendingOutputBytes = 0;
+                Monitor.PulseAll(_gate);
+            }
             _pty?.Dispose();
             _pty = null;
         }
