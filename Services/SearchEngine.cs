@@ -17,6 +17,16 @@ namespace KillerShell.Services
     // Stop drains quietly via ct.IsCancellationRequested - no exceptions escape.
     public class SearchEngine
     {
+        private readonly Func<string, Stream> _openContent;
+
+        public SearchEngine() : this(path => new FileStream(path, FileMode.Open, FileAccess.Read,
+            FileShare.Read, bufferSize: 65536)) { }
+
+        internal SearchEngine(Func<string, Stream> openContent)
+        {
+            _openContent = openContent ?? throw new ArgumentNullException(nameof(openContent));
+        }
+
         // ── Events (invoked from the pump task; the UI marshals via Dispatcher) ──
         public event Action<List<SearchResult>>? ResultsBatch;   // flushed every ~150 ms
         public event Action<string>?             StatusChanged;
@@ -89,6 +99,7 @@ namespace KillerShell.Services
             // Per-file evaluation, run concurrently on the workers.
             void EvaluateFile(string filePath)
             {
+                ct.ThrowIfCancellationRequested();
                 // Piped lists are snapshots - files may have vanished since pass 1.
                 if (fileList != null && !File.Exists(filePath))
                 { Interlocked.Increment(ref processed); return; }
@@ -120,6 +131,7 @@ namespace KillerShell.Services
                     bool groupSat = And;   // AND starts true, OR starts false
                     foreach (var (term, nameRx) in Terms)
                     {
+                        ct.ThrowIfCancellationRequested();
                         bool hit;
                         if (nameRx != null)
                         {
@@ -128,7 +140,7 @@ namespace KillerShell.Services
                         }
                         else
                         {
-                            var lines = SearchContent(filePath, term.Pattern, comparison);
+                            var lines = SearchContent(filePath, term.Pattern, comparison, ct);
                             hit = lines.Count > 0;
                             if (hit) result.Matches.Add(new TermMatch { Term = term, Lines = lines });
                         }
@@ -150,6 +162,7 @@ namespace KillerShell.Services
                 }
                 catch { /* unreadable - sorts to the bottom */ }
                 result.Seq = Interlocked.Increment(ref seq) - 1;
+                ct.ThrowIfCancellationRequested();
                 outQueue.Enqueue(result);
             }
 
@@ -184,6 +197,7 @@ namespace KillerShell.Services
                     {
                         if (ct.IsCancellationRequested) continue;   // drain fast, evaluate nothing
                         try { EvaluateFile(filePath); }
+                        catch (OperationCanceledException) when (ct.IsCancellationRequested) { /* graceful stop */ }
                         catch { /* one bad file never kills a worker */ }
                     }
                 }, CancellationToken.None);
@@ -204,9 +218,14 @@ namespace KillerShell.Services
             // Posts at most MaxBatch results. Returns true while the queue still holds more.
             bool FlushResults()
             {
+                if (ct.IsCancellationRequested)
+                {
+                    while (outQueue.TryDequeue(out _)) { }
+                    return false;
+                }
                 var batch = new List<SearchResult>(MaxBatch);
                 while (batch.Count < MaxBatch && outQueue.TryDequeue(out var r)) batch.Add(r);
-                if (batch.Count > 0) ResultsBatch?.Invoke(batch);
+                if (batch.Count > 0 && !ct.IsCancellationRequested) ResultsBatch?.Invoke(batch);
                 return !outQueue.IsEmpty;
             }
 
@@ -305,32 +324,33 @@ namespace KillerShell.Services
         }
 
         // ── Content search ───────────────────────────────────────
-        private static List<LineMatch> SearchContent(
-            string filePath, string pattern, StringComparison comparison)
+        private List<LineMatch> SearchContent(
+            string filePath, string pattern, StringComparison comparison, CancellationToken ct)
         {
             var matches = new List<LineMatch>();
             try
             {
-                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read,
-                                              FileShare.Read, bufferSize: 65536);
+                ct.ThrowIfCancellationRequested();
+                using var fs = _openContent(filePath);
 
                 // Check decoded characters so UTF-16/32 padding bytes are not mistaken
                 // for binary content. Keep the probe bounded to the first 4 KB.
                 var buf  = new byte[Math.Min(4096, fs.Length)];
                 int read = fs.Read(buf, 0, buf.Length);
+                ct.ThrowIfCancellationRequested();
                 using (var sample = new StreamReader(new MemoryStream(buf, 0, read), Encoding.UTF8,
                                                      detectEncodingFromByteOrderMarks: true))
                     if (sample.ReadToEnd().IndexOf('\0') >= 0) return matches;
                 fs.Seek(0, SeekOrigin.Begin);
 
-                // Stream line-by-line - never loads the whole file into memory
+                // Bound decoded reads so even a single long line can observe cancellation.
                 using var reader = new StreamReader(fs, Encoding.UTF8,
                                                     detectEncodingFromByteOrderMarks: true,
                                                     bufferSize: 65536, leaveOpen: false);
-                string? line;
                 int lineNum = 0;
-                while ((line = reader.ReadLine()) != null)
+                foreach (string line in ReadContentLines(reader, ct))
                 {
+                    ct.ThrowIfCancellationRequested();
                     lineNum++;
                     if (line.IndexOf(pattern, comparison) >= 0)
                     {
@@ -341,8 +361,41 @@ namespace KillerShell.Services
                     }
                 }
             }
+            catch (OperationCanceledException) { throw; }
             catch { /* unreadable file - skip */ }
             return matches;
+        }
+
+        private static IEnumerable<string> ReadContentLines(StreamReader reader, CancellationToken ct)
+        {
+            var buffer = new char[4096];
+            var line = new StringBuilder();
+            bool skipLf = false;
+            while (true)
+            {
+                ct.ThrowIfCancellationRequested();
+                // A native read already in progress must return before cancellation can stop it.
+                int read = reader.Read(buffer, 0, buffer.Length);
+                ct.ThrowIfCancellationRequested();
+                if (read == 0) break;
+                for (int i = 0; i < read; i++)
+                {
+                    char c = buffer[i];
+                    if (skipLf)
+                    {
+                        skipLf = false;
+                        if (c == '\n') continue;
+                    }
+                    if (c == '\r' || c == '\n')
+                    {
+                        yield return line.ToString();
+                        line.Clear();
+                        skipLf = c == '\r';
+                    }
+                    else line.Append(c);
+                }
+            }
+            if (line.Length > 0) yield return line.ToString();
         }
 
         // ── Pattern helpers ──────────────────────────────────────

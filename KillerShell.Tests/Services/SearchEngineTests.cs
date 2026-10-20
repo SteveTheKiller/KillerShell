@@ -227,6 +227,20 @@ namespace KillerShell.Tests.Services
         }
 
         [Fact]
+        public async Task SearchAsync_PreservesLineNumbersAcrossBoundedReadsAndMixedEndings()
+        {
+            string file = Path.GetTempFileName();
+            try
+            {
+                File.WriteAllText(file, new string('x', 4095) + "\r\nneedle one\rneedle two\nneedle three\r\n");
+                var lines = Assert.Single(Assert.Single(await SearchContentAsync(file)).Matches).Lines;
+                Assert.Equal(new[] { 2, 3, 4 }, lines.Select(line => line.LineNumber));
+                Assert.Equal(new[] { "needle one", "needle two", "needle three" }, lines.Select(line => line.LineText));
+            }
+            finally { File.Delete(file); }
+        }
+
+        [Fact]
         public async Task SearchAsync_PreCanceledTokenProducesNoResults()
         {
             string file = Path.GetTempFileName();
@@ -246,6 +260,87 @@ namespace KillerShell.Tests.Services
             finally
             {
                 File.Delete(file);
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task CancellationStopsAnActiveContentScanBeforeEof(bool longLine)
+        {
+            string file = Path.GetTempFileName();
+            byte[] content = Enumerable.Repeat((byte)'x', 1024 * 1024).ToArray();
+            if (!longLine)
+                for (int i = 79; i < content.Length - 6; i += 80) content[i] = (byte)'\n';
+            Encoding.ASCII.GetBytes("needle").CopyTo(content, content.Length - 6);
+            using var paused = new PausedContentStream(content);
+            using var cts = new CancellationTokenSource();
+            int opens = 0;
+            var found = new List<SearchResult>();
+            var engine = new SearchEngine(_ => Interlocked.Increment(ref opens) == 1
+                ? paused : new MemoryStream(content));
+            engine.ResultsBatch += batch => found.AddRange(batch);
+            var group = new TermGroup();
+            group.Terms.Add(new SearchTerm { Mode = SearchTerm.SearchMode.Content, Pattern = "needle" });
+            group.Terms.Add(new SearchTerm { Mode = SearchTerm.SearchMode.Content, Pattern = "needle" });
+            Task search = engine.SearchAsync(Path.GetDirectoryName(file)!, [group], [], "", "", false, cts.Token, [file]);
+            try
+            {
+                Assert.True(await Task.Run(() => paused.ReadingStarted.Wait(TimeSpan.FromSeconds(5))), "Content reading did not begin.");
+                cts.Cancel();
+                Assert.NotSame(search, await Task.WhenAny(search, Task.Delay(50)));
+                paused.ContinueReading.Set();
+                Assert.Same(search, await Task.WhenAny(search, Task.Delay(TimeSpan.FromSeconds(5))));
+                await search;
+                Assert.True(paused.ContentBytesRead < content.Length, "Canceled content scan continued to EOF.");
+                Assert.Equal(1, opens);
+                Assert.Empty(found);
+                Assert.True(paused.WasDisposed);
+            }
+            finally
+            {
+                cts.Cancel();
+                paused.ContinueReading.Set();
+                await search;
+                File.Delete(file);
+            }
+        }
+
+        private sealed class PausedContentStream : MemoryStream
+        {
+            internal readonly ManualResetEventSlim ReadingStarted = new ManualResetEventSlim();
+            internal readonly ManualResetEventSlim ContinueReading = new ManualResetEventSlim();
+            internal long ContentBytesRead;
+            internal bool WasDisposed;
+            private bool _contentPass;
+            private bool _paused;
+
+            internal PausedContentStream(byte[] bytes) : base(bytes) { }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                long position = base.Seek(offset, origin);
+                _contentPass = true;
+                return position;
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                if (_contentPass && !_paused)
+                {
+                    _paused = true;
+                    ReadingStarted.Set();
+                    if (!ContinueReading.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException("Paused read was not released.");
+                }
+                int read = base.Read(buffer, offset, count);
+                if (_contentPass) ContentBytesRead += read;
+                return read;
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                WasDisposed = true;
+                base.Dispose(disposing);
             }
         }
     }
