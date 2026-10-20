@@ -41,6 +41,11 @@ public sealed class SessionPersistenceTests
     public Task SearchOptionsSurviveOpeningSecondPane() => RunScenario("first-open");
 
     [Theory]
+    [InlineData("groups-mixed")]
+    [InlineData("groups-all")]
+    public Task BooleanGroupsKeepTheirStructureAndMatchingResults(string scenario) => RunScenario(scenario);
+
+    [Theory]
     [InlineData("missing-first")]
     [InlineData("missing-middle")]
     public Task MissingDocumentDoesNotMoveLaterTabsToOtherPane(string scenario) => RunScenario(scenario);
@@ -199,6 +204,42 @@ public static class SessionPersistenceScenario
                     Convert.ToBase64String(Encoding.UTF8.GetBytes(pair.Value))));
                 return;
             }
+            if (scenario.StartsWith("groups-", StringComparison.Ordinal))
+            {
+                string alpha = Path.Combine(root, "alpha.txt"), beta = Path.Combine(root, "beta.txt"), gamma = Path.Combine(root, "gamma.txt");
+                File.WriteAllText(alpha, "c;~|% d");
+                File.WriteAllText(beta, "c;~|%");
+                File.WriteAllText(gamma, "c;~|% d");
+                string[] files = { alpha, beta, gamma };
+                var original = ShowWindow();
+                var tab = Assert.Single(Tabs(original, "LeftPane"));
+                tab.IsBrowsing = false;
+                tab.HasSearch = true;
+                tab.Groups.Clear();
+                var names = new TermGroup { Mode = scenario == "groups-mixed" ? TermGroup.GroupMode.Or : TermGroup.GroupMode.And };
+                names.Terms.Add(new SearchTerm { Pattern = "alpha", Mode = SearchTerm.SearchMode.FileName });
+                if (scenario == "groups-mixed") names.Terms.Add(new SearchTerm { Pattern = "beta", Mode = SearchTerm.SearchMode.FileName });
+                tab.Groups.Add(names);
+                var content = scenario == "groups-mixed" ? new TermGroup { Mode = TermGroup.GroupMode.And } : names;
+                content.Terms.Add(new SearchTerm { Pattern = "c;~|%", Mode = SearchTerm.SearchMode.Content });
+                content.Terms.Add(new SearchTerm { Pattern = "d", Mode = SearchTerm.SearchMode.Content });
+                if (scenario == "groups-mixed") tab.Groups.Add(content);
+                Assert.Equal(new[] { alpha }, MatchingFiles(tab, files));
+                CloseWindow(original);
+                var restored = ShowWindow();
+                var restoredTab = Assert.Single(Tabs(restored, "LeftPane"));
+                Assert.Equal(scenario == "groups-mixed" ? 2 : 1, restoredTab.Groups.Count);
+                Assert.Equal(names.Mode, restoredTab.Groups[0].Mode);
+                Assert.Equal(scenario == "groups-mixed" ? new[] { "alpha", "beta" } : new[] { "alpha", "c;~|%", "d" },
+                    restoredTab.Groups[0].Terms.Select(term => term.Pattern));
+                var restoredContent = restoredTab.Groups.Last();
+                Assert.Equal(TermGroup.GroupMode.And, restoredContent.Mode);
+                Assert.Equal(new[] { "c;~|%", "d" }, restoredContent.Terms.Skip(scenario == "groups-mixed" ? 0 : 1).Select(term => term.Pattern));
+                Assert.All(restoredContent.Terms.Skip(scenario == "groups-mixed" ? 0 : 1), term => Assert.Equal(SearchTerm.SearchMode.Content, term.Mode));
+                Assert.Equal(new[] { alpha }, MatchingFiles(restoredTab, files));
+                CloseWindow(restored);
+                return;
+            }
             if (scenario == "first-open")
             {
                 var original = ShowWindow();
@@ -229,6 +270,7 @@ public static class SessionPersistenceScenario
                     Assert.Equal(2, tab.SortIndex);
                     Assert.False(tab.SortAsc);
                     Assert.Equal("needle", Assert.Single(Assert.Single(tab.Groups).Terms).Pattern);
+                    Assert.Equal(TermGroup.GroupMode.Or, Assert.Single(tab.Groups).Mode);
                     Assert.True(Assert.Single(Tabs(restored, "RightPane")).IsEditor);
                     Click(restored, "DualPaneRailBtn");
                     var editor = (TextEditor)((ContentControl)Pane(restored, "RightPane").FindName("EditorSlot")).Content;
@@ -316,6 +358,16 @@ public static class SessionPersistenceScenario
         window.Show();
         Pump(TimeSpan.FromMilliseconds(300));
         return window;
+    }
+
+    private static string[] MatchingFiles(SearchTab tab, string[] files)
+    {
+        var found = new List<SearchResult>();
+        var engine = new SearchEngine();
+        engine.ResultsBatch += batch => found.AddRange(batch);
+        Task.Run(() => engine.SearchAsync(Path.GetDirectoryName(files[0])!, tab.Groups.ToArray(), [], "", "", false,
+            CancellationToken.None, files)).GetAwaiter().GetResult();
+        return found.Select(result => result.FilePath).OrderBy(path => path).ToArray();
     }
 
     private static void CloseWindow(MainWindow window)

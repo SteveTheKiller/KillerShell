@@ -259,6 +259,10 @@ namespace KillerShell.Shell
                 string terms = string.Join(";", t.Groups.SelectMany(g => g.Terms)
                     .Where(x => !string.IsNullOrWhiteSpace(x.Pattern))
                     .Select(x => $"{(x.Mode == SearchTerm.SearchMode.Content ? 1 : 0)}~{Uri.EscapeDataString(x.Pattern)}"));
+                string groupedTerms = string.Join("/", t.Groups.Select(g =>
+                    (g.Mode == TermGroup.GroupMode.And ? "1:" : "0:") +
+                    string.Join(";", g.Terms.Select(x =>
+                        $"{(x.Mode == SearchTerm.SearchMode.Content ? 1 : 0)}~{Uri.EscapeDataString(x.Pattern)}"))));
                 string filters = string.Join(";", t.Filters.Select(f =>
                     $"{f.FieldIndex}~{f.ConditionIndex}~{Uri.EscapeDataString(f.Text)}~{(f.Date.HasValue ? f.Date.Value.Ticks.ToString() : "")}~{Uri.EscapeDataString(f.SizeText)}~{f.UnitIndex}"));
                 // The browse fields are APPENDED, never inserted: the nine original fields keep
@@ -271,7 +275,7 @@ namespace KillerShell.Shell
                     Uri.EscapeDataString(t.IncludePatterns), Uri.EscapeDataString(t.ExcludePatterns),
                     t.CaseSensitive ? "1" : "0", t.SortIndex.ToString(), t.SortAsc ? "1" : "0",
                     terms, filters,
-                    Uri.EscapeDataString(t.CurrentFolder), t.IsBrowsing ? "1" : "0"));
+                    Uri.EscapeDataString(t.CurrentFolder), t.IsBrowsing ? "1" : "0", groupedTerms));
             }
             return string.Join("\n", lines);
         }
@@ -368,19 +372,31 @@ namespace KillerShell.Shell
                         t.IsBrowsing    = p[10] == "1";
                     }
 
-                    var g = t.Groups[0];
-                    g.Terms.Clear();
-                    foreach (var ts in p[7].Split(';'))
+                    // The appended field preserves groups. Older rows retain their original
+                    // single ANY group, and older readers can still read the flat term field.
+                    t.Groups.Clear();
+                    foreach (string groupText in p.Length >= 12 ? p[11].Split('/') : new[] { "0:" + p[7] })
                     {
-                        var tp = ts.Split('~');
-                        if (tp.Length < 2) continue;
-                        g.Terms.Add(new SearchTerm
+                        if (groupText.Length < 2 || groupText[1] != ':'
+                            || (groupText[0] != '0' && groupText[0] != '1'))
+                            throw new FormatException("Invalid saved search group.");
+                        var group = new TermGroup
                         {
-                            Mode    = tp[0] == "1" ? SearchTerm.SearchMode.Content : SearchTerm.SearchMode.FileName,
-                            Pattern = Uri.UnescapeDataString(tp[1]),
-                        });
+                            Mode = groupText[0] == '1' ? TermGroup.GroupMode.And : TermGroup.GroupMode.Or
+                        };
+                        foreach (string termText in groupText.Substring(2).Split(';'))
+                        {
+                            int separator = termText.IndexOf('~');
+                            if (separator < 0) continue;
+                            group.Terms.Add(new SearchTerm
+                            {
+                                Mode = termText.Substring(0, separator) == "1" ? SearchTerm.SearchMode.Content : SearchTerm.SearchMode.FileName,
+                                Pattern = Uri.UnescapeDataString(termText.Substring(separator + 1)),
+                            });
+                        }
+                        if (group.Terms.Count == 0) group.Terms.Add(new SearchTerm());
+                        t.Groups.Add(group);
                     }
-                    if (g.Terms.Count == 0) g.Terms.Add(new SearchTerm());
 
                     foreach (var fs in p[8].Split(';'))
                     {
@@ -402,7 +418,7 @@ namespace KillerShell.Shell
                     // search with its search icon. TabFolderIconConverter reruns on HasSearch; it
                     // never sees the terms change.
                     t.HasSearch = !t.IsBrowsing
-                        && (g.Terms.Any(x => !string.IsNullOrWhiteSpace(x.Pattern)) || t.Filters.Count > 0);
+                        && (t.Groups.Any(group => group.Terms.Any(x => !string.IsNullOrWhiteSpace(x.Pattern))) || t.Filters.Count > 0);
                 }
                 catch
                 {
