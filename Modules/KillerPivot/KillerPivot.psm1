@@ -109,36 +109,101 @@ function Get-PivotConfigPath {
     Join-Path $env:LOCALAPPDATA 'PIVOT\tenants.json'
 }
 
-function Read-PivotConfig {
-    $path = Get-PivotConfigPath
-    if (-not (Test-Path -LiteralPath $path)) { return @() }
-    try {
-        $raw = Get-Content -LiteralPath $path -Raw -ErrorAction Stop
-        if ([string]::IsNullOrWhiteSpace($raw)) { return @() }
-        $obj = $raw | ConvertFrom-Json -ErrorAction Stop
-    } catch {
-        Write-Warning "PIVOT: could not parse $path. $($_.Exception.Message)"
-        return @()
+function ConvertFrom-PivotConfig {
+    param([Parameter(Mandatory)][AllowEmptyString()][string]$Raw)
+
+    if ([string]::IsNullOrWhiteSpace($Raw)) { throw 'PIVOT: existing configuration is empty. Restore or repair it before making changes.' }
+    $obj = $Raw | ConvertFrom-Json -ErrorAction Stop
+    if ($null -eq $obj -or ($obj.schema -isnot [int] -and $obj.schema -isnot [long]) -or $obj.schema -ne 1 -or
+        $obj.tenants -isnot [System.Array]) {
+        throw 'PIVOT: invalid configuration schema. Expected schema 1 and a tenants array.'
     }
-    if ($null -eq $obj.tenants) { return @() }
+    $keys = @{}
+    foreach ($tenant in $obj.tenants) {
+        if ($tenant.key -isnot [string] -or $tenant.key -cnotmatch '^[a-z0-9][a-z0-9-]{0,31}$' -or
+            $tenant.name -isnot [string] -or [string]::IsNullOrWhiteSpace($tenant.name) -or
+            $tenant.upn -isnot [string] -or $tenant.upn -notmatch '^[^@\s]+@[^@\s]+\.[^@\s]+$' -or
+            $tenant.tenantId -isnot [string] -or $tenant.tenantId -notmatch '^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$' -or
+            $keys.ContainsKey($tenant.key)) {
+            throw 'PIVOT: invalid or duplicate tenant entry. Restore or repair the configuration before making changes.'
+        }
+        $keys[$tenant.key] = $true
+    }
     return @($obj.tenants)
 }
 
+function Read-PivotConfig {
+    param([switch]$ForUpdate)
+
+    $path = [IO.Path]::GetFullPath((Get-PivotConfigPath))
+    $exists = $true
+    $bytes = $null
+    try { $bytes = [IO.File]::ReadAllBytes($path) }
+    catch {
+        $cause = $_.Exception.GetBaseException()
+        if ($cause -is [IO.FileNotFoundException] -or $cause -is [IO.DirectoryNotFoundException]) {
+            $exists = $false
+        } else { throw "PIVOT: cannot read configuration '$path'. $($cause.Message)" }
+    }
+    $tenants = @()
+    $snapshot = $null
+    if ($exists) {
+        $snapshot = [Convert]::ToBase64String($bytes)
+        $stream = [IO.MemoryStream]::new($bytes, $false)
+        $reader = [IO.StreamReader]::new($stream, [Text.UTF8Encoding]::new($false, $true), $true)
+        try { $tenants = @(ConvertFrom-PivotConfig -Raw $reader.ReadToEnd()) }
+        finally { $reader.Dispose() }
+    }
+    if ($ForUpdate) { return [pscustomobject]@{ Path=$path; Exists=$exists; Snapshot=$snapshot; Tenants=$tenants } }
+    return $tenants
+}
+
 function Write-PivotConfig {
-    param([Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Tenants)
+    param(
+        [Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Tenants,
+        [Parameter(Mandatory)][object]$Expected
+    )
 
-    $path = Get-PivotConfigPath
-    $dir  = Split-Path -Parent $path
-    if (-not (Test-Path -LiteralPath $dir)) {
-        New-Item -Path $dir -ItemType Directory -Force | Out-Null
+    $path = $Expected.Path
+    $dir = [IO.Path]::GetDirectoryName($path)
+    [IO.Directory]::CreateDirectory($dir) | Out-Null
+    $lock = $null
+    $temporary = $null
+    $temporaryOwned = $false
+    try {
+        # Cooperating writers serialize publication, then reject stale reads.
+        $lock = [IO.File]::Open("$path.lock", [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
+        $current = Read-PivotConfig -ForUpdate
+        if ($current.Path -ne $path -or $current.Exists -ne $Expected.Exists -or $current.Snapshot -cne $Expected.Snapshot) {
+            throw 'PIVOT: configuration changed during this operation. Nothing written. Reload and retry.'
+        }
+        $payload = [ordered]@{
+            schema  = 1
+            updated = (Get-Date).ToString('yyyy-MM-dd')
+            tenants = @($Tenants | Sort-Object key)
+        }
+        $json = $payload | ConvertTo-Json -Depth 5
+        ConvertFrom-PivotConfig -Raw $json | Out-Null
+        $temporary = Join-Path $dir ([IO.Path]::GetRandomFileName())
+        $file = [IO.File]::Open($temporary, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+        $temporaryOwned = $true
+        try {
+            $bytes = [Text.UTF8Encoding]::new($false).GetBytes($json)
+            $file.Write($bytes, 0, $bytes.Length)
+            $file.Flush($true)
+        } finally { $file.Dispose() }
+        if ($Expected.Exists) {
+            $backup = "$path.previous.$([guid]::NewGuid().ToString('N'))"
+            [IO.File]::Replace($temporary, $path, $backup)
+        } else {
+            [IO.File]::Move($temporary, $path)
+        }
+        $temporary = $null
+    } finally {
+        try {
+            if ($temporaryOwned -and $temporary -and [IO.File]::Exists($temporary)) { [IO.File]::Delete($temporary) }
+        } finally { if ($lock) { $lock.Dispose() } }
     }
-
-    $payload = [ordered]@{
-        schema  = 1
-        updated = (Get-Date).ToString('yyyy-MM-dd')
-        tenants = @($Tenants | Sort-Object key)
-    }
-    $payload | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $path -Encoding UTF8
 }
 
 function Resolve-PivotTenant {
@@ -294,7 +359,8 @@ function Add-PivotTenant {
     }
 
     # --- Collision check ---
-    $all = @(Read-PivotConfig)
+    $store = Read-PivotConfig -ForUpdate
+    $all = @($store.Tenants)
     if (($all | Where-Object { $_.key -eq $Key }) -and -not $Force) {
         if ($interactive) {
             $ow = (Read-Host " > Key '$Key' already exists. Overwrite? (y/N)").Trim()
@@ -332,7 +398,7 @@ function Add-PivotTenant {
     $new = @(@($all | Where-Object { $_.key -ne $Key }) + $entry)
 
     if ($PSCmdlet.ShouldProcess($Key, "Write tenant entry")) {
-        Write-PivotConfig -Tenants $new
+        Write-PivotConfig -Tenants $new -Expected $store
         Write-Host "[>] Saved: " -NoNewline -ForegroundColor $LineCol
         Write-Host "$Key ($Name)" -ForegroundColor $AccentCol
         if ($interactive) {
@@ -346,12 +412,13 @@ function Remove-PivotTenant {
     [CmdletBinding(SupportsShouldProcess)]
     param([Parameter(Mandatory)][string]$Key)
 
-    $all = @(Read-PivotConfig)
+    $store = Read-PivotConfig -ForUpdate
+    $all = @($store.Tenants)
     if (-not ($all | Where-Object { $_.key -eq $Key })) {
         throw "PIVOT: no tenant with key '$Key'."
     }
     if ($PSCmdlet.ShouldProcess($Key, "Remove tenant entry")) {
-        Write-PivotConfig -Tenants @($all | Where-Object { $_.key -ne $Key })
+        Write-PivotConfig -Tenants @($all | Where-Object { $_.key -ne $Key }) -Expected $store
         Write-Host "[>] Removed: " -NoNewline -ForegroundColor $LineCol
         Write-Host $Key -ForegroundColor $AccentCol
     }

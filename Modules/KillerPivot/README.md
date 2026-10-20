@@ -91,6 +91,13 @@ Add-PivotTenant -Key acme -Upn admin@acme.com -TenantId <guid> -Name 'Acme Inc'
 
 Written to `%LOCALAPPDATA%\PIVOT\tenants.json` by default.
 
+Existing unreadable, empty or invalid configuration blocks changes. Repair it
+or restore a known good copy first. Saves publish atomically and retain each
+previous store as `tenants.json.previous.<unique ID>`. Remove older copies
+when they are no longer needed. The `.lock` sidecar coordinates module writers;
+a conflicting update is refused so you can reload and retry. Direct editors
+and older module versions do not participate in this locking protocol.
+
 Four fields per tenant: a short lowercase key you type, a display name, the
 admin UPN, and the tenant GUID. All four are identifiers. Nothing secret is
 stored, and authentication stays interactive on every connect.
@@ -112,7 +119,8 @@ admin UPN is not a credential, but it is a target list.
 
 - Forcing a real sign-in prompt on every switch is what makes the guarantee
   real. That tradeoff is deliberate.
-- Success prints two lines. The full status block only appears on `pvc`.
+- Success prints verification. KeepExisting also prints the command prefix.
+  The full status block only appears on `pvc`.
 - A mismatch is loud and leaves you disconnected. That is the intended outcome.
 
 ---

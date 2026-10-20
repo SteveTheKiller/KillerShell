@@ -25,7 +25,7 @@
         PSData = @{
             Tags         = @('MSP', 'Microsoft365', 'ExchangeOnline', 'Graph', 'MultiTenant', 'Sysadmin', 'Windows')
             ProjectUri    = 'https://github.com/SteveTheKiller/killer-modules/tree/main/KillerPivot'
-            ReleaseNotes = 'Disconnect sessions when connection or tenant validation fails, and report incomplete cleanup.'
+            ReleaseNotes = 'Validate the exact Exchange connection, clean up failed connections, and preserve tenant configuration with atomic saves and conflict detection.'
         }
     }
 }
