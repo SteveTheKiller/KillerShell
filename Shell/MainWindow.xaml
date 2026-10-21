@@ -339,6 +339,7 @@
                                  two-way state bindings, so RevealInTree can drive the tree from
                                  code when navigation came from somewhere else. -->
                             <Style TargetType="TreeViewItem" BasedOn="{StaticResource FolderTreeItem}">
+                                <Setter Property="AutomationProperties.Name" Value="{Binding NameLabel}"/>
                                 <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
                                 <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
                             </Style>
@@ -470,6 +471,7 @@
                             </ListBox.OpacityMask>
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
+                                    <Setter Property="AutomationProperties.Name" Value="{Binding NameLabel}"/>
                                     <Setter Property="Padding" Value="0"/>
                                     <Setter Property="Margin" Value="0"/>
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -2068,6 +2070,7 @@
                                FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"/>
                 </Border>
                 <Button Content="{DynamicResource AboutCloseGlyph}" Click="ShortcutsClose_Click" Style="{StaticResource OverlayCloseButton}"
+                        AutomationProperties.Name="{DynamicResource Str_Menu_Close}" ToolTip="{DynamicResource Str_Menu_Close}"
                         HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="7"
                         Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
                         Margin="{DynamicResource AboutCloseMargin}"/>
