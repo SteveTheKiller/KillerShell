@@ -2,6 +2,7 @@ using System;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using KillerShell.Services;
+using KillerShell.Tests.Safety;
 using Microsoft.Win32;
 using Xunit;
 
@@ -9,9 +10,11 @@ namespace KillerShell.Tests.Services
 {
     public sealed class RegistryEditorLogicTests
     {
-        [Fact]
+        [DisposableVmFact]
+        [Trait("Category", "DisposableVm")]
         public void RenameKey_PreservesProtectedPermissionsAndOpenHandles()
         {
+            DisposableVmGuard.RequireDisposableVm();
             string subkey = "Software\\KillerShell.Tests." + Guid.NewGuid().ToString("N");
             try
             {
@@ -108,9 +111,11 @@ namespace KillerShell.Tests.Services
             }
         }
 
-        [Fact]
+        [DisposableVmFact]
+        [Trait("Category", "DisposableVm")]
         public void Renames_KeepUncommonValueTypes()
         {
+            DisposableVmGuard.RequireDisposableVm();
             const uint RegResourceList = 8;
             string rootName = "KillerShell.Tests." + Guid.NewGuid().ToString("N");
             string parentPath = "HKEY_CURRENT_USER\\Software";
