@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using KillerShell.Services;
 using Xunit;
@@ -14,21 +15,40 @@ public sealed class UninstallRelayTests
     public async Task ClientRejectsRecycledServerIdentityPacket()
     {
         string name = "KillerShell-uninstall-" + Guid.NewGuid().ToString("N");
-        using var server = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-        Task send = Task.Run(async () =>
+        using var server = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None);
+        using var ready = new ManualResetEventSlim();
+        Exception? serverFailure = null;
+        var send = new Thread(() =>
         {
-            await server.WaitForConnectionAsync();
-            byte[] wrongCreation = BitConverter.GetBytes(1L);
-            await server.WriteAsync(wrongCreation, 0, wrongCreation.Length);
-        });
-        using var child = Start(name, Process.GetCurrentProcess().MainModule!.FileName, hold:false);
+            try
+            {
+                // Run the blocking OS accept on its own thread before launching the client.
+                ready.Set();
+                server.WaitForConnection();
+                byte[] wrongCreation = BitConverter.GetBytes(1L);
+                server.Write(wrongCreation, 0, wrongCreation.Length);
+            }
+            catch (Exception error) { serverFailure = error; }
+        }) { IsBackground = true };
+        send.Start();
+        Process? child = null;
         try
         {
+            Assert.True(ready.Wait(5000), "The dedicated pipe server did not start.");
+            child = Start(name, Process.GetCurrentProcess().MainModule!.FileName, hold: false);
+            Task<string> standardError = child.StandardError.ReadToEndAsync();
+            Assert.True(send.Join(15000), "The wrong-creation packet was not delivered.");
+            Assert.Null(serverFailure);
             Assert.True(child.WaitForExit(15000));
             Assert.NotEqual(0, child.ExitCode);
-            await send;
+            Assert.Contains("The uninstall coordinator process identity changed.", await standardError);
         }
-        finally {Stop(child);}
+        finally
+        {
+            if (child != null) { Stop(child); child.Dispose(); }
+            server.Dispose();
+            Assert.True(send.Join(5000), "The dedicated pipe server did not stop.");
+        }
     }
 
     [Fact]
