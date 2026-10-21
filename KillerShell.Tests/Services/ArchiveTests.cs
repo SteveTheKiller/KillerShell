@@ -268,7 +268,7 @@ namespace KillerShell.Tests.Services
         [InlineData(0, true)]
         [InlineData(1, true)]
         [InlineData(2, true)]
-        public void ZipAdd_CollidesOnlyWithTheExactCaseName(int policy, bool exactNameExists)
+        public void ZipAdd_PreservesCaseDistinctEntriesAndPreventsWindowsOutputCollisions(int policy, bool exactNameExists)
         {
             string path = exactNameExists
                 ? CreateCaseArchive(".zip", "A.txt", "a.txt")
@@ -281,23 +281,25 @@ namespace KillerShell.Tests.Services
 
                 var result = ArchiveWriter.Add(path, "", new[] { source }, (ArchiveCollision)policy, null, CancellationToken.None);
 
-                if (exactNameExists && policy == (int)ArchiveCollision.Report)
+                if (exactNameExists || policy != (int)ArchiveCollision.KeepBoth)
                 {
                     Assert.False(result.Ok);
-                    Assert.Equal("a.txt", Assert.Single(result.Collisions));
+                    Assert.NotEmpty(result.Collisions);
                     Assert.Equal(original, File.ReadAllBytes(path));
                     return;
                 }
                 Assert.True(result.Ok, result.ErrorDetail ?? result.ErrorKey);
                 Assert.Equal(1, result.Changed);
-                using var archive = ZipFile.OpenRead(path);
-                string added = exactNameExists && policy == (int)ArchiveCollision.KeepBoth ? "a (2).txt" : "a.txt";
-                Assert.Equal(added == "a.txt" ? new[] { "A.txt", "a.txt" } : new[] { "A.txt", "a.txt", "a (2).txt" },
-                    archive.Entries.Select(entry => entry.FullName));
-                using (var reader = new StreamReader(archive.GetEntry("A.txt")!.Open())) Assert.Equal("A.txt", reader.ReadToEnd());
-                using (var reader = new StreamReader(archive.GetEntry(added)!.Open())) Assert.Equal("new content", reader.ReadToEnd());
-                if (added != "a.txt")
-                    using (var reader = new StreamReader(archive.GetEntry("a.txt")!.Open())) Assert.Equal("a.txt", reader.ReadToEnd());
+                using (var archive = ZipFile.OpenRead(path))
+                {
+                    Assert.Equal(new[] { "A.txt", "a (2).txt" }, archive.Entries.Select(entry => entry.FullName));
+                    using (var reader = new StreamReader(archive.GetEntry("A.txt")!.Open())) Assert.Equal("A.txt", reader.ReadToEnd());
+                    using (var reader = new StreamReader(archive.GetEntry("a (2).txt")!.Open())) Assert.Equal("new content", reader.ReadToEnd());
+                }
+                string output = Path.Combine(Path.GetDirectoryName(path)!, "out");
+                Assert.True(ArchiveProvider.ExtractAll(path, output, CancellationToken.None, out string? error), error);
+                Assert.Equal("A.txt", File.ReadAllText(Path.Combine(output, "A.txt")));
+                Assert.Equal("new content", File.ReadAllText(Path.Combine(output, "a (2).txt")));
             }
             finally
             {

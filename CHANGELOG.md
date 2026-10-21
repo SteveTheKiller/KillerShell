@@ -26,7 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Copies and moves preserve recovery copies if replacing a destination fails, and report unreadable source folders as partial failures while continuing accessible work. Whole-folder renames still report success when they complete.
 - File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark. Copying a read-only source can still replace an existing file.
 - Editing a ZIP preserves file permissions, including Unix executable permissions, and folder attributes on retained entries. Archive browsing, extraction, and edits distinguish names that differ by case, and bulk extraction reports conflicting Windows output paths.
-- Replacing duplicate incoming ZIP names keeps the last source once, so successful additions remain extractable.
+- ZIP additions resolve file and folder conflicts before publication, reject conflicting Windows output names, and refuse malformed existing paths without changing the archive. Replacing duplicate incoming names keeps the last source once.
 - Canceling extraction stops between decompression chunks, including the final entry, and prevents canceled output from being accepted as complete.
 - Updating an all-users install and saving a protected file as administrator check the staged download or document against its verified hash just before writing, so another program cannot swap it in on the way. The update runs from the installed copy instead of a script in the temp folder.
 - Text printed in a terminal can no longer point the tab's folder at a network share, which could send your Windows sign-in to that machine when the folder was opened. Local and WSL folders still follow the shell.

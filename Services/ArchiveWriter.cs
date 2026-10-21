@@ -211,11 +211,21 @@ namespace KillerShell.Services
                 return result;
             }
 
-            // Existing names, and the incoming ones as they are decided, share one set: two
-            // dropped files that would land on the same name have to collide with each other as
-            // well as with the archive, or KeepBoth would hand out the same name twice.
-            HashSet<string> taken;
-            try { taken = ExistingNames(archivePath); }
+            var root = new AddPathNode { IsDirectory = true };
+            var planned = new List<ArchiveAddItem>();
+            var replaced = new HashSet<string>(StringComparer.Ordinal);
+            var renamedDirectories = new Dictionary<string, string>(StringComparer.Ordinal);
+            try
+            {
+                using var zip = ZipFile.OpenRead(archivePath);
+                foreach (var entry in zip.Entries)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    if (!PlanAddPath(root, entry.FullName, null, ArchiveCollision.Report, planned,
+                                     replaced, renamedDirectories, result)) break;
+                }
+            }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 result.ErrorKey = "Str_Status_ArchiveWriteFailed";
@@ -223,23 +233,13 @@ namespace KillerShell.Services
                 return result;
             }
 
-            var replaced = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var a in adds)
+            if (result.Collisions.Count == 0)
             {
-                if (taken.Add(a.EntryName)) continue;
-
-                switch (collision)
+                foreach (var item in adds)
                 {
-                    case ArchiveCollision.Report:
-                        result.Collisions.Add(a.EntryName);
-                        break;
-                    case ArchiveCollision.Replace:
-                        replaced.Add(a.EntryName);
-                        break;
-                    default:
-                        a.EntryName = UniqueEntryName(a.EntryName, taken);
-                        taken.Add(a.EntryName);
-                        break;
+                    ct.ThrowIfCancellationRequested();
+                    PlanAddPath(root, item.EntryName, item, collision, planned,
+                                replaced, renamedDirectories, result);
                 }
             }
 
@@ -251,23 +251,106 @@ namespace KillerShell.Services
                 return result;
             }
 
-            if (collision == ArchiveCollision.Replace)
-            {
-                // Last source wins, in source order, before any archive bytes are written.
-                var winners = new Dictionary<string, ArchiveAddItem>(StringComparer.Ordinal);
-                foreach (var item in adds) winners[item.EntryName] = item;
-                adds = adds.Where(item => ReferenceEquals(winners[item.EntryName], item)).ToList();
-            }
-            int changed = adds.Count;
-            var ok = Rebuild(archivePath, raw =>
-            {
-                string norm = NormalizeExisting(raw);
-                // Only a REPLACE drops anything that is already there, and only the exact name.
-                return replaced.Contains(norm) ? null : raw;
-            }, adds, progress, result, ct);
+            int changed = planned.Count;
+            var ok = Rebuild(archivePath, raw => replaced.Contains(raw) ? null : raw,
+                             planned, progress, result, ct);
 
             if (ok) { result.Ok = true; result.Changed = changed; }
             return result;
+        }
+
+        private sealed class AddPathNode
+        {
+            internal string Name = "";
+            internal bool IsDirectory;
+            internal readonly Dictionary<string, AddPathNode> Children = new(StringComparer.OrdinalIgnoreCase);
+            internal readonly List<string> Existing = [];
+            internal ArchiveAddItem? Incoming;
+        }
+
+        // Include implied directories, so either direction of a file/folder conflict is
+        // decided before publication. Replacement removes only the explicitly chosen branch.
+        private static bool PlanAddPath(AddPathNode root, string raw, ArchiveAddItem? item,
+                                        ArchiveCollision collision, List<ArchiveAddItem> planned,
+                                        HashSet<string> replaced, Dictionary<string, string> renamedDirectories,
+                                        ArchiveWriteResult result)
+        {
+            bool directory = raw.EndsWith("/", StringComparison.Ordinal);
+            string path = raw.Replace('\\', '/');
+            string[] parts = (directory ? path[..^1] : path).Split('/');
+            if (parts.Any(part => !IsWindowsOutputComponent(part)))
+            {
+                result.Collisions.Add(raw);
+                return false;
+            }
+            var parent = root;
+            var output = new List<string>();
+            for (int i = 0; i < parts.Length; i++)
+            {
+                bool needsDirectory = i < parts.Length - 1 || directory;
+                string originalPrefix = string.Join("/", parts.Take(i + 1));
+                string leaf = item != null && needsDirectory && renamedDirectories.TryGetValue(originalPrefix, out var renamed)
+                    ? renamed : parts[i];
+                if (parent.Children.TryGetValue(leaf.TrimEnd(' ', '.'), out var node)
+                    && (node.Name != leaf || node.IsDirectory != needsDirectory || !needsDirectory))
+                {
+                    // Distinct entry names are different archive identities. Replace must
+                    // not discard one merely because Windows would give it the same path.
+                    if (collision == ArchiveCollision.Report
+                        || (collision == ArchiveCollision.Replace && node.Name != leaf))
+                    {
+                        result.Collisions.Add(raw);
+                        return false;
+                    }
+                    if (collision == ArchiveCollision.Replace)
+                    {
+                        RemovePlannedBranch(node, planned, replaced);
+                        parent.Children.Remove(leaf.TrimEnd(' ', '.'));
+                    }
+                    else
+                    {
+                        leaf = UniqueEntryName(leaf, new HashSet<string>(parent.Children.Keys, StringComparer.OrdinalIgnoreCase));
+                        if (needsDirectory) renamedDirectories[originalPrefix] = leaf;
+                    }
+                    node = null;
+                }
+                if (node == null)
+                {
+                    node = new AddPathNode { Name = leaf, IsDirectory = needsDirectory };
+                    parent.Children.Add(leaf.TrimEnd(' ', '.'), node);
+                }
+                output.Add(leaf);
+                parent = node;
+            }
+            if (item == null) parent.Existing.Add(raw);
+            else
+            {
+                if (directory && parent.Incoming != null) planned.Remove(parent.Incoming);
+                item.EntryName = string.Join("/", output) + (directory ? "/" : "");
+                parent.Incoming = item;
+                planned.Add(item);
+            }
+            return true;
+        }
+
+        private static void RemovePlannedBranch(AddPathNode node, List<ArchiveAddItem> planned,
+                                                 HashSet<string> replaced)
+        {
+            foreach (string name in node.Existing) replaced.Add(name);
+            if (node.Incoming != null) planned.Remove(node.Incoming);
+            foreach (var child in node.Children.Values) RemovePlannedBranch(child, planned, replaced);
+        }
+
+        private static bool IsWindowsOutputComponent(string name)
+        {
+            string trimmed = name.TrimEnd(' ', '.');
+            if (trimmed.Length == 0 || name.IndexOfAny(BadNameChars) >= 0) return false;
+            string device = trimmed.Split('.')[0].TrimEnd(' ').ToUpperInvariant();
+            if (device == "CON" || device == "PRN" || device == "AUX" || device == "NUL"
+                || device == "CONIN$" || device == "CONOUT$" || device == "CLOCK$") return false;
+            return !(device.Length == 4 && (device.StartsWith("COM", StringComparison.Ordinal)
+                       || device.StartsWith("LPT", StringComparison.Ordinal))
+                     && "123456789\u00b9\u00b2\u00b3".IndexOf(device[3]) >= 0);
         }
 
         private static void AddFile(string src, string? entryName, List<ArchiveAddItem> adds,
@@ -722,7 +805,8 @@ namespace KillerShell.Services
             int n = 2;
             string candidate;
             do { candidate = dir + stem + " (" + n++ + ")" + ext; }
-            while (taken.Contains(candidate));
+            while (taken.Contains(candidate)
+                   || taken.Any(n => n.StartsWith(candidate + "/", StringComparison.Ordinal)));
 
             return candidate;
         }
