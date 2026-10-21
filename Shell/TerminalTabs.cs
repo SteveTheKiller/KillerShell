@@ -311,8 +311,7 @@ namespace KillerShell.Shell
                 // Focus has to wait for the swap to lay out, or it lands on an element that is
                 // still collapsed and silently does nothing.
                 var term = t.Term!;
-                Dispatcher.BeginInvoke(new Action(() => term.Focus()),
-                                       System.Windows.Threading.DispatcherPriority.Input);
+                QueueTabFocus(t, () => term.Focus());
             }
         }
 

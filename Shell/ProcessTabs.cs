@@ -147,8 +147,7 @@ namespace KillerShell.Shell
             // Focus has to wait for the swap to lay out, or it lands on an element that is still
             // collapsed and silently does nothing - same reason the shell and the editor both
             // defer their own focus call (TerminalTabs.cs / EditorTabs.cs).
-            Dispatcher.BeginInvoke(new System.Action(() => procList.FocusFilter()),
-                                   System.Windows.Threading.DispatcherPriority.Input);
+            QueueTabFocus(t, () => procList.FocusFilter());
         }
 
         /// <summary>Tear a Task Manager tab down when its tab closes. Called from FinishCloseTab.</summary>

@@ -46,6 +46,16 @@ namespace KillerShell.Shell
         /// </summary>
         private void FocusPaneQuiet(FilePane pane) => _focus = pane;
 
+        private void QueueTabFocus(SearchTab tab, System.Action focus)
+        {
+            var owner = Pane;
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, new System.Action(() =>
+            {
+                if (ReferenceEquals(Pane, owner) && ReferenceEquals(owner.Active, tab) && owner.IsVisible)
+                    focus();
+            }));
+        }
+
         /// <summary>Panes currently on screen. Just the left one until the second pane opens.</summary>
         private System.Collections.Generic.IEnumerable<FilePane> LivePanes()
         {

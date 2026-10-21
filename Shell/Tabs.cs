@@ -571,7 +571,7 @@ namespace KillerShell.Shell
         }
 
         // Point the whole UI at a tab: collections, config boxes, status, counters, button label.
-        private void ActivateTab(SearchTab t)
+        private void ActivateTab(SearchTab t, bool updateShared = true)
         {
             // Cancel a half-typed address edit before the switch. Clicking a tab does not move
             // keyboard focus off the address TextBox (a Border press takes no focus), so
@@ -592,8 +592,11 @@ namespace KillerShell.Shell
             // ring is the last thing UpdateTabBar does anyway.
             UpdateTabBar();
 
-            TermsList.ItemsSource   = t.Groups;
-            FiltersList.ItemsSource = t.Filters;
+            if (updateShared)
+            {
+                TermsList.ItemsSource   = t.Groups;
+                FiltersList.ItemsSource = t.Filters;
+            }
 
             // Only re-bind when the collection actually CHANGES. Assigning ItemsSource resets
             // the ListBox's selection even when handed the very same collection back, so
@@ -653,14 +656,15 @@ namespace KillerShell.Shell
             Pane.RootPathBox.Text             = t.RootPath;
             Pane.ScopePathLabel.Text          = t.PipeFiles != null ? t.PipeLabel
                 : string.IsNullOrEmpty(t.RootPath) ? Loc("Str_Scope_Empty") : t.RootPath;
-            IncludePatternsBox.Text      = t.IncludePatterns;
-            ExcludePatternsBox.Text      = t.ExcludePatterns;
-            CaseSensitiveCheck.IsChecked = t.CaseSensitive;
-
-            SetFooterStatus(t.StatusMessage);           // window footer - the live line
-            // The light belongs to whichever tab is showing: switching from a running tab to an
-            // idle one has to drop it back off amber, and vice versa.
-            ApplyStatusTone(t.StatusKey);
+            if (updateShared)
+            {
+                IncludePatternsBox.Text      = t.IncludePatterns;
+                ExcludePatternsBox.Text      = t.ExcludePatterns;
+                CaseSensitiveCheck.IsChecked = t.CaseSensitive;
+                SetFooterStatus(t.StatusMessage);
+                ApplyStatusTone(t.StatusKey);
+                SearchButton.Content = t.IsSearching ? Loc("Str_Btn_Stop") : Loc("Str_Btn_Search");
+            }
             Pane.QueryText.Text    = t.QueryLabel;
             SetExpandAllLabel(t.Results.Count > 0 && t.Results.All(r => r.IsExpanded));
             ApplySort(t);
@@ -672,7 +676,6 @@ namespace KillerShell.Shell
             Pane.StatsText.Text         = t.StatsLabel;
             UpdatePaneStatusBar();      // the incoming tab may have nothing to report
             UpdateLocationColumn();   // ViewOptions.cs - a browsing tab hides the folder column
-            SearchButton.Content   = t.IsSearching ? Loc("Str_Btn_Stop") : Loc("Str_Btn_Search");
             Pane.ResultsHeader.Text = t.Results.Count > 0
                 ? string.Format(Loc("Str_Lbl_ResultsCount"), t.Results.Count)
                 : Loc("Str_Lbl_Results");
@@ -681,10 +684,10 @@ namespace KillerShell.Shell
             // Only the active tab is watched (BrowseWatcher.cs), so the watch moves with it and
             // the incoming tab gets a silent refresh to catch anything that changed on disk while
             // it sat in the background.
-            StopWatching();
+            if (updateShared) StopWatching();
             // A --demo folder is fabricated (DemoFileSystem.cs), so ask the demo table too, or a demo
             // tab switch would skip the refresh and the tree would never follow it.
-            if (t.IsBrowsing && (System.IO.Directory.Exists(t.CurrentFolder)
+            if (updateShared && t.IsBrowsing && (System.IO.Directory.Exists(t.CurrentFolder)
                                 || (DemoMode && Services.DemoFs.Has(t.CurrentFolder))))
                 _ = RefreshBrowsingTab(Pane, t, restoreSelection: rebound);
 
@@ -910,10 +913,11 @@ namespace KillerShell.Shell
         private void RunPaneCrossfade(System.Windows.Media.ImageSource? snap)
         {
             if (snap == null) return;
-            Pane.TabFadeGhost.BeginAnimation(OpacityProperty, null);
-            Pane.TabFadeGhost.Source     = snap;
-            Pane.TabFadeGhost.Opacity    = 1;
-            Pane.TabFadeGhost.Visibility = Visibility.Visible;
+            var ghost = Pane.TabFadeGhost;
+            ghost.BeginAnimation(OpacityProperty, null);
+            ghost.Source     = snap;
+            ghost.Opacity    = 1;
+            ghost.Visibility = Visibility.Visible;
             var fade = new System.Windows.Media.Animation.DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(140))
             {
                 EasingFunction = new System.Windows.Media.Animation.QuadraticEase
@@ -921,11 +925,12 @@ namespace KillerShell.Shell
             };
             fade.Completed += (_, _) =>
             {
-                Pane.TabFadeGhost.BeginAnimation(OpacityProperty, null);
-                Pane.TabFadeGhost.Visibility = Visibility.Collapsed;
-                Pane.TabFadeGhost.Source     = null;
+                if (!ReferenceEquals(ghost.Source, snap)) return;
+                ghost.BeginAnimation(OpacityProperty, null);
+                ghost.Visibility = Visibility.Collapsed;
+                ghost.Source     = null;
             };
-            Pane.TabFadeGhost.BeginAnimation(OpacityProperty, fade);
+            ghost.BeginAnimation(OpacityProperty, fade);
         }
 
         private void OpenCurrentFolderTab()
@@ -967,18 +972,23 @@ namespace KillerShell.Shell
 
         private void CloseActiveTab_Click(object sender, RoutedEventArgs e) => CloseTab(_active);
 
+        private readonly System.Collections.Generic.HashSet<SearchTab> _closingTabs = [];
+
         private void CloseTab(SearchTab t)
         {
+            var owner = LeftPane.Tabs.Contains(t) ? LeftPane : RightPane.Tabs.Contains(t) ? RightPane : null;
+            if (owner == null || _closingTabs.Contains(t)) return;
             // The one close that can destroy something: unsaved typing exists nowhere else, so
             // a document tab gets asked first (EditorTabs.cs). Ahead of the fade, because the
             // dialog has to be able to call the whole thing off.
             if (!ConfirmDiscard(t)) return;
+            _closingTabs.Add(t);
 
             t.Cts?.Cancel();   // stop its search; the engine winds down gracefully
 
             // Fade the tab CHIP out first (when the bar is visible), then remove.
-            var cont = TabContainer(t);
-            if (cont != null && _tabs.Count > 1)
+            var cont = owner.TabStrip.ItemContainerGenerator.ContainerFromItem(t) as FrameworkElement;
+            if (cont != null && owner.Tabs.Count > 1)
             {
                 cont.IsHitTestVisible = false;   // no clicks on a dying tab
                 var chipFade = new System.Windows.Media.Animation.DoubleAnimation(0, TimeSpan.FromMilliseconds(110))
@@ -986,14 +996,28 @@ namespace KillerShell.Shell
                     EasingFunction = new System.Windows.Media.Animation.QuadraticEase
                         { EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut },
                 };
-                chipFade.Completed += (_, _) => FinishCloseTab(t);
+                chipFade.Completed += (_, _) => FinishCloseTab(owner, t);
                 cont.BeginAnimation(OpacityProperty, chipFade);
                 return;
             }
-            FinishCloseTab(t);
+            FinishCloseTab(owner, t);
         }
 
-        private void FinishCloseTab(SearchTab t)
+        private void FinishCloseTab(FilePane owner, SearchTab t)
+        {
+            var focused = Pane;
+            bool background = !ReferenceEquals(owner, focused);
+            FocusPaneQuiet(owner);
+            try { FinishCloseTab(t, updateShared: !background); }
+            finally
+            {
+                _closingTabs.Remove(t);
+                if (background) FocusPaneQuiet(focused);
+                UpdatePaneFocusRing();
+            }
+        }
+
+        private void FinishCloseTab(SearchTab t, bool updateShared = true)
         {
             if (!_tabs.Contains(t)) return;   // guard against a double-fire
 
@@ -1027,17 +1051,18 @@ namespace KillerShell.Shell
                 // to there. CloseSecondPane moves focus to the survivor before it hides this one.
                 if (DualPane && ReferenceEquals(Pane, RightPane))
                 {
+                    if (!updateShared) FocusPaneQuiet(LeftPane);
                     CloseSecondPane();   // DualPane.cs
                     return;
                 }
 
-                ActivateTab(CreateTab());
+                ActivateTab(CreateTab(), updateShared);
                 RunPaneCrossfade(snap);
                 return;
             }
             if (t == _active)
             {
-                ActivateTab(_tabs[Math.Min(idx, _tabs.Count - 1)]);
+                ActivateTab(_tabs[Math.Min(idx, _tabs.Count - 1)], updateShared);
                 RunPaneCrossfade(snap);
             }
             UpdateTabBar();

@@ -272,8 +272,7 @@ namespace KillerShell.Shell
             var editor = t.Editor!;
             // Focus has to wait for the swap to lay out, or it lands on an element that is still
             // collapsed and silently does nothing.
-            Dispatcher.BeginInvoke(new Action(() => editor.TextArea.Focus()),
-                                   System.Windows.Threading.DispatcherPriority.Input);
+            QueueTabFocus(t, () => editor.TextArea.Focus());
         }
 
         /// <summary>Tear a document down when its tab closes. Called from FinishCloseTab.</summary>
