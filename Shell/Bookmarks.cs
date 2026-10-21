@@ -163,7 +163,7 @@ namespace KillerShell.Shell
                     if (IsPlaceSentinel(p) || Services.WslDistributions.TryParsePath(p, out _, out _) || Directory.Exists(p)) _bookmarks.Add(new Bookmark { Path = p });
                 }
 
-            // The Recycle Bin joined the places in 1.4.1. Added once to a list saved before then,
+            // The Recycle Bin joined the places in 1.5.0. Added once to a list saved before then,
             // after This PC, and never again - so removing it sticks.
             if (Services.ThemeManager.GetSetting("BookmarksRecycleBinAdded") != "1")
             {

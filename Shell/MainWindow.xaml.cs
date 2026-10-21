@@ -800,7 +800,7 @@ namespace KillerShell.Shell
             // above already use (StorageTabs.cs).
             if (StorageAnalyzerHasFocus && !IsWindowChord(e, ctrl, shift, alt)) return;
 
-            // Commands that had no key before 1.4.1, and the folder tree's own menu keys
+            // Commands that had no key before 1.5.0, and the folder tree's own menu keys
             // (KeyCommands.cs). Ahead of the chain below so a focused tree can claim F3, F6,
             // Ctrl+D and the rest for its selected node rather than for the listing's selection.
             if (HandleCommandKey(e, ctrl, shift, alt)) return;

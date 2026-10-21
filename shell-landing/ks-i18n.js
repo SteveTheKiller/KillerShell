@@ -8566,7 +8566,7 @@ Object.assign(I18N["pt"], {
   "f_themes_d": "13 temas, 41 visuais: Dark, Light, Black e 98SE têm 8 cores de destaque cada. Os outros 9 têm paletas fixas. Troque sem reiniciar. O menu de temas permite ativar ou desativar o grão de filme."
 });
 
-/* 1.4.1: bookmark drops always move, the Recycle Bin bookmark, the Event Viewer and Storage Analyzer keys,
+/* 1.5.0: bookmark drops always move, the Recycle Bin bookmark, the Event Viewer and Storage Analyzer keys,
    the app size keys, and the location bar star. Later blocks win, so these replace the older wording. */
 Object.assign(window.I18N["vi"], {
   "h_browse_p4": "Ngôi sao trên dải nút, hoặc <b>Ctrl+B</b>, hiện hoặc ẩn ngăn dấu trang bên dưới cây thư mục. Để lưu một thư mục, hãy thả nó vào ngăn, chọn <b>Thêm vào Dấu trang</b> trong menu chuột phải của nó (<b>Ctrl+D</b>), hoặc nhấp vào ngôi sao bên cạnh địa chỉ để lưu thư mục hiện tại. Sau đó chuyển nhanh đến mười dấu trang đầu tiên bằng <b>Alt+1</b> đến <b>Alt+0</b>.",
