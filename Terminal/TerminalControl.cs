@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -69,8 +70,9 @@ namespace KillerShell.Terminal
 
         public TerminalBuffer Buffer => _buf;
 
-        public TerminalControl(TerminalSkin skin)
+        public TerminalControl(TerminalSkin skin, Action<AutomationPeer, AutomationEvents>? automationEventSink = null)
         {
+            _automationEventSink = automationEventSink ?? ((peer, notification) => peer.RaiseAutomationEvent(notification));
             _palette = TerminalPalette.For(skin);
             _buf = new TerminalBuffer(80, 25);
             _parser = new VtParser(_buf);
@@ -462,6 +464,7 @@ namespace KillerShell.Terminal
                 any = true;
             }
             if (any) _scroll = 0;               // new output jumps back to the bottom
+            if (any) QueueAutomationChange(text: true, selection: true);
             if (_buf.Version != _drawnVersion) InvalidateVisual();
             return consumed;
         }
@@ -471,6 +474,7 @@ namespace KillerShell.Terminal
         {
             var b = Encoding.UTF8.GetBytes(s);
             _parser.Feed(b, b.Length);
+            QueueAutomationChange(text: true, selection: true);
             InvalidateVisual();
         }
 
@@ -490,6 +494,7 @@ namespace KillerShell.Terminal
         {
             _pump?.Stop();
             _blink?.Stop();
+            _automationEvents?.Stop();
             lock (_gate)
             {
                 _closing = true;
@@ -540,6 +545,7 @@ namespace KillerShell.Terminal
             if (cols != _buf.Cols || rows != _buf.Rows)
             {
                 _buf.Resize(cols, rows);
+                QueueAutomationChange(text: true, selection: true);
                 _pty?.Resize((short)cols, (short)rows);
                 InvalidateVisual();
             }
@@ -919,18 +925,21 @@ namespace KillerShell.Terminal
 
             if (e.ChangedButton == MouseButton.Left && !_hasSelection) ClearSelection();
             SelectionMouseDown(e);           // TerminalSelection.cs
+            QueueAutomationChange(selection: true);
             base.OnMouseDown(e);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             SelectionMouseMove(e);
+            QueueAutomationChange(selection: true);
             base.OnMouseMove(e);
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             SelectionMouseUp();
+            QueueAutomationChange(selection: true);
             base.OnMouseUp(e);
         }
 

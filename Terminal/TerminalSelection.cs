@@ -119,6 +119,7 @@ namespace KillerShell.Terminal
             _selHeadLine = _buf.TotalLines - 1;
             _selHeadCol = _buf.Cols;
             _hasSelection = true;
+            QueueAutomationChange(selection: true);
             InvalidateVisual();
         }
 
@@ -126,6 +127,7 @@ namespace KillerShell.Terminal
         {
             if (!_hasSelection) return;
             _hasSelection = false;
+            QueueAutomationChange(selection: true);
             InvalidateVisual();
         }
 

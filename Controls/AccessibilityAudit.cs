@@ -33,9 +33,13 @@ namespace KillerFamily.Accessibility
 
         private static void Visit(DependencyObject element, List<string> lines)
         {
-            if (element is Control control && control.IsVisible)
+            if (element is FrameworkElement control && control.IsVisible)
             {
                 var peer = UIElementAutomationPeer.CreatePeerForElement(control);
+                if (peer == null && control.Focusable)
+                    lines.Add(string.Join("\t", [control.GetType().Name, Clean(AutomationProperties.GetAutomationId(control)),
+                        Clean(AutomationProperties.GetName(control)), control.Focusable.ToString(), control.IsEnabled.ToString(),
+                        control.IsVisible.ToString(), (control.FocusVisualStyle != null).ToString(), "MissingPeer"]));
                 if (peer != null && peer.IsControlElement())
                 {
                     string id = AutomationProperties.GetAutomationId(control);
