@@ -150,6 +150,12 @@ namespace KillerShell
                 return;
             }
 
+            if (e.Args.Length > 0 && e.Args[0] == Services.ProcessRestart.ElevatedArgument)
+            {
+                Shutdown(Services.ProcessRestart.RunElevatedHelper(e.Args));
+                return;
+            }
+
             // Elevated retry of a recycle this user was refused: KillerShell.exe --recycle "<p>"...
             // Started by RecycleElevated (Elevation.cs) with the runas verb. It does the one job
             // and exits WITHOUT a window - the window that asked is still open behind it, and its

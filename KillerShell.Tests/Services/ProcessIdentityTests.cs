@@ -87,6 +87,7 @@ public sealed class ProcessIdentityTests
     private sealed class ControlledInstance : IRestartProcess
     {
         public long StartTimeUtcTicks { get; set; }
+        public string ImagePath => @"C:\fixture\original.exe";
         public bool HasExited { get; set; }
         public bool Killed { get; private set; }
         public bool Disposed { get; private set; }

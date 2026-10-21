@@ -1463,7 +1463,17 @@ namespace KillerShell.Tools
             {
                 var psi = new ProcessStartInfo(path, args) { UseShellExecute = true };
                 if (elevated) psi.Verb = "runas";
-                await Services.ProcessRestart.RestartAsync(p.Pid, psi, expectedStartTimeUtcTicks: p.StartTimeUtcTicks);
+                bool restarted = await Services.ProcessRestart.RestartAsync(p.Pid, psi,
+                    expectedStartTimeUtcTicks: p.StartTimeUtcTicks, confirm: () =>
+                    {
+                        var confirmation = new ConfirmDialog(
+                            string.Format(MainWindow.LocStatic("Str_Dlg_ProcKillMsg"), p.Name, p.Pid), path,
+                            MainWindow.LocStatic(elevated ? "Str_Menu_ProcRunAsAdmin" : "Str_Menu_ProcRestart"))
+                            { Owner = Window.GetWindow(this) };
+                        confirmation.ShowDialog();
+                        return confirmation.Confirmed;
+                    });
+                if (!restarted) return;
                 ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_Restarted"), p.Name), error: false);
             }
             catch (Exception ex) when (ex is Win32Exception
