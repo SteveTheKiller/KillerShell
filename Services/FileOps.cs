@@ -104,7 +104,8 @@ namespace KillerShell.Services
         /// a progress bar that discovers its own length as it goes is not a progress bar.
         /// </summary>
         private static List<WorkItem> Plan(IEnumerable<string> sources, string targetDir, bool move,
-                                           List<string> dirsToCreate, FileOpResult result, CancellationToken ct)
+                                           List<string> dirsToCreate, FileOpResult result, CancellationToken ct,
+                                           string? directoryTarget = null)
         {
             var work = new List<WorkItem>();
 
@@ -125,7 +126,7 @@ namespace KillerShell.Services
                 }
                 else if (Directory.Exists(src))
                 {
-                    string root = Path.Combine(targetDir, Path.GetFileName(src.TrimEnd(Path.DirectorySeparatorChar)));
+                    string root = directoryTarget ?? Path.Combine(targetDir, Path.GetFileName(src.TrimEnd(Path.DirectorySeparatorChar)));
                     if (move && IsLink(src))
                     {
                         work.Add(new WorkItem { Source = src, Target = root, IsLink = true });
@@ -194,14 +195,17 @@ namespace KillerShell.Services
 
         internal static FileOpResult CopyOrMove(IEnumerable<string> sources, string targetDir, bool move,
             Func<ConflictInfo, ConflictChoice> onConflict, Action<FileOpProgress> onProgress,
-            CancellationToken ct, Action<string, string, string?> replace)
-            => CopyOrMoveCore(sources, targetDir, move, onConflict, onProgress, ct, true, replace);
+            CancellationToken ct, Action<string, string, string?> replace,
+            Action<string, string>? moveDirectory = null)
+            => CopyOrMoveCore(sources, targetDir, move, onConflict, onProgress, ct, true, replace, moveDirectory);
 
         private static FileOpResult CopyOrMoveCore(IEnumerable<string> sources, string targetDir, bool move,
                                                    Func<ConflictInfo, ConflictChoice> onConflict,
                                                    Action<FileOpProgress> onProgress,
                                                    CancellationToken ct, bool allowFastMove,
-                                                   Action<string, string, string?>? replace = null)
+                                                   Action<string, string, string?>? replace = null,
+                                                   Action<string, string>? moveDirectory = null,
+                                                   string? directoryTarget = null)
         {
             var result = new FileOpResult();
             var dirsToCreate = new List<string>();
@@ -211,10 +215,10 @@ namespace KillerShell.Services
             // copying. Worth catching before the per-file loop, because moving a 40 GB folder
             // across the same disk should be instant rather than a progress bar.
             sources = new List<string>(sources);
-            if (move && allowFastMove && TryFastMoveDirectories(sources, targetDir, onConflict, onProgress, result, ct, replace))
+            if (move && allowFastMove && TryFastMoveDirectories(sources, targetDir, onConflict, onProgress, result, ct, replace, moveDirectory))
                 return result;
 
-            try { work = Plan(sources, targetDir, move, dirsToCreate, result, ct); }
+            try { work = Plan(sources, targetDir, move, dirsToCreate, result, ct, directoryTarget); }
             catch (OperationCanceledException) { result.Canceled = true; return result; }
 
             foreach (string d in dirsToCreate)
@@ -275,7 +279,8 @@ namespace KillerShell.Services
                                                    Func<ConflictInfo, ConflictChoice> onConflict,
                                                    Action<FileOpProgress> onProgress,
                                                    FileOpResult result, CancellationToken ct,
-                                                   Action<string, string, string?>? replace = null)
+                                                   Action<string, string, string?>? replace = null,
+                                                   Action<string, string>? moveDirectory = null)
         {
             var list = new List<string>(sources);
             foreach (string s in list)
@@ -315,7 +320,7 @@ namespace KillerShell.Services
                 if (item.Choice == ConflictChoice.Replace)
                 {
                     FileOpResult merged = CopyOrMoveCore([item.Source], targetDir, true,
-                                                         onConflict, onProgress, ct, false, replace);
+                                                         onConflict, onProgress, ct, false, replace, moveDirectory);
                     result.Succeeded += merged.Succeeded;
                     result.Skipped += merged.Skipped;
                     result.Failed.AddRange(merged.Failed);
@@ -323,7 +328,17 @@ namespace KillerShell.Services
                     if (merged.Canceled) { result.Canceled = true; return true; }
                     continue;
                 }
-                try { Directory.Move(item.Source, item.Target); result.Succeeded++; result.SucceededTargets.Add(item.Target); }
+                try { (moveDirectory ?? Directory.Move)(item.Source, item.Target); result.Succeeded++; result.SucceededTargets.Add(item.Target); }
+                catch (IOException ex) when (ex.HResult == unchecked((int)0x80070011) && !IsLink(item.Source))
+                {
+                    FileOpResult copied = CopyOrMoveCore([item.Source], targetDir, true,
+                        onConflict, onProgress, ct, false, replace, moveDirectory, item.Target);
+                    result.Succeeded += copied.Succeeded;
+                    result.Skipped += copied.Skipped;
+                    result.Failed.AddRange(copied.Failed);
+                    result.SucceededTargets.AddRange(copied.SucceededTargets);
+                    if (copied.Canceled) { result.Canceled = true; return true; }
+                }
                 catch (Exception ex) { result.Failed.Add((item.Source, ex.Message)); }
             }
 
@@ -430,13 +445,23 @@ namespace KillerShell.Services
             {
                 long size = SafeSize(src);
                 ct.ThrowIfCancellationRequested();
-                if (File.Exists(dst)) ReplaceFileWithRecovery(src, dst, replace);
-                else File.Move(src, dst);
-                progress.BytesDone += size;
-                return;
+                try
+                {
+                    if (File.Exists(dst)) ReplaceFileWithRecovery(src, dst, replace);
+                    else File.Move(src, dst);
+                    progress.BytesDone += size;
+                    return;
+                }
+                catch (IOException ex) when (ex.InnerException is IOException native
+                                             && native.HResult == unchecked((int)0x80070011))
+                {
+                    // File.Replace cannot cross a mounted volume even when both paths have
+                    // the same drive root. Only ERROR_NOT_SAME_DEVICE selects the copy route.
+                }
             }
 
             CopyFile(src, dst, ref progress, onProgress, ct, replace);
+            ct.ThrowIfCancellationRequested();
             try { File.Delete(src); }
             catch (Exception ex)
             {
@@ -666,9 +691,8 @@ namespace KillerShell.Services
         }
 
         /// <summary>
-        /// Same volume, by root path. Deliberately not a mount-point-aware test: getting that
-        /// right needs GetVolumePathName, and being wrong here only costs a copy-then-delete
-        /// where a rename would have done - slower, never incorrect.
+        /// A drive-root hint for the rename fast path. A mounted volume can share the root;
+        /// native ERROR_NOT_SAME_DEVICE then selects the staged copy-and-delete route.
         /// </summary>
         private static bool SameVolume(string a, string b)
         {
