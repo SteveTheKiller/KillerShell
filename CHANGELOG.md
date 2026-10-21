@@ -6,31 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.4.1] - Unreleased
 
-### Added
-- Installed copies add their folder to PATH, so commands such as `killershell list` run from any new terminal. `killershell --help` lists commands, and `--cli` stays compatible. Portable copies run from their folder or full path. Uninstalling removes the installed PATH entry.
-- If KillerShell closes unexpectedly, it records what happened in crash.log under %LOCALAPPDATA%\KillerShell, like KillerNotes and Killendar, so a report can include it.
-- The Recycle Bin is one of the saved places. Clicking it opens it, and files dropped on it are recycled (Shift deletes them for good).
-- Keyboard shortcuts for the view buttons, icon size, density, sort, folders on top, recents, the side panels, app size, theme, language, film grain, nicknames, compress and extract, and Analyze storage, plus the folder tree's menu, the Event Viewer rows and the Storage Analyzer's menu. Every key is on the F1 card, its menu row, its button's tooltip and the website.
-- Added a right-hand position for the folder tree and its rail, picked from the rail's right-click menu or with Alt+Shift+Left and Alt+Shift+Right. The search panel moves to the left edge, and the arrow of the side the tree is already on opens or closes it.
-- Added Start with Windows to the About card. It starts KillerShell minimized on the taskbar when you sign in, and stays off until you turn it on.
-- Added Close to system tray to the About card. With it on, closing the window keeps KillerShell running in the notification area, where its icon brings the window back or exits; it stays off until you turn it on.
-- The website's top bar has a Microsoft Store button on every page, and the MCP page has a Microsoft Store button for KillerMCP.
-- The website's About page lists KillerBench and KillerShot under Also try, with larger app icons.
-
-### Changed
-- Dropping files on a saved place always moves them, across drives too.
-- The keyboard focus outline is a thin one-pixel dotted ring in the theme accent instead of a thick dotted line, and uses the text color where the accent would be too faint to see.
-- Film grain is softer and shows on every theme, Black included. Its specks come in many shades, and some lean toward a color opposite the theme accent, such as purple on green and orange-brown on blue and red.
-- Rail buttons and the collapse arrow stay centered on either side, with a larger arrow and illustrated position choices in the right-click menu. Dual pane comes first in the app icon group.
-- The website's top bar Download button uses the same font and height as the other top bar buttons.
-- Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
-
 ### Fixed
-- Bundled KillerPivot closes sessions when tenant validation fails and reports incomplete cleanup.
+- Bundled KillerPivot verifies the exact selected tenant connection, closes failed connections, and preserves tenant configuration on failed or conflicting saves.
 - Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.
 - Release builds refuse unsigned publication and recheck the executable's trusted signature and checksum before publishing.
+- Uninstalling uses a fixed Windows helper, reports cancellation and removal failures, and preserves a recovery image and uninstall entry when cleanup fails.
 - Failed saves preserve the previous content and keep the document unsaved. If restoring an in-place write also fails, KillerShell attempts a recovery copy of the original. Administrator retries report recovery paths and safely handle a closed editor. Saving keeps the file's permissions, attributes, alternate streams, hard links and symbolic links.
-- Saving refuses text the selected encoding cannot represent, keeps the document unsaved, and explains how to save it as UTF-8.
+- Saving refuses text the selected encoding cannot represent and explains how to save it as UTF-8. Encoding changes stay unsaved through Undo, and administrator saves preserve newer text and encoding edits.
 - A text file whose bytes do not match its UTF-8, UTF-16 or UTF-32 byte order mark is no longer opened with replacement characters that the next save would write over it. It stays closed with a message, and UTF-32 files now open and save unchanged.
 - Closing, installing, updating, or signing out asks before discarding unsaved documents in either pane, even when a pane is hidden. Cancel keeps the session, live folder updates, and terminal theme data intact.
 - Copying or moving over a file preserves the old file if the operation fails or is canceled. Folder moves keep each conflict choice, failed cross-drive moves report the leftover source, and oversized tar metadata is rejected. Moving a folder that holds a junction or folder link moves the link instead of emptying the folder it points to. Extract All no longer leaves a second copy of every file in the temp folder. Edits made while the administrator save prompt is open stay marked unsaved. Renaming a registry key or value keeps every value with its exact type, instead of failing or dropping values of uncommon types.
@@ -47,15 +29,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Switching a registry number between hexadecimal and decimal keeps its value instead of saving a different number. Text the old base cannot read keeps that base and shows an error.
 - Updates verify a complete replacement before publishing it, retain recovery images after failure, and change installed version metadata only after publication succeeds.
 - Restarting a service finishes with Start even if its Services tab or KillerShell closes while it is stopping. Late results reach the status bar, and failures are recorded in %LOCALAPPDATA%\KillerShell\service-actions.log when storage is available. Stalled diagnostic storage cannot hold the app open.
-- Ending a process from the Processes tab can no longer end a different program that was given the same process ID while the confirmation was open.
+- Ending or restarting a process verifies that its creation identity still matches the displayed row, so a recycled process ID cannot target a different program.
 - Restarting a process waits for the original to exit before launching its replacement and reports termination, timeout, or launch failures.
-- Closing and reopening restores both panes, including hidden tabs, and skips missing documents or damaged session entries without moving other tabs. Opening or switching panes preserves each tab's search options.
-- Storage scans enumerate network shares and extended-length paths correctly. Canceled scans cannot overwrite newer results or stop their progress, and scan resources are released when the tab or app closes.
+- Closing and reopening restores both panes, including hidden tabs and Boolean search groups, and skips missing documents or damaged session entries without moving other tabs. Opening or switching panes preserves each tab's search options.
+- Storage scans enumerate network shares and extended-length paths correctly. Canceled scans cannot overwrite newer results, and resources are released when the tab or app closes. Storage nodes support keyboard and screen-reader selection, and Ctrl+Enter starts a scan from the target field.
 - Switching the Event Viewer's log or level, refreshing it, or closing its tab while events are still loading no longer adds rows or an error from the earlier load to the new view.
 - Stopping a search whose name, include or exclude pattern has many `*` wildcards returns within a second, and such patterns no longer stall the search on long file names.
-- Content search recognizes UTF-16 and UTF-32 text with byte order marks instead of skipping it as binary.
+- Content search recognizes UTF-16 and UTF-32 text with byte order marks and stops between bounded reads when canceled, including within long lines.
 - Terminal output stays inside its tab when KillerShell is launched with redirected output. Folder and title updates preserve Unicode text and accept standard escape sequence terminators, including sequences split across reads.
+- Terminal output and selection are available to screen readers, and heavy output uses bounded batches. Performance sampling stays stopped while its tab is hidden or closed.
 - Saying No at the administrator prompt when opening a file, or Windows refusing to open it, shows a status message instead of closing KillerShell.
+- Invalid file-picker input stays in the dialog with a validation message. New windows and administrator launches preserve drive roots, and failed window handoffs fall back to a fresh administrator request.
 - The command line accepts an optional trailing --json while keeping its existing JSON output. `read --max-chars` no longer cuts an emoji in half, and odd characters in file names and registry text come out as valid JSON.
 - A silent install or update that finds KillerShell running exits with 1618, which Intune, Configuration Manager and RMM tools retry, instead of a general failure.
 - Chocolatey validation no longer reports success when its last known result remains failed after a retry.
@@ -93,6 +77,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The shortcuts, font and file association cards put scroll bars at their edges, show when more content is out of view, and keep Close reachable in short windows.
 - Saved-places fades leave the scrollbar clear and disappear at the start and end of the list. Sidebar fades turn off immediately when switching to 98SE.
 - The footer copyright sits a few pixels further from the corner grip instead of running into it.
+
+### Added
+- Installed copies add their folder to PATH, so commands such as `killershell list` run from any new terminal. `killershell --help` lists commands, and `--cli` stays compatible. Portable copies run from their folder or full path. Uninstalling removes the installed PATH entry.
+- If KillerShell closes unexpectedly, it records what happened in crash.log under %LOCALAPPDATA%\KillerShell, like KillerNotes and Killendar, so a report can include it.
+- The Recycle Bin is one of the saved places. Clicking it opens it, and files dropped on it are recycled (Shift deletes them for good).
+- Keyboard shortcuts for the view buttons, icon size, density, sort, folders on top, recents, the side panels, app size, theme, language, film grain, nicknames, compress and extract, and Analyze storage, plus the folder tree's menu, the Event Viewer rows and the Storage Analyzer's menu. Every key is on the F1 card, its menu row, its button's tooltip and the website.
+- Added a right-hand position for the folder tree and its rail, picked from the rail's right-click menu or with Alt+Shift+Left and Alt+Shift+Right. The search panel moves to the left edge, and the arrow of the side the tree is already on opens or closes it.
+- Added Start with Windows to the About card. It starts KillerShell minimized on the taskbar when you sign in, and stays off until you turn it on.
+- Added Close to system tray to the About card. With it on, closing the window keeps KillerShell running in the notification area, where its icon brings the window back or exits; it stays off until you turn it on.
+- The website's top bar has a Microsoft Store button on every page, and the MCP page has a Microsoft Store button for KillerMCP.
+- The website's About page lists KillerBench and KillerShot under Also try, with larger app icons.
+
+### Changed
+- Dropping files on a saved place always moves them, across drives too.
+- The keyboard focus outline is a thin one-pixel dotted ring in the theme accent instead of a thick dotted line, and uses the text color where the accent would be too faint to see.
+- Film grain is softer and shows on every theme, Black included. Its specks come in many shades, and some lean toward a color opposite the theme accent, such as purple on green and orange-brown on blue and red.
+- Rail buttons and the collapse arrow stay centered on either side, with a larger arrow and illustrated position choices in the right-click menu. Dual pane comes first in the app icon group.
+- The website's top bar Download button uses the same font and height as the other top bar buttons.
+- Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
 
 ## [1.4.0] - 2026-10-15
 
