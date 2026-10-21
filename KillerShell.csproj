@@ -97,6 +97,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Terminal\KillerPrompt.ps1" />
     <EmbeddedResource Include="Terminal\KillerPrompt.bash" />
+    <EmbeddedResource Include="Terminal\Unicode-LICENSE.txt" />
   </ItemGroup>
 
   <!-- Syntax definitions AvalonEdit does not ship (Editing/KillerHighlighting.cs). Embedded for

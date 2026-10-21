@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.1] - Unreleased
 
 ### Fixed
+- Terminal text uses consistent widths for CJK, emoji, and combining marks across display, cursor movement, copying, and accessibility.
 - GPU counters show their own identity instead of being assigned to hardware names by list order.
 - Unbound Alt shortcuts reach the terminal while application shortcuts keep precedence.
 - Reused process IDs get fresh CPU, owner, and access information. Delayed owner lookups cannot update a different process.

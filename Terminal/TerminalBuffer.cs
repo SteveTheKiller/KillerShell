@@ -23,6 +23,10 @@ namespace KillerShell.Terminal
         public int Ch;          // codepoint; 0 is an empty cell
         public int Fg, Bg;      // see TerminalBuffer.DefaultColor / Rgb
         public CellFlags Flags;
+        public byte Width;
+        public bool IsContinuation;
+        public string? Combining;
+        public string Text => IsContinuation ? string.Empty : (Ch == 0 ? " " : char.ConvertFromUtf32(Ch)) + Combining;
     }
 
     internal sealed class TerminalBuffer : IVtHandler
@@ -137,11 +141,13 @@ namespace KillerShell.Terminal
 
             var old = _screen;
             int oldRows = Rows;
+            int cursorAfter = CursorCol + (_pendingWrap ? 1 : 0);
 
             _screen = New(cols, rows);
             for (int r = 0; r < Math.Min(oldRows, rows); r++)
             {
                 Array.Copy(old[r], _screen[r], Math.Min(Cols, cols));
+                NormalizeLine(_screen[r]);
                 if (_lineIdentities.TryGetValue(old[r], out object identity))
                     _lineIdentities.Add(_screen[r], identity);
             }
@@ -153,6 +159,7 @@ namespace KillerShell.Terminal
                 for (int r = 0; r < Math.Min(oldRows, rows); r++)
                 {
                     Array.Copy(oldAlt[r], _altScreen[r], Math.Min(Cols, cols));
+                    NormalizeLine(_altScreen[r]);
                     if (_lineIdentities.TryGetValue(oldAlt[r], out object identity))
                         _lineIdentities.Add(_altScreen[r], identity);
                 }
@@ -163,7 +170,8 @@ namespace KillerShell.Terminal
             _top = 0;
             _bottom = rows - 1;
             CursorRow = Math.Min(CursorRow, rows - 1);
-            CursorCol = Math.Min(CursorCol, cols - 1);
+            CursorCol = Math.Min(cursorAfter, cols - 1);
+            _pendingWrap = _pendingWrap && cursorAfter >= cols;
             ResetTabs();
             Version++;
         }
@@ -194,6 +202,23 @@ namespace KillerShell.Terminal
         public void Print(int cp)
         {
             if (cp == 0) return;
+            int width = UnicodeWidth.Of(cp);
+            if (width == 0)
+            {
+                var previousLine = _screen[CursorRow];
+                int previous = _pendingWrap ? CursorCol : CursorCol - 1;
+                if (previous >= 0 && previousLine[previous].IsContinuation) previous--;
+                if (previous >= 0 && previousLine[previous].Ch != 0)
+                {
+                    string suffix = char.ConvertFromUtf32(cp);
+                    if ((previousLine[previous].Combining?.Length ?? 0) + suffix.Length <= 64)
+                    {
+                        previousLine[previous].Combining += suffix;
+                        Version++;
+                    }
+                }
+                return;
+            }
 
             // Deferred wrap: after writing the last column the cursor STAYS there and only
             // wraps when the next character arrives. Wrapping eagerly puts the cursor on the
@@ -210,18 +235,34 @@ namespace KillerShell.Terminal
             }
 
             if (CursorCol >= Cols) CursorCol = Cols - 1;
+            if (width == 2 && CursorCol == Cols - 1)
+            {
+                if (_autoWrap && Cols > 1) { CursorCol = 0; LineFeed(); }
+                else { cp = 0xFFFD; width = 1; }
+            }
 
             var line = _screen[CursorRow];
-            if (_insertMode && CursorCol < Cols - 1)
-                Array.Copy(line, CursorCol, line, CursorCol + 1, Cols - CursorCol - 1);
+            if (_insertMode) InsertChars(width);
+            ClearRun(line, CursorCol, CursorCol + width - 1);
 
             line[CursorCol].Ch = cp;
             line[CursorCol].Fg = _curFg;
             line[CursorCol].Bg = _curBg;
             line[CursorCol].Flags = _curFlags;
+            line[CursorCol].Width = (byte)width;
+            line[CursorCol].IsContinuation = false;
+            line[CursorCol].Combining = null;
+            if (width == 2)
+            {
+                line[CursorCol + 1] = line[CursorCol];
+                line[CursorCol + 1].Ch = 0;
+                line[CursorCol + 1].Width = 0;
+                line[CursorCol + 1].IsContinuation = true;
+            }
 
-            if (CursorCol == Cols - 1) _pendingWrap = true;
-            else CursorCol++;
+            int next = CursorCol + width;
+            _pendingWrap = next >= Cols;
+            CursorCol = Math.Min(next, Cols - 1);
 
             Version++;
         }
@@ -301,13 +342,7 @@ namespace KillerShell.Terminal
         // of a long output, and a fresh Cell[] each time is pure garbage churn.
         private Cell[] Blank(Cell[] reuse)
         {
-            for (int c = 0; c < reuse.Length; c++)
-            {
-                reuse[c].Ch = 0;
-                reuse[c].Fg = DefaultColor;
-                reuse[c].Bg = _curBg;      // so a colored background fills the new line too
-                reuse[c].Flags = CellFlags.None;
-            }
+            ClearCells(reuse, 0, reuse.Length - 1);
             return reuse;
         }
 
@@ -410,8 +445,24 @@ namespace KillerShell.Terminal
 
                 case 'b':                                            // repeat the last glyph
                     {
-                        int prev = CursorCol > 0 ? _screen[CursorRow][CursorCol - 1].Ch : 0;
-                        if (prev != 0) for (int i = 0; i < P(0); i++) Print(prev);
+                        var line = _screen[CursorRow];
+                        int previous = _pendingWrap ? CursorCol : CursorCol - 1;
+                        if (previous >= 0 && line[previous].IsContinuation) previous--;
+                        if (previous >= 0 && line[previous].Ch != 0)
+                        {
+                            var cell = line[previous];
+                            for (int i = 0; i < P(0); i++)
+                            {
+                                Print(cell.Ch);
+                                string suffix = cell.Combining ?? string.Empty;
+                                for (int j = 0; j < suffix.Length; j++)
+                                {
+                                    int scalar = char.ConvertToUtf32(suffix, j);
+                                    Print(scalar);
+                                    if (scalar > 0xFFFF) j++;
+                                }
+                            }
+                        }
                     }
                     break;
 
@@ -531,12 +582,27 @@ namespace KillerShell.Terminal
 
         private void ClearRun(Cell[] line, int from, int to)
         {
-            for (int c = Math.Max(0, from); c <= Math.Min(to, Cols - 1); c++)
+            from = Math.Max(0, from);
+            to = Math.Min(to, line.Length - 1);
+            if (from > to) return;
+            if (line[from].IsContinuation) from--;
+            if (line[to].Width == 2) to++;
+            ClearCells(line, from, to);
+        }
+
+        private void ClearCells(Cell[] line, int from, int to)
+        {
+            for (int c = Math.Max(0, from); c <= Math.Min(to, line.Length - 1); c++)
+                line[c] = new Cell { Fg = DefaultColor, Bg = _curBg };
+        }
+
+        private void NormalizeLine(Cell[] line)
+        {
+            for (int c = 0; c < line.Length; c++)
             {
-                line[c].Ch = 0;
-                line[c].Fg = DefaultColor;
-                line[c].Bg = _curBg;
-                line[c].Flags = CellFlags.None;
+                bool orphan = line[c].IsContinuation && (c == 0 || line[c - 1].Width != 2);
+                bool clipped = line[c].Width == 2 && (c + 1 >= line.Length || !line[c + 1].IsContinuation);
+                if (orphan || clipped) ClearCells(line, c, c);
             }
         }
 
@@ -573,8 +639,10 @@ namespace KillerShell.Terminal
             var line = _screen[CursorRow];
             n = Math.Min(n, Cols - CursorCol);
             if (n <= 0) return;
+            if (line[CursorCol].IsContinuation) ClearRun(line, CursorCol, CursorCol);
             Array.Copy(line, CursorCol, line, CursorCol + n, Cols - CursorCol - n);
-            ClearRun(line, CursorCol, CursorCol + n - 1);
+            ClearCells(line, CursorCol, CursorCol + n - 1);
+            NormalizeLine(line);
             Version++;
         }
 
@@ -583,8 +651,10 @@ namespace KillerShell.Terminal
             var line = _screen[CursorRow];
             n = Math.Min(n, Cols - CursorCol);
             if (n <= 0) return;
+            ClearRun(line, CursorCol, CursorCol + n - 1);
             Array.Copy(line, CursorCol + n, line, CursorCol, Cols - CursorCol - n);
-            ClearRun(line, Cols - n, Cols - 1);
+            ClearCells(line, Cols - n, Cols - 1);
+            NormalizeLine(line);
             Version++;
         }
 

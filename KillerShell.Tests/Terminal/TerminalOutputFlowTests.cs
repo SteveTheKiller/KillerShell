@@ -87,7 +87,7 @@ public static class TerminalOutputFlowScenario
             {
                 var actual = new StringBuilder();
                 foreach (var cell in terminal.Buffer.LineAt(index))
-                    actual.Append(cell.Ch == 0 ? " " : char.ConvertFromUtf32(cell.Ch));
+                    actual.Append(cell.Text);
                 Assert.Equal(lines[index], actual.ToString().TrimEnd());
             }
         }
@@ -107,9 +107,10 @@ public static class TerminalOutputFlowScenario
             var line = terminal.Buffer.LineAt(0);
             Assert.Equal(0xE9, line[3].Ch);
             Assert.Equal(0x1F600, line[4].Ch);
-            Assert.Equal('r', line[5].Ch);
-            Assert.Equal(1, line[5].Fg);
-            Assert.Equal('d', line[7].Ch);
+            Assert.True(line[5].IsContinuation);
+            Assert.Equal('r', line[6].Ch);
+            Assert.Equal(1, line[6].Fg);
+            Assert.Equal('d', line[8].Ch);
         }
         finally { terminal.Close(); }
     }

@@ -34,6 +34,9 @@ namespace KillerShell.Terminal
             // boundary, which is what makes dragging feel like it selects what you crossed.
             col = _cellW > 0 ? (int)Math.Round((p.X - LeftInset) / _cellW) : 0;
             col = Math.Max(0, Math.Min(_buf.Cols, col));
+            var cells = _buf.LineAt(line);
+            if (col < cells.Length && cells[col].IsContinuation)
+                col += (p.X - LeftInset) / _cellW < col ? -1 : 1;
         }
 
         private void SelectionMouseDown(MouseButtonEventArgs e)
@@ -82,10 +85,13 @@ namespace KillerShell.Terminal
             var cells = _buf.LineAt(line);
             col = Math.Min(col, cells.Length - 1);
             if (col < 0) return;
+            if (cells[col].IsContinuation) col--;
 
             int a = col, b = col;
-            while (a > 0 && IsWordChar(cells[a - 1].Ch)) a--;
-            while (b < cells.Length - 1 && IsWordChar(cells[b + 1].Ch)) b++;
+            bool WordAt(int index) => IsWordChar(cells[cells[index].IsContinuation ? index - 1 : index].Ch);
+            while (a > 0 && WordAt(a - 1)) a--;
+            while (b < cells.Length - 1 && WordAt(b + 1)) b++;
+            if (cells[b].Width == 2) b++;
 
             _selAnchorLine = _selHeadLine = line;
             _selAnchorCol = a;
@@ -152,6 +158,10 @@ namespace KillerShell.Terminal
                 l1 = _selHeadLine;   c1 = _selHeadCol;
                 l2 = _selAnchorLine; c2 = _selAnchorCol;
             }
+            var first = _buf.LineAt(l1);
+            var last = _buf.LineAt(l2);
+            if (c1 < first.Length && first[c1].IsContinuation) c1--;
+            if (c2 < last.Length && last[c2].IsContinuation) c2++;
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -207,7 +217,7 @@ namespace KillerShell.Terminal
 
                 var row = new StringBuilder();
                 for (int c = from; c < to; c++)
-                    row.Append(cells[c].Ch == 0 ? " " : char.ConvertFromUtf32(cells[c].Ch));
+                    row.Append(cells[c].Text);
 
                 // Trailing blanks are padding, not content: a terminal line is always Cols wide
                 // whether or not anything was written to the end of it, and pasting that

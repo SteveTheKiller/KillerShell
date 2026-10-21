@@ -81,9 +81,14 @@ namespace KillerShell.Terminal
                     var offsets = _offsets[line] = new int[cells.Length + 1];
                     for (int col = 0; col < cells.Length; col++)
                     {
+                        if (cells[col].IsContinuation)
+                        {
+                            offsets[col] = offsets[col - 1];
+                            continue;
+                        }
                         offsets[col] = text.Length;
-                        int cp = (cells[col].Flags & CellFlags.Hidden) != 0 ? 0 : cells[col].Ch;
-                        text.Append(cp == 0 ? " " : char.ConvertFromUtf32(cp));
+                        text.Append((cells[col].Flags & CellFlags.Hidden) != 0
+                            ? new string(' ', Math.Max(1, (int)cells[col].Width)) : cells[col].Text);
                     }
                     while (text.Length > Starts[line] && text[text.Length - 1] == ' ') text.Length--;
                     offsets[cells.Length] = text.Length;
@@ -100,7 +105,7 @@ namespace KillerShell.Terminal
                 return _offsets[line][Math.Max(0, Math.Min(col, Lines[line].Length))];
             }
 
-            internal (int Line, int Col) Position(int offset)
+            internal (int Line, int Col) Position(int offset, bool end = false)
             {
                 offset = Math.Max(0, Math.Min(offset, Text.Length));
                 int line = Array.BinarySearch(Starts, offset);
@@ -112,6 +117,8 @@ namespace KillerShell.Terminal
                     int middle = low + (high - low) / 2;
                     if (offsets[middle] < offset) low = middle + 1; else high = middle;
                 }
+                if (!end && low > 0 && offsets[low] > offset) low--;
+                if (low < Lines[line].Length && Lines[line][low].IsContinuation) low--;
                 return (line, low);
             }
 
@@ -120,7 +127,13 @@ namespace KillerShell.Terminal
                 if (unit == TextUnit.Document || unit == TextUnit.Page)
                     return new[] { 0, Text.Length };
                 var boundaries = new List<int> { 0 };
-                if (unit == TextUnit.Line || unit == TextUnit.Paragraph || unit == TextUnit.Format)
+                if (unit == TextUnit.Character)
+                {
+                    foreach (var line in _offsets)
+                        foreach (int offset in line)
+                            if (offset > boundaries[boundaries.Count - 1]) boundaries.Add(offset);
+                }
+                else if (unit == TextUnit.Line || unit == TextUnit.Paragraph || unit == TextUnit.Format)
                 {
                     for (int line = 1; line < Starts.Length; line++) boundaries.Add(Starts[line]);
                 }
@@ -215,7 +228,7 @@ namespace KillerShell.Terminal
             {
                 var snapshot = Snapshot;
                 var first = snapshot.Position(Math.Min(start, end));
-                var last = snapshot.Position(Math.Max(start, end));
+                var last = snapshot.Position(Math.Max(start, end), start != end);
                 _startLine = snapshot.LineIdentities[first.Line]; _startCol = first.Col;
                 _endLine = snapshot.LineIdentities[last.Line]; _endCol = last.Col;
             }

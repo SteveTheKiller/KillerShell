@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -55,6 +56,7 @@ namespace KillerShell.Terminal
         private int _drawnVersion = -1;
 
         private GlyphTypeface? _glyphs;
+        private Typeface? _typeface;
         private double _cellW, _cellH, _baseline;
         private double _fontSize = 12;   // overwritten from the setting in the ctor
         private float _pixelsPerDip = 1f;
@@ -270,6 +272,7 @@ namespace KillerShell.Terminal
                     if (!gt.CharacterToGlyphMap.ContainsKey('M')) continue;
 
                     _glyphs = gt;
+                    _typeface = tf;
 
                     // SNAPPED TO WHOLE DEVICE PIXELS, not rounded to two decimals. Every glyph
                     // origin in the grid is a multiple of these three numbers (x = col * _cellW,
@@ -668,11 +671,25 @@ namespace KillerShell.Terminal
             int c = 0;
             while (c < line.Length)
             {
-                if (line[c].Ch == 0 || line[c].Ch == ' ') { c++; continue; }
+                if (line[c].Ch == 0 || (line[c].Ch == ' ' && line[c].Combining == null)) { c++; continue; }
 
                 var fg = CellFg(line[c]);
                 var flags = line[c].Flags;
                 int start = c;
+                if (line[c].Combining != null)
+                {
+                    bool dim = (flags & CellFlags.Faint) != 0;
+                    var ink = new SolidColorBrush(dim ? Color.FromArgb(FaintAlpha, fg.R, fg.G, fg.B) : fg);
+                    ink.Freeze();
+                    double clusterX = c * _cellW, width = Math.Max(1, (int)line[c].Width) * _cellW;
+                    DrawCombined(dc, line[c], clusterX, y, ink);
+                    if ((flags & CellFlags.Underline) != 0)
+                        dc.DrawRectangle(ink, null, new Rect(clusterX, y + _baseline + 1.5, width, 1));
+                    if ((flags & CellFlags.Strike) != 0)
+                        dc.DrawRectangle(ink, null, new Rect(clusterX, y + _baseline * 0.65, width, 1));
+                    c += Math.Max(1, (int)line[c].Width);
+                    continue;
+                }
 
                 // Which face this run is drawn from. A GlyphRun carries exactly ONE typeface, so
                 // a cell that has to come from the bundled fallback breaks the run.
@@ -683,6 +700,7 @@ namespace KillerShell.Terminal
                 var widths = new List<double>();
 
                 while (c < line.Length && line[c].Ch != 0 && line[c].Ch != ' '
+                       && !line[c].IsContinuation && line[c].Combining == null
                        && CellFg(line[c]) == fg && line[c].Flags == flags
                        && ReferenceEquals(FaceFor(gt, line[c].Ch), face)
                        // A fallback cell is taken ONE at a time: it is drawn inside a horizontal
@@ -697,8 +715,9 @@ namespace KillerShell.Terminal
                         face.CharacterToGlyphMap.TryGetValue(0x25A1, out gi);
 
                     indices.Add(gi);
-                    widths.Add(_cellW);
-                    c++;
+                    int columns = Math.Max(1, (int)line[c].Width);
+                    widths.Add(columns * _cellW);
+                    c += columns;
                 }
 
                 if (indices.Count == 0) continue;
@@ -761,6 +780,20 @@ namespace KillerShell.Terminal
             if (primary.CharacterToGlyphMap.ContainsKey(cp)) return primary;
             if (_fallback != null && _fallback.CharacterToGlyphMap.ContainsKey(cp)) return _fallback;
             return SystemFaceFor(cp) ?? primary;
+        }
+
+        private void DrawCombined(DrawingContext dc, Cell cell, double x, double y, Brush ink)
+        {
+            if (_typeface == null) return;
+            var text = new FormattedText(cell.Text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+                _typeface, _fontSize, ink, _pixelsPerDip);
+            double width = Math.Max(1, (int)cell.Width) * _cellW;
+            double scale = text.WidthIncludingTrailingWhitespace > width ? width / text.WidthIncludingTrailingWhitespace : 1;
+            dc.PushClip(new RectangleGeometry(new Rect(x, y, width, _cellH)));
+            dc.PushTransform(new ScaleTransform(scale, 1, x, 0));
+            dc.DrawText(text, new Point(x, y + _baseline - text.Baseline));
+            dc.Pop();
+            dc.Pop();
         }
 
         // ── System font fallback ─────────────────────────────────
@@ -847,31 +880,36 @@ namespace KillerShell.Terminal
         {
             if (!_buf.CursorVisible || !_cursorOn || _scroll != 0 || !IsKeyboardFocusWithin) return;
 
-            double x = _buf.CursorCol * _cellW;
+            var line = _buf.LineAt(_buf.ScrollbackCount + _buf.CursorRow);
+            int column = _buf.CursorCol;
+            if (line[column].IsContinuation) column--;
+            var cell = line[column];
+            double width = Math.Max(1, (int)cell.Width) * _cellW;
+            double x = column * _cellW;
             double y = _buf.CursorRow * _cellH;
             var b = new SolidColorBrush(_palette.Cursor);
             b.Freeze();
 
             switch (_buf.CursorShape)
             {
-                case 1: dc.DrawRectangle(b, null, new Rect(x, y + _cellH - 2, _cellW, 2)); break;
+                case 1: dc.DrawRectangle(b, null, new Rect(x, y + _cellH - 2, width, 2)); break;
                 case 2: dc.DrawRectangle(b, null, new Rect(x, y, 2, _cellH)); break;
                 default:
-                    dc.DrawRectangle(b, null, new Rect(x, y, _cellW, _cellH));
+                    dc.DrawRectangle(b, null, new Rect(x, y, width, _cellH));
 
                     // Repaint the glyph underneath in the background color, so a block cursor
                     // does not hide the character it is sitting on. Through FaceFor, so a
                     // fallback-drawn glyph (a prompt icon, exactly where the cursor usually
                     // sits) gets the same treatment as one from the chosen face.
-                    var cell = _buf.LineAt(_buf.ScrollbackCount + _buf.CursorRow)[_buf.CursorCol];
-                    if (cell.Ch != 0 && cell.Ch != ' ' && _glyphs != null)
+                    if (cell.Ch != 0 && (cell.Ch != ' ' || cell.Combining != null) && _glyphs != null)
                     {
+                        var hole = new SolidColorBrush(_palette.Background);
+                        hole.Freeze();
+                        if (cell.Combining != null) { DrawCombined(dc, cell, x, y, hole); break; }
                         var face = FaceFor(_glyphs, cell.Ch);
                         if (face.CharacterToGlyphMap.TryGetValue(cell.Ch, out ushort gi))
                         {
-                            var hole = new SolidColorBrush(_palette.Background);
-                            hole.Freeze();
-                            var run = MakeRun(face, [gi], [_cellW], new Point(x, y + _baseline));
+                            var run = MakeRun(face, [gi], [width], new Point(x, y + _baseline));
                             if (run != null) dc.DrawGlyphRun(hole, run);
                         }
                     }
