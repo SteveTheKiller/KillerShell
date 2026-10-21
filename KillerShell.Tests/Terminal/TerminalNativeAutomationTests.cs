@@ -49,17 +49,21 @@ public static class TerminalNativeAutomationScenario
     {
         using var workerEntered = new ManualResetEventSlim();
         using var releaseWorker = new ManualResetEventSlim();
-        Task blockedWorker = Task.Run(() => { workerEntered.Set(); releaseWorker.Wait(); });
-        Assert.True(workerEntered.Wait(5000), "The controlled pool worker did not start.");
-        var app = RuntimeComponentProcess.StartApplication();
-        var terminal = new TerminalControl(TerminalSkin.Default);
         using var output = new OutputStream();
         using var cancel = new CancellationTokenSource();
         var startNoise = new TaskCompletionSource<bool>();
-        Task producer = StartProducer(output, cancel.Token, startNoise.Task);
-        terminal.ReadOutput(output);
+        Application? app = null;
+        TerminalControl? terminal = null;
+        Task blockedWorker = Task.CompletedTask;
+        Task producer = Task.CompletedTask;
         try
         {
+            blockedWorker = Task.Run(() => { workerEntered.Set(); releaseWorker.Wait(); });
+            Assert.True(workerEntered.Wait(5000), "The controlled pool worker did not start.");
+            app = RuntimeComponentProcess.StartApplication();
+            terminal = new TerminalControl(TerminalSkin.Default);
+            producer = StartProducer(output, cancel.Token, startNoise.Task);
+            terminal.ReadOutput(output);
             startNoise.SetResult(true);
             Wait(() => producer.IsCompleted, "bounded producer with occupied pool worker", 10000);
             producer.GetAwaiter().GetResult();
@@ -73,11 +77,14 @@ public static class TerminalNativeAutomationScenario
             cancel.Cancel();
             startNoise.TrySetResult(true);
             releaseWorker.Set();
-            terminal.Close();
-            Wait(() => producer.IsCompleted && blockedWorker.IsCompleted, "controlled producer shutdown");
-            producer.GetAwaiter().GetResult();
-            blockedWorker.GetAwaiter().GetResult();
-            app.Shutdown();
+            try
+            {
+                terminal?.Close();
+                Wait(() => producer.IsCompleted && blockedWorker.IsCompleted, "controlled producer shutdown");
+                producer.GetAwaiter().GetResult();
+                blockedWorker.GetAwaiter().GetResult();
+            }
+            finally { app?.Shutdown(); }
         }
     }
 
