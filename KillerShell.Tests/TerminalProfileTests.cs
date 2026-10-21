@@ -127,6 +127,39 @@ public sealed class TerminalProfileTests
     }
 
     [Theory]
+    [InlineData("/home/steve/trailing  ", "/home/steve/trailing  ")]
+    [InlineData("/home/steve/  leading", "/home/steve/  leading")]
+    [InlineData("/home/steve/caf\u00e9 \U0001f4c1", "/home/steve/caf\u00e9 \U0001f4c1")]
+    [InlineData("/home/steve/a\"b", "/home/steve/a\"b")]
+    [InlineData("\"C:\\Users\\steve\"", "C:\\Users\\steve")]
+    public void ReportedFoldersKeepEveryCharacter(string payload, string expected)
+    {
+        var buffer = new TerminalBuffer(80, 25);
+        var parser = new VtParser(buffer);
+        var seen = new System.Collections.Generic.List<string>();
+        buffer.DirectoryChanged += seen.Add;
+        byte[] data = Encoding.UTF8.GetBytes("\u001b]9;9;" + payload + "\u0007");
+        parser.Feed(data, data.Length);
+        Assert.Equal(new[] { expected }, seen);
+        Assert.Equal(expected, buffer.WorkingDirectory);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("\"\"")]
+    public void EmptyFolderReportsAreIgnored(string payload)
+    {
+        var buffer = new TerminalBuffer(80, 25);
+        var parser = new VtParser(buffer);
+        string? cwd = null;
+        buffer.DirectoryChanged += directory => cwd = directory;
+        byte[] data = Encoding.UTF8.GetBytes("\u001b]9;9;" + payload + "\u0007");
+        parser.Feed(data, data.Length);
+        Assert.Null(cwd);
+    }
+
+    [Theory]
     [InlineData("\u001b]7;file://attacker/share/x\u0007")]
     [InlineData("\u001b]9;9;\\\\attacker\\share\u0007")]
     [InlineData("\u001b]9;9;//attacker/share\u0007")]

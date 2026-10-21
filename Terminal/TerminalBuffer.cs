@@ -748,11 +748,21 @@ namespace KillerShell.Terminal
                     SetDirFromUri(data);
                     break;
                 case 9:
+                    // Only the "9;" prefix comes off. Spaces are legal at either end of a Linux
+                    // folder name, so trimming would point the tab at a different folder.
                     if (data.StartsWith("9;", StringComparison.Ordinal))
-                        SetDir(data[2..].Trim());
+                        SetDir(Unquote(data[2..]));
                     break;
             }
         }
+
+        /// <summary>
+        /// Windows Terminal's documented prompt wraps the path in double quotes. A real path
+        /// never starts and ends with one (Windows forbids them; a Linux path starts with '/'),
+        /// so a quoted pair is the wrapper and comes off. Anything else is kept exactly.
+        /// </summary>
+        private static string Unquote(string path)
+            => path.Length >= 2 && path[0] == '"' && path[path.Length - 1] == '"' ? path[1..^1] : path;
 
         private void SetDirFromUri(string data)
         {
