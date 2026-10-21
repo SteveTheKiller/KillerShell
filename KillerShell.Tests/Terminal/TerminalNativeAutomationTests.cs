@@ -26,6 +26,22 @@ public sealed class TerminalNativeAutomationTests
     [Fact]
     public Task WindowsTextPatternProducerCompletesWithOneThreadPoolWorker()
         => RuntimeComponentProcess.Run(nameof(TerminalSingleWorkerAutomationScenario));
+
+    [Fact]
+    public Task WindowsTextPatternReceivesNativeEventsWithOneThreadPoolWorker()
+        => RuntimeComponentProcess.Run(nameof(TerminalSingleWorkerNativeEventsScenario));
+}
+
+public static class TerminalSingleWorkerNativeEventsScenario
+{
+    public static void Run()
+    {
+        ThreadPool.GetMinThreads(out _, out int minimumIo);
+        ThreadPool.GetMaxThreads(out _, out int maximumIo);
+        Assert.True(ThreadPool.SetMinThreads(1, minimumIo));
+        Assert.True(ThreadPool.SetMaxThreads(1, maximumIo));
+        TerminalNativeAutomationScenario.Run();
+    }
 }
 
 public static class TerminalSingleWorkerAutomationScenario
