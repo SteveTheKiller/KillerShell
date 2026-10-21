@@ -24,7 +24,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Terminal input and output stay responsive under load and when launched with redirected output. CJK, emoji and combining marks use consistent widths, unbound Alt shortcuts reach the shell, and closing a terminal releases pending work.
 - File and folder pickers remain responsive during storage reads, ignore stale results, and keep invalid input in the dialog. Canceled administrator requests and failed file opens report errors without closing the app.
 - Storage scans support network and extended-length paths. Canceled scans and stale Event Viewer loads cannot replace newer results; hidden performance tabs stop sampling, and GPU counters retain their own identities.
-- Command-line JSON stays valid with unusual Unicode text and accepts an optional trailing `--json`. New windows and administrator launches preserve drive roots and recover from failed handoffs.
+- Command-line JSON stays valid with unusual Unicode text, accepts an optional trailing `--json`, and reports skipped links and unreadable search paths. New windows and administrator launches preserve drive roots and recover from failed handoffs.
 - Screen readers receive terminal output, selection and meaningful control names. Keyboard focus stays inside open cards, returns on close, skips hidden controls, and moves correctly through option groups and storage views.
 - Windows contrast themes use system colors without decorative effects. Windows and dialogs fit small or scaled monitors, and card controls remain reachable in short windows.
 - Language changes refresh both panes and hidden tabs. App and website translations cover remaining English labels, corrected wording and shortcut documentation.

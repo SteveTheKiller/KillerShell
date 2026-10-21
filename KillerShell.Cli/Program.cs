@@ -400,7 +400,9 @@ namespace KillerShell.Cli
                 output.Append(",\"modifiedUtc\":").Append(JsonString(item.Modified.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture)));
                 output.Append('}');
             }
-            output.Append("],\"limitReached\":").Append(cancellation.IsCancellationRequested ? "true" : "false").Append('}');
+            output.Append("],\"limitReached\":").Append(cancellation.IsCancellationRequested ? "true" : "false");
+            output.Append(",\"incompletePaths\":").Append(engine.IncompletePaths.ToString(CultureInfo.InvariantCulture));
+            output.Append(",\"skippedDirectoryLinks\":").Append(engine.SkippedDirectoryLinks.ToString(CultureInfo.InvariantCulture)).Append('}');
             Console.WriteLine(output.ToString());
             return 0;
         }

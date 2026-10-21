@@ -9,6 +9,56 @@ namespace KillerShell.Tests;
 public sealed class CliCommandTests
 {
     [Fact]
+    public void SearchReportsASkippedJunctionRoot()
+    {
+        using var fixture = new Services.SearchLinkFixture();
+        fixture.AddLink();
+
+        Result result = Run("search", fixture.Link, "--name", "*.txt");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("\"results\":[]", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"limitReached\":false", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"skippedDirectoryLinks\":1", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"incompletePaths\":0", result.Output, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void SearchKeepsResultsAndReportsSkippedDescendantLinks(bool addLink)
+    {
+        using var fixture = new Services.SearchLinkFixture();
+        if (addLink) fixture.AddLink();
+
+        Result result = Run("search", fixture.Root, "--name", "*.txt");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("fixture.txt", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"limitReached\":false", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"skippedDirectoryLinks\":" + (addLink ? "1" : "0"), result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"incompletePaths\":0", result.Output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void SearchReportsUnreadableContentWhileKeepingReadableResults()
+    {
+        using var fixture = new Services.SearchLinkFixture();
+        string blocked = Path.Combine(fixture.Root, "blocked.txt");
+        File.WriteAllText(blocked, "fixture");
+        using var locked = new FileStream(blocked, FileMode.Open, FileAccess.Read, FileShare.None);
+
+        Result result = Run("search", fixture.Root, "--content", "fixture");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("fixture.txt", result.Output, StringComparison.Ordinal);
+        Assert.DoesNotContain("blocked.txt", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"limitReached\":false", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"skippedDirectoryLinks\":0", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"incompletePaths\":1", result.Output, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ReadOnlyFileCommandsReturnBoundedJson()
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
