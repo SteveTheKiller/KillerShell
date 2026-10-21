@@ -252,9 +252,10 @@ namespace KillerShell.Services
         {
             const int OpenLink = 0x8, QueryValue = 0x1;
             const uint RegLink = 6;
-            if (RegOpenKeyEx(parent.Handle, subKey, OpenLink, QueryValue, out var link) != 0) return false;
+            int opened = RegOpenKeyEx(parent.Handle, subKey, OpenLink, QueryValue, out var link);
             using (link)
             {
+                if (opened != 0) return false;
                 int size = 0;
                 return RegQueryValueEx(link, "SymbolicLinkValue", IntPtr.Zero, out uint type, null, ref size) == 0
                        && type == RegLink;
