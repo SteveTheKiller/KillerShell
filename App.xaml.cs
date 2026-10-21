@@ -546,7 +546,7 @@ namespace KillerShell
 
                 Directory.CreateDirectory(installDir);
                 string src = Process.GetCurrentProcess().MainModule!.FileName;
-                File.Copy(src, installExe, overwrite: true);
+                Services.InstallationImage.Publish(src, installExe);
                 Services.CommandLinePath.Register(installDir, machine: true);
 
                 Directory.CreateDirectory(startMenuDir);
@@ -615,7 +615,7 @@ namespace KillerShell
         {
             Directory.CreateDirectory(InstallDir);
             string src = Process.GetCurrentProcess().MainModule!.FileName;
-            File.Copy(src, InstallExe, overwrite: true);
+            Services.InstallationImage.Publish(src, InstallExe);
             Services.CommandLinePath.Register(InstallDir, machine: false);
 
             Directory.CreateDirectory(StartMenuDir);

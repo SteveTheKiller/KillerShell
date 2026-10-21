@@ -27,7 +27,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - CSV export writes a file or folder name that starts with =, +, - or @ with a leading apostrophe, so a spreadsheet shows it as text instead of running it as a formula.
 - Renaming registry keys preserves their permissions, child keys, and existing open handles.
 - Switching a registry number between hexadecimal and decimal keeps its value instead of saving a different number. Text the old base cannot read keeps that base and shows an error.
-- Updates verify a complete replacement before publishing it, retain recovery images after failure, and change installed version metadata only after publication succeeds.
+- Installation and updates verify a complete replacement before publishing it, retain recovery images after failure, and change installed version metadata only after publication succeeds.
 - Restarting a service finishes with Start even if its Services tab or KillerShell closes while it is stopping. Late results reach the status bar, and failures are recorded in %LOCALAPPDATA%\KillerShell\service-actions.log when storage is available. Stalled diagnostic storage cannot hold the app open.
 - Ending or restarting a process verifies that its creation identity still matches the displayed row, so a recycled process ID cannot target a different program.
 - Restarting a process waits for the original to exit before launching its replacement and reports termination, timeout, or launch failures.
