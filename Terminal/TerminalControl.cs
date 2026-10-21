@@ -965,24 +965,25 @@ namespace KillerShell.Terminal
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
+            var key = e.Key == Key.System ? e.SystemKey : e.Key;
             var mods = Keyboard.Modifiers;
             bool ctrl = (mods & ModifierKeys.Control) != 0;
             bool shift = (mods & ModifierKeys.Shift) != 0;
             bool alt = (mods & ModifierKeys.Alt) != 0;
 
-            if (HandleTerminalChord(e.Key, ctrl, shift, alt)) { e.Handled = true; return; }
+            if (HandleTerminalChord(key, ctrl, shift, alt)) { e.Handled = true; return; }
 
             // Ctrl+C copies WHEN THERE IS A SELECTION and interrupts otherwise, which is what
             // Windows Terminal does. Copy returning false is what makes the fall-through work,
             // so a runaway command is still killable with the chord everyone reaches for.
-            if (ctrl && !shift && !alt && e.Key == Key.C && CopySelection())
+            if (ctrl && !shift && !alt && key == Key.C && CopySelection())
             {
                 ClearSelection();
                 e.Handled = true;
                 return;
             }
 
-            string? seq = Encode(e.Key, ctrl, shift, alt);
+            string? seq = Encode(key, ctrl, shift, alt);
             if (seq == null) return;
 
             // Typing dismisses a selection, the way it does in an editor.
