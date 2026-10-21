@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.1] - Unreleased
 
 ### Fixed
+- Reused process IDs get fresh CPU, owner, and access information. Delayed owner lookups cannot update a different process.
 - Large terminal input stays ordered without blocking the window. A full input queue rejects the new text with a visible warning, and closing a terminal releases blocked work.
 - Stopping a search also stops empty-folder traversal between filesystem calls.
 - CSV and HTML exports preserve existing reports when replacement fails.
@@ -84,6 +85,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The footer copyright sits a few pixels further from the corner grip instead of running into it.
 
 ### Added
+- Added Slovenian across the app, installer, help, website, and keyboard shortcuts.
 - Installed copies add their folder to PATH, so commands such as `killershell list` run from any new terminal. `killershell --help` lists commands, and `--cli` stays compatible. Portable copies run from their folder or full path. Uninstalling removes the installed PATH entry.
 - If KillerShell closes unexpectedly, it records what happened in crash.log under %LOCALAPPDATA%\KillerShell, like KillerNotes and Killendar, so a report can include it.
 - The Recycle Bin is one of the saved places. Clicking it opens it, and files dropped on it are recycled (Shift deletes them for good).

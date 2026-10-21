@@ -1,10 +1,97 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using KillerShell.Models;
 
 namespace KillerShell.Services
 {
     internal static class ProcessListLogic
     {
+        internal sealed class ProcessCache
+        {
+            private readonly object _gate = new();
+            private readonly Dictionary<int, CachedProcess> _entries = new();
+
+            internal CachedProcess Observe(int pid, long? createdUtcTicks)
+            {
+                lock (_gate)
+                {
+                    if (_entries.TryGetValue(pid, out var entry) &&
+                        MatchesCreationTime(entry.CreatedUtcTicks, createdUtcTicks)) return entry;
+                    return _entries[pid] = new CachedProcess(pid, createdUtcTicks);
+                }
+            }
+
+            internal string Owner(CachedProcess entry)
+            {
+                lock (_gate) return entry.Owner ?? "-";
+            }
+
+            internal bool BeginOwnerLookup(CachedProcess entry)
+            {
+                lock (_gate)
+                {
+                    if (!entry.CreatedUtcTicks.HasValue || !IsCurrent(entry) ||
+                        entry.Owner != null || entry.OwnerPending) return false;
+                    entry.OwnerPending = true;
+                    return true;
+                }
+            }
+
+            internal bool CompleteOwnerLookup(CachedProcess request, string owner)
+            {
+                lock (_gate)
+                {
+                    if (!_entries.TryGetValue(request.Pid, out var current) ||
+                        !ReferenceEquals(current, request)) return false;
+                    current.Owner = owner;
+                    current.OwnerPending = false;
+                    return true;
+                }
+            }
+
+            internal bool IsCurrent(CachedProcess entry)
+            {
+                lock (_gate) return _entries.TryGetValue(entry.Pid, out var current) && ReferenceEquals(current, entry);
+            }
+
+            internal void ForgetExcept(ISet<int> livePids)
+            {
+                lock (_gate)
+                    foreach (int pid in _entries.Keys.Where(pid => !livePids.Contains(pid)).ToList())
+                        _entries.Remove(pid);
+            }
+        }
+
+        internal sealed class CachedProcess
+        {
+            internal int Pid { get; }
+            internal long? CreatedUtcTicks { get; }
+            internal bool Unreadable { get; set; }
+            internal string? Owner;
+            internal bool OwnerPending;
+            private TimeSpan? _lastCpu;
+            private DateTime _lastSampleAt;
+
+            internal CachedProcess(int pid, long? createdUtcTicks)
+            {
+                Pid = pid;
+                CreatedUtcTicks = createdUtcTicks;
+            }
+
+            internal double SampleCpu(TimeSpan cpu, DateTime now, int processorCount)
+            {
+                double result = 0;
+                double elapsed = (now - _lastSampleAt).TotalMilliseconds;
+                if (_lastCpu.HasValue && elapsed > 0)
+                    result = Math.Max(0, Math.Round((cpu - _lastCpu.Value).TotalMilliseconds /
+                        elapsed / processorCount * 100.0, 1));
+                _lastCpu = cpu;
+                _lastSampleAt = now;
+                return result;
+            }
+        }
+
         internal static bool Matches(ProcessInfo process, string query)
             => query.Length == 0
                || Contains(process.Name, query)

@@ -45,24 +45,32 @@ namespace KillerShell.Services
             return result;
         }
 
-        internal static string QueryOwner(int pid)
+        internal static string QueryOwner(int pid, long expectedCreatedUtcTicks)
         {
             try
             {
                 using var searcher = new ManagementObjectSearcher(
-                    $"SELECT Handle FROM Win32_Process WHERE ProcessId = {pid}");
+                    $"SELECT Handle, CreationDate FROM Win32_Process WHERE ProcessId = {pid}");
                 using var rows = searcher.Get();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
                 {
                     using (row)
                     {
-                        var arguments = new object[2];
-                        uint result = (uint)row.InvokeMethod("GetOwner", arguments);
-                        if (result == 0 && arguments[0] is string user && !string.IsNullOrEmpty(user))
-                        {
-                            string domain = arguments[1] as string ?? string.Empty;
-                            return domain.Length > 0 ? domain + "\\" + user : user;
-                        }
+                        bool firstRead = true;
+                        return ReadOwnerForIdentity(expectedCreatedUtcTicks, () =>
+                            {
+                                if (!firstRead) row.Get();
+                                firstRead = false;
+                                return row["CreationDate"] is string created
+                                    ? ManagementDateTimeConverter.ToDateTime(created).ToUniversalTime().Ticks : (long?)null;
+                            }, () =>
+                            {
+                                var arguments = new object[2];
+                                uint result = (uint)row.InvokeMethod("GetOwner", arguments);
+                                if (result != 0 || arguments[0] is not string user || string.IsNullOrEmpty(user)) return "-";
+                                string domain = arguments[1] as string ?? string.Empty;
+                                return domain.Length > 0 ? domain + "\\" + user : user;
+                            });
                     }
                 }
             }
@@ -72,6 +80,14 @@ namespace KillerShell.Services
             }
 
             return "-";
+        }
+
+        internal static string ReadOwnerForIdentity(long expectedCreatedUtcTicks,
+            Func<long?> readCreatedUtcTicks, Func<string> readOwner)
+        {
+            if (!ProcessListLogic.MatchesCreationTime(expectedCreatedUtcTicks, readCreatedUtcTicks())) return "-";
+            string owner = readOwner();
+            return ProcessListLogic.MatchesCreationTime(expectedCreatedUtcTicks, readCreatedUtcTicks()) ? owner : "-";
         }
 
         internal static Dictionary<string, (string StartMode, string Path, string LogOnAs, string Description)> QueryServices()

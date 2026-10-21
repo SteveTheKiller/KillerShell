@@ -69,44 +69,10 @@ namespace KillerShell.Tools
         private readonly ICollectionView _svcView;
         private readonly Dictionary<string, ServiceInfo> _byName = new(StringComparer.OrdinalIgnoreCase);
 
-        // CPU% has to be a DELTA, not a snapshot: Process.TotalProcessorTime is cumulative since
-        // the process started, so reading it once and dividing by wall-clock-since-start would
-        // report a process's LIFETIME average, not what it is doing right now - a shell that sat
-        // idle for an hour after one busy second would show a number nobody could read anything
-        // into. Two samples, taken RefreshInterval apart, are how every real task manager gets a
-        // live percentage out of the same cumulative counter.
-        private readonly Dictionary<int, TimeSpan> _lastCpuTime  = [];
-        private readonly Dictionary<int, DateTime> _lastSampleAt = [];
-
-        // PIDs this process cannot open - protected or elevated processes, where
-        // TotalProcessorTime and StartTime both throw Win32Exception. Remembered so the reads
-        // are not RETRIED on every tick.
-        //
-        // The catch blocks were already correct; the cost was that they ran again every refresh.
-        // On an ordinary machine that is ~20 unreadable processes x 2 reads = ~40 thrown and
-        // caught exceptions PER TICK, forever. Cheap when running normally, and very expensive
-        // under a debugger, which breaks in and walks a stack for every first-chance throw -
-        // which is exactly what the "everything is sluggish" trace showed, 40 identical
-        // Win32Exception lines in a burst.
-        //
-        // Permission does not change while a process lives, so one failure is conclusive for
-        // that PID. Pruned with the other per-PID bookkeeping when a process exits, so a reused
-        // PID starts clean rather than inheriting the old one's verdict.
-        private readonly HashSet<int> _unreadablePids = [];
-
-        // Owner lookups are a per-instance WMI method INVOKE (GetOwner), which costs far more
-        // than the one bulk SELECT the rest of a row comes from. A process's owner cannot change
-        // for its lifetime, so once a PID has answered - even with "-" for "could not tell" - it
-        // is never asked again.
-        //
-        // Concurrent, not a plain Dictionary: BuildSamples reads this on the refresh thread while
-        // EnrichOwners below writes it from its OWN separate background thread - see the remark
-        // there for why owner lookups were pulled out of BuildSamples in the first place.
-        private readonly System.Collections.Concurrent.ConcurrentDictionary<int, string> _ownerCache = new();
-
-        // PIDs an EnrichOwners pass is already chasing, so a slow WMI answer for one process does
-        // not get asked again by the next tick before it has even come back.
-        private readonly System.Collections.Concurrent.ConcurrentDictionary<int, byte> _ownerPending = new();
+        // CPU baselines, access failures and owner requests belong to a creation identity.
+        // A PID can be reused between refreshes without ever appearing absent.
+        private readonly Services.ProcessListLogic.ProcessCache _processCache = new();
+        private readonly Dictionary<int, Services.ProcessListLogic.CachedProcess> _rowIdentities = new();
 
         // E8FD (ViewAll/list): the same glyph ProcessTabs.cs's own ProcessesGlyph and the rail's
         // TaskManagerRailBtn already use for "a live list of what is running now" - reused here
@@ -137,7 +103,7 @@ namespace KillerShell.Tools
 
         // Canceled from Shutdown() - see the remark there. New one per control instance, not
         // reset between refreshes: EnrichOwners passes overlap fine (each is its own list of
-        // PIDs, guarded from double-chasing the same PID by _ownerPending), so there is never a
+        // identities, guarded from duplicate lookups by _processCache), so there is never a
         // reason to cancel one early except the whole control going away.
         private readonly CancellationTokenSource _ownerCts = new();
 
@@ -550,7 +516,7 @@ namespace KillerShell.Tools
             try
             {
                 var now = DateTime.UtcNow;
-                (List<ProcessSample> samples, HashSet<int> seen, List<int> needOwner) built;
+                (List<ProcessSample> samples, HashSet<int> seen, List<Services.ProcessListLogic.CachedProcess> needOwner) built;
                 try
                 {
                     // A dedicated (LongRunning) thread, not a pooled one from plain Task.Run.
@@ -592,22 +558,17 @@ namespace KillerShell.Tools
         /// bulk WMI query, and any owner lookups a newly-seen PID still needs.
         /// </summary>
         /// <remarks>
-        /// _lastCpuTime/_lastSampleAt are read and written here even though this runs on a
-        /// background thread - safe only because _refreshing above guarantees a single Refresh()
-        /// is ever in flight at once, so there is never a second reader or writer to race
-        /// against. _ownerCache/_ownerPending are the exception: EnrichOwners below writes them
-        /// from ITS OWN separate background thread, which can still be running when the next
-        /// Refresh()'s BuildSamples starts - that is exactly why they are ConcurrentDictionary
-        /// and not plain Dictionary.
+        /// CPU and readability are sampled only by the single active refresh. Owner requests
+        /// overlap refreshes, so their cache access is synchronized and checked by identity.
         /// </remarks>
-        private (List<ProcessSample> samples, HashSet<int> seen, List<int> needOwner) BuildSamples(
+        private (List<ProcessSample> samples, HashSet<int> seen, List<Services.ProcessListLogic.CachedProcess> needOwner) BuildSamples(
             DateTime now, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var live = Process.GetProcesses();
             var seen = new HashSet<int>(live.Length);
             var samples = new List<ProcessSample>(live.Length);
-            var needOwner = new List<int>();
+            var needOwner = new List<Services.ProcessListLogic.CachedProcess>();
 
             // One bulk WMI query for the whole machine's command lines, executable paths AND
             // parent PIDs, rather than one query per process - the difference between a refresh
@@ -640,50 +601,15 @@ namespace KillerShell.Tools
                     try { mem = proc.WorkingSet64; }
                     catch { mem = 0; }
 
-                    // Both reads below are skipped entirely for a PID already known to be
-                    // unopenable - see _unreadablePids. The catches stay: the FIRST read of a
-                    // given process still has to discover it, and a process can exit between
-                    // GetProcesses and here.
-                    bool readable = !_unreadablePids.Contains(pid);
+                    wmi.TryGetValue(pid, out var info);
+                    var identity = info.CreatedUtcTicks.HasValue
+                        ? _processCache.Observe(pid, info.CreatedUtcTicks) : null;
 
-                    // CPU%: swallowed per-process, not per-refresh - a system process we cannot
-                    // query for its processor time must not blank out every OTHER row's number.
-                    double cpuPercent = 0;
-                    if (readable)
-                    {
-                        try
-                        {
-                            var cpuTime = proc.TotalProcessorTime;
-                            if (_lastCpuTime.TryGetValue(pid, out var prevCpu) &&
-                                _lastSampleAt.TryGetValue(pid, out var prevAt))
-                            {
-                                double elapsedMs = (now - prevAt).TotalMilliseconds;
-                                if (elapsedMs > 0)
-                                {
-                                    double deltaMs = (cpuTime - prevCpu).TotalMilliseconds;
-                                    cpuPercent = Math.Max(0, Math.Round(
-                                        deltaMs / elapsedMs / Environment.ProcessorCount * 100.0, 1));
-                                }
-                            }
-                            _lastCpuTime[pid]  = cpuTime;
-                            _lastSampleAt[pid] = now;
-                        }
-                        catch
-                        {
-                            // Conclusive for this PID: it is protected or elevated, and it will
-                            // still be at the next tick. StartTime below would throw too, so it
-                            // is skipped in the same breath.
-                            _unreadablePids.Add(pid);
-                            readable = false;
-                        }
-                    }
-
-                    // Process.StartTime throws for a protected/elevated process this app is not
-                    // running as - read defensively, per-process, no WMI round trip needed since
-                    // Process already exposes it directly (unlike ParentProcessId).
+                    // Resolve identity before consuming cached CPU or access information.
+                    // WMI creation time also lets protected processes reset a negative cache.
                     string startTime = "-";
                     long? startTimeUtcTicks = null;
-                    if (readable)
+                    if (identity?.Unreadable != true)
                     {
                         try
                         {
@@ -691,13 +617,26 @@ namespace KillerShell.Tools
                             DateTime created = proc.StartTime;
                             startTime = created.ToString("yyyy-MM-dd HH:mm:ss");
                             startTimeUtcTicks = created.ToUniversalTime().Ticks;
+                            identity = _processCache.Observe(pid, startTimeUtcTicks);
                         }
-                        catch { _unreadablePids.Add(pid); }
+                        catch
+                        {
+                            identity ??= _processCache.Observe(pid, null);
+                            identity.Unreadable = true;
+                        }
+                    }
+                    identity ??= _processCache.Observe(pid, null);
+
+                    double cpuPercent = 0;
+                    if (!identity.Unreadable)
+                    {
+                        try { cpuPercent = identity.SampleCpu(proc.TotalProcessorTime, now, Environment.ProcessorCount); }
+                        catch { identity.Unreadable = true; }
                     }
 
                     string cmd = string.Empty, path = string.Empty, parentPid = "-";
                     long? actionableStartTimeUtcTicks = null;
-                    if (wmi.TryGetValue(pid, out var info) &&
+                    if (info.Name != null &&
                         Services.ProcessListLogic.VerifySampleMetadata(startTimeUtcTicks, info.CreatedUtcTicks,
                             info.Name, info.CommandLine, info.Path, info.ParentPid) is { } verified)
                     {
@@ -713,10 +652,10 @@ namespace KillerShell.Tools
                     // used to make the very first refresh take the better part of a minute with
                     // nothing on screen to show for it. Show "-" now, and let EnrichOwners fill
                     // it in as its own answers come back, one row at a time.
-                    string owner = _ownerCache.TryGetValue(pid, out string? cached) ? cached : "-";
-                    if (cached == null && _ownerPending.TryAdd(pid, 0)) needOwner.Add(pid);
+                    string owner = _processCache.Owner(identity);
+                    if (_processCache.BeginOwnerLookup(identity)) needOwner.Add(identity);
 
-                    samples.Add(new ProcessSample(pid, name, mem, cpuPercent, cmd, path, owner, parentPid, startTime, actionableStartTimeUtcTicks));
+                    samples.Add(new ProcessSample(pid, name, mem, cpuPercent, cmd, path, owner, parentPid, startTime, actionableStartTimeUtcTicks, identity));
                 }
                 finally { proc.Dispose(); }
             }
@@ -738,12 +677,12 @@ namespace KillerShell.Tools
         /// fills in progressively instead of jumping all at once after the slowest process
         /// answers.
         /// </remarks>
-        private void EnrichOwners(List<int> pids)
+        private void EnrichOwners(List<Services.ProcessListLogic.CachedProcess> identities)
         {
             var token = _ownerCts.Token;
             Task.Factory.StartNew(() =>
             {
-                foreach (int pid in pids)
+                foreach (var identity in identities)
                 {
                     // Checked BEFORE the next WMI call, not after - Shutdown() (app close with
                     // this tab still open) wants this thread to run out cleanly between PIDs
@@ -751,14 +690,16 @@ namespace KillerShell.Tools
                     // which is what threw RaceOnRCWCleanup in the first place (Shutdown remark).
                     if (token.IsCancellationRequested) return;
 
-                    string owner = Services.ProcessListQueryService.QueryOwner(pid);
-                    _ownerCache[pid] = owner;
-                    _ownerPending.TryRemove(pid, out _);
+                    if (!_processCache.IsCurrent(identity)) continue;
+                    string owner = Services.ProcessListQueryService.QueryOwner(identity.Pid, identity.CreatedUtcTicks!.Value);
+                    if (!_processCache.CompleteOwnerLookup(identity, owner)) continue;
                     if (token.IsCancellationRequested) return;   // window may be gone by now
 
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        if (_byPid.TryGetValue(pid, out var row)) row.User = owner;
+                        if (_processCache.IsCurrent(identity) &&
+                            _rowIdentities.TryGetValue(identity.Pid, out var displayed) && ReferenceEquals(displayed, identity) &&
+                            _byPid.TryGetValue(identity.Pid, out var row)) row.User = owner;
                     }));
                 }
             }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -772,11 +713,13 @@ namespace KillerShell.Tools
         {
             foreach (var s in samples)
             {
-                if (!_byPid.TryGetValue(s.Pid, out var row) || row.StartTimeUtcTicks != s.StartTimeUtcTicks)
+                if (!_byPid.TryGetValue(s.Pid, out var row) ||
+                    !_rowIdentities.TryGetValue(s.Pid, out var displayed) || !ReferenceEquals(displayed, s.Identity))
                 {
                     if (row != null) _items.Remove(row);
                     row = new ProcessInfo(s.Pid);
                     _byPid[s.Pid] = row;
+                    _rowIdentities[s.Pid] = s.Identity;
                     _items.Add(row);
                 }
                 row.Name          = s.Name;
@@ -784,7 +727,7 @@ namespace KillerShell.Tools
                 row.CpuPercent     = s.CpuPercent;
                 row.CommandLine    = s.CommandLine;
                 row.Path           = s.Path;
-                row.User           = s.User;
+                row.User           = _processCache.Owner(s.Identity);
                 row.ParentPid      = s.ParentPid;
                 row.StartTimeLabel = s.StartTimeLabel;
                 row.StartTimeUtcTicks = s.StartTimeUtcTicks;
@@ -797,12 +740,9 @@ namespace KillerShell.Tools
             {
                 _items.Remove(_byPid[gone]);
                 _byPid.Remove(gone);
-                _lastCpuTime.Remove(gone);
-                _lastSampleAt.Remove(gone);
-                _unreadablePids.Remove(gone);   // a reused PID must not inherit this verdict
-                _ownerCache.TryRemove(gone, out _);
-                _ownerPending.TryRemove(gone, out _);
+                _rowIdentities.Remove(gone);
             }
+            _processCache.ForgetExcept(seen);
 
             // WPF's ordinary SortDescriptions are not live: property-change notifications
             // repaint CpuPercent/MemoryBytes in place, but they do not move an existing row.
@@ -834,15 +774,18 @@ namespace KillerShell.Tools
             internal readonly string ParentPid;
             internal readonly string StartTimeLabel;
             internal readonly long? StartTimeUtcTicks;
+            internal readonly Services.ProcessListLogic.CachedProcess Identity;
 
             internal ProcessSample(int pid, string name, long memoryBytes, double cpuPercent,
                                    string commandLine, string path, string user,
-                                   string parentPid, string startTimeLabel, long? startTimeUtcTicks)
+                                   string parentPid, string startTimeLabel, long? startTimeUtcTicks,
+                                   Services.ProcessListLogic.CachedProcess identity)
             {
                 Pid = pid; Name = name; MemoryBytes = memoryBytes; CpuPercent = cpuPercent;
                 CommandLine = commandLine; Path = path; User = user;
                 ParentPid = parentPid; StartTimeLabel = startTimeLabel;
                 StartTimeUtcTicks = startTimeUtcTicks;
+                Identity = identity;
             }
         }
 
