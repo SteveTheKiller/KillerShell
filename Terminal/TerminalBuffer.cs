@@ -139,30 +139,25 @@ namespace KillerShell.Terminal
             rows = Math.Max(1, rows);
             if (cols == Cols && rows == Rows) return;
 
-            var old = _screen;
             int oldRows = Rows;
             int cursorAfter = CursorCol + (_pendingWrap ? 1 : 0);
 
-            _screen = New(cols, rows);
-            for (int r = 0; r < Math.Min(oldRows, rows); r++)
+            if (_altScreen == null)
             {
-                Array.Copy(old[r], _screen[r], Math.Min(Cols, cols));
-                NormalizeLine(_screen[r]);
-                if (_lineIdentities.TryGetValue(old[r], out object identity))
-                    _lineIdentities.Add(_screen[r], identity);
+                int shift = MainShift(_screen, oldRows, rows, CursorRow);
+                _screen = Regrid(_screen, oldRows, cols, rows, shift, toScrollback: true);
+                CursorRow -= shift;
+                _savedRow = Math.Max(0, _savedRow - shift);
             }
-
-            if (_altScreen != null)
+            else
             {
-                var oldAlt = _altScreen;
-                _altScreen = New(cols, rows);
-                for (int r = 0; r < Math.Min(oldRows, rows); r++)
-                {
-                    Array.Copy(oldAlt[r], _altScreen[r], Math.Min(Cols, cols));
-                    NormalizeLine(_altScreen[r]);
-                    if (_lineIdentities.TryGetValue(oldAlt[r], out object identity))
-                        _lineIdentities.Add(_altScreen[r], identity);
-                }
+                // A full-screen program owns the alternate screen and redraws it for the new size,
+                // so it is cut from the top as before and never becomes scrollback. The main
+                // screen kept behind it moves like the main screen, around its saved cursor.
+                _screen = Regrid(_screen, oldRows, cols, rows, 0, toScrollback: false);
+                int shift = MainShift(_altScreen, oldRows, rows, _savedRow);
+                _altScreen = Regrid(_altScreen, oldRows, cols, rows, shift, toScrollback: true);
+                _savedRow = Math.Max(0, _savedRow - shift);
             }
 
             Cols = cols;
@@ -174,6 +169,52 @@ namespace KillerShell.Terminal
             _pendingWrap = _pendingWrap && cursorAfter >= cols;
             ResetTabs();
             Version++;
+        }
+
+        /// <summary>
+        /// How many rows a main screen moves up to fit <paramref name="rows"/>. The cursor row and
+        /// anything written below it stay on screen when they can; the rows that no longer fit
+        /// are the oldest ones at the top, which is where the console itself drops them. Growing
+        /// never moves anything.
+        /// </summary>
+        private static int MainShift(Cell[][] grid, int oldRows, int rows, int cursorRow)
+        {
+            int lastUsed = Math.Min(cursorRow, oldRows - 1);
+            for (int r = oldRows - 1; r > lastUsed; r--)
+                if (!IsBlank(grid[r])) { lastUsed = r; break; }
+            return Math.Max(0, Math.Min(lastUsed - (rows - 1), cursorRow));
+        }
+
+        private static bool IsBlank(Cell[] line)
+        {
+            foreach (var cell in line)
+                if (cell.Ch != 0 || cell.Combining != null || cell.Bg != DefaultColor) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// A copy of <paramref name="old"/> at the new size, starting at row <paramref name="shift"/>.
+        /// Rows above it move into scrollback whole (the same arrays, so selections and
+        /// accessibility ranges stay attached to them) when <paramref name="toScrollback"/> is set.
+        /// Copied rows carry their identity to the new arrays.
+        /// </summary>
+        private Cell[][] Regrid(Cell[][] old, int oldRows, int cols, int rows, int shift, bool toScrollback)
+        {
+            if (toScrollback && shift > 0)
+            {
+                for (int r = 0; r < shift; r++) _scrollback.Add(old[r]);
+                if (_scrollback.Count > ScrollbackLimit)
+                    _scrollback.RemoveRange(0, _scrollback.Count - ScrollbackLimit);
+            }
+            var grid = New(cols, rows);
+            for (int r = 0; r < Math.Min(oldRows - shift, rows); r++)
+            {
+                Array.Copy(old[r + shift], grid[r], Math.Min(Cols, cols));
+                NormalizeLine(grid[r]);
+                if (_lineIdentities.TryGetValue(old[r + shift], out object identity))
+                    _lineIdentities.Add(grid[r], identity);
+            }
+            return grid;
         }
 
         private static Cell[][] New(int cols, int rows)
