@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -59,8 +60,14 @@ public static class TabCloseOwnershipScenario
         window.CloseTab_Click(close, new RoutedEventArgs(Button.ClickEvent));
         Assert.Contains(victim, left.Tabs); // The loaded chip is still in its fade.
         window.CloseTab_Click(close, new RoutedEventArgs(Button.ClickEvent));
-        window.FocusPane(right);
         var active = right.Active;
+        int listingResets = 0;
+        NotifyCollectionChangedEventHandler listingChanged = (_, e) =>
+        {
+            if (e.Action == NotifyCollectionChangedAction.Reset) listingResets++;
+        };
+        active.Results.CollectionChanged += listingChanged;
+        window.FocusPane(right);
         var groups = ((ItemsControl)window.FindName("TermsList")).ItemsSource;
         ShellWindowFixture.PumpUntil(() => !left.Tabs.Contains(victim));
         Assert.True(ghostShown, "The owner pane never displayed its close crossfade.");
@@ -75,10 +82,16 @@ public static class TabCloseOwnershipScenario
         ShellWindowFixture.PumpUntil(() => left.TabFadeGhost.Source == null);
         Assert.Equal(Visibility.Collapsed, left.TabFadeGhost.Visibility);
         Assert.Null(right.TabFadeGhost.Source);
+        string WatchDiagnostics() => "Listing resets=" + listingResets + "; focused=" + window.Pane.Name
+            + "; status=" + active.StatusKey + "; text=" + active.StatusMessage;
+        // The old rows can already contain the child file while activation is still listing.
+        // Wait for this activation's publication before probing the installed watcher.
+        ShellWindowFixture.PumpUntil(() => listingResets > 0, diagnostic: WatchDiagnostics);
+        active.Results.CollectionChanged -= listingChanged;
         ShellWindowFixture.PumpUntil(() => active.Results.Any(r => r.FilePath == ready));
         string watched = Path.Combine(fixture.Root, "still-watched.txt");
         File.WriteAllText(watched, "fixture");
-        ShellWindowFixture.PumpUntil(() => active.Results.Any(r => r.FilePath == watched));
+        ShellWindowFixture.PumpUntil(() => active.Results.Any(r => r.FilePath == watched), diagnostic: WatchDiagnostics);
 
         // A right pane can be hidden while its loaded tab chip is fading.
         window.FocusPane(right);
@@ -122,7 +135,8 @@ internal sealed class ShellWindowFixture : IDisposable
     internal static void Click(MainWindow window, string name)
         => ((Button)window.FindName(name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
-    internal static void PumpUntil(Func<bool> done, [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+    internal static void PumpUntil(Func<bool> done, [System.Runtime.CompilerServices.CallerLineNumber] int line = 0,
+        Func<string>? diagnostic = null)
     {
         var elapsed = Stopwatch.StartNew();
         do
@@ -133,7 +147,8 @@ internal sealed class ShellWindowFixture : IDisposable
             timer.Start();
             Dispatcher.PushFrame(frame);
         } while (!done() && elapsed.ElapsedMilliseconds < 5000);
-        Assert.True(done(), "The expected shell state at fixture line " + line + " did not arrive within five seconds.");
+        Assert.True(done(), "The expected shell state at fixture line " + line + " did not arrive within five seconds. "
+            + diagnostic?.Invoke());
     }
 
     public void Dispose()
