@@ -53,6 +53,9 @@ namespace KillerShell.Terminal
         // able to make us allocate without limit, and no real sequence comes near these.
         private const int MaxParams = 32;
         private readonly int[] _pars = new int[MaxParams];
+        // True where a parameter was introduced by ':' (an ITU T.416 subparameter) rather than ';'.
+        private readonly bool[] _sub = new bool[MaxParams];
+        private bool _subSeen;
         private int _parCount;
         private bool _parSeen;          // distinguishes "CSI m" from "CSI 0 m"
         private char _prefix, _inter;
@@ -133,32 +136,36 @@ namespace KillerShell.Terminal
                     _state = S.Ground;
                     break;
 
+                // Only 0x40-0x7E ends a CSI sequence. Every parameter byte (0x30-0x3F, the colon
+                // included) stays inside it, so nothing between ESC [ and the final byte can print.
                 case S.CsiEntry:
                     if (b < 0x20) { _h.Execute(b); break; }
                     if (b >= 0x3C && b <= 0x3F) { _prefix = (char)b; _state = S.CsiParam; break; }
-                    if (b == ';' || (b >= '0' && b <= '9')) { _state = S.CsiParam; Param(b); break; }
+                    if (b <= 0x3B && b >= 0x30) { _state = S.CsiParam; Param(b); break; }
                     if (b < 0x30) { _inter = (char)b; _state = S.CsiInt; break; }
-                    Csi(b);
+                    if (b <= 0x7E) { Csi(b); break; }
+                    if (b != 0x7F) _state = S.CsiIgnore;
                     break;
 
                 case S.CsiParam:
                     if (b < 0x20) { _h.Execute(b); break; }
-                    if (b == ';' || (b >= '0' && b <= '9')) { Param(b); break; }
+                    if (b <= 0x3B && b >= 0x30) { Param(b); break; }
                     if (b >= 0x3C && b <= 0x3F) { _state = S.CsiIgnore; break; }   // prefix after params is malformed
                     if (b < 0x30) { _inter = (char)b; _state = S.CsiInt; break; }
-                    Csi(b);
+                    if (b <= 0x7E) { Csi(b); break; }
+                    if (b != 0x7F) _state = S.CsiIgnore;
                     break;
 
                 case S.CsiInt:
                     if (b < 0x20) { _h.Execute(b); break; }
                     if (b < 0x30) { _inter = (char)b; break; }
-                    if (b < 0x40) { _state = S.CsiIgnore; break; }
+                    if (b < 0x40 || b > 0x7E) { if (b != 0x7F) _state = S.CsiIgnore; break; }
                     Csi(b);
                     break;
 
                 case S.CsiIgnore:
                     if (b < 0x20) { _h.Execute(b); break; }
-                    if (b >= 0x40) _state = S.Ground;
+                    if (b >= 0x40 && b <= 0x7E) _state = S.Ground;
                     break;
 
                 case S.OscString:
@@ -215,9 +222,14 @@ namespace KillerShell.Terminal
         private void Param(byte b)
         {
             _parSeen = true;
-            if (b == ';')
+            if (b == ';' || b == ':')
             {
-                if (_parCount < MaxParams - 1) _parCount++;
+                if (_parCount < MaxParams - 1)
+                {
+                    _parCount++;
+                    _sub[_parCount] = b == ':';
+                    if (b == ':') _subSeen = true;
+                }
                 return;
             }
             if (_parCount >= MaxParams) return;
@@ -230,10 +242,56 @@ namespace KillerShell.Terminal
         private void Csi(byte final)
         {
             int n = _parSeen ? _parCount + 1 : 0;
-            var pars = new int[n];
-            Array.Copy(_pars, pars, n);
+            int[] pars;
+            if (_subSeen)
+            {
+                // Subparameters are only understood in SGR. Any other sequence carrying them is
+                // consumed whole and not acted on.
+                _state = S.Ground;
+                if (final != 'm') return;
+                pars = FlattenSgr(n);
+                // Nothing usable left. An empty SGR would mean reset, which was not asked for.
+                if (pars.Length == 0) return;
+            }
+            else
+            {
+                pars = new int[n];
+                Array.Copy(_pars, pars, n);
+            }
             _h.CsiDispatch((char)final, pars, _prefix, _inter);
             _state = S.Ground;
+        }
+
+        /// <summary>
+        /// Rewrites colon SGR forms into the semicolon forms the handler reads: 38:2::r:g:b and
+        /// 38:2:r:g:b become 38;2;r;g;b, 38:5:n becomes 38;5;n (likewise 48). Underline color (58)
+        /// is dropped, and any other attribute with subparameters keeps only its main number, so
+        /// 4:3 is plain underline. A subparameter never becomes an attribute of its own.
+        /// </summary>
+        private int[] FlattenSgr(int n)
+        {
+            var output = new System.Collections.Generic.List<int>(n);
+            int i = 0;
+            while (i < n)
+            {
+                int end = i + 1;
+                while (end < n && _sub[end]) end++;
+                int len = end - i, main = _pars[i];
+                if (len == 1) output.Add(main);
+                else if ((main == 38 || main == 48) && _pars[i + 1] == 2 && (len == 5 || len == 6))
+                {
+                    int rgb = end - 3;
+                    output.Add(main); output.Add(2);
+                    output.Add(_pars[rgb]); output.Add(_pars[rgb + 1]); output.Add(_pars[rgb + 2]);
+                }
+                else if ((main == 38 || main == 48) && _pars[i + 1] == 5 && len == 3)
+                {
+                    output.Add(main); output.Add(5); output.Add(_pars[i + 2]);
+                }
+                else if (main != 38 && main != 48 && main != 58) output.Add(main);
+                i = end;
+            }
+            return output.ToArray();
         }
 
         private void FlushOsc()
@@ -246,6 +304,8 @@ namespace KillerShell.Terminal
         private void Clear()
         {
             Array.Clear(_pars, 0, _pars.Length);
+            Array.Clear(_sub, 0, _sub.Length);
+            _subSeen = false;
             _parCount = 0;
             _parSeen = false;
             _prefix = '\0';

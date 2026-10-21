@@ -107,6 +107,75 @@ namespace KillerShell.Tests.Terminal
             Assert.Equal(new[] { (int)'Y' }, handler.Codepoints);
         }
 
+        [Theory]
+        [InlineData("\u001b[38:2::255:0:0mRED", new[] { 38, 2, 255, 0, 0 })]
+        [InlineData("\u001b[38:2:255:0:0mRED", new[] { 38, 2, 255, 0, 0 })]
+        [InlineData("\u001b[48:5:200mRED", new[] { 48, 5, 200 })]
+        [InlineData("\u001b[1;4:3;38:5:9mRED", new[] { 1, 4, 38, 5, 9 })]
+        [InlineData("\u001b[58:2::1:2:3;1mRED", new[] { 1 })]
+        public void Feed_ColonSgrSubparametersNeverPrint(string sequence, int[] expected)
+        {
+            byte[] bytes = Encoding.ASCII.GetBytes(sequence);
+            for (int split = 0; split <= bytes.Length; split++)
+            {
+                var handler = new RecordingHandler();
+                var parser = new VtParser(handler);
+                var first = new byte[split];
+                var second = new byte[bytes.Length - split];
+                System.Array.Copy(bytes, first, split);
+                System.Array.Copy(bytes, split, second, 0, second.Length);
+                parser.Feed(first, first.Length);
+                parser.Feed(second, second.Length);
+
+                var call = Assert.Single(handler.CsiCalls);
+                Assert.Equal('m', call.Final);
+                Assert.Equal(expected, call.Parameters);
+                Assert.Equal(new[] { (int)'R', 'E', 'D' }, handler.Codepoints);
+            }
+        }
+
+        [Theory]
+        [InlineData("\u001b[1:2HX")]         // subparameters outside SGR are consumed, not acted on
+        [InlineData("\u001b[:mX")]
+        [InlineData("\u001b[1\u007f2mX")]   // DEL inside a sequence is ignored
+        public void Feed_UnsupportedCsiParametersAreConsumedWhole(string sequence)
+        {
+            var handler = new RecordingHandler();
+            var parser = new VtParser(handler);
+            byte[] bytes = Encoding.ASCII.GetBytes(sequence);
+            parser.Feed(bytes, bytes.Length);
+
+            Assert.Equal(new[] { (int)'X' }, handler.Codepoints);
+        }
+
+        [Fact]
+        public void Feed_OversizedColonSequenceStaysBounded()
+        {
+            var handler = new RecordingHandler();
+            var parser = new VtParser(handler);
+            var text = new StringBuilder("\u001b[38");
+            for (int i = 0; i < 10000; i++) text.Append(":1");
+            text.Append("mX");
+            byte[] bytes = Encoding.ASCII.GetBytes(text.ToString());
+            parser.Feed(bytes, bytes.Length);
+
+            Assert.Empty(handler.CsiCalls);   // nothing usable, and not turned into a reset
+            Assert.Equal(new[] { (int)'X' }, handler.Codepoints);
+        }
+
+        [Fact]
+        public void Feed_EscapeCancelsAColonSequenceAndLaterSequencesAreClean()
+        {
+            var handler = new RecordingHandler();
+            var parser = new VtParser(handler);
+            byte[] bytes = Encoding.ASCII.GetBytes("\u001b[38:2\u001b[31mX");
+            parser.Feed(bytes, bytes.Length);
+
+            var call = Assert.Single(handler.CsiCalls);
+            Assert.Equal(new[] { 31 }, call.Parameters);
+            Assert.Equal(new[] { (int)'X' }, handler.Codepoints);
+        }
+
         private sealed class RecordingHandler : IVtHandler
         {
             internal readonly List<int> Codepoints = [];
