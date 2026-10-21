@@ -1443,6 +1443,8 @@ namespace KillerShell.Shell
         {
             tab.StatusKey     = null;   // transient text - not re-renderable on language switch
             tab.StatusArgs    = null;
+            tab.StatusSupplementKey = null;
+            tab.StatusSupplementArgs = null;
             tab.StatusMessage = msg;
             if (tab == _active) { SetFooterStatus(msg); ApplyStatusTone(null); }
         }
@@ -1667,8 +1669,20 @@ namespace KillerShell.Shell
         {
             tab.StatusKey     = key;
             tab.StatusArgs    = args;
-            tab.StatusMessage = args.Length > 0 ? string.Format(Loc(key), args) : Loc(key);
-            if (tab == _active) { SetFooterStatus(tab.StatusMessage); ApplyStatusTone(key); }
+            tab.StatusSupplementKey = null;
+            tab.StatusSupplementArgs = null;
+            RefreshTabStatus(tab);
+        }
+
+        private void RefreshTabStatus(SearchTab tab)
+        {
+            tab.StatusMessage = tab.StatusArgs is { Length: > 0 }
+                ? string.Format(Loc(tab.StatusKey!), tab.StatusArgs) : Loc(tab.StatusKey!);
+            if (!string.IsNullOrEmpty(tab.StatusSupplementKey))
+                tab.StatusMessage += " " + (tab.StatusSupplementArgs is { Length: > 0 }
+                    ? string.Format(Loc(tab.StatusSupplementKey!), tab.StatusSupplementArgs)
+                    : Loc(tab.StatusSupplementKey!));
+            if (tab == _active) { SetFooterStatus(tab.StatusMessage); ApplyStatusTone(tab.StatusKey); }
         }
 
         // All engine callbacks land at Background priority so queued result churn sits

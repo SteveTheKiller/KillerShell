@@ -171,7 +171,8 @@ namespace KillerShell.Shell
             foreach (var root in _treeRoots) root.RefreshGroupName(Loc("Str_Term_Linux"));
             SearchButton.Content = Loc(_active.IsSearching ? "Str_Btn_Stop" : "Str_Btn_Search");
 
-            foreach (var tab in _tabs)
+            // Hidden panes retain their tabs, so their stored text must change too.
+            foreach (var tab in new[] { LeftPane, RightPane }.SelectMany(pane => pane.Tabs))
             {
                 // ANY/ALL chips, name/content chips, and their tooltips (INPC re-raise).
                 foreach (var g in tab.Groups)
@@ -183,9 +184,7 @@ namespace KillerShell.Shell
                 // Status line: rebuilt from key + args when we have them; transient
                 // text (mid-search progress) is left alone.
                 if (!string.IsNullOrEmpty(tab.StatusKey))
-                    tab.StatusMessage = tab.StatusArgs is { Length: > 0 }
-                        ? string.Format(Loc(tab.StatusKey!), tab.StatusArgs)
-                        : Loc(tab.StatusKey!);
+                    RefreshTabStatus(tab);
                 if (tab.ScannedCount >= 0)
                     tab.ScannedLabel = string.Format(Loc("Str_Status_Scanned"), tab.ScannedCount.ToString("N0"));
                 if (tab.Results.Count > 0)
@@ -198,21 +197,25 @@ namespace KillerShell.Shell
                     tab.PipeLabel = string.Format(Loc("Str_Pipe_Scope"), tab.PipeArgs);
             }
 
-            // Push the active tab's re-rendered lines into the visible controls.
+            // The footer belongs to the focused tab; each visible pane owns its other lines.
             SetFooterStatus(_active.StatusMessage);          // window footer - the live line
-            Pane.QueryText.Text   = _active.QueryLabel;
-            Pane.StatsText.Text   = _active.StatsLabel;
-            Pane.ScannedText.Text = _active.ScannedLabel;
-            UpdatePaneStatusBar();
-            if (!_active.IsSearching)
+            ForEachPane(() =>
             {
-                int c = _active.Results.Count;
-                Pane.ResultsHeader.Text = c > 0 ? string.Format(Loc("Str_Lbl_ResultsCount"), c) : Loc("Str_Lbl_Results");
-            }
-            if (_active.PipeFiles != null)
-                Pane.ScopePathLabel.Text = _active.PipeLabel;
-            else if (string.IsNullOrWhiteSpace(Pane.RootPathBox.Text))
-                Pane.ScopePathLabel.Text = Loc("Str_Scope_Empty");
+                if (_active == null) return;
+                Pane.QueryText.Text   = _active.QueryLabel;
+                Pane.StatsText.Text   = _active.StatsLabel;
+                Pane.ScannedText.Text = _active.ScannedLabel;
+                UpdatePaneStatusBar();
+                if (!_active.IsSearching)
+                {
+                    int c = _active.Results.Count;
+                    Pane.ResultsHeader.Text = c > 0 ? string.Format(Loc("Str_Lbl_ResultsCount"), c) : Loc("Str_Lbl_Results");
+                }
+                if (_active.PipeFiles != null)
+                    Pane.ScopePathLabel.Text = _active.PipeLabel;
+                else if (string.IsNullOrWhiteSpace(Pane.RootPathBox.Text))
+                    Pane.ScopePathLabel.Text = Loc("Str_Scope_Empty");
+            });
         }
     }
 }

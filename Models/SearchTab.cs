@@ -170,6 +170,9 @@ namespace KillerShell.Models
         // (RelocalizeDynamicUi). Null/-1 = nothing stored (transient text stays as-is).
         public string?   StatusKey;
         public object[]? StatusArgs;
+        // One optional completion detail, kept separate from the primary status and its tone.
+        public string?   StatusSupplementKey;
+        public object[]? StatusSupplementArgs;
         public long      ScannedCount = -1;
         public object[]? PipeArgs;     // {count, source title, query} for Str_Pipe_Scope
         // Human-readable summary of what this tab last searched for, shown in the

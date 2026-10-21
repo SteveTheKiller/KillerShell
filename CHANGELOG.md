@@ -7,40 +7,41 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.1] - Unreleased
 
 ### Fixed
-- Website screenshots keep keyboard focus inside the viewer, provide a translated Close button, and return focus to the selected screenshot. Help explains how to refresh hardware information by reopening the Performance tab.
-- TAR archives honor local extended sizes and reject malformed or unsupported metadata before extraction.
-- Terminal text uses consistent widths for CJK, emoji, and combining marks across display, cursor movement, copying, and accessibility.
-- GPU counters show their own identity instead of being assigned to hardware names by list order.
-- Unbound Alt shortcuts reach the terminal while application shortcuts keep precedence.
-- Reused process IDs get fresh CPU, owner, and access information. Delayed owner lookups cannot update a different process.
-- Large terminal input stays ordered without blocking the window. A full input queue rejects the new text with a visible warning, and closing a terminal releases blocked work.
-- Search, file copying and archive addition skip directory links and report skipped counts. Search reports unreadable paths and stops empty-folder traversal between filesystem calls.
-- CSV and HTML exports preserve existing reports when replacement fails.
-- Bundled KillerPivot verifies the selected tenant connection, reports failed or unverified disconnects, and preserves tenant configuration on failed or conflicting saves.
-- Bundled KillerScripts preserves non-ASCII text, completed caches after failed refreshes, and the script version used by each active invocation under Windows PowerShell 5.1 and PowerShell 7.
-- Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.
-- Release builds stop on incomplete dependency audits, failed metadata commits or tags, and concurrent source changes. Publication verifies the committed candidate, trusted signature, and checksum.
 - Uninstalling and duplicate-install cleanup reject unsafe paths and permissions, preserve unrelated files and settings, report failures, and retain recovery images and registration when cleanup fails.
 - Failed saves preserve the previous content and keep the document unsaved. If restoring an in-place write also fails, KillerShell attempts a recovery copy of the original. Administrator retries report recovery paths, handle closed editors, and serialize later saves so an older helper cannot overwrite newer content. Saving keeps the file's permissions, attributes, alternate streams, hard links and symbolic links.
 - Saving refuses text the selected encoding cannot represent and explains how to save it as UTF-8. Encoding changes stay unsaved through Undo, and administrator saves preserve newer text and encoding edits.
 - Malformed legacy text and files whose bytes do not match their UTF-8, UTF-16 or UTF-32 byte order mark stay closed with a message instead of changing bytes on save. Valid legacy and UTF-32 files open and save unchanged.
 - Closing, installing, updating, or signing out asks before discarding unsaved documents in either pane, even when a pane is hidden. Cancel keeps the session, live folder updates, and terminal theme data intact.
+- Updating an all-users install and saving a protected file as administrator check the staged download or document against its verified hash just before writing, so another program cannot swap it in on the way. The update runs from the installed copy instead of a script in the temp folder.
+- Text printed in a terminal can no longer point the tab's folder at a network share, which could send your Windows sign-in to that machine when the folder was opened. Local and WSL folders still follow the shell.
+- Files opened, dragged or extracted from a downloaded archive keep its downloaded-from-the-internet mark, as in Explorer, so Windows still warns before running them.
+- CSV export writes a file or folder name that starts with =, +, - or @ with a leading apostrophe, so a spreadsheet shows it as text instead of running it as a formula.
+- Installation and updates verify a complete replacement before publishing it, retain recovery images after failure, and change installed version metadata only after publication succeeds.
+- TAR archives honor local extended sizes and reject malformed or unsupported metadata before extraction.
+- CSV and HTML exports preserve existing reports when replacement fails.
+- Bundled KillerPivot verifies the selected tenant connection, reports failed or unverified disconnects, and preserves tenant configuration on failed or conflicting saves.
+- Bundled KillerScripts preserves non-ASCII text, completed caches after failed refreshes, and the script version used by each active invocation under Windows PowerShell 5.1 and PowerShell 7.
+- Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.
 - Copying or moving over a file preserves the old file if the operation fails or is canceled. Folder moves keep each conflict choice, failed cross-drive moves report the leftover source, and oversized tar metadata is rejected. Moving a folder that holds a junction or folder link moves the link instead of emptying the folder it points to. Extract All no longer leaves a second copy of every file in the temp folder. Edits made while the administrator save prompt is open stay marked unsaved. Renaming a registry key or value keeps every value with its exact type, instead of failing or dropping values of uncommon types.
 - Copies and moves preserve recovery copies if replacing a destination fails, and report unreadable source folders as partial failures while continuing accessible work. Whole-folder renames still report success when they complete.
 - File copies and moves between drives preserve alternate streams, including the downloaded-from-the-internet mark. Moves fall back to staged copying when a mounted volume rejects a rename. Copying a read-only source can still replace an existing file.
 - Editing a ZIP preserves file permissions, including Unix executable permissions, and folder attributes on retained entries. Archive browsing, extraction, and edits distinguish names that differ by case, and bulk extraction reports conflicting Windows output paths.
 - ZIP additions resolve file and folder conflicts before publication, reject conflicting Windows output names, and refuse malformed existing paths without changing the archive. Replacing duplicate incoming names keeps the last source once.
 - Canceling extraction stops between decompression chunks, including the final entry, and prevents canceled output from being accepted as complete.
-- Updating an all-users install and saving a protected file as administrator check the staged download or document against its verified hash just before writing, so another program cannot swap it in on the way. The update runs from the installed copy instead of a script in the temp folder.
-- Text printed in a terminal can no longer point the tab's folder at a network share, which could send your Windows sign-in to that machine when the folder was opened. Local and WSL folders still follow the shell.
-- Files opened, dragged or extracted from a downloaded archive keep its downloaded-from-the-internet mark, as in Explorer, so Windows still warns before running them.
-- CSV export writes a file or folder name that starts with =, +, - or @ with a leading apostrophe, so a spreadsheet shows it as text instead of running it as a formula.
 - Renaming registry keys preserves their permissions, child keys, and existing open handles.
 - Switching a registry number between hexadecimal and decimal keeps its value instead of saving a different number. Text the old base cannot read keeps that base and shows an error.
-- Installation and updates verify a complete replacement before publishing it, retain recovery images after failure, and change installed version metadata only after publication succeeds.
+- Reused process IDs get fresh CPU, owner, and access information. Delayed owner lookups cannot update a different process.
+- Large terminal input stays ordered without blocking the window. A full input queue rejects the new text with a visible warning, and closing a terminal releases blocked work.
+- Release builds stop on incomplete dependency audits, failed metadata commits or tags, and concurrent source changes. Publication verifies the committed candidate, trusted signature, and checksum.
 - Restarting a service finishes with Start even if its Services tab or KillerShell closes while it is stopping. Late results reach the status bar, and failures are recorded in %LOCALAPPDATA%\KillerShell\service-actions.log when storage is available. Stalled diagnostic storage cannot hold the app open.
 - Ending or restarting a process verifies that its creation identity still matches the displayed row, so a recycled process ID cannot target a different program.
 - Restarting a process asks before terminating it, waits for its exit, and reports failures. Administrator restarts keep the original running until elevation is approved and its executable and creation identity are verified.
+- A silent install or update that finds KillerShell running exits with 1618, which Intune, Configuration Manager and RMM tools retry, instead of a general failure.
+- Chocolatey has one submission workflow, skips duplicate initial uploads on retry, and keeps failed or pending validation distinct from approval.
+- Terminal text uses consistent widths for CJK, emoji, and combining marks across display, cursor movement, copying, and accessibility.
+- GPU counters show their own identity instead of being assigned to hardware names by list order.
+- Unbound Alt shortcuts reach the terminal while application shortcuts keep precedence.
+- Search, file copying and archive addition skip directory links and report skipped counts. Search reports unreadable paths and stops empty-folder traversal between filesystem calls.
 - Closing and reopening restores both panes, including hidden tabs and Boolean search groups, and skips missing documents or damaged session entries without moving other tabs. Opening or switching panes preserves each tab's search options. Closing a tab finishes in its original pane without stealing focus or interrupting the other pane's folder updates.
 - Storage scans enumerate network shares and extended-length paths correctly. Canceled scans cannot overwrite newer results, and resources are released when the tab or app closes. Storage nodes support keyboard and screen-reader selection, and Ctrl+Enter starts a scan from the target field.
 - Switching the Event Viewer's log or level, refreshing it, or closing its tab while events are still loading no longer adds rows or an error from the earlier load to the new view.
@@ -51,20 +52,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Saying No at the administrator prompt when opening a file, or Windows refusing to open it, shows a status message instead of closing KillerShell.
 - File and folder pickers stay responsive during storage reads, ignore outdated results, and preserve selections while rows load. Invalid file-picker input stays in the dialog with a validation message. New windows and administrator launches preserve drive roots, and failed window handoffs fall back to a fresh administrator request.
 - The command line accepts an optional trailing --json while keeping its existing JSON output. `read --max-chars` no longer cuts an emoji in half, and odd characters in file names and registry text come out as valid JSON.
-- A silent install or update that finds KillerShell running exits with 1618, which Intune, Configuration Manager and RMM tools retry, instead of a general failure.
-- Chocolatey has one submission workflow, skips duplicate initial uploads on retry, and keeps failed or pending validation distinct from approval.
-- Test fixtures use the configured temporary folder and keep cleanup inside their own directories.
+- Changing language refreshes dynamic text in both panes, including hidden tabs, and preserves translated operation details and status colors.
 - Window resize minimums stay within the current monitor's work area on small or scaled displays.
-- The keyboard diagram shows the Alt+Shift shortcuts for sort direction, removing nicknames, and extracting to a folder, and keeps its modifier hint visible in narrow windows.
 - Windows contrast themes now use system colors for text, icons, panels and selections, without decorative grain or shadows.
 - The window opens sized for the monitor it starts on instead of the main monitor, so a smaller or higher-scaling second screen shows all of it.
-- On the Light theme's Yellow and Orange accents, buttons, links, tabs and accent icons keep their color with a thin gray outline around accent text and icons, instead of turning near-black or brown.
-- Gray, menu and accent text reads at 4.5:1 contrast or better in every theme and accent, and the footer's version and copyright are slightly dimmed.
-- The Dark theme's Red accent stays a true red on buttons, lines, scroll bars and the website's accent swatches, and only small red text uses a lighter red.
-- When KillerShell runs as administrator, the Administrator caption beside the title bar wordmark sits on the wordmark's baseline in Killer Sans, like KillerPDF's filename.
-- The website's text and accent colors read at 4.5:1 contrast or better in every theme, and a narrow top bar shrinks the Microsoft Store and MCP buttons to their logos and moves links into a More menu instead of wrapping. The More button's accessible name follows the selected language.
-- On the website's Light theme with the Yellow or Orange accent, links, headings and labels keep their color with a thin gray outline instead of turning olive or brown.
-- The exe's file properties show Steve the Killer as the copyright holder instead of leaving it blank.
 - Screen readers no longer read toolbar, menu and title bar icons as unreadable symbols, file list items read as their names instead of a type name, the sort direction button says whether the list is ascending or descending, and every part of each scroll bar has a name. Folder-tree, bookmark and file-picker rows announce their current names. The shortcut card's Close button has a translated name.
 - Opening the shortcuts, About or another card over the window moves keyboard focus into it, Tab stays inside the card, and closing it returns focus to where it was.
 - Tab no longer stops on hidden links, which screen readers announced as the window.
@@ -72,6 +63,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Each group of option buttons is one Tab stop that lands on the selected option, and the arrow keys move between its options.
 - Screen readers name each tab's close button after its tab.
 - Tab no longer stops on the tab strip itself, which drew a dotted outline around every tab.
+- The shortcuts, font and file association cards put scroll bars at their edges, show when more content is out of view, and keep Close reachable in short windows.
+- Website screenshots keep keyboard focus inside the viewer, provide a translated Close button, and return focus to the selected screenshot. Help explains how to refresh hardware information by reopening the Performance tab.
+- Test fixtures use the configured temporary folder and keep cleanup inside their own directories.
+- The keyboard diagram shows the Alt+Shift shortcuts for sort direction, removing nicknames, and extracting to a folder, and keeps its modifier hint visible in narrow windows.
+- On the Light theme's Yellow and Orange accents, buttons, links, tabs and accent icons keep their color with a thin gray outline around accent text and icons, instead of turning near-black or brown.
+- Gray, menu and accent text reads at 4.5:1 contrast or better in every theme and accent, and the footer's version and copyright are slightly dimmed.
+- The Dark theme's Red accent stays a true red on buttons, lines, scroll bars and the website's accent swatches, and only small red text uses a lighter red.
+- When KillerShell runs as administrator, the Administrator caption beside the title bar wordmark sits on the wordmark's baseline in Killer Sans, like KillerPDF's filename.
+- The website's text and accent colors read at 4.5:1 contrast or better in every theme, and a narrow top bar shrinks the Microsoft Store and MCP buttons to their logos and moves links into a More menu instead of wrapping. The More button's accessible name follows the selected language.
+- On the website's Light theme with the Yellow or Orange accent, links, headings and labels keep their color with a thin gray outline instead of turning olive or brown.
+- The exe's file properties show Steve the Killer as the copyright holder instead of leaving it blank.
 - The website top bar no longer leaves extra space under the wordmark and buttons.
 - The website's Help and Technical pages match the app on bookmark drops, the bookmark star, the Event Viewer, Storage Analyzer and app size keys, and the CLI commands, in every language.
 - Radio buttons and checkboxes line up with their labels in every theme, 98SE included, at every app size, and the selected radio dot sits in the middle of its ring.
@@ -85,7 +87,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The website's MCP page, release details, contact cards, pattern comments and feature carousel controls are translated, and the Help and Technical pages were retranslated so they read naturally in every language.
 - Spanish, French and Turkish text on the website that had lost or misplaced its accents reads correctly again.
 - On phones, the website's logo, download hash, Help shortcut list and Technical CLI commands fit the screen instead of making the page scroll sideways.
-- The shortcuts, font and file association cards put scroll bars at their edges, show when more content is out of view, and keep Close reachable in short windows.
 - Saved-places fades leave the scrollbar clear and disappear at the start and end of the list. Sidebar fades turn off immediately when switching to 98SE.
 - The footer copyright sits a few pixels further from the corner grip instead of running into it.
 

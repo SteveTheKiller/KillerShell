@@ -406,10 +406,9 @@ namespace KillerShell.Shell
         private void AppendDirectoryLinkStatus(SearchTab tab, int skipped)
         {
             if (skipped == 0) return;
-            string? toneKey = tab.StatusKey;
-            SetTabStatus(tab, tab.StatusMessage + " "
-                + string.Format(Loc("Str_Status_DirectoryLinksSkipped"), skipped.ToString("N0")));
-            if (tab == _active) ApplyStatusTone(toneKey);
+            tab.StatusSupplementKey = "Str_Status_DirectoryLinksSkipped";
+            tab.StatusSupplementArgs = [skipped.ToString("N0")];
+            RefreshTabStatus(tab);
         }
 
         /// <summary>
