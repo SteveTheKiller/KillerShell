@@ -62,6 +62,15 @@ namespace KillerShell
             _validationWork = new Services.PickerWork(Dispatcher);
             Closed += (_, _) => { _navigationWork.Dispose(); _sortWork.Dispose(); _placesWork.Dispose(); _validationWork.Dispose(); };
             InitializeComponent();
+            try
+            {
+                var decoder = System.Windows.Media.Imaging.BitmapDecoder.Create(
+                    new System.Uri("pack://application:,,,/Resources/ksh-icon.ico"),
+                    System.Windows.Media.Imaging.BitmapCreateOptions.None,
+                    System.Windows.Media.Imaging.BitmapCacheOption.OnLoad);
+                TitleIcon.Source = decoder.Frames[0];
+            }
+            catch { TitleIcon.Visibility = Visibility.Collapsed; }
             PathBox.TextChanged += (_, _) => _validationWork.Cancel();
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
             void RefreshPickerChrome() => PickerWindowChrome.Apply(this, RootBorder);

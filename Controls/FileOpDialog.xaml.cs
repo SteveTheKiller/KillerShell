@@ -42,6 +42,15 @@ namespace KillerShell
         private FileOpDialog(string opLabelKey)
         {
             InitializeComponent();
+            try
+            {
+                var decoder = System.Windows.Media.Imaging.BitmapDecoder.Create(
+                    new System.Uri("pack://application:,,,/Resources/ksh-icon.ico"),
+                    System.Windows.Media.Imaging.BitmapCreateOptions.None,
+                    System.Windows.Media.Imaging.BitmapCacheOption.OnLoad);
+                TitleIcon.Source = decoder.Frames[0];
+            }
+            catch { TitleIcon.Visibility = Visibility.Collapsed; }
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
             SourceInitialized += (_, _) => MainWindow.ApplyThemeBorder(this);
 

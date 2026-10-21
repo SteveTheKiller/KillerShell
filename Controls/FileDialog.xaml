@@ -7,6 +7,7 @@
 <Window x:Class="KillerShell.FileDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:icons="clr-namespace:KillerShell.Controls"
         xmlns:picker="clr-namespace:KillerShell"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="{DynamicResource Str_Dlg_SelectFile}"
@@ -24,7 +25,7 @@
                             GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
     </shell:WindowChrome.WindowChrome>
 
-    <picker:PickerBorder x:Name="RootBorder" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="0">
+    <picker:PickerBorder x:Name="RootBorder" Tag="{DynamicResource UseDialogCaption}" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="{DynamicResource DialogOuterBorderThickness}" CornerRadius="0">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>    <!-- title bar -->
@@ -49,6 +50,11 @@
                     BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
             <Border Grid.RowSpan="7" IsHitTestVisible="False" Panel.ZIndex="6"
                     BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+            <Border Grid.RowSpan="7" IsHitTestVisible="False" Panel.ZIndex="6" Margin="{DynamicResource FrameInnerMargin}"
+                    BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameInnerLightThickness}"/>
+            <Border Grid.RowSpan="7" IsHitTestVisible="False" Panel.ZIndex="6" Margin="{DynamicResource FrameInnerMargin}"
+                    BorderBrush="{DynamicResource FrameInnerDarkBrush}" BorderThickness="{DynamicResource FrameInnerDarkThickness}"/>
+
 
             <!-- Title bar -->
             <!-- DialogTitleBarBrush, not a literal Transparent: the token RESOLVES to Transparent
@@ -60,19 +66,30 @@
                 <Grid>
                     <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <Grid Margin="16,0">
-                    <Grid VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="0,-18,0,-22">
-                        <Grid.RenderTransform><TranslateTransform Y="-5"/></Grid.RenderTransform>
-                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}" Margin="1,2,0,0" Opacity="{DynamicResource WordmarkShadowOpacity}">
-                            <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
-                            <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/>
-                        </TextBlock>
-                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}" Margin="1,2,0,0" IsHitTestVisible="False" Opacity="{DynamicResource WordmarkAccentShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
-                            <Run Text="Killer" Foreground="Transparent"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/>
-                        </TextBlock>
-                        <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}">
-                            <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="{DynamicResource AccentLogo}"/>
-                        </TextBlock>
-                    </Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <!-- The app icon leads the caption, as it does in the main title bar. -->
+                        <icons:AppIcon x:Name="TitleIcon" VerticalAlignment="Center"
+                               Width="{DynamicResource TitleIconSize}" Height="{DynamicResource TitleIconSize}"
+                               Margin="{DynamicResource TitleIconMargin}"
+                               RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                        <Grid VerticalAlignment="Center" Margin="0,-18,0,-22">
+                            <Grid.RenderTransform><TranslateTransform Y="-5"/></Grid.RenderTransform>
+                            <StackPanel Orientation="Horizontal" Margin="1,2,0,0"
+                                        Visibility="{DynamicResource DialogWordmarkVisibility}"
+                                        Opacity="{DynamicResource WordmarkShadowOpacity}">
+                                <StackPanel.Effect><BlurEffect Radius="3"/></StackPanel.Effect>
+                                <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"><Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/></TextBlock>
+                            </StackPanel>
+                            <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"
+                                       Visibility="{DynamicResource DialogWordmarkVisibility}" Margin="1,2,0,0" IsHitTestVisible="False" Opacity="{DynamicResource WordmarkAccentShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect><Run Text="Killer" Foreground="Transparent"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/></TextBlock>
+                            <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"
+                                       Visibility="{DynamicResource DialogWordmarkVisibility}"><Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
+                        </Grid>
+                            <!-- Outside the wordmark grid so the wordmark's lift and bleed never move it. -->
+                            <TextBlock Text="KillerShell" FontFamily="{DynamicResource ChromeFontFamily}" VerticalAlignment="Center"
+                                       FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"
+                                       Visibility="{DynamicResource DialogPlainTitleVisibility}"/>
+                        </StackPanel>
                     <!-- The family overlay and dialog close (Controls.xaml, OverlayCloseButton). -->
                     <Button Content="{DynamicResource AboutCloseGlyph}" Click="Cancel_Click" HorizontalAlignment="Right" VerticalAlignment="Center"
                             Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
@@ -115,7 +132,7 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-                <TextBox x:Name="PathBox" Grid.Column="1" Height="28" VerticalContentAlignment="Center" KeyDown="PathBox_KeyDown"
+                <TextBox x:Name="PathBox" Grid.Column="1" Style="{StaticResource DialogPickerTextBox}" VerticalContentAlignment="Center" KeyDown="PathBox_KeyDown"
                          AutomationProperties.Name="{Binding Text, RelativeSource={RelativeSource Self}}"/>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8,0,0,0" VerticalAlignment="Center">
                     <Button x:Name="ViewListBtn"    Style="{StaticResource PickerViewBtn}" Content="&#xE8FD;" ToolTip="{DynamicResource Str_TT_ViewList}"    Click="ViewList_Click"/>
@@ -253,7 +270,7 @@
 
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource Str_Dlg_FileName}" VerticalAlignment="Center"
                            Margin="0,0,10,0" Foreground="{DynamicResource DimTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="11"/>
-                <TextBox x:Name="FileNameBox" Grid.Row="0" Grid.Column="1" Height="28"
+                <TextBox x:Name="FileNameBox" Grid.Row="0" Grid.Column="1" Style="{StaticResource DialogPickerTextBox}"
                          AutomationProperties.Name="{DynamicResource Str_Dlg_FileName}"
                          VerticalContentAlignment="Center" KeyDown="FileNameBox_KeyDown"/>
 

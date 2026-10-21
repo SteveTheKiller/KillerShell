@@ -19,6 +19,15 @@ namespace KillerShell
         public TerminalProfilesDialog()
         {
             InitializeComponent();
+            try
+            {
+                var decoder = System.Windows.Media.Imaging.BitmapDecoder.Create(
+                    new System.Uri("pack://application:,,,/Resources/ksh-icon.ico"),
+                    System.Windows.Media.Imaging.BitmapCreateOptions.None,
+                    System.Windows.Media.Imaging.BitmapCacheOption.OnLoad);
+                TitleIcon.Source = decoder.Frames[0];
+            }
+            catch { TitleIcon.Visibility = Visibility.Collapsed; }
             _profiles = [.. TerminalProfileStore.Load().Select(p => p.Copy())];
             _defaultId = Services.ThemeManager.GetSetting("DefaultTerminalProfile") ?? "pwsh";
             ProfilesList.ItemsSource = _profiles;
