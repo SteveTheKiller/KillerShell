@@ -33,6 +33,42 @@ function Get-KsCacheDir {
     $script:CacheDir
 }
 
+function Open-KsCacheLease {
+    param([string]$Path)
+    $deadline = [DateTime]::UtcNow.AddSeconds(10)
+    while ($true) {
+        try { return [IO.File]::Open("$Path.lock", [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None) }
+        catch [IO.IOException] {
+            if ([DateTime]::UtcNow -ge $deadline) { throw "KillerScripts: cache is busy. Retry the operation. $($_.Exception.Message)" }
+            Start-Sleep -Milliseconds 25
+        }
+    }
+}
+
+function Write-KsCacheContent {
+    param([string]$Path, [string]$Content)
+
+    $temporary = Join-Path ([IO.Path]::GetDirectoryName($Path)) ('.ks-stage-' + [guid]::NewGuid().ToString('N') + '.tmp')
+    $owned = $false
+    try {
+        $created = [IO.File]::Open($temporary, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+        $owned = $true
+        $created.Dispose()
+        $encoding = if ($PSVersionTable.PSVersion.Major -ge 6) { 'utf8BOM' } else { 'UTF8' }
+        Set-Content -LiteralPath $temporary -Value $Content -Encoding $encoding -NoNewline -ErrorAction Stop
+        if ([IO.File]::ReadAllText($temporary) -cne $Content) { throw 'KillerScripts: incomplete cache write.' }
+        $completed = [IO.File]::Open($temporary, [IO.FileMode]::Open, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
+        try { $completed.Flush($true) } finally { $completed.Dispose() }
+        $lease = Open-KsCacheLease -Path $Path
+        try {
+            if ([IO.File]::Exists($Path)) { [IO.File]::Replace($temporary, $Path, [System.Management.Automation.Language.NullString]::Value) }
+            else { [IO.File]::Move($temporary, $Path) }
+        } finally { $lease.Dispose() }
+    } finally {
+        if ($owned -and [IO.File]::Exists($temporary)) { [IO.File]::Delete($temporary) }
+    }
+}
+
 function Get-KsWeb {
     param([Parameter(Mandatory = $true)][string]$Url)
     Set-KsTls
@@ -48,12 +84,16 @@ function Get-KsManifest {
     $cacheFile = Join-Path (Get-KsCacheDir) 'descriptions.json'
     try {
         $json = Get-KsWeb -Url ($script:RawBase + 'descriptions.json')
-        [System.IO.File]::WriteAllText($cacheFile, $json)
+        $manifest = $json | ConvertFrom-Json -ErrorAction Stop
+        if ($manifest -isnot [pscustomobject]) { throw 'KillerScripts: invalid manifest content.' }
+        Write-KsCacheContent -Path $cacheFile -Content $json
     }
     catch {
         if (Test-Path -LiteralPath $cacheFile) {
             Write-Verbose 'KillerScripts: repo unreachable, using cached manifest.'
-            $json = [System.IO.File]::ReadAllText($cacheFile)
+            $lease = Open-KsCacheLease -Path $cacheFile
+            try { $json = [System.IO.File]::ReadAllText($cacheFile) }
+            finally { $lease.Dispose() }
         }
         else {
             throw "KillerScripts: cannot reach the repo and no cached manifest exists. $($_.Exception.Message)"
@@ -99,7 +139,11 @@ function Invoke-KillerScript {
     if (-not $Offline) {
         try {
             $body = Get-KsWeb -Url ($script:RawBase + $file)
-            [System.IO.File]::WriteAllText($cachePath, $body, [Text.UTF8Encoding]::new($true))
+            $parseTokens = $null
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseInput($body, [ref]$parseTokens, [ref]$parseErrors) | Out-Null
+            if ([string]::IsNullOrWhiteSpace($body) -or $parseErrors.Count) { throw "KillerScripts: invalid script content for $file." }
+            Write-KsCacheContent -Path $cachePath -Content $body
         }
         catch {
             if (Test-Path -LiteralPath $cachePath) {
@@ -114,9 +158,24 @@ function Invoke-KillerScript {
         throw "KillerScripts: no cached copy of $file. Run it once online first."
     }
 
-    # Run with the call operator so the script executes in its own scope and
-    # exit / top-level flow behave exactly as they do when run standalone.
-    & $cachePath @ScriptArgs
+    # Each invocation keeps its completed version while another terminal refreshes
+    # the shared cache. Keep the snapshot beside the cache for PSScriptRoot.
+    $snapshot = Join-Path ([IO.Path]::GetDirectoryName($cachePath)) ('.ks-run-' + [guid]::NewGuid().ToString('N') + '.ps1')
+    $snapshotOwned = $false
+    try {
+        $lease = Open-KsCacheLease -Path $cachePath
+        try {
+            [IO.File]::Copy($cachePath, $snapshot, $false)
+            $snapshotOwned = $true
+        } finally { $lease.Dispose() }
+        $parseTokens = $null
+        $parseErrors = $null
+        [System.Management.Automation.Language.Parser]::ParseFile($snapshot, [ref]$parseTokens, [ref]$parseErrors) | Out-Null
+        if ($parseErrors.Count) { throw "KillerScripts: invalid cached script for $file." }
+        & $snapshot @ScriptArgs
+    } finally {
+        if ($snapshotOwned -and [IO.File]::Exists($snapshot)) { [IO.File]::Delete($snapshot) }
+    }
 }
 
 function Update-KillerScripts {
@@ -129,7 +188,11 @@ function Update-KillerScripts {
         if ($p.Name -notlike '*.ps1') { continue }
         try {
             $body = Get-KsWeb -Url ($script:RawBase + $p.Name)
-            [System.IO.File]::WriteAllText((Join-Path (Get-KsCacheDir) $p.Name), $body, [Text.UTF8Encoding]::new($true))
+            $parseTokens = $null
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseInput($body, [ref]$parseTokens, [ref]$parseErrors) | Out-Null
+            if ([string]::IsNullOrWhiteSpace($body) -or $parseErrors.Count) { throw "KillerScripts: invalid script content for $($p.Name)." }
+            Write-KsCacheContent -Path (Join-Path (Get-KsCacheDir) $p.Name) -Content $body
             $count++
         }
         catch {

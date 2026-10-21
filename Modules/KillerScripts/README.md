@@ -25,6 +25,7 @@ Pass `-Offline` to `Invoke-KillerScript` (after an `Update-KillerScripts`) to ru
 
 ## Notes
 
-- Tools run with the call operator, so they execute exactly as they do standalone, interactive prompts and `exit` included.
+- Tools run with the call operator from a private completed snapshot. Interactive prompts and `exit` remain supported. `$PSScriptRoot` remains the cache directory; `$PSCommandPath` has a unique filename for that invocation.
+- Downloads are checked before atomic cache publication. Failed downloads or writes retain the previous complete cache. Cooperating terminals use short file leases for publication and snapshot creation, with no lease held while a tool runs. Interrupted stage files are ignored.
 - PRINT.ps1 uses the alias `KillerPrint`, since a plain `print` alias would shadow `print.exe`. Short aliases are also only created when the name is free, so nothing built in is ever shadowed and the same guard covers any future clash.
 - When you add or rename a script in the killer-scripts repo, run `Build-KillerScripts.ps1` to refresh the shipped manifest and export list and bump the version, then `Publish-Module`.
