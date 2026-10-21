@@ -11,6 +11,7 @@ $PSScriptRoot = 'C:\fixture'
 $Version = '1.4.1'
 $Tag = 'v1.4.1'
 $defaultBranch = 'main'
+$local = 'BASE'
 $exe = 'fixture.exe'
 $exeHash = 'ABC123'
 $srcZip = 'fixture-src.zip'
@@ -45,7 +46,16 @@ function Set-Location { param($Path) }
 function Get-AuthenticodeSignature { param($LiteralPath) [pscustomobject]@{ Status = $(if ($global:releaseFixtureInvalid) { 'NotSigned' } else { 'Valid' }) } }
 function Get-FileHash { param($LiteralPath, $Algorithm) [pscustomobject]@{ Hash = 'ABC123' } }
 function git {
-    if ($args[0] -eq 'status') { return ' M shell-landing/index.html' }
+    $global:LASTEXITCODE = 0
+    if ($args[0] -eq 'status') { if ($args.Count -gt 2) { return ' M shell-landing/index.html' }; return }
+    if ($args[0] -eq 'rev-parse') {
+        if ($args[1] -eq 'HEAD^{tree}') { return 'TREE' }
+        if ($args[1] -eq 'HEAD^') { return 'BASE' }
+        return $(if ($global:releaseFixtureCommitted) { 'RELEASE' } else { 'BASE' })
+    }
+    if ($args[0] -eq 'write-tree') { return 'TREE' }
+    if ($args[0] -eq 'diff') { return 'README.md' }
+    if ($args[0] -eq 'commit') { $global:releaseFixtureCommitted = $true }
     if ($args[0] -eq 'push') {
         $global:releaseFixtureCalls.Add('git push')
         if ($global:releaseFixtureTamper) { $global:releaseFixtureInvalid = $true }

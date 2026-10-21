@@ -462,12 +462,31 @@ if ($themeCount -gt 0) { Test-CountClaim 'Themes\*.xaml' $themeCount 'themes' $d
 if ($DryRun) {
     Write-Host "DryRun: would commit and push shell-landing + README for v$Version"
 } else {
+    $releaseCommit = git rev-parse HEAD
+    if ($LASTEXITCODE -ne 0 -or $releaseCommit -ne $local) { Fail 'Source commit changed during release preparation.' }
     $siteDirty = git status --porcelain shell-landing README.md
+    if ($LASTEXITCODE -ne 0) { Fail 'Could not inspect release metadata changes.' }
     if ($siteDirty) {
         git add shell-landing README.md
+        if ($LASTEXITCODE -ne 0) { Fail 'Could not stage release metadata.' }
+        $stagedPaths = git diff --cached --name-only
+        if ($LASTEXITCODE -ne 0 -or @($stagedPaths | Where-Object { $_ -ne 'README.md' -and $_ -notlike 'shell-landing/*' }).Count) {
+            Fail 'The release index contains unexpected source changes.'
+        }
+        $expectedTree = git write-tree
+        if ($LASTEXITCODE -ne 0 -or -not $expectedTree) { Fail 'Could not identify the staged release metadata.' }
         git commit -m "v${Version}: site and README release info" --quiet
+        if ($LASTEXITCODE -ne 0) { Fail 'Release metadata commit failed. Nothing was published.' }
+        $committedTree = git rev-parse 'HEAD^{tree}'
+        if ($LASTEXITCODE -ne 0 -or $committedTree -ne $expectedTree) { Fail 'Committed release metadata differs from the staged candidate.' }
+        $commitParent = git rev-parse 'HEAD^'
+        if ($LASTEXITCODE -ne 0 -or $commitParent -ne $local) { Fail 'Release metadata was committed over unexpected source changes.' }
+        $releaseCommit = git rev-parse HEAD
+        if ($LASTEXITCODE -ne 0 -or -not $releaseCommit) { Fail 'Could not identify the release commit.' }
+        $remainingChanges = git status --porcelain
+        if ($LASTEXITCODE -ne 0 -or $remainingChanges) { Fail 'Concurrent changes remain after the release metadata commit.' }
         Assert-PublishableArtifact
-        git push origin $defaultBranch --quiet
+        git push origin "${releaseCommit}:refs/heads/$defaultBranch" --quiet
         if ($LASTEXITCODE -ne 0) { Fail 'Landing page / README commit failed to push' }
         Write-Host "shell-landing and README updated to v$Version and pushed"
         Write-Host 'Remember: killershell.net does NOT auto-deploy. Drag shell-landing/ into Cloudflare Pages.' -ForegroundColor Yellow
@@ -502,8 +521,15 @@ if ($DryRun) {
 
 # --- 9. Tag and push ---
 Step "Tagging $Tag"
+$currentHead = git rev-parse HEAD
+if ($LASTEXITCODE -ne 0 -or $currentHead -ne $releaseCommit) { Fail 'Source commit changed before release tagging.' }
+$remainingChanges = git status --porcelain
+if ($LASTEXITCODE -ne 0 -or $remainingChanges) { Fail 'Uncommitted changes remain before release tagging.' }
 Assert-PublishableArtifact
-git tag -a $Tag -m "KillerShell $Tag"
+git tag -a $Tag $releaseCommit -m "KillerShell $Tag"
+if ($LASTEXITCODE -ne 0) { Fail 'Release tag creation failed. The tag was not published.' }
+$tagCommit = git rev-parse "${Tag}^{}"
+if ($LASTEXITCODE -ne 0 -or $tagCommit -ne $releaseCommit) { Fail 'Release tag does not identify the verified source commit.' }
 Assert-PublishableArtifact
 git push origin $Tag
 if ($LASTEXITCODE -ne 0) { Fail 'Tag push failed' }
