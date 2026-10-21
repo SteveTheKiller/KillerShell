@@ -1548,8 +1548,9 @@
                      edge is the app's own frame color - the same line that rings the window -
                      rather than the flatter card edge used for panels sitting inside one. On
                      several palettes the two differ sharply (Ectoplasm's frame is the pink), and
-                     the card was reading as unrelated to the app around it (2026-08-09). -->
-                <Border Background="{DynamicResource OverlayWindowBrush}" BorderBrush="{DynamicResource AppBorderBrush}"
+                     the card was reading as unrelated to the app around it (2026-08-09).
+                     OverlayEdgeBrush is that color, or its gradient on a gradient theme. -->
+                <Border Background="{DynamicResource OverlayWindowBrush}" BorderBrush="{DynamicResource OverlayEdgeBrush}"
                         BorderThickness="{DynamicResource OverlayCardBorderThickness}" CornerRadius="{DynamicResource PanelCornerRadius}">
                     <Grid>
                         <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
