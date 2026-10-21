@@ -22,6 +22,25 @@ public sealed class TerminalNativeAutomationTests
     [Fact]
     public Task WindowsTextPatternReadsOutputSelectionAndBoundedUpdates()
         => RuntimeComponentProcess.Run(nameof(TerminalNativeAutomationScenario));
+
+    [Fact]
+    public Task WindowsTextPatternProducerCompletesWithOneThreadPoolWorker()
+        => RuntimeComponentProcess.Run(nameof(TerminalSingleWorkerAutomationScenario));
+}
+
+public static class TerminalSingleWorkerAutomationScenario
+{
+    public static void Run()
+    {
+        ThreadPool.GetMinThreads(out _, out int minimumIo);
+        ThreadPool.GetMaxThreads(out _, out int maximumIo);
+        Assert.True(ThreadPool.SetMinThreads(1, minimumIo));
+        Assert.True(ThreadPool.SetMaxThreads(1, maximumIo));
+        ThreadPool.GetMaxThreads(out int workers, out _);
+        Assert.Equal(1, workers);
+        Console.WriteLine("Controlled child-process ThreadPool worker limit=" + workers);
+        TerminalNativeAutomationScenario.Run();
+    }
 }
 
 public static class TerminalNativeAutomationScenario
@@ -47,20 +66,20 @@ public static class TerminalNativeAutomationScenario
         terminal.Arrange(new Rect(0, 0, 800, 500));
         output.Append("native café\U0001F600\r\n", cancel.Token);
         terminal.ReadOutput(output);
-        Task producer = Task.Run(async () =>
+        Task producer = Task.Factory.StartNew(() =>
         {
-            await startNoise.Task.ConfigureAwait(false);
+            startNoise.Task.GetAwaiter().GetResult();
             try
             {
                 for (int index = 0; index < 100; index++)
                 {
                     output.Append("noise-" + index.ToString("D4") + "\r\n", cancel.Token);
-                    await Task.Delay(10, cancel.Token).ConfigureAwait(false);
+                    if (cancel.Token.WaitHandle.WaitOne(10)) cancel.Token.ThrowIfCancellationRequested();
                 }
             }
             catch (OperationCanceledException) { }
             finally { output.Complete(); }
-        });
+        }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         try
         {
             Wait(() => terminal.Buffer.LineAt(0)[0].Ch == 'n', "initial output");
