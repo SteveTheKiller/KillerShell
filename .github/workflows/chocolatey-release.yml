@@ -9,6 +9,10 @@ on:
         description: 'Release tag (e.g. v1.0.0)'
         required: true
 
+concurrency:
+  group: chocolatey-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
 jobs:
   push:
     runs-on: windows-latest
@@ -66,8 +70,26 @@ jobs:
           choco pack choco\killershell.nuspec --out "$env:RUNNER_TEMP"
           if ($LASTEXITCODE -ne 0) { throw "choco pack failed." }
           $package = "$env:RUNNER_TEMP\killershell.$version.nupkg"
-          choco push $package --source https://push.chocolatey.org --api-key $env:CHOCO_API_KEY
-          if ($LASTEXITCODE -ne 0) {
+          $alreadySubmitted = $false
+          $feed = "https://community.chocolatey.org/api/v2/Packages(Id='killershell',Version='$version')"
+          try {
+              [xml]$existingPackage = (Invoke-WebRequest -Uri $feed -UseBasicParsing -TimeoutSec 90).Content
+              $namespace = 'http://schemas.microsoft.com/ado/2007/08/dataservices'
+              $ids = $existingPackage.GetElementsByTagName('Id', $namespace)
+              $versions = $existingPackage.GetElementsByTagName('Version', $namespace)
+              if ($ids.Count -ne 1 -or $ids[0].InnerText -ne 'killershell' -or
+                  $versions.Count -ne 1 -or $versions[0].InnerText -ne $version) {
+                  throw 'Package feed returned an incomplete or mismatched identity.'
+              }
+              $alreadySubmitted = $true
+              Write-Host 'This version already exists. Continuing validation without another initial submission.'
+          } catch {
+              if (-not $_.Exception.Response -or [int]$_.Exception.Response.StatusCode -ne 404) { throw }
+          }
+          if (-not $alreadySubmitted) {
+              choco push $package --source https://push.chocolatey.org --api-key $env:CHOCO_API_KEY
+          }
+          if (-not $alreadySubmitted -and $LASTEXITCODE -ne 0) {
               # Chocolatey answers most rejections with a bare 403, so report what the package page shows.
               $page = "https://community.chocolatey.org/packages/killershell"
               try {

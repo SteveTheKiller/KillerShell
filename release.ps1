@@ -7,7 +7,7 @@
 #   .\release.ps1              # full release for the version in the csproj
 #   .\release.ps1 -DryRun      # everything except the site push, tag push and gh release
 #   .\release.ps1 -SkipSign -DryRun # local test build only
-#   .\release.ps1 -Choco       # also pack/push the Chocolatey package after the release
+#   .\release.ps1 -Choco       # show Chocolatey workflow status and retry guidance
 #
 # winget is NOT submitted from here. Like KillerScan, this repo has
 # .github/workflows/winget-release.yml, which fires on "release: published" and runs komac
@@ -551,47 +551,13 @@ if ($LASTEXITCODE -ne 0) {
     Write-Warning 'The release is published, but thekiller.net refresh could not be started. Run: gh workflow run deploy.yml --repo SteveTheKiller/thekiller-site'
 }
 
-# --- 11. Chocolatey pack/push (opt-in) ---
-# Runs AFTER the release is published so the package never points at a release that failed.
-# Non-fatal: the GitHub release is already out, so a choco hiccup must not fail the run.
+# --- 11. Chocolatey workflow guidance (opt-in) ---
+# The release event owns initial submission. Local invocation must never submit again.
 if ($Choco) {
-    $chocoDir   = Join-Path $PSScriptRoot 'choco'
-    $nuspec     = Join-Path $chocoDir 'killershell.nuspec'
-    if (-not (Test-Path $nuspec)) {
-        Write-Warning 'Skipping Chocolatey - no choco\killershell.nuspec yet (copy KillerScan''s choco folder as a template).'
-    } else {
-        Step "Packing Chocolatey package"
-        $installPs1 = Join-Path $chocoDir 'tools\chocolateyInstall.ps1'
-        $nuspecOrig  = Get-Content $nuspec -Raw
-        $installOrig = Get-Content $installPs1 -Raw
-        $nupkg = $null
-        try {
-            $nuspecOrig  -replace 'REPLACE_VERSION', $Version | Set-Content $nuspec -NoNewline
-            $installOrig -replace 'REPLACE_HASH',    $exeHash | Set-Content $installPs1 -NoNewline
-
-            Push-Location $chocoDir
-            choco pack killershell.nuspec
-            if ($LASTEXITCODE -ne 0) { Write-Warning 'choco pack failed' } else {
-                $nupkg = Join-Path $chocoDir "killershell.$Version.nupkg"
-                Write-Host "Packed: $nupkg" -ForegroundColor Green
-            }
-            Pop-Location
-        } finally {
-            # Always restore the templates so the placeholders survive in git.
-            $nuspecOrig  | Set-Content $nuspec -NoNewline
-            $installOrig | Set-Content $installPs1 -NoNewline
-        }
-
-        if ($nupkg -and $ChocoApiKey) {
-            Step "Pushing to the Chocolatey community repo"
-            Assert-PublishableArtifact
-            choco push $nupkg --source https://push.chocolatey.org --api-key $ChocoApiKey
-            if ($LASTEXITCODE -ne 0) { Write-Warning 'choco push failed - push it by hand.' }
-            else { Write-Host 'Pushed OK' -ForegroundColor Green }
-        } elseif ($nupkg) {
-            Write-Host 'Skipping push - set CHOCO_API_KEY or pass -ChocoApiKey to push automatically.' -ForegroundColor Yellow
-        }
-    }
+    Step 'Chocolatey submission is owned by the release workflow'
+    Write-Host 'Check the Chocolatey Release workflow for submission and validation status. This local release does not confirm package acceptance.'
+    Write-Host "For an intentional retry, dispatch chocolatey-release.yml with tag $Tag after reviewing the existing run."
+    if ($ChocoApiKey) { Write-Warning 'The local Chocolatey API key is unused. Configure the workflow secret instead.' }
 }
 
 Step "Done"

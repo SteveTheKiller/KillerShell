@@ -26,7 +26,7 @@ $cases = @(
     @{ Name = 'unsigned'; Args = @{ SkipSign = $true }; Expected = 1; Calls = 0 },
     @{ Name = 'unsigned-dry'; Args = @{ SkipSign = $true; DryRun = $true; Choco = $true }; Expected = 0; Calls = 0 },
     @{ Name = 'invalid-signature'; Args = @{}; Expected = 1; Calls = 0; Invalid = $true },
-    @{ Name = 'signed'; Args = @{ Choco = $true; ChocoApiKey = 'fixture' }; Expected = 0; Calls = 6 },
+    @{ Name = 'signed'; Args = @{ Choco = $true; ChocoApiKey = 'fixture' }; Expected = 0; Calls = 5 },
     @{ Name = 'changed-after-site'; Args = @{}; Expected = 1; Calls = 1; Tamper = $true }
 )
 foreach ($case in $cases) {
