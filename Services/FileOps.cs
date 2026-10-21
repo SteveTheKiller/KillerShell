@@ -55,6 +55,7 @@ namespace KillerShell.Services
     {
         public int Succeeded;
         public int Skipped;
+        public int SkippedDirectoryLinks;
         public bool Canceled;
 
         /// <summary>
@@ -127,9 +128,10 @@ namespace KillerShell.Services
                 else if (Directory.Exists(src))
                 {
                     string root = directoryTarget ?? Path.Combine(targetDir, Path.GetFileName(src.TrimEnd(Path.DirectorySeparatorChar)));
-                    if (move && IsLink(src))
+                    if (IsLink(src))
                     {
-                        work.Add(new WorkItem { Source = src, Target = root, IsLink = true });
+                        if (move) work.Add(new WorkItem { Source = src, Target = root, IsLink = true });
+                        else { result.Skipped++; result.SkippedDirectoryLinks++; }
                         continue;
                     }
                     dirsToCreate.Add(root);
@@ -151,10 +153,12 @@ namespace KillerShell.Services
             {
                 foreach (var d in Directory.EnumerateDirectories(srcDir))
                 {
+                    ct.ThrowIfCancellationRequested();
                     string sub = Path.Combine(dstDir, Path.GetFileName(d));
-                    if (move && IsLink(d))
+                    if (IsLink(d))
                     {
-                        work.Add(new WorkItem { Source = d, Target = sub, IsLink = true });
+                        if (move) work.Add(new WorkItem { Source = d, Target = sub, IsLink = true });
+                        else { result.Skipped++; result.SkippedDirectoryLinks++; }
                         continue;
                     }
                     dirsToCreate.Add(sub);
@@ -163,6 +167,7 @@ namespace KillerShell.Services
 
                 foreach (var f in Directory.EnumerateFiles(srcDir))
                 {
+                    ct.ThrowIfCancellationRequested();
                     long size;
                     try { size = new FileInfo(f).Length; } catch { size = 0; }
                     work.Add(new WorkItem

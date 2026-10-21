@@ -111,14 +111,19 @@ namespace KillerShell.Shell
                         Loc("Str_Chk_ArchiveReplace")) { Owner = this };
                     dlg.ShowDialog();
 
-                    if (!dlg.Confirmed) { SetTabStatusKey(tab, "Str_Status_ArchiveCanceled"); return; }
+                    if (!dlg.Confirmed)
+                    {
+                        SetTabStatusKey(tab, "Str_Status_ArchiveCanceled");
+                        AppendDirectoryLinkStatus(tab, r.SkippedDirectoryLinks);
+                        return;
+                    }
 
                     policy = dlg.Check1Checked ? ArchiveCollision.Replace : ArchiveCollision.KeepBoth;
                     continue;
                 }
 
-                ReportArchive(tab, r, "Str_Status_ArchiveAdded", r.Changed.ToString("N0"));
                 if (r.Ok) await RelistArchive(tab);
+                ReportArchive(tab, r, "Str_Status_ArchiveAdded", r.Changed.ToString("N0"));
                 return;
             }
         }
@@ -308,7 +313,7 @@ namespace KillerShell.Shell
                 ReportArchive(tab, r, "Str_Status_ArchiveCompressed", "");
                 return;
             }
-            SetTabStatusKey(tab, "Str_Status_ArchiveCompressed", System.IO.Path.GetFileName(zipPath));
+            ReportArchive(tab, r, "Str_Status_ArchiveCompressed", System.IO.Path.GetFileName(zipPath));
         }
 
         internal void MenuExtractHere_Click(object sender, RoutedEventArgs e) => ExtractArchives(intoOwnFolder: false);
@@ -443,6 +448,7 @@ namespace KillerShell.Shell
             {
                 SetTabStatusKey(tab, r.ErrorKey ?? "Str_Status_ArchiveWriteFailed",
                                 r.ErrorDetail ?? string.Empty);
+                AppendDirectoryLinkStatus(tab, r.SkippedDirectoryLinks);
                 return;
             }
 
@@ -451,6 +457,7 @@ namespace KillerShell.Shell
                                 r.Rejected.Count.ToString("N0"));
             else
                 SetTabStatusKey(tab, okKey, okArg);
+            AppendDirectoryLinkStatus(tab, r.SkippedDirectoryLinks);
         }
 
         /// <summary>

@@ -678,6 +678,7 @@
     <sys:String x:Key="Str_Perf_Network">Желі</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Диск</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Тағайындалмаған GPU есептегіштері</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Кэштелген</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Жүктелуі</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Өткізу қабілеті</sys:String>
@@ -712,6 +713,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Сақтау орны есебін HTML ретінде сақтау</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Файлды таңдау</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">Қабықшаны іске қосу мүмкін болмады.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Енгізу бос емес. Жаңа мәтін жіберілмеді. Күтіп, қайта көріңіз.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[процесс {0} кодымен аяқталды]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell профилі қайта жүктелді.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell жинақтауыш есебі</sys:String>
@@ -960,7 +962,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">Бір бет төмен</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Бір бет солға</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Бір бет оңға</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Енгізу бос емес. Жаңа мәтін жіберілмеді. Күтіп, қайта көріңіз.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Ішінара нәтижелер: {0} файл сәйкес келді; {1} жолда толық іздеу мүмкін болмады; {2} каталог сілтемесі өткізіп жіберілді.</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Тағайындалмаған GPU есептегіштері</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Өткізіп жіберілген қалта сілтемелері: {0}.</sys:String>
 </ResourceDictionary>

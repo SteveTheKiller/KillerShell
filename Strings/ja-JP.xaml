@@ -639,6 +639,7 @@
     <sys:String x:Key="Str_Perf_GatherFailed">ハードウェア情報を取得できませんでした - {0}</sys:String>
     <sys:String x:Key="Str_Perf_Gathering">ハードウェア情報を取得しています...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">未割り当ての GPU カウンター</sys:String>
     <sys:String x:Key="Str_Perf_InUse">使用中</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">論理プロセッサ数</sys:String>
     <sys:String x:Key="Str_Perf_Network">ネットワーク</sys:String>
@@ -813,6 +814,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">ストレージ レポートを HTML として保存</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">ファイルの選択</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">シェルを起動できませんでした。</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">入力が混み合っています。新しいテキストは送信されませんでした。しばらく待ってから再試行してください。</sys:String>
     <sys:String x:Key="Str_Term_Exited">[プロセスはコード {0} で終了しました]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell プロファイルを再読み込みしました。</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell ストレージ レポート</sys:String>
@@ -944,7 +946,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">1 ページ下へ</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">1 ページ左へ</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">1 ページ右へ</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">入力が混み合っています。新しいテキストは送信されませんでした。しばらく待ってから再試行してください。</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">一部の検索結果: {0} 個のファイルが一致しました。{1} 個のパスを完全には検索できませんでした。{2} 個のディレクトリリンクをスキップしました。</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">未割り当ての GPU カウンター</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">スキップしたフォルダーリンク: {0}。</sys:String>
 </ResourceDictionary>

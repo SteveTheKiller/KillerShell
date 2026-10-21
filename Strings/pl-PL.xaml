@@ -71,6 +71,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Zapisz raport magazynu jako HTML</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Wybierz plik</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">Nie można uruchomić powłoki.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Wejście jest zajęte. Nowy tekst nie został wysłany. Poczekaj i spróbuj ponownie.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[proces zakończył się z kodem {0}]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">Ponownie załadowano profil PowerShell.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Raport magazynu KillerShell</sys:String>
@@ -642,6 +643,7 @@
   <sys:String x:Key="Str_Perf_Network">Sieć</sys:String>
   <sys:String x:Key="Str_Perf_Disk">Dysk</sys:String>
   <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Nieprzypisane liczniki GPU</sys:String>
   <sys:String x:Key="Str_Perf_Cached">W pamięci podręcznej</sys:String>
   <sys:String x:Key="Str_Perf_Utilization">Wykorzystanie</sys:String>
   <sys:String x:Key="Str_Perf_Throughput">Przepustowość</sys:String>
@@ -863,7 +865,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">Strona w dół</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Strona w lewo</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Strona w prawo</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Wejście jest zajęte. Nowy tekst nie został wysłany. Poczekaj i spróbuj ponownie.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Częściowe wyniki: pasujące pliki: {0}; nie udało się w pełni przeszukać {1} ścieżek; pominięte dowiązania do katalogów: {2}.</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Nieprzypisane liczniki GPU</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Pominięte łącza do folderów: {0}.</sys:String>
 </ResourceDictionary>

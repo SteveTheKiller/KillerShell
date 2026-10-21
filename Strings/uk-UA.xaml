@@ -709,6 +709,7 @@
     <sys:String x:Key="Str_Perf_Network">Мережа</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Диск</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">ГП</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Неприв'язані лічильники GPU</sys:String>
     <sys:String x:Key="Str_Perf_Cached">У кеші</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Використання</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Пропускна здатність</sys:String>
@@ -743,6 +744,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Зберегти звіт про сховище як HTML</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Виберіть файл</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">Не вдалося запустити оболонку.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Ввід зайнятий. Новий текст не надіслано. Зачекайте й повторіть спробу.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[процес завершився з кодом {0}]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">Профіль PowerShell перезавантажено.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Звіт KillerShell про сховище</sys:String>
@@ -994,7 +996,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">На сторінку вниз</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">На сторінку ліворуч</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">На сторінку праворуч</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Ввід зайнятий. Новий текст не надіслано. Зачекайте й повторіть спробу.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Часткові результати: знайдено файлів: {0}; не вдалося повністю перевірити шляхів: {1}; пропущено посилань на каталоги: {2}.</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Неприв'язані лічильники GPU</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Пропущено посилань на папки: {0}.</sys:String>
 </ResourceDictionary>

@@ -644,6 +644,7 @@
     <sys:String x:Key="Str_Perf_GatherFailed">No se pudo leer la información del hardware - {0}</sys:String>
     <sys:String x:Key="Str_Perf_Gathering">Leyendo información del hardware...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Contadores de GPU sin asignar</sys:String>
     <sys:String x:Key="Str_Perf_InUse">En uso</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Procesadores lógicos</sys:String>
     <sys:String x:Key="Str_Perf_Network">Red</sys:String>
@@ -817,6 +818,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Guardar informe de almacenamiento como HTML</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Seleccionar archivo</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">No se pudo iniciar el shell.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">La entrada está ocupada. El texto nuevo no se envió. Espere y vuelva a intentarlo.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[el proceso terminó con el código {0}]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">Perfil de PowerShell recargado.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Informe de almacenamiento de KillerShell</sys:String>
@@ -948,7 +950,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">Una página hacia abajo</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Una página hacia la izquierda</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Una página hacia la derecha</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">La entrada está ocupada. El texto nuevo no se envió. Espere y vuelva a intentarlo.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Resultados parciales: {0} archivo(s) coincidente(s); no se pudieron buscar por completo {1} ruta(s); se omitieron {2} enlaces a directorios.</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Contadores de GPU sin asignar</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Enlaces a carpetas omitidos: {0}.</sys:String>
 </ResourceDictionary>

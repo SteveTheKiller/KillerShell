@@ -644,6 +644,7 @@
     <sys:String x:Key="Str_Perf_GatherFailed">Impossible de lire les informations matérielles - {0}</sys:String>
     <sys:String x:Key="Str_Perf_Gathering">Lecture des informations matérielles...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Compteurs GPU non attribués</sys:String>
     <sys:String x:Key="Str_Perf_InUse">En cours d'utilisation</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Processeurs logiques</sys:String>
     <sys:String x:Key="Str_Perf_Network">Réseau</sys:String>
@@ -817,6 +818,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Enregistrer le rapport de stockage au format HTML</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Sélectionner un fichier</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">Impossible de démarrer le shell.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">La saisie est occupée. Le nouveau texte n’a pas été envoyé. Patientez et réessayez.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[processus terminé avec le code {0}]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">Profil PowerShell rechargé.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Rapport de stockage KillerShell</sys:String>
@@ -948,7 +950,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">Page vers le bas</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Page vers la gauche</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Page vers la droite</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">La saisie est occupée. Le nouveau texte n’a pas été envoyé. Patientez et réessayez.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Résultats partiels : {0} fichier(s) correspondant(s) ; recherche incomplète dans {1} chemin(s) ; {2} lien(s) de dossier ignoré(s).</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Compteurs GPU non attribués</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Liens vers des dossiers ignorés : {0}.</sys:String>
 </ResourceDictionary>

@@ -287,7 +287,7 @@ namespace KillerShell.Shell
                 ReportResult(r);
             }
 
-            RefreshAfterFileOp();
+            _ = RefreshAfterFileOp();
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace KillerShell.Shell
             string? made = FileOps.NewFolder(target, Loc("Str_Fo_NewFolderName"));
             if (made == null) { SetTabStatusKey(_active, "Str_Status_OpFailed"); return; }
 
-            RefreshAfterFileOp();
+            _ = RefreshAfterFileOp();
 
             // Straight into a rename, the way Explorer does - a folder called "New folder" is
             // never what anyone wanted, it is just the fastest way to get to naming one.
@@ -350,22 +350,23 @@ namespace KillerShell.Shell
             // A nickname follows its item to the new name (Services/Nicknames.cs).
             string? dir = Path.GetDirectoryName(path.TrimEnd('\\'));
             if (dir != null) Services.Nicknames.Move(path, Path.Combine(dir, dlg.NewName));
-            RefreshAfterFileOp();
+            _ = RefreshAfterFileOp();
         }
 
         // ── Shared plumbing ──────────────────────────────────────
 
         private async System.Threading.Tasks.Task RunCopyMove(string[] sources, string target, bool move, bool navigateAfterMove = false)
         {
+            var tab = _active;
             var r = FileOpDialog.CopyOrMove(this, sources, target, move);
-            ReportResult(r);
-            RefreshAfterFileOp();
+            await RefreshAfterFileOp();
 
             // Awaited rather than fired-and-forgotten: DropOntoFolder's caller (Window_Drop)
             // needs this pane's own refresh to be fully landed before it goes near focus again
             // for the source-pane refresh, or the two race (see RefreshSourcePaneIfStale).
             if (navigateAfterMove && !r.Canceled && r.SucceededTargets.Count > 0)
                 await NavigateToAndSelectAll(target, r.SucceededTargets);
+            ReportResult(r, tab);
         }
 
         /// <summary>
@@ -389,23 +390,35 @@ namespace KillerShell.Shell
             Pane.ResultsList.ScrollIntoView(hits[0]);
         }
 
-        private void ReportResult(FileOpResult r)
+        private void ReportResult(FileOpResult r, SearchTab? owner = null)
         {
+            var tab = owner ?? _active;
             if (r.Failed.Count > 0)
-                SetTabStatusKey(_active, "Str_Status_OpPartial",
+                SetTabStatusKey(tab, "Str_Status_OpPartial",
                                 r.Succeeded.ToString("N0"), r.Failed.Count.ToString("N0"));
             else if (r.Canceled)
-                SetTabStatusKey(_active, "Str_Status_OpCanceled", r.Succeeded.ToString("N0"));
+                SetTabStatusKey(tab, "Str_Status_OpCanceled", r.Succeeded.ToString("N0"));
             else
-                SetTabStatusKey(_active, "Str_Status_OpDone", r.Succeeded.ToString("N0"));
+                SetTabStatusKey(tab, "Str_Status_OpDone", r.Succeeded.ToString("N0"));
+            AppendDirectoryLinkStatus(tab, r.SkippedDirectoryLinks);
+        }
+
+        private void AppendDirectoryLinkStatus(SearchTab tab, int skipped)
+        {
+            if (skipped == 0) return;
+            string? toneKey = tab.StatusKey;
+            SetTabStatus(tab, tab.StatusMessage + " "
+                + string.Format(Loc("Str_Status_DirectoryLinksSkipped"), skipped.ToString("N0")));
+            if (tab == _active) ApplyStatusTone(toneKey);
         }
 
         /// <summary>
         /// Bring the tree back in step after a file operation, and the listing too when nothing
         /// else is watching it. The tree has no watcher of its own, so it is always refreshed.
         /// </summary>
-        private void RefreshAfterFileOp()
+        private System.Threading.Tasks.Task RefreshAfterFileOp()
         {
+            var refresh = System.Threading.Tasks.Task.CompletedTask;
             // Only when nothing else will do it. The watcher patches the active folder entry by
             // entry (BrowseWatcher.cs), which is the one way a delete can leave the scroll
             // position where it was; re-listing here as well cleared and refilled the collection
@@ -414,9 +427,10 @@ namespace KillerShell.Shell
             // share that refused a watch - and there the re-list is still the only refresh.
             if (_watcher == null && _active != null && _active.IsBrowsing
                 && !string.IsNullOrEmpty(_active.CurrentFolder))
-                _ = NavigateTo(_active.CurrentFolder!, record: false);   // Browse.cs
+                refresh = NavigateTo(_active.CurrentFolder!, record: false);   // Browse.cs
 
             _ = RefreshTreeAsync();   // FolderTree.cs
+            return refresh;
         }
     }
 }

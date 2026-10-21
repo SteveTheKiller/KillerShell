@@ -666,6 +666,7 @@
   <sys:String x:Key="Str_Perf_Network">Mạng</sys:String>
   <sys:String x:Key="Str_Perf_Disk">Ổ đĩa</sys:String>
   <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Bộ đếm GPU chưa được gán</sys:String>
   <sys:String x:Key="Str_Perf_Cached">Đã lưu vào bộ nhớ đệm</sys:String>
   <sys:String x:Key="Str_Perf_Utilization">Mức sử dụng</sys:String>
   <sys:String x:Key="Str_Perf_Throughput">Thông lượng</sys:String>
@@ -700,6 +701,7 @@
   <sys:String x:Key="Str_Export_TitleStorage">Lưu báo cáo lưu trữ dưới dạng HTML</sys:String>
   <sys:String x:Key="Str_Dlg_SelectFile">Chọn tệp</sys:String>
   <sys:String x:Key="Str_Term_StartFailed">Không thể khởi động shell.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Đầu vào đang bận. Văn bản mới chưa được gửi. Hãy chờ rồi thử lại.</sys:String>
   <sys:String x:Key="Str_Term_Exited">[tiến trình đã thoát với mã {0}]</sys:String>
   <sys:String x:Key="Str_Term_ProfileReloaded">Đã tải lại hồ sơ PowerShell.</sys:String>
   <sys:String x:Key="Str_StRpt_Title">Báo cáo lưu trữ KillerShell</sys:String>
@@ -950,7 +952,6 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Scroll_PageDown">Xuống một trang</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Sang trái một trang</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Sang phải một trang</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Đầu vào đang bận. Văn bản mới chưa được gửi. Hãy chờ rồi thử lại.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Kết quả một phần: {0} tệp khớp; không thể tìm kiếm đầy đủ trong {1} đường dẫn; đã bỏ qua {2} liên kết thư mục.</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Bộ đếm GPU chưa được gán</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Đã bỏ qua {0} liên kết thư mục.</sys:String>
 </ResourceDictionary>

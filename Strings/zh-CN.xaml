@@ -641,6 +641,7 @@
     <sys:String x:Key="Str_Perf_GatherFailed">无法读取硬件信息 - {0}</sys:String>
     <sys:String x:Key="Str_Perf_Gathering">正在读取硬件信息...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">未分配的 GPU 计数器</sys:String>
     <sys:String x:Key="Str_Perf_InUse">使用中</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">逻辑处理器</sys:String>
     <sys:String x:Key="Str_Perf_Network">网络</sys:String>
@@ -814,6 +815,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">将存储报告另存为 HTML</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">选择文件</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">无法启动 shell。</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">输入正忙。新文本未发送。请稍候重试。</sys:String>
     <sys:String x:Key="Str_Term_Exited">[进程已退出，代码 {0}]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">已重新加载 PowerShell 配置文件。</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell 存储报告</sys:String>
@@ -945,7 +947,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">向下翻页</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">向左翻页</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">向右翻页</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">输入正忙。新文本未发送。请稍候重试。</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">部分结果：{0} 个文件匹配；无法完整搜索 {1} 个路径；已跳过 {2} 个目录链接。</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">未分配的 GPU 计数器</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">已跳过 {0} 个文件夹链接。</sys:String>
 </ResourceDictionary>

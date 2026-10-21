@@ -644,6 +644,7 @@
     <sys:String x:Key="Str_Perf_GatherFailed">Hardwareinformationen konnten nicht gelesen werden - {0}</sys:String>
     <sys:String x:Key="Str_Perf_Gathering">Hardwareinformationen werden gelesen...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Nicht zugeordnete GPU-Zähler</sys:String>
     <sys:String x:Key="Str_Perf_InUse">In Verwendung</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Logische Prozessoren</sys:String>
     <sys:String x:Key="Str_Perf_Network">Netzwerk</sys:String>
@@ -817,6 +818,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Speicherbericht als HTML speichern</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Datei auswählen</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">Die Shell konnte nicht gestartet werden.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Die Eingabe ist ausgelastet. Der neue Text wurde nicht gesendet. Warten Sie und versuchen Sie es erneut.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[Prozess mit Code {0} beendet]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell-Profil neu geladen.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell-Speicherbericht</sys:String>
@@ -948,7 +950,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">Seite nach unten</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Seite nach links</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Seite nach rechts</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Die Eingabe ist ausgelastet. Der neue Text wurde nicht gesendet. Warten Sie und versuchen Sie es erneut.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Teilergebnisse: {0} passende Datei(en); {1} Pfad(e) konnten nicht vollständig durchsucht werden; {2} Verzeichnisverknüpfung(en) übersprungen.</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Nicht zugeordnete GPU-Zähler</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Übersprungene Ordnerverknüpfungen: {0}.</sys:String>
 </ResourceDictionary>

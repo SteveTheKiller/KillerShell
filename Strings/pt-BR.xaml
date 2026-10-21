@@ -709,6 +709,7 @@
     <sys:String x:Key="Str_Perf_Network">Rede</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Disco</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Contadores de GPU não atribuídos</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Em cache</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utilização</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Taxa de transferência</sys:String>
@@ -743,6 +744,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Salvar relatório de armazenamento como HTML</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Selecionar arquivo</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">Não foi possível iniciar o shell.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">A entrada está ocupada. O novo texto não foi enviado. Aguarde e tente novamente.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[processo encerrado com o código {0}]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">Perfil do PowerShell recarregado.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Relatório de armazenamento do KillerShell</sys:String>
@@ -994,7 +996,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">Uma página abaixo</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Uma página à esquerda</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Uma página à direita</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">A entrada está ocupada. O novo texto não foi enviado. Aguarde e tente novamente.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Resultados parciais: {0} arquivo(s) correspondente(s); não foi possível pesquisar completamente {1} caminho(s); {2} link(s) de diretório ignorado(s).</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Contadores de GPU não atribuídos</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Links para pastas ignorados: {0}.</sys:String>
 </ResourceDictionary>

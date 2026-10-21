@@ -644,6 +644,7 @@
     <sys:String x:Key="Str_Perf_GatherFailed">Donanım bilgisi okunamadı - {0}</sys:String>
     <sys:String x:Key="Str_Perf_Gathering">Donanım bilgisi okunuyor...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Atanmamış GPU sayaçları</sys:String>
     <sys:String x:Key="Str_Perf_InUse">Kullanımda</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Mantıksal işlemciler</sys:String>
     <sys:String x:Key="Str_Perf_Network">Ağ</sys:String>
@@ -817,6 +818,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Depolama raporunu HTML olarak kaydet</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Dosya seç</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">Kabuk başlatılamadı.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Giriş meşgul. Yeni metin gönderilmedi. Bekleyip yeniden deneyin.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[işlem {0} koduyla sonlandı]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell profili yeniden yüklendi.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell Depolama Raporu</sys:String>
@@ -948,7 +950,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">Bir sayfa aşağı</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Bir sayfa sola</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Bir sayfa sağa</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Giriş meşgul. Yeni metin gönderilmedi. Bekleyip yeniden deneyin.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Kısmi sonuçlar: {0} dosya eşleşti; {1} yolda arama tamamlanamadı; {2} dizin bağlantısı atlandı.</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Atanmamış GPU sayaçları</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Atlanan klasör bağlantısı: {0}.</sys:String>
 </ResourceDictionary>

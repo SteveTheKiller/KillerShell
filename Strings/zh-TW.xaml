@@ -641,6 +641,7 @@
     <sys:String x:Key="Str_Perf_GatherFailed">無法讀取硬體資訊 - {0}</sys:String>
     <sys:String x:Key="Str_Perf_Gathering">正在讀取硬體資訊...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">未指派的 GPU 計數器</sys:String>
     <sys:String x:Key="Str_Perf_InUse">使用中</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">邏輯處理器</sys:String>
     <sys:String x:Key="Str_Perf_Network">網路</sys:String>
@@ -814,6 +815,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">將儲存空間報告另存為 HTML</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">選取檔案</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">無法啟動 shell。</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">輸入忙碌中。新文字未傳送。請稍候再試。</sys:String>
     <sys:String x:Key="Str_Term_Exited">[處理程序已結束，代碼 {0}]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">已重新載入 PowerShell 設定檔。</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell 儲存空間報告</sys:String>
@@ -945,7 +947,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">向下翻頁</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">向左翻頁</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">向右翻頁</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">輸入忙碌中。新文字未傳送。請稍候再試。</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">部分結果：{0} 個檔案符合；無法完整搜尋 {1} 個路徑；已略過 {2} 個目錄連結。</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">未指派的 GPU 計數器</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">已略過 {0} 個資料夾連結。</sys:String>
 </ResourceDictionary>

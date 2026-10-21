@@ -709,6 +709,7 @@
     <sys:String x:Key="Str_Perf_Network">Nettverk</sys:String>
     <sys:String x:Key="Str_Perf_Disk">Disk</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Ikke tilordnede GPU-tellere</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Bufret</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utnyttelse</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Gjennomstrømning</sys:String>
@@ -743,6 +744,7 @@
     <sys:String x:Key="Str_Export_TitleStorage">Lagre lagringsrapport som HTML</sys:String>
     <sys:String x:Key="Str_Dlg_SelectFile">Velg fil</sys:String>
     <sys:String x:Key="Str_Term_StartFailed">Kunne ikke starte skallet.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Inndata er opptatt. Den nye teksten ble ikke sendt. Vent og prøv igjen.</sys:String>
     <sys:String x:Key="Str_Term_Exited">[prosessen avsluttet med kode {0}]</sys:String>
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell-profilen er lastet inn på nytt.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell lagringsrapport</sys:String>
@@ -994,7 +996,6 @@
     <sys:String x:Key="Str_Scroll_PageDown">Side ned</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Side til venstre</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Side til høyre</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Inndata er opptatt. Den nye teksten ble ikke sendt. Vent og prøv igjen.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Delvise resultater: {0} fil(er) samsvarte; {1} bane(r) kunne ikke gjennomsøkes fullstendig; {2} kataloglenke(r) hoppet over.</sys:String>
-    <sys:String x:Key="Str_Perf_GpuUnassigned">Ikke tilordnede GPU-tellere</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Hoppet over {0} mappelenker.</sys:String>
 </ResourceDictionary>

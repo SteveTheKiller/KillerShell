@@ -79,6 +79,8 @@ namespace KillerShell.Services
         /// <summary>Entries added, removed or renamed.</summary>
         internal int Changed;
 
+        internal int SkippedDirectoryLinks;
+
         /// <summary>Entry names already present, when the collision policy was Report.</summary>
         internal readonly List<string> Collisions = [];
 
@@ -185,6 +187,19 @@ namespace KillerShell.Services
             var result = new ArchiveWriteResult();
             if (!Precheck(archivePath, result)) return result;
 
+            try { return AddCore(archivePath, entryFolder, sources, collision, progress, ct, result); }
+            catch (OperationCanceledException)
+            {
+                result.ErrorKey = "Str_Status_ArchiveCanceled";
+                return result;
+            }
+        }
+
+        private static ArchiveWriteResult AddCore(string archivePath, string entryFolder,
+                                                  IEnumerable<string> sources, ArchiveCollision collision,
+                                                  Action<int, int, string>? progress, CancellationToken ct,
+                                                  ArchiveWriteResult result)
+        {
             // The folder being browsed goes through the same hygiene as the names themselves, so
             // a virtual path that somehow carried "../" cannot aim the add outside the archive.
             string? folder = SafeEntryName(entryFolder);
@@ -378,6 +393,11 @@ namespace KillerShell.Services
             string[] files, subs;
             try
             {
+                if ((File.GetAttributes(dir) & FileAttributes.ReparsePoint) != 0)
+                {
+                    result.SkippedDirectoryLinks++;
+                    return;
+                }
                 files = Directory.GetFiles(dir);
                 subs  = Directory.GetDirectories(dir);
             }
@@ -392,7 +412,11 @@ namespace KillerShell.Services
                 return;
             }
 
-            foreach (string f in files) AddFile(f, entryDir + "/" + Path.GetFileName(f), adds, result);
+            foreach (string f in files)
+            {
+                ct.ThrowIfCancellationRequested();
+                AddFile(f, entryDir + "/" + Path.GetFileName(f), adds, result);
+            }
             foreach (string d in subs)
                 WalkFolder(d, entryDir + "/" + Path.GetFileName(d.TrimEnd(Path.DirectorySeparatorChar)),
                            adds, result, ct);
