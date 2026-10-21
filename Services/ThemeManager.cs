@@ -306,8 +306,10 @@ namespace KillerShell.Services
             // whereas the top rail is the pane's real frame and must remain present.
             SetIfAbsent("PaneEdgeSideThickness", new Thickness(1, 1, 1, 0));
             SetIfAbsent("PaneEdgeBottomThickness", new Thickness(0, 0, 0, 1));
-            Mirror("FocusedPaneBrush", "PaneBrush");
-            Mirror("TabActiveBrush", "PaneBrush");
+            // Tabs and the pane's bars are the darker menu tier; the content below them is the
+            // lighter PaneBrush (ListPaneBrush). The family reads content as the main surface.
+            Mirror("FocusedPaneBrush", "MenuBackgroundBrush");
+            Mirror("TabActiveBrush", "MenuBackgroundBrush");
             Mirror("TabInactiveBrush", "BackgroundBrush");
             Mirror("DocumentPaneBevelTopLeftBrush", "PaneBevelDarkBrush");
             Mirror("DocumentPaneBevelBottomRightBrush", "PaneBevelLightBrush");
@@ -473,12 +475,12 @@ namespace KillerShell.Services
             SetIfAbsent("IconShadowOpacity", 0.9);
             Mirror("InputEdgeBrush", "InputBorderBrush");
             // The surface a LIST sits on - the file listing and the terminal screen. It is the
-            // theme's content color, the same one KillerPDF's document pane and the file pickers
-            // use (FileDialogPaneBrush), so the content reads as its own surface against the
-            // window. The menu tier it used to take sat within a few steps of the window on most
-            // themes (Dark #1e1e1e on #1c1c1c) and made every tab look like bare background.
-            // 98SE states #ffffff, a Win98 sunken WHITE well; Malaise states its #303638.
-            Mirror("ListPaneBrush", "FileDialogPaneBrush");
+            // pane color, the family's content surface, while the tab and the pane's bars above
+            // it take the darker menu tier. The menu tier it used to take sat within a few steps
+            // of the window on most themes (Dark #1e1e1e on #1c1c1c) and made every tab look like
+            // bare background. 98SE states #ffffff, a Win98 sunken WHITE well; Malaise states its
+            // #303638.
+            Mirror("ListPaneBrush", "PaneBrush");
 
             // Two KillerShell-only surfaces a RETRO theme wants BLACK even when the rest of its
             // palette is light gray: the terminal screen and the Performance tab's metric tiles.

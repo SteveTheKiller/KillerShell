@@ -606,11 +606,9 @@
                    the strip is inside a ScrollViewer, which clips anything a tab overhangs.
                    With one tab the strip is collapsed and the -1 just eats 1px of the 6px gap.
                    ApplySearchPanel (SearchPanel.cs) reassigns this margin and repeats the -1. -->
-              <!-- The listing surface takes the MENU tier and the location row above it takes
-                   PaneBrush - swapped from the obvious way round on purpose.
-                   It also happens to be the only pairing that reads on Black, where PaneBrush is
-                   #0a0a0a against a #000000 window (1.06:1, invisible) while the menu tier is
-                   #121212. -->
+              <!-- The listing surface takes the pane color (ListPaneBrush) and the tab and
+                   location row above it take the darker MENU tier, as everywhere in the family.
+                   This frame keeps the menu tier so it matches the bars it holds. -->
               <!-- PaneOuterMargin: 0,-1,8,0 as it always was, and 0,-1,0,0 on a flat theme. That 8
                    is an inset on the RIGHT only, with 0 on the left, so the pane sat visibly
                    further from the window edge on one side than the other - the right edge that
@@ -676,11 +674,11 @@
               <DockPanel>
                 <!-- Location row: the tab's folder on the left (click to change), tab-level
                      actions on the right: pipe, export, close tab. -->
-                <!-- PaneBrush, the same tier the ACTIVE TAB is filled with, so the tab merges
-                     into this bar and the two read as one surface the listing hangs below.
+                <!-- MenuBackgroundBrush, the same tier the ACTIVE TAB is filled with, so the tab
+                     merges into this bar and the two read as one surface the listing hangs below.
                      Square top corners are fine: PaneClip.cs clips this to the pane's radius. -->
                 <Grid x:Name="LocationRow" DockPanel.Dock="Top" SizeChanged="ToolStrip_SizeChanged"
-                      Background="{DynamicResource PaneBrush}"
+                      Background="{DynamicResource MenuBackgroundBrush}"
                       ContextMenu="{StaticResource BarMenu}"
                       Margin="{DynamicResource BarPadding}">
                     <Grid.RowDefinitions>
@@ -1304,13 +1302,10 @@
                      animation.
                      Split into two columns: file details (left) and an image preview / big shell
                      icon (right) - DetailsPaneContent (Shell/DetailsPane.cs). -->
-                <!-- PaneBrush, not MenuBackgroundBrush: LocationRow above
-                     paints nothing of its own and lets the pane's PaneBrush show through - see
-                     the identical note on the shell bar further down - so this strip needs the
-                     same brush to read as one continuous band with the toolbar rather than a
-                     darker strip stacked under it. -->
+                <!-- MenuBackgroundBrush, the same brush as LocationRow and the tab, so this strip
+                     reads as part of the bar band rather than a lighter strip under the list. -->
                 <Border x:Name="DetailsPane" DockPanel.Dock="Bottom" Height="0" Visibility="Collapsed"
-                        ClipToBounds="True" Background="{DynamicResource PaneBrush}"
+                        ClipToBounds="True" Background="{DynamicResource MenuBackgroundBrush}"
                         BorderBrush="{DynamicResource PaneBorderBrush}"
                         BorderThickness="{DynamicResource DetailsPaneBorderThickness}">
                     <Grid>
@@ -1455,13 +1450,13 @@
                     </Grid>
                 </Border>
 
-                <!-- The list area sits on the in-between tone (MenuBackgroundBrush - between
-                     the bar and pane tiers, like KillerPDF's annotation bars), grain-wrapped.
+                <!-- The list area sits on the content tone (ListPaneBrush, the pane color), below
+                     the darker bar and tab tier, grain-wrapped.
                      CornerRadius is driven from code (UpdatePaneStatusBar): square while the
                      status bar is showing, because the bar owns the pane's bottom edge then -
                      and rounded back to 5 the moment the bar collapses, or the list would sit
                      square-cornered inside the pane's own radius 6. -->
-                <Border x:Name="ResultsSurface" Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="0">
+                <Border x:Name="ResultsSurface" Background="{DynamicResource ListPaneBrush}" CornerRadius="0">
                 <Grid>
                 <Border x:Name="ResultsSurfaceGrain" IsHitTestVisible="False" CornerRadius="0"
                         Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
@@ -1485,17 +1480,15 @@
                          the one thing that IS live: where the shell currently is, tracked from
                          OSC 7. The buttons are the rows a hand reaches for often enough not to
                          want a right-click first; the rest stay in the menu.
-                         PaneBrush, not MenuBackgroundBrush: the folder
-                         browsing LocationRow paints nothing of its own and lets the pane's own
-                         PaneBrush show through, which is what makes it blend into the active
-                         tab above it; MenuBackgroundBrush here was a full step darker, so this
-                         bar visibly seamed against the tab where the folder view never did. -->
+                         MenuBackgroundBrush, the same tier as the active tab and the folder
+                         LocationRow, so the tab and this bar read as one band above the
+                         lighter content. -->
                     <!-- BarUnderlineThickness, not a literal 0,0,0,1: this rule is the line under
                          the menu bar that had to go on 98SE (2026-08-09). The token defaults
                          to exactly the literal it replaced, so the twelve rounded themes keep it. -->
                     <!-- A wide bar stays 32px tall. A narrow pane moves the same cwd controls
                          below the buttons; auto height also lets Alt+M restore that second row. -->
-                    <Border x:Name="TerminalBarRow" Grid.Row="0" Background="{DynamicResource PaneBrush}"
+                    <Border x:Name="TerminalBarRow" Grid.Row="0" Background="{DynamicResource MenuBackgroundBrush}"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
                             ContextMenu="{StaticResource BarMenu}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}">
@@ -1624,16 +1617,14 @@
                          are readouts rather than controls: a script PowerShell 5.1 will read
                          depends on both and neither is visible in the text, but changing either
                          rewrites somebody's file just to look at it.
-                         PaneBrush, not MenuBackgroundBrush: same fix as the
-                         shell bar above - MenuBackgroundBrush is a full step darker than the
-                         pane, so this bar visibly seamed against the tab above it where the
-                         folder view's own location row never does. -->
+                         MenuBackgroundBrush, the same tier as the active tab, as with the shell
+                         bar above. -->
                     <!-- BarUnderlineThickness, not a literal 0,0,0,1: this rule is the line under
                          the menu bar that had to go on 98SE (2026-08-09). The token defaults
                          to exactly the literal it replaced, so the twelve rounded themes keep it. -->
                     <!-- Height 32 = the folder LocationRow's natural height, same as the shell bar
                          above, so the content starts at one height whatever kind of tab is up. -->
-                    <Border x:Name="EditorBarRow" Grid.Row="0" Height="32" Background="{DynamicResource PaneBrush}"
+                    <Border x:Name="EditorBarRow" Grid.Row="0" Height="32" Background="{DynamicResource MenuBackgroundBrush}"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
                             ContextMenu="{StaticResource BarMenu}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}">

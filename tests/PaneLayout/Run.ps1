@@ -19,7 +19,7 @@ $manager = $assembly.GetType('KillerShell.Services.ThemeManager')
 $themeType = $assembly.GetType('KillerShell.Services.Theme')
 $static = [Reflection.BindingFlags]'Static,NonPublic,Public'
 $manager.GetMethod('LoadDict', $static).Invoke($null, @([Enum]::Parse($themeType, 'Malaise')))
-foreach ($pair in @(@('ListPaneBrush', '#FF303638'), @('TerminalBackgroundBrush', '#FF303638'), @('MenuBackgroundBrush', '#FF262B2D'), @('TabActiveBrush', '#FF232A2B'))) {
+foreach ($pair in @(@('ListPaneBrush', '#FF303638'), @('TerminalBackgroundBrush', '#FF303638'), @('MenuBackgroundBrush', '#FF262B2D'), @('TabActiveBrush', '#FF262B2D'))) {
     if ($app.FindResource($pair[0]).Color.ToString() -ne $pair[1]) { throw "Malaise surface changed: $($pair[0])" }
 }
 $type = $assembly.GetType('KillerShell.Shell.MainWindow')
