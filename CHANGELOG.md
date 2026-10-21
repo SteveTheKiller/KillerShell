@@ -7,7 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.1] - Unreleased
 
 ### Fixed
-- Website screenshots keep keyboard focus inside the viewer, provide a translated Close button, and return focus to the selected screenshot.
+- Website screenshots keep keyboard focus inside the viewer, provide a translated Close button, and return focus to the selected screenshot. Help explains how to refresh hardware information by reopening the Performance tab.
 - TAR archives honor local extended sizes and reject malformed or unsupported metadata before extraction.
 - Terminal text uses consistent widths for CJK, emoji, and combining marks across display, cursor movement, copying, and accessibility.
 - GPU counters show their own identity instead of being assigned to hardware names by list order.
