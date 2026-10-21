@@ -69,7 +69,8 @@ namespace KillerShell.Services
             sb.Append(string.Join(",", palettes.Select(p => "['" + p.Key + "','" + p.Label + "','" + p.Pane + "']")));
             sb.Append("];var s=document.getElementById('themes');function setTheme(k){document.documentElement.className='theme-'+k;Array.prototype.forEach.call(s.children,function(b){b.className=b.dataset.k===k?'active':''})}T.forEach(function(t){var b=document.createElement('button');b.title=t[1];b.dataset.k=t[0];b.style.background=t[2];b.onclick=function(){setTheme(t[0])};s.appendChild(b)});setTheme('")
               .Append(current).Append("');document.documentElement.style.setProperty('--accent','").Append(accent).Append("');</script></body></html>");
-            File.WriteAllText(outputPath, sb.ToString(), Encoding.UTF8);
+            SafeFileWrite.Write(outputPath, Encoding.UTF8.GetPreamble()
+                .Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray());
         }
 
         private static IEnumerable<StorageReportNode> Descendants(StorageReportNode n)

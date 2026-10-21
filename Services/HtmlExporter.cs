@@ -215,7 +215,8 @@ namespace KillerShell.Services
             sb.AppendLine("</script>");
             sb.AppendLine("</body></html>");
 
-            File.WriteAllText(outputPath, sb.ToString(), Encoding.UTF8);
+            SafeFileWrite.Write(outputPath, Encoding.UTF8.GetPreamble()
+                .Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray());
         }
 
         // Resolve a UI string from the app's live locale resources (falls back to English).

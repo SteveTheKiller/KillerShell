@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.1] - Unreleased
 
 ### Fixed
+- CSV and HTML exports preserve existing reports when replacement fails.
 - Bundled KillerPivot verifies the selected tenant connection, reports failed or unverified disconnects, and preserves tenant configuration on failed or conflicting saves.
 - Bundled KillerScripts preserves non-ASCII text in downloaded and cached scripts under Windows PowerShell 5.1 and PowerShell 7.
 - Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.

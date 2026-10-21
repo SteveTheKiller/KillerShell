@@ -41,7 +41,7 @@ namespace KillerShell.Shell
 
             try
             {
-                File.WriteAllText(dlg.FileName, Services.CsvExport.Build(tab.Results), System.Text.Encoding.UTF8);
+                Services.CsvExport.Export(dlg.FileName, tab.Results);
                 SetTabStatusKey(tab, "Str_Status_Exported", dlg.FileName);
             }
             catch (Exception ex)

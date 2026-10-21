@@ -14,6 +14,10 @@ namespace KillerShell.Services
     {
         internal const string Header = "Name,Folder,SizeBytes,Modified,Found";
 
+        internal static void Export(string outputPath, IEnumerable<SearchResult> results)
+            => SafeFileWrite.Write(outputPath, Encoding.UTF8.GetPreamble()
+                .Concat(Encoding.UTF8.GetBytes(Build(results))).ToArray());
+
         internal static string Build(IEnumerable<SearchResult> results)
         {
             var sb = new StringBuilder();
