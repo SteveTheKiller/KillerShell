@@ -67,21 +67,21 @@ public static class ShellAccessibilityNamesScenario
         ShellWindowFixture.PumpUntil(() => overlay.Visibility == Visibility.Visible);
         var close = Descendants(overlay).OfType<Button>().Single(b => ReferenceEquals(b.Style, window.FindResource("OverlayCloseButton")));
         AutomationProperties.SetAutomationId(close, "fixture-help-close");
-        Assert.Equal((string)window.FindResource("Str_Menu_Close"), NativeName(handle, "fixture-help-close"));
+        Assert.Equal((string)window.FindResource("Str_Menu_Close"), NativeName(handle, "fixture-help-close", TreeScope.Children));
         LocaleManager.Apply(Locale.Fr);
-        Assert.Equal((string)window.FindResource("Str_Menu_Close"), NativeName(handle, "fixture-help-close"));
+        Assert.Equal((string)window.FindResource("Str_Menu_Close"), NativeName(handle, "fixture-help-close", TreeScope.Children));
         Assert.Equal(close.ToolTip, window.FindResource("Str_Menu_Close"));
         close.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         ShellWindowFixture.PumpUntil(() => overlay.Visibility == Visibility.Collapsed);
     }
 
-    private static string NativeName(IntPtr handle, string id)
+    private static string NativeName(IntPtr handle, string id, TreeScope scope = TreeScope.Descendants)
     {
         Console.WriteLine("query " + id);
         var task = Task.Factory.StartNew(() =>
         {
             Assert.Equal(ApartmentState.MTA, Thread.CurrentThread.GetApartmentState());
-            var element = AutomationElement.FromHandle(handle).FindFirst(TreeScope.Descendants,
+            var element = AutomationElement.FromHandle(handle).FindFirst(scope,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, id));
             Assert.NotNull(element);
             string name = element.Current.Name;
