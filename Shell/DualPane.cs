@@ -915,7 +915,10 @@ namespace KillerShell.Shell
                 bool lit = DualPane && ReferenceEquals(p, Pane);
                 bool paneActive = ReferenceEquals(p, Pane) && (DualPane || retro);
 
-                string barBrush = retro && DualPane && !lit ? "TabInactiveBrush" : "PaneBrush";
+                // The bars share the active tab's menu tier above the lighter content. 98SE keeps
+                // its window-face bars, dimmed on the unfocused pane.
+                string barBrush = !retro ? "MenuBackgroundBrush"
+                                : DualPane && !lit ? "TabInactiveBrush" : "PaneBrush";
                 p.LocationRow.SetResourceReference(Panel.BackgroundProperty, barBrush);
                 p.TerminalBarRow.SetResourceReference(Border.BackgroundProperty, barBrush);
                 p.EditorBarRow.SetResourceReference(Border.BackgroundProperty, barBrush);
