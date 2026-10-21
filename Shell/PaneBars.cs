@@ -1,5 +1,6 @@
 using KillerShell.Models;
 using KillerShell.Tools;
+using System.Windows.Data;
 
 // Which bar a pane wears. Partial of MainWindow.
 //
@@ -47,6 +48,18 @@ namespace KillerShell.Shell
         /// </remarks>
         private void ApplyPaneBars(SearchTab t)
         {
+            if (WearsLocationRow(t))
+                Pane.SetResourceReference(FilePane.MenuBarContentBrushProperty, "ListPaneBrush");
+            else if (t.Term != null)
+                Pane.SetBinding(FilePane.MenuBarContentBrushProperty,
+                    new Binding(nameof(Terminal.TerminalControl.ScreenBackground)) { Source = t.Term });
+            else
+                Pane.ClearValue(FilePane.MenuBarContentBrushProperty);
+            if (t.Term != null)
+                Pane.SetBinding(FilePane.MenuBarContentForegroundProperty,
+                    new Binding(nameof(Terminal.TerminalControl.ScreenForeground)) { Source = t.Term });
+            else
+                Pane.ClearValue(FilePane.MenuBarContentForegroundProperty);
             SetLocationRow(Pane, hidden: !WearsLocationRow(t) || Pane.MenuBarHidden, animate: false);
         }
 

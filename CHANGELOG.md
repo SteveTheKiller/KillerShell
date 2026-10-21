@@ -41,7 +41,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Changed
 - Dropping files on a saved place always moves them, including across drives.
-- Buttons and shortcut diagrams use the embedded interface font. Dialog icons, button states, focus, rail alignment and grain follow the family design; 98SE uses full bevels and compact text fields.
+- Buttons and shortcut diagrams use the embedded interface font. Dialog icons, button states, focus, rail alignment and grain follow the family design; 98SE uses full bevels and compact text fields. Active tabs blend into their terminal or file pane when Alt+M hides the menu bar.
 
 ## [1.4.0] - 2026-10-15
 

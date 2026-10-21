@@ -338,10 +338,37 @@ namespace KillerShell
         internal int TabWindow { get; set; }
 
         /// <summary>
-        /// This pane's location row is collapsed (F10, MenuBar.cs). Per pane and not per tab:
+        /// This pane's location row is collapsed (Alt+M, MenuBar.cs). Per pane and not per tab:
         /// the row is pane chrome, and hiding it per tab would make it jump on every switch.
         /// </summary>
         internal bool MenuBarHidden { get; set; }
+
+        public static readonly DependencyProperty MenuBarBlendProperty = DependencyProperty.Register(
+            nameof(MenuBarBlend), typeof(double), typeof(FilePane), new PropertyMetadata(0.0));
+
+        public double MenuBarBlend
+        {
+            get => (double)GetValue(MenuBarBlendProperty);
+            set => SetValue(MenuBarBlendProperty, value);
+        }
+
+        public static readonly DependencyProperty MenuBarContentBrushProperty = DependencyProperty.Register(
+            nameof(MenuBarContentBrush), typeof(Brush), typeof(FilePane), new PropertyMetadata(null));
+
+        public Brush? MenuBarContentBrush
+        {
+            get => (Brush?)GetValue(MenuBarContentBrushProperty);
+            set => SetValue(MenuBarContentBrushProperty, value);
+        }
+
+        public static readonly DependencyProperty MenuBarContentForegroundProperty = DependencyProperty.Register(
+            nameof(MenuBarContentForeground), typeof(Brush), typeof(FilePane), new PropertyMetadata(null));
+
+        public Brush? MenuBarContentForeground
+        {
+            get => (Brush?)GetValue(MenuBarContentForegroundProperty);
+            set => SetValue(MenuBarContentForegroundProperty, value);
+        }
 
         /// <summary>
         /// Bumped on every selection change (Shell/DetailsPane.cs). An async stat/decode captures

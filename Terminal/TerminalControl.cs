@@ -73,12 +73,33 @@ namespace KillerShell.Terminal
 
         public TerminalBuffer Buffer => _buf;
 
+        private static readonly DependencyPropertyKey ScreenBackgroundPropertyKey = DependencyProperty.RegisterReadOnly(
+            nameof(ScreenBackground), typeof(Brush), typeof(TerminalControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty ScreenBackgroundProperty = ScreenBackgroundPropertyKey.DependencyProperty;
+        public Brush ScreenBackground => (Brush)GetValue(ScreenBackgroundProperty);
+
+        private static readonly DependencyPropertyKey ScreenForegroundPropertyKey = DependencyProperty.RegisterReadOnly(
+            nameof(ScreenForeground), typeof(Brush), typeof(TerminalControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty ScreenForegroundProperty = ScreenForegroundPropertyKey.DependencyProperty;
+        public Brush ScreenForeground => (Brush)GetValue(ScreenForegroundProperty);
+
+        private void RefreshScreenBrushes()
+        {
+            var brush = new SolidColorBrush(_palette.Background);
+            brush.Freeze();
+            SetValue(ScreenBackgroundPropertyKey, brush);
+            var foreground = new SolidColorBrush(_palette.Foreground);
+            foreground.Freeze();
+            SetValue(ScreenForegroundPropertyKey, foreground);
+        }
+
         public TerminalControl(TerminalSkin skin, Action<AutomationPeer, AutomationEvents>? automationEventSink = null,
                                Action<string>? clipboardWrite = null)
         {
             _automationEventSink = automationEventSink ?? ((peer, notification) => peer.RaiseAutomationEvent(notification));
             _clipboardWrite = clipboardWrite ?? Clipboard.SetText;
             _palette = TerminalPalette.For(skin);
+            RefreshScreenBrushes();
             _buf = new TerminalBuffer(80, 25);
             _parser = new VtParser(_buf);
 
@@ -125,6 +146,7 @@ namespace KillerShell.Terminal
         public void SetSkin(TerminalSkin skin)
         {
             _palette = TerminalPalette.For(skin);
+            RefreshScreenBrushes();
             InvalidateVisual();
         }
 
@@ -132,6 +154,7 @@ namespace KillerShell.Terminal
         public void RefreshTheme()
         {
             _palette = TerminalPalette.For(_palette.Skin);
+            RefreshScreenBrushes();
             InvalidateVisual();
         }
 

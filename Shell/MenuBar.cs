@@ -95,6 +95,23 @@ namespace KillerShell.Shell
         private static void ApplyMenuBar(FilePane pane, bool animate)
         {
             bool hidden = pane.MenuBarHidden;
+            double start = pane.MenuBarBlend;
+            double target = hidden ? 1 : 0;
+            pane.BeginAnimation(FilePane.MenuBarBlendProperty, null);
+            pane.MenuBarBlend = animate ? start : target;
+            if (animate)
+            {
+                var blend = new DoubleAnimation(start, target, TimeSpan.FromMilliseconds(MenuSlideMs))
+                {
+                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                };
+                blend.Completed += (_, _) =>
+                {
+                    pane.MenuBarBlend = target;
+                    pane.BeginAnimation(FilePane.MenuBarBlendProperty, null);
+                };
+                pane.BeginAnimation(FilePane.MenuBarBlendProperty, blend);
+            }
             SetLocationRow(pane, hidden, animate);   // keeps its own listing-only guard
             // The terminal path can occupy a second row, so restore its measured height.
             // The editor still has its fixed 32px bar.
@@ -140,18 +157,21 @@ namespace KillerShell.Shell
                 return;
             }
 
-            // A fixed-height bar animates to its authored height; the auto-sized location row is
-            // measured, not assumed - its height depends on the toolbar's display mode and on
-            // the app scale, so a hard-coded number would animate to the wrong place the moment
-            // either changed.
-            double open = !double.IsNaN(openHeight) ? openHeight
-                        : row.ActualHeight > 0 ? row.ActualHeight : Measured(row);
+            // Capture the live height before replacing an interrupted animation. Restore auto
+            // sizing to measure the full destination, even when the old row was half closed.
+            double start = row.Visibility == Visibility.Collapsed ? 0
+                : double.IsNaN(row.Height) ? row.ActualHeight : row.Height;
+            row.BeginAnimation(FrameworkElement.HeightProperty, null);
+            row.Height = openHeight;
+            row.Visibility = Visibility.Visible;
+            double open = double.IsNaN(openHeight) ? Measured(row) : openHeight;
+            row.Height = start;
             var ease = new QuadraticEase { EasingMode = EasingMode.EaseOut };
             var dur  = new Duration(TimeSpan.FromMilliseconds(MenuSlideMs));
 
             if (hidden)
             {
-                var shut = new DoubleAnimation(open, 0, dur) { EasingFunction = ease };
+                var shut = new DoubleAnimation(start, 0, dur) { EasingFunction = ease };
 
                 // Collapse only AFTER the slide finishes. Setting it up front would take the row
                 // out of layout immediately and there would be nothing left to animate.
@@ -163,10 +183,7 @@ namespace KillerShell.Shell
                 return;
             }
 
-            row.Visibility = Visibility.Visible;
-            row.Height = 0;
-
-            var openAnim = new DoubleAnimation(0, open, dur) { EasingFunction = ease };
+            var openAnim = new DoubleAnimation(start, open, dur) { EasingFunction = ease };
 
             // Hand the height back at the end - auto (NaN) for the location row so a later
             // toolbar reflow or scale change can still grow it, the authored height for a fixed
@@ -182,7 +199,8 @@ namespace KillerShell.Shell
         /// <summary>Natural height of a row that has never been laid out (hidden at startup).</summary>
         private static double Measured(FrameworkElement el)
         {
-            el.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            el.Measure(new Size(el.ActualWidth > 0 ? el.ActualWidth : double.PositiveInfinity,
+                double.PositiveInfinity));
             return el.DesiredSize.Height;
         }
 

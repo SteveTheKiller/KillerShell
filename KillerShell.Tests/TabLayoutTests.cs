@@ -93,7 +93,7 @@ public sealed class TabLayoutTests
                 && element.Elements().Any(setter =>
                     setter.Name.LocalName == "Setter"
                     && (string?)setter.Attribute("TargetName") == "tabBd"
-                    && (string?)setter.Attribute("Property") == "Background"));
+                    && (string?)setter.Attribute("Property") == "MenuBackground"));
         Assert.Contains(document.Descendants().Where(element => element.Name.LocalName == "MultiDataTrigger").SelectMany(element => element.Elements()), setter =>
             setter.Name.LocalName == "Setter"
             && (string?)setter.Attribute("TargetName") == "tabInactiveRetroOuterOutline"
