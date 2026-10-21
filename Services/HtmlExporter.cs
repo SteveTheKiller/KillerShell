@@ -97,6 +97,10 @@ namespace KillerShell.Services
             sb.AppendLine("table{position:relative;z-index:1;border-collapse:collapse;width:100%;min-width:860px}");
             sb.AppendLine("th{background:var(--surface);color:var(--muted);text-align:left;padding:10px 14px;font-size:12px;font-weight:600;font-family:Consolas,monospace;letter-spacing:.3px;position:sticky;top:0;white-space:nowrap;cursor:pointer;user-select:none}");
             sb.AppendLine("th:hover{color:var(--text)}th .arrow{display:inline-block;width:10px;font-size:10px;opacity:.7}");
+            // The sort control is a real button inside the header so Tab reaches it and Enter or
+            // Space sorts. It takes the header's look exactly, so the table keeps its geometry.
+            sb.AppendLine(".sortbtn{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;letter-spacing:inherit;text-align:inherit;cursor:pointer}");
+            sb.AppendLine(".sortbtn:focus-visible,.themesw button:focus-visible,details summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}");
             sb.AppendLine("td{border-top:1px solid var(--border);padding:7px 14px;font-size:13px;vertical-align:top}");
             sb.AppendLine("td.name{font-family:Consolas,monospace;font-weight:600;white-space:nowrap}");
             sb.AppendLine("td.dir{font-family:Consolas,monospace;font-size:12px;color:var(--muted);word-break:break-all}");
@@ -151,11 +155,15 @@ namespace KillerShell.Services
                 : string.Format(L("Str_Rpt_Query", "Searched {0} for {1}."), $"<b>{Esc(rootPath)}</b>", what))}</p>");
 
             sb.AppendLine("<div class='tablewrap'><table id='tbl'><thead><tr>");
-            sb.AppendLine($"<th data-type='text'>{L("Str_Col_Name", "name")} <span class='arrow'></span></th>");
-            sb.AppendLine($"<th data-type='text'>{L("Str_Col_Folder", "location")} <span class='arrow'></span></th>");
-            sb.AppendLine($"<th data-type='num'>{L("Str_Col_Size", "size")} <span class='arrow'></span></th>");
-            sb.AppendLine($"<th data-type='num'>{L("Str_Col_Modified", "modified")} <span class='arrow'></span></th>");
-            sb.AppendLine($"<th data-type='text'>{L("Str_Rpt_Found", "found by")} <span class='arrow'></span></th>");
+            foreach (var (type, label) in new[]
+            {
+                ("text", L("Str_Col_Name", "name")),
+                ("text", L("Str_Col_Folder", "location")),
+                ("num",  L("Str_Col_Size", "size")),
+                ("num",  L("Str_Col_Modified", "modified")),
+                ("text", L("Str_Rpt_Found", "found by")),
+            })
+                sb.AppendLine($"<th data-type='{type}' aria-sort='none'><button type='button' class='sortbtn'>{label} <span class='arrow' aria-hidden='true'></span></button></th>");
             sb.AppendLine("</tr></thead><tbody>");
 
             foreach (var r in results)
@@ -196,11 +204,12 @@ namespace KillerShell.Services
             sb.AppendLine($"setAccent('{accentHex}');");
             sb.AppendLine("var tbl=document.getElementById('tbl'),tb=tbl.tBodies[0],sortCol=-1,sortDir=1;");
             sb.AppendLine("var ths=tbl.tHead.rows[0].cells;");
-            sb.AppendLine("for(var c=0;c<ths.length;c++){(function(i){ths[i].onclick=function(){");
+            sb.AppendLine("for(var c=0;c<ths.length;c++){(function(i){ths[i].getElementsByTagName('button')[0].onclick=function(){");
             sb.AppendLine("sortDir=(sortCol===i)?-sortDir:1;sortCol=i;var num=ths[i].getAttribute('data-type')==='num';");
             sb.AppendLine("var rows=Array.prototype.slice.call(tb.rows);rows.sort(function(a,b){var x,y;if(num){x=parseFloat(a.cells[i].getAttribute('data-sort'))||0;y=parseFloat(b.cells[i].getAttribute('data-sort'))||0;}else{x=a.cells[i].innerText.toLowerCase();y=b.cells[i].innerText.toLowerCase();}return (x>y?1:x<y?-1:0)*sortDir;});");
             sb.AppendLine("for(var r=0;r<rows.length;r++)tb.appendChild(rows[r]);");
-            sb.AppendLine("for(var h=0;h<ths.length;h++)ths[h].getElementsByClassName('arrow')[0].textContent='';");
+            sb.AppendLine("for(var h=0;h<ths.length;h++){ths[h].getElementsByClassName('arrow')[0].textContent='';ths[h].setAttribute('aria-sort','none');}");
+            sb.AppendLine("ths[i].setAttribute('aria-sort',sortDir>0?'ascending':'descending');");
             sb.AppendLine("ths[i].getElementsByClassName('arrow')[0].textContent=sortDir>0?'\\u25B2':'\\u25BC';};})(c);}");
             sb.AppendLine("</script>");
             sb.AppendLine("</body></html>");
