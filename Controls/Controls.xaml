@@ -340,6 +340,10 @@
                             BorderBrush="{DynamicResource PaneBevelDarkBrush}"  BorderThickness="{DynamicResource PaneBevelLightThickness}"/>
                     <Border IsHitTestVisible="False"
                             BorderBrush="{DynamicResource PaneBevelLightBrush}" BorderThickness="{DynamicResource PaneBevelDarkThickness}"/>
+                    <Border IsHitTestVisible="False" Margin="{DynamicResource PaneBevelInnerMargin}"
+                            BorderBrush="{DynamicResource PaneBevelDark2Brush}" BorderThickness="{DynamicResource PaneBevel2LightThickness}"/>
+                    <Border IsHitTestVisible="False" Margin="{DynamicResource PaneBevelInnerMargin}"
+                            BorderBrush="{DynamicResource PaneBevelLight2Brush}" BorderThickness="{DynamicResource PaneBevel2DarkThickness}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <MultiDataTrigger>
