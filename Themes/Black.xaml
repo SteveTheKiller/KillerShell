@@ -9,6 +9,7 @@
          surface is the one place the difference between 0.12 and 0.24 is the difference
          between a texture and a flat panel. -->
     <sys:Double x:Key="GrainOpacity">0.24</sys:Double>
+    <sys:Boolean x:Key="GrainHighlightsOnly">True</sys:Boolean>
     <sys:Double x:Key="IconShadowOpacity">0.9</sys:Double>
 
     <!-- Text-stroke shadows behind button labels (nulled on Light). -->
