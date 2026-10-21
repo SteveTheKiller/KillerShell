@@ -1995,9 +1995,9 @@
                      SurfaceBrush, which is #000000 on Black against the terminal's #121212 - so
                      the file browser came up pure black while the terminal did not, in the same
                      window. -->
-                <!-- ListPaneBrush: the menu tier on every ordinary theme (matching the terminal
-                     screen), and the sunken WHITE list well on 98SE, whose menu tier is #c0c0c0
-                     and would otherwise leave the file listing gray. -->
+                <!-- ListPaneBrush: the theme's content color (KillerPDF's document pane color,
+                     shared with the terminal screen), and the sunken WHITE list well on 98SE. -->
+
                 <Border IsHitTestVisible="False" Background="{DynamicResource ListPaneBrush}"
                         Visibility="{Binding Visibility, ElementName=ResultsList}"/>
                 <!-- Recessed list bevel - brushes CROSSED against the thicknesses so it reads as

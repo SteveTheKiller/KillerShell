@@ -472,12 +472,13 @@ namespace KillerShell.Services
             SetIfAbsent("GrainOpacity", 0.24);
             SetIfAbsent("IconShadowOpacity", 0.9);
             Mirror("InputEdgeBrush", "InputBorderBrush");
-            // The surface a LIST sits on - the file listing and the terminal screen. Defaults to
-            // the menu tier, which is where that content landed on 2026-08-08 (tab surface is
-            // PaneBrush, content is MenuBackgroundBrush), so the other twelve themes are
-            // unchanged. 98SE states #ffffff: a Win98 list is a sunken WHITE well, and on that
-            // theme the menu tier is #c0c0c0, which came out as a gray content area.
-            Mirror("ListPaneBrush", "MenuBackgroundBrush");
+            // The surface a LIST sits on - the file listing and the terminal screen. It is the
+            // theme's content color, the same one KillerPDF's document pane and the file pickers
+            // use (FileDialogPaneBrush), so the content reads as its own surface against the
+            // window. The menu tier it used to take sat within a few steps of the window on most
+            // themes (Dark #1e1e1e on #1c1c1c) and made every tab look like bare background.
+            // 98SE states #ffffff, a Win98 sunken WHITE well; Malaise states its #303638.
+            Mirror("ListPaneBrush", "FileDialogPaneBrush");
 
             // Two KillerShell-only surfaces a RETRO theme wants BLACK even when the rest of its
             // palette is light gray: the terminal screen and the Performance tab's metric tiles.
