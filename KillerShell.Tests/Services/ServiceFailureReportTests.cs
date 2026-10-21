@@ -138,7 +138,7 @@ public sealed class ServiceFailureReportTests
         finally { Directory.Delete(root, true); }
     }
 
-    private static async Task AssertPersistedFailureAsync(ServiceControlResult result, string report,
+    internal static async Task AssertPersistedFailureAsync(ServiceControlResult result, string report,
         string serviceName, Stopwatch elapsed, int iteration)
     {
         const string deferredError = "Timed out writing the service failure report. The background write may finish later.";
@@ -212,7 +212,7 @@ public sealed class ServiceFailureReportTests
         }
         finally { Directory.Delete(root, true); }
     }
-    private sealed class NativeOplock : IDisposable
+    internal sealed class NativeOplock : IDisposable
     {
         private readonly SafeFileHandle _handle;
         private readonly IntPtr _overlapped;

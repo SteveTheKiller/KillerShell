@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
 using System.Threading;
@@ -53,23 +54,39 @@ namespace KillerShell.Tests.Services
             Assert.Empty(result.ReportError);
         }
 
-        [Fact]
-        public async Task StartFailureAfterCanceledStop_IsReportedNotSwallowed()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task StartFailureAfterCanceledStop_IsReportedNotSwallowed(bool deferReport)
         {
             var service = new FakeService(ServiceControllerStatus.Running) { HoldStop = true, FailStart = true };
             using var cts = new CancellationTokenSource();
 
-            Task<ServiceControlResult> run = ServiceControlService.ExecuteAsync("Fixture", () => service, ServiceControlAction.Restart, cts.Token, ReportPath);
-            Assert.True(service.StopIssued.Wait(5000));
-            cts.Cancel();
-            service.ReleaseStop.Set();
-
-            ServiceControlResult result = await WithTimeout(run);
+            if (deferReport)
+            {
+                Directory.CreateDirectory(_reportRoot);
+                File.WriteAllText(ReportPath, "existing report" + Environment.NewLine);
+            }
+            ServiceControlResult result;
+            var elapsed = Stopwatch.StartNew();
+            using (var held = deferReport ? new ServiceFailureReportTests.NativeOplock(ReportPath) : null)
+            {
+                Task<ServiceControlResult> run = ServiceControlService.ExecuteAsync("Fixture", () => service, ServiceControlAction.Restart, cts.Token, ReportPath);
+                Assert.True(service.StopIssued.Wait(5000));
+                cts.Cancel();
+                service.ReleaseStop.Set();
+                if (held != null) Assert.True(held.BreakRequested.WaitOne(5000), "Report writer did not reach the controlled native open.");
+                result = await WithTimeout(run);
+                if (held != null)
+                {
+                    Assert.Empty(result.ReportPath);
+                    Assert.Contains("Timed out writing", result.ReportError);
+                }
+            }
             Assert.False(result.Succeeded);
             Assert.False(result.Canceled, "A failed start after an accepted stop was reported as a cancellation.");
             Assert.Contains("start refused", result.Error);
-            Assert.Equal(ReportPath, result.ReportPath);
-            Assert.Empty(result.ReportError);
+            await ServiceFailureReportTests.AssertPersistedFailureAsync(result, ReportPath, "Fixture", elapsed, 0);
             Assert.Contains("start refused", File.ReadAllText(ReportPath));
         }
 
