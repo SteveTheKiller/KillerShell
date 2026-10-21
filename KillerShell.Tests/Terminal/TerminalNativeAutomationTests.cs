@@ -39,12 +39,64 @@ public static class TerminalSingleWorkerAutomationScenario
         ThreadPool.GetMaxThreads(out int workers, out _);
         Assert.Equal(1, workers);
         Console.WriteLine("Controlled child-process ThreadPool worker limit=" + workers);
-        TerminalNativeAutomationScenario.Run();
+        TerminalNativeAutomationScenario.RunWithBlockedWorker();
     }
 }
 
 public static class TerminalNativeAutomationScenario
 {
+    public static void RunWithBlockedWorker()
+    {
+        using var workerEntered = new ManualResetEventSlim();
+        using var releaseWorker = new ManualResetEventSlim();
+        Task blockedWorker = Task.Run(() => { workerEntered.Set(); releaseWorker.Wait(); });
+        Assert.True(workerEntered.Wait(5000), "The controlled pool worker did not start.");
+        var app = RuntimeComponentProcess.StartApplication();
+        var terminal = new TerminalControl(TerminalSkin.Default);
+        using var output = new OutputStream();
+        using var cancel = new CancellationTokenSource();
+        var startNoise = new TaskCompletionSource<bool>();
+        Task producer = StartProducer(output, cancel.Token, startNoise.Task);
+        terminal.ReadOutput(output);
+        try
+        {
+            startNoise.SetResult(true);
+            Wait(() => producer.IsCompleted, "bounded producer with occupied pool worker", 10000);
+            producer.GetAwaiter().GetResult();
+            Assert.False(blockedWorker.IsCompleted);
+            Wait(() => string.Join("", Enumerable.Range(0, terminal.Buffer.TotalLines)
+                .Select(line => new string(terminal.Buffer.LineAt(line).Select(cell => (char)cell.Ch).ToArray())))
+                .Contains("noise-0099"), "parsed bounded producer output");
+        }
+        finally
+        {
+            cancel.Cancel();
+            startNoise.TrySetResult(true);
+            releaseWorker.Set();
+            terminal.Close();
+            Wait(() => producer.IsCompleted && blockedWorker.IsCompleted, "controlled producer shutdown");
+            producer.GetAwaiter().GetResult();
+            blockedWorker.GetAwaiter().GetResult();
+            app.Shutdown();
+        }
+    }
+
+    private static Task StartProducer(OutputStream output, CancellationToken cancel, Task startNoise)
+        => Task.Factory.StartNew(() =>
+        {
+            startNoise.GetAwaiter().GetResult();
+            try
+            {
+                for (int index = 0; index < 100; index++)
+                {
+                    output.Append("noise-" + index.ToString("D4") + "\r\n", cancel);
+                    if (cancel.WaitHandle.WaitOne(10)) cancel.ThrowIfCancellationRequested();
+                }
+            }
+            catch (OperationCanceledException) { }
+            finally { output.Complete(); }
+        }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+
     public static void Run()
     {
         var app = RuntimeComponentProcess.StartApplication();
@@ -66,20 +118,7 @@ public static class TerminalNativeAutomationScenario
         terminal.Arrange(new Rect(0, 0, 800, 500));
         output.Append("native café\U0001F600\r\n", cancel.Token);
         terminal.ReadOutput(output);
-        Task producer = Task.Factory.StartNew(() =>
-        {
-            startNoise.Task.GetAwaiter().GetResult();
-            try
-            {
-                for (int index = 0; index < 100; index++)
-                {
-                    output.Append("noise-" + index.ToString("D4") + "\r\n", cancel.Token);
-                    if (cancel.Token.WaitHandle.WaitOne(10)) cancel.Token.ThrowIfCancellationRequested();
-                }
-            }
-            catch (OperationCanceledException) { }
-            finally { output.Complete(); }
-        }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        Task producer = StartProducer(output, cancel.Token, startNoise.Task);
         try
         {
             Wait(() => terminal.Buffer.LineAt(0)[0].Ch == 'n', "initial output");
@@ -163,10 +202,10 @@ public static class TerminalNativeAutomationScenario
         finally { Automation.RemoveAutomationEventHandler(TextPattern.TextChangedEvent, terminal, changed); }
     }
 
-    private static void Wait(Func<bool> complete, string stage)
+    private static void Wait(Func<bool> complete, string stage, int timeoutMilliseconds = 20000)
     {
         var watch = Stopwatch.StartNew();
-        while (!complete() && watch.Elapsed < TimeSpan.FromSeconds(20))
+        while (!complete() && watch.ElapsedMilliseconds < timeoutMilliseconds)
         {
             var frame = new DispatcherFrame();
             var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
