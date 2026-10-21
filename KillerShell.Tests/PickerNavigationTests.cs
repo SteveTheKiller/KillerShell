@@ -10,16 +10,27 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using KillerShell.Services;
+using KillerShell.Tests.Editing;
 using Xunit;
 
 namespace KillerShell.Tests;
 
 public sealed class PickerNavigationTests
 {
-    private const BindingFlags Private = BindingFlags.NonPublic | BindingFlags.Instance;
+    [Fact]
+    public Task PinsAndSuccessfulFoldersSurviveReopeningWithoutChangingUserSettings()
+        => EditorScenarioProcess.Run(typeof(PickerNavigationScenario).FullName!);
 
     [Fact]
-    public void PinsAndSuccessfulFoldersSurviveReopeningWithoutChangingUserSettings()
+    public Task NavigationFinishesWhileTheCallingProcessWorkerIsOccupied()
+        => EditorScenarioProcess.Run(typeof(PickerNavigationWorkerPressureScenario).FullName!);
+}
+
+public static class PickerNavigationScenario
+{
+    private const BindingFlags Private = BindingFlags.NonPublic | BindingFlags.Instance;
+
+    public static void Run()
     {
         Exception? failure = null;
         var thread = new Thread(() =>
@@ -197,5 +208,37 @@ public sealed class PickerNavigationTests
         bool? result = dialog.ShowDialog(null);
         if (failure != null) throw failure;
         return result;
+    }
+}
+
+public static class PickerNavigationWorkerPressureScenario
+{
+    public static void Run()
+    {
+        ThreadPool.GetMinThreads(out _, out int minimumIo);
+        ThreadPool.GetMaxThreads(out _, out int maximumIo);
+        Assert.True(ThreadPool.SetMinThreads(1, minimumIo));
+        Assert.True(ThreadPool.SetMaxThreads(1, maximumIo));
+        using var entered = new ManualResetEventSlim();
+        using var release = new ManualResetEventSlim();
+        using var exited = new ManualResetEventSlim();
+        ThreadPool.QueueUserWorkItem(_ =>
+        {
+            entered.Set();
+            release.Wait();
+            exited.Set();
+        });
+        Assert.True(entered.Wait(TimeSpan.FromSeconds(5)), "The host worker was not occupied.");
+        Task navigation;
+        try
+        {
+            navigation = new PickerNavigationTests().PinsAndSuccessfulFoldersSurviveReopeningWithoutChangingUserSettings();
+        }
+        finally
+        {
+            release.Set();
+            Assert.True(exited.Wait(TimeSpan.FromSeconds(5)), "The host worker did not finish.");
+        }
+        navigation.GetAwaiter().GetResult();
     }
 }
