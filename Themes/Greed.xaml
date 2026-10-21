@@ -27,7 +27,7 @@
     <SolidColorBrush x:Key="WarnBrush"           Color="#e0d49a" po:Freeze="True"/>
     <!-- Status dot "all fine" - see Dark.xaml. -->
     <SolidColorBrush x:Key="OkBrush"             Color="#7bc96f" po:Freeze="True"/>
-    <SolidColorBrush x:Key="PaneBorderBrush" Color="#0f4a30" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+    <SolidColorBrush x:Key="PaneBorderBrush" Color="#0d3f29" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
 
     <SolidColorBrush x:Key="TextBrush" Color="#fffde8" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
     <SolidColorBrush x:Key="MutedTextBrush" Color="#e0d49a" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
