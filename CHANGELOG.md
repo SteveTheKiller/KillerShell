@@ -8,7 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 - Failed document saves preserve the original and retain recovery copies when restoration fails. Administrator saves keep newer edits unsaved and cannot overwrite a later save. Saving over a file another program changed since it was opened asks whether to replace it, reload it or save a copy, with Cancel as the default.
-- Installation and updates verify replacements before publishing them. Uninstall and duplicate-install cleanup reject unsafe paths, preserve unrelated files, and retain recovery data after failure.
+- Installation and updates verify replacements before publishing them. A signed copy only accepts an update signed by the same publisher. Uninstall and duplicate-install cleanup reject unsafe paths, preserve unrelated files, and retain recovery data after failure.
 - Closing, updating, installing or signing out checks unsaved documents in both panes. Cancel preserves the session and live folder updates.
 - Text files with malformed encoding stay closed instead of changing bytes on save. Lossy saves are refused, encoding changes remain unsaved through Undo, and valid legacy and UTF-32 files round-trip unchanged.
 - Terminal output cannot redirect a tab to a network share. Files extracted from downloaded archives retain Windows' internet safety mark, and CSV exports treat formula-like names as text.

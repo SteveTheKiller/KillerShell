@@ -770,7 +770,16 @@ namespace KillerShell
                 catch { OpenReleasesUnelevated(); return 1; }
             }
 
-            try { Services.VerifiedFile.ReplaceImage(curExe, data); }
+            // The hash proves these are the bytes the window downloaded. The signature check, on
+            // the replacement written beside this exe, proves who published them: a request that
+            // reaches this helper some other way cannot put a different publisher's exe here.
+            try { Services.VerifiedFile.ReplaceImage(curExe, data, fresh => Services.CodeSignature.MayReplace(curExe, fresh)); }
+            catch (Services.PublisherMismatchException)
+            {
+                try { File.Delete(download); } catch { }
+                OpenReleasesUnelevated();
+                return KillerFamily.Deployment.InstallerExitCodes.SecurityRejected;
+            }
             catch (Exception ex)
             {
                 // Retain both the verified download and any sibling recovery images.

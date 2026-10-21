@@ -57,21 +57,46 @@ namespace KillerShell.Services
         /// so the chain still builds offline.</summary>
         internal static (bool valid, string subject, string thumb) GetSignerInfo()
         {
+            string exePath;
+            try { exePath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty; }
+            catch { exePath = string.Empty; }
+            if (exePath.Length == 0) return (false, "(unavailable)", "(none)");
+            var (valid, subject, thumb, _) = Inspect(exePath);
+            return (valid, subject, thumb);
+        }
+
+        /// <summary>
+        /// Whether <paramref name="candidate"/> may replace the signed exe at
+        /// <paramref name="current"/>. A copy with a valid signature only accepts a replacement
+        /// whose signature also validates and names the same publisher: the certificate subject,
+        /// which stays the same across certificate renewals. An unsigned copy (a local or
+        /// development build) has no publisher to hold a replacement to, and accepts it as before.
+        /// </summary>
+        internal static bool MayReplace(string current, string candidate)
+        {
+            var (currentValid, _, _, currentPublisher) = Inspect(current);
+            if (!currentValid) return true;
+            var (candidateValid, _, _, candidatePublisher) = Inspect(candidate);
+            return candidateValid && currentPublisher.Length > 0
+                && string.Equals(currentPublisher, candidatePublisher, StringComparison.Ordinal);
+        }
+
+        private static (bool valid, string subject, string thumb, string publisher) Inspect(string exePath)
+        {
             var subject = "(not signed)";
             var thumb   = "(none)";
-            string exePath;
+            string publisher;
 
             try
             {
-                exePath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
-                if (exePath.Length == 0) return (false, "(unavailable)", "(none)");
                 using var sourceCertificate = X509Certificate.CreateFromSignedFile(exePath);
                 using var cert = new X509Certificate2(sourceCertificate);
                 var subj = cert.GetNameInfo(X509NameType.SimpleName, false);
-                subject = string.IsNullOrEmpty(subj) ? cert.Subject : subj;
-                thumb   = string.IsNullOrEmpty(cert.Thumbprint) ? "(none)" : cert.Thumbprint;
+                subject   = string.IsNullOrEmpty(subj) ? cert.Subject : subj;
+                thumb     = string.IsNullOrEmpty(cert.Thumbprint) ? "(none)" : cert.Thumbprint;
+                publisher = cert.Subject ?? string.Empty;
             }
-            catch { return (false, "(not signed)", "(none)"); }
+            catch { return (false, "(not signed)", "(none)", string.Empty); }
 
             var pathPtr     = Marshal.StringToHGlobalUni(exePath);
             var fileInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf<WINTRUST_FILE_INFO>());
@@ -94,9 +119,9 @@ namespace KillerShell.Services
                 }, dataPtr, false);
 
                 var actionId = WTD_VERIFY_GENERIC;
-                return (WinVerifyTrust(IntPtr.Zero, ref actionId, dataPtr) == 0, subject, thumb);
+                return (WinVerifyTrust(IntPtr.Zero, ref actionId, dataPtr) == 0, subject, thumb, publisher);
             }
-            catch { return (false, subject, thumb); }
+            catch { return (false, subject, thumb, publisher); }
             finally
             {
                 Marshal.FreeHGlobal(dataPtr);

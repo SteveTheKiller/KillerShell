@@ -11,6 +11,13 @@ namespace KillerShell.Services
     /// hash it was launched with, and writes exactly those bytes. A swap after launch fails the
     /// check; a swap after the check changes nothing, because the file is never read again.
     /// </summary>
+    /// <summary>An update image is not signed by the publisher of the copy it would replace.</summary>
+    internal sealed class PublisherMismatchException : Exception
+    {
+        internal PublisherMismatchException()
+            : base("The update is not signed by the publisher of the installed copy. Nothing was changed.") { }
+    }
+
     internal static class VerifiedFile
     {
         /// <summary>Marker on the previous image, set aside while it may still be running.</summary>
@@ -69,7 +76,12 @@ namespace KillerShell.Services
         /// publication retains recovery images and reports their paths.
         /// </summary>
         /// <returns>The exact retained backup created by this publication, or null for a new image.</returns>
-        internal static string? ReplaceImage(string target, byte[] data)
+        /// <param name="accept">
+        /// Checked against the written replacement, beside the target and before anything is
+        /// swapped. Refusal removes the replacement and throws <see cref="PublisherMismatchException"/>
+        /// with the target unchanged.
+        /// </param>
+        internal static string? ReplaceImage(string target, byte[] data, Func<string, bool>? accept = null)
         {
             string fresh = target + ".new-" + Guid.NewGuid().ToString("N");
             string aside = target + OldMark + Guid.NewGuid().ToString("N")[..8];
@@ -83,6 +95,11 @@ namespace KillerShell.Services
                 }
                 if (ReadVerified(fresh, Sha256(data)) == null)
                     throw new IOException("Replacement verification failed.");
+                if (accept != null && !accept(fresh))
+                {
+                    try { File.Delete(fresh); } catch { }
+                    throw new PublisherMismatchException();
+                }
                 if (File.Exists(target))
                 {
                     File.Replace(fresh, target, aside);
@@ -91,6 +108,7 @@ namespace KillerShell.Services
                 File.Move(fresh, target);
                 return null;
             }
+            catch (PublisherMismatchException) { throw; }
             catch (Exception ex)
             {
                 Exception? rollback = null;

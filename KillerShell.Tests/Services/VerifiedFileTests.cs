@@ -332,6 +332,55 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        [Fact]
+        public void RefusedPublisher_LeavesTheTargetAndNoReplacementBehind()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Path.Combine(root, "App.exe");
+                File.WriteAllText(target, "v1");
+                string? checkedPath = null;
+
+                Assert.Throws<PublisherMismatchException>(() => VerifiedFile.ReplaceImage(target,
+                    Encoding.UTF8.GetBytes("v2"), fresh => { checkedPath = fresh; return false; }));
+
+                Assert.Equal("v1", File.ReadAllText(target));
+                Assert.NotNull(checkedPath);
+                Assert.False(File.Exists(checkedPath!), "The refused replacement was left beside the target.");
+                AssertNoLeftovers(root, "App.exe");
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
+        public void SignedCopy_AcceptsOnlyTheSamePublisher()
+        {
+            // dotnet.exe carries an embedded Microsoft signature; the test host runs on it.
+            string signed = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet", "dotnet.exe");
+            Assert.True(File.Exists(signed), "The fixture needs the signed dotnet host at " + signed);
+            string root = NewTempDirectory();
+            try
+            {
+                string sameSigner = Path.Combine(root, "same.exe");
+                File.Copy(signed, sameSigner);
+                string unsigned = Path.Combine(root, "unsigned.exe");
+                File.WriteAllBytes(unsigned, Encoding.ASCII.GetBytes("MZ not really an executable"));
+                string tampered = Path.Combine(root, "tampered.exe");
+                byte[] bytes = File.ReadAllBytes(signed);
+                bytes[bytes.Length / 2] ^= 0xFF;
+                File.WriteAllBytes(tampered, bytes);
+
+                Assert.True(CodeSignature.MayReplace(signed, sameSigner));
+                Assert.False(CodeSignature.MayReplace(signed, unsigned));
+                Assert.False(CodeSignature.MayReplace(signed, tampered));
+                // An unsigned local build has no publisher to hold a replacement to.
+                Assert.True(CodeSignature.MayReplace(unsigned, unsigned));
+                Assert.True(CodeSignature.MayReplace(unsigned, sameSigner));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
