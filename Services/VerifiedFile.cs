@@ -57,7 +57,8 @@ namespace KillerShell.Services
         /// renamed. Flush and verify a unique sibling before replacing with a backup. Failed
         /// publication retains recovery images and reports their paths.
         /// </summary>
-        internal static void ReplaceImage(string target, byte[] data)
+        /// <returns>The exact retained backup created by this publication, or null for a new image.</returns>
+        internal static string? ReplaceImage(string target, byte[] data)
         {
             string fresh = target + ".new-" + Guid.NewGuid().ToString("N");
             string aside = target + OldMark + Guid.NewGuid().ToString("N")[..8];
@@ -71,8 +72,13 @@ namespace KillerShell.Services
                 }
                 if (ReadVerified(fresh, Sha256(data)) == null)
                     throw new IOException("Replacement verification failed.");
-                if (File.Exists(target)) File.Replace(fresh, target, aside);
-                else File.Move(fresh, target);
+                if (File.Exists(target))
+                {
+                    File.Replace(fresh, target, aside);
+                    return aside;
+                }
+                File.Move(fresh, target);
+                return null;
             }
             catch (Exception ex)
             {
@@ -82,7 +88,6 @@ namespace KillerShell.Services
                 throw new IOException($"Image publication failed. Target: {target}. Replacement: {fresh}. Backup: {aside}. "
                     + ex.Message + (rollback == null ? "" : " Recovery failed: " + rollback.Message), ex);
             }
-            // Keep the old image until the replacement starts successfully.
         }
 
         /// <summary>Removes images set aside by an earlier <see cref="ReplaceImage"/>.</summary>

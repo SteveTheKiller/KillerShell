@@ -8,6 +8,35 @@ namespace KillerShell.Tests.Services;
 public sealed class InstallationImageTests
 {
     [Fact]
+    public void LockedBackupReportsPublicationFailureAndRetainsBothImages()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell-install-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        string source = Path.Combine(root, "candidate.exe");
+        string target = Path.Combine(root, "KillerShell.exe");
+        File.WriteAllText(source, "complete candidate");
+        File.WriteAllText(target, "previous image");
+        string? backup = null;
+        try
+        {
+            var failure = Assert.Throws<IOException>(() => InstallationImage.Publish(source, target, path =>
+            {
+                backup = path;
+                using var held = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                File.Delete(path);
+            }));
+
+            Assert.NotNull(backup);
+            Assert.Equal("previous image", File.ReadAllText(backup!));
+            Assert.Equal("complete candidate", File.ReadAllText(target));
+            Assert.Equal("complete candidate", File.ReadAllText(source));
+            Assert.Contains("Recovery image: " + backup, failure.Message);
+            Assert.Contains("Installation image was published", failure.Message);
+        }
+        finally { Directory.Delete(root, recursive: true); }
+    }
+
+    [Fact]
     public void FailedInstallationCopyPreservesThePreviousExecutable()
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell-install-" + Guid.NewGuid().ToString("N"));
@@ -33,8 +62,7 @@ public sealed class InstallationImageTests
             InstallationImage.Publish(source, target);
 
             Assert.Equal(candidate, File.ReadAllBytes(target));
-            string backup = Assert.Single(Directory.GetFiles(root, "KillerShell.exe.old-*"));
-            Assert.Equal(previous, File.ReadAllBytes(backup));
+            Assert.Empty(Directory.GetFiles(root, "KillerShell.exe.old-*"));
         }
         finally { Directory.Delete(root, recursive: true); }
     }

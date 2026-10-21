@@ -12,6 +12,54 @@ namespace KillerShell.Tests.Services;
 public sealed class InstallationConflictRemovalTests
 {
     [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void SilentReplacementCanBeRemovedWithoutNormalStartup(bool machine, bool conflict)
+    {
+        using var fixture = new Fixture(machine);
+        string candidate = Path.Combine(fixture.Root, "candidate.exe");
+        File.WriteAllText(candidate, "replacement image");
+
+        InstallationImage.Publish(candidate, fixture.Image);
+        Assert.Equal("replacement image", File.ReadAllText(fixture.Image));
+
+        if (conflict)
+            InstallationConflictRemoval.Remove(machine, () => { }, _ => { }, fixture.Environment);
+        else
+        {
+            using var removal = UninstallRemoval.Begin(machine, fixture.Environment);
+            removal.Commit();
+        }
+
+        Assert.False(Directory.Exists(fixture.Directory));
+        Assert.Equal("replacement image", File.ReadAllText(candidate));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ReplacementDoesNotAuthorizeAnUnrelatedBackupNamedFile(bool machine)
+    {
+        using var fixture = new Fixture(machine);
+        string unrelated = fixture.Image + ".old-deadbeef";
+        string candidate = Path.Combine(fixture.Root, "candidate.exe");
+        File.WriteAllText(unrelated, "unrelated recovery-shaped file");
+        File.WriteAllText(candidate, "replacement image");
+        bool registered = true;
+
+        InstallationImage.Publish(candidate, fixture.Image);
+
+        Assert.Equal("unrelated recovery-shaped file", File.ReadAllText(unrelated));
+        Assert.Throws<IOException>(() => InstallationConflictRemoval.Remove(machine,
+            () => registered = false, _ => registered = true, fixture.Environment));
+        Assert.Equal("unrelated recovery-shaped file", File.ReadAllText(unrelated));
+        Assert.Equal("replacement image", File.ReadAllText(fixture.Image));
+        Assert.True(registered);
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public void UnrelatedInstallationFilesKeepTheImageAndRegistration(bool machine)

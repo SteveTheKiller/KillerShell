@@ -139,9 +139,11 @@ namespace KillerShell.Tests.Services
                 File.WriteAllText(target, "v1");
                 byte[] v2 = Encoding.UTF8.GetBytes("v2");
 
-                VerifiedFile.ReplaceImage(target, v2);
+                string? backup = VerifiedFile.ReplaceImage(target, v2);
 
                 Assert.Equal("v2", File.ReadAllText(target));
+                Assert.NotNull(backup);
+                Assert.Equal("v1", File.ReadAllText(backup!));
                 Assert.False(File.Exists(target + ".new"));
             }
             finally { Directory.Delete(root, true); }
