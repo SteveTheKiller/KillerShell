@@ -59,21 +59,24 @@ namespace KillerShell.Terminal
             internal readonly int Version;
             internal readonly string Text;
             internal readonly Cell[][] Lines;
+            internal readonly object[] LineIdentities;
             internal readonly int[] Starts;
             private readonly int[][] _offsets;
-            private readonly Dictionary<Cell[], int> _lineNumbers = new();
+            private readonly Dictionary<object, int> _lineNumbers = new();
 
             internal TextSnapshot(TerminalBuffer buffer)
             {
                 Version = buffer.Version;
                 Lines = new Cell[buffer.TotalLines][];
+                LineIdentities = new object[Lines.Length];
                 Starts = new int[Lines.Length];
                 _offsets = new int[Lines.Length][];
                 var text = new StringBuilder();
                 for (int line = 0; line < Lines.Length; line++)
                 {
                     var cells = Lines[line] = buffer.LineAt(line);
-                    _lineNumbers[cells] = line;
+                    object identity = LineIdentities[line] = buffer.LineIdentity(cells);
+                    _lineNumbers[identity] = line;
                     Starts[line] = text.Length;
                     var offsets = _offsets[line] = new int[cells.Length + 1];
                     for (int col = 0; col < cells.Length; col++)
@@ -90,7 +93,7 @@ namespace KillerShell.Terminal
                 Text = text.ToString();
             }
 
-            internal int LineNumber(Cell[] cells) => _lineNumbers.TryGetValue(cells, out int line) ? line : 0;
+            internal int LineNumber(object identity) => _lineNumbers.TryGetValue(identity, out int line) ? line : 0;
             internal int Offset(int line, int col)
             {
                 line = Math.Max(0, Math.Min(line, Lines.Length - 1));
@@ -183,7 +186,7 @@ namespace KillerShell.Terminal
         private sealed class TerminalRange : ITextRangeProvider
         {
             private readonly TerminalPeer _peer;
-            private Cell[] _startLine = null!, _endLine = null!;
+            private object _startLine = null!, _endLine = null!;
             private int _startCol, _endCol;
             private TerminalControl Terminal => _peer.Terminal;
             private TextSnapshot Snapshot => Terminal.AutomationSnapshot();
@@ -197,8 +200,8 @@ namespace KillerShell.Terminal
             {
                 _peer = peer;
                 var snapshot = Snapshot;
-                _startLine = snapshot.Lines[Math.Max(0, Math.Min(l1, snapshot.Lines.Length - 1))];
-                _endLine = snapshot.Lines[Math.Max(0, Math.Min(l2, snapshot.Lines.Length - 1))];
+                _startLine = snapshot.LineIdentities[Math.Max(0, Math.Min(l1, snapshot.Lines.Length - 1))];
+                _endLine = snapshot.LineIdentities[Math.Max(0, Math.Min(l2, snapshot.Lines.Length - 1))];
                 _startCol = c1; _endCol = c2;
             }
             private (int Start, int End) Offsets()
@@ -213,8 +216,8 @@ namespace KillerShell.Terminal
                 var snapshot = Snapshot;
                 var first = snapshot.Position(Math.Min(start, end));
                 var last = snapshot.Position(Math.Max(start, end));
-                _startLine = snapshot.Lines[first.Line]; _startCol = first.Col;
-                _endLine = snapshot.Lines[last.Line]; _endCol = last.Col;
+                _startLine = snapshot.LineIdentities[first.Line]; _startCol = first.Col;
+                _endLine = snapshot.LineIdentities[last.Line]; _endCol = last.Col;
             }
             private TerminalRange Other(ITextRangeProvider range)
                 => range is TerminalRange other && other._peer == _peer ? other : throw new ArgumentException(nameof(range));

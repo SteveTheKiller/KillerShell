@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 // The screen: what the VT stream means, held as a grid of cells plus scrollback.
 //
@@ -46,6 +47,9 @@ namespace KillerShell.Terminal
         private Cell[][] _screen = [];
         private Cell[][]? _altScreen;                       // non-null while the alt buffer is up
         private readonly List<Cell[]> _scrollback = [];
+        private readonly ConditionalWeakTable<Cell[], object> _lineIdentities = new();
+
+        internal object LineIdentity(Cell[] line) => _lineIdentities.GetValue(line, _ => new object());
 
         /// <summary>Cap on remembered lines. 5000 x 200 cells is a few MB, which is fine.</summary>
         public int ScrollbackLimit { get; set; } = 5000;
@@ -136,14 +140,22 @@ namespace KillerShell.Terminal
 
             _screen = New(cols, rows);
             for (int r = 0; r < Math.Min(oldRows, rows); r++)
+            {
                 Array.Copy(old[r], _screen[r], Math.Min(Cols, cols));
+                if (_lineIdentities.TryGetValue(old[r], out object identity))
+                    _lineIdentities.Add(_screen[r], identity);
+            }
 
             if (_altScreen != null)
             {
                 var oldAlt = _altScreen;
                 _altScreen = New(cols, rows);
                 for (int r = 0; r < Math.Min(oldRows, rows); r++)
+                {
                     Array.Copy(oldAlt[r], _altScreen[r], Math.Min(Cols, cols));
+                    if (_lineIdentities.TryGetValue(oldAlt[r], out object identity))
+                        _lineIdentities.Add(_altScreen[r], identity);
+                }
             }
 
             Cols = cols;
