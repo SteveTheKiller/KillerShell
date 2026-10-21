@@ -14,6 +14,7 @@ using Xunit;
 
 namespace KillerShell.Tests.Terminal;
 
+[Collection(NativeAccessibilityCollection.Name)]
 public sealed class ShellAccessibilityNamesTests
 {
     [Fact]
