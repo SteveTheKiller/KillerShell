@@ -32,7 +32,9 @@ public static class TerminalInputOrderScenario
         string script = Path.Combine(root, "read.ps1");
         File.WriteAllText(script, "[Console]::InputEncoding = New-Object Text.UTF8Encoding; " +
             "$a=[Console]::ReadLine(); $b=[Console]::ReadLine(); " +
-            "[IO.File]::WriteAllLines('" + result.Replace("'", "''") + "', [string[]]@($a,$b))", Encoding.UTF8);
+            "$result='" + result.Replace("'", "''") + "'; " +
+            "[IO.File]::WriteAllLines($result+'.tmp', [string[]]@($a,$b)); " +
+            "[IO.File]::Move($result+'.tmp', $result)", Encoding.UTF8);
         var app = RuntimeComponentProcess.StartApplication();
         var terminal = new TerminalControl(TerminalSkin.Default);
         try
@@ -86,8 +88,9 @@ public static class TerminalInputFlowScenario
         {
             terminal.Measure(new Size(800, 500));
             terminal.Arrange(new Rect(0, 0, 800, 500));
-            terminal.Start("powershell.exe -NoProfile -NonInteractive -Command \"[IO.File]::WriteAllText('" +
-                ready.Replace("'", "''") + "', [string]$PID); Start-Sleep -Seconds 30\"", root);
+            terminal.Start("powershell.exe -NoProfile -NonInteractive -Command \"$ready='" +
+                ready.Replace("'", "''") + "'; [IO.File]::WriteAllText($ready+'.tmp', [string]$PID); " +
+                "[IO.File]::Move($ready+'.tmp', $ready); Start-Sleep -Seconds 30\"", root);
             Assert.True(SpinWait.SpinUntil(() => File.Exists(ready), 3000), "The controlled child did not start.");
             using var child = Process.GetProcessById(int.Parse(File.ReadAllText(ready)));
             int heartbeats = 0;

@@ -46,8 +46,9 @@ public static class TabCloseOwnershipScenario
         window.UpdateLayout();
         ShellWindowFixture.PumpUntil(() => left.TabStrip.ItemContainerGenerator.ContainerFromItem(victim) is FrameworkElement);
         string ready = Path.Combine(fixture.Root, "child.txt");
-        terminal.Start("powershell.exe -NoProfile -NonInteractive -Command \"[IO.File]::WriteAllText('" +
-            ready.Replace("'", "''") + "', [string]$PID); Start-Sleep -Seconds 30\"", fixture.Root);
+        terminal.Start("powershell.exe -NoProfile -NonInteractive -Command \"$ready='" +
+            ready.Replace("'", "''") + "'; [IO.File]::WriteAllText($ready+'.tmp', [string]$PID); " +
+            "[IO.File]::Move($ready+'.tmp', $ready); Start-Sleep -Seconds 30\"", fixture.Root);
         ShellWindowFixture.PumpUntil(() => File.Exists(ready));
         using var child = Process.GetProcessById(int.Parse(File.ReadAllText(ready)));
         int canceled = 0;
