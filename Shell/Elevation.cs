@@ -282,19 +282,36 @@ namespace KillerShell.Shell
             }
         }
 
+        private readonly System.Collections.Generic.Dictionary<Editing.EditorControl, Action?> _pendingEditorSaves = new();
+
+        private bool QueuePendingEditorSave(Editing.EditorControl editor, Action save)
+        {
+            if (!_pendingEditorSaves.ContainsKey(editor)) return false;
+            // Repeated save commands coalesce to the latest document state.
+            _pendingEditorSaves[editor] = save;
+            return true;
+        }
+
         /// <summary>
-        /// Retry a document save that was refused with access denied - Ctrl+F7's whole point
-        /// (EditorTabs.cs SaveActiveEditor / EditorControl.ElevatedSaveOnFail). Same shape as
-        /// RecycleElevated above: the document's text is staged to a temp file in this document's
-        /// own encoding, a second instance is started elevated and copies that staged file over
-        /// the real, permission-denied path, then exits without a window. Nothing happens in
-        /// THIS window unless it succeeds - if the prompt is declined, nothing was written.
+        /// Stage a permission-denied save in its original encoding and publish it through an
+        /// elevated helper. Later saves wait for completion before staging the latest edits.
+        /// Declining elevation leaves the target and dirty state unchanged.
         /// </summary>
-        internal void RetrySaveElevated(SearchTab t, string name)
+        internal void RetrySaveElevated(SearchTab t, string name, Func<ProcessStartInfo, Process?>? start = null)
         {
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe) || t.Editor == null) return;
             var originalEditor = t.Editor;
+            if (QueuePendingEditorSave(originalEditor, () => RetrySaveElevated(t, Path.GetFileName(originalEditor.FilePath), start))) return;
+            _pendingEditorSaves.Add(originalEditor, null);
+
+            void ReleaseSave()
+            {
+                Action? queued = _pendingEditorSaves[originalEditor];
+                _pendingEditorSaves.Remove(originalEditor);
+                if (ReferenceEquals(t.Editor, originalEditor)
+                    && (LeftPane.Tabs.Contains(t) || RightPane.Tabs.Contains(t))) queued?.Invoke();
+            }
 
             string tempFile = string.Empty;
             Services.ElevatedSaveResponse? response = null;
@@ -317,6 +334,7 @@ namespace KillerShell.Shell
             {
                 try { File.Delete(tempFile); } catch { }
                 SetTabStatusKey(t, "Str_Ed_SaveFailed", name, ex.Message);
+                ReleaseSave();
                 return;
             }
 
@@ -331,7 +349,7 @@ namespace KillerShell.Shell
                     Arguments = ProcessRelaunchArgs("--elevated-save \"" + TrimForArg(tempFile) + "\" \""
                               + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash + " " + response.Name),
                 };
-                var proc = Process.Start(psi);
+                var proc = (start ?? Process.Start)(psi);
                 if (proc == null) return;
                 _ = CompleteSaveAsync(proc, response);
                 response = null;
@@ -348,7 +366,11 @@ namespace KillerShell.Shell
             finally
             {
                 response?.Dispose();
-                if (!handedOff) try { File.Delete(tempFile); } catch { }
+                if (!handedOff)
+                {
+                    try { File.Delete(tempFile); } catch { }
+                    ReleaseSave();
+                }
             }
 
             async System.Threading.Tasks.Task CompleteSaveAsync(Process proc, Services.ElevatedSaveResponse reply)
@@ -374,7 +396,10 @@ namespace KillerShell.Shell
                 try
                 {
                     _ = Dispatcher.BeginInvoke((Action)(() =>
-                        CompleteElevatedSave(t, originalEditor, name, stagedText, stagedEncoding, stagedPath, code, diagnostic)));
+                    {
+                        try { CompleteElevatedSave(t, originalEditor, name, stagedText, stagedEncoding, stagedPath, code, diagnostic); }
+                        finally { ReleaseSave(); }
+                    }));
                 }
                 catch (InvalidOperationException) { /* The dispatcher closed before delivery. */ }
             }

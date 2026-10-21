@@ -288,10 +288,12 @@ namespace KillerShell.Shell
         //  SAVE
         // ═══════════════════════════════════════════════════════════
         /// <summary>Ctrl+S. A no-op on any tab that is not a document.</summary>
-        private void SaveActiveEditor()
+        private void SaveActiveEditor() => SaveEditor(_active);
+
+        private void SaveEditor(SearchTab t)
         {
-            var t = _active;
             if (t.Editor == null) return;
+            if (QueuePendingEditorSave(t.Editor, () => SaveEditor(t))) return;
 
             // An untitled document has nowhere to be written yet, so the first save asks. Backing
             // out of the dialog cancels the save outright rather than picking somewhere for you.

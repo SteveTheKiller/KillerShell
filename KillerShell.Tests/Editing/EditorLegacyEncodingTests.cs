@@ -20,14 +20,15 @@ public sealed class EditorLegacyEncodingTests
 
 internal static class EditorScenarioProcess
 {
-    internal static async Task Run(string scenario)
+    internal static async Task Run(string scenario, string? argument = null)
     {
         string Quote(string value) => value.Replace("'", "''");
         string script = "$ErrorActionPreference='Stop'; try { " +
             "[Reflection.Assembly]::LoadFrom('" + Quote(typeof(EditorControl).Assembly.Location) + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + Quote(typeof(Assert).Assembly.Location) + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + Quote(typeof(EditorScenarioProcess).Assembly.Location) + "') | Out-Null; " +
-            "[KillerShell.Tests.Editing." + scenario + "]::Run(); exit 0 " +
+            "[KillerShell.Tests.Editing." + scenario + "]::Run(" +
+            (argument == null ? "" : "'" + Quote(argument) + "'") + "); exit 0 " +
             "} catch { [Console]::Error.WriteLine($_.Exception.ToString()); exit 1 }";
         using var process = Process.Start(new ProcessStartInfo
         {
