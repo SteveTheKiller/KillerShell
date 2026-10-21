@@ -40,6 +40,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Added the Recycle Bin to saved places and crash logging for unexpected exits.
 
 ### Changed
+- Light's background, sidebar and footer are a slightly darker gray (#d4d4d4), and fields a touch lighter, so content stands apart from the chrome.
 - Dropping files on a saved place always moves them, including across drives.
 - Buttons and shortcut diagrams use the embedded interface font. Dialog icons, button states, focus, rail alignment and grain follow the family design; 98SE uses full bevels and compact text fields. Active tabs blend into their terminal or file pane when Alt+M hides the menu bar.
 
