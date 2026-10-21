@@ -355,10 +355,9 @@ namespace KillerShell.Editing
 
             if (Strict(bytes, 0, new UTF8Encoding(false, true), new UTF8Encoding(false), out encoding, out text, ref badLabel))
                 return true;
-            badLabel = string.Empty;
-            encoding = Encoding.Default;
-            text = encoding.GetString(bytes);
-            return true;
+            var legacyDecoder = (Encoding)Encoding.Default.Clone();
+            legacyDecoder.DecoderFallback = DecoderFallback.ExceptionFallback;
+            return Strict(bytes, 0, legacyDecoder, Encoding.Default, out encoding, out text, ref badLabel);
         }
 
         private static bool Strict(byte[] bytes, int skip, Encoding decoder, Encoding writer,
