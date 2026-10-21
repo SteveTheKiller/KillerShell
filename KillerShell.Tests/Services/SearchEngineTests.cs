@@ -286,7 +286,8 @@ namespace KillerShell.Tests.Services
             Task search = engine.SearchAsync(Path.GetDirectoryName(file)!, [group], [], "", "", false, cts.Token, [file]);
             try
             {
-                Assert.True(await Task.Run(() => paused.ReadingStarted.Wait(TimeSpan.FromSeconds(5))), "Content reading did not begin.");
+                Assert.True(ReferenceEquals(paused.ReadingStarted.Task,
+                    await Task.WhenAny(paused.ReadingStarted.Task, Task.Delay(TimeSpan.FromSeconds(5)))), "Content reading did not begin.");
                 cts.Cancel();
                 Assert.NotSame(search, await Task.WhenAny(search, Task.Delay(50)));
                 paused.ContinueReading.Set();
@@ -308,7 +309,7 @@ namespace KillerShell.Tests.Services
 
         private sealed class PausedContentStream : MemoryStream
         {
-            internal readonly ManualResetEventSlim ReadingStarted = new ManualResetEventSlim();
+            internal readonly TaskCompletionSource<bool> ReadingStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             internal readonly ManualResetEventSlim ContinueReading = new ManualResetEventSlim();
             internal long ContentBytesRead;
             internal bool WasDisposed;
@@ -329,7 +330,7 @@ namespace KillerShell.Tests.Services
                 if (_contentPass && !_paused)
                 {
                     _paused = true;
-                    ReadingStarted.Set();
+                    ReadingStarted.TrySetResult(true);
                     if (!ContinueReading.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException("Paused read was not released.");
                 }
                 int read = base.Read(buffer, offset, count);
