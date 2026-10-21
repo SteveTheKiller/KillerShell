@@ -4,6 +4,7 @@
   var root = document.documentElement;
   var chromeEnglish = {"site_ui_theme":"Theme","site_ui_choose_theme":"Choose theme","site_ui_accent":"Accent color","site_ui_close":"Close","site_ui_language":"Language","site_ui_copy":"Copy to clipboard","site_ui_copied":"Copied","site_ui_click":"Click me","site_ui_home":"Home","site_ui_shortcuts":"Shortcut view","site_ui_screenshot":"Screenshot","site_ui_red":"Red","site_ui_orange":"Orange","site_ui_yellow":"Yellow","site_ui_green":"Green","site_ui_teal":"Teal","site_ui_blue":"Blue","site_ui_purple":"Purple","site_ui_magenta":"Magenta","site_ui_expand":"Expand section","site_ui_collapse":"Collapse section","site_ui_family":"Part of","footer_src":"Source on GitHub"};
   chromeEnglish.site_ui_more = 'More';
+  chromeEnglish.site_ui_store = 'Get KillerShell from the Microsoft Store';
   function chromeText(key) {
     var lang = root.getAttribute('lang') || 'en';
     if (lang === 'zh-Hant') lang = 'zh';
@@ -12,9 +13,17 @@
     return dict && dict[key] != null ? dict[key] : chromeEnglish[key] || (EN && EN[key]);
   }
   function localizeChrome() {
+    var themeDict = (window.I18N && window.I18N[root.getAttribute('lang')]) || {};
+    document.querySelectorAll('.swatch[data-theme]').forEach(function (swatch) {
+      if (!swatch.hasAttribute('data-en-theme-title')) swatch.setAttribute('data-en-theme-title', swatch.title);
+      var title = themeDict['theme_' + swatch.getAttribute('data-theme')] || swatch.getAttribute('data-en-theme-title');
+      swatch.title = title;
+      swatch.setAttribute('aria-label', title);
+    });
     function label(selector, key, attribute) {
       document.querySelectorAll(selector).forEach(function (element) { element.setAttribute(attribute, chromeText(key)); });
     }
+    label('.tb-store', 'site_ui_store', 'title');
     label('.theme-toggle', 'site_ui_theme', 'title');
     label('.theme-toggle', 'site_ui_choose_theme', 'aria-label');
     label('.tgrp', 'site_ui_theme', 'aria-label');
@@ -123,6 +132,7 @@
     ];
     // The dictionary values are innerHTML, but captions are set as plain text.
     var caption = captions[index - 1];
+    if (caption) caption = caption.replace(/^[^:]+/, function (name) { return dict['theme_' + (name === 'Black' ? 'hc' : name.toLowerCase())] || name; });
     return caption ? 'KillerShell ' + caption.replace(/&amp;/g, '&') : english;
   }
   window.ksLocalizeChrome = function () { localizeChrome(); localizeExtras(); };
@@ -330,8 +340,9 @@
   var I18N = (typeof window !== 'undefined' && window.I18N) ? window.I18N : {};
   var EN = {};
   document.querySelectorAll('[data-i18n]').forEach(function (n) { EN[n.getAttribute('data-i18n')] = n.innerHTML; });
-  var LANGS = ['en','es','de','fr','it','tr','vi','zh','zh-cn','bn','hu','pl','cs','ja','ru','uk','nb','pt','kk'];
+  var LANGS = ['en','es','de','fr','it','tr','vi','zh','zh-cn','bn','hu','pl','cs','ja','ru','uk','nb','pt','kk','sl'];
   var FLAGS = {
+    sl: '<svg viewBox="0 0 24 24"><rect width="24" height="8" fill="#fff"/><rect y="8" width="24" height="8" fill="#005da4"/><rect y="16" width="24" height="8" fill="#ed1c24"/><path d="M5 4h6v5c0 3-3 4-3 4S5 12 5 9Z" fill="#005da4" stroke="#ed1c24" stroke-width=".6"/><path d="m5.5 9 1.2-1.7L8 9l1.3-1.7 1.2 1.7v1H5.5Z" fill="#fff"/><g fill="#ffdd00"><circle cx="7" cy="5.3" r=".35"/><circle cx="9" cy="5.3" r=".35"/><circle cx="8" cy="6.3" r=".35"/></g></svg>',
     en: '<svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#fff"/><g fill="#b22234"><rect width="24" height="1.85"/><rect y="3.7" width="24" height="1.85"/><rect y="7.4" width="24" height="1.85"/><rect y="11.1" width="24" height="1.85"/><rect y="14.8" width="24" height="1.85"/><rect y="18.5" width="24" height="1.85"/><rect y="22.2" width="24" height="1.8"/></g><rect width="11" height="12.95" fill="#3c3b6e"/></svg>',
     cs: '<svg viewBox="0 0 24 24"><rect width="24" height="12" fill="#fff"/><rect y="12" width="24" height="12" fill="#d7141a"/><polygon points="0,0 12,12 0,24" fill="#11457e"/></svg>',
     pl: '<svg viewBox="0 0 24 24"><rect width="24" height="12" fill="#fff"/><rect y="12" width="24" height="12" fill="#dc143c"/></svg>',
