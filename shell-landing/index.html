@@ -271,7 +271,8 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <span class="right"><span id="verEgg" title="click me">v1.4.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Expanded KillerShell screenshot" aria-hidden="true" tabindex="-1">
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Expanded KillerShell screenshot" aria-hidden="true" tabindex="-1" inert>
+  <button class="help-link lightbox-close" id="lightboxClose" type="button" aria-label="Close" title="Close">&times;</button>
   <figure class="lightbox-figure">
     <img id="lightboxImg" src="" alt="">
     <figcaption id="lightboxCaption"></figcaption>
@@ -306,10 +307,21 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
   var lightbox = document.getElementById('lightbox');
   var lightboxImg = document.getElementById('lightboxImg');
   var lightboxCaption = document.getElementById('lightboxCaption');
+  var lightboxClose = document.getElementById('lightboxClose');
   var lastLightboxTrigger = null;
+  var lightboxBackground = [];
   var loaded = 0;
 
   function openLightbox(src, description, trigger) {
+    if (!lightbox.classList.contains('show')) {
+      lightboxBackground = Array.from(document.body.children).filter(function (element) {
+        return element !== lightbox && !/^(SCRIPT|STYLE|LINK)$/.test(element.tagName);
+      }).map(function (element) {
+        var previous = element.inert;
+        element.inert = true;
+        return { element: element, previous: previous };
+      });
+    }
     lastLightboxTrigger = trigger;
     lightboxImg.src = src;
     lightboxImg.dataset.englishDescription = trigger.dataset.englishDescription || description;
@@ -317,17 +329,26 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
     lightboxImg.title = description;
     lightboxCaption.textContent = description;
     lightbox.setAttribute('aria-hidden', 'false');
+    lightbox.inert = false;
     lightbox.classList.add('show');
-    lightbox.focus();
+    lightboxClose.focus();
   }
   function closeLightbox() {
     if (!lightbox.classList.contains('show')) return;
+    lightboxBackground.forEach(function (state) { state.element.inert = state.previous; });
+    lightboxBackground = [];
+    if (lastLightboxTrigger && lastLightboxTrigger.isConnected) lastLightboxTrigger.focus();
+    lastLightboxTrigger = null;
+    lightbox.inert = true;
     lightbox.classList.remove('show');
     lightbox.setAttribute('aria-hidden', 'true');
-    if (lastLightboxTrigger) lastLightboxTrigger.focus();
   }
   lightbox.addEventListener('click', closeLightbox);
   document.addEventListener('keydown', function (e) {
+    if (e.key === 'Tab' && lightbox.classList.contains('show')) {
+      lightboxClose.focus();
+      e.preventDefault();
+    }
     if (e.key === 'Escape' && lightbox.classList.contains('show')) {
       closeLightbox();
       e.preventDefault();

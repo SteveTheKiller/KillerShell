@@ -36,6 +36,8 @@
     label('#verEgg', 'site_ui_click', 'title');
     label('.ks-viewtoggle', 'site_ui_shortcuts', 'aria-label');
     label('#lightbox', 'site_ui_screenshot', 'aria-label');
+    label('#lightboxClose', 'site_ui_close', 'aria-label');
+    label('#lightboxClose', 'site_ui_close', 'title');
     ['red','orange','yellow','green','teal','blue','purple','magenta'].forEach(function (color) {
       label('.acc[data-accent="' + color + '"]', 'site_ui_' + color, 'title');
       label('.acc[data-accent="' + color + '"]', 'site_ui_' + color, 'aria-label');

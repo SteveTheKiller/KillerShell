@@ -257,6 +257,8 @@ body.compact-sidebar .outline a:hover { color: var(--text); background: color-mi
 .lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; padding: 32px; cursor: zoom-out; opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility 0s linear .2s; }
 .lightbox.show { opacity: 1; visibility: visible; transition: opacity .2s ease; }
 .lightbox[hidden] { display: none; }
+.lightbox-close { position: absolute; top: 8px; right: 8px; background: var(--modal); color: var(--text); font-size: 20px; line-height: 1; min-width: 32px; min-height: 32px; cursor: pointer; }
+.lightbox-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .lightbox-figure { margin: 0; max-width: 100%; max-height: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .lightbox img { display: block; max-width: 100%; max-height: calc(100vh - 112px); border-radius: 6px; box-shadow: 0 24px 60px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); transform: scale(.96); transition: transform .2s ease; }
 .lightbox.show img { transform: scale(1); }
