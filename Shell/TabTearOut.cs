@@ -112,7 +112,7 @@ namespace KillerShell.Shell
                 // merged terminal tab reopens as a FRESH shell in the same folder, not the same
                 // session (see the file header). Carry the launch profile with the current folder.
                 return "--terminal-profile " + (t.LaunchProfile ?? TerminalProfile.PowerShell()).HandoffToken()
-                    + " --cwd \"" + TrimForArg(cwd) + "\"";
+                    + " --cwd " + QuoteToken(TrimForArg(cwd));
             }
 
             if (t.Editor != null)
@@ -125,11 +125,18 @@ namespace KillerShell.Shell
                     SetTabStatusKey(t, "Str_Status_TearOutNeedsSave");
                     return null;
                 }
-                return "--edit \"" + TrimForArg(t.Editor.FilePath) + "\"";
+                return "--edit " + QuoteToken(TrimForArg(t.Editor.FilePath));
             }
 
-            return "--cwd \"" + TrimForArg(cwd) + "\"";
+            return "--cwd " + QuoteToken(TrimForArg(cwd));
         }
+
+        /// <summary>
+        /// One value in the handoff grammar TokenizeArgs reads back: quoted whole, with a literal
+        /// quote doubled. A WSL folder may contain quotes, which used to end the token early.
+        /// Strings written before doubling existed hold no quotes, so they read back unchanged.
+        /// </summary>
+        internal static string QuoteToken(string value) => "\"" + value.Replace("\"", "\"\"") + "\"";
 
         // WM_COPYDATA/session strings use the existing transport grammar. Only the
         // process boundary needs Windows argv escaping, including trailing separators.
@@ -138,10 +145,10 @@ namespace KillerShell.Shell
 
         /// <summary>
         /// Splits a "--flag value" string the way BuildRelaunchArgs writes it - quoted segments
-        /// kept whole, everything else split on spaces. Not a general shell tokenizer (no
-        /// escaped quotes, no single quotes) - the only strings this ever sees are ones this
-        /// file wrote itself, carried over a WM_COPYDATA handoff instead of real process argv
-        /// (TabHandoff.cs ApplyHandoff).
+        /// kept whole, with "" inside one standing for a literal quote (QuoteToken), everything
+        /// else split on spaces. Not a general shell tokenizer (no single quotes) - the only
+        /// strings this ever sees are ones this file wrote itself, carried over a WM_COPYDATA
+        /// handoff or a saved session instead of real process argv (TabHandoff.cs ApplyHandoff).
         /// </summary>
         internal static List<string> TokenizeArgs(string s)
         {
@@ -153,9 +160,18 @@ namespace KillerShell.Shell
                 if (i >= s.Length) break;
                 if (s[i] == '"')
                 {
-                    int j = s.IndexOf('"', i + 1);
-                    if (j < 0) j = s.Length;
-                    result.Add(s.Substring(i + 1, j - i - 1));
+                    var token = new System.Text.StringBuilder();
+                    int j = i + 1;
+                    while (j < s.Length)
+                    {
+                        if (s[j] == '"')
+                        {
+                            if (j + 1 < s.Length && s[j + 1] == '"') { token.Append('"'); j += 2; continue; }
+                            break;
+                        }
+                        token.Append(s[j++]);
+                    }
+                    result.Add(token.ToString());
                     i = j + 1;
                 }
                 else

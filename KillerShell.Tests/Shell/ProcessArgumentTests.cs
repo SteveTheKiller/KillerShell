@@ -18,6 +18,12 @@ public sealed class ProcessArgumentTests
     [InlineData(@"\\server\share\")]
     [InlineData(@"C:\ordinary")]
     [InlineData(@"C:\folder with spaces\")]
+    [InlineData("/home/user/a\"b")]
+    [InlineData("/home/user/\"quoted\" name")]
+    [InlineData("/home/user/trailing  ")]
+    [InlineData("/home/user/back\\slash\\")]
+    [InlineData("/home/user/caf\u00e9 \U0001f4c1")]
+    [InlineData("/home/user/ends with quote\"")]
     public async Task RelaunchTransportPreservesRealProcessArguments(string folder)
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "arguments", Guid.NewGuid().ToString("N"));
@@ -33,7 +39,7 @@ public sealed class ProcessArgumentTests
                     "using System; using System.Text; class Entry { static void Main(string[] args) { foreach (var a in args) Console.WriteLine(Convert.ToBase64String(Encoding.UTF8.GetBytes(a))); } }");
                 Assert.False(result.Errors.HasErrors, string.Join(Environment.NewLine, result.Errors.Cast<CompilerError>()));
             }
-            string handoff = "--terminal-profile fixture --cwd \"" + folder + "\"";
+            string handoff = "--terminal-profile fixture --cwd " + MainWindow.QuoteToken(folder);
             Assert.Equal(folder, MainWindow.TokenizeArgs(handoff).Last());
             using var child = Process.Start(new ProcessStartInfo(exe, MainWindow.ProcessRelaunchArgs(handoff))
             { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true })!;
@@ -47,4 +53,11 @@ public sealed class ProcessArgumentTests
         }
         finally { Directory.Delete(root, true); }
     }
+
+    [Theory]
+    [InlineData("--cwd \"C:\\old session\"", new[] { "--cwd", "C:\\old session" })]
+    [InlineData("--cwd \"\" --processes", new[] { "--cwd", "", "--processes" })]
+    [InlineData("--edit \"C:\\a.txt\" --cwd \"/home/x\"", new[] { "--edit", "C:\\a.txt", "--cwd", "/home/x" })]
+    public void SessionsSavedBeforeQuoteDoublingStillRead(string saved, string[] expected)
+        => Assert.Equal(expected, MainWindow.TokenizeArgs(saved));
 }

@@ -63,7 +63,7 @@ namespace KillerShell.Shell
             // resolve against the new process's current directory rather than naming the
             // root. Same trap that sent Up-from-C: back to the home folder.
             string flags = "--terminal-profile " + profile.HandoffToken()
-                          + " --cwd \"" + TrimForArg(folder) + "\"";
+                          + " --cwd " + QuoteToken(TrimForArg(folder));
 
             // Same reuse as RelaunchElevatedProcesses/RelaunchElevatedEventViewer below: an
             // already-elevated window gets the shell tab handed to it instead of a fresh UAC
@@ -245,7 +245,7 @@ namespace KillerShell.Shell
             if (string.IsNullOrEmpty(exe) || paths.Count == 0) return;
 
             var args = new System.Text.StringBuilder("--recycle");
-            foreach (string p in paths) args.Append(" \"").Append(TrimForArg(p)).Append('"');
+            foreach (string p in paths) args.Append(' ').Append(QuoteToken(TrimForArg(p)));
 
             var psi = new ProcessStartInfo(exe)
             {
@@ -352,8 +352,8 @@ namespace KillerShell.Shell
                 {
                     UseShellExecute = true,
                     Verb = "runas",
-                    Arguments = ProcessRelaunchArgs("--elevated-save \"" + TrimForArg(tempFile) + "\" \""
-                              + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash + " " + response.Name
+                    Arguments = ProcessRelaunchArgs("--elevated-save " + QuoteToken(TrimForArg(tempFile)) + " "
+                              + QuoteToken(TrimForArg(t.Editor.FilePath)) + " " + stagedHash + " " + response.Name
                               + " " + diskBaseline),
                 };
                 var proc = (start ?? Process.Start)(psi);
