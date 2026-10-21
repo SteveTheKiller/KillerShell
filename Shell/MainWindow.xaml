@@ -921,9 +921,8 @@
                                                  Checked="ThemeMourningRadio_Checked"/>
 
                                     <!-- Fonts/File Associations: KillerShell-only rows, kept from
-                                         the old flyout content - not part of PDF's menu, and not
-                                         part of what was reported wrong, so left in place. -->
-                                    <Border Height="1" Margin="0,12,0,6" Background="{DynamicResource MenuBorderBrush}"/>
+                                         the old flyout content - not part of PDF's menu. They follow
+                                         the themes directly, with no gap or rule between. -->
                                     <!-- Film Grain: one switch for the grain texture on every
                                          surface (Services/FilmGrain.cs). -->
                                     <CheckBox x:Name="FilmGrainCheck" Content="{DynamicResource Str_Theme_FilmGrain}"
