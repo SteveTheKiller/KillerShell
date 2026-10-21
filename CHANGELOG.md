@@ -15,7 +15,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Failed or canceled copies and moves preserve existing destinations and recovery copies. Cross-drive and mounted-volume moves stay cancellable, retain alternate streams, honor conflict choices, and report incomplete work.
 - ZIP edits preserve permissions and attributes, distinguish case-sensitive names, and reject conflicting output paths before publication. TAR extraction validates extended metadata, and cancellation stops extraction through the final entry.
 - CSV and HTML exports preserve existing reports when replacement fails.
-- Bundled KillerPivot verifies tenant connections, reports incomplete disconnects, and preserves configuration after failed saves. KillerScripts preserves Unicode text, complete caches, and the script version used by an active invocation.
+- Bundled KillerPivot verifies tenant connections, disconnects a Graph session left from another tenant when switching, reports incomplete disconnects, and preserves configuration after failed saves. KillerScripts preserves Unicode text, complete caches, and the script version used by an active invocation.
 - Registry renames preserve value types, permissions, child keys and open handles. Switching between hexadecimal and decimal keeps the value unchanged.
 - Ending or restarting a process verifies its identity. Administrator restarts keep the original running until elevation is approved, and reused process IDs receive fresh status information.
 - Service restarts finish after their tab or window closes, with failures reported or logged. Silent installation returns a retryable busy code when KillerShell is running.

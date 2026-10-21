@@ -469,6 +469,10 @@ function Get-PivotContext {
         Write-Host "not connected" -ForegroundColor $DimCol
     }
 
+    if ($exo -and $mg -and $exo.TenantID -ne $mg.TenantId) {
+        Write-Host "[!] Exchange and Graph are connected to different tenants." -ForegroundColor Yellow
+    }
+
     Write-HLine -Style "dashed"
 }
 
@@ -528,13 +532,36 @@ function Connect-PivotTenant {
         [Parameter(Mandatory, Position = 0)][string]$Key,
         [switch]$Graph,
         [string[]]$Scopes = @('User.Read.All'),
-        [switch]$KeepExisting
+        [switch]$KeepExisting,
+        [switch]$KeepGraph
     )
+
+    if ($Graph -and $KeepGraph) { throw 'PIVOT: -Graph and -KeepGraph cannot be combined. Nothing connected.' }
 
     $t = Resolve-PivotTenant -Key $Key
 
     if (-not (Get-Module -ListAvailable -Name ExchangeOnlineManagement)) {
         throw "PIVOT: ExchangeOnlineManagement not found. Check with Get-Module -ListAvailable ExchangeOnlineManagement."
+    }
+
+    # Graph holds one context per session and has no command prefix, so a context
+    # left from another tenant would answer every Mg command after the switch.
+    $retainedGraph = $null
+    if (-not $Graph -and (Get-Command Get-MgContext -ErrorAction SilentlyContinue)) {
+        try { $staleGraph = Get-MgContext -ErrorAction Stop }
+        catch { throw "PIVOT: Graph state query failed: $($_.Exception.Message) Nothing connected." }
+        if ($staleGraph -and $staleGraph.TenantId -ne $t.tenantId) {
+            if ($KeepGraph) {
+                $retainedGraph = $staleGraph
+            } else {
+                try { Disconnect-MgGraph -ErrorAction Stop | Out-Null }
+                catch { throw "PIVOT: Graph teardown failed: $($_.Exception.Message) Graph is still connected to tenant $($staleGraph.TenantId). Nothing connected." }
+                try { $remainingGraph = Get-MgContext -ErrorAction Stop }
+                catch { throw "PIVOT: Graph verification failed: $($_.Exception.Message) Nothing connected." }
+                if ($remainingGraph) { throw "PIVOT: Graph still reports tenant $($remainingGraph.TenantId) after disconnect. Nothing connected." }
+                Write-Host "[>] Graph disconnected from tenant $($staleGraph.TenantId)." -ForegroundColor $DimCol
+            }
+        }
     }
 
     $beforeIds = @()
@@ -629,6 +656,9 @@ function Connect-PivotTenant {
 
         }
         Write-StatusTag "[VERIFIED]" $MainCol
+        if ($retainedGraph) {
+            Write-Host "[!] Graph is still connected to tenant $($retainedGraph.TenantId), not $($t.name). Mg commands go to that tenant." -ForegroundColor Yellow
+        }
         if ($connectionPrefix) {
             Write-Host "    Exchange command prefix: $connectionPrefix (for example Get-${connectionPrefix}Mailbox)." -ForegroundColor $DimCol
         }
