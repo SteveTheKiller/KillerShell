@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +19,17 @@ namespace KillerShell
     public partial class FolderPickerDialog : Window
     {
         public string? SelectedPath { get; private set; }
+        internal Func<string, CancellationToken, PickerEntry[]?> ReadDirectory { get; set; } = Services.PickerDirectoryReader.Read;
+        internal Func<CancellationToken, (string Label, string Path)[]> ReadDrives { get; set; } = Services.PickerDirectoryReader.ReadDrives;
+        internal Func<string, bool> FolderExists { get; set; } = Directory.Exists;
+        private readonly Services.PickerWork _navigationWork;
+        private readonly Services.PickerWork _sortWork;
+        private readonly Services.PickerWork _placesWork;
+        private readonly Services.PickerWork _validationWork;
+        internal Task NavigationTask { get; private set; } = Task.CompletedTask;
+        internal Task SortTask { get; private set; } = Task.CompletedTask;
+        internal Task PlacesTask { get; private set; } = Task.CompletedTask;
+        internal Task AcceptanceTask { get; private set; } = Task.CompletedTask;
 
         public ObservableCollection<PickerPlace> Places  { get; } = [];
         public ObservableCollection<PickerEntry> Entries { get; } = [];
@@ -43,7 +56,13 @@ namespace KillerShell
 
         public FolderPickerDialog(string? initialPath = null)
         {
+            _navigationWork = new Services.PickerWork(Dispatcher);
+            _sortWork = new Services.PickerWork(Dispatcher);
+            _placesWork = new Services.PickerWork(Dispatcher);
+            _validationWork = new Services.PickerWork(Dispatcher);
+            Closed += (_, _) => { _navigationWork.Dispose(); _sortWork.Dispose(); _placesWork.Dispose(); _validationWork.Dispose(); };
             InitializeComponent();
+            PathBox.TextChanged += (_, _) => _validationWork.Cancel();
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
             void RefreshPickerChrome() => PickerWindowChrome.Apply(this, RootBorder);
             Loaded += (_, _) => Services.ThemeManager.ThemeChanged += RefreshPickerChrome;
@@ -110,35 +129,40 @@ namespace KillerShell
             FolderList.ItemsSource = Entries;
             ApplyView();
 
-            string start = !string.IsNullOrWhiteSpace(initialPath) && Directory.Exists(initialPath)
-                ? initialPath!
-                : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            NavigateTo(start);
+            string fallback = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var exists = FolderExists;
+            var read = ReadDirectory;
+            StartNavigation(token =>
+            {
+                string start = !string.IsNullOrWhiteSpace(initialPath) && exists(initialPath!) ? initialPath! : fallback;
+                return (start, read(start, token));
+            });
         }
 
         // ── Quick places: known folders + ready drives ───────────────────────────
         private void BuildPlaces()
         {
-            AddPlace(GlyphHome,      Loc("Str_QA_Home"),      Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-            AddPlace(GlyphDesktop,   Loc("Str_QA_Desktop"),   Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-            AddPlace(GlyphDocuments, Loc("Str_QA_Documents"), Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-            AddPlace(GlyphDownloads, Loc("Str_QA_Downloads"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"));
-            AddPlace(GlyphPictures,  Loc("Str_QA_Pictures"),  Environment.GetFolderPath(Environment.SpecialFolder.MyPictures));
-
-            foreach (var d in DriveInfo.GetDrives().Where(d => d.IsReady))
+            PickerPlace[] known =
+            [
+                new(GlyphHome, Loc("Str_QA_Home"), Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)),
+                new(GlyphDesktop, Loc("Str_QA_Desktop"), Environment.GetFolderPath(Environment.SpecialFolder.Desktop)),
+                new(GlyphDocuments, Loc("Str_QA_Documents"), Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)),
+                new(GlyphDownloads, Loc("Str_QA_Downloads"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads")),
+                new(GlyphPictures, Loc("Str_QA_Pictures"), Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)),
+            ];
+            var read = ReadDrives;
+            var exists = FolderExists;
+            PlacesTask = _placesWork.RunAsync(token =>
             {
-                string label;
-                try { label = string.IsNullOrWhiteSpace(d.VolumeLabel) ? d.DriveType.ToString() : d.VolumeLabel.Trim(); }
-                catch { label = d.DriveType.ToString(); }
-                AddPlace(GlyphDrive, $"{d.Name.TrimEnd('\\')}  {label}", d.RootDirectory.FullName);
-            }
-        }
-
-        private void AddPlace(string glyph, string label, string path)
-        {
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
-                Places.Add(new PickerPlace(glyph, label, path));
+                var places = new List<PickerPlace>();
+                foreach (var place in known)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (place.Path.Length > 0 && exists(place.Path)) places.Add(place);
+                }
+                foreach (var place in read(token)) places.Add(new PickerPlace(GlyphDrive, place.Label, place.Path));
+                return places.ToArray();
+            }, (places, token) => Services.PickerWork.PublishAsync(places, Places, token, MutateRows));
         }
 
         private static string Loc(string key)
@@ -147,46 +171,28 @@ namespace KillerShell
         // ── Navigation ───────────────────────────────────────────────────────────
         private void NavigateTo(string dir)
         {
-            if (string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir)) return;
+            if (string.IsNullOrWhiteSpace(dir)) return;
+            var read = ReadDirectory;
+            StartNavigation(token => (dir, read(dir, token)));
+        }
 
-            _navigating = true;
-            _currentDir  = dir;
-            PathBox.Text = dir;
-            _raw.Clear();
-
-            try
+        private void StartNavigation(Func<CancellationToken, (string Directory, PickerEntry[]? Entries)> read)
+        {
+            _sortWork.Cancel();
+            _validationWork.Cancel();
+            NavigationTask = _navigationWork.RunAsync(read, async (result, token) =>
             {
-                foreach (var sub in Directory.EnumerateDirectories(dir))
-                {
-                    DirectoryInfo info;
-                    try { info = new DirectoryInfo(sub); } catch { continue; }
-                    if ((info.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
-                    _raw.Add(new PickerEntry(info.Name, sub, true, 0, SafeTime(() => info.LastWriteTime)));
-                }
-                foreach (var file in Directory.EnumerateFiles(dir))
-                {
-                    FileInfo fi;
-                    try { fi = new FileInfo(file); } catch { continue; }
-                    if ((fi.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
-                    _raw.Add(new PickerEntry(fi.Name, file, false, SafeLen(fi), SafeTime(() => fi.LastWriteTime)));
-                }
-            }
-            catch { /* unauthorized / unreadable - show what we have */ }
-
-            ApplySort();
-            UpButton.IsEnabled = Directory.GetParent(dir) != null;
-            UpdateInfoSummary();
-            _navigating = false;
-        }
-
-        private static DateTime SafeTime(Func<DateTime> get)
-        {
-            try { return get(); } catch { return DateTime.MinValue; }
-        }
-
-        private static long SafeLen(FileInfo fi)
-        {
-            try { return fi.Length; } catch { return 0; }
+                if (result.Entries == null) { SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"); return; }
+                string dir = result.Directory;
+                _currentDir = dir;
+                PathBox.Text = dir;
+                _raw.Clear();
+                _raw.AddRange(result.Entries);
+                await ApplySortAsync();
+                token.ThrowIfCancellationRequested();
+                UpButton.IsEnabled = Directory.GetParent(dir) != null;
+                UpdateInfoSummary();
+            }, _ => SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"));
         }
 
         private void Up_Click(object sender, RoutedEventArgs e)
@@ -225,7 +231,7 @@ namespace KillerShell
         {
             if (e.Key != Key.Enter) return;
             var typed = PathBox.Text?.Trim();
-            if (!string.IsNullOrEmpty(typed) && Directory.Exists(typed)) NavigateTo(typed!);
+            if (!string.IsNullOrEmpty(typed)) NavigateTo(typed!);
             e.Handled = true;
         }
 
@@ -363,11 +369,17 @@ namespace KillerShell
 
         // Folders always list before files; within each group the sort key applies
         // (folders fall back to name order for the size key - they have no size here).
-        private void ApplySort()
+        private void ApplySort() => SortTask = ApplySortAsync();
+
+        private Task ApplySortAsync()
         {
+            var raw = _raw.ToArray();
+            int key = _sortKey;
+            bool ascending = _sortAsc;
+            string? selected = (FolderList.SelectedItem as PickerEntry)?.FullPath;
             int Cmp(PickerEntry a, PickerEntry b)
             {
-                int r = _sortKey switch
+                int r = key switch
                 {
                     1 => (a.IsFolder && b.IsFolder)
                             ? string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase)
@@ -375,22 +387,34 @@ namespace KillerShell
                     2 => a.Modified.CompareTo(b.Modified),
                     _ => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase),
                 };
-                return _sortAsc ? r : -r;
+                return ascending ? r : -r;
             }
+            return _sortWork.RunAsync(token =>
+            {
+                var folders = raw.Where(x => x.IsFolder).ToList();
+                var files = raw.Where(x => !x.IsFolder).ToList();
+                folders.Sort(Cmp);
+                files.Sort(Cmp);
+                return folders.Concat(files).ToArray();
+            }, async (ordered, token) =>
+            {
+                await Services.PickerWork.PublishAsync(ordered, Entries, token, MutateRows);
+                token.ThrowIfCancellationRequested();
+                if (selected != null && FolderList.SelectedItem == null)
+                    MutateRows(() => FolderList.SelectedItem = Entries.FirstOrDefault(entry => entry.FullPath == selected));
+                EmptyHint.Visibility = Entries.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                NameArrow.Text = key == 0 ? (ascending ? ArrowUp : ArrowDown) : string.Empty;
+                SizeArrow.Text = key == 1 ? (ascending ? ArrowUp : ArrowDown) : string.Empty;
+                ModArrow.Text = key == 2 ? (ascending ? ArrowUp : ArrowDown) : string.Empty;
+            });
+        }
 
-            var folders = _raw.Where(x => x.IsFolder).ToList();
-            var files   = _raw.Where(x => !x.IsFolder).ToList();
-            folders.Sort(Cmp);
-            files.Sort(Cmp);
-
-            Entries.Clear();
-            foreach (var en in folders) Entries.Add(en);
-            foreach (var en in files)   Entries.Add(en);
-
-            EmptyHint.Visibility = Entries.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-            NameArrow.Text = _sortKey == 0 ? (_sortAsc ? ArrowUp : ArrowDown) : string.Empty;
-            SizeArrow.Text = _sortKey == 1 ? (_sortAsc ? ArrowUp : ArrowDown) : string.Empty;
-            ModArrow.Text  = _sortKey == 2 ? (_sortAsc ? ArrowUp : ArrowDown) : string.Empty;
+        private void MutateRows(Action change)
+        {
+            bool was = _navigating;
+            _navigating = true;
+            try { change(); }
+            finally { _navigating = was; }
         }
 
         // ── Chrome / confirm ─────────────────────────────────────────────────────
@@ -413,13 +437,19 @@ namespace KillerShell
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
+            if (!NavigationTask.IsCompleted) return;
             var path = PathBox.Text?.Trim();
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+            var exists = FolderExists;
+            AcceptanceTask = _validationWork.RunAsync(_ => !string.IsNullOrEmpty(path) && exists(path!), (valid, token) =>
             {
-                SelectedPath = path;
-                DialogResult = true;
-            }
-            Close();
+                if (valid)
+                {
+                    SelectedPath = path;
+                    DialogResult = true;
+                }
+                Close();
+                return Task.CompletedTask;
+            });
         }
     }
 

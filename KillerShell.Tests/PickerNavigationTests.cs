@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -154,8 +156,26 @@ public sealed class PickerNavigationTests
 
     private static FieldInfo Field(FileDialog dialog, string name) => dialog.GetType().GetField(name, Private)!;
 
-    private static void Call(FileDialog dialog, string method, params object[] args) =>
+    private static void Call(FileDialog dialog, string method, params object[] args)
+    {
         typeof(FileDialog).GetMethod(method, Private)!.Invoke(dialog, args);
+        if (method is "BuildPlaces" or "PinPlace" or "UnpinPlace_Click") WaitFor(dialog.PlacesTask);
+        if (method == "OK_Click") WaitFor(dialog.AcceptanceTask);
+    }
+
+    private static void WaitFor(Task task)
+    {
+        var elapsed = Stopwatch.StartNew();
+        while (!task.IsCompleted && elapsed.Elapsed < TimeSpan.FromSeconds(10))
+        {
+            var frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => frame.Continue = false));
+            Dispatcher.PushFrame(frame);
+            Thread.Sleep(1);
+        }
+        Assert.True(task.IsCompleted, "Picker work did not finish before the fixture deadline.");
+        task.GetAwaiter().GetResult();
+    }
 
     private static bool? Show(FileDialog dialog, string expectedDirectory, Action<FileDialog> action)
     {
@@ -164,6 +184,7 @@ public sealed class PickerNavigationTests
         {
             try
             {
+                WaitFor(dialog.NavigationTask);
                 Assert.Equal(expectedDirectory, Field(dialog, "_currentDir").GetValue(dialog));
                 action(dialog);
             }

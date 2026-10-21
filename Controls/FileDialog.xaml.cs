@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -60,6 +62,18 @@ namespace KillerShell
         // ── internals ────────────────────────────────────────────────────────────
 
         private readonly FileDialogMode _mode;
+        internal Func<string, CancellationToken, PickerEntry[]?> ReadDirectory { get; set; } = Services.PickerDirectoryReader.Read;
+        internal Func<CancellationToken, (string Label, string Path)[]> ReadDrives { get; set; } = Services.PickerDirectoryReader.ReadDrives;
+        internal Func<string, bool> FolderExists { get; set; } = Directory.Exists;
+        internal Func<string, bool> PathIsFile { get; set; } = File.Exists;
+        private readonly Services.PickerWork _navigationWork;
+        private readonly Services.PickerWork _sortWork;
+        private readonly Services.PickerWork _placesWork;
+        private readonly Services.PickerWork _validationWork;
+        internal Task NavigationTask { get; private set; } = Task.CompletedTask;
+        internal Task SortTask { get; private set; } = Task.CompletedTask;
+        internal Task PlacesTask { get; private set; } = Task.CompletedTask;
+        internal Task AcceptanceTask { get; private set; } = Task.CompletedTask;
 
         public ObservableCollection<PickerPlace> Places  { get; } = [];
         public ObservableCollection<PickerEntry> Entries { get; } = [];
@@ -82,7 +96,14 @@ namespace KillerShell
         public FileDialog(FileDialogMode mode = FileDialogMode.Open)
         {
             _mode = mode;
+            _navigationWork = new Services.PickerWork(Dispatcher);
+            _sortWork = new Services.PickerWork(Dispatcher);
+            _placesWork = new Services.PickerWork(Dispatcher);
+            _validationWork = new Services.PickerWork(Dispatcher);
+            Closed += (_, _) => { _navigationWork.Dispose(); _sortWork.Dispose(); _placesWork.Dispose(); _validationWork.Dispose(); };
             InitializeComponent();
+            FileNameBox.TextChanged += (_, _) => _validationWork.Cancel();
+            PathBox.TextChanged += (_, _) => _validationWork.Cancel();
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
             void RefreshPickerChrome() => PickerWindowChrome.Apply(this, RootBorder);
             Loaded += (_, _) => Services.ThemeManager.ThemeChanged += RefreshPickerChrome;
@@ -165,26 +186,21 @@ namespace KillerShell
 
             // A seeded FileName can be a bare name ("export.ics"), a full path, or empty.
             string startDir = InitialDirectory;
+            string? seededDirectory = null;
             string seedName = "";
             if (!string.IsNullOrWhiteSpace(FileName))
             {
                 if (FileName.IndexOfAny(['\\', '/']) >= 0)
                 {
                     var d = Path.GetDirectoryName(FileName);
-                    if (!string.IsNullOrEmpty(d) && Directory.Exists(d)) startDir = d!;
+                    seededDirectory = d;
                     seedName = Path.GetFileName(FileName);
                 }
                 else seedName = FileName;
             }
-            if (string.IsNullOrWhiteSpace(startDir) || !Directory.Exists(startDir))
-            {
-                string? remembered = Services.ThemeManager.GetSetting(_mode == FileDialogMode.Open ? LastOpenKey : LastSaveKey);
-                startDir = !string.IsNullOrWhiteSpace(remembered) && Directory.Exists(remembered)
-                    ? remembered! : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            }
-
+            string? remembered = Services.ThemeManager.GetSetting(_mode == FileDialogMode.Open ? LastOpenKey : LastSaveKey);
             _built = true;
-            NavigateTo(startDir);
+            NavigateInitially([seededDirectory, startDir, remembered, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)]);
             FileNameBox.Text = seedName;
 
             // Save: preselect the stem so typing replaces the name but keeps the extension
@@ -245,12 +261,9 @@ namespace KillerShell
         }
 
         /// <summary>True when the name passes the active filter. Folders are never filtered out.</summary>
-        private bool PassesFilter(PickerEntry en)
+        private static bool PassesFilter(PickerEntry en, string[] pats)
         {
             if (en.IsFolder) return true;
-            int i = FilterCombo.SelectedIndex;
-            if (i < 0 || i >= _filterPatterns.Count) return true;
-            var pats = _filterPatterns[i];
             return pats.Any(p => p == "*.*" || p == "*" || WildcardMatch(en.Name, p));
         }
 
@@ -271,47 +284,44 @@ namespace KillerShell
 
         private void NavigateTo(string dir)
         {
-            if (string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir)) return;
+            if (string.IsNullOrWhiteSpace(dir)) return;
+            var read = ReadDirectory;
+            StartNavigation(token => (dir, read(dir, token)));
+        }
 
-            _navigating = true;
-            _currentDir  = dir;
-            PathBox.Text = dir;
-            _raw.Clear();
-
-            try
+        private void NavigateInitially(string?[] candidates)
+        {
+            var exists = FolderExists;
+            var read = ReadDirectory;
+            StartNavigation(token =>
             {
-                foreach (var sub in Directory.EnumerateDirectories(dir))
+                foreach (string? candidate in candidates)
                 {
-                    DirectoryInfo info;
-                    try { info = new DirectoryInfo(sub); } catch { continue; }
-                    if ((info.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
-                    _raw.Add(new PickerEntry(info.Name, sub, true, 0, SafeTime(() => info.LastWriteTime)));
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrWhiteSpace(candidate) && exists(candidate!)) return (candidate!, read(candidate!, token));
                 }
-                foreach (var file in Directory.EnumerateFiles(dir))
-                {
-                    FileInfo fi;
-                    try { fi = new FileInfo(file); } catch { continue; }
-                    if ((fi.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
-                    _raw.Add(new PickerEntry(fi.Name, file, false, SafeLen(fi), SafeTime(() => fi.LastWriteTime)));
-                }
-            }
-            catch { /* unauthorized / unreadable - show what we have */ }
-
-            ApplySort();
-            UpButton.IsEnabled = Directory.GetParent(dir) != null;
-            UpdateInfoSummary();
-            _navigating = false;
-            SyncPlacesSelection();
+                return (string.Empty, (PickerEntry[]?)null);
+            });
         }
 
-        private static DateTime SafeTime(Func<DateTime> get)
+        private void StartNavigation(Func<CancellationToken, (string Directory, PickerEntry[]? Entries)> read)
         {
-            try { return get(); } catch { return DateTime.MinValue; }
-        }
-
-        private static long SafeLen(FileInfo fi)
-        {
-            try { return fi.Length; } catch { return 0; }
+            _sortWork.Cancel();
+            _validationWork.Cancel();
+            NavigationTask = _navigationWork.RunAsync(read, async (result, token) =>
+            {
+                if (result.Entries == null) { SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"); return; }
+                string dir = result.Directory;
+                _currentDir = dir;
+                PathBox.Text = dir;
+                _raw.Clear();
+                _raw.AddRange(result.Entries);
+                await ApplySortAsync();
+                token.ThrowIfCancellationRequested();
+                UpButton.IsEnabled = Directory.GetParent(dir) != null;
+                UpdateInfoSummary();
+                SyncPlacesSelection();
+            }, _ => SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"));
         }
 
         private void Up_Click(object sender, RoutedEventArgs e)
@@ -352,7 +362,7 @@ namespace KillerShell
         {
             if (e.Key != Key.Enter) return;
             var typed = PathBox.Text?.Trim();
-            if (!string.IsNullOrEmpty(typed) && Directory.Exists(typed)) NavigateTo(typed!);
+            if (!string.IsNullOrEmpty(typed)) NavigateTo(typed!);
             e.Handled = true;
         }
 
@@ -365,23 +375,21 @@ namespace KillerShell
 
             // A directory typed into the name box navigates instead of accepting - matches the
             // Win32 dialogs, and is how people paste a path in.
-            if (typed.Length > 0)
+            if (!TryResolveName(typed, true, out var asDir)) return;
+            var exists = FolderExists;
+            AcceptanceTask = _validationWork.RunAsync(_ => typed.Length > 0 && exists(asDir), (isFolder, token) =>
             {
-                if (!TryResolveName(typed, true, out var asDir)) return;
-                if (Directory.Exists(asDir)) { NavigateTo(asDir); FileNameBox.Clear(); return; }
-            }
-
-            // A wildcard retargets the listing rather than naming a file.
-            if (typed.IndexOfAny(['*', '?']) >= 0)
-            {
-                _filterPatterns.Insert(0, [typed]);
-                FilterCombo.Items.Insert(0, typed);
-                FilterCombo.SelectedIndex = 0;
-                FileNameBox.Clear();
-                return;
-            }
-
-            Accept();
+                if (isFolder) { NavigateTo(asDir); FileNameBox.Clear(); return Task.CompletedTask; }
+                if (typed.IndexOfAny(['*', '?']) >= 0)
+                {
+                    _filterPatterns.Insert(0, [typed]);
+                    FilterCombo.Items.Insert(0, typed);
+                    FilterCombo.SelectedIndex = 0;
+                    FileNameBox.Clear();
+                }
+                else Accept();
+                return Task.CompletedTask;
+            });
         }
 
         private void UpdateInfoSummary()
@@ -515,28 +523,47 @@ namespace KillerShell
         /// Rebuilds Entries from _raw: filter applied, folders always before files, then the
         /// active sort key. Folders-first is not a sort key - it is the frame the sort runs in.
         /// </summary>
-        private void ApplySort()
+        private void ApplySort() => SortTask = ApplySortAsync();
+
+        private Task ApplySortAsync()
         {
-            var visible = _raw.Where(PassesFilter);
-
-            IOrderedEnumerable<PickerEntry> ordered = _sortKey switch
+            var raw = _raw.ToArray();
+            int key = _sortKey, filter = FilterCombo.SelectedIndex;
+            bool ascending = _sortAsc;
+            string[] patterns = filter >= 0 && filter < _filterPatterns.Count ? _filterPatterns[filter].ToArray() : ["*"];
+            string? selected = (FileList.SelectedItem as PickerEntry)?.FullPath;
+            return _sortWork.RunAsync(token =>
             {
-                1 => _sortAsc ? visible.OrderBy(x => !x.IsFolder).ThenBy(x => x.SizeBytes)
-                              : visible.OrderBy(x => !x.IsFolder).ThenByDescending(x => x.SizeBytes),
-                2 => _sortAsc ? visible.OrderBy(x => !x.IsFolder).ThenBy(x => x.Modified)
-                              : visible.OrderBy(x => !x.IsFolder).ThenByDescending(x => x.Modified),
-                _ => _sortAsc ? visible.OrderBy(x => !x.IsFolder).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
-                              : visible.OrderBy(x => !x.IsFolder).ThenByDescending(x => x.Name, StringComparer.OrdinalIgnoreCase),
-            };
+                var visible = raw.Where(entry => PassesFilter(entry, patterns));
+                IOrderedEnumerable<PickerEntry> ordered = key switch
+                {
+                    1 => ascending ? visible.OrderBy(x => !x.IsFolder).ThenBy(x => x.SizeBytes)
+                                   : visible.OrderBy(x => !x.IsFolder).ThenByDescending(x => x.SizeBytes),
+                    2 => ascending ? visible.OrderBy(x => !x.IsFolder).ThenBy(x => x.Modified)
+                                   : visible.OrderBy(x => !x.IsFolder).ThenByDescending(x => x.Modified),
+                    _ => ascending ? visible.OrderBy(x => !x.IsFolder).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+                                   : visible.OrderBy(x => !x.IsFolder).ThenByDescending(x => x.Name, StringComparer.OrdinalIgnoreCase),
+                };
+                return ordered.ToArray();
+            }, async (ordered, token) =>
+            {
+                await Services.PickerWork.PublishAsync(ordered, Entries, token, MutateRows);
+                token.ThrowIfCancellationRequested();
+                if (selected != null && FileList.SelectedItem == null)
+                    MutateRows(() => FileList.SelectedItem = Entries.FirstOrDefault(entry => entry.FullPath == selected));
+                NameArrow.Text = key == 0 ? (ascending ? ArrowUp : ArrowDown) : "";
+                SizeArrow.Text = key == 1 ? (ascending ? ArrowUp : ArrowDown) : "";
+                ModArrow.Text = key == 2 ? (ascending ? ArrowUp : ArrowDown) : "";
+                EmptyHint.Visibility = Entries.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            });
+        }
 
-            Entries.Clear();
-            foreach (var e in ordered) Entries.Add(e);
-
-            NameArrow.Text = _sortKey == 0 ? (_sortAsc ? ArrowUp : ArrowDown) : "";
-            SizeArrow.Text = _sortKey == 1 ? (_sortAsc ? ArrowUp : ArrowDown) : "";
-            ModArrow.Text  = _sortKey == 2 ? (_sortAsc ? ArrowUp : ArrowDown) : "";
-
-            EmptyHint.Visibility = Entries.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        private void MutateRows(Action change)
+        {
+            bool was = _navigating;
+            _navigating = true;
+            try { change(); }
+            finally { _navigating = was; }
         }
 
         // ── Accept / cancel ──────────────────────────────────────────────────────
@@ -588,6 +615,7 @@ namespace KillerShell
             }
 
             if (!TryResolveName(typed, false, out var full)) return;
+            if (!NavigationTask.IsCompleted) return;
 
             if (_mode == FileDialogMode.Save)
             {
@@ -597,42 +625,49 @@ namespace KillerShell
                     full += DefaultExt.StartsWith(".") ? DefaultExt : "." + DefaultExt;
                 }
 
-                // The directory must exist; we do not silently create trees on the user's behalf.
-                var dir = Path.GetDirectoryName(full);
-                if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
+            }
+            bool save = _mode == FileDialogMode.Save, overwrite = OverwritePrompt, checkFile = CheckFileExists;
+            var folderExists = FolderExists;
+            var fileExists = PathIsFile;
+            AcceptanceTask = _validationWork.RunAsync(_ =>
+            {
+                string? directory = Path.GetDirectoryName(full);
+                bool validFolder = !save || (!string.IsNullOrEmpty(directory) && folderExists(directory!));
+                bool existingFile = (save ? overwrite : checkFile) && fileExists(full);
+                return (validFolder, existingFile);
+            }, (validation, token) =>
+            {
+                if (!validation.validFolder)
                 {
                     SelMeta.Text = Loc("Str_Dlg_NoSuchFolder");
                     FileNameBox.Focus();
-                    return;
+                    return Task.CompletedTask;
                 }
-
-                if (OverwritePrompt && File.Exists(full))
+                if (save && overwrite && validation.existingFile)
                 {
                     var confirm = new ConfirmDialog(
                         string.Format(Loc("Str_Dlg_OverwriteMsg"), Path.GetFileName(full)),
                         null,
                         Loc("Str_Btn_Replace")) { Owner = this };
                     confirm.ShowDialog();
-                    if (!confirm.Confirmed) { FileNameBox.Focus(); return; }
+                    if (!confirm.Confirmed) { FileNameBox.Focus(); return Task.CompletedTask; }
                 }
-            }
-            else
-            {
-                if (CheckFileExists && !File.Exists(full))
+                if (!save && checkFile && !validation.existingFile)
                 {
                     SelMeta.Text = Loc("Str_Dlg_NoSuchFile");
                     FileNameBox.Focus();
                     FileNameBox.SelectAll();
-                    return;
+                    return Task.CompletedTask;
                 }
-            }
-
-            FileName = full;
-            string? acceptedFolder = Path.GetDirectoryName(full);
-            if (!string.IsNullOrEmpty(acceptedFolder))
-                Services.ThemeManager.SetSetting(_mode == FileDialogMode.Open ? LastOpenKey : LastSaveKey, acceptedFolder);
-            DialogResult = true;
-            Close();
+                token.ThrowIfCancellationRequested();
+                FileName = full;
+                string? acceptedFolder = Path.GetDirectoryName(full);
+                if (!string.IsNullOrEmpty(acceptedFolder))
+                    Services.ThemeManager.SetSetting(save ? LastSaveKey : LastOpenKey, acceptedFolder);
+                DialogResult = true;
+                Close();
+                return Task.CompletedTask;
+            }, _ => SelMeta.Text = Loc("Str_Dlg_NoSuchFile"));
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e) => Close();

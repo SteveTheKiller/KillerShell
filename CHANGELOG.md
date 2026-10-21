@@ -49,7 +49,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Terminal output stays inside its tab when KillerShell is launched with redirected output. Folder and title updates preserve Unicode text and accept standard escape sequence terminators, including sequences split across reads.
 - Terminal output and selection are available to screen readers, and heavy output uses bounded batches. Performance sampling stays stopped while its tab is hidden or closed.
 - Saying No at the administrator prompt when opening a file, or Windows refusing to open it, shows a status message instead of closing KillerShell.
-- Invalid file-picker input stays in the dialog with a validation message. New windows and administrator launches preserve drive roots, and failed window handoffs fall back to a fresh administrator request.
+- File and folder pickers stay responsive during storage reads, ignore outdated results, and preserve selections while rows load. Invalid file-picker input stays in the dialog with a validation message. New windows and administrator launches preserve drive roots, and failed window handoffs fall back to a fresh administrator request.
 - The command line accepts an optional trailing --json while keeping its existing JSON output. `read --max-chars` no longer cuts an emoji in half, and odd characters in file names and registry text come out as valid JSON.
 - A silent install or update that finds KillerShell running exits with 1618, which Intune, Configuration Manager and RMM tools retry, instead of a general failure.
 - Chocolatey has one submission workflow, skips duplicate initial uploads on retry, and keeps failed or pending validation distinct from approval.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -17,26 +18,32 @@ namespace KillerShell
 
         private void BuildPlaces()
         {
-            Places.Clear();
-            var added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var p in PinnedPaths())
-                if (added.Add(p.TrimEnd('\\'))) AddPlace(LabelFor(p), p, pinned: true);
-
-            foreach (var place in ExplorerQuickAccessPlaces())
-                if (added.Add(place.Path.TrimEnd('\\'))) AddPlace(place.Label, place.Path);
-
-            foreach (var d in DriveInfo.GetDrives().Where(d => d.IsReady))
+            var pins = PinnedPaths().Select(path => (Label: LabelFor(path), Path: path)).ToArray();
+            var readDrives = ReadDrives;
+            var exists = FolderExists;
+            PlacesTask = _placesWork.RunAsync(token =>
             {
-                string label;
-                try { label = string.IsNullOrWhiteSpace(d.VolumeLabel) ? d.DriveType.ToString() : d.VolumeLabel.Trim(); }
-                catch { label = d.DriveType.ToString(); }
-                if (added.Add(d.RootDirectory.FullName.TrimEnd('\\')))
-                    AddPlace($"{d.Name.TrimEnd('\\')}  {label}", d.RootDirectory.FullName);
-            }
+                var places = new List<PickerPlace>();
+                var added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                void Add(string label, string path, bool pinned = false)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (path.Length > 0 && added.Add(path.TrimEnd('\\')) && exists(path))
+                        places.Add(new PickerPlace(pinned ? GlyphFolderPlace : GlyphDrive, label, path, pinned));
+                }
+                foreach (var pin in pins) Add(pin.Label, pin.Path, true);
+                foreach (var place in ExplorerQuickAccessPlaces(token)) Add(place.Label, place.Path);
+                foreach (var place in readDrives(token)) Add(place.Label, place.Path);
+                return places.ToArray();
+            }, async (places, token) =>
+            {
+                await Services.PickerWork.PublishAsync(places, Places, token, MutateRows);
+                token.ThrowIfCancellationRequested();
+                SyncPlacesSelection();
+            });
         }
 
-        private static List<(string Label, string Path)> ExplorerQuickAccessPlaces()
+        private static List<(string Label, string Path)> ExplorerQuickAccessPlaces(CancellationToken token)
         {
             const string QuickAccess = "shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}";
             var places = new List<(string Label, string Path)>();
@@ -52,6 +59,7 @@ namespace KillerShell
                 int count = Convert.ToInt32(items!.GetType().InvokeMember("Count", System.Reflection.BindingFlags.GetProperty, null, items, null));
                 for (int i = 0; i < count; i++)
                 {
+                    token.ThrowIfCancellationRequested();
                     object? item = null;
                     try
                     {
@@ -61,7 +69,7 @@ namespace KillerShell
                         if (!Convert.ToBoolean(Property("IsFolder"))) continue;
                         string path = Convert.ToString(Property("Path")) ?? "";
                         string name = Convert.ToString(Property("Name")) ?? "";
-                        if (Directory.Exists(path)) places.Add((name.Length > 0 ? name : LabelFor(path), path));
+                        places.Add((name.Length > 0 ? name : Path.GetFileName(path.TrimEnd('\\')), path));
                     }
                     catch { /* One unreadable entry must not hide the remaining folders. */ }
                     finally { if (item != null && Marshal.IsComObject(item)) Marshal.FinalReleaseComObject(item); }
@@ -114,12 +122,6 @@ namespace KillerShell
 
             var name = Path.GetFileName(p);
             return name.Length == 0 ? p : name;
-        }
-
-        private void AddPlace(string label, string path, bool pinned = false)
-        {
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
-                Places.Add(new PickerPlace(pinned ? GlyphFolderPlace : GlyphDrive, label, path, pinned));
         }
 
         private void PinPlace(string path)
