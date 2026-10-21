@@ -18,13 +18,19 @@ namespace KillerShell.Services
     public class SearchEngine
     {
         private readonly Func<string, Stream> _openContent;
+        private readonly Func<string, IEnumerable<string>> _enumerateFiles;
+        private readonly Func<string, IEnumerable<string>> _enumerateDirectories;
 
         public SearchEngine() : this(path => new FileStream(path, FileMode.Open, FileAccess.Read,
             FileShare.Read, bufferSize: 65536)) { }
 
-        internal SearchEngine(Func<string, Stream> openContent)
+        internal SearchEngine(Func<string, Stream> openContent,
+            Func<string, IEnumerable<string>>? enumerateFiles = null,
+            Func<string, IEnumerable<string>>? enumerateDirectories = null)
         {
             _openContent = openContent ?? throw new ArgumentNullException(nameof(openContent));
+            _enumerateFiles = enumerateFiles ?? Directory.EnumerateFiles;
+            _enumerateDirectories = enumerateDirectories ?? Directory.EnumerateDirectories;
         }
 
         // ── Events (invoked from the pump task; the UI marshals via Dispatcher) ──
@@ -177,7 +183,7 @@ namespace KillerShell.Services
             {
                 try
                 {
-                    foreach (var f in fileList ?? SafeEnumerateFiles(rootPath))
+                    foreach (var f in fileList ?? SafeEnumerateFiles(rootPath, ct))
                     {
                         if (ct.IsCancellationRequested) break;
                         feed.Add(f, ct);   // throws OCE if canceled while the queue is full
@@ -244,28 +250,45 @@ namespace KillerShell.Services
         }
 
         // ── File enumeration ─────────────────────────────────────
-        private static IEnumerable<string> SafeEnumerateFiles(string root)
+        private IEnumerable<string> SafeEnumerateFiles(string root, CancellationToken ct)
         {
             var queue = new Queue<string>();
             queue.Enqueue(root);
 
             while (queue.Count > 0)
             {
+                ct.ThrowIfCancellationRequested();
                 string dir = queue.Dequeue();
                 IEnumerable<string> files = [];
 
-                try { files = Directory.EnumerateFiles(dir); }
+                try { files = _enumerateFiles(dir); }
                 catch { /* skip inaccessible */ }
 
-                foreach (var f in files)
+                foreach (var f in EnumerateCancelable(files, ct))
                     yield return f;
 
+                ct.ThrowIfCancellationRequested();
                 IEnumerable<string> subdirs = [];
-                try { subdirs = Directory.EnumerateDirectories(dir); }
+                try { subdirs = _enumerateDirectories(dir); }
                 catch { /* skip inaccessible */ }
 
-                foreach (var d in subdirs)
+                foreach (var d in EnumerateCancelable(subdirs, ct))
                     queue.Enqueue(d);
+            }
+        }
+
+        private static IEnumerable<string> EnumerateCancelable(IEnumerable<string> entries, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            using var iterator = entries.GetEnumerator();
+            while (true)
+            {
+                ct.ThrowIfCancellationRequested();
+                bool next = iterator.MoveNext();
+                // A native enumeration call must return before managed cancellation can act.
+                ct.ThrowIfCancellationRequested();
+                if (!next) yield break;
+                yield return iterator.Current;
             }
         }
 
