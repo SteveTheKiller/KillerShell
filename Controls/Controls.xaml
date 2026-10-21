@@ -2107,7 +2107,6 @@
     <Style x:Key="ScrollTopCue" TargetType="Border" BasedOn="{StaticResource ScrollCueBase}">
         <Setter Property="Height" Value="24"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource PaneBorderBrush}"/>
         <Setter Property="BorderThickness" Value="0,1,0,0"/>
         <Setter Property="Background">
             <Setter.Value>
@@ -2162,6 +2161,9 @@
     <!-- BareScrollViewer's layout (no corner block, the vertical bar runs through the corner)
          with the four edge cues under the bars. -->
     <Style x:Key="ShadowScrollViewer" TargetType="ScrollViewer">
+        <!-- The viewer draws no border of its own; BorderBrush is the top cue's 1px rule, so a
+             host on a gradient surface can give the rule a gradient (the Shortcuts card). -->
+        <Setter Property="BorderBrush" Value="{DynamicResource PaneBorderBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">
@@ -2177,7 +2179,8 @@
                         <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
                                                 Grid.Row="0" Grid.Column="0" Margin="{TemplateBinding Padding}"
                                                 CanContentScroll="{TemplateBinding CanContentScroll}"/>
-                        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ScrollTopCue}">
+                        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ScrollTopCue}"
+                                BorderBrush="{TemplateBinding BorderBrush}">
                             <Border.Visibility>
                                 <MultiBinding Converter="{StaticResource ScrollEdgeVisibility}" ConverterParameter="Start">
                                     <Binding Path="VerticalOffset" RelativeSource="{RelativeSource TemplatedParent}"/>

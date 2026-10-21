@@ -2044,7 +2044,7 @@
                  or short window shrink the card and hand overflow to its ScrollViewer. -->
             <Border x:Name="ShortcutCard" Margin="32" VerticalAlignment="Center" HorizontalAlignment="Stretch"
                     MaxHeight="620"
-                    Background="{DynamicResource OverlayWindowBrush}" BorderBrush="{DynamicResource AppBorderBrush}"
+                    Background="{DynamicResource OverlayWindowBrush}" BorderBrush="{DynamicResource OverlayEdgeBrush}"
                     BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" MouseLeftButtonDown="ShortcutsCard_Click">
                 <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270"
                                                  Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
@@ -2143,7 +2143,8 @@
                          BuildKeyboardView (KeyboardMapOverlay.cs), each once and lazily. -->
                     <ScrollViewer x:Name="ShortcutScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly" Focusable="False"
-                                  Style="{StaticResource ShadowScrollViewer}" Margin="-24,0,-24,0" Padding="24,0,24,0">
+                                  Style="{StaticResource ShadowScrollViewer}" BorderBrush="{DynamicResource OverlayRuleBrush}"
+                                  Margin="-24,0,-24,0" Padding="24,0,24,0">
                     <StackPanel>
                         <StackPanel x:Name="ShortcutListHost"/>
                         <StackPanel x:Name="ShortcutKeyboardHost" Visibility="Collapsed"/>
@@ -2151,7 +2152,7 @@
                     </ScrollViewer>
 
                     <TextBlock Grid.Row="2" Text="{DynamicResource Str_Ks_Hint}" Foreground="{DynamicResource DimTextBrush}"
-                               FontSize="10.5" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                               FontSize="10.5" TextWrapping="Wrap" TextAlignment="Center" Margin="0,6,0,0"/>
                 </Grid>
                 </Grid>
             </Border>

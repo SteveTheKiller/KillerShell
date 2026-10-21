@@ -1013,8 +1013,9 @@ namespace KillerShell.Services
 
                 // KillerScan is the family reference for overlay-card padding. The flat theme's
                 // extra 12px clears its 20px caption band; ordinary themes use the bare-card inset.
-                combined["ShortcutsContentMargin"] = flat ? new Thickness(24, 30, 24, 20)
-                                                          : new Thickness(24, 18, 24, 18);
+                // The bottom inset is tighter: only the one-line hint sits there.
+                combined["ShortcutsContentMargin"] = flat ? new Thickness(24, 30, 24, 12)
+                                                          : new Thickness(24, 18, 24, 10);
 
                 // The details filename's family drop shadow - null on a flat theme, which casts
                 // nothing (its 98SE depth comes from the hard white emboss copy instead).
@@ -1205,7 +1206,38 @@ namespace KillerShell.Services
             // after every palette/accent merge so gradient brushes remain gradients.
             combined["OverlayWindowBrush"] = combined["BackgroundBrush"];
 
+            // Their 1px edges. A single border color over a gradient surface reads as one end's
+            // color stuck to the other end (Delirium's red border under its purple side), so a
+            // gradient surface gets a gradient edge: the same stops lifted toward white. A solid
+            // surface keeps the border it always had.
+            Brush? gradientEdge = combined["BackgroundBrush"] is LinearGradientBrush surface ? LiftedEdge(surface) : null;
+            combined["OverlayEdgeBrush"] = gradientEdge ?? combined["AppBorderBrush"];
+            combined["OverlayRuleBrush"] = gradientEdge ?? combined["PaneBorderBrush"];
+
             return combined;
+        }
+
+        /// <summary>
+        /// The surface gradient with every stop mixed one fifth of the way to white, which lands
+        /// on each gradient theme's own border tone at that end (Delirium #641d25 to #834a51,
+        /// against its #81423b border).
+        /// </summary>
+        internal static LinearGradientBrush LiftedEdge(LinearGradientBrush surface)
+        {
+            var edge = new LinearGradientBrush
+            {
+                StartPoint = surface.StartPoint,
+                EndPoint = surface.EndPoint,
+                MappingMode = surface.MappingMode,
+                SpreadMethod = surface.SpreadMethod,
+                ColorInterpolationMode = surface.ColorInterpolationMode,
+            };
+            static byte Lift(byte channel) => (byte)(channel + (255 - channel) / 5);
+            foreach (var stop in surface.GradientStops)
+                edge.GradientStops.Add(new GradientStop(
+                    Color.FromArgb(255, Lift(stop.Color.R), Lift(stop.Color.G), Lift(stop.Color.B)), stop.Offset));
+            edge.Freeze();
+            return edge;
         }
     }
 }
