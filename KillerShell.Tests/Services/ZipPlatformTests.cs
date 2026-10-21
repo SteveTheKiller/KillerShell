@@ -17,6 +17,11 @@ namespace KillerShell.Tests.Services
         private const string Fixture =
             "UEsDBBQAAAAAAAU5plgAAAAAAAAAAAAAAAAGAAAAdG9vbHMvUEsDBBQAAAAAAAU5plgIAQ5JDAAAAAwAAAAMAAAAdG9vbHMvcnVuLnNoZWNobyBleGFtcGxlUEsDBBQAAAAAAAU5plgwHYBoBgAAAAYAAAAKAAAAcmVtb3ZlLnR4dHJlbW92ZVBLAwQUAAAAAAAFOaZYV+5xkgUAAAAFAAAACAAAAHNhbWUudHh0Zmlyc3RQSwMEFAAAAAAABTmmWGkRH7YGAAAABgAAAAgAAABzYW1lLnR4dHNlY29uZFBLAQIUAxQAAAAAAAU5plgAAAAAAAAAAAAAAAAGAAAAAAAAAAAAEADtQQAAAAB0b29scy9QSwECFAMUAAAAAAAFOaZYCAEOSQwAAAAMAAAADAAAAAAAAAAAAAAA7YEkAAAAdG9vbHMvcnVuLnNoUEsBAhQAFAAAAAAABTmmWDAdgGgGAAAABgAAAAoAAAAAAAAAAAAgAAAAWgAAAHJlbW92ZS50eHRQSwECFAMUAAAAAAAFOaZYV+5xkgUAAAAFAAAACAAAAAAAAAAAAAAApIGIAAAAc2FtZS50eHRQSwECFAAUAAAAAAAFOaZYaREftgYAAAAGAAAACAAAAAAAAAAAACAAAACzAAAAc2FtZS50eHRQSwUGAAAAAAUABQASAQAA3wAAABMAY29tbWVudCBQSwECIGluc2lkZQ==";
 
+        // The same Python fixture with the second same.txt named next.txt, so successful
+        // additions can retain every platform and permission while remaining extractable.
+        private const string DistinctNameFixture =
+            "UEsDBBQAAAAAAAU5plgAAAAAAAAAAAAAAAAGAAAAdG9vbHMvUEsDBBQAAAAAAAU5plgIAQ5JDAAAAAwAAAAMAAAAdG9vbHMvcnVuLnNoZWNobyBleGFtcGxlUEsDBBQAAAAAAAU5plgwHYBoBgAAAAYAAAAKAAAAcmVtb3ZlLnR4dHJlbW92ZVBLAwQUAAAAAAAFOaZYV+5xkgUAAAAFAAAACAAAAHNhbWUudHh0Zmlyc3RQSwMEFAAAAAAABTmmWGkRH7YGAAAABgAAAAgAAABuZXh0LnR4dHNlY29uZFBLAQIUAxQAAAAAAAU5plgAAAAAAAAAAAAAAAAGAAAAAAAAAAAAEADtQQAAAAB0b29scy9QSwECFAMUAAAAAAAFOaZYCAEOSQwAAAAMAAAADAAAAAAAAAAAAAAA7YEkAAAAdG9vbHMvcnVuLnNoUEsBAhQAFAAAAAAABTmmWDAdgGgGAAAABgAAAAoAAAAAAAAAAAAgAAAAWgAAAHJlbW92ZS50eHRQSwECFAMUAAAAAAAFOaZYV+5xkgUAAAAFAAAACAAAAAAAAAAAAAAApIGIAAAAc2FtZS50eHRQSwECFAAUAAAAAAAFOaZYaREftgYAAAAGAAAACAAAAAAAAAAAACAAAACzAAAAbmV4dC50eHRQSwUGAAAAAAUABQASAQAA3wAAABMAY29tbWVudCBQSwECIGluc2lkZQ==";
+
         [Theory]
         [InlineData("add", false)]
         [InlineData("delete", false)]
@@ -33,7 +38,7 @@ namespace KillerShell.Tests.Services
             string path = Path.Combine(work, "foreign.zip");
             try
             {
-                byte[] fixture = Convert.FromBase64String(Fixture);
+                byte[] fixture = Convert.FromBase64String(operation == "add" ? DistinctNameFixture : Fixture);
                 File.WriteAllBytes(path, zip64 ? WithZip64Directory(fixture) : fixture);
                 string added = Path.Combine(work, "added.txt");
                 File.WriteAllText(added, "added");
@@ -52,10 +57,58 @@ namespace KillerShell.Tests.Services
                 var executable = entries.Single(e => e.Name == folder + "run.sh");
                 Assert.Equal((byte)3, executable.Platform);
                 Assert.Equal(0x81ed0000u, executable.Attributes);
-                Assert.Equal(new byte[] { 3, 0 }, entries.Where(e => e.Name == "same.txt").Select(e => e.Platform));
+                string secondName = operation == "add" ? "next.txt" : "same.txt";
+                var preserved = entries.Where(e => e.Name == "same.txt" || e.Name == secondName).ToArray();
+                Assert.Equal(new[] { "same.txt", secondName }, preserved.Select(e => e.Name));
+                Assert.Equal(new byte[] { 3, 0 }, preserved.Select(e => e.Platform));
+                Assert.Equal(new uint[] { 0x81a40000, 0x20 }, preserved.Select(e => e.Attributes));
                 using var archive = ZipFile.OpenRead(path);
                 using var reader = new StreamReader(archive.GetEntry(folder + "run.sh")!.Open());
                 Assert.Equal("echo example", reader.ReadToEnd());
+                Assert.Equal(new[] { "first", "second" }, archive.Entries
+                    .Where(e => e.FullName == "same.txt" || e.FullName == secondName)
+                    .Select(e => { using var text = new StreamReader(e.Open()); return text.ReadToEnd(); }));
+                if (operation == "add")
+                {
+                    string output = Path.Combine(work, "extracted");
+                    Assert.True(ArchiveProvider.ExtractAll(path, output, CancellationToken.None, out string? error), error);
+                    Assert.Equal("added", File.ReadAllText(Path.Combine(output, "added.txt")));
+                    Assert.Equal("first", File.ReadAllText(Path.Combine(output, "same.txt")));
+                    Assert.Equal("second", File.ReadAllText(Path.Combine(output, "next.txt")));
+                }
+            }
+            finally { Directory.Delete(work, true); }
+        }
+
+        [Theory]
+        [InlineData(false, 0)]
+        [InlineData(false, 1)]
+        [InlineData(false, 2)]
+        [InlineData(true, 0)]
+        [InlineData(true, 1)]
+        [InlineData(true, 2)]
+        public void Add_RefusesExistingDuplicateOutputsWithoutChangingBytes(bool zip64, int policy)
+        {
+            string work = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(work);
+            string path = Path.Combine(work, "foreign.zip");
+            try
+            {
+                byte[] fixture = Convert.FromBase64String(Fixture);
+                byte[] original = zip64 ? WithZip64Directory(fixture) : fixture;
+                File.WriteAllBytes(path, original);
+                string added = Path.Combine(work, "added.txt");
+                File.WriteAllText(added, "added");
+
+                var result = ArchiveWriter.Add(path, "", new[] { added }, (ArchiveCollision)policy,
+                    null, CancellationToken.None);
+
+                Assert.False(result.Ok);
+                Assert.Equal("Str_Status_ArchiveCollide", result.ErrorKey);
+                Assert.Equal("same.txt", Assert.Single(result.Collisions));
+                Assert.Equal(original, File.ReadAllBytes(path));
+                Assert.Equal("added", File.ReadAllText(added));
+                Assert.Equal(2, Directory.GetFiles(work).Length);
             }
             finally { Directory.Delete(work, true); }
         }
