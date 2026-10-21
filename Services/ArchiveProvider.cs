@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -317,7 +318,7 @@ namespace KillerShell.Services
             var header = new byte[TarBlock];
             // A GZipStream is not seekable, so skipping content means reading it away.
             var skip = new byte[81920];
-            string longName = "";   // set by a GNU 'L' header for the entry that follows
+            var metadata = new TarMetadata();
 
             while (true)
             {
@@ -331,7 +332,6 @@ namespace KillerShell.Services
                 string name = TarString(header, 0, 100);
                 string prefix = TarString(header, 345, 155);   // ustar splits long names in two
                 if (prefix.Length > 0) name = prefix + "/" + name;
-                if (longName.Length > 0) { name = longName; longName = ""; }
 
                 long size = TarOctal(header, 124, 12);
                 char type = (char)header[156];
@@ -345,19 +345,21 @@ namespace KillerShell.Services
                 //        and the ustar header that follows carries a TRUNCATED name. pax is
                 //        the default for bsdtar, macOS tar and Python's tarfile, so this is
                 //        the common case, not the exotic one.
-                // 'g' is a pax GLOBAL header: its defaults apply to the whole archive, and a
-                // path in one would not name the next entry, so its content is skipped.
+                // Global path/size overrides are refused explicitly. Other global metadata
+                // does not affect the paths or payloads this reader exposes.
                 if (type == 'L' || type == 'x' || type == 'X' || type == 'g')
                 {
                     if (size < 0 || size > MaxTarMetadataSize)
                         throw new InvalidDataException("tar metadata size exceeds the supported limit");
                     var metaBuf = new byte[size];
-                    if (!ReadExactly(s, metaBuf, (int)size, ct)) break;
-                    if (type == 'L') longName = Encoding.UTF8.GetString(metaBuf).TrimEnd('\0');
-                    else if (type != 'g') longName = PaxPath(metaBuf) ?? longName;
+                    if (!ReadExactly(s, metaBuf, (int)size, ct))
+                        throw new InvalidDataException("truncated tar metadata");
+                    metadata.Read(metaBuf, type);
                     SkipPadding(s, size, skip, ct);
                     continue;
                 }
+
+                metadata.Apply(ref name, ref size);
 
                 // '0'/'\0' regular file, '5' directory. Everything else (links, devices, the
                 // pax 'x' records) is skipped rather than shown as a file it is not.
@@ -384,7 +386,7 @@ namespace KillerShell.Services
                 while (remaining > 0)
                 {
                     int want = (int)Math.Min(skip.Length, remaining);
-                    if (!ReadExactly(s, skip, want, ct)) return list;
+                    if (!ReadExactly(s, skip, want, ct)) throw new InvalidDataException("truncated tar payload");
                     remaining -= want;
                 }
                 SkipPadding(s, size, skip, ct);
@@ -396,7 +398,8 @@ namespace KillerShell.Services
         {
             int pad = (int)(size % TarBlock);
             if (pad == 0) return;
-            ReadExactly(s, scratch, TarBlock - pad, ct);
+            if (!ReadExactly(s, scratch, TarBlock - pad, ct))
+                throw new InvalidDataException("truncated tar padding");
         }
 
         /// <summary>Reads exactly <paramref name="count"/> bytes, looping because a GZipStream
@@ -416,17 +419,17 @@ namespace KillerShell.Services
         }
 
         /// <summary>
-        /// The "path" value out of a pax extended header, or null when it carries none.
+        /// Values from a PAX extended header, bounded by each record's declared byte length.
         /// </summary>
         /// <remarks>
         /// A pax header is a run of records, each "&lt;length&gt; key=value\n" where length counts
         /// the WHOLE record including its own digits and the newline. Records are walked by
         /// that length rather than split on newlines, because a value is allowed to contain
-        /// one. "path" wins over the truncated ustar name; everything else (mtime, uid, sizes
-        /// past the octal limit) is ignored here - the listing does not use them.
+        /// one. Both the effective path and size can override the following ustar header.
         /// </remarks>
-        private static string? PaxPath(byte[] content)
+        private static Dictionary<string, string> PaxFields(byte[] content)
         {
+            var fields = new Dictionary<string, string>(StringComparer.Ordinal);
             int i = 0;
             while (i < content.Length)
             {
@@ -435,28 +438,65 @@ namespace KillerShell.Services
                 int len = 0;
                 while (i < content.Length && content[i] >= '0' && content[i] <= '9')
                 {
+                    if (len > (int.MaxValue - (content[i] - '0')) / 10)
+                        throw new InvalidDataException("invalid PAX record length");
                     len = (len * 10) + (content[i] - '0');
                     i++;
                 }
-                if (len <= 0 || start + len > content.Length) return null;   // malformed - stop
-                if (i >= content.Length || content[i] != ' ') return null;
+                if (len <= 0 || len > content.Length - start || i >= start + len
+                    || content[i] != ' ' || content[start + len - 1] != '\n')
+                    throw new InvalidDataException("invalid PAX record length");
                 i++;   // the space after the length
 
                 int keyStart = i;
-                while (i < content.Length && content[i] != '=') i++;
-                if (i >= content.Length) return null;
+                while (i < start + len - 1 && content[i] != '=') i++;
+                if (i == keyStart || i >= start + len - 1)
+                    throw new InvalidDataException("invalid PAX record field");
 
                 string key = Encoding.UTF8.GetString(content, keyStart, i - keyStart);
                 int valueStart = i + 1;
                 int valueLen = (start + len) - valueStart - 1;   // minus the trailing newline
-                if (valueLen < 0) return null;
-
-                if (key == "path")
-                    return Encoding.UTF8.GetString(content, valueStart, valueLen).TrimEnd('\0');
+                fields[key] = Encoding.UTF8.GetString(content, valueStart, valueLen);
 
                 i = start + len;   // next record
             }
-            return null;
+            return fields;
+        }
+
+        private sealed class TarMetadata
+        {
+            private string? _path;
+            private long? _size;
+
+            internal void Read(byte[] content, char type)
+            {
+                if (type == 'L') { _path = Encoding.UTF8.GetString(content).TrimEnd('\0'); return; }
+                var fields = PaxFields(content);
+                if (fields.Keys.Any(key => key.StartsWith("GNU.sparse.", StringComparison.Ordinal)
+                                           || key == "SCHILY.realsize"))
+                    throw new InvalidDataException("sparse PAX metadata is not supported");
+                if (type == 'g')
+                {
+                    if (fields.ContainsKey("path") || fields.ContainsKey("size"))
+                        throw new InvalidDataException("global PAX path and size overrides are not supported");
+                    return;
+                }
+                if (fields.TryGetValue("path", out string path)) _path = path;
+                if (fields.TryGetValue("size", out string size))
+                {
+                    if (!long.TryParse(size, NumberStyles.None, CultureInfo.InvariantCulture, out long value))
+                        throw new InvalidDataException("invalid PAX size");
+                    _size = value;
+                }
+            }
+
+            internal void Apply(ref string path, ref long size)
+            {
+                if (!string.IsNullOrEmpty(_path)) path = _path!;
+                if (_size.HasValue) size = _size.Value;
+                _path = null;
+                _size = null;
+            }
         }
 
         private static string TarString(byte[] b, int offset, int length)
@@ -761,7 +801,7 @@ namespace KillerShell.Services
 
             var header = new byte[TarBlock];
             var buf = new byte[81920];
-            string longName = "";
+            var metadata = new TarMetadata();
 
             while (ReadExactly(s, header, TarBlock, ct))
             {
@@ -772,7 +812,6 @@ namespace KillerShell.Services
                 string name = TarString(header, 0, 100);
                 string prefix = TarString(header, 345, 155);
                 if (prefix.Length > 0) name = prefix + "/" + name;
-                if (longName.Length > 0) { name = longName; longName = ""; }
 
                 long size = TarOctal(header, 124, 12);
                 char type = (char)header[156];
@@ -782,13 +821,14 @@ namespace KillerShell.Services
                     if (size < 0 || size > MaxTarMetadataSize)
                         throw new InvalidDataException("tar metadata size exceeds the supported limit");
                     var metaBuf = new byte[size];
-                    if (!ReadExactly(s, metaBuf, (int)size, ct)) return false;
-                    if (type == 'L') longName = Encoding.UTF8.GetString(metaBuf).TrimEnd('\0');
-                    else if (type != 'g') longName = PaxPath(metaBuf) ?? longName;
+                    if (!ReadExactly(s, metaBuf, (int)size, ct))
+                        throw new InvalidDataException("truncated tar metadata");
+                    metadata.Read(metaBuf, type);
                     SkipPadding(s, size, buf, ct);
                     continue;
                 }
 
+                metadata.Apply(ref name, ref size);
                 bool match = string.Equals(Normalize(name), want, StringComparison.Ordinal)
                              && (type == '0' || type == '\0');
 
