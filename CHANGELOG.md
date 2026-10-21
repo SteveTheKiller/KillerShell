@@ -43,6 +43,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The command line accepts an optional trailing --json while keeping its existing JSON output. `read --max-chars` no longer cuts an emoji in half, and odd characters in file names and registry text come out as valid JSON.
 - A silent install or update that finds KillerShell running exits with 1618, which Intune, Configuration Manager and RMM tools retry, instead of a general failure.
 - Chocolatey validation no longer reports success when its last known result remains failed after a retry.
+- Test fixtures use the configured temporary folder and keep cleanup inside their own directories.
 - Window resize minimums stay within the current monitor's work area on small or scaled displays.
 - The keyboard diagram shows the Alt+Shift shortcuts for sort direction, removing nicknames, and extracting to a folder, and keeps its modifier hint visible in narrow windows.
 - Windows contrast themes now use system colors for text, icons, panels and selections, without decorative grain or shadows.

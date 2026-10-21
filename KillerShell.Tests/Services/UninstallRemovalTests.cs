@@ -12,7 +12,8 @@ public sealed class UninstallRemovalTests
     [Fact]
     public async Task TrustedCleanupTreatsPathAsDataAndDeletesOnlyItsDetachedImage()
     {
-        string root = Path.Combine(@"C:\Users\steve\scratch\killershell-evening-20261020\cleanup", Guid.NewGuid().ToString("N"));
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "cleanup", Guid.NewGuid().ToString("N"));
+        Assert.StartsWith(Path.GetFullPath(Path.GetTempPath()), Path.GetFullPath(root), StringComparison.OrdinalIgnoreCase);
         Directory.CreateDirectory(root);
         try
         {

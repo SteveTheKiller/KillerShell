@@ -59,7 +59,8 @@ public static class StorageAccessibilityScenario
         foreach (string resource in new[] { "Themes/Dark.xaml", "Controls/Controls.xaml", "Controls/AppStyles.xaml", "Strings/en-US.xaml" })
             app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/KillerShell;component/" + resource) });
         ThemeManager.Initialize();
-        string root = Path.Combine(@"C:\Users\steve\scratch\killershell-evening-20261020\storage", Guid.NewGuid().ToString("N"));
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "storage", Guid.NewGuid().ToString("N"));
+        Assert.StartsWith(Path.GetFullPath(Path.GetTempPath()), Path.GetFullPath(root), StringComparison.OrdinalIgnoreCase);
         string folder = Path.Combine(root, "big");
         Directory.CreateDirectory(folder);
         File.WriteAllBytes(Path.Combine(folder, "large.bin"), new byte[11]);
@@ -166,7 +167,7 @@ public static class StorageAccessibilityScenario
         finally
         {
             control.Shutdown(); window.Close(); app.Shutdown();
-            string ownedRoot = Path.GetFullPath(@"C:\Users\steve\scratch\killershell-evening-20261020\storage") + Path.DirectorySeparatorChar;
+            string ownedRoot = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "storage")) + Path.DirectorySeparatorChar;
             if (!Path.GetFullPath(root).StartsWith(ownedRoot, StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Fixture escaped scratch root.");
             Directory.Delete(root, true);
         }

@@ -20,7 +20,8 @@ public sealed class ProcessArgumentTests
     [InlineData(@"C:\folder with spaces\")]
     public async Task RelaunchTransportPreservesRealProcessArguments(string folder)
     {
-        string root = Path.Combine(@"C:\Users\steve\scratch\killershell-evening-20261020\arguments", Guid.NewGuid().ToString("N"));
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "arguments", Guid.NewGuid().ToString("N"));
+        Assert.StartsWith(Path.GetFullPath(Path.GetTempPath()), Path.GetFullPath(root), StringComparison.OrdinalIgnoreCase);
         Directory.CreateDirectory(root);
         try
         {
