@@ -28,7 +28,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Screen readers receive terminal output, selection and meaningful control names. Keyboard focus stays inside open cards, returns on close, skips hidden controls, and moves correctly through option groups and storage views.
 - Windows contrast themes use system colors without decorative effects. Windows and dialogs fit small or scaled monitors, and card controls remain reachable in short windows.
 - Language changes refresh both panes and hidden tabs. App and website translations cover remaining English labels, corrected wording and shortcut documentation.
-- Theme text, selections and accent colors remain readable, including Light Yellow and Orange. Controls, picker close buttons, sidebar fades and 98SE text follow the family appearance.
+- Theme text, selections and accent colors remain readable, including Light Yellow and Orange. File and bookmark lists use theme content colors; picker controls, sidebar fades and 98SE text follow the family appearance.
 - Website screenshots support contained keyboard navigation and translated controls. Navigation, help and command examples fit narrow screens, and hardware refresh instructions match the app.
 
 ### Added

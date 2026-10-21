@@ -148,7 +148,6 @@
              A filled rest state also leaves nowhere for hover to go. -->
         <Setter Property="Background" Value="{DynamicResource OutlineFaceBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource OutlineTextBrush}"/>
-        <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Padding" Value="14,5"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -2386,7 +2385,7 @@
     <Style x:Key="PickerColBtn" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/>
-        <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>

@@ -654,4 +654,5 @@
     <SolidColorBrush x:Key="RadioAccent" Color="#FF004F00" po:Freeze="True"/>
     <SolidColorBrush x:Key="SelectionAccent" Color="#FF004F00" po:Freeze="True"/>
     <SolidColorBrush x:Key="AccentLogo" Color="#FF004F00" po:Freeze="True"/>
+    <SolidColorBrush x:Key="FileDialogPaneBrush" Color="#ffffff" po:Freeze="True"/>
 </ResourceDictionary>

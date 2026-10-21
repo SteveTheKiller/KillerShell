@@ -129,17 +129,12 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- SidebarPaneBrush / ListPaneBrush below, NOT BackgroundBrush: that key is a
-                     full-window LinearGradientBrush on five themes, and painting it inside a
-                     column re-ramps the whole sweep at the column's own bounds - the picker's
-                     two panes came out the wrong color on every gradient theme (2026-08-09).
-                     These are the tokens the contract already carries for exactly these two
-                     surfaces: transparent sidebar / menu-tier list on the ordinary themes,
-                     white client wells on 98SE. -->
+                <!-- Picker clients use the content surface. Keep BackgroundBrush on the window
+                     so relative full-window gradients do not restart inside either column. -->
                 <!-- PanelCornerRadius is 6 on all twelve rounded themes, the literal it replaces
                      here and on the results pane below, and 0 on 98SE - where a client area is a
                      square white well, never a rounded card. -->
-                <Border Grid.Column="0" Background="{DynamicResource SidebarPaneBrush}"
+                <Border Grid.Column="0" Background="{DynamicResource FileDialogPaneBrush}"
                         BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
                   <Grid>
                     <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
@@ -172,7 +167,7 @@
                   </Grid>
                 </Border>
 
-                <Border Grid.Column="2" Background="{DynamicResource ListPaneBrush}"
+                <Border Grid.Column="2" Background="{DynamicResource FileDialogPaneBrush}"
                         BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
                   <Grid>
                     <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"

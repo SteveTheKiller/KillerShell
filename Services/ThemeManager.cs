@@ -802,6 +802,7 @@ namespace KillerShell.Services
             // box). Every other theme lets the window show through the tree exactly as before, so
             // wiring this must not hand them an opaque fill they never had.
             SetIfAbsent("SidebarPaneBrush", Transparent);
+            Mirror("FileDialogPaneBrush", "PaneBrush");
             SetIfAbsent("SidebarPanelMargin", new Thickness(0));
             // The slider's unfilled groove - InputBorderBrush, which is what ThinSlider drew.
             // Transparent would have made the track vanish on every theme.
