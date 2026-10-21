@@ -63,11 +63,10 @@ namespace KillerShell.Tools
         private readonly DispatcherTimer _statusClearTimer;
 
         // ── Metric state ─────────────────────────────────────────
-        // _tiles is every metric in build order; _gpuTiles is the GPU subset in the same order -
-        // SampleGpus pairs sorted LUIDs against it by index, so its order must never change or
-        // one adapter's activity would be relabeled as another's.
+        // Named hardware cards and counter identities are separate until a reliable mapping exists.
         private readonly List<MetricTile> _tiles = [];
         private readonly List<MetricTile> _gpuTiles = [];
+        private readonly Dictionary<string, MetricTile> _gpuCounterTiles = new(StringComparer.Ordinal);
 
         private bool _countersAvailable;
 
@@ -442,12 +441,14 @@ namespace KillerShell.Tools
         private sealed class GpuState
         {
             internal bool MemoryAvailable;
+            internal Border? Panel;
         }
 
         private void BuildTiles(Services.PerformanceHardwareInfo info)
         {
             _tiles.Clear();
             _gpuTiles.Clear();
+            _gpuCounterTiles.Clear();
 
             // Local, cheap, no WMI: whether these two counter categories exist at all on this
             // machine, checked once so SampleGpus doesn't have to probe (and possibly throw)
@@ -590,18 +591,20 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private MetricTile BuildGpuTile(string name, int index)
+        private MetricTile BuildGpuTile(string name, int index, bool liveCounters = false)
         {
-            var gs = new GpuState { MemoryAvailable = _gpuMemoryAvailable };
+            var gs = new GpuState { MemoryAvailable = liveCounters && _gpuMemoryAvailable };
             var tile = new MetricTile
             {
                 Kind = MetricKind.Gpu,
-                Label = MainWindow.LocStatic("Str_Perf_Gpu") + " " + index,
+                Label = liveCounters ? MainWindow.LocStatic("Str_Perf_GpuUnassigned")
+                    : MainWindow.LocStatic("Str_Perf_Gpu") + " " + index,
                 Description = name,
                 State = gs,
                 SummaryBrushKey = "OkBrush",
             };
 
+            if (!liveCounters) return tile;
             var utilGraph = new Sparkline(HistorySamples, 100, "OkBrush");
             if (gs.MemoryAvailable)
             {
@@ -1003,17 +1006,13 @@ namespace KillerShell.Tools
         ///
         /// Multi-GPU separation: instance names encode a LUID (e.g.
         /// "...luid_0x00000000_0x0000CAFE_phys_0_eng_0_engtype_3D"). There is no cheap, reliable
-        /// way to map a LUID to a specific Win32_VideoController row without a vendor/DXGI call,
-        /// so this uses a best-effort heuristic: when the number of DISTINCT LUIDs actually
-        /// observed this tick equals the number of GPU tiles built from WMI, they are paired up
-        /// in sorted-LUID / WMI-enumeration order. That is exactly right on the overwhelming
-        /// majority of machines (one LUID, one tile). When it doesn't match, everything is
-        /// summed into tile 0 only and every other GPU tile shows its static name with no live
-        /// number, rather than risk mislabeling one adapter's activity as another's.
+        /// way to map a LUID to a specific Win32_VideoController row without a vendor/DXGI call.
+        /// Counter cards therefore show their LUID and remain explicitly unassigned. Named WMI
+        /// cards contain static details only, regardless of matching discovery counts or order.
         /// </summary>
         private void SampleGpus()
         {
-            if (!_gpuEngineAvailable || _gpuTiles.Count == 0) return;
+            if (!_gpuEngineAvailable) return;
 
             // Only re-enumerate the instance-name LISTS periodically (see the class-level remark
             // on GpuRescanIntervalTicks and the long remark above) - NextValue() on already-cached
@@ -1112,32 +1111,44 @@ namespace KillerShell.Tools
                     }
                 }
 
-                var luidList = new List<string>(allLuids);
-                if (luidList.Count == _gpuTiles.Count && luidList.Count > 0)
-                {
-                    for (int i = 0; i < _gpuTiles.Count; i++)
-                    {
-                        string luid = luidList[i];
-                        luidUtil.TryGetValue(luid, out double util);
-                        luidDedicated.TryGetValue(luid, out double ded);
-                        luidShared.TryGetValue(luid, out double shr);
-                        ApplyGpuSample(_gpuTiles[i], util, ded, shr);
-                    }
-                }
-                else if (_gpuTiles.Count > 0)
-                {
-                    double totalUtil = 0, totalDed = 0, totalShr = 0;
-                    foreach (var v in luidUtil.Values) totalUtil += v;
-                    foreach (var v in luidDedicated.Values) totalDed += v;
-                    foreach (var v in luidShared.Values) totalShr += v;
-                    ApplyGpuSample(_gpuTiles[0], totalUtil, totalDed, totalShr);
-                }
+                PublishGpuSamples(allLuids, luidUtil, luidDedicated, luidShared);
             }
             catch
             {
                 // A GPU read going bad (driver reset, adapter removed) should not take the rest of
                 // the tab's counters down with it - swallow and try again next tick.
             }
+        }
+
+        internal void PublishGpuSamples(IEnumerable<string> allLuids, IReadOnlyDictionary<string, double> luidUtil,
+            IReadOnlyDictionary<string, double> luidDedicated, IReadOnlyDictionary<string, double> luidShared)
+        {
+            var current = new HashSet<string>(allLuids, StringComparer.Ordinal);
+            foreach (string missing in _gpuCounterTiles.Keys.Where(key => !current.Contains(key)).ToList())
+            {
+                var old = _gpuCounterTiles[missing];
+                _gpuCounterBand.Children.Remove(((GpuState)old.State!).Panel);
+                _gpuCounterTiles.Remove(missing);
+                _tiles.Remove(old);
+            }
+            foreach (string luid in current.OrderBy(value => value, StringComparer.Ordinal))
+            {
+                if (!_gpuCounterTiles.TryGetValue(luid, out var tile))
+                {
+                    tile = BuildGpuTile("LUID " + luid, 0, liveCounters: true);
+                    var panel = BuildGpuPanel(tile);
+                    ((GpuState)tile.State!).Panel = panel;
+                    _gpuCounterTiles.Add(luid, tile);
+                    _tiles.Add(tile);
+                    _gpuCounterBand.Children.Add(panel);
+                }
+                luidUtil.TryGetValue(luid, out double util);
+                luidDedicated.TryGetValue(luid, out double ded);
+                luidShared.TryGetValue(luid, out double shr);
+                ApplyGpuSample(tile, util, ded, shr);
+            }
+            _gpuCounterBand.Columns = Math.Max(1, Math.Min(2, current.Count));
+            _gpuCounterBand.Visibility = current.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static string ExtractGpuLuid(string instanceName)

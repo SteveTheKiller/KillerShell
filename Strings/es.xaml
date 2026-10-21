@@ -950,4 +950,5 @@
     <sys:String x:Key="Str_Scroll_PageRight">Una página hacia la derecha</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">La entrada está ocupada. El texto nuevo no se envió. Espere y vuelva a intentarlo.</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Resultados parciales: {0} archivo(s) coincidente(s); no se pudieron buscar por completo {1} ruta(s).</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">Contadores de GPU sin asignar</sys:String>
 </ResourceDictionary>

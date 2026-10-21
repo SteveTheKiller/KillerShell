@@ -947,4 +947,5 @@
     <sys:String x:Key="Str_Scroll_PageRight">向右翻頁</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">輸入忙碌中。新文字未傳送。請稍候再試。</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">部分結果：{0} 個檔案符合；無法完整搜尋 {1} 個路徑。</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">未指派的 GPU 計數器</sys:String>
 </ResourceDictionary>

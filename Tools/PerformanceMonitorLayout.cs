@@ -24,6 +24,7 @@ namespace KillerShell.Tools
     {
         private UniformGrid _summaryStrip = null!;
         private StackPanel _panels = null!;
+        private UniformGrid _gpuCounterBand = null!;
 
         // The summary strip's tiles. Null for hardware this machine does not have (a server
         // with no GPU counters, a VM with no physical disk), which simply gets no tile.
@@ -100,7 +101,7 @@ namespace KillerShell.Tools
             if (_ramTile != null) _sumRam = AddSummaryTile("Str_Perf_Ram", "TypeWindows", 100);
             if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile("Str_Perf_Disk", "WarnBrush", 100);
             if (_netTiles.Count > 0) _sumNet = AddSummaryTile("Str_Perf_Network", "MonitorTextBrush", 0);
-            if (_gpuTiles.Count > 0) _sumGpu = AddSummaryTile("Str_Perf_Gpu", "OkBrush", 100);
+            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile("Str_Perf_Gpu", "OkBrush", 100);
 
             // ── Band 1: CPU and memory ───────────────────────────
             if (_cpuTile != null || _ramTile != null)
@@ -150,6 +151,8 @@ namespace KillerShell.Tools
                 foreach (var gpu in _gpuTiles) band.Children.Add(BuildGpuPanel(gpu));
                 _panels.Children.Add(band);
             }
+            _gpuCounterBand = new UniformGrid { Columns = 1, Visibility = Visibility.Collapsed };
+            _panels.Children.Add(_gpuCounterBand);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -198,7 +201,11 @@ namespace KillerShell.Tools
             if (_sumCpu != null && _cpuTile != null) SetSummaryPercent(_sumCpu, _cpuTile.Primary);
             if (_sumRam != null && _ramTile != null) SetSummaryPercent(_sumRam, _ramTile.Primary);
             if (_sumDisk != null) SetSummaryPercent(_sumDisk, _diskTiles.Max(t => t.Primary));
-            if (_sumGpu != null) SetSummaryPercent(_sumGpu, _gpuTiles.Max(t => t.Primary));
+            if (_sumGpu != null)
+            {
+                if (_gpuCounterTiles.Count > 0) SetSummaryPercent(_sumGpu, _gpuCounterTiles.Values.Max(t => t.Primary));
+                else _sumGpu.Value.Text = "-";
+            }
             if (_sumNet != null)
             {
                 double total = _netTiles.Sum(t => t.Primary);
@@ -545,6 +552,7 @@ namespace KillerShell.Tools
             body.Children.Add(BuildPanelHeader(tile, titleSize: 16, valueSize: 24));
             body.Children.Add(BuildDescription(tile.Description));
 
+            if (tile.BigGraphs.Length == 0) return BuildCard(body);
             var util = tile.BigGraphs[0];
             util.Host.Height = 84;
 
