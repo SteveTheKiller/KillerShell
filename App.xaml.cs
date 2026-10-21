@@ -826,10 +826,12 @@ namespace KillerShell
                         ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), AppName)
                         : StartMenuDir;
                     string targetDir = machine ? MachineInstallDir : InstallDir;
-                    File.Delete(Path.Combine(startMenuDir, $"{AppName}.lnk"));
+                    try { File.Delete(Path.Combine(startMenuDir, $"{AppName}.lnk")); }
+                    catch (DirectoryNotFoundException) { /* The shortcut's parent is already absent. */ }
                     if (Directory.Exists(startMenuDir) && Directory.GetFileSystemEntries(startMenuDir).Length == 0)
                         Directory.Delete(startMenuDir, recursive: false);
-                    File.Delete(DesktopLnk);
+                    try { File.Delete(DesktopLnk); }
+                    catch (DirectoryNotFoundException) { /* The desktop folder is already absent. */ }
                     Services.CommandLinePath.UnregisterRequired(targetDir, machine);
                     if (!KillerFamily.Deployment.StartupRegistration.Set(Services.AppInfo.DisplayName, false))
                         throw new UnauthorizedAccessException();
