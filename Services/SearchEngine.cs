@@ -20,6 +20,7 @@ namespace KillerShell.Services
         private readonly Func<string, Stream> _openContent;
         private readonly Func<string, IEnumerable<string>> _enumerateFiles;
         private readonly Func<string, IEnumerable<string>> _enumerateDirectories;
+        public int IncompletePaths { get; private set; }
 
         public SearchEngine() : this(path => new FileStream(path, FileMode.Open, FileAccess.Read,
             FileShare.Read, bufferSize: 65536)) { }
@@ -98,6 +99,8 @@ namespace KillerShell.Services
 
             // ---- Shared state (closures hoist these; counters via Interlocked) ----
             var    outQueue    = new ConcurrentQueue<SearchResult>();
+            var incomplete = new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase);
+            IncompletePaths = 0;
             int    processed   = 0;
             int    seq         = 0;
             string currentFile = string.Empty;   // reference writes are atomic; racy is fine for status
@@ -146,7 +149,8 @@ namespace KillerShell.Services
                         }
                         else
                         {
-                            var lines = SearchContent(filePath, term.Pattern, comparison, ct);
+                            var lines = SearchContent(filePath, term.Pattern, comparison, ct,
+                                () => incomplete.TryAdd(filePath, 0));
                             hit = lines.Count > 0;
                             if (hit) result.Matches.Add(new TermMatch { Term = term, Lines = lines });
                         }
@@ -247,6 +251,7 @@ namespace KillerShell.Services
                 Flush();
             try { producer.Wait(CancellationToken.None); } catch (AggregateException) { /* producer OCE already handled */ }
             Flush();   // final drain
+            IncompletePaths = incomplete.Count;
         }
 
         // ── File enumeration ─────────────────────────────────────
@@ -348,12 +353,14 @@ namespace KillerShell.Services
 
         // ── Content search ───────────────────────────────────────
         private List<LineMatch> SearchContent(
-            string filePath, string pattern, StringComparison comparison, CancellationToken ct)
+            string filePath, string pattern, StringComparison comparison, CancellationToken ct, Action incomplete)
         {
             var matches = new List<LineMatch>();
             try
             {
                 ct.ThrowIfCancellationRequested();
+                // Matching state is bounded by this limit, independent of logical line length.
+                if (pattern.Length > 65536) throw new NotSupportedException("Content pattern exceeds the streaming limit.");
                 using var fs = _openContent(filePath);
 
                 // Check decoded characters so UTF-16/32 padding bytes are not mistaken
@@ -370,30 +377,48 @@ namespace KillerShell.Services
                 using var reader = new StreamReader(fs, Encoding.UTF8,
                                                     detectEncodingFromByteOrderMarks: true,
                                                     bufferSize: 65536, leaveOpen: false);
-                int lineNum = 0;
-                foreach (string line in ReadContentLines(reader, ct))
+                foreach (var line in ReadContentMatches(reader, pattern, comparison, ct))
                 {
                     ct.ThrowIfCancellationRequested();
-                    lineNum++;
-                    if (line.IndexOf(pattern, comparison) >= 0)
-                    {
-                        matches.Add(new LineMatch { LineNumber = lineNum, LineText = line.Trim() });
-                        // Enough to prove the hit and fill the UI - a 10k-hit log file
-                        // would otherwise build a skyscraper of a result card.
-                        if (matches.Count >= 100) break;
-                    }
+                    matches.Add(line);
+                    // Retain the existing cap on displayed matching lines.
+                    if (matches.Count >= 100) break;
                 }
             }
             catch (OperationCanceledException) { throw; }
-            catch { /* unreadable file - skip */ }
+            catch { incomplete(); }
             return matches;
         }
 
-        private static IEnumerable<string> ReadContentLines(StreamReader reader, CancellationToken ct)
+        private static IEnumerable<LineMatch> ReadContentMatches(StreamReader reader, string pattern,
+            StringComparison comparison, CancellationToken ct)
         {
             var buffer = new char[4096];
-            var line = new StringBuilder();
+            var chunk = new StringBuilder(4096);
+            var preview = new StringBuilder(1024);
+            string tail = string.Empty;
+            bool matched = false, truncated = false, hasText = false;
+            int lineNumber = 1;
             bool skipLf = false;
+
+            void MatchChunk()
+            {
+                if (!matched && chunk.Length > 0)
+                {
+                    string window = tail + chunk.ToString();
+                    matched = window.IndexOf(pattern, comparison) >= 0;
+                    int keep = Math.Min(pattern.Length - 1, window.Length);
+                    tail = matched || keep <= 0 ? string.Empty : window.Substring(window.Length - keep);
+                }
+                chunk.Clear();
+            }
+            LineMatch FinishLine()
+            {
+                string text = preview.ToString();
+                if (truncated && text.Length > 0 && char.IsHighSurrogate(text[text.Length - 1]))
+                    text = text.Substring(0, text.Length - 1);
+                return new LineMatch { LineNumber = lineNumber, LineText = text.Trim() + (truncated ? "\u2026" : string.Empty) };
+            }
             while (true)
             {
                 ct.ThrowIfCancellationRequested();
@@ -411,14 +436,29 @@ namespace KillerShell.Services
                     }
                     if (c == '\r' || c == '\n')
                     {
-                        yield return line.ToString();
-                        line.Clear();
+                        MatchChunk();
+                        if (matched) yield return FinishLine();
+                        preview.Clear();
+                        tail = string.Empty;
+                        matched = truncated = hasText = false;
+                        lineNumber++;
                         skipLf = c == '\r';
                     }
-                    else line.Append(c);
+                    else
+                    {
+                        hasText = true;
+                        if (preview.Length < 1024) preview.Append(c);
+                        else truncated = true;
+                        if (!matched)
+                        {
+                            chunk.Append(c);
+                            if (chunk.Length == 4096) MatchChunk();
+                        }
+                    }
                 }
             }
-            if (line.Length > 0) yield return line.ToString();
+            MatchChunk();
+            if (hasText && matched) yield return FinishLine();
         }
 
         // ── Pattern helpers ──────────────────────────────────────

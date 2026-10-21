@@ -864,4 +864,5 @@
     <sys:String x:Key="Str_Scroll_PageLeft">Strona w lewo</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Strona w prawo</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">Wejście jest zajęte. Nowy tekst nie został wysłany. Poczekaj i spróbuj ponownie.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Częściowe wyniki: pasujące pliki: {0}; nie udało się w pełni przeszukać {1} ścieżek.</sys:String>
 </ResourceDictionary>

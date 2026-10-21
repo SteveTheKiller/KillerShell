@@ -949,4 +949,5 @@
     <sys:String x:Key="Str_Scroll_PageLeft">Bir sayfa sola</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Bir sayfa sağa</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">Giriş meşgul. Yeni metin gönderilmedi. Bekleyip yeniden deneyin.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Kısmi sonuçlar: {0} dosya eşleşti; {1} yolda arama tamamlanamadı.</sys:String>
 </ResourceDictionary>

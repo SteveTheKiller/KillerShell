@@ -578,6 +578,8 @@ namespace KillerShell.Shell
                 sw.Stop();
                 if (tab.Cts.IsCancellationRequested)
                     SetTabStatusKey(tab, "Str_Status_Stopped");
+                else if (tab.Engine.IncompletePaths > 0)
+                    SetTabStatusKey(tab, "Str_Status_SearchPartial", tab.Results.Count, tab.Engine.IncompletePaths);
                 else
                     SetTabStatusKey(tab, "Str_Status_Done",
                         sw.Elapsed.TotalSeconds.ToString("0.00"), tab.Results.Count);
@@ -1629,6 +1631,7 @@ namespace KillerShell.Shell
         private static readonly string[] WarnKeys =
         [
             "Str_Status_FileOnly", "Str_Status_ClipboardBusy", "Str_Status_ElevationDeclined",
+            "Str_Status_SearchPartial",
         ];
 
         private static readonly string[] ErrorKeys =

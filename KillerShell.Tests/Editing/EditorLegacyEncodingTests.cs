@@ -29,8 +29,8 @@ internal static class EditorScenarioProcess
             "[Reflection.Assembly]::LoadFrom('" + Quote(typeof(Assert).Assembly.Location) + "') | Out-Null; " +
             "[Reflection.Assembly]::LoadFrom('" + Quote(typeof(EditorScenarioProcess).Assembly.Location) + "') | Out-Null; " +
             "[" + typeName + "]::Run(" +
-            (argument == null ? "" : "'" + Quote(argument) + "'") + "); exit 0 " +
-            "} catch { [Console]::Error.WriteLine($_.Exception.ToString()); exit 1 }";
+            (argument == null ? "" : "'" + Quote(argument) + "'") + "); [Environment]::Exit(0) " +
+            "} catch { [Console]::Error.WriteLine($_.Exception.ToString()); [Environment]::Exit(1) }";
         using var process = Process.Start(new ProcessStartInfo
         {
             FileName = "powershell.exe",
@@ -40,7 +40,7 @@ internal static class EditorScenarioProcess
         var output = process.StandardOutput.ReadToEndAsync();
         var errors = process.StandardError.ReadToEndAsync();
         if (!process.WaitForExit(60000)) { process.Kill(); Assert.Fail("The editor scenario exceeded its deadline."); }
-        Assert.True(process.ExitCode == 0, await output + await errors);
+        Assert.True(process.ExitCode == 0, "Scenario exit code: " + process.ExitCode + Environment.NewLine + await output + await errors);
     }
 }
 

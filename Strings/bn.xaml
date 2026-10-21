@@ -946,4 +946,5 @@
     <sys:String x:Key="Str_Scroll_PageLeft">এক পৃষ্ঠা বাঁয়ে</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">এক পৃষ্ঠা ডানে</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">ইনপুট ব্যস্ত। নতুন লেখা পাঠানো হয়নি। অপেক্ষা করে আবার চেষ্টা করুন।</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">আংশিক ফলাফল: {0}টি ফাইল মিলেছে; {1}টি পাথে সম্পূর্ণ অনুসন্ধান করা যায়নি।</sys:String>
 </ResourceDictionary>

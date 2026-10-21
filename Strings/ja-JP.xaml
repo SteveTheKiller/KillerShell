@@ -945,4 +945,5 @@
     <sys:String x:Key="Str_Scroll_PageLeft">1 ページ左へ</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">1 ページ右へ</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">入力が混み合っています。新しいテキストは送信されませんでした。しばらく待ってから再試行してください。</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">一部の検索結果: {0} 個のファイルが一致しました。{1} 個のパスを完全には検索できませんでした。</sys:String>
 </ResourceDictionary>

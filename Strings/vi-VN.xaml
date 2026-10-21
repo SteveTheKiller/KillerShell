@@ -951,4 +951,5 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Sang trái một trang</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Sang phải một trang</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">Đầu vào đang bận. Văn bản mới chưa được gửi. Hãy chờ rồi thử lại.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Kết quả một phần: {0} tệp khớp; không thể tìm kiếm đầy đủ trong {1} đường dẫn.</sys:String>
 </ResourceDictionary>

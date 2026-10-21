@@ -41,7 +41,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Storage scans enumerate network shares and extended-length paths correctly. Canceled scans cannot overwrite newer results, and resources are released when the tab or app closes. Storage nodes support keyboard and screen-reader selection, and Ctrl+Enter starts a scan from the target field.
 - Switching the Event Viewer's log or level, refreshing it, or closing its tab while events are still loading no longer adds rows or an error from the earlier load to the new view.
 - Stopping a search whose name, include or exclude pattern has many `*` wildcards returns within a second, and such patterns no longer stall the search on long file names.
-- Content search recognizes UTF-16 and UTF-32 text with byte order marks and stops between bounded reads when canceled, including within long lines.
+- Content search recognizes UTF-16 and UTF-32 text, matches long lines with bounded memory and previews, and stops between reads. Unreadable content and unsupported oversized patterns show a partial-results warning.
 - Terminal output stays inside its tab when KillerShell is launched with redirected output. Folder and title updates preserve Unicode text and accept standard escape sequence terminators, including sequences split across reads.
 - Terminal output and selection are available to screen readers, and heavy output uses bounded batches. Performance sampling stays stopped while its tab is hidden or closed.
 - Saying No at the administrator prompt when opening a file, or Windows refusing to open it, shows a status message instead of closing KillerShell.

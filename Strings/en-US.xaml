@@ -995,4 +995,5 @@
     <sys:String x:Key="Str_Scroll_PageLeft">Page left</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Page right</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">Input is busy. The new text was not sent. Wait and try again.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Partial results: {0} file(s) matched; {1} path(s) could not be searched completely.</sys:String>
 </ResourceDictionary>

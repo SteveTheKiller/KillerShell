@@ -949,4 +949,5 @@
     <sys:String x:Key="Str_Scroll_PageLeft">Seite nach links</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Seite nach rechts</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">Die Eingabe ist ausgelastet. Der neue Text wurde nicht gesendet. Warten Sie und versuchen Sie es erneut.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Teilergebnisse: {0} passende Datei(en); {1} Pfad(e) konnten nicht vollständig durchsucht werden.</sys:String>
 </ResourceDictionary>
