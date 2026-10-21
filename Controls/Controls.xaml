@@ -67,7 +67,7 @@
         <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Background" Value="{DynamicResource PrimaryFillBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnPrimaryBrush}"/>
-        <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
         <Setter Property="FontSize" Value="12.5"/>
         <Setter Property="Padding" Value="14,7"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -139,6 +139,7 @@
     </Style>
 
     <Style x:Key="OutlineButton" TargetType="Button">
+        <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
         <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <!-- TRANSPARENT at rest. This is the family's outline button: an accent OUTLINE at rest
              that fills solid on hover. It was filled with RowSelectedBrush, which on the newer
@@ -223,6 +224,7 @@
     <!-- ChipFaceBrush: the pane tier on every ordinary theme, a raised #c0c0c0 Win98 button face
          on a flat one. Its hover follows ChipHoverBrush for the same reason. -->
     <Style x:Key="SurfaceButton" TargetType="Button">
+        <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
         <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=ToolTip}"/>
         <Setter Property="Background" Value="{DynamicResource ChipFaceBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>

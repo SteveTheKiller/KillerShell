@@ -92,10 +92,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Changed
 - Dropping files on a saved place always moves them, across drives too.
 - The keyboard focus outline is a thin one-pixel dotted ring in the theme accent instead of a thick dotted line, and uses the text color where the accent would be too faint to see.
-- Film grain is softer and shows on every theme, Black included. Its specks come in many shades, and some lean toward a color opposite the theme accent, such as purple on green and orange-brown on blue and red.
+- Film grain has crisper specks and fades midtones across app and website themes without dimming bright highlights.
 - Rail buttons and the collapse arrow stay centered on either side, with a larger arrow and illustrated position choices in the right-click menu. Dual pane comes first in the app icon group.
 - The website's top bar Download button uses the same font and height as the other top bar buttons.
-- Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its flat beveled buttons.
+- Buttons, the shortcut list and the keyboard map use the embedded interface font. Primary, outline and secondary buttons sit raised on a soft shadow that lifts on hover and sets down when pressed. 98SE keeps its classic font and flat beveled buttons.
 
 ## [1.4.0] - 2026-10-15
 

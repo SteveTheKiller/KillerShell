@@ -193,7 +193,6 @@ namespace KillerShell.Shell
                 var b = new Button
                 {
                     Content = caption,
-                    FontFamily = new FontFamily("Consolas"),
                     FontSize = 11,
                     Padding = new Thickness(10, 4, 10, 4),
                     Margin = new Thickness(0, 0, 8, 0),
@@ -227,14 +226,13 @@ namespace KillerShell.Shell
             // string, so both halves stay on SetResourceReference and follow a language switch
             // live the way every other label on this card does.
             var scopeRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 10) };
-            var scopeLead = new TextBlock { FontFamily = new FontFamily("Consolas"), FontSize = 11 };
+            var scopeLead = new TextBlock { FontSize = 11 };
             scopeLead.SetResourceReference(TextBlock.TextProperty, "Str_Ks_ScopeShown");
             scopeLead.SetResourceReference(TextBlock.ForegroundProperty, "DimTextBrush");
             scopeRow.Children.Add(scopeLead);
 
             _kbScopeName = new TextBlock
             {
-                FontFamily = new FontFamily("Consolas"),
                 FontSize = 11,
                 Margin = new Thickness(6, 0, 0, 0),
             };
@@ -257,7 +255,7 @@ namespace KillerShell.Shell
                     var capText = new TextBlock
                     {
                         Text = cap,
-                        FontFamily = new FontFamily("Consolas"),   // symbols come from font fallback
+                        // symbols come from font fallback
                         FontSize = 11,
                         HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Top,
@@ -346,7 +344,6 @@ namespace KillerShell.Shell
             _kbDetail = new TextBlock
             {
                 Text = " ",
-                FontFamily = new FontFamily("Consolas"),
                 FontSize = 12.5,
                 Margin = new Thickness(2, 10, 0, 0),
                 Height = 18,

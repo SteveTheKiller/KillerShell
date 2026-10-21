@@ -491,7 +491,6 @@ namespace KillerShell.Shell
 
                 var heading = new TextBlock
                 {
-                    FontFamily = new System.Windows.Media.FontFamily("Consolas"),
                     FontSize   = 11,
                     FontWeight = FontWeights.Bold,
                 };
@@ -563,7 +562,6 @@ namespace KillerShell.Shell
 
                 var heading = new TextBlock
                 {
-                    FontFamily = new System.Windows.Media.FontFamily("Consolas"),
                     FontSize   = 10,
                     FontWeight = FontWeights.Bold,
                     Margin     = new Thickness(0, 10, 0, 6),
@@ -584,7 +582,6 @@ namespace KillerShell.Shell
                     var keys = new TextBlock
                     {
                         Text       = r.Keys,
-                        FontFamily = new System.Windows.Media.FontFamily("Consolas"),
                         FontSize   = 12,
                         Margin     = new Thickness(0, 0, 10, 7),
                         VerticalAlignment = VerticalAlignment.Top,

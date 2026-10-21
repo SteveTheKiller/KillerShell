@@ -24,7 +24,7 @@ namespace KillerShell.Services
     public static class ThemeManager
     {
         /// <summary>Killer Sans UI (Killer Sans scaled to Segoe UI proportions) with the Segoe fallback stack.</summary>
-        internal static readonly FontFamily KillerSansUiStack = new(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
+        internal static readonly FontFamily KillerSansUiStack = new(new Uri("pack://application:,,,/KillerShell;component/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
         internal static readonly FontFamily LacquerHeadingStack = new(new Uri("pack://application:,,,/"), "./Fonts/#Lacquer, ./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
         /// <summary>
         /// Read a corner radius out of the live theme. For code-built controls, which cannot use a
