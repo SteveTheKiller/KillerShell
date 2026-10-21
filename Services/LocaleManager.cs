@@ -79,6 +79,34 @@ namespace KillerShell.Services
             ApplyInternal(locale);
         }
 
+        /// <summary>
+        /// The BCP 47 tag for a locale, as exported HTML declares it in its lang attribute.
+        /// Every locale has an entry; screen readers pick pronunciation from it.
+        /// </summary>
+        internal static string LanguageTag(Locale locale) => locale switch
+        {
+            Locale.Es   => "es",
+            Locale.Fr   => "fr-FR",
+            Locale.ZhTW => "zh-TW",
+            Locale.ZhCN => "zh-CN",
+            Locale.Bn   => "bn",
+            Locale.TrTR => "tr-TR",
+            Locale.De   => "de-DE",
+            Locale.Ja   => "ja-JP",
+            Locale.Cs   => "cs-CZ",
+            Locale.PlPL => "pl-PL",
+            Locale.HuHU => "hu-HU",
+            Locale.It   => "it-IT",
+            Locale.RuRU => "ru-RU",
+            Locale.KkKZ => "kk-KZ",
+            Locale.ViVN => "vi-VN",
+            Locale.UkUA => "uk-UA",
+            Locale.NbNO => "nb-NO",
+            Locale.PtBR => "pt-BR",
+            Locale.SlSI => "sl-SI",
+            _           => "en-US",
+        };
+
         private static void ApplyInternal(Locale locale)
         {
             var merged = Application.Current.Resources.MergedDictionaries;
