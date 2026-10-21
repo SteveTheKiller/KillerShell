@@ -948,5 +948,5 @@
     <sys:String x:Key="Str_Scroll_PageDown">Page vers le bas</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Page vers la gauche</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Page vers la droite</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Input is busy. The new text was not sent. Wait and try again.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">La saisie est occupée. Le nouveau texte n’a pas été envoyé. Patientez et réessayez.</sys:String>
 </ResourceDictionary>

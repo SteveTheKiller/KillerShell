@@ -945,5 +945,5 @@
     <sys:String x:Key="Str_Scroll_PageDown">向下翻頁</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">向左翻頁</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">向右翻頁</sys:String>
-    <sys:String x:Key="Str_Term_InputBusy">Input is busy. The new text was not sent. Wait and try again.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">輸入忙碌中。新文字未傳送。請稍候再試。</sys:String>
 </ResourceDictionary>
