@@ -70,9 +70,11 @@ namespace KillerShell.Terminal
 
         public TerminalBuffer Buffer => _buf;
 
-        public TerminalControl(TerminalSkin skin, Action<AutomationPeer, AutomationEvents>? automationEventSink = null)
+        public TerminalControl(TerminalSkin skin, Action<AutomationPeer, AutomationEvents>? automationEventSink = null,
+                               Action<string>? clipboardWrite = null)
         {
             _automationEventSink = automationEventSink ?? ((peer, notification) => peer.RaiseAutomationEvent(notification));
+            _clipboardWrite = clipboardWrite ?? Clipboard.SetText;
             _palette = TerminalPalette.For(skin);
             _buf = new TerminalBuffer(80, 25);
             _parser = new VtParser(_buf);

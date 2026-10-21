@@ -15,6 +15,7 @@ namespace KillerShell.Terminal
     internal sealed partial class TerminalControl
     {
         private bool _selecting;
+        private readonly Action<string> _clipboardWrite;
         private bool _hasSelection;
         private int _selAnchorLine, _selAnchorCol;      // where the drag began
         private int _selHeadLine, _selHeadCol;          // where it is now
@@ -206,7 +207,7 @@ namespace KillerShell.Terminal
 
                 var row = new StringBuilder();
                 for (int c = from; c < to; c++)
-                    row.Append(cells[c].Ch == 0 ? ' ' : (char)cells[c].Ch);
+                    row.Append(cells[c].Ch == 0 ? " " : char.ConvertFromUtf32(cells[c].Ch));
 
                 // Trailing blanks are padding, not content: a terminal line is always Cols wide
                 // whether or not anything was written to the end of it, and pasting that
@@ -218,7 +219,7 @@ namespace KillerShell.Terminal
             string text = sb.ToString();
             if (text.Length == 0) return false;
 
-            try { Clipboard.SetText(text); }
+            try { _clipboardWrite(text); }
             catch { return false; }        // another app holding the clipboard
 
             return true;
