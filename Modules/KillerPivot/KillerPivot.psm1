@@ -473,12 +473,43 @@ function Get-PivotContext {
 }
 
 function Disconnect-PivotTenant {
+    [CmdletBinding()]
+    param()
+
+    $failures = @()
     if (Get-Command Disconnect-ExchangeOnline -ErrorAction SilentlyContinue) {
-        Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
+        try { Disconnect-ExchangeOnline -Confirm:$false -ErrorAction Stop }
+        catch { $failures += "Exchange teardown failed: $($_.Exception.Message)" }
     }
-    if ((Get-Command Disconnect-MgGraph -ErrorAction SilentlyContinue) -and
-        (Get-MgContext -ErrorAction SilentlyContinue)) {
-        Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null
+    $graphContextCommand = Get-Command Get-MgContext -ErrorAction SilentlyContinue
+    if (Get-Command Disconnect-MgGraph -ErrorAction SilentlyContinue) {
+        $disconnectGraph = $true
+        if ($graphContextCommand) {
+            try { $disconnectGraph = $null -ne (Get-MgContext -ErrorAction Stop) }
+            catch { $failures += "Graph state query failed: $($_.Exception.Message)" }
+        }
+        if ($disconnectGraph) {
+            try { Disconnect-MgGraph -ErrorAction Stop | Out-Null }
+            catch { $failures += "Graph teardown failed: $($_.Exception.Message)" }
+        }
+    }
+    if (Get-Command Get-ConnectionInformation -ErrorAction SilentlyContinue) {
+        try {
+            $remaining = @(Get-ConnectionInformation -ErrorAction Stop | Where-Object { $_.State -eq 'Connected' })
+            if ($remaining.Count) { $failures += 'Exchange still reports connected sessions.' }
+        } catch { $failures += "Exchange verification failed: $($_.Exception.Message)" }
+    } elseif (Get-Command Disconnect-ExchangeOnline -ErrorAction SilentlyContinue) {
+        $failures += 'Exchange disconnect could not be verified by this provider version.'
+    }
+    if ($graphContextCommand) {
+        try {
+            if (Get-MgContext -ErrorAction Stop) { $failures += 'Graph still reports a connected context.' }
+        } catch { $failures += "Graph verification failed: $($_.Exception.Message)" }
+    } elseif (Get-Command Disconnect-MgGraph -ErrorAction SilentlyContinue) {
+        $failures += 'Graph disconnect could not be verified by this provider version.'
+    }
+    if ($failures.Count) {
+        throw "PIVOT: disconnect incomplete. $($failures -join '; ') Close this PowerShell session before running tenant commands."
     }
     Write-Host "[>] All sessions closed." -ForegroundColor $DimCol
 }

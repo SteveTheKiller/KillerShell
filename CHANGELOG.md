@@ -7,7 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.1] - Unreleased
 
 ### Fixed
-- Bundled KillerPivot verifies the exact selected tenant connection, closes failed connections, and preserves tenant configuration on failed or conflicting saves.
+- Bundled KillerPivot verifies the selected tenant connection, reports failed or unverified disconnects, and preserves tenant configuration on failed or conflicting saves.
 - Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.
 - Release builds refuse unsigned publication and recheck the executable's trusted signature and checksum before publishing.
 - Uninstalling uses a fixed Windows helper, rejects unsafe installation and recovery permissions, reports failures, and preserves a recovery image and uninstall entry when cleanup fails.
