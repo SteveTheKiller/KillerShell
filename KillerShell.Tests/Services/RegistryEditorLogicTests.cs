@@ -12,7 +12,7 @@ namespace KillerShell.Tests.Services
     {
         [DisposableVmFact]
         [Trait("Category", "DisposableVm")]
-        public void RenameKey_PreservesProtectedPermissionsAndOpenHandles()
+        public void RenameKey_PreservesProtectedPermissionsAndChildren()
         {
             DisposableVmGuard.RequireDisposableVm();
             string subkey = "Software\\KillerShell.Tests." + Guid.NewGuid().ToString("N");
@@ -43,8 +43,32 @@ namespace KillerShell.Tests.Services
                 Assert.Equal(sourceSecurity, renamed.GetAccessControl(sections).GetSecurityDescriptorSddlForm(sections));
                 Assert.Equal(childSecurity, renamedChild!.GetAccessControl(sections).GetSecurityDescriptorSddlForm(sections));
                 Assert.Equal("child", renamedChild.GetValue("Value"));
-                source.SetValue("Value", "through existing handle");
-                Assert.Equal("through existing handle", renamed.GetValue("Value"));
+                Assert.Equal("original", renamed.GetValue("Value"));
+                // A copy, not Windows' rename: a handle to the original now refers to a deleted key.
+                Assert.ThrowsAny<System.IO.IOException>(() => source.SetValue("Value", "through existing handle"));
+            }
+            finally { Registry.CurrentUser.DeleteSubKeyTree(subkey, false); }
+        }
+
+        [DisposableVmFact]
+        [Trait("Category", "DisposableVm")]
+        public void RenameKey_OntoAnExistingName_ChangesNothing()
+        {
+            DisposableVmGuard.RequireDisposableVm();
+            string subkey = "Software\\KillerShell.Tests." + Guid.NewGuid().ToString("N");
+            try
+            {
+                using var parent = Registry.CurrentUser.CreateSubKey(subkey);
+                using (var a = parent.CreateSubKey("A")) a.SetValue("Value", "a");
+                using (var b = parent.CreateSubKey("B")) b.SetValue("Value", "b");
+
+                RegistryEditResult result = RegistryEditorLogic.RenameKey("HKEY_CURRENT_USER\\" + subkey, "A", "b");
+
+                Assert.Equal(RegistryEditStatus.AlreadyExists, result.Status);
+                using var keptA = parent.OpenSubKey("A");
+                using var keptB = parent.OpenSubKey("B");
+                Assert.Equal("a", keptA!.GetValue("Value"));
+                Assert.Equal("b", keptB!.GetValue("Value"));
             }
             finally { Registry.CurrentUser.DeleteSubKeyTree(subkey, false); }
         }

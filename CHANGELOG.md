@@ -16,7 +16,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - ZIP edits preserve permissions and attributes, distinguish case-sensitive names, and reject conflicting output paths before publication. TAR extraction validates extended metadata, and cancellation stops extraction through the final entry.
 - CSV and HTML exports preserve existing reports when replacement fails.
 - Bundled KillerPivot verifies tenant connections, disconnects a Graph session left from another tenant when switching, reports incomplete disconnects, and preserves configuration after failed saves. KillerScripts preserves Unicode text, complete caches, and the script version used by an active invocation.
-- Registry renames preserve value types, permissions, child keys and open handles. Switching between hexadecimal and decimal keeps the value unchanged.
+- Registry key renames copy the key and then remove the original instead of calling Windows' key rename, which could crash the system. Renames preserve value types, permissions and child keys, and refuse link keys or owners that a copy cannot keep. Switching between hexadecimal and decimal keeps the value unchanged.
 - Ending or restarting a process verifies its identity. Administrator restarts keep the original running until elevation is approved, and reused process IDs receive fresh status information.
 - Service restarts finish after their tab or window closes, with failures reported or logged. Silent installation returns a retryable busy code when KillerShell is running.
 - Both panes restore their tabs and search options, including hidden tabs. Delayed tab closure stays in its owning pane without stealing focus or interrupting the other pane's folder updates.

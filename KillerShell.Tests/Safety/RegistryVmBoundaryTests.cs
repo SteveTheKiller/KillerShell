@@ -8,7 +8,8 @@ namespace KillerShell.Tests.Safety;
 public sealed class RegistryVmBoundaryTests
 {
     [Theory]
-    [InlineData(nameof(RegistryEditorLogicTests.RenameKey_PreservesProtectedPermissionsAndOpenHandles))]
+    [InlineData(nameof(RegistryEditorLogicTests.RenameKey_PreservesProtectedPermissionsAndChildren))]
+    [InlineData(nameof(RegistryEditorLogicTests.RenameKey_OntoAnExistingName_ChangesNothing))]
     [InlineData(nameof(RegistryEditorLogicTests.Renames_KeepUncommonValueTypes))]
     public void NativeRegistryTestsRequireVmAdmissionAtDiscovery(string methodName)
     {
