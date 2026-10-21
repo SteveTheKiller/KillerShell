@@ -140,10 +140,26 @@ Write-Host 'Preflight OK'
 # --- 3. Vulnerable package scan (required at every release) ---
 Step "Scanning for vulnerable packages"
 dotnet restore | Out-Null
-$scan = dotnet list package --vulnerable --include-transitive 2>&1 | Out-String
+if ($LASTEXITCODE -ne 0) { Fail 'Package restore failed. Release audit is incomplete.' }
+$scan = dotnet list KillerShell.csproj package --vulnerable --include-transitive --format json --output-version 1 2>&1 | Out-String
+if ($LASTEXITCODE -ne 0) { Fail 'Package vulnerability audit failed. Resolve the audit error before releasing.' }
 Write-Host $scan
-if ($scan -match 'has the following vulnerable packages') {
-    Fail 'Vulnerable packages found. Resolve before releasing.'
+try { $audit = $scan | ConvertFrom-Json -ErrorAction Stop }
+catch { Fail 'Package vulnerability audit did not return valid JSON.' }
+if ($audit.version -ne 1 -or $audit.parameters -notmatch '(?:^|\s)--vulnerable(?:\s|$)' -or
+    $audit.parameters -notmatch '(?:^|\s)--include-transitive(?:\s|$)' -or
+    @($audit.sources | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }).Count -eq 0 -or @($audit.projects).Count -ne 1 -or
+    [IO.Path]::GetFileName([string]$audit.projects[0].path) -ne 'KillerShell.csproj') {
+    Fail 'Package vulnerability audit is incomplete or covers the wrong project.'
+}
+if (@($audit.PSObject.Properties.Name | Where-Object { $_ -notin @('version', 'parameters', 'sources', 'projects') }).Count -or
+    @($audit.projects[0].PSObject.Properties.Name | Where-Object { $_ -notin @('path', 'frameworks') }).Count) {
+    Fail 'Package vulnerability audit contains diagnostics or unsupported data. Review it before releasing.'
+}
+foreach ($framework in $audit.projects[0].frameworks) {
+    foreach ($package in (@($framework.topLevelPackages) + @($framework.transitivePackages))) {
+        if ($null -ne $package) { Fail 'Vulnerable packages found. Resolve before releasing.' }
+    }
 }
 
 # --- 3b. Release tests ---
