@@ -543,6 +543,11 @@ namespace KillerShell.Services
         /// <summary>Permanent delete. Ours, recursive, cancelable.</summary>
         public static FileOpResult Delete(IEnumerable<string> paths, Action<FileOpProgress> onProgress,
                                           CancellationToken ct)
+            => Delete(paths, onProgress, ct, null);
+
+        /// <param name="removed">Test seam: called after each entry inside a folder is removed.</param>
+        internal static FileOpResult Delete(IEnumerable<string> paths, Action<FileOpProgress> onProgress,
+                                            CancellationToken ct, Action<string>? removed)
         {
             var list = new List<string>(paths);
             var result = new FileOpResult();
@@ -555,9 +560,21 @@ namespace KillerShell.Services
                 progress.CurrentFile = p;
                 onProgress(progress);
 
+                // The cancel can land inside that callback. Nothing is touched after it.
+                if (ct.IsCancellationRequested) { result.Canceled = true; return result; }
+
+                bool removedAny = false;
                 try
                 {
-                    if (Directory.Exists(p)) Directory.Delete(p, recursive: true);
+                    if (Directory.Exists(p))
+                    {
+                        if (!DeleteTree(p, ct, removed, ref removedAny))
+                        {
+                            result.Canceled = true;
+                            if (removedAny) result.Failed.Add((p, "Canceled after part of this folder was deleted."));
+                            return result;
+                        }
+                    }
                     else if (File.Exists(p)) File.Delete(p);
                     result.Succeeded++;
                 }
@@ -568,6 +585,39 @@ namespace KillerShell.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Recursive delete that checks the token before every removal, so a cancel stops at the
+        /// next entry instead of finishing the subtree. A junction or directory symlink is removed
+        /// as the link and never walked. Returns false when canceled.
+        /// </summary>
+        private static bool DeleteTree(string dir, CancellationToken ct, Action<string>? removed,
+                                       ref bool removedAny)
+        {
+            if (!IsLink(dir))
+            {
+                foreach (string entry in Directory.GetFileSystemEntries(dir))
+                {
+                    if (ct.IsCancellationRequested) return false;
+                    if ((File.GetAttributes(entry) & FileAttributes.Directory) != 0)
+                    {
+                        if (!DeleteTree(entry, ct, removed, ref removedAny)) return false;
+                    }
+                    else
+                    {
+                        File.Delete(entry);
+                        removedAny = true;
+                        removed?.Invoke(entry);
+                    }
+                }
+            }
+
+            if (ct.IsCancellationRequested) return false;
+            Directory.Delete(dir);
+            removedAny = true;
+            removed?.Invoke(dir);
+            return true;
         }
 
         /// <summary>

@@ -506,6 +506,144 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        [Fact]
+        public void PreCanceledDelete_ChangesNothing()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                File.WriteAllText(Path.Combine(target, "a.txt"), "a");
+                using var cts = new CancellationTokenSource();
+                cts.Cancel();
+
+                FileOpResult result = FileOps.Delete([target], _ => { }, cts.Token);
+
+                Assert.True(result.Canceled);
+                Assert.Equal(0, result.Succeeded);
+                Assert.True(File.Exists(Path.Combine(target, "a.txt")));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
+        public void CancelInFirstProgressCallback_PreservesTheDirectory()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                File.WriteAllText(Path.Combine(target, "a.txt"), "a");
+                using var cts = new CancellationTokenSource();
+
+                FileOpResult result = FileOps.Delete([target], _ => cts.Cancel(), cts.Token);
+
+                Assert.True(result.Canceled);
+                Assert.Equal(0, result.Succeeded);
+                Assert.True(File.Exists(Path.Combine(target, "a.txt")));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
+        public void CancelBetweenChildren_StopsBeforeTheNextChildAndReportsThePartialFolder()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                for (int i = 0; i < 5; i++) File.WriteAllText(Path.Combine(target, i + ".txt"), "x");
+                using var cts = new CancellationTokenSource();
+                int removed = 0;
+
+                FileOpResult result = FileOps.Delete([target], _ => { }, cts.Token,
+                    _ => { if (++removed == 2) cts.Cancel(); });
+
+                Assert.True(result.Canceled);
+                Assert.Equal(0, result.Succeeded);
+                Assert.Equal(2, removed);
+                Assert.Equal(3, Directory.GetFiles(target).Length);
+                Assert.Equal(target, Assert.Single(result.Failed).Path);
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
+        public void CancelAfterTheLastItemStarts_IsNotReportedAsSuccess()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string first = Path.Combine(root, "first.txt");
+                string last = Directory.CreateDirectory(Path.Combine(root, "last")).FullName;
+                File.WriteAllText(first, "x");
+                File.WriteAllText(Path.Combine(last, "a.txt"), "a");
+                File.WriteAllText(Path.Combine(last, "b.txt"), "b");
+                using var cts = new CancellationTokenSource();
+
+                FileOpResult result = FileOps.Delete([first, last], _ => { }, cts.Token,
+                    path => { if (path.StartsWith(last, StringComparison.OrdinalIgnoreCase)) cts.Cancel(); });
+
+                Assert.True(result.Canceled);
+                Assert.Equal(1, result.Succeeded);
+                Assert.False(File.Exists(first));
+                Assert.True(Directory.Exists(last));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
+        public void DeletingAFolderWithAJunction_RemovesOnlyTheLink()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string victim = Directory.CreateDirectory(Path.Combine(root, "victim")).FullName;
+                string victimFile = Path.Combine(victim, "keep.txt");
+                File.WriteAllText(victimFile, "keep");
+                string target = Directory.CreateDirectory(Path.Combine(root, "target")).FullName;
+                File.WriteAllText(Path.Combine(target, "own.txt"), "own");
+                CreateJunction(Path.Combine(target, "link"), victim);
+
+                FileOpResult result = FileOps.Delete([target], _ => { }, CancellationToken.None);
+
+                Assert.Equal(1, result.Succeeded);
+                Assert.Empty(result.Failed);
+                Assert.False(Directory.Exists(target));
+                Assert.Equal("keep", File.ReadAllText(victimFile));
+            }
+            finally
+            {
+                RemoveJunctions(root);
+                Directory.Delete(root, true);
+            }
+        }
+
+        [Fact]
+        public void LockedChildDuringDelete_IsReportedAndTheRestOfTheBatchContinues()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string locked = Directory.CreateDirectory(Path.Combine(root, "locked")).FullName;
+                string lockedFile = Path.Combine(locked, "held.txt");
+                File.WriteAllText(lockedFile, "held");
+                string other = Path.Combine(root, "other.txt");
+                File.WriteAllText(other, "x");
+
+                FileOpResult result;
+                using (new FileStream(lockedFile, FileMode.Open, FileAccess.Read, FileShare.None))
+                    result = FileOps.Delete([locked, other], _ => { }, CancellationToken.None);
+
+                Assert.False(result.Canceled);
+                Assert.Equal(1, result.Succeeded);
+                Assert.Equal(locked, Assert.Single(result.Failed).Path);
+                Assert.True(File.Exists(lockedFile));
+                Assert.False(File.Exists(other));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
         private static void CreateJunction(string link, string target)
         {
             var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe",
