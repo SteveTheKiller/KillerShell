@@ -1,6 +1,6 @@
 @{
     RootModule        = 'KillerScripts.psm1'
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '1.0.1'
     GUID              = 'b7e6f2a4-9c1d-4f3b-8a2e-5d6c7f8a9b01'
     Author            = 'Steve'
     CompanyName       = 'killertools.net'

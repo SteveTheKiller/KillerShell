@@ -99,7 +99,7 @@ function Invoke-KillerScript {
     if (-not $Offline) {
         try {
             $body = Get-KsWeb -Url ($script:RawBase + $file)
-            [System.IO.File]::WriteAllText($cachePath, $body)
+            [System.IO.File]::WriteAllText($cachePath, $body, [Text.UTF8Encoding]::new($true))
         }
         catch {
             if (Test-Path -LiteralPath $cachePath) {
@@ -129,7 +129,7 @@ function Update-KillerScripts {
         if ($p.Name -notlike '*.ps1') { continue }
         try {
             $body = Get-KsWeb -Url ($script:RawBase + $p.Name)
-            [System.IO.File]::WriteAllText((Join-Path (Get-KsCacheDir) $p.Name), $body)
+            [System.IO.File]::WriteAllText((Join-Path (Get-KsCacheDir) $p.Name), $body, [Text.UTF8Encoding]::new($true))
             $count++
         }
         catch {

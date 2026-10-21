@@ -8,6 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 - Bundled KillerPivot verifies the selected tenant connection, reports failed or unverified disconnects, and preserves tenant configuration on failed or conflicting saves.
+- Bundled KillerScripts preserves non-ASCII text in downloaded and cached scripts under Windows PowerShell 5.1 and PowerShell 7.
 - Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.
 - Release builds stop on failed or incomplete dependency audits, refuse unsigned publication, and recheck the executable's trusted signature and checksum before publishing.
 - Uninstalling uses a fixed Windows helper, rejects unsafe installation and recovery permissions, reports failures, and preserves a recovery image and uninstall entry when cleanup fails.
