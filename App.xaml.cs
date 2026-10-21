@@ -146,8 +146,7 @@ namespace KillerShell
             if (e.Args.Length > 0 &&
                 string.Equals(e.Args[0], "/remove-machine-conflict", StringComparison.OrdinalIgnoreCase))
             {
-                RemoveMachineInstallConflict();
-                Shutdown(0);
+                Shutdown(RemoveMachineInstallConflict());
                 return;
             }
 
@@ -402,29 +401,44 @@ namespace KillerShell
             confirm.ShowDialog();
             if (!confirm.Confirmed) return;
 
-            if (runningMachine) RemovePerUserInstall();
-            else
+            try
             {
-                try
+                if (runningMachine) RemovePerUserInstall();
+                else
                 {
                     using var p = Process.Start(new ProcessStartInfo(current, "/remove-machine-conflict")
                     { UseShellExecute = true, Verb = "runas" });
-                    p?.WaitForExit();
+                    if (p == null) throw new IOException("The installation repair helper could not start.");
+                    p.WaitForExit();
+                    if (p.ExitCode != 0) throw new System.ComponentModel.Win32Exception(p.ExitCode);
                 }
-                catch { /* declining UAC leaves both copies in place */ }
+            }
+            catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223) { }
+            catch (Exception ex) { ShowInstallConflictFailure(ex); }
+        }
+
+        private static int RemoveMachineInstallConflict()
+        {
+            try
+            {
+                if (!KillerFamily.Deployment.InstallerExitCodes.IsElevated())
+                    return KillerFamily.Deployment.InstallerExitCodes.AccessDenied;
+                RemoveInstallConflict(machine: true);
+                return KillerFamily.Deployment.InstallerExitCodes.Success;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                return KillerFamily.Deployment.InstallerExitCodes.FromException(ex);
             }
         }
 
-        private static void RemoveMachineInstallConflict()
+        private static void ShowInstallConflictFailure(Exception error)
         {
-            string common = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), AppName);
-            try { Registry.LocalMachine.DeleteSubKeyTree(RegKey, false); } catch { }
-            try { Registry.LocalMachine.DeleteSubKeyTree(
-                @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell", false); } catch { }
-            UnregisterAssociations(machine: true);
-            try { if (Directory.Exists(common)) Directory.Delete(common, true); } catch { }
-            try { if (Directory.Exists(MachineInstallDir)) Directory.Delete(MachineInstallDir, true); } catch { }
-            Services.CommandLinePath.Unregister(MachineInstallDir, machine: true);
+            var owner = Current.MainWindow is { IsVisible: true } window ? window : null;
+            new ConfirmDialog(AppMainWindow.LocStatic("Str_Status_OpFailed") + Environment.NewLine + error.Message,
+                null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: owner == null, notification: true)
+                { Owner = owner }.ShowDialog();
         }
 
         /// <summary>Installs KillerShell, then relaunches from the installed location.
@@ -444,7 +458,8 @@ namespace KillerShell
 
                 // Only ever one install: drop the per-user copy so there is a single Start Menu
                 // entry and a single uninstall entry. Settings are deliberately left alone.
-                RemovePerUserInstall();
+                try { RemovePerUserInstall(); }
+                catch (Exception ex) { ShowInstallConflictFailure(ex); return false; }
                 SetDesktopShortcut(wantDesktop, MachineInstallExe);
 
                 Process.Start(new ProcessStartInfo(MachineInstallExe));
@@ -470,44 +485,46 @@ namespace KillerShell
                     Verb = "runas",          // triggers the UAC prompt
                 };
                 using var p = Process.Start(psi);
-                p?.WaitForExit();
-                return p is not null && p.ExitCode == 0 && File.Exists(MachineInstallExe);
+                if (p == null) throw new IOException("The installation helper could not start.");
+                p.WaitForExit();
+                if (p.ExitCode != 0) throw new System.ComponentModel.Win32Exception(p.ExitCode);
+                return File.Exists(MachineInstallExe);
             }
-            catch
+            catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223)
             {
-                // Declining the UAC prompt throws Win32Exception 1223 (ERROR_CANCELLED).
                 return false;
             }
+            catch (Exception ex) { ShowInstallConflictFailure(ex); return false; }
         }
 
         /// <summary>Remove a per-user install: files, shortcuts, and its HKCU install markers.
         /// Settings under the app's own registry key are deliberately left alone so theme,
         /// accent, locale and window placement survive the move to a machine-wide install.</summary>
         private static void RemovePerUserInstall()
-        {
-            try { if (File.Exists(StartMenuLnk)) File.Delete(StartMenuLnk); } catch { }
-            try { if (Directory.Exists(StartMenuDir)) Directory.Delete(StartMenuDir, true); } catch { }
-            try { if (File.Exists(DesktopLnk)) File.Delete(DesktopLnk); } catch { }
-            try { if (Directory.Exists(InstallDir)) Directory.Delete(InstallDir, true); } catch { }
-            Services.CommandLinePath.Unregister(InstallDir, machine: false);
-            try
-            {
-                using var key = Registry.CurrentUser.OpenSubKey(RegKey, writable: true);
-                key?.DeleteValue("Installed", throwOnMissingValue: false);
-                key?.DeleteValue("InstallPath", throwOnMissingValue: false);
-            }
-            catch { }
-            try
-            {
-                Registry.CurrentUser.DeleteSubKeyTree(
-                    @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell", throwOnMissingSubKey: false);
-            }
-            catch { }
+            => RemoveInstallConflict(machine: false);
 
-            // The per-user copy is going away, so its associations have to go with it. A
-            // ProgID left pointing at a deleted exe is a dead row in Open With that nothing
-            // in the UI would ever offer to clean up. (Associations.cs)
-            UnregisterAssociations(machine: false);
+        private static void RemoveInstallConflict(bool machine)
+        {
+            using var lease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName);
+            const string uninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell";
+            var hive = machine ? Registry.LocalMachine : Registry.CurrentUser;
+            var metadata = new Services.UninstallMetadata(hive, RegKey, uninstallKey);
+            Services.InstallationConflictRemoval.Remove(machine, () =>
+            {
+                Services.CommandLinePath.UnregisterRequired(machine ? MachineInstallDir : InstallDir, machine);
+                if (!UnregisterAssociations(machine)) throw new UnauthorizedAccessException();
+                using (var key = hive.OpenSubKey(RegKey, writable: true))
+                    foreach (string marker in InstallMarkers) key?.DeleteValue(marker, throwOnMissingValue: false);
+                hive.DeleteSubKeyTree(uninstallKey, throwOnMissingSubKey: false);
+            }, recovery =>
+            {
+                metadata.Restore();
+                if (recovery == null) return;
+                using var install = hive.CreateSubKey(RegKey);
+                install.SetValue("RecoveryImagePath", recovery);
+                using var entry = hive.CreateSubKey(uninstallKey);
+                entry.SetValue("RecoveryImagePath", recovery);
+            });
         }
 
         // ============================================================

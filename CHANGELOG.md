@@ -11,7 +11,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Bundled KillerScripts preserves non-ASCII text in downloaded and cached scripts under Windows PowerShell 5.1 and PowerShell 7.
 - Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.
 - Release builds stop on failed or incomplete dependency audits, refuse unsigned publication, and recheck the executable's trusted signature and checksum before publishing.
-- Uninstalling uses a fixed Windows helper, rejects unsafe installation and recovery permissions, reports failures, and preserves a recovery image and uninstall entry when cleanup fails.
+- Uninstalling and duplicate-install cleanup reject unsafe paths and permissions, preserve unrelated files and settings, report failures, and retain recovery images and registration when cleanup fails.
 - Failed saves preserve the previous content and keep the document unsaved. If restoring an in-place write also fails, KillerShell attempts a recovery copy of the original. Administrator retries report recovery paths and safely handle a closed editor. Saving keeps the file's permissions, attributes, alternate streams, hard links and symbolic links.
 - Saving refuses text the selected encoding cannot represent and explains how to save it as UTF-8. Encoding changes stay unsaved through Undo, and administrator saves preserve newer text and encoding edits.
 - Malformed legacy text and files whose bytes do not match their UTF-8, UTF-16 or UTF-32 byte order mark stay closed with a message instead of changing bytes on save. Valid legacy and UTF-32 files open and save unchanged.
