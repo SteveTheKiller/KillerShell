@@ -949,6 +949,6 @@
     <sys:String x:Key="Str_Scroll_PageLeft">Page vers la gauche</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Page vers la droite</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">La saisie est occupée. Le nouveau texte n’a pas été envoyé. Patientez et réessayez.</sys:String>
-    <sys:String x:Key="Str_Status_SearchPartial">Résultats partiels : {0} fichier(s) correspondant(s) ; recherche incomplète dans {1} chemin(s).</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Résultats partiels : {0} fichier(s) correspondant(s) ; recherche incomplète dans {1} chemin(s) ; {2} lien(s) de dossier ignoré(s).</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Compteurs GPU non attribués</sys:String>
 </ResourceDictionary>

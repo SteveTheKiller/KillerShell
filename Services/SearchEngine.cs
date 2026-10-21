@@ -21,6 +21,7 @@ namespace KillerShell.Services
         private readonly Func<string, IEnumerable<string>> _enumerateFiles;
         private readonly Func<string, IEnumerable<string>> _enumerateDirectories;
         public int IncompletePaths { get; private set; }
+        public int SkippedDirectoryLinks { get; private set; }
 
         public SearchEngine() : this(path => new FileStream(path, FileMode.Open, FileAccess.Read,
             FileShare.Read, bufferSize: 65536)) { }
@@ -101,6 +102,7 @@ namespace KillerShell.Services
             var    outQueue    = new ConcurrentQueue<SearchResult>();
             var incomplete = new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase);
             IncompletePaths = 0;
+            SkippedDirectoryLinks = 0;
             int    processed   = 0;
             int    seq         = 0;
             string currentFile = string.Empty;   // reference writes are atomic; racy is fine for status
@@ -187,7 +189,7 @@ namespace KillerShell.Services
             {
                 try
                 {
-                    foreach (var f in fileList ?? SafeEnumerateFiles(rootPath, ct))
+                    foreach (var f in fileList ?? SafeEnumerateFiles(rootPath, ct, path => incomplete.TryAdd(path, 0)))
                     {
                         if (ct.IsCancellationRequested) break;
                         feed.Add(f, ct);   // throws OCE if canceled while the queue is full
@@ -255,7 +257,7 @@ namespace KillerShell.Services
         }
 
         // ── File enumeration ─────────────────────────────────────
-        private IEnumerable<string> SafeEnumerateFiles(string root, CancellationToken ct)
+        private IEnumerable<string> SafeEnumerateFiles(string root, CancellationToken ct, Action<string> incomplete)
         {
             var queue = new Queue<string>();
             queue.Enqueue(root);
@@ -264,36 +266,45 @@ namespace KillerShell.Services
             {
                 ct.ThrowIfCancellationRequested();
                 string dir = queue.Dequeue();
-                IEnumerable<string> files = [];
-
-                try { files = _enumerateFiles(dir); }
-                catch { /* skip inaccessible */ }
-
-                foreach (var f in EnumerateCancelable(files, ct))
+                FileAttributes attributes;
+                try { attributes = File.GetAttributes(dir); }
+                catch { incomplete(dir); continue; }
+                if ((attributes & FileAttributes.ReparsePoint) != 0)
+                {
+                    SkippedDirectoryLinks++;
+                    continue;
+                }
+                foreach (var f in EnumerateCancelable(() => _enumerateFiles(dir), ct, () => incomplete(dir)))
                     yield return f;
 
                 ct.ThrowIfCancellationRequested();
-                IEnumerable<string> subdirs = [];
-                try { subdirs = _enumerateDirectories(dir); }
-                catch { /* skip inaccessible */ }
-
-                foreach (var d in EnumerateCancelable(subdirs, ct))
+                foreach (var d in EnumerateCancelable(() => _enumerateDirectories(dir), ct, () => incomplete(dir)))
                     queue.Enqueue(d);
             }
         }
 
-        private static IEnumerable<string> EnumerateCancelable(IEnumerable<string> entries, CancellationToken ct)
+        private static IEnumerable<string> EnumerateCancelable(Func<IEnumerable<string>> entries,
+            CancellationToken ct, Action incomplete)
         {
             ct.ThrowIfCancellationRequested();
-            using var iterator = entries.GetEnumerator();
-            while (true)
+            IEnumerator<string> iterator;
+            try { iterator = entries().GetEnumerator(); }
+            catch (OperationCanceledException) { throw; }
+            catch { incomplete(); yield break; }
+            using (iterator)
             {
-                ct.ThrowIfCancellationRequested();
-                bool next = iterator.MoveNext();
-                // A native enumeration call must return before managed cancellation can act.
-                ct.ThrowIfCancellationRequested();
-                if (!next) yield break;
-                yield return iterator.Current;
+                while (true)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    bool next;
+                    try { next = iterator.MoveNext(); }
+                    catch (OperationCanceledException) { throw; }
+                    catch { incomplete(); yield break; }
+                    // A native enumeration call must return before managed cancellation can act.
+                    ct.ThrowIfCancellationRequested();
+                    if (!next) yield break;
+                    yield return iterator.Current;
+                }
             }
         }
 

@@ -946,6 +946,6 @@
     <sys:String x:Key="Str_Scroll_PageLeft">向左翻页</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">向右翻页</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">输入正忙。新文本未发送。请稍候重试。</sys:String>
-    <sys:String x:Key="Str_Status_SearchPartial">部分结果：{0} 个文件匹配；无法完整搜索 {1} 个路径。</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">部分结果：{0} 个文件匹配；无法完整搜索 {1} 个路径；已跳过 {2} 个目录链接。</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">未分配的 GPU 计数器</sys:String>
 </ResourceDictionary>

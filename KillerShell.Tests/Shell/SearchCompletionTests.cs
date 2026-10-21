@@ -18,19 +18,22 @@ namespace KillerShell.Tests.Shell;
 
 public sealed class SearchCompletionTests
 {
-    [Fact]
-    public Task UnreadableContentShowsPartialResultsInTheLoadedWindow()
-        => EditorScenarioProcess.Run(typeof(SearchCompletionScenario).FullName!);
+    [Theory]
+    [InlineData("unreadable")]
+    [InlineData("links")]
+    public Task IncompleteOrSkippedPathsShowPartialResultsInTheLoadedWindow(string mode)
+        => EditorScenarioProcess.Run(typeof(SearchCompletionScenario).FullName!, mode);
 }
 
 public static class SearchCompletionScenario
 {
-    public static void Run()
+    public static void Run(string mode)
     {
-        string root = Path.Combine(Path.GetTempPath(), "ks-search-completion-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(root);
-        string path = Path.Combine(root, "locked.txt");
+        using var fixture = new KillerShell.Tests.Services.SearchLinkFixture();
+        string root = fixture.Root;
+        string path = fixture.File;
         File.WriteAllText(path, "needle");
+        if (mode == "links") fixture.AddLink();
         Environment.SetEnvironmentVariable("KS_STATE", Path.Combine(root, "state.json"));
         var app = RuntimeComponentProcess.StartApplication();
         var settings = new Dictionary<string, string>
@@ -52,12 +55,14 @@ public static class SearchCompletionScenario
             var opening = Stopwatch.StartNew();
             while (active.StatusKey != "Str_Status_Listed" && opening.Elapsed < TimeSpan.FromSeconds(10)) Pump();
             Assert.Equal("Str_Status_Listed", active.StatusKey);
-            active.PipeFiles = [path];
+            active.PipeFiles = mode == "unreadable" ? [path] : null;
+            active.IsBrowsing = false;
             active.Groups.Clear();
             var group = new TermGroup();
             group.Terms.Add(new SearchTerm { Mode = SearchTerm.SearchMode.Content, Pattern = "needle" });
             active.Groups.Add(group);
-            using var locked = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            using var locked = mode == "unreadable"
+                ? new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None) : null;
             ((Button)window.FindName("SearchButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             Console.WriteLine("Started locked-file content search.");
             var watch = Stopwatch.StartNew();
@@ -68,14 +73,16 @@ public static class SearchCompletionScenario
             Assert.False(active.IsSearching);
             Console.WriteLine("Search completion: " + active.StatusKey + ": " + active.StatusMessage);
             Assert.Equal("Str_Status_SearchPartial", active.StatusKey);
-            Assert.Empty(active.Results);
+            Assert.Equal(mode == "unreadable" ? 0 : 1, active.Results.Count);
+            Assert.Equal(mode == "unreadable" ? 1 : 0, active.Engine.IncompletePaths);
+            Assert.Equal(mode == "links" ? 1 : 0, active.Engine.SkippedDirectoryLinks);
             Assert.Contains("1", active.StatusMessage);
             Assert.Equal("WarnBrush", MainWindow.StatusBrushKey(active.StatusKey, false));
         }
         finally
         {
             Console.WriteLine("Closing search fixture.");
-            window?.Close(); app.Shutdown(); Directory.Delete(root, true);
+            window?.Close(); app.Shutdown();
             Console.WriteLine("Search fixture cleaned.");
         }
     }

@@ -12,7 +12,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Unbound Alt shortcuts reach the terminal while application shortcuts keep precedence.
 - Reused process IDs get fresh CPU, owner, and access information. Delayed owner lookups cannot update a different process.
 - Large terminal input stays ordered without blocking the window. A full input queue rejects the new text with a visible warning, and closing a terminal releases blocked work.
-- Stopping a search also stops empty-folder traversal between filesystem calls.
+- Search skips directory links, reports skipped or unreadable paths, and stops empty-folder traversal between filesystem calls.
 - CSV and HTML exports preserve existing reports when replacement fails.
 - Bundled KillerPivot verifies the selected tenant connection, reports failed or unverified disconnects, and preserves tenant configuration on failed or conflicting saves.
 - Bundled KillerScripts preserves non-ASCII text, completed caches after failed refreshes, and the script version used by each active invocation under Windows PowerShell 5.1 and PowerShell 7.

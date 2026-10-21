@@ -869,5 +869,5 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Scroll_PageDown">Stran navzdol</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Stran v levo</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Stran v desno</sys:String>
-    <sys:String x:Key="Str_Status_SearchPartial">Delni rezultati: {0} ujemajočih se datotek; {1} poti ni bilo mogoče v celoti preiskati.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Delni rezultati: {0} ujemajočih se datotek; {1} poti ni bilo mogoče v celoti preiskati; preskočene povezave do map: {2}.</sys:String>
 </ResourceDictionary>

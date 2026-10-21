@@ -961,6 +961,6 @@
     <sys:String x:Key="Str_Scroll_PageLeft">Бір бет солға</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Бір бет оңға</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">Енгізу бос емес. Жаңа мәтін жіберілмеді. Күтіп, қайта көріңіз.</sys:String>
-    <sys:String x:Key="Str_Status_SearchPartial">Ішінара нәтижелер: {0} файл сәйкес келді; {1} жолда толық іздеу мүмкін болмады.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Ішінара нәтижелер: {0} файл сәйкес келді; {1} жолда толық іздеу мүмкін болмады; {2} каталог сілтемесі өткізіп жіберілді.</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Тағайындалмаған GPU есептегіштері</sys:String>
 </ResourceDictionary>

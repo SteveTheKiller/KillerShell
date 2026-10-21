@@ -947,6 +947,6 @@
     <sys:String x:Key="Str_Scroll_PageLeft">O stránku doleva</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">O stránku doprava</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">Vstup je zaneprázdněn. Nový text nebyl odeslán. Počkejte a zkuste to znovu.</sys:String>
-    <sys:String x:Key="Str_Status_SearchPartial">Částečné výsledky: odpovídající soubory: {0}; zcela neprohledané cesty: {1}.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Částečné výsledky: odpovídající soubory: {0}; zcela neprohledané cesty: {1}; přeskočené odkazy na složky: {2}.</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Nepřiřazená počítadla GPU</sys:String>
 </ResourceDictionary>

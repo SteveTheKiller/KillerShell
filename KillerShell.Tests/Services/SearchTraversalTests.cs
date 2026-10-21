@@ -26,24 +26,26 @@ public sealed class SearchTraversalTests
     [Fact]
     public async Task CancellationAfterEmptyDirectoryEnumerationStopsBeforeNextNativeCall()
     {
+        using var fixture = new SearchLinkFixture();
         using var stop = new CancellationTokenSource();
         int directories = 0;
         var engine = new SearchEngine(_ => Stream.Null,
             _ => { stop.Cancel(); return Array.Empty<string>(); },
             _ => { directories++; return Array.Empty<string>(); });
-        await engine.SearchAsync("root", [], [], "", "", false, stop.Token);
+        await engine.SearchAsync(fixture.Root, [], [], "", "", false, stop.Token);
         Assert.Equal(0, directories);
     }
 
     [Fact]
     public async Task CancellationBetweenDirectoryEntriesDisposesTheEnumerator()
     {
+        using var fixture = new SearchLinkFixture();
         using var stop = new CancellationTokenSource();
         bool disposed = false;
         int returned = 0;
         IEnumerable<string> Directories(string root)
         {
-            if (root != "root") yield break;
+            if (root != fixture.Root) yield break;
             try
             {
                 for (int i = 0; i < 50; i++)
@@ -56,7 +58,7 @@ public sealed class SearchTraversalTests
             finally { disposed = true; }
         }
         var engine = new SearchEngine(_ => Stream.Null, _ => Array.Empty<string>(), Directories);
-        await engine.SearchAsync("root", [], [], "", "", false, stop.Token);
+        await engine.SearchAsync(fixture.Root, [], [], "", "", false, stop.Token);
         Assert.Equal(1, returned);
         Assert.True(disposed);
     }

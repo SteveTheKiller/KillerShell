@@ -995,6 +995,6 @@
     <sys:String x:Key="Str_Scroll_PageLeft">Side til venstre</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Side til høyre</sys:String>
     <sys:String x:Key="Str_Term_InputBusy">Inndata er opptatt. Den nye teksten ble ikke sendt. Vent og prøv igjen.</sys:String>
-    <sys:String x:Key="Str_Status_SearchPartial">Delvise resultater: {0} fil(er) samsvarte; {1} bane(r) kunne ikke gjennomsøkes fullstendig.</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">Delvise resultater: {0} fil(er) samsvarte; {1} bane(r) kunne ikke gjennomsøkes fullstendig; {2} kataloglenke(r) hoppet over.</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Ikke tilordnede GPU-tellere</sys:String>
 </ResourceDictionary>

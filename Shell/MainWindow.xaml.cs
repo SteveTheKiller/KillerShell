@@ -578,8 +578,9 @@ namespace KillerShell.Shell
                 sw.Stop();
                 if (tab.Cts.IsCancellationRequested)
                     SetTabStatusKey(tab, "Str_Status_Stopped");
-                else if (tab.Engine.IncompletePaths > 0)
-                    SetTabStatusKey(tab, "Str_Status_SearchPartial", tab.Results.Count, tab.Engine.IncompletePaths);
+                else if (tab.Engine.IncompletePaths > 0 || tab.Engine.SkippedDirectoryLinks > 0)
+                    SetTabStatusKey(tab, "Str_Status_SearchPartial", tab.Results.Count,
+                        tab.Engine.IncompletePaths, tab.Engine.SkippedDirectoryLinks);
                 else
                     SetTabStatusKey(tab, "Str_Status_Done",
                         sw.Elapsed.TotalSeconds.ToString("0.00"), tab.Results.Count);
