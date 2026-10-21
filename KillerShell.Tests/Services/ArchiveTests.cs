@@ -262,6 +262,51 @@ namespace KillerShell.Tests.Services
         }
 
         [Theory]
+        [InlineData("b.txt", "A.txt", "a.txt", "b.txt")]
+        [InlineData("sub/b.txt", "A.TXT", "sub/a.txt", "sub/b.txt")]
+        [InlineData("a.txt", "DIR", "a.txt", "dir/x.txt")]
+        [InlineData("other", "dir", "Dir/x.txt", "other/y.txt")]
+        public void ZipRename_RejectsNamesThatWouldCollideOnWindowsExtraction(string entry, string newName, params string[] names)
+        {
+            string path = CreateCaseArchive(".zip", names);
+            try
+            {
+                byte[] original = File.ReadAllBytes(path);
+
+                var result = ArchiveWriter.Rename(path, entry, newName, null, CancellationToken.None);
+
+                Assert.False(result.Ok);
+                Assert.Equal("Str_Status_ArchiveNameTaken", result.ErrorKey);
+                Assert.Equal(original, File.ReadAllBytes(path));
+                string output = Path.Combine(Path.GetDirectoryName(path)!, "out");
+                Assert.True(ArchiveProvider.ExtractAll(path, output, CancellationToken.None, out string? error), error);
+            }
+            finally
+            {
+                Directory.Delete(Path.GetDirectoryName(path)!, true);
+            }
+        }
+
+        [Fact]
+        public void ZipRename_LoneCaseOnlyRenameStaysExtractable()
+        {
+            string path = CreateCaseArchive(".zip", "b.txt", "c.txt");
+            try
+            {
+                var result = ArchiveWriter.Rename(path, "b.txt", "B.txt", null, CancellationToken.None);
+
+                Assert.True(result.Ok, result.ErrorDetail ?? result.ErrorKey);
+                string output = Path.Combine(Path.GetDirectoryName(path)!, "out");
+                Assert.True(ArchiveProvider.ExtractAll(path, output, CancellationToken.None, out string? error), error);
+                Assert.Equal("B.txt", Path.GetFileName(Assert.Single(Directory.GetFiles(output, "b.txt"))));
+            }
+            finally
+            {
+                Directory.Delete(Path.GetDirectoryName(path)!, true);
+            }
+        }
+
+        [Theory]
         [InlineData(0, false)]
         [InlineData(1, false)]
         [InlineData(2, false)]

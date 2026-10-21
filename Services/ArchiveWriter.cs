@@ -562,13 +562,21 @@ namespace KillerShell.Services
                 return result;
             }
 
+            // Compared the way extraction will see it: Windows paths ignore case, so a name that
+            // differs only in case, or a file and folder that would share a path, would make the
+            // archive refuse to extract (ArchiveProvider.ExtractFolderChildren). The entries being
+            // renamed are left out, so a lone case-only rename still goes through.
             foreach (string n in existing)
-                if (n.Equals(newPath, StringComparison.Ordinal)
-                    || n.StartsWith(newPath + "/", StringComparison.Ordinal))
+            {
+                if (n.Equals(oldPath, StringComparison.Ordinal)
+                    || n.StartsWith(oldPath + "/", StringComparison.Ordinal)) continue;
+                if (n.Equals(newPath, StringComparison.OrdinalIgnoreCase)
+                    || n.StartsWith(newPath + "/", StringComparison.OrdinalIgnoreCase))
                 {
                     result.ErrorKey = "Str_Status_ArchiveNameTaken";
                     return result;
                 }
+            }
 
             int moved = 0;
             var ok = Rebuild(archivePath, raw =>
