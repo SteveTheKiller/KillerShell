@@ -57,6 +57,22 @@ namespace KillerShell.Services
             });
         }
 
+        /// <summary>
+        /// Restart a row from the Processes list, as the list's own menu does
+        /// (ProcessListControl.RestartProcess). The path captured with the row is checked against
+        /// the running image and held open through the relaunch, so a missing, moved or replaced
+        /// executable refuses the restart before the original is terminated.
+        /// </summary>
+        internal static Task<bool> RestartListedAsync(int pid, long? startTimeUtcTicks, string path, string arguments,
+            bool elevated, Func<bool>? confirm, Func<int, IRestartProcess?>? open = null,
+            Action<ProcessStartInfo>? start = null, Func<string, IDisposable>? holdImage = null)
+        {
+            var psi = new ProcessStartInfo(path, arguments) { UseShellExecute = true };
+            if (elevated) psi.Verb = "runas";
+            return RestartAsync(pid, psi, open: open, start: start, expectedStartTimeUtcTicks: startTimeUtcTicks,
+                expectedImagePath: path, holdImage: holdImage, confirm: confirm);
+        }
+
         internal static ProcessStartInfo CreateBrokerStartInfo(int pid, ProcessStartInfo replacement,
             long expectedStartTimeUtcTicks, int timeoutMilliseconds = 10000)
         {

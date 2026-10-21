@@ -148,6 +148,68 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        [Theory]
+        [InlineData("missing")]
+        [InlineData("denied")]
+        [InlineData("mismatch")]
+        public async Task ListedRestart_RefusesBeforeKillWhenTheImageCannotBeUsed(string failure)
+        {
+            using var original = new ControlledProcess();
+            original.Release.Set();
+            bool launched = false;
+            string path = failure == "mismatch" ? @"C:\fixture\replaced.exe" : original.ImagePath;
+            Func<string, IDisposable> hold = failure switch
+            {
+                "missing" => _ => throw new System.IO.FileNotFoundException("gone"),
+                "denied"  => _ => throw new UnauthorizedAccessException("denied"),
+                _         => _ => new Held(),
+            };
+
+            await Assert.ThrowsAnyAsync<Exception>(() => ProcessRestart.RestartListedAsync(42, 123, path, "",
+                elevated: false, confirm: () => true, open: _ => original, start: _ => launched = true, holdImage: hold));
+
+            Assert.False(original.Killed, "The original must survive a refused restart.");
+            Assert.False(launched);
+        }
+
+        [Fact]
+        public async Task ListedRestart_HoldsTheImageThroughTheRelaunch()
+        {
+            using var original = new ControlledProcess();
+            original.Release.Set();
+            var held = new Held();
+            string? heldPath = null;
+            bool launchedWhileHeld = false;
+
+            bool restarted = await ProcessRestart.RestartListedAsync(42, 123, original.ImagePath, "-x",
+                elevated: false, confirm: () => true, open: _ => original,
+                start: info => launchedWhileHeld = !held.Disposed && info.FileName == original.ImagePath && info.Arguments == "-x",
+                holdImage: p => { heldPath = p; return held; });
+
+            Assert.True(restarted);
+            Assert.True(original.Killed);
+            Assert.Equal(original.ImagePath, heldPath);
+            Assert.True(launchedWhileHeld, "The image must stay held until the replacement starts.");
+            Assert.True(held.Disposed);
+        }
+
+        [Fact]
+        public async Task ListedRestart_StillRefusesAReusedProcessId()
+        {
+            using var original = new ControlledProcess();
+            original.Release.Set();
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ProcessRestart.RestartListedAsync(42, 999,
+                original.ImagePath, "", elevated: false, confirm: () => true, open: _ => original,
+                start: _ => { }, holdImage: _ => new Held()));
+            Assert.False(original.Killed);
+        }
+
+        private sealed class Held : IDisposable
+        {
+            internal bool Disposed;
+            public void Dispose() => Disposed = true;
+        }
+
         private sealed class ControlledProcess : IRestartProcess
         {
             public long StartTimeUtcTicks => 123;

@@ -1404,10 +1404,8 @@ namespace KillerShell.Tools
 
             try
             {
-                var psi = new ProcessStartInfo(path, args) { UseShellExecute = true };
-                if (elevated) psi.Verb = "runas";
-                bool restarted = await Services.ProcessRestart.RestartAsync(p.Pid, psi,
-                    expectedStartTimeUtcTicks: p.StartTimeUtcTicks, confirm: () =>
+                bool restarted = await Services.ProcessRestart.RestartListedAsync(p.Pid, p.StartTimeUtcTicks, path, args,
+                    elevated, confirm: () =>
                     {
                         var confirmation = new ConfirmDialog(
                             string.Format(MainWindow.LocStatic("Str_Dlg_ProcKillMsg"), p.Name, p.Pid), path,
@@ -1422,10 +1420,13 @@ namespace KillerShell.Tools
             catch (Exception ex) when (ex is Win32Exception
                                              or InvalidOperationException
                                              or NotSupportedException
-                                             or System.TimeoutException)
+                                             or System.TimeoutException
+                                             or System.IO.IOException
+                                             or UnauthorizedAccessException)
             {
-                // Covers a canceled UAC prompt (ERROR_CANCELLED, Win32Exception) as well as a
-                // launch failure - both land here rather than crashing the refresh loop.
+                // Covers a canceled UAC prompt (ERROR_CANCELLED, Win32Exception), a launch
+                // failure, and an executable that is missing or cannot be held before the original
+                // is ended - all land here rather than crashing the refresh loop.
                 ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_RestartFailed"), p.Name, ex.Message),
                            error: true);
             }
