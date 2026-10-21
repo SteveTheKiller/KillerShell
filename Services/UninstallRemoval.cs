@@ -10,11 +10,24 @@ namespace KillerShell.Services
     /// <summary>Removes only the fixed installation image, generated icon and empty directory.</summary>
     internal static class UninstallRemoval
     {
+        // Raw inherited ACLs can retain generic rights instead of mapped file rights.
+        private const uint GenericAll = 0x10000000;
+        private const uint GenericWrite = 0x40000000;
+
         internal sealed class EnvironmentBoundary
         {
             internal Func<Environment.SpecialFolder, string> Folder = Environment.GetFolderPath;
             internal Action<string> Cleanup = StartImageCleanup;
             internal Func<Process[]> Processes = () => Process.GetProcessesByName("KillerShell");
+            internal Func<string, DirectorySecurity> ReadDirectorySecurity = path =>
+                Directory.GetAccessControl(path, AccessControlSections.Owner | AccessControlSections.Access);
+            internal Func<string, FileSecurity> ReadFileSecurity = path =>
+                File.GetAccessControl(path, AccessControlSections.Owner | AccessControlSections.Access);
+            internal Func<SecurityIdentifier?> ReadCreatorOwner = () =>
+            {
+                using var identity = WindowsIdentity.GetCurrent();
+                return identity.Owner;
+            };
         }
 
         internal static void Remove(bool machine)
@@ -35,7 +48,7 @@ namespace KillerShell.Services
             string image = Path.Combine(directory, "KillerShell.exe");
             string icon = Path.Combine(directory, "text-file.ico");
             RejectLinks(directory);
-            if (machine) ValidateMachineSecurity(directory, parent);
+            if (machine) ValidateMachineSecurity(directory, parent, environment, validateRecoveryOwner: true);
             var transaction = new Transaction(directory, image, icon, parent, environment.Cleanup);
             if (!Directory.Exists(directory)) return transaction;
             foreach (string entry in Directory.EnumerateFileSystemEntries(directory))
@@ -85,16 +98,20 @@ namespace KillerShell.Services
         }
 
         internal static void ValidateMachineImage(string expectedImage)
+            => ValidateMachineImage(expectedImage, new EnvironmentBoundary());
+
+        internal static void ValidateMachineImage(string expectedImage, EnvironmentBoundary environment)
         {
-            string parent = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            string parent = environment.Folder(Environment.SpecialFolder.ProgramFiles);
             string directory = Path.Combine(parent, "KillerShell");
             if (!string.Equals(Path.GetFullPath(expectedImage), Path.Combine(directory, "KillerShell.exe"), StringComparison.OrdinalIgnoreCase))
                 throw new UnauthorizedAccessException("The uninstall image is outside the fixed machine installation.");
             RejectLinks(expectedImage);
-            ValidateMachineSecurity(directory, parent);
+            ValidateMachineSecurity(directory, parent, environment);
         }
 
-        private static void ValidateMachineSecurity(string directory, string parent)
+        private static void ValidateMachineSecurity(string directory, string parent, EnvironmentBoundary environment,
+            bool validateRecoveryOwner = false)
         {
             if (!string.Equals(Path.GetDirectoryName(Path.GetFullPath(directory)), Path.GetFullPath(parent), StringComparison.OrdinalIgnoreCase))
                 throw new UnauthorizedAccessException("The uninstall directory is outside its trusted parent.");
@@ -103,31 +120,52 @@ namespace KillerShell.Services
             SecurityIdentifier? installer = null;
             try { installer = (SecurityIdentifier)new NTAccount("NT SERVICE", "TrustedInstaller").Translate(typeof(SecurityIdentifier)); }
             catch (IdentityNotMappedException) { }
-            bool Trusted(IdentityReference sid) => sid.Equals(system) || sid.Equals(administrators) || sid.Equals(installer);
+            bool Trusted(IdentityReference? sid) => sid != null && (sid.Equals(system) || sid.Equals(administrators) || sid.Equals(installer));
+            // The pre-elevation image check cannot know the later creating token.
+            // Begin checks it before any removal can require newly created recovery objects.
+            if (validateRecoveryOwner && !Trusted(environment.ReadCreatorOwner()))
+                throw new UnauthorizedAccessException("Machine uninstall recovery requires a trusted creating owner.");
+            var creatorOwner = new SecurityIdentifier(WellKnownSidType.CreatorOwnerSid, null);
+            const uint fileWrites = GenericAll | GenericWrite | (uint)(FileSystemRights.Write
+                | FileSystemRights.Delete | FileSystemRights.ChangePermissions | FileSystemRights.TakeOwnership);
+            const uint pathControl = GenericAll | (uint)(FileSystemRights.Delete | FileSystemRights.DeleteSubdirectoriesAndFiles
+                | FileSystemRights.ChangePermissions | FileSystemRights.TakeOwnership);
             for (string? item = directory; !string.IsNullOrEmpty(item); item = Path.GetDirectoryName(item))
             {
                 if (!Directory.Exists(item)) continue;
-                var security = Directory.GetAccessControl(item, AccessControlSections.Owner | AccessControlSections.Access);
+                var security = environment.ReadDirectorySecurity(item);
                 if (!Trusted(security.GetOwner(typeof(SecurityIdentifier))))
                     throw new UnauthorizedAccessException("The machine uninstall path is not owned by a trusted administrator or system principal.");
                 bool installation = string.Equals(item, directory, StringComparison.OrdinalIgnoreCase);
-                FileSystemRights dangerous = FileSystemRights.Delete | FileSystemRights.DeleteSubdirectoriesAndFiles
-                    | FileSystemRights.ChangePermissions | FileSystemRights.TakeOwnership;
-                if (installation) dangerous |= FileSystemRights.Write;
+                bool immediateParent = string.Equals(item, parent, StringComparison.OrdinalIgnoreCase);
+                uint dangerous = pathControl;
+                if (installation || immediateParent) dangerous |= fileWrites;
                 foreach (FileSystemAccessRule rule in security.GetAccessRules(true, true, typeof(SecurityIdentifier)))
-                    if (rule.AccessControlType == AccessControlType.Allow
-                        && (rule.PropagationFlags & PropagationFlags.InheritOnly) == 0
-                        && (rule.FileSystemRights & dangerous) != 0 && !Trusted(rule.IdentityReference))
+                {
+                    if (rule.AccessControlType != AccessControlType.Allow || Trusted(rule.IdentityReference)) continue;
+                    uint rights = unchecked((uint)rule.FileSystemRights);
+                    bool effective = (rule.PropagationFlags & PropagationFlags.InheritOnly) == 0;
+                    // Rollback creates a directory and may recreate its icon. Moved files
+                    // retain their ACLs; only the immediate parent's inheritance applies.
+                    bool reachesDirectory = (rule.InheritanceFlags & InheritanceFlags.ContainerInherit) != 0;
+                    bool reachesIcon = (rule.InheritanceFlags & InheritanceFlags.ObjectInherit) != 0
+                        && (rule.PropagationFlags & PropagationFlags.NoPropagateInherit) == 0;
+                    bool unsafeRecovery = immediateParent
+                        && ((reachesDirectory && (rights & (fileWrites | pathControl)) != 0)
+                            || (reachesIcon && (rights & fileWrites) != 0))
+                        && !rule.IdentityReference.Equals(creatorOwner);
+                    if ((effective && (rights & dangerous) != 0) || unsafeRecovery)
                         throw new UnauthorizedAccessException("The machine uninstall path permits changes by an untrusted principal.");
+                }
             }
             foreach (string file in new[] {Path.Combine(directory, "KillerShell.exe"), Path.Combine(directory, "text-file.ico")})
             {
                 if (!File.Exists(file)) continue;
-                var security = File.GetAccessControl(file, AccessControlSections.Owner | AccessControlSections.Access);
+                var security = environment.ReadFileSecurity(file);
                 if (!Trusted(security.GetOwner(typeof(SecurityIdentifier)))) throw new UnauthorizedAccessException("The uninstall file owner is not trusted.");
                 foreach (FileSystemAccessRule rule in security.GetAccessRules(true, true, typeof(SecurityIdentifier)))
                     if (rule.AccessControlType == AccessControlType.Allow
-                        && (rule.FileSystemRights & (FileSystemRights.Write | FileSystemRights.Delete | FileSystemRights.ChangePermissions | FileSystemRights.TakeOwnership)) != 0
+                        && (unchecked((uint)rule.FileSystemRights) & fileWrites) != 0
                         && !Trusted(rule.IdentityReference)) throw new UnauthorizedAccessException("The uninstall file is writable by an untrusted principal.");
             }
         }

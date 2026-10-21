@@ -10,7 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Bundled KillerPivot verifies the exact selected tenant connection, closes failed connections, and preserves tenant configuration on failed or conflicting saves.
 - Editing an archive preserves unrelated files beside it, including files whose names match an old temporary probe.
 - Release builds refuse unsigned publication and recheck the executable's trusted signature and checksum before publishing.
-- Uninstalling uses a fixed Windows helper, reports cancellation and removal failures, and preserves a recovery image and uninstall entry when cleanup fails.
+- Uninstalling uses a fixed Windows helper, rejects unsafe installation and recovery permissions, reports failures, and preserves a recovery image and uninstall entry when cleanup fails.
 - Failed saves preserve the previous content and keep the document unsaved. If restoring an in-place write also fails, KillerShell attempts a recovery copy of the original. Administrator retries report recovery paths and safely handle a closed editor. Saving keeps the file's permissions, attributes, alternate streams, hard links and symbolic links.
 - Saving refuses text the selected encoding cannot represent and explains how to save it as UTF-8. Encoding changes stay unsaved through Undo, and administrator saves preserve newer text and encoding edits.
 - A text file whose bytes do not match its UTF-8, UTF-16 or UTF-32 byte order mark is no longer opened with replacement characters that the next save would write over it. It stays closed with a message, and UTF-32 files now open and save unchanged.
