@@ -1,4 +1,4 @@
-# Changelog
+# KillerShell Changelog
 
 All notable changes to KillerShell are documented here.
 

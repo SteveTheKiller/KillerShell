@@ -1,4 +1,4 @@
-# Changelog
+# KillerPivot Changelog
 
 ## 1.0.2 (Unreleased)
 
