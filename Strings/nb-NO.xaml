@@ -994,4 +994,5 @@
     <sys:String x:Key="Str_Scroll_PageDown">Side ned</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">Side til venstre</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Side til høyre</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Input is busy. The new text was not sent. Wait and try again.</sys:String>
 </ResourceDictionary>

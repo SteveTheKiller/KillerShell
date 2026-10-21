@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.1] - Unreleased
 
 ### Fixed
+- Large terminal input stays ordered without blocking the window. A full input queue rejects the new text with a visible warning, and closing a terminal releases blocked work.
 - Stopping a search also stops empty-folder traversal between filesystem calls.
 - CSV and HTML exports preserve existing reports when replacement fails.
 - Bundled KillerPivot verifies the selected tenant connection, reports failed or unverified disconnects, and preserves tenant configuration on failed or conflicting saves.

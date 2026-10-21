@@ -960,4 +960,5 @@
     <sys:String x:Key="Str_Scroll_PageDown">На страницу вниз</sys:String>
     <sys:String x:Key="Str_Scroll_PageLeft">На страницу влево</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">На страницу вправо</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">Input is busy. The new text was not sent. Wait and try again.</sys:String>
 </ResourceDictionary>

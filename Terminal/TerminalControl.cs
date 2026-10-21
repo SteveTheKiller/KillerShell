@@ -41,6 +41,7 @@ namespace KillerShell.Terminal
         private readonly TerminalBuffer _buf;
         private readonly VtParser _parser;
         private ConPtySession? _pty;
+        private TerminalInput? _input;
         private TerminalPalette _palette;
 
         private readonly Queue<byte[]> _incoming = new();
@@ -349,9 +350,11 @@ namespace KillerShell.Terminal
                 return;
             }
 
+            _input = new TerminalInput(_pty.Input);
             _pty.Exited += code => Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (_closing) return;
+                _input?.Stop();
                 WriteLocal("\r\n" + string.Format(MainWindow.LocStatic("Str_Term_Exited"), code) + "\r\n");
                 Exited?.Invoke(code);
             }));
@@ -483,13 +486,8 @@ namespace KillerShell.Terminal
         public void Send(string s)
         {
             if (_pty == null || _pty.HasExited || string.IsNullOrEmpty(s)) return;
-            try
-            {
-                var b = Encoding.UTF8.GetBytes(s);
-                _pty.Input.Write(b, 0, b.Length);
-                _pty.Input.Flush();
-            }
-            catch { /* the shell went away between keystroke and write */ }
+            if (_input != null && !_input.TrySend(s))
+                WriteLocal("\r\n" + MainWindow.LocStatic("Str_Term_InputBusy") + "\r\n");
         }
 
         public void Close()
@@ -504,8 +502,12 @@ namespace KillerShell.Terminal
                 _pendingOutputBytes = 0;
                 Monitor.PulseAll(_gate);
             }
-            _pty?.Dispose();
+            _input?.Stop();
+            _input = null;
+            var pty = _pty;
             _pty = null;
+            if (pty != null)
+                new Thread(pty.Dispose) { IsBackground = true, Name = "ConPTY cleanup" }.Start();
         }
 
         // ═══════════════════════════════════════════════════════════
