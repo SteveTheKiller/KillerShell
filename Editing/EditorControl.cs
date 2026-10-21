@@ -62,6 +62,13 @@ namespace KillerShell.Editing
         private Encoding _savedEncoding = new UTF8Encoding(false);
         private string? _savedTextOverride;
 
+        /// <summary>
+        /// SHA-256 of the bytes this document last read from or wrote to disk, or null when there
+        /// is nothing to compare against (untitled, demo, or a Save As the user already confirmed).
+        /// A save refuses to replace a file that no longer hashes to this (SafeFileWrite).
+        /// </summary>
+        internal string? DiskHash { get; private set; }
+
         static EditorControl()
         {
             IsModifiedProperty.OverrideMetadata(typeof(EditorControl),
@@ -153,6 +160,7 @@ namespace KillerShell.Editing
                 _encoding = encoding;
                 _savedEncoding = encoding;
                 _savedTextOverride = null;
+                DiskHash = Services.VerifiedFile.Sha256(bytes);
                 Text = text;
 
                 EncodingLabel = Describe(_encoding);
@@ -183,6 +191,7 @@ namespace KillerShell.Editing
             _encoding     = new UTF8Encoding(false);
             _savedEncoding = _encoding;
             _savedTextOverride = null;
+            DiskHash      = null;
             Text          = text;
             EncodingLabel = Describe(_encoding);
             NewLineLabel  = DescribeNewLine(Text);
@@ -203,12 +212,19 @@ namespace KillerShell.Editing
             _encoding     = new UTF8Encoding(false);
             _savedEncoding = _encoding;
             _savedTextOverride = null;
+            DiskHash      = null;
             EncodingLabel = Describe(_encoding);
             NewLineLabel  = DescribeNewLine(Text);
             Document.UndoStack.ClearAll();
             IsModified    = false;
             _wasDirty     = false;
         }
+
+        /// <summary>
+        /// Stop comparing against the last known disk content. For a Save As the user confirmed
+        /// in the file dialog, which already asked about replacing whatever is at that path.
+        /// </summary>
+        internal void ForgetDiskBaseline() => DiskHash = null;
 
         /// <summary>
         /// Give an untitled document the path it was just saved to, and the encoding to write
@@ -267,19 +283,29 @@ namespace KillerShell.Editing
         /// locked by another process) reports normally, because elevation would not fix it.
         /// </param>
         internal bool SaveFile(out string error, out bool accessDenied)
+            => SaveFile(out error, out accessDenied, out _);
+
+        /// <param name="changedOnDisk">
+        /// True when another program changed, replaced or deleted the file since this document
+        /// last read or wrote it. Nothing was written; the caller asks what to keep and passes
+        /// <paramref name="overwrite"/> to replace it anyway.
+        /// </param>
+        internal bool SaveFile(out string error, out bool accessDenied, out bool changedOnDisk, bool overwrite = false)
         {
             accessDenied = false;
+            changedOnDisk = false;
             try
             {
                 // The encoding instance carries its own preamble, so a file that arrived with a
                 // BOM keeps it and one that arrived without stays without. Written whole beside
                 // the file and swapped in, so a failed save leaves the old file as it was.
-                Services.SafeFileWrite.Write(FilePath, EncodedBytes());
+                Services.SafeFileWrite.Write(FilePath, EncodedBytes(), overwrite ? null : DiskHash);
                 CompleteSave(_encoding, Text);
 
                 error = string.Empty;
                 return true;
             }
+            catch (Services.DiskChangedException ex) { changedOnDisk = true; error = ex.Message; return false; }
             catch (UnauthorizedAccessException ex) { accessDenied = true; error = ex.Message; return false; }
             catch (Exception ex) { error = ex.Message; return false; }
         }
@@ -290,13 +316,15 @@ namespace KillerShell.Editing
         /// (Elevation.cs RetrySaveElevated): the hash of exactly these bytes goes to the elevated
         /// helper, which refuses a staged file that no longer matches.
         /// </summary>
-        internal byte[] EncodedBytes()
+        internal byte[] EncodedBytes() => Encode(Text, _encoding);
+
+        private static byte[] Encode(string text, Encoding encoding)
         {
-            byte[] preamble = _encoding.GetPreamble();
-            var strict = (Encoding)_encoding.Clone();
+            byte[] preamble = encoding.GetPreamble();
+            var strict = (Encoding)encoding.Clone();
             strict.EncoderFallback = EncoderFallback.ExceptionFallback;
             byte[] body;
-            try { body = strict.GetBytes(Text); }
+            try { body = strict.GetBytes(text); }
             catch (EncoderFallbackException ex)
             {
                 throw new InvalidOperationException(MainWindow.LocStatic("Str_Ed_LossyEncoding"), ex);
@@ -442,6 +470,9 @@ namespace KillerShell.Editing
         internal void CompleteSave(Encoding encoding, string savedText)
         {
             _savedEncoding = encoding;
+            // What is on disk now, so the next save compares against this write, not the load.
+            try { DiskHash = Services.VerifiedFile.Sha256(Encode(savedText, encoding)); }
+            catch (InvalidOperationException) { DiskHash = null; }
             // A helper may finish after newer edits. Its text is now the disk baseline,
             // while the undo marker still refers to the previous save.
             bool textUnchanged = string.Equals(Text, savedText, StringComparison.Ordinal);

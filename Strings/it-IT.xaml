@@ -450,6 +450,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">A capo automatico disattivato - scorri per vedere le righe lunghe.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} salvato.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Impossibile salvare {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} è stato modificato sul disco</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Un altro programma ha salvato questo file dopo che l'hai aperto. Scegli quale versione mantenere.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Ricarica</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} ricaricato dal disco.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} è stato modificato sul disco prima del salvataggio come amministratore. Non è stato salvato nulla; salva di nuovo per scegliere cosa mantenere.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Impossibile aprire {0}: {1}</sys:String>
 
     <!-- New blank document -->

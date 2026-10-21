@@ -473,6 +473,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Zeilenumbruch aus - scrollen, um lange Zeilen zu sehen.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} gespeichert.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">{0} konnte nicht gespeichert werden: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} wurde auf dem Datenträger geändert</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Ein anderes Programm hat diese Datei gespeichert, nachdem Sie sie geöffnet haben. Wählen Sie, welche Version erhalten bleiben soll.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Neu laden</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} wurde vom Datenträger neu geladen.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} wurde vor dem Speichern als Administrator auf dem Datenträger geändert. Es wurde nichts gespeichert; speichern Sie erneut, um zu wählen, was erhalten bleibt.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">{0} konnte nicht geöffnet werden: {1}</sys:String>
 
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->

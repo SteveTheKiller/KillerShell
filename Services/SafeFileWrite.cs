@@ -29,19 +29,48 @@ namespace KillerShell.Services
     /// the file; a failure during the write itself puts the original bytes back. If restoration
     /// also fails, an emergency copy is attempted in the user's temp folder and its result reported.
     /// </remarks>
+    /// <summary>
+    /// The file on disk is no longer the content a save was based on: another program changed,
+    /// replaced or deleted it. Nothing was written.
+    /// </summary>
+    internal sealed class DiskChangedException : IOException
+    {
+        internal DiskChangedException(string path)
+            : base("'" + path + "' changed on disk after it was opened. Nothing was saved.") { }
+    }
+
     internal static class SafeFileWrite
     {
         internal static void Write(string target, byte[] data)
-            => Write(target, data, OpenInPlace);
+            => Write(target, data, OpenInPlace, null);
 
         internal static void Write(string target, byte[] data, Func<string, FileStream> openInPlace)
+            => Write(target, data, openInPlace, null);
+
+        /// <param name="expectedSha256">
+        /// SHA-256 of the content the caller last read or wrote, or null for no check. When set,
+        /// a target whose current bytes hash differently, or that is gone, throws
+        /// <see cref="DiskChangedException"/> before anything is written. The in-place path checks
+        /// again under its range lock. The replace path checks just before staging, which leaves
+        /// only the moment of the swap itself unguarded.
+        /// </param>
+        internal static void Write(string target, byte[] data, string? expectedSha256)
+            => Write(target, data, OpenInPlace, expectedSha256);
+
+        internal static void Write(string target, byte[] data, Func<string, FileStream> openInPlace, string? expectedSha256)
         {
             string path = Path.GetFullPath(target);
             if (!File.Exists(path))
             {
+                if (expectedSha256 != null) throw new DiskChangedException(path);
                 WriteNew(path, data);
                 return;
             }
+
+            // Read rather than opened for writing, so a protected file still reports a conflict
+            // before the access check below offers an elevated retry.
+            if (expectedSha256 != null && !Matches(File.ReadAllBytes(path), expectedSha256))
+                throw new DiskChangedException(path);
 
             // Opening for writing without truncating is the access check. It changes nothing and
             // throws UnauthorizedAccessException for a read-only or protected file, which the
@@ -53,7 +82,7 @@ namespace KillerShell.Services
             bool reparse = (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0;
             if (links > 1 || reparse)
             {
-                WriteInPlace(path, data, openInPlace);
+                WriteInPlace(path, data, openInPlace, expectedSha256);
                 return;
             }
 
@@ -62,7 +91,7 @@ namespace KillerShell.Services
             catch (UnauthorizedAccessException)
             {
                 // The folder refuses new files but the file itself is writable.
-                WriteInPlace(path, data, openInPlace);
+                WriteInPlace(path, data, openInPlace, expectedSha256);
                 return;
             }
             catch (IOException ex) when (IsOutOfSpace(ex))
@@ -70,8 +99,15 @@ namespace KillerShell.Services
                 // Not enough room for a second full copy. Writing in place only needs the space
                 // the file grows by, which it reserves before changing anything, so a save that
                 // fits by reusing the old file's space still succeeds.
-                WriteInPlace(path, data, openInPlace);
+                WriteInPlace(path, data, openInPlace, expectedSha256);
                 return;
+            }
+
+            // Staging can take a while on a large file. Look once more right before the swap.
+            if (expectedSha256 != null && !(File.Exists(path) && Matches(File.ReadAllBytes(path), expectedSha256)))
+            {
+                TryDelete(temp);
+                throw new DiskChangedException(path);
             }
 
             // Always swapped with a backup name. ReplaceFile documents that without one, failing
@@ -96,8 +132,11 @@ namespace KillerShell.Services
                 }
                 TryDelete(temp);
             }
-            WriteInPlace(path, data, openInPlace);
+            WriteInPlace(path, data, openInPlace, expectedSha256);
         }
+
+        private static bool Matches(byte[] content, string expectedSha256) =>
+            string.Equals(VerifiedFile.Sha256(content), expectedSha256, StringComparison.OrdinalIgnoreCase);
 
         private static string SiblingName(string path, string extension) =>
             Path.Combine(Path.GetDirectoryName(path) ?? ".",
@@ -151,10 +190,10 @@ namespace KillerShell.Services
         private static FileStream OpenInPlace(string path) =>
             new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.WriteThrough);
 
-        private static void WriteInPlace(string path, byte[] data, Func<string, FileStream> openInPlace)
+        private static void WriteInPlace(string path, byte[] data, Func<string, FileStream> openInPlace, string? expectedSha256)
         {
             var fs = openInPlace(path);
-            try { WriteInPlaceCore(path, data, fs); }
+            try { WriteInPlaceCore(path, data, fs, expectedSha256); }
             catch
             {
                 // A failed buffered write can also make Dispose throw. Keep the recovery result.
@@ -164,7 +203,7 @@ namespace KillerShell.Services
             fs.Dispose();
         }
 
-        private static void WriteInPlaceCore(string path, byte[] data, FileStream fs)
+        private static void WriteInPlaceCore(string path, byte[] data, FileStream fs, string? expectedSha256)
         {
             long oldLength = fs.Length;
             long span = Math.Max(Math.Max(oldLength, data.Length), 1);
@@ -182,6 +221,10 @@ namespace KillerShell.Services
                     if (n == 0) throw new EndOfStreamException("Could not read the complete original before saving.");
                     read += n;
                 }
+
+                // Under the lock, so nothing can change these bytes between this check and the write.
+                if (expectedSha256 != null && !Matches(original, expectedSha256))
+                    throw new DiskChangedException(path);
 
                 // Growing first claims the space; a full disk fails here with the content intact.
                 if (data.Length > oldLength) fs.SetLength(data.Length);

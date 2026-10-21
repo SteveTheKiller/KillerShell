@@ -468,6 +468,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Перенесення слів вимкнено - прокручуйте, щоб бачити довгі рядки.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Збережено {0}.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Не вдалося зберегти {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} змінено на диску</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Інша програма зберегла цей файл після того, як ви його відкрили. Виберіть, яку версію залишити.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Завантажити знову</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} завантажено знову з диска.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} змінено на диску до збереження від імені адміністратора. Нічого не збережено; збережіть ще раз, щоб вибрати, що залишити.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Не вдалося відкрити {0}: {1}</sys:String>
 
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->

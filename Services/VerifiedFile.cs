@@ -40,15 +40,26 @@ namespace KillerShell.Services
             => TryCopy(stagedPath, expectedSha256, target, out _);
 
         internal static bool TryCopy(string stagedPath, string expectedSha256, string target, out string error)
+            => TryCopy(stagedPath, expectedSha256, target, null, out error, out _);
+
+        /// <summary>Exit code of the elevated save helper when the target changed on disk.</summary>
+        internal const int ChangedOnDiskExit = 2;
+
+        /// <param name="expectedDiskSha256">What the target must still hash to, or null for no check
+        /// (<see cref="SafeFileWrite.Write(string, byte[], string?)"/>).</param>
+        internal static bool TryCopy(string stagedPath, string expectedSha256, string target,
+                                     string? expectedDiskSha256, out string error, out bool changedOnDisk)
         {
             error = string.Empty;
+            changedOnDisk = false;
             byte[]? data = ReadVerified(stagedPath, expectedSha256);
             if (data == null) return false;
             try
             {
-                SafeFileWrite.Write(target, data);
+                SafeFileWrite.Write(target, data, expectedDiskSha256);
                 return true;
             }
+            catch (DiskChangedException ex) { changedOnDisk = true; error = ex.Message; return false; }
             catch (Exception ex) { error = ex.Message; return false; }
         }
 

@@ -332,6 +332,86 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void TargetChangedSinceTheBaseline_IsRefusedAndKept(bool hardLinked)
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Path.Combine(root, "target.txt");
+                File.WriteAllText(target, "version A");
+                string baseline = HashOf(target);
+                if (hardLinked) Assert.True(CreateHardLink(Path.Combine(root, "second.txt"), target, IntPtr.Zero));
+                File.WriteAllText(target, "version B");
+                string staged = Stage(root, "version C");
+
+                Assert.False(VerifiedFile.TryCopy(staged, HashOf(staged), target, baseline, out _, out bool changed));
+                Assert.True(changed);
+                Assert.Equal("version B", File.ReadAllText(target));
+                if (hardLinked) AssertNoLeftovers(root, "target.txt", "second.txt", "staged.bin");
+                else AssertNoLeftovers(root, "target.txt", "staged.bin");
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
+        public void TargetMatchingTheBaseline_Saves()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Path.Combine(root, "target.txt");
+                File.WriteAllText(target, "version A");
+                string staged = Stage(root, "version C");
+                Assert.True(VerifiedFile.TryCopy(staged, HashOf(staged), target, HashOf(target), out string error, out _), error);
+                Assert.Equal("version C", File.ReadAllText(target));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
+        public void InPlaceWrite_RechecksTheBaselineUnderItsLock()
+        {
+            // The first check passes; the file changes before the range lock is taken. The check
+            // under the lock must catch it before any byte is written.
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Path.Combine(root, "target.txt");
+                string second = Path.Combine(root, "second.txt");
+                File.WriteAllText(target, "version A");
+                string baseline = HashOf(target);
+                Assert.True(CreateHardLink(second, target, IntPtr.Zero));
+
+                Assert.Throws<DiskChangedException>(() => SafeFileWrite.Write(target, Encoding.ASCII.GetBytes("version C"),
+                    path =>
+                    {
+                        File.WriteAllText(second, "version B");
+                        return new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.WriteThrough);
+                    }, baseline));
+                Assert.Equal("version B", File.ReadAllText(target));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
+        [Fact]
+        public void DeletedTargetWithABaseline_IsNotRecreated()
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string target = Path.Combine(root, "target.txt");
+                File.WriteAllText(target, "version A");
+                string baseline = HashOf(target);
+                File.Delete(target);
+                Assert.Throws<DiskChangedException>(() => SafeFileWrite.Write(target, Encoding.ASCII.GetBytes("C"), baseline));
+                Assert.False(File.Exists(target));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
         private static string Stage(string root, string text)
         {
             string staged = Path.Combine(root, "staged.bin");

@@ -393,6 +393,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Prelom vrstic je izklopljen. Za dolge vrstice uporabite drsenje.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} je shranjen.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Ni bilo mogoče shraniti {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} je bil spremenjen na disku</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Drug program je to datoteko shranil, potem ko ste jo odprli. Izberite, katero različico želite obdržati.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Znova naloži</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} je bil znova naložen z diska.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} je bil spremenjen na disku pred shranjevanjem kot skrbnik. Nič ni bilo shranjeno; znova shranite in izberite, kaj želite obdržati.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Ni bilo mogoče odpreti {0}: {1}</sys:String>
     <sys:String x:Key="Str_TT_TabOverflow">Vsi zavihki</sys:String>
     <sys:String x:Key="Str_TT_ColResize">Povlecite za spremembo velikosti, dvokliknite za ponastavitev</sys:String>

@@ -452,6 +452,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Сөз бойынша тасымалдау өшірулі - ұзын жолдарды көру үшін айналдырыңыз.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} сақталды.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">{0} сақталмады: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} дискіде өзгертілді</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Сіз ашқаннан кейін басқа бағдарлама бұл файлды сақтады. Қай нұсқаны қалдыру керектігін таңдаңыз.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Қайта жүктеу</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} дискіден қайта жүктелді.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} әкімші ретінде сақтау алдында дискіде өзгертілді. Ештеңе сақталмады; нені қалдыру керектігін таңдау үшін қайта сақтаңыз.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">{0} ашылмады: {1}</sys:String>
 
     <!-- New blank document -->

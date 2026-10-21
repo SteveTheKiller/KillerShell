@@ -440,6 +440,11 @@
   <sys:String x:Key="Str_Ed_WrapOff">Đã tắt ngắt dòng. Hãy cuộn để xem các dòng dài.</sys:String>
   <sys:String x:Key="Str_Ed_Saved">Đã lưu {0}.</sys:String>
   <sys:String x:Key="Str_Ed_SaveFailed">Không thể lưu {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} đã thay đổi trên đĩa</sys:String>
+  <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Một chương trình khác đã lưu tệp này sau khi bạn mở nó. Hãy chọn phiên bản cần giữ.</sys:String>
+  <sys:String x:Key="Str_Btn_Reload">Tải lại</sys:String>
+  <sys:String x:Key="Str_Ed_Reloaded">Đã tải lại {0} từ đĩa.</sys:String>
+  <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} đã thay đổi trên đĩa trước khi lưu với quyền quản trị. Chưa có gì được lưu; hãy lưu lại để chọn nội dung cần giữ.</sys:String>
   <sys:String x:Key="Str_Ed_OpenFailed">Không thể mở {0}: {1}</sys:String>
   <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
   <sys:String x:Key="Str_TT_TabOverflow">Tất cả các tab</sys:String>

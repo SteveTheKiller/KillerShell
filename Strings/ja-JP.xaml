@@ -471,6 +471,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">折り返しオフ - 長い行はスクロールして表示します。</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} を保存しました。</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">{0} を保存できませんでした: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} はディスク上で変更されました</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">開いた後に別のプログラムがこのファイルを保存しました。残すバージョンを選んでください。</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">再読み込み</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} をディスクから再読み込みしました。</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">管理者として保存する前に {0} がディスク上で変更されました。何も保存されていません。もう一度保存して残す内容を選んでください。</sys:String>
     <sys:String x:Key="Str_TT_TabOverflow">すべてのタブ</sys:String>
     <sys:String x:Key="Str_TT_ColResize">ドラッグで幅を変更  -  ダブルクリックでリセット</sys:String>
     <sys:String x:Key="Str_TT_NewDoc">新しいドキュメント  (F7)  |  保存が拒否されたときは Ctrl+F7 で管理者として再試行</sys:String>

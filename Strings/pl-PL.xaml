@@ -444,6 +444,11 @@
   <sys:String x:Key="Str_Ed_WrapOff">Zawijanie wierszy wyłączone - przewiń, aby zobaczyć długie wiersze.</sys:String>
   <sys:String x:Key="Str_Ed_Saved">Zapisano {0}.</sys:String>
   <sys:String x:Key="Str_Ed_SaveFailed">Nie udało się zapisać {0}: {1}</sys:String>
+  <sys:String x:Key="Str_Ed_ChangedOnDisk">Plik {0} został zmieniony na dysku</sys:String>
+  <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Inny program zapisał ten plik po jego otwarciu. Wybierz, którą wersję zachować.</sys:String>
+  <sys:String x:Key="Str_Btn_Reload">Wczytaj ponownie</sys:String>
+  <sys:String x:Key="Str_Ed_Reloaded">Ponownie wczytano {0} z dysku.</sys:String>
+  <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">Plik {0} został zmieniony na dysku przed zapisem jako administrator. Nic nie zapisano; zapisz ponownie, aby wybrać, co zachować.</sys:String>
   <sys:String x:Key="Str_Ed_OpenFailed">Nie udało się otworzyć {0}: {1}</sys:String>
   <sys:String x:Key="Str_TT_TabOverflow">Wszystkie karty</sys:String>
   <sys:String x:Key="Str_TT_ColResize">Przeciągnij, aby zmienić rozmiar - kliknij dwukrotnie, aby przywrócić</sys:String>

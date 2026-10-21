@@ -13,6 +13,9 @@ namespace KillerShell
     public partial class ConfirmDialog : Window
     {
         public bool Confirmed     { get; private set; }
+
+        /// <summary>The id of the extra button pressed (<see cref="AddChoice"/>), or null.</summary>
+        public string? Choice { get; private set; }
         public bool Check1Checked => Check1.IsChecked == true;
         public bool Check2Checked => Check2.IsChecked == true;
 
@@ -79,6 +82,31 @@ namespace KillerShell
                 Check2Note.Text       = note;
                 Check2Note.Visibility = Visibility.Visible;
             }
+        }
+
+        /// <summary>An extra answer between Cancel and OK, styled like Cancel. Pressing it closes
+        /// the dialog unconfirmed with <see cref="Choice"/> set to <paramref name="id"/>.</summary>
+        public void AddChoice(string id, string label)
+        {
+            var button = new System.Windows.Controls.Button
+            {
+                Content  = label,
+                Style    = (Style)FindResource("SurfaceButton"),
+                Height   = 28,
+                MinWidth = 80,
+                Padding  = new Thickness(12, 2, 12, 2),
+                Margin   = new Thickness(0, 0, 8, 0),
+            };
+            button.Click += (_, _) => { Choice = id; Confirmed = false; Close(); };
+            ButtonRow.Children.Insert(ButtonRow.Children.IndexOf(OkBtn), button);
+        }
+
+        /// <summary>Enter and Esc both answer Cancel, for a prompt whose OK replaces something.</summary>
+        public void DefaultToCancel()
+        {
+            CancelBtn.IsDefault = true;
+            CancelBtn.IsCancel  = true;
+            Loaded += (_, _) => CancelBtn.Focus();
         }
 
         // The family setup dialog's notice ring: an amber "!" on a confirmation and the accent "i" on a

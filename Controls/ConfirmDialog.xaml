@@ -137,7 +137,7 @@
                      re-space the button row on all twelve other themes unless its default were
                      hand-set to 24,0,24,20 per dialog - and each dialog has a different inset.
                      Left for the pass that unifies the dialog layouts. -->
-                <StackPanel Grid.Row="2" Orientation="Horizontal"
+                <StackPanel x:Name="ButtonRow" Grid.Row="2" Orientation="Horizontal"
                             HorizontalAlignment="Right" Margin="24,0,24,20">
                     <Button x:Name="CancelBtn" Content="{DynamicResource Str_Btn_Cancel}" Click="Cancel_Click"
                             Style="{StaticResource SurfaceButton}"

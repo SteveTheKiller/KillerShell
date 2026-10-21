@@ -473,6 +473,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">自动换行已关闭 - 滚动以查看较长的行。</sys:String>
     <sys:String x:Key="Str_Ed_Saved">已保存 {0}。</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">无法保存 {0}：{1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} 已在磁盘上更改</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">你打开此文件后，另一个程序保存了它。请选择要保留的版本。</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">重新加载</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">已从磁盘重新加载 {0}。</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">在以管理员身份保存之前，{0} 已在磁盘上更改。未保存任何内容；请再次保存以选择要保留的内容。</sys:String>
     <sys:String x:Key="Str_TT_TabOverflow">所有标签页</sys:String>
     <sys:String x:Key="Str_TT_ColResize">拖动调整列宽  -  双击还原</sys:String>
     <sys:String x:Key="Str_TT_NewDoc">新建文档  (F7)  |  保存被拒绝时，Ctrl+F7 以管理员身份重试</sys:String>

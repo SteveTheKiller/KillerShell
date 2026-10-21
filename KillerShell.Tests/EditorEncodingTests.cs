@@ -49,6 +49,17 @@ namespace KillerShell.Tests
         [InlineData("save-lossy-ansi")]
         public Task FailedSavesKeepTheFileAndTheEdits(string scenario) => RunIsolated(scenario);
 
+        [Theory]
+        [InlineData("stale-external-edit")]
+        [InlineData("stale-same-size")]
+        [InlineData("stale-deleted")]
+        [InlineData("stale-recreated-identical")]
+        [InlineData("stale-overwrite")]
+        [InlineData("unchanged-repeated-saves")]
+        [InlineData("stale-after-own-save")]
+        [InlineData("stale-denied")]
+        public Task SavesNeverReplaceNewerContentOnDisk(string scenario) => RunIsolated(scenario);
+
         [Fact]
         public Task EncodingChangesSurviveTextUndo() => RunIsolated("encoding-undo");
 
@@ -261,6 +272,125 @@ namespace KillerShell.Tests
                     Assert.False(editor.IsModified);
                     Assert.Equal("brand new", File.ReadAllText(path));
                     AssertOnlyFile(path);
+                    break;
+                }
+                case "stale-external-edit":
+                case "stale-same-size":
+                {
+                    // A, then another program writes B, then the stale buffer saves as C.
+                    File.WriteAllText(path, "version A");
+                    var editor = Loaded(path);
+                    editor.Document.Insert(0, "C ");
+                    string external = scenario == "stale-same-size" ? "version Z" : "version B from elsewhere";
+                    File.WriteAllText(path, external);
+                    Assert.False(editor.SaveFile(out _, out bool denied, out bool changed));
+                    Assert.True(changed, "A newer file on disk was not reported.");
+                    Assert.False(denied);
+                    Assert.Equal(external, File.ReadAllText(path));
+                    Assert.True(editor.Dirty, "A refused save cleared the unsaved mark.");
+                    Assert.Equal("C version A", editor.Text);
+                    AssertOnlyFile(path);
+                    break;
+                }
+                case "stale-deleted":
+                {
+                    File.WriteAllText(path, "version A");
+                    var editor = Loaded(path);
+                    editor.Document.Insert(0, "C ");
+                    File.Delete(path);
+                    Assert.False(editor.SaveFile(out _, out _, out bool changed));
+                    Assert.True(changed, "A deleted file was silently recreated.");
+                    Assert.False(File.Exists(path));
+                    Assert.True(editor.Dirty);
+                    break;
+                }
+                case "stale-recreated-identical":
+                {
+                    // Deleted and written back with the same bytes: nothing newer exists to lose.
+                    File.WriteAllText(path, "version A");
+                    var editor = Loaded(path);
+                    editor.Document.Insert(0, "C ");
+                    File.Delete(path);
+                    File.WriteAllText(path, "version A");
+                    Assert.True(editor.SaveFile(out string error, out _, out bool changed), error);
+                    Assert.False(changed);
+                    Assert.Equal("C version A", File.ReadAllText(path));
+                    break;
+                }
+                case "stale-overwrite":
+                {
+                    File.WriteAllText(path, "version A");
+                    var editor = Loaded(path);
+                    editor.Document.Insert(0, "C ");
+                    File.WriteAllText(path, "version B");
+                    Assert.False(editor.SaveFile(out _, out _, out bool changed));
+                    Assert.True(changed);
+                    Assert.True(editor.SaveFile(out string error, out _, out changed, overwrite: true), error);
+                    Assert.False(changed);
+                    Assert.Equal("C version A", File.ReadAllText(path));
+                    Assert.False(editor.Dirty);
+                    // The overwrite is the new baseline, so the next ordinary save just works.
+                    editor.Document.Insert(0, "D ");
+                    Assert.True(editor.SaveFile(out error, out _, out changed), error);
+                    Assert.Equal("D C version A", File.ReadAllText(path));
+                    AssertOnlyFile(path);
+                    break;
+                }
+                case "unchanged-repeated-saves":
+                {
+                    File.WriteAllText(path, "version A");
+                    var editor = Loaded(path);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        editor.Document.Insert(0, i + " ");
+                        Assert.True(editor.SaveFile(out string error, out _, out bool changed), error);
+                        Assert.False(changed);
+                    }
+                    Assert.Equal("2 1 0 version A", File.ReadAllText(path));
+                    break;
+                }
+                case "stale-after-own-save":
+                {
+                    // The baseline moves with each save; an external write after it still counts.
+                    File.WriteAllText(path, "version A");
+                    var editor = Loaded(path);
+                    editor.Document.Insert(0, "C ");
+                    Assert.True(editor.SaveFile(out string error, out _, out _), error);
+                    File.WriteAllText(path, "version B");
+                    editor.Document.Insert(0, "D ");
+                    Assert.False(editor.SaveFile(out _, out _, out bool changed));
+                    Assert.True(changed);
+                    Assert.Equal("version B", File.ReadAllText(path));
+                    break;
+                }
+                case "stale-denied":
+                {
+                    // A protected file that also changed reports the conflict first, so the user
+                    // decides before any elevated retry is offered.
+                    File.WriteAllText(path, "version A");
+                    var editor = Loaded(path);
+                    editor.Document.Insert(0, "C ");
+                    File.WriteAllText(path, "version B");
+                    var me = System.Security.Principal.WindowsIdentity.GetCurrent().User!;
+                    var deny = new System.Security.AccessControl.FileSystemAccessRule(me,
+                        System.Security.AccessControl.FileSystemRights.WriteData | System.Security.AccessControl.FileSystemRights.AppendData,
+                        System.Security.AccessControl.AccessControlType.Deny);
+                    var acl = File.GetAccessControl(path);
+                    acl.AddAccessRule(deny);
+                    File.SetAccessControl(path, acl);
+                    try
+                    {
+                        Assert.False(editor.SaveFile(out _, out bool denied, out bool changed));
+                        Assert.True(changed);
+                        Assert.False(denied);
+                        Assert.Equal("version B", File.ReadAllText(path));
+                    }
+                    finally
+                    {
+                        acl = File.GetAccessControl(path);
+                        acl.RemoveAccessRule(deny);
+                        File.SetAccessControl(path, acl);
+                    }
                     break;
                 }
                 default: throw new ArgumentException("Unknown scenario " + scenario);

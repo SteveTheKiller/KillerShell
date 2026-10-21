@@ -468,6 +468,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Quebra de linha desativada - role para ver as linhas longas.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} salvo.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Não foi possível salvar {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} foi alterado no disco</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Outro programa salvou este arquivo depois que você o abriu. Escolha qual versão manter.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Recarregar</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} recarregado do disco.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} foi alterado no disco antes do salvamento como administrador. Nada foi salvo; salve novamente para escolher o que manter.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Não foi possível abrir {0}: {1}</sys:String>
 
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->

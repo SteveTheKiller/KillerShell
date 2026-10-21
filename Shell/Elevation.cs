@@ -297,7 +297,12 @@ namespace KillerShell.Shell
         /// elevated helper. Later saves wait for completion before staging the latest edits.
         /// Declining elevation leaves the target and dirty state unchanged.
         /// </summary>
-        internal void RetrySaveElevated(SearchTab t, string name, Func<ProcessStartInfo, Process?>? start = null)
+        /// <param name="overwrite">
+        /// The user already chose to replace a file that changed on disk. Otherwise the helper
+        /// refuses a target that no longer matches what this document last read or wrote.
+        /// </param>
+        internal void RetrySaveElevated(SearchTab t, string name, Func<ProcessStartInfo, Process?>? start = null,
+                                        bool overwrite = false)
         {
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe) || t.Editor == null) return;
@@ -322,6 +327,7 @@ namespace KillerShell.Shell
             string stagedText = t.Editor.Text;
             var stagedEncoding = t.Editor.CurrentEncoding;
             string stagedPath = t.Editor.FilePath;
+            string diskBaseline = (overwrite ? null : t.Editor.DiskHash) ?? "-";
             string stagedHash;
             try
             {
@@ -347,7 +353,8 @@ namespace KillerShell.Shell
                     UseShellExecute = true,
                     Verb = "runas",
                     Arguments = ProcessRelaunchArgs("--elevated-save \"" + TrimForArg(tempFile) + "\" \""
-                              + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash + " " + response.Name),
+                              + TrimForArg(t.Editor.FilePath) + "\" " + stagedHash + " " + response.Name
+                              + " " + diskBaseline),
                 };
                 var proc = (start ?? Process.Start)(psi);
                 if (proc == null) return;
@@ -423,6 +430,12 @@ namespace KillerShell.Shell
                 if (string.Equals(originalEditor.FilePath, stagedPath, StringComparison.OrdinalIgnoreCase))
                     originalEditor.CompleteSave(stagedEncoding, stagedText);
                 SetTabStatusKey(t, "Str_Ed_Saved", name);
+            }
+            else if (code == Services.VerifiedFile.ChangedOnDiskExit)
+            {
+                // Another program wrote the file while elevation was being approved. Nothing was
+                // written; the next save asks what to keep.
+                SetTabStatusKey(t, "Str_Ed_ChangedBeforeAdminSave", name);
             }
             else
             {

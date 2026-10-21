@@ -473,6 +473,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Sözcük kaydırma kapalı - uzun satırları görmek için kaydırın.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} kaydedildi.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">{0} kaydedilemedi: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} diskte değişti</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Siz açtıktan sonra başka bir program bu dosyayı kaydetti. Hangi sürümün tutulacağını seçin.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Yeniden yükle</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} diskten yeniden yüklendi.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0}, yönetici olarak kaydetmeden önce diskte değişti. Hiçbir şey kaydedilmedi; neyin tutulacağını seçmek için yeniden kaydedin.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">{0} açılamadı: {1}</sys:String>
 
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->

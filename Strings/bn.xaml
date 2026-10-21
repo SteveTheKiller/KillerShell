@@ -473,6 +473,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">ওয়ার্ড র‍্যাপ বন্ধ - লম্বা লাইন দেখতে স্ক্রোল করুন।</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} সংরক্ষিত হয়েছে।</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">{0} সংরক্ষণ করা যায়নি: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} ডিস্কে পরিবর্তিত হয়েছে</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">আপনি খোলার পরে অন্য একটি প্রোগ্রাম এই ফাইলটি সংরক্ষণ করেছে। কোন সংস্করণ রাখবেন তা বেছে নিন।</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">পুনরায় লোড</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} ডিস্ক থেকে পুনরায় লোড করা হয়েছে।</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">প্রশাসক হিসেবে সংরক্ষণের আগে {0} ডিস্কে পরিবর্তিত হয়েছে। কিছুই সংরক্ষিত হয়নি; কী রাখবেন বেছে নিতে আবার সংরক্ষণ করুন।</sys:String>
     <sys:String x:Key="Str_TT_TabOverflow">সব ট্যাব</sys:String>
     <sys:String x:Key="Str_TT_ColResize">টেনে প্রস্থ বদলান  -  ডাবল-ক্লিকে আগের অবস্থায়</sys:String>
     <sys:String x:Key="Str_TT_NewDoc">নতুন নথি  (F7)  |  সংরক্ষণ প্রত্যাখ্যাত হলে Ctrl+F7 অ্যাডমিন হিসেবে আবার চেষ্টা করে</sys:String>

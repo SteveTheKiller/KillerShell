@@ -452,6 +452,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Перенос по словам выключен - прокручивайте, чтобы видеть длинные строки.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} сохранён.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Не удалось сохранить {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} изменён на диске</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Другая программа сохранила этот файл после того, как вы его открыли. Выберите, какую версию оставить.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Загрузить заново</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} загружен заново с диска.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} изменён на диске до сохранения от имени администратора. Ничего не сохранено; сохраните ещё раз, чтобы выбрать, что оставить.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Не удалось открыть {0}: {1}</sys:String>
 
     <!-- New blank document -->

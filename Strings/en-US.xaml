@@ -468,6 +468,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Word wrap off - scroll to see long lines.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Saved {0}.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Could not save {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} changed on disk</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Another program saved this file after you opened it. Choose which version to keep.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Reload</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">Reloaded {0} from disk.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} changed on disk before the administrator save. Nothing was saved; save again to choose what to keep.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Could not open {0}: {1}</sys:String>
 
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->

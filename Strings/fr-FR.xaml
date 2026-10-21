@@ -473,6 +473,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Retour à la ligne désactivé - faites défiler pour voir les lignes longues.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} enregistré.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Impossible d'enregistrer {0} : {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} a été modifié sur le disque</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Un autre programme a enregistré ce fichier après son ouverture. Choisissez la version à conserver.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Recharger</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} rechargé depuis le disque.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} a été modifié sur le disque avant l'enregistrement administrateur. Rien n'a été enregistré ; enregistrez à nouveau pour choisir quoi conserver.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Impossible d'ouvrir {0} : {1}</sys:String>
 
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->

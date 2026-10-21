@@ -306,7 +306,37 @@ namespace KillerShell.Shell
             }
 
             string name = Path.GetFileName(t.Editor.FilePath);
-            if (t.Editor.SaveFile(out string error, out bool accessDenied))
+            bool overwrite = false;
+            bool saved = t.Editor.SaveFile(out string error, out bool accessDenied, out bool changedOnDisk);
+            if (changedOnDisk)
+            {
+                // Another program wrote the file after it was opened here. Both versions stay
+                // exactly as they are until the user picks one.
+                switch (AskChangedOnDisk(name))
+                {
+                    case DiskConflictAnswer.Replace:
+                        overwrite = true;
+                        saved = t.Editor.SaveFile(out error, out accessDenied, out _, overwrite: true);
+                        break;
+                    case DiskConflictAnswer.Reload:
+                        if (t.Editor.LoadFile(out string loadError)) SetTabStatusKey(t, "Str_Ed_Reloaded", name);
+                        else SetTabStatusKey(t, "Str_Ed_OpenFailed", name, loadError);
+                        SetEditorTitle(t);
+                        SyncEditorBar(t);
+                        return;
+                    case DiskConflictAnswer.SaveAs:
+                        if (!PromptSaveAs(t.Editor, keepEncoding: true)) return;
+                        t.CurrentFolder = Path.GetDirectoryName(t.Editor.FilePath) ?? string.Empty;
+                        t.RootPath      = t.CurrentFolder;
+                        name  = Path.GetFileName(t.Editor.FilePath);
+                        saved = t.Editor.SaveFile(out error, out accessDenied, out _);
+                        break;
+                    default:
+                        return;
+                }
+            }
+
+            if (saved)
             {
                 SetTabStatusKey(t, "Str_Ed_Saved", name);
             }
@@ -315,7 +345,7 @@ namespace KillerShell.Shell
                 // Ctrl+F7's whole point: a permission-denied write on THIS tab retries through
                 // a second, elevated instance instead of just failing (Elevation.cs
                 // RetrySaveElevated). Title/bar refresh happens once that retry resolves.
-                RetrySaveElevated(t, name);
+                RetrySaveElevated(t, name, overwrite: overwrite);
                 return;
             }
             else
@@ -338,7 +368,30 @@ namespace KillerShell.Shell
         /// it (2026-08-03), so Save As kept popping the unthemed Windows dialog on top of
         /// an otherwise fully themed app.
         /// </remarks>
-        private bool PromptSaveAs(Editing.EditorControl editor)
+        private enum DiskConflictAnswer { Cancel, Replace, Reload, SaveAs }
+
+        /// <summary>
+        /// The file changed on disk since it was opened or saved here. Cancel is the default, so
+        /// Enter never replaces another program's work.
+        /// </summary>
+        private DiskConflictAnswer AskChangedOnDisk(string name)
+        {
+            var dlg = new ConfirmDialog(string.Format(Loc("Str_Ed_ChangedOnDisk"), name),
+                                        Loc("Str_Ed_ChangedOnDiskDetail"), Loc("Str_Btn_Replace")) { Owner = this };
+            dlg.AddChoice("saveas", Loc("Str_Ed_SaveAs"));
+            dlg.AddChoice("reload", Loc("Str_Btn_Reload"));
+            dlg.DefaultToCancel();
+            dlg.ShowDialog();
+            if (dlg.Confirmed) return DiskConflictAnswer.Replace;
+            return dlg.Choice switch
+            {
+                "reload" => DiskConflictAnswer.Reload,
+                "saveas" => DiskConflictAnswer.SaveAs,
+                _        => DiskConflictAnswer.Cancel,
+            };
+        }
+
+        private bool PromptSaveAs(Editing.EditorControl editor, bool keepEncoding = false)
         {
             var dlg = new FileDialog(FileDialogMode.Save)
             {
@@ -362,9 +415,12 @@ namespace KillerShell.Shell
             // The same BOM rule OpenForEditing uses on a file it creates: PowerShell 5.1 reads a
             // BOM-less script as the system ANSI codepage, so a .ps1 written without one comes
             // back as mojibake the first time it prints a box-drawing glyph.
+            // A copy saved out of a changed-on-disk conflict keeps the document's own encoding.
             bool bom = Array.IndexOf(BomExtensions,
                                      Path.GetExtension(dlg.FileName).ToLowerInvariant()) >= 0;
-            editor.AdoptPath(dlg.FileName, new UTF8Encoding(bom));
+            editor.AdoptPath(dlg.FileName, keepEncoding ? editor.CurrentEncoding : new UTF8Encoding(bom));
+            // The dialog already asked about replacing whatever is at the chosen path.
+            editor.ForgetDiskBaseline();
             return true;
         }
 

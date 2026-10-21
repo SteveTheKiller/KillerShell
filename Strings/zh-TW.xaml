@@ -473,6 +473,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">自動換行已關閉 - 捲動以檢視較長的行。</sys:String>
     <sys:String x:Key="Str_Ed_Saved">已儲存 {0}。</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">無法儲存 {0}：{1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} 已在磁碟上變更</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">您開啟此檔案後，另一個程式儲存了它。請選擇要保留的版本。</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">重新載入</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">已從磁碟重新載入 {0}。</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">以系統管理員身分儲存之前，{0} 已在磁碟上變更。未儲存任何內容；請再次儲存以選擇要保留的內容。</sys:String>
     <sys:String x:Key="Str_TT_TabOverflow">所有分頁</sys:String>
     <sys:String x:Key="Str_TT_ColResize">拖曳調整欄寬  -  按兩下還原</sys:String>
     <sys:String x:Key="Str_TT_NewDoc">新增文件  (F7)  |  儲存遭拒時，Ctrl+F7 以系統管理員身分重試</sys:String>

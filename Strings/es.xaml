@@ -473,6 +473,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Ajuste de línea desactivado - desplácese para ver las líneas largas.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} guardado.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">No se pudo guardar {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">{0} cambió en el disco</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Otro programa guardó este archivo después de que lo abrieras. Elige qué versión conservar.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Recargar</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">{0} se recargó desde el disco.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">{0} cambió en el disco antes de guardar como administrador. No se guardó nada; vuelve a guardar para elegir qué conservar.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">No se pudo abrir {0}: {1}</sys:String>
 
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->

@@ -468,6 +468,11 @@
     <sys:String x:Key="Str_Ed_WrapOff">Szótördelés kikapcsolva - görgessen a hosszú sorok megtekintéséhez.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Mentve: {0}.</sys:String>
     <sys:String x:Key="Str_Ed_SaveFailed">Nem sikerült menteni a következőt: {0}: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">A(z) {0} megváltozott a lemezen</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">Egy másik program mentette ezt a fájlt, miután megnyitotta. Válassza ki, melyik verziót tartja meg.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">Újratöltés</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">A(z) {0} újratöltve a lemezről.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">A(z) {0} megváltozott a lemezen a rendszergazdai mentés előtt. Semmi sem lett mentve; mentsen újra, és válassza ki, mit tart meg.</sys:String>
     <sys:String x:Key="Str_Ed_OpenFailed">Nem sikerült megnyitni a következőt: {0}: {1}</sys:String>
 
     <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
