@@ -41,7 +41,7 @@ public static class TerminalInputOrderScenario
         {
             terminal.Measure(new Size(800, 500));
             terminal.Arrange(new Rect(0, 0, 800, 500));
-            terminal.Start("powershell.exe -NoProfile -NonInteractive -File \"" + script + "\"", root);
+            terminal.Start("powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"" + script + "\"", root);
             terminal.Send(new string('x', 4 * 1024 * 1024 + 1));
             var warning = new StringBuilder();
             for (int line = 0; line < terminal.Buffer.TotalLines; line++)
@@ -60,10 +60,25 @@ public static class TerminalInputOrderScenario
                 timer.Start();
                 Dispatcher.PushFrame(frame);
             }
-            Assert.True(File.Exists(result), "The real ConPTY child did not receive the ordered input.");
+            Assert.True(File.Exists(result), "The real ConPTY child did not receive the ordered input.\n"
+                + TerminalFixtureOutput.Capture(terminal));
             Assert.Equal(new[] { "caf\u00e9 \u65e5\u672c", "second" }, File.ReadAllLines(result));
         }
         finally { terminal.Close(); app.Shutdown(); try { Directory.Delete(root, true); } catch (IOException) { } }
+    }
+}
+
+internal static class TerminalFixtureOutput
+{
+    internal static string Capture(TerminalControl terminal)
+    {
+        var text = new StringBuilder("Terminal output:\n");
+        for (int line = 0; line < terminal.Buffer.TotalLines; line++)
+        {
+            foreach (var cell in terminal.Buffer.LineAt(line)) text.Append(cell.Text);
+            text.AppendLine();
+        }
+        return text.ToString();
     }
 }
 

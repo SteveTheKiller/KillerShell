@@ -51,8 +51,8 @@ public static class TerminalKeyInputScenario
             source.RootVisual = grid;
             grid.Measure(new Size(800, 500));
             grid.Arrange(new Rect(0, 0, 800, 500));
-            terminal.Start("powershell.exe -NoProfile -NonInteractive -File \"" + script + "\"", root);
-            Wait(() => File.Exists(ready));
+            terminal.Start("powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"" + script + "\"", root);
+            Wait(() => File.Exists(ready), "child readiness", () => TerminalFixtureOutput.Capture(terminal));
             int commands = 0;
             grid.PreviewKeyDown += (_, e) =>
             {
@@ -83,7 +83,7 @@ public static class TerminalKeyInputScenario
                 new TextComposition(InputManager.Current, terminal, "x")) { RoutedEvent = TextCompositionManager.TextInputEvent };
             terminal.RaiseEvent(text);
             Assert.True(text.Handled);
-            Wait(() => File.Exists(result));
+            Wait(() => File.Exists(result), "three decoded keys", () => TerminalFixtureOutput.Capture(terminal));
             Assert.Equal(new[] { "B:Alt:98", "LeftArrow:Control:0", "X:0:120" }, File.ReadAllLines(result));
         }
         finally
@@ -94,7 +94,7 @@ public static class TerminalKeyInputScenario
         }
     }
 
-    private static void Wait(Func<bool> complete)
+    private static void Wait(Func<bool> complete, string stage, Func<string> diagnostics)
     {
         var elapsed = Stopwatch.StartNew();
         while (!complete() && elapsed.ElapsedMilliseconds < 10000)
@@ -104,6 +104,6 @@ public static class TerminalKeyInputScenario
             timer.Tick += (_, _) => { timer.Stop(); frame.Continue = false; };
             timer.Start(); Dispatcher.PushFrame(frame);
         }
-        Assert.True(complete(), "The real ConPTY keyboard fixture did not complete.");
+        Assert.True(complete(), "The real ConPTY keyboard fixture did not complete: " + stage + ".\n" + diagnostics());
     }
 }
