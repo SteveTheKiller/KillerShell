@@ -125,6 +125,7 @@
                 <DockPanel LastChildFill="True">
                 <Button x:Name="NewTabBtn" DockPanel.Dock="Right"
                         Style="{StaticResource GrungeCalendarNavButton}"
+                        BorderThickness="0" BorderBrush="Transparent"
                         Content="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                         Foreground="{DynamicResource MutedTextBrush}"
                         Width="22" Height="20" Margin="2,4,2,3" VerticalAlignment="Center"
@@ -194,10 +195,7 @@
                                 <!-- No MaxWidth: it would cap each cell and put the dead space
                                      back. The MinWidth floor is low so a lot of open tabs still
                                      divide the bar rather than overflowing it. -->
-                                <!-- CornerRadius matches the pane's 6, not the 4 it used to be:
-                                     the rightmost tab sits directly above the pane's top-right
-                                     corner, and a 4px curve stacked on a 6px one reads as a
-                                     mistake rather than as two rounded things. -->
+                                <!-- Square tab faces meet along straight, gap-free dividers. -->
                                 <!-- No right MARGIN: the 1px right BorderThickness below already
                                      separates one tab from the next, and the margin only served
                                      to stop the last tab reaching the strip's right edge - which
@@ -208,13 +206,14 @@
                                 <!-- TabPadding keeps each label aligned within its tab state. The
                                      98SE value also uses a tighter left inset so the icon leaves
                                      more room for the title. -->
-                                <local:TabSurfaceBorder x:Name="tabBd" CornerRadius="{DynamicResource TabCornerRadius}" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
+                                <local:TabSurfaceBorder x:Name="tabBd" CornerRadius="0" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
                                         MinWidth="160" MaxWidth="260"
                                         UseLayoutRounding="True" SnapsToDevicePixels="True"
                                         Cursor="Hand" MenuBackground="Transparent"
                                         ContentBackground="{Binding MenuBarContentBrush, RelativeSource={RelativeSource AncestorType=local:FilePane}}"
                                         BorderThickness="0,0,1,0"
-                                        BorderBrush="{DynamicResource PaneEdgeBrush}"
+                                        DividerBrush="{DynamicResource PaneEdgeBrush}"
+                                        BorderBrush="{Binding FadedDividerBrush, RelativeSource={RelativeSource Self}}"
                                         MouseDown="Tab_MouseDown"
                                         PreviewMouseLeftButtonDown="Tab_DragDown"
                                         PreviewMouseMove="Tab_DragMove"
@@ -237,7 +236,7 @@
                                              fill that hides the band, so the IsActive trigger
                                              below turns this back on for that one. -->
                                         <Border x:Name="tabGrain" IsHitTestVisible="False"
-                                                CornerRadius="{DynamicResource TabCornerRadius}" Margin="{DynamicResource TabGrainMargin}"
+                                                CornerRadius="0" Margin="{DynamicResource TabGrainMargin}"
                                                 Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
                                         <!-- Win98 tab bevel: light along the top and left, dark
                                              down the right. A Win98 tab is a raised control, not
@@ -287,7 +286,7 @@
                                              Closing its selected tab with a gray foot keeps that black
                                              surface from visually swallowing the tab. Zero-thickness on
                                              every ordinary theme and collapsed for every other tab. -->
-                                        <DockPanel LastChildFill="True">
+                                        <DockPanel x:Name="tabContents" LastChildFill="True" VerticalAlignment="Top">
                                             <!-- Nulled here rather than on the shared DangerButton style,
                                                  which the term and filter x's also use. -->
                                             <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Width="18" Height="18" Margin="4,0,0,0"
@@ -316,7 +315,7 @@
                                                  room - the collapse trigger below. -->
                                             <Image x:Name="tabFolderIcon" DockPanel.Dock="Left"
                                                    Width="20" Height="20" Stretch="Uniform"
-                                                   Margin="0,0,3,0" VerticalAlignment="Center">
+                                                   Margin="2,0,3,0" VerticalAlignment="Center">
                                                 <Image.Source>
                                                     <MultiBinding Converter="{StaticResource TabFolderIcon}">
                                                         <Binding/>
@@ -334,7 +333,7 @@
                                                  a folder tab moves. -->
                                             <TextBlock x:Name="tabGlyph" DockPanel.Dock="Left"
                                                        Text="{Binding TabGlyph}" FontFamily="Segoe MDL2 Assets"
-                                                       FontSize="12" Margin="0,0,3,0" VerticalAlignment="Center"
+                                                       FontSize="12" Margin="2,0,3,0" VerticalAlignment="Center"
                                                        Foreground="{DynamicResource MutedTextBrush}"/>
                                             <TextBlock x:Name="tabLbl" Text="{Binding Title}" FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                                        Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center"
@@ -449,14 +448,17 @@
                                              none anywhere. -->
                                         <Setter TargetName="tabBd" Property="Effect" Value="{DynamicResource BarShadowEffect}"/>
                                         <Setter TargetName="tabLbl" Property="Foreground" Value="{DynamicResource TextBrush}"/>
-                                        <!-- Bold Consolas at 11px is nearly indistinguishable in Display mode;
-                                             the half-point bump makes the active weight actually read as bold. -->
-                                        <Setter TargetName="tabLbl" Property="FontWeight" Value="Bold"/>
-                                        <Setter TargetName="tabLbl" Property="FontSize" Value="11.5"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding UseRetroTabChrome}" Value="True">
                                         <Setter TargetName="tabBd" Property="Effect" Value="{x:Null}"/>
                                     </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding UseRetroTabChrome}" Value="True"/>
+                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabContents" Property="Margin" Value="0,3,0,-3"/>
+                                    </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding UseRetroTabChrome}" Value="True"/>
@@ -486,15 +488,15 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabActiveOnlyMargin}"/>
                                     </MultiDataTrigger>
-                                    <!-- One pane open (neither focused nor dimmed): the active tab's
-                                         sides fade out toward its foot instead of stopping dead,
-                                         since there is no pane ring below for them to join. -->
+                                    <!-- With one pane, the accent sides fade into the content below. -->
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding IsActive}" Value="True"/>
                                             <Condition Binding="{Binding PaneFocused}" Value="False"/>
                                             <Condition Binding="{Binding PaneDimmed}" Value="False"/>
                                         </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabBd" Property="BorderThickness" Value="{DynamicResource TabFocusThickness}"/>
+                                        <Setter TargetName="tabBd" Property="Padding" Value="{DynamicResource TabFocusPadding}"/>
                                         <Setter TargetName="tabBd" Property="BorderBrush" Value="{DynamicResource TabActiveRingFadeBrush}"/>
                                     </MultiDataTrigger>
                                     <!-- Unfocused pane: the lip drops off the accent entirely and
@@ -960,13 +962,13 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0"/>
                             </Grid>
                         </Button>
-                        <!-- Details/preview strip toggle (Shell/DetailsPane.cs). Slides out of the
-                             BOTTOM of this pane, not a side panel - see the strip itself further
-                             down. Window-wide like ShowHidden/FoldersTop above it, so both panes
-                             agree on whether it is showing. -->
-                        <Button x:Name="DetailsPaneBtn" Content="&#xE75B;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
-                                FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
-                                ToolTip="{DynamicResource Str_TT_DetailsPane}" Click="DetailsPane_Click"/>
+                        <!-- Details position belongs to this pane. Click cycles bottom/right/off. -->
+                        <Button x:Name="DetailsPaneBtn" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
+                                Style="{StaticResource SurfaceButton}" Click="DetailsPane_Click">
+                            <Path x:Name="DetailsPaneGlyph" Width="14" Height="14" Stretch="Uniform"
+                                  Stroke="{DynamicResource TextBrush}" StrokeThickness="1"
+                                  Data="M0,0 H14 V14 H0 Z M2,2 L12,12"/>
+                        </Button>
                     <!-- Pipe: search WITHIN these results in a new tab. Collapsed while browsing
                          (ViewOptions.cs) - piping a folder listing into a search tab is the one
                          case where it reads as a filter and surprises you. -->
@@ -1295,20 +1297,8 @@
                     </Grid>
                 </Border>
 
-                <!-- DETAILS/PREVIEW STRIP (Shell/DetailsPane.cs): slides out of the BOTTOM of
-                     this pane, full width, NOT a side panel like Explorer's - it belongs
-                     under the listing. Declared AFTER PaneStatusBar (Bottom-docked children stack
-                     in declaration order, first = bottommost), so this sits just above the
-                     status strip and below the results list.
-                     Off by default (Height 0, Collapsed). DetailsPaneBtn (ToolStrip above) and
-                     Alt+P toggle it; ApplyDetailsPane animates Height from/to a MEASURED content
-                     height, never a guessed constant, until the user drags DetailsPaneGrip below -
-                     the Bookmarks-drawer lesson (a fixed pixel target drifts from a variable-
-                     length path/attributes row and a variable-aspect image), same estimate-then-
-                     measure-and-correct shape. ClipToBounds hides the content overshoot mid-
-                     animation.
-                     Split into two columns: file details (left) and an image preview / big shell
-                     icon (right) - DetailsPaneContent (Shell/DetailsPane.cs). -->
+                <!-- Details docks after the bottom status bar, keeping that bar full width.
+                     Bottom uses fields beside the preview; right stacks them and scrolls. -->
                 <!-- MenuBackgroundBrush, the same brush as LocationRow and the tab, so this strip
                      reads as part of the bar band rather than a lighter strip under the list. -->
                 <Border x:Name="DetailsPane" DockPanel.Dock="Bottom" Height="0" Visibility="Collapsed"
@@ -1321,7 +1311,13 @@
                              behind the text exactly like PaneContent's own grain layer does further
                              up, instead of sitting on top of it. -->
                         <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                        <ScrollViewer x:Name="DetailsScroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
                         <Grid x:Name="DetailsPaneContent" Margin="14,10,14,10" SizeChanged="DetailsPaneContent_SizeChanged">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="0"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="16"/>
@@ -1402,7 +1398,7 @@
                              helpful; the preview now widens with the STRIP's height instead, via
                              DetailsPaneGrip below). Kept purely as a visual rule, matching the old
                              splitter's line color. -->
-                        <Border Grid.Column="1" Width="{DynamicResource DetailsDividerWidth}" HorizontalAlignment="Center" Margin="0,2"
+                        <Border x:Name="DetailsDivider" Grid.Column="1" Width="{DynamicResource DetailsDividerWidth}" HorizontalAlignment="Center" Margin="0,2"
                                 Background="{DynamicResource PaneBorderBrush}"/>
 
                         <!-- Preview: DetailsPreviewImage is the real decoded thumbnail (images
@@ -1413,7 +1409,7 @@
                              (Shell/DetailsPane.cs ApplyDetailsPreviewWidth), and the images need to
                              fill that area - Stretch="Uniform" on each Image is what keeps them
                              proportional inside it while it grows or shrinks. -->
-                        <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid x:Name="DetailsPreviewHost" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Image x:Name="DetailsPreviewImage" Stretch="Uniform"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Visibility="Collapsed" SnapsToDevicePixels="True"/>
@@ -1422,6 +1418,7 @@
                                    Visibility="Collapsed" SnapsToDevicePixels="True"/>
                         </Grid>
                         </Grid>
+                        </ScrollViewer>
 
                         <!-- Horizontal resize grip: the STRIP's own height, not a column width.
                              Same Thumb approach as TreeResizeGrip (Shell/MainWindow.xaml) rather
@@ -1443,6 +1440,12 @@
                                                    Fill="{DynamicResource PaneBorderBrush}" Opacity="0"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
+                                        <Trigger Property="Tag" Value="right">
+                                            <Setter TargetName="hint" Property="Width" Value="1"/>
+                                            <Setter TargetName="hint" Property="Height" Value="Auto"/>
+                                            <Setter TargetName="hint" Property="HorizontalAlignment" Value="Left"/>
+                                            <Setter TargetName="hint" Property="VerticalAlignment" Value="Stretch"/>
+                                        </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="hint" Property="Opacity" Value="1"/>
                                         </Trigger>

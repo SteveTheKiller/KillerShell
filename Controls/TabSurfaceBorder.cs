@@ -8,6 +8,34 @@ namespace KillerShell
     /// <summary>Joins a selected tab's face to its content as the intervening menu collapses.</summary>
     public sealed class TabSurfaceBorder : Border
     {
+        public static readonly DependencyProperty DividerBrushProperty = DependencyProperty.Register(
+            nameof(DividerBrush), typeof(Brush), typeof(TabSurfaceBorder), new PropertyMetadata(null, RefreshDivider));
+        private static readonly DependencyPropertyKey FadedDividerBrushPropertyKey = DependencyProperty.RegisterReadOnly(
+            nameof(FadedDividerBrush), typeof(Brush), typeof(TabSurfaceBorder), new PropertyMetadata(null));
+        public static readonly DependencyProperty FadedDividerBrushProperty = FadedDividerBrushPropertyKey.DependencyProperty;
+        public Brush? FadedDividerBrush => (Brush?)GetValue(FadedDividerBrushProperty);
+        public Brush? DividerBrush
+        {
+            get => (Brush?)GetValue(DividerBrushProperty);
+            set => SetValue(DividerBrushProperty, value);
+        }
+
+        private static void RefreshDivider(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+        {
+            var border = (TabSurfaceBorder)sender;
+            Brush? brush = border.DividerBrush;
+            if (brush is SolidColorBrush solid)
+            {
+                var color = solid.Color;
+                var fade = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(0, 1) };
+                fade.GradientStops.Add(new GradientStop(Color.FromArgb(0, color.R, color.G, color.B), 0));
+                fade.GradientStops.Add(new GradientStop(color, 0.75));
+                fade.Freeze();
+                brush = fade;
+            }
+            border.SetValue(FadedDividerBrushPropertyKey, brush);
+        }
+
         public static readonly DependencyProperty MenuBackgroundProperty = DependencyProperty.Register(
             nameof(MenuBackground), typeof(Brush), typeof(TabSurfaceBorder),
             new PropertyMetadata(Brushes.Transparent, Refresh));

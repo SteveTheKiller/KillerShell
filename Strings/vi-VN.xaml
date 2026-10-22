@@ -43,7 +43,7 @@
   <sys:String x:Key="Str_TT_Bookmarks">Dấu trang  (Ctrl+B)</sys:String>
   <sys:String x:Key="Str_TT_Favorite">Đánh dấu thư mục này  (Ctrl+D)</sys:String>
   <sys:String x:Key="Str_TT_ShowHidden">Hiện các mục ẩn và mục hệ thống  (Ctrl+H)</sys:String>
-  <sys:String x:Key="Str_TT_DetailsPane">Hiện thông tin chi tiết về tệp  (Alt+P)</sys:String>
+  <sys:String x:Key="Str_TT_DetailsPane">Chi tiết ở dưới / Chi tiết bên phải / Ẩn chi tiết (Alt+P)</sys:String>
   <sys:String x:Key="Str_TT_FoldersTop">Luôn đặt thư mục phía trên tệp  (Alt+O)</sys:String>
   <sys:String x:Key="Str_Menu_AddFavorite">Thêm vào Dấu trang</sys:String>
   <sys:String x:Key="Str_Menu_RemoveFavorite">Xóa khỏi Dấu trang</sys:String>
@@ -109,7 +109,7 @@
   <sys:String x:Key="Str_Sort_Found">theo thứ tự tìm thấy</sys:String>
   <sys:String x:Key="Str_TT_FilterResults">Lọc các kết quả này (Ctrl+F)</sys:String>
   <sys:String x:Key="Str_TT_Pipe">Tìm kiếm trong các kết quả này  (Ctrl+Shift+F)</sys:String>
-  <sys:String x:Key="Str_TT_DualPane">Ngăn thứ hai  (F10)  |  bấm chuột phải để chuyển đổi giữa bố cục cạnh nhau và xếp chồng</sys:String>
+  <sys:String x:Key="Str_TT_DualPane">Ngăn trái và phải / Ngăn trên và dưới (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
   <sys:String x:Key="Str_TT_MoreTools">Công cụ khác</sys:String>
   <sys:String x:Key="Str_TT_SystemTools">Công cụ hệ thống</sys:String>
   <sys:String x:Key="Str_TT_Sort">Sắp xếp theo  (Alt+S)</sys:String>
@@ -772,7 +772,7 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Ks_FilmGrain">bật hoặc tắt hạt phim</sys:String>
   <sys:String x:Key="Str_Ks_DualPane">mở hoặc đóng ngăn thứ hai</sys:String>
   <sys:String x:Key="Str_Ks_ShowHidden">hiện hoặc ẩn các mục ẩn và mục hệ thống</sys:String>
-  <sys:String x:Key="Str_Ks_DetailsPane">hiện hoặc ẩn thông tin chi tiết về tệp</sys:String>
+  <sys:String x:Key="Str_Ks_DetailsPane">Chi tiết ở dưới / Chi tiết bên phải / Ẩn chi tiết</sys:String>
   <sys:String x:Key="Str_Ks_ResultsViews">dạng xem danh sách, biểu tượng hoặc chi tiết</sys:String>
   <sys:String x:Key="Str_Ks_Density">chuyển đổi mật độ kết quả</sys:String>
   <sys:String x:Key="Str_Ks_IconSize">biểu tượng lớn hơn hoặc nhỏ hơn, như Ctrl+cuộn chuột</sys:String>
@@ -959,6 +959,14 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Sang phải một trang</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Kết quả một phần: {0} tệp khớp; không thể tìm kiếm đầy đủ trong {1} đường dẫn; đã bỏ qua {2} liên kết thư mục.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Đã bỏ qua {0} liên kết thư mục.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Sắp xếp các ngăn trên và dưới</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Sắp xếp các ngăn bên trái và bên phải</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Ngăn trên và dưới (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Ngăn trái và phải (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Chi tiết ở dưới</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Chi tiết bên phải</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Ẩn chi tiết</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Ngăn trái và phải</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Ngăn trên và dưới</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Chi tiết ở dưới (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Chi tiết bên phải (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Ẩn chi tiết (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

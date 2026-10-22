@@ -119,7 +119,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Zakładki  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Dodaj ten folder do zakładek  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Pokaż elementy ukryte i systemowe  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Pokaż szczegóły pliku  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Szczegóły na dole / Szczegóły po prawej / Ukryj szczegóły (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Foldery nad plikami  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Dodaj do zakładek</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Usuń z zakładek</sys:String>
@@ -177,7 +177,7 @@
     <sys:String x:Key="Str_Sort_Found">kolejność znalezienia</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtruj te wyniki (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Szukaj w tych wynikach  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Drugi panel  (F10)  |  kliknij prawym, aby zmienić układ</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Panele obok siebie / Panele jeden nad drugim (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Więcej narzędzi</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Narzędzia systemowe</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sortuj według  (Alt+S)</sys:String>
@@ -691,7 +691,7 @@
   <sys:String x:Key="Str_Ks_FilmGrain">włącz lub wyłącz ziarno filmowe</sys:String>
   <sys:String x:Key="Str_Ks_DualPane">otwórz lub zamknij drugi panel</sys:String>
   <sys:String x:Key="Str_Ks_ShowHidden">pokaż lub ukryj elementy ukryte i systemowe</sys:String>
-  <sys:String x:Key="Str_Ks_DetailsPane">pokaż lub ukryj szczegóły pliku</sys:String>
+  <sys:String x:Key="Str_Ks_DetailsPane">Szczegóły na dole / Szczegóły po prawej / Ukryj szczegóły</sys:String>
   <sys:String x:Key="Str_Ks_ResultsViews">widok listy, ikon lub szczegółów</sys:String>
   <sys:String x:Key="Str_Ks_Density">przełącz gęstość wyników</sys:String>
   <sys:String x:Key="Str_Ks_IconSize">większe lub mniejsze ikony, jak Ctrl+kółko</sys:String>
@@ -872,6 +872,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Strona w prawo</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Częściowe wyniki: pasujące pliki: {0}; nie udało się w pełni przeszukać {1} ścieżek; pominięte dowiązania do katalogów: {2}.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Pominięte łącza do folderów: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Ułóż panele jeden nad drugim</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Ułóż panele obok siebie</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Panele jeden nad drugim (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Panele obok siebie (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Szczegóły na dole</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Szczegóły po prawej</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Ukryj szczegóły</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Panele obok siebie</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Panele jeden nad drugim</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Szczegóły na dole (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Szczegóły po prawej (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Ukryj szczegóły (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

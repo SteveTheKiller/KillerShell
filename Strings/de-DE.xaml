@@ -73,7 +73,7 @@
     <sys:String x:Key="Str_Sort_Found">wie gefunden</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Diese Ergebnisse filtern (Strg+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">In diesen Ergebnissen suchen  (Strg+Umschalt+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Zweiter Bereich  (F10)  |  Rechtsklick wechselt nebeneinander / übereinander</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Fenster links und rechts / Fenster oben und unten (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Weitere Werkzeuge</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systemwerkzeuge</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sortieren nach  (Alt+S)</sys:String>
@@ -749,7 +749,7 @@
     <sys:String x:Key="Str_Svc_Started">{0} gestartet</sys:String>
     <sys:String x:Key="Str_Svc_StopFailed">{0} konnte nicht beendet werden - {1}</sys:String>
     <sys:String x:Key="Str_Svc_Stopped">{0} beendet</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Dateidetails anzeigen  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Details unten / Details rechts / Details aus (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Klicken, um die Kodierung für den nächsten Speichervorgang zu ändern</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Klicken zum Bearbeiten - Pfad eingeben und Eingabetaste drücken, um die Datei umzubenennen/zu verschieben</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Ereignisanzeige  (Strg+F12)</sys:String>
@@ -883,7 +883,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">Filmkorn ein- oder ausschalten</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">zweiten Bereich öffnen oder schließen</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">versteckte und Systemelemente ein- oder ausblenden</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">Dateidetails ein- oder ausblenden</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Details unten / Details rechts / Details aus</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">Listen-, Symbol- oder Detailansicht</sys:String>
     <sys:String x:Key="Str_Ks_Density">Ergebnisdichte wechseln</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">größere oder kleinere Symbole, wie Strg+Mausrad</sys:String>
@@ -957,6 +957,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Seite nach rechts</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Teilergebnisse: {0} passende Datei(en); {1} Pfad(e) konnten nicht vollständig durchsucht werden; {2} Verzeichnisverknüpfung(en) übersprungen.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Übersprungene Ordnerverknüpfungen: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Bereiche übereinander anordnen</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Bereiche nebeneinander anordnen</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Fenster oben und unten (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Fenster links und rechts (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Details unten</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Details rechts</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Details aus</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Fenster links und rechts</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Fenster oben und unten</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Details unten (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Details rechts (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Details aus (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

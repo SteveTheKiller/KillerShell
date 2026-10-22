@@ -41,7 +41,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Segnalibri  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Aggiungi questa cartella ai segnalibri  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Mostra elementi nascosti e di sistema  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Mostra i dettagli del file  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Dettagli in basso / Dettagli a destra / Nascondi dettagli (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Tieni le cartelle sopra i file  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Aggiungi ai segnalibri</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Rimuovi dai segnalibri</sys:String>
@@ -109,7 +109,7 @@
     <sys:String x:Key="Str_Sort_Found">come trovati</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtra questi risultati (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Cerca dentro questi risultati  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Secondo pannello  (F10)  |  clic destro per alternare affiancato / impilato</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Riquadri affiancati / Riquadri sovrapposti (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Altri strumenti</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Strumenti di sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordina per  (Alt+S)</sys:String>
@@ -775,7 +775,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">attivare o disattivare la grana pellicola</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">aprire o chiudere il secondo pannello</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">mostrare o nascondere gli elementi nascosti e di sistema</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">mostrare o nascondere i dettagli del file</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Dettagli in basso / Dettagli a destra / Nascondi dettagli</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">vista elenco, icone o dettagli</sys:String>
     <sys:String x:Key="Str_Ks_Density">cambiare la densità dei risultati</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">icone più grandi o più piccole, come Ctrl+rotellina</sys:String>
@@ -966,6 +966,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Pagina a destra</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Risultati parziali: {0} file corrispondenti; ricerca incompleta in {1} percorsi; {2} collegamenti a cartelle ignorati.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Collegamenti a cartelle ignorati: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Disporre i riquadri in alto e in basso</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Disporre i riquadri a sinistra e a destra</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Riquadri sovrapposti (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Riquadri affiancati (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Dettagli in basso</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Dettagli a destra</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Nascondi dettagli</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Riquadri affiancati</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Riquadri sovrapposti</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Dettagli in basso (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Dettagli a destra (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Nascondi dettagli (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

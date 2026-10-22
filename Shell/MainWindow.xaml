@@ -639,8 +639,9 @@
                     <!-- Workspace layout comes before the content and tool controls. -->
                     <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE89F;"
                             FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
-                            MouseRightButtonUp="DualPaneOrient_Click"
-                            ToolTip="{DynamicResource Str_TT_DualPane}"/>
+                            ToolTip="{DynamicResource Str_TT_DualPane}">
+                        <Button.ContextMenu><ContextMenu Opened="PaneOrientationMenu_Opened"/></Button.ContextMenu>
+                    </Button>
                     <!-- E721 (magnifier): the search panel, out on the right edge. Glyph never
                          changes - RailButton draws it in TextBrush and switches to the accent
                          on Tag="on", which is the open/shut tell. -->
@@ -1470,6 +1471,7 @@
                 <Button x:Name="PaneOrientationButton"
                         Width="22" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"
                         Visibility="Collapsed" Click="PaneOrientation_Click">
+                    <Button.ContextMenu><ContextMenu Opened="PaneOrientationMenu_Opened"/></Button.ContextMenu>
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource GrungeCalendarNavButton}">
                             <Setter Property="Foreground" Value="{DynamicResource TextFooter}"/>

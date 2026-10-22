@@ -73,7 +73,7 @@
     <sys:String x:Key="Str_Sort_Found">bulunma sırası</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Bu sonuçları filtrele (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Bu sonuçların içinde ara  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">İkinci bölme  (F10)  |  yan yana / üst üste için sağ tıklayın</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Sol ve sağ bölmeler / Üst ve alt bölmeler (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Diğer araçlar</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Sistem araçları</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü  (Alt+S)</sys:String>
@@ -749,7 +749,7 @@
     <sys:String x:Key="Str_Svc_Started">{0} başlatıldı</sys:String>
     <sys:String x:Key="Str_Svc_StopFailed">{0} durdurulamadı - {1}</sys:String>
     <sys:String x:Key="Str_Svc_Stopped">{0} durduruldu</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Dosya ayrıntılarını göster  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Ayrıntılar altta / Ayrıntılar sağda / Ayrıntıları gizle (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Sonraki kaydetmede kullanılacak kodlamayı değiştirmek için tıklayın</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Düzenlemek için tıklayın - dosyayı yeniden adlandırmak/taşımak için bir yol yazıp Enter'a basın</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Olay Görüntüleyicisi  (Ctrl+F12)</sys:String>
@@ -883,7 +883,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">film grenini aç veya kapat</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">ikinci bölmeyi aç veya kapat</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">gizli ve sistem öğelerini göster veya gizle</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">dosya ayrıntılarını göster veya gizle</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Ayrıntılar altta / Ayrıntılar sağda / Ayrıntıları gizle</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">liste, simge veya ayrıntı görünümü</sys:String>
     <sys:String x:Key="Str_Ks_Density">sonuç yoğunluğunu değiştir</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">simgeleri büyüt veya küçült, Ctrl+tekerlek gibi</sys:String>
@@ -957,6 +957,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Bir sayfa sağa</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Kısmi sonuçlar: {0} dosya eşleşti; {1} yolda arama tamamlanamadı; {2} dizin bağlantısı atlandı.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Atlanan klasör bağlantısı: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Bölmeleri üst üste yerleştir</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Bölmeleri yan yana yerleştir</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Üst ve alt bölmeler (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Sol ve sağ bölmeler (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Ayrıntılar altta</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Ayrıntılar sağda</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Ayrıntıları gizle</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Sol ve sağ bölmeler</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Üst ve alt bölmeler</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Ayrıntılar altta (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Ayrıntılar sağda (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Ayrıntıları gizle (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

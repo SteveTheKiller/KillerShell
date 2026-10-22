@@ -47,7 +47,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Favoritos  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Adicionar esta pasta aos favoritos  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Mostrar itens ocultos e de sistema  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Mostrar detalhes do arquivo  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Detalhes embaixo / Detalhes à direita / Ocultar detalhes (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Manter as pastas acima dos arquivos  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Adicionar aos Favoritos</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Remover dos Favoritos</sys:String>
@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">como encontrado</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrar estes resultados (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Pesquisar dentro destes resultados  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Segundo painel  (F10)  |  clique com o botão direito para alternar entre lado a lado e empilhado</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Painéis lado a lado / Painéis superior e inferior (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Mais ferramentas</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Ferramentas do sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordenar por  (Alt+S)</sys:String>
@@ -810,7 +810,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">ativar ou desativar a granulação de filme</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">abrir ou fechar o segundo painel</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">mostrar ou ocultar itens ocultos e de sistema</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">mostrar ou ocultar os detalhes do arquivo</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Detalhes embaixo / Detalhes à direita / Ocultar detalhes</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">exibição em lista, ícones ou detalhes</sys:String>
     <sys:String x:Key="Str_Ks_Density">alternar a densidade dos resultados</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">ícones maiores ou menores, como Ctrl+roda</sys:String>
@@ -1003,6 +1003,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Uma página à direita</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Resultados parciais: {0} arquivo(s) correspondente(s); não foi possível pesquisar completamente {1} caminho(s); {2} link(s) de diretório ignorado(s).</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Links para pastas ignorados: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Dispor os painéis em cima e embaixo</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Dispor os painéis à esquerda e à direita</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Painéis superior e inferior (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Painéis lado a lado (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Detalhes embaixo</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Detalhes à direita</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Ocultar detalhes</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Painéis lado a lado</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Painéis superior e inferior</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Detalhes embaixo (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Detalhes à direita (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Ocultar detalhes (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

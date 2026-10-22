@@ -95,7 +95,7 @@
     <sys:String x:Key="Str_Sort_Found">検出順</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">この結果を絞り込む (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">この結果の中を検索  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">2 つ目のペイン  (F10)  |  右クリックで左右 / 上下を切り替え</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">左右に並べる / 上下に並べる (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">その他のツール</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">システムツール</sys:String>
     <sys:String x:Key="Str_TT_Sort">並べ替え  (Alt+S)</sys:String>
@@ -744,7 +744,7 @@
     <sys:String x:Key="Str_Svc_Started">{0} を開始しました</sys:String>
     <sys:String x:Key="Str_Svc_StopFailed">{0} を停止できませんでした - {1}</sys:String>
     <sys:String x:Key="Str_Svc_Stopped">{0} を停止しました</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">ファイルの詳細を表示  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">詳細を下に表示 / 詳細を右に表示 / 詳細を非表示 (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">クリックすると、次回保存時のエンコードを変更できます</sys:String>
     <sys:String x:Key="Str_TT_EdPath">クリックして編集 - パスを入力して Enter を押すとファイルの名前変更・移動ができます</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">イベント ビューアー  (Ctrl+F12)</sys:String>
@@ -879,7 +879,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">フィルムグレインのオン/オフ</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">2 つ目のペインを開く/閉じる</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">隠しファイルとシステム項目の表示を切り替え</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">ファイルの詳細の表示を切り替え</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">詳細を下に表示 / 詳細を右に表示 / 詳細を非表示</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">一覧、アイコン、詳細表示</sys:String>
     <sys:String x:Key="Str_Ks_Density">結果の表示密度を切り替え</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">アイコンを大きく/小さく (Ctrl+ホイールと同じ)</sys:String>
@@ -953,6 +953,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">1 ページ右へ</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">一部の検索結果: {0} 個のファイルが一致しました。{1} 個のパスを完全には検索できませんでした。{2} 個のディレクトリリンクをスキップしました。</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">スキップしたフォルダーリンク: {0}。</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">ペインを上下に並べる</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">ペインを左右に並べる</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">上下に並べる (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">左右に並べる (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">詳細を下に表示</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">詳細を右に表示</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">詳細を非表示</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">左右に並べる</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">上下に並べる</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">詳細を下に表示 (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">詳細を右に表示 (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">詳細を非表示 (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

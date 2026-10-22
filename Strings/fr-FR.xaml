@@ -73,7 +73,7 @@
     <sys:String x:Key="Str_Sort_Found">non trié</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrer ces résultats (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Chercher dans ces résultats  (Ctrl+Maj+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Second volet  (F10)  |  clic droit pour basculer côte à côte / empilé</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Volets gauche et droit / Volets supérieur et inférieur (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Plus d'outils</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Outils système</sys:String>
     <sys:String x:Key="Str_TT_Sort">Trier par  (Alt+S)</sys:String>
@@ -749,7 +749,7 @@
     <sys:String x:Key="Str_Svc_Started">{0} démarré</sys:String>
     <sys:String x:Key="Str_Svc_StopFailed">Impossible d'arrêter {0} - {1}</sys:String>
     <sys:String x:Key="Str_Svc_Stopped">{0} arrêté</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Afficher les détails du fichier  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Détails en bas / Détails à droite / Masquer les détails (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Cliquez pour changer l'encodage utilisé au prochain enregistrement</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Cliquez pour modifier - saisissez un chemin et appuyez sur Entrée pour renommer/déplacer le fichier</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Observateur d'événements  (Ctrl+F12)</sys:String>
@@ -883,7 +883,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">activer ou désactiver le grain de film</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">ouvrir ou fermer le second volet</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">afficher ou masquer les éléments masqués et système</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">afficher ou masquer les détails du fichier</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Détails en bas / Détails à droite / Masquer les détails</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">vue liste, icônes ou détails</sys:String>
     <sys:String x:Key="Str_Ks_Density">changer la densité des résultats</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">icônes plus grandes ou plus petites, comme Ctrl+molette</sys:String>
@@ -957,6 +957,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Page vers la droite</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Résultats partiels : {0} fichier(s) correspondant(s) ; recherche incomplète dans {1} chemin(s) ; {2} lien(s) de dossier ignoré(s).</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Liens vers des dossiers ignorés : {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Disposer les volets en haut et en bas</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Disposer les volets à gauche et à droite</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Volets supérieur et inférieur (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Volets gauche et droit (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Détails en bas</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Détails à droite</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Masquer les détails</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Volets gauche et droit</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Volets supérieur et inférieur</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Détails en bas (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Détails à droite (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Masquer les détails (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

@@ -73,7 +73,7 @@
     <sys:String x:Key="Str_Sort_Found">默认顺序</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">筛选这些结果（Ctrl+F）</sys:String>
     <sys:String x:Key="Str_TT_Pipe">在这些结果中搜索  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">第二个窗格  (F10)  |  右键切换左右 / 上下</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">左右窗格 / 上下窗格 (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">更多工具</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">系统工具</sys:String>
     <sys:String x:Key="Str_TT_Sort">排序方式  (Alt+S)</sys:String>
@@ -746,7 +746,7 @@
     <sys:String x:Key="Str_Svc_Started">{0} 已启动</sys:String>
     <sys:String x:Key="Str_Svc_StopFailed">无法停止 {0} - {1}</sys:String>
     <sys:String x:Key="Str_Svc_Stopped">{0} 已停止</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">显示文件详细信息  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">在底部显示详细信息 / 在右侧显示详细信息 / 隐藏详细信息 (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">点击以更改下次保存所使用的编码</sys:String>
     <sys:String x:Key="Str_TT_EdPath">点击以编辑 - 输入路径后按 Enter 可重命名/移动文件</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">事件查看器  (Ctrl+F12)</sys:String>
@@ -880,7 +880,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">开启或关闭胶片颗粒</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">打开或关闭第二个窗格</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">显示或隐藏隐藏和系统项目</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">显示或隐藏文件详细信息</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">在底部显示详细信息 / 在右侧显示详细信息 / 隐藏详细信息</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">列表、图标或详细信息视图</sys:String>
     <sys:String x:Key="Str_Ks_Density">切换结果密度</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">放大或缩小图标，与 Ctrl+滚轮相同</sys:String>
@@ -954,6 +954,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">向右翻页</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">部分结果：{0} 个文件匹配；无法完整搜索 {1} 个路径；已跳过 {2} 个目录链接。</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">已跳过 {0} 个文件夹链接。</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">将窗格上下排列</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">将窗格左右排列</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">上下窗格 (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">左右窗格 (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">在底部显示详细信息</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">在右侧显示详细信息</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">隐藏详细信息</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">左右窗格</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">上下窗格</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">在底部显示详细信息 (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">在右侧显示详细信息 (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">隐藏详细信息 (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

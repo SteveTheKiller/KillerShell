@@ -47,7 +47,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Könyvjelzők (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Könyvjelzők közé sorolja ezt a mappát (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Rejtett és rendszerelemek megjelenítése (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Fájl részleteinek megjelenítése (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Részletek alul / Részletek jobb oldalon / Részletek kikapcsolása (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Tartsa a mappákat a fájlok felett (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Hozzáadás a könyvjelzőkhöz</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Eltávolítás a könyvjelzők közül</sys:String>
@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">ahogy találták</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Az eredmények szűrése (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Keresés ezeken a találatokon belül (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Második ablaktábla (F10) |  jobb gombbal válthat az egymás melletti / egymás alatti elrendezés között</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Bal és jobb oldali panel / Felső és alsó panel (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Több eszköz</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Rendszereszközök</sys:String>
     <sys:String x:Key="Str_TT_Sort">Rendezés (Alt+S)</sys:String>
@@ -810,7 +810,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">a filmszemcse be- vagy kikapcsolása</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">a második ablaktábla megnyitása vagy bezárása</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">rejtett és rendszerelemek megjelenítése vagy elrejtése</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">a fájl részleteinek megjelenítése vagy elrejtése</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Részletek alul / Részletek jobb oldalon / Részletek kikapcsolása</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">lista, ikon vagy részletek nézet</sys:String>
     <sys:String x:Key="Str_Ks_Density">az eredménysűrűség váltása</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">nagyobb vagy kisebb ikonok, mint a Ctrl+görgő</sys:String>
@@ -1003,6 +1003,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Egy oldallal jobbra</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Részleges eredmények: {0} egyező fájl; {1} útvonal keresése nem volt teljes; {2} könyvtárhivatkozás kihagyva.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Kihagyott mappahivatkozások: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Panelek egymás alá rendezése</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Panelek egymás mellé rendezése</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Felső és alsó panel (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Bal és jobb oldali panel (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Részletek alul</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Részletek jobb oldalon</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Részletek kikapcsolása</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Bal és jobb oldali panel</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Felső és alsó panel</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Részletek alul (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Részletek jobb oldalon (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Részletek kikapcsolása (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

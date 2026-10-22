@@ -28,6 +28,22 @@ namespace KillerShell.Shell
             // Alt chords and F10 arrive as Key.System with the real key in SystemKey.
             var key = e.Key == Key.System ? e.SystemKey : e.Key;
 
+            if (ctrl && alt && !shift)
+            {
+                switch (key)
+                {
+                    case Key.Left: SetPaneOrientation(true); e.Handled = true; return true;
+                    case Key.Up: SetPaneOrientation(false); e.Handled = true; return true;
+                    case Key.Down when _active != null && CanShowListing(_active):
+                        SetDetailsPanePosition(Pane, 1); e.Handled = true; return true;
+                    case Key.Right when _active != null && CanShowListing(_active):
+                        SetDetailsPanePosition(Pane, 2); e.Handled = true; return true;
+                    case Key.D0 when _active != null && CanShowListing(_active):
+                    case Key.NumPad0 when _active != null && CanShowListing(_active):
+                        SetDetailsPanePosition(Pane, 0); e.Handled = true; return true;
+                }
+            }
+
             // The sort flyout is a Popup declared in the pane, so its keys tunnel through this
             // window handler first. Enter has to pick the focused row rather than run a search,
             // and Esc has to close the flyout rather than offer to quit.

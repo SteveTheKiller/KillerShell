@@ -95,7 +95,7 @@
     <sys:String x:Key="Str_Sort_Found">v pořadí nalezení</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrovat tyto výsledky (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Hledat uvnitř těchto výsledků  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Druhý panel  (F10)  |  pravým tlačítkem přepnete vedle sebe / pod sebou</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Panely vlevo a vpravo / Panely nahoře a dole (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Další nástroje</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systémové nástroje</sys:String>
     <sys:String x:Key="Str_TT_Sort">Řadit podle  (Alt+S)</sys:String>
@@ -747,7 +747,7 @@
     <sys:String x:Key="Str_Svc_Started">{0} spuštěna</sys:String>
     <sys:String x:Key="Str_Svc_StopFailed">Nepodařilo se zastavit {0} - {1}</sys:String>
     <sys:String x:Key="Str_Svc_Stopped">{0} zastavena</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Zobrazit podrobnosti souboru  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Podrobnosti dole / Podrobnosti vpravo / Vypnout podrobnosti (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Kliknutím změníte kódování, se kterým se příště uloží</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Kliknutím upravíte - zadejte cestu a stiskněte Enter pro přejmenování/přesun souboru</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Prohlížeč událostí  (Ctrl+F12)</sys:String>
@@ -881,7 +881,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">zapnout nebo vypnout filmové zrno</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">otevřít nebo zavřít druhý panel</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">zobrazit nebo skrýt skryté a systémové položky</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">zobrazit nebo skrýt podrobnosti souboru</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Podrobnosti dole / Podrobnosti vpravo / Vypnout podrobnosti</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">zobrazení seznamu, ikon nebo podrobností</sys:String>
     <sys:String x:Key="Str_Ks_Density">přepnout hustotu výsledků</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">větší nebo menší ikony, stejně jako Ctrl+kolečko</sys:String>
@@ -955,6 +955,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">O stránku doprava</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Částečné výsledky: odpovídající soubory: {0}; zcela neprohledané cesty: {1}; přeskočené odkazy na složky: {2}.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Přeskočené odkazy na složky: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Přepnout na panely nad sebou</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Přepnout na panely vedle sebe</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Panely nahoře a dole (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Panely vlevo a vpravo (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Podrobnosti dole</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Podrobnosti vpravo</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Vypnout podrobnosti</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Panely vlevo a vpravo</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Panely nahoře a dole</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Podrobnosti dole (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Podrobnosti vpravo (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Vypnout podrobnosti (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

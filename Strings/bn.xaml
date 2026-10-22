@@ -73,7 +73,7 @@
     <sys:String x:Key="Str_Sort_Found">যেমন পাওয়া</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">এই ফলাফলগুলি ফিল্টার করুন (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">দ্বিতীয় প্যান  (F10)  |  পাশাপাশি / উপর-নিচ বদলাতে ডান-ক্লিক করুন</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">বাম ও ডান প্যান / উপর ও নিচের প্যান (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">আরও টুল</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">সিস্টেম টুল</sys:String>
     <sys:String x:Key="Str_TT_Sort">সাজান  (Alt+S)</sys:String>
@@ -746,7 +746,7 @@
     <sys:String x:Key="Str_Svc_Started">{0} শুরু হয়েছে</sys:String>
     <sys:String x:Key="Str_Svc_StopFailed">{0} বন্ধ করা যায়নি - {1}</sys:String>
     <sys:String x:Key="Str_Svc_Stopped">{0} বন্ধ হয়েছে</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">ফাইলের বিবরণ দেখান  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">নিচে বিবরণ / ডান দিকে বিবরণ / বিবরণ বন্ধ (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">পরবর্তী সংরক্ষণের এনকোডিং বদলাতে ক্লিক করুন</sys:String>
     <sys:String x:Key="Str_TT_EdPath">সম্পাদনা করতে ক্লিক করুন - ফাইলটির নাম বদলাতে বা সরাতে একটি পাথ লিখে Enter চাপুন</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">ইভেন্ট ভিউয়ার  (Ctrl+F12)</sys:String>
@@ -880,7 +880,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">ফিল্ম গ্রেইন চালু বা বন্ধ করুন</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">দ্বিতীয় প্যান খুলুন বা বন্ধ করুন</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">লুকানো ও সিস্টেম আইটেম দেখান বা লুকান</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">ফাইলের বিবরণ দেখান বা লুকান</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">নিচে বিবরণ / ডান দিকে বিবরণ / বিবরণ বন্ধ</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">তালিকা, আইকন বা বিস্তারিত ভিউ</sys:String>
     <sys:String x:Key="Str_Ks_Density">ফলাফলের ঘনত্ব বদলান</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">আইকন বড় বা ছোট করুন, Ctrl+হুইলের মতো</sys:String>
@@ -954,6 +954,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">এক পৃষ্ঠা ডানে</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">আংশিক ফলাফল: {0}টি ফাইল মিলেছে; {1}টি পাথে সম্পূর্ণ অনুসন্ধান করা যায়নি; {2}টি ডিরেক্টরি লিঙ্ক বাদ দেওয়া হয়েছে।</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">বাদ দেওয়া ফোল্ডার লিংক: {0}।</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">ফলকগুলো উপর ও নিচে সাজান</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">ফলকগুলো বাম ও ডানে সাজান</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">উপর ও নিচের প্যান (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">বাম ও ডান প্যান (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">নিচে বিবরণ</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">ডান দিকে বিবরণ</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">বিবরণ বন্ধ</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">বাম ও ডান প্যান</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">উপর ও নিচের প্যান</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">নিচে বিবরণ (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">ডান দিকে বিবরণ (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">বিবরণ বন্ধ (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

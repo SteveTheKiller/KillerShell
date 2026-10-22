@@ -43,7 +43,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Закладки  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Добавить эту папку в закладки  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Показывать скрытые и системные элементы  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Показать сведения о файле  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Сведения снизу / Сведения справа / Скрыть сведения (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Папки выше файлов  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Добавить в закладки</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Убрать из закладок</sys:String>
@@ -111,7 +111,7 @@
     <sys:String x:Key="Str_Sort_Found">как найдено</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Отфильтровать эти результаты (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Искать внутри этих результатов  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Вторая панель  (F10)  |  правый клик переключает рядом / друг над другом</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Панели слева и справа / Панели сверху и снизу (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Другие инструменты</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Системные инструменты</sys:String>
     <sys:String x:Key="Str_TT_Sort">Сортировать по  (Alt+S)</sys:String>
@@ -778,7 +778,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">включить или выключить зернистость плёнки</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">открыть или закрыть вторую панель</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">показать или скрыть скрытые и системные элементы</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">показать или скрыть сведения о файле</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Сведения снизу / Сведения справа / Скрыть сведения</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">вид: список, значки или таблица</sys:String>
     <sys:String x:Key="Str_Ks_Density">переключить плотность результатов</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">крупнее или мельче значки, как Ctrl+колесо</sys:String>
@@ -969,6 +969,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">На страницу вправо</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Частичные результаты: найдено файлов: {0}; не удалось полностью проверить путей: {1}; пропущено ссылок на каталоги: {2}.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Пропущено ссылок на папки: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Расположить панели сверху и снизу</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Расположить панели слева и справа</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Панели сверху и снизу (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Панели слева и справа (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Сведения снизу</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Сведения справа</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Скрыть сведения</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Панели слева и справа</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Панели сверху и снизу</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Сведения снизу (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Сведения справа (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Скрыть сведения (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

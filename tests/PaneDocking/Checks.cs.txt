@@ -1,0 +1,303 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Automation.Peers;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using KillerShell.Services;
+using KillerShell.Shell;
+using KillerShell;
+
+public static class PaneDockingChecks
+{
+    [DllImport("user32.dll")] private static extern bool GetKeyboardState(byte[] state);
+    [DllImport("user32.dll")] private static extern bool SetKeyboardState(byte[] state);
+
+    // Thread-local keyboard state supplies the OS input boundary. The real routed window
+    // handler still reads Keyboard.Modifiers and dispatches the command. No physical input.
+    private static void Shortcut(UIElement target, Key key, bool alt = true, bool shift = false)
+    {
+        var original = new byte[256];
+        Check(GetKeyboardState(original), "Read fixture thread keyboard state");
+        var state = (byte[])original.Clone();
+        state[0x11] = state[0xA2] = 0x80;
+        state[0x12] = state[0xA4] = alt ? (byte)0x80 : (byte)0;
+        state[0x10] = state[0xA0] = shift ? (byte)0x80 : (byte)0;
+        try
+        {
+            Check(SetKeyboardState(state), "Set fixture thread modifiers");
+            Check((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt)) ==
+                (alt ? ModifierKeys.Control | ModifierKeys.Alt : ModifierKeys.Control),
+                "Actual WPF keyboard sees requested modifiers");
+            var args = new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(target), Environment.TickCount, key) {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent };
+            target.RaiseEvent(args);
+            Check(args.Handled, "Actual window handles layout shortcut " + key);
+        }
+        finally { Check(SetKeyboardState(original), "Restore fixture thread keyboard state"); }
+        Pump();
+    }
+    private static void Pick(Button button, int index, int count, string gesture)
+    {
+        var menu = button.ContextMenu;
+        Check(menu != null, "Layout button has a context menu");
+        menu.PlacementTarget = button;
+        menu.IsOpen = true; Pump();
+        Check(menu.Items.Count == count, "Menu exposes all explicit layouts");
+        var item = (MenuItem)menu.Items[index];
+        Check(item.Icon is System.Windows.Shapes.Path && item.InputGestureText == gesture,
+            "Menu item has its layout icon and shortcut");
+        item.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        menu.IsOpen = false; Pump();
+    }
+    private static void Tooltip(Button button, string shortcut)
+    {
+        Check(((string)button.ToolTip).Contains(shortcut), "Tooltip includes the next action shortcut");
+        Check(new ButtonAutomationPeer(button).GetName() == (string)button.ToolTip,
+            "Accessible name includes the same shortcut");
+    }
+    private static void Capture(MainWindow window, string output, string name)
+    {
+        if (string.IsNullOrEmpty(output)) return;
+        Directory.CreateDirectory(output);
+        var root = (FrameworkElement)window.Content;
+        root.UpdateLayout();
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(root.ActualWidth), (int)Math.Ceiling(root.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+        bitmap.Render(root);
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using (var stream = File.Create(Path.Combine(output, name + ".png"))) encoder.Save(stream);
+        Console.WriteLine("CAPTURE " + name);
+    }
+    private static void Pump()
+    {
+        var until = DateTime.UtcNow.AddMilliseconds(450);
+        while (DateTime.UtcNow < until)
+        {
+            var frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => frame.Continue = false));
+            Dispatcher.PushFrame(frame);
+            Thread.Sleep(5);
+        }
+    }
+    private static void Click(Button button)
+    {
+        button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Pump();
+    }
+    private static void Check(bool value, string text)
+    {
+        if (!value) throw new InvalidOperationException(text);
+        Console.WriteLine("PASS " + text);
+    }
+    private static IEnumerable<T> Descendants<T>(DependencyObject parent) where T : DependencyObject
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T) yield return (T)child;
+            foreach (var descendant in Descendants<T>(child)) yield return descendant;
+        }
+    }
+    private static void SquareTabs(MainWindow window, string output)
+    {
+        var pane = (FrameworkElement)window.FindName("LeftPane");
+        var add = (Button)pane.FindName("NewTabBtn");
+        Click(add); Click(add);
+        foreach (Theme theme in Enum.GetValues(typeof(Theme)))
+        {
+            ThemeManager.Apply(theme); Pump();
+            var tabs = Descendants<TabSurfaceBorder>(pane).Where(tab => tab.IsVisible).ToArray();
+            Check(tabs.Length >= 2, "Tab geometry is checked with multiple real tabs");
+            Check(tabs.All(tab => tab.CornerRadius.TopLeft == 0 && tab.CornerRadius.TopRight == 0), "Tab top corners are square");
+            Check(tabs.All(tab => tab.Margin.Left <= 0 && tab.Margin.Right <= 0), "Tab faces have no horizontal gaps");
+            var labels = tabs.SelectMany(tab => Descendants<TextBlock>(tab)).Where(label => label.Name == "tabLbl").ToArray();
+            Check(labels.All(label => label.FontSize == 11 && label.FontWeight == FontWeights.Normal),
+                "Active and inactive tab labels use the same normal eleven-pixel type");
+            var selected = tabs.Single(tab => (bool)tab.DataContext.GetType().GetProperty("IsActive").GetValue(tab.DataContext, null));
+            var strip = (ItemsControl)pane.FindName("TabStrip");
+            var targetTab = tabs.First(tab => !ReferenceEquals(tab, selected));
+            var targetModel = targetTab.DataContext;
+            int targetIndex = strip.Items.IndexOf(targetModel);
+            var selectedLabel = Descendants<TextBlock>(targetTab).Single(label => label.Name == "tabLbl");
+            double beforeBaseline = selectedLabel.TranslatePoint(new Point(0, selectedLabel.BaselineOffset), pane).Y;
+            Check(targetIndex >= 0, "Target tab exists in the actual tab strip");
+            bool previous = targetIndex < strip.Items.IndexOf(selected.DataContext);
+            for (int step = 0; step < strip.Items.Count
+                && !(bool)targetModel.GetType().GetProperty("IsActive").GetValue(targetModel, null); step++)
+                Shortcut(window, Key.Tab, false, previous);
+            Check((bool)targetModel.GetType().GetProperty("IsActive").GetValue(targetModel, null),
+                "Actual tab shortcut selects its target");
+            targetTab = Descendants<TabSurfaceBorder>(pane).Single(tab => tab.IsVisible && ReferenceEquals(tab.DataContext, targetModel));
+            selectedLabel = Descendants<TextBlock>(targetTab).Single(label => label.Name == "tabLbl");
+            Check(targetTab.IsVisible, "The measured label stays visible after switching tabs");
+            double afterBaseline = selectedLabel.TranslatePoint(new Point(0, selectedLabel.BaselineOffset), pane).Y;
+            Check(Math.Abs(beforeBaseline - afterBaseline) < 0.1,
+                "Tab text baseline stays fixed on selection (before " + beforeBaseline + ", after " + afterBaseline + ")");
+            tabs = Descendants<TabSurfaceBorder>(pane).Where(tab => tab.IsVisible).ToArray();
+            Check(Descendants<Border>(add).All(border => border.BorderThickness == new Thickness(0)), "New Tab button has no border");
+            var frame = (Border)pane.FindName("ResultsPane");
+            Check(frame.CornerRadius.TopLeft == 0 && frame.CornerRadius.TopRight == 0, "Tab band joins square content tops");
+            if (theme == Theme.Dark || theme == Theme.Light)
+                Check(frame.CornerRadius.BottomLeft == 6 && frame.CornerRadius.BottomRight == 6, "Content pane bottom corners remain rounded");
+            if (theme == Theme.Dark)
+            {
+                var active = tabs.Single(tab => (bool)tab.DataContext.GetType().GetProperty("IsActive").GetValue(tab.DataContext, null));
+                Check(active.BorderThickness.Top > 0 && active.BorderThickness.Left > 0 && active.BorderThickness.Right > 0,
+                    "Single-pane active tab retains its top and side outline");
+                var activeFade = active.BorderBrush as LinearGradientBrush;
+                Check(activeFade != null && activeFade.GradientStops.First().Color.A > 0
+                    && activeFade.GradientStops.Last().Color.A == 0,
+                    "Single-pane active sides fade toward the bottom");
+                foreach (var inactive in tabs.Where(tab => !ReferenceEquals(tab, active)))
+                {
+                    var divider = inactive.BorderBrush as LinearGradientBrush;
+                    Check(divider != null && divider.GradientStops.First().Color.A == 0
+                        && divider.GradientStops.Last().Color.A > 0,
+                        "Inactive tab dividers fade toward the top");
+                }
+                foreach (var tab in tabs)
+                {
+                    Check(Descendants<Image>(tab).Where(icon => icon.Name == "tabFolderIcon").All(icon => icon.Margin.Left == 2),
+                        "Tab artwork has two pixels of left padding");
+                    Check(Descendants<TextBlock>(tab).Where(icon => icon.Name == "tabGlyph").All(icon => icon.Margin.Left == 2),
+                        "Tab glyphs have two pixels of left padding");
+                }
+                Click((Button)window.FindName("DualPaneRailBtn"));
+                var second = (FrameworkElement)window.FindName("RightPane");
+                var focused = Descendants<TabSurfaceBorder>(second).Single(tab => tab.IsVisible
+                    && (bool)tab.DataContext.GetType().GetProperty("IsActive").GetValue(tab.DataContext, null));
+                Check(focused.BorderBrush is SolidColorBrush && ((SolidColorBrush)focused.BorderBrush).Color.A > 0,
+                    "Dual-pane focused outline stays solid");
+                Click((Button)window.FindName("DualPaneRailBtn"));
+            }
+            Capture(window, output, "tabs-" + theme);
+        }
+    }
+    public static void Run(string output, bool verifySquareTabs)
+    {
+        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+        var settings = new Dictionary<string, string> {
+            { "CheckForUpdatesOnStartup", "0" }, { "CloseToTray", "0" }, { "RememberTabs", "0" },
+            { "SearchPanelOpen", "0" }, { "DualPane", "0" }
+        };
+        ThemeManager.GetSetting = key => settings.ContainsKey(key) ? settings[key] : null;
+        ThemeManager.SetSetting = (key, value) => settings[key] = value;
+        LocaleManager.GetSetting = key => "EnUS";
+        LocaleManager.SetSetting = (key, value) => { };
+        ThemeManager.Initialize(); LocaleManager.Initialize();
+        MainWindow.DemoMode = true;
+        MainWindow window = new MainWindow { ShowInTaskbar = false, ShowActivated = false, Left = -32000, Top = -32000 };
+        try
+        {
+            window.Show(); Pump();
+            if (verifySquareTabs) { SquareTabs(window, output); return; }
+            var pane = (FrameworkElement)window.FindName("LeftPane");
+            var button = (Button)pane.FindName("DetailsPaneBtn");
+            var details = (FrameworkElement)pane.FindName("DetailsPane");
+            Click(button);
+            Check(details.IsVisible && DockPanel.GetDock(details) == Dock.Bottom, "First details click opens bottom");
+            Click(button);
+            Check(details.IsVisible && DockPanel.GetDock(details) == Dock.Right, "Second details click moves to right");
+            Click(button);
+            Check(!details.IsVisible, "Third details click turns details off");
+
+            Pick(button, 1, 3, "Ctrl+Alt+Right");
+            Check(details.IsVisible && DockPanel.GetDock(details) == Dock.Right, "Menu selects right details");
+            Tooltip(button, "Ctrl+Alt+0");
+            Check(settings["DetailsPanePositionL"] == "right" && settings["DetailsPaneOpenL"] == "1", "Right details choice is saved");
+            var grip = (Thumb)pane.FindName("DetailsPaneGrip");
+            double before = details.ActualWidth;
+            grip.RaiseEvent(new DragDeltaEventArgs(30, 0) { RoutedEvent = Thumb.DragDeltaEvent }); Pump();
+            grip.RaiseEvent(new DragCompletedEventArgs(30, 0, false) { RoutedEvent = Thumb.DragCompletedEvent }); Pump();
+            Check(details.ActualWidth < before && settings.ContainsKey("DetailsPaneWidthL"), "Right grip resizes and saves width");
+
+            var list = (ListBox)pane.FindName("ResultsList");
+            list.SelectedItem = list.Items.OfType<KillerShell.Models.SearchResult>().First(item => !item.IsDirectory);
+            Pump();
+            list.Focus(); Pump();
+            Shortcut(list, Key.Down);
+            Check(details.IsVisible && DockPanel.GetDock(details) == Dock.Bottom, "Shortcut selects bottom details");
+            Tooltip(button, "Ctrl+Alt+Right");
+            Shortcut(list, Key.Right);
+            Check(details.IsVisible && DockPanel.GetDock(details) == Dock.Right, "Shortcut selects right details");
+            Shortcut(list, Key.D0);
+            Check(!details.IsVisible, "Shortcut turns details off");
+            Tooltip(button, "Ctrl+Alt+Down");
+
+            var rail = (Button)window.FindName("DualPaneRailBtn");
+            Pick(rail, 1, 2, "Ctrl+Alt+Up");
+            var right = (FrameworkElement)window.FindName("RightPane");
+            Check(right.IsVisible && Grid.GetRow(right) == 2, "Rail menu opens top/bottom panes");
+            var footer = (Button)window.FindName("PaneOrientationButton");
+            Tooltip(footer, "Ctrl+Alt+Left");
+            Pick(footer, 0, 2, "Ctrl+Alt+Left");
+            Check(Grid.GetColumn(right) == 2, "Footer menu selects left/right panes");
+            Tooltip(footer, "Ctrl+Alt+Up");
+            Shortcut(list, Key.Up);
+            Check(Grid.GetRow(right) == 2, "Shortcut selects top/bottom panes");
+            Shortcut(list, Key.Left);
+            Check(Grid.GetColumn(right) == 2, "Shortcut selects left/right panes");
+
+            var otherButton = (Button)right.FindName("DetailsPaneBtn");
+            var otherDetails = (FrameworkElement)right.FindName("DetailsPane");
+            Pick(otherButton, 1, 3, "Ctrl+Alt+Right");
+            Check(otherDetails.IsVisible && !details.IsVisible, "Menu acts on its owning pane without changing the other");
+            Pick(button, 0, 3, "Ctrl+Alt+Down");
+            Check(DockPanel.GetDock(details) == Dock.Bottom && DockPanel.GetDock(otherDetails) == Dock.Right,
+                "Each pane keeps an independent details position");
+            Check(((FrameworkElement)pane.FindName("DetailsFieldsGrid")).IsVisible,
+                "A selected file shows real details content at the bottom");
+            Pick(button, 1, 3, "Ctrl+Alt+Right");
+            Check(((FrameworkElement)pane.FindName("DetailsFieldsGrid")).IsVisible,
+                "The same selected file keeps its details on the right");
+            Capture(window, output, "selected-file-details-right");
+            Pick(button, 0, 3, "Ctrl+Alt+Down");
+
+            window.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window), Environment.TickCount, Key.F1) {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent }); Pump();
+            Click((Button)window.FindName("KsViewListBtn"));
+            var overlay = (FrameworkElement)window.FindName("ShortcutListHost");
+            var shortcutText = Descendants<TextBlock>(overlay).Select(block => block.Text).ToArray();
+            foreach (string gesture in new[] { "Ctrl+Alt+Down", "Ctrl+Alt+Right", "Ctrl+Alt+0", "Ctrl+Alt+Left", "Ctrl+Alt+Up" })
+                Check(shortcutText.Any(text => text.Contains(gesture)), "Actual shortcut overlay includes " + gesture);
+            window.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window), Environment.TickCount, Key.Escape) {
+                RoutedEvent = Keyboard.PreviewKeyDownEvent }); Pump();
+            foreach (Theme theme in new[] { Theme.Dark, Theme.Light, Theme.SE98 })
+            {
+                ThemeManager.Apply(theme); Pump();
+                Capture(window, output, theme + "-left-right-details");
+                Pick(footer, 1, 2, "Ctrl+Alt+Up");
+                Check(otherDetails.ActualWidth > 0 && otherDetails.ActualWidth <= ((FrameworkElement)right.FindName("ResultsPane")).ActualWidth * 0.5 + 1,
+                    "Right details fits its current pane");
+                Capture(window, output, theme + "-top-bottom-details");
+                Pick(footer, 0, 2, "Ctrl+Alt+Left");
+            }
+            LocaleManager.Apply(Locale.SlSI); Pump();
+            Tooltip(button, "Ctrl+Alt+Right"); Tooltip(otherButton, "Ctrl+Alt+0");
+            Check(((string)button.ToolTip).Contains("Podrobnosti"), "Slovenian next-action tooltip is translated");
+            Capture(window, output, "Slovenian-details");
+            LocaleManager.Apply(Locale.EnUS);
+            Pick(button, 1, 3, "Ctrl+Alt+Right");
+            double savedWidth = double.Parse(settings["DetailsPaneWidthL"], CultureInfo.InvariantCulture);
+            window.Close(); Pump();
+            window = new MainWindow { ShowInTaskbar = false, ShowActivated = false, Left = -32000, Top = -32000 };
+            window.Show(); Pump();
+            pane = (FrameworkElement)window.FindName("LeftPane"); details = (FrameworkElement)pane.FindName("DetailsPane");
+            Check(details.IsVisible && DockPanel.GetDock(details) == Dock.Right, "Restart restores right details");
+            double availableWidth = ((FrameworkElement)pane.FindName("ResultsPane")).ActualWidth;
+            Check(Math.Abs(details.ActualWidth - Math.Min(savedWidth, availableWidth * 0.5)) < 1,
+                "Restart restores dragged width within available space (saved " + savedWidth + ", actual " + details.ActualWidth + ")");
+        }
+        finally { window.Close(); Pump(); }
+    }
+}

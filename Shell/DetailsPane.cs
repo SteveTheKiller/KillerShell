@@ -8,14 +8,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using KillerShell.Models;
 
-// The details/preview strip that slides out of the BOTTOM of a results pane (Controls/FilePane.
-// xaml, "DetailsPane" - deliberately NOT a side panel like Explorer's). File details on the left,
-// an image preview - or the shell's own big icon for everything else - on the right. Partial of
-// MainWindow. Open/closed, dragged height, and content are ALL per-pane (FilePane.DetailsPaneOpen/
-// DetailsPaneUserSized/DetailsPaneHeight) - each pane tracks its own selection, so there is no
-// reason left for the two strips to move together; they used to open and close as a pair when
-// they should be independent. Unlike ShowHidden/FoldersOnTop, which genuinely are
-// meant to agree across both panes.
+// Details and preview dock below or to the right of each file listing. Visibility, position,
+// dimensions and selection belong to that FilePane, independently of the other pane.
 //
 // Updates once per selection change (FilePane.xaml.cs forwards ResultsList_SelectionChanged
 // here), never on a timer - the folder listing's own file-watcher already keeps the rows
@@ -79,7 +73,11 @@ namespace KillerShell.Shell
                 string key = PaneKey(p);
 
                 p.DetailsPaneOpen = Services.ThemeManager.GetSetting("DetailsPaneOpen" + key) == "1";
+                p.DetailsPaneOnRight = Services.ThemeManager.GetSetting("DetailsPanePosition" + key) == "right";
                 p.DetailsPaneUserSized = Services.ThemeManager.GetSetting("DetailsPaneUserSized" + key) == "1";
+                if (double.TryParse(Services.ThemeManager.GetSetting("DetailsPaneWidth" + key),
+                    System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double width)
+                    && !double.IsNaN(width) && !double.IsInfinity(width)) p.DetailsPaneWidth = width;
 
                 string? rawHeight = Services.ThemeManager.GetSetting("DetailsPaneHeight" + key);
                 if (!string.IsNullOrEmpty(rawHeight) &&
@@ -88,15 +86,72 @@ namespace KillerShell.Shell
                     p.DetailsPaneHeight = parsed;   // re-clamped against the live pane in ApplyDetailsPane
                 }
 
+                p.DetailsPaneBtn.ContextMenu = new System.Windows.Controls.ContextMenu();
+                p.DetailsPaneBtn.ContextMenu.Opened += (_, _) => PopulateDetailsPaneMenu(p);
+                p.ResultsPane.SizeChanged += (_, _) => CorrectDetailsPaneHeight(p);
                 ApplyDetailsPane(p, animate: false);   // no slide-open flash at launch
             }
         }
 
         internal void DetailsPaneToggle_Click(FilePane pane)
         {
-            pane.DetailsPaneOpen = !pane.DetailsPaneOpen;
-            Services.ThemeManager.SetSetting("DetailsPaneOpen" + PaneKey(pane), pane.DetailsPaneOpen ? "1" : "0");
-            ApplyDetailsPane(pane, animate: true);
+            SetDetailsPanePosition(pane, !pane.DetailsPaneOpen ? 1 : pane.DetailsPaneOnRight ? 0 : 2);
+        }
+
+        // 0 = off, 1 = bottom, 2 = right. Explicit choices are idempotent.
+        private void SetDetailsPanePosition(FilePane pane, int position)
+        {
+            pane.DetailsPaneOpen = position != 0;
+            pane.DetailsPaneOnRight = position == 2;
+            string key = PaneKey(pane);
+            Services.ThemeManager.SetSetting("DetailsPaneOpen" + key, pane.DetailsPaneOpen ? "1" : "0");
+            Services.ThemeManager.SetSetting("DetailsPanePosition" + key, pane.DetailsPaneOnRight ? "right" : "bottom");
+            ApplyDetailsPane(pane, animate: false);
+        }
+
+        private static double ClampDetailsPaneWidth(FilePane pane, double width)
+        {
+            double ceiling = pane.ResultsPane.ActualWidth > 0 ? pane.ResultsPane.ActualWidth * 0.5 : 400;
+            double floor = Math.Min(210, ceiling);
+            return Math.Max(floor, Math.Min(ceiling, width));
+        }
+
+        private static void ConfigureDetailsPaneDock(FilePane pane)
+        {
+            bool right = pane.DetailsPaneOnRight;
+            var panel = pane.DetailsPane;
+            panel.BeginAnimation(FrameworkElement.HeightProperty, null);
+            panel.BeginAnimation(FrameworkElement.WidthProperty, null);
+            System.Windows.Controls.DockPanel.SetDock(panel, right ? System.Windows.Controls.Dock.Right : System.Windows.Controls.Dock.Bottom);
+            panel.Width = right ? ClampDetailsPaneWidth(pane, pane.DetailsPaneWidth) : double.NaN;
+            panel.Height = right ? double.NaN : pane.DetailsPaneHeight;
+            if (right) panel.BorderThickness = new Thickness(1, 0, 0, 0);
+            else panel.SetResourceReference(System.Windows.Controls.Border.BorderThicknessProperty, "DetailsPaneBorderThickness");
+            pane.DetailsScroll.VerticalScrollBarVisibility = right
+                ? System.Windows.Controls.ScrollBarVisibility.Auto : System.Windows.Controls.ScrollBarVisibility.Disabled;
+            var content = pane.DetailsPaneContent;
+            content.RowDefinitions[0].Height = right ? GridLength.Auto : new GridLength(1, GridUnitType.Star);
+            content.RowDefinitions[1].Height = new GridLength(right ? 16 : 0);
+            content.RowDefinitions[2].Height = new GridLength(right ? 180 : 0);
+            content.ColumnDefinitions[1].Width = new GridLength(right ? 0 : 16);
+            pane.DetailsPreviewCol.Width = new GridLength(right ? 0 : 150);
+            System.Windows.Controls.Grid.SetColumn(pane.DetailsPreviewHost, right ? 0 : 2);
+            System.Windows.Controls.Grid.SetRow(pane.DetailsPreviewHost, right ? 2 : 0);
+            System.Windows.Controls.Grid.SetColumn(pane.DetailsDivider, right ? 0 : 1);
+            System.Windows.Controls.Grid.SetRow(pane.DetailsDivider, right ? 1 : 0);
+            pane.DetailsDivider.Height = right ? 1 : double.NaN;
+            pane.DetailsDivider.HorizontalAlignment = right ? HorizontalAlignment.Stretch : HorizontalAlignment.Center;
+            if (right) pane.DetailsDivider.Width = double.NaN;
+            else pane.DetailsDivider.SetResourceReference(FrameworkElement.WidthProperty, "DetailsDividerWidth");
+            pane.DetailsDivider.Margin = right ? new Thickness(0, 8, 0, 8) : new Thickness(0, 2, 0, 2);
+            pane.DetailsFieldsGrid.VerticalAlignment = right ? VerticalAlignment.Top : VerticalAlignment.Center;
+            var grip = pane.DetailsPaneGrip;
+            grip.Tag = right ? "right" : null;
+            grip.Height = right ? double.NaN : 5;
+            grip.Width = right ? 5 : double.NaN;
+            grip.VerticalAlignment = right ? VerticalAlignment.Stretch : VerticalAlignment.Top;
+            grip.HorizontalAlignment = right ? HorizontalAlignment.Left : HorizontalAlignment.Stretch;
+            grip.Cursor = right ? System.Windows.Input.Cursors.SizeWE : System.Windows.Input.Cursors.SizeNS;
         }
 
         /// <summary>
@@ -110,6 +165,14 @@ namespace KillerShell.Shell
         {
             if (!pane.DetailsPaneOpen) return;
 
+            if (pane.DetailsPaneOnRight)
+            {
+                pane.DetailsPaneWidth = ClampDetailsPaneWidth(pane, pane.DetailsPane.ActualWidth - e.HorizontalChange);
+                pane.DetailsPane.BeginAnimation(FrameworkElement.WidthProperty, null);
+                pane.DetailsPane.Width = pane.DetailsPaneWidth;
+                return;
+            }
+
             pane.DetailsPaneUserSized = true;
 
             pane.DetailsPaneHeight = ClampDetailsPaneHeight(pane, pane.DetailsPane.ActualHeight - e.VerticalChange);
@@ -122,6 +185,12 @@ namespace KillerShell.Shell
         internal void DetailsPaneGrip_DragCompleted(FilePane pane, System.Windows.Controls.Primitives.DragCompletedEventArgs _)
         {
             string key = PaneKey(pane);
+            if (pane.DetailsPaneOnRight)
+            {
+                Services.ThemeManager.SetSetting("DetailsPaneWidth" + key,
+                    pane.DetailsPaneWidth.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
+                return;
+            }
             Services.ThemeManager.SetSetting("DetailsPaneHeight" + key,
                 pane.DetailsPaneHeight.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
             Services.ThemeManager.SetSetting("DetailsPaneUserSized" + key, "1");
@@ -199,6 +268,7 @@ namespace KillerShell.Shell
         /// </summary>
         private static void ApplyDetailsPreviewWidth(FilePane pane, double stripHeight)
         {
+            if (pane.DetailsPaneOnRight) return;
             double preferred = Math.Max(DetailsPreviewMinWidth, stripHeight * DetailsPreviewWidthRatio);
 
             double totalContentWidth = pane.DetailsPaneContent.ActualWidth;
@@ -227,6 +297,11 @@ namespace KillerShell.Shell
         private static void SyncDetailsPaneCollapse(FilePane pane, bool animate)
         {
             if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
+            if (pane.DetailsPaneOnRight)
+            {
+                pane.DetailsPane.Width = ClampDetailsPaneWidth(pane, pane.DetailsPaneWidth);
+                return;
+            }
 
             bool empty = IsDetailsPaneEmpty(pane);
             double target = NormalDetailsPaneHeight(pane);
@@ -263,6 +338,8 @@ namespace KillerShell.Shell
             bool listing = pane.ResultsList.Visibility == Visibility.Visible;
 
             pane.DetailsPaneBtn.Tag = pane.DetailsPaneOpen ? "on" : null;
+            ConfigureDetailsPaneDock(pane);
+            UpdateDetailsPaneButton(pane);
 
             if (pane.DetailsPaneOpen && listing)
             {
@@ -281,11 +358,12 @@ namespace KillerShell.Shell
         private static void AnimateDetailsPane(FilePane pane, double target, bool animate, bool collapseWhenDone)
         {
             var el = pane.DetailsPane;
+            var dimension = pane.DetailsPaneOnRight ? FrameworkElement.WidthProperty : FrameworkElement.HeightProperty;
 
             void Settle()
             {
-                el.BeginAnimation(FrameworkElement.HeightProperty, null);
-                el.Height = target;
+                el.BeginAnimation(dimension, null);
+                el.SetValue(dimension, target);
                 if (collapseWhenDone) el.Visibility = Visibility.Collapsed;
             }
 
@@ -293,13 +371,13 @@ namespace KillerShell.Shell
 
             var anim = new DoubleAnimation
             {
-                From = double.IsNaN(el.ActualHeight) ? 0 : el.ActualHeight,
+                From = pane.DetailsPaneOnRight ? el.ActualWidth : el.ActualHeight,
                 To = target,
                 Duration = new Duration(TimeSpan.FromMilliseconds(160)),
                 EasingFunction = new QuadraticEase { EasingMode = collapseWhenDone ? EasingMode.EaseIn : EasingMode.EaseOut },
             };
             anim.Completed += (_, _) => Settle();
-            el.BeginAnimation(FrameworkElement.HeightProperty, anim);
+            el.BeginAnimation(dimension, anim);
         }
 
         /// <summary>
@@ -313,6 +391,13 @@ namespace KillerShell.Shell
         internal static void CorrectDetailsPaneHeight(FilePane pane)
         {
             if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
+            if (pane.DetailsPaneOnRight)
+            {
+                double width = ClampDetailsPaneWidth(pane, pane.DetailsPaneWidth);
+                if (Math.Abs(pane.DetailsPane.Width - width) > 0.5) pane.DetailsPane.Width = width;
+                return;
+            }
+            ApplyDetailsPreviewWidth(pane, pane.DetailsPane.ActualHeight);
 
             // Empty content keeps the space reserved by the selection update.
             if (IsDetailsPaneEmpty(pane)) return;

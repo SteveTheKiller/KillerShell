@@ -47,7 +47,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Bookmarks  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Bookmark this folder  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Show hidden and system items  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Show file details  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Details at bottom / Details on right / Details off (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Keep folders above files  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Add to Bookmarks</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Remove from Bookmarks</sys:String>
@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">as found</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filter these results (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Search within these results  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Second pane  (F10)  |  right-click to flip side-by-side / stacked</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Left and right panes / Top and bottom panes (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">More tools</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">System tools</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sort by  (Alt+S)</sys:String>
@@ -810,7 +810,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">turn film grain on or off</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">open or close the second pane</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">show or hide hidden and system items</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">show or hide file details</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Details at bottom / Details on right / Details off</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">list, icon or details view</sys:String>
     <sys:String x:Key="Str_Ks_Density">cycle the results density</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">larger or smaller icons, like Ctrl+wheel</sys:String>
@@ -1003,6 +1003,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Page right</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Partial results: {0} file(s) matched; {1} path(s) could not be searched completely; {2} directory link(s) skipped.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">{0} directory link(s) skipped.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Switch to top and bottom panes</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Switch to left and right panes</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Top and bottom panes (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Left and right panes (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Details at bottom</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Details on right</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Details off</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Left and right panes</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Top and bottom panes</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Details at bottom (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Details on right (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Details off (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

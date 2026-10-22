@@ -31,7 +31,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Zaznamki  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Dodaj to mapo med zaznamke  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Prikaži skrite in sistemske elemente  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Prikaži podrobnosti datoteke  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Podrobnosti spodaj / Podrobnosti desno / Izklopi podrobnosti (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Ohrani mape nad datotekami  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Dodaj med zaznamke</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Odstrani iz zaznamkov</sys:String>
@@ -91,7 +91,7 @@
     <sys:String x:Key="Str_Sort_Found">po vrstnem redu najdb</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtriraj te rezultate (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Išči v teh rezultatih  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Drugo podokno  (F10)  |  desni klik preklopi vzporedno / navpično postavitev</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Podokni levo in desno / Podokni zgoraj in spodaj (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Več orodij</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Sistemska orodja</sys:String>
     <sys:String x:Key="Str_TT_Sort">Razvrsti po  (Alt+S)</sys:String>
@@ -696,7 +696,7 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">vklopi ali izklopi filmsko zrnatost</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">odpri ali zapri drugo podokno</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">prikaži ali skrij skrite in sistemske elemente</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">prikaži ali skrij podrobnosti datoteke</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Podrobnosti spodaj / Podrobnosti desno / Izklopi podrobnosti</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">pogled seznama, ikon ali podrobnosti</sys:String>
     <sys:String x:Key="Str_Ks_Density">preklopi gostoto rezultatov</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">večje ali manjše ikone, enako kot Ctrl+kolešček</sys:String>
@@ -876,6 +876,14 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Stran v desno</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Delni rezultati: {0} ujemajočih se datotek; {1} poti ni bilo mogoče v celoti preiskati; preskočene povezave do map: {2}.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Preskočene povezave do map: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Razporedi podokni zgoraj in spodaj</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Razporedi podokni levo in desno</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Podokni zgoraj in spodaj (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Podokni levo in desno (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Podrobnosti spodaj</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Podrobnosti desno</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Izklopi podrobnosti</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Podokni levo in desno</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Podokni zgoraj in spodaj</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Podrobnosti spodaj (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Podrobnosti desno (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Izklopi podrobnosti (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

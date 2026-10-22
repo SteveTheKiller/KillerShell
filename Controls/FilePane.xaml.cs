@@ -390,6 +390,8 @@ namespace KillerShell
         // ever dragged it were still shared. Same fix shape as ViewMode/ViewState above: each
         // pane now opens, closes and remembers its own height on its own.
         internal bool DetailsPaneOpen { get; set; }
+        internal bool DetailsPaneOnRight { get; set; }
+        internal double DetailsPaneWidth { get; set; } = 320;
 
         /// <summary>Whether THIS pane's user has ever dragged its details grip - once true, its
         /// height is remembered rather than auto-fit to content (Shell/DetailsPane.cs).</summary>

@@ -47,7 +47,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Закладки  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Додати цю папку до закладок  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Показати приховані та системні елементи  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Показати відомості про файл  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Відомості внизу / Відомості праворуч / Приховати відомості (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Тримати папки над файлами  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Додати до закладок</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Видалити із закладок</sys:String>
@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">за порядком знаходження</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Фільтрувати ці результати (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Шукати в цих результатах  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Друга панель  (F10)  |  клацніть правою кнопкою, щоб перемкнути поруч / одна під одною</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Панелі ліворуч і праворуч / Панелі зверху і знизу (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Більше інструментів</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Системні інструменти</sys:String>
     <sys:String x:Key="Str_TT_Sort">Сортувати за  (Alt+S)</sys:String>
@@ -810,7 +810,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">увімкнути або вимкнути зернистість плівки</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">відкрити або закрити другу панель</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">показати або сховати приховані та системні елементи</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">показати або сховати відомості про файл</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Відомості внизу / Відомості праворуч / Приховати відомості</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">вигляд: список, значки або таблиця</sys:String>
     <sys:String x:Key="Str_Ks_Density">перемкнути щільність результатів</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">більші або менші значки, як Ctrl+коліщатко</sys:String>
@@ -1003,6 +1003,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">На сторінку праворуч</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Часткові результати: знайдено файлів: {0}; не вдалося повністю перевірити шляхів: {1}; пропущено посилань на каталоги: {2}.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Пропущено посилань на папки: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Розташувати панелі зверху та знизу</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Розташувати панелі ліворуч і праворуч</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Панелі зверху і знизу (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Панелі ліворуч і праворуч (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Відомості внизу</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Відомості праворуч</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Приховати відомості</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Панелі ліворуч і праворуч</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Панелі зверху і знизу</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Відомості внизу (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Відомості праворуч (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Приховати відомості (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

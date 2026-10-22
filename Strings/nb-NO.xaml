@@ -47,7 +47,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Bokmerker  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Legg til bokmerke for denne mappen  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Vis skjulte elementer og systemelementer  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Vis fildetaljer  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Detaljer nederst / Detaljer til høyre / Skjul detaljer (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Hold mapper over filer  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Legg til i bokmerker</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Fjern fra bokmerker</sys:String>
@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">som funnet</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrer disse resultatene  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Søk i disse resultatene  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Andre panel  (F10)  |  høyreklikk for å bytte mellom side ved side og stablet</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Ruter til venstre og høyre / Ruter øverst og nederst (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Flere verktøy</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systemverktøy</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sorter etter  (Alt+S)</sys:String>
@@ -810,7 +810,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">slå filmkorn på eller av</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">åpne eller lukk det andre panelet</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">vis eller skjul skjulte elementer og systemelementer</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">vis eller skjul fildetaljer</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Detaljer nederst / Detaljer til høyre / Skjul detaljer</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">liste-, ikon- eller detaljvisning</sys:String>
     <sys:String x:Key="Str_Ks_Density">bla gjennom resultattettheten</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">større eller mindre ikoner, som Ctrl+hjul</sys:String>
@@ -1003,6 +1003,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Side til høyre</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Delvise resultater: {0} fil(er) samsvarte; {1} bane(r) kunne ikke gjennomsøkes fullstendig; {2} kataloglenke(r) hoppet over.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Hoppet over {0} mappelenker.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Plasser rutene over og under hverandre</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Plasser rutene ved siden av hverandre</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Ruter øverst og nederst (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Ruter til venstre og høyre (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Detaljer nederst</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Detaljer til høyre</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Skjul detaljer</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Ruter til venstre og høyre</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Ruter øverst og nederst</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Detaljer nederst (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Detaljer til høyre (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Skjul detaljer (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>

@@ -157,31 +157,15 @@ namespace KillerShell.Shell
 
             if (show)
             {
-                // Off the tab, like the ring reads them (DualPane.UpdatePaneFocusRing) - NOT
-                // recomputed from the strip. Recomputed, "last" means last visible and misses
-                // the chevron, so the pane squared its top-right corner under a chevron that is
-                // sitting on that corner instead of the tab: a hard edge on the details header
-                // with no tab above it to explain the join.
-                //
-                // Pattern-matched rather than dereferenced: F11 creates the second pane EMPTY
-                // and this runs before SeedPane gives it a tab, so Active is genuinely null for
-                // one pass. `Active` is declared non-nullable ("set before anything reads it"),
-                // which is true of every other caller and was not true of this one - it threw a
-                // NullReferenceException the moment the second pane opened.
-                var act = Pane.Active;
-                bool firstActive = act is { IsFirst: true };
-                bool lastActive  = act is { IsLast:  true };
-                double r = PaneRadius, b = BarRadius;
-                Pane.ResultsPane.CornerRadius = new CornerRadius(firstActive ? 0 : r, lastActive ? 0 : r, r, r);
-                Pane.ScopeBar.CornerRadius    = new CornerRadius(firstActive ? 0 : b, 0, 0, 0);
+                // The tab band meets a square top edge; the lower corners retain the theme radius.
+                double r = PaneRadius;
+                Pane.ResultsPane.CornerRadius = new CornerRadius(0, 0, r, r);
+                Pane.ScopeBar.CornerRadius    = new CornerRadius(0);
                 // The details header carries NO radius of its own. It is the top of the pane only
                 // while the location row is hidden, and then PaneContent's clip rounds it to the
                 // pane's curve, corner by corner (RefreshPaneClip below). With the row showing it
                 // sits under a straight edge, where a curve of its own cut a notch out of the
                 // band's top corner wherever the active tab was not above it.
-                // The ring line in the band IS the pane's top border, so it curves where the
-                // pane curves. Left flat and full-width it overshot the corner and read as a
-                // rule laid across the pane rather than as its edge (FilePane.xaml).
             }
             else
             {

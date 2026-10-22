@@ -43,7 +43,7 @@
     <sys:String x:Key="Str_TT_Bookmarks">Бетбелгілер  (Ctrl+B)</sys:String>
     <sys:String x:Key="Str_TT_Favorite">Бұл қалтаны бетбелгіге қосу  (Ctrl+D)</sys:String>
     <sys:String x:Key="Str_TT_ShowHidden">Жасырын және жүйелік элементтерді көрсету  (Ctrl+H)</sys:String>
-    <sys:String x:Key="Str_TT_DetailsPane">Файл мәліметтерін көрсету  (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">Мәліметтер төменде / Мәліметтер оң жақта / Мәліметтерді жасыру (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_FoldersTop">Қалталарды файлдардан жоғары ұстау  (Alt+O)</sys:String>
     <sys:String x:Key="Str_Menu_AddFavorite">Бетбелгілерге қосу</sys:String>
     <sys:String x:Key="Str_Menu_RemoveFavorite">Бетбелгілерден алып тастау</sys:String>
@@ -111,7 +111,7 @@
     <sys:String x:Key="Str_Sort_Found">табылғандай</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Осы нәтижелерді сүзу (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Осы нәтижелердің ішінен іздеу  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Екінші тақта  (F10)  |  оң жақ басу қатар / үстіңгі орналасуды ауыстырады</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Сол және оң жақ тақталар / Жоғарғы және төменгі тақталар (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Басқа құралдар</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Жүйелік құралдар</sys:String>
     <sys:String x:Key="Str_TT_Sort">Бойынша сұрыптау  (Alt+S)</sys:String>
@@ -778,7 +778,7 @@
     <sys:String x:Key="Str_Ks_FilmGrain">пленка түйіршігін қосу немесе өшіру</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">екінші тақтаны ашу немесе жабу</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">жасырын және жүйелік элементтерді көрсету немесе жасыру</sys:String>
-    <sys:String x:Key="Str_Ks_DetailsPane">файл мәліметтерін көрсету немесе жасыру</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">Мәліметтер төменде / Мәліметтер оң жақта / Мәліметтерді жасыру</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">тізім, таңбашалар немесе кесте көрінісі</sys:String>
     <sys:String x:Key="Str_Ks_Density">нәтиже тығыздығын ауыстыру</sys:String>
     <sys:String x:Key="Str_Ks_IconSize">таңбашаларды үлкейту немесе кішірейту, Ctrl+дөңгелек сияқты</sys:String>
@@ -969,6 +969,14 @@
     <sys:String x:Key="Str_Scroll_PageRight">Бір бет оңға</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Ішінара нәтижелер: {0} файл сәйкес келді; {1} жолда толық іздеу мүмкін болмады; {2} каталог сілтемесі өткізіп жіберілді.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Өткізіп жіберілген қалта сілтемелері: {0}.</sys:String>
-    <sys:String x:Key="Str_TT_PanesTopBottom">Панельдерді жоғары және төмен орналастыру</sys:String>
-    <sys:String x:Key="Str_TT_PanesLeftRight">Панельдерді сол және оң жаққа орналастыру</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Жоғарғы және төменгі тақталар (Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Сол және оң жақ тақталар (Ctrl+Alt+Left)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">Мәліметтер төменде</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">Мәліметтер оң жақта</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">Мәліметтерді жасыру</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">Сол және оң жақ тақталар</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">Жоғарғы және төменгі тақталар</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">Мәліметтер төменде (Ctrl+Alt+Down; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">Мәліметтер оң жақта (Ctrl+Alt+Right; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">Мәліметтерді жасыру (Ctrl+Alt+0; Alt+P)</sys:String>
 </ResourceDictionary>
