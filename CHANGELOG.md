@@ -31,7 +31,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Theme text, selections and accent colors remain readable, including Light Yellow and Orange. File and bookmark lists use theme content colors; picker controls, sidebar fades and 98SE text follow the family appearance. 98SE menu highlights follow the selected accent, and selected dropdown text stays readable on hover. The Light title bar matches the surrounding gray, with readable elevated-status text.
 - Website screenshots support contained keyboard navigation and translated controls. Navigation, help and command examples fit narrow screens, and hardware refresh instructions match the app.
 - The website's film grain is lighter, matching KillerTools, and the theme menu can turn it off (Alt+Shift+G). The top bar no longer leaves extra space above the page on narrower windows, and the release details box lifts with an accent border on hover.
-- The elevated tag in the title bar sits on the baseline of Killer in the wordmark instead of 3px below it.
 
 ### Added
 - Added a New Tab button after the tab overflow control to open a file browser at Home.
