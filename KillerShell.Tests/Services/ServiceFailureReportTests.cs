@@ -232,12 +232,41 @@ public sealed class ServiceFailureReportTests
         internal EventWaitHandle BreakRequested { get; } = new(false, EventResetMode.ManualReset);
         internal NativeOplock(string path)
         {
-            _handle = CreateFile(path, 0x80000000, 7, IntPtr.Zero, 3, 0x40000000, IntPtr.Zero);
-            if (_handle.IsInvalid) throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
             _overlapped = Marshal.AllocHGlobal(Marshal.SizeOf<NativeOverlappedData>());
-            Marshal.StructureToPtr(new NativeOverlappedData { Event = BreakRequested.SafeWaitHandle.DangerousGetHandle() }, _overlapped, false);
-            bool complete = DeviceIoControl(_handle, 0x00090000, IntPtr.Zero, 0, IntPtr.Zero, 0, out _, _overlapped);
-            if (complete || Marshal.GetLastWin32Error() != 997) throw new IOException("An exclusive NTFS oplock could not be established.");
+            var elapsed = Stopwatch.StartNew();
+            try
+            {
+                while (true)
+                {
+                    BreakRequested.Reset();
+                    _handle = CreateFile(path, 0x80000000, 7, IntPtr.Zero, 3, 0x40000000, IntPtr.Zero);
+                    int error = Marshal.GetLastWin32Error();
+                    if (!_handle.IsInvalid)
+                    {
+                        Marshal.StructureToPtr(new NativeOverlappedData { Event = BreakRequested.SafeWaitHandle.DangerousGetHandle() }, _overlapped, false);
+                        bool complete = DeviceIoControl(_handle, 0x00090000, IntPtr.Zero, 0, IntPtr.Zero, 0, out _, _overlapped);
+                        error = Marshal.GetLastWin32Error();
+                        if (!complete && error == 997) return;
+                        if (complete) error = 0;
+                    }
+                    _handle.Dispose();
+                    // A competing native open can briefly prevent fixture setup.
+                    // Proceed only after the real oplock request is pending.
+                    if ((error == 32 || error == 33 || error == 300) && elapsed.ElapsedMilliseconds < 5000)
+                    {
+                        Thread.Sleep(20);
+                        continue;
+                    }
+                    throw new IOException("An exclusive NTFS oplock could not be established. Win32 error " + error + ".");
+                }
+            }
+            catch
+            {
+                _handle?.Dispose();
+                Marshal.FreeHGlobal(_overlapped);
+                BreakRequested.Dispose();
+                throw;
+            }
         }
         public void Dispose()
         {

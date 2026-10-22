@@ -52,17 +52,31 @@ public static class TerminalInputOrderScenario
             terminal.Send("\u65e5\u672c\r");
             terminal.Send("second\r");
             var elapsed = Stopwatch.StartNew();
-            while (!File.Exists(result) && elapsed.ElapsedMilliseconds < 10000)
+            string[]? received = null;
+            IOException? readFailure = null;
+            while (elapsed.ElapsedMilliseconds < 10000)
             {
+                try
+                {
+                    if (File.Exists(result))
+                    {
+                        received = File.ReadAllLines(result);
+                        break;
+                    }
+                }
+                catch (IOException ex) when ((ex.HResult & 65535) == 32 || (ex.HResult & 65535) == 33)
+                {
+                    readFailure = ex;
+                }
                 var frame = new DispatcherFrame();
                 var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
                 timer.Tick += (_, _) => { timer.Stop(); frame.Continue = false; };
                 timer.Start();
                 Dispatcher.PushFrame(frame);
             }
-            Assert.True(File.Exists(result), "The real ConPTY child did not receive the ordered input.\n"
-                + TerminalFixtureOutput.Capture(terminal));
-            Assert.Equal(new[] { "caf\u00e9 \u65e5\u672c", "second" }, File.ReadAllLines(result));
+            Assert.True(received != null, "The real ConPTY child did not publish readable ordered input.\n"
+                + readFailure + "\n" + TerminalFixtureOutput.Capture(terminal));
+            Assert.Equal(new[] { "caf\u00e9 \u65e5\u672c", "second" }, received);
         }
         finally { terminal.Close(); app.Shutdown(); try { Directory.Delete(root, true); } catch (IOException) { } }
     }
