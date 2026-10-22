@@ -4,7 +4,7 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.0] - Unreleased
+## [1.5.0] - 2026-10-22
 
 ### Fixed
 - Failed document saves preserve the original and retain recovery copies when restoration fails. Administrator saves keep newer edits unsaved and cannot overwrite a later save. Saving over a file another program changed since it was opened asks whether to replace it, reload it or save a copy, with Cancel as the default.
@@ -27,12 +27,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Command-line JSON stays valid with unusual Unicode text, accepts an optional trailing `--json`, and reports skipped links and unreadable search paths. New windows and administrator launches preserve drive roots and recover from failed handoffs.
 - Screen readers receive terminal output, selection and meaningful control names. Keyboard focus stays inside open cards, returns on close, skips hidden controls, and moves correctly through option groups and storage views.
 - Windows contrast themes use matching system foreground and background colors, including hovered menu and dropdown text, without decorative effects. The file list and terminal use the theme's pane color, and tabs and the pane bars use the darker menu color, so content no longer nearly matches the window. The Keyboard Shortcuts and About card edges follow gradient themes, and the shortcuts hint sits centered in a shorter footer. Windows and dialogs fit small or scaled monitors, and card controls remain reachable in short windows.
-- Language changes refresh both panes and hidden tabs. App and website translations cover remaining English labels, corrected wording and shortcut documentation.
+- Language changes refresh both panes and hidden tabs. App, installer, website and Store translations cover remaining English labels, corrected wording and shortcut documentation. Standalone uninstall dialogs use the saved language.
 - Theme text, selections and accent colors remain readable, including Light Yellow and Orange. File and bookmark lists use theme content colors; picker controls, sidebar fades and 98SE text follow the family appearance. 98SE menu highlights follow the selected accent, and selected dropdown text stays readable on hover. The Light title bar matches the surrounding gray, with readable elevated-status text.
 - Website screenshots support contained keyboard navigation and translated controls. Navigation, help and command examples fit narrow screens, and hardware refresh instructions match the app.
 - The website's film grain is lighter, matching KillerTools, and the theme menu can turn it off (Alt+Shift+G). The top bar no longer leaves extra space above the page on narrower windows, and the release details box lifts with an accent border on hover.
+- The elevated tag in the title bar sits on the baseline of Killer in the wordmark instead of 3px below it.
 
 ### Added
+- Added a New Tab button after the tab overflow control to open a file browser at Home.
 - Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
 - Keyboard shortcuts cover the remaining commands and appear in menus, tooltips, the shortcut card and website.
 - Added Slovenian across the app, installer, help, website and keyboard shortcuts.

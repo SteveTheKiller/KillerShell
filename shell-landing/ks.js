@@ -13,7 +13,10 @@
     return dict && dict[key] != null ? dict[key] : chromeEnglish[key] || (EN && EN[key]);
   }
   function localizeChrome() {
-    var themeDict = (window.I18N && window.I18N[root.getAttribute('lang')]) || {};
+    var lang = root.getAttribute('lang') || 'en';
+    if (lang === 'zh-Hant') lang = 'zh';
+    if (lang === 'zh-Hans') lang = 'zh-cn';
+    var themeDict = (window.I18N && window.I18N[lang]) || {};
     document.querySelectorAll('.swatch[data-theme]').forEach(function (swatch) {
       if (!swatch.hasAttribute('data-en-theme-title')) swatch.setAttribute('data-en-theme-title', swatch.title);
       var title = themeDict['theme_' + swatch.getAttribute('data-theme')] || swatch.getAttribute('data-en-theme-title');
@@ -53,9 +56,8 @@
 
   function localizeExtras() {
     document.querySelectorAll('.ol-chev').forEach(function (button) { button.setAttribute('aria-label', chromeText('site_ui_expand')); });
-    // The release script rewrites the hero facts by matching the plain English label spans,
-    // so those labels carry no data-i18n and are translated here instead.
-    document.querySelectorAll('.hero-info .row .k').forEach(function (label) {
+    // Legacy fact labels without explicit translation keys retain their English fallback.
+    document.querySelectorAll('.hero-info .row .k:not([data-i18n])').forEach(function (label) {
       if (!label.hasAttribute('data-en-label')) label.setAttribute('data-en-label', label.textContent.trim());
       var english = label.getAttribute('data-en-label');
       var text = chromeText('ui_' + english);

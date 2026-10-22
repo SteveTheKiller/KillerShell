@@ -166,9 +166,9 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <p data-i18n="t_stack_p">Requires .NET Framework 4.8 (x64). The app's other dependencies are packaged in one executable.</p>
 <table class="spec-table"><tr><th data-i18n="t_stack_c">Component</th><th data-i18n="t_stack_d">Detail</th></tr>
 <tr><td data-i18n="t_stack_ui">UI</td><td data-i18n="t_stack_ui_d">WPF on .NET Framework 4.8 (net48), x64, custom window chrome</td></tr>
-<tr><td data-i18n="t_stack_search">Search engine</td><td data-i18n="t_stack_search_d">A parallel engine: one walker feeds a worker per CPU core, and results are pushed to the UI in batches, cancelable at any time</td></tr>
+<tr><td data-i18n="t_stack_search">Search engine</td><td data-i18n="t_stack_search_d">A parallel engine with two to sixteen workers, selected from the CPU count. Results reach the UI in cancellable batches.</td></tr>
 <tr><td data-i18n="t_stack_walk">File walk</td><td data-i18n="t_stack_walk_d">A breadth-first walk built on <code>Directory.EnumerateFiles</code>, yielding files one at a time and skipping folders it cannot read</td></tr>
-<tr><td data-i18n="t_stack_read">Content read</td><td data-i18n="t_stack_read_d">A buffered <code>FileStream</code> and <code>StreamReader</code> that reads each file line by line, with a null-byte check to skip binaries</td></tr>
+<tr><td data-i18n="t_stack_read">Content read</td><td data-i18n="t_stack_read_d">A buffered <code>FileStream</code> and <code>StreamReader</code> with bounded decoded reads and a null-character check to skip binaries.</td></tr>
 <tr><td data-i18n="t_arch_h">Archives</td><td data-i18n="t_stack_arch_d">Zip and gzip out of .NET Framework itself and a tar reader written in place, so a .zip or a .tar browses like a folder without adding a single dependency</td></tr>
 <tr><td data-i18n="t_stack_disk">Disk map</td><td data-i18n="t_stack_disk_d">Direct NTFS Master File Table enumeration when elevated, with a parallel <code>FindFirstFileExW</code> fallback, feeding a squarified treemap drawn in one render pass</td></tr>
 <tr><td data-i18n="t_stack_export">Export</td><td data-i18n="t_stack_export_d">A self-contained HTML report or CSV, written directly from the result set or the storage scan, no libraries required</td></tr>
@@ -186,7 +186,7 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 
 <div class="tech-sec" id="pipeline">
 <h2 data-i18n="t_pipe_h">The search pipeline</h2>
-<p data-i18n="t_pipe_p1">A search is one continuous pass over a folder tree. You give KillerShell a starting folder and one or more search terms, then it walks every file underneath and tests each one against your terms as it goes. There is no separate indexing step and nothing is stored between runs, so the first search on a folder is just as fast as the tenth.</p>
+<p data-i18n="t_pipe_p1">A search walks the folder tree and tests files as they arrive. No index is built or retained between searches. Timing can vary with the files, storage and operating-system cache.</p>
 <p data-i18n="t_pipe_p2">Each term is either a <b>name</b> term, matched against the filename, or a <b>text</b> term, matched against the contents of the file. You can mix as many of each as you like in a single pass, and optional include and exclude filters narrow which files are looked at in the first place. A piped tab - search within results - runs this same pass over a snapshot of another tab's result list instead of walking a folder.</p>
 
 <figure class="diagram">
@@ -233,12 +233,12 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <p data-i18n="t_match_p">Every file that clears the filters is tested against each of your terms. The two kinds of term work differently.</p>
 
 <h3 id="names" data-i18n="t_match_names_h">Name terms: wildcards</h3>
-<p data-i18n="t_match_names_p">A name term is a wildcard pattern tested against the filename. An asterisk stands for any run of characters and a question mark stands for a single character, the same shorthand Windows itself uses. The pattern is turned into an anchored regular expression once, so <code>*.log</code> matches any name ending in ".log" and <code>report_?.txt</code> matches "report_1.txt" but not "report_final.txt".</p>
+<p data-i18n="t_match_names_p">A name term is a wildcard pattern tested against the filename. An asterisk matches any run of characters and a question mark matches one character. The pattern is prepared once and matched directly without regular expressions, so <code>*.log</code> matches names ending in ".log" and <code>report_?.txt</code> matches "report_1.txt" but not "report_final.txt".</p>
 <div class="codeblock">*.log        <span class="cm" data-i18n="cm_log">// any name ending in .log</span><br>report_*.xlsx <span class="cm" data-i18n="cm_xlsx">// report_ then anything, then .xlsx</span><br>?.tmp        <span class="cm" data-i18n="cm_tmp2">// a single character, then .tmp</span></div>
 
 <h3 id="contents" data-i18n="t_match_content_h">Text terms: reading inside files</h3>
-<p data-i18n="t_match_content_p1">A text term looks for a run of characters inside the file. Before reading, KillerShell checks the first few kilobytes for a null byte, which almost never appears in text but is common in programs, images, and archives. If it finds one, the file is treated as binary and skipped, so a content search does not waste time scanning a photo or an .exe.</p>
-<p data-i18n="t_match_content_p2">Files that pass that check are read one line at a time through a buffered reader that also honors a byte-order mark if the file has one. The whole file is never loaded into memory at once, so a multi-gigabyte log is no heavier to search than a small note. Each line that contains the term is recorded with its line number and its text, trimmed of surrounding whitespace - up to the first 100 matched lines per file, so one pathological file cannot flood the results.</p>
+<p data-i18n="t_match_content_p1">Before matching content, KillerShell detects the text encoding and decodes a bounded probe. A null character in the decoded text marks the file as binary, so UTF-16 and UTF-32 text are not rejected just because their raw bytes contain zeros.</p>
+<p data-i18n="t_match_content_p2">Files are decoded with byte-order-mark detection and Unicode-aware text handling. Content is streamed through bounded buffers without loading the whole file at once. Up to 100 matching-line previews per file are retained; long previews are bounded, and incomplete reads are reported.</p>
 </div>
 
 <div class="tech-sec" id="filters">
@@ -254,8 +254,8 @@ var bg={dark:'#333333',light:'#b8b8b8',hc:'#0d0d0d',blood:'#4a1f20',greed:'#0a52
 <div class="tech-sec" id="streaming">
 <h2 data-i18n="t_stream_h">Streaming, memory, and cancellation</h2>
 <p data-i18n="t_stream_p1">The reason KillerShell can start on a huge folder like your whole user profile without a long wait is that it never builds a list of the tree up front. The walk yields one file at a time and the search reacts to each file as it arrives, so work begins on the first file instead of after the last. Folders it is not allowed to read are quietly stepped over rather than stopping the search.</p>
-<p data-i18n="t_stream_p2">The search itself runs on background workers, one per CPU core, which keeps the window responsive and lets a long search be canceled the moment you ask. Results are collected and handed to the UI in batches on a fixed timer, about once every 150 milliseconds, along with the running file count and the file currently being read. That single, gentle pace is what stops a fast search from flooding the interface with thousands of tiny updates.</p>
-<p data-i18n="t_stream_p3">Memory stays flat because nothing large is ever held at once. Files are read through fixed 64 KB buffers, content is streamed line by line, and only the lines that actually matched are kept. A search across hundreds of thousands of files uses about the same memory as a search across a handful.</p>
+<p data-i18n="t_stream_p2">Search runs on two to sixteen background workers, selected from the CPU count. Results reach the UI in batches about every 150 milliseconds. Cancellation is checked while walking folders, matching patterns and reading content.</p>
+<p data-i18n="t_stream_p3">File contents are streamed through bounded buffers, and matching-line previews are capped. Result rows remain in memory, so memory use grows with the number of results; it is not constant for every search.</p>
 </div>
 
 <div class="tech-sec" id="export">
@@ -365,7 +365,7 @@ killershell --cli hash "C:\logs\today.log"</code></pre>
 <tr><td data-i18n="t_g_line">Line number</td><td data-i18n="t_g_line_d">The position of a matched line within its file, counted from the top, recorded so you can jump straight to it.</td></tr>
 <tr><td data-i18n="t_g_osc">OSC 7</td><td data-i18n="t_g_osc_d">A short escape sequence a shell emits to announce its current directory. KillerShell reads it, which is why the folder shown on a shell tab's toolbar stays right through a cd or a script.</td></tr>
 <tr><td data-i18n="t_g_portable">Portable</td><td data-i18n="t_g_portable_d">Able to run from anywhere without being installed. KillerShell runs as a loose .exe and shows a PORTABLE badge when it does.</td></tr>
-<tr><td data-i18n="t_g_regex">Regular expression</td><td data-i18n="t_g_regex_d">A precise pattern-matching notation. KillerShell converts each wildcard filename pattern into one internally to test names quickly.</td></tr>
+<tr><td data-i18n="t_g_regex">Regular expression</td><td data-i18n="t_g_regex_d">A pattern language used by the editor find tool. Filename search uses direct wildcard matching instead.</td></tr>
 <tr><td data-i18n="t_g_stream">Streaming</td><td data-i18n="t_g_stream_d">Reading a file or a folder tree a small piece at a time instead of loading it whole, which keeps memory low no matter the size.</td></tr>
 <tr><td data-i18n="t_g_term">Term</td><td data-i18n="t_g_term_d">One search request: a pattern plus whether it applies to filenames or file contents. A single pass can run many terms at once.</td></tr>
 <tr><td data-i18n="t_g_treemap">Treemap</td><td data-i18n="t_g_treemap_d">A picture of a disk in which every file is a rectangle sized by how much room it takes up and folders are drawn as outlines around their contents, so the things using the space are the things you see first.</td></tr>
@@ -382,7 +382,7 @@ killershell --cli hash "C:\logs\today.log"</code></pre>
 </div>
 <footer class="statusbar">
 <span class="left"><a href="https://github.com/SteveTheKiller/KillerShell" target="_blank" rel="noopener" data-i18n="footer_src">Source on GitHub</a> &middot; GPLv3 &middot; Part of <a href="https://killertools.net" target="_blank" rel="noopener">killertools.net</a></span>
-<span class="right"><span id="verEgg" title="click me">v1.4.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
+<span class="right"><span id="verEgg" title="click me">v1.5.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
 <div class="dlightbox" id="diagram-lightbox" hidden><div class="dlb-inner"></div></div>

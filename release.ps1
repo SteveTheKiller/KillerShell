@@ -362,10 +362,10 @@ $siteDir     = Join-Path (Get-Location).Path 'shell-landing'
 $indexPath = Join-Path $siteDir 'index.html'
 $indexRaw  = [System.IO.File]::ReadAllText($indexPath)
 $indexNew  = $indexRaw
-$indexNew  = $indexNew -replace '(<span class="k">version</span>&nbsp;<span class="v">)KillerShell v[0-9]+\.[0-9]+\.[0-9]+', ('${1}' + "KillerShell v$Version")
-$indexNew  = $indexNew -replace '(<span class="k">released</span>&nbsp;<span class="v">)[0-9]{4}-[0-9]{2}-[0-9]{2}', ('${1}' + $releaseDate)
-$indexNew  = $indexNew -replace '(<span class="k">size</span>&nbsp;<span class="v">)[^<]*', ('${1}' + $exeMB + ' exe')
-$indexNew  = $indexNew -replace '(<span class="v hash">)[0-9A-Fa-f]{32}<br>[0-9A-Fa-f]{32}', ('${1}' + $hashUpper.Substring(0, 32) + '<br>' + $hashUpper.Substring(32, 32))
+$indexNew  = $indexNew -replace '(<span class="k"(?: data-i18n="release_version")?>version</span>&nbsp;<span class="v">)KillerShell v[0-9]+\.[0-9]+\.[0-9]+', ('${1}' + "KillerShell v$Version")
+$indexNew  = $indexNew -replace '(<span class="k"(?: data-i18n="release_date")?>released</span>&nbsp;<span class="v">)[0-9]{4}-[0-9]{2}-[0-9]{2}', ('${1}' + $releaseDate)
+$indexNew  = $indexNew -replace '(<span class="k"(?: data-i18n="release_size")?>size</span>&nbsp;)<span class="v"(?: data-i18n="release_size_pending")?>[^<]*', ('${1}<span class="v">' + $exeMB + ' exe')
+$indexNew  = $indexNew -replace '<span class="v hash"(?: data-i18n="release_hash_pending")?>(?:[0-9A-Fa-f]{32}<br>[0-9A-Fa-f]{32}|Available with the signed release)', ('<span class="v hash">' + $hashUpper.Substring(0, 32) + '<br>' + $hashUpper.Substring(32, 32))
 if ($indexNew -eq $indexRaw) {
     Write-Warning 'index.html hero block did not change - check the release-info markup still matches the patterns in this script.'
 }

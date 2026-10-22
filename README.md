@@ -11,7 +11,7 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 ## Features
 
 - Browse folders in list, icon, or details view with tabs, favorites, a folder tree, live filesystem updates, and two panes arranged side by side or stacked
-- Search names with wildcards or stream file contents line by line across every CPU core, with multiple ANY/ALL terms, filters, chained searches, and HTML or CSV export
+- Search names with wildcards or stream file contents with 2 to 16 workers, with multiple ANY/ALL terms, filters, chained searches, and HTML or CSV export
 - Use saved terminal profiles for PowerShell, CMD, WSL, or custom commands, choose a default shell, and track its working folder live; edit the themed PowerShell or Bash prompt, or your PowerShell profile
 - Browse installed WSL distributions, pin Linux folders, and open a terminal in the selected Linux directory
 - Edit text with syntax highlighting, find, go to line, undo/redo, encoding and line-ending preservation, indentation controls, and a dedicated font setting

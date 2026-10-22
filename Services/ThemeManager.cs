@@ -870,7 +870,7 @@ namespace KillerShell.Services
             SetIfAbsent("FileNameFontSize", flatTitle ? 11.0 : 18.0);
             if (!combined.Contains("FileNameTransform"))
             {
-                var fileNameShift = new TranslateTransform(0, flatTitle ? 0 : 3);
+                var fileNameShift = new TranslateTransform(0, 0);
                 fileNameShift.Freeze();
                 combined["FileNameTransform"] = fileNameShift;
             }
