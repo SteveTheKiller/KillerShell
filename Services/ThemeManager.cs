@@ -211,6 +211,7 @@ namespace KillerShell.Services
             foreach (object key in newDict.Keys)
                 combined[key] = newDict[key];
 
+            bool accentOwnsMenuHover = false;
             if (HasAccents(theme) && accent != Accent.Green)
             {
                 string family = theme == Theme.Light ? "Light"
@@ -223,6 +224,7 @@ namespace KillerShell.Services
                     {
                         Source = new Uri($"pack://application:,,,/Themes/Accents/{family}/{accent}.xaml")
                     };
+                    accentOwnsMenuHover = accentDict.Contains("MenuHoverBrush");
                     foreach (object key in accentDict.Keys)
                         combined[key] = accentDict[key];
                 }
@@ -1184,7 +1186,7 @@ namespace KillerShell.Services
             // set, white on 98SE where the highlight bar is the solid navy MenuHoverBrush.
             if (!combined.Contains("ComboHighlightTextBrush"))
                 combined["ComboHighlightTextBrush"] = combined["PrimaryBrush"];
-            if (theme == Theme.SE98)
+            if (theme == Theme.SE98 && !accentOwnsMenuHover)
                 combined["MenuHoverBrush"] = combined["PrimaryBrush"];
 
             // A hovered menu or list item takes the accent for its text, nudged lighter or darker
