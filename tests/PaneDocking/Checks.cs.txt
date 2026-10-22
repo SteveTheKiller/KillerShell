@@ -261,6 +261,22 @@ public static class PaneDockingChecks
             Check(((FrameworkElement)pane.FindName("DetailsFieldsGrid")).IsVisible,
                 "The same selected file keeps its details on the right");
             Capture(window, output, "selected-file-details-right");
+            ThemeManager.ApplyAccent(Theme.Dark, Accent.Yellow); Pump();
+            var scroll = (ScrollViewer)pane.FindName("DetailsScroll");
+            var fields = (FrameworkElement)pane.FindName("DetailsFieldsGrid");
+            var content = (Grid)pane.FindName("DetailsPaneContent");
+            var preview = (FrameworkElement)pane.FindName("DetailsPreviewHost");
+            double previewTop = fields.TranslatePoint(new Point(0, fields.ActualHeight), scroll).Y + 16;
+            double previewBottom = scroll.ViewportHeight - content.Margin.Bottom;
+            double actualCenter = preview.TranslatePoint(new Point(0, preview.ActualHeight / 2), scroll).Y;
+            bool centered = Math.Abs(actualCenter - (previewTop + previewBottom) / 2) < 1;
+            bool lacquer = ((TextBlock)pane.FindName("DetailsNameText")).FontFamily.Source.Contains("Lacquer");
+            var iconStroke = ((System.Windows.Shapes.Path)pane.FindName("DetailsPaneGlyph")).Stroke as SolidColorBrush;
+            bool blackIcon = iconStroke != null && iconStroke.Color.A == 255
+                && iconStroke.Color.R < 64 && iconStroke.Color.G < 64 && iconStroke.Color.B < 64;
+            Capture(window, output, "Yellow-right-details");
+            Check(centered && lacquer && blackIcon,
+                "Right details: centered preview=" + centered + ", Lacquer filename=" + lacquer + ", black yellow-accent icon=" + blackIcon);
             Pick(button, 0, 3, "Ctrl+Alt+Down");
 
             window.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window), Environment.TickCount, Key.F1) {

@@ -89,6 +89,8 @@ namespace KillerShell.Shell
                 p.DetailsPaneBtn.ContextMenu = new System.Windows.Controls.ContextMenu();
                 p.DetailsPaneBtn.ContextMenu.Opened += (_, _) => PopulateDetailsPaneMenu(p);
                 p.ResultsPane.SizeChanged += (_, _) => CorrectDetailsPaneHeight(p);
+                p.DetailsFieldsGrid.SizeChanged += (_, _) => CorrectDetailsPaneHeight(p);
+                p.DetailsScroll.ScrollChanged += (_, e) => { if (e.ViewportHeightChange != 0) CorrectDetailsPaneHeight(p); };
                 ApplyDetailsPane(p, animate: false);   // no slide-open flash at launch
             }
         }
@@ -130,9 +132,10 @@ namespace KillerShell.Shell
             pane.DetailsScroll.VerticalScrollBarVisibility = right
                 ? System.Windows.Controls.ScrollBarVisibility.Auto : System.Windows.Controls.ScrollBarVisibility.Disabled;
             var content = pane.DetailsPaneContent;
+            if (!right) { content.MinHeight = 0; pane.DetailsPreviewHost.MaxHeight = double.PositiveInfinity; }
             content.RowDefinitions[0].Height = right ? GridLength.Auto : new GridLength(1, GridUnitType.Star);
             content.RowDefinitions[1].Height = new GridLength(right ? 16 : 0);
-            content.RowDefinitions[2].Height = new GridLength(right ? 180 : 0);
+            content.RowDefinitions[2].Height = right ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
             content.ColumnDefinitions[1].Width = new GridLength(right ? 0 : 16);
             pane.DetailsPreviewCol.Width = new GridLength(right ? 0 : 150);
             System.Windows.Controls.Grid.SetColumn(pane.DetailsPreviewHost, right ? 0 : 2);
@@ -395,6 +398,16 @@ namespace KillerShell.Shell
             {
                 double width = ClampDetailsPaneWidth(pane, pane.DetailsPaneWidth);
                 if (Math.Abs(pane.DetailsPane.Width - width) > 0.5) pane.DetailsPane.Width = width;
+                double viewport = pane.DetailsScroll.ViewportHeight;
+                if (viewport > 0 && !double.IsNaN(viewport) && !double.IsInfinity(viewport))
+                {
+                    var content = pane.DetailsPaneContent;
+                    double available = Math.Max(0, viewport - content.Margin.Top - content.Margin.Bottom);
+                    if (Math.Abs(content.MinHeight - available) > 0.5) content.MinHeight = available;
+                    double previewHeight = Math.Max(180, available - pane.DetailsFieldsGrid.ActualHeight - 16);
+                    if (Math.Abs(pane.DetailsPreviewHost.MaxHeight - previewHeight) > 0.5)
+                        pane.DetailsPreviewHost.MaxHeight = previewHeight;
+                }
                 return;
             }
             ApplyDetailsPreviewWidth(pane, pane.DetailsPane.ActualHeight);

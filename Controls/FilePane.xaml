@@ -966,7 +966,7 @@
                         <Button x:Name="DetailsPaneBtn" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
                                 Style="{StaticResource SurfaceButton}" Click="DetailsPane_Click">
                             <Path x:Name="DetailsPaneGlyph" Width="14" Height="14" Stretch="Uniform"
-                                  Stroke="{DynamicResource TextBrush}" StrokeThickness="1"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1"
                                   Data="M0,0 H14 V14 H0 Z M2,2 L12,12"/>
                         </Button>
                     <!-- Pipe: search WITHIN these results in a new tab. Collapsed while browsing
@@ -1335,14 +1335,7 @@
                                    FontSize="11.5" VerticalAlignment="Center" Visibility="Collapsed"/>
 
                         <StackPanel x:Name="DetailsFieldsGrid" Grid.Column="0" VerticalAlignment="Center">
-                            <!-- PrimaryBrush, matching ScopePathLabel's treatment of the current
-                                 location above (LocationRow) - the family's "this is the title
-                                 text" accent, not the plain TextBrush every field value below uses.
-                                 BrandSansFont + a size well above the field rows (10/11 below) - it
-                                 is the title of what you're looking at, so it should read as more
-                                 prominent. -->
-                            <!-- DetailsNameFont = BrandSansFont everywhere but 98SE, where the
-                                 typewriter face gives way to Courier New - the era's monospace. -->
+                            <!-- The filename uses the bundled Lacquer heading face and accent color. -->
                             <!-- The filename's chrome is theme-split: the family drop shadow
                                  (DetailsNameEffect, null on 98SE - a flat theme casts nothing)
                                  and, on 98SE only, a hard 1px WHITE copy up-left of the crisp
@@ -1350,14 +1343,14 @@
                                  carries. The copy binds the live text so it
                                  always mirrors what DetailsPane.cs writes. -->
                             <Grid Margin="0,0,0,9">
-                                <TextBlock IsHitTestVisible="False" FontFamily="{DynamicResource DetailsNameFont}" FontSize="20"
-                                           FontWeight="SemiBold" Foreground="#FFFFFF" TextWrapping="Wrap"
+                                <TextBlock IsHitTestVisible="False" FontFamily="{DynamicResource WordmarkAccentFont}" FontSize="20"
+                                           FontWeight="Normal" Foreground="#FFFFFF" TextWrapping="Wrap"
                                            Text="{Binding Text, ElementName=DetailsNameText}"
                                            Opacity="{DynamicResource AboutEmbossOpacity}">
                                     <TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform>
                                 </TextBlock>
-                                <TextBlock x:Name="DetailsNameText" FontFamily="{DynamicResource DetailsNameFont}" FontSize="20"
-                                           FontWeight="SemiBold" Foreground="{DynamicResource PrimaryBrush}"
+                                <TextBlock x:Name="DetailsNameText" FontFamily="{DynamicResource WordmarkAccentFont}" FontSize="20"
+                                           FontWeight="Normal" Foreground="{DynamicResource PrimaryBrush}"
                                            TextWrapping="Wrap" Effect="{DynamicResource DetailsNameEffect}"/>
                             </Grid>
                             <Grid Margin="0,0,0,3">
