@@ -365,7 +365,7 @@ namespace KillerShell.Tests.Services
                 string sameSigner = Path.Combine(root, "same.exe");
                 File.Copy(signed, sameSigner);
                 string unsigned = Path.Combine(root, "unsigned.exe");
-                File.WriteAllBytes(unsigned, Encoding.ASCII.GetBytes("MZ not really an executable"));
+                File.Copy(typeof(CodeSignature).Assembly.Location, unsigned);
                 string tampered = Path.Combine(root, "tampered.exe");
                 byte[] bytes = File.ReadAllBytes(signed);
                 bytes[bytes.Length / 2] ^= 0xFF;

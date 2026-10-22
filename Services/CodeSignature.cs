@@ -74,11 +74,44 @@ namespace KillerShell.Services
         /// </summary>
         internal static bool MayReplace(string current, string candidate)
         {
-            var (currentValid, _, _, currentPublisher) = Inspect(current);
-            if (!currentValid) return true;
-            var (candidateValid, _, _, candidatePublisher) = Inspect(candidate);
-            return candidateValid && currentPublisher.Length > 0
-                && string.Equals(currentPublisher, candidatePublisher, StringComparison.Ordinal);
+            try
+            {
+                // Keep the current bytes stable while distinguishing an unsigned local image
+                // from a signed image whose verification failed or could not be completed.
+                using var currentImage = new FileStream(current, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var (currentValid, _, _, currentPublisher) = Inspect(current);
+                if (!currentValid)
+                    return currentPublisher.Length == 0 && IsUnsignedImage(currentImage);
+                var (candidateValid, _, _, candidatePublisher) = Inspect(candidate);
+                return candidateValid && currentPublisher.Length > 0
+                    && string.Equals(currentPublisher, candidatePublisher, StringComparison.Ordinal);
+            }
+            catch { return false; }
+        }
+
+        private static bool IsUnsignedImage(FileStream image)
+        {
+            // A missing certificate is conclusive only for a readable PE with an empty
+            // certificate directory. A malformed or unreadable signature must fail closed.
+            using var reader = new BinaryReader(image, System.Text.Encoding.UTF8, leaveOpen: true);
+            if (image.Length < 64 || reader.ReadUInt16() != 0x5a4d) return false;
+            image.Position = 0x3c;
+            uint pe = reader.ReadUInt32();
+            if (pe < 64 || (long)pe + 24 > image.Length) return false;
+            image.Position = pe;
+            if (reader.ReadUInt32() != 0x00004550) return false;
+            image.Position = pe + 20;
+            ushort optionalSize = reader.ReadUInt16();
+            long optional = (long)pe + 24;
+            if (optional + optionalSize > image.Length) return false;
+            image.Position = optional;
+            ushort magic = reader.ReadUInt16();
+            int directories = magic == 0x10b ? 96 : magic == 0x20b ? 112 : 0;
+            if (directories == 0 || optionalSize < directories + 40) return false;
+            image.Position = optional + directories - 4;
+            if (reader.ReadUInt32() < 5) return false;
+            image.Position = optional + directories + 32;
+            return reader.ReadUInt32() == 0 && reader.ReadUInt32() == 0;
         }
 
         private static (bool valid, string subject, string thumb, string publisher) Inspect(string exePath)
