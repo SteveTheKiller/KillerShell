@@ -398,7 +398,7 @@
                              - invisible highlighted items. White there. -->
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
@@ -1027,7 +1027,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType=MenuItem}}" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -1121,11 +1121,11 @@
                         <!-- Hover uses the menu wash and its contrast text brush. -->
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="MenuBd" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
-                            <Setter TargetName="Check" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
-                            <Setter TargetName="Gesture" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
-                            <Setter TargetName="SubArrow" Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
-                            <Setter TargetName="IconPresenter" Property="TextElement.Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
+                            <Setter TargetName="Check" Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
+                            <Setter TargetName="Gesture" Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
+                            <Setter TargetName="SubArrow" Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
+                            <Setter TargetName="IconPresenter" Property="TextElement.Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
                         </Trigger>
                         <!-- Collapse the shortcut column when there is no gesture, so items without a
                              shortcut do not reserve its 24px left margin as phantom right padding. -->
@@ -1189,7 +1189,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType=MenuItem}}" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ComboHighlightTextBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>

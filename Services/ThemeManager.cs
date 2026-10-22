@@ -23,6 +23,13 @@ namespace KillerShell.Services
     /// </summary>
     public static class ThemeManager
     {
+        private static SolidColorBrush Frozen(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
+        }
+
         /// <summary>Killer Sans UI (Killer Sans scaled to Segoe UI proportions) with the Segoe fallback stack.</summary>
         internal static readonly FontFamily KillerSansUiStack = new(new Uri("pack://application:,,,/KillerShell;component/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
         internal static readonly FontFamily LacquerHeadingStack = new(new Uri("pack://application:,,,/"), "./Fonts/#Lacquer, ./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
@@ -1177,6 +1184,15 @@ namespace KillerShell.Services
             // set, white on 98SE where the highlight bar is the solid navy MenuHoverBrush.
             if (!combined.Contains("ComboHighlightTextBrush"))
                 combined["ComboHighlightTextBrush"] = combined["PrimaryBrush"];
+            // A hovered menu or list item takes the accent for its text, nudged lighter or darker
+            // only as far as it takes to read at 4.5:1 on that theme's hover fill. 98SE keeps its
+            // Win98 highlight text.
+            combined["MenuHoverTextBrush"] =
+                combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is true
+                    || combined["PrimaryBrush"] is not SolidColorBrush hoverAccent
+                    || combined["MenuHoverBrush"] is not SolidColorBrush hoverFill
+                ? combined["ComboHighlightTextBrush"]
+                : Frozen(ColorContrast.ReadableOn(hoverAccent.Color, hoverFill.Color, 4.5));
 
             // A dialog's caption band. TRANSPARENT by default, so the band shows the card's own
             // face and is invisible - the family look, where a dialog title blends into the

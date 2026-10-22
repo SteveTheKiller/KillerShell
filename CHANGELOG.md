@@ -43,6 +43,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.
 - Dropping files on a saved place always moves them, including across drives.
 - Buttons and shortcut diagrams use the embedded interface font. Dialog icons, button states, focus, rail alignment and grain follow the family design; 98SE uses full bevels and compact text fields. Active tabs blend into their terminal or file pane when Alt+M hides the menu bar.
+- Hovered menu and list items show their text in the theme accent, lightened or darkened only as far as needed to stay readable on the hover fill.
 
 ### Changed
 
