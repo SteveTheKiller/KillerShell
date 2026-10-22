@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.AccessControl;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace KillerShell.Services
 {
-    /// <summary>Removes only the fixed installation image, generated icon and empty directory.</summary>
+    /// <summary>Removes the fixed image, generated icon and verified publication recovery files.</summary>
     internal static class UninstallRemoval
     {
         // Raw inherited ACLs can retain generic rights instead of mapped file rights.
@@ -51,9 +52,18 @@ namespace KillerShell.Services
             if (machine) ValidateMachineSecurity(directory, parent, environment, validateRecoveryOwner: true);
             var transaction = new Transaction(directory, image, icon, parent, environment.Cleanup);
             if (!Directory.Exists(directory)) return transaction;
+            var recoveries = RecoveryImages.Read(image);
+            var ownedRecovery = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var recovery in recoveries)
+            {
+                recovery.Verify();
+                ownedRecovery.Add(recovery.Record);
+                ownedRecovery.Add(recovery.Image);
+            }
             foreach (string entry in Directory.EnumerateFileSystemEntries(directory))
                 if (!string.Equals(entry, image, StringComparison.OrdinalIgnoreCase)
-                    && !string.Equals(entry, icon, StringComparison.OrdinalIgnoreCase))
+                    && !string.Equals(entry, icon, StringComparison.OrdinalIgnoreCase)
+                    && !ownedRecovery.Contains(entry))
                     throw new IOException("The installation contains unrelated files. They were preserved.");
             foreach (var process in environment.Processes())
                 using (process)
@@ -69,6 +79,9 @@ namespace KillerShell.Services
                 }
             try
             {
+                // Uninstall explicitly retires failed candidates too. Finish this before
+                // detaching the installed image so cleanup failure leaves a working install.
+                foreach (var recovery in recoveries) recovery.Remove();
                 RejectLinks(icon);
                 if (File.Exists(image))
                 {
@@ -158,8 +171,9 @@ namespace KillerShell.Services
                         throw new UnauthorizedAccessException("The machine uninstall path permits changes by an untrusted principal.");
                 }
             }
-            foreach (string file in new[] {Path.Combine(directory, "KillerShell.exe"), Path.Combine(directory, "text-file.ico")})
+            foreach (string file in Directory.Exists(directory) ? Directory.EnumerateFiles(directory) : Array.Empty<string>())
             {
+                RejectLinks(file);
                 if (!File.Exists(file)) continue;
                 var security = environment.ReadFileSecurity(file);
                 if (!Trusted(security.GetOwner(typeof(SecurityIdentifier)))) throw new UnauthorizedAccessException("The uninstall file owner is not trusted.");

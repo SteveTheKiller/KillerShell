@@ -83,51 +83,48 @@ namespace KillerShell.Services
         /// </param>
         internal static string? ReplaceImage(string target, byte[] data, Func<string, bool>? accept = null)
         {
+            RecoveryImages.RejectLinks(target);
             string fresh = target + ".new-" + Guid.NewGuid().ToString("N");
-            string aside = target + OldMark + Guid.NewGuid().ToString("N")[..8];
+            string aside = target + OldMark + Guid.NewGuid().ToString("N");
+            RecoveryImages.CreatedImage? staging = null;
+            bool recorded = false;
 
             try
             {
-                using (var stream = new FileStream(fresh, FileMode.CreateNew, FileAccess.Write, FileShare.None))
-                {
-                    stream.Write(data, 0, data.Length);
-                    stream.Flush(true);
-                }
-                if (ReadVerified(fresh, Sha256(data)) == null)
-                    throw new IOException("Replacement verification failed.");
+                staging = RecoveryImages.WriteStaging(fresh, data);
                 if (accept != null && !accept(fresh))
-                {
-                    try { File.Delete(fresh); } catch { }
                     throw new PublisherMismatchException();
-                }
+                RecoveryImages.Record(target, fresh, fresh, backup: false, staging);
+                recorded = true;
                 if (File.Exists(target))
                 {
+                    RecoveryImages.Record(target, aside, target, backup: true);
                     File.Replace(fresh, target, aside);
                     return aside;
                 }
                 File.Move(fresh, target);
                 return null;
             }
-            catch (PublisherMismatchException) { throw; }
             catch (Exception ex)
             {
+                Exception? cleanup = null;
+                if (!recorded && staging != null)
+                    try { staging.Remove(); } catch (Exception cleanupError) { cleanup = cleanupError; }
+                if (ex is PublisherMismatchException && cleanup == null) throw;
                 Exception? rollback = null;
                 if (!File.Exists(target) && File.Exists(aside))
                     try { File.Copy(aside, target); } catch (Exception restoreError) { rollback = restoreError; }
                 throw new IOException($"Image publication failed. Target: {target}. Replacement: {fresh}. Backup: {aside}. "
-                    + ex.Message + (rollback == null ? "" : " Recovery failed: " + rollback.Message), ex);
+                    + ex.Message + (cleanup == null ? "" : " Staging cleanup failed: " + cleanup.Message)
+                    + (rollback == null ? "" : " Recovery failed: " + rollback.Message),
+                    cleanup == null ? ex : new AggregateException(ex, cleanup));
             }
         }
 
         /// <summary>Removes images set aside by an earlier <see cref="ReplaceImage"/>.</summary>
         internal static void DeleteSetAside(string exePath)
         {
-            try
-            {
-                string dir = Path.GetDirectoryName(exePath) ?? string.Empty;
-                foreach (string f in Directory.GetFiles(dir, Path.GetFileName(exePath) + OldMark + "*"))
-                    try { File.Delete(f); } catch { }
-            }
+            try { RecoveryImages.Cleanup(exePath, includeUnpublished: false); }
             catch { }
         }
     }
