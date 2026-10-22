@@ -393,15 +393,13 @@
                         <ContentPresenter VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <!-- ComboHighlightTextBrush = the PrimaryBrush this always set, except on
-                             98SE where MenuHoverBrush is solid NAVY and PrimaryBrush IS that navy
-                             - invisible highlighted items. White there. -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                        </Trigger>
+                        <!-- Hover text takes precedence when the highlighted row is also selected. -->
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
