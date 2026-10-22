@@ -406,6 +406,11 @@ namespace KillerShell
         // be resized by a splitter drag that never touched it.
         private void TabBar_SizeChanged(object s, SizeChangedEventArgs e)  => Owner.TabBarResized(this);
         private void TabOverflow_Click(object s, RoutedEventArgs e)        => Owner.TabOverflowMenu(this);
+        private void NewTab_Click(object s, RoutedEventArgs e)
+        {
+            Owner.FocusPane(this);
+            Owner.NewTab_Click(s, e);
+        }
 
         // ── Navigation + address bar ─────────────────────────────
         private void NavBack_Click(object s, RoutedEventArgs e)            => Owner.NavBack_Click(s, e);

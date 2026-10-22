@@ -123,6 +123,13 @@
                             Background="{DynamicResource BevelLightBrush}"/>
                 </Canvas>
                 <DockPanel LastChildFill="True">
+                <Button x:Name="NewTabBtn" DockPanel.Dock="Right"
+                        Style="{StaticResource GrungeCalendarNavButton}"
+                        Content="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                        Foreground="{DynamicResource MutedTextBrush}"
+                        Width="22" Height="20" Margin="2,4,2,3" VerticalAlignment="Center"
+                        AutomationProperties.Name="{DynamicResource Str_Ks_NewTab}"
+                        ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click"/>
                 <!-- Overflow chevron: only tabs collapsed out of this pane's strip (Tabs.cs
                      TabOverflowMenu). Docked BEFORE the strip so the strip's remaining width is
                      what the ScrollViewer measures against - docked after, the strip would take

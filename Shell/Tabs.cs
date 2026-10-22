@@ -315,6 +315,8 @@ namespace KillerShell.Shell
             // width keeps the answer sane instead of capping the strip at one tab and having to
             // be undone by the SizeChanged that follows.
             double avail = p.TabBar.ActualWidth > 0 ? p.TabBar.ActualWidth : p.ActualWidth;
+            avail = Math.Max(0, avail - p.NewTabBtn.Width -
+                p.NewTabBtn.Margin.Left - p.NewTabBtn.Margin.Right);
 
             // Two passes, because the chevron's width changes the answer that decides whether
             // there is a chevron. Asked without it first: if everything fits there is none, and
@@ -947,7 +949,7 @@ namespace KillerShell.Shell
             _ = NavigateTo(folder);
         }
 
-        private void NewTab_Click(object sender, RoutedEventArgs e)
+        internal void NewTab_Click(object sender, RoutedEventArgs e)
         {
             CaptureTab(_active);
             ActivateTab(CreateTab());

@@ -409,7 +409,8 @@ public static class SessionPersistenceScenario
 
     private static void NewTab(MainWindow window)
     {
-        var button = Descendants(window).OfType<Button>().Single(candidate => Equals(candidate.ToolTip, window.FindResource("Str_TT_NewTab")));
+        var button = Descendants((DependencyObject)window.FindName("SearchPanel")).OfType<Button>()
+            .Single(candidate => Equals(candidate.ToolTip, window.FindResource("Str_TT_NewTab")));
         button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         Pump(TimeSpan.FromMilliseconds(300));
     }
