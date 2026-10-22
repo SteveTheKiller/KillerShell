@@ -165,18 +165,29 @@ public static class MenuBarTerminalBlendScenario
         MenuBarTabBlendScenario.Descendants<Button>(window).Single(button => Equals(button.Content, "+"))
             .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         window.UpdateLayout();
-        var border = MenuBarTabBlendScenario.TabBorder(pane, tab);
         MenuBarTabBlendScenario.SelectTab(pane, tab);
         Assert.True(pane.TerminalHost.IsVisible);
         var menu = (ContextMenu)pane.FindResource("BarMenu");
         ((MenuItem)menu.Items[0]).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         ShellWindowFixture.PumpUntil(() => pane.TerminalBarRow.Visibility == Visibility.Collapsed);
+        var border = MenuBarTabBlendScenario.TabBorder(pane, tab);
         Assert.Equal(Colors.Black, MenuBarTabBlendScenario.Paint(border.Background));
         var title = MenuBarTabBlendScenario.Descendants<TextBlock>(border).Single(text => text.Name == "tabLbl");
         var close = MenuBarTabBlendScenario.Descendants<Button>(border).Single(button => button.Name == "tabClose");
+        void FindCurrentTerminalTab()
+        {
+            // Selection and layout can rebuild the tab's item template.
+            border = MenuBarTabBlendScenario.TabBorder(pane, tab);
+            title = MenuBarTabBlendScenario.Descendants<TextBlock>(border).Single(text => text.Name == "tabLbl");
+            close = MenuBarTabBlendScenario.Descendants<Button>(border).Single(button => button.Name == "tabClose");
+        }
         Color terminalText = MenuBarTabBlendScenario.Paint((Brush)pane.FindResource("TerminalForegroundBrush"));
-        ShellWindowFixture.PumpUntil(() => terminalText == MenuBarTabBlendScenario.Paint(title.Foreground)
-            && terminalText == MenuBarTabBlendScenario.Paint(close.Foreground),
+        ShellWindowFixture.PumpUntil(() =>
+            {
+                FindCurrentTerminalTab();
+                return terminalText == MenuBarTabBlendScenario.Paint(title.Foreground)
+                    && terminalText == MenuBarTabBlendScenario.Paint(close.Foreground);
+            },
             diagnostic: () => "Blend=" + pane.MenuBarBlend + "; active=" + tab.IsActive + "; terminal=" + tab.IsTerminal
                 + "; text=" + pane.MenuBarContentForeground + "; title=" + title.Foreground + "; close=" + close.Foreground);
         Assert.True(terminalText == MenuBarTabBlendScenario.Paint(title.Foreground), "The terminal tab title must use readable terminal text.");
@@ -185,12 +196,17 @@ public static class MenuBarTerminalBlendScenario
             + "; source=" + DependencyPropertyHelper.GetValueSource(close, Control.ForegroundProperty).BaseValueSource);
 
         terminal.SetSkin(TerminalSkin.Lcd);
-        ShellWindowFixture.PumpUntil(() => MenuBarTabBlendScenario.Paint(border.Background) == Color.FromRgb(10, 20, 12));
+        ShellWindowFixture.PumpUntil(() =>
+        {
+            FindCurrentTerminalTab();
+            return MenuBarTabBlendScenario.Paint(border.Background) == Color.FromRgb(10, 20, 12);
+        });
         Assert.Equal(Color.FromRgb(10, 20, 12), MenuBarTabBlendScenario.Paint(border.Background));
 
-        var folderBorder = MenuBarTabBlendScenario.TabBorder(pane, folder);
         MenuBarTabBlendScenario.SelectTab(pane, folder);
         ShellWindowFixture.PumpUntil(() => pane.ResultsList.IsVisible);
+        var folderBorder = MenuBarTabBlendScenario.TabBorder(pane, folder);
+        FindCurrentTerminalTab();
         Assert.Equal(Colors.White, MenuBarTabBlendScenario.Paint(folderBorder.Background));
         Assert.NotEqual(Colors.Black, MenuBarTabBlendScenario.Paint(border.Background));
     }
