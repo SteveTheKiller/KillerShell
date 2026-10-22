@@ -121,23 +121,25 @@
     var dict = window.I18N && window.I18N[lang];
     if (!dict) return english;
     var captions = [
-      'Dark: ' + dict.f_themes_t + ', ' + dict.f_browse_t,
-      'Light: ' + dict.f_fname_t,
-      '98SE: ' + dict.f_storage_t,
-      'Malaise: ' + dict.f_panes_t + ', ' + dict.f_browse_t,
-      'Ectoplasm: ' + dict.f_editor_t + ', ' + dict.f_panes_t,
-      'Delirium: ' + dict.f_procsvc_t + ', ' + dict.f_lang_t,
-      'Sepulchre: ' + dict.f_evt_t + ', ' + dict.f_panes_t,
-      'Decay: ' + dict.f_term_t,
-      'Mourning: ' + dict.f_perf_t,
-      'Light: ' + dict.f_browse_t,
-      'Black: ' + dict.f_browse_t,
-      'Dark: ' + dict.f_browse_t
+      dict.theme_dark + ', ' + dict.site_ui_blue + ': ' + dict.f_browse_t,
+      dict.theme_light + ', ' + dict.site_ui_green + ': ' + dict.f_browse_t,
+      dict.theme_98se + ', ' + dict.site_ui_green + ': ' + dict.f_browse_t,
+      dict.theme_dark + ', ' + dict.site_ui_orange + ': ' + dict.f_browse_t,
+      dict.theme_blood + ': ' + dict.f_browse_t,
+      dict.theme_greed + ': PowerShell, ' + dict.f_term_t,
+      dict.theme_cyanotic + ': PowerShell, ' + dict.f_editor_t,
+      dict.theme_ectoplasm + ': PowerShell, ' + dict.f_term_t,
+      dict.theme_dark + ', ' + dict.site_ui_blue + ': ' + dict.f_reg_t + ' (Ctrl+F11)',
+      dict.theme_light + ', ' + dict.site_ui_green + ': ' + dict.f_evt_t + ' (Ctrl+F12)',
+      dict.theme_blood + ': ' + dict.f_procsvc_t + ' (Ctrl+F9)',
+      dict.theme_dark + ': ' + dict.f_panes_t + ' (F10)',
+      dict.theme_dark + ': ' + dict.f_panes_t + ' (F10)',
+      dict.theme_dark + ': ' + dict.f_browse_t + ' (150%)',
+      dict.theme_dark + ': Slovenščina, ' + dict.f_panes_t
     ];
-    // The dictionary values are innerHTML, but captions are set as plain text.
+    // Demo is a fixed command-line mode; feature and theme names use the site locale.
     var caption = captions[index - 1];
-    if (caption) caption = caption.replace(/^[^:]+/, function (name) { return dict['theme_' + (name === 'Black' ? 'hc' : name.toLowerCase())] || name; });
-    return caption ? 'KillerShell ' + caption.replace(/&amp;/g, '&') : english;
+    return caption ? 'KillerShell --demo: ' + caption.replace(/&amp;/g, '&') : english;
   }
   window.ksLocalizeChrome = function () { localizeChrome(); localizeExtras(); };
   var THEMES = ['dark','light','hc','blood','greed','cyanotic','ectoplasm','decay','malaise','sepulchre','delirium','mourning'];

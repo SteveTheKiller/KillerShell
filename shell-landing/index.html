@@ -281,25 +281,28 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <div class="egg-toast" id="eggToast"></div>
 
 <script src="ks-i18n.js?v=12"></script>
-<script src="ks.js?v=14"></script>
-<script src="feature-carousel.js?v=3"></script>
+<script src="ks.js?v=15"></script>
+<script src="feature-carousel.js?v=4"></script>
 <script>
 (function () {
   // Screenshot strip: tries screenshots/01.png .. NN.png, drops any that 404, and shows a
   // placeholder until at least one loads. Drop real screenshots into screenshots/ to populate it.
   var descriptions = [
-    'KillerShell Dark theme browsing Documents in details view with the theme, accent and Film Grain controls open',
-    'KillerShell Light theme showing filename search results and the search terms panel with a blue accent and grain off',
-    'KillerShell 98SE theme showing the Storage Analyzer treemap for Windows System32',
-    'KillerShell Malaise theme browsing Documents in side-by-side list and details views',
-    'KillerShell Ectoplasm theme editing a PowerShell script beside a file listing',
-    'KillerShell Delirium theme showing the Processes table with the language picker open',
-    'KillerShell Sepulchre theme showing Event Viewer beside a folder in details view',
-    'KillerShell Decay theme showing a PowerShell terminal with network checks and a patching preview',
-    'KillerShell Mourning theme showing CPU, RAM, disk and network graphs in Performance Monitor',
-    'KillerShell Light theme showing file details and an image preview with a red accent',
-    'KillerShell Black theme browsing Pictures with image thumbnails and a green accent',
-    'KillerShell Dark theme browsing Documents in details view with an orange accent, grain off and the folder tree hidden'
+    "KillerShell Dark theme with a Blue accent browsing a Documents tab with fabricated demo data.",
+    "KillerShell Light theme with a Green accent browsing a Documents tab with fabricated demo data.",
+    "KillerShell 98SE theme with a Green accent browsing a Documents tab with fabricated demo data.",
+    "KillerShell Dark theme with an Orange accent browsing a Documents tab with fabricated demo data.",
+    "KillerShell Blood theme browsing a Pictures tab in icon view with fabricated demo data.",
+    "KillerShell Greed theme showing a PowerShell terminal tab with fabricated demo script output; no script operation is demonstrated.",
+    "KillerShell Cyanotic theme editing a fabricated PowerShell demo script in the text editor.",
+    "KillerShell Ectoplasm theme showing a PowerShell terminal tab with fabricated demo network output; no live network check is demonstrated.",
+    "KillerShell Dark theme with a Blue accent showing Registry Editor with fabricated demo data in an actual administrator process; no live registry change is demonstrated.",
+    "KillerShell Light theme with a Green accent showing Event Viewer with fabricated demo data in an actual administrator process; no live event query is demonstrated.",
+    "KillerShell Blood theme showing Processes with fabricated demo data in an actual administrator process; no process operation is demonstrated.",
+    "KillerShell Dark theme showing side-by-side panes with fabricated demo data.",
+    "KillerShell Dark theme showing vertically stacked panes with fabricated demo data.",
+    "KillerShell Dark theme at 150% app scale browsing a Documents tab with fabricated demo data.",
+    "KillerShell Dark theme with the app set to Slovenian and dual panes showing fabricated demo data."
   ];
   var MAX = descriptions.length;
   var sbThumbs = document.getElementById('sbThumbs');
@@ -357,7 +360,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 
   for (var i = 1; i <= MAX; i++) {
     (function (n) {
-      var src = 'screenshots/' + (n < 10 ? '0' + n : '' + n) + '.png?v=1.4.0';
+      var src = 'screenshots/' + (n < 10 ? '0' + n : '' + n) + '.png?v=1.5.0';
       var img = new Image();
       img.onload = function () {
         if (empty) { empty.remove(); empty = null; }
