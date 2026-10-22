@@ -1477,7 +1477,7 @@
                     </Button.Style>
                     <Path x:Name="PaneOrientationIcon" Width="14" Height="14"
                           Data="M0,0 H14 V6 H0 Z M0,8 H14 V14 H0 Z"
-                          Stretch="Uniform" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                          Stretch="Uniform" Stroke="{DynamicResource TextFooter}"
                           StrokeThickness="1" RenderTransformOrigin="0.5,0.5"/>
                 </Button>
                 <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
