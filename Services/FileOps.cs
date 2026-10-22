@@ -258,6 +258,7 @@ namespace KillerShell.Services
 
                 try
                 {
+                    ct.ThrowIfCancellationRequested();
                     if (item.IsLink) MoveLink(item.Source, target);
                     else if (move) MoveFile(item.Source, target, ref progress, onProgress, ct, replace, renameFile);
                     else      CopyFile(item.Source, target, ref progress, onProgress, ct, replace, renameFile);
