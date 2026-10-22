@@ -195,11 +195,14 @@ public sealed class TerminalProfileTests
     public void ChoosingProfileDoesNotAlsoLaunchDefaultThroughParentMenu()
     {
         Exception? failure = null;
+        string stage = "starting the STA thread";
         var thread = new System.Threading.Thread(() =>
         {
             try
             {
+                System.Threading.Volatile.Write(ref stage, "constructing the terminal");
                 var terminal = new TerminalControl(TerminalSkin.Lcd) { ShellKind = TerminalShellKind.Wsl };
+                System.Threading.Volatile.Write(ref stage, "building the menu");
                 int defaultLaunches = 0;
                 terminal.MenuCommand += _ => defaultLaunches++;
                 var menu = (System.Windows.Controls.ContextMenu)typeof(TerminalControl)
@@ -209,7 +212,9 @@ public sealed class TerminalProfileTests
                 parent.Items.Add(child);
                 int selectedLaunches = 0;
                 child.Click += (_, _) => selectedLaunches++;
+                System.Threading.Volatile.Write(ref stage, "raising the profile click");
                 child.RaiseEvent(new System.Windows.RoutedEventArgs(System.Windows.Controls.MenuItem.ClickEvent));
+                System.Threading.Volatile.Write(ref stage, "checking menu behavior");
                 Assert.Equal(1, selectedLaunches);
                 Assert.Equal(0, defaultLaunches);
                 var editProfile = menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+,");
@@ -222,7 +227,7 @@ public sealed class TerminalProfileTests
         });
         thread.SetApartmentState(System.Threading.ApartmentState.STA);
         thread.Start();
-        Assert.True(thread.Join(TimeSpan.FromSeconds(10)));
+        Assert.True(thread.Join(TimeSpan.FromSeconds(10)), "The profile menu fixture timed out while " + System.Threading.Volatile.Read(ref stage) + ".");
         if (failure != null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
     }
 }
