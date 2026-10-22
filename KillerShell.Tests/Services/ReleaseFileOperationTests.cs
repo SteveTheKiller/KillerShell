@@ -32,6 +32,44 @@ public sealed class ReleaseFileOperationTests
         Assert.Equal("sentinel", File.ReadAllText(Path.Combine(fixture.Target, "keep.txt")));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ReadOnlyIncomingMovePreservesAttributesAndBothPayloadsOnFailure(bool fail)
+    {
+        using var fixture = new Fixture();
+        string source = Path.Combine(fixture.Root, "sample.txt");
+        string destination = Path.Combine(fixture.Output, "sample.txt");
+        File.WriteAllText(source, "incoming");
+        File.WriteAllText(destination, "existing");
+        File.SetAttributes(source, FileAttributes.ReadOnly | FileAttributes.Hidden);
+        var result = fail
+            ? FileOps.CopyOrMove(new[] { source }, fixture.Output, true,
+                _ => ConflictChoice.Replace, _ => { }, CancellationToken.None,
+                (_, _, _) => throw new IOException("PUBLICATION_REFUSED"))
+            : FileOps.CopyOrMove(new[] { source }, fixture.Output, true,
+                _ => ConflictChoice.Replace, _ => { }, CancellationToken.None);
+
+        if (fail)
+        {
+            Assert.Equal(0, result.Succeeded);
+            Assert.Single(result.Failed);
+            Assert.Equal("incoming", File.ReadAllText(source));
+            Assert.Equal("existing", File.ReadAllText(destination));
+        }
+        else
+        {
+            Assert.Empty(result.Failed);
+            Assert.Equal(1, result.Succeeded);
+            Assert.False(File.Exists(source));
+            Assert.Equal("incoming", File.ReadAllText(destination));
+        }
+        var attributes = File.GetAttributes(fail ? source : destination);
+        Assert.True((attributes & FileAttributes.ReadOnly) != 0);
+        Assert.True((attributes & FileAttributes.Hidden) != 0);
+        Assert.Empty(Directory.GetFiles(fixture.Output, "*.KillerShell-backup-*"));
+    }
+
     private sealed class Fixture : IDisposable
     {
         internal string Root { get; } = Path.Combine(Path.GetTempPath(), "ks-release-files-" + Guid.NewGuid().ToString("N"));

@@ -470,7 +470,25 @@ namespace KillerShell.Services
                 ct.ThrowIfCancellationRequested();
                 try
                 {
-                    if (File.Exists(dst)) ReplaceFileWithRecovery(src, dst, replace);
+                    if (File.Exists(dst))
+                    {
+                        FileAttributes incomingAttributes = File.GetAttributes(src);
+                        bool readOnly = (incomingAttributes & FileAttributes.ReadOnly) != 0;
+                        bool published = false;
+                        try
+                        {
+                            if (readOnly) File.SetAttributes(src, incomingAttributes & ~FileAttributes.ReadOnly);
+                            ReplaceFileWithRecovery(src, dst, replace);
+                            published = true;
+                        }
+                        finally
+                        {
+                            // Replacement needs writable staging; a move still carries the
+                            // incoming file's attributes, including after a refused publication.
+                            if (published) File.SetAttributes(dst, incomingAttributes);
+                            else if (readOnly && File.Exists(src)) File.SetAttributes(src, incomingAttributes);
+                        }
+                    }
                     else (renameFile ?? RenameFile)(src, dst, 0);
                     progress.BytesDone += size;
                     return;
