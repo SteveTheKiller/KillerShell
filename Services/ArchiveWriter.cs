@@ -450,8 +450,8 @@ namespace KillerShell.Services
             try
             {
                 var existing = ExistingNames(archivePath);
-                if (existing.Contains(full)
-                    || existing.Any(n => n.StartsWith(full + "/", StringComparison.Ordinal)))
+                if (existing.Any(n => n.Equals(full, StringComparison.OrdinalIgnoreCase)
+                    || n.StartsWith(full + "/", StringComparison.OrdinalIgnoreCase)))
                 {
                     result.ErrorKey = "Str_Status_ArchiveNameTaken";
                     return result;

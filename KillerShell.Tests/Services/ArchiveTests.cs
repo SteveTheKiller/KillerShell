@@ -195,9 +195,9 @@ namespace KillerShell.Tests.Services
         }
 
         [Theory]
-        [InlineData("docs", true)]
-        [InlineData("Docs", false)]
-        public void ZipCreateFolder_CollidesOnlyWithTheExactCaseDirectory(string name, bool allowed)
+        [InlineData("docs")]
+        [InlineData("Docs")]
+        public void ZipCreateFolder_RejectsCaseAliasesOfExistingDirectories(string name)
         {
             string path = CreateCaseArchive(".zip", "Docs/existing.txt");
             try
@@ -206,17 +206,9 @@ namespace KillerShell.Tests.Services
 
                 var result = ArchiveWriter.CreateFolder(path, "", name, null, CancellationToken.None);
 
-                Assert.Equal(allowed, result.Ok);
-                if (allowed)
-                {
-                    using var archive = ZipFile.OpenRead(path);
-                    Assert.Equal(new[] { "Docs/existing.txt", "docs/" }, archive.Entries.Select(entry => entry.FullName));
-                }
-                else
-                {
-                    Assert.Equal("Str_Status_ArchiveNameTaken", result.ErrorKey);
-                    Assert.Equal(original, File.ReadAllBytes(path));
-                }
+                Assert.False(result.Ok);
+                Assert.Equal("Str_Status_ArchiveNameTaken", result.ErrorKey);
+                Assert.Equal(original, File.ReadAllBytes(path));
             }
             finally
             {
@@ -660,6 +652,31 @@ namespace KillerShell.Tests.Services
             {
                 if (temp != null) Directory.Delete(Path.GetDirectoryName(temp)!, true);
                 Directory.Delete(work, true);
+            }
+        }
+
+        [Fact]
+        public void NewFolderCannotBlockLaterExtractionAndAdditionWithACaseAlias()
+        {
+            string path = CreateCaseArchive(".zip", "Docs/existing.txt");
+            try
+            {
+                byte[] original = File.ReadAllBytes(path);
+                var created = ArchiveWriter.CreateFolder(path, "", "docs", null, CancellationToken.None);
+                Assert.False(created.Ok);
+                Assert.Equal("Str_Status_ArchiveNameTaken", created.ErrorKey);
+                Assert.Equal(original, File.ReadAllBytes(path));
+                string output = Path.Combine(Path.GetDirectoryName(path)!, "out");
+                Assert.True(ArchiveProvider.ExtractAll(path, output, CancellationToken.None, out string? error), error);
+                Assert.Equal("Docs/existing.txt", File.ReadAllText(Path.Combine(output, "Docs", "existing.txt")));
+                string addition = Path.Combine(Path.GetDirectoryName(path)!, "unrelated.txt");
+                File.WriteAllText(addition, "new");
+                var added = ArchiveWriter.Add(path, "", new[] { addition }, ArchiveCollision.Report, null, CancellationToken.None);
+                Assert.True(added.Ok, added.ErrorDetail);
+            }
+            finally
+            {
+                Directory.Delete(Path.GetDirectoryName(path)!, true);
             }
         }
 
