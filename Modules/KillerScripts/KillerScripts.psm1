@@ -5,7 +5,7 @@
 
     Every tool is pulled fresh from GitHub the moment you run it, so you always
     execute the current version. A local cache under %LOCALAPPDATA%\KillerScripts
-    is kept only as an offline fallback.
+    supports offline fallback and retains script versions for detached relaunches.
 
     Repo: https://github.com/SteveTheKiller/killer-scripts
 #>
@@ -158,24 +158,44 @@ function Invoke-KillerScript {
         throw "KillerScripts: no cached copy of $file. Run it once online first."
     }
 
-    # Each invocation keeps its completed version while another terminal refreshes
-    # the shared cache. Keep the snapshot beside the cache for PSScriptRoot.
-    $snapshot = Join-Path ([IO.Path]::GetDirectoryName($cachePath)) ('.ks-run-' + [guid]::NewGuid().ToString('N') + '.ps1')
-    $snapshotOwned = $false
+    # Detached relaunches can load this path after the original caller exits.
+    # Retain one immutable file per content version beside the cache for PSScriptRoot.
+    # Caller exit or age alone cannot prove that a version is no longer needed.
+    $lease = Open-KsCacheLease -Path $cachePath
     try {
-        $lease = Open-KsCacheLease -Path $cachePath
+        $bytes = [IO.File]::ReadAllBytes($cachePath)
+        $hash = [Security.Cryptography.SHA256]::Create()
         try {
-            [IO.File]::Copy($cachePath, $snapshot, $false)
-            $snapshotOwned = $true
-        } finally { $lease.Dispose() }
-        $parseTokens = $null
-        $parseErrors = $null
-        [System.Management.Automation.Language.Parser]::ParseFile($snapshot, [ref]$parseTokens, [ref]$parseErrors) | Out-Null
-        if ($parseErrors.Count) { throw "KillerScripts: invalid cached script for $file." }
-        & $snapshot @ScriptArgs
-    } finally {
-        if ($snapshotOwned -and [IO.File]::Exists($snapshot)) { [IO.File]::Delete($snapshot) }
-    }
+            $version = [BitConverter]::ToString($hash.ComputeHash($bytes)).Replace('-', '')
+            $snapshot = Join-Path ([IO.Path]::GetDirectoryName($cachePath)) ('.ks-version-' + $version + '.ps1')
+            if (-not [IO.File]::Exists($snapshot)) {
+                $temporary = Join-Path ([IO.Path]::GetDirectoryName($cachePath)) ('.ks-stage-' + [guid]::NewGuid().ToString('N') + '.tmp')
+                $owned = $false
+                try {
+                    $created = [IO.File]::Open($temporary, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+                    $owned = $true
+                    try {
+                        $created.Write($bytes, 0, $bytes.Length)
+                        $created.Flush($true)
+                    } finally { $created.Dispose() }
+                    try { [IO.File]::Move($temporary, $snapshot) }
+                    catch [IO.IOException] {
+                        # Another script with identical content may publish this version first.
+                        if (-not [IO.File]::Exists($snapshot)) { throw }
+                    }
+                } finally {
+                    if ($owned -and [IO.File]::Exists($temporary)) { [IO.File]::Delete($temporary) }
+                }
+            }
+            $existingVersion = [BitConverter]::ToString($hash.ComputeHash([IO.File]::ReadAllBytes($snapshot))).Replace('-', '')
+            if ($existingVersion -cne $version) { throw "KillerScripts: retained script version has changed: $snapshot" }
+        } finally { $hash.Dispose() }
+    } finally { $lease.Dispose() }
+    $parseTokens = $null
+    $parseErrors = $null
+    [System.Management.Automation.Language.Parser]::ParseFile($snapshot, [ref]$parseTokens, [ref]$parseErrors) | Out-Null
+    if ($parseErrors.Count) { throw "KillerScripts: invalid cached script for $file." }
+    & $snapshot @ScriptArgs
 }
 
 function Update-KillerScripts {
