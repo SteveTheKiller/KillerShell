@@ -82,7 +82,9 @@ public static class ConPtyScenario
                 session.Input.Flush();
             }
             reader.Start();
-            session.Resize(100, 30);
+            // Leave room for wide characters in the directory and for echoed commands.
+            short columns = checked((short)Math.Max(100, root.Length * 2 + 40));
+            session.Resize(columns, 30);
             // The literal marker is absent from input, so terminal input echo cannot pass this.
             Send("echo KS_CONPTY_MA^RKER");
             Send("cd");
@@ -94,7 +96,11 @@ public static class ConPtyScenario
             Volatile.Write(ref disposing, true);
             session.Dispose();
             Assert.True(reader.Join(3000), "The ConPTY output reader did not finish after disposal.");
-            Assert.True(received, "Shell output or Unicode working directory escaped the PTY. Captured: " + Text());
+            Assert.True(received, "Shell output or Unicode working directory escaped the PTY. Captured: " + Text()
+                + "\nExpected root (ASCII escaped): " + Escape(root)
+                + "; UTF-16 length=" + root.Length + "; resized columns=" + columns
+                + "; fixture stderr code page=" + Console.Error.Encoding.CodePage
+                + "\nCaptured (ASCII escaped): " + Escape(Text()));
             Assert.Null(readError);
             Assert.Equal(23, exitCode);
         }
@@ -104,5 +110,17 @@ public static class ConPtyScenario
             // not replace the assertion that explains which terminal boundary failed.
             try { Directory.Delete(Path.GetDirectoryName(root)!, true); } catch (IOException) { }
         }
+    }
+
+    private static string Escape(string text)
+    {
+        var escaped = new StringBuilder();
+        foreach (char character in text)
+        {
+            if (character == '\\') escaped.Append("\\\\");
+            else if (character < ' ' || character > '~') escaped.Append("\\u").Append(((int)character).ToString("X4"));
+            else escaped.Append(character);
+        }
+        return escaped.ToString();
     }
 }
