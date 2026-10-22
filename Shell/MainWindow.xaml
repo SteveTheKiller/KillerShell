@@ -1,6 +1,7 @@
 <Window x:Class="KillerShell.Shell.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:theme="clr-namespace:KillerFamily.Theming"
         xmlns:a11y="clr-namespace:KillerFamily.Accessibility"
         xmlns:icons="clr-namespace:KillerShell.Controls"
         xmlns:local="clr-namespace:KillerShell"
@@ -141,11 +142,6 @@
                     <!-- Sizes come from the shared theme resources, with smaller text
                          on a flat theme whose caption bar is far shorter. WordmarkEmbossOpacity is
                          the blurred dark copy behind the crisp text, 0 where an emboss is wrong. -->
-                    <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}"
-                               Margin="1,2,0,0" Opacity="{DynamicResource WordmarkEmbossOpacity}">
-                        <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
-                        <Run Text="Killer" Foreground="#D8000000"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/>
-                    </TextBlock>
                     <!-- Light mode has no emboss behind the whole wordmark (dark "Killer" on a light
                          caption needs none), so the same blurred dark copy goes behind the accent run
                          alone. WordmarkAccentShadowOpacity is 0 on every theme but Light. -->
@@ -154,7 +150,7 @@
                         <TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect>
                         <Run Text="Killer" Foreground="Transparent"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="#D8000000"/>
                     </TextBlock>
-                    <TextBlock FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}">
+                    <TextBlock theme:Bevel.Enabled="True" FontFamily="{DynamicResource WordmarkFont}" FontSize="{DynamicResource TitleWordmarkSize}">
                         <Run Text="Killer" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="{DynamicResource TitleWordmarkBoldSize}" Foreground="{DynamicResource AccentLogo}"/>
                     </TextBlock>
                 </Grid>
@@ -1628,7 +1624,7 @@
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" IsHitTestVisible="False"
                                                    Opacity="{DynamicResource AboutEmbossOpacity}"><TextBlock.RenderTransform><TranslateTransform X="-1" Y="-1"/></TextBlock.RenderTransform><Run Text="Killer" FontSize="17.21" Foreground="#FFFFFF"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="#FFFFFF"/></TextBlock>
                                         <TextBlock FontFamily="{DynamicResource WordmarkFont}" Margin="1,2,0,0" IsHitTestVisible="False" Opacity="{DynamicResource WordmarkAccentShadowOpacity}"><TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect><Run Text="Killer" FontSize="17.21" Foreground="Transparent"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="#D8000000"/></TextBlock>
-                                        <TextBlock FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="17.21" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
+                                        <TextBlock theme:Bevel.Enabled="True" FontFamily="{DynamicResource WordmarkFont}"><Run Text="Killer" FontSize="17.21" Foreground="{DynamicResource TextBrush}"/><Run FontFamily="{DynamicResource WordmarkAccentFont}" Text="Shell" FontSize="25.85" Foreground="{DynamicResource AccentLogo}"/></TextBlock>
                                     </Grid>
                                     <!-- Tagline is composed here, not in the .xaml string files: GPLv3 and
                                          "Killer Tools" are proper nouns and stay out of the translations
