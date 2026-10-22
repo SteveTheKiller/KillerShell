@@ -641,7 +641,7 @@ namespace KillerShell.Services
             }
             // A palette can fill buttons with a deeper shade than its accent text (PrimaryFillBaseBrush).
             combined["PrimaryFillBrush"] = ButtonFill(combined.Contains("PrimaryFillBaseBrush") ? combined["PrimaryFillBaseBrush"] : combined["PrimaryBrush"]);
-            combined["OutlineHoverBrush"] = ButtonFill(combined["OutlineHoverBrush"]);
+            combined["OutlineHoverBrush"] = ButtonFill(combined.Contains("OutlineHoverFillBaseBrush") ? combined["OutlineHoverFillBaseBrush"] : combined["OutlineHoverBrush"]);
             SetIfAbsent("PaneBevel2DarkThickness", new Thickness(0));
             SetIfAbsent("PaneBevel2LightThickness", new Thickness(0));
             SetIfAbsent("PaneBevelDark2Brush", Transparent);
