@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,6 +47,30 @@ public static class SearchCompletionScenario
         ThemeManager.SetSetting = (key, value) => settings[key] = value;
         ThemeManager.Initialize();
         MainWindow? window = null;
+        Exception? asynchronousFailure = null;
+        EventHandler<FirstChanceExceptionEventArgs> firstChance = (_, e) =>
+        {
+            if (e.Exception is InvalidOperationException
+                && (e.Exception.StackTrace ?? string.Empty).IndexOf(
+                    "System.Windows.Threading.Dispatcher.VerifyAccess", StringComparison.Ordinal) >= 0
+                && Interlocked.CompareExchange(ref asynchronousFailure, e.Exception, null) == null)
+                Console.Error.WriteLine("Search fixture dispatcher access failure: " + e.Exception);
+        };
+        DispatcherUnhandledExceptionEventHandler unhandled = (_, e) =>
+        {
+            Interlocked.CompareExchange(ref asynchronousFailure, e.Exception, null);
+            e.Handled = true;
+        };
+        AppDomain.CurrentDomain.FirstChanceException += firstChance;
+        app.DispatcherUnhandledException += unhandled;
+        void CheckAsynchronousFailure()
+        {
+            Exception? failure = Volatile.Read(ref asynchronousFailure);
+            if (failure != null)
+                throw new InvalidOperationException("The search fixture observed an asynchronous UI failure.", failure);
+        }
+        var originalContext = SynchronizationContext.Current;
+        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(app.Dispatcher));
         try
         {
             window = new MainWindow { Opacity = 0, ShowInTaskbar = false, ShowActivated = false };
@@ -54,6 +80,7 @@ public static class SearchCompletionScenario
             var active = ((ItemsControl)pane.FindName("TabStrip")).Items.OfType<SearchTab>().Single(t => t.IsActive);
             var opening = Stopwatch.StartNew();
             while (active.StatusKey != "Str_Status_Listed" && opening.Elapsed < TimeSpan.FromSeconds(10)) Pump();
+            CheckAsynchronousFailure();
             Assert.Equal("Str_Status_Listed", active.StatusKey);
             active.PipeFiles = mode == "unreadable" ? [path] : null;
             active.IsBrowsing = false;
@@ -69,8 +96,13 @@ public static class SearchCompletionScenario
             while (active.IsSearching && watch.Elapsed < TimeSpan.FromSeconds(10))
             {
                 Pump();
+                CheckAsynchronousFailure();
             }
+            Pump();
+            CheckAsynchronousFailure();
             Assert.False(active.IsSearching);
+            Assert.Equal(app.FindResource("Str_Btn_Search"), ((Button)window.FindName("SearchButton")).Content);
+            Assert.Equal(Visibility.Collapsed, ((TextBlock)pane.FindName("ScannedText")).Visibility);
             Console.WriteLine("Search completion: " + active.StatusKey + ": " + active.StatusMessage);
             Assert.Equal("Str_Status_SearchPartial", active.StatusKey);
             Assert.Equal(mode == "unreadable" ? 0 : 1, active.Results.Count);
@@ -81,9 +113,19 @@ public static class SearchCompletionScenario
         }
         finally
         {
-            Console.WriteLine("Closing search fixture.");
-            window?.Close(); app.Shutdown();
-            Console.WriteLine("Search fixture cleaned.");
+            try
+            {
+                Console.WriteLine("Closing search fixture.");
+                window?.Close(); app.Shutdown();
+                Console.WriteLine("Search fixture cleaned.");
+            }
+            finally
+            {
+                AppDomain.CurrentDomain.FirstChanceException -= firstChance;
+                app.DispatcherUnhandledException -= unhandled;
+                SynchronizationContext.SetSynchronizationContext(originalContext);
+            }
+            CheckAsynchronousFailure();
         }
     }
 
