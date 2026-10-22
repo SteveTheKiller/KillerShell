@@ -19,7 +19,7 @@ $manager = $assembly.GetType('KillerShell.Services.ThemeManager')
 $themeType = $assembly.GetType('KillerShell.Services.Theme')
 $static = [Reflection.BindingFlags]'Static,NonPublic,Public'
 $manager.GetMethod('LoadDict', $static).Invoke($null, @([Enum]::Parse($themeType, 'Malaise')))
-foreach ($pair in @(@('ListPaneBrush', '#FF303638'), @('TerminalBackgroundBrush', '#FF303638'), @('MenuBackgroundBrush', '#FF262B2D'), @('TabActiveBrush', '#FF262B2D'))) {
+foreach ($pair in @(@('ListPaneBrush', '#FF303638'), @('TerminalBackgroundBrush', '#FF303638'), @('MenuBackgroundBrush', '#FF171C1D'), @('TabActiveBrush', '#FF171C1D'))) {
     if ($app.FindResource($pair[0]).Color.ToString() -ne $pair[1]) { throw "Malaise surface changed: $($pair[0])" }
 }
 $type = $assembly.GetType('KillerShell.Shell.MainWindow')
@@ -129,7 +129,7 @@ $terminalTab = Call 'CreateDemoTerminalTab' @('C:\Users\Demo', "Pane regression 
 $right = Field 'RightPane'
 $strip = $right.GetType().GetField('TabStrip', $flags).GetValue($right)
 $strip.ItemsSource = $right.GetType().GetProperty('Tabs', $flags).GetValue($right, $null)
-Call 'ActivateTab' @($terminalTab)
+Call 'ActivateTab' @($terminalTab, $true)
 Call 'FocusPane' @((Field 'LeftPane'))
 Set-Dual $true
 Call 'UpdateTabBar'
