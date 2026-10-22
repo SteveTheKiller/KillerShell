@@ -131,6 +131,11 @@ namespace KillerShell
                 return;
             }
 
+            // Standalone installer dialogs need the saved language before their early return.
+            Services.LocaleManager.GetSetting = GetSetting;
+            Services.LocaleManager.SetSetting = SetSetting;
+            Services.LocaleManager.Initialize();
+
             // Uninstall flags (Add/Remove Programs runs /uninstall; package managers run
             // /uninstall-silent, the registered QuietUninstallString, which shows no UI)
             if (e.Args.Length > 0 &&
@@ -245,17 +250,12 @@ namespace KillerShell
             Services.ThemeManager.GetSetting = GetSetting;
             Services.ThemeManager.SetSetting = SetSetting;
 
-            // Same persistence for the chosen UI language.
-            Services.LocaleManager.GetSetting = GetSetting;
-            Services.LocaleManager.SetSetting = SetSetting;
-
             // An elevated window themes itself separately, and defaults to Blood - see
             // ThemeManager.ThemeKey. Has to be set before Initialize, which is what reads it.
             Services.ThemeManager.Elevated = AppMainWindow.IsElevated;
 
             Services.ThemeManager.Initialize();    // restore saved theme before the window is built
             Services.FilmGrain.Initialize();       // then the Film Grain choice, which outranks it
-            Services.LocaleManager.Initialize();   // then the saved language (en-US base + override)
 
             // Keep text-file.ico in sync with whatever THIS build embeds. EnsureFileIcon
             // otherwise only ever runs from RegisterAssociations (Associations.cs), so anyone who

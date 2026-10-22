@@ -28,7 +28,7 @@ namespace KillerShell.Services
         private static Locale _current = Locale.EnUS;
         public static Locale Current => _current;
 
-        /// <summary>Call once at startup (after ThemeManager.Initialize) to restore the saved locale.</summary>
+        /// <summary>Call once at startup before any localized dialog to restore the saved locale.</summary>
         public static void Initialize()
         {
             var saved = GetSetting("Locale");

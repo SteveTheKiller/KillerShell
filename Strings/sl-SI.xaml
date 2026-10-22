@@ -41,8 +41,8 @@
     <sys:String x:Key="Str_Menu_HideMenuBar">Skrij menijsko vrstico</sys:String>
     <sys:String x:Key="Str_Ks_Bookmarks">prikaži ali skrij zaznamke</sys:String>
     <sys:String x:Key="Str_Ks_JumpBookmark">pojdi na zaznamek 1-10 (0 = deseti)</sys:String>
-    <sys:String x:Key="Str_TT_Back">Nazaj  (Alt+Left arrow)</sys:String>
-    <sys:String x:Key="Str_TT_Forward">Naprej  (Alt+Right arrow)</sys:String>
+    <sys:String x:Key="Str_TT_Back">Nazaj  (Alt+puščica levo)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">Naprej  (Alt+puščica desno)</sys:String>
     <sys:String x:Key="Str_Status_Listing">Odpiranje {0}...</sys:String>
     <sys:String x:Key="Str_Status_Listed">Število elementov: {0}</sys:String>
     <sys:String x:Key="Str_Status_BadPath">Ni mogoče odpreti {0}</sys:String>
@@ -254,8 +254,8 @@
     <sys:String x:Key="Str_TT_ModeContent">Iskanje po vsebini  (besedilo v datotekah)</sys:String>
     <sys:String x:Key="Str_Group_Any">KATERI KOLI</sys:String>
     <sys:String x:Key="Str_Group_All">VSI</sys:String>
-    <sys:String x:Key="Str_TT_GroupAny">ANY: datoteka se ujema, če se ujema kateri koli izraz v tej skupini</sys:String>
-    <sys:String x:Key="Str_TT_GroupAll">ALL: datoteka se mora ujemati z vsakim izrazom v tej skupini</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">KATERI KOLI: datoteka se ujema, če se ujema kateri koli izraz v tej skupini</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">VSI: datoteka se mora ujemati z vsakim izrazom v tej skupini</sys:String>
     <sys:String x:Key="Str_Join_And">IN</sys:String>
     <sys:String x:Key="Str_Join_Or">ALI</sys:String>
     <sys:String x:Key="Str_Chk_CloseTabs">Zapri moje odprte zavihke</sys:String>
@@ -519,8 +519,8 @@
     <sys:String x:Key="Str_Proc_DetailsTitle">Podrobnosti procesa</sys:String>
     <sys:String x:Key="Str_Proc_DetailsParentPid">Nadrejeni PID</sys:String>
     <sys:String x:Key="Str_Proc_DetailsStartTime">Čas zagona</sys:String>
-    <sys:String x:Key="Str_TT_ProcPrev">Prejšnji proces  (Left arrow)</sys:String>
-    <sys:String x:Key="Str_TT_ProcNext">Naslednji proces  (Right arrow)</sys:String>
+    <sys:String x:Key="Str_TT_ProcPrev">Prejšnji proces  (puščica levo)</sys:String>
+    <sys:String x:Key="Str_TT_ProcNext">Naslednji proces  (puščica desno)</sys:String>
     <sys:String x:Key="Str_TT_ProcCopyDetails">Kopiraj podrobnosti  (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_ProcClose">Zapri  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_ProcToggleToServices">Preklopi na storitve  (Ctrl+.)</sys:String>
@@ -547,8 +547,8 @@
     <sys:String x:Key="Str_Svc_RefreshFailed">Seznama storitev ni bilo mogoče osvežiti: {0}</sys:String>
     <sys:String x:Key="Str_Svc_Loading">Nalaganje seznama storitev...</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Podrobnosti storitve</sys:String>
-    <sys:String x:Key="Str_TT_SvcPrev">Prejšnja storitev  (Left arrow)</sys:String>
-    <sys:String x:Key="Str_TT_SvcNext">Naslednja storitev  (Right arrow)</sys:String>
+    <sys:String x:Key="Str_TT_SvcPrev">Prejšnja storitev  (puščica levo)</sys:String>
+    <sys:String x:Key="Str_TT_SvcNext">Naslednja storitev  (puščica desno)</sys:String>
     <sys:String x:Key="Str_TT_SvcCopyDetails">Kopiraj podrobnosti  (Ctrl+C)</sys:String>
     <sys:String x:Key="Str_TT_SvcClose">Zapri  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Pregledovalnik dogodkov  (Ctrl+F12)</sys:String>
@@ -837,8 +837,8 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Evt_ViewFormatted">Prikaži oblikovano</sys:String>
     <sys:String x:Key="Str_Evt_SearchOnline">Poišči ta dogodek v spletu</sys:String>
     <sys:String x:Key="Str_Btn_Close">Zapri</sys:String>
-    <sys:String x:Key="Str_TT_EvtPrev">Prejšnji dogodek  (Left arrow)</sys:String>
-    <sys:String x:Key="Str_TT_EvtNext">Naslednji dogodek  (Right arrow)</sys:String>
+    <sys:String x:Key="Str_TT_EvtPrev">Prejšnji dogodek  (puščica levo)</sys:String>
+    <sys:String x:Key="Str_TT_EvtNext">Naslednji dogodek  (puščica desno)</sys:String>
     <sys:String x:Key="Str_TT_EvtViewXml">Prikaži neobdelani XML  (Alt+X)</sys:String>
     <sys:String x:Key="Str_TT_EvtViewFormatted">Prikaži oblikovano  (Alt+X)</sys:String>
     <sys:String x:Key="Str_TT_EvtSearchOnline">Poišči ta dogodek v spletu  (Alt+S)</sys:String>
