@@ -76,6 +76,14 @@ namespace KillerFamily.Accessibility
 
         private static void Refresh()
         {
+            if (Application.Current == null) return;
+            Refresh(SystemParameters.HighContrast, SystemColors.WindowBrush, SystemColors.WindowTextBrush,
+                SystemColors.HighlightBrush, SystemColors.HighlightTextBrush);
+        }
+
+        internal static void Refresh(bool highContrast, Brush windowBrush, Brush windowTextBrush,
+            Brush highlightBrush, Brush highlightTextBrush)
+        {
             var app = Application.Current;
             if (app == null) return;
             if (_owner != app.Resources)
@@ -83,7 +91,7 @@ namespace KillerFamily.Accessibility
                 Restore();
                 _owner = app.Resources;
             }
-            if (!SystemParameters.HighContrast)
+            if (!highContrast)
             {
                 Restore();
                 return;
@@ -98,13 +106,13 @@ namespace KillerFamily.Accessibility
             {
                 foreach (string key in keys) d[key] = brush;
             }
-            Brushes(SystemColors.WindowBrush, "BackgroundBrush", "SurfaceBrush", "PaneBrush", "ContentPaneBrush",
+            Brushes(windowBrush, "BackgroundBrush", "SurfaceBrush", "PaneBrush", "ContentPaneBrush",
                 "ScanContentPaneBrush", "TableHeaderBrush", "TitleBarBrush", "FooterBackgroundBrush",
                 "OverlayWindowBrush", "MenuBackgroundBrush", "BgFlyout", "SidebarPaneBrush", "FileDialogPaneBrush",
                 "ComboFieldBrush", "ComboFieldHoverBrush", "ComboPopupBrush", "ComboButtonBrush",
                 "ComboButtonHoverBrush", "DropdownArrowBrush", "DialogTitleBarBrush", "RowAltBrush",
                 "RowHoverBrush", "MenuHoverBrush", "SurfaceHoverBrush", "OutlinePressedBrush");
-            Brushes(SystemColors.WindowBrush, "AboutPanelBrush", "EditorPaneBrush", "InputFieldBrush", "KeyCapBrush",
+            Brushes(windowBrush, "AboutPanelBrush", "EditorPaneBrush", "InputFieldBrush", "KeyCapBrush",
                 "CalendarEvenColumnBrush", "CalendarOddColumnBrush", "CalendarEvenHeaderBrush", "CalendarOddHeaderBrush",
                 "CalendarOutsideMonthBrush", "CalendarWeekendBrush", "CalendarWeekendHeaderBrush", "CalendarDayHoverBrush",
                 "CalendarWeekendHoverBrush", "GraphCanvasBrush", "ListPaneBrush", "OutlineFaceBrush", "TextFieldBrush",
@@ -115,8 +123,8 @@ namespace KillerFamily.Accessibility
                 "ComparisonBarBrush", "ComparisonBarHoverBrush", "AnnotationBarBrush", "KeyboardKeyBrush", "TabActiveBrush",
                 "BgCanvas", "BgRecentPanel", "BgDragHandle",
                 "FooterZoomSurfaceBrush", "FooterZoomClosedBrush", "SortButtonBrush", "MonitorCellBrush", "MonitorHoverBrush");
-            Brushes(SystemColors.WindowTextBrush, "TextBrush", "MutedTextBrush", "DimTextBrush", "ChromeTextBrush",
-                "MenuTextBrush", "TextFooter", "FilenameBrush", "CaptionTextBrush", "DialogCaptionTextBrush",
+            Brushes(windowTextBrush, "TextBrush", "MutedTextBrush", "DimTextBrush", "ChromeTextBrush",
+                "MenuTextBrush", "MenuHoverTextBrush", "TextFooter", "FilenameBrush", "CaptionTextBrush", "DialogCaptionTextBrush",
                 "OverlayCloseBrush", "CaptionGlyphBrush", "ComboTextBrush", "OutlineRestBrush", "OutlineBtnBrush", "RadioAccent",
                 "RadioHoverFgBrush", "ScrollThumbBrush", "ScrollThumbHoverBrush", "AccentLogo", "HeaderLineBrush",
                 "CardBorderBrush", "PaneBorderBrush", "AppBorderBrush", "OverlayEdgeBrush", "OverlayRuleBrush",
@@ -124,21 +132,21 @@ namespace KillerFamily.Accessibility
                 "MenuBorderBrush", "MenuSeparatorBrush", "ButtonEdgeBrush", "WindowEdgeBrush", "DialogFrameBrush",
                 "SurfaceButtonEdgeBrush", "KsCatFile", "KsCatTools", "KsCatEdit", "KsCatNav", "KsCatView",
                 "KsCatSearch", "KsCatHelp", "KsCatOcr", "KsCatAppt", "KsCatTabs");
-            Brushes(SystemColors.WindowTextBrush, "CaptionCloseBrush", "AboutCloseFg", "OutlineTextBrush", "TitleMetaBrush",
+            Brushes(windowTextBrush, "CaptionCloseBrush", "AboutCloseFg", "OutlineTextBrush", "TitleMetaBrush",
                 "DatabaseActiveTextBrush", "DatabaseMetadataBrush", "InputEdgeBrush", "PaneEdgeBrush", "BarEdgeBrush",
                 "BarSepBrush", "ChipEdgeBrush", "AboutPanelEdgeBrush", "ConsoleTextBrush",
                 "ConsoleBorderBrush", "ReportMetricBrush", "TreeLineBrush", "TopologyNodeTextBrush", "TopologyNodeBorderBrush",
                 "TopologyNodeHoverTextBrush", "TerminalForegroundBrush", "MonitorTextBrush", "MonitorMutedBrush",
                 "ComparisonBarForegroundBrush", "AnnotationBarBorderBrush", "WindowFrameBrush", "FooterAccentBrush", "DropBorder");
-            Brushes(SystemColors.HighlightBrush, "PrimaryBrush", "PrimaryHoverBrush", "PrimaryPressedBrush",
+            Brushes(highlightBrush, "PrimaryBrush", "PrimaryHoverBrush", "PrimaryPressedBrush",
                 "PrimaryFillBaseBrush", "PrimaryFillBrush", "SelectionBg", "RowSelectedBrush", "SelectionAccent",
                 "OutlineHoverBrush", "OutlineHoverFillBrush", "CaptionHoverBrush", "CaptionCloseHoverBrush",
                 "CalendarViewSelectedBrush");
-            Brushes(SystemColors.HighlightBrush, "DatabaseSelectionBrush", "TextSelectionBrush", "TabActiveRingBrush",
+            Brushes(highlightBrush, "DatabaseSelectionBrush", "TextSelectionBrush", "TabActiveRingBrush",
                 "CheckBoxCheckedBackgroundBrush", "CheckBoxCheckedBrush", "FocusedPaneBrush", "SettingsOpenRowBg");
-            Brushes(SystemColors.HighlightTextBrush, "OnPrimaryBrush", "SelectionFg", "OutlineHoverTextBrush",
+            Brushes(highlightTextBrush, "OnPrimaryBrush", "SelectionFg", "OutlineHoverTextBrush",
                 "ComboHighlightTextBrush", "CaptionHoverTextBrush", "CaptionCloseHoverTextBrush");
-            Brushes(SystemColors.HighlightTextBrush, "CaptionCloseHoverFgBrush", "AboutCloseHoverFg", "CaptionPressedTextBrush",
+            Brushes(highlightTextBrush, "CaptionCloseHoverFgBrush", "AboutCloseHoverFg", "CaptionPressedTextBrush",
                 "DatabaseSelectionTextBrush", "TextSelectionTextBrush", "GridSelectedTextBrush", "CheckMarkBrush",
                 "CheckBoxCheckBrush", "OnOutlineBtnBrush");
             Brushes(System.Windows.Media.Brushes.Transparent, "CaptionButtonBrush");
