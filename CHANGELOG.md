@@ -34,7 +34,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 - Added a New Tab button after tab overflow to open Home. Tabs have square tops, fading dividers and single-pane outlines, with rounded content-pane bottoms.
-- Details can dock below or to the right of either pane, or turn off. Details and dual-pane layouts have direct shortcuts, icons and right-click menus, with a footer layout toggle while dual pane is open.
+- Details can dock below or to the right of either pane, or turn off. Filenames shrink to fit and use beveled Lacquer lettering. Details and dual-pane layouts have direct shortcuts, icons and right-click menus, with a footer layout toggle while dual pane is open.
 - Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
 - Keyboard shortcuts cover the remaining commands and appear in menus, tooltips, the shortcut card and website.
 - Added Slovenian across the app, installer, help, website and keyboard shortcuts.

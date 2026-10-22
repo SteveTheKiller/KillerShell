@@ -394,6 +394,7 @@ namespace KillerShell.Shell
         internal static void CorrectDetailsPaneHeight(FilePane pane)
         {
             if (!pane.DetailsPaneOpen || pane.DetailsPane.Visibility != Visibility.Visible) return;
+            FitDetailsFilename(pane);
             if (pane.DetailsPaneOnRight)
             {
                 double width = ClampDetailsPaneWidth(pane, pane.DetailsPaneWidth);
@@ -487,6 +488,21 @@ namespace KillerShell.Shell
             SyncDetailsPaneCollapse(pane, animate);
         }
 
+        private static void FitDetailsFilename(FilePane pane)
+        {
+            var name = pane.DetailsNameText;
+            double width = pane.DetailsFieldsGrid.ActualWidth;
+            if (width <= 2 || string.IsNullOrEmpty(name.Text)) return;
+            var typeface = new System.Windows.Media.Typeface(name.FontFamily, name.FontStyle,
+                name.FontWeight, name.FontStretch);
+            var measured = new System.Windows.Media.FormattedText(name.Text,
+                System.Globalization.CultureInfo.CurrentUICulture, name.FlowDirection, typeface,
+                20, name.Foreground, System.Windows.Media.VisualTreeHelper.GetDpi(name).PixelsPerDip);
+            // Keep short names at full size. Very long names wrap at the readable minimum.
+            double size = Math.Max(12, Math.Min(20, 20 * (width - 2) / Math.Max(1, measured.WidthIncludingTrailingWhitespace)));
+            if (Math.Abs(name.FontSize - size) > 0.01) name.FontSize = size;
+        }
+
         private static void ShowDetailsEmpty(FilePane pane)
         {
             pane.DetailsFieldsGrid.Visibility = Visibility.Collapsed;
@@ -499,6 +515,7 @@ namespace KillerShell.Shell
             pane.DetailsFieldsGrid.Visibility = Visibility.Visible;
 
             pane.DetailsNameText.Text = r.FileName;
+            FitDetailsFilename(pane);
             // A folder's own size is not shown without a recursive walk we are not doing here
             // (Explorer either omits it too or computes it lazily) - the size ROW still shows,
             // just with a dash, so the field layout does not jump between a file and a folder.
@@ -616,6 +633,7 @@ namespace KillerShell.Shell
             pane.DetailsFieldsGrid.Visibility = Visibility.Visible;
 
             pane.DetailsNameText.Text = string.Format(Loc("Str_Status_Selected"), items.Count.ToString("N0"));
+            FitDetailsFilename(pane);
 
             // In-memory sum only, never a fresh disk touch: SizeBytes was already stat'd when
             // each row was listed (Browse.cs), so this is cheap even for a big selection.

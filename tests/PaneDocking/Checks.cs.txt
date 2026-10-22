@@ -277,6 +277,15 @@ public static class PaneDockingChecks
             Capture(window, output, "Yellow-right-details");
             Check(centered && lacquer && blackIcon,
                 "Right details: centered preview=" + centered + ", Lacquer filename=" + lacquer + ", black yellow-accent icon=" + blackIcon);
+            var filename = (TextBlock)pane.FindName("DetailsNameText");
+            grip.RaiseEvent(new DragDeltaEventArgs(100, 0) { RoutedEvent = Thumb.DragDeltaEvent }); Pump();
+            Check(filename.FontSize < 20 && filename.FontSize >= 12 && filename.ActualHeight < 32,
+                "Filename shrinks to fit a narrow details pane without becoming unreadable");
+            Check(filename.Effect != null && filename.Effect.GetType().Name == "BevelEffect",
+                "Details filename uses the family heading bevel");
+            Capture(window, output, "filename-fit-bevel");
+            grip.RaiseEvent(new DragDeltaEventArgs(-200, 0) { RoutedEvent = Thumb.DragDeltaEvent }); Pump();
+            Check(filename.FontSize == 20, "Filename returns to full size when the pane widens");
             Pick(button, 0, 3, "Ctrl+Alt+Down");
 
             window.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window), Environment.TickCount, Key.F1) {
