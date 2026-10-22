@@ -1184,6 +1184,9 @@ namespace KillerShell.Services
             // set, white on 98SE where the highlight bar is the solid navy MenuHoverBrush.
             if (!combined.Contains("ComboHighlightTextBrush"))
                 combined["ComboHighlightTextBrush"] = combined["PrimaryBrush"];
+            if (theme == Theme.SE98)
+                combined["MenuHoverBrush"] = combined["PrimaryBrush"];
+
             // A hovered menu or list item takes the accent for its text, nudged lighter or darker
             // only as far as it takes to read at 4.5:1 on that theme's hover fill. 98SE keeps its
             // Win98 highlight text.
