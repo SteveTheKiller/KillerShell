@@ -167,7 +167,9 @@ function Invoke-KillerScript {
         $hash = [Security.Cryptography.SHA256]::Create()
         try {
             $version = [BitConverter]::ToString($hash.ComputeHash($bytes)).Replace('-', '')
-            $snapshot = Join-Path ([IO.Path]::GetDirectoryName($cachePath)) ('.ks-version-' + $version + '.ps1')
+            # A compact filename preserves the PS5.1 path budget. The complete hash
+            # still verifies the content below, so a filename collision is refused.
+            $snapshot = Join-Path ([IO.Path]::GetDirectoryName($cachePath)) ('.ks-v-' + $version.Substring(0, 32) + '.ps1')
             if (-not [IO.File]::Exists($snapshot)) {
                 $temporary = Join-Path ([IO.Path]::GetDirectoryName($cachePath)) ('.ks-stage-' + [guid]::NewGuid().ToString('N') + '.tmp')
                 $owned = $false

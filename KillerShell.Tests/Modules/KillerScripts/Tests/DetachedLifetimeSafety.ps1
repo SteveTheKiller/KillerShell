@@ -144,6 +144,19 @@ try {
             }
         }
     }
+    # Keep the cache directory long enough to expose added filename overhead on PS5.1.
+    $longLeafLength = 210 - $root.Length - 1
+    if ($longLeafLength -lt 1 -or $longLeafLength -gt 255) { throw 'The fixture scratch root cannot contain the required 210-character cache directory.' }
+    $longRoot = Join-Path $root ('p' * $longLeafLength)
+    [IO.Directory]::CreateDirectory($longRoot) | Out-Null
+    if ($longRoot.Length -ne 210) { throw 'The long cache directory fixture must contain exactly 210 characters.' }
+    & $module { param($path) $script:CacheDir = $path } $longRoot
+    $global:KsLifetimeBody = '$PSScriptRoot'
+    Write-Output 'CHECK version publication with a 210-character cache directory'
+    if ((Invoke-KillerScript fixture) -cne $longRoot) { throw 'Online invocation from the long cache directory changed its script root.' }
+    if ((Invoke-KillerScript fixture -Offline) -cne $longRoot) { throw 'Offline invocation from the long cache directory changed its script root.' }
+    Write-Output 'PASS online and offline invocation from a 210-character cache directory'
+
     $controlRoot = Join-Path $root 'version-controls'
     [IO.Directory]::CreateDirectory($controlRoot) | Out-Null
     & $module { param($path) $script:CacheDir = $path } $controlRoot
