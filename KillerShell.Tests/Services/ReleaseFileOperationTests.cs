@@ -32,6 +32,26 @@ public sealed class ReleaseFileOperationTests
         Assert.Equal("sentinel", File.ReadAllText(Path.Combine(fixture.Target, "keep.txt")));
     }
 
+    [Fact]
+    public void SkippingARootLinkDoesNotPruneItsTarget()
+    {
+        using var fixture = new Fixture();
+        string loose = Path.Combine(fixture.Root, "loose.txt");
+        File.WriteAllText(loose, "first");
+        string empty = Directory.CreateDirectory(Path.Combine(fixture.Target, "empty")).FullName;
+        string link = fixture.CreateLink();
+        Directory.CreateDirectory(Path.Combine(fixture.Output, "link"));
+        var result = FileOps.CopyOrMove(new[] { link, loose }, fixture.Output, true,
+            _ => ConflictChoice.Skip, _ => { }, CancellationToken.None);
+
+        Assert.Empty(result.Failed);
+        Assert.Equal(1, result.Succeeded);
+        Assert.Equal(1, result.Skipped);
+        Assert.True(Directory.Exists(link));
+        Assert.True(Directory.Exists(empty), "Cleanup traversed a skipped junction.");
+        Assert.Equal("sentinel", File.ReadAllText(Path.Combine(fixture.Target, "keep.txt")));
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

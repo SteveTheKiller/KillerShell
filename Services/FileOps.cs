@@ -533,7 +533,7 @@ namespace KillerShell.Services
         {
             foreach (string s in sources)
             {
-                if (!Directory.Exists(s)) continue;
+                if (!Directory.Exists(s) || IsLink(s)) continue;
                 try
                 {
                     // Only if genuinely empty. A directory still holding a file that failed to
@@ -550,6 +550,7 @@ namespace KillerShell.Services
             try
             {
                 // Never through a link: an empty folder on the far side of a junction is not ours.
+                if (IsLink(dir)) return;
                 foreach (var d in Directory.EnumerateDirectories(dir))
                     if (!IsLink(d)) PruneEmpty(d);
                 if (Directory.GetFileSystemEntries(dir).Length == 0) Directory.Delete(dir);
