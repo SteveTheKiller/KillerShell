@@ -41,7 +41,7 @@ public sealed class ServiceFailureReportTests
             var deadline = Stopwatch.StartNew();
             while (deadline.Elapsed < TimeSpan.FromSeconds(10))
             {
-                try { completed = File.ReadAllText(report).Contains("DelayedFixture"); }
+                try { completed = ReportWriteCompleted(report, "DelayedFixture"); }
                 catch (IOException) { }
                 if (completed) break;
                 await Task.Delay(20);
@@ -159,7 +159,7 @@ public sealed class ServiceFailureReportTests
         {
             try
             {
-                writerCompleted = File.ReadAllText(report).Contains("\tservice=" + serviceName + "\t");
+                writerCompleted = ReportWriteCompleted(report, "\tservice=" + serviceName + "\t");
                 readError = string.Empty;
             }
             catch (IOException ex) { readError = ex.Message; }
@@ -169,6 +169,19 @@ public sealed class ServiceFailureReportTests
         } while (true);
         Assert.True(writerCompleted, Diagnostic());
         Assert.InRange(new FileInfo(report).Length, 1, 65536);
+    }
+
+    private static bool ReportWriteCompleted(string report, string serviceMarker)
+    {
+        // Observing the pending write must not deny the writer access to the report.
+        using (var stream = new FileStream(report, FileMode.Open, FileAccess.Read,
+            FileShare.ReadWrite | FileShare.Delete))
+        using (var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true))
+            if (!reader.ReadToEnd().Contains(serviceMarker)) return false;
+
+        // The marker proves the writer opened the file. A restrictive read can now
+        // succeed only after its write handle closes, making later reads and cleanup safe.
+        return File.ReadAllText(report).Contains(serviceMarker);
     }
 
     [Fact]
