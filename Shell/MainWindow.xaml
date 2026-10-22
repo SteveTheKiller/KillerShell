@@ -834,9 +834,13 @@
                                 <ContextMenu.ItemContainerStyle>
                                     <Style TargetType="MenuItem" BasedOn="{StaticResource PanelMenuItem}"/>
                                 </ContextMenu.ItemContainerStyle>
-                                <Grid Margin="12,10,3,10">
+                                <!-- Hover rows sit 4px in from both menu edges: 12 left less the
+                                     row's -8, and 2 right plus the row's own 2. The theme column
+                                     fills the menu (*) so the hover reaches across when the menu
+                                     is wider than the list. -->
+                                <Grid Margin="12,10,2,10">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                 <!-- Content-sized for the two command rows below. The former
@@ -924,8 +928,11 @@
                                     <CheckBox x:Name="FilmGrainCheck" Content="{DynamicResource Str_Theme_FilmGrain}"
                                               Style="{StaticResource ThemeCheck}" Margin="0,0,0,4"
                                               Click="FilmGrainCheck_Click"/>
+                                    <!-- Same -8,0,2,0 as a ThemeRadio row so the hover lines up
+                                         with the theme rows; the wider left padding keeps the glyph
+                                         and label where they were. -->
                                     <Button x:Name="FontsRowBtn" Click="FontsRow_Click"
-                                            Style="{StaticResource MenuRowButton}">
+                                            Style="{StaticResource MenuRowButton}" Margin="-8,0,2,0" Padding="14,5,6,5">
                                         <StackPanel Orientation="Horizontal">
                                             <a11y:Glyph Text="&#xE8D2;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                        Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -934,7 +941,7 @@
                                         </StackPanel>
                                     </Button>
                                     <Button x:Name="AssocRowBtn" Click="AssocRow_Click"
-                                            Style="{StaticResource MenuRowButton}">
+                                            Style="{StaticResource MenuRowButton}" Margin="-8,0,2,0" Padding="14,5,6,5">
                                         <StackPanel Orientation="Horizontal">
                                             <a11y:Glyph Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                        Margin="0,0,8,0" VerticalAlignment="Center"/>
