@@ -33,7 +33,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The website's film grain is lighter, matching KillerTools, and the theme menu can turn it off (Alt+Shift+G). The top bar no longer leaves extra space above the page on narrower windows, and the release details box lifts with an accent border on hover.
 
 ### Added
-- Added a New Tab button after the tab overflow control to open a file browser at Home.
+- Added a New Tab button after tab overflow to open Home, and a footer layout toggle while dual pane is open.
 - Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
 - Keyboard shortcuts cover the remaining commands and appear in menus, tooltips, the shortcut card and website.
 - Added Slovenian across the app, installer, help, website and keyboard shortcuts.

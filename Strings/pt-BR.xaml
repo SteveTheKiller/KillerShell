@@ -1003,4 +1003,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Uma página à direita</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Resultados parciais: {0} arquivo(s) correspondente(s); não foi possível pesquisar completamente {1} caminho(s); {2} link(s) de diretório ignorado(s).</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Links para pastas ignorados: {0}.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Dispor os painéis em cima e embaixo</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Dispor os painéis à esquerda e à direita</sys:String>
 </ResourceDictionary>

@@ -966,4 +966,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Pagina a destra</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Risultati parziali: {0} file corrispondenti; ricerca incompleta in {1} percorsi; {2} collegamenti a cartelle ignorati.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Collegamenti a cartelle ignorati: {0}.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Disporre i riquadri in alto e in basso</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Disporre i riquadri a sinistra e a destra</sys:String>
 </ResourceDictionary>

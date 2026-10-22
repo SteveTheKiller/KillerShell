@@ -957,4 +957,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Page vers la droite</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Résultats partiels : {0} fichier(s) correspondant(s) ; recherche incomplète dans {1} chemin(s) ; {2} lien(s) de dossier ignoré(s).</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Liens vers des dossiers ignorés : {0}.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Disposer les volets en haut et en bas</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Disposer les volets à gauche et à droite</sys:String>
 </ResourceDictionary>

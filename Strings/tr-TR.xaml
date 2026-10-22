@@ -957,4 +957,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Bir sayfa sağa</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Kısmi sonuçlar: {0} dosya eşleşti; {1} yolda arama tamamlanamadı; {2} dizin bağlantısı atlandı.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Atlanan klasör bağlantısı: {0}.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Bölmeleri üst üste yerleştir</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Bölmeleri yan yana yerleştir</sys:String>
 </ResourceDictionary>

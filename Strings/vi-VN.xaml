@@ -959,4 +959,6 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Scroll_PageRight">Sang phải một trang</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Kết quả một phần: {0} tệp khớp; không thể tìm kiếm đầy đủ trong {1} đường dẫn; đã bỏ qua {2} liên kết thư mục.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Đã bỏ qua {0} liên kết thư mục.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Sắp xếp các ngăn trên và dưới</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Sắp xếp các ngăn bên trái và bên phải</sys:String>
 </ResourceDictionary>

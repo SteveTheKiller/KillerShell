@@ -954,4 +954,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">向右翻頁</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">部分結果：{0} 個檔案符合；無法完整搜尋 {1} 個路徑；已略過 {2} 個目錄連結。</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">已略過 {0} 個資料夾連結。</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">將窗格上下排列</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">將窗格左右排列</sys:String>
 </ResourceDictionary>

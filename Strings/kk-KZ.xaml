@@ -969,4 +969,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Бір бет оңға</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Ішінара нәтижелер: {0} файл сәйкес келді; {1} жолда толық іздеу мүмкін болмады; {2} каталог сілтемесі өткізіп жіберілді.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Өткізіп жіберілген қалта сілтемелері: {0}.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Панельдерді жоғары және төмен орналастыру</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Панельдерді сол және оң жаққа орналастыру</sys:String>
 </ResourceDictionary>

@@ -1003,4 +1003,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Egy oldallal jobbra</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Részleges eredmények: {0} egyező fájl; {1} útvonal keresése nem volt teljes; {2} könyvtárhivatkozás kihagyva.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Kihagyott mappahivatkozások: {0}.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Panelek egymás alá rendezése</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Panelek egymás mellé rendezése</sys:String>
 </ResourceDictionary>

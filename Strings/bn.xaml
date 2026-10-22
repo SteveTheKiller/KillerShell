@@ -954,4 +954,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">এক পৃষ্ঠা ডানে</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">আংশিক ফলাফল: {0}টি ফাইল মিলেছে; {1}টি পাথে সম্পূর্ণ অনুসন্ধান করা যায়নি; {2}টি ডিরেক্টরি লিঙ্ক বাদ দেওয়া হয়েছে।</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">বাদ দেওয়া ফোল্ডার লিংক: {0}।</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">ফলকগুলো উপর ও নিচে সাজান</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">ফলকগুলো বাম ও ডানে সাজান</sys:String>
 </ResourceDictionary>

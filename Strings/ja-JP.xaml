@@ -953,4 +953,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">1 ページ右へ</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">一部の検索結果: {0} 個のファイルが一致しました。{1} 個のパスを完全には検索できませんでした。{2} 個のディレクトリリンクをスキップしました。</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">スキップしたフォルダーリンク: {0}。</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">ペインを上下に並べる</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">ペインを左右に並べる</sys:String>
 </ResourceDictionary>

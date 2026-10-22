@@ -872,4 +872,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Strona w prawo</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Częściowe wyniki: pasujące pliki: {0}; nie udało się w pełni przeszukać {1} ścieżek; pominięte dowiązania do katalogów: {2}.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Pominięte łącza do folderów: {0}.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Ułóż panele jeden nad drugim</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Ułóż panele obok siebie</sys:String>
 </ResourceDictionary>

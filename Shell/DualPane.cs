@@ -186,9 +186,13 @@ namespace KillerShell.Shell
             else          OpenSecondPane();
         }
 
-        // Toolbar button (FilePane.xaml). Left-click opens/closes, right-click flips the
-        // orientation - a second button for orientation would sit dead most of the time.
+        // The rail opens or closes the second pane; right-click also changes its layout.
         internal void DualPane_Click(object sender, RoutedEventArgs e) => ToggleDualPane();
+
+        private void PaneOrientation_Click(object sender, RoutedEventArgs e)
+        {
+            if (DualPane) TogglePaneOrientation();
+        }
 
         internal void DualPaneOrient_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -271,6 +275,12 @@ namespace KillerShell.Shell
             bool two = DualPane;
             bool cols = two && _paneSideBySide;
             bool rows = two && !_paneSideBySide;
+
+            PaneOrientationButton.Visibility = two ? Visibility.Visible : Visibility.Collapsed;
+            PaneOrientationButton.SetResourceReference(FrameworkElement.ToolTipProperty,
+                _paneSideBySide ? "Str_TT_PanesTopBottom" : "Str_TT_PanesLeftRight");
+            PaneOrientationIcon.RenderTransform = new System.Windows.Media.RotateTransform(
+                _paneSideBySide ? 0 : 90);
 
             // Splitters: exactly one is live, and only while there are two panes.
             PaneSplitV.Visibility = cols ? Visibility.Visible : Visibility.Collapsed;

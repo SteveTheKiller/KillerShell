@@ -1003,4 +1003,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Side til høyre</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Delvise resultater: {0} fil(er) samsvarte; {1} bane(r) kunne ikke gjennomsøkes fullstendig; {2} kataloglenke(r) hoppet over.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Hoppet over {0} mappelenker.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Plasser rutene over og under hverandre</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Plasser rutene ved siden av hverandre</sys:String>
 </ResourceDictionary>

@@ -957,4 +957,6 @@
     <sys:String x:Key="Str_Scroll_PageRight">Una página hacia la derecha</sys:String>
     <sys:String x:Key="Str_Status_SearchPartial">Resultados parciales: {0} archivo(s) coincidente(s); no se pudieron buscar por completo {1} ruta(s); se omitieron {2} enlaces a directorios.</sys:String>
     <sys:String x:Key="Str_Status_DirectoryLinksSkipped">Enlaces a carpetas omitidos: {0}.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">Colocar los paneles arriba y abajo</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">Colocar los paneles a izquierda y derecha</sys:String>
 </ResourceDictionary>

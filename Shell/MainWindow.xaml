@@ -1467,6 +1467,19 @@
                  short because its PARENT refused to give it the row's height. The inner content
                  keeps its own VerticalAlignment="Center" below, so the text still centers. -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0,0,16,0">
+                <Button x:Name="PaneOrientationButton"
+                        Width="22" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"
+                        Visibility="Collapsed" Click="PaneOrientation_Click">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource GrungeCalendarNavButton}">
+                            <Setter Property="Foreground" Value="{DynamicResource TextFooter}"/>
+                        </Style>
+                    </Button.Style>
+                    <Path x:Name="PaneOrientationIcon" Width="14" Height="14"
+                          Data="M0,0 H14 V6 H0 Z M0,8 H14 V14 H0 Z"
+                          Stretch="Uniform" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                          StrokeThickness="1" RenderTransformOrigin="0.5,0.5"/>
+                </Button>
                 <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
                      bottom and right. Only the dark half was here, which drew half a box round
                      the version text. Both are zero-thickness elsewhere. -->
