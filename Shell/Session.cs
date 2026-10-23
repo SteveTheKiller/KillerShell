@@ -103,7 +103,7 @@ namespace KillerShell.Shell
         private void RequestQuit()
         {
             // Elevated windows skip the session prompt, but still check unsaved documents.
-            if (IsElevated) { ConfirmedClose(); return; }   // Elevation.cs
+            if (IsElevated || IsConsoleWindow) { ConfirmedClose(); return; }   // Elevation.cs, ConsoleHandoff.cs
 
             string remembered = Services.ThemeManager.GetSetting("EscQuit") ?? string.Empty;
             if (remembered == "stay") return;
@@ -127,7 +127,7 @@ namespace KillerShell.Shell
             //
             // Elevated windows skip this session prompt because they do not persist tabs.
             // They still ask about unsaved documents below.
-            if (!_closeConfirmed && !DemoMode && !IsElevated &&
+            if (!_closeConfirmed && !DemoMode && !IsElevated && !IsConsoleWindow &&
                 string.IsNullOrEmpty(Services.ThemeManager.GetSetting("EscQuit")))
             {
                 e.Cancel = true;

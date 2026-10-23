@@ -70,6 +70,15 @@ public sealed class HandoffConnectionTests
     }
 
     [Fact]
+    public void ProcessIdNamesTheHandedOverProgram()
+    {
+        using var console = new ConsoleSide(clientExitCode: 0);
+        using var connection = console.Accept();
+
+        Assert.Equal(console.ClientId, connection.ProcessId);
+    }
+
+    [Fact]
     public void ClosingTheTerminalClosesTheSignalPipe()
     {
         using var console = new ConsoleSide(clientExitCode: 0);
@@ -102,6 +111,7 @@ internal sealed class ConsoleSide : IDisposable
     internal IntPtr Reference => _reference.SafeFileHandle.DangerousGetHandle();
     internal IntPtr Server => _self.Handle;
     internal IntPtr Client => _client.Handle;
+    internal int ClientId => _client.Id;
 
     internal ConsoleSide(int clientExitCode)
     {

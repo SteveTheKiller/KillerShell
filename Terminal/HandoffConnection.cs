@@ -36,6 +36,9 @@ namespace KillerShell.Terminal
         public Stream Input { get; private set; } = Stream.Null;
         public bool HasExited { get; private set; }
 
+        /// <summary>The program that was started, as Task Manager shows it.</summary>
+        public int ProcessId { get; private set; }
+
         /// <summary>
         /// Raised once, off the UI thread, when the handed-off program exits. A handler added
         /// after that is called at once: the program can finish before its window is built.
@@ -73,6 +76,7 @@ namespace KillerShell.Terminal
                 c._reference = Duplicate(reference);
                 c._server    = Duplicate(server);
                 c._client    = Duplicate(client);
+                c.ProcessId  = GetProcessId(c._client);
 
                 if (!CreatePipe(out inRead, out inWrite, IntPtr.Zero, PipeSize))
                     throw new Win32Exception(Marshal.GetLastWin32Error(), "CreatePipe (in)");
@@ -219,5 +223,8 @@ namespace KillerShell.Terminal
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool GetExitCodeProcess(SafeFileHandle hProcess, out int lpExitCode);
+
+        [DllImport("kernel32.dll")]
+        private static extern int GetProcessId(SafeFileHandle process);
     }
 }

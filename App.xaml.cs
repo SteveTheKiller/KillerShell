@@ -271,6 +271,14 @@ namespace KillerShell
             if (AssociationsRegistered(machine: false) || AssociationsRegistered(machine: true))
                 EnsureFileIcon(ExePath);
 
+            // Started by COM for one console program, with KillerShell the default terminal
+            // (DefaultTerminal.cs). That program's window is all this process is for.
+            if (IsComServerStart(e.Args))
+            {
+                StartForConsoleHandoff();
+                return;
+            }
+
             OfferInstallConflictRepair();
             // Start with Windows (About card): keep the Run value pointing at this exe.
             KillerFamily.Deployment.StartupRegistration.Refresh(Services.AppInfo.DisplayName);
