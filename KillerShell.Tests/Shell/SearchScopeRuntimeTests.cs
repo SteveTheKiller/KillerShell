@@ -168,7 +168,7 @@ public static class SearchWslScopeScenario
             button.ContextMenu.IsOpen = true;
             ((MenuItem)button.ContextMenu.Items[1]).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             button.ContextMenu.IsOpen = false;
-            string roots = (string)((Button)window.FindName("SearchScopeButton")).ToolTip;
+            string roots = window.TitleSearchRootsText();
             Assert.Contains(@"\\wsl.localhost\DemoDistro\home\demo", roots);
         }
         finally { MainWindow.DemoMode = false; }

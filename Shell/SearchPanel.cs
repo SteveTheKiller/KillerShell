@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,6 +20,19 @@ namespace KillerShell.Shell
             ScaleHost.SizeChanged += (_, _) => UpdateTitleSearchSize();
             TitleSearchSurface.SizeChanged += (_, _) => UpdateTitleSearchPlacement();
             LocationChanged += (_, _) => { if (_searchOpen) TitleSearchPopup.IsOpen = false; };
+            // The flyout is a topmost popup, so switching to another app has to close it. A dialog
+            // of ours, such as the folder picker, keeps it open.
+            Deactivated += (_, _) => Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_searchOpen && !Application.Current.Windows.Cast<Window>().Any(w => w.IsActive))
+                    TitleSearchPopup.IsOpen = false;
+            }), System.Windows.Threading.DispatcherPriority.Input);
+            // Resolving the roots checks every drive or tab folder, which can stall on a
+            // disconnected drive, so it waits until someone actually hovers the scope.
+            SearchScopeButton.ToolTipOpening += (_, _) =>
+            {
+                if (Pane.Active?.PipeFiles == null) SearchScopeButton.ToolTip = TitleSearchRootsText();
+            };
             _searchOpen = false;
             ApplySearchPanel(false);
         }
@@ -49,9 +63,11 @@ namespace KillerShell.Shell
             SearchScopeLabel.SetResourceReference(TextBlock.TextProperty, withinResults
                 ? "Str_Menu_PipeTab" : SearchScopeKey(_titleSearchScope));
             SearchScopeIcon.Text = withinResults ? "\uE71C" : _titleSearchScope == 2 ? "\uE7F4" : _titleSearchScope == 1 ? "\uE8F1" : "\uE737";
-            SearchScopeButton.ToolTip = withinResults
-                ? Pane.Active?.PipeLabel : string.Join(Environment.NewLine, ResolveTitleSearchRoots());
+            // A placeholder so the tooltip opens; ToolTipOpening fills in the roots.
+            SearchScopeButton.ToolTip = withinResults ? Pane.Active?.PipeLabel : Loc(SearchScopeKey(_titleSearchScope));
         }
+
+        internal string TitleSearchRootsText() => string.Join(Environment.NewLine, ResolveTitleSearchRoots());
 
         private void UpdateTitleSearchSize()
         {
