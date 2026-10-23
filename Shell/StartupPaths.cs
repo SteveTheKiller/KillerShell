@@ -30,10 +30,22 @@ namespace KillerShell.Shell
             // the first-run Home navigation in Loaded skips it because these paths are pending.
             var startTab = _active;
             bool first = true;
+            bool handedToExplorer = false;
             foreach (string raw in StartupPaths)
             {
                 string path;
                 try { path = Path.GetFullPath(raw); } catch { continue; }
+
+                if (!Directory.Exists(path) && !File.Exists(path) && IsDriveRoot(path))
+                {
+                    // A drive that is not ready: no disc, a card reader with no card, a mapped
+                    // drive to reconnect. Explorer has the prompt for each, which matters now that
+                    // "Open folders in KillerShell" sends drive double-clicks here. Run directly, so
+                    // the folder setting cannot send it straight back.
+                    try { System.Diagnostics.Process.Start("explorer.exe", "\"" + path + "\""); handedToExplorer = true; }
+                    catch { }
+                    continue;
+                }
 
                 if (Directory.Exists(path))
                 {
@@ -54,6 +66,14 @@ namespace KillerShell.Shell
                 }
             }
 
+            // A window opened only for a drive Explorer took over has nothing left to show.
+            if (first && handedToExplorer && IsNewWindow())
+            {
+                StartupPaths.Clear();
+                Dispatcher.BeginInvoke(new System.Action(Close));
+                return;
+            }
+
             // Nothing on the command line could be opened: land at Home rather than leave the
             // blank tab sitting on an empty pane.
             if (first && IsBlankTab(startTab)) _ = NavigateTo(HomeFolder);   // Browse.cs
@@ -62,6 +82,15 @@ namespace KillerShell.Shell
             // whatever the first one was launched with.
             StartupPaths.Clear();
         }
+
+        /// <summary>A drive root such as E:\, as a drive double-click arrives.</summary>
+        internal static bool IsDriveRoot(string fullPath)
+            => string.Equals(Path.GetPathRoot(fullPath), fullPath, System.StringComparison.OrdinalIgnoreCase)
+               && fullPath.Length <= 3;
+
+        /// <summary>Started with --new-window: a window of its own, with no session behind it.</summary>
+        private static bool IsNewWindow() => System.Array.Exists(System.Environment.GetCommandLineArgs(),
+            a => string.Equals(a, "--new-window", System.StringComparison.OrdinalIgnoreCase));
 
         /// <summary>A tab nothing has been put in yet: no folder, search, document or tool.</summary>
         private static bool IsBlankTab(SearchTab t) =>

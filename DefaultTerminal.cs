@@ -95,9 +95,11 @@ namespace KillerShell
         /// <summary>
         /// Uninstall: puts back the default terminal the About card replaced, then removes the
         /// class. That reaches the account running the uninstall, and the user who asked for an
-        /// elevated one (RelaunchMachineUninstallElevatedIfNeeded). Any other account still
-        /// pointing here, or every account under an uninstall run as SYSTEM, finds no class and
-        /// its console programs stay in Windows' own console.
+        /// elevated one (RelaunchMachineUninstallElevatedIfNeeded), which does the same for
+        /// "Open folders in KillerShell". Any other account still pointing here, or every account
+        /// under an uninstall run as SYSTEM, finds no class and its console programs stay in
+        /// Windows' own console; its folder default names a verb that is gone, which Windows
+        /// treats like its own "none" and opens folders in Explorer.
         /// </summary>
         private static void RemoveTerminalClass(bool machine, bool restoreDefault)
         {

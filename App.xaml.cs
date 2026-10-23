@@ -542,7 +542,8 @@ namespace KillerShell
             Services.InstallationConflictRemoval.Remove(machine, () =>
             {
                 Services.CommandLinePath.UnregisterRequired(machine ? MachineInstallDir : InstallDir, machine);
-                if (!UnregisterAssociations(machine)) throw new UnauthorizedAccessException();
+                // The other install stays, and its own verb carries "Open folders in KillerShell".
+                if (!UnregisterAssociations(machine, keepFolderOpener: true)) throw new UnauthorizedAccessException();
                 // A per-user class left behind would win for this user and point at a deleted exe.
                 // When the all-users copy is the one staying, point this user's class at it: an
                 // all-users copy from before the class existed has none of its own until it runs
@@ -760,9 +761,14 @@ namespace KillerShell
                 if (!child.WaitForExit(120000)) return KillerFamily.Deployment.InstallerExitCodes.Busy;
                 if (child.ExitCode == 0 && Directory.Exists(MachineInstallDir))
                     return KillerFamily.Deployment.InstallerExitCodes.Failure;
-                // The elevated child put back the default terminal of the account it ran as,
-                // which over the shoulder is an administrator's. This is the user who turned it on.
-                if (child.ExitCode == 0) RemoveTerminalClass(machine: false, restoreDefault: true);   // DefaultTerminal.cs
+                // The elevated child put back the default terminal and folder opener of the
+                // account it ran as, which over the shoulder is an administrator's. This is the
+                // user who turned them on.
+                if (child.ExitCode == 0)
+                {
+                    RemoveTerminalClass(machine: false, restoreDefault: true);   // DefaultTerminal.cs
+                    try { FolderOpenerSetting().TurnOff(); } catch { }
+                }
                 return child.ExitCode;
             }
             catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223)
