@@ -122,7 +122,7 @@ namespace KillerShell.Shell
             pane.ResultsSurfaceGrain.CornerRadius = pane.ResultsSurface.CornerRadius;
             if (!bottom) return;
 
-            pane.ResultsPane.CornerRadius = new CornerRadius(PaneRadius, PaneRadius, 0, 0);
+            pane.ResultsPane.CornerRadius = TabSideCorners(pane, bottom: true);   // Tabs.cs
             pane.ScopeBar.CornerRadius = new CornerRadius(BarRadius, 0, 0, 0);
             pane.ResultsPane.BorderThickness = ReverseVertical(pane.ResultsPane.BorderThickness);
             if (ThemeManager.Current == Theme.SE98)

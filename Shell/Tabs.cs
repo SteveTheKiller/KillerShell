@@ -158,9 +158,8 @@ namespace KillerShell.Shell
 
             if (show)
             {
-                // The tab band meets a square top edge; the lower corners retain the theme radius.
-                double r = PaneRadius;
-                Pane.ResultsPane.CornerRadius = new CornerRadius(0, 0, r, r);
+                // The tab band meets the pane's top edge; the lower corners retain the theme radius.
+                Pane.ResultsPane.CornerRadius = TabSideCorners(Pane, bottom: false);
                 Pane.ScopeBar.CornerRadius    = new CornerRadius(0);
                 // The details header carries NO radius of its own. It is the top of the pane only
                 // while the location row is hidden, and then PaneContent's clip rounds it to the
@@ -300,6 +299,30 @@ namespace KillerShell.Shell
         /// whatever the XAML said, on every tab change.
         /// </summary>
         private static double PaneRadius => RadiusOf("PaneCornerRadiusValue", 6.0);
+
+        /// <summary>The active tab's own corner (FilePane.xaml, its IsActive trigger).</summary>
+        private const double TabRadius = 3.0;
+
+        /// <summary>
+        /// The pane's corners with tabs showing. The two on the tab side take the tabs' own
+        /// softening rather than a hard right angle at each end of the band; one with the active
+        /// tab right over it stays square, where that tab runs straight down into the pane's side.
+        /// The other two keep the pane radius. Square throughout on a flat theme.
+        /// </summary>
+        private static CornerRadius TabSideCorners(FilePane pane, bool bottom)
+        {
+            double r = PaneRadius, t = Math.Min(TabRadius, r);
+            bool left = false, right = false;
+            if (pane.TabStrip.ItemsSource is System.Collections.IEnumerable items)
+                foreach (var tab in items.OfType<SearchTab>())
+                {
+                    if (!tab.IsActive) continue;
+                    left |= tab.IsFirst;
+                    right |= tab.IsLast;
+                }
+            double l = left ? 0 : t, rt = right ? 0 : t;
+            return bottom ? new CornerRadius(r, r, rt, l) : new CornerRadius(l, rt, r, r);
+        }
 
         /// <summary>The nested-bar radius: the scope bar and the details header, 5 / 0.</summary>
         private static double BarRadius => RadiusOf("BarCornerRadiusValue", 5.0);

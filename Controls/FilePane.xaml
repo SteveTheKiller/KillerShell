@@ -435,7 +435,8 @@
                                         <Setter TargetName="tabScrollShadow" Property="Visibility" Value="Visible"/>
                                     </MultiDataTrigger>
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                        <Setter TargetName="tabBd" Property="CornerRadius" Value="2,2,0,0"/>
+                                        <!-- 3px, matched by the pane's corners at each end of the band (Tabs.cs TabRadius). -->
+                                        <Setter TargetName="tabBd" Property="CornerRadius" Value="3,3,0,0"/>
                                         <Setter TargetName="tabClose" Property="Style" Value="{StaticResource DangerButton}"/>
                                         <Setter TargetName="tabBd" Property="BlendProgress" Value="{Binding MenuBarBlend, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                                         <!-- Only the active tab draws its own grain - it is opaque,
