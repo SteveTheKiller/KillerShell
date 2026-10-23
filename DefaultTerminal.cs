@@ -72,6 +72,50 @@ namespace KillerShell
             MainWindow.Show();
         }
 
+        /// <summary>The About card's default terminal setting, for this copy of KillerShell.</summary>
+        internal static Services.DefaultTerminalSetting DefaultTerminalSetting()
+            => new(Services.WindowsRegistryStore.Instance, installed: !IsPortable(), exePath: ExePath);
+
+        /// <summary>
+        /// Registers the terminal class for an install. It does nothing until the About card turns
+        /// the default terminal on, and never fails an install: turning it on registers it again.
+        /// </summary>
+        private static void RegisterTerminalClass(bool machine, string exe)
+        {
+            try { Services.DefaultTerminalSetting.RegisterClass(Services.WindowsRegistryStore.Instance, machine, exe); }
+            catch { }
+        }
+
+        /// <summary>
+        /// Uninstall: puts back the default terminal the About card replaced, then removes the
+        /// class. A console program started afterwards by another account still pointing here
+        /// finds no class and stays in Windows' own console.
+        /// </summary>
+        private static void RemoveTerminalClass(bool machine, bool restoreDefault)
+        {
+            try { if (restoreDefault) DefaultTerminalSetting().TurnOff(); } catch { }
+            try { Services.DefaultTerminalSetting.UnregisterClass(Services.WindowsRegistryStore.Instance, machine); } catch { }
+        }
+
+        /// <summary>
+        /// An install from before the class existed gets it on its next start. All-users installs
+        /// need an elevated start for the HKLM write, which is the only registration elevated
+        /// console programs can use.
+        /// </summary>
+        private static void RefreshTerminalClass()
+        {
+            string exe = ExePath;
+            bool machine = string.Equals(exe, MachineInstallExe, StringComparison.OrdinalIgnoreCase);
+            if (!machine && !string.Equals(exe, InstallExe, StringComparison.OrdinalIgnoreCase)) return;
+            if (machine && !AppMainWindow.IsElevated) return;
+
+            var store = Services.WindowsRegistryStore.Instance;
+            var hive = machine ? Microsoft.Win32.RegistryHive.LocalMachine : Microsoft.Win32.RegistryHive.CurrentUser;
+            string server = store.GetString(hive, @"Software\Classes\CLSID\" + Services.DefaultTerminalSetting.ClassId + @"\LocalServer32", null) ?? string.Empty;
+            if (!string.Equals(server, "\"" + exe + "\"", StringComparison.OrdinalIgnoreCase))
+                RegisterTerminalClass(machine, exe);
+        }
+
         /// <summary>
         /// Handoff timings, for the lab and for support. Written only while HKCU\Software\KillerShell
         /// HandoffLog is "1", to handoff.log beside crash.log.

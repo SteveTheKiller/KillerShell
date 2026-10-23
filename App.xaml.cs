@@ -270,6 +270,7 @@ namespace KillerShell
             // creating the association in the first place.
             if (AssociationsRegistered(machine: false) || AssociationsRegistered(machine: true))
                 EnsureFileIcon(ExePath);
+            RefreshTerminalClass();   // DefaultTerminal.cs - installs from before the class existed
 
             // Started by COM for one console program, with KillerShell the default terminal
             // (DefaultTerminal.cs). That program's window is all this process is for.
@@ -532,6 +533,9 @@ namespace KillerShell
             {
                 Services.CommandLinePath.UnregisterRequired(machine ? MachineInstallDir : InstallDir, machine);
                 if (!UnregisterAssociations(machine)) throw new UnauthorizedAccessException();
+                // The other install now owns the class; a per-user one left behind would win for
+                // this user and point at a deleted exe.
+                RemoveTerminalClass(machine, restoreDefault: false);   // DefaultTerminal.cs
                 using (var key = hive.OpenSubKey(RegKey, writable: true))
                     foreach (string marker in InstallMarkers) key?.DeleteValue(marker, throwOnMissingValue: false);
                 hive.DeleteSubKeyTree(uninstallKey, throwOnMissingSubKey: false);
@@ -615,6 +619,7 @@ namespace KillerShell
                 // belongs here rather than only in the interactive caller. Settings survive.
                 RemovePerUserInstall();
                 RegisterAssociations(machine: true, exe: installExe);
+                RegisterTerminalClass(machine: true, installExe);   // DefaultTerminal.cs
                 return KillerFamily.Deployment.InstallerExitCodes.Success;
             }
             catch (Exception ex)
@@ -681,6 +686,7 @@ namespace KillerShell
                 key.SetValue("NoRepair",             1);
             }
             RegisterAssociations(machine: false, exe: InstallExe);
+            RegisterTerminalClass(machine: false, InstallExe);   // DefaultTerminal.cs
         }
 
         private static void CreateShortcut(string lnkPath, string targetPath)
@@ -882,6 +888,9 @@ namespace KillerShell
                         throw new UnauthorizedAccessException();
                     if (!UnregisterAssociations(machine)) throw new UnauthorizedAccessException();
                     if (machine) UnregisterAssociations(machine: false);
+                    // Before RegKey goes: it holds the default terminal pair to put back.
+                    RemoveTerminalClass(machine, restoreDefault: true);    // DefaultTerminal.cs
+                    if (machine) RemoveTerminalClass(machine: false, restoreDefault: false);
                     hive.DeleteSubKeyTree(RegKey, throwOnMissingSubKey: false);
                     hive.DeleteSubKeyTree(uninstallKey, throwOnMissingSubKey: false);
                     removal.Commit();
