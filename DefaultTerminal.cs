@@ -72,7 +72,46 @@ namespace KillerShell
             if (info.StartsMaximized) MainWindow.WindowState = WindowState.Maximized;
             MainWindow.ShowActivated = info.StartsActivated;
             MainWindow.Show();
+            if (info.StartsActivated) BringForward(MainWindow);
         }
+
+        /// <summary>
+        /// COM starts this process, so Windows' foreground lock left the program's window behind
+        /// the one it was started from (Win+R, a shortcut, Explorer). Joining the foreground
+        /// window's input for the moment it takes is how Windows lets it come forward.
+        /// </summary>
+        private static void BringForward(Window window)
+        {
+            try
+            {
+                IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+                uint foregroundThread = GetWindowThreadProcessId(GetForegroundWindow(), out _);
+                uint thisThread = GetCurrentThreadId();
+                bool attached = foregroundThread != 0 && foregroundThread != thisThread &&
+                                AttachThreadInput(thisThread, foregroundThread, true);
+                try
+                {
+                    SetForegroundWindow(hwnd);
+                    BringWindowToTop(hwnd);
+                }
+                finally { if (attached) AttachThreadInput(thisThread, foregroundThread, false); }
+                window.Activate();
+            }
+            catch { /* behind is still a working window */ }
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint processId);
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern uint GetCurrentThreadId();
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool AttachThreadInput(uint attach, uint attachTo, bool join);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hwnd);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool BringWindowToTop(IntPtr hwnd);
 
         /// <summary>The About card's default terminal setting, for this copy of KillerShell.</summary>
         internal static Services.DefaultTerminalSetting DefaultTerminalSetting()
