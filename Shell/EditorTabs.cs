@@ -509,6 +509,11 @@ namespace KillerShell.Shell
                 && (e.Key == System.Windows.Input.Key.S || e.Key == System.Windows.Input.Key.G))
                 return true;
 
+            // Alt+Shift+Up/Down is the editor's column selection, not the tab placement chord.
+            var key = e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key;
+            if (alt && shift && !ctrl && key is System.Windows.Input.Key.Up or System.Windows.Input.Key.Down)
+                return false;
+
             return IsWindowChord(e, ctrl, shift, alt);
         }
     }
