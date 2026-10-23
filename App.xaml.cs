@@ -759,6 +759,9 @@ namespace KillerShell
                 if (!child.WaitForExit(120000)) return KillerFamily.Deployment.InstallerExitCodes.Busy;
                 if (child.ExitCode == 0 && Directory.Exists(MachineInstallDir))
                     return KillerFamily.Deployment.InstallerExitCodes.Failure;
+                // The elevated child put back the default terminal of the account it ran as,
+                // which over the shoulder is an administrator's. This is the user who turned it on.
+                if (child.ExitCode == 0) RemoveTerminalClass(machine: false, restoreDefault: true);   // DefaultTerminal.cs
                 return child.ExitCode;
             }
             catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223)
