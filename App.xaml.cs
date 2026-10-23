@@ -323,6 +323,15 @@ namespace KillerShell
         private static readonly string[] InstallMarkers = ["Installed", "InstallPath", "Version"];
 
         /// <summary>
+        /// What Clear all Data leaves: the install markers, and the default terminal the About
+        /// card replaced (DefaultTerminal.cs). That one is not a preference but what turning the
+        /// default terminal off, or uninstalling, puts back.
+        /// </summary>
+        internal static bool SurvivesClearAllData(string valueName)
+            => Array.IndexOf(InstallMarkers, valueName) >= 0 ||
+               string.Equals(valueName, Services.DefaultTerminalSetting.PreviousSetting, StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
         /// Clear all Data: every saved preference, plus the temp files KillerShell extracted while
         /// browsing archives. The user's own files are never touched, and neither is the install.
         /// </summary>
@@ -343,7 +352,7 @@ namespace KillerShell
                 {
                     foreach (var name in k.GetValueNames())
                     {
-                        if (Array.IndexOf(InstallMarkers, name) >= 0) continue;
+                        if (SurvivesClearAllData(name)) continue;
                         try { k.DeleteValue(name, throwOnMissingValue: false); } catch { }
                     }
                     // Nothing writes subkeys under here today, but a future feature might, and a
