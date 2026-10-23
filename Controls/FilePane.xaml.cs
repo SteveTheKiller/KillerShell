@@ -49,6 +49,7 @@ namespace KillerShell
             // RelativeSource binding can reach the same reliable way {Binding X, Source=...} used
             // to reach the old static ResultsViewState.Current.
             ResultsList.Tag = ViewState;
+            ResultsList.SizeChanged += (_, _) => Owner.UpdateColumnFit();
 
             // ScrollChanged is routed, so one handler sees the large viewport inside whichever
             // tab is currently visible: the file list, editor, a DataGrid, Performance, etc.
@@ -356,6 +357,15 @@ namespace KillerShell
             set => SetValue(MenuBarBlendProperty, value);
         }
 
+        public static readonly DependencyProperty MenuBarShownBrushProperty = DependencyProperty.Register(
+            nameof(MenuBarShownBrush), typeof(Brush), typeof(FilePane), new PropertyMetadata(null));
+
+        public Brush? MenuBarShownBrush
+        {
+            get => (Brush?)GetValue(MenuBarShownBrushProperty);
+            set => SetValue(MenuBarShownBrushProperty, value);
+        }
+
         public static readonly DependencyProperty MenuBarContentBrushProperty = DependencyProperty.Register(
             nameof(MenuBarContentBrush), typeof(Brush), typeof(FilePane), new PropertyMetadata(null));
 
@@ -412,6 +422,7 @@ namespace KillerShell
         // be resized by a splitter drag that never touched it.
         private void TabBar_SizeChanged(object s, SizeChangedEventArgs e)  => Owner.TabBarResized(this);
         private void TabOverflow_Click(object s, RoutedEventArgs e)        => Owner.TabOverflowMenu(this);
+        private void TabPlacementMenu_Opened(object s, RoutedEventArgs e) => Owner.TabPlacementMenu_Opened(s, e);
         private void NewTab_Click(object s, RoutedEventArgs e)
         {
             Owner.FocusPane(this);

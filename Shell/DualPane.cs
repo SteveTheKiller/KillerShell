@@ -899,11 +899,13 @@ namespace KillerShell.Shell
             var tm = Application.Current?.TryFindResource("TabBarMargin") as Thickness?
                      ?? new Thickness(0, 6, 8, 0);
 
-            double top = p.TabBar.Visibility == Visibility.Visible ? om.Top : 0;
-
-            p.ResultsPane.Margin  = new Thickness(left, top, right, om.Bottom);
+            bool bottom = Grid.GetRow(p.TabBar) == 2;
+            double overlap = p.TabBar.Visibility == Visibility.Visible ? om.Top : 0;
+            p.ResultsPane.Margin  = new Thickness(left, bottom ? 0 : overlap, right,
+                om.Bottom + (bottom ? overlap : 0));
             p.TabFadeGhost.Margin = p.ResultsPane.Margin;
-            p.TabBar.Margin       = new Thickness(tm.Left + left - om.Left, tm.Top, right, tm.Bottom);
+            p.TabBar.Margin       = new Thickness(tm.Left + left - om.Left,
+                bottom ? tm.Bottom : tm.Top, right, bottom ? tm.Top : tm.Bottom);
         }
 
         // ═══════════════════════════════════════════════════════════

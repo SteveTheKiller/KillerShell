@@ -27,8 +27,8 @@ namespace KillerShell.Shell
             for (int scope = 0; scope < 3; scope++)
             {
                 int selectedScope = scope;
-                var icon = new TextBlock { Text = glyphs[scope], FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"), FontSize = 13 };
-                icon.SetBinding(TextBlock.ForegroundProperty, InheritedForeground());
+                var icon = new TextBlock { Text = glyphs[scope] };
+                icon.SetResourceReference(StyleProperty, "MenuIcon");
                 var item = new MenuItem
                 {
                     Header = Loc(SearchScopeKey(scope)), Icon = icon,
@@ -57,12 +57,20 @@ namespace KillerShell.Shell
         {
             _searchOpen = false;
             SearchPanelBtn.Tag = null;
+            TitleSearchSurface.BeginAnimation(OpacityProperty, null);
+            TitleSearchSurface.Opacity = 0;
         }
 
         private void TitleSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
+                if (PatternHelpOverlay.Visibility == Visibility.Visible)
+                {
+                    PatternHelpClose_Click(sender, new RoutedEventArgs());
+                    e.Handled = true;
+                    return;
+                }
                 TitleSearchPopup.IsOpen = false;
                 SearchPanelBtn.Focus();
                 e.Handled = true;
@@ -71,6 +79,7 @@ namespace KillerShell.Shell
             {
                 if (e.OriginalSource is ComboBoxItem
                     || e.OriginalSource is ComboBox { IsDropDownOpen: true }
+                    || e.OriginalSource is System.Windows.Controls.Primitives.ButtonBase
                     || e.OriginalSource is System.Windows.Controls.Primitives.DatePickerTextBox) return;
                 Search_Click(sender, new RoutedEventArgs());
                 e.Handled = true;

@@ -30,6 +30,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Sprawdzaj aktualizacje przy uruchamianiu</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Uruchamiaj razem z Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Zamykaj do zasobnika systemowego</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Pokazuj skróty w menu</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Gdy ta opcja jest włączona, zamknięcie okna pozostawia aplikację uruchomioną w obszarze powiadomień.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Otwórz {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Zakończ</sys:String>
@@ -243,7 +244,10 @@
     <sys:String x:Key="Str_Status_TreeHiddenOn">Drzewo: pokazuje ukryte elementy i foldery z kropką</sys:String>
     <sys:String x:Key="Str_Status_TreeHiddenOff">Drzewo: ukrywa ukryte elementy i foldery z kropką</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Otwórz tutaj terminal jako administrator</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Wyklucz ten folder</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Wyklucz folder z wyszukiwania</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Opcje archiwum</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Kopiuj...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Dodaj do {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Kopiuj ścieżkę folderu</sys:String>
     <sys:String x:Key="Str_Menu_CopyLines">Kopiuj pasujące wiersze</sys:String>
     <sys:String x:Key="Str_Menu_CopyHash">Kopiuj SHA-256</sys:String>
@@ -879,6 +883,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Szczegóły po prawej</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Ukryj szczegóły</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Jeden panel</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Karty u góry</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Karty u dołu</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Panele obok siebie</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Panele jeden nad drugim</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Przeszukaj to okno</sys:String>

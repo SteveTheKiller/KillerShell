@@ -34,7 +34,12 @@ namespace KillerShell.Shell
         }
 
         // ── Entering edit mode ───────────────────────────────────
-        internal void ScopeBar_Click(object sender, MouseButtonEventArgs e) => BeginEditAddress();
+        internal void ScopeBar_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (Pane.AddressBox.Visibility == Visibility.Visible) return;
+            BeginEditAddress();
+            e.Handled = true;
+        }
 
         internal void BeginEditAddress()
         {
@@ -44,18 +49,15 @@ namespace KillerShell.Shell
 
             // Empty on This PC rather than its sentinel: there is no path to edit there, and an
             // internal token in the address box would just be noise to type over.
-            string here = _active.CurrentFolder ?? _active.RootPath ?? string.Empty;
+            string here = string.IsNullOrEmpty(_active.CurrentFolder) ? _active.RootPath : _active.CurrentFolder;
             Pane.AddressBox.Text = IsThisPc(here) ? string.Empty : here;   // Browse.cs
             Pane.AddressBox.Visibility   = Visibility.Visible;
             Pane.ScopePathLabel.Visibility = Visibility.Collapsed;
 
-            // Focus has to wait for the box to actually be visible, or Focus() lands on a
-            // collapsed element and silently does nothing.
-            Dispatcher.InvokeAsync(() =>
-            {
-                Pane.AddressBox.Focus();
-                Pane.AddressBox.SelectAll();
-            }, System.Windows.Threading.DispatcherPriority.Input);
+            // Visibility is already set, so focus belongs to this edit immediately. A queued
+            // focus can outlive a toolbar click or pane switch and leave the old editor open.
+            Pane.AddressBox.Focus();
+            Pane.AddressBox.SelectAll();
         }
 
         private void EndEditAddress()

@@ -144,6 +144,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">All'avvio cerca aggiornamenti</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Avvia all'avvio di Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Chiudi nell'area di notifica</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Mostra le scorciatoie nei menu</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Se attivo, chiudendo la finestra l'app resta in esecuzione nell'area di notifica.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Apri {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Esci</sys:String>
@@ -213,7 +214,10 @@
     <sys:String x:Key="Str_Ks_TreeHidden">mostrare o nascondere gli elementi nascosti nell'albero</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Apri il terminale qui</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Apri il terminale qui come amministratore</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Escludi questa cartella</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Escludi cartella dalle ricerche</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Opzioni archivio</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Copia...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Aggiungi a {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Copia il percorso completo</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Copia il nome del file</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Copia il percorso della cartella</sys:String>
@@ -973,6 +977,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Dettagli a destra</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Nascondi dettagli</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Un riquadro</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Schede in alto</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Schede in basso</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Riquadri affiancati</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Riquadri sovrapposti</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Cerca in questa finestra</sys:String>

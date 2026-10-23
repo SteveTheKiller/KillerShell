@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:theme="clr-namespace:KillerFamily.Theming"
         xmlns:a11y="clr-namespace:KillerFamily.Accessibility"
+        xmlns:kl="clr-namespace:KillerFamily.Layout"
         xmlns:icons="clr-namespace:KillerShell.Controls"
         xmlns:local="clr-namespace:KillerShell"
         xmlns:shellns="clr-namespace:KillerShell.Shell"
@@ -174,20 +175,13 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="SearchPanelBtn" Style="{StaticResource SurfaceButton}" Content="&#xE721;"
-                        Width="26" Height="22" Padding="0" Margin="0,0,4,0"
-                        FontFamily="Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center"
-                        Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}"
-                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button.ContextMenu><ContextMenu Opened="SearchScopeMenu_Opened"/></Button.ContextMenu>
-                </Button>
                 <ContentControl x:Name="TitleContextHost" Grid.Column="1"
                                 VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left"
                                 Focusable="False" IsHitTestVisible="False"/>
                 <Popup x:Name="TitleSearchPopup" PlacementTarget="{Binding ElementName=SearchPanelBtn}"
-                       Placement="Relative" HorizontalOffset="26" VerticalOffset="0"
-                       AllowsTransparency="True" StaysOpen="False" Closed="TitleSearchPopup_Closed">
-                    <Grid Margin="8" PreviewKeyDown="TitleSearch_KeyDown"
+                       Placement="Relative"
+                       AllowsTransparency="True" StaysOpen="True" Opened="TitleSearchPopup_Opened" Closed="TitleSearchPopup_Closed">
+                    <Grid x:Name="TitleSearchSurface" Margin="8" Opacity="0" PreviewKeyDown="TitleSearch_KeyDown"
                           LayoutTransform="{Binding LayoutTransform, ElementName=ScaleHost}"
                           TextOptions.TextFormattingMode="{Binding Path=(TextOptions.TextFormattingMode), ElementName=ScaleHost}"
                           TextOptions.TextRenderingMode="{Binding Path=(TextOptions.TextRenderingMode), ElementName=ScaleHost}">
@@ -195,16 +189,29 @@
                                 Opacity="{DynamicResource MenuShadowOpacity}" Effect="{DynamicResource MenuShadowEffect}"/>
                         <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                 BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
-                            <Grid>
-                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                                <Button x:Name="SearchScopeButton" Style="{StaticResource SurfaceButton}" Margin="8,6,8,0"
-                                        HorizontalContentAlignment="Left" Click="SearchScopeButton_Click"/>
-                                <ScrollViewer x:Name="TitleSearchViewport" Grid.Row="1"
+                                <ScrollViewer x:Name="TitleSearchViewport" Style="{StaticResource ShadowScrollViewer}"
                                               VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                                               HorizontalContentAlignment="Stretch" Focusable="False">
-                                    <ContentControl x:Name="TitleSearchContent" HorizontalContentAlignment="Stretch"/>
+                                    <Grid x:Name="TitleSearchLayout">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                        <StackPanel x:Name="TitleSearchForm">
+                                            <DockPanel LastChildFill="False">
+                                                <Button x:Name="TitleSearchToggle" DockPanel.Dock="Right" Style="{StaticResource ChromeButton}" Content="&#xE721;"
+                                                        Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                        Tag="on" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}"/>
+                                                <Button x:Name="SearchScopeButton" Style="{StaticResource SurfaceButton}" Margin="6,0,0,0"
+                                                        Height="26" Padding="8,2" VerticalAlignment="Center"
+                                                        HorizontalContentAlignment="Left" Click="SearchScopeButton_Click"/>
+                                                <Button DockPanel.Dock="Right" Content="&#xE8BB;" Width="28" Height="26" Padding="0"
+                                                        VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                                        Style="{StaticResource DangerButton}" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_Menu_Close}"/>
+                                            </DockPanel>
+                                            <ContentControl x:Name="TitleSearchContent" HorizontalContentAlignment="Stretch"/>
+                                        </StackPanel>
+                                        <ContentControl x:Name="PatternHelpHost" Grid.Column="1" HorizontalContentAlignment="Stretch"/>
+                                    </Grid>
                                 </ScrollViewer>
-                            </Grid>
                         </Border>
                         <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
                     </Grid>
@@ -218,6 +225,10 @@
                            Margin="8,0,12,0" FontFamily="{DynamicResource FileNameFont}" FontSize="{DynamicResource FileNameFontSize}"
                            RenderTransform="{DynamicResource FileNameTransform}" TextOptions.TextFormattingMode="Ideal"
                            shell:WindowChrome.IsHitTestVisibleInChrome="False" Text="{DynamicResource Str_Title_Elevated}"/>
+                <Button x:Name="SearchPanelBtn" Style="{StaticResource ChromeButton}" Content="&#xE721;"
+                        FontSize="13" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}">
+                    <Button.ContextMenu><ContextMenu Opened="SearchScopeMenu_Opened"/></Button.ContextMenu>
+                </Button>
                 <!-- Language and theme moved to the icon rail (column 0), the way KillerNotes
                      has them. The title bar keeps only the window buttons. -->
                 <Button x:Name="MinimizeBtn" Click="MinimizeBtn_Click" Style="{StaticResource ChromeButton}" Content="&#xE921;" ToolTip="{DynamicResource Str_Menu_Minimize}"/>
@@ -1071,57 +1082,38 @@
                 </StackPanel>
             </Grid>
 
-            <!-- COLUMN 5 - SEARCH CONFIG, out on the right edge (textured, flows into the bars
-                 above / footer below). Collapsed by default and toggled from the rail. -->
+            <!-- Search controls are reparented into the titlebar flyout at startup. -->
             <Grid Grid.Column="5" x:Name="SearchPanel" Visibility="Collapsed">
               <DockPanel Background="Transparent" LastChildFill="True">
-                <Border DockPanel.Dock="Bottom" Padding="12,8">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" x:Name="SearchButton" Content="{DynamicResource Str_Btn_Search}" Style="{StaticResource OutlineButton}" Height="32" FontSize="13" Click="Search_Click"/>
-                            <!-- New search: opens a fresh tab -->
-                            <!-- Background Transparent, overriding SurfaceButton's ChipFaceBrush
-                                 face. These three buttons are one group, and SEARCH beside them
-                                 is an OutlineButton with no fill - so a filled + and CLEAR put a
-                                 slab of pane color behind their labels while the button they sit
-                                 with had none. This panel is not on a pane either: the search
-                                 column shows the window's own background, which is a gradient on
-                                 five themes, so the flat fill read as a gray block on it.
-                                 Set locally, NOT on the SurfaceButton style - that style is the
-                                 app's secondary button everywhere (tool tab toolbars, dialog
-                                 footers, the details strip) and those all DO sit on a pane, where
-                                 the face is doing its job.
-                                 Hover and press still fill: the template's triggers set the
-                                 Border's own Background, which beats this. -->
-                            <Button Grid.Column="1" Content="+" Width="32" Height="32" Margin="6,0,0,0" Padding="0"
-                                    FontFamily="Consolas" FontSize="15" Style="{StaticResource SurfaceButton}"
-                                    Background="Transparent"
-                                    ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click"/>
-                        </Grid>
+                <Border DockPanel.Dock="Bottom" Padding="12,4,12,10">
+                    <WrapPanel>
+                        <Button x:Name="SearchButton" Content="{DynamicResource Str_Btn_Search}" Style="{StaticResource OutlineButton}"
+                                MinWidth="90" Height="26" Padding="12,2" Margin="0,0,6,4" Click="Search_Click"/>
+                        <Button Content="+" Width="28" Height="26" Margin="0,0,6,4" Padding="0" FontSize="15"
+                                Style="{StaticResource SurfaceButton}" Background="Transparent"
+                                ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click"/>
                         <Button Content="{DynamicResource Str_Btn_Clear}" Style="{StaticResource SurfaceButton}"
-                                Background="Transparent" Height="28" Margin="0,6,0,0" Click="Clear_Click"/>
-                    </StackPanel>
+                                Background="Transparent" Height="26" Padding="10,2" Margin="0,0,6,4" Click="Clear_Click"/>
+                        <Button x:Name="SearchWithinButton" Content="{DynamicResource Str_Menu_PipeTab}" Style="{StaticResource SurfaceButton}"
+                                Background="Transparent" Height="26" Padding="10,2" Margin="0,0,0,4"
+                                ToolTip="{DynamicResource Str_TT_Pipe}" Click="PipeButton_Click"/>
+                    </WrapPanel>
                 </Border>
 
-                <!-- Terms over filters with a draggable divider between them, clamped so
-                     neither section can be crushed against an edge. -->
-                <Grid>
+                <Grid x:Name="SearchSections">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="SearchTermsColumn" Width="*"/>
+                        <ColumnDefinition x:Name="SearchFiltersColumn" Width="*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" MinHeight="140"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto" MinHeight="80" MaxHeight="430"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                <!-- Bottom-anchored so any slack in the row sits ABOVE the section: the
-                     collapsed "advanced" line seats flat against the buttons below. -->
-                <Border Grid.Row="2" Padding="12,8,12,2" VerticalAlignment="Bottom">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Border x:Name="SearchFiltersSection" Grid.Column="1" Padding="8,8,12,6" VerticalAlignment="Top">
                     <StackPanel>
-                        <TextBlock Text="{DynamicResource Str_Lbl_Filters}" Style="{StaticResource SectionHeader}"/>
+                        <TextBlock Text="{DynamicResource Str_Lbl_Filters}" FontFamily="{DynamicResource HeadingFont}"
+                                   FontSize="18" Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True" Margin="0,0,0,6"/>
 
                         <!-- Filter rows: [field v] on top, [condition toggle][value] below. AND-ed with
                              the terms. The condition is a toggle button with SHORT localized words
@@ -1129,17 +1121,10 @@
                             <ItemsControl x:Name="FiltersList">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:SearchFilter}">
-                                        <!-- Shadow on a SEPARATE sibling border, per the rule Controls.xaml states
-                                             twice: an Effect on the border the text lives in rasterizes the whole
-                                             subtree and the text loses ClearType. This card carried ShadowBar on
-                                             its own content border until 2026-08-10. -->
                                         <Grid Margin="0,0,0,6">
-                                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="5" Effect="{StaticResource ShadowBar}"/>
-                                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
+                                        <Border Background="Transparent" BorderBrush="{DynamicResource InputBorderBrush}"
                                                 BorderThickness="1" CornerRadius="5" Padding="6">
                                             <Grid>
-                                            <Border IsHitTestVisible="False" CornerRadius="4" Margin="-6"
-                                                    Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                                             <StackPanel>
                                                 <Grid Margin="0,0,0,4">
                                                     <Grid.ColumnDefinitions>
@@ -1147,12 +1132,14 @@
                                                         <ColumnDefinition Width="4"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ComboBox Grid.Column="0" SelectedIndex="{Binding FieldIndex, Mode=TwoWay}">
+                                                    <ComboBox Grid.Column="0" HorizontalAlignment="Left" MinWidth="112"
+                                                              SelectedIndex="{Binding FieldIndex, Mode=TwoWay}">
                                                         <ComboBoxItem Content="{DynamicResource Str_Filter_Ext}"/>
                                                         <ComboBoxItem Content="{DynamicResource Str_Filter_Date}"/>
                                                         <ComboBoxItem Content="{DynamicResource Str_Filter_Size}"/>
                                                     </ComboBox>
-                                                    <Button Grid.Column="2" Content="x" Style="{StaticResource DangerButton}" Width="22" Height="22" Padding="0"
+                                                    <Button Grid.Column="2" Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                                            Style="{StaticResource DangerButton}" Width="26" Height="26" Padding="0"
                                                             Tag="{Binding}" Click="RemoveFilter_Click"/>
                                                 </Grid>
                                                 <Grid>
@@ -1245,7 +1232,7 @@
                                 Padding="8,3" FontSize="10" Margin="0,2,0,0" Click="AddFilter_Click"/>
 
                         <!-- "advanced" accordion: include/exclude/case collapse out of the way -->
-                        <Border Margin="0,10,0,0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="0,1,0,0" Padding="0,7,0,2">
+                        <Border Margin="0,6,0,0" Padding="0,4,0,2">
                           <StackPanel>
                             <Border Background="Transparent" Cursor="Hand" MouseLeftButtonUp="AdvancedToggle_Click">
                                 <StackPanel Orientation="Horizontal">
@@ -1259,7 +1246,7 @@
                         <Grid Margin="0,9,0,3">
                             <TextBlock Text="{DynamicResource Str_Lbl_Include}" Foreground="{DynamicResource DimTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center"/>
                             <!-- Pattern cheat-sheet card, like KillerPDF's keyboard shortcuts overlay -->
-                            <Button HorizontalAlignment="Right" Width="16" Height="16" Padding="0" Cursor="Hand"
+                            <Button x:Name="PatternHelpButton" HorizontalAlignment="Right" Width="28" Height="26" Padding="0" Cursor="Hand"
                                     ToolTip="{DynamicResource Str_TT_PatternHelp}" Click="PatternHelp_Click">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
@@ -1284,48 +1271,24 @@
                           </StackPanel>
                         </Border>
                     </StackPanel>
-                    </ScrollViewer>
                 </Border>
 
-                <!-- Draggable divider between terms and filters -->
-                <GridSplitter Grid.Row="1" Height="7" HorizontalAlignment="Stretch" Background="Transparent"
-                              ResizeBehavior="PreviousAndNext" ResizeDirection="Rows"
-                              Cursor="SizeNS" ShowsPreview="False" Focusable="False">
-                    <GridSplitter.Template>
-                        <ControlTemplate TargetType="GridSplitter">
-                            <Border Background="Transparent">
-                                <Border x:Name="line" Height="1" VerticalAlignment="Center"
-                                        Background="{DynamicResource CardBorderBrush}" Margin="12,0"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="line" Property="Background" Value="{DynamicResource PrimaryBrush}"/></Trigger>
-                                <Trigger Property="IsDragging" Value="True"><Setter TargetName="line" Property="Background" Value="{DynamicResource PrimaryBrush}"/></Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </GridSplitter.Template>
-                </GridSplitter>
-
-                <Border Grid.Row="0" Padding="12,8,12,10">
+                <Border x:Name="SearchTermsSection" Padding="12,8,8,6" VerticalAlignment="Top">
                     <DockPanel LastChildFill="True">
-                        <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Str_Lbl_SearchTerms}" Style="{StaticResource SectionHeader}"/>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <ItemsControl x:Name="TermsList">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:TermGroup}">
-                                        <!-- Shadow on a SEPARATE sibling border - same fix and same reason as the
-                                             filter card below (Controls.xaml's own rule; effects rasterize text). -->
                                         <Grid Margin="0,0,0,8">
-                                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="5" Effect="{StaticResource ShadowBar}"/>
-                                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
+                                        <Border Background="Transparent" BorderBrush="{DynamicResource InputBorderBrush}"
                                                 BorderThickness="1" CornerRadius="5" Padding="6">
                                             <Grid>
-                                            <Border IsHitTestVisible="False" CornerRadius="4" Margin="-6"
-                                                    Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                                             <StackPanel>
                                                 <!-- Group header: ANY/ALL combiner toggle + remove-group -->
                                                 <Grid Margin="0,0,0,5">
+                                                    <TextBlock Text="KillerSearch" FontFamily="{DynamicResource HeadingFont}" FontSize="18"
+                                                               Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True" Margin="52,0,0,0"/>
                                                     <Button HorizontalAlignment="Left" Content="{Binding ModeLabel, Mode=OneWay}" Style="{StaticResource ModeButton}"
-                                                            Width="44" Height="20" FontSize="10" ToolTip="{Binding ModeTooltip}" Tag="{Binding}" Click="ToggleGroupMode_Click"/>
+                                                            Width="44" Height="24" FontSize="10" ToolTip="{Binding ModeTooltip}" Tag="{Binding}" Click="ToggleGroupMode_Click"/>
                                                 </Grid>
                                                 <ItemsControl ItemsSource="{Binding Terms}">
                                                     <ItemsControl.ItemTemplate>
@@ -1345,15 +1308,13 @@
                                                                 <TextBox Grid.Column="2" Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding ModeTooltip}"/>
                                                                 <TextBlock Grid.Column="4" Text="{Binding MatchBadge}" Foreground="{DynamicResource PrimaryBrush}"
                                                                            FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center"/>
-                                                                <Button Grid.Column="6" Content="x" Style="{StaticResource DangerButton}" Width="22" Height="22" Padding="0"
+                                                                <Button Grid.Column="6" Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                                                        Style="{StaticResource DangerButton}" Width="26" Height="26" Padding="0"
                                                                         Tag="{Binding}" Click="RemoveTerm_Click"/>
                                                             </Grid>
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
-                                                <!-- Transparent face, like every other button in
-                                                     this panel - see the note on the search
-                                                     buttons below. -->
                                                 <Button HorizontalAlignment="Left" Content="{DynamicResource Str_Btn_AddTerm}" Style="{StaticResource SurfaceButton}"
                                                         Background="Transparent"
                                                         Padding="8,3" FontSize="10" Margin="0,2,0,0" Tag="{Binding}" Click="AddTerm_Click"/>
@@ -1364,7 +1325,6 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        </ScrollViewer>
                     </DockPanel>
                 </Border>
                 </Grid>
@@ -1876,6 +1836,10 @@
                                             <TextBlock Text="{DynamicResource Str_About_CloseToTray}"
                                                        TextWrapping="Wrap"/>
                                         </CheckBox>
+                                        <CheckBox x:Name="AboutShowShortcuts" Margin="0,6,0,0"
+                                                  IsChecked="{Binding Source={x:Static kl:ShortcutHints.Current}, Path=Enabled, Mode=TwoWay}">
+                                            <TextBlock Text="{DynamicResource Str_About_ShowShortcutsInMenus}" TextWrapping="Wrap"/>
+                                        </CheckBox>
                                         <CheckBox x:Name="AboutConfirmFolderDelete" Margin="0,6,0,0"
                                                   Checked="AboutConfirmFolderDelete_Changed"
                                                   Unchecked="AboutConfirmFolderDelete_Changed">
@@ -2040,94 +2004,51 @@
             </Border>
         </Grid>
 
-        <!-- ══════════ PATTERN HELP OVERLAY (dim backdrop + centered cheat-sheet card) ══════════ -->
-        <Grid x:Name="PatternHelpOverlay" Grid.RowSpan="3" Panel.ZIndex="9000" Visibility="Collapsed"
-              Background="#88000000" MouseLeftButtonDown="PatternHelpOverlay_Click">
-            <Border Width="440" VerticalAlignment="Center" HorizontalAlignment="Center"
-                    Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
-                    BorderThickness="1" CornerRadius="{DynamicResource WindowCornerRadius}" MouseLeftButtonDown="PatternHelpCard_Click">
-                <Border.Effect><DropShadowEffect Color="Black" BlurRadius="30" ShadowDepth="6" Direction="270"
-                                                 Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
-                <Grid>
-                <!-- One dark surface with grain across the whole card - no inner box. -->
-                <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                <StackPanel Margin="24,20">
-                    <Grid Margin="0,0,0,12">
-                        <TextBlock Text="{DynamicResource Str_Help_Title}" Style="{StaticResource SectionHeader}" FontSize="13" Margin="0" VerticalAlignment="Center"/>
-                        <!-- Foreground lives in a Style setter so the hover/press triggers can win
-                             (a local value would beat them - that's why hover never turned red). -->
-                        <Button Content="&#xE8BB;" Click="PatternHelpClose_Click" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                Width="30" Height="26" FontSize="10" FontFamily="Segoe MDL2 Assets"
-                                Background="Transparent" BorderThickness="0" Cursor="Hand">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Foreground" Value="{DynamicResource ChromeTextBrush}"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="bg" Background="Transparent" CornerRadius="3">
-                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                                                        <Setter TargetName="bg" Property="Background" Value="#33C42B1C"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+        <!-- Reparented into the search flyout's shared scrolling surface during initialization. -->
+        <Grid x:Name="PatternHelpOverlay" Width="240" VerticalAlignment="Top" Visibility="Collapsed">
+            <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
+                    BorderThickness="1,0,0,0" Padding="12,6,8,8">
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style x:Key="HelpPat" TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                        </Style>
+                        <Style x:Key="HelpDesc" TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                            <Setter Property="Margin" Value="0,2,0,10"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="{DynamicResource Str_Help_Title}" FontFamily="{DynamicResource HeadingFont}" FontSize="18"
+                                   Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True"
+                                   TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <Button Grid.Column="1" Content="&#xE8BB;" Click="PatternHelpClose_Click"
+                                Style="{StaticResource DangerButton}" Width="28" Height="26" Padding="0"
+                                FontSize="13" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Top"
+                                ToolTip="{DynamicResource Str_Menu_Close}"/>
                     </Grid>
-
-                    <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="118"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.Resources>
-                                <Style x:Key="HelpPat" TargetType="TextBlock">
-                                    <Setter Property="FontFamily" Value="Consolas"/>
-                                    <Setter Property="FontSize" Value="12"/>
-                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
-                                    <Setter Property="Margin" Value="0,0,10,7"/>
-                                    <Setter Property="VerticalAlignment" Value="Top"/>
-                                </Style>
-                                <Style x:Key="HelpDesc" TargetType="TextBlock">
-                                    <Setter Property="FontSize" Value="11"/>
-                                    <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
-                                    <Setter Property="TextWrapping" Value="Wrap"/>
-                                    <Setter Property="Margin" Value="0,1,0,7"/>
-                                </Style>
-                            </Grid.Resources>
-                            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource HelpPat}" Text="*.log"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Star}"/>
-                            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource HelpPat}" Text="report*"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Prefix}"/>
-                            <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource HelpPat}" Text="*2024*"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Middle}"/>
-                            <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource HelpPat}" Text="log?.txt"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Q}"/>
-                            <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource HelpPat}" Text="*.txt;*.log"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_List}"/>
-                            <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource HelpPat}" Text="log"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Plain}"/>
-                            <TextBlock Grid.Row="6" Grid.Column="0" Style="{StaticResource HelpPat}" Text="bin;obj"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Exclude}"/>
-                    </Grid>
-
+                    <TextBlock Style="{StaticResource HelpPat}" Text="*.log"/>
+                    <TextBlock Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Star}"/>
+                    <TextBlock Style="{StaticResource HelpPat}" Text="report*"/>
+                    <TextBlock Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Prefix}"/>
+                    <TextBlock Style="{StaticResource HelpPat}" Text="*2024*"/>
+                    <TextBlock Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Middle}"/>
+                    <TextBlock Style="{StaticResource HelpPat}" Text="log?.txt"/>
+                    <TextBlock Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Q}"/>
+                    <TextBlock Style="{StaticResource HelpPat}" Text="*.txt;*.log"/>
+                    <TextBlock Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_List}"/>
+                    <TextBlock Style="{StaticResource HelpPat}" Text="log"/>
+                    <TextBlock Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Plain}"/>
+                    <TextBlock Style="{StaticResource HelpPat}" Text="bin;obj"/>
+                    <TextBlock Style="{StaticResource HelpDesc}" Text="{DynamicResource Str_Help_Exclude}" Margin="0,2,0,0"/>
                 </StackPanel>
-                </Grid>
             </Border>
         </Grid>
 

@@ -169,7 +169,10 @@
     <sys:String x:Key="Str_Menu_SearchHere">Hledat v této složce</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Otevřít zde terminál</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Otevřít zde terminál jako správce</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Vyloučit tuto složku</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Vyloučit složku z hledání</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Možnosti archivu</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Kopírovat...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Přidat do {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Kopírovat úplnou cestu</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Kopírovat název souboru</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Kopírovat cestu ke složce</sys:String>
@@ -507,6 +510,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Kontrolovat aktualizace při spuštění</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Spouštět se systémem Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Zavírat do oznamovací oblasti</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Zobrazovat zkratky v nabídkách</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Když je tato volba zapnutá, zavření okna nechá aplikaci běžet v oznamovací oblasti.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Otevřít {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Ukončit</sys:String>
@@ -962,6 +966,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Podrobnosti vpravo</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Vypnout podrobnosti</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Jeden panel</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Karty nahoře</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Karty dole</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Panely vlevo a vpravo</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Panely nahoře a dole</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Prohledat toto okno</sys:String>

@@ -92,8 +92,9 @@ namespace KillerShell.Shell
         /// are not currently showing sit inside collapsed hosts, so setting them too is free and
         /// means a later tab switch comes up already matching the flag.
         /// </summary>
-        private static void ApplyMenuBar(FilePane pane, bool animate)
+        private void ApplyMenuBar(FilePane pane, bool animate)
         {
+            RefreshActiveTabSurface(pane);
             bool hidden = pane.MenuBarHidden;
             double start = pane.MenuBarBlend;
             double target = hidden ? 1 : 0;

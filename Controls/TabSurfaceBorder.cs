@@ -84,7 +84,8 @@ namespace KillerShell
             Brush menu = border.MenuBackground;
             Brush? content = border.ContentBackground;
             double progress = Math.Max(0, Math.Min(1, border.BlendProgress));
-            border.SetValue(UsesContentBackgroundPropertyKey, content != null && progress >= 0.5);
+            border.SetValue(UsesContentBackgroundPropertyKey,
+                content != null && (progress >= 0.5 || ReferenceEquals(menu, content)));
             if (content == null || progress == 0) { border.Background = menu; return; }
             if (progress == 1) { border.Background = content; return; }
 

@@ -849,6 +849,7 @@ namespace KillerShell.Shell
             Pane.ViewDetailsBtn.Tag = mode == 2 ? "on" : null;
 
             UpdateColumnArrows();
+            RefreshActiveTabSurface(Pane);
         }
 
         // ── Sortable column headers (details view) ───────────────
@@ -1009,9 +1010,8 @@ namespace KillerShell.Shell
         /// Tell each pane's OWN column state how much room ITS pane actually has.
         /// </summary>
         /// <remarks>
-        /// Driven off the pane's CONTENT grid rather than the details header: the header is
-        /// collapsed in list and icon view, so it stops reporting a width exactly when you might
-        /// switch back to details at the new size.
+        /// The list has the remaining width after a side preview is reserved. Its outer pane
+        /// includes the preview, so fitting to that would hide columns behind the preview.
         ///
         /// This is also what stops the window chrome being clipped. Fixed pixel columns give the
         /// details Grid a large minimum desired width, and WPF propagates that all the way up -
@@ -1024,7 +1024,7 @@ namespace KillerShell.Shell
         {
             foreach (var p in LivePanes())                       // Panes.cs
             {
-                double w = p.PaneContent.ActualWidth;
+                double w = p.ResultsList.ActualWidth - p.ResultsList.Padding.Left - p.ResultsList.Padding.Right;
                 if (w <= 0) continue;                             // nothing measured yet
 
                 // What the columns can have: the pane's content minus the icon column and the

@@ -338,7 +338,7 @@ namespace KillerShell.Shell
         private static readonly string[] ListingOnlyTools =
         [
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "FileDensityBtn", "SortControlsHost",
-            "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "PipeBtn", "ExportBtn",
+            "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "ExportBtn",
             "DetailsHeader", "DetailsPaneBtn", "DetailsPane",
         ];
 
@@ -346,7 +346,7 @@ namespace KillerShell.Shell
         /// Hide the listing controls on a shell tab, and hand them back to their own logic on
         /// any other kind. Restoring is done by re-running the normal updaters rather than by
         /// setting Visible here: several of these have their own rules (ExpandAll hides outside
-        /// list view, Pipe hides while browsing) and forcing them visible would break those.
+        /// list view) and forcing them visible would break those.
         /// </summary>
         private void ApplyPaneToolbarMode(bool shell)
         {

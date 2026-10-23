@@ -117,10 +117,7 @@ namespace KillerShell.Tools
 
             _grid = BuildGrid();
             _grid.ItemsSource = _view;
-            // Side gutters remain on ordinary themes; the bottom is zero so a horizontal
-            // scrollbar lands at the content edge. 98SE fills the entire well edge to edge.
-            _grid.SetResourceReference(FrameworkElement.MarginProperty, "ToolGridMargin");
-            var gridHost = ToolTabChrome.WrapContent(_grid, "ToolContentBrush");
+            var gridHost = ToolTabChrome.WrapTable(_grid, "ToolContentBrush");
             SetRow(gridHost, 1);
             Children.Add(gridHost);
 

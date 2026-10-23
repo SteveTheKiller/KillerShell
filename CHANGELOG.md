@@ -4,7 +4,7 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.0] - 2026-10-22
+## [1.5.0] - Unreleased
 
 ### Fixed
 - Failed document saves preserve the original and retain recovery copies when restoration fails. Administrator saves keep newer edits unsaved and cannot overwrite a later save. Saving over a file another program changed since it was opened asks whether to replace it, reload it or save a copy, with Cancel as the default.
@@ -21,6 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Ending or restarting a process verifies its identity. Restart also confirms the executable is still in place and holds it until the replacement starts, so a missing file no longer ends the original first. Administrator restarts keep the original running until elevation is approved, and reused process IDs receive fresh status information.
 - Service restarts finish after their tab or window closes, with failures reported or logged. Silent installation returns a retryable busy code when KillerShell is running.
 - Both panes restore their tabs and search options, including hidden tabs. Delayed tab closure stays in its owning pane without stealing focus or interrupting the other pane's folder updates. Malformed saved details-pane heights no longer prevent startup.
+- Editing an address keeps its path and toolbar height. A side preview reserves space for the table header and rows, with reachable scrolling.
 - Search remains cancellable with complex wildcards, empty folders and large text files. Unicode content search uses bounded previews and reports incomplete results; recursive search, copy and archive addition skip directory links and report counts.
 - Terminal input and output stay responsive under load and when launched with redirected output. CJK, emoji and combining marks use consistent widths, unbound Alt shortcuts reach the shell, and closing a terminal releases pending work. Making a terminal shorter moves its oldest rows into scrollback instead of dropping recent output. Colon-separated color codes show their colors instead of printing stray digits. Terminal tabs follow folders whose names start or end with spaces, and WSL folders containing quotes survive tear-out, merge and session restore.
 - File and folder pickers remain responsive during storage reads, ignore stale results, and keep invalid input in the dialog. Canceled administrator requests and failed file opens report errors without closing the app.
@@ -35,8 +36,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 - Details can dock below or to the right of either pane, or turn off. Filenames shrink to fit and use beveled Lacquer lettering. Details and pane layouts have direct shortcuts and right-click menus; the rail cycles one pane, side-by-side panes and stacked panes.
-- File details include image dimensions, document pages, media duration and file versions when available. Demo PowerShell profiles and ZIP contents open and edit in memory.
-- Keyboard shortcuts cover the remaining commands and appear in menus, tooltips, the shortcut card and website. Ctrl+F6 switches panes, and the keyboard map shows Ctrl+Alt combinations.
+- File details include image dimensions, document pages, media duration and file versions when available. Demo PowerShell profiles and archive contents open and edit in memory; demo archives can also be created and extracted during the session.
+- Archive options group named ZIP, TAR and TAR.GZ creation with extraction commands. Extra copy commands share a submenu, and file, folder and empty-space menus show relevant actions.
+- Keyboard shortcuts cover the remaining commands and appear in menus, tooltips, the shortcut card and website. Ctrl+F6 switches panes, and the keyboard map shows Ctrl+Alt combinations. About can hide menu and tooltip shortcut hints while keeping the keys active.
 - Added Slovenian across the app, installer, help, website and keyboard shortcuts.
 - Added a New Tab button after tab overflow to open Home, with the toolbar's hover effect. Mouse Back and Forward buttons navigate folder history.
 - Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
@@ -45,10 +47,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Added the Recycle Bin to saved places and crash logging for unexpected exits.
 
 ### Changed
-- Search moves beside the title wordmark, with current-folder, open-tab and whole-computer scopes. Single-row pane toolbars keep the address editable, with standard sort dropdowns and responsive button overflow. Each window remembers its view settings. New folders default to Modified, newest first; Ctrl+scroll cycles list, details and icon sizes.
+- Search opens from the right of the title bar, with current-folder, open-tab and whole-computer scopes. Its compact form grows with terms and filters, scrolls as one panel, and includes a sliding pattern-help drawer. Single-row pane toolbars keep the address editable, with standard sort dropdowns and responsive button overflow. Each window remembers its view settings. New folders default to Modified, newest first; Ctrl+scroll cycles list, details and icon sizes.
 - Terminal Profiles is smaller and uses themed controls. Performance has hardware icons, 98SE sidebar icons use native small artwork, and Recycle Bin uses matching theme artwork.
 - Dropping files on a saved place always moves them, including across drives.
-- Tabs have subtly rounded tops, aligned straight dividers, fading single-pane outlines and rounded content-pane bottoms. Active and inactive labels keep the same size, weight and baseline. Active tabs blend into their content when Alt+M hides the menu bar.
+- Tabs have subtly rounded tops, stable label spacing, and larger close targets. Their menus and shortcuts choose top or bottom placement per window. Active tabs match the adjacent toolbar or content; administrator table headers reach the pane edges, and performance cards use lighter surfaces inside a darker frame.
 - Toolbar icons are larger, with crisp vector navigation and New Tab icons. Buttons and shortcut diagrams use the embedded interface font; dialog icons, focus, rail alignment and grain follow the family design. About uses 8px side gutters and describes the advanced file browser.
 - Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.
 - Hovered menu and list items show their text in the theme accent, lightened or darkened only as far as needed to stay readable on the hover fill. Theme menu rows have matching left and right insets.

@@ -169,7 +169,10 @@
     <sys:String x:Key="Str_Menu_SearchHere">このフォルダー内を検索</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">ここでターミナルを開く</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">ここで管理者としてターミナルを開く</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">このフォルダーを除外</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">フォルダーを検索から除外</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">アーカイブのオプション</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">コピー...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">{0} に追加</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">フルパスをコピー</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">ファイル名をコピー</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">フォルダーのパスをコピー</sys:String>
@@ -504,6 +507,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">起動時に更新を確認する</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Windows の起動時に起動する</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">閉じるときにシステム トレイに格納</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">メニューにショートカットを表示</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">オンにすると、ウィンドウを閉じてもアプリは通知領域で実行し続けます。</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} を開く</sys:String>
     <sys:String x:Key="Str_Tray_Exit">終了</sys:String>
@@ -960,6 +964,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">詳細を右に表示</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">詳細を非表示</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">1つのペイン</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">タブを上に表示</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">タブを下に表示</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">左右に並べる</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">上下に並べる</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">このウィンドウを検索</sys:String>

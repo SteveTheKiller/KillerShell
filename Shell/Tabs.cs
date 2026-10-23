@@ -179,6 +179,7 @@ namespace KillerShell.Shell
             // (FilePane.xaml.cs PaneContent_SizeChanged), so it has to re-run whenever the
             // corners just changed - otherwise a last-active tab squared the pane's border while
             // the clip kept rounding the bar under it.
+            ApplyTabPlacementChrome(Pane);
             Pane.RefreshPaneClip();
             // Break the page line under the new active tab NOW, in the same pass that moved the
             // tab's own edges, and again once layout settles. Deferred alone, the break arrived
@@ -397,8 +398,10 @@ namespace KillerShell.Shell
                 {
                     Content = "x",
                     Style = (Style)FindResource("DangerButton"),
-                    Width = 16,
-                    Height = 16,
+                    Width = 26,
+                    Height = 26,
+                    FontSize = 14,
+                    Padding = new Thickness(0),
                     Margin = new Thickness(12, 0, 0, 0),
                     FocusVisualStyle = null,
                     VerticalAlignment = VerticalAlignment.Center,
@@ -418,7 +421,7 @@ namespace KillerShell.Shell
                     FontWeight = tab.IsActive ? FontWeights.Bold : FontWeights.Normal,
                 };
 
-                var row = new DockPanel { LastChildFill = true, MinWidth = 160 };
+                var row = new DockPanel { LastChildFill = true, MinWidth = 160, Margin = new Thickness(8, 0, 0, 0) };
                 DockPanel.SetDock(closeBtn, Dock.Right);
                 row.Children.Add(closeBtn);
                 row.Children.Add(label);
@@ -651,6 +654,7 @@ namespace KillerShell.Shell
                 SetFooterStatus(t.StatusMessage);
                 ApplyStatusTone(t.StatusKey);
                 SearchButton.Content = t.IsSearching ? Loc("Str_Btn_Stop") : Loc("Str_Btn_Search");
+                RefreshTitleSearchContext();
             }
             Pane.QueryText.Text    = t.QueryLabel;
             SetExpandAllLabel(t.Results.Count > 0 && t.Results.All(r => r.IsExpanded));

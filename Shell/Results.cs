@@ -343,6 +343,9 @@ namespace KillerShell.Shell
             // Tab title keeps the lineage readable: "~\code > invoice".
             t.Title = $"{src.Title} > {(string.IsNullOrEmpty(firstTerm) ? files.Count.ToString("N0") : firstTerm)}";
             ActivateTab(t);
+            if (!_searchOpen) ToggleSearchPanel();
+            else ApplySearchPanel(false);
+            FocusFirstTerm();
         }
 
         // ═══════════════════════════════════════════════════════════

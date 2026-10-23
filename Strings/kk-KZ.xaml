@@ -146,6 +146,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Іске қосылғанда жаңартуларды тексеру</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Windows-пен бірге іске қосу</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Жүйелік науаға жабу</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Мәзірлерде пернелер тіркесімін көрсету</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Қосулы болса, терезені жапқанда қолданба хабарландыру аймағында жұмысын жалғастырады.</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} ашу</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Шығу</sys:String>
@@ -215,7 +216,10 @@
     <sys:String x:Key="Str_Ks_TreeHidden">ағаштағы жасырын және нүктелі қалталарды көрсету немесе жасыру</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Осы жерде терминал ашу</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Осы жерде терминалды әкімші атынан ашу</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Осы қалтаны шығару</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Қалтаны іздеуден алып тастау</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Мұрағат параметрлері</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Көшіру...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">{0} мұрағатына қосу</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Толық жолды көшіру</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Файл атауын көшіру</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Қалта жолын көшіру</sys:String>
@@ -976,6 +980,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Мәліметтер оң жақта</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Мәліметтерді жасыру</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Бір тақта</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Қойындылар жоғарыда</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Қойындылар төменде</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Сол және оң жақ тақталар</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Жоғарғы және төменгі тақталар</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Осы терезеде іздеу</sys:String>

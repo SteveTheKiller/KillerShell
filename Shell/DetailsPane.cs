@@ -126,6 +126,14 @@ namespace KillerShell.Shell
             panel.BeginAnimation(FrameworkElement.HeightProperty, null);
             panel.BeginAnimation(FrameworkElement.WidthProperty, null);
             System.Windows.Controls.DockPanel.SetDock(panel, right ? System.Windows.Controls.Dock.Right : System.Windows.Controls.Dock.Bottom);
+            if (panel.Parent is System.Windows.Controls.DockPanel dock)
+            {
+                // Reserve the side preview before measuring the header and rows together.
+                dock.Children.Remove(panel);
+                int position = right ? dock.Children.IndexOf(pane.DetailsHeader)
+                    : dock.Children.IndexOf(pane.PaneStatusBar) + 1;
+                dock.Children.Insert(position, panel);
+            }
             panel.Width = right ? ClampDetailsPaneWidth(pane, pane.DetailsPaneWidth) : double.NaN;
             panel.Height = right ? double.NaN : pane.DetailsPaneHeight;
             if (right) panel.BorderThickness = new Thickness(1, 0, 0, 0);

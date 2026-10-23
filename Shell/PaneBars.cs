@@ -1,5 +1,7 @@
 using KillerShell.Models;
 using KillerShell.Tools;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 // Which bar a pane wears. Partial of MainWindow.
@@ -48,19 +50,49 @@ namespace KillerShell.Shell
         /// </remarks>
         private void ApplyPaneBars(SearchTab t)
         {
-            if (WearsLocationRow(t))
-                Pane.SetResourceReference(FilePane.MenuBarContentBrushProperty, "ListPaneBrush");
-            else if (t.Term != null)
-                Pane.SetBinding(FilePane.MenuBarContentBrushProperty,
-                    new Binding(nameof(Terminal.TerminalControl.ScreenBackground)) { Source = t.Term });
-            else
-                Pane.ClearValue(FilePane.MenuBarContentBrushProperty);
-            if (t.Term != null)
-                Pane.SetBinding(FilePane.MenuBarContentForegroundProperty,
-                    new Binding(nameof(Terminal.TerminalControl.ScreenForeground)) { Source = t.Term });
-            else
-                Pane.ClearValue(FilePane.MenuBarContentForegroundProperty);
+            RefreshActiveTabSurface(Pane);
             SetLocationRow(Pane, hidden: !WearsLocationRow(t) || Pane.MenuBarHidden, animate: false);
+        }
+
+        internal void RefreshActiveTabSurface(FilePane pane)
+        {
+            var t = pane.Active;
+            if (t == null) return;
+            bool bottom = Grid.GetRow(pane.TabBar) == 2;
+            if (WearsLocationRow(t))
+            {
+                FrameworkElement content = !bottom && pane.ViewMode == 2 ? pane.DetailsHeader : pane.ResultsSurface;
+                Bind(FilePane.MenuBarContentBrushProperty, content, "Background");
+                Bind(FilePane.MenuBarShownBrushProperty, bottom ? content : pane.LocationRow, "Background");
+            }
+            else if (t.Term != null)
+            {
+                Bind(FilePane.MenuBarContentBrushProperty, t.Term, nameof(Terminal.TerminalControl.ScreenBackground));
+                if (bottom) Bind(FilePane.MenuBarShownBrushProperty, t.Term, nameof(Terminal.TerminalControl.ScreenBackground));
+                else Bind(FilePane.MenuBarShownBrushProperty, pane.TerminalBarRow, "Background");
+            }
+            else if (t.Editor != null)
+            {
+                Bind(FilePane.MenuBarContentBrushProperty, t.Editor, "Background");
+                Bind(FilePane.MenuBarShownBrushProperty, bottom ? (FrameworkElement)t.Editor : pane.EditorBarRow, "Background");
+            }
+            else
+            {
+                FrameworkElement? tool = (FrameworkElement?)t.Procs ?? (FrameworkElement?)t.Events
+                    ?? (FrameworkElement?)t.Perf ?? (FrameworkElement?)t.Registry ?? t.Storage;
+                if (tool != null)
+                {
+                    Bind(FilePane.MenuBarShownBrushProperty, tool, "Background");
+                    Bind(FilePane.MenuBarContentBrushProperty, tool, "Background");
+                }
+            }
+            if (t.Term != null)
+                Bind(FilePane.MenuBarContentForegroundProperty, t.Term, nameof(Terminal.TerminalControl.ScreenForeground));
+            else
+                pane.ClearValue(FilePane.MenuBarContentForegroundProperty);
+
+            void Bind(DependencyProperty property, object source, string path)
+                => pane.SetBinding(property, new Binding(path) { Source = source });
         }
 
         /// <summary>

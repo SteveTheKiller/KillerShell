@@ -323,7 +323,10 @@
     <sys:String x:Key="Str_Menu_SearchHere">Bu klasörde ara</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Burada terminal aç</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Burada yönetici olarak terminal aç</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Bu klasörü hariç tut</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Klasörü aramalardan hariç tut</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Arşiv seçenekleri</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Kopyala...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">{0} arşivine ekle</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Tam yolu kopyala</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Dosya adını kopyala</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Klasör yolunu kopyala</sys:String>
@@ -509,6 +512,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Başlangıçta güncellemeleri denetle</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Windows ile başlat</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Sistem tepsisine kapat</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Menülerde kısayolları göster</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Bu açıkken pencereyi kapatmak uygulamayı bildirim alanında çalışır durumda tutar.</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} uygulamasını aç</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Çıkış</sys:String>
@@ -964,6 +968,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Ayrıntılar sağda</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Ayrıntıları gizle</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Tek bölme</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Sekmeler üstte</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Sekmeler altta</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Sol ve sağ bölmeler</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Üst ve alt bölmeler</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Bu pencerede ara</sys:String>

@@ -323,7 +323,10 @@
     <sys:String x:Key="Str_Menu_SearchHere">Rechercher dans ce dossier</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Ouvrir un terminal ici</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Ouvrir un terminal ici en tant qu'administrateur</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Exclure ce dossier</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Exclure le dossier des recherches</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Options d’archive</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Copier...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Ajouter à {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Copier le chemin complet</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Copier le nom du fichier</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Copier le chemin du dossier</sys:String>
@@ -509,6 +512,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Rechercher les mises à jour au démarrage</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Lancer au démarrage de Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Fermer dans la zone de notification</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Afficher les raccourcis dans les menus</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Lorsque cette option est activée, fermer la fenêtre laisse l'application active dans la zone de notification.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Ouvrir {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Quitter</sys:String>
@@ -964,6 +968,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Détails à droite</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Masquer les détails</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Un volet</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Onglets en haut</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Onglets en bas</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Volets gauche et droit</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Volets supérieur et inférieur</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Rechercher dans cette fenêtre</sys:String>

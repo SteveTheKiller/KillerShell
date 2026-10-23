@@ -89,7 +89,7 @@ namespace KillerShell.Shell
                              ? n : path,
                         VerticalAlignment = VerticalAlignment.Center,
                     };
-                    var head = new Grid();
+                    var head = new Grid { Margin = new Thickness(8, 0, 0, 0) };
                     head.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                     head.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                     Grid.SetColumn(name, 0);
@@ -103,7 +103,7 @@ namespace KillerShell.Shell
                     // the menu stays open for removing several in a row.
                     var remove = new Button
                     {
-                        Content = "x", Width = 18, Height = 18,
+                        Content = "x", Width = 26, Height = 26, FontSize = 14,
                         Padding = new Thickness(0), Margin = new Thickness(10, 0, 0, 0),
                         Style = (Style)FindResource("DangerButton"),
                         VerticalAlignment = VerticalAlignment.Center,

@@ -123,6 +123,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Ob zagonu preveri posodobitve</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Zaženi ob zagonu sistema Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Ob zapiranju skrij v sistemsko vrstico</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Prikaži bližnjice v menijih</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Če je ta možnost vklopljena, se aplikacija po zaprtju okna še naprej izvaja v območju za obvestila.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Odpri {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Izhod</sys:String>
@@ -188,7 +189,10 @@
     <sys:String x:Key="Str_Ks_TreeHidden">prikaži ali skrij skrite mape in mape s piko v drevesu</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Odpri terminal tukaj</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Odpri terminal tukaj kot skrbnik</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Izključi to mapo</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Izključi mapo iz iskanja</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Možnosti arhiva</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Kopiraj...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Dodaj v {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Kopiraj celotno pot</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Kopiraj ime datoteke</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Kopiraj pot mape</sys:String>
@@ -883,6 +887,8 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Podrobnosti desno</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Izklopi podrobnosti</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Eno podokno</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Zavihki zgoraj</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Zavihki spodaj</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Podokni levo in desno</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Podokni zgoraj in spodaj</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Preišči to okno</sys:String>

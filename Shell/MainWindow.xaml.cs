@@ -39,7 +39,7 @@ namespace KillerShell.Shell
             _tray = KillerFamily.Shell.CloseToTray.Attach(this, Services.AppInfo.DisplayName, Loc,
                 () => Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown);
             new KillerFamily.Accessibility.OverlayFocus(this)
-                .Track(ShortcutsOverlay, AboutOverlay, FontsOverlay, AssocOverlay, PatternHelpOverlay);
+                .Track(ShortcutsOverlay, AboutOverlay, FontsOverlay, AssocOverlay);
             _about = new Features.About.AboutController(this);   // Features/About
 
             // KillerUI / Grunge shell wiring.
@@ -134,6 +134,7 @@ namespace KillerShell.Shell
             // Restore the saved results view mode and tile size (ResultsView.cs). Also after the
             // tabs, since applying the view reads _active to redraw the sort arrows.
             InitResultsView();
+            InitTabPlacement();
 
             // Which side the tree docks to (TreeDock.cs), before either side panel lays out.
             InitTreeSide();
@@ -466,22 +467,32 @@ namespace KillerShell.Shell
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  PATTERN HELP CARD
+        //  PATTERN HELP DRAWER
         // ═══════════════════════════════════════════════════════════
+        private int _patternHelpTransition;
+
         private void PatternHelp_Click(object sender, RoutedEventArgs e)
         {
+            _patternHelpTransition++;
+            PatternHelpOverlay.IsHitTestVisible = true;
             PatternHelpOverlay.Visibility = Visibility.Visible;
-            Anim.FadeIn(PatternHelpOverlay);   // the standard 150ms fade, like About
+            UpdateTitleSearchSize();
+            Anim.SlideInX(PatternHelpOverlay, -12);
         }
 
         private void PatternHelpClose_Click(object sender, RoutedEventArgs e)
-            => FadeOverlayOut(PatternHelpOverlay);   // About.cs helper
-
-        private void PatternHelpOverlay_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-            => FadeOverlayOut(PatternHelpOverlay);
-
-        private void PatternHelpCard_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-            => e.Handled = true;   // clicks on the card don't dismiss it
+        {
+            if (PatternHelpOverlay.Visibility != Visibility.Visible) return;
+            int transition = ++_patternHelpTransition;
+            PatternHelpOverlay.IsHitTestVisible = false;
+            Anim.FadeOut(PatternHelpOverlay, () =>
+            {
+                if (transition != _patternHelpTransition) return;
+                PatternHelpOverlay.Visibility = Visibility.Collapsed;
+                UpdateTitleSearchSize();
+                if (TitleSearchPopup.IsOpen) PatternHelpButton.Focus();
+            });
+        }
 
         // ═══════════════════════════════════════════════════════════
         //  SHORTCUTS CARD (F1) - family standard, same shape as above
@@ -635,6 +646,7 @@ namespace KillerShell.Shell
                     // back to green.
                     ApplyStatusTone(tab.StatusKey);
                     UpdatePaneStatusBar();
+                    RefreshTitleSearchContext();
                 }
             }
         }
@@ -653,6 +665,7 @@ namespace KillerShell.Shell
             Pane.ResultsHeader.Text     = Loc("Str_Lbl_Results");
             UpdatePaneStatusBar();
             SetTabStatusKey(tab, "Str_Status_Cleared");
+            RefreshTitleSearchContext();
         }
 
         // "name: invoice  OR  content: foo  |  extension is pdf, over 100 MB" - built from

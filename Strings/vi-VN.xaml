@@ -142,6 +142,7 @@
   <sys:String x:Key="Str_About_StartupUpdateCheck">Kiểm tra cập nhật khi khởi động</sys:String>
   <sys:String x:Key="Str_About_StartWithWindows">Khởi động cùng Windows</sys:String>
   <sys:String x:Key="Str_About_CloseToTray">Đóng xuống khay hệ thống</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Hiển thị phím tắt trong menu</sys:String>
   <sys:String x:Key="Str_About_CloseToTrayHint">Khi bật, đóng cửa sổ sẽ giữ ứng dụng chạy trong vùng thông báo.</sys:String>
   <sys:String x:Key="Str_Tray_Open">Mở {0}</sys:String>
   <sys:String x:Key="Str_Tray_Exit">Thoát</sys:String>
@@ -210,7 +211,10 @@
   <sys:String x:Key="Str_Ks_TreeHidden">hiển thị hoặc ẩn mục ẩn và thư mục bắt đầu bằng dấu chấm trong cây thư mục</sys:String>
   <sys:String x:Key="Str_Menu_OpenTerminal">Mở terminal tại đây</sys:String>
   <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Mở terminal tại đây với quyền quản trị viên</sys:String>
-  <sys:String x:Key="Str_Menu_ExcludeFolder">Loại trừ thư mục này</sys:String>
+  <sys:String x:Key="Str_Menu_ExcludeFolder">Loại trừ thư mục khỏi tìm kiếm</sys:String>
+  <sys:String x:Key="Str_Menu_ArchiveOptions">Tùy chọn tệp lưu trữ</sys:String>
+  <sys:String x:Key="Str_Menu_CopySpecial">Sao chép...</sys:String>
+  <sys:String x:Key="Str_Menu_AddToArchive">Thêm vào {0}</sys:String>
   <sys:String x:Key="Str_Menu_CopyPath">Sao chép đường dẫn đầy đủ</sys:String>
   <sys:String x:Key="Str_Menu_CopyName">Sao chép tên tệp</sys:String>
   <sys:String x:Key="Str_Menu_CopyFolder">Sao chép đường dẫn thư mục</sys:String>
@@ -966,6 +970,8 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Chi tiết bên phải</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Ẩn chi tiết</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Một ngăn</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Tab ở trên</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Tab ở dưới</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Ngăn trái và phải</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Ngăn trên và dưới</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Tìm trong cửa sổ này</sys:String>

@@ -152,6 +152,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Check for updates on startup</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Start with Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Close to system tray</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Show Shortcuts in Menus</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">When this is on, closing the window keeps the app running in the notification area.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Open {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Exit</sys:String>
@@ -222,7 +223,10 @@
     <sys:String x:Key="Str_Ks_TreeHidden">show or hide hidden and dotfolders in the tree</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Open terminal here</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Open terminal here as administrator</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Exclude this folder</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Exclude folder from searches</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Archive options</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Copy...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Add to {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Copy full path</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Copy file name</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Copy folder path</sys:String>
@@ -1010,6 +1014,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Details on right</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Details off</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">One pane</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Tabs on top</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Tabs on bottom</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Left and right panes</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Top and bottom panes</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Search this window</sys:String>

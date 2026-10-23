@@ -152,6 +152,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Se etter oppdateringer ved oppstart</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Start når Windows starter</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Lukk til systemstatusfeltet</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Vis hurtigtaster i menyer</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Når dette er på, fortsetter appen å kjøre i systemstatusfeltet når du lukker vinduet.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Åpne {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Avslutt</sys:String>
@@ -222,7 +223,10 @@
     <sys:String x:Key="Str_Ks_TreeHidden">vis eller skjul skjulte mapper og punktmapper i treet</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Åpne terminal her</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Åpne terminal her som administrator</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Utelat denne mappen</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Utelat mappen fra søk</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Arkivalternativer</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Kopier...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Legg til i {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Kopier full sti</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Kopier filnavn</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Kopier mappesti</sys:String>
@@ -1010,6 +1014,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Detaljer til høyre</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Skjul detaljer</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Én rute</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Faner øverst</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Faner nederst</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Ruter til venstre og høyre</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Ruter øverst og nederst</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Søk i dette vinduet</sys:String>

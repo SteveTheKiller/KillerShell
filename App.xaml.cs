@@ -255,6 +255,7 @@ namespace KillerShell
             Services.ThemeManager.Elevated = AppMainWindow.IsElevated;
 
             Services.ThemeManager.Initialize();    // restore saved theme before the window is built
+            KillerFamily.Layout.ShortcutHints.Initialize(GetSetting, SetSetting);
             Services.FilmGrain.Initialize();       // then the Film Grain choice, which outranks it
 
             // Keep text-file.ico in sync with whatever THIS build embeds. EnsureFileIcon

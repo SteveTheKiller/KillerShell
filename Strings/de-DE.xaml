@@ -323,7 +323,10 @@
     <sys:String x:Key="Str_Menu_SearchHere">In diesem Ordner suchen</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Terminal hier öffnen</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Terminal hier als Administrator öffnen</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Diesen Ordner ausschließen</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Ordner von der Suche ausschließen</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Archivoptionen</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Kopieren...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Zu {0} hinzufügen</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Vollständigen Pfad kopieren</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Dateinamen kopieren</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Ordnerpfad kopieren</sys:String>
@@ -509,6 +512,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Beim Start nach Updates suchen</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Mit Windows starten</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">In den Infobereich schließen</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Tastenkürzel in Menüs anzeigen</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Ist dies an, läuft die App nach dem Schließen des Fensters im Infobereich weiter.</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} öffnen</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Beenden</sys:String>
@@ -964,6 +968,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Details rechts</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Details aus</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Ein Fenster</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Tabs oben</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Tabs unten</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Fenster links und rechts</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Fenster oben und unten</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Dieses Fenster durchsuchen</sys:String>

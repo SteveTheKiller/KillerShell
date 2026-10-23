@@ -152,6 +152,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Frissítések keresése indításkor</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Indítás a Windows-zal</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Bezárás az értesítési területre</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Billentyűparancsok megjelenítése a menükben</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Ha be van kapcsolva, az ablak bezárása után az alkalmazás tovább fut az értesítési területen.</sys:String>
     <sys:String x:Key="Str_Tray_Open">A(z) {0} megnyitása</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Kilépés</sys:String>
@@ -222,7 +223,10 @@
     <sys:String x:Key="Str_Ks_TreeHidden">rejtett és pontmappák megjelenítése vagy elrejtése a fán</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Nyissa meg a terminált itt</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Nyissa meg a terminált itt rendszergazdaként</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Zárja ki ezt a mappát</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Mappa kizárása a keresésekből</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Archívumbeállítások</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Másolás...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Hozzáadás ehhez: {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">A teljes elérési út másolása</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Fájlnév másolása</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Mappa elérési útjának másolása</sys:String>
@@ -1010,6 +1014,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Részletek jobb oldalon</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Részletek kikapcsolása</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Egy panel</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Lapok felül</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Lapok alul</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Bal és jobb oldali panel</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Felső és alsó panel</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Keresés ebben az ablakban</sys:String>

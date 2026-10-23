@@ -279,16 +279,25 @@ namespace KillerShell.Shell
         /// <summary>Whether the menu's selection is all real archives this build can read,
         /// for the extract rows.</summary>
         private List<string> MenuArchives()
-            => DemoMode ? [] : [.. MenuFiles().Where(p => System.IO.File.Exists(p) && ArchiveProvider.IsReadable(p))];
+            => DemoMode ? [.. MenuFiles().Where(DemoArchives.Contains)]
+                : [.. MenuFiles().Where(p => System.IO.File.Exists(p) && ArchiveProvider.IsReadable(p))];
 
         /// <summary>The selection as real files and folders on disk, for Compress. Empty
         /// inside an archive, where the rows are not on disk at all.</summary>
         private List<string> MenuDiskItems()
-            => DemoMode || InArchive(Pane) ? [] : [.. MenuFiles().Where(Exists)];
+            => InArchive(Pane) ? [] : DemoMode ? [.. MenuFiles().Where(path => DemoFs.Find(path) != null)]
+                : [.. MenuFiles().Where(Exists)];
+
+        private static string ArchiveOutputName(string source, string extension)
+        {
+            string path = source.TrimEnd(System.IO.Path.DirectorySeparatorChar);
+            bool folder = DemoMode ? DemoFs.Has(path) : System.IO.Directory.Exists(path);
+            string stem = folder ? System.IO.Path.GetFileName(path) : System.IO.Path.GetFileNameWithoutExtension(path);
+            return (stem.Length == 0 ? "Archive" : stem) + extension;
+        }
 
         internal void MenuCompress_Click(object sender, RoutedEventArgs e)
         {
-            if (RefuseDemoArchiveWrite()) return;
             var sources = MenuDiskItems();
             if (sources.Count == 0) return;
 
@@ -296,13 +305,28 @@ namespace KillerShell.Shell
             string? folder = System.IO.Path.GetDirectoryName(first);
             if (string.IsNullOrEmpty(folder)) return;   // a drive root has nowhere beside it
 
-            string stem = System.IO.File.Exists(first)
-                ? System.IO.Path.GetFileNameWithoutExtension(first)
-                : System.IO.Path.GetFileName(first);
-            if (stem.Length == 0) stem = "Archive";
-
-            string zipPath = FreeName(System.IO.Path.Combine(folder, stem + ".zip"));
+            string extension = ((sender as System.Windows.Controls.MenuItem)?.Tag as string) switch
+            {
+                "tar" => ".tar", "targz" => ".tar.gz", _ => ".zip",
+            };
+            string proposed = System.IO.Path.Combine(folder, ArchiveOutputName(first, extension));
             var tab = _active;
+            if (DemoMode)
+            {
+                string? created = DemoArchives.Create(proposed, sources, path => DemoTextStore.Open(path, DemoTextFor(path)));
+                if (created == null) SetTabStatusKey(tab, "Str_Status_ArchiveCanceled");
+                else SetTabStatusKey(tab, "Str_Status_ArchiveCompressed", System.IO.Path.GetFileName(created));
+                RefreshDemoArchiveListing(tab);
+                return;
+            }
+            string zipPath = FreeName(proposed);
+            if (extension != ".zip")
+            {
+                var created = FileOpDialog.RewriteArchive(this,
+                    (progress, ct) => TarArchiveCreator.Create(zipPath, sources, extension == ".tar.gz", progress, ct));
+                ReportArchive(tab, created, "Str_Status_ArchiveCompressed", System.IO.Path.GetFileName(zipPath));
+                return;
+            }
 
             // An empty zip first, so the writer has an archive to add into. It is removed again
             // if the add fails or is canceled, so a failure never leaves a stray empty zip.
@@ -340,11 +364,23 @@ namespace KillerShell.Shell
         /// </summary>
         private void ExtractArchives(bool intoOwnFolder)
         {
-            if (RefuseDemoArchiveWrite()) return;
             var archives = MenuArchives();
             if (archives.Count == 0) return;
             var tab = _active;
             string? landed = null;
+
+            if (DemoMode)
+            {
+                foreach (string archive in archives)
+                {
+                    landed = DemoArchives.Extract(archive, intoOwnFolder);
+                    if (landed == null) break;
+                }
+                if (landed == null) SetTabStatusKey(tab, "Str_Status_ArchiveCanceled");
+                else SetTabStatusKey(tab, "Str_Status_ArchiveExtracted", landed);
+                RefreshDemoArchiveListing(tab);
+                return;
+            }
 
             foreach (string archive in archives)
             {
@@ -400,6 +436,12 @@ namespace KillerShell.Shell
             if (landed != null) SetTabStatusKey(tab, "Str_Status_ArchiveExtracted", landed);
         }
 
+        private void RefreshDemoArchiveListing(SearchTab tab)
+        {
+            if (tab == _active && tab.IsBrowsing && !string.IsNullOrEmpty(tab.CurrentFolder))
+                _ = NavigateTo(tab.CurrentFolder!, record: false);
+        }
+
         /// <summary>Moves every top-level item out of a staging folder into
         /// <paramref name="parent"/>, renaming any that would collide, then removes the stage.</summary>
         private static ArchiveWriteResult MoveOutOfStage(string stage, string parent)
@@ -442,7 +484,9 @@ namespace KillerShell.Shell
             if (!System.IO.File.Exists(path) && !System.IO.Directory.Exists(path)) return path;
             string dir  = System.IO.Path.GetDirectoryName(path) ?? string.Empty;
             string stem = folder ? System.IO.Path.GetFileName(path) : System.IO.Path.GetFileNameWithoutExtension(path);
-            string ext  = folder ? string.Empty : System.IO.Path.GetExtension(path);
+            string ext  = folder ? string.Empty : path.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase)
+                ? ".tar.gz" : System.IO.Path.GetExtension(path);
+            if (!folder && ext == ".tar.gz") stem = System.IO.Path.GetFileName(path)[..^7];
             int n = 2;
             string candidate;
             do { candidate = System.IO.Path.Combine(dir, stem + " (" + n++ + ")" + ext); }

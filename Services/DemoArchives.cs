@@ -9,6 +9,94 @@ namespace KillerShell.Services
     /// <summary>Small archive listings and text samples held entirely in memory.</summary>
     internal static class DemoArchives
     {
+        private static readonly object CreatedGate = new();
+        private static readonly Dictionary<string, List<(string Path, string Text)>> Created = new(StringComparer.OrdinalIgnoreCase);
+
+        internal static string? Create(string path, IReadOnlyList<string> sources, Func<string, string> textFor)
+        {
+            string? parent = Path.GetDirectoryName(path);
+            if (parent == null || !DemoFs.Has(parent) || !ArchiveProvider.IsReadable(path)
+                || sources.Count == 0 || sources.Any(source => DemoFs.Find(source) == null)) return null;
+            var files = new List<(string Path, string Text)>();
+            var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            long bytes = 0;
+            bool Add(string source, string entry)
+            {
+                var info = DemoFs.Find(source);
+                if (info == null || files.Count >= 4096 || !names.Add(entry)) return false;
+                if (info.IsDir)
+                {
+                    files.Add((entry + "/", ""));
+                    foreach (var child in DemoFs.Children(source))
+                        if (!Add(Path.Combine(source, child.Name), entry + "/" + child.Name)) return false;
+                }
+                else
+                {
+                    string text = textFor(source);
+                    bytes += Encoding.UTF8.GetByteCount(text);
+                    if (bytes > 16 * 1024 * 1024) return false;
+                    files.Add((entry, text));
+                }
+                return true;
+            }
+            foreach (string source in sources)
+                if (!Add(source, Path.GetFileName(source))) return null;
+            path = FreePath(path);
+            DateTime modified = DemoFs.Find(sources[0])!.Modified;
+            if (!DemoFs.TryAddSessionEntry(path, false, bytes, modified)) return null;
+            lock (CreatedGate) Created.Add(path, files);
+            return path;
+        }
+
+        internal static string? Extract(string archivePath, bool intoOwnFolder)
+        {
+            if (!Contains(archivePath)) return null;
+            string? parent = Path.GetDirectoryName(archivePath);
+            if (parent == null || !DemoFs.Has(parent)) return null;
+            DateTime modified = DemoFs.Find(archivePath)!.Modified;
+            string destination = parent;
+            if (intoOwnFolder)
+            {
+                string stem = Path.GetFileName(archivePath);
+                stem = stem.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase) ? stem[..^7] : Path.GetFileNameWithoutExtension(stem);
+                destination = FreePath(Path.Combine(parent, stem));
+                if (!DemoFs.TryAddSessionEntry(destination, true, 0, modified)) return null;
+            }
+            var roots = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var file in Files(archivePath))
+            {
+                string relative = file.Path.TrimEnd('/');
+                string[] segments = relative.Split('/');
+                if (!roots.TryGetValue(segments[0], out string root))
+                    roots.Add(segments[0], root = FreePath(Path.Combine(destination, segments[0])));
+                string target = root;
+                for (int i = 0; i < segments.Length; i++)
+                {
+                    if (i > 0) target = Path.Combine(target, segments[i]);
+                    bool directory = i < segments.Length - 1 || file.Path.EndsWith("/", StringComparison.Ordinal);
+                    if (DemoFs.Find(target) == null)
+                        DemoFs.TryAddSessionEntry(target, directory, directory ? 0 : Encoding.UTF8.GetByteCount(file.Text), modified);
+                }
+                if (!file.Path.EndsWith("/", StringComparison.Ordinal))
+                    DemoTextStore.Open(target, DemoTextStore.Open(ArchiveProvider.Combine(archivePath, file.Path), file.Text));
+            }
+            return destination;
+        }
+
+        private static string FreePath(string path)
+        {
+            if (DemoFs.Find(path) == null && !DemoFs.Has(path)) return path;
+            string parent = Path.GetDirectoryName(path)!;
+            string extension = path.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase) ? ".tar.gz" : Path.GetExtension(path);
+            string stem = Path.GetFileName(path);
+            stem = stem.Substring(0, stem.Length - extension.Length);
+            int number = 2;
+            string candidate;
+            do { candidate = Path.Combine(parent, stem + " (" + number++ + ")" + extension); }
+            while (DemoFs.Find(candidate) != null || DemoFs.Has(candidate));
+            return candidate;
+        }
+
         internal static bool Contains(string archivePath)
             => ArchiveProvider.IsReadable(archivePath) && DemoFs.Find(archivePath) is { IsDir: false };
 
@@ -50,6 +138,8 @@ namespace KillerShell.Services
 
         private static List<(string Path, string Text)> Files(string archivePath)
         {
+            lock (CreatedGate)
+                if (Created.TryGetValue(archivePath, out var saved)) return saved;
             string name = Path.GetFileName(archivePath);
             var files = new List<(string Path, string Text)>
             {

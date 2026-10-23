@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 // The machine --demo pretends to be: one MSP field technician's workstation, invented whole.
 //
@@ -64,6 +65,9 @@ namespace KillerShell.Services
 
         private static readonly Dictionary<string, List<Entry>> Table =
             new(StringComparer.OrdinalIgnoreCase);
+
+        private static readonly object SessionGate = new();
+        private static readonly Dictionary<string, List<Entry>> SessionTable = new(StringComparer.OrdinalIgnoreCase);
 
         // The order Add() was called in. A Dictionary's enumeration order is an implementation
         // detail and is NOT promised to be insertion order, so anything that has to walk the whole
@@ -172,7 +176,10 @@ namespace KillerShell.Services
         internal static IReadOnlyList<string> Drives => Roots;
 
         /// <summary>True when <paramref name="path"/> is a folder on the fabricated machine.</summary>
-        internal static bool Has(string path) => Table.ContainsKey(Key(path));
+        internal static bool Has(string path)
+        {
+            lock (SessionGate) return Table.ContainsKey(Key(path)) || SessionTable.ContainsKey(Key(path));
+        }
 
         /// <summary>
         /// What is inside <paramref name="path"/>. Empty rather than null for a folder that was
@@ -180,7 +187,32 @@ namespace KillerShell.Services
         /// which is what an expander arrow opening onto nothing already means in the tree.
         /// </summary>
         internal static IReadOnlyList<Entry> Children(string path)
-            => Table.TryGetValue(Key(path), out var kids) ? kids : Nothing;
+        {
+            lock (SessionGate)
+            {
+                var kids = Table.TryGetValue(Key(path), out var initial) ? initial : Nothing;
+                if (!SessionTable.TryGetValue(Key(path), out var added) || added.Count == 0) return kids;
+                var snapshot = new List<Entry>(kids);
+                snapshot.AddRange(added);
+                return snapshot;
+            }
+        }
+
+        internal static bool TryAddSessionEntry(string path, bool directory, long size, DateTime modified)
+        {
+            string? parent = Path.GetDirectoryName(path);
+            string name = Path.GetFileName(path);
+            if (parent == null || !ArchiveWriter.IsLegalLeafName(name)) return false;
+            lock (SessionGate)
+            {
+                if (!Has(parent) || Find(path) != null) return false;
+                if (!SessionTable.TryGetValue(Key(parent), out var siblings))
+                    SessionTable[Key(parent)] = siblings = [];
+                siblings.Add(new Entry { Name = name, IsDir = directory, Size = size, Modified = modified });
+                if (directory) SessionTable[Key(path)] = [];
+                return true;
+            }
+        }
 
         /// <summary>
         /// The fabricated entry behind a full path, or null when the table has no such row (a
@@ -199,8 +231,7 @@ namespace KillerShell.Services
             string name = path[(cut + 1)..];
             if (folder.Length == 2 && folder[1] == ':') folder += "\\";   // "C:" is drive-relative
 
-            if (!Table.TryGetValue(Key(folder), out var kids)) return null;
-            foreach (var e in kids)
+            foreach (var e in Children(folder))
                 if (string.Equals(e.Name, name, StringComparison.OrdinalIgnoreCase)) return e;
             return null;
         }

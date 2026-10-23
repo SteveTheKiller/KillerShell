@@ -152,6 +152,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Verificar atualizações ao iniciar</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Iniciar com o Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Fechar para a bandeja do sistema</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Mostrar atalhos nos menus</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Quando ativado, fechar a janela mantém o aplicativo em execução na área de notificação.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Abrir o {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Sair</sys:String>
@@ -222,7 +223,10 @@
     <sys:String x:Key="Str_Ks_TreeHidden">mostrar ou ocultar pastas ocultas e iniciadas por ponto na árvore</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Abrir terminal aqui</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Abrir terminal aqui como administrador</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Excluir esta pasta</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Excluir pasta das pesquisas</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Opções de arquivo compactado</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Copiar...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Adicionar a {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Copiar caminho completo</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Copiar nome do arquivo</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Copiar caminho da pasta</sys:String>
@@ -1010,6 +1014,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Detalhes à direita</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Ocultar detalhes</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Um painel</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Guias na parte superior</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Guias na parte inferior</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Painéis lado a lado</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Painéis superior e inferior</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Pesquisar nesta janela</sys:String>

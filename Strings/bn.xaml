@@ -323,7 +323,10 @@
     <sys:String x:Key="Str_Menu_SearchHere">এই ফোল্ডারের ভেতরে খুঁজুন</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">এখানে টার্মিনাল খুলুন</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">এখানে প্রশাসক হিসেবে টার্মিনাল খুলুন</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">এই ফোল্ডার বাদ দিন</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">অনুসন্ধান থেকে ফোল্ডার বাদ দিন</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">আর্কাইভ বিকল্প</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">কপি...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">{0}-এ যোগ করুন</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">পুরো পাথ কপি করুন</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">ফাইলের নাম কপি করুন</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">ফোল্ডারের পাথ কপি করুন</sys:String>
@@ -506,6 +509,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">অ্যাপ চালু হলে আপডেট পরীক্ষা করুন</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Windows চালু হলে চালু করুন</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">সিস্টেম ট্রেতে বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">মেনুতে শর্টকাট দেখান</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">এটি চালু থাকলে, উইন্ডো বন্ধ করলেও অ্যাপটি নোটিফিকেশন এরিয়াতে চলতে থাকে।</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} খুলুন</sys:String>
     <sys:String x:Key="Str_Tray_Exit">প্রস্থান</sys:String>
@@ -961,6 +965,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">ডান দিকে বিবরণ</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">বিবরণ বন্ধ</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">একটি প্যান</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">ট্যাব উপরে</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">ট্যাব নিচে</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">বাম ও ডান প্যান</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">উপর ও নিচের প্যান</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">এই উইন্ডোতে খুঁজুন</sys:String>

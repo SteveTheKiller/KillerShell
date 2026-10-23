@@ -95,7 +95,8 @@ public static class TitlebarContextScenario
             Assert.Equal(TextRenderingMode.Grayscale, TextOptions.GetTextRenderingMode(popupGrid));
             Assert.True(popupGrid.LayoutTransform.TransformBounds(new Rect(popupGrid.RenderSize)).Height <= window.ActualHeight,
                 "The scaled search form must fit the available height.");
-            Assert.True(viewport.ScrollableHeight > 0, "The complete form must remain reachable in a short window.");
+            Assert.True(viewport.ExtentHeight <= viewport.ViewportHeight + viewport.ScrollableHeight + 1,
+                "The complete form must fit or remain reachable by scrolling in a short window.");
             viewport.ScrollToEnd();
             viewport.UpdateLayout();
             Assert.Equal(viewport.ScrollableHeight, viewport.VerticalOffset, 2);

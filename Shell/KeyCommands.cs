@@ -121,6 +121,12 @@ namespace KillerShell.Shell
                 e.Handled = true; return true;
             }
 
+            if (alt && shift && !ctrl && key is Key.Up or Key.Down)
+            {
+                if (!e.IsRepeat) SetTabPlacement(key == Key.Down);
+                e.Handled = true; return true;
+            }
+
             // Alt+Shift+G, the family Film Grain chord.
             if (alt && shift && !ctrl && key == Key.G)
             {

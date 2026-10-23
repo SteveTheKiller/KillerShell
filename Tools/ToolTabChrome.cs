@@ -1,5 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using KillerShell.Shell;
 
 namespace KillerShell.Tools
@@ -57,6 +59,46 @@ namespace KillerShell.Tools
             host.Children.Add(Inner("PaneBevelDark2Brush", "PaneBevel2LightThickness"));
             host.Children.Add(Inner("PaneBevelLight2Brush", "PaneBevel2DarkThickness"));
             return host;
+        }
+
+        /// <summary>One square header band across the full table well, including its filler.</summary>
+        internal static Grid WrapTable(DataGrid table, string faceKey)
+        {
+            table.Margin = new Thickness(0);
+            var headerStyle = new Style(typeof(DataGridColumnHeader), table.ColumnHeaderStyle);
+            headerStyle.Setters.Add(new EventSetter(FrameworkElement.LoadedEvent,
+                new RoutedEventHandler(TableHeader_Loaded)));
+            table.ColumnHeaderStyle = headerStyle;
+
+            var host = WrapContent(table, faceKey);
+            var band = new Border
+            {
+                Name = "ToolTableHeaderBand",
+                VerticalAlignment = VerticalAlignment.Top,
+                BorderThickness = new Thickness(0, 0, 0, 1),
+                IsHitTestVisible = false,
+                Child = Grain()
+            };
+            band.SetBinding(FrameworkElement.HeightProperty,
+                new Binding(nameof(DataGrid.ColumnHeaderHeight)) { Source = table });
+            band.SetResourceReference(Border.BackgroundProperty, "TableHeaderBrush");
+            band.SetResourceReference(Border.BorderBrushProperty, "HeaderLineBrush");
+            host.Children.Insert(1, band);
+            return host;
+        }
+
+        private static void TableHeader_Loaded(object sender, RoutedEventArgs e)
+        {
+            var header = (DataGridColumnHeader)sender;
+            if (header.Template?.FindName("hdrBg", header) is not Border face || face.Child is not Grid content) return;
+            foreach (UIElement child in content.Children)
+                if (child is FrameworkElement element && element.Name == "ToolTableHeaderGrain") return;
+            var grain = Grain();
+            grain.Name = "ToolTableHeaderGrain";
+            Grid.SetColumnSpan(grain, System.Math.Max(1, content.ColumnDefinitions.Count));
+            // Undo the header's text inset so grain reaches the same edges as its face.
+            grain.Margin = new Thickness(-face.Padding.Left, -face.Padding.Top, -face.Padding.Right, -face.Padding.Bottom);
+            content.Children.Insert(0, grain);
         }
 
         private static Border Edge(string brushKey, string thicknessKey, int z)

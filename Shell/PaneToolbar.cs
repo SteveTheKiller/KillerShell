@@ -11,7 +11,7 @@ namespace KillerShell.Shell
     {
         private static readonly string[] ShedOrder =
         [
-            "ExportBtn", "PipeBtn", "FoldersTopBtn", "ShowHiddenBtn", "DetailsPaneBtn",
+            "ExportBtn", "FoldersTopBtn", "ShowHiddenBtn", "DetailsPaneBtn",
             "ExpandAllButton", "FileDensityBtn", "ViewDetailsBtn", "ViewIconsBtn", "ViewListBtn",
             "SortControlsHost",
         ];
@@ -130,7 +130,7 @@ namespace KillerShell.Shell
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "FileDensityBtn",
             "SortControlsHost",
             "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "DetailsPaneBtn",
-            "PipeBtn", "ExportBtn", "OverflowBtn",
+            "ExportBtn", "OverflowBtn",
         ];
 
         internal static void Overflow_Click(FilePane pane)

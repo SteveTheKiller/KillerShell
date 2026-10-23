@@ -74,11 +74,6 @@ namespace KillerShell.Shell
         /// </summary>
         private void UpdateBrowseChrome(bool browsing)
         {
-            // Pipe opens a NEW TAB scoped to the listed files. Over a folder listing the funnel
-            // reads as "filter these rows", so the tab it opens comes as a surprise; over search
-            // results, which is what it was built for, it reads correctly.
-            Pane.PipeBtn.Visibility = browsing ? Visibility.Collapsed : Visibility.Visible;
-
             // "as found" is the ENGINE'S discovery order, which only exists because a search
             // streams hits in as it walks. A folder is enumerated in one pass, so there is no
             // discovery order to show. Browsing starts with the newest changes first.

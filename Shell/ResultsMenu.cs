@@ -22,6 +22,7 @@ namespace KillerShell.Shell
     public partial class MainWindow
     {
         private SearchResult? _menuSeed;
+        private bool _menuBackground;
 
         /// <summary>
         /// True when keyboard focus is inside the results list. The file commands and Enter only
@@ -43,6 +44,7 @@ namespace KillerShell.Shell
         private void FromKeyboard(Action<object, RoutedEventArgs> cmd)
         {
             _menuSeed = null;
+            _menuBackground = false;
             cmd(this, new RoutedEventArgs());
         }
 
@@ -50,6 +52,7 @@ namespace KillerShell.Shell
         {
             var item = ItemUnder(e.OriginalSource as System.Windows.DependencyObject);
             _menuSeed = DataFor(item);
+            _menuBackground = _menuSeed == null;
 
             // Right-clicking outside the selection moves the selection there first, so the menu
             // always acts on what you are pointing at. Right-clicking inside it leaves the
@@ -67,10 +70,13 @@ namespace KillerShell.Shell
         // landed on something the visual walk did not resolve to a container.
         internal void ResultsList_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var seed = DataFor(ItemUnder(Mouse.DirectlyOver as System.Windows.DependencyObject))
+            bool keyboard = e.CursorLeft < 0 && e.CursorTop < 0;
+            var seed = keyboard
+                ? Pane.ResultsList.SelectedItem as SearchResult
+                : DataFor(ItemUnder(Mouse.DirectlyOver as System.Windows.DependencyObject))
                     ?? DataFor(ItemUnder(e.OriginalSource as System.Windows.DependencyObject));
-
-            if (seed != null) _menuSeed = seed;
+            _menuSeed = seed;
+            _menuBackground = seed == null;
 
             // Same rule as the press handler: pointing outside the selection moves it here,
             // pointing inside it leaves a multi-file selection intact.
@@ -83,12 +89,12 @@ namespace KillerShell.Shell
             // One item covers both directions, so its header has to be decided per opening.
             //
             // Found by Tag rather than x:Name: the menu is declared inside ListBox.Resources, and
-            // XAML does not generate fields for elements inside a resource, so an x:Name there
-            // compiles to nothing the code-behind can see. Cached after the first lookup.
-            _favMenuItem ??= Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
+            // XAML does not generate fields for elements inside a resource. Resolve from the
+            // active pane each time, since each pane has its own menu instance.
+            var favorite = Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
                                         .FirstOrDefault(m => (m.Tag as string) == "fav");
 
-            _favMenuItem?.Header = Loc(IsBookmarked(MenuFolder())
+            favorite?.Header = Loc(IsBookmarked(MenuFolder())
                 ? "Str_Menu_RemoveFavorite"
                 : "Str_Menu_AddFavorite");
 
@@ -97,14 +103,68 @@ namespace KillerShell.Shell
             // space. Right-clicking empty space used to still show it, and clicking it there
             // either silently did nothing or, worse, acted on whatever was left selected from
             // before (2026-08-03).
-            _shellMenuItem ??= Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
+            var shellMenu = Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
                                         .FirstOrDefault(m => (m.Tag as string) == "shellmenu");
-            _shellMenuItem?.Visibility = seed != null ? Visibility.Visible : Visibility.Collapsed;
+            shellMenu?.Visibility = seed != null && !DemoMode ? Visibility.Visible : Visibility.Collapsed;
 
             // Same rule for the nickname rows: they belong to the item under the pointer.
             SyncNicknameMenu(Pane.ResultsList.ContextMenu, seed?.FilePath);   // NicknameCommands.cs
 
             SyncArchiveMenu(Pane.ResultsList.ContextMenu, seed != null);
+            SyncResultMenuRelevance(Pane.ResultsList.ContextMenu, seed != null);
+        }
+
+        private void SyncResultMenuRelevance(ContextMenu? menu, bool onItem)
+        {
+            if (menu == null) return;
+            var rows = onItem ? MenuRows() : [];
+            bool filesOnly = rows.Count > 0 && rows.All(row => !row.IsDirectory);
+            bool lines = filesOnly && rows.Any(row => row.Matches.Any(match => match.Lines.Count > 0));
+            foreach (var item in ResultMenuItems(menu.Items))
+            {
+                if (item.InputGestureText == "Enter")
+                    item.Header = Loc(filesOnly ? "Str_Menu_OpenFile" : "Str_Btn_Open");
+                bool? show = (item.Tag as string) switch
+                {
+                    "item" or "copyspecial" => onItem,
+                    "fileonly" => filesOnly,
+                    "matchedlines" => lines,
+                    "background" => !onItem && _active.IsBrowsing,
+                    _ => null,
+                };
+                if (show.HasValue) item.Visibility = show.Value ? Visibility.Visible : Visibility.Collapsed;
+            }
+            TrimResultMenuSeparators(menu.Items);
+        }
+
+        private static IEnumerable<MenuItem> ResultMenuItems(ItemCollection items)
+        {
+            foreach (var item in items.OfType<MenuItem>())
+            {
+                yield return item;
+                foreach (var child in ResultMenuItems(item.Items)) yield return child;
+            }
+        }
+
+        private static void TrimResultMenuSeparators(ItemCollection items)
+        {
+            bool hasItem = false;
+            Separator? pending = null;
+            foreach (var item in items.OfType<FrameworkElement>())
+            {
+                if (item is Separator separator)
+                {
+                    separator.Visibility = Visibility.Collapsed;
+                    if (hasItem) pending = separator;
+                }
+                else if (item is MenuItem command && command.Visibility == Visibility.Visible)
+                {
+                    if (pending != null) pending.Visibility = Visibility.Visible;
+                    pending = null;
+                    hasItem = true;
+                    TrimResultMenuSeparators(command.Items);
+                }
+            }
         }
 
         /// <summary>
@@ -115,17 +175,23 @@ namespace KillerShell.Shell
         private void SyncArchiveMenu(ContextMenu? menu, bool onItem)
         {
             if (menu == null) return;
-            var items = menu.Items.OfType<FrameworkElement>().ToList();
-            FrameworkElement? Row(string tag) => items.FirstOrDefault(m => (m.Tag as string) == tag);
+            var items = ResultMenuItems(menu.Items).ToList();
+            MenuItem? Row(string tag) => items.FirstOrDefault(m => (m.Tag as string) == tag);
 
             var archives = onItem ? MenuArchives() : [];
             bool extract = archives.Count > 0 && archives.Count == MenuFiles().Count;
             bool compress = onItem && MenuDiskItems().Count > 0;
 
-            Row("zip")?.Visibility       = compress ? Visibility.Visible : Visibility.Collapsed;
             Row("unziphere")?.Visibility = extract  ? Visibility.Visible : Visibility.Collapsed;
             Row("unzipto")?.Visibility   = extract  ? Visibility.Visible : Visibility.Collapsed;
-            Row("zipsep")?.Visibility    = compress || extract ? Visibility.Visible : Visibility.Collapsed;
+            Row("archiveoptions")?.Visibility = compress || extract ? Visibility.Visible : Visibility.Collapsed;
+
+            foreach (var format in new[] { ("zip", ".zip"), ("tar", ".tar"), ("targz", ".tar.gz") })
+                if (Row(format.Item1) is MenuItem create)
+                {
+                    create.Visibility = compress ? Visibility.Visible : Visibility.Collapsed;
+                    if (compress) create.Header = string.Format(Loc("Str_Menu_AddToArchive"), ArchiveOutputName(MenuDiskItems()[0], format.Item2));
+                }
 
             if (extract && Row("unzipto") is MenuItem to)
             {
@@ -133,9 +199,6 @@ namespace KillerShell.Shell
                 to.Header = string.Format(Loc("Str_Menu_ExtractTo"), name);
             }
         }
-
-        private MenuItem? _favMenuItem;
-        private MenuItem? _shellMenuItem;
 
         // ── Shells ───────────────────────────────────────────────
         // Same folder rule as Favorites below: a shell opens ON the seed when it is a folder and
@@ -164,7 +227,14 @@ namespace KillerShell.Shell
             else                      AddBookmark(folder);
         }
 
-        private List<string> MenuFiles() => FilesForCommand(_menuSeed);
+        private List<SearchResult> MenuRows()
+        {
+            var rows = Pane.ResultsList.SelectedItems.OfType<SearchResult>().ToList();
+            if (_menuSeed != null && !rows.Contains(_menuSeed)) return [_menuSeed];
+            return rows.Count > 0 ? rows : _menuSeed != null ? [_menuSeed] : [];
+        }
+
+        private List<string> MenuFiles() => MenuRows().Select(row => row.FilePath).ToList();
         private string?      MenuFile()  => MenuFiles().FirstOrDefault();
 
         // Browsing put folders in this list, and every command below used to guard on
@@ -189,6 +259,14 @@ namespace KillerShell.Shell
         // ── Open ─────────────────────────────────────────────────
         internal void MenuOpen_Click(object sender, RoutedEventArgs e)
         {
+            if (DemoMode)
+            {
+                var row = MenuRows().FirstOrDefault();
+                if (row == null) return;
+                if (row.IsDirectory || Services.DemoArchives.Contains(row.FilePath)) _ = NavigateTo(row.FilePath);
+                else OpenForEditing(row.FilePath);
+                return;
+            }
             string? p = MenuFile();
             if (!Exists(p)) return;
 
@@ -304,8 +382,8 @@ namespace KillerShell.Shell
         internal void MenuCopyFolder_Click(object sender, RoutedEventArgs e)
         {
             // Distinct: several results from one folder should not paste that folder five times.
-            var folders = MenuFiles()
-                .Select(f => Path.GetDirectoryName(f) ?? string.Empty)
+            var folders = MenuRows()
+                .Select(row => row.IsDirectory ? row.FilePath : Path.GetDirectoryName(row.FilePath) ?? string.Empty)
                 .Where(f => f.Length > 0)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
@@ -377,8 +455,11 @@ namespace KillerShell.Shell
         // a level, which is the opposite of what the command says.
         private string? MenuFolder()
         {
+            if (_menuBackground) return _active.IsBrowsing ? _active.CurrentFolder : null;
             string? p = MenuFile();
             if (p == null) return null;
+            if (DemoMode)
+                return Services.DemoFs.Has(p) ? p : Path.GetDirectoryName(p);
             if (Directory.Exists(p)) return p;
             string? parent = Path.GetDirectoryName(p);
             return Directory.Exists(parent) ? parent : null;

@@ -44,6 +44,7 @@
               <Grid.RowDefinitions>
                   <RowDefinition Height="Auto"/>
                   <RowDefinition Height="*"/>
+                  <RowDefinition Height="Auto"/>
               </Grid.RowDefinitions>
 
               <!-- Tab band: hidden until there are 2+ tabs (like KillerPDF). Opaque + its own
@@ -71,6 +72,9 @@
                       Height="{DynamicResource TabBandHeight}"
                       Background="Transparent" Visibility="Collapsed"
                       SizeChanged="TabBar_SizeChanged">
+               <Border.ContextMenu>
+                   <ContextMenu Opened="TabPlacementMenu_Opened"/>
+               </Border.ContextMenu>
                <Grid>
                 <!-- NO grain layer of the band's own. ScaleHost's row-wide grain (MainWindow.xaml)
                      already covers this area, so a second tile here DOUBLED the texture across the
@@ -98,7 +102,8 @@
                      flat. This gradient is a SHADOW, and it was hardcoded - which is why the tabs
                      still looked shadowed on 98SE after the tab's own DropShadowEffect was made
                      theme-driven. -->
-                <Border IsHitTestVisible="False" Opacity="{DynamicResource BarShadowOpacity}">
+                <Border x:Name="TabBandShadow" IsHitTestVisible="False" Opacity="{DynamicResource BarShadowOpacity}"
+                        RenderTransformOrigin="0.5,0.5">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                             <GradientStop Color="#00000000" Offset="0"/>
@@ -226,10 +231,12 @@
                                         PreviewMouseMove="Tab_DragMove"
                                         PreviewMouseLeftButtonUp="Tab_DragUp">
                                     <Border.ContextMenu>
-                                        <ContextMenu>
+                                        <ContextMenu Opened="TabPlacementMenu_Opened">
                                             <MenuItem Header="{DynamicResource Str_Menu_PipeTab}"
                                                       Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                      Click="PipeTab_Click" InputGestureText="Ctrl+Shift+F"/>
+                                                      Click="PipeTab_Click" InputGestureText="Ctrl+Shift+F">
+                                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Border.ContextMenu>
                                     <Grid>
@@ -294,10 +301,10 @@
                                              surface from visually swallowing the tab. Zero-thickness on
                                              every ordinary theme and collapsed for every other tab. -->
                                         <DockPanel x:Name="tabContents" LastChildFill="True" VerticalAlignment="Top">
-                                            <!-- Nulled here rather than on the shared DangerButton style,
-                                                 which the term and filter x's also use. -->
-                                            <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Width="18" Height="18" Margin="4,0,0,0"
-                                                    FocusVisualStyle="{x:Null}"
+                                            <!-- The larger close target extends into existing vertical
+                                                 padding without increasing the tab strip's height. -->
+                                            <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Width="24" Height="24" Margin="4,-2,0,-2"
+                                                    FontSize="14" Padding="0" VerticalAlignment="Center" FocusVisualStyle="{x:Null}"
                                                     ToolTip="{DynamicResource Str_TT_CloseTab}" Tag="{Binding}" Click="CloseTab_Click">
                                                 <AutomationProperties.Name>
                                                     <MultiBinding Converter="{StaticResource CloseTabName}">
@@ -401,7 +408,6 @@
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
                                         <Setter TargetName="tabBd" Property="CornerRadius" Value="2,2,0,0"/>
                                         <Setter TargetName="tabClose" Property="Style" Value="{StaticResource DangerButton}"/>
-                                        <Setter TargetName="tabBd" Property="MenuBackground" Value="{DynamicResource TabActiveBrush}"/>
                                         <Setter TargetName="tabBd" Property="BlendProgress" Value="{Binding MenuBarBlend, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                                         <!-- Only the active tab draws its own grain - it is opaque,
                                              so it hides the band's layer and needs to replace it. -->
@@ -584,6 +590,9 @@
                                     <DataTrigger Binding="{Binding IsActive}" Value="False">
                                         <Setter TargetName="tabClose" Property="Style" Value="{StaticResource DangerButton}"/>
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                        <Setter TargetName="tabBd" Property="MenuBackground" Value="{Binding MenuBarShownBrush, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
+                                    </DataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding IsActive}" Value="True"/>
@@ -593,6 +602,15 @@
                                         <Setter TargetName="tabLbl" Property="Foreground" Value="{Binding MenuBarContentForeground, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                                         <Setter TargetName="tabGlyph" Property="Foreground" Value="{Binding MenuBarContentForeground, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                                         <Setter TargetName="tabClose" Property="Style" Value="{StaticResource TerminalTabCloseButton}"/>
+                                        <Setter TargetName="tabGrain" Property="Opacity" Value="0"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                            <Condition Binding="{Binding IsEditor}" Value="True"/>
+                                            <Condition Binding="{Binding UsesContentBackground, ElementName=tabBd}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabGrain" Property="Opacity" Value="0"/>
                                     </MultiDataTrigger>
                                 </DataTemplate.Triggers>
                             </DataTemplate>
@@ -801,7 +819,7 @@
                             </Button.Style>
                         </Button>
                     </StackPanel>
-                    <Border Grid.Column="1" x:Name="ScopeBar" CornerRadius="5,0,0,0" Padding="6,7,8,5" MinHeight="22"
+                    <Border Grid.Column="1" x:Name="ScopeBar" CornerRadius="5,0,0,0" Padding="6,6,8,4" MinHeight="22"
                             Cursor="Hand" ToolTip="{DynamicResource Str_TT_Scope}" MouseLeftButtonUp="ScopeBar_Click">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -952,12 +970,6 @@
                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1"
                                   Data="M0,0 H14 V14 H0 Z M2,2 L12,12"/>
                         </Button>
-                    <!-- Pipe: search WITHIN these results in a new tab. Collapsed while browsing
-                         (ViewOptions.cs) - piping a folder listing into a search tab is the one
-                         case where it reads as a filter and surprises you. -->
-                        <Button x:Name="PipeBtn" Content="&#xE71C;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
-                                FontFamily="Segoe MDL2 Assets" FontSize="15" Style="{StaticResource SurfaceButton}"
-                                ToolTip="{DynamicResource Str_TT_Pipe}" Click="PipeButton_Click"/>
                         <!-- Dual pane moved to the icon rail (MainWindow.xaml). It was the one
                              control in this strip that acts on the WINDOW rather than on this
                              pane, so there were two of them - one per pane - both doing the
@@ -2032,28 +2044,25 @@
                              right-click records what is under the pointer and each command asks
                              FilesForCommand what to act on, which is what lets a command work on
                              a whole selection ("copy 12 paths") instead of a single Tag.
-                             Flat rather than nested. That USED to be forced - the MenuItem
-                             template had no submenu popup, so a Copy submenu would silently
-                             never open - but the template carries KillerPDF's SubPopup now, so
-                             nesting the six Copy items is on the table if this list grows. -->
+                             Related copy and archive commands share submenus. -->
                         <ContextMenu x:Key="ResultMenu">
-                            <MenuItem Header="{DynamicResource Str_Menu_OpenFile}"      Click="MenuOpen_Click"           InputGestureText="Enter">
+                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_OpenFile}"      Click="MenuOpen_Click"           InputGestureText="Enter">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8E5;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Edit opens the file in a TAB rather than through its association,
                                  which is the point on a script: opening a .ps1 the normal way
                                  runs it (ResultsMenu.cs MenuEdit_Click). -->
-                            <MenuItem Header="{DynamicResource Str_Menu_Edit}"          Click="MenuEdit_Click"           InputGestureText="F7">
+                            <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_Edit}"          Click="MenuEdit_Click"           InputGestureText="F7">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE70F;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_OpenWith}"      Click="MenuOpenWith_Click"       InputGestureText="Ctrl+Shift+O">
+                            <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_OpenWith}"      Click="MenuOpenWith_Click"       InputGestureText="Ctrl+Shift+O">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7AC;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_OpenAdmin}"     Click="MenuOpenAdmin_Click"      InputGestureText="Ctrl+Shift+Enter">
+                            <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_OpenAdmin}"     Click="MenuOpenAdmin_Click"      InputGestureText="Ctrl+Shift+Enter">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                             </MenuItem>
                             <Separator/>
-                            <MenuItem Header="{DynamicResource Str_Menu_ShowExplorer}"  Click="MenuShowInExplorer_Click" InputGestureText="F6">
+                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_ShowExplorer}"  Click="MenuShowInExplorer_Click" InputGestureText="F6">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE838;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_SearchHere}"    Click="MenuSearchHere_Click"     InputGestureText="F3">
@@ -2091,23 +2100,26 @@
                                  is LINK - a chain - and read as "make a shortcut" rather than
                                  "copy". E8C8 is what Copy below already uses, and the editor,
                                  terminal, Registry Editor and Storage Analyzer menus too. -->
+                            <MenuItem Tag="copyspecial" Header="{DynamicResource Str_Menu_CopySpecial}">
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                             <MenuItem Header="{DynamicResource Str_Menu_CopyPath}"      Click="MenuCopyPath_Click"   InputGestureText="Ctrl+Shift+C">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_CopyName}"      Click="MenuCopyName_Click"   InputGestureText="Ctrl+Shift+M">
+                            <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_CopyName}"      Click="MenuCopyName_Click"   InputGestureText="Ctrl+Shift+M">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_CopyFolder}"    Click="MenuCopyFolder_Click" InputGestureText="Ctrl+Shift+D">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8B7;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_CopyLines}"     Click="MenuCopyLines_Click"  InputGestureText="Ctrl+Shift+Y">
+                            <MenuItem Tag="matchedlines" Header="{DynamicResource Str_Menu_CopyLines}"     Click="MenuCopyLines_Click"  InputGestureText="Ctrl+Shift+Y">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8A5;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- "Copy file" used to sit here. It was PutFilesOnClipboard(Copy)
                                  written twice - same CF_HDROP, same Preferred DropEffect blob,
                                  same status key as Ctrl+C / Copy below. Removed as redundant. -->
-                            <MenuItem Header="{DynamicResource Str_Menu_CopyHash}"      Click="MenuCopyHash_Click"   InputGestureText="Ctrl+Shift+H">
+                            <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_CopyHash}"      Click="MenuCopyHash_Click"   InputGestureText="Ctrl+Shift+H">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE72E;"/></MenuItem.Icon>
+                            </MenuItem>
                             </MenuItem>
                             <!-- File operations (FileCommands.cs). Cut / Copy / Paste sit above
                                  the destructive pair, and New folder last, so Delete never lands
@@ -2118,16 +2130,16 @@
                                  KillerPDF's MakeMenuItem passes it. Each one below is a binding
                                  that really exists in Window_PreviewKeyDown - an item showing a
                                  shortcut that does nothing is worse than showing none. -->
-                            <MenuItem Header="{DynamicResource Str_Menu_Cut}"           Click="MenuCut_Click"       InputGestureText="Ctrl+X">
+                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Cut}"           Click="MenuCut_Click"       InputGestureText="Ctrl+X">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C6;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_Copy}"          Click="MenuCopy_Click"      InputGestureText="Ctrl+C">
+                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Copy}"          Click="MenuCopy_Click"      InputGestureText="Ctrl+C">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_Paste}"         Click="MenuPaste_Click"     InputGestureText="Ctrl+V">
+                            <MenuItem Tag="background" Header="{DynamicResource Str_Menu_Paste}"         Click="MenuPaste_Click"     InputGestureText="Ctrl+V">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE77F;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_Rename}"        Click="MenuRename_Click"    InputGestureText="F2">
+                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Rename}"        Click="MenuRename_Click"    InputGestureText="F2">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Nickname rows, next to Rename because they read like one: header
@@ -2138,10 +2150,10 @@
                             <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="MenuNicknameRemove_Click" InputGestureText="Alt+Shift+N">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_Delete}"        Click="MenuDelete_Click"    InputGestureText="Delete">
+                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Delete}"        Click="MenuDelete_Click"    InputGestureText="Delete">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE74D;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_NewFolder}"     Click="MenuNewFolder_Click" InputGestureText="Ctrl+Shift+N">
+                            <MenuItem Tag="background" Header="{DynamicResource Str_Menu_NewFolder}"     Click="MenuNewFolder_Click" InputGestureText="Ctrl+Shift+N">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8F4;"/></MenuItem.Icon>
                             </MenuItem>
                             <!-- Archive verbs (ArchiveEdit.cs). Shown only where they apply:
@@ -2149,7 +2161,15 @@
                                  selection is archives this build can read. The Extract to row's
                                  header carries the folder name and is set as the menu opens. -->
                             <Separator Tag="zipsep"/>
+                            <MenuItem Tag="archiveoptions" Header="{DynamicResource Str_Menu_ArchiveOptions}">
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
                             <MenuItem Tag="zip" Header="{DynamicResource Str_Menu_Compress}" Click="MenuCompress_Click" InputGestureText="Alt+Z">
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Tag="tar" Click="MenuCompress_Click">
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Tag="targz" Click="MenuCompress_Click">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Tag="unziphere" Header="{DynamicResource Str_Menu_ExtractHere}" Click="MenuExtractHere_Click" InputGestureText="Alt+X">
@@ -2158,8 +2178,9 @@
                             <MenuItem Tag="unzipto" Header="{DynamicResource Str_Menu_ExtractTo}" Click="MenuExtractTo_Click" InputGestureText="Alt+Shift+X">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8DA;"/></MenuItem.Icon>
                             </MenuItem>
+                            </MenuItem>
                             <Separator/>
-                            <MenuItem Header="{DynamicResource Str_Menu_Properties}"    Click="MenuProperties_Click" InputGestureText="Alt+Enter">
+                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Properties}"    Click="MenuProperties_Click" InputGestureText="Alt+Enter">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}"     Click="MenuShell_Click"      InputGestureText="Shift+F10" Tag="shellmenu">

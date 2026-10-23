@@ -13,9 +13,11 @@ namespace KillerShell.Shell
         {
             if (SearchPanel.Parent is Panel parent) parent.Children.Remove(SearchPanel);
             TitleSearchContent.Content = SearchPanel;
-            SearchPanel.Width = 320;
+            if (PatternHelpOverlay.Parent is Panel helpParent) helpParent.Children.Remove(PatternHelpOverlay);
+            PatternHelpHost.Content = PatternHelpOverlay;
             SearchPanel.Visibility = Visibility.Visible;
             ScaleHost.SizeChanged += (_, _) => UpdateTitleSearchSize();
+            LocationChanged += (_, _) => { if (_searchOpen) TitleSearchPopup.IsOpen = false; };
             _searchOpen = false;
             ApplySearchPanel(false);
         }
@@ -35,19 +37,49 @@ namespace KillerShell.Shell
             SearchCol.Width = new GridLength(0);
             SearchCol.MinWidth = 0;
             UpdateTitleSearchSize();
-            SearchScopeButton.Content = Loc(SearchScopeKey(_titleSearchScope));
-            SearchScopeButton.ToolTip = string.Join(Environment.NewLine, ResolveTitleSearchRoots());
+            RefreshTitleSearchContext();
             TitleSearchPopup.IsOpen = _searchOpen;
+        }
+
+        private void RefreshTitleSearchContext()
+        {
+            SearchScopeButton.Content = Pane.Active?.PipeFiles != null
+                ? Loc("Str_Menu_PipeTab") : Loc(SearchScopeKey(_titleSearchScope));
+            SearchScopeButton.ToolTip = Pane.Active?.PipeFiles != null
+                ? Pane.Active.PipeLabel : string.Join(Environment.NewLine, ResolveTitleSearchRoots());
+            SearchWithinButton.IsEnabled = Pane.Active != null && !Pane.Active.IsBrowsing && Pane.Active.Results.Count > 0;
         }
 
         private void UpdateTitleSearchSize()
         {
             double windowHeight = ActualHeight > 0 ? ActualHeight : Height;
-            double available = (Math.Min(windowHeight, SystemParameters.WorkArea.Height) - 100) / _appScale;
-            TitleSearchViewport.MaxHeight = Math.Max(80, available - 52);
-            // The form retains room for its existing minimum rows; the viewport scrolls it
-            // when accessibility zoom or a short window leaves less space.
-            SearchPanel.Height = Math.Max(320, Math.Min(560, TitleSearchViewport.MaxHeight));
+            double windowWidth = ActualWidth > 0 ? ActualWidth : Width;
+            double scale = Math.Max(0.5, _appScale);
+            double available = Math.Max(220, (windowWidth - 48) / scale);
+            bool helpOpen = PatternHelpOverlay.Visibility == Visibility.Visible;
+            bool helpBeside = helpOpen && available >= 780;
+            double formWidth = Math.Min(620, available - (helpBeside ? 256 : 0));
+            TitleSearchForm.Width = formWidth;
+            bool stacked = formWidth < 540;
+            SearchTermsColumn.Width = new GridLength(stacked ? 1 : 1.1, GridUnitType.Star);
+            SearchFiltersColumn.Width = stacked ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+            Grid.SetColumn(SearchFiltersSection, stacked ? 0 : 1);
+            Grid.SetRow(SearchFiltersSection, stacked ? 1 : 0);
+            TitleSearchLayout.Width = formWidth + (helpBeside ? 256 : 0);
+            Grid.SetColumn(PatternHelpHost, helpBeside ? 1 : 0);
+            Grid.SetRow(PatternHelpHost, helpBeside ? 0 : 1);
+            PatternHelpOverlay.Width = helpBeside ? 240 : formWidth - 24;
+            PatternHelpHost.Margin = helpOpen ? new Thickness(8, 8, 8, 8) : new Thickness(0);
+            TitleSearchViewport.MaxHeight = Math.Max(80, (windowHeight - 80) / scale);
+            // Popup positioning already accounts for the outer shadow margin. Align the inner border.
+            TitleSearchPopup.HorizontalOffset = SearchPanelBtn.ActualWidth - (formWidth + 1) * scale;
+            TitleSearchPopup.VerticalOffset = -scale;
+        }
+
+        private void TitleSearchPopup_Opened(object sender, EventArgs e)
+        {
+            TitleSearchViewport.ScrollToTop();
+            Anim.FadeIn(TitleSearchSurface);
         }
 
         internal void FocusSearchTerms()

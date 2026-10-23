@@ -146,6 +146,7 @@
     <sys:String x:Key="Str_About_StartupUpdateCheck">Проверять обновления при запуске</sys:String>
     <sys:String x:Key="Str_About_StartWithWindows">Запускать вместе с Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Сворачивать в системный трей при закрытии</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">Показывать сочетания клавиш в меню</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Если включено, после закрытия окна приложение продолжает работать в области уведомлений.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Открыть {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Выход</sys:String>
@@ -215,7 +216,10 @@
     <sys:String x:Key="Str_Ks_TreeHidden">показать или скрыть в дереве скрытые папки и папки с точкой</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminal">Открыть здесь терминал</sys:String>
     <sys:String x:Key="Str_Menu_OpenTerminalAdmin">Открыть здесь терминал от имени администратора</sys:String>
-    <sys:String x:Key="Str_Menu_ExcludeFolder">Исключить эту папку</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">Исключить папку из поиска</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">Параметры архива</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">Копировать...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">Добавить в {0}</sys:String>
     <sys:String x:Key="Str_Menu_CopyPath">Копировать полный путь</sys:String>
     <sys:String x:Key="Str_Menu_CopyName">Копировать имя файла</sys:String>
     <sys:String x:Key="Str_Menu_CopyFolder">Копировать путь к папке</sys:String>
@@ -976,6 +980,8 @@
     <sys:String x:Key="Str_Layout_DetailsRight">Сведения справа</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Скрыть сведения</sys:String>
     <sys:String x:Key="Str_Layout_OnePane">Одна панель</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">Вкладки сверху</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">Вкладки снизу</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Панели слева и справа</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Панели сверху и снизу</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Искать в этом окне</sys:String>

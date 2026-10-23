@@ -111,12 +111,9 @@ namespace KillerShell.Tools
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // the panels
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
 
-            // PaneBrush, the same tier as the file browser's location row and the ACTIVE TAB, so
-            // the tab floats down into this surface and the two read as one. The cards and tiles
-            // on top of it take the menu tier, exactly as the file listing and the terminal do -
-            // one rule for every tab: the tab's own surface is PaneBrush, its content is
-            // MenuBackgroundBrush.
-            this.SetResourceReference(Grid.BackgroundProperty, "PaneBrush");
+            this.SetResourceReference(Grid.BackgroundProperty, "MenuBackgroundBrush");
+            RefreshSurfaceResources();
+            Services.ThemeManager.ThemeChanged += RefreshSurfaceResources;
             // Grain over that opaque face, spanning all three rows. PaneContent's own grain layer
             // is the FIRST child of its Grid, so it paints UNDER everything - an opaque root here
             // hides it and the tab comes up as the one flat, textureless surface in the window.
@@ -212,11 +209,23 @@ namespace KillerShell.Tools
         /// </summary>
         internal void Shutdown()
         {
+            Services.ThemeManager.ThemeChanged -= RefreshSurfaceResources;
             _loadVersion++;
             _lifetimeCts.Cancel();
             _timer.Stop();
             _statusClearTimer.Stop();
             DisposeCounters();
+        }
+
+        private void RefreshSurfaceResources()
+        {
+            var app = Application.Current;
+            if (app == null) return;
+            var configured = app.FindResource("MonitorCellBrush");
+            // Keep an explicit monitor palette, such as the retro black readouts. Ordinary
+            // cells inherit the lighter content surface locally, without changing other tools.
+            Resources["MonitorCellBrush"] = ReferenceEquals(configured, app.FindResource("MenuBackgroundBrush"))
+                ? app.FindResource("ListPaneBrush") : configured;
         }
 
         private void DisposeCounters()

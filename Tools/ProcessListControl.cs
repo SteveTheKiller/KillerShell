@@ -149,10 +149,7 @@ namespace KillerShell.Tools
 
             _grid = BuildGrid();
             _grid.ItemsSource = _procView;
-            // Processes uses the pane's full right edge: its header and vertical scrollbar align
-            // with the containing well instead of stopping at the shared Event Viewer gutter.
-            _grid.SetResourceReference(FrameworkElement.MarginProperty, "ProcessGridMargin");
-            var gridHost = ToolTabChrome.WrapContent(_grid, "ToolContentBrush");
+            var gridHost = ToolTabChrome.WrapTable(_grid, "ToolContentBrush");
             SetRow(gridHost, 1);
             Children.Add(gridHost);
 

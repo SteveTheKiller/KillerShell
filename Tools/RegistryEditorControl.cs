@@ -276,7 +276,6 @@ namespace KillerShell.Tools
         private void OnThemeChanged()
         {
             ApplyTreeChevronMask(_tree);
-            ApplyValueHeaderCorners(_grid);
         }
 
         /// <summary>
@@ -515,10 +514,6 @@ namespace KillerShell.Tools
         private Grid BuildSplit(out TreeView tree, out DataGrid grid)
         {
             var split = new Grid();
-            // RegSplitMargin = the 8,0,8,6 this always was, 0 on 98SE: the wells then run flush
-            // to the pane edges so the tree's left edge lines up under the menu bar's white left
-            // line and the right edge is the same thin line as the left.
-            split.SetResourceReference(FrameworkElement.MarginProperty, "RegSplitMargin");
             // A fixed default width, narrower than the folder browser's own 240 (TreePanel.cs
             // TreeWidthDefault) - registry key names run shorter than folder paths, so the tree
             // does not need as much room at rest, and the value grid's Data column (a REG_BINARY
@@ -600,7 +595,7 @@ namespace KillerShell.Tools
             grid = BuildValueGrid();
             // Its own sunken WHITE well, separate from the tree's, with the skinny splitter
             // between them as the divider.
-            var gridHost = ToolTabChrome.WrapContent(grid, "ToolContentBrush");
+            var gridHost = ToolTabChrome.WrapTable(grid, "ToolContentBrush");
             SetColumn(gridHost, 2);
             split.Children.Add(gridHost);
 
@@ -654,11 +649,7 @@ namespace KillerShell.Tools
                 // layer instead of sitting directly on the tab.
                 Background = Brushes.Transparent
             };
-            // RegGridMargin: the 6,0,0,0 gap to the splitter it always had, 0 on 98SE - inside
-            // its own sunken well the gap read as a slim white border to the left of the
-            // table; the skinny splitter is the divider now.
-            grid.SetResourceReference(FrameworkElement.MarginProperty, "RegGridMargin");
-            grid.CanUserReorderColumns = false;   // keeps Name/Data as the fixed first/last columns the header rounding below assumes
+            grid.CanUserReorderColumns = false;
             grid.SetResourceReference(DataGrid.ForegroundProperty, "TextBrush");
             grid.SetResourceReference(DataGrid.HorizontalGridLinesBrushProperty, "PaneBorderBrush");
             grid.RowStyle          = (Style)FindResourceStatic("DarkDataGridRow");
@@ -673,16 +664,6 @@ namespace KillerShell.Tools
             var kind = Col("Str_Col_RegType", nameof(RegistryValueRow.KindLabel), 90);
             var data = Col("Str_Col_RegData", nameof(RegistryValueRow.DataLabel), new DataGridLength(1, DataGridLengthUnitType.Star));
 
-            // Rounded top corners on the OUTER two headers only, so the row reads as one radius-5
-            // band with rounded top corners - the
-            // family standard documented against Killendar's MonthView/TimeGridView day-name strip
-            // (CalendarChrome.cs / MonthView.xaml: TableHeaderBrush, CornerRadius 5,5,0,0,
-            // HeaderLineBrush bottom border). A DataGrid draws one DataGridColumnHeader per
-            // column rather than a single band Border, so the shared DarkDataGridColumnHeader
-            // style (Controls.xaml, still flat/square and used as-is by Task Manager/Event Viewer -
-            // untouched here) is only overridden on the leftmost and rightmost columns via their
-            // own HeaderStyle; the middle Type column keeps the grid's plain ColumnHeaderStyle.
-
             // A long binary/multi-string value clips at the column edge just like the Processes/
             // Event Viewer grids do - the edit dialog (double-click / Enter / Modify...) is where
             // the full value actually lives, but the tooltip still carries it for a quick look.
@@ -693,19 +674,11 @@ namespace KillerShell.Tools
             grid.Columns.Add(name);
             grid.Columns.Add(kind);
             grid.Columns.Add(data);
-            ApplyValueHeaderCorners(grid);
 
             grid.ContextMenuOpening += Grid_ContextMenuOpening;
             grid.MouseDoubleClick += Grid_MouseDoubleClick;
             grid.PreviewKeyDown += Grid_PreviewKeyDown;
             return grid;
-        }
-
-        private static void ApplyValueHeaderCorners(DataGrid grid)
-        {
-            var radius = Services.ThemeManager.Radius("BarCornerRadiusValue", 5);
-            grid.Columns[0].HeaderStyle = BuildValueHeaderStyle(new CornerRadius(radius, 0, 0, 0));
-            grid.Columns[2].HeaderStyle = BuildValueHeaderStyle(new CornerRadius(0, radius, 0, 0));
         }
 
         private static DataGridTextColumn Col(string headerKey, string bindingPath, double width)
@@ -721,117 +694,6 @@ namespace KillerShell.Tools
                 Binding = new Binding(bindingPath),
                 Width   = width,
             };
-        }
-
-        /// <summary>Rebuilds the shared DarkDataGridColumnHeader template (Controls.xaml) with one
-        /// difference: the header Border's CornerRadius, so the value grid's outer two columns can
-        /// carry a rounded top corner without touching the shared style every other DataGrid in the
-        /// app (Task Manager, Event Viewer) still uses unmodified. Colors, fonts, the sort glyph and
-        /// the resize grippers are identical to that shared template.</summary>
-        private static Style BuildValueHeaderStyle(CornerRadius corner)
-        {
-            var style = new Style(typeof(DataGridColumnHeader));
-            style.Setters.Add(new Setter(Control.BackgroundProperty, new DynamicResourceExtension("TableHeaderBrush")));
-            style.Setters.Add(new Setter(Control.ForegroundProperty, new DynamicResourceExtension("MutedTextBrush")));
-            style.Setters.Add(new Setter(Control.FontSizeProperty, 11.0));
-            style.Setters.Add(new Setter(Control.FontWeightProperty, FontWeights.Normal));
-            style.Setters.Add(new Setter(Control.PaddingProperty, new Thickness(8, 0, 8, 0)));
-            style.Setters.Add(new Setter(Control.BorderBrushProperty, new DynamicResourceExtension("HeaderLineBrush")));
-            style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(0, 0, 0, 1)));
-            style.Setters.Add(new Setter(Control.CursorProperty, Cursors.Hand));
-            style.Setters.Add(new Setter(Control.TemplateProperty, BuildValueHeaderTemplate(corner)));
-            return style;
-        }
-
-        private static ControlTemplate BuildValueHeaderTemplate(CornerRadius corner)
-        {
-            var template = new ControlTemplate(typeof(DataGridColumnHeader));
-
-            var outerGrid = new FrameworkElementFactory(typeof(Grid));
-
-            var border = new FrameworkElementFactory(typeof(Border), "hdrBg");
-            border.SetBinding(Border.BackgroundProperty, new Binding("Background") { RelativeSource = RelativeSource.TemplatedParent });
-            border.SetBinding(Border.BorderBrushProperty, new Binding("BorderBrush") { RelativeSource = RelativeSource.TemplatedParent });
-            border.SetBinding(Border.BorderThicknessProperty, new Binding("BorderThickness") { RelativeSource = RelativeSource.TemplatedParent });
-            border.SetBinding(Border.PaddingProperty, new Binding("Padding") { RelativeSource = RelativeSource.TemplatedParent });
-            border.SetValue(Border.SnapsToDevicePixelsProperty, true);
-            border.SetValue(Border.CornerRadiusProperty, corner);
-
-            var innerGrid = new FrameworkElementFactory(typeof(Grid));
-            var col0 = new FrameworkElementFactory(typeof(ColumnDefinition));
-            col0.SetValue(ColumnDefinition.WidthProperty, new GridLength(1, GridUnitType.Star));
-            var col1 = new FrameworkElementFactory(typeof(ColumnDefinition));
-            col1.SetValue(ColumnDefinition.WidthProperty, GridLength.Auto);
-            innerGrid.AppendChild(col0);
-            innerGrid.AppendChild(col1);
-
-            var content = new FrameworkElementFactory(typeof(ContentPresenter));
-            content.SetValue(Grid.ColumnProperty, 0);
-            content.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
-            content.SetBinding(ContentPresenter.HorizontalAlignmentProperty, new Binding("HorizontalContentAlignment") { RelativeSource = RelativeSource.TemplatedParent });
-            content.SetBinding(ContentPresenter.SnapsToDevicePixelsProperty, new Binding("SnapsToDevicePixels") { RelativeSource = RelativeSource.TemplatedParent });
-
-            var sortGlyph = new FrameworkElementFactory(typeof(TextBlock), "sortGlyph");
-            sortGlyph.SetValue(Grid.ColumnProperty, 1);
-            sortGlyph.SetValue(TextBlock.TextProperty, ((char)0x25B2).ToString());
-            sortGlyph.SetValue(TextBlock.FontSizeProperty, 8.0);
-            sortGlyph.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
-            sortGlyph.SetValue(TextBlock.MarginProperty, new Thickness(6, 1, 0, 0));
-            sortGlyph.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("PrimaryBrush"));
-            sortGlyph.SetValue(TextBlock.VisibilityProperty, Visibility.Collapsed);
-
-            innerGrid.AppendChild(content);
-            innerGrid.AppendChild(sortGlyph);
-            border.AppendChild(innerGrid);
-
-            var leftGripper = new FrameworkElementFactory(typeof(Thumb), "PART_LeftHeaderGripper");
-            leftGripper.SetValue(Thumb.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            leftGripper.SetValue(Thumb.WidthProperty, 8.0);
-            leftGripper.SetValue(Thumb.MarginProperty, new Thickness(-4, 0, 0, 0));
-            leftGripper.SetValue(Thumb.CursorProperty, Cursors.SizeWE);
-            leftGripper.SetValue(Thumb.TemplateProperty, GripperTemplate());
-
-            var rightGripper = new FrameworkElementFactory(typeof(Thumb), "PART_RightHeaderGripper");
-            rightGripper.SetValue(Thumb.HorizontalAlignmentProperty, HorizontalAlignment.Right);
-            rightGripper.SetValue(Thumb.WidthProperty, 8.0);
-            rightGripper.SetValue(Thumb.MarginProperty, new Thickness(0, 0, -4, 0));
-            rightGripper.SetValue(Thumb.CursorProperty, Cursors.SizeWE);
-            rightGripper.SetValue(Thumb.TemplateProperty, GripperTemplate());
-
-            outerGrid.AppendChild(border);
-            outerGrid.AppendChild(leftGripper);
-            outerGrid.AppendChild(rightGripper);
-            template.VisualTree = outerGrid;
-
-            var ascTrigger = new Trigger { Property = DataGridColumnHeader.SortDirectionProperty, Value = System.ComponentModel.ListSortDirection.Ascending };
-            ascTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible) { TargetName = "sortGlyph" });
-            ascTrigger.Setters.Add(new Setter(TextBlock.TextProperty, ((char)0x25B2).ToString()) { TargetName = "sortGlyph" });
-            template.Triggers.Add(ascTrigger);
-
-            var descTrigger = new Trigger { Property = DataGridColumnHeader.SortDirectionProperty, Value = System.ComponentModel.ListSortDirection.Descending };
-            descTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible) { TargetName = "sortGlyph" });
-            descTrigger.Setters.Add(new Setter(TextBlock.TextProperty, ((char)0x25BC).ToString()) { TargetName = "sortGlyph" });
-            template.Triggers.Add(descTrigger);
-
-            var hoverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = true };
-            hoverTrigger.Setters.Add(new Setter(Border.BackgroundProperty, new DynamicResourceExtension("RowHoverBrush")) { TargetName = "hdrBg" });
-            hoverTrigger.Setters.Add(new Setter(Control.ForegroundProperty, new DynamicResourceExtension("TextBrush")));
-            template.Triggers.Add(hoverTrigger);
-
-            var pressedTrigger = new Trigger { Property = ButtonBase.IsPressedProperty, Value = true };
-            pressedTrigger.Setters.Add(new Setter(Border.BackgroundProperty, new DynamicResourceExtension("RowSelectedBrush")) { TargetName = "hdrBg" });
-            template.Triggers.Add(pressedTrigger);
-
-            return template;
-        }
-
-        private static ControlTemplate GripperTemplate()
-        {
-            var template = new ControlTemplate(typeof(Thumb));
-            var border = new FrameworkElementFactory(typeof(Border));
-            border.SetValue(Border.BackgroundProperty, Brushes.Transparent);
-            template.VisualTree = border;
-            return template;
         }
 
         private static TextBlock BuildStatusLine()
