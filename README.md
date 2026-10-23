@@ -31,12 +31,8 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 
 <table>
 <tr>
-<td width="50%"><img src="shell-landing/screenshots/04.png" alt="Documents open side by side in list and details views in the Malaise theme"><br><sub>Give each pane its own tabs and view, with list and details views side by side.</sub></td>
-<td width="50%"><img src="shell-landing/screenshots/05.png" alt="PowerShell script open in the editor beside a file listing in the Ectoplasm theme"><br><sub>Edit a PowerShell script with syntax highlighting while keeping files in the other pane.</sub></td>
-</tr>
-<tr>
-<td><img src="shell-landing/screenshots/08.png" alt="PowerShell terminal showing network checks and a patching preview in the Decay theme"><br><sub>Run PowerShell in a tab, with a themed prompt and room to read command output.</sub></td>
-<td><img src="shell-landing/screenshots/09.png" alt="Performance Monitor showing CPU, RAM, disk and network graphs in the Mourning theme"><br><sub>Watch CPU, RAM, disk and network activity together in the built-in Performance Monitor.</sub></td>
+<td width="50%"><img src="shell-landing/screenshots/02.png" alt="Stacked panes with invoice search results and the file menu above Pictures, with a photo previewed in the details panel"><br><sub>Stack two panes, each with its own tabs and view, and preview the selected file in the details panel.</sub></td>
+<td width="50%"><img src="shell-landing/screenshots/04.png" alt="Processes beside Registry Editor in side-by-side panes"><br><sub>Open Processes, Services and Registry Editor as tabs, side by side with anything else.</sub></td>
 </tr>
 </table>
 

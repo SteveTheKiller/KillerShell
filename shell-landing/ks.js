@@ -121,21 +121,14 @@
     var dict = window.I18N && window.I18N[lang];
     if (!dict) return english;
     var captions = [
-      dict.theme_dark + ', ' + dict.site_ui_blue + ': ' + dict.f_browse_t,
-      dict.theme_light + ', ' + dict.site_ui_green + ': ' + dict.f_browse_t,
-      dict.theme_98se + ', ' + dict.site_ui_green + ': ' + dict.f_browse_t,
-      dict.theme_dark + ', ' + dict.site_ui_orange + ': ' + dict.f_browse_t,
-      dict.theme_blood + ': ' + dict.f_browse_t,
-      dict.theme_greed + ': PowerShell, ' + dict.f_term_t,
-      dict.theme_cyanotic + ': PowerShell, ' + dict.f_editor_t,
-      dict.theme_ectoplasm + ': PowerShell, ' + dict.f_term_t,
-      dict.theme_dark + ', ' + dict.site_ui_blue + ': ' + dict.f_reg_t + ' (Ctrl+F11)',
-      dict.theme_light + ', ' + dict.site_ui_green + ': ' + dict.f_evt_t + ' (Ctrl+F12)',
-      dict.theme_blood + ': ' + dict.f_procsvc_t + ' (Ctrl+F9)',
-      dict.theme_dark + ': ' + dict.f_panes_t + ' (F10)',
-      dict.theme_dark + ': ' + dict.f_panes_t + ' (F10)',
-      dict.theme_dark + ': ' + dict.f_browse_t + ' (150%)',
-      dict.theme_dark + ': Slovenščina, ' + dict.f_panes_t
+      dict.f_panes_t + ': PowerShell, ' + dict.f_editor_t + ', ' + dict.f_browse_t,
+      dict.f_panes_t + ': ' + dict.f_fname_t + ', ' + dict.f_fileops_t,
+      dict.f_pipe_t + ', ' + dict.f_editor_t,
+      dict.f_panes_t + ': ' + dict.f_procsvc_t + ', ' + dict.f_reg_t,
+      dict.f_evt_t + ' (Ctrl+F12)',
+      dict.f_panes_t + ': ' + dict.f_tabs_t + ', ' + dict.f_browse_t,
+      dict.f_storage_t + ', ' + dict.f_browse_t,
+      dict.theme_light + ': ' + dict.f_fname_t
     ];
     // Demo is a fixed command-line mode; feature and theme names use the site locale.
     var caption = captions[index - 1];

@@ -288,21 +288,14 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
   // Screenshot strip: tries screenshots/01.png .. NN.png, drops any that 404, and shows a
   // placeholder until at least one loads. Drop real screenshots into screenshots/ to populate it.
   var descriptions = [
-    "KillerShell Dark theme with a Blue accent browsing a Documents tab with fabricated demo data.",
-    "KillerShell Light theme with a Green accent browsing a Documents tab with fabricated demo data.",
-    "KillerShell 98SE theme with a Green accent browsing a Documents tab with fabricated demo data.",
-    "KillerShell Dark theme with an Orange accent browsing a Documents tab with fabricated demo data.",
-    "KillerShell Blood theme browsing a Pictures tab in icon view with fabricated demo data.",
-    "KillerShell Greed theme showing a PowerShell terminal tab with fabricated demo script output; no script operation is demonstrated.",
-    "KillerShell Cyanotic theme editing a fabricated PowerShell demo script in the text editor.",
-    "KillerShell Ectoplasm theme showing a PowerShell terminal tab with fabricated demo network output; no live network check is demonstrated.",
-    "KillerShell Dark theme with a Blue accent showing Registry Editor with fabricated demo data in an actual administrator process; no live registry change is demonstrated.",
-    "KillerShell Light theme with a Green accent showing Event Viewer with fabricated demo data in an actual administrator process; no live event query is demonstrated.",
-    "KillerShell Blood theme showing Processes with fabricated demo data in an actual administrator process; no process operation is demonstrated.",
-    "KillerShell Dark theme showing side-by-side panes with fabricated demo data.",
-    "KillerShell Dark theme showing vertically stacked panes with fabricated demo data.",
-    "KillerShell Dark theme at 150% app scale browsing a Documents tab with fabricated demo data.",
-    "KillerShell Dark theme with the app set to Slovenian and dual panes showing fabricated demo data."
+    "KillerShell stacked panes: a PowerShell script in the editor above Pictures thumbnails, with the selected photo in the details panel.",
+    "KillerShell stacked panes: invoice search results with the file menu open, beside Pictures with a photo previewed in the details panel on the right.",
+    "KillerShell searching within earlier results in the details view, above a PowerShell script open in the editor, with the folder tree on the right.",
+    "KillerShell side-by-side panes: Processes on the left and Registry Editor on the right, with fabricated demo data.",
+    "KillerShell Event Viewer listing application events, with the folder tree on the right.",
+    "KillerShell stacked panes in the icon view: screen recordings above the Demo profile folder.",
+    "KillerShell side-by-side panes: a folder in the details view beside the Storage Analyzer treemap.",
+    "KillerShell Light theme showing invoice search results in the icon view."
   ];
   var MAX = descriptions.length;
   var sbThumbs = document.getElementById('sbThumbs');
@@ -360,7 +353,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 
   for (var i = 1; i <= MAX; i++) {
     (function (n) {
-      var src = 'screenshots/' + (n < 10 ? '0' + n : '' + n) + '.png?v=1.5.0';
+      var src = 'screenshots/' + (n < 10 ? '0' + n : '' + n) + '.png?v=1.5.0-2';
       var img = new Image();
       img.onload = function () {
         if (empty) { empty.remove(); empty = null; }
