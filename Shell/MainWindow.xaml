@@ -244,7 +244,7 @@
              here, not on the root grid, so the title bar and footer keep a fixed size and the
              wordmark you scroll over never moves. LayoutTransform reflows and re-rasterizes
              text; RenderTransform would bitmap-stretch it. -->
-        <Grid x:Name="ScaleHost" Grid.Row="1" Panel.ZIndex="1">
+        <local:UnclippedGrid x:Name="ScaleHost" Grid.Row="1" Panel.ZIndex="1">
             <Grid.ColumnDefinitions>
                 <!-- Folder tree, then the permanent icon rail on the tree's inner lip, then the
                      results, then the search panel out on the right edge. Both side panels
@@ -1385,7 +1385,7 @@
                 <local:FilePane x:Name="RightPane" Grid.Column="2" Grid.Row="0"
                                 Visibility="Collapsed"/>
             </Grid>
-        </Grid>
+        </local:UnclippedGrid>
 
         <!-- ══════════ ROW 2 - FOOTER (blends with the sidebar/panes, no divider line) ══════════ -->
         <!-- The footer's own bevel. Zero-thickness on every ordinary theme; on 98SE it is the

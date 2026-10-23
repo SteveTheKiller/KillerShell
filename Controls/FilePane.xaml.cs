@@ -30,11 +30,9 @@ namespace KillerShell
             // Clicking anywhere in a pane makes it the one every command acts on. Preview, so
             // it lands before the click is handled by whatever was actually hit - a button in
             // this pane must not run against the other pane's tab.
-            PreviewMouseDown += (_, e) =>
-            {
-                Owner.FocusPane(this);
-                Owner.PaneHistoryMouseDown(this, e);
-            };
+            // The mouse Back/Forward buttons are handled once, on release, by the window hook
+            // (Chrome.cs WndProc); this only points that hook at the pane under the pointer.
+            PreviewMouseDown += (_, _) => Owner.FocusPane(this);
 
             // Every tile/row/card DataTemplate reaches ViewState through ResultsList.Tag rather
             // than a RelativeSource walk up to this UserControl, or the icons fail to load.
@@ -58,6 +56,10 @@ namespace KillerShell
             PaneContent.AddHandler(ScrollViewer.ScrollChangedEvent,
                 new ScrollChangedEventHandler(PaneScroller_ScrollChanged), handledEventsToo: true);
         }
+
+        // Same rule as UnclippedGrid: a zoom-rounded arrange must not cut off the pane shadow.
+        protected override Geometry? GetLayoutClip(Size layoutSlotSize)
+            => ClipToBounds ? base.GetLayoutClip(layoutSlotSize) : null;
 
         private ScrollViewer? _paneScroller;
         private Brush? _paneScrollerOriginalMask;

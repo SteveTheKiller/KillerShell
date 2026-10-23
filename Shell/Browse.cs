@@ -479,16 +479,6 @@ namespace KillerShell.Shell
         }
 
         // ── History ──────────────────────────────────────────────
-        internal void PaneHistoryMouseDown(FilePane pane, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != System.Windows.Input.MouseButton.XButton1
-                && e.ChangedButton != System.Windows.Input.MouseButton.XButton2) return;
-            if (pane.Active?.IsBrowsing != true) return;
-            e.Handled = true;
-            if (e.ChangedButton == System.Windows.Input.MouseButton.XButton1) NavBack_Click(pane, e);
-            else NavForward_Click(pane, e);
-        }
-
         internal async void NavBack_Click(object sender, RoutedEventArgs e)
         {
             var t = _active;
