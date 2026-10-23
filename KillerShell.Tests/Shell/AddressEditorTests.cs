@@ -23,6 +23,9 @@ public static class AddressEditorScenario
     {
         using var fixture = new ShellWindowFixture();
         var window = fixture.Window;
+        // Wide enough that each pane's toolbar shows its view buttons instead of the overflow
+        // menu, which takes them on a small screen.
+        window.Width = 1600;
         var left = (FilePane)window.FindName("LeftPane");
         var right = (FilePane)window.FindName("RightPane");
         window.ToggleDualPane();
@@ -51,7 +54,9 @@ public static class AddressEditorScenario
 
         left.ViewDetailsBtn.Focus();
         left.ViewDetailsBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        ShellWindowFixture.PumpUntil(() => left.AddressBox.Visibility == Visibility.Collapsed);
+        ShellWindowFixture.PumpUntil(() => left.AddressBox.Visibility == Visibility.Collapsed,
+            diagnostic: () => "detailsVisible=" + left.ViewDetailsBtn.IsVisible + "; focus=" + Keyboard.FocusedElement
+                + "; paneWidth=" + left.ActualWidth);
         Assert.Equal(Visibility.Visible, left.ScopePathLabel.Visibility);
         Assert.Equal(fixture.Root, left.ScopePathLabel.Text);
         Assert.Equal("", search.CurrentFolder);
