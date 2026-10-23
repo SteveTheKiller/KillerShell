@@ -967,7 +967,27 @@ namespace KillerShell.Shell
                     t.PaneFocused = paneActive && t.IsActive;
                     t.PaneDimmed  = DualPane && !lit && t.IsActive;
                 }
+
+                // The pane without focus recedes a little, toward the window behind it, so the
+                // one taking keys stands out. Not under a Windows contrast theme, where text
+                // keeps its full system colors.
+                SetPaneDim(p, DualPane && !lit && !SystemParameters.HighContrast);
             }
+        }
+
+        private const double InactivePaneOpacity = 0.9;
+
+        private static void SetPaneDim(FilePane pane, bool dim)
+        {
+            double target = dim ? InactivePaneOpacity : 1;
+            if (pane.DimTarget == target) return;
+            pane.DimTarget = target;
+            pane.BeginAnimation(UIElement.OpacityProperty,
+                new System.Windows.Media.Animation.DoubleAnimation(target, new Duration(System.TimeSpan.FromMilliseconds(Anim.FadeMs)))
+                {
+                    EasingFunction = new System.Windows.Media.Animation.QuadraticEase
+                        { EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut }
+                });
         }
 
         // ═══════════════════════════════════════════════════════════

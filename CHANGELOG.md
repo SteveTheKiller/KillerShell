@@ -56,6 +56,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.
 - Hovered menu and list items show their text in the theme accent, lightened or darkened only as far as needed to stay readable on the hover fill. Theme menu rows have matching left and right insets and a fading divider below Film Grain. Black uses subtler grain in the app and website.
 - Wordmarks and headings are raised with a subtle bevel in their own color instead of a dark outline; wordmarks keep their drop shadow. The Dark theme's red accent is the brand red again instead of a pink tint.
+- With two panes open, the pane without focus dims slightly so the focused one stands out. Windows contrast themes keep both at full strength.
 
 ## [1.4.0] - 2026-10-15
 

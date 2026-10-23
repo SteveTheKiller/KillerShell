@@ -425,6 +425,10 @@ namespace KillerShell
         internal bool DetailsPaneOnRight { get; set; }
         internal double DetailsPaneWidth { get; set; } = 320;
 
+        /// <summary>The opacity this pane is fading to: below 1 while the other pane has focus
+        /// (DualPane.cs SetPaneDim), so a repeated focus pass does not restart the fade.</summary>
+        internal double DimTarget { get; set; } = 1;
+
         /// <summary>Whether THIS pane's user has ever dragged its details grip - once true, its
         /// height is remembered rather than auto-fit to content (Shell/DetailsPane.cs).</summary>
         internal bool DetailsPaneUserSized { get; set; }
