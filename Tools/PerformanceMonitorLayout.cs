@@ -56,9 +56,9 @@ namespace KillerShell.Tools
         private UniformGrid BuildSummaryStrip()
         {
             _summaryStrip = new UniformGrid { Rows = 1 };
-            // Same outer inset as the panels below, so the strip's first and last tiles line up
-            // with the panels' outer edges (MonitorGridMargin + each card's MonitorTileMargin).
-            _summaryStrip.SetResourceReference(FrameworkElement.MarginProperty, "MonitorGridMargin");
+            // Same side inset as the panels below, so the strip's first and last tiles line up
+            // with the panels' outer edges: 8 from the pane with each card's MonitorTileMargin.
+            _summaryStrip.SetResourceReference(FrameworkElement.MarginProperty, "MonitorStripMargin");
             return _summaryStrip;
         }
 
@@ -74,12 +74,12 @@ namespace KillerShell.Tools
             };
             // ShadowScrollViewer draws the edge shadows under the scrollbar (Controls.xaml).
             scroller.SetResourceReference(FrameworkElement.StyleProperty, "ShadowScrollViewer");
-            // MonitorGridMargin: 2 a side so the cards' own 6px MonitorTileMargin lands their
+            // MonitorPanelsPadding: 4 a side so the cards' own 4px MonitorTileMargin lands their
             // edges at 8; 0 on 98SE so the cards run to the pane edge like every other well (the
             // tab strip above runs to the window edge, and anything short of it reads as the
             // right edge being off). It is Padding, inside the scrolling content, so the edge
             // shadows still reach the pane edges.
-            scroller.SetResourceReference(Control.PaddingProperty, "MonitorGridMargin");
+            scroller.SetResourceReference(Control.PaddingProperty, "MonitorPanelsPadding");
             _panelsScroller = scroller;
             return scroller;
         }
