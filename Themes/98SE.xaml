@@ -339,6 +339,19 @@
          inner dark rings; these two are the inner light and outer dark rings, 1px inside and on
          the edge respectively. Zero and transparent on every other theme. -->
     <Thickness x:Key="BevelInnerMargin">1</Thickness>
+    <!-- The search card and its chips are raised Win98 controls: bevel, no accent outline. -->
+    <Thickness x:Key="SearchCardBorderThickness">0</Thickness>
+    <Thickness x:Key="ModeButtonBorderThickness">0</Thickness>
+    <CornerRadius x:Key="ModeButtonCornerRadius">0</CornerRadius>
+    <sys:Double x:Key="CaptionSearchGlyphSize">9</sys:Double>
+    <!-- Wider than the 2px between maximize and close, so search reads as its own button. -->
+    <Thickness x:Key="CaptionSearchMargin">0,0,6,0</Thickness>
+    <!-- The search box reads as one Win98 dialog: Microsoft Sans Serif throughout, normal weight
+         on its push buttons. Only the KillerSearch title keeps Lacquer (SearchTitleFont). -->
+    <FontFamily x:Key="SearchSectionFont">Microsoft Sans Serif</FontFamily>
+    <sys:Double x:Key="SearchSectionFontSize">11</sys:Double>
+    <FontWeight x:Key="SearchSectionFontWeight">Bold</FontWeight>
+    <FontWeight x:Key="ModeButtonFontWeight">Normal</FontWeight>
     <SolidColorBrush x:Key="BevelInnerLightBrush" Color="#dfdfdf" po:Freeze="True"/>
     <Thickness x:Key="BevelInnerLightThickness">1,1,0,0</Thickness>
     <SolidColorBrush x:Key="BevelOuterDarkBrush" Color="#000000" po:Freeze="True"/>

@@ -217,6 +217,10 @@ namespace KillerShell.Shell
             double activeLeft = Math.Max(0, Math.Min(joinWidth, Math.Round(activeOrigin.X)));
             double activeRight = Math.Max(activeLeft,
                 Math.Min(joinWidth, Math.Round(activeOrigin.X + activeTab.ActualWidth)));
+            // Under a bottom strip the line is the page's gray foot, and the active tab's own dark
+            // right edges start a pixel below it. Running the line under those two columns closes
+            // the corner instead of leaving a light notch in it.
+            if (Grid.GetRow(pane.TabBar) == 2) activeRight = Math.Max(activeLeft, activeRight - 2);
 
             pane.RetroTabInnerJoinLeft.Width = activeLeft;
             Canvas.SetLeft(pane.RetroTabInnerJoinLeft, 0);

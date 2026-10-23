@@ -294,7 +294,7 @@
                                              a doubled line under the tabs is what made the menu bar
                                              below them read as sunken when it is not. An unselected
                                              Win98 tab has a SINGLE line under it. -->
-                                        <Border x:Name="tabBevelDark" IsHitTestVisible="False" Margin="{DynamicResource TabBevelMargin}" Panel.ZIndex="4"
+                                        <Border x:Name="tabBevelDark" IsHitTestVisible="False" Margin="{DynamicResource TabBevelDarkMargin}" Panel.ZIndex="4"
                                                 BorderBrush="{DynamicResource BevelDarkBrush}"
                                                 BorderThickness="{DynamicResource TabInactiveBevelDarkThickness}"/>
                                         <Border x:Name="tabActiveRetroInnerBevel" IsHitTestVisible="False" Panel.ZIndex="6"

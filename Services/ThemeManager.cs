@@ -356,6 +356,8 @@ namespace KillerShell.Services
             // trims the BOTTOM so the right-hand dark edge stops at the tab's foot instead of
             // hanging a pixel into the pane below it.
             SetIfAbsent("TabBevelMargin", new Thickness(-12, -4, -5, -5));
+            // The dark right edge's own copy, so a bottom strip can shorten it alone (TabPlacement.cs).
+            SetIfAbsent("TabBevelDarkMargin", combined["TabBevelMargin"]);
             SetIfAbsent("TabGrainMargin", new Thickness(-12, -4, -5, -5));
             // The folder tree's inset inside its well (MainWindow.xaml TreeFadeHost). Default is
             // the literal it replaced; a flat theme zeroes the top so the well's own fill does not
@@ -419,6 +421,14 @@ namespace KillerShell.Services
             SetIfAbsent("DialogWordmarkVisibility", Visibility.Visible);
             SetIfAbsent("DialogPlainTitleVisibility", Visibility.Collapsed);
             SetIfAbsent("ContentPaneMargin", new Thickness(0));
+            // The search card's accent outline and the search chips' outline and rounding;
+            // 98SE replaces both with raised Win98 bevels.
+            SetIfAbsent("SearchCardBorderThickness", new Thickness(1));
+            SetIfAbsent("ModeButtonBorderThickness", new Thickness(1));
+            SetIfAbsent("ModeButtonCornerRadius", new CornerRadius(4));
+            // The title-bar search glyph; 98SE's 16px caption buttons need it at caption size.
+            SetIfAbsent("CaptionSearchGlyphSize", 13.0);
+            SetIfAbsent("CaptionSearchMargin", new Thickness(0));
             // The file and folder pickers' button row, field rows and list rows. 98SE states its
             // own tight Win98 insets; these defaults are the 16px inset the pickers always had.
             SetIfAbsent("DialogButtonsMargin", new Thickness(16, 12, 16, 16));
@@ -861,6 +871,13 @@ namespace KillerShell.Services
             // Killer Sans. Secondary headings, the footer and the interface stay Killer Sans.
             SetIfAbsent("HeadingFont", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fh && fh
                 ? new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans") : LacquerHeadingStack);
+            // KillerSearch is a product name, so it keeps Lacquer even on 98SE. The search box's own
+            // section labels follow HeadingFont, except where 98SE sets them to its interface face.
+            SetIfAbsent("SearchTitleFont", LacquerHeadingStack);
+            SetIfAbsent("SearchSectionFont", combined["HeadingFont"]);
+            SetIfAbsent("SearchSectionFontSize", 18.0);
+            SetIfAbsent("SearchSectionFontWeight", FontWeights.Normal);
+            SetIfAbsent("ModeButtonFontWeight", FontWeights.SemiBold);
             // The titlebar text beside the wordmark (the elevated caption) sits on the wordmark
             // baseline in Killer Sans, as KillerPDF's filename and KillerScan's subtitle do. A flat
             // theme keeps its caption font beside its plain title.

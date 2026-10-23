@@ -28,7 +28,7 @@
         <Setter Property="Height" Value="26"/>
         <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
         <Setter Property="FontSize" Value="11"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontWeight" Value="{DynamicResource ModeButtonFontWeight}"/>
         <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
         <!-- TRANSPARENT at rest, so the button shows whatever card or panel is behind it and
              reads as an accent outline rather than a filled chip. The template hardcoded
@@ -44,11 +44,21 @@
                     <Grid><Border x:Name="bRing" IsHitTestVisible="False" CornerRadius="{Binding CornerRadius, ElementName=b}" BorderThickness="{Binding BorderThickness, ElementName=b}" BorderBrush="{Binding Background, ElementName=b}" Margin="{Binding Margin, ElementName=b}" Visibility="{Binding Visibility, ElementName=b}" Opacity="{Binding Opacity, ElementName=b}"/><Border x:Name="b"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource OutlineBtnBrush}"
-                            BorderThickness="1" CornerRadius="4">
+                            BorderThickness="{DynamicResource ModeButtonBorderThickness}" CornerRadius="{DynamicResource ModeButtonCornerRadius}">
                         <ContentPresenter x:Name="label" HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           Effect="{DynamicResource TextStrokeSoft}"/>
-                    </Border></Grid>
+                    </Border>
+                        <!-- Raised Win98 push-button bevel; zero-thickness on every other theme. -->
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                        <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
+                                BorderBrush="{DynamicResource BevelDarkBrush}"  BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                        <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}"
+                                BorderBrush="{DynamicResource BevelInnerLightBrush}" BorderThickness="{DynamicResource BevelInnerLightThickness}"/>
+                        <Border IsHitTestVisible="False"
+                                BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="b" Property="Background" Value="{DynamicResource OutlineBtnBrush}"/>

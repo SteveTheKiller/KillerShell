@@ -70,6 +70,31 @@ namespace KillerShell.Shell
                 }
                 else pane.TabBar.Resources.Remove(key);
             }
+            // The flip already puts each tab's white highlight on its foot. The edge the tabs hang
+            // from is the pane's bottom, which Win98 shades gray, not the white top edge a top
+            // strip sits on - so the line beside the active tab turns gray down here.
+            string joinBrush = bottom ? "BevelDarkBrush" : "BevelLightBrush";
+            pane.RetroTabInnerJoinLeft.SetResourceReference(Border.BackgroundProperty, joinBrush);
+            pane.RetroTabInnerJoinRight.SetResourceReference(Border.BackgroundProperty, joinBrush);
+            // The active tab shares the pane's face, so its flipped white foot vanishes into it;
+            // a gray foot (template "top", flipped) closes it off. 98SE only.
+            // The dividers (each tab's gray and black right edge) stop one row short of the white
+            // foot, as a Win98 tab's dark edge stops short of its corner. Template "top" is the
+            // visual foot here.
+            if (bottom && ThemeManager.Current == Theme.SE98)
+            {
+                pane.TabBar.Resources["TabActiveBevelDarkThickness"] = new Thickness(0, 1, 1, 0);
+                foreach (var (key, source) in new[] { ("TabBevelDarkMargin", "TabBevelMargin"),
+                                                      ("TabInactiveOuterOutlineMargin", "TabInactiveOuterOutlineMargin") })
+                    if (Application.Current.TryFindResource(source) is Thickness m)
+                        pane.TabBar.Resources[key] = new Thickness(m.Left, m.Top + 1, m.Right, m.Bottom);
+            }
+            else
+            {
+                pane.TabBar.Resources.Remove("TabActiveBevelDarkThickness");
+                pane.TabBar.Resources.Remove("TabBevelDarkMargin");
+                pane.TabBar.Resources.Remove("TabInactiveOuterOutlineMargin");
+            }
             pane.TabBandShadow.RenderTransform = tabTransform;
             pane.RetroTabJoinLine.VerticalAlignment = bottom ? VerticalAlignment.Top : VerticalAlignment.Bottom;
             pane.RetroTabJoinLine.Margin = bottom ? new Thickness(0, 1, 0, 0) : new Thickness(0, 0, 0, 1);
@@ -86,6 +111,7 @@ namespace KillerShell.Shell
             double surfaceFoot = bottom || pane.PaneStatusBar.Visibility == Visibility.Visible ? 0 : PaneRadius;
             pane.ResultsSurface.CornerRadius = new CornerRadius(0, 0, surfaceFoot, surfaceFoot);
             pane.ResultsSurfaceGrain.CornerRadius = pane.ResultsSurface.CornerRadius;
+            pane.PaneBevelOuterDark.SetResourceReference(Border.BorderBrushProperty, "DocumentPaneBevelTopLeftBrush");
             if (!bottom) return;
 
             pane.ResultsPane.CornerRadius = new CornerRadius(PaneRadius, PaneRadius, 0, 0);
@@ -99,6 +125,9 @@ namespace KillerShell.Shell
                     bevel.Margin = ReverseVertical(bevel.Margin);
                     bevel.BorderThickness = ReverseVertical(bevel.BorderThickness);
                 }
+                // The page's left column is white under a top strip, continuing the first tab's
+                // white edge down the pane; a bottom strip mirrors it, so it turns dark.
+                pane.PaneBevelOuterDark.SetResourceReference(Border.BorderBrushProperty, "BevelDarkBrush");
             }
         }
 
