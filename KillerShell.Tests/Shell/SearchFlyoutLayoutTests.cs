@@ -37,19 +37,13 @@ public static class SearchFlyoutGrowthScenario
         view.SetRows(1, 0);
         view.Open();
         double compactHeight = view.Root.ActualHeight;
-        Assert.InRange(compactHeight, 40, 300);
+        Assert.InRange(compactHeight, 40, 340);
         view.AssertWholeFormViewport();
         Assert.True(view.SawOpeningFade, "Opening the search flyout should fade its surface into view.");
         var trigger = view.Named<Button>("SearchPanelBtn");
-        var expandedToggle = view.Named<Button>("TitleSearchToggle");
-        Point triggerCenter = trigger.PointToScreen(new Point(trigger.ActualWidth / 2, trigger.ActualHeight / 2));
-        Point expandedCenter = expandedToggle.PointToScreen(new Point(expandedToggle.ActualWidth / 2, expandedToggle.ActualHeight / 2));
-        Assert.True(Math.Abs(triggerCenter.X - expandedCenter.X) <= 4
-            && Math.Abs(triggerCenter.Y - expandedCenter.Y) <= 4,
-            "The close control should replace the title search button. Title center=" + triggerCenter
-            + "; expanded center=" + expandedCenter + "; surface=" + view.Root.RenderSize);
-        Assert.Equal("\uE8BB", expandedToggle.Content);
-        Assert.Single(SearchFlyoutLayoutProbe.Descendants<Button>((DependencyObject)expandedToggle.Parent));
+        view.AssertAnchoredBelowButton();
+        Assert.Equal("\uE8BB", trigger.Content);
+        Assert.DoesNotContain(SearchFlyoutLayoutProbe.Descendants<Button>(view.Root), button => button.Name == "TitleSearchToggle");
         Assert.Single(SearchFlyoutLayoutProbe.Descendants<TextBlock>(view.Root),
             label => label.Text == "KillerSearch");
         Assert.Equal("KillerSearch", view.Named<TextBlock>("SearchHeading").Text);
@@ -64,9 +58,10 @@ public static class SearchFlyoutGrowthScenario
         var filtersSection = view.Named<FrameworkElement>("SearchFiltersSection");
         Rect terms = view.Bounds(termsSection);
         Rect filters = view.Bounds(filtersSection);
-        Assert.True(terms.Right <= filters.Left + 2,
-            "Terms and filters should sit beside each other when the flyout has enough width.");
-        Assert.InRange(Math.Abs(terms.Top - filters.Top), 0, 8);
+        Assert.True(filters.Top >= terms.Bottom - 2,
+            "Filters should follow terms vertically even in a wide window.");
+        Assert.InRange(Math.Abs(terms.Left - filters.Left), 0, 1);
+        Assert.InRange(Math.Abs(terms.Right - filters.Right), 0, 1);
 
         view.Advanced.Visibility = Visibility.Visible;
         ShellWindowFixture.PumpUntil(() => view.Viewport.ExtentHeight > rowsExtent + 12);
@@ -169,12 +164,7 @@ public static class SearchFlyoutScrollScenario
             Assert.Equal(scale, view.Root.LayoutTransform.Value.M11, 2);
             Assert.Equal(scale, view.Root.LayoutTransform.Value.M22, 2);
             view.AssertWithinWorkArea();
-            var trigger = view.Named<Button>("SearchPanelBtn");
-            var close = view.Named<Button>("TitleSearchToggle");
-            var triggerCenter = trigger.PointToScreen(new Point(trigger.ActualWidth / 2, trigger.ActualHeight / 2));
-            var closeCenter = close.PointToScreen(new Point(close.ActualWidth / 2, close.ActualHeight / 2));
-            Assert.InRange(Math.Abs(triggerCenter.X - closeCenter.X), 0, 4);
-            Assert.InRange(Math.Abs(triggerCenter.Y - closeCenter.Y), 0, 4);
+            view.AssertAnchoredBelowButton();
 
             foreach (string name in new[] { "SearchScopeButton", "SearchButton", "IncludePatternsBox", "ExcludePatternsBox", "CaseSensitiveCheck" })
             {
@@ -282,6 +272,17 @@ internal sealed class SearchFlyoutLayoutProbe
         Rect scaled = Root.LayoutTransform.TransformBounds(new Rect(Root.RenderSize));
         Assert.True(scaled.Height <= SystemParameters.WorkArea.Height + 2, "The flyout must fit the work area's height.");
         Assert.True(scaled.Width <= SystemParameters.WorkArea.Width + 2, "The flyout must fit the work area's width.");
+    }
+
+    internal void AssertAnchoredBelowButton()
+    {
+        var trigger = Named<Button>("SearchPanelBtn");
+        Point buttonEdge = trigger.PointToScreen(new Point(trigger.ActualWidth, trigger.ActualHeight));
+        Point flyoutEdge = Root.PointToScreen(new Point(Root.ActualWidth, 0));
+        Assert.True(Math.Abs(buttonEdge.X - flyoutEdge.X) <= 4,
+            "Flyout right edge=" + flyoutEdge + "; button edge=" + buttonEdge
+            + "; scale=" + Root.LayoutTransform.Value.M11 + "; surface=" + Root.RenderSize);
+        Assert.InRange(flyoutEdge.Y - buttonEdge.Y, 2, 8);
     }
 
     private static ScrollViewer? ScrollParent(DependencyObject child)

@@ -179,15 +179,15 @@
                                 VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left"
                                 Focusable="False" IsHitTestVisible="False"/>
                 <Popup x:Name="TitleSearchPopup" PlacementTarget="{Binding ElementName=SearchPanelBtn}"
-                       Placement="Relative"
+                       Placement="Bottom"
                        AllowsTransparency="True" StaysOpen="True" Opened="TitleSearchPopup_Opened" Closed="TitleSearchPopup_Closed">
                     <Grid x:Name="TitleSearchSurface" Margin="8" Opacity="0" PreviewKeyDown="TitleSearch_KeyDown"
                           LayoutTransform="{Binding LayoutTransform, ElementName=ScaleHost}"
                           TextOptions.TextFormattingMode="{Binding Path=(TextOptions.TextFormattingMode), ElementName=ScaleHost}"
                           TextOptions.TextRenderingMode="{Binding Path=(TextOptions.TextRenderingMode), ElementName=ScaleHost}">
-                        <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}"
+                        <Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}"
                                 Opacity="{DynamicResource MenuShadowOpacity}" Effect="{DynamicResource MenuShadowEffect}"/>
-                        <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
+                        <Border x:Name="TitleSearchCard" Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource PrimaryBrush}"
                                 BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
                                 <ScrollViewer x:Name="TitleSearchViewport" Style="{StaticResource ShadowScrollViewer}"
                                               VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
@@ -196,14 +196,9 @@
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                                         <StackPanel x:Name="TitleSearchForm">
-                                            <DockPanel LastChildFill="False">
-                                                <Button x:Name="TitleSearchToggle" DockPanel.Dock="Right" Style="{StaticResource ChromeButton}" Content="&#xE8BB;"
-                                                        Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="13" VerticalAlignment="Top"
-                                                        Tag="on" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}"/>
-                                                <TextBlock x:Name="SearchHeading" Text="KillerSearch" FontFamily="{DynamicResource HeadingFont}"
-                                                           FontSize="20" Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True"
-                                                           Margin="12,0,8,0" VerticalAlignment="Center"/>
-                                            </DockPanel>
+                                            <TextBlock x:Name="SearchHeading" Text="KillerSearch" FontFamily="{DynamicResource HeadingFont}"
+                                                       FontSize="20" Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True"
+                                                       Margin="12,8,12,4"/>
                                             <Button x:Name="SearchScopeButton" Style="{StaticResource SurfaceButton}" Margin="12,2,12,4"
                                                     Height="26" Padding="8,2" HorizontalAlignment="Left"
                                                     HorizontalContentAlignment="Left" Click="SearchScopeButton_Click">
@@ -1031,14 +1026,23 @@
                                                  Style="{StaticResource ThemeRadio}"
                                                  Checked="ThemeMourningRadio_Checked"/>
 
-                                    <!-- Fonts/File Associations: KillerShell-only rows, kept from
-                                         the old flyout content - not part of PDF's menu. They follow
-                                         the themes directly, with no gap or rule between. -->
                                     <!-- Film Grain: one switch for the grain texture on every
                                          surface (Services/FilmGrain.cs). -->
                                     <CheckBox x:Name="FilmGrainCheck" Content="{DynamicResource Str_Theme_FilmGrain}"
-                                              Style="{StaticResource ThemeCheck}" Margin="0,0,0,4"
+                                              Style="{StaticResource ThemeCheck}" Margin="0"
                                               Click="FilmGrainCheck_Click"/>
+                                    <Border Height="1" Margin="0,4,9,4" Opacity="0.18" IsHitTestVisible="False"
+                                            Background="{DynamicResource TextBrush}">
+                                        <Border.OpacityMask>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Color="Transparent" Offset="0"/>
+                                                <GradientStop Color="Black" Offset="0.15"/>
+                                                <GradientStop Color="Black" Offset="0.85"/>
+                                                <GradientStop Color="Transparent" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Border.OpacityMask>
+                                    </Border>
+                                    <!-- Fonts/File Associations follow the Film Grain divider. -->
                                     <!-- Same -8,0,2,0 as a ThemeRadio row so the hover lines up
                                          with the theme rows; the wider left padding keeps the glyph
                                          and label where they were. -->
@@ -1104,16 +1108,12 @@
                 </Border>
 
                 <Grid x:Name="SearchSections">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition x:Name="SearchTermsColumn" Width="*"/>
-                        <ColumnDefinition x:Name="SearchFiltersColumn" Width="*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                <Border x:Name="SearchFiltersSection" Grid.Column="1" Padding="8,8,12,6" VerticalAlignment="Top">
+                <Border x:Name="SearchFiltersSection" Grid.Row="1" Padding="12,4,12,6" VerticalAlignment="Top">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource Str_Lbl_Filters}" FontFamily="{DynamicResource HeadingFont}"
                                    FontSize="18" Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True" Margin="0,0,0,6"/>
@@ -1276,7 +1276,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border x:Name="SearchTermsSection" Padding="12,8,8,6" VerticalAlignment="Top">
+                <Border x:Name="SearchTermsSection" Padding="12,8,12,4" VerticalAlignment="Top">
                     <DockPanel LastChildFill="True">
                             <ItemsControl x:Name="TermsList">
                                 <ItemsControl.ItemTemplate>

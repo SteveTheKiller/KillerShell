@@ -17,6 +17,7 @@ namespace KillerShell.Shell
             PatternHelpHost.Content = PatternHelpOverlay;
             SearchPanel.Visibility = Visibility.Visible;
             ScaleHost.SizeChanged += (_, _) => UpdateTitleSearchSize();
+            TitleSearchSurface.SizeChanged += (_, _) => UpdateTitleSearchPlacement();
             LocationChanged += (_, _) => { if (_searchOpen) TitleSearchPopup.IsOpen = false; };
             _searchOpen = false;
             ApplySearchPanel(false);
@@ -57,28 +58,30 @@ namespace KillerShell.Shell
             double windowHeight = ActualHeight > 0 ? ActualHeight : Height;
             double windowWidth = ActualWidth > 0 ? ActualWidth : Width;
             double scale = Math.Max(0.5, _appScale);
-            TitleSearchToggle.Width = SearchPanelBtn.ActualWidth > 0 ? SearchPanelBtn.ActualWidth / scale : SearchPanelBtn.Width / scale;
-            TitleSearchToggle.Height = SearchPanelBtn.ActualHeight > 0 ? SearchPanelBtn.ActualHeight / scale : SearchPanelBtn.Height / scale;
-            TitleSearchToggle.FontSize = SearchPanelBtn.FontSize / scale;
-            double available = Math.Max(220, (windowWidth - 48) / scale);
+            double anchorRight = SearchPanelBtn.ActualWidth > 0
+                ? SearchPanelBtn.TranslatePoint(new Point(SearchPanelBtn.ActualWidth, 0), this).X
+                : windowWidth - 132;
+            double available = Math.Max(160, (anchorRight - 24) / scale);
             bool helpOpen = PatternHelpOverlay.Visibility == Visibility.Visible;
-            bool helpBeside = helpOpen && available >= 780;
-            double formWidth = Math.Min(620, available - (helpBeside ? 256 : 0));
+            bool helpBeside = helpOpen && available >= 660;
+            double formWidth = Math.Min(360, available - (helpBeside ? 256 : 0));
             TitleSearchForm.Width = formWidth;
-            bool stacked = formWidth < 540;
-            SearchTermsColumn.Width = new GridLength(stacked ? 1 : 1.1, GridUnitType.Star);
-            SearchFiltersColumn.Width = stacked ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
-            Grid.SetColumn(SearchFiltersSection, stacked ? 0 : 1);
-            Grid.SetRow(SearchFiltersSection, stacked ? 1 : 0);
             TitleSearchLayout.Width = formWidth + (helpBeside ? 256 : 0);
             Grid.SetColumn(PatternHelpHost, helpBeside ? 1 : 0);
             Grid.SetRow(PatternHelpHost, helpBeside ? 0 : 1);
             PatternHelpOverlay.Width = helpBeside ? 240 : formWidth - 24;
             PatternHelpHost.Margin = helpOpen ? new Thickness(8, 8, 8, 8) : new Thickness(0);
             TitleSearchViewport.MaxHeight = Math.Max(80, (windowHeight - 80) / scale);
-            // Popup positioning already accounts for the outer shadow margin. Align the inner border.
-            TitleSearchPopup.HorizontalOffset = SearchPanelBtn.ActualWidth - (formWidth + 1) * scale;
-            TitleSearchPopup.VerticalOffset = -scale;
+            UpdateTitleSearchPlacement();
+        }
+
+        private void UpdateTitleSearchPlacement()
+        {
+            // Include the measured scrollbar and help drawer when aligning the outer edge.
+            double width = TitleSearchSurface.ActualWidth > 0
+                ? TitleSearchSurface.ActualWidth : TitleSearchLayout.Width + 2;
+            TitleSearchPopup.HorizontalOffset = SearchPanelBtn.ActualWidth - width * Math.Max(0.5, _appScale);
+            TitleSearchPopup.VerticalOffset = 4;
         }
 
         private void TitleSearchPopup_Opened(object sender, EventArgs e)
