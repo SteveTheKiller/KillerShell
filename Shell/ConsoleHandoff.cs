@@ -43,10 +43,13 @@ namespace KillerShell.Shell
             if (tab == null) return;
 
             // As a console window does: a program that finishes cleanly takes its window with it,
-            // and one that fails leaves its output and exit code on screen.
+            // and one that fails leaves its output and exit code on screen. Tabs opened here since
+            // are the user's, so with any of them open only the program's own tab goes.
             tab.Term!.Exited += code => Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (code == 0) Close();
+                if (code != 0) return;
+                if (LeftPane.Tabs.Count + RightPane.Tabs.Count <= 1) Close();
+                else CloseTab(tab);   // Tabs.cs
             }));
 
             FocusPane(Pane);       // Panes.cs
