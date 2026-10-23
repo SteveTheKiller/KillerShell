@@ -150,6 +150,27 @@ namespace KillerShell.Editing
             ApplyTheme();
             BuildMenu();          // EditorMenu.cs - right-click had nothing at all before this
             TextChanged += (_, _) => ReportDirty();
+
+            // No extension to go by (untitled, or a file like "hosts"): the colors follow what the
+            // text looks like, re-guessed after each pause in typing or pasting (LanguageSniffer).
+            _sniff = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(350) };
+            _sniff.Tick += (_, _) => { _sniff.Stop(); SniffLanguage(); };
+            TextChanged += (_, _) => { if (SniffsLanguage) { _sniff.Stop(); _sniff.Start(); } };
+        }
+
+        private readonly System.Windows.Threading.DispatcherTimer _sniff;
+
+        private bool SniffsLanguage => Path.GetExtension(FilePath).Length == 0;
+
+        /// <summary>Color an extensionless document by its content. Plain text when unsure.</summary>
+        internal void SniffLanguage()
+        {
+            if (!SniffsLanguage) return;
+            string? ext = LanguageSniffer.Detect(Text);
+            var definition = ext != null ? ForExtension("document" + ext) : null;
+            if (ReferenceEquals(definition, SyntaxHighlighting)) return;
+            SyntaxHighlighting = definition!;
+            ApplyTheme();
         }
 
         // ═══════════════════════════════════════════════════════════

@@ -41,6 +41,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Keyboard shortcuts cover the remaining commands and appear in menus, tooltips, the shortcut card and website. Ctrl+F6 switches panes, and the keyboard map shows Ctrl+Alt combinations. About can hide menu and tooltip shortcut hints while keeping the keys active.
 - Added Slovenian across the app, installer, help, website and keyboard shortcuts.
 - Added a New Tab button after tab overflow to open Home, with the toolbar's hover effect. Mouse Back and Forward buttons navigate folder history.
+- Untitled documents and files without an extension pick their syntax colors from their contents.
 - Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
 - Added optional Start with Windows and Close to system tray settings, both off by default.
 - Added a right-hand position for the folder tree and its rail, selectable from its menu or keyboard.
