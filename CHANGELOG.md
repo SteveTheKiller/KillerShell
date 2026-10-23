@@ -4,6 +4,13 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+KillerShell can be the Windows default terminal, so console programs started from Explorer, Run or a shortcut open in a KillerShell window.
+
+### Added
+- Use KillerShell as the default terminal, in the About card. Console programs open in their own KillerShell window with the default terminal look, and a window closes when its program exits cleanly. Turning it off, or uninstalling, puts back the terminal you had; a choice made since in Windows Settings is left alone. Needs an installed copy and Windows Terminal, which passes the programs over.
+
 ## [1.5.0] - 2026-10-23
 
 ### Fixed
