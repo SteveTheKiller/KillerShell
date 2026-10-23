@@ -576,11 +576,16 @@ namespace KillerShell.Services
             SetIfAbsent("OverflowCornerRadius", new CornerRadius(4));
             SetIfAbsent("OverflowShadowOpacity", 0.5);
             SetIfAbsent("MonitorTileListMargin", new Thickness(8, 0, 4, 8));
-            SetIfAbsent("MonitorTileMargin",     new Thickness(6, 3, 6, 3));
-            // The cell GRID's outer margin (the 2026-08-09 grid-of-cells layout). 2 a side so
-            // the cells' own 6px MonitorTileMargin lands their edges at 8, flush with the info
-            // panel above; 0 on 98SE so the cells run to the pane edge like every other well.
+            // The Performance cards' standard 8px: 4 around each card, so 8 between any two, and
+            // 4 more inside the pane's edges (MonitorStripMargin above the panels, MonitorPanelsPadding
+            // around them), so 8 there too. 98SE states its own tile margin and a 0 grid, and both
+            // performance insets follow its grid so its cells still run to the pane edge.
+            bool gridStated = combined.Contains("MonitorGridMargin");
+            SetIfAbsent("MonitorTileMargin",     new Thickness(4));
+            // The Storage Analyzer map's outer margin.
             SetIfAbsent("MonitorGridMargin", new Thickness(2, 0, 2, 5));
+            SetIfAbsent("MonitorStripMargin",   gridStated ? combined["MonitorGridMargin"] : new Thickness(4, 4, 4, 0));
+            SetIfAbsent("MonitorPanelsPadding", gridStated ? combined["MonitorGridMargin"] : new Thickness(4, 0, 4, 4));
             SetIfAbsent("PerformanceTabFootThickness", new Thickness(0));
             // Space reserved INSIDE the Performance tab host for its classic page bevel. The
             // ordinary themes have no bevel and no inset; 98SE reserves two physical pixels.
@@ -1144,6 +1149,12 @@ namespace KillerShell.Services
                 if (!combined.Contains("TabActivePadding"))
                     combined["TabActivePadding"] = flat ? new Thickness(12, 4, 5, 5)
                                                         : new Thickness(1, 1, 4, 5);
+
+                // The tab's picture: larger on the rounded themes, overlapping the tab's padding by
+                // a pixel top and bottom so the tab keeps its height. 98SE keeps its 20px box.
+                if (!combined.Contains("TabIconSize")) combined["TabIconSize"] = flat ? 20.0 : 22.0;
+                if (!combined.Contains("TabIconMargin"))
+                    combined["TabIconMargin"] = flat ? new Thickness(2, 0, 3, 0) : new Thickness(1, -1, 4, -1);
 
                 // A TAB is the panel radius on its TOP corners only - the bottom two are where it
                 // joins the pane and must stay square. Derived so it tracks PanelCornerRadius and
