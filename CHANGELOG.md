@@ -34,6 +34,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 - Added a New Tab button after tab overflow to open Home. Tabs have square tops, fading dividers and single-pane outlines, with rounded content-pane bottoms.
+- Mouse Back and Forward buttons navigate folder history.
 - Details can dock below or to the right of either pane, or turn off. Filenames shrink to fit and use beveled Lacquer lettering. Details and dual-pane layouts have direct shortcuts, icons and right-click menus, with a footer layout toggle while dual pane is open.
 - Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
 - Keyboard shortcuts cover the remaining commands and appear in menus, tooltips, the shortcut card and website.
@@ -45,7 +46,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Changed
 - Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.
 - Dropping files on a saved place always moves them, including across drives.
-- Buttons and shortcut diagrams use the embedded interface font. Dialog icons, button states, focus, rail alignment and grain follow the family design; 98SE uses full bevels and compact text fields. Active tabs blend into their terminal or file pane when Alt+M hides the menu bar.
+- Buttons and shortcut diagrams use the embedded interface font. Toolbar icons are larger, with crisp vector navigation and New Tab icons. About has 8px side gutters and a clearer description. Dialog icons, button states, focus, rail alignment and grain follow the family design; 98SE uses full bevels and compact text fields. Active tabs blend into their terminal or file pane when Alt+M hides the menu bar.
 - Hovered menu and list items show their text in the theme accent, lightened or darkened only as far as needed to stay readable on the hover fill.
 
 - Wordmarks and headings are raised with a subtle bevel in their own color instead of a dark outline; wordmarks keep their drop shadow. The Dark theme's red accent is the brand red again instead of a pink tint.

@@ -30,7 +30,11 @@ namespace KillerShell
             // Clicking anywhere in a pane makes it the one every command acts on. Preview, so
             // it lands before the click is handled by whatever was actually hit - a button in
             // this pane must not run against the other pane's tab.
-            PreviewMouseDown += (_, _) => Owner.FocusPane(this);
+            PreviewMouseDown += (_, e) =>
+            {
+                Owner.FocusPane(this);
+                Owner.PaneHistoryMouseDown(this, e);
+            };
 
             // Every tile/row/card DataTemplate reaches ViewState through ResultsList.Tag rather
             // than a RelativeSource walk up to this UserControl, or the icons fail to load.

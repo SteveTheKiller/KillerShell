@@ -34,6 +34,10 @@
                 <Style x:Key="TerminalTabCloseButton" TargetType="Button" BasedOn="{StaticResource DangerButton}">
                     <Setter Property="Foreground" Value="{Binding MenuBarContentForeground, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                 </Style>
+                <Style x:Key="PaneViewButton" TargetType="Button" BasedOn="{StaticResource ViewToggleBtn}">
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale"/>
+                </Style>
             </UserControl.Resources>
 
             <Grid>
@@ -127,11 +131,15 @@
                 <Button x:Name="NewTabBtn" DockPanel.Dock="Right"
                         Style="{StaticResource GrungeCalendarNavButton}"
                         BorderThickness="0" BorderBrush="Transparent"
-                        Content="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                         Foreground="{DynamicResource MutedTextBrush}"
                         Width="22" Height="20" Margin="2,4,2,3" VerticalAlignment="Center"
                         AutomationProperties.Name="{DynamicResource Str_Ks_NewTab}"
-                        ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click"/>
+                        ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click">
+                    <Path Width="11" Height="11" Stretch="None" IsHitTestVisible="False"
+                          SnapsToDevicePixels="True" UseLayoutRounding="True" RenderOptions.EdgeMode="Aliased"
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                          Data="M5,0 H6 V5 H11 V6 H6 V11 H5 V6 H0 V5 H5 Z"/>
+                </Button>
                 <!-- Overflow chevron: only tabs collapsed out of this pane's strip (Tabs.cs
                      TabOverflowMenu). Docked BEFORE the strip so the strip's remaining width is
                      what the ScrollViewer measures against - docked after, the strip would take
@@ -733,17 +741,25 @@
                          after Up, the star scoots left, the
                          address follows immediately. The one group separator left is the etched
                          rule before the sort group in ToolStrip. -->
-                    <StackPanel x:Name="NavStrip" Grid.Column="0" Orientation="Horizontal" Margin="4,0,0,0" VerticalAlignment="Center">
-                        <Button x:Name="NavBackBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE72B;"
-                                ToolTip="{DynamicResource Str_TT_Back}" Click="NavBack_Click"/>
-                        <Button x:Name="NavForwardBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE72A;" Margin="2,0"
-                                ToolTip="{DynamicResource Str_TT_Forward}" Click="NavForward_Click"/>
+                    <StackPanel x:Name="NavStrip" Grid.Column="0" Orientation="Horizontal" Margin="4,0,0,0" VerticalAlignment="Center" TextOptions.TextRenderingMode="Grayscale">
+                        <Button x:Name="NavBackBtn" Style="{StaticResource PaneViewButton}"
+                                ToolTip="{DynamicResource Str_TT_Back}" Click="NavBack_Click">
+                            <Path Width="16" Height="16" Stretch="Uniform" Data="M7,1 L0,8 L7,15 M0,8 H16" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                        </Button>
+                        <Button x:Name="NavForwardBtn" Style="{StaticResource PaneViewButton}" Margin="2,0"
+                                ToolTip="{DynamicResource Str_TT_Forward}" Click="NavForward_Click">
+                            <Path Width="16" Height="16" Stretch="Uniform" Data="M9,1 L16,8 L9,15 M0,8 H16" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                        </Button>
                         <!-- Str_TT_Up is shared with the file dialogs, which have no Alt+Up, so the
                              key is appended here rather than in the string. Same for the three
                              view buttons below. -->
-                        <Button x:Name="NavUpBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE74A;"
+                        <Button x:Name="NavUpBtn" Style="{StaticResource PaneViewButton}"
                                 Click="NavUp_Click">
                             <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_Up}"/><Run Text="  (Alt+Up)"/></TextBlock></Button.ToolTip>
+                            <Path Width="16" Height="16" Stretch="Uniform" Data="M1,7 L8,0 L15,7 M8,0 V16" StrokeThickness="1.5"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                         </Button>
                         <!-- Favorite: sits immediately LEFT of the address, the way a browser
                              puts its bookmark star next to the URL, so saving where you are is
@@ -753,7 +769,7 @@
                              fourth nav button and compete with back/forward/up. It still gets a
                              hover tint and a hit area from the transparent border. -->
                         <Button x:Name="FavoriteStarBtn" Content="&#xE734;" Width="22" Height="22" Padding="0"
-                                Margin="2,0,0,0" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                Margin="2,0,0,0" FontFamily="Segoe MDL2 Assets" FontSize="16"
                                 VerticalAlignment="Center" Cursor="Hand"
                                 ToolTip="{DynamicResource Str_TT_Favorite}" Click="FavoriteStar_Click">
                             <Button.Style>
@@ -844,7 +860,7 @@
                                     ToolTip="{DynamicResource Str_TT_Recents}"
                                     Click="Recents_Click">
                                 <Button.Content>
-                                    <Image Width="15" Height="15" Stretch="Uniform"
+                                    <Image Width="18" Height="18" Stretch="Uniform"
                                            RenderOptions.BitmapScalingMode="HighQuality"
                                            Source="{x:Static svc:IconCache.RecentsArt}"/>
                                 </Button.Content>
@@ -860,19 +876,19 @@
                          and its lit/unlit Tag with no second copy to keep in step.
                          SizeChanged drives it; the chevron only appears once something is shed. -->
                     <StackPanel Grid.Column="2" x:Name="ToolStrip" Orientation="Horizontal"
-                                VerticalAlignment="Center" Margin="8,4,8,2" SizeChanged="ToolStrip_SizeChanged">
+                                VerticalAlignment="Center" Margin="8,4,8,2" SizeChanged="ToolStrip_SizeChanged" TextOptions.TextRenderingMode="Grayscale">
                         <!-- View modes: cards / tile grid / flat rows under sortable columns.
                              Folded up from the row below, so this strip now carries everything
                              that acts on the listing. -->
-                        <Button x:Name="ViewListBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE8FD;"
+                        <Button x:Name="ViewListBtn" Style="{StaticResource PaneViewButton}" Content="&#xE8FD;"
                                 VerticalAlignment="Center" Click="ViewList_Click">
                             <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_ViewList}"/><Run Text="  (Ctrl+Shift+1)"/></TextBlock></Button.ToolTip>
                         </Button>
-                        <Button x:Name="ViewIconsBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE80A;" Margin="2,0"
+                        <Button x:Name="ViewIconsBtn" Style="{StaticResource PaneViewButton}" Content="&#xE80A;" Margin="2,0"
                                 VerticalAlignment="Center" Click="ViewIcons_Click">
                             <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_ViewIcons}"/><Run Text="  (Ctrl+Shift+2)"/></TextBlock></Button.ToolTip>
                         </Button>
-                        <Button x:Name="ViewDetailsBtn" Style="{StaticResource ViewToggleBtn}" Content="&#xE700;" Margin="0,0,2,0"
+                        <Button x:Name="ViewDetailsBtn" Style="{StaticResource PaneViewButton}" Content="&#xE700;" Margin="0,0,2,0"
                                 VerticalAlignment="Center" Click="ViewDetails_Click">
                             <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_ViewDetails}"/><Run Text="  (Ctrl+Shift+3)"/></TextBlock></Button.ToolTip>
                         </Button>
@@ -884,7 +900,7 @@
                              shape as export - the 118px combo was the widest control in this
                              strip and the first thing to crush the location path beside it. -->
                         <Button x:Name="SortBtn" Content="&#xE8CB;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
-                                FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
+                                FontFamily="Segoe MDL2 Assets" FontSize="15" Style="{StaticResource SurfaceButton}"
                                 VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_Sort}" Click="SortMenu_Click"/>
                         <!-- Same flyout construction as export: StaysOpen="False" so an outside
                              click dismisses it, and the shadow on its own border so the text
@@ -931,7 +947,7 @@
                             </Grid>
                         </Popup>
                         <Button x:Name="SortDirButton" Content="&#xE70E;" Width="24" Height="24" Padding="0" Margin="0,0,2,0"
-                                FontFamily="Segoe MDL2 Assets" FontSize="10" Style="{StaticResource SurfaceButton}"
+                                FontFamily="Segoe MDL2 Assets" FontSize="14" Style="{StaticResource SurfaceButton}"
                                 VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_SortDir}" Click="SortDir_Click"/>
                         <!-- Expand/collapse all: one glyph button, no words to shift width.
                              Hidden (not collapsed) outside list view - see ResultsView.cs. -->
@@ -941,13 +957,13 @@
                             <!-- The key follows the glyph: SetExpandAllLabel (Results.cs) swaps
                                  this for the collapse wording and Ctrl+Left. -->
                             <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Btn_ExpandAll}"/><Run Text="  (Ctrl+Right)"/></TextBlock></Button.ToolTip>
-                            <a11y:Glyph x:Name="ExpandAllGlyph" Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                            <a11y:Glyph x:Name="ExpandAllGlyph" Text="&#xE740;" FontFamily="Segoe MDL2 Assets" FontSize="15"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
                         <!-- View options (ViewOptions.cs). Both accent while on, via the
                              Tag="on" trigger SurfaceButton carries. -->
                         <Button x:Name="ShowHiddenBtn" Content="&#xE7B3;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
-                                FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
+                                FontFamily="Segoe MDL2 Assets" FontSize="15" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_ShowHidden}" Click="ShowHidden_Click"/>
                         <!-- Custom composite glyph: no single Segoe MDL2 glyph
                              reads as "folders sort above files", so this stacks FolderHorizontal
@@ -957,16 +973,16 @@
                                 Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_FoldersTop}" Click="FoldersTop_Click">
                             <Grid>
-                                <a11y:Glyph Text="&#xF12B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                <a11y:Glyph Text="&#xF12B;" FontFamily="Segoe MDL2 Assets" FontSize="17"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <a11y:Glyph Text="&#xEDDB;" FontFamily="Segoe MDL2 Assets" FontSize="7"
+                                <a11y:Glyph Text="&#xEDDB;" FontFamily="Segoe MDL2 Assets" FontSize="9"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0"/>
                             </Grid>
                         </Button>
                         <!-- Details position belongs to this pane. Click cycles bottom/right/off. -->
                         <Button x:Name="DetailsPaneBtn" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
                                 Style="{StaticResource SurfaceButton}" Click="DetailsPane_Click">
-                            <Path x:Name="DetailsPaneGlyph" Width="14" Height="14" Stretch="Uniform"
+                            <Path x:Name="DetailsPaneGlyph" Width="17" Height="17" Stretch="Uniform"
                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1"
                                   Data="M0,0 H14 V14 H0 Z M2,2 L12,12"/>
                         </Button>
@@ -974,7 +990,7 @@
                          (ViewOptions.cs) - piping a folder listing into a search tab is the one
                          case where it reads as a filter and surprises you. -->
                         <Button x:Name="PipeBtn" Content="&#xE71C;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
-                                FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
+                                FontFamily="Segoe MDL2 Assets" FontSize="15" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_TT_Pipe}" Click="PipeButton_Click"/>
                         <!-- Dual pane moved to the icon rail (MainWindow.xaml). It was the one
                              control in this strip that acts on the WINDOW rather than on this
@@ -984,7 +1000,7 @@
                              (CSV + HTML) took enough of this row to crush the location path
                              beside them; a 26px icon sits with the rest of the toolbar. -->
                         <Button x:Name="ExportBtn" Content="&#xE72D;" Width="26" Height="24" Padding="0"
-                                FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
+                                FontFamily="Segoe MDL2 Assets" FontSize="15" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_Btn_Export}" Click="ExportButton_Click"/>
                         <!-- StaysOpen="False" so an outside click dismisses it - what a two-item
                              format picker should do. The theme flyout deliberately keeps capture

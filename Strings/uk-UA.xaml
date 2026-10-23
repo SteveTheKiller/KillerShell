@@ -267,7 +267,7 @@
          GPLv3 and the product name stay out of the translatable text (family standard). -->
     <sys:String x:Key="Str_About_Title">Про KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Розмір тексту: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Один портативний застосунок для керування комп'ютером і його файлами. Файловий браузер, термінал, текстовий редактор, аналізатор сховища та інструменти адміністратора разом в одному вікні. Утиліта від </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Розширений файловий браузер для досвідчених користувачів із терміналами, текстовим редактором та інструментами адміністратора. Утиліта від </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">ВЕРСІЯ</sys:String>
     <sys:String x:Key="Str_About_Publisher">ВИДАВЕЦЬ</sys:String>

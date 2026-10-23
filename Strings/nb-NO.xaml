@@ -267,7 +267,7 @@
          GPLv3 and the product name stay out of the translatable text (family standard). -->
     <sys:String x:Key="Str_About_Title">Om KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Tekststørrelse: {0} %</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Én portabel app for å administrere en datamaskin og filene på den. Filutforsker, terminal, tekstredigering, lagringsanalyse og administratorverktøy deler ett vindu. Et </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">En avansert filutforsker for erfarne brukere, med terminaler, tekstredigering og administratorverktøy. Et </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> verktøy.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSJON</sys:String>
     <sys:String x:Key="Str_About_Publisher">UTGIVER</sys:String>

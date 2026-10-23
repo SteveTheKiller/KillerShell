@@ -201,7 +201,37 @@ public static class PaneDockingChecks
         {
             window.Show(); Pump();
             if (verifySquareTabs) { SquareTabs(window, output); return; }
+            // Render the About component without inspecting the signed fixture host or checking updates.
+            ((TextBlock)window.FindName("AboutSha256Block")).Text = new string('0', 64);
+            var about = (UIElement)window.FindName("AboutOverlay");
+            about.Visibility = Visibility.Visible; Pump();
+            var aboutInfo = (FrameworkElement)window.FindName("AboutInfoGrid");
+            var aboutBody = aboutInfo.Parent as FrameworkElement;
+            Check(aboutInfo.IsVisible && aboutBody != null && aboutBody.Margin.Left == 8 && aboutBody.Margin.Right == 8,
+                "Rendered About content has eight-pixel side margins");
+            Capture(window, output, "About-eight-pixel-gutter");
+            about.Visibility = Visibility.Collapsed; Pump();
             var pane = (FrameworkElement)window.FindName("LeftPane");
+            var location = (TextBlock)pane.FindName("ScopePathLabel");
+            var originalTab = ((ItemsControl)pane.FindName("TabStrip")).Items.Cast<object>()
+                .Single(tab => (bool)tab.GetType().GetProperty("IsActive").GetValue(tab, null));
+            pane.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) {
+                RoutedEvent = Mouse.PreviewMouseDownEvent }); Pump();
+            for (int i = 0; i < 16 && !((Button)pane.FindName("NavUpBtn")).IsEnabled; i++)
+                Shortcut(window, Key.Tab, false);
+            string initialFolder = location.Text;
+            Click((Button)pane.FindName("NavUpBtn"));
+            string parentFolder = location.Text;
+            Check(parentFolder != initialFolder, "Folder navigation creates a history entry (" + initialFolder + " to " + parentFolder + ")");
+            pane.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.XButton1) {
+                RoutedEvent = Mouse.PreviewMouseDownEvent }); Pump();
+            Check(location.Text == initialFolder, "Mouse Back returns to the previous folder");
+            pane.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.XButton2) {
+                RoutedEvent = Mouse.PreviewMouseDownEvent }); Pump();
+            Check(location.Text == parentFolder, "Mouse Forward returns to the next folder");
+            Click((Button)pane.FindName("NavBackBtn"));
+            for (int i = 0; i < 16 && !(bool)originalTab.GetType().GetProperty("IsActive").GetValue(originalTab, null); i++)
+                Shortcut(window, Key.Tab, false, true);
             var button = (Button)pane.FindName("DetailsPaneBtn");
             var details = (FrameworkElement)pane.FindName("DetailsPane");
             Click(button);

@@ -257,7 +257,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">KillerShell туралы</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Мәтін өлшемі: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Компьютерді және оның файлдарын басқаруға арналған бір тасымалды қолданба. Файл шолғышы, терминал, мәтін өңдегіші, жинақтауыш талдағышы және әкімші құралдары бір терезеде. </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Тәжірибелі пайдаланушыларға арналған терминалдары, мәтін өңдегіші және әкімші құралдары бар кеңейтілген файл шолғышы. </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> утилитасы.</sys:String>
     <sys:String x:Key="Str_About_Version">НҰСҚА</sys:String>
     <sys:String x:Key="Str_About_Publisher">ЖАРИЯЛАУШЫ</sys:String>

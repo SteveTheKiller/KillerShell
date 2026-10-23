@@ -277,7 +277,7 @@
     <sys:String x:Key="Str_Count_Matches">Dopasowania: {0}</sys:String>
     <sys:String x:Key="Str_About_Title">KillerShell - informacje</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Rozmiar tekstu: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Jedna przenośna aplikacja do zarządzania komputerem i jego plikami. Przeglądarka plików, terminal, edytor tekstu, analizator pamięci masowej i narzędzia administracyjne w jednym oknie. Narzędzie </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Zaawansowana przeglądarka plików dla wymagających użytkowników, z terminalami, edytorem tekstu i narzędziami administracyjnymi. Narzędzie </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">WERSJA</sys:String>
     <sys:String x:Key="Str_About_Publisher">WYDAWCA</sys:String>

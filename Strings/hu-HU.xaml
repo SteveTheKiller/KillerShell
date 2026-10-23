@@ -267,7 +267,7 @@
          GPLv3 and the product name stay out of the translatable text (family standard). -->
     <sys:String x:Key="Str_About_Title">A KillerShellről</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Szövegméret: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Egy hordozható alkalmazás a számítógép és fájljainak kezelésére. A fájlböngésző, terminál, szövegszerkesztő, tárolóelemző és adminisztrációs eszközök egy ablakon osztoznak. A </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Fejlett fájlböngésző haladó felhasználóknak, terminálokkal, szövegszerkesztővel és rendszergazdai eszközökkel. A </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> segédprogram.</sys:String>
     <sys:String x:Key="Str_About_Version">VERZIÓ</sys:String>
     <sys:String x:Key="Str_About_Publisher">KIADÓ</sys:String>

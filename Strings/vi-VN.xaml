@@ -253,7 +253,7 @@
          GPLv3 and the product name stay out of the translatable text (family standard). -->
   <sys:String x:Key="Str_About_Title">Giới thiệu về KillerShell</sys:String>
   <sys:String x:Key="Str_Status_TextSize">Cỡ chữ: {0}%</sys:String>
-  <sys:String x:Key="Str_About_DescA" xml:space="preserve">Một ứng dụng di động để quản lý máy tính và các tệp trên đó. Trình duyệt tệp, cửa sổ dòng lệnh, trình soạn thảo văn bản, công cụ phân tích dung lượng lưu trữ và công cụ quản trị đều nằm trong cùng một cửa sổ. Một tiện ích </sys:String>
+  <sys:String x:Key="Str_About_DescA" xml:space="preserve">Trình duyệt tệp nâng cao dành cho người dùng chuyên sâu, tích hợp các cửa sổ dòng lệnh, trình soạn thảo văn bản và công cụ quản trị. Một tiện ích </sys:String>
   <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
   <sys:String x:Key="Str_About_Version">PHIÊN BẢN</sys:String>
   <sys:String x:Key="Str_About_Publisher">NHÀ PHÁT HÀNH</sys:String>

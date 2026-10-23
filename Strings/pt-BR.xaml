@@ -267,7 +267,7 @@
          GPLv3 and the product name stay out of the translatable text (family standard). -->
     <sys:String x:Key="Str_About_Title">Sobre o KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Tamanho do texto: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Um app portátil para gerenciar um computador e seus arquivos. Navegador de arquivos, terminal, editor de texto, analisador de armazenamento e ferramentas de administração compartilham uma única janela. Um utilitário </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Um navegador de arquivos avançado para usuários experientes, com terminais, um editor de texto e ferramentas de administração. Um utilitário </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSÃO</sys:String>
     <sys:String x:Key="Str_About_Publisher">EDITOR</sys:String>

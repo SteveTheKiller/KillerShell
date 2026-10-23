@@ -164,7 +164,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">关于 KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">文字大小: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">一个便携应用，集中管理一台计算机及其文件。文件浏览器、终端、文本编辑器、存储分析器和管理工具共享一个窗口。一个 </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">面向高级用户的高级文件浏览器，集成终端、文本编辑器和管理工具。由 </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> 出品的实用工具。</sys:String>
     <sys:String x:Key="Str_About_Version">版本</sys:String>
     <sys:String x:Key="Str_About_Publisher">发布者</sys:String>

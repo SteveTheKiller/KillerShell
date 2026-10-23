@@ -226,7 +226,7 @@
     <sys:String x:Key="Str_Count_Matches">Število ujemanj: {0}</sys:String>
     <sys:String x:Key="Str_About_Title">O programu KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Velikost besedila: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Ena prenosna aplikacija za upravljanje računalnika in njegovih datotek. Brskalnik datotek, terminal, urejevalnik besedila, analizator shrambe in skrbniška orodja v enem oknu. Orodje družine </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Napreden brskalnik datotek za zahtevne uporabnike s terminali, urejevalnikom besedila in skrbniškimi orodji. Orodje družine </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">RAZLIČICA</sys:String>
     <sys:String x:Key="Str_About_Publisher">IZDAJATELJ</sys:String>

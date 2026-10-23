@@ -257,7 +257,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">О программе KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Размер текста: {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Одно портативное приложение для управления компьютером и его файлами. Файловый браузер, терминал, текстовый редактор, анализатор хранилища и инструменты администратора в одном окне. Утилита от </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Продвинутый файловый браузер для опытных пользователей с терминалами, текстовым редактором и инструментами администратора. Утилита от </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">ВЕРСИЯ</sys:String>
     <sys:String x:Key="Str_About_Publisher">ИЗДАТЕЛЬ</sys:String>

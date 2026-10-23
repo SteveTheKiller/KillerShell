@@ -164,7 +164,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">À propos de KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Taille du texte : {0}%</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Une application portable pour gérer un ordinateur et ses fichiers. Un explorateur de fichiers, un terminal, un éditeur de texte, un analyseur de stockage et des outils d'administration partagent une même fenêtre. Un utilitaire </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Un explorateur de fichiers avancé pour les utilisateurs expérimentés, avec des terminaux, un éditeur de texte et des outils d'administration. Un utilitaire </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve">.</sys:String>
     <sys:String x:Key="Str_About_Version">VERSION</sys:String>
     <sys:String x:Key="Str_About_Publisher">ÉDITEUR</sys:String>

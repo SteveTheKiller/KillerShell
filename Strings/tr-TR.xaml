@@ -164,7 +164,7 @@
     <!-- About overlay -->
     <sys:String x:Key="Str_About_Title">KillerShell Hakkında</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Metin boyutu: %{0}</sys:String>
-    <sys:String x:Key="Str_About_DescA" xml:space="preserve">Bir bilgisayarı ve dosyalarını yönetmek için tek bir taşınabilir uygulama. Dosya tarayıcısı, terminal, metin düzenleyici, depolama çözümleyicisi ve yönetim araçları tek bir pencereyi paylaşır. Bir </sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">İleri düzey kullanıcılar için terminaller, metin düzenleyici ve yönetim araçları içeren gelişmiş bir dosya tarayıcısı. Bir </sys:String>
     <sys:String x:Key="Str_About_DescB" xml:space="preserve"> aracı.</sys:String>
     <sys:String x:Key="Str_About_Version">SÜRÜM</sys:String>
     <sys:String x:Key="Str_About_Publisher">YAYINCI</sys:String>
