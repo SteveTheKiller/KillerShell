@@ -33,7 +33,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The website's film grain is lighter, matching KillerTools, and the theme menu can turn it off (Alt+Shift+G). The top bar no longer leaves extra space above the page on narrower windows, and the release details box lifts with an accent border on hover.
 
 ### Added
-- Added a New Tab button after tab overflow to open Home. Tabs have square tops, fading dividers and single-pane outlines, with rounded content-pane bottoms.
+- Added a New Tab button after tab overflow to open Home. Tabs have subtly rounded tops, straight fading dividers and single-pane outlines, with rounded content-pane bottoms.
 - Mouse Back and Forward buttons navigate folder history.
 - Details can dock below or to the right of either pane, or turn off. Filenames shrink to fit and use beveled Lacquer lettering. Details and dual-pane layouts have direct shortcuts, icons and right-click menus, with a footer layout toggle while dual pane is open.
 - Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.

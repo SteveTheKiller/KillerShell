@@ -245,7 +245,7 @@
                                              fill that hides the band, so the IsActive trigger
                                              below turns this back on for that one. -->
                                         <Border x:Name="tabGrain" IsHitTestVisible="False"
-                                                CornerRadius="0" Margin="{DynamicResource TabGrainMargin}"
+                                                CornerRadius="{Binding CornerRadius, ElementName=tabBd}" Margin="{DynamicResource TabGrainMargin}"
                                                 Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
                                         <!-- Win98 tab bevel: light along the top and left, dark
                                              down the right. A Win98 tab is a raised control, not
@@ -401,6 +401,7 @@
                                         <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabInactiveLastMargin}"/>
                                     </MultiDataTrigger>
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                        <Setter TargetName="tabBd" Property="CornerRadius" Value="2,2,0,0"/>
                                         <Setter TargetName="tabClose" Property="Style" Value="{StaticResource DangerButton}"/>
                                         <Setter TargetName="tabBd" Property="MenuBackground" Value="{DynamicResource TabActiveBrush}"/>
                                         <Setter TargetName="tabBd" Property="BlendProgress" Value="{Binding MenuBarBlend, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>

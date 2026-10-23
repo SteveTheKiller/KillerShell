@@ -118,7 +118,8 @@ public static class PaneDockingChecks
             ThemeManager.Apply(theme); Pump();
             var tabs = Descendants<TabSurfaceBorder>(pane).Where(tab => tab.IsVisible).ToArray();
             Check(tabs.Length >= 2, "Tab geometry is checked with multiple real tabs");
-            Check(tabs.All(tab => tab.CornerRadius.TopLeft == 0 && tab.CornerRadius.TopRight == 0), "Tab top corners are square");
+            Check(tabs.All(tab => tab.CornerRadius == ((bool)tab.DataContext.GetType().GetProperty("IsActive").GetValue(tab.DataContext, null)
+                ? new CornerRadius(2, 2, 0, 0) : new CornerRadius(0))), "Active tab tops have a two-pixel radius; inactive dividers stay straight");
             Check(tabs.All(tab => tab.Margin.Left <= 0 && tab.Margin.Right <= 0), "Tab faces have no horizontal gaps");
             var labels = tabs.SelectMany(tab => Descendants<TextBlock>(tab)).Where(label => label.Name == "tabLbl").ToArray();
             Check(labels.All(label => label.FontSize == 11 && label.FontWeight == FontWeights.Normal),
