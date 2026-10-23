@@ -42,6 +42,29 @@ namespace KillerShell
             return true;
         }
 
+        /// <summary>
+        /// The active tab's grain sits in the child and reaches past the padding to cover the
+        /// whole face, so it kept square corners over the rounded face. Clipping the child to the
+        /// face (in the child's own coordinates) rounds the grain with it; the icon, title and
+        /// close button sit inside the padding and are untouched.
+        /// </summary>
+        protected override Size ArrangeOverride(Size arrangeSize)
+        {
+            Size arranged = base.ArrangeOverride(arrangeSize);
+            if (Child is UIElement child)
+            {
+                CornerRadius r = CornerRadius;
+                Thickness b = BorderThickness, p = Padding;
+                bool rounded = !RetroBottomEdges && (r.TopLeft > 0 || r.TopRight > 0) &&
+                               r.BottomLeft <= 0 && r.BottomRight <= 0 && b.Top > 0;
+                double w = arranged.Width - b.Left - b.Right, h = arranged.Height - b.Top - b.Bottom;
+                child.Clip = rounded && w > 0 && h > 0
+                    ? TopRounded(new Rect(-p.Left, -p.Top, w, h), Math.Max(0, r.TopLeft - 1), Math.Max(0, r.TopRight - 1))
+                    : null;
+            }
+            return arranged;
+        }
+
         private static Geometry TopRounded(Rect rect, double left, double right)
         {
             left = Math.Min(left, Math.Min(rect.Width / 2, rect.Height));
