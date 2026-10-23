@@ -37,10 +37,10 @@ public sealed class FolderOpenerSettingTests
 
         setting.TurnOn();
 
-        // The default names a verb; one that does not exist would break every folder double-click.
-        Assert.Equal("\"" + Exe + "\" \"%1\\.\"",
+        // The default names a verb, so the verb has to be there to run.
+        Assert.Equal(FolderOpenerSetting.VerbCommand(Exe),
             registry.GetString(RegistryHive.CurrentUser, Directories + @"\KillerShell\command", null));
-        Assert.Equal("\"" + Exe + "\" \"%1\\.\"",
+        Assert.Equal(FolderOpenerSetting.VerbCommand(Exe),
             registry.GetString(RegistryHive.CurrentUser, Drives + @"\KillerShell\command", null));
     }
 
@@ -49,8 +49,8 @@ public sealed class FolderOpenerSettingTests
     {
         var registry = new FakeRegistryStore();
         string machineExe = @"C:\Program Files\KillerShell\KillerShell.exe";
-        registry.SetString(RegistryHive.LocalMachine, Directories + @"\KillerShell\command", null, "\"" + machineExe + "\" \"%1\\.\"");
-        registry.SetString(RegistryHive.LocalMachine, Drives + @"\KillerShell\command", null, "\"" + machineExe + "\" \"%1\\.\"");
+        registry.SetString(RegistryHive.LocalMachine, Directories + @"\KillerShell\command", null, FolderOpenerSetting.VerbCommand(machineExe));
+        registry.SetString(RegistryHive.LocalMachine, Drives + @"\KillerShell\command", null, FolderOpenerSetting.VerbCommand(machineExe));
         var setting = new FolderOpenerSetting(registry, installed: true, exePath: machineExe);
 
         setting.TurnOn();
@@ -90,6 +90,58 @@ public sealed class FolderOpenerSettingTests
         // Drives were still KillerShell's, so they go back.
         Assert.Null(Default(registry, RegistryHive.CurrentUser, Drives));
     }
+
+    [Fact]
+    public void TickingAgainAfterAnotherProgramTookFoldersKeepsWhatToPutBack()
+    {
+        var registry = new FakeRegistryStore();
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+        registry.SetString(RegistryHive.CurrentUser, Directories, null, "openinfiles");   // drives still KillerShell's
+
+        setting.TurnOn();
+        setting.TurnOff();
+
+        // "KillerShell" is never what to put back: drives return to what they had before any of it.
+        Assert.Equal("openinfiles", Default(registry, RegistryHive.CurrentUser, Directories));
+        Assert.Null(Default(registry, RegistryHive.CurrentUser, Drives));
+        Assert.Equal(FolderOpenerState.Off, setting.State);
+    }
+
+    [Fact]
+    public void TurningOffWithNothingSavedLetsWindowsDecide()
+    {
+        var registry = new FakeRegistryStore();
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+        registry.DeleteValue(RegistryHive.CurrentUser, @"Software\KillerShell", FolderOpenerSetting.PreviousSetting);
+
+        setting.TurnOff();
+
+        Assert.Null(Default(registry, RegistryHive.CurrentUser, Directories));
+        Assert.Null(Default(registry, RegistryHive.CurrentUser, Drives));
+    }
+
+    [Fact]
+    public void AVerbPointingAtAnotherCopyIsRewrittenForThisOne()
+    {
+        // Left by a portable copy registered from the Associations card and deleted since: as the
+        // double-click default it would run an exe that is not there.
+        var registry = new FakeRegistryStore();
+        registry.SetString(RegistryHive.CurrentUser, Directories + @"\KillerShell\command", null,
+                           FolderOpenerSetting.VerbCommand(@"C:\Users\lab\Downloads\KillerShell.exe"));
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+
+        setting.TurnOn();
+
+        Assert.Equal(FolderOpenerSetting.VerbCommand(Exe),
+            registry.GetString(RegistryHive.CurrentUser, Directories + @"\KillerShell\command", null));
+    }
+
+    [Fact]
+    public void AFolderOpensAsANewWindowWithoutTheSavedSession()
+        // --new-window: a folder double-clicked in Explorer must not restore every saved tab first.
+        => Assert.Equal("\"" + Exe + "\" --new-window \"%1\\.\"", FolderOpenerSetting.VerbCommand(Exe));
 
     [Fact]
     public void APortableCopyChangesNothing()

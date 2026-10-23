@@ -50,8 +50,12 @@ namespace KillerShell.Services
             _exePath = exePath;
         }
 
-        /// <summary>The verb's command, shared with Associations.cs. The trailing \. keeps a drive root's quote from being escaped.</summary>
-        internal static string VerbCommand(string exePath) => "\"" + exePath + "\" \"%1\\.\"";
+        /// <summary>
+        /// The verb's command, shared with Associations.cs. --new-window: a folder opened from
+        /// Explorer gets a window of its own, not the saved session restored around it. The
+        /// trailing \. keeps a drive root's quote from being escaped.
+        /// </summary>
+        internal static string VerbCommand(string exePath) => "\"" + exePath + "\" --new-window \"%1\\.\"";
 
         internal FolderOpenerState State
         {
@@ -85,8 +89,13 @@ namespace KillerShell.Services
             if (!_installed) return false;
 
             EnsureVerbs();
-            _registry.SetString(RegistryHive.CurrentUser, SettingsKey, PreviousSetting,
-                                Read(Owners[0]) + "|" + Read(Owners[1]));
+            // Per owner: one still set to KillerShell (another program took only the other one)
+            // keeps the value saved for it, so "KillerShell" is never what gets put back.
+            string[] saved = (Previous() ?? "|").Split('|');
+            string[] previous = new string[Owners.Length];
+            for (int i = 0; i < Owners.Length; i++)
+                previous[i] = IsOurs(Owners[i]) ? (i < saved.Length ? saved[i] : string.Empty) : Read(Owners[i]);
+            _registry.SetString(RegistryHive.CurrentUser, SettingsKey, PreviousSetting, string.Join("|", previous));
             foreach (string owner in Owners)
                 _registry.SetString(RegistryHive.CurrentUser, owner, null, Verb);
             return true;
@@ -103,6 +112,7 @@ namespace KillerShell.Services
             {
                 if (!IsOurs(Owners[i])) continue;
                 string value = i < previous.Length ? previous[i] : string.Empty;
+                if (string.Equals(value, Verb, StringComparison.OrdinalIgnoreCase)) value = string.Empty;
                 if (value.Length == 0) _registry.DeleteValue(RegistryHive.CurrentUser, Owners[i], string.Empty);
                 else _registry.SetString(RegistryHive.CurrentUser, Owners[i], null, value);
             }
@@ -121,12 +131,25 @@ namespace KillerShell.Services
 
         private string? Previous() => _registry.GetString(RegistryHive.CurrentUser, SettingsKey, PreviousSetting);
 
+        /// <summary>
+        /// The verb the defaults name, as this copy runs it. A per-user verb wins over the
+        /// all-users one, so one left by another copy (a portable copy registered from the
+        /// Associations card and deleted since) is rewritten rather than made the double-click
+        /// default. An all-users verb is kept: only an all-users install writes or removes it.
+        /// </summary>
         private void EnsureVerbs()
         {
+            string command = VerbCommand(_exePath);
             foreach (string owner in Owners)
             {
                 string key = owner + @"\" + Verb;
-                if (_registry.KeyExists(RegistryHive.CurrentUser, key) || _registry.KeyExists(RegistryHive.LocalMachine, key))
+                if (_registry.KeyExists(RegistryHive.CurrentUser, key))
+                {
+                    if (string.Equals(_registry.GetString(RegistryHive.CurrentUser, key + @"\command", null), command,
+                                      StringComparison.OrdinalIgnoreCase))
+                        continue;
+                }
+                else if (_registry.KeyExists(RegistryHive.LocalMachine, key))
                     continue;
                 _registry.SetString(RegistryHive.CurrentUser, key, null, "Open in KillerShell");
                 _registry.SetString(RegistryHive.CurrentUser, key + @"\command", null, VerbCommand(_exePath));
