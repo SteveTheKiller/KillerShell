@@ -791,7 +791,7 @@ namespace KillerShell.Shell
             // or an open dropdown before the flyout itself.
             if (TitleSearchPopup.IsOpen && e.Key == System.Windows.Input.Key.Escape)
             {
-                if (!TitleSearchSurface.IsKeyboardFocusWithin)
+                if (!(e.OriginalSource is DependencyObject source && TitleSearchSurface.IsAncestorOf(source)))
                 {
                     TitleSearchPopup.IsOpen = false;
                     SearchPanelBtn.Focus();

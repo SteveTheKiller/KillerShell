@@ -152,11 +152,9 @@ public static class SearchFlyoutEscapeScenario
         ShellWindowFixture.Click(window, "PatternHelpButton");
         ShellWindowFixture.PumpUntil(() => help.Visibility == Visibility.Visible);
 
-        // Typing in the flyout puts focus there; the include box stands in for that.
+        // Esc pressed while typing in the include box, which sits inside the flyout.
         var include = (TextBox)window.FindName("IncludePatternsBox");
-        include.Focus();
-        ShellWindowFixture.PumpUntil(() => surface.IsKeyboardFocusWithin,
-            diagnostic: () => "focus=" + Keyboard.FocusedElement + "; active=" + window.IsActive);
+        Assert.True(surface.IsAncestorOf(include));
         PaneKeyboardScenario.Raise(include, Key.Escape, ModifierKeys.None);
         ShellWindowFixture.PumpUntil(() => help.Visibility != Visibility.Visible);
         Assert.True(popup.IsOpen, "The first Esc closes only the pattern help.");
