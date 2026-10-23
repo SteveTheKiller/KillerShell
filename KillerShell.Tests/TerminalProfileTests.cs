@@ -41,9 +41,25 @@ public sealed class TerminalProfileTests
 
         Assert.Equal(look.Skin, handoff.Skin);
         Assert.Equal(string.Empty, handoff.CommandLine);
-        // Custom, so the title bar reads "Terminal" rather than naming a shell it is not running.
+        // Not a shell, so Custom: the title bar reads "Terminal" rather than naming one.
         Assert.Equal(TerminalShellKind.Custom, handoff.Kind);
         Assert.Equal(program, handoff.ExePath);
+    }
+
+    [Theory]
+    [InlineData("cmd.exe", "Cmd", "cls\r")]
+    [InlineData("powershell.exe", "PowerShell", "cls\r")]
+    [InlineData("pwsh.exe", "PowerShell", "cls\r")]
+    [InlineData("python.exe", "Custom", "clear\r")]
+    public void AHandedOffShellGetsItsOwnCommands(string program, string kindName, string clear)
+    {
+        var kind = (TerminalShellKind)Enum.Parse(typeof(TerminalShellKind), kindName);
+        var handoff = TerminalProfile.Handoff(TerminalProfile.Cmd(), elevated: false,
+                                              programPath: System.IO.Path.Combine(@"C:\Windows\System32", program));
+
+        // Clear and the folder box type into the program, so they have to speak its language.
+        Assert.Equal(kind, handoff.Kind);
+        Assert.Equal(clear, handoff.ClearCommand);
     }
 
     [Fact]
