@@ -328,6 +328,22 @@ public sealed class FolderOpenerSettingTests
     }
 
     [Fact]
+    public void APortableCopyThatFindsItOnSaysNothingAboutInstalling()
+    {
+        // The installed copy turned it on; the portable copy may turn it off, and only then
+        // does "install KillerShell to open folders in it" apply.
+        var registry = new FakeRegistryStore();
+        new FolderOpenerSetting(registry, installed: true, exePath: Exe).TurnOn();
+        var portable = new FolderOpenerSetting(registry, installed: false, exePath: @"E:\Tools\KillerShell.exe");
+
+        Assert.Equal("Str_About_OpenFoldersHint", portable.NoteKey);
+        Assert.False(portable.ShowsNote);
+
+        portable.TurnOff();
+        Assert.Equal("Str_About_OpenFoldersPortable", portable.NoteKey);
+    }
+
+    [Fact]
     public void AMissingVerbIsAddedAgainWhileItIsOn()
     {
         var registry = new FakeRegistryStore();

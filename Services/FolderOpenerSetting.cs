@@ -81,9 +81,12 @@ namespace KillerShell.Services
         /// <summary>Whether the About checkbox takes a click: only installed copies can turn it on.</summary>
         internal bool CanChange => _installed || State == FolderOpenerState.On;
 
-        /// <summary>The About checkbox's tooltip.</summary>
+        /// <summary>
+        /// The About checkbox's tooltip. A portable copy that finds it on (an installed copy turned
+        /// it on) may turn it off, so it says nothing about installing until it is off.
+        /// </summary>
         internal string NoteKey =>
-            !_installed ? "Str_About_OpenFoldersPortable"
+            !_installed && State != FolderOpenerState.On ? "Str_About_OpenFoldersPortable"
           : State == FolderOpenerState.ChangedElsewhere ? "Str_About_OpenFoldersChanged"
           : "Str_About_OpenFoldersHint";
 

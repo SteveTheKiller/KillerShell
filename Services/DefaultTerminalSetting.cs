@@ -106,8 +106,9 @@ namespace KillerShell.Services
         internal bool CanChange => State == DefaultTerminalState.On || Blocker == DefaultTerminalBlocker.None;
 
         /// <summary>The About checkbox's tooltip: why it cannot be turned on, what happened, or what it does.</summary>
+        // A portable copy that finds it on may turn it off: nothing about installing until it is off.
         internal string NoteKey =>
-            Blocker == DefaultTerminalBlocker.Portable ? "Str_About_DefaultTerminalPortable"
+            Blocker == DefaultTerminalBlocker.Portable && State != DefaultTerminalState.On ? "Str_About_DefaultTerminalPortable"
           : Blocker == DefaultTerminalBlocker.NoConsoleHost ? "Str_About_DefaultTerminalNoHost"
           : State == DefaultTerminalState.ChangedElsewhere ? "Str_About_DefaultTerminalChanged"
           : "Str_About_DefaultTerminalHint";

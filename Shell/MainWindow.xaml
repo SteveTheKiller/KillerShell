@@ -1681,7 +1681,7 @@
                              98SE states extra TOP inset so the wordmark gets breathing room under
                              the caption band. -->
                         <StackPanel Margin="{DynamicResource AboutContentMargin}">
-                        <StackPanel Margin="8,10,8,18">
+                        <StackPanel Margin="8,10,8,12">
                             <!-- Header: icon left, wordmark (links to the site) + tagline right.
                                  Width is pinned to the info panel below so the tagline wraps
                                  instead of widening the card - the SHA-256 line stays the driver. -->
@@ -1815,7 +1815,6 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <CheckBox x:Name="AboutStartWithWindows" Grid.Row="0" Grid.Column="0"
                                           Click="AboutStartWithWindows_Click">
@@ -1863,14 +1862,20 @@
                                                Foreground="{DynamicResource DimTextBrush}" FontSize="10.5"
                                                TextWrapping="Wrap" Margin="20,2,0,0"/>
                                 </StackPanel>
-                                <CheckBox x:Name="AboutConfirmFolderDelete" Grid.Row="3" Grid.ColumnSpan="3" Margin="0,6,0,0"
+                                <!-- The Recycle Bin question with Clear all Data on the same line. -->
+                                <Grid Grid.Row="3" Grid.ColumnSpan="3" Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox x:Name="AboutConfirmFolderDelete"
                                           Checked="AboutConfirmFolderDelete_Changed"
                                           Unchecked="AboutConfirmFolderDelete_Changed">
                                     <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
                                                TextWrapping="Wrap"/>
                                 </CheckBox>
-                                <TextBlock Grid.Row="4" Grid.ColumnSpan="3" FontFamily="{DynamicResource MonoFont}" FontSize="10"
-                                           HorizontalAlignment="Right" Margin="0,8,0,0" TextWrapping="Wrap">
+                                <TextBlock Grid.Column="1" FontFamily="{DynamicResource MonoFont}" FontSize="10"
+                                           VerticalAlignment="Center" Margin="12,0,0,0">
                                     <Hyperlink TextDecorations="None" Cursor="Hand" Click="AboutClearData_Click">
                                         <Hyperlink.Style>
                                             <Style TargetType="Hyperlink">
@@ -1885,6 +1890,7 @@
                                         <Run Text="{DynamicResource Str_About_ClearData}"/>
                                     </Hyperlink>
                                 </TextBlock>
+                                </Grid>
                             </Grid>
                         </StackPanel>
                         </StackPanel>

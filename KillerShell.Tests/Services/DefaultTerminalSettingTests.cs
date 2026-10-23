@@ -176,6 +176,17 @@ public sealed class DefaultTerminalSettingTests
     }
 
     [Fact]
+    public void APortableCopyThatFindsItOnSaysNothingAboutInstalling()
+    {
+        var registry = MachineWith(WtConsole);
+        new DefaultTerminalSetting(registry, installed: true, exePath: Exe).TurnOn();
+        var portable = new DefaultTerminalSetting(registry, installed: false, exePath: @"E:\Tools\KillerShell.exe");
+
+        Assert.Equal("Str_About_DefaultTerminalHint", portable.NoteKey);
+        Assert.False(portable.ShowsNote);
+    }
+
+    [Fact]
     public void AfterWindowsTerminalIsRemovedItCanStillBeTurnedOff()
     {
         var registry = MachineWith(WtConsole);
