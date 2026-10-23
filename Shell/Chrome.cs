@@ -58,11 +58,16 @@ namespace KillerShell.Shell
             // Windows 11 snap layouts flyout on the maximize button. Added after WindowChrome's
             // hook, so it answers WM_NCHITTEST first.
             SnapLayouts.Attach(this, MaximizeBtn);
-            // Before the first show: the XAML default size (1140 x 710) is capped at 90% of the
-            // work area of the monitor the window opens on, so a small desktop (a 1024 x 768 VM,
-            // a netbook, a laptop at high scaling) gets the whole window on screen.
+            // Before the first show: the last window's size and place (WindowBounds.cs), or else
+            // the XAML default size (1140 x 710) capped at 90% of the work area of the monitor the
+            // window opens on, so a small desktop (a 1024 x 768 VM, a netbook, a laptop at high
+            // scaling) gets the whole window on screen.
+            RestoreWindowBounds();
             WorkAreaFit.Fit(this);
-            ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
+            SyncWindowCorners(force: true);
+            // Snapping moves and resizes a window without changing its state.
+            LocationChanged += (_, _) => SyncWindowCorners();
+            SizeChanged += (_, _) => SyncWindowCorners();
             ApplyThemeBorder(this);
         }
 
@@ -136,16 +141,9 @@ namespace KillerShell.Shell
         protected override void OnStateChanged(EventArgs e)
         {
             base.OnStateChanged(e);
-            ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
+            // The window's corners and the close fill: square while maximized or snapped.
+            SyncWindowCorners(force: true);   // WindowBounds.cs
             SyncElevationHaloCorners();   // Elevation.cs
-            // The close fill follows the window's corner, so a maximized window has a square one.
-            if (CloseBtn != null)
-            {
-                if (WindowState == WindowState.Maximized)
-                    CloseBtn.Resources["CaptionCloseCornerRadius"] = new CornerRadius(0);
-                else
-                    CloseBtn.Resources.Remove("CaptionCloseCornerRadius");
-            }
             // Segoe MDL2: E923 restore (when maximized) / E922 maximize. Built from a (char)
             // cast, never typed as a literal PUA character - literal glyphs do not survive
             // tooling (family-wide rule).

@@ -149,6 +149,7 @@ namespace KillerShell.Shell
             // Stage 2: fade the window out once, then really close.
             if (!_fadeOutDone)
             {
+                SaveWindowBounds();   // WindowBounds.cs - the next window opens here
                 e.Cancel        = true;
                 _closeConfirmed = true;   // never re-prompt after the fade starts
                 IsEnabled = false;       // no edits after discard approval while the fade runs
