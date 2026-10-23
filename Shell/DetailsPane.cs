@@ -81,7 +81,8 @@ namespace KillerShell.Shell
 
                 string? rawHeight = Services.ThemeManager.GetSetting("DetailsPaneHeight" + key);
                 if (!string.IsNullOrEmpty(rawHeight) &&
-                    double.TryParse(rawHeight, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double parsed))
+                    double.TryParse(rawHeight, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double parsed)
+                    && !double.IsNaN(parsed) && !double.IsInfinity(parsed) && parsed >= 0)
                 {
                     p.DetailsPaneHeight = parsed;   // re-clamped against the live pane in ApplyDetailsPane
                 }

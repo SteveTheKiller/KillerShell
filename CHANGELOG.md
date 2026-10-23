@@ -19,7 +19,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Registry key renames copy the key and then remove the original instead of calling Windows' key rename, which could crash the system. Renames preserve value types, permissions and child keys, and refuse link keys or owners that a copy cannot keep. Switching between hexadecimal and decimal keeps the value unchanged.
 - Ending or restarting a process verifies its identity. Restart also confirms the executable is still in place and holds it until the replacement starts, so a missing file no longer ends the original first. Administrator restarts keep the original running until elevation is approved, and reused process IDs receive fresh status information.
 - Service restarts finish after their tab or window closes, with failures reported or logged. Silent installation returns a retryable busy code when KillerShell is running.
-- Both panes restore their tabs and search options, including hidden tabs. Delayed tab closure stays in its owning pane without stealing focus or interrupting the other pane's folder updates.
+- Both panes restore their tabs and search options, including hidden tabs. Delayed tab closure stays in its owning pane without stealing focus or interrupting the other pane's folder updates. Malformed saved details-pane heights no longer prevent startup.
 - Search remains cancellable with complex wildcards, empty folders and large text files. Unicode content search uses bounded previews and reports incomplete results; recursive search, copy and archive addition skip directory links and report counts.
 - Terminal input and output stay responsive under load and when launched with redirected output. CJK, emoji and combining marks use consistent widths, unbound Alt shortcuts reach the shell, and closing a terminal releases pending work. Making a terminal shorter moves its oldest rows into scrollback instead of dropping recent output. Colon-separated color codes show their colors instead of printing stray digits. Terminal tabs follow folders whose names start or end with spaces, and WSL folders containing quotes survive tear-out, merge and session restore.
 - File and folder pickers remain responsive during storage reads, ignore stale results, and keep invalid input in the dialog. Canceled administrator requests and failed file opens report errors without closing the app.
@@ -33,24 +33,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The website's film grain is lighter, matching KillerTools, and the theme menu can turn it off (Alt+Shift+G). The top bar no longer leaves extra space above the page on narrower windows, and the release details box lifts with an accent border on hover.
 
 ### Added
-- Added a New Tab button after tab overflow to open Home. Tabs have subtly rounded tops, straight fading dividers and single-pane outlines, with rounded content-pane bottoms.
-- Mouse Back and Forward buttons navigate folder history.
 - Details can dock below or to the right of either pane, or turn off. Filenames shrink to fit and use beveled Lacquer lettering. Details and dual-pane layouts have direct shortcuts, icons and right-click menus, with a footer layout toggle while dual pane is open.
-- Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
 - Keyboard shortcuts cover the remaining commands and appear in menus, tooltips, the shortcut card and website.
 - Added Slovenian across the app, installer, help, website and keyboard shortcuts.
+- Added a New Tab button after tab overflow to open Home. Mouse Back and Forward buttons navigate folder history.
+- Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
 - Added optional Start with Windows and Close to system tray settings, both off by default.
 - Added a right-hand position for the folder tree and its rail, selectable from its menu or keyboard.
 - Added the Recycle Bin to saved places and crash logging for unexpected exits.
 
 ### Changed
-- Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.
 - Dropping files on a saved place always moves them, including across drives.
-- Buttons and shortcut diagrams use the embedded interface font. Toolbar icons are larger, with crisp vector navigation and New Tab icons. About has 8px side gutters and a clearer description. Dialog icons, button states, focus, rail alignment and grain follow the family design; 98SE uses full bevels and compact text fields. Active tabs blend into their terminal or file pane when Alt+M hides the menu bar.
-- Hovered menu and list items show their text in the theme accent, lightened or darkened only as far as needed to stay readable on the hover fill.
-
+- Tabs have subtly rounded tops, aligned straight dividers, fading single-pane outlines and rounded content-pane bottoms. Active and inactive labels keep the same size, weight and baseline. Active tabs blend into their content when Alt+M hides the menu bar.
+- Toolbar icons are larger, with crisp vector navigation and New Tab icons. Buttons and shortcut diagrams use the embedded interface font; dialog icons, focus, rail alignment and grain follow the family design. About uses 8px side gutters and describes the advanced file browser.
+- Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.
+- Hovered menu and list items show their text in the theme accent, lightened or darkened only as far as needed to stay readable on the hover fill. Theme menu rows have matching left and right insets.
 - Wordmarks and headings are raised with a subtle bevel in their own color instead of a dark outline; wordmarks keep their drop shadow. The Dark theme's red accent is the brand red again instead of a pink tint.
-- Theme menu hover rows reach the right edge with the same inset as the left.
 
 ## [1.4.0] - 2026-10-15
 
