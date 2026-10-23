@@ -40,8 +40,9 @@ namespace KillerShell.Terminal
         public int ProcessId { get; private set; }
 
         /// <summary>
-        /// Raised once, off the UI thread, when the handed-off program exits. A handler added
-        /// after that is called at once: the program can finish before its window is built.
+        /// Raised once, off the UI thread, when the session ends (WatchForExit), with the
+        /// handed-off program's exit code. A handler added after that is called at once: the
+        /// program can finish before its window is built.
         /// </summary>
         public event Action<int>? Exited
         {
@@ -123,27 +124,45 @@ namespace KillerShell.Terminal
         }
 
         /// <summary>
-        /// The program that was started, not the console host: its exit is what a console
-        /// window reports, and the console host can outlive it briefly while output drains.
+        /// The session ends when the console host leaves, which it does once the last program
+        /// using the console has gone (the reference went on the first resize). Ending on the
+        /// first program instead would cut off whatever it left running there, a "start /b"
+        /// child or a launcher's program. The exit code is still the first program's, which is
+        /// what a console window reports.
         /// </summary>
         private void WatchForExit()
         {
+            // Both references are taken here, on the calling thread. Dispose can follow Accept
+            // at once, and an AddRef on the watch thread would then throw there and end the process.
+            var host = new ProcessWait(_server!);
             var client = _client!;
+            bool clientAdded = false;
+            client.DangerousAddRef(ref clientAdded);
+
             var t = new Thread(() =>
             {
-                Action<int>? handlers;
-                using (var wait = new ProcessWait(client))
+                try
                 {
-                    wait.WaitOne();
-                    lock (_exitGate)
+                    Action<int>? handlers;
+                    using (host)
                     {
-                        _exitCode = GetExitCodeProcess(client, out int code) ? code : -1;
-                        HasExited = true;
-                        handlers = _exited;
-                        _exited = null;
+                        host.WaitOne();
+                        int code = GetExitCodeProcess(client, out int c) ? c : -1;
+                        // Still running means the console host went first, as it does when the
+                        // terminal closes it: a close, not a failure. Windows Terminal reads it the same way.
+                        if (code == StillActive) code = 0;
+                        lock (_exitGate)
+                        {
+                            _exitCode = code;
+                            HasExited = true;
+                            handlers = _exited;
+                            _exited = null;
+                        }
                     }
+                    handlers?.Invoke(_exitCode);
                 }
-                try { handlers?.Invoke(_exitCode); } catch { /* a dying tab is not worth a crash */ }
+                catch { /* a dying tab is not worth a crash */ }
+                finally { if (clientAdded) client.DangerousRelease(); }
             })
             { IsBackground = true, Name = "Handoff exit watch" };
             t.Start();
@@ -187,6 +206,8 @@ namespace KillerShell.Terminal
         // ═══════════════════════════════════════════════════════════
         // PTY signal ids from microsoft/terminal src/host/PtySignalInputThread.hpp.
         private const byte ResizeSignal = 8;
+
+        private const int StillActive = 259;   // STILL_ACTIVE from GetExitCodeProcess
 
         // The size Windows Terminal gives its handoff pipes. Output written before the window
         // exists waits here, so a program that prints at once does not stall on a 4 KB pipe.

@@ -57,8 +57,9 @@ public sealed class HandoffConnectionTests
         using var console = new ConsoleSide(clientExitCode: 7);
         using var connection = console.Accept();
         console.WaitForClientExit();
+        console.EndConsoleHost();
 
-        // Subscribed only after the program has gone, which is the order a window that takes
+        // Subscribed only after the session has ended, which is the order a window that takes
         // a second to build will see it in.
         int code = -1;
         using var exited = new ManualResetEventSlim();
@@ -67,6 +68,36 @@ public sealed class HandoffConnectionTests
         Assert.True(exited.Wait(10000), "Exited never fired.");
         Assert.Equal(7, code);
         Assert.True(connection.HasExited);
+    }
+
+    [Fact]
+    public void TheSessionLastsUntilTheConsoleHostLeaves()
+    {
+        using var console = new ConsoleSide(clientExitCode: 7);
+        using var connection = console.Accept();
+        using var exited = new ManualResetEventSlim();
+        connection.Exited += _ => exited.Set();
+        console.WaitForClientExit();
+
+        // A program started with "start /b" can still be using the console after the first one
+        // has gone; Windows' console and Windows Terminal both keep the session until the
+        // console host leaves, which it does once the last program has.
+        Assert.False(exited.Wait(500), "The session ended with the first program.");
+        Assert.False(connection.HasExited);
+
+        console.EndConsoleHost();
+        Assert.True(exited.Wait(10000), "Exited never fired after the console host left.");
+    }
+
+    [Fact]
+    public void ClosingStraightAfterTheHandoffIsSafe()
+    {
+        // The window can be closed, or the COM call can fail, before the exit watch is running.
+        for (int i = 0; i < 100; i++)
+        {
+            using var console = new ConsoleSide(clientExitCode: 0);
+            console.Accept().Dispose();
+        }
     }
 
     [Fact]
@@ -100,7 +131,9 @@ internal sealed class ConsoleSide : IDisposable
     // is an ordinary file, deleted when the test lets go of it.
     private readonly FileStream _reference = new(Path.Combine(Path.GetTempPath(), "KillerShell-handoff-" + Guid.NewGuid().ToString("N")),
                                                  FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
-    private readonly Process _self = Process.GetCurrentProcess();
+    // Stands in for the console host process: a windowless cmd that waits on its input and
+    // leaves when EndConsoleHost closes it.
+    private readonly Process _host;
     private readonly Process _client;
 
     internal SafeFileHandle? ConsoleInput { get; private set; }
@@ -109,19 +142,38 @@ internal sealed class ConsoleSide : IDisposable
     // What the console host passes to EstablishPtyHandoff.
     internal IntPtr Signal => _signal.ClientSafePipeHandle.DangerousGetHandle();
     internal IntPtr Reference => _reference.SafeFileHandle.DangerousGetHandle();
-    internal IntPtr Server => _self.Handle;
+    internal IntPtr Server => _host.Handle;
     internal IntPtr Client => _client.Handle;
     internal int ClientId => _client.Id;
 
     internal ConsoleSide(int clientExitCode)
     {
+        string cmd = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+        _host = Process.Start(new ProcessStartInfo
+        {
+            FileName = cmd,
+            Arguments = "/d /q",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardInput = true,
+            RedirectStandardOutput = true,
+        })!;
+        _host.OutputDataReceived += (_, _) => { };
+        _host.BeginOutputReadLine();
         _client = Process.Start(new ProcessStartInfo
         {
-            FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
+            FileName = cmd,
             Arguments = "/d /c exit " + clientExitCode,
             UseShellExecute = false,
             CreateNoWindow = true,
         })!;
+    }
+
+    /// <summary>The console host leaves, as it does once the last program has.</summary>
+    internal void EndConsoleHost()
+    {
+        try { _host.StandardInput.Close(); } catch (IOException) { }
+        if (!_host.WaitForExit(10000)) _host.Kill();
     }
 
     internal HandoffConnection Accept()
@@ -164,7 +216,8 @@ internal sealed class ConsoleSide : IDisposable
         ConsoleOutput?.Dispose();
         _signal.Dispose();
         _reference.Dispose();
-        _self.Dispose();
+        EndConsoleHost();
+        _host.Dispose();
         _client.Dispose();
     }
 }
