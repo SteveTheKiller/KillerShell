@@ -259,7 +259,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows 不接受該變更</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- 已提升權限</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">已提升權限</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">顯示或隱藏窗格功能表列</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">開啟新視窗</sys:String>
 
@@ -969,6 +969,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">分頁置底</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">左右窗格</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">上下窗格</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">檔案瀏覽器</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">搜尋結果</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell 終端機</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD 終端機</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL 終端機</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">文字編輯器</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">效能監視器</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">搜尋此視窗</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">搜尋所有開啟的分頁</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">搜尋整部電腦</sys:String>

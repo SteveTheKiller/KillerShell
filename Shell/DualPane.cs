@@ -518,8 +518,10 @@ namespace KillerShell.Shell
             // stretch it further" bug (interrupted toggles leaving it stale).
             // A snapped window that split in place is treated like a maximized one: shrinking it
             // would pull its edge off the side of the screen it is snapped to.
-            bool canShrinkWindow = !_paneLayoutKeepsWindowSize && WindowState != WindowState.Maximized
-                                   && (_paneOpenGrewWindow || !IsWindowSnapped());
+            // A split F10 opened by growing the window gives that room back however it closes;
+            // a layout pick keeps the size only when the window was not grown for this split.
+            bool canShrinkWindow = WindowState != WindowState.Maximized
+                                   && (_paneOpenGrewWindow || (!_paneLayoutKeepsWindowSize && !IsWindowSnapped()));
             if (!open) _paneOpenGrewWindow = false;
             double closeWidthTarget = Width - (from + SplitPx);
             if (!open && canShrinkWindow) AnimateWindowWidth(closeWidthTarget);

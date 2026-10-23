@@ -380,7 +380,7 @@
     <sys:String x:Key="Str_Assoc_Failed">A Windows nem fogadja el ezt a változtatást</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Emelt szintű jogosultságok</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Emelt szintű jogosultságok</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">a panel menüsor elrejtése vagy megjelenítése</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">nyisson meg egy új ablakot</sys:String>
 
@@ -1018,6 +1018,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Lapok alul</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Bal és jobb oldali panel</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Felső és alsó panel</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Fájlböngésző</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Keresési eredmények</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell terminál</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD terminál</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL terminál</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Szövegszerkesztő</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Teljesítményfigyelő</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Keresés ebben az ablakban</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Keresés az összes megnyitott lapon</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Keresés az egész számítógépen</sys:String>

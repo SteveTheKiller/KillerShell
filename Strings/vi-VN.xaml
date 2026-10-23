@@ -360,7 +360,7 @@
   <sys:String x:Key="Str_Assoc_Removed">Đã xóa đăng ký</sys:String>
   <sys:String x:Key="Str_Assoc_Failed">Windows không chấp nhận thay đổi đó</sys:String>
   <!-- Title-bar caption on an elevated window, beside the wordmark -->
-  <sys:String x:Key="Str_Title_Elevated">- Đặc quyền nâng cao</sys:String>
+  <sys:String x:Key="Str_Title_Elevated">Đặc quyền nâng cao</sys:String>
   <sys:String x:Key="Str_Ks_MenuBar">ẩn hoặc hiện thanh menu của ngăn</sys:String>
   <sys:String x:Key="Str_Ks_NewWindow">mở cửa sổ mới</sys:String>
   <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
@@ -974,6 +974,13 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Layout_TabsBottom">Tab ở dưới</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Ngăn trái và phải</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Ngăn trên và dưới</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Trình duyệt tệp</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Kết quả tìm kiếm</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">Terminal PowerShell</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">Terminal CMD</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">Terminal WSL</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Trình soạn thảo văn bản</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Trình theo dõi hiệu suất</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Tìm trong cửa sổ này</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Tìm trong tất cả thẻ đang mở</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Tìm trên toàn bộ máy tính</sys:String>

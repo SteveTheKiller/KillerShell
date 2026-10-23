@@ -380,7 +380,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows godtok ikke den endringen</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Utvidede rettigheter</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Utvidede rettigheter</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">skjul eller vis panelets menylinje</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">åpne et nytt vindu</sys:String>
 
@@ -1018,6 +1018,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Faner nederst</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Ruter til venstre og høyre</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Ruter øverst og nederst</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Filutforsker</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Søkeresultater</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell-terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD-terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL-terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Tekstredigering</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Ytelsesovervåking</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Søk i dette vinduet</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Søk i alle åpne faner</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Søk på hele datamaskinen</sys:String>

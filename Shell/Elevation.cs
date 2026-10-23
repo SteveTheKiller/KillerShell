@@ -601,7 +601,8 @@ namespace KillerShell.Shell
             // FindElevatedKillerShellWindow below can find another elevated window's title by
             // matching against this process's own copy of that same string, in whatever locale
             // is active, rather than an English word that would only ever match an en-US window.
-            Title = "KillerShell " + Loc("Str_Title_Elevated");
+            // The caption string carries no separator of its own, so the window title adds it.
+            Title = "KillerShell - " + Loc("Str_Title_Elevated");
             SyncElevationHaloCorners();
         }
 
@@ -644,7 +645,7 @@ namespace KillerShell.Shell
         /// is denied access to query a higher-integrity process's token, and this caller may
         /// itself be unelevated - that is the whole point, catching the case BEFORE prompting.
         /// Instead this reads the window's own title text, which ApplyElevationHalo above already
-        /// stamps with the localized "- Escalated Privileges" suffix (Str_Title_Elevated) the
+        /// stamps with the localized "Escalated Privileges" suffix (Str_Title_Elevated) the
         /// moment a window comes up elevated, and compares it against THIS process's own
         /// localized copy of that same string - never a hardcoded English literal - so the match
         /// still works whatever locale either window is running in.

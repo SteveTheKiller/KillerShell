@@ -380,7 +380,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows would not accept that change</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Escalated Privileges</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Escalated Privileges</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">hide or show the pane menubar</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">open a new window</sys:String>
 
@@ -1013,11 +1013,18 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Details at bottom</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Details on right</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Details off</sys:String>
-    <sys:String x:Key="Str_Layout_OnePane">One pane</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Single pane</sys:String>
     <sys:String x:Key="Str_Layout_TabsTop">Tabs on top</sys:String>
     <sys:String x:Key="Str_Layout_TabsBottom">Tabs on bottom</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Left and right panes</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Top and bottom panes</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">File Browser</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Search Results</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell Terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD Terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL Terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Text Editor</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Performance Monitor</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Search this window</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Search all open tabs</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Search whole computer</sys:String>

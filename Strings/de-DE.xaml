@@ -259,7 +259,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows hat diese Änderung nicht angenommen</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Erhöhte Rechte</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Erhöhte Rechte</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">Bereichsleiste ein- oder ausblenden</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">neues Fenster öffnen</sys:String>
 
@@ -972,6 +972,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Tabs unten</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Fenster links und rechts</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Fenster oben und unten</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Dateibrowser</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Suchergebnisse</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell-Terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD-Terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL-Terminal</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Texteditor</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Leistungsüberwachung</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Dieses Fenster durchsuchen</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Alle offenen Tabs durchsuchen</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Gesamten Computer durchsuchen</sys:String>

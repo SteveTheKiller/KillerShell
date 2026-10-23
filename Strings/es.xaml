@@ -259,7 +259,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows no aceptó ese cambio</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Privilegios elevados</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Privilegios elevados</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">mostrar u ocultar la barra del panel</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">abrir una ventana nueva</sys:String>
 
@@ -972,6 +972,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Pestañas abajo</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Paneles izquierdo y derecho</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Paneles superior e inferior</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Explorador de archivos</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Resultados de búsqueda</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">Terminal de PowerShell</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">Terminal de CMD</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">Terminal de WSL</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Editor de texto</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Monitor de rendimiento</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Buscar en esta ventana</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Buscar en todas las pestañas abiertas</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Buscar en todo el equipo</sys:String>

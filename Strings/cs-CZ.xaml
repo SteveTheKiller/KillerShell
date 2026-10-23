@@ -309,7 +309,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows tuto změnu nepřijal</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Zvýšená oprávnění</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Zvýšená oprávnění</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">zobrazit nebo skrýt lištu panelu</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">otevřít nové okno</sys:String>
 
@@ -970,6 +970,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Karty dole</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Panely vlevo a vpravo</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Panely nahoře a dole</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Prohlížeč souborů</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Výsledky hledání</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">Terminál PowerShell</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">Terminál CMD</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">Terminál WSL</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Textový editor</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Sledování výkonu</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Prohledat toto okno</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Prohledat všechny otevřené karty</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Prohledat celý počítač</sys:String>

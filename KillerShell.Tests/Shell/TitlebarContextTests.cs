@@ -33,7 +33,7 @@ public static class TitlebarContextScenario
         var title = (ContentControl)window.FindName("TitleContextHost");
         Assert.Same(left.LocationRow, left.ScopeBar.Parent);
         Assert.False(title.IsHitTestVisible);
-        Assert.Equal(left.Active.Title, ((TextBlock)title.Content).Text);
+        Assert.Equal(KillerShell.Shell.MainWindow.TabKindTitle(left.Active), ((TextBlock)title.Content).Text);
         Assert.Null(window.FindName("DensityBtn"));
         Assert.NotNull(left.FileDensityBtn);
 
@@ -52,10 +52,14 @@ public static class TitlebarContextScenario
 
         ShellWindowFixture.Click(window, "DualPaneRailBtn");
         ShellWindowFixture.PumpUntil(() => right.IsVisible && right.Active != null);
+        // The opening slide freezes the pane at a pixel width and releases it when it lands;
+        // measuring before then compares a mid-slide width with the settled one.
+        ShellWindowFixture.PumpUntil(() => right.ReadLocalValue(FrameworkElement.WidthProperty) == DependencyProperty.UnsetValue);
+        window.UpdateLayout();
         window.FocusPane(right);
         Assert.Same(right.LocationRow, right.ScopeBar.Parent);
         Assert.Equal(Visibility.Visible, left.ScopeBar.Visibility);
-        Assert.Equal(right.Active.Title, ((TextBlock)title.Content).Text);
+        Assert.Equal(KillerShell.Shell.MainWindow.TabKindTitle(right.Active), ((TextBlock)title.Content).Text);
 
         var terminal = new SearchTab("Terminal") { Term = new TerminalControl(TerminalSkin.Default) };
         var editor = new SearchTab("Editor") { Editor = new EditorControl("") };
@@ -65,7 +69,7 @@ public static class TitlebarContextScenario
             right.Tabs.Add(tab);
             right.Active = tab;
             window.FocusPane(right);
-            Assert.Equal(tab.Title, ((TextBlock)title.Content).Text);
+            Assert.Equal(KillerShell.Shell.MainWindow.TabKindTitle(tab), ((TextBlock)title.Content).Text);
             Assert.NotNull(right.TermPathHost.Parent);
             Assert.NotNull(right.EditorPathHost.Parent);
             int before = right.ViewState.Density;

@@ -89,7 +89,20 @@ namespace KillerShell.Shell
                 if (node is ButtonBase) return;
 
             var menu = new ContextMenu();
-            menu.Items.Add(new MenuItem { Header = Loc("Str_Sidebar"), IsEnabled = false });
+            // A centered caption over the choices, not a disabled row: a MenuItem header sits in
+            // the text column after the icon gutter, which left it hanging off-center.
+            var caption = new TextBlock
+            {
+                Text = Loc("Str_Sidebar"),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 4, 0, 4),
+            };
+            caption.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
+            caption.SetResourceReference(TextBlock.FontFamilyProperty, "MenuFontFamily");
+            caption.SetResourceReference(TextBlock.FontSizeProperty, "MenuFontSize");
+            var header = new MenuItem { Header = caption, Focusable = false, IsHitTestVisible = false, IsEnabled = false };
+            header.SetResourceReference(FrameworkElement.StyleProperty, "PanelMenuItem");
+            menu.Items.Add(header);
             foreach (bool right in new[] { false, true })
             {
                 var item = new MenuItem

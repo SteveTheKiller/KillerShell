@@ -364,7 +364,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows не приняла это изменение</sys:String>
 
     <!-- Title-bar caption on an elevated window -->
-    <sys:String x:Key="Str_Title_Elevated">- Повышенные привилегии</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Повышенные привилегии</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">скрыть или показать строку меню панели</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">открыть новое окно</sys:String>
 
@@ -984,6 +984,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Вкладки снизу</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Панели слева и справа</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Панели сверху и снизу</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Обозреватель файлов</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Результаты поиска</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">Терминал PowerShell</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">Терминал CMD</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">Терминал WSL</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Текстовый редактор</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Монитор производительности</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Искать в этом окне</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Искать во всех открытых вкладках</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Искать на всём компьютере</sys:String>

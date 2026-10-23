@@ -64,6 +64,20 @@ namespace KillerShell
         private LinearGradientBrush? _paneFadeMask;
         private bool _paneUsesShadow;
 
+        public static readonly DependencyProperty HasBottomTabShadowProperty = DependencyProperty.Register(
+            nameof(HasBottomTabShadow), typeof(bool), typeof(FilePane), new PropertyMetadata(false));
+        public bool HasBottomTabShadow => (bool)GetValue(HasBottomTabShadowProperty);
+
+        internal void RefreshBottomTabShadow()
+        {
+            bool listing = _paneScroller != null && IsVisualDescendantOf(_paneScroller, ResultsList);
+            bool covered = listing && (PaneStatusBar.Visibility == Visibility.Visible ||
+                (DetailsPane.Visibility == Visibility.Visible && !DetailsPaneOnRight));
+            SetValue(HasBottomTabShadowProperty, Grid.GetRow(TabBar) == 2 && !covered &&
+                _paneUsesShadow && _paneScroller?.IsVisible == true &&
+                _paneScroller.ScrollableHeight - _paneScroller.VerticalOffset > 0.5);
+        }
+
         private void PaneScroller_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             var scroller = e.OriginalSource as ScrollViewer ?? e.Source as ScrollViewer;
@@ -124,6 +138,7 @@ namespace KillerShell
             _paneFadeMask = null;
             _paneUsesShadow = scroller != null && UsesShadowCue(scroller);
             _paneScrollerOriginalMask = scroller?.OpacityMask;
+            RefreshBottomTabShadow();
 
             if (scroller == null || _paneUsesShadow) return;
             _paneFadeMask = new LinearGradientBrush
@@ -167,6 +182,7 @@ namespace KillerShell
             bool hasBelow = scroller.VerticalOffset < scroller.ScrollableHeight - 0.5;
 
             if (!ReferenceEquals(_paneScroller, scroller)) SetPaneScroller(scroller);
+            RefreshBottomTabShadow();
             if (scroller.ActualHeight <= 1) return;
 
             // The file browser and Performance read better with the original dark edge shadow:

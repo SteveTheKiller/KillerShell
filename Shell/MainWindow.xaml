@@ -224,7 +224,7 @@
                         shell:WindowChrome.IsHitTestVisibleInChrome="True">
                 <TextBlock x:Name="ElevatedTag" Visibility="Collapsed" VerticalAlignment="Center"
                            Margin="8,0,12,0" FontFamily="{DynamicResource FileNameFont}" FontSize="{DynamicResource FileNameFontSize}"
-                           RenderTransform="{DynamicResource FileNameTransform}" TextOptions.TextFormattingMode="Ideal"
+                           TextOptions.TextFormattingMode="Ideal"
                            shell:WindowChrome.IsHitTestVisibleInChrome="False" Text="{DynamicResource Str_Title_Elevated}"/>
                 <Button x:Name="SearchPanelBtn" Style="{StaticResource ChromeButton}" Content="&#xE721;"
                         FontSize="13" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}">

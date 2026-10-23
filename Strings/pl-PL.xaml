@@ -372,7 +372,7 @@
     <sys:String x:Key="Str_Assoc_Registered">Zarejestrowano w systemie Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Usunięto rejestrację</sys:String>
     <sys:String x:Key="Str_Assoc_Failed">System Windows nie zaakceptował tej zmiany</sys:String>
-    <sys:String x:Key="Str_Title_Elevated">- Podwyższone uprawnienia</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Podwyższone uprawnienia</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">ukryj lub pokaż pasek menu panelu</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">otwórz nowe okno</sys:String>
     <sys:String x:Key="Str_TT_Recents">Ostatnio odwiedzone foldery  (Alt+R)</sys:String>
@@ -887,6 +887,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Karty u dołu</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Panele obok siebie</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Panele jeden nad drugim</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Przeglądarka plików</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Wyniki wyszukiwania</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">Terminal PowerShell</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">Terminal CMD</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">Terminal WSL</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Edytor tekstu</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Monitor wydajności</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Przeszukaj to okno</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Przeszukaj wszystkie otwarte karty</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Przeszukaj cały komputer</sys:String>

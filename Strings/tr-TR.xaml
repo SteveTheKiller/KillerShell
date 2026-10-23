@@ -259,7 +259,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows bu değişikliği kabul etmedi</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Yükseltilmiş ayrıcalıklar</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Yükseltilmiş ayrıcalıklar</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">bölme çubuğunu göster veya gizle</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">yeni pencere aç</sys:String>
 
@@ -972,6 +972,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Sekmeler altta</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Sol ve sağ bölmeler</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Üst ve alt bölmeler</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Dosya Tarayıcısı</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Arama Sonuçları</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell Terminali</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD Terminali</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL Terminali</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Metin Düzenleyici</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Performans İzleyicisi</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Bu pencerede ara</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Tüm açık sekmelerde ara</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Tüm bilgisayarda ara</sys:String>

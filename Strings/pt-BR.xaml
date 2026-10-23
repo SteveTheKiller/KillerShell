@@ -380,7 +380,7 @@
     <sys:String x:Key="Str_Assoc_Failed">O Windows não aceitou essa alteração</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Privilégios elevados</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Privilégios elevados</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">ocultar ou mostrar a barra de menus do painel</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">abrir uma nova janela</sys:String>
 
@@ -1018,6 +1018,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Guias na parte inferior</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Painéis lado a lado</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Painéis superior e inferior</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Navegador de arquivos</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Resultados da pesquisa</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">Terminal do PowerShell</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">Terminal do CMD</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">Terminal do WSL</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Editor de texto</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Monitor de desempenho</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Pesquisar nesta janela</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Pesquisar em todas as abas abertas</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Pesquisar em todo o computador</sys:String>

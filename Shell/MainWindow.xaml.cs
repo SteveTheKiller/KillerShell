@@ -1602,7 +1602,9 @@ namespace KillerShell.Shell
 
             // Hands the pane's bottom rounding back to the list surface when the bar is gone. The
             // 5 was a literal and kept two rounded corners on the flat theme; PaneRadius is 0 there.
-            double br = any ? 0 : PaneRadius;
+            // Tabs along the bottom own that edge too and meet the pane square (TabPlacement.cs).
+            bool tabsBelow = Grid.GetRow(Pane.TabBar) == 2 && Pane.TabBar.Visibility == Visibility.Visible;
+            double br = any || tabsBelow ? 0 : PaneRadius;
             var radius = new CornerRadius(0, 0, br, br);
             Pane.ResultsSurface.CornerRadius      = radius;
             Pane.ResultsSurfaceGrain.CornerRadius = radius;

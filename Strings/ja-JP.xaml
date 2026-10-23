@@ -309,7 +309,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows はその変更を受け付けませんでした</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- 昇格された特権</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">昇格された特権</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">ペインのバーの表示を切り替え</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">新しいウィンドウを開く</sys:String>
 
@@ -968,6 +968,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">タブを下に表示</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">左右に並べる</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">上下に並べる</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">ファイル ブラウザー</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">検索結果</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell ターミナル</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD ターミナル</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL ターミナル</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">テキスト エディター</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">パフォーマンス モニター</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">このウィンドウを検索</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">開いているすべてのタブを検索</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">コンピューター全体を検索</sys:String>

@@ -222,6 +222,7 @@ namespace KillerShell.Shell
                     Pane.ScopePathLabel.Text = Loc("Str_Scope_Empty");
             });
             RefreshTitleSearchContext();
+            UpdateTitleContext();
         }
     }
 }

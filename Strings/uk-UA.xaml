@@ -380,7 +380,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows не прийняла цю зміну</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- Підвищені права</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Підвищені права</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">сховати або показати рядок меню панелі</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">відкрити нове вікно</sys:String>
 
@@ -1018,6 +1018,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Вкладки знизу</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Панелі ліворуч і праворуч</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Панелі зверху і знизу</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Оглядач файлів</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Результати пошуку</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">Термінал PowerShell</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">Термінал CMD</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">Термінал WSL</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Текстовий редактор</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Монітор продуктивності</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Шукати в цьому вікні</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Шукати в усіх відкритих вкладках</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Шукати на всьому комп’ютері</sys:String>

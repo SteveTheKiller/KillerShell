@@ -253,6 +253,11 @@
                                         <Border x:Name="tabGrain" IsHitTestVisible="False"
                                                 CornerRadius="{Binding CornerRadius, ElementName=tabBd}" Margin="{DynamicResource TabGrainMargin}"
                                                 Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
+                                        <!-- Continue the bottom scroll cue across the selected tab's face. -->
+                                        <Border x:Name="tabScrollShadow" IsHitTestVisible="False"
+                                                CornerRadius="{Binding CornerRadius, ElementName=tabBd}"
+                                                Margin="{DynamicResource TabGrainMargin}" Background="#50000000"
+                                                Opacity="{DynamicResource EdgeFadeOpacity}" Visibility="Collapsed"/>
                                         <!-- Win98 tab bevel: light along the top and left, dark
                                              down the right. A Win98 tab is a raised control, not
                                              a flat card. The margins undo the
@@ -406,6 +411,13 @@
                                             <Condition Binding="{Binding IsActive}" Value="False"/>
                                         </MultiDataTrigger.Conditions>
                                         <Setter TargetName="tabBd" Property="Margin" Value="{DynamicResource TabInactiveLastMargin}"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsActive}" Value="True"/>
+                                            <Condition Binding="{Binding HasBottomTabShadow, RelativeSource={RelativeSource AncestorType=local:FilePane}}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="tabScrollShadow" Property="Visibility" Value="Visible"/>
                                     </MultiDataTrigger>
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
                                         <Setter TargetName="tabBd" Property="CornerRadius" Value="2,2,0,0"/>
@@ -916,7 +928,7 @@
                                 ToolTip="{DynamicResource Str_TT_Density}"/>
                         <!-- The one group separator in the strip, between the view modes and the
                              sort controls. Same BarSep* pair, zero width off 98SE. -->
-                        <Border Width="{DynamicResource BarSepWidth}" Margin="2,3,4,3"
+                        <Border x:Name="ViewSortSeparator" Width="{DynamicResource BarSepWidth}" Margin="2,3,4,3"
                                 Background="{DynamicResource BarSepBrush}"/>
                         <StackPanel x:Name="SortControlsHost" Orientation="Horizontal" VerticalAlignment="Center">
                         <ComboBox x:Name="SortChoice" Width="112" Height="24" FontSize="11" Margin="0,0,2,0"
@@ -936,7 +948,7 @@
                                 VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_SortDir}" Click="SortDir_Click"/>
                         </StackPanel>
                         <!-- Expand/collapse all: one glyph button, no words to shift width.
-                             Hidden (not collapsed) outside list view - see ResultsView.cs. -->
+                             Collapsed in every view for now - see ResultsView.cs. -->
                         <Button x:Name="ExpandAllButton" Style="{StaticResource SurfaceButton}"
                                 Width="26" Height="24" Padding="0" Margin="0,0,2,0" VerticalAlignment="Center"
                                 Click="ExpandAll_Click">
@@ -1069,10 +1081,15 @@
                                 <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource OverflowCornerRadius}" IsHitTestVisible="False">
                                     <Border.Effect><DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="2" Direction="270" Opacity="{DynamicResource OverflowShadowOpacity}"/></Border.Effect>
                                 </Border>
+                                <!-- One row in the strip's own order (PaneToolbar.cs), so the shed
+                                     buttons read like the toolbar they came from. -->
                                 <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                         BorderThickness="1" CornerRadius="{DynamicResource OverflowCornerRadius}" Padding="6">
-                                    <WrapPanel x:Name="OverflowPanel" Orientation="Horizontal" MaxWidth="360"/>
+                                    <StackPanel x:Name="OverflowPanel" Orientation="Horizontal"/>
                                 </Border>
+                                <!-- Grain over the card like every other flyout (FlyoutGrain). -->
+                                <Border Style="{StaticResource FlyoutGrain}" Margin="1"
+                                        CornerRadius="{DynamicResource OverflowCornerRadius}"/>
                             </Grid>
                         </Popup>
                         <!-- No close button here. Every tab carries its own x in the strip, and

@@ -259,7 +259,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows সেই পরিবর্তন গ্রহণ করেনি</sys:String>
 
     <!-- Title-bar caption on an elevated window, beside the wordmark -->
-    <sys:String x:Key="Str_Title_Elevated">- উন্নীত অধিকার</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">উন্নীত অধিকার</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">প্যানেলের বার দেখান বা লুকান</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">নতুন উইন্ডো খুলুন</sys:String>
 
@@ -969,6 +969,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">ট্যাব নিচে</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">বাম ও ডান প্যান</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">উপর ও নিচের প্যান</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">ফাইল ব্রাউজার</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">অনুসন্ধানের ফলাফল</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell টার্মিনাল</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD টার্মিনাল</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL টার্মিনাল</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">টেক্সট এডিটর</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">পারফরম্যান্স মনিটর</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">এই উইন্ডোতে খুঁজুন</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">সব খোলা ট্যাবে খুঁজুন</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">পুরো কম্পিউটারে খুঁজুন</sys:String>

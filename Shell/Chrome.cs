@@ -138,6 +138,14 @@ namespace KillerShell.Shell
             base.OnStateChanged(e);
             ApplyWindowCorners(this, rounded: WindowState == WindowState.Normal);
             SyncElevationHaloCorners();   // Elevation.cs
+            // The close fill follows the window's corner, so a maximized window has a square one.
+            if (CloseBtn != null)
+            {
+                if (WindowState == WindowState.Maximized)
+                    CloseBtn.Resources["CaptionCloseCornerRadius"] = new CornerRadius(0);
+                else
+                    CloseBtn.Resources.Remove("CaptionCloseCornerRadius");
+            }
             // Segoe MDL2: E923 restore (when maximized) / E922 maximize. Built from a (char)
             // cast, never typed as a literal PUA character - literal glyphs do not survive
             // tooling (family-wide rule).

@@ -13,7 +13,7 @@ namespace KillerShell.Shell
         [
             "ExportBtn", "FoldersTopBtn", "ShowHiddenBtn", "DetailsPaneBtn",
             "ExpandAllButton", "FileDensityBtn", "ViewDetailsBtn", "ViewIconsBtn", "ViewListBtn",
-            "SortControlsHost",
+            "ViewSortSeparator", "SortControlsHost",
         ];
 
         // About 36 characters at the existing 12px monospace size, excluding the
@@ -62,7 +62,8 @@ namespace KillerShell.Shell
                 foreach (var name in ShedOrder)
                 {
                     if (remaining + (shed.Count > 0 ? chevron : 0) <= avail) break;
-                    if (Named(pane, name) is not FrameworkElement el || el.Visibility == Visibility.Collapsed) continue;
+                    // Hidden too: an invisible button moved into the overflow is only a gap there.
+                    if (Named(pane, name) is not FrameworkElement el || el.Visibility != Visibility.Visible) continue;
                     shed.Add(name);
                     remaining -= MeasuredWidth(el);
                 }
@@ -78,12 +79,12 @@ namespace KillerShell.Shell
                     if (inOverflow)
                     {
                         pane.OverflowPanel.Children.Remove(el);
-                        InsertBack(pane, el, name);
+                        InsertInStripOrder(pane.ToolStrip, el, name);
                     }
                     else
                     {
                         pane.ToolStrip.Children.Remove(el);
-                        pane.OverflowPanel.Children.Insert(0, el);
+                        InsertInStripOrder(pane.OverflowPanel, el, name);
                     }
                 }
                 pane.OverflowBtn.Visibility = shed.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -112,23 +113,25 @@ namespace KillerShell.Shell
 
         private static object? Named(FilePane pane, string name) => pane.FindName(name);
 
-        private static void InsertBack(FilePane pane, FrameworkElement el, string name)
+        // The strip and the overflow both keep StripOrder, so a shed button lands in the
+        // overflow where it sat in the toolbar rather than wherever it happened to be shed.
+        private static void InsertInStripOrder(Panel panel, FrameworkElement el, string name)
         {
             int want = System.Array.IndexOf(StripOrder, name);
-            int at = pane.ToolStrip.Children.Count;
-            for (int i = 0; i < pane.ToolStrip.Children.Count; i++)
+            int at = panel.Children.Count;
+            for (int i = 0; i < panel.Children.Count; i++)
             {
-                if (pane.ToolStrip.Children[i] is not FrameworkElement c) continue;
+                if (panel.Children[i] is not FrameworkElement c) continue;
                 int idx = System.Array.IndexOf(StripOrder, c.Name);
                 if (idx > want) { at = i; break; }
             }
-            pane.ToolStrip.Children.Insert(at, el);
+            panel.Children.Insert(at, el);
         }
 
         private static readonly string[] StripOrder =
         [
             "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "FileDensityBtn",
-            "SortControlsHost",
+            "ViewSortSeparator", "SortControlsHost",
             "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "DetailsPaneBtn",
             "ExportBtn", "OverflowBtn",
         ];

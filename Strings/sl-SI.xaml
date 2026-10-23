@@ -321,7 +321,7 @@
     <sys:String x:Key="Str_Assoc_Registered">Registrirano v sistemu Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registracija je odstranjena</sys:String>
     <sys:String x:Key="Str_Assoc_Failed">Windows spremembe ni sprejel</sys:String>
-    <sys:String x:Key="Str_Title_Elevated">(skrbniške pravice)</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Skrbniške pravice</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">skrij ali prikaži menijsko vrstico podokna</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">odpri novo okno</sys:String>
     <sys:String x:Key="Str_TT_Recents">Nedavno obiskane mape  (Alt+R)</sys:String>
@@ -891,6 +891,13 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Layout_TabsBottom">Zavihki spodaj</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Podokni levo in desno</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Podokni zgoraj in spodaj</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Brskalnik datotek</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Rezultati iskanja</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">Terminal PowerShell</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">Terminal CMD</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">Terminal WSL</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Urejevalnik besedila</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Nadzornik zmogljivosti</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Preišči to okno</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Preišči vse odprte zavihke</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Preišči celoten računalnik</sys:String>

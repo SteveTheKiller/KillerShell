@@ -364,7 +364,7 @@
     <sys:String x:Key="Str_Assoc_Failed">Windows бұл өзгерісті қабылдамады</sys:String>
 
     <!-- Title-bar caption on an elevated window -->
-    <sys:String x:Key="Str_Title_Elevated">- Жоғары құқықтар</sys:String>
+    <sys:String x:Key="Str_Title_Elevated">Жоғары құқықтар</sys:String>
     <sys:String x:Key="Str_Ks_MenuBar">тақта мәзір жолағын жасыру немесе көрсету</sys:String>
     <sys:String x:Key="Str_Ks_NewWindow">жаңа терезе ашу</sys:String>
 
@@ -984,6 +984,13 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Қойындылар төменде</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Сол және оң жақ тақталар</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Жоғарғы және төменгі тақталар</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">Файл шолғышы</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">Іздеу нәтижелері</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell терминалы</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD терминалы</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL терминалы</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">Мәтін өңдегіші</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">Өнімділік мониторы</sys:String>
     <sys:String x:Key="Str_SearchScope_Window">Осы терезеде іздеу</sys:String>
     <sys:String x:Key="Str_SearchScope_Tabs">Барлық ашық қойындыларда іздеу</sys:String>
     <sys:String x:Key="Str_SearchScope_Computer">Бүкіл компьютерде іздеу</sys:String>

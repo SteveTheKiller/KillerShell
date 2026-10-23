@@ -825,11 +825,7 @@ namespace KillerShell.Shell
             // expandable-cards template that mode 0 used to carry; the compact list has nothing
             // to expand, so it is hidden in every mode now.
             //
-            // Hidden, not Collapsed: the button sits in the header's right-hand strip, and a
-            // collapsed element gives up its width, so every other control in that strip slid
-            // sideways each time the view changed. Hidden keeps the slot.
-            //
-            // Also gated on ResultsList actually being visible (a restored terminal tab in
+            // DetailsHeader is gated on ResultsList actually being visible (a restored terminal tab in
             // Details view showed the column-heading row above its empty prompt).
             // ApplyPaneToolbarMode (TerminalTabs.cs) already collapses DetailsHeader correctly
             // the moment a shell/editor/registry/processes/events tab activates - but at startup,
@@ -842,7 +838,9 @@ namespace KillerShell.Shell
             // every one of them already agrees on), so it doubles as "is a listing even showing".
             bool showingListing = Pane.ResultsList.Visibility == Visibility.Visible;
             Pane.DetailsHeader.Visibility   = mode == 2 && showingListing ? Visibility.Visible : Visibility.Collapsed;
-            Pane.ExpandAllButton.Visibility = Visibility.Hidden;
+            // Collapsed now that no view shows it: a Hidden slot left a blank 28px gap in the
+            // strip and counted against the room the toolbar has before shedding (PaneToolbar.cs).
+            Pane.ExpandAllButton.Visibility = Visibility.Collapsed;
 
             Pane.ViewListBtn.Tag    = mode == 0 ? "on" : null;
             Pane.ViewIconsBtn.Tag   = mode == 1 ? "on" : null;

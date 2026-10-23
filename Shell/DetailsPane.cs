@@ -72,8 +72,12 @@ namespace KillerShell.Shell
             {
                 string key = PaneKey(p);
 
-                p.DetailsPaneOpen = Services.ThemeManager.GetSetting("DetailsPaneOpen" + key) == "1";
-                p.DetailsPaneOnRight = Services.ThemeManager.GetSetting("DetailsPanePosition" + key) == "right";
+                // A second pane that has never saved its own choice starts from the first pane's,
+                // so a fresh split does not open with the details on a different side.
+                string? Saved(string name) => Services.ThemeManager.GetSetting(name + key)
+                    ?? (p == RightPane ? Services.ThemeManager.GetSetting(name + PaneKey(LeftPane)) : null);
+                p.DetailsPaneOpen = Saved("DetailsPaneOpen") == "1";
+                p.DetailsPaneOnRight = Saved("DetailsPanePosition") == "right";
                 p.DetailsPaneUserSized = Services.ThemeManager.GetSetting("DetailsPaneUserSized" + key) == "1";
                 if (double.TryParse(Services.ThemeManager.GetSetting("DetailsPaneWidth" + key),
                     System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double width)

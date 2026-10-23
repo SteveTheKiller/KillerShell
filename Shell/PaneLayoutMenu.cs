@@ -60,7 +60,7 @@ namespace KillerShell.Shell
                 item.IsChecked = layout == current;
                 menu.Items.Add(item);
             }
-            AddLayout("Str_Layout_OnePane", "", OnePaneIcon, 0);
+            AddLayout("Str_Layout_OnePane", "F10", OnePaneIcon, 0);
             AddLayout("Str_Layout_LeftRight", "Ctrl+Alt+Left", PanesLeftRightIcon, 1);
             AddLayout("Str_Layout_TopBottom", "Ctrl+Alt+Up", PanesTopBottomIcon, 2);
         }
@@ -69,9 +69,26 @@ namespace KillerShell.Shell
         {
             if (DualPane && _paneSideBySide == sideBySide) return;
             FinishPendingPaneSlide();
+            // Stacking a split that F10 opened by growing the window: the extra width was for
+            // the side pane, so it goes back now. Otherwise the stacked close cannot return it
+            // and every F10-then-cycle leaves the window wider.
+            double giveBack = DualPane && _paneSideBySide && !sideBySide && _paneOpenGrewWindow
+                && WindowState == WindowState.Normal ? PaneColB.ActualWidth + SplitPx : 0;
             _paneSideBySide = sideBySide;
             if (!DualPane) OpenSecondPane();
             else ApplyPaneLayout();
+            if (giveBack > 0)
+            {
+                _paneOpenGrewWindow = false;
+                BeginAnimation(WidthProperty, null);
+                Width = System.Math.Max(MinWidth, Width - giveBack);
+                double slideBack = _paneShiftLeft;
+                _paneShiftLeft = 0;
+                if (slideBack > 0)
+                    Dispatcher.BeginInvoke(new Action(() =>
+                        ShiftWindowDip(System.Math.Min(slideBack, MonitorRoomToGrowRightDip()))),
+                        System.Windows.Threading.DispatcherPriority.Loaded);
+            }
         }
     }
 }

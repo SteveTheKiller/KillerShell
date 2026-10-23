@@ -81,6 +81,11 @@ namespace KillerShell.Shell
                 edge.SetResourceReference(Border.BorderThicknessProperty, "PaneEdgeBottomThickness");
                 if (bottom) edge.BorderThickness = ReverseVertical(edge.BorderThickness);
             }
+            // The list surface rounds its foot only when it IS the pane's bottom edge; the same
+            // rule UpdatePaneStatusBar applies, re-run here because placement changes it.
+            double surfaceFoot = bottom || pane.PaneStatusBar.Visibility == Visibility.Visible ? 0 : PaneRadius;
+            pane.ResultsSurface.CornerRadius = new CornerRadius(0, 0, surfaceFoot, surfaceFoot);
+            pane.ResultsSurfaceGrain.CornerRadius = pane.ResultsSurface.CornerRadius;
             if (!bottom) return;
 
             pane.ResultsPane.CornerRadius = new CornerRadius(PaneRadius, PaneRadius, 0, 0);
