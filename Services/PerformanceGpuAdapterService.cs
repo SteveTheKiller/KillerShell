@@ -28,6 +28,7 @@ namespace KillerShell.Services
                     {
                         if (enumerate(factory, index, out adapter) < 0 || adapter == IntPtr.Zero) break;
                         if (Method<GetDesc1>(adapter, 10)(adapter, out AdapterDescription description) < 0) continue;
+                        if (!IsHardwareAdapter(description.Flags)) continue;
                         string name = (description.Description ?? string.Empty).Trim();
                         if (name.Length == 0) continue;
                         string luid = "0x" + unchecked((uint)description.LuidHigh).ToString("x8", CultureInfo.InvariantCulture)
@@ -44,6 +45,11 @@ namespace KillerShell.Services
             finally { if (factory != IntPtr.Zero) Marshal.Release(factory); }
             return names;
         }
+
+        // DXGI always lists the Microsoft Basic Render Driver, a software renderer, last.
+        private const uint DXGI_ADAPTER_FLAG_SOFTWARE = 2;
+
+        internal static bool IsHardwareAdapter(uint flags) => (flags & DXGI_ADAPTER_FLAG_SOFTWARE) == 0;
 
         private static T Method<T>(IntPtr instance, int slot) where T : Delegate
             => Marshal.GetDelegateForFunctionPointer<T>(Marshal.ReadIntPtr(Marshal.ReadIntPtr(instance), slot * IntPtr.Size));
