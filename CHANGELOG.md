@@ -13,7 +13,7 @@ KillerShell can be the Windows default terminal and can open folders, so console
 - Open folders in KillerShell, in the About card. Double-clicking a folder or drive, or a program asking Windows to open one, opens it in a KillerShell window; This PC, Recycle Bin, Control Panel, the desktop, open/save dialogs and programs that run explorer.exe themselves stay with Explorer. Turning it off, removing the associations, or uninstalling puts back what opened folders before, including another file manager's; removing an all-users copy does that for every user, including one removed by SYSTEM through an RMM or Intune.
 
 ### Changed
-- The About card's settings sit in even pairs: startup, the window, the Recycle Bin question, then the two Windows takeovers side by side with their notes.
+- The About card's settings sit in evenly spaced pairs: startup, the window, then the two Windows takeovers side by side with their notes, with the Recycle Bin question last.
 - The Fonts and File associations cards have Lacquer headings and the shared close X in the corner.
 
 ## [1.5.0] - 2026-10-23

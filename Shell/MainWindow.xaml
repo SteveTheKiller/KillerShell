@@ -1800,9 +1800,10 @@
 
                             <!-- Two equal settings columns inside the SHA-sized info panel, a pair to
                                  a row so both columns line up however a translation wraps: startup,
-                                 the window, the Recycle Bin question across both, then the two things
-                                 KillerShell can take over from Windows, with their notes under them.
-                                 Children run row by row, left to right, which is also the Tab order. -->
+                                 the window, the two things KillerShell can take over from Windows
+                                 (with their notes under them), then the Recycle Bin question across
+                                 both. Every row is the same 6px below the one above. Children run
+                                 row by row, left to right, which is also the Tab order. -->
                             <Grid Margin="0,12,0,0" Width="{Binding ActualWidth, ElementName=AboutInfoGrid}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -1836,17 +1837,11 @@
                                           IsChecked="{Binding Source={x:Static kl:ShortcutHints.Current}, Path=Enabled, Mode=TwoWay}">
                                     <TextBlock Text="{DynamicResource Str_About_ShowShortcutsInMenus}" TextWrapping="Wrap"/>
                                 </CheckBox>
-                                <CheckBox x:Name="AboutConfirmFolderDelete" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,6,0,0"
-                                          Checked="AboutConfirmFolderDelete_Changed"
-                                          Unchecked="AboutConfirmFolderDelete_Changed">
-                                    <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
-                                               TextWrapping="Wrap"/>
-                                </CheckBox>
                                 <!-- Tooltip and enabled state come from AboutController: a disabled box
                                      still has to say why. The note under each is the same text, shown
                                      when it says why the box is off or cannot be ticked: keyboard focus
                                      never reaches a disabled box. -->
-                                <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,12,0,0">
+                                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,6,0,0">
                                     <CheckBox x:Name="AboutDefaultTerminal"
                                               ToolTipService.ShowOnDisabled="True"
                                               Click="AboutDefaultTerminal_Click">
@@ -1857,7 +1852,7 @@
                                                Foreground="{DynamicResource DimTextBrush}" FontSize="10.5"
                                                TextWrapping="Wrap" Margin="20,2,0,0"/>
                                 </StackPanel>
-                                <StackPanel Grid.Row="3" Grid.Column="2" Margin="0,12,0,0">
+                                <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,6,0,0">
                                     <CheckBox x:Name="AboutOpenFolders"
                                               ToolTipService.ShowOnDisabled="True"
                                               Click="AboutOpenFolders_Click">
@@ -1868,6 +1863,12 @@
                                                Foreground="{DynamicResource DimTextBrush}" FontSize="10.5"
                                                TextWrapping="Wrap" Margin="20,2,0,0"/>
                                 </StackPanel>
+                                <CheckBox x:Name="AboutConfirmFolderDelete" Grid.Row="3" Grid.ColumnSpan="3" Margin="0,6,0,0"
+                                          Checked="AboutConfirmFolderDelete_Changed"
+                                          Unchecked="AboutConfirmFolderDelete_Changed">
+                                    <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
+                                               TextWrapping="Wrap"/>
+                                </CheckBox>
                                 <TextBlock Grid.Row="4" Grid.ColumnSpan="3" FontFamily="{DynamicResource MonoFont}" FontSize="10"
                                            HorizontalAlignment="Right" Margin="0,8,0,0" TextWrapping="Wrap">
                                     <Hyperlink TextDecorations="None" Cursor="Hand" Click="AboutClearData_Click">
