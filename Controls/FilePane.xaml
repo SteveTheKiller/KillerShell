@@ -1270,7 +1270,7 @@
                      search, and the query label is blank. An empty 24px strip under the listing
                      is dead space. UpdatePaneStatusBar (MainWindow.xaml.cs) toggles this and
                      hands the pane's bottom rounding back to the list surface below. -->
-                <Border x:Name="PaneStatusBar" DockPanel.Dock="Bottom" Height="24" Padding="8,0">
+                <Border x:Name="PaneStatusBar" DockPanel.Dock="Bottom" Height="24" Padding="14,0,8,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -1435,6 +1435,9 @@
                                 </ControlTemplate>
                             </Thumb.Template>
                         </Thumb>
+                        <Border x:Name="DetailsPaneBottomEdge" Height="1" VerticalAlignment="Bottom"
+                                Panel.ZIndex="61" IsHitTestVisible="False"
+                                Background="{DynamicResource PaneBorderBrush}"/>
                     </Grid>
                 </Border>
 

@@ -62,6 +62,14 @@ namespace KillerShell.Shell
             if (WearsLocationRow(t))
             {
                 FrameworkElement content = !bottom && pane.ViewMode == 2 ? pane.DetailsHeader : pane.ResultsSurface;
+                if (bottom)
+                {
+                    // The summary spans the bottom edge; side details leave the listing beside it.
+                    if (pane.PaneStatusBar.Visibility == Visibility.Visible)
+                        content = pane.ResultsPane;
+                    else if (pane.DetailsPane.Visibility == Visibility.Visible && !pane.DetailsPaneOnRight)
+                        content = pane.DetailsPane;
+                }
                 Bind(FilePane.MenuBarContentBrushProperty, content, "Background");
                 Bind(FilePane.MenuBarShownBrushProperty, bottom ? content : pane.LocationRow, "Background");
             }

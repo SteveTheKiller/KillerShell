@@ -1703,8 +1703,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
-                    <StackPanel Orientation="Horizontal" Background="Transparent">
-                        <Grid x:Name="box" Width="15" Height="15" VerticalAlignment="Center">
+                    <DockPanel Background="Transparent" LastChildFill="True">
+                        <Grid x:Name="box" DockPanel.Dock="Left" Width="15" Height="15" VerticalAlignment="Center">
                             <Border x:Name="boxFace" CornerRadius="{DynamicResource SmallCornerRadius}"
                                     Background="{DynamicResource CheckBoxBackgroundBrush}"
                                     BorderBrush="{DynamicResource CheckBoxBorderBrush}" BorderThickness="1"/>
@@ -1724,7 +1724,7 @@
                                        Visibility="Collapsed" Effect="{DynamicResource TextStrokeSoft}"/>
                         </Grid>
                         <ContentPresenter Margin="7,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
+                    </DockPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="boxFace" Property="BorderBrush" Value="{DynamicResource InputHoverBrush}"/>

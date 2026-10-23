@@ -28,6 +28,91 @@ public sealed class ThemeSurfaceRegressionTests
     [Fact]
     public Task DefaultTerminalTabKeepsThemeGrainWithEitherToolbarOrTabPlacement()
         => RuntimeComponentProcess.Run(nameof(TerminalTabGrainScenario));
+
+    [Fact]
+    public Task BottomListingTabFollowsDetailsAndSearchSummaryAcrossThemes()
+        => RuntimeComponentProcess.Run(nameof(BottomListingTabSurfaceScenario));
+}
+
+public static class BottomListingTabSurfaceScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var pane = window.Pane;
+        pane.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => pane.TabStrip.Items.Count == 2 && pane.Active.IsBrowsing);
+        pane.ViewDetailsBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        ThemeManager.Apply(Theme.Malaise);
+        PlaceTabs(bottom: true);
+        pane.DetailsPaneBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        MatchSurface(pane.DetailsPane.Background, "opening full-width details");
+
+        foreach (Theme theme in Enum.GetValues(typeof(Theme)))
+        {
+            ThemeManager.Apply(theme);
+            MatchSurface(pane.DetailsPane.Background, "theme change with full-width details");
+            var edge = Assert.IsType<Border>(pane.FindName("DetailsPaneBottomEdge"));
+            Assert.Equal(1, edge.Height);
+            Assert.Equal(VerticalAlignment.Bottom, edge.VerticalAlignment);
+            Assert.False(edge.IsHitTestVisible);
+            Assert.Equal(MenuBarTabBlendScenario.Paint((Brush)pane.FindResource("PaneBorderBrush")),
+                MenuBarTabBlendScenario.Paint(edge.Background));
+
+            pane.DetailsPaneBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Assert.Equal(Dock.Right, DockPanel.GetDock(pane.DetailsPane));
+            MatchSurface(pane.ResultsSurface.Background, "moving details to the right");
+            Assert.True(edge.IsVisible && edge.ActualWidth > 0, "Right details must retain their bottom rule.");
+
+            pane.DetailsPaneBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Assert.Equal(Visibility.Collapsed, pane.DetailsPane.Visibility);
+            MatchSurface(pane.ResultsSurface.Background, "closing details");
+
+            pane.Active.Groups[0].Terms[0].Pattern = "*.txt";
+            ShellWindowFixture.Click(window, "SearchButton");
+            ShellWindowFixture.PumpUntil(() => !pane.Active.IsSearching && pane.PaneStatusBar.IsVisible);
+            MatchSurface(pane.ResultsPane.Background, "showing the search summary");
+
+            pane.DetailsPaneBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Assert.Equal(Dock.Bottom, DockPanel.GetDock(pane.DetailsPane));
+            MatchSurface(pane.ResultsPane.Background, "showing details above the search summary");
+
+            var search = (Button)window.FindName("SearchButton");
+            ((Panel)search.Parent).Children.OfType<Button>()
+                .Single(button => Equals(button.Content, pane.FindResource("Str_Btn_Clear")))
+                .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Assert.Equal(Visibility.Collapsed, pane.PaneStatusBar.Visibility);
+            MatchSurface(pane.DetailsPane.Background, "clearing the search summary");
+
+            PlaceTabs(bottom: false);
+            window.SetMenuBar(pane, hidden: false, animate: false, persist: false);
+            MatchSurface(pane.LocationRow.Background, "top tabs with the menu shown");
+            window.SetMenuBar(pane, hidden: true, animate: false, persist: false);
+            MatchSurface(pane.DetailsHeader.Background, "top tabs with the menu hidden");
+            window.SetMenuBar(pane, hidden: false, animate: false, persist: false);
+            PlaceTabs(bottom: true);
+        }
+
+        void PlaceTabs(bool bottom)
+        {
+            var menu = pane.TabBar.ContextMenu;
+            menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent));
+            var label = pane.FindResource(bottom ? "Str_Layout_TabsBottom" : "Str_Layout_TabsTop");
+            menu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, label))
+                .RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            window.UpdateLayout();
+        }
+
+        void MatchSurface(Brush expectedBrush, string state)
+        {
+            window.UpdateLayout();
+            Color expected = MenuBarTabBlendScenario.Paint(expectedBrush);
+            Color actual = MenuBarTabBlendScenario.Paint(MenuBarTabBlendScenario.TabBorder(pane, pane.Active).Background);
+            Assert.True(expected == actual,
+                ThemeManager.Current + ": " + state + " expected " + expected + ", actual " + actual + ".");
+        }
+    }
 }
 
 public static class BlackHeaderSurfaceScenario

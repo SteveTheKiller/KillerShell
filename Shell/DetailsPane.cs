@@ -89,6 +89,7 @@ namespace KillerShell.Shell
 
                 p.DetailsPaneBtn.ContextMenu = new System.Windows.Controls.ContextMenu();
                 p.DetailsPaneBtn.ContextMenu.Opened += (_, _) => PopulateDetailsPaneMenu(p);
+                p.DetailsPane.IsVisibleChanged += (_, _) => RefreshActiveTabSurface(p);
                 p.ResultsPane.SizeChanged += (_, _) => CorrectDetailsPaneHeight(p);
                 p.DetailsFieldsGrid.SizeChanged += (_, _) => CorrectDetailsPaneHeight(p);
                 p.DetailsScroll.ScrollChanged += (_, e) => { if (e.ViewportHeightChange != 0) CorrectDetailsPaneHeight(p); };
@@ -367,6 +368,7 @@ namespace KillerShell.Shell
             {
                 AnimateDetailsPane(pane, 0, animate, collapseWhenDone: true);
             }
+            RefreshActiveTabSurface(pane);
         }
 
         private static void AnimateDetailsPane(FilePane pane, double target, bool animate, bool collapseWhenDone)

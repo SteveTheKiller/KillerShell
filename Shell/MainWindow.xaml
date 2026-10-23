@@ -1776,51 +1776,14 @@
                                 <TextBlock x:Name="AboutUpdateText" FontSize="12"/>
                             </Button>
 
-                            <!-- Settings footer. KillerPDF's About card carries the same kind of
-                                 row (its recent-files toggle and Clear all Data), so this is the
-                                 family precedent rather than a new idea. It does not break the
-                                 locked About standard: the rule there is no COPYRIGHT footer,
-                                 because GPLv3 is already in the tagline.
-                                 It is here because About is already the app's "what is this thing
-                                 actually doing" screen - the signature, the thumbprint and the exe
-                                 hash live on it - and because the delete prompt's don't-ask-again
-                                 box needs somewhere to be undone from.
-                                 Sized and spaced off KillerPDF's equivalent row: 12px above it and
-                                 no rule, no padding. It carried a hairline and 26px of vertical
-                                 space at first, which made one checkbox read as a whole section.
-                                 NO FontSize HERE. The implicit CheckBox style is Consolas 11
-                                 (Controls.xaml) and every other checkbox in the app takes it; the
-                                 12 that was set on this TextBlock made this the largest one in the
-                                 app and the only one off the app's own scale.
-                                 WIDTH IS PINNED to AboutInfoGrid, exactly like the header above:
-                                 the SHA-256 line is the only thing allowed to set the card width,
-                                 so the label wraps inside this instead of widening the card. A
-                                 bare Content string, which is what KillerPDF uses, cannot wrap and
-                                 would be clipped by that pin once a locale runs long. -->
-                            <Border Margin="0,12,0,0"
-                                    Width="{Binding ActualWidth, ElementName=AboutInfoGrid}">
-                                <!-- Toggle left, the destructive link hard right, the way
-                                     KillerPDF's footer is laid out. LastChildFill off so the
-                                     checkbox keeps its own width and the link stays pinned to the
-                                     edge rather than being centered in whatever is left. -->
-                                <DockPanel LastChildFill="False">
-                                    <TextBlock DockPanel.Dock="Right" FontFamily="{DynamicResource MonoFont}" FontSize="10"
-                                               VerticalAlignment="Center">
-                                        <Hyperlink TextDecorations="None" Cursor="Hand" Click="AboutClearData_Click">
-                                            <Hyperlink.Style>
-                                                <Style TargetType="Hyperlink">
-                                                    <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/>
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Hyperlink.Style>
-                                            <Run Text="{DynamicResource Str_About_ClearData}"/>
-                                        </Hyperlink>
-                                    </TextBlock>
-                                    <StackPanel DockPanel.Dock="Left">
+                            <!-- Two equal settings columns stay inside the SHA-sized info panel. -->
+                            <Grid Margin="0,12,0,0" Width="{Binding ActualWidth, ElementName=AboutInfoGrid}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
                                         <CheckBox x:Name="AboutStartupUpdateCheck"
                                                   Click="AboutStartupUpdateCheck_Click">
                                             <TextBlock Text="{DynamicResource Str_About_StartupUpdateCheck}"
@@ -1837,7 +1800,9 @@
                                             <TextBlock Text="{DynamicResource Str_About_CloseToTray}"
                                                        TextWrapping="Wrap"/>
                                         </CheckBox>
-                                        <CheckBox x:Name="AboutShowShortcuts" Margin="0,6,0,0"
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <CheckBox x:Name="AboutShowShortcuts"
                                                   IsChecked="{Binding Source={x:Static kl:ShortcutHints.Current}, Path=Enabled, Mode=TwoWay}">
                                             <TextBlock Text="{DynamicResource Str_About_ShowShortcutsInMenus}" TextWrapping="Wrap"/>
                                         </CheckBox>
@@ -1847,9 +1812,24 @@
                                             <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
                                                        TextWrapping="Wrap"/>
                                         </CheckBox>
+                                        <TextBlock FontFamily="{DynamicResource MonoFont}" FontSize="10"
+                                                   HorizontalAlignment="Right" Margin="0,8,0,0" TextWrapping="Wrap">
+                                            <Hyperlink TextDecorations="None" Cursor="Hand" Click="AboutClearData_Click">
+                                                <Hyperlink.Style>
+                                                    <Style TargetType="Hyperlink">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Hyperlink.Style>
+                                                <Run Text="{DynamicResource Str_About_ClearData}"/>
+                                            </Hyperlink>
+                                        </TextBlock>
                                     </StackPanel>
-                                </DockPanel>
-                            </Border>
+                            </Grid>
                         </StackPanel>
                         </StackPanel>
                     </Grid>

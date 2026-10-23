@@ -1606,6 +1606,7 @@ namespace KillerShell.Shell
             var radius = new CornerRadius(0, 0, br, br);
             Pane.ResultsSurface.CornerRadius      = radius;
             Pane.ResultsSurfaceGrain.CornerRadius = radius;
+            RefreshActiveTabSurface(Pane);
         }
 
         // The badge appearing or going away changes how much room the line has, and it does NOT
