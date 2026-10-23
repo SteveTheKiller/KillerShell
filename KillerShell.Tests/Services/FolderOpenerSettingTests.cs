@@ -192,19 +192,103 @@ public sealed class FolderOpenerSettingTests
     public void AnotherFileManagersOpenVerbComesBack()
     {
         var registry = new FakeRegistryStore();
+        registry.SetString(RegistryHive.CurrentUser, Directories + @"\open", "MUIVerb", "Open in Pilot");
+        registry.SetString(RegistryHive.CurrentUser, Directories + @"\open", "ExplorerCommandHandler", "{66666666-7777-8888-9999-000000000000}");
         registry.SetString(RegistryHive.CurrentUser, Directories + @"\open\command", null, Pilot);
         registry.SetString(RegistryHive.CurrentUser, Directories + @"\open\command", "DelegateExecute", "{11111111-2222-3333-4444-555555555555}");
+        registry.SetString(RegistryHive.CurrentUser, Directories + @"\open\ddeexec", null, "[open(\"%1\")]");
         var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
 
         setting.TurnOn();
-        // A DelegateExecute beside the command would run instead of it.
+        // A handler, a DelegateExecute or a DDE conversation beside the command would run instead
+        // of it, or alongside it.
+        Assert.Null(registry.GetString(RegistryHive.CurrentUser, Directories + @"\open", "ExplorerCommandHandler"));
         Assert.Null(registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", "DelegateExecute"));
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Directories + @"\open\ddeexec"));
         setting.TurnOff();
 
         Assert.Equal(Pilot, registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", null));
+        Assert.Equal("Open in Pilot", registry.GetString(RegistryHive.CurrentUser, Directories + @"\open", "MUIVerb"));
+        Assert.Equal("{66666666-7777-8888-9999-000000000000}",
+            registry.GetString(RegistryHive.CurrentUser, Directories + @"\open", "ExplorerCommandHandler"));
         Assert.Equal("{11111111-2222-3333-4444-555555555555}",
             registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", "DelegateExecute"));
+        Assert.Equal("[open(\"%1\")]", registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\ddeexec", null));
         Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Drives + @"\open"));
+    }
+
+    [Fact]
+    public void AnOpenVerbWithoutACommandComesBackWithoutOne()
+    {
+        var registry = new FakeRegistryStore();
+        registry.SetString(RegistryHive.CurrentUser, Directories + @"\open", "MUIVerb", "Open in Pilot");
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+
+        setting.TurnOn();
+        setting.TurnOff();
+
+        Assert.Equal("Open in Pilot", registry.GetString(RegistryHive.CurrentUser, Directories + @"\open", "MUIVerb"));
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Directories + @"\open\command"));
+    }
+
+    [Fact]
+    public void TheOpenVerbFollowsItsDefaultWhenAnotherProgramTakesDoubleClicks()
+    {
+        // The box shows off once something else owns double-clicks, so programs must not keep
+        // reaching KillerShell through the open verb either.
+        var registry = new FakeRegistryStore();
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+
+        registry.SetString(RegistryHive.CurrentUser, Directories, null, "openinfiles");
+        setting.Repair();
+
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Directories + @"\open"));
+        Assert.Equal(FolderOpenerSetting.VerbCommand(Exe),
+            registry.GetString(RegistryHive.CurrentUser, Drives + @"\open\command", null));
+    }
+
+    [Fact]
+    public void TheOpenVerbFollowsADefaultThatWasReset()
+    {
+        var registry = new FakeRegistryStore();
+        registry.SetString(RegistryHive.CurrentUser, Drives + @"\open\command", null, Pilot);
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+
+        registry.DeleteValue(RegistryHive.CurrentUser, Drives, string.Empty);
+        setting.Repair();
+
+        Assert.Equal(Pilot, registry.GetString(RegistryHive.CurrentUser, Drives + @"\open\command", null));
+    }
+
+    [Fact]
+    public void ACopyBeingRemovedTurnsItOffWhereItOpensFolders()
+    {
+        // An all-users uninstall run by SYSTEM or another administrator reaches each user's own
+        // registry (UserHives.cs): an open verb naming the deleted exe would break every folder.
+        var registry = new FakeRegistryStore();
+        string machineExe = @"C:\Program Files\KillerShell\KillerShell.exe";
+        new FolderOpenerSetting(registry, installed: true, exePath: machineExe).TurnOn();
+
+        new FolderOpenerSetting(registry, installed: false, exePath: machineExe).TurnOffFor(machineExe);
+
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Directories + @"\open"));
+        Assert.Null(Default(registry, RegistryHive.CurrentUser, Drives));
+    }
+
+    [Fact]
+    public void ACopyBeingRemovedLeavesAUsersOwnCopyAlone()
+    {
+        var registry = new FakeRegistryStore();
+        new FolderOpenerSetting(registry, installed: true, exePath: Exe).TurnOn();
+        string machineExe = @"C:\Program Files\KillerShell\KillerShell.exe";
+
+        new FolderOpenerSetting(registry, installed: false, exePath: machineExe).TurnOffFor(machineExe);
+
+        Assert.Equal(FolderOpenerSetting.VerbCommand(Exe),
+            registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", null));
+        Assert.Equal("KillerShell", Default(registry, RegistryHive.CurrentUser, Directories));
     }
 
     [Fact]

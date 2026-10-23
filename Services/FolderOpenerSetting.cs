@@ -39,10 +39,12 @@ namespace KillerShell.Services
 
         /// <summary>
         /// Where the replaced defaults wait to be put back: "directory|drive", empty for missing.
-        /// Every value whose name starts with this is something to put back (SavedOpen).
+        /// The replaced open verbs wait whole under the subkey of the same name plus "Open"
+        /// (SavedOpen). Clear all Data keeps every value and subkey whose name starts with this.
         /// </summary>
         internal const string PreviousSetting = "FolderOpenerPrevious";
         private const string SettingsKey = @"Software\KillerShell";
+        private const string SavedOpenKey = SettingsKey + @"\" + PreviousSetting + "Open";
 
         private const string Arguments = " --new-window \"%1\\.\"";
 
@@ -112,6 +114,8 @@ namespace KillerShell.Services
             EnsureVerbs();
             foreach (string owner in Owners)
                 _registry.SetString(RegistryHive.CurrentUser, owner, null, Verb);
+            // Last: an open verb is only ever live behind a default that is KillerShell's (Repair).
+            EnsureOpen();
             return true;
         }
 
@@ -130,22 +134,42 @@ namespace KillerShell.Services
                 if (value.Length == 0) _registry.DeleteValue(RegistryHive.CurrentUser, Owners[i], string.Empty);
                 else _registry.SetString(RegistryHive.CurrentUser, Owners[i], null, value);
             }
+            // The open verbs: another program's comes back where ours is still in its place.
             for (int i = 0; i < Owners.Length; i++)
-            {
                 if (IsOurOpen(Owners[i])) RestoreOpen(i);
-                _registry.DeleteValue(RegistryHive.CurrentUser, SettingsKey, SavedOpen(i));
-                _registry.DeleteValue(RegistryHive.CurrentUser, SettingsKey, SavedDelegate(i));
-            }
+            _registry.DeleteKey(RegistryHive.CurrentUser, SavedOpenKey);
             _registry.DeleteValue(RegistryHive.CurrentUser, SettingsKey, PreviousSetting);
         }
 
-        /// <summary>While it is on, makes sure the verbs it relies on still exist and run this copy.</summary>
+        /// <summary>
+        /// For a copy being removed (UserHives.cs): turns it off where this user's open verb runs
+        /// that copy, and leaves a user whose folders open in a copy of their own alone.
+        /// </summary>
+        internal void TurnOffFor(string exePath)
+        {
+            string command = VerbCommand(exePath);
+            if (Array.Exists(Owners, o => string.Equals(OpenCommand(o), command, StringComparison.OrdinalIgnoreCase)))
+                TurnOff();
+        }
+
+        /// <summary>
+        /// While it is on, makes sure the verbs it relies on still exist and run this copy. An open
+        /// verb whose default something else has taken since (another file manager, a reset, a
+        /// TurnOn that stopped halfway) goes back with it: the box shows off then, so programs
+        /// must not keep reaching KillerShell either.
+        /// </summary>
         internal void Repair()
         {
-            if (State == FolderOpenerState.On && _installed) EnsureVerbs();
+            for (int i = 0; i < Owners.Length; i++)
+                if (!IsOurs(Owners[i]) && IsOurOpen(Owners[i])) RestoreOpen(i);
+            if (State != FolderOpenerState.On || !_installed) return;
+            EnsureVerbs();
+            EnsureOpen();
         }
 
         private bool IsOurs(string owner) => string.Equals(Read(owner), Verb, StringComparison.OrdinalIgnoreCase);
+
+        private string? OpenCommand(string owner) => _registry.GetString(RegistryHive.CurrentUser, owner + @"\open\command", null);
 
         /// <summary>
         /// An open verb any copy of KillerShell wrote. Not only this copy's: the one left behind by
@@ -153,48 +177,33 @@ namespace KillerShell.Services
         /// </summary>
         private bool IsOurOpen(string owner)
         {
-            string? command = _registry.GetString(RegistryHive.CurrentUser, owner + @"\open\command", null);
+            string? command = OpenCommand(owner);
             return command != null && command.StartsWith("\"", StringComparison.Ordinal)
                 && command.EndsWith(@"\KillerShell.exe""" + Arguments, StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>What another program had as the open verb: its command, missing if it had none.</summary>
-        private static string SavedOpen(int i) => PreviousSetting + OwnerNames[i] + "Open";
+        /// <summary>Where another program's open verb waits, whole; missing when there was none.</summary>
+        private static string SavedOpen(int i) => SavedOpenKey + @"\" + OwnerNames[i];
 
-        /// <summary>Its DelegateExecute, which runs in place of the command while it is there.</summary>
-        private static string SavedDelegate(int i) => SavedOpen(i) + "Delegate";
-
+        /// <summary>
+        /// Sets another program's open verb aside as it is: its command with the value kind it had,
+        /// and whatever handler, DelegateExecute or DDE conversation runs in place of it or beside it.
+        /// </summary>
         private void SaveOpen(int i)
         {
-            string key = Owners[i] + @"\open";
-            _registry.DeleteValue(RegistryHive.CurrentUser, SettingsKey, SavedOpen(i));
-            _registry.DeleteValue(RegistryHive.CurrentUser, SettingsKey, SavedDelegate(i));
-            if (!_registry.KeyExists(RegistryHive.CurrentUser, key)) return;
-
-            _registry.SetString(RegistryHive.CurrentUser, SettingsKey, SavedOpen(i),
-                _registry.GetString(RegistryHive.CurrentUser, key + @"\command", null) ?? string.Empty);
-            string? delegateExecute = _registry.GetString(RegistryHive.CurrentUser, key + @"\command", "DelegateExecute");
-            if (delegateExecute != null)
-                _registry.SetString(RegistryHive.CurrentUser, SettingsKey, SavedDelegate(i), delegateExecute);
+            _registry.DeleteKey(RegistryHive.CurrentUser, SavedOpen(i));
+            _registry.CopyKey(RegistryHive.CurrentUser, Owners[i] + @"\open", SavedOpen(i));
         }
 
         /// <summary>
-        /// Puts another program's open verb back, or takes ours away when there was none, which
-        /// hands "open" back to Explorer's on Folder.
+        /// Puts back the open verb set aside, or none when there was none, which hands "open"
+        /// back to Explorer's on Folder.
         /// </summary>
         private void RestoreOpen(int i)
         {
-            string? command = _registry.GetString(RegistryHive.CurrentUser, SettingsKey, SavedOpen(i));
-            if (command == null)
-            {
-                _registry.DeleteKey(RegistryHive.CurrentUser, Owners[i] + @"\open");
-                return;
-            }
-            string key = Owners[i] + @"\open\command";
-            if (command.Length == 0) _registry.DeleteValue(RegistryHive.CurrentUser, key, string.Empty);
-            else _registry.SetString(RegistryHive.CurrentUser, key, null, command);
-            string? delegateExecute = _registry.GetString(RegistryHive.CurrentUser, SettingsKey, SavedDelegate(i));
-            if (delegateExecute != null) _registry.SetString(RegistryHive.CurrentUser, key, "DelegateExecute", delegateExecute);
+            _registry.DeleteKey(RegistryHive.CurrentUser, Owners[i] + @"\open");
+            _registry.CopyKey(RegistryHive.CurrentUser, SavedOpen(i), Owners[i] + @"\open");
+            _registry.DeleteKey(RegistryHive.CurrentUser, SavedOpen(i));
         }
 
         private string Read(string owner) => _registry.GetString(RegistryHive.CurrentUser, owner, null) ?? string.Empty;
@@ -224,14 +233,21 @@ namespace KillerShell.Services
                 _registry.SetString(RegistryHive.CurrentUser, key, null, "Open in KillerShell");
                 _registry.SetString(RegistryHive.CurrentUser, key + @"\command", null, VerbCommand(_exePath));
             }
+        }
 
-            // The open verb is only ever this user's, and always runs this copy.
+        /// <summary>
+        /// The open verb programs get: only ever this user's, always running this copy, and
+        /// nothing else under it, so no handler or DDE conversation left by another program runs
+        /// in place of the command or beside it.
+        /// </summary>
+        private void EnsureOpen()
+        {
+            string command = VerbCommand(_exePath);
             foreach (string owner in Owners)
             {
-                string key = owner + @"\open\command";
-                if (!string.Equals(_registry.GetString(RegistryHive.CurrentUser, key, null), command, StringComparison.OrdinalIgnoreCase))
-                    _registry.SetString(RegistryHive.CurrentUser, key, null, command);
-                _registry.DeleteValue(RegistryHive.CurrentUser, key, "DelegateExecute");
+                if (string.Equals(OpenCommand(owner), command, StringComparison.OrdinalIgnoreCase)) continue;
+                _registry.DeleteKey(RegistryHive.CurrentUser, owner + @"\open");
+                _registry.SetString(RegistryHive.CurrentUser, owner + @"\open\command", null, command);
             }
         }
     }

@@ -44,6 +44,14 @@ internal sealed class FakeRegistryStore : IRegistryStore
             _keys.Remove(k);
     }
 
+    public void CopyKey(RegistryHive hive, string source, string destination)
+    {
+        string from = Path(hive, source), to = Path(hive, destination);
+        foreach (var k in _keys.Keys.Where(k => k.Equals(from, StringComparison.OrdinalIgnoreCase) ||
+                                               k.StartsWith(from + @"\", StringComparison.OrdinalIgnoreCase)).ToList())
+            _keys[to + k.Substring(from.Length)] = new Dictionary<string, string>(_keys[k], StringComparer.OrdinalIgnoreCase);
+    }
+
     /// <summary>Creates an empty key, as a packaged app's COM registration appears to a reader.</summary>
     internal void CreateKey(RegistryHive hive, string key)
     {

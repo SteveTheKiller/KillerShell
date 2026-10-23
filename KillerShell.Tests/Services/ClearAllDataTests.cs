@@ -12,8 +12,7 @@ public sealed class ClearAllDataTests
     [InlineData("Version")]
     [InlineData(DefaultTerminalSetting.PreviousSetting)]
     [InlineData(FolderOpenerSetting.PreviousSetting)]
-    [InlineData("FolderOpenerPreviousDirectoryOpen")]
-    [InlineData("FolderOpenerPreviousDriveOpenDelegate")]
+    [InlineData("FolderOpenerPreviousOpen")]
     public void InstallMarkersAndWhatToPutBackSurvive(string name)
         // What the About card replaced is not a preference: without it, turning the setting off
         // after a clear would lose what the user had before.

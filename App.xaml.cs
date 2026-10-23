@@ -329,9 +329,9 @@ namespace KillerShell
         private static readonly string[] InstallMarkers = ["Installed", "InstallPath", "Version"];
 
         /// <summary>
-        /// What Clear all Data leaves: the install markers, and what the About card's default
-        /// terminal and folder settings replaced (DefaultTerminal.cs). Those are not preferences
-        /// but what turning the settings off, or uninstalling, puts back.
+        /// What Clear all Data leaves, by value or subkey name: the install markers, and what the
+        /// About card's default terminal and folder settings replaced (DefaultTerminal.cs). Those
+        /// are not preferences but what turning the settings off, or uninstalling, puts back.
         /// </summary>
         internal static bool SurvivesClearAllData(string valueName)
             => Array.IndexOf(InstallMarkers, valueName) >= 0 ||
@@ -365,7 +365,10 @@ namespace KillerShell
                     // Nothing writes subkeys under here today, but a future feature might, and a
                     // preference hiding in one would survive a clear that only walked values.
                     foreach (var sub in k.GetSubKeyNames())
+                    {
+                        if (SurvivesClearAllData(sub)) continue;
                         try { k.DeleteSubKeyTree(sub, throwOnMissingSubKey: false); } catch { }
+                    }
                 }
             }
             catch { }
@@ -548,14 +551,20 @@ namespace KillerShell
             Services.InstallationConflictRemoval.Remove(machine, () =>
             {
                 Services.CommandLinePath.UnregisterRequired(machine ? MachineInstallDir : InstallDir, machine);
-                // The other install stays, and its own verb carries "Open folders in KillerShell".
+                // The other install stays and carries "Open folders in KillerShell" on.
                 if (!UnregisterAssociations(machine, keepFolderOpener: true)) throw new UnauthorizedAccessException();
                 // A per-user class left behind would win for this user and point at a deleted exe.
                 // When the all-users copy is the one staying, point this user's class at it: an
                 // all-users copy from before the class existed has none of its own until it runs
-                // elevated.
+                // elevated. The same goes for the open verb, which is only ever this user's and
+                // names one exe: a winget or RMM install over a per-user copy may not start the
+                // all-users one for a long time.
                 RemoveTerminalClass(machine, restoreDefault: false);   // DefaultTerminal.cs
-                if (!machine) RegisterTerminalClass(machine: false, MachineInstallExe);
+                if (!machine)
+                {
+                    RegisterTerminalClass(machine: false, MachineInstallExe);
+                    RepointFolderOpener(MachineInstallExe);
+                }
                 using (var key = hive.OpenSubKey(RegKey, writable: true))
                     foreach (string marker in InstallMarkers) key?.DeleteValue(marker, throwOnMissingValue: false);
                 hive.DeleteSubKeyTree(uninstallKey, throwOnMissingSubKey: false);
@@ -916,6 +925,7 @@ namespace KillerShell
                         throw new UnauthorizedAccessException();
                     if (!UnregisterAssociations(machine)) throw new UnauthorizedAccessException();
                     if (machine) UnregisterAssociations(machine: false);
+                    if (machine) TurnOffFolderOpenerForOtherUsers();      // DefaultTerminal.cs
                     // Before RegKey goes: it holds the default terminal pair to put back.
                     RemoveTerminalClass(machine, restoreDefault: true);    // DefaultTerminal.cs
                     if (machine) RemoveTerminalClass(machine: false, restoreDefault: false);

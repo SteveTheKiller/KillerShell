@@ -95,16 +95,41 @@ namespace KillerShell
         /// <summary>
         /// Uninstall: puts back the default terminal the About card replaced, then removes the
         /// class. That reaches the account running the uninstall, and the user who asked for an
-        /// elevated one (RelaunchMachineUninstallElevatedIfNeeded), which does the same for
-        /// "Open folders in KillerShell". Any other account still pointing here, or every account
-        /// under an uninstall run as SYSTEM, finds no class and its console programs stay in
-        /// Windows' own console; its folder default names a verb that is gone, which Windows
-        /// treats like its own "none" and opens folders in Explorer.
+        /// elevated one (RelaunchMachineUninstallElevatedIfNeeded). Any other account still
+        /// pointing here, or every account under an uninstall run as SYSTEM, finds no class and
+        /// its console programs stay in Windows' own console. "Open folders in KillerShell" has no
+        /// such fallback, since its open verb would name a deleted exe, so an all-users uninstall
+        /// reaches every user for it (TurnOffFolderOpenerForOtherUsers).
         /// </summary>
         private static void RemoveTerminalClass(bool machine, bool restoreDefault)
         {
             try { if (restoreDefault) DefaultTerminalSetting().TurnOff(); } catch { }
             try { Services.DefaultTerminalSetting.UnregisterClass(Services.WindowsRegistryStore.Instance, machine); } catch { }
+        }
+
+        /// <summary>
+        /// An all-users uninstall, run as SYSTEM (RMM, Intune) or by another administrator, puts
+        /// back what opened folders before for every other user whose folders open in this copy.
+        /// The account running it is handled by UnregisterAssociations. Never fails an uninstall.
+        /// </summary>
+        private static void TurnOffFolderOpenerForOtherUsers()
+        {
+            try
+            {
+                Services.UserHives.ForEachOtherUser(store =>
+                    new Services.FolderOpenerSetting(store, installed: false, exePath: MachineInstallExe).TurnOffFor(MachineInstallExe));
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Points this user's "Open folders in KillerShell" at the copy that stays when a duplicate
+        /// install goes, while it is on. Never fails the removal: the copy's next start mends it too.
+        /// </summary>
+        private static void RepointFolderOpener(string exe)
+        {
+            try { new Services.FolderOpenerSetting(Services.WindowsRegistryStore.Instance, installed: true, exePath: exe).Repair(); }
+            catch { }
         }
 
         /// <summary>
