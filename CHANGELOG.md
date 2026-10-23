@@ -9,7 +9,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 KillerShell can now be the Windows default terminal and open folders for you, and this release makes saves, installs, copies and archives safer across the app.
 
 ### Fixed
-- The main window's thin border shows again on every theme but 98SE, which draws its own frame.
 - Failed document saves preserve the original and retain recovery copies when restoration fails. Administrator saves keep newer edits unsaved and cannot overwrite a later save. Saving over a file another program changed since it was opened asks whether to replace it, reload it or save a copy, with Cancel as the default.
 - Installation and updates verify replacements before publishing them. Signed copies require a valid update from the same publisher, and unreadable or invalid current images cannot bypass that check. Recovery cleanup verifies file identity and contents, preserves unrelated files, and lets a successful retry be uninstalled.
 - Closing, updating, installing or signing out checks unsaved documents in both panes. Cancel preserves the session and live folder updates.
