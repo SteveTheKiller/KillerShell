@@ -31,6 +31,16 @@ namespace KillerShell.Terminal
         /// <summary>The STARTUPINFO show command (SW_*) the program was started with.</summary>
         public ushort ShowWindow { get; private set; }
 
+        // Hidden and minimized programs never reach a terminal: Windows' console keeps them
+        // (microsoft/terminal src/server/IoDispatchers.cpp, _shouldAttemptHandoff). What is
+        // left to honor is maximized, and showing without taking the focus.
+
+        /// <summary>SW_SHOWMAXIMIZED, as a shortcut set to Run: Maximized asks.</summary>
+        public bool StartsMaximized => ShowWindow == 3;
+
+        /// <summary>False for SW_SHOWNOACTIVATE and SW_SHOWNA, which ask not to take the focus.</summary>
+        public bool StartsActivated => ShowWindow != 4 && ShowWindow != 8;
+
         /// <summary>Reads a TERMINAL_STARTUP_INFO (src/host/proxy/ITerminalHandoff.idl).</summary>
         internal static HandoffStartupInfo Read(IntPtr info)
         {

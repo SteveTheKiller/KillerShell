@@ -48,6 +48,30 @@ public sealed class TerminalHandoffTests
     }
 }
 
+public sealed class HandoffStartupInfoTests
+{
+    [Theory]
+    [InlineData(1, false, true)]    // SW_SHOWNORMAL
+    [InlineData(3, true, true)]     // SW_SHOWMAXIMIZED: a shortcut set to Run: Maximized
+    [InlineData(4, false, false)]   // SW_SHOWNOACTIVATE
+    [InlineData(8, false, false)]   // SW_SHOWNA
+    public void TheWindowFollowsTheProgramsShowCommand(short show, bool maximized, bool activate)
+    {
+        IntPtr native = Marshal.AllocHGlobal(56);
+        try
+        {
+            for (int i = 0; i < 56; i += 4) Marshal.WriteInt32(native, i, 0);
+            Marshal.WriteInt16(native, 52, show);
+
+            var info = HandoffStartupInfo.Read(native);
+
+            Assert.Equal(maximized, info.StartsMaximized);
+            Assert.Equal(activate, info.StartsActivated);
+        }
+        finally { Marshal.FreeHGlobal(native); }
+    }
+}
+
 /// <summary>Plays Windows Terminal's console host in a separate, windowless process.</summary>
 internal static class ConsoleHostProcess
 {

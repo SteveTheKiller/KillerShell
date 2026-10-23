@@ -69,6 +69,8 @@ namespace KillerShell
             ShutdownMode = ShutdownMode.OnLastWindowClose;
             MainWindow = new AppMainWindow();
             MainWindow.ContentRendered += (_, _) => HandoffLog("shown pid=" + connection.ProcessId);
+            if (info.StartsMaximized) MainWindow.WindowState = WindowState.Maximized;
+            MainWindow.ShowActivated = info.StartsActivated;
             MainWindow.Show();
         }
 
