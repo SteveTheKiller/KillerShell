@@ -4,7 +4,7 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.0] - Unreleased
+## [1.5.0] - 2026-10-23
 
 ### Fixed
 - Failed document saves preserve the original and retain recovery copies when restoration fails. Administrator saves keep newer edits unsaved and cannot overwrite a later save. Saving over a file another program changed since it was opened asks whether to replace it, reload it or save a copy, with Cancel as the default.
