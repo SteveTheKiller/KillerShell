@@ -620,13 +620,20 @@ namespace KillerShell.Shell
             get
             {
                 if (_windowViewSettings != null) return _windowViewSettings;
-                string role = (DemoMode ? "demo." : "") + (IsElevated ? "admin" : "normal");
+                string role = WindowViewRole(DemoMode, IsElevated, IsConsoleWindow);
                 _windowViewSettings = new Services.WindowViewSettings(role,
                     Services.ThemeManager.GetSetting, Services.ThemeManager.SetSetting);
                 Closed += (_, _) => _windowViewSettings.Dispose();
                 return _windowViewSettings;
             }
         }
+
+        /// <summary>
+        /// Which set of per-window view settings a window reserves. A handed-off program's window
+        /// (ConsoleHandoff.cs) has its own, so it never takes an ordinary window's slot.
+        /// </summary>
+        internal static string WindowViewRole(bool demo, bool elevated, bool console)
+            => (demo ? "demo." : "") + (console ? "console" : elevated ? "admin" : "normal");
 
         private string? GetWindowViewSetting(string key) => WindowViews.Get(key);
         private void SetWindowViewSetting(string key, string value) => WindowViews.Set(key, value);
