@@ -221,11 +221,13 @@ namespace KillerShell.Tools
         {
             var app = Application.Current;
             if (app == null) return;
-            var configured = app.FindResource("MonitorCellBrush");
+            // Before a theme is loaded there is nothing to adjust, and FindResource would throw.
+            var configured = app.TryFindResource("MonitorCellBrush");
+            if (configured == null) return;
             // Keep an explicit monitor palette, such as the retro black readouts. Ordinary
             // cells inherit the lighter content surface locally, without changing other tools.
-            Resources["MonitorCellBrush"] = ReferenceEquals(configured, app.FindResource("MenuBackgroundBrush"))
-                ? app.FindResource("ListPaneBrush") : configured;
+            Resources["MonitorCellBrush"] = ReferenceEquals(configured, app.TryFindResource("MenuBackgroundBrush"))
+                ? app.TryFindResource("ListPaneBrush") ?? configured : configured;
         }
 
         private void DisposeCounters()
