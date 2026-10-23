@@ -15,9 +15,49 @@ namespace KillerShell
             // Not on a 98SE bottom strip, whose edges are drawn on the tab's true bounds below.
             bool dividerOnly = BorderThickness == new Thickness(0, 0, 1, 0) && !RetroBottomEdges;
             if (dividerOnly) drawingContext.PushTransform(new TranslateTransform(1, 0));
-            base.OnRender(drawingContext);
+            if (RetroBottomEdges || !DrawRoundedTop(drawingContext)) base.OnRender(drawingContext);
             if (RetroBottomEdges) DrawRetroBottomEdges(drawingContext);
             if (dividerOnly) drawingContext.Pop();
+        }
+
+        /// <summary>
+        /// The active tab: its outline rounds the top corners at CornerRadius and the face inside
+        /// rounds them 1px less, so the face nests in the outline. A plain Border works the inner
+        /// curve out from each side's thickness, which under the 3px top stripe flattened the
+        /// face's corners almost square. False for any other tab, which Border draws as before.
+        /// </summary>
+        private bool DrawRoundedTop(DrawingContext dc)
+        {
+            CornerRadius r = CornerRadius;
+            Thickness b = BorderThickness;
+            if ((r.TopLeft <= 0 && r.TopRight <= 0) || r.BottomLeft > 0 || r.BottomRight > 0 || b.Top <= 0) return false;
+            var outer = new Rect(RenderSize);
+            if (outer.Width <= b.Left + b.Right || outer.Height <= b.Top + b.Bottom) return false;
+            var inner = new Rect(b.Left, b.Top, outer.Width - b.Left - b.Right, outer.Height - b.Top - b.Bottom);
+            Geometry outerShape = TopRounded(outer, r.TopLeft, r.TopRight);
+            Geometry face = TopRounded(inner, Math.Max(0, r.TopLeft - 1), Math.Max(0, r.TopRight - 1));
+            if (BorderBrush != null)
+                dc.DrawGeometry(BorderBrush, null, new CombinedGeometry(GeometryCombineMode.Exclude, outerShape, face));
+            if (Background != null) dc.DrawGeometry(Background, null, face);
+            return true;
+        }
+
+        private static Geometry TopRounded(Rect rect, double left, double right)
+        {
+            left = Math.Min(left, Math.Min(rect.Width / 2, rect.Height));
+            right = Math.Min(right, Math.Min(rect.Width / 2, rect.Height));
+            var shape = new StreamGeometry();
+            using (StreamGeometryContext c = shape.Open())
+            {
+                c.BeginFigure(new Point(rect.Left, rect.Bottom), isFilled: true, isClosed: true);
+                c.LineTo(new Point(rect.Left, rect.Top + left), true, false);
+                if (left > 0) c.ArcTo(new Point(rect.Left + left, rect.Top), new Size(left, left), 0, false, SweepDirection.Clockwise, true, false);
+                c.LineTo(new Point(rect.Right - right, rect.Top), true, false);
+                if (right > 0) c.ArcTo(new Point(rect.Right, rect.Top + right), new Size(right, right), 0, false, SweepDirection.Clockwise, true, false);
+                c.LineTo(new Point(rect.Right, rect.Bottom), true, false);
+            }
+            shape.Freeze();
+            return shape;
         }
 
         /// <summary>
