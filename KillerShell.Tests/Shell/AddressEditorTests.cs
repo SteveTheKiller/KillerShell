@@ -23,9 +23,6 @@ public static class AddressEditorScenario
     {
         using var fixture = new ShellWindowFixture();
         var window = fixture.Window;
-        // Wide enough that each pane's toolbar shows its view buttons instead of the overflow
-        // menu, which takes them on a small screen.
-        window.Width = 1600;
         var left = (FilePane)window.FindName("LeftPane");
         var right = (FilePane)window.FindName("RightPane");
         window.ToggleDualPane();
@@ -52,11 +49,15 @@ public static class AddressEditorScenario
         window.UpdateLayout();
         Assert.Equal(rowHeight, left.LocationRow.ActualHeight, 2);
 
-        left.ViewDetailsBtn.Focus();
-        left.ViewDetailsBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        // A narrow pane (two panes on a small screen) moves the view buttons into the overflow
+        // menu; then its chevron is the toolbar button a click lands on.
+        Button toolbarButton = left.ViewDetailsBtn.IsVisible ? left.ViewDetailsBtn : left.OverflowBtn;
+        Assert.True(toolbarButton.IsVisible);
+        toolbarButton.Focus();
+        toolbarButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         ShellWindowFixture.PumpUntil(() => left.AddressBox.Visibility == Visibility.Collapsed,
-            diagnostic: () => "detailsVisible=" + left.ViewDetailsBtn.IsVisible + "; focus=" + Keyboard.FocusedElement
-                + "; paneWidth=" + left.ActualWidth);
+            diagnostic: () => "button=" + toolbarButton.Name + "; focus=" + Keyboard.FocusedElement);
+        left.OverflowPopup.IsOpen = false;
         Assert.Equal(Visibility.Visible, left.ScopePathLabel.Visibility);
         Assert.Equal(fixture.Root, left.ScopePathLabel.Text);
         Assert.Equal("", search.CurrentFolder);
