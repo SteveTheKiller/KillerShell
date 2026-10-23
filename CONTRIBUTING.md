@@ -60,4 +60,3 @@ Be prepared to revise an approved contribution after review. Contributions must 
 ## Project-specific guidance
 
 Preserve the terminal and file-manager boundaries and existing shell behavior. Run destructive file operations, registry repairs, and installer failure tests only in an appropriate disposable environment.
-
