@@ -18,7 +18,7 @@ namespace KillerShell.Tests.Terminal;
 // are copied between processes. (In one process COM refuses handle marshaling outright.)
 public sealed class TerminalHandoffTests
 {
-    [Fact]
+    [WindowsTerminalProxyFact]
     public async Task AConsoleHostInAnotherProcessGetsAWorkingConnection()
     {
         var clsid = Guid.NewGuid();
