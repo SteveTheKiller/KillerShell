@@ -128,7 +128,8 @@
       dict.f_evt_t + ' (Ctrl+F12)',
       dict.f_panes_t + ': ' + dict.f_tabs_t + ', ' + dict.f_browse_t,
       dict.f_storage_t + ', ' + dict.f_browse_t,
-      dict.theme_light + ': ' + dict.f_fname_t
+      dict.theme_light + ': ' + dict.f_fname_t,
+      dict.theme_98se + ': ' + dict.f_fname_t + ', ' + dict.f_tabs_t
     ];
     // Demo is a fixed command-line mode; feature and theme names use the site locale.
     var caption = captions[index - 1];
