@@ -14,7 +14,7 @@ namespace KillerShell.Editing
     internal static class LanguageSniffer
     {
         // Enough to decide on, small enough to run on every pause in typing.
-        private const int SampleLength = 16000;
+        internal const int SampleLength = 16000;
         private const int MinimumScore = 3;
 
         private static readonly RegexOptions Opt = RegexOptions.Multiline | RegexOptions.CultureInvariant;

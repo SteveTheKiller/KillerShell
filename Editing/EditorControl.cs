@@ -166,7 +166,9 @@ namespace KillerShell.Editing
         internal void SniffLanguage()
         {
             if (!SniffsLanguage) return;
-            string? ext = LanguageSniffer.Detect(Text);
+            // Detect reads only the start, so a large document is not copied whole.
+            string? ext = LanguageSniffer.Detect(Document.TextLength > LanguageSniffer.SampleLength
+                ? Document.GetText(0, LanguageSniffer.SampleLength) : Text);
             var definition = ext != null ? ForExtension("document" + ext) : null;
             if (ReferenceEquals(definition, SyntaxHighlighting)) return;
             SyntaxHighlighting = definition!;
@@ -275,8 +277,11 @@ namespace KillerShell.Editing
             _encoding     = encoding;
             EncodingLabel = Describe(encoding);
 
-            var highlighting = ForExtension(path);
-            if (highlighting != null) SyntaxHighlighting = highlighting;
+            // The new extension decides the colors, plain text when it has none of its own, so
+            // colors guessed while untitled do not stay on a .txt file. Still no extension:
+            // guess again from the text.
+            if (SniffsLanguage) SniffLanguage();
+            else SyntaxHighlighting = ForExtension(path)!;
             ApplyTheme();
         }
 
