@@ -219,8 +219,9 @@ namespace KillerShell.Shell
             int mouseHistoryDirection = MouseHistoryDirectionFromMessage(msg, wParam, lParam);
             if (mouseHistoryDirection != 0)
             {
-                // Folder history only: a shell, document or tool tab keeps its place.
-                if (_active?.IsBrowsing == true)
+                // Folder history only: a shell, document or tool tab keeps its place. Search
+                // results are still a folder tab with history, like the toolbar's Back.
+                if (_active != null && CanShowListing(_active))
                 {
                     if (mouseHistoryDirection < 0) NavBack_Click(this, new RoutedEventArgs());
                     else                           NavForward_Click(this, new RoutedEventArgs());
