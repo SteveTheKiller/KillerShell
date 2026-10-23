@@ -279,8 +279,13 @@ internal sealed class SearchFlyoutLayoutProbe
         var trigger = Named<Button>("SearchPanelBtn");
         Point buttonEdge = trigger.PointToScreen(new Point(trigger.ActualWidth, trigger.ActualHeight));
         Point flyoutEdge = Root.PointToScreen(new Point(Root.ActualWidth, 0));
-        Assert.True(Math.Abs(buttonEdge.X - flyoutEdge.X) <= 4,
-            "Flyout right edge=" + flyoutEdge + "; button edge=" + buttonEdge
+        // A flyout wider than the space left of the button is kept on screen, which moves it
+        // right of the button; that is Windows' popup placement, not a misalignment.
+        double dpi = PresentationSource.FromVisual(Root)?.CompositionTarget?.TransformToDevice.M11 ?? 1;
+        double popupLeft = Root.PointToScreen(new Point(0, 0)).X - Root.Margin.Left * dpi;
+        bool keptOnScreen = popupLeft <= SystemParameters.VirtualScreenLeft * dpi + 1;
+        Assert.True(keptOnScreen || Math.Abs(buttonEdge.X - flyoutEdge.X) <= 4,
+            "Flyout right edge=" + flyoutEdge + "; button edge=" + buttonEdge + "; popup left=" + popupLeft
             + "; scale=" + Root.LayoutTransform.Value.M11 + "; surface=" + Root.RenderSize);
         Assert.InRange(flyoutEdge.Y - buttonEdge.Y, 2, 8);
     }
