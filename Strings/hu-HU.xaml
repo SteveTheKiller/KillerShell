@@ -722,6 +722,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">Elrendezés visszaállítása</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">Háló</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">Lemez</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">Egy oszlop</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">Két oszlop</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Gyorsítótárazott</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Kihasználás</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">áteresztőképesség</sys:String>

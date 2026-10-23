@@ -657,6 +657,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">Düzeni sıfırla</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">Ağ</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">Disk</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">Tek sütun</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">İki sütun</sys:String>
     <sys:String x:Key="Str_Perf_InUse">Kullanımda</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Mantıksal işlemciler</sys:String>
     <sys:String x:Key="Str_Perf_Network">Ağ</sys:String>

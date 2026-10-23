@@ -654,6 +654,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">重置布局</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">网络</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">磁盘</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">单列</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">双列</sys:String>
     <sys:String x:Key="Str_Perf_InUse">使用中</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">逻辑处理器</sys:String>
     <sys:String x:Key="Str_Perf_Network">网络</sys:String>

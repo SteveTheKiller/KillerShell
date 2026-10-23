@@ -722,6 +722,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">Redefinir layout</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">Rede</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">Disco</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">Uma coluna</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">Duas colunas</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Em cache</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utilização</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Taxa de transferência</sys:String>

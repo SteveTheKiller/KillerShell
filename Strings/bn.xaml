@@ -654,6 +654,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">বিন্যাস রিসেট করুন</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">নেট</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">ডিস্ক</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">এক কলাম</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">দুই কলাম</sys:String>
     <sys:String x:Key="Str_Perf_InUse">ব্যবহৃত হচ্ছে</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">লজিক্যাল প্রসেসর</sys:String>
     <sys:String x:Key="Str_Perf_Network">নেটওয়ার্ক</sys:String>

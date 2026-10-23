@@ -691,6 +691,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">Орналасуды ысыру</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">Желі</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">Диск</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">Бір баған</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">Екі баған</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Кэштелген</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Жүктелуі</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Өткізу қабілеті</sys:String>

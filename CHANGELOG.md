@@ -45,7 +45,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Installed copies add `killershell` to PATH and provide `--help`; portable copies remain usable by path.
 - Added optional Start with Windows and Close to system tray settings, both off by default.
 - Added a right-hand position for the folder tree and its rail, selectable from its menu or keyboard.
-- Performance cards can be dragged into another order or into the space under a minimized card, and minimized to their title line from the right-click menu, which also resets the layout. The arrangement is remembered.
+- Performance cards can be dragged into another order or into the space under a minimized card. Their right-click menu minimizes a card to its title line, sets it to one column or two, and resets the layout. The arrangement is remembered.
 - Added the Recycle Bin to saved places and crash logging for unexpected exits.
 
 ### Changed

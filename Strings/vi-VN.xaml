@@ -679,6 +679,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">Đặt lại bố cục</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">Mạng</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">Đĩa</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">Một cột</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">Hai cột</sys:String>
   <sys:String x:Key="Str_Perf_Cached">Đã lưu vào bộ nhớ đệm</sys:String>
   <sys:String x:Key="Str_Perf_Utilization">Mức sử dụng</sys:String>
   <sys:String x:Key="Str_Perf_Throughput">Thông lượng</sys:String>

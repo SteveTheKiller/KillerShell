@@ -722,6 +722,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">Скинути розташування</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">Мережа</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">Диск</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">Один стовпець</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">Два стовпці</sys:String>
     <sys:String x:Key="Str_Perf_Cached">У кеші</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Використання</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Пропускна здатність</sys:String>

@@ -654,6 +654,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">重設配置</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">網路</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">磁碟</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">單欄</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">雙欄</sys:String>
     <sys:String x:Key="Str_Perf_InUse">使用中</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">邏輯處理器</sys:String>
     <sys:String x:Key="Str_Perf_Network">網路</sys:String>

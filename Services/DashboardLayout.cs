@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 // The Performance Monitor's arrangement as the user left it: the order its cards were dragged
-// into, which cards are stacked in the gap under another, and which are folded to their title
-// line, for the top strip and for the panels below it separately. One setting holds all of it, so
+// into, which cards are stacked in the gap under another, which are folded to their title line
+// and which span both columns of a row, for the top strip and for the panels below it separately. One setting holds all of it, so
 // it survives restarts, and Reset layout clears it back to the designed dashboard.
 //
 // A slot is one column of a row: usually one card, or a card with others stacked under it in the
@@ -26,8 +26,9 @@ namespace KillerShell.Services
         private readonly Dictionary<string, List<string>> _order = new(StringComparer.Ordinal);
         private readonly Dictionary<string, HashSet<string>> _stacked = new(StringComparer.Ordinal);   // sit under the card before them
         private readonly Dictionary<string, HashSet<string>> _folded = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, HashSet<string>> _wide = new(StringComparer.Ordinal);     // span both columns of a row
 
-        internal bool IsDefault => _order.Count == 0 && _stacked.Count == 0 && _folded.Count == 0;
+        internal bool IsDefault => _order.Count == 0 && _stacked.Count == 0 && _folded.Count == 0 && _wide.Count == 0;
 
         /// <summary>The cards that exist now, in the user's slots.</summary>
         internal List<List<string>> Slots(string area, IEnumerable<string> present)
@@ -115,19 +116,27 @@ namespace KillerShell.Services
         private bool IsStacked(string area, string id)
             => _stacked.TryGetValue(area, out var stacked) && stacked.Contains(id);
 
-        internal bool IsFolded(string area, string id)
-            => _folded.TryGetValue(area, out var folded) && folded.Contains(id);
+        internal bool IsFolded(string area, string id) => Has(_folded, area, id);
+        internal void SetFolded(string area, string id, bool folded) => Set(_folded, area, id, folded);
 
-        internal void SetFolded(string area, string id, bool folded)
+        /// <summary>A card that spans both columns of its row rather than one of them.</summary>
+        internal bool IsWide(string area, string id) => Has(_wide, area, id);
+        internal void SetWide(string area, string id, bool wide) => Set(_wide, area, id, wide);
+
+        private static bool Has(Dictionary<string, HashSet<string>> flags, string area, string id)
+            => flags.TryGetValue(area, out var set) && set.Contains(id);
+
+        // An area with nothing flagged is dropped, so a layout put back by hand reads as the default.
+        private static void Set(Dictionary<string, HashSet<string>> flags, string area, string id, bool on)
         {
-            if (folded)
+            if (on)
             {
-                if (!_folded.TryGetValue(area, out var set)) _folded[area] = set = new HashSet<string>(StringComparer.Ordinal);
+                if (!flags.TryGetValue(area, out var set)) flags[area] = set = new HashSet<string>(StringComparer.Ordinal);
                 set.Add(id);
             }
-            else if (_folded.TryGetValue(area, out var set) && set.Remove(id) && set.Count == 0)
+            else if (flags.TryGetValue(area, out var set) && set.Remove(id) && set.Count == 0)
             {
-                _folded.Remove(area);
+                flags.Remove(area);
             }
         }
 
@@ -136,14 +145,22 @@ namespace KillerShell.Services
             _order.Clear();
             _stacked.Clear();
             _folded.Clear();
+            _wide.Clear();
         }
 
-        /// <summary>Two slots to a row, in order; an odd last slot has its row to itself.</summary>
-        internal static List<T[]> Rows<T>(IReadOnlyList<T> slots)
+        /// <summary>
+        /// Two slots to a row, in order. A slot that spans both columns has its row to itself, and
+        /// a one-column slot that cannot pair (the last one, or one followed by a spanning slot)
+        /// keeps its one column of a row of its own rather than stretching across it.
+        /// </summary>
+        internal static List<T[]> Rows<T>(IReadOnlyList<T> slots, Func<T, bool> wide)
         {
             var rows = new List<T[]>((slots.Count + 1) / 2);
-            for (int i = 0; i < slots.Count; i += 2)
-                rows.Add(i + 1 < slots.Count ? [slots[i], slots[i + 1]] : [slots[i]]);
+            for (int i = 0; i < slots.Count; i++)
+            {
+                if (!wide(slots[i]) && i + 1 < slots.Count && !wide(slots[i + 1])) rows.Add([slots[i], slots[++i]]);
+                else rows.Add([slots[i]]);
+            }
             return rows;
         }
 
@@ -156,6 +173,7 @@ namespace KillerShell.Services
             Write(parts, "order.", _order.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             Write(parts, "stacked.", _stacked.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             Write(parts, "folded.", _folded.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
+            Write(parts, "wide.", _wide.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             return string.Join(";", parts);
         }
 
@@ -182,6 +200,7 @@ namespace KillerShell.Services
                 if (Area(key, "order.") is { } order) layout._order[order] = ids;
                 else if (Area(key, "stacked.") is { } stacked) layout._stacked[stacked] = new HashSet<string>(ids, StringComparer.Ordinal);
                 else if (Area(key, "folded.") is { } folded) layout._folded[folded] = new HashSet<string>(ids, StringComparer.Ordinal);
+                else if (Area(key, "wide.") is { } wide) layout._wide[wide] = new HashSet<string>(ids, StringComparer.Ordinal);
             }
             return layout;
         }

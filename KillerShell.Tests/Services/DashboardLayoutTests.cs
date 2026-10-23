@@ -181,11 +181,36 @@ namespace KillerShell.Tests.Services
         [Fact]
         public void Rows_PairsSlotsTwoToARow()
         {
-            List<string[]> rows = Rows(new[] { "a", "b", "c", "d", "e" });
+            List<string[]> rows = Rows(new[] { "a", "b", "c", "d", "e" }, _ => false);
             Assert.Equal(3, rows.Count);
             Assert.Equal(new[] { "a", "b" }, rows[0]);
             Assert.Equal(new[] { "c", "d" }, rows[1]);
             Assert.Equal(new[] { "e" }, rows[2]);
+        }
+
+        [Fact]
+        public void Rows_GiveATwoColumnSlotItsRowToItself()
+        {
+            // "a" cannot pair with the wide slot after it, so it keeps one column of its own row.
+            List<string[]> rows = Rows(new[] { "a", "B", "c", "d", "e" }, slot => slot == "B");
+            Assert.Equal("a|B|c+d|e", Show(rows));
+        }
+
+        [Fact]
+        public void Wide_IsRememberedPerCardAndReset()
+        {
+            var layout = Parse(null);
+            layout.SetWide(Panels, "gpu:A", true);
+            Assert.True(layout.IsWide(Panels, "gpu:A"));
+            Assert.False(layout.IsWide(Strip, "gpu:A"));
+
+            var reread = Parse(layout.Serialize());
+            Assert.True(reread.IsWide(Panels, "gpu:A"));
+
+            reread.SetWide(Panels, "gpu:A", false);
+            Assert.True(reread.IsDefault);
+            layout.Reset();
+            Assert.False(layout.IsWide(Panels, "gpu:A"));
         }
     }
 }

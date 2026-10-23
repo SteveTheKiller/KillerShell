@@ -722,6 +722,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">Tilbakestill oppsett</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">Nett</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">Disk</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">Én kolonne</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">To kolonner</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Bufret</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utnyttelse</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Gjennomstrømning</sys:String>

@@ -652,6 +652,8 @@
     <sys:String x:Key="Str_Perf_ResetLayout">配置をリセット</sys:String>
     <sys:String x:Key="Str_Perf_NetworkShort">ネット</sys:String>
     <sys:String x:Key="Str_Perf_DiskShort">ディスク</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">1 列</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">2 列</sys:String>
     <sys:String x:Key="Str_Perf_InUse">使用中</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">論理プロセッサ数</sys:String>
     <sys:String x:Key="Str_Perf_Network">ネットワーク</sys:String>

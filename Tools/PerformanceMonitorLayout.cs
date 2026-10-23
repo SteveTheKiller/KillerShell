@@ -116,7 +116,8 @@ namespace KillerShell.Tools
 
             // ── Panels, two to a row ─────────────────────────────
             // CPU beside memory, disks beside network adapters, then the GPUs. A card that is
-            // alone in its row (an odd GPU, a VM with no disks) has the row to itself.
+            // alone in its row (an odd GPU, a VM with no disks) keeps one column of it unless
+            // the user sets it to two (PerformanceMonitorCards.cs).
             if (_cpuTile != null) AddPanelCard(BuildCpuPanel(_cpuTile));
             if (_ramTile != null) AddPanelCard(BuildRamPanel(_ramTile));
             if (_diskTiles.Count > 0) AddPanelCard(BuildDevicePanel("disks", _diskTiles));

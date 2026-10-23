@@ -23,7 +23,8 @@ using CardDrop = KillerShell.Services.DashboardLayout.Drop;
 // a minimized card leaves can be filled. A marker in the gutter shows where it will land. The
 // panels flow two columns to a row whatever their order, and each keeps its own weight, so the
 // CPU is still wider than whatever shares its row. Right-click minimizes a card to its header
-// line or restores it, and resets the whole dashboard to the designed arrangement. All of it is
+// line or restores it, sets a panel to one column or across both, and resets the whole dashboard
+// to the designed arrangement. All of it is
 // saved as one setting (Services/DashboardLayout.cs), so it comes back after a restart.
 namespace KillerShell.Tools
 {
@@ -148,24 +149,30 @@ namespace KillerShell.Tools
         }
 
         /// <summary>Two columns to a row, in the user's order. A card moved, added or taken away
-        /// re-forms the rows; the cards themselves are moved into them, never rebuilt.</summary>
+        /// re-forms the rows; the cards themselves are moved into them, never rebuilt. A card set
+        /// to two columns spans its row; any other card alone in a row keeps one column of it.</summary>
         private void ArrangePanels()
         {
             DetachPanelRows();
             _panelSlots = Slots(Services.DashboardLayout.Panels, _panelCards);
-            foreach (var pair in Services.DashboardLayout.Rows(_panelSlots))
+            foreach (var pair in Services.DashboardLayout.Rows(_panelSlots, IsWide))
             {
                 var row = new Grid();
                 for (int c = 0; c < pair.Length; c++)
                 {
-                    double weight = pair.Length == 1 ? 1 : pair[c].Cards.Max(card => card.Weight);
+                    double weight = pair.Length == 1 && IsWide(pair[c]) ? 1 : pair[c].Cards.Max(card => card.Weight);
                     row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(weight, GridUnitType.Star) });
                     SetColumn(pair[c].Host, c);
                     row.Children.Add(pair[c].Host);
                 }
+                // The empty half beside a lone one-column card, weighted like any other card.
+                if (pair.Length == 1 && !IsWide(pair[0]))
+                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
                 _panels.Children.Add(row);
             }
         }
+
+        private bool IsWide(CardSlot slot) => slot.Cards.Any(card => _layout.IsWide(card.Area, card.Id));
 
         /// <summary>
         /// The user's slots for these cards, each with the element that holds it. A card alone is
@@ -250,6 +257,13 @@ namespace KillerShell.Tools
             ApplyFold(card);
         }
 
+        private void SetCardWide(DashboardCard card, bool wide)
+        {
+            _layout.SetWide(card.Area, card.Id, wide);
+            SaveLayout();
+            ArrangePanels();
+        }
+
         private void ResetLayout()
         {
             _layout.Reset();
@@ -267,6 +281,14 @@ namespace KillerShell.Tools
             AddCardMenuItem(menu, card.Folded ? "Str_Menu_Restore" : "Str_Menu_Minimize",
                 card.Folded ? 0xE923 : 0xE921, () => SetCardFolded(card, !card.Folded));
             menu.Items.Add(new Separator());
+            // The top strip is always one row, so only the panels below it choose a width.
+            if (card.Area == Services.DashboardLayout.Panels)
+            {
+                bool wide = _layout.IsWide(card.Area, card.Id);
+                AddWidthMenuItem(menu, "Str_Perf_OneColumn", OneColumnIcon, !wide, () => SetCardWide(card, false));
+                AddWidthMenuItem(menu, "Str_Perf_TwoColumns", TwoColumnsIcon, wide, () => SetCardWide(card, true));
+                menu.Items.Add(new Separator());
+            }
             // E777: the app's "start over" glyph, as Processes' Restart uses it.
             AddCardMenuItem(menu, "Str_Perf_ResetLayout", 0xE777, ResetLayout, enabled: !_layout.IsDefault);
             menu.IsOpen = true;
@@ -282,6 +304,25 @@ namespace KillerShell.Tools
             icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
             item.Icon = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = icon };
             item.Click += (_, _) => click();
+            menu.Items.Add(item);
+        }
+
+        // Outlines in a 14px box, drawn like the pane layout menu's (Shell/PaneLayoutMenu.cs): a
+        // card in one half of the row, and a card across all of it.
+        private const string OneColumnIcon = "M0.5,0.5 H6.5 V13.5 H0.5 Z";
+        private const string TwoColumnsIcon = "M0.5,0.5 H13.5 V13.5 H0.5 Z";
+
+        /// <summary>One of the pair that sets a card's width. The checkmark takes the icon's
+        /// place in the family template's reserved gutter while it is the card's width.</summary>
+        private static void AddWidthMenuItem(ContextMenu menu, string headerKey, string geometry, bool chosen, Action click)
+        {
+            var icon = new System.Windows.Shapes.Path { Width = 14, Height = 14, Stretch = Stretch.None,
+                StrokeThickness = 1, Data = Geometry.Parse(geometry) };
+            icon.SetBinding(System.Windows.Shapes.Shape.StrokeProperty, new System.Windows.Data.Binding("Foreground")
+                { RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(MenuItem), 1) });
+            var item = new MenuItem { Icon = icon, IsCheckable = true, IsChecked = chosen };
+            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
+            item.Click += (_, _) => { if (!chosen) click(); };
             menu.Items.Add(item);
         }
 
