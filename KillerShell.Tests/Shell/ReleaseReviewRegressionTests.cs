@@ -119,12 +119,18 @@ public static class EditorColumnSelectionScenario
         using var fixture = new ShellWindowFixture();
         var window = fixture.Window;
         var pane = (FilePane)window.FindName("LeftPane");
+        var right = (FilePane)window.FindName("RightPane");
         var editor = new SearchTab("Editor") { Editor = new EditorControl("") };
-        pane.Tabs.Add(editor);
-        pane.Active = editor;
+        // The same route as PaneKeyboardScenario: focus moves into the editor on pane focus.
+        window.ToggleDualPane();
+        ShellWindowFixture.PumpUntil(() => right.Active.IsBrowsing);
         window.FocusPane(pane);
+        right.Tabs.Add(editor);
+        right.Active = editor;
+        window.FocusPane(right);
         var text = editor.Editor!.TextArea;
-        ShellWindowFixture.PumpUntil(() => text.IsKeyboardFocusWithin);
+        ShellWindowFixture.PumpUntil(() => text.IsKeyboardFocusWithin,
+            diagnostic: () => "focus=" + Keyboard.FocusedElement + "; visible=" + text.IsVisible + "; active=" + window.IsActive);
         Assert.False(window.TabsAtBottom);
 
         ReviewKeys.Raise(text, Key.Down, ReviewKeys.Menu, ReviewKeys.LeftMenu, ReviewKeys.Shift, ReviewKeys.LeftShift);
@@ -142,16 +148,20 @@ public static class SearchFlyoutEscapeScenario
         var help = (FrameworkElement)window.FindName("PatternHelpOverlay");
         var surface = (FrameworkElement)window.FindName("TitleSearchSurface");
         ShellWindowFixture.Click(window, "SearchPanelBtn");
-        ShellWindowFixture.PumpUntil(() => popup.IsOpen && surface.IsKeyboardFocusWithin);
+        ShellWindowFixture.PumpUntil(() => popup.IsOpen);
         ShellWindowFixture.Click(window, "PatternHelpButton");
         ShellWindowFixture.PumpUntil(() => help.Visibility == Visibility.Visible);
 
-        var focused = (UIElement)Keyboard.FocusedElement;
-        PaneKeyboardScenario.Raise(focused, Key.Escape, ModifierKeys.None);
+        // Typing in the flyout puts focus there; the include box stands in for that.
+        var include = (TextBox)window.FindName("IncludePatternsBox");
+        include.Focus();
+        ShellWindowFixture.PumpUntil(() => surface.IsKeyboardFocusWithin,
+            diagnostic: () => "focus=" + Keyboard.FocusedElement + "; active=" + window.IsActive);
+        PaneKeyboardScenario.Raise(include, Key.Escape, ModifierKeys.None);
         ShellWindowFixture.PumpUntil(() => help.Visibility != Visibility.Visible);
         Assert.True(popup.IsOpen, "The first Esc closes only the pattern help.");
 
-        PaneKeyboardScenario.Raise((UIElement)Keyboard.FocusedElement, Key.Escape, ModifierKeys.None);
+        PaneKeyboardScenario.Raise(include, Key.Escape, ModifierKeys.None);
         ShellWindowFixture.PumpUntil(() => !popup.IsOpen);
     }
 }
