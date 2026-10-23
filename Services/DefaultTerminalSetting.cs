@@ -112,6 +112,12 @@ namespace KillerShell.Services
           : State == DefaultTerminalState.ChangedElsewhere ? "Str_About_DefaultTerminalChanged"
           : "Str_About_DefaultTerminalHint";
 
+        /// <summary>
+        /// Whether the card shows NoteKey as text under the checkbox, not only as its tooltip: a
+        /// disabled checkbox cannot take keyboard focus, so its tooltip is out of keyboard reach.
+        /// </summary>
+        internal bool ShowsNote => NoteKey != "Str_About_DefaultTerminalHint";
+
         /// <summary>Makes KillerShell the default terminal. False when it cannot be, with nothing changed.</summary>
         internal bool TurnOn()
         {

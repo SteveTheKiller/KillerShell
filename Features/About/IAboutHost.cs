@@ -51,6 +51,9 @@ namespace KillerShell.Features.About
         bool DefaultTerminalEnabled { set; }
         string DefaultTerminalNote { set; }
 
+        /// <summary>Whether the note also shows as text under the checkbox.</summary>
+        bool DefaultTerminalNoteVisible { set; }
+
         /// <summary>True under --demo, where the card is rendered in its signed state so marketing
         /// captures from an unsigned local build match the release (DemoMode.cs).</summary>
         bool DemoPreview { get; }

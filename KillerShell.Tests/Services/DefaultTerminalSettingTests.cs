@@ -201,6 +201,23 @@ public sealed class DefaultTerminalSettingTests
     }
 
     [Fact]
+    public void TheReasonIsShownOnTheCardWheneverItIsNotTheUsualHint()
+    {
+        // A disabled checkbox cannot take keyboard focus, so a tooltip alone would hide the
+        // reason from anyone not using a mouse.
+        var portable = new DefaultTerminalSetting(MachineWith(WtConsole), installed: false, exePath: Exe);
+        var ready = new DefaultTerminalSetting(MachineWith(WtConsole), installed: true, exePath: Exe);
+        var registry = MachineWith(WtConsole);
+        var changed = new DefaultTerminalSetting(registry, installed: true, exePath: Exe);
+        changed.TurnOn();
+        registry.SetString(RegistryHive.CurrentUser, Startup, "DelegationTerminal", WtTerminal);
+
+        Assert.True(portable.ShowsNote);
+        Assert.False(ready.ShowsNote);
+        Assert.True(changed.ShowsNote);
+    }
+
+    [Fact]
     public void AMissingClassIsRegisteredAgainWhileItIsOn()
     {
         var registry = MachineWith(WtConsole);

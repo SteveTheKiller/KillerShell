@@ -78,7 +78,19 @@ namespace KillerShell.Shell
         bool IAboutHost.CloseToTray        { set => AboutCloseToTray.IsChecked = value; }
         bool IAboutHost.DefaultTerminal        { set => AboutDefaultTerminal.IsChecked = value; }
         bool IAboutHost.DefaultTerminalEnabled { set => AboutDefaultTerminal.IsEnabled = value; }
-        string IAboutHost.DefaultTerminalNote  { set => AboutDefaultTerminal.ToolTip = value; }
+        string IAboutHost.DefaultTerminalNote
+        {
+            set
+            {
+                AboutDefaultTerminal.ToolTip = value;
+                AboutDefaultTerminalNote.Text = value;
+                System.Windows.Automation.AutomationProperties.SetHelpText(AboutDefaultTerminal, value);
+            }
+        }
+        bool IAboutHost.DefaultTerminalNoteVisible
+        {
+            set => AboutDefaultTerminalNote.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        }
 
         bool IAboutHost.DemoPreview => DemoMode;
 

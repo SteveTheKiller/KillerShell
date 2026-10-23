@@ -74,6 +74,7 @@ namespace KillerShell.Features.About
             _host.DefaultTerminal        = setting.State == DefaultTerminalState.On;
             _host.DefaultTerminalEnabled = setting.CanChange;
             _host.DefaultTerminalNote    = _host.Loc(setting.NoteKey);
+            _host.DefaultTerminalNoteVisible = setting.ShowsNote;
         }
 
         /// <summary>Once per run, after the first window has loaded: when a newer release exists,

@@ -1830,6 +1830,11 @@
                                             <TextBlock Text="{DynamicResource Str_About_DefaultTerminal}"
                                                        TextWrapping="Wrap"/>
                                         </CheckBox>
+                                        <!-- The same note as text, when it says why the box is off or
+                                             cannot be ticked: keyboard focus never reaches a disabled box. -->
+                                        <TextBlock x:Name="AboutDefaultTerminalNote" Visibility="Collapsed"
+                                                   Foreground="{DynamicResource DimTextBrush}" FontSize="10.5"
+                                                   TextWrapping="Wrap" Margin="20,2,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
                                         <CheckBox x:Name="AboutShowShortcuts"
