@@ -201,6 +201,32 @@ public sealed class DefaultTerminalSettingTests
     }
 
     [Fact]
+    public void AMissingClassIsRegisteredAgainWhileItIsOn()
+    {
+        var registry = MachineWith(WtConsole);
+        var setting = new DefaultTerminalSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+
+        // Removing a duplicate install, or an install from before the class existed, can leave
+        // the pair pointing at KillerShell with no class behind it.
+        DefaultTerminalSetting.UnregisterClass(registry, machine: false);
+        setting.Repair();
+
+        Assert.True(registry.KeyExists(RegistryHive.CurrentUser, @"Software\Classes\CLSID\" + KillerShell));
+    }
+
+    [Fact]
+    public void RepairWritesNothingWhileItIsOff()
+    {
+        var registry = MachineWith(WtConsole);
+        var setting = new DefaultTerminalSetting(registry, installed: true, exePath: Exe);
+
+        setting.Repair();
+
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, @"Software\Classes\CLSID\" + KillerShell));
+    }
+
+    [Fact]
     public void TurningOnTwiceKeepsTheFirstPairToPutBack()
     {
         var registry = MachineWith(WtConsole);

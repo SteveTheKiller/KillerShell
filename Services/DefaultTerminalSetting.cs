@@ -115,7 +115,11 @@ namespace KillerShell.Services
         /// <summary>Makes KillerShell the default terminal. False when it cannot be, with nothing changed.</summary>
         internal bool TurnOn()
         {
-            if (State == DefaultTerminalState.On) return true;
+            if (State == DefaultTerminalState.On)
+            {
+                Repair();
+                return true;
+            }
             string? host = ConsoleHost;
             if (Blocker != DefaultTerminalBlocker.None || host == null) return false;
 
@@ -146,6 +150,16 @@ namespace KillerShell.Services
         {
             if (value.Length == 0) _registry.DeleteValue(RegistryHive.CurrentUser, StartupKey, name);
             else _registry.SetString(RegistryHive.CurrentUser, StartupKey, name, value);
+        }
+
+        /// <summary>
+        /// While it is on, makes sure the class the pair names is registered. Removing a duplicate
+        /// install, or an all-users install from before the class existed, can leave the pair
+        /// pointing at nothing. KillerShell runs this at every start of an installed copy.
+        /// </summary>
+        internal void Repair()
+        {
+            if (State == DefaultTerminalState.On && _installed) EnsureClassRegistered();
         }
 
         private bool IsKillerShellPair()

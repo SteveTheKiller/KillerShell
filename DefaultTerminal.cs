@@ -106,6 +106,9 @@ namespace KillerShell
         /// </summary>
         private static void RefreshTerminalClass()
         {
+            // A pair left pointing at no class (a removed duplicate install) is mended for this user.
+            try { DefaultTerminalSetting().Repair(); } catch { }
+
             string exe = ExePath;
             bool machine = string.Equals(exe, MachineInstallExe, StringComparison.OrdinalIgnoreCase);
             if (!machine && !string.Equals(exe, InstallExe, StringComparison.OrdinalIgnoreCase)) return;

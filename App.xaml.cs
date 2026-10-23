@@ -542,9 +542,12 @@ namespace KillerShell
             {
                 Services.CommandLinePath.UnregisterRequired(machine ? MachineInstallDir : InstallDir, machine);
                 if (!UnregisterAssociations(machine)) throw new UnauthorizedAccessException();
-                // The other install now owns the class; a per-user one left behind would win for
-                // this user and point at a deleted exe.
+                // A per-user class left behind would win for this user and point at a deleted exe.
+                // When the all-users copy is the one staying, point this user's class at it: an
+                // all-users copy from before the class existed has none of its own until it runs
+                // elevated.
                 RemoveTerminalClass(machine, restoreDefault: false);   // DefaultTerminal.cs
+                if (!machine) RegisterTerminalClass(machine: false, MachineInstallExe);
                 using (var key = hive.OpenSubKey(RegKey, writable: true))
                     foreach (string marker in InstallMarkers) key?.DeleteValue(marker, throwOnMissingValue: false);
                 hive.DeleteSubKeyTree(uninstallKey, throwOnMissingSubKey: false);
