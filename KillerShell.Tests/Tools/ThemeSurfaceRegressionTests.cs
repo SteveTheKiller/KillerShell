@@ -79,7 +79,9 @@ public static class BottomListingTabSurfaceScenario
             MatchSurface(pane.ResultsPane.Background, "showing details above the search summary");
 
             var search = (Button)window.FindName("SearchButton");
-            ((Panel)search.Parent).Children.OfType<Button>()
+            // Clear sits in its own bevel grid beside Search (MainWindow.xaml), not loose in the row.
+            ((Panel)search.Parent).Children.OfType<UIElement>()
+                .SelectMany(child => child is Panel wrapper ? wrapper.Children.OfType<Button>() : child is Button b ? new[] { b } : Enumerable.Empty<Button>())
                 .Single(button => Equals(button.Content, pane.FindResource("Str_Btn_Clear")))
                 .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             Assert.Equal(Visibility.Collapsed, pane.PaneStatusBar.Visibility);

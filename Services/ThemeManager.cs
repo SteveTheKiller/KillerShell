@@ -358,6 +358,8 @@ namespace KillerShell.Services
             SetIfAbsent("TabBevelMargin", new Thickness(-12, -4, -5, -5));
             // The dark right edge's own copy, so a bottom strip can shorten it alone (TabPlacement.cs).
             SetIfAbsent("TabBevelDarkMargin", combined["TabBevelMargin"]);
+            // Set true per strip by TabPlacement.cs for 98SE tabs below the page.
+            SetIfAbsent("TabRetroBottomEdges", false);
             SetIfAbsent("TabGrainMargin", new Thickness(-12, -4, -5, -5));
             // The folder tree's inset inside its well (MainWindow.xaml TreeFadeHost). Default is
             // the literal it replaced; a flat theme zeroes the top so the well's own fill does not

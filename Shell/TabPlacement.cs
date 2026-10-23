@@ -70,36 +70,34 @@ namespace KillerShell.Shell
                 }
                 else pane.TabBar.Resources.Remove(key);
             }
-            // The flip already puts each tab's white highlight on its foot. The edge the tabs hang
-            // from is the pane's bottom, which Win98 shades gray, not the white top edge a top
-            // strip sits on - so the line beside the active tab turns gray down here.
-            string joinBrush = bottom ? "BevelDarkBrush" : "BevelLightBrush";
+            // 98SE keeps Win98's single light source when the strip moves below the page: the page
+            // stays raised (white top and left, #808080 then black on the right and foot) and each
+            // tab hangs from it with a white left edge and a dark right edge and foot. Flipping the
+            // top-strip chrome would flip the light, so on a bottom strip the tabs' bevel borders
+            // are zeroed and TabSurfaceBorder draws their edges instead, and the page foot is the
+            // two join lines, black against the tabs and #808080 above it, broken by the
+            // selected tab.
+            bool retroBottom = bottom && ThemeManager.Current == Theme.SE98;
+            string[] tabBevels = { "TabBevelLightThickness", "TabInactiveBevelDarkThickness",
+                                   "TabActiveBevelDarkThickness", "TabOuterOutlineThickness" };
+            foreach (string key in tabBevels)
+                if (retroBottom) pane.TabBar.Resources[key] = new Thickness(0);
+                else pane.TabBar.Resources.Remove(key);
+            if (retroBottom) pane.TabBar.Resources["TabRetroBottomEdges"] = true;
+            else pane.TabBar.Resources.Remove("TabRetroBottomEdges");
+            string joinBrush = retroBottom ? "BevelOuterDarkBrush" : "BevelLightBrush";
             pane.RetroTabInnerJoinLeft.SetResourceReference(Border.BackgroundProperty, joinBrush);
             pane.RetroTabInnerJoinRight.SetResourceReference(Border.BackgroundProperty, joinBrush);
-            // The active tab shares the pane's face, so its flipped white foot vanishes into it;
-            // a gray foot (template "top", flipped) closes it off. 98SE only.
-            // The dividers (each tab's gray and black right edge) stop one row short of the white
-            // foot, as a Win98 tab's dark edge stops short of its corner. Template "top" is the
-            // visual foot here.
-            if (bottom && ThemeManager.Current == Theme.SE98)
-            {
-                pane.TabBar.Resources["TabActiveBevelDarkThickness"] = new Thickness(0, 1, 1, 0);
-                foreach (var (key, source) in new[] { ("TabBevelDarkMargin", "TabBevelMargin"),
-                                                      ("TabInactiveOuterOutlineMargin", "TabInactiveOuterOutlineMargin") })
-                    if (Application.Current.TryFindResource(source) is Thickness m)
-                        pane.TabBar.Resources[key] = new Thickness(m.Left, m.Top + 1, m.Right, m.Bottom);
-            }
-            else
-            {
-                pane.TabBar.Resources.Remove("TabActiveBevelDarkThickness");
-                pane.TabBar.Resources.Remove("TabBevelDarkMargin");
-                pane.TabBar.Resources.Remove("TabInactiveOuterOutlineMargin");
-            }
+            pane.RetroTabFootShade.Visibility = retroBottom ? Visibility.Visible : Visibility.Collapsed;
             pane.TabBandShadow.RenderTransform = tabTransform;
             pane.RetroTabJoinLine.VerticalAlignment = bottom ? VerticalAlignment.Top : VerticalAlignment.Bottom;
             pane.RetroTabJoinLine.Margin = bottom ? new Thickness(0, 1, 0, 0) : new Thickness(0, 0, 0, 1);
             pane.RetroTabInnerJoin.VerticalAlignment = bottom ? VerticalAlignment.Top : VerticalAlignment.Bottom;
-            pane.RetroTabInnerJoin.Margin = bottom ? new Thickness(1, -1, 2, 0) : new Thickness(1, 0, 2, -1);
+            // A 98SE bottom strip's black foot reaches the page's left edge: the shadow owns that
+            // corner (Tabs.cs UpdateRetroTabInnerJoin).
+            pane.RetroTabInnerJoin.Margin = retroBottom ? new Thickness(0, -1, 0, 0)
+                : bottom ? new Thickness(1, -1, 2, 0) : new Thickness(1, 0, 2, -1);
+            pane.RetroTabFootShade.Margin = new Thickness(0, -2, 1, 0);
 
             foreach (var edge in new[] { pane.ResultsPaneBottomEdge, pane.PaneFocusBottomEdge })
             {
@@ -111,7 +109,6 @@ namespace KillerShell.Shell
             double surfaceFoot = bottom || pane.PaneStatusBar.Visibility == Visibility.Visible ? 0 : PaneRadius;
             pane.ResultsSurface.CornerRadius = new CornerRadius(0, 0, surfaceFoot, surfaceFoot);
             pane.ResultsSurfaceGrain.CornerRadius = pane.ResultsSurface.CornerRadius;
-            pane.PaneBevelOuterDark.SetResourceReference(Border.BorderBrushProperty, "DocumentPaneBevelTopLeftBrush");
             if (!bottom) return;
 
             pane.ResultsPane.CornerRadius = new CornerRadius(PaneRadius, PaneRadius, 0, 0);
@@ -125,11 +122,26 @@ namespace KillerShell.Shell
                     bevel.Margin = ReverseVertical(bevel.Margin);
                     bevel.BorderThickness = ReverseVertical(bevel.BorderThickness);
                 }
-                // The page's left column is white under a top strip, continuing the first tab's
-                // white edge down the pane; a bottom strip mirrors it, so it turns dark.
-                pane.PaneBevelOuterDark.SetResourceReference(Border.BorderBrushProperty, "BevelDarkBrush");
+                // Raised page: white top and left, shadow only down the right. The foot is the
+                // join lines in the strip, which break for the selected tab.
+                pane.PaneBevelOuterDark.BorderThickness = new Thickness(1, 1, 0, 0);
+                pane.PaneBevelOuterLight.BorderThickness = new Thickness(0, 0, 1, 0);
+                pane.PaneBevelInnerLight.BorderThickness = new Thickness(0, 0, 1, 0);
+                // The strip overlaps the page's last two rows and the foot lines take the two
+                // above them, so the content stops four rows up and its own sunken edge stays
+                // inside the page instead of showing under the foot beside the last tab.
+                var padding = pane.ResultsPane.Padding;
+                pane.ResultsPane.Padding = new Thickness(padding.Left, padding.Top, padding.Right, 4);
+                // The side edges run down to the foot: white and #808080 stop on the gray foot
+                // row, and the black right edge meets the black foot, owning that corner.
+                pane.PaneBevelOuterDark.Margin = WithBottom(pane.PaneBevelOuterDark.Margin, -1);
+                pane.PaneBevelOuterLight.Margin = WithBottom(pane.PaneBevelOuterLight.Margin, -2);
+                pane.PaneBevelInnerLight.Margin = WithBottom(pane.PaneBevelInnerLight.Margin, -1);
             }
         }
+
+        private static Thickness WithBottom(Thickness value, double bottom)
+            => new Thickness(value.Left, value.Top, value.Right, bottom);
 
         private static Thickness ReverseVertical(Thickness value)
             => new Thickness(value.Left, value.Bottom, value.Right, value.Top);

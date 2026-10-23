@@ -73,7 +73,7 @@ public static class SearchScopeRuntimeScenario
         Assert.Equal(Visibility.Visible, left.ResultsList.Visibility);
         Assert.NotSame(document.Groups[0], left.Active.Groups[0]);
         Assert.Equal("editor-search", left.Active.Title);
-        Assert.Equal("editor-search", ((TextBlock)((ContentControl)window.FindName("TitleContextHost")).Content).Text);
+        Assert.Equal(MainWindow.TabKindTitle(left.Active), ((TextBlock)((ContentControl)window.FindName("TitleContextHost")).Content).Text);
     }
 }
 

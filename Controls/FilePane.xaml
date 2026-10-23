@@ -131,6 +131,20 @@
                             Background="{DynamicResource BevelLightBrush}"/>
                     <Border x:Name="RetroTabInnerJoinRight" Height="1"
                             Background="{DynamicResource BevelLightBrush}"/>
+                    <Border x:Name="RetroTabInnerJoinCorner" Height="1" Width="0"
+                            Background="{DynamicResource BevelDarkBrush}"/>
+                    <Border x:Name="RetroTabInnerJoinLeftEdge" Height="1" Width="0"
+                            Background="{DynamicResource BevelLightBrush}"/>
+                </Canvas>
+                <!-- 98SE bottom strip only: the page foot's inner #808080 line, one row above the
+                     black join and broken for the selected tab the same way (TabPlacement.cs). -->
+                <Canvas x:Name="RetroTabFootShade" Height="1" VerticalAlignment="Top"
+                        Margin="1,-2,2,0" Visibility="Collapsed"
+                        IsHitTestVisible="False" SnapsToDevicePixels="True">
+                    <Border x:Name="RetroTabFootShadeLeft" Height="1" Background="{DynamicResource BevelDarkBrush}"/>
+                    <Border x:Name="RetroTabFootShadeRight" Height="1" Background="{DynamicResource BevelDarkBrush}"/>
+                    <Border x:Name="RetroTabFootShadeCorner" Height="1" Width="0" Background="{DynamicResource BevelOuterDarkBrush}"/>
+                    <Border x:Name="RetroTabFootShadeLeftEdge" Height="1" Width="0" Background="{DynamicResource BevelLightBrush}"/>
                 </Canvas>
                 <DockPanel LastChildFill="True">
                 <Button x:Name="NewTabBtn" DockPanel.Dock="Right"
@@ -219,6 +233,7 @@
                                      98SE value also uses a tighter left inset so the icon leaves
                                      more room for the title. -->
                                 <local:TabSurfaceBorder x:Name="tabBd" CornerRadius="0" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
+                                        RetroBottomEdges="{DynamicResource TabRetroBottomEdges}"
                                         MinWidth="160" MaxWidth="260"
                                         RenderTransform="{DynamicResource TabPlacementTransform}" RenderTransformOrigin="0.5,0.5"
                                         UseLayoutRounding="True" SnapsToDevicePixels="True"

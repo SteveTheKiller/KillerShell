@@ -217,15 +217,45 @@ namespace KillerShell.Shell
             double activeLeft = Math.Max(0, Math.Min(joinWidth, Math.Round(activeOrigin.X)));
             double activeRight = Math.Max(activeLeft,
                 Math.Min(joinWidth, Math.Round(activeOrigin.X + activeTab.ActualWidth)));
-            // Under a bottom strip the line is the page's gray foot, and the active tab's own dark
-            // right edges start a pixel below it. Running the line under those two columns closes
-            // the corner instead of leaving a light notch in it.
-            if (Grid.GetRow(pane.TabBar) == 2) activeRight = Math.Max(activeLeft, activeRight - 2);
+            pane.RetroTabInnerJoinCorner.Width = 0;
+            pane.RetroTabFootShadeCorner.Width = 0;
+            pane.RetroTabInnerJoinLeftEdge.Width = 0;
+            pane.RetroTabFootShadeLeftEdge.Width = 0;
+            if (Grid.GetRow(pane.TabBar) != 2)
+            {
+                pane.RetroTabInnerJoinLeft.Width = activeLeft;
+                Canvas.SetLeft(pane.RetroTabInnerJoinLeft, 0);
+                pane.RetroTabInnerJoinRight.Width = joinWidth - activeRight;
+                Canvas.SetLeft(pane.RetroTabInnerJoinRight, activeRight);
+                return;
+            }
 
+            // Bottom strip: the page foot is two lines, black (this canvas) over #808080 (the
+            // shade canvas a row above). The selected tab's white left edge is at activeLeft and
+            // its #808080 and black right edges at activeRight - 2 and activeRight - 1
+            // (TabSurfaceBorder draws on its true bounds). The break runs between them, and the
+            // tab's edges carry on up through both foot rows, so those pixels take the tab's
+            // colors instead of the lines'. The shade starts one pixel in, leaving the page's
+            // white left edge to meet the black foot.
             pane.RetroTabInnerJoinLeft.Width = activeLeft;
             Canvas.SetLeft(pane.RetroTabInnerJoinLeft, 0);
-            pane.RetroTabInnerJoinRight.Width = joinWidth - activeRight;
-            Canvas.SetLeft(pane.RetroTabInnerJoinRight, activeRight);
+            pane.RetroTabInnerJoinLeftEdge.Width = 1;
+            Canvas.SetLeft(pane.RetroTabInnerJoinLeftEdge, activeLeft);
+            pane.RetroTabInnerJoinCorner.Width = 1;
+            Canvas.SetLeft(pane.RetroTabInnerJoinCorner, activeRight - 2);
+            pane.RetroTabInnerJoinRight.Width = Math.Max(0, joinWidth - (activeRight - 1));
+            Canvas.SetLeft(pane.RetroTabInnerJoinRight, activeRight - 1);
+
+            double shadeOffset = Math.Round(pane.RetroTabFootShade.TranslatePoint(new Point(0, 0), pane.RetroTabInnerJoin).X);
+            double shadeWidth = pane.RetroTabFootShade.ActualWidth;
+            pane.RetroTabFootShadeLeft.Width = Math.Max(0, activeLeft - 1 - shadeOffset);
+            Canvas.SetLeft(pane.RetroTabFootShadeLeft, 1);
+            pane.RetroTabFootShadeLeftEdge.Width = 1;
+            Canvas.SetLeft(pane.RetroTabFootShadeLeftEdge, activeLeft - shadeOffset);
+            pane.RetroTabFootShadeCorner.Width = 1;
+            Canvas.SetLeft(pane.RetroTabFootShadeCorner, activeRight - 1 - shadeOffset);
+            pane.RetroTabFootShadeRight.Width = Math.Max(0, shadeWidth - (activeRight - 2 - shadeOffset));
+            Canvas.SetLeft(pane.RetroTabFootShadeRight, activeRight - 2 - shadeOffset);
         }
 
         /// <summary>
