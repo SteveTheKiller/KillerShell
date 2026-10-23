@@ -12373,3 +12373,23 @@ if (I18N["vi"]) Object.assign(I18N["vi"], {"hx_067":"<b>Alt+P</b>: Chi tiết �
 if (I18N["uk"]) Object.assign(I18N["uk"], {"hx_067":"<b>Alt+P</b>: Відомості внизу &rarr; Відомості праворуч &rarr; Приховати відомості.<br><b>Ctrl+Alt+Down</b>: Відомості внизу; <b>Ctrl+Alt+Right</b>: Відомості праворуч; <b>Ctrl+Alt+0</b>: Приховати відомості; <b>Ctrl+Alt+Left</b>: Панелі ліворуч і праворуч; <b>Ctrl+Alt+Up</b>: Панелі зверху і знизу.<br>Натискайте кнопку відомостей для перемикання або клацніть кнопку розташування правою кнопкою миші для вибору. Перетягніть межу, щоб змінити розмір. Кожна панель запам’ятовує власні розташування та розмір відомостей."});
 if (I18N["nb"]) Object.assign(I18N["nb"], {"hx_067":"<b>Alt+P</b>: Detaljer nederst &rarr; Detaljer til høyre &rarr; Skjul detaljer.<br><b>Ctrl+Alt+Down</b>: Detaljer nederst; <b>Ctrl+Alt+Right</b>: Detaljer til høyre; <b>Ctrl+Alt+0</b>: Skjul detaljer; <b>Ctrl+Alt+Left</b>: Ruter til venstre og høyre; <b>Ctrl+Alt+Up</b>: Ruter øverst og nederst.<br>Klikk på detaljknappen for å bytte, eller høyreklikk på en oppsettknapp for å velge. Dra i skillelinjen for å endre størrelse. Hver rute husker sin egen plassering og størrelse for detaljer."});
 if (I18N["pt"]) Object.assign(I18N["pt"], {"hx_067":"<b>Alt+P</b>: Detalhes embaixo &rarr; Detalhes à direita &rarr; Ocultar detalhes.<br><b>Ctrl+Alt+Down</b>: Detalhes embaixo; <b>Ctrl+Alt+Right</b>: Detalhes à direita; <b>Ctrl+Alt+0</b>: Ocultar detalhes; <b>Ctrl+Alt+Left</b>: Painéis lado a lado; <b>Ctrl+Alt+Up</b>: Painéis superior e inferior.<br>Clique no botão de detalhes para alternar ou clique com o botão direito em um botão de disposição para escolher. Arraste a divisória para redimensionar. Cada painel lembra a posição e o tamanho dos próprios detalhes."});
+// Screenshot caption parts, the app's own Str_Layout_TabsBottom and Str_Layout_TopBottom wording.
+if (I18N["sl"]) Object.assign(I18N["sl"], {"shot_tabs_bottom":"Zavihki spodaj","shot_panes_top_bottom":"Podokni zgoraj in spodaj"});
+if (I18N["vi"]) Object.assign(I18N["vi"], {"shot_tabs_bottom":"Tab ở dưới","shot_panes_top_bottom":"Ngăn trên và dưới"});
+if (I18N["hu"]) Object.assign(I18N["hu"], {"shot_tabs_bottom":"Lapok alul","shot_panes_top_bottom":"Felső és alsó panel"});
+if (I18N["pl"]) Object.assign(I18N["pl"], {"shot_tabs_bottom":"Karty u dołu","shot_panes_top_bottom":"Panele jeden nad drugim"});
+if (I18N["es"]) Object.assign(I18N["es"], {"shot_tabs_bottom":"Pestañas abajo","shot_panes_top_bottom":"Paneles superior e inferior"});
+if (I18N["de"]) Object.assign(I18N["de"], {"shot_tabs_bottom":"Tabs unten","shot_panes_top_bottom":"Fenster oben und unten"});
+if (I18N["fr"]) Object.assign(I18N["fr"], {"shot_tabs_bottom":"Onglets en bas","shot_panes_top_bottom":"Volets supérieur et inférieur"});
+if (I18N["tr"]) Object.assign(I18N["tr"], {"shot_tabs_bottom":"Sekmeler altta","shot_panes_top_bottom":"Üst ve alt bölmeler"});
+if (I18N["zh-cn"]) Object.assign(I18N["zh-cn"], {"shot_tabs_bottom":"标签页置底","shot_panes_top_bottom":"上下窗格"});
+if (I18N["zh"]) Object.assign(I18N["zh"], {"shot_tabs_bottom":"分頁置底","shot_panes_top_bottom":"上下窗格"});
+if (I18N["cs"]) Object.assign(I18N["cs"], {"shot_tabs_bottom":"Karty dole","shot_panes_top_bottom":"Panely nahoře a dole"});
+if (I18N["ja"]) Object.assign(I18N["ja"], {"shot_tabs_bottom":"タブを下に表示","shot_panes_top_bottom":"上下に並べる"});
+if (I18N["bn"]) Object.assign(I18N["bn"], {"shot_tabs_bottom":"ট্যাব নিচে","shot_panes_top_bottom":"উপর ও নিচের প্যান"});
+if (I18N["it"]) Object.assign(I18N["it"], {"shot_tabs_bottom":"Schede in basso","shot_panes_top_bottom":"Riquadri sovrapposti"});
+if (I18N["ru"]) Object.assign(I18N["ru"], {"shot_tabs_bottom":"Вкладки снизу","shot_panes_top_bottom":"Панели сверху и снизу"});
+if (I18N["kk"]) Object.assign(I18N["kk"], {"shot_tabs_bottom":"Қойындылар төменде","shot_panes_top_bottom":"Жоғарғы және төменгі тақталар"});
+if (I18N["uk"]) Object.assign(I18N["uk"], {"shot_tabs_bottom":"Вкладки знизу","shot_panes_top_bottom":"Панелі зверху і знизу"});
+if (I18N["nb"]) Object.assign(I18N["nb"], {"shot_tabs_bottom":"Faner nederst","shot_panes_top_bottom":"Ruter øverst og nederst"});
+if (I18N["pt"]) Object.assign(I18N["pt"], {"shot_tabs_bottom":"Guias na parte inferior","shot_panes_top_bottom":"Painéis superior e inferior"});
