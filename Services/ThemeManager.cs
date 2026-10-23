@@ -904,8 +904,10 @@ namespace KillerShell.Services
             SetIfAbsent("TitleWordmarkBoldSize", 22.52);
             SetIfAbsent("TitleWordmarkSize", 15.0);
             SetIfAbsent("UseDialogCaption", false);
+            // The family's 1px app border (KillerUI: WindowEdgeThickness 1). 98SE states 0 and
+            // draws its own frame. At 0 the window had no visible edge on a dark desktop.
             Mirror("WindowEdgeBrush", "AppBorderBrush");
-            SetIfAbsent("WindowEdgeThickness", new Thickness(0));
+            SetIfAbsent("WindowEdgeThickness", new Thickness(1));
             // The frame's FACE. 98SE does not declare one, and a transparent default left a
             // see-through gutter around the window where its 5,4,5,5 padding
             // is. AppBorderBrush is the right source: it is already the frame's color,
