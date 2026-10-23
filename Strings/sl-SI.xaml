@@ -603,6 +603,8 @@
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Nedodeljeni števci GPU</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Ponastavi postavitev</sys:String>
+    <sys:String x:Key="Str_Perf_NetworkShort">Omrežje</sys:String>
+    <sys:String x:Key="Str_Perf_DiskShort">Disk</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Predpomnjeno</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Izkoriščenost</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Prepustnost</sys:String>

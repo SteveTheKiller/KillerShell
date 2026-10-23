@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Automation;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -106,11 +108,11 @@ namespace KillerShell.Tools
             // ── Summary strip ────────────────────────────────────
             // Each tile takes its panel's color, so the eye can go from a number up here to the
             // panel it came from without reading a label.
-            if (_cpuTile != null) _sumCpu = AddSummaryTile("cpu", MetricKind.Cpu, "Str_Perf_Cpu", "MonitorAccentBrush", 100);
-            if (_ramTile != null) _sumRam = AddSummaryTile("ram", MetricKind.Ram, "Str_Perf_Ram", "TypeWindows", 100);
-            if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile("disk", MetricKind.Disk, "Str_Perf_Disk", "WarnBrush", 100);
-            if (_netTiles.Count > 0) _sumNet = AddSummaryTile("network", MetricKind.Network, "Str_Perf_Network", "MonitorTextBrush", 0);
-            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile("gpu", MetricKind.Gpu, "Str_Perf_Gpu", "OkBrush", 100);
+            if (_cpuTile != null) _sumCpu = AddSummaryTile("cpu", MetricKind.Cpu, "Str_Perf_Cpu", null, "MonitorAccentBrush", 100);
+            if (_ramTile != null) _sumRam = AddSummaryTile("ram", MetricKind.Ram, "Str_Perf_Ram", null, "TypeWindows", 100);
+            if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile("disk", MetricKind.Disk, "Str_Perf_Disk", "Str_Perf_DiskShort", "WarnBrush", 100);
+            if (_netTiles.Count > 0) _sumNet = AddSummaryTile("network", MetricKind.Network, "Str_Perf_Network", "Str_Perf_NetworkShort", "MonitorTextBrush", 0);
+            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile("gpu", MetricKind.Gpu, "Str_Perf_Gpu", null, "OkBrush", 100);
 
             // ── Panels, two to a row ─────────────────────────────
             // CPU beside memory, disks beside network adapters, then the GPUs. A card that is
@@ -132,22 +134,22 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         /// <summary>One box of the strip: a large icon and the hardware's name in Lacquer, its
         /// headline number in the top right corner, and a bare trace across the bottom. The
-        /// whole box is the handle it is dragged by; minimized, it keeps its top line.</summary>
-        private SummaryTile AddSummaryTile(string id, MetricKind kind, string labelKey, string brushKey, double fixedScaleMax)
+        /// whole box is the handle it is dragged by; minimized, it keeps its top line. In a
+        /// narrow box the name gives way rather than the number (FittedName).</summary>
+        private SummaryTile AddSummaryTile(string id, MetricKind kind, string labelKey, string? shortKey,
+            string brushKey, double fixedScaleMax)
         {
             var icon = BuildMetricIcon(kind, Shell.MainWindow.LocStatic(labelKey), 22);
 
-            var name = new TextBlock
+            var name = new FittedName
             {
-                FontSize = 18,
                 Margin = new Thickness(8, 0, 8, 0),
                 VerticalAlignment = VerticalAlignment.Center,
-                TextTrimming = TextTrimming.CharacterEllipsis,
             };
-            TextOptions.SetTextFormattingMode(name, TextFormattingMode.Ideal);
-            name.SetResourceReference(TextBlock.TextProperty, labelKey);
-            name.SetResourceReference(TextBlock.FontFamilyProperty, "HeadingFont");
-            name.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+            name.SetResourceReference(FittedName.FullProperty, labelKey);
+            if (shortKey != null) name.SetResourceReference(FittedName.ShortProperty, shortKey);
+            name.SetResourceReference(FittedName.FontFamilyProperty, "HeadingFont");
+            name.SetResourceReference(FittedName.ForegroundProperty, "MonitorTextBrush");
 
             var value = new TextBlock
             {
@@ -211,6 +213,55 @@ namespace KillerShell.Tools
         {
             CountTo(tile.Value, percent, FormatPercent);
             tile.Trace.Push(percent);
+        }
+
+        /// <summary>
+        /// A summary box's name, in whatever room the icon and the number leave it: shrinking a
+        /// little first, then its short form ("Net"), then nothing, by Services.LabelFit. Drawn
+        /// rather than a TextBlock because the choice is made in Measure, where the room is known,
+        /// and a TextBlock's text cannot be changed from there. It keeps one height whatever it
+        /// shows, so the box does not move as a reading widens or narrows the room.
+        /// </summary>
+        private sealed class FittedName : FrameworkElement
+        {
+            internal static readonly DependencyProperty FullProperty = DependencyProperty.Register(
+                nameof(Full), typeof(string), typeof(FittedName),
+                new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+
+            internal static readonly DependencyProperty ShortProperty = DependencyProperty.Register(
+                nameof(Short), typeof(string), typeof(FittedName),
+                new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+
+            internal static readonly DependencyProperty FontFamilyProperty = TextElement.FontFamilyProperty.AddOwner(typeof(FittedName),
+                new FrameworkPropertyMetadata(SystemFonts.MessageFontFamily, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+
+            internal static readonly DependencyProperty ForegroundProperty = TextElement.ForegroundProperty.AddOwner(typeof(FittedName),
+                new FrameworkPropertyMetadata(Brushes.Black, FrameworkPropertyMetadataOptions.AffectsRender));
+
+            internal string Full { get => (string)GetValue(FullProperty); set => SetValue(FullProperty, value); }
+            internal string Short { get => (string)GetValue(ShortProperty); set => SetValue(ShortProperty, value); }
+
+            private (string Text, double Size)? _shown;
+
+            protected override Size MeasureOverride(Size availableSize)
+            {
+                _shown = Services.LabelFit.Choose(availableSize.Width, Full ?? string.Empty, Short ?? string.Empty,
+                    (text, size) => Format(text, size, Brushes.Black).WidthIncludingTrailingWhitespace);
+                double width = _shown is { } shown ? Format(shown.Text, shown.Size, Brushes.Black).WidthIncludingTrailingWhitespace : 0;
+                return new Size(width, Format("Ag", Services.LabelFit.Largest, Brushes.Black).Height);
+            }
+
+            protected override void OnRender(DrawingContext drawingContext)
+            {
+                if (_shown is not { } shown) return;
+                var text = Format(shown.Text, shown.Size, (Brush)GetValue(ForegroundProperty));
+                drawingContext.DrawText(text, new Point(0, (RenderSize.Height - text.Height) / 2));
+            }
+
+            private FormattedText Format(string text, double size, Brush brush)
+                => new(text, CultureInfo.CurrentUICulture, FlowDirection,
+                    new Typeface((FontFamily)GetValue(FontFamilyProperty), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal),
+                    size, brush, null, TextFormattingMode.Ideal, VisualTreeHelper.GetDpi(this).PixelsPerDip);
         }
 
         // ═══════════════════════════════════════════════════════════

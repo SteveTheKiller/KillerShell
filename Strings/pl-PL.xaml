@@ -654,6 +654,8 @@
   <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Nieprzypisane liczniki GPU</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Przywróć układ</sys:String>
+    <sys:String x:Key="Str_Perf_NetworkShort">Sieć</sys:String>
+    <sys:String x:Key="Str_Perf_DiskShort">Dysk</sys:String>
   <sys:String x:Key="Str_Perf_Cached">W pamięci podręcznej</sys:String>
   <sys:String x:Key="Str_Perf_Utilization">Wykorzystanie</sys:String>
   <sys:String x:Key="Str_Perf_Throughput">Przepustowość</sys:String>

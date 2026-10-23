@@ -652,6 +652,8 @@
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">未指派的 GPU 計數器</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">重設配置</sys:String>
+    <sys:String x:Key="Str_Perf_NetworkShort">網路</sys:String>
+    <sys:String x:Key="Str_Perf_DiskShort">磁碟</sys:String>
     <sys:String x:Key="Str_Perf_InUse">使用中</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">邏輯處理器</sys:String>
     <sys:String x:Key="Str_Perf_Network">網路</sys:String>
