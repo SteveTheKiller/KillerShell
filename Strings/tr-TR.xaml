@@ -253,7 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Kayıtlı değil. Windows KillerShell'i henüz hiçbir dosya türü için sunmuyor.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Hesabınız için kayıtlı. Windows sizin yerinize varsayılanı değiştirmez; KillerShell'i Ayarlar içinde her dosya türü için kendiniz seçin.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Bu bilgisayardaki tüm kullanıcılar için kayıtlı. Windows sizin yerinize varsayılanı değiştirmez; KillerShell'i Ayarlar içinde her dosya türü için kendiniz seçin.</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">Konsol programlarını KillerShell'de açmak için KillerShell Hakkında (F12) bölümünde varsayılan terminal ayarını açın.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Konsol programlarını veya klasörleri KillerShell'de açmak için KillerShell Hakkında (F12) bölümünde ayarlarını açın.</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Bu kopya taşınabilir. İlişkilendirmeler bu .exe dosyasının şu anda bulunduğu yeri gösterir; dosyayı taşır veya silerseniz bozulur.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Windows'a kaydedildi</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Kayıt kaldırıldı</sys:String>
@@ -519,6 +519,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">Varsayılan terminal olarak kullanmak için KillerShell'i yükleyin. Taşınabilir bir kopyanın yeri değişebilir veya silinebilir.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Konsol programlarını KillerShell'e aktaran Windows Terminal gerekir.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">O zamandan beri, örneğin Windows Ayarları'nda, başka bir varsayılan terminal seçildi.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Klasörleri KillerShell'de aç</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Explorer'da ya da başka bir yerde bir klasöre veya sürücüye çift tıklamak onu bir KillerShell penceresinde açar. Bu bilgisayar, Geri Dönüşüm Kutusu, Denetim Masası ve masaüstü Explorer'da kalır. Bunu kapatmak, klasörleri önceden açan şeyi geri getirir.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Klasörleri KillerShell'de açmak için onu yükleyin. Taşınabilir bir kopyanın yeri değişebilir veya silinebilir.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">O zamandan beri klasörleri açmak için başka bir şey ayarlandı.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Bu açıkken pencereyi kapatmak uygulamayı bildirim alanında çalışır durumda tutar.</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} uygulamasını aç</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Çıkış</sys:String>

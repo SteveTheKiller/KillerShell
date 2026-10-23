@@ -253,7 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Non enregistré. Windows ne propose encore KillerShell pour aucun type de fichier.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Enregistré pour votre compte. Windows ne changera aucune application par défaut à votre place : choisissez vous-même KillerShell pour chaque type de fichier dans Paramètres.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Enregistré pour tous les utilisateurs de ce PC. Windows ne changera aucune application par défaut à votre place : choisissez vous-même KillerShell pour chaque type de fichier dans Paramètres.</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">Pour ouvrir les programmes console dans KillerShell, activez l'option de terminal par défaut dans À propos de KillerShell (F12).</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Pour ouvrir les programmes console ou les dossiers dans KillerShell, activez ses options dans À propos de KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Cette copie est portable. Les associations pointeront vers l'emplacement actuel de ce .exe et cesseront de fonctionner si vous le déplacez ou le supprimez.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Enregistré auprès de Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Enregistrement supprimé</sys:String>
@@ -519,6 +519,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">Installez KillerShell pour l'utiliser comme terminal par défaut. Une copie portable peut être déplacée ou supprimée.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Nécessite Windows Terminal, qui transmet les programmes console à KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Un autre terminal par défaut a été choisi depuis, par exemple dans les Paramètres de Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Ouvrir les dossiers dans KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Un double-clic sur un dossier ou un lecteur, dans l'Explorateur ou ailleurs, l'ouvre dans une fenêtre KillerShell. Ce PC, la Corbeille, le Panneau de configuration et le Bureau restent à l'Explorateur. Désactiver cette option rétablit ce qui ouvrait les dossiers avant.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Installez KillerShell pour y ouvrir les dossiers. Une copie portable peut être déplacée ou supprimée.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Un autre programme a été choisi depuis pour ouvrir les dossiers.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Lorsque cette option est activée, fermer la fenêtre laisse l'application active dans la zone de notification.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Ouvrir {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Quitter</sys:String>

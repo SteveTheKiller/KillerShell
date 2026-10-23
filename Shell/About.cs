@@ -91,6 +91,21 @@ namespace KillerShell.Shell
         {
             set => AboutDefaultTerminalNote.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
         }
+        bool IAboutHost.OpenFolders        { set => AboutOpenFolders.IsChecked = value; }
+        bool IAboutHost.OpenFoldersEnabled { set => AboutOpenFolders.IsEnabled = value; }
+        string IAboutHost.OpenFoldersNote
+        {
+            set
+            {
+                AboutOpenFolders.ToolTip = value;
+                AboutOpenFoldersNote.Text = value;
+                System.Windows.Automation.AutomationProperties.SetHelpText(AboutOpenFolders, value);
+            }
+        }
+        bool IAboutHost.OpenFoldersNoteVisible
+        {
+            set => AboutOpenFoldersNote.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        }
 
         bool IAboutHost.DemoPreview => DemoMode;
 
@@ -121,6 +136,9 @@ namespace KillerShell.Shell
 
         private void AboutDefaultTerminal_Click(object sender, RoutedEventArgs e)
             => _about.SetDefaultTerminal(AboutDefaultTerminal.IsChecked == true);   // DefaultTerminal.cs
+
+        private void AboutOpenFolders_Click(object sender, RoutedEventArgs e)
+            => _about.SetOpenFolders(AboutOpenFolders.IsChecked == true);   // Services/FolderOpenerSetting.cs
 
         /// <summary>
         /// Clear all Data, the footer's destructive link. Wipes every saved preference and the

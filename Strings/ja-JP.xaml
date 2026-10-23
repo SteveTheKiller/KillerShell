@@ -303,7 +303,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">未登録です。Windows はまだどのファイル形式でも KillerShell を候補に出しません。</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">お使いのアカウントに登録済みです。Windows が既定を切り替えることはありません。設定 でファイル形式ごとに KillerShell をご自分で選んでください。</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">この PC のすべてのユーザーに登録済みです。Windows が既定を切り替えることはありません。設定 でファイル形式ごとに KillerShell をご自分で選んでください。</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">コンソール プログラムを KillerShell で開くには、KillerShell について (F12) で既定のターミナルの設定をオンにしてください。</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">コンソール プログラムやフォルダーを KillerShell で開くには、KillerShell について (F12) でその設定をオンにしてください。</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">このコピーはポータブル版です。関連付けは今この .exe がある場所を指すため、移動したり削除したりすると壊れます。</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Windows に登録しました</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">登録を解除しました</sys:String>
@@ -514,6 +514,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">既定のターミナルとして使用するには KillerShell をインストールしてください。ポータブル版は移動や削除される可能性があります。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">コンソール プログラムを KillerShell に渡す Windows Terminal が必要です。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">その後、Windows の設定などで別の既定のターミナルが選択されました。</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">フォルダーを KillerShell で開く</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">エクスプローラーやその他の場所でフォルダーやドライブをダブルクリックすると、KillerShell のウィンドウで開きます。PC、ごみ箱、コントロール パネル、デスクトップはエクスプローラーのままです。オフにすると、以前フォルダーを開いていたものに戻ります。</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">フォルダーを KillerShell で開くには、KillerShell をインストールしてください。ポータブル版は移動や削除される可能性があります。</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">その後、フォルダーを開くものとして別のものが設定されました。</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">オンにすると、ウィンドウを閉じてもアプリは通知領域で実行し続けます。</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} を開く</sys:String>
     <sys:String x:Key="Str_Tray_Exit">終了</sys:String>

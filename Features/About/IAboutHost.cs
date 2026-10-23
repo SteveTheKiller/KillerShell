@@ -54,6 +54,13 @@ namespace KillerShell.Features.About
         /// <summary>Whether the note also shows as text under the checkbox.</summary>
         bool DefaultTerminalNoteVisible { set; }
 
+        /// <summary>The "Open folders in KillerShell" checkbox, under the default terminal one,
+        /// with the same four parts.</summary>
+        bool OpenFolders { set; }
+        bool OpenFoldersEnabled { set; }
+        string OpenFoldersNote { set; }
+        bool OpenFoldersNoteVisible { set; }
+
         /// <summary>True under --demo, where the card is rendered in its signed state so marketing
         /// captures from an unsigned local build match the release (DemoMode.cs).</summary>
         bool DemoPreview { get; }

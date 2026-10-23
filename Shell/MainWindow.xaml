@@ -1835,6 +1835,15 @@
                                         <TextBlock x:Name="AboutDefaultTerminalNote" Visibility="Collapsed"
                                                    Foreground="{DynamicResource DimTextBrush}" FontSize="10.5"
                                                    TextWrapping="Wrap" Margin="20,2,0,0"/>
+                                        <CheckBox x:Name="AboutOpenFolders" Margin="0,6,0,0"
+                                                  ToolTipService.ShowOnDisabled="True"
+                                                  Click="AboutOpenFolders_Click">
+                                            <TextBlock Text="{DynamicResource Str_About_OpenFolders}"
+                                                       TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <TextBlock x:Name="AboutOpenFoldersNote" Visibility="Collapsed"
+                                                   Foreground="{DynamicResource DimTextBrush}" FontSize="10.5"
+                                                   TextWrapping="Wrap" Margin="20,2,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
                                         <CheckBox x:Name="AboutShowShortcuts"

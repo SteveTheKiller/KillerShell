@@ -151,6 +151,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">Installa KillerShell per usarlo come terminale predefinito. Una copia portatile può essere spostata o eliminata.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Richiede Windows Terminal, che passa i programmi console a KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Nel frattempo è stato scelto un altro terminale predefinito, ad esempio nelle Impostazioni di Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Apri le cartelle in KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Facendo doppio clic su una cartella o un'unità, in Explorer o altrove, si apre in una finestra di KillerShell. Questo PC, il Cestino, il Pannello di controllo e il desktop restano a Explorer. Disattivandolo torna ciò che apriva le cartelle prima.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Installa KillerShell per aprirci le cartelle. Una copia portatile può essere spostata o eliminata.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Nel frattempo è stato impostato qualcos'altro per aprire le cartelle.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Se attivo, chiudendo la finestra l'app resta in esecuzione nell'area di notifica.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Apri {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Esci</sys:String>
@@ -362,7 +366,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Non registrato. Windows non offre ancora KillerShell per alcun tipo di file.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Registrato per il tuo account. Windows non cambierà un'app predefinita per te - scegli KillerShell per tipo di file nelle Impostazioni.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Registrato per tutti gli utenti di questo PC. Windows non cambierà un'app predefinita per te - scegli KillerShell per tipo di file nelle Impostazioni.</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">Per aprire i programmi console in KillerShell, attiva l'opzione del terminale predefinito in Informazioni su KillerShell (F12).</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Per aprire i programmi console o le cartelle in KillerShell, attiva le sue opzioni in Informazioni su KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Questa copia è portatile. Le associazioni punteranno a dove si trova ora questo .exe, e si romperanno se lo sposti o lo elimini.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registrato in Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registrazione rimossa</sys:String>

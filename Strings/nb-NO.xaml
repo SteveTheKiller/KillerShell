@@ -159,6 +159,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">Installer KillerShell for å bruke den som standardterminal. En portabel kopi kan bli flyttet eller slettet.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Krever Windows Terminal, som sender konsollprogrammer videre til KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">En annen standardterminal er valgt siden, for eksempel i Windows-innstillinger.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Åpne mapper i KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Dobbeltklikk på en mappe eller stasjon, i Filutforsker eller andre steder, åpner den i et KillerShell-vindu. Denne PC-en, papirkurven, kontrollpanelet og skrivebordet blir hos Filutforsker. Når du slår dette av, får du tilbake det som åpnet mapper før.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Installer KillerShell for å åpne mapper i den. En portabel kopi kan bli flyttet eller slettet.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Noe annet er valgt til å åpne mapper siden.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Når dette er på, fortsetter appen å kjøre i systemstatusfeltet når du lukker vinduet.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Åpne {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Avslutt</sys:String>
@@ -380,7 +384,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Ikke registrert. Windows tilbyr ikke KillerShell for noen filtype ennå.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Registrert for kontoen din. Windows bytter ikke standard for deg - velg KillerShell per filtype i Innstillinger.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Registrert for alle brukere på denne PC-en. Windows bytter ikke standard for deg - velg KillerShell per filtype i Innstillinger.</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">For å åpne konsollprogrammer i KillerShell, slå på standardterminal-innstillingen i Om KillerShell (F12).</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">For å åpne konsollprogrammer eller mapper i KillerShell, slå på innstillingene i Om KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Denne kopien er portabel. Tilknytningene peker dit denne .exe-filen ligger akkurat nå, og slutter å virke hvis du flytter eller sletter den.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registrert i Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registreringen er fjernet</sys:String>

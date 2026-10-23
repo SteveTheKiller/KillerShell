@@ -77,6 +77,28 @@ namespace KillerShell.Features.About
             _host.DefaultTerminalNoteVisible = setting.ShowsNote;
         }
 
+        /// <summary>Turns "Open folders in KillerShell" on or off from the About checkbox, then
+        /// shows what the registry actually holds.</summary>
+        internal void SetOpenFolders(bool enabled)
+        {
+            var setting = App.FolderOpenerSetting();   // DefaultTerminal.cs
+            try
+            {
+                if (enabled) setting.TurnOn();
+                else setting.TurnOff();
+            }
+            catch { /* shown below as whatever the registry kept */ }
+            ShowOpenFolders(setting);
+        }
+
+        private void ShowOpenFolders(FolderOpenerSetting setting)
+        {
+            _host.OpenFolders            = setting.State == FolderOpenerState.On;
+            _host.OpenFoldersEnabled     = setting.CanChange;
+            _host.OpenFoldersNote        = _host.Loc(setting.NoteKey);
+            _host.OpenFoldersNoteVisible = setting.ShowsNote;
+        }
+
         /// <summary>Once per run, after the first window has loaded: when a newer release exists,
         /// offers it with an "Always check on startup" box so the check can be turned off right there.
         /// The About card's checkbox turns it back on. Skipped under --demo so captures stay clean.</summary>
@@ -141,6 +163,7 @@ namespace KillerShell.Features.About
             _host.StartWithWindows = KillerFamily.Deployment.StartupRegistration.IsEnabled(AppInfo.DisplayName);
             _host.CloseToTray = CloseToTrayEnabled;
             ShowDefaultTerminal(App.DefaultTerminalSetting());
+            ShowOpenFolders(App.FolderOpenerSetting());
 
             _host.ShowCard();
 

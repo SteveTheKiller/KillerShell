@@ -159,6 +159,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">Install KillerShell to use it as the default terminal. A portable copy can be moved or deleted.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Needs Windows Terminal, which passes console programs to KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">A different default terminal was chosen since, for example in Windows Settings.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Open folders in KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Double-clicking a folder or drive, in Explorer or anywhere else, opens it in a KillerShell window. This PC, Recycle Bin, Control Panel and the desktop stay with Explorer. Turning this off puts back what opened folders before.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Install KillerShell to open folders in it. A portable copy can be moved or deleted.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Something else was set to open folders since.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">When this is on, closing the window keeps the app running in the notification area.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Open {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Exit</sys:String>
@@ -380,7 +384,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Not registered. Windows does not offer KillerShell for any file type yet.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Registered for your account. Windows will not switch a default for you - pick KillerShell per file type in Settings.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Registered for all users on this PC. Windows will not switch a default for you - pick KillerShell per file type in Settings.</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">To open console programs in KillerShell, turn on the default terminal setting in About KillerShell (F12).</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">To open console programs or folders in KillerShell, turn on its settings in About KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">This copy is portable. The associations will point at wherever this .exe sits right now, and break if you move or delete it.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registered with Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registration removed</sys:String>

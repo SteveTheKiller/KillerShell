@@ -149,6 +149,10 @@
   <sys:String x:Key="Str_About_DefaultTerminalPortable">Hãy cài đặt KillerShell để dùng làm terminal mặc định. Bản di động có thể bị di chuyển hoặc xóa.</sys:String>
   <sys:String x:Key="Str_About_DefaultTerminalNoHost">Cần có Windows Terminal để chuyển các chương trình console sang KillerShell.</sys:String>
   <sys:String x:Key="Str_About_DefaultTerminalChanged">Sau đó đã có một terminal mặc định khác được chọn, ví dụ trong Cài đặt Windows.</sys:String>
+  <sys:String x:Key="Str_About_OpenFolders">Mở thư mục trong KillerShell</sys:String>
+  <sys:String x:Key="Str_About_OpenFoldersHint">Bấm đúp vào thư mục hoặc ổ đĩa, trong Explorer hay bất kỳ đâu, sẽ mở nó trong cửa sổ KillerShell. This PC, Thùng rác, Control Panel và màn hình nền vẫn mở bằng Explorer. Tắt tùy chọn này sẽ khôi phục chương trình mở thư mục trước đó.</sys:String>
+  <sys:String x:Key="Str_About_OpenFoldersPortable">Hãy cài đặt KillerShell để mở thư mục trong đó. Bản di động có thể bị di chuyển hoặc xóa.</sys:String>
+  <sys:String x:Key="Str_About_OpenFoldersChanged">Sau đó đã có chương trình khác được đặt để mở thư mục.</sys:String>
   <sys:String x:Key="Str_About_CloseToTrayHint">Khi bật, đóng cửa sổ sẽ giữ ứng dụng chạy trong vùng thông báo.</sys:String>
   <sys:String x:Key="Str_Tray_Open">Mở {0}</sys:String>
   <sys:String x:Key="Str_Tray_Exit">Thoát</sys:String>
@@ -361,7 +365,7 @@
   <sys:String x:Key="Str_Assoc_StateNone">Chưa đăng ký. Windows chưa đề xuất KillerShell cho bất kỳ loại tệp nào.</sys:String>
   <sys:String x:Key="Str_Assoc_StateUser">Đã đăng ký cho tài khoản của bạn. Windows sẽ không tự thay đổi ứng dụng mặc định. Hãy chọn KillerShell cho từng loại tệp trong Cài đặt.</sys:String>
   <sys:String x:Key="Str_Assoc_StateMachine">Đã đăng ký cho tất cả người dùng trên PC này. Windows sẽ không tự thay đổi ứng dụng mặc định. Hãy chọn KillerShell cho từng loại tệp trong Cài đặt.</sys:String>
-  <sys:String x:Key="Str_Assoc_DefaultTerminal">Để mở các chương trình console trong KillerShell, hãy bật tùy chọn terminal mặc định trong Giới thiệu về KillerShell (F12).</sys:String>
+  <sys:String x:Key="Str_Assoc_DefaultTerminal">Để mở các chương trình console hoặc thư mục trong KillerShell, hãy bật các tùy chọn của nó trong Giới thiệu về KillerShell (F12).</sys:String>
   <sys:String x:Key="Str_Assoc_Portable">Đây là bản di động. Các liên kết sẽ trỏ đến vị trí hiện tại của tệp .exe này và sẽ bị hỏng nếu bạn di chuyển hoặc xóa tệp.</sys:String>
   <sys:String x:Key="Str_Assoc_Registered">Đã đăng ký với Windows</sys:String>
   <sys:String x:Key="Str_Assoc_Removed">Đã xóa đăng ký</sys:String>

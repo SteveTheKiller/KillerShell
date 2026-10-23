@@ -130,6 +130,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">Namestite KillerShell, če ga želite uporabljati kot privzeti terminal. Prenosno kopijo je mogoče premakniti ali izbrisati.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Potreben je Windows Terminal, ki konzolne programe preda programu KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Medtem je bil izbran drug privzeti terminal, na primer v nastavitvah sistema Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Odpiraj mape v KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Dvoklik na mapo ali pogon, v Raziskovalcu ali kjer koli drugje, jo odpre v oknu KillerShell. Ta računalnik, Koš, Nadzorna plošča in namizje ostanejo Raziskovalcu. Ko to izklopite, se vrne tisto, kar je prej odpiralo mape.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Namestite KillerShell, če želite v njem odpirati mape. Prenosno kopijo je mogoče premakniti ali izbrisati.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Medtem je bilo za odpiranje map nastavljeno nekaj drugega.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Če je ta možnost vklopljena, se aplikacija po zaprtju okna še naprej izvaja v območju za obvestila.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Odpri {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Izhod</sys:String>
@@ -323,7 +327,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Ni registrirano. Windows še ne ponuja KillerShell za nobeno vrsto datoteke.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Registrirano za vaš račun. Windows privzetih aplikacij ne spremeni sam. V nastavitvah izberite KillerShell za posamezne vrste datotek.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Registrirano za vse uporabnike tega računalnika. Windows privzetih aplikacij ne spremeni sam. V nastavitvah izberite KillerShell za posamezne vrste datotek.</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">Če želite konzolne programe odpirati v KillerShell, vklopite nastavitev privzetega terminala v oknu O programu KillerShell (F12).</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Če želite konzolne programe ali mape odpirati v KillerShell, vklopite njegove nastavitve v oknu O programu KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Ta kopija je prenosna. Povezave bodo kazale na trenutno mesto datoteke .exe in prenehale delovati, če jo premaknete ali izbrišete.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registrirano v sistemu Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registracija je odstranjena</sys:String>

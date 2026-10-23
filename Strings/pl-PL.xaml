@@ -36,6 +36,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">Zainstaluj KillerShell, aby używać go jako domyślnego terminala. Kopię przenośną można przenieść lub usunąć.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Wymaga programu Windows Terminal, który przekazuje programy konsolowe do KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Od tego czasu wybrano inny domyślny terminal, na przykład w Ustawieniach systemu Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Otwieraj foldery w KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Dwukrotne kliknięcie folderu lub dysku, w Eksploratorze czy gdziekolwiek indziej, otwiera go w oknie KillerShell. Ten komputer, Kosz, Panel sterowania i pulpit zostają przy Eksploratorze. Wyłączenie tej opcji przywraca to, co wcześniej otwierało foldery.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Zainstaluj KillerShell, aby otwierać w nim foldery. Kopię przenośną można przenieść lub usunąć.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Od tego czasu do otwierania folderów ustawiono coś innego.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Gdy ta opcja jest włączona, zamknięcie okna pozostawia aplikację uruchomioną w obszarze powiadomień.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Otwórz {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Zakończ</sys:String>
@@ -374,7 +378,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Brak rejestracji. System Windows nie proponuje jeszcze KillerShell dla żadnego typu pliku.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Zarejestrowano dla Twojego konta. System Windows nie zmieni domyślnej aplikacji za Ciebie - wybierz KillerShell dla poszczególnych typów plików w Ustawieniach.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Zarejestrowano dla wszystkich użytkowników tego komputera. System Windows nie zmieni domyślnej aplikacji za Ciebie - wybierz KillerShell dla poszczególnych typów plików w Ustawieniach.</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">Aby otwierać programy konsolowe w KillerShell, włącz opcję domyślnego terminala w oknie KillerShell - informacje (F12).</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Aby otwierać programy konsolowe lub foldery w KillerShell, włącz jego opcje w oknie KillerShell - informacje (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Ta kopia jest przenośna. Skojarzenia wskażą bieżące położenie pliku .exe i przestaną działać, jeśli go przeniesiesz lub usuniesz.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Zarejestrowano w systemie Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Usunięto rejestrację</sys:String>

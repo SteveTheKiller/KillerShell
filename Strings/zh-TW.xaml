@@ -253,7 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">尚未註冊。Windows 目前不會為任何檔案類型提供 KillerShell。</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">已為您的帳戶註冊。Windows 不會替您切換預設應用程式，請在 設定 中依檔案類型自行選擇 KillerShell。</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">已為這台電腦上的所有使用者註冊。Windows 不會替您切換預設應用程式，請在 設定 中依檔案類型自行選擇 KillerShell。</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">若要在 KillerShell 中開啟主控台程式，請在「關於 KillerShell」(F12) 中開啟預設終端機設定。</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">若要在 KillerShell 中開啟主控台程式或資料夾，請在「關於 KillerShell」(F12) 中開啟相應設定。</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">這是可攜版。關聯會指向此 .exe 目前所在的位置，移動或刪除它之後關聯就會失效。</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">已註冊到 Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">註冊已移除</sys:String>
@@ -516,6 +516,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">請安裝 KillerShell 才能將其設為預設終端機。可攜版可能會被移動或刪除。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">需要 Windows Terminal，由它將主控台程式交給 KillerShell。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">之後已選擇其他預設終端機，例如在 Windows 設定中。</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">在 KillerShell 中開啟資料夾</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">在檔案總管或其他任何地方按兩下資料夾或磁碟機，會在 KillerShell 視窗中開啟。「本機」、資源回收筒、控制台和桌面仍由檔案總管開啟。關閉此選項會還原之前開啟資料夾的程式。</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">請安裝 KillerShell 才能在其中開啟資料夾。可攜版可能會被移動或刪除。</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">之後已設定其他程式來開啟資料夾。</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">開啟後，關閉視窗時應用程式會繼續在通知區域執行。</sys:String>
     <sys:String x:Key="Str_Tray_Open">開啟 {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">結束</sys:String>

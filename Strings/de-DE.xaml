@@ -253,7 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Nicht registriert. Windows bietet KillerShell noch für keinen Dateityp an.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Für Ihr Konto registriert. Windows stellt keine Standard-App für Sie um: Wählen Sie KillerShell in den Einstellungen je Dateityp selbst aus.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Für alle Benutzer dieses PCs registriert. Windows stellt keine Standard-App für Sie um: Wählen Sie KillerShell in den Einstellungen je Dateityp selbst aus.</sys:String>
-    <sys:String x:Key="Str_Assoc_DefaultTerminal">Um Konsolenprogramme in KillerShell zu öffnen, schalten Sie die Standardterminal-Einstellung unter Über KillerShell (F12) ein.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Um Konsolenprogramme oder Ordner in KillerShell zu öffnen, schalten Sie die Einstellungen dafür unter Über KillerShell (F12) ein.</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Diese Kopie ist portabel. Die Zuordnungen zeigen auf den Ort, an dem diese .exe gerade liegt, und gehen ins Leere, wenn Sie sie verschieben oder löschen.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Bei Windows registriert</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registrierung entfernt</sys:String>
@@ -519,6 +519,10 @@
     <sys:String x:Key="Str_About_DefaultTerminalPortable">Installieren Sie KillerShell, um es als Standardterminal zu verwenden. Eine portable Kopie kann verschoben oder gelöscht werden.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Erfordert Windows Terminal, das Konsolenprogramme an KillerShell übergibt.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Inzwischen wurde ein anderes Standardterminal gewählt, zum Beispiel in den Windows-Einstellungen.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Ordner in KillerShell öffnen</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Ein Doppelklick auf einen Ordner oder ein Laufwerk, im Explorer oder anderswo, öffnet ihn in einem KillerShell-Fenster. Dieser PC, Papierkorb, Systemsteuerung und Desktop bleiben beim Explorer. Beim Ausschalten kehrt zurück, was Ordner vorher geöffnet hat.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Installieren Sie KillerShell, um Ordner darin zu öffnen. Eine portable Kopie kann verschoben oder gelöscht werden.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Inzwischen wurde etwas anderes zum Öffnen von Ordnern festgelegt.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Ist dies an, läuft die App nach dem Schließen des Fensters im Infobereich weiter.</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} öffnen</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Beenden</sys:String>
