@@ -186,8 +186,42 @@ namespace KillerShell.Shell
             // a beat after the tab lit and the strip visibly caught up with itself on every
             // switch.
             UpdateRetroTabInnerJoin(Pane);
+            UpdateDetailsTabJoin(Pane);
+            var pane = Pane;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
-                (Action)(() => UpdateRetroTabInnerJoin(Pane)));
+                (Action)(() => { UpdateRetroTabInnerJoin(pane); UpdateDetailsTabJoin(pane); }));
+        }
+
+        // A bottom strip sits right under the details panel, and the active tab opens into it the
+        // way it opens into the list or the search summary: the panel's bottom rule breaks across
+        // the tab and stays over the inactive tabs and the empty strip. With the search summary
+        // showing, the rule divides the panel from the summary instead and runs unbroken.
+        private static void UpdateDetailsTabJoin(FilePane pane)
+        {
+            var edge = pane.DetailsPaneBottomEdge;
+            if (Grid.GetRow(pane.TabBar) != 2 || pane.TabBar.Visibility != Visibility.Visible || pane.Active == null
+                || pane.PaneStatusBar.Visibility == Visibility.Visible || edge.ActualWidth <= 0
+                || pane.TabStrip.ItemContainerGenerator.ContainerFromItem(pane.Active) is not FrameworkElement activeTab
+                || activeTab.ActualWidth <= 0)
+            {
+                edge.Clip = null;
+                return;
+            }
+
+            Point origin = activeTab.TranslatePoint(new Point(0, 0), edge);
+            double width = edge.ActualWidth, height = Math.Max(1, edge.ActualHeight);
+            double left = Math.Max(0, Math.Min(width, Math.Round(origin.X)));
+            double right = Math.Max(left, Math.Min(width, Math.Round(origin.X + activeTab.ActualWidth)));
+            if (right <= left)
+            {
+                edge.Clip = null;
+                return;
+            }
+            var visible = new System.Windows.Media.GeometryGroup();
+            visible.Children.Add(new System.Windows.Media.RectangleGeometry(new Rect(0, 0, left, height)));
+            visible.Children.Add(new System.Windows.Media.RectangleGeometry(new Rect(right, 0, width - right, height)));
+            visible.Freeze();
+            edge.Clip = visible;
         }
 
         private static void UpdateRetroTabInnerJoin(FilePane pane)

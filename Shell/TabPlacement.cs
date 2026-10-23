@@ -18,7 +18,18 @@ namespace KillerShell.Shell
         internal bool TabsAtBottom { get; private set; }
 
         private void InitTabPlacement()
-            => SetTabPlacement(GetWindowViewSetting("TabsAtBottom") == "1", persist: false);
+        {
+            // The details rule's break follows the active tab (Tabs.cs UpdateDetailsTabJoin), so it
+            // is redrawn whenever the panel, the strip or the search summary changes size or shows.
+            foreach (var pane in new[] { LeftPane, RightPane })
+            {
+                var p = pane;
+                p.DetailsPaneBottomEdge.SizeChanged += (_, _) => UpdateDetailsTabJoin(p);
+                p.TabStrip.SizeChanged += (_, _) => UpdateDetailsTabJoin(p);
+                p.PaneStatusBar.IsVisibleChanged += (_, _) => UpdateDetailsTabJoin(p);
+            }
+            SetTabPlacement(GetWindowViewSetting("TabsAtBottom") == "1", persist: false);
+        }
 
         private void SetTabPlacement(bool bottom, bool persist = true)
         {

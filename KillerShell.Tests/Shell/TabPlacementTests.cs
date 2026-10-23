@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using KillerShell.Models;
 using KillerShell.Services;
 using KillerShell.Shell;
 using Xunit;
@@ -21,6 +22,53 @@ public sealed class TabPlacementTests
     [Fact]
     public Task PlacementWorksFromShortcutsAndEveryTabSurfaceAndSurvivesRestart()
         => RuntimeComponentProcess.Run(nameof(TabPlacementScenario));
+
+    [Fact]
+    public Task BottomActiveTabOpensIntoTheDetailsPanel()
+        => RuntimeComponentProcess.Run(nameof(DetailsTabJoinScenario));
+}
+
+// With the tabs below the details panel, the panel's bottom rule ran straight across the active
+// tab, a red line between the tab and the surface it belongs to.
+public static class DetailsTabJoinScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var pane = window.Pane;
+        pane.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => pane.TabStrip.Items.Count == 2 && pane.Active.IsBrowsing);
+        pane.ResultsList.Focus();
+        Assert.True(PaneKeyboardScenario.Raise(pane.ResultsList, Key.Down, ModifierKeys.Alt | ModifierKeys.Shift).Handled);
+        Assert.True(window.TabsAtBottom);
+        for (int i = 0; i < 3 && !(pane.DetailsPaneOpen && !pane.DetailsPaneOnRight); i++)
+            window.DetailsPaneToggle_Click(pane);
+        Assert.True(pane.DetailsPaneOpen && !pane.DetailsPaneOnRight, "Details must sit at the bottom, on the strip.");
+
+        var edge = pane.DetailsPaneBottomEdge;
+        foreach (int index in new[] { 1, 0 })
+        {
+            var active = (SearchTab)pane.TabStrip.Items[index];
+            var other = (SearchTab)pane.TabStrip.Items[1 - index];
+            if (!ReferenceEquals(pane.Active, active))
+                Assert.True(PaneKeyboardScenario.Raise(pane.ResultsList, Key.Tab, ModifierKeys.Control).Handled);
+            ShellWindowFixture.PumpUntil(() => ReferenceEquals(pane.Active, active) && edge.IsVisible && edge.ActualWidth > 0
+                && pane.PaneStatusBar.Visibility != Visibility.Visible);
+            ShellWindowFixture.PumpUntil(() => !Paints(edge, CenterOver(pane, active, edge)) && Paints(edge, CenterOver(pane, other, edge)),
+                diagnostic: () => "active=" + CenterOver(pane, active, edge) + "; other=" + CenterOver(pane, other, edge)
+                    + "; clip=" + (edge.Clip?.Bounds.ToString() ?? "none") + "; width=" + edge.ActualWidth);
+        }
+    }
+
+    private static double CenterOver(FilePane pane, SearchTab tab, FrameworkElement edge)
+    {
+        var container = (FrameworkElement)pane.TabStrip.ItemContainerGenerator.ContainerFromItem(tab);
+        return container.TranslatePoint(new Point(container.ActualWidth / 2, 0), edge).X;
+    }
+
+    private static bool Paints(Border edge, double x)
+        => edge.Clip?.FillContains(new Point(x, edge.ActualHeight / 2)) ?? true;
 }
 
 public static class TabPlacementScenario
