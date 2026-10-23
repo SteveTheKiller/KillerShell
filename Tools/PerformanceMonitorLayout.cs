@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,9 +8,10 @@ using System.Windows.Automation;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-// The Performance Monitor's dashboard: what goes where, and how much room it gets. The other
-// half of PerformanceMonitorControl (PerformanceMonitorControl.cs) owns the counters, the
-// sampling and the Sparkline; nothing here reads a counter.
+// The Performance Monitor's dashboard: what goes where, and how much room it gets. The rest of
+// PerformanceMonitorControl owns the counters, the sampling and the Sparkline
+// (PerformanceMonitorControl.cs) and the motion between samples (PerformanceMonitorMotion.cs);
+// nothing here reads a counter.
 //
 //   summary strip   one tile per kind of hardware: its headline number and a bare trace
 //   band 1          CPU (three fifths) beside memory (two fifths) - the two a person reads first
@@ -176,7 +176,7 @@ namespace KillerShell.Tools
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             value.SetResourceReference(TextBlock.ForegroundProperty, brushKey);
 
-            var trace = new Sparkline(HistorySamples, fixedScaleMax, brushKey);
+            var trace = new Sparkline(_cadence, HistorySamples, fixedScaleMax, brushKey);
             trace.MakeBare();
             trace.Host.Height = 26;
             trace.Host.Margin = new Thickness(0, 4, 0, 0);
@@ -204,19 +204,19 @@ namespace KillerShell.Tools
             if (_sumGpu != null)
             {
                 if (_gpuCounterTiles.Count > 0) SetSummaryPercent(_sumGpu, _gpuCounterTiles.Values.Max(t => t.Primary));
-                else _sumGpu.Value.Text = "-";
+                else ShowDash(_sumGpu.Value);
             }
             if (_sumNet != null)
             {
                 double total = _netTiles.Sum(t => t.Primary);
-                _sumNet.Value.Text = FormatThroughput(total);
+                CountTo(_sumNet.Value, total, FormatThroughput);
                 _sumNet.Trace.Push(total);
             }
         }
 
-        private static void SetSummaryPercent(SummaryTile tile, double percent)
+        private void SetSummaryPercent(SummaryTile tile, double percent)
         {
-            tile.Value.Text = percent.ToString("0", CultureInfo.InvariantCulture) + " %";
+            CountTo(tile.Value, percent, FormatPercent);
             tile.Trace.Push(percent);
         }
 

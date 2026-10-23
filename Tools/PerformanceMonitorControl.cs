@@ -27,7 +27,8 @@ using KillerShell.Shell;
 // the same. Now the busy panels get the space and an idle device folds to a single line.
 //
 // This file is the data side: counters, sampling, the tile model and the Sparkline. The
-// dashboard's construction lives in PerformanceMonitorLayout.cs, the other half of this class.
+// dashboard's construction lives in PerformanceMonitorLayout.cs, and the motion that carries each
+// sample into the next over its second lives in PerformanceMonitorMotion.cs.
 //
 // Same "own host, own control, MOVED not rebuilt between activations" rule ProcessListControl and
 // EventViewerControl already carry (Shell/ProcessTabs.cs / Shell/EventViewerTabs.cs): a
@@ -52,7 +53,7 @@ namespace KillerShell.Tools
         /// </summary>
         private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(1);
 
-        /// <summary>How many samples each sparkline keeps - one minute of history at a
+        /// <summary>How many samples each sparkline shows - one minute of history at a
         /// one-second interval, the same rough window a classic Task Manager graph shows.</summary>
         private const int HistorySamples = 60;
 
@@ -149,7 +150,7 @@ namespace KillerShell.Tools
             // is: the control is MOVED between the visual tree and nowhere as tabs switch, so a
             // Performance tab sitting in the background costs nothing until it is looked at again.
             Loaded   += Control_Loaded;
-            Unloaded += (_, _) => { _loadVersion++; _timer.Stop(); };
+            Unloaded += (_, _) => { _loadVersion++; _timer.Stop(); UnhookFrames(); };
         }
 
         private bool _staticApplied;
@@ -213,6 +214,7 @@ namespace KillerShell.Tools
             _loadVersion++;
             _lifetimeCts.Cancel();
             _timer.Stop();
+            UnhookFrames();   // the frame callback is static and would otherwise keep this alive
             _statusClearTimer.Stop();
             DisposeCounters();
         }
@@ -501,7 +503,7 @@ namespace KillerShell.Tools
         private static bool SafeCategoryExists(string category)
             => Services.PerformanceCounterService.CategoryExists(category);
 
-        private static MetricTile BuildCpuTile(Services.PerformanceHardwareInfo info)
+        private MetricTile BuildCpuTile(Services.PerformanceHardwareInfo info)
         {
             var tile = new MetricTile
             {
@@ -515,7 +517,7 @@ namespace KillerShell.Tools
                 PhysicalCores = info.CpuCores,
                 LogicalProcessors = info.CpuThreads,
                 BaseMhz = info.CpuBaseMhz,
-                AggregateGraph = new Sparkline(HistorySamples, 100, "MonitorAccentBrush"),
+                AggregateGraph = new Sparkline(_cadence, HistorySamples, 100, "MonitorAccentBrush"),
             };
 
             tile.State = cs;
@@ -538,7 +540,7 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private static MetricTile BuildRamTile(Services.PerformanceHardwareInfo info)
+        private MetricTile BuildRamTile(Services.PerformanceHardwareInfo info)
         {
             var tile = new MetricTile
             {
@@ -547,7 +549,7 @@ namespace KillerShell.Tools
                 Description = info.Ram,
                 State = new RamState(),
                 SummaryBrushKey = "TypeWindows",
-                BigGraphs = [new Sparkline(HistorySamples, 100, "TypeWindows")],
+                BigGraphs = [new Sparkline(_cadence, HistorySamples, 100, "TypeWindows")],
                 // In use is already the complete headline (used / total and percentage).
                 FieldLabelKeys = ["Str_Perf_Available", "Str_Perf_Committed"],
                 FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush"],
@@ -557,7 +559,7 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private static MetricTile BuildDiskTile(Services.PerformanceDiskInfo d, int index)
+        private MetricTile BuildDiskTile(Services.PerformanceDiskInfo d, int index)
         {
             // "Disk 0 (C:)" / "Disk 1 (C:, D:)" / bare "Disk N" with no parentheses when the
             // physical disk has no lettered volume (unpartitioned, or only a hidden/system
@@ -580,7 +582,7 @@ namespace KillerShell.Tools
                 // never hide each other. Active time is the row's headline number, not a graph.
                 BigGraphs =
                 [
-                    new Sparkline(HistorySamples, 0, "MonitorAccentBrush", "TypeWindows")
+                    new Sparkline(_cadence, HistorySamples, 0, "MonitorAccentBrush", "TypeWindows")
                         { Mirrored = true, ScaleFormatter = FormatThroughput },
                 ],
                 FieldLabelKeys = [],
@@ -591,7 +593,7 @@ namespace KillerShell.Tools
             return tile;
         }
 
-        private static MetricTile BuildNetworkTile(string instanceName, int index, int totalCount)
+        private MetricTile BuildNetworkTile(string instanceName, int index, int totalCount)
         {
             string label = MainWindow.LocStatic("Str_Perf_Network") + (totalCount > 1 ? " " + index : "");
             var tile = new MetricTile
@@ -603,7 +605,7 @@ namespace KillerShell.Tools
                 // Send = blue, rising from the center line; Receive = theme-aware green, below it.
                 BigGraphs =
                 [
-                    new Sparkline(HistorySamples, 0, "TypeWindows", "OkBrush")
+                    new Sparkline(_cadence, HistorySamples, 0, "TypeWindows", "OkBrush")
                         { Mirrored = true, ScaleFormatter = FormatThroughput },
                 ],
                 FieldLabelKeys = [],
@@ -628,14 +630,14 @@ namespace KillerShell.Tools
             };
 
             if (!liveCounters) return tile;
-            var utilGraph = new Sparkline(HistorySamples, 100, "OkBrush");
+            var utilGraph = new Sparkline(_cadence, HistorySamples, 100, "OkBrush");
             if (gs.MemoryAvailable)
             {
                 // Dedicated and shared memory use the same byte scale, so they belong in one
                 // two-series plot. The colored legend below identifies both lines; repeating
                 // those labels as graph captions only spends vertical space and separates data
                 // that is easier to compare when overlaid.
-                var memory = new Sparkline(HistorySamples, 0, "MonitorAccentBrush", "TypeWindows")
+                var memory = new Sparkline(_cadence, HistorySamples, 0, "MonitorAccentBrush", "TypeWindows")
                     { ScaleFormatter = FormatBytes };
                 tile.BigGraphs = [utilGraph, memory];
                 tile.FieldLabelKeys = [];
@@ -696,8 +698,9 @@ namespace KillerShell.Tools
             return cell;
         }
 
-        /// <summary>Writes a tile's current FieldValues into its cell's own value blocks -
-        /// every cell is live all the time now, there is no selected-tile gate.</summary>
+        /// <summary>Writes a tile's FieldValues into its cell's own value blocks when the panel is
+        /// built: the facts that never change, and the dash each live field starts on. The live
+        /// fields are counted from their first sample on (CountField), not rewritten from here.</summary>
         private static void RefreshDetailFieldValues(MetricTile tile)
         {
             for (int i = 0; i < tile.FieldValueBlocks.Length && i < tile.FieldValues.Length; i++)
@@ -825,6 +828,7 @@ namespace KillerShell.Tools
         private void SampleLiveMetrics()
         {
             if (!_countersAvailable) return;
+            _cadence.Mark(MotionNow());   // PerformanceMonitorMotion.cs - every reading below blends from here
 
             foreach (var tile in _tiles)
             {
@@ -840,9 +844,10 @@ namespace KillerShell.Tools
 
             SampleGpus();
             UpdateSummary();   // PerformanceMonitorLayout.cs - after every panel has its number
+            BeginMotion();     // PerformanceMonitorMotion.cs - and then carry them all over the next second
         }
 
-        private static void SampleCpuTile(MetricTile tile)
+        private void SampleCpuTile(MetricTile tile)
         {
             var cs = (CpuState)tile.State!;
             if (cs.Total == null) return;
@@ -850,7 +855,7 @@ namespace KillerShell.Tools
             {
                 if (!Services.PerformanceCounterService.TrySample(cs.Total, out double rawPercent)) return;
                 double pct = Services.PerformanceCounterService.ClampPercent(rawPercent);
-                tile.TileSummaryText.Text = pct.ToString("0", CultureInfo.InvariantCulture) + " %";
+                CountTo(tile.TileSummaryText, pct, FormatPercent);
                 tile.Primary = pct;
                 cs.AggregateGraph.Push(pct);
 
@@ -860,7 +865,8 @@ namespace KillerShell.Tools
                     double c = Services.PerformanceCounterService.ClampPercent(rawCore);
                     // A floor, so an idle processor is a faint square rather than a hole in the
                     // strip; the rest of the range is the load.
-                    cs.CoreFills[i].Opacity = 0.10 + 0.90 * (c / 100.0);
+                    var fill = cs.CoreFills[i];
+                    Blend(fill, c, load => fill.Opacity = 0.10 + 0.90 * (load / 100.0));
                     cs.CoreCells[i].ToolTip = i.ToString(CultureInfo.InvariantCulture) + ": "
                         + c.ToString("0", CultureInfo.InvariantCulture) + " %";
                 }
@@ -869,16 +875,15 @@ namespace KillerShell.Tools
                 // runs past 100 % under turbo, which is the point of showing it.
                 if (cs.Performance != null && cs.BaseMhz > 0
                     && Services.PerformanceCounterService.TrySample(cs.Performance, out double perfPct) && perfPct > 0)
-                    tile.FieldValues[2] = (cs.BaseMhz * perfPct / 100.0 / 1000.0)
-                        .ToString("0.00", CultureInfo.InvariantCulture) + " GHz";
+                    CountField(tile, 2, cs.BaseMhz * perfPct / 100.0 / 1000.0, FormatGhz);
                 if (cs.Processes != null && Services.PerformanceCounterService.TrySample(cs.Processes, out double procs))
-                    tile.FieldValues[3] = procs.ToString("N0", CultureInfo.CurrentCulture);
+                    CountField(tile, 3, procs, FormatCount);
                 if (cs.Threads != null && Services.PerformanceCounterService.TrySample(cs.Threads, out double threads))
-                    tile.FieldValues[4] = threads.ToString("N0", CultureInfo.CurrentCulture);
-                tile.FieldValues[5] = Services.PerformanceMetricFormatter.UpTime(
-                    TimeSpan.FromMilliseconds(GetTickCount64()));
-
-                RefreshDetailFieldValues(tile);
+                    CountField(tile, 4, threads, FormatCount);
+                // Up time is a clock, and a clock ticks: the one readout here that is not counted.
+                if (tile.FieldValueBlocks.Length > 5)
+                    tile.FieldValueBlocks[5].Text = Services.PerformanceMetricFormatter.UpTime(
+                        TimeSpan.FromMilliseconds(GetTickCount64()));
             }
             catch { /* counter went stale - leave last-known values in place */ }
         }
@@ -895,13 +900,11 @@ namespace KillerShell.Tools
                     double availGb = availMb / 1024.0;
                     double usedGb = Math.Max(0, _totalRamGb - availGb);
                     double pct = usedGb / _totalRamGb * 100.0;
-                    tile.TileSummaryText.Text = usedGb.ToString("0.0", CultureInfo.InvariantCulture) + "/" +
-                        _totalRamGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB (" +
-                        pct.ToString("0", CultureInfo.InvariantCulture) + "%)";
+                    CountTo(tile.TileSummaryText, usedGb, FormatRamInUse);
                     double clamped = Math.Min(100, pct);
                     tile.Primary = clamped;
                     if (tile.BigGraphs.Length > 0) tile.BigGraphs[0].Push(clamped);
-                    tile.FieldValues[0] = availGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+                    CountField(tile, 0, availGb, FormatGb);
 
                     // The composition bar: in use, then cached (available memory that still holds
                     // file data and is handed back on demand), then truly free. Without the free
@@ -912,36 +915,33 @@ namespace KillerShell.Tools
                     double cachedGb = Math.Max(0, availGb - freeGb);
                     if (rs.BarColumns.Length == 3)
                     {
-                        rs.BarColumns[0].Width = new GridLength(usedGb, GridUnitType.Star);
-                        rs.BarColumns[1].Width = new GridLength(cachedGb, GridUnitType.Star);
-                        rs.BarColumns[2].Width = new GridLength(freeGb, GridUnitType.Star);
+                        BlendColumn(rs.BarColumns[0], usedGb);
+                        BlendColumn(rs.BarColumns[1], cachedGb);
+                        BlendColumn(rs.BarColumns[2], freeGb);
                     }
                     if (tile.LegendValueBlocks.Length >= 3)
                     {
-                        tile.LegendValueBlocks[0].Text = usedGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
-                        tile.LegendValueBlocks[1].Text = cachedGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
-                        tile.LegendValueBlocks[2].Text = freeGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+                        CountTo(tile.LegendValueBlocks[0], usedGb, FormatGb);
+                        CountTo(tile.LegendValueBlocks[1], cachedGb, FormatGb);
+                        CountTo(tile.LegendValueBlocks[2], freeGb, FormatGb);
                     }
                 }
                 else
                 {
-                    tile.TileSummaryText.Text = string.Format(MainWindow.LocStatic("Str_Perf_MbFree"),
-                        availMb.ToString("0", CultureInfo.InvariantCulture));
+                    CountTo(tile.TileSummaryText, availMb, FormatMbFree);
                 }
 
                 if (rs.Committed != null)
                 {
                     if (!Services.PerformanceCounterService.TrySample(rs.Committed, out double committedBytes)) return;
                     double committedMb = committedBytes / 1024.0 / 1024.0;
-                    tile.FieldValues[1] = (committedMb / 1024.0).ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+                    CountField(tile, 1, committedMb / 1024.0, FormatGb);
                 }
-
-                RefreshDetailFieldValues(tile);
             }
             catch { }
         }
 
-        private static void SampleDiskTile(MetricTile tile)
+        private void SampleDiskTile(MetricTile tile)
         {
             var ds = (DiskState)tile.State!;
             try
@@ -951,22 +951,20 @@ namespace KillerShell.Tools
                     !Services.PerformanceCounterService.TrySample(ds.WriteBytes, out double writeBps)) return;
                 double activePct = Services.PerformanceCounterService.ClampPercent(activeRaw);
 
-                tile.TileSummaryText.Text = activePct.ToString("0", CultureInfo.InvariantCulture) + " %";
+                CountTo(tile.TileSummaryText, activePct, FormatPercent);
                 tile.Primary = activePct;
                 tile.BigGraphs[0].Push(readBps, writeBps);
                 UpdateRowActivity(tile, activePct >= 1 || readBps + writeBps >= RowActivityBytes);   // PerformanceMonitorLayout.cs
                 if (tile.LegendValueBlocks.Length >= 2)
                 {
-                    tile.LegendValueBlocks[0].Text = FormatThroughput(readBps);
-                    tile.LegendValueBlocks[1].Text = FormatThroughput(writeBps);
+                    CountTo(tile.LegendValueBlocks[0], readBps, FormatThroughput);
+                    CountTo(tile.LegendValueBlocks[1], writeBps, FormatThroughput);
                 }
-
-                RefreshDetailFieldValues(tile);
             }
             catch { }
         }
 
-        private static void SampleNetworkTile(MetricTile tile)
+        private void SampleNetworkTile(MetricTile tile)
         {
             var ns = (NetState)tile.State!;
             try
@@ -976,15 +974,13 @@ namespace KillerShell.Tools
 
                 if (tile.LegendValueBlocks.Length >= 2)
                 {
-                    tile.LegendValueBlocks[0].Text = FormatThroughput(sent);
-                    tile.LegendValueBlocks[1].Text = FormatThroughput(recv);
+                    CountTo(tile.LegendValueBlocks[0], sent, FormatThroughput);
+                    CountTo(tile.LegendValueBlocks[1], recv, FormatThroughput);
                 }
                 tile.Primary = sent + recv;
-                tile.TileSummaryText.Text = FormatThroughput(sent + recv);
+                CountTo(tile.TileSummaryText, sent + recv, FormatThroughput);
                 tile.BigGraphs[0].Push(sent, recv);
                 UpdateRowActivity(tile, sent + recv >= RowActivityBytes);   // PerformanceMonitorLayout.cs
-
-                RefreshDetailFieldValues(tile);
             }
             catch { }
         }
@@ -1148,11 +1144,12 @@ namespace KillerShell.Tools
                 if (_gpuHardwareTiles.ContainsKey(missing))
                 {
                     old.Primary = 0;
-                    old.TileSummaryText.Text = "-";
-                    foreach (var value in old.LegendValueBlocks) value.Text = "-";
+                    ShowDash(old.TileSummaryText);
+                    foreach (var value in old.LegendValueBlocks) ShowDash(value);
                 }
                 else
                 {
+                    ForgetReadouts(old);
                     _gpuCounterBand.Children.Remove(((GpuState)old.State!).Panel);
                     _tiles.Remove(old);
                 }
@@ -1184,36 +1181,56 @@ namespace KillerShell.Tools
         private static string ExtractGpuLuid(string instanceName)
             => Services.PerformanceMetricFormatter.GpuLuid(instanceName);
 
-        private static void ApplyGpuSample(MetricTile tile, double util, double dedicatedBytes, double sharedBytes)
+        private void ApplyGpuSample(MetricTile tile, double util, double dedicatedBytes, double sharedBytes)
         {
             util = Math.Min(100, Math.Max(0, util));
             var gs = (GpuState)tile.State!;
 
             tile.BigGraphs[0].Push(util);
             tile.Primary = util;
-            tile.TileSummaryText.Text = util.ToString("0", CultureInfo.InvariantCulture) + " %";
+            CountTo(tile.TileSummaryText, util, FormatPercent);
 
             if (gs.MemoryAvailable && tile.BigGraphs.Length >= 2)
             {
                 tile.BigGraphs[1].Push(dedicatedBytes, sharedBytes);
                 if (tile.LegendValueBlocks.Length >= 2)
                 {
-                    tile.LegendValueBlocks[0].Text = FormatBytes(dedicatedBytes);
-                    tile.LegendValueBlocks[1].Text = FormatBytes(sharedBytes);
+                    CountTo(tile.LegendValueBlocks[0], dedicatedBytes, FormatBytes);
+                    CountTo(tile.LegendValueBlocks[1], sharedBytes, FormatBytes);
                 }
             }
-
-            RefreshDetailFieldValues(tile);
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  FORMATTING
+        //  FORMATTING  -  every live readout is counted through one of these, once per frame
         // ═══════════════════════════════════════════════════════════
         private static string FormatThroughput(double bytesPerSec)
             => Services.PerformanceMetricFormatter.Throughput(bytesPerSec);
 
         private static string FormatBytes(double bytes)
             => Services.PerformanceMetricFormatter.Bytes(bytes);
+
+        private static string FormatPercent(double percent)
+            => percent.ToString("0", CultureInfo.InvariantCulture) + " %";
+
+        private static string FormatGb(double gb)
+            => gb.ToString("0.0", CultureInfo.InvariantCulture) + " GB";
+
+        private static string FormatGhz(double ghz)
+            => ghz.ToString("0.00", CultureInfo.InvariantCulture) + " GHz";
+
+        private static string FormatCount(double count)
+            => count.ToString("N0", CultureInfo.CurrentCulture);
+
+        private static string FormatMbFree(double availMb)
+            => string.Format(MainWindow.LocStatic("Str_Perf_MbFree"), availMb.ToString("0", CultureInfo.InvariantCulture));
+
+        /// <summary>"12.4/31.9 GB (39%)": the percentage follows the counted amount, so the two
+        /// halves of the headline never disagree mid-count.</summary>
+        private string FormatRamInUse(double usedGb)
+            => usedGb.ToString("0.0", CultureInfo.InvariantCulture) + "/" +
+               _totalRamGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB (" +
+               (usedGb / _totalRamGb * 100.0).ToString("0", CultureInfo.InvariantCulture) + "%)";
 
         // Milliseconds since boot. Environment.TickCount wraps after 24.9 days, which is well
         // inside how long a server or a field laptop stays up.
@@ -1245,11 +1262,21 @@ namespace KillerShell.Tools
         /// auto-scale: the vertical range tracks the highest recent sample across ALL of this
         /// sparkline's series (so two series sharing one graph share one scale), with 20%
         /// headroom so a peak never touches the top edge.
+        ///
+        /// The scroll is continuous rather than a step a second (PerformanceMonitorMotion.cs):
+        /// a new sample is laid out one step past the right edge and the whole trace slides in
+        /// over its second, so the right edge passes through every value on the way. The slide
+        /// is a translation of the laid-out points, not a re-lay, so a fixed-scale graph builds
+        /// its points once a second whatever the frame rate. An auto-scaled graph whose top is
+        /// changing re-lays its heights each frame instead of scaling them with a transform,
+        /// which would thicken and thin the stroke along with the trace.
         /// </summary>
         private sealed class Sparkline
         {
             internal readonly Border Host;
             private readonly Canvas _canvas;
+            private readonly Canvas _plot = new();   // the fills and traces, slid together
+            private readonly TranslateTransform _slide = new();
             private readonly Polyline[] _lines;
             private readonly Polygon[] _fills;
             private readonly Line[] _gridLines = new Line[3];
@@ -1258,6 +1285,12 @@ namespace KillerShell.Tools
             private readonly List<double>[] _seriesSamples;
             private readonly int _maxSamples;
             private readonly Services.MetricHistory _history;
+            private readonly Services.SampleCadence _cadence;
+            private readonly Services.BlendedScale _scale = new();
+            private readonly double _ceiling;                     // the highest a sample is drawn
+            private double _laidScale = double.NaN;               // the scale the points were laid out at
+            private double _pushedAt = double.NegativeInfinity;   // when the current slide began
+            private double _shownAt = double.PositiveInfinity;    // the time on screen; infinity is settled
 
             /// <summary>
             /// Two series drawn away from a shared center line instead of over each other: the
@@ -1272,14 +1305,18 @@ namespace KillerShell.Tools
             /// graphs are percentages and label themselves.</summary>
             internal Func<double, string>? ScaleFormatter { get; set; }
 
-            internal Sparkline(int maxSamples, double fixedScaleMax, params string[] brushKeys)
+            internal Sparkline(Services.SampleCadence cadence, int maxSamples, double fixedScaleMax, params string[] brushKeys)
             {
+                _cadence = cadence;
                 _maxSamples = maxSamples;
                 int n = Math.Max(1, brushKeys.Length);
                 _lines = new Polyline[n];
                 _fills = new Polygon[n];
                 _seriesSamples = new List<double>[n];
-                _history = new Services.MetricHistory(n, maxSamples, fixedScaleMax);
+                // One more than the graph shows: the oldest is the one sliding off the left edge.
+                _history = new Services.MetricHistory(n, maxSamples + 1, fixedScaleMax);
+                _scale.Retarget(_history.ScaleMax, 0, 0);   // the empty graph's scale, until a sample moves it
+                _ceiling = fixedScaleMax > 0 ? 1 : 1 / Services.MetricHistory.Headroom;
 
                 _canvas = new Canvas { ClipToBounds = true };
 
@@ -1306,7 +1343,7 @@ namespace KillerShell.Tools
                     var fill = new Polygon { Opacity = 0.18 };
                     fill.SetResourceReference(Shape.FillProperty, i < brushKeys.Length ? brushKeys[i] : "MonitorAccentBrush");
                     _fills[i] = fill;
-                    _canvas.Children.Add(fill);
+                    _plot.Children.Add(fill);
                 }
                 for (int i = 0; i < n; i++)
                 {
@@ -1314,8 +1351,11 @@ namespace KillerShell.Tools
                     var line = new Polyline { StrokeThickness = 1.5 };
                     line.SetResourceReference(Shape.StrokeProperty, i < brushKeys.Length ? brushKeys[i] : "MonitorAccentBrush");
                     _lines[i] = line;
-                    _canvas.Children.Add(line);
+                    _plot.Children.Add(line);
                 }
+                // Over the quarter lines, and clipped by the canvas like they are.
+                _plot.RenderTransform = _slide;
+                _canvas.Children.Add(_plot);
                 _canvas.SizeChanged += (_, _) => Redraw();
 
                 _scaleLabel = new TextBlock
@@ -1362,7 +1402,22 @@ namespace KillerShell.Tools
             internal void Push(params double[] values)
             {
                 _history.Push(values);
+                _pushedAt = _cadence.LastSample;
+                // An auto-scaled top counts to its new value too, over the same second the new
+                // peak slides in past the right edge, so the peak arrives as its room is made.
+                _scale.Retarget(_history.ScaleMax, _cadence.LastSample, _cadence.Period);
                 Redraw();
+            }
+
+            /// <summary>Moves the trace to where it is at <paramref name="now"/>: slid part of a
+            /// step left, and re-laid only if an auto-scaled top is still on its way.</summary>
+            internal void Advance(double now)
+            {
+                _shownAt = now;
+                double scale = _scale.At(now);
+                if (scale != _laidScale) Lay(scale);
+                double progress = Services.MetricMotion.Progress(now, _pushedAt, _cadence.Period);
+                _slide.X = Services.MetricMotion.SlideOffset(progress, _maxSamples, _canvas.ActualWidth);
             }
 
             /// <summary>
@@ -1379,10 +1434,11 @@ namespace KillerShell.Tools
                 foreach (var rule in _gridLines) rule.Visibility = Visibility.Collapsed;
             }
 
+            /// <summary>A new sample or a new size: lay the points out again and put the trace
+            /// back where it is on screen.</summary>
             private void Redraw()
             {
                 double w = _canvas.ActualWidth, h = _canvas.ActualHeight;
-                double stepX = _maxSamples > 1 ? w / (_maxSamples - 1) : 0;
 
                 for (int i = 0; i < _gridLines.Length; i++)
                 {
@@ -1391,7 +1447,20 @@ namespace KillerShell.Tools
                     _gridLines[i].Y1 = y; _gridLines[i].Y2 = y;
                 }
 
-                if (ScaleFormatter != null) _scaleLabel.Text = ScaleFormatter(_history.ScaleMax);
+                _laidScale = double.NaN;
+                Advance(_shownAt);
+            }
+
+            private void Lay(double scale)
+            {
+                _laidScale = scale;
+                double w = _canvas.ActualWidth, h = _canvas.ActualHeight;
+
+                if (ScaleFormatter != null)
+                {
+                    string label = ScaleFormatter(scale);
+                    if (_scaleLabel.Text != label) _scaleLabel.Text = label;
+                }
 
                 // A plain graph grows up from its floor. A mirrored one has its axis across the
                 // middle and half the height to each side of it.
@@ -1411,11 +1480,11 @@ namespace KillerShell.Tools
 
                     double direction = mirrored && s == 1 ? +1 : -1;   // screen y grows downward
                     var pts = new PointCollection(samples.Count);
-                    int startIndex = _maxSamples - samples.Count;   // newest sample lands at the right edge
                     for (int i = 0; i < samples.Count; i++)
                     {
-                        double x = (startIndex + i) * stepX;
-                        double frac = _history.ScaleMax > 0 ? Math.Min(1.0, samples[i] / _history.ScaleMax) : 0;
+                        // Newest one step past the right edge; Advance slides it in.
+                        double x = Services.MetricMotion.SampleX(i, samples.Count, _maxSamples, w);
+                        double frac = Services.MetricMotion.Height(samples[i], scale, _ceiling);
                         pts.Add(new Point(x, axis + direction * frac * reach));
                     }
                     _lines[s].Points = pts;

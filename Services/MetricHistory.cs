@@ -5,6 +5,10 @@ namespace KillerShell.Services
 {
     internal sealed class MetricHistory
     {
+        /// <summary>How far an auto-scaled top sits above the highest sample, so a peak never
+        /// touches the top edge.</summary>
+        internal const double Headroom = 1.2;
+
         private readonly int _capacity;
         private readonly bool _autoScale;
         private readonly List<double>[] _series;
@@ -35,7 +39,7 @@ namespace KillerShell.Services
             foreach (List<double> samples in _series)
                 foreach (double sample in samples)
                     if (sample > maximum) maximum = sample;
-            ScaleMax = maximum * 1.2;
+            ScaleMax = maximum * Headroom;
         }
     }
 }
