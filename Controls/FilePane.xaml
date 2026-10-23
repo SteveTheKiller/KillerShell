@@ -220,6 +220,7 @@
                                      more room for the title. -->
                                 <local:TabSurfaceBorder x:Name="tabBd" CornerRadius="0" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
                                         MinWidth="160" MaxWidth="260"
+                                        RenderTransform="{DynamicResource TabPlacementTransform}" RenderTransformOrigin="0.5,0.5"
                                         UseLayoutRounding="True" SnapsToDevicePixels="True"
                                         Cursor="Hand" MenuBackground="Transparent"
                                         ContentBackground="{Binding MenuBarContentBrush, RelativeSource={RelativeSource AncestorType=local:FilePane}}"
@@ -300,7 +301,8 @@
                                              Closing its selected tab with a gray foot keeps that black
                                              surface from visually swallowing the tab. Zero-thickness on
                                              every ordinary theme and collapsed for every other tab. -->
-                                        <DockPanel x:Name="tabContents" LastChildFill="True" VerticalAlignment="Top">
+                                        <DockPanel x:Name="tabContents" LastChildFill="True" VerticalAlignment="Top"
+                                                   RenderTransform="{DynamicResource TabPlacementTransform}" RenderTransformOrigin="0.5,0.5">
                                             <!-- The larger close target extends into existing vertical
                                                  padding without increasing the tab strip's height. -->
                                             <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Width="24" Height="24" Margin="4,-2,0,-2"
@@ -602,7 +604,6 @@
                                         <Setter TargetName="tabLbl" Property="Foreground" Value="{Binding MenuBarContentForeground, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                                         <Setter TargetName="tabGlyph" Property="Foreground" Value="{Binding MenuBarContentForeground, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                                         <Setter TargetName="tabClose" Property="Style" Value="{StaticResource TerminalTabCloseButton}"/>
-                                        <Setter TargetName="tabGrain" Property="Opacity" Value="0"/>
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
@@ -677,7 +678,7 @@
                      keeping it separate prevents scroll-chrome changes from breaking the ring. -->
                 <Border x:Name="PaneFocusBottomEdge" IsHitTestVisible="False" Panel.ZIndex="101"
                         Visibility="Collapsed"
-                        BorderBrush="{DynamicResource PrimaryBrush}"
+                        BorderBrush="{DynamicResource TabActiveRingBrush}"
                         BorderThickness="{DynamicResource PaneEdgeBottomThickness}"
                         CornerRadius="{DynamicResource PanelCornerRadius}"/>
                 <!-- Hybrid scroll treatment: dense table tools dissolve their actual content;
@@ -820,17 +821,7 @@
                         </Button>
                     </StackPanel>
                     <Border Grid.Column="1" x:Name="ScopeBar" CornerRadius="5,0,0,0" Padding="6,6,8,4" MinHeight="22"
-                            Cursor="Hand" ToolTip="{DynamicResource Str_TT_Scope}" MouseLeftButtonUp="ScopeBar_Click">
-                        <Border.Style>
-                            <Style TargetType="Border">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
+                            Background="Transparent" Cursor="Hand" ToolTip="{DynamicResource Str_TT_Scope}" MouseLeftButtonUp="ScopeBar_Click">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -841,8 +832,19 @@
                                        FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBlock x:Name="ScopePathLabel" Grid.Column="1" Text="{DynamicResource Str_Scope_Empty}"
                                        Foreground="{DynamicResource PrimaryBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="12"
-                                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                       ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                                       VerticalAlignment="Center" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"
+                                       ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                             <!-- Hidden mirror of the tab's search root. Not the address bar -
                                  CaptureTab reads it, so it has to keep meaning "search root"
                                  even while the visible row is being edited. -->

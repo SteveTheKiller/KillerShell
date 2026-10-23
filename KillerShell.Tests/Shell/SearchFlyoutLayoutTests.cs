@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +22,10 @@ public sealed class SearchFlyoutLayoutTests
     [Fact]
     public Task ScaledSearchKeepsTheEntireFormReachableInOneViewport()
         => RuntimeComponentProcess.Run(nameof(SearchFlyoutScrollScenario));
+
+    [Fact]
+    public Task SearchScopeCanUseResultsAndReturnToFolderSearch()
+        => RuntimeComponentProcess.Run(nameof(SearchScopeResultsScenario));
 }
 
 public static class SearchFlyoutGrowthScenario
@@ -41,8 +46,15 @@ public static class SearchFlyoutGrowthScenario
         Point expandedCenter = expandedToggle.PointToScreen(new Point(expandedToggle.ActualWidth / 2, expandedToggle.ActualHeight / 2));
         Assert.True(Math.Abs(triggerCenter.X - expandedCenter.X) <= 4
             && Math.Abs(triggerCenter.Y - expandedCenter.Y) <= 4,
-            "The expanded magnifier should cover the title button. Title center=" + triggerCenter
+            "The close control should replace the title search button. Title center=" + triggerCenter
             + "; expanded center=" + expandedCenter + "; surface=" + view.Root.RenderSize);
+        Assert.Equal("\uE8BB", expandedToggle.Content);
+        Assert.Single(SearchFlyoutLayoutProbe.Descendants<Button>((DependencyObject)expandedToggle.Parent));
+        Assert.Single(SearchFlyoutLayoutProbe.Descendants<TextBlock>(view.Root),
+            label => label.Text == "KillerSearch");
+        Assert.Equal("KillerSearch", view.Named<TextBlock>("SearchHeading").Text);
+        Assert.True(view.Bounds(view.Named<TextBlock>("SearchHeading")).Bottom
+            <= view.Bounds(view.Named<Button>("SearchScopeButton")).Top + 2);
 
         view.SetRows(4, 2);
         ShellWindowFixture.PumpUntil(() => view.Root.ActualHeight > compactHeight + 12);
@@ -92,6 +104,52 @@ public static class SearchFlyoutGrowthScenario
     }
 }
 
+public static class SearchScopeResultsScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var view = new SearchFlyoutLayoutProbe(fixture.Window);
+        var pane = (FilePane)fixture.Window.FindName("LeftPane");
+        pane.Active.IsBrowsing = false;
+        pane.Active.Results.Clear();
+        pane.Active.Results.Add(new SearchResult { FilePath = @"C:\Users\Demo\Documents\sample.txt", FileName = "sample.txt" });
+        pane.Active.Results.Add(new SearchResult { FilePath = @"C:\Users\Demo\Documents\second.txt", FileName = "second.txt" });
+        view.Open();
+        var scope = view.Named<Button>("SearchScopeButton");
+        scope.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => scope.ContextMenu?.IsOpen == true);
+        var within = Assert.Single(scope.ContextMenu.Items.OfType<MenuItem>(),
+            item => item.InputGestureText == "Ctrl+Shift+F");
+        Assert.False(within.IsChecked);
+        scope.ContextMenu.IsOpen = false;
+        within.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => pane.Active.PipeFiles != null);
+        Assert.Equal(new[] { @"C:\Users\Demo\Documents\sample.txt", @"C:\Users\Demo\Documents\second.txt" },
+            pane.Active.PipeFiles!.OrderBy(path => path, StringComparer.Ordinal));
+        Assert.Equal(within.Header, view.Named<TextBlock>("SearchScopeLabel").Text);
+        var firstRefinement = pane.Active;
+        firstRefinement.Results.Add(new SearchResult { FilePath = @"C:\Users\Demo\Documents\second.txt", FileName = "second.txt" });
+        scope.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => scope.ContextMenu.IsOpen);
+        within = Assert.Single(scope.ContextMenu.Items.OfType<MenuItem>(), item => item.IsChecked);
+        scope.ContextMenu.IsOpen = false;
+        within.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => !ReferenceEquals(firstRefinement, pane.Active));
+        Assert.Equal(new[] { @"C:\Users\Demo\Documents\second.txt" }, pane.Active.PipeFiles);
+        scope.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => scope.ContextMenu.IsOpen);
+        Assert.Single(scope.ContextMenu.Items.OfType<MenuItem>(), item => item.IsChecked);
+        var windowScope = scope.ContextMenu.Items.OfType<MenuItem>().First();
+        scope.ContextMenu.IsOpen = false;
+        windowScope.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        Assert.Null(pane.Active.PipeFiles);
+        Assert.Equal(windowScope.Header, view.Named<TextBlock>("SearchScopeLabel").Text);
+        Assert.Equal(pane.Active.RootPath, pane.ScopePathLabel.Text);
+        view.Close();
+    }
+}
+
 public static class SearchFlyoutScrollScenario
 {
     public static void Run()
@@ -111,6 +169,12 @@ public static class SearchFlyoutScrollScenario
             Assert.Equal(scale, view.Root.LayoutTransform.Value.M11, 2);
             Assert.Equal(scale, view.Root.LayoutTransform.Value.M22, 2);
             view.AssertWithinWorkArea();
+            var trigger = view.Named<Button>("SearchPanelBtn");
+            var close = view.Named<Button>("TitleSearchToggle");
+            var triggerCenter = trigger.PointToScreen(new Point(trigger.ActualWidth / 2, trigger.ActualHeight / 2));
+            var closeCenter = close.PointToScreen(new Point(close.ActualWidth / 2, close.ActualHeight / 2));
+            Assert.InRange(Math.Abs(triggerCenter.X - closeCenter.X), 0, 4);
+            Assert.InRange(Math.Abs(triggerCenter.Y - closeCenter.Y), 0, 4);
 
             foreach (string name in new[] { "SearchScopeButton", "SearchButton", "IncludePatternsBox", "ExcludePatternsBox", "CaseSensitiveCheck" })
             {

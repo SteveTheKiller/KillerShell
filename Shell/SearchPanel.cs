@@ -34,6 +34,7 @@ namespace KillerShell.Shell
         private void ApplySearchPanel(bool animate)
         {
             SearchPanelBtn.Tag = _searchOpen ? "on" : null;
+            SearchPanelBtn.Content = _searchOpen ? "\uE8BB" : "\uE721";
             SearchCol.Width = new GridLength(0);
             SearchCol.MinWidth = 0;
             UpdateTitleSearchSize();
@@ -43,11 +44,12 @@ namespace KillerShell.Shell
 
         private void RefreshTitleSearchContext()
         {
-            SearchScopeButton.Content = Pane.Active?.PipeFiles != null
-                ? Loc("Str_Menu_PipeTab") : Loc(SearchScopeKey(_titleSearchScope));
-            SearchScopeButton.ToolTip = Pane.Active?.PipeFiles != null
-                ? Pane.Active.PipeLabel : string.Join(Environment.NewLine, ResolveTitleSearchRoots());
-            SearchWithinButton.IsEnabled = Pane.Active != null && !Pane.Active.IsBrowsing && Pane.Active.Results.Count > 0;
+            bool withinResults = Pane.Active?.PipeFiles != null;
+            SearchScopeLabel.SetResourceReference(TextBlock.TextProperty, withinResults
+                ? "Str_Menu_PipeTab" : SearchScopeKey(_titleSearchScope));
+            SearchScopeIcon.Text = withinResults ? "\uE71C" : _titleSearchScope == 2 ? "\uE7F4" : _titleSearchScope == 1 ? "\uE8F1" : "\uE737";
+            SearchScopeButton.ToolTip = withinResults
+                ? Pane.Active?.PipeLabel : string.Join(Environment.NewLine, ResolveTitleSearchRoots());
         }
 
         private void UpdateTitleSearchSize()
@@ -55,6 +57,9 @@ namespace KillerShell.Shell
             double windowHeight = ActualHeight > 0 ? ActualHeight : Height;
             double windowWidth = ActualWidth > 0 ? ActualWidth : Width;
             double scale = Math.Max(0.5, _appScale);
+            TitleSearchToggle.Width = SearchPanelBtn.ActualWidth > 0 ? SearchPanelBtn.ActualWidth / scale : SearchPanelBtn.Width / scale;
+            TitleSearchToggle.Height = SearchPanelBtn.ActualHeight > 0 ? SearchPanelBtn.ActualHeight / scale : SearchPanelBtn.Height / scale;
+            TitleSearchToggle.FontSize = SearchPanelBtn.FontSize / scale;
             double available = Math.Max(220, (windowWidth - 48) / scale);
             bool helpOpen = PatternHelpOverlay.Visibility == Visibility.Visible;
             bool helpBeside = helpOpen && available >= 780;

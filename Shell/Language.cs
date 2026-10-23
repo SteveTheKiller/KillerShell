@@ -221,6 +221,7 @@ namespace KillerShell.Shell
                 else if (string.IsNullOrWhiteSpace(Pane.RootPathBox.Text))
                     Pane.ScopePathLabel.Text = Loc("Str_Scope_Empty");
             });
+            RefreshTitleSearchContext();
         }
     }
 }

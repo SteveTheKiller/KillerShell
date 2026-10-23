@@ -54,6 +54,10 @@ namespace KillerShell.Shell
         /// place. A snapped window that did not grow keeps its size on close.</summary>
         private bool _paneOpenGrewWindow;
 
+        // Choosing a layout rearranges the existing window. F10 retains its separate
+        // slide-out behavior, which can grow a floating window to keep pane A's width.
+        private bool _paneLayoutKeepsWindowSize;
+
         /// <summary>Pane A's width as of the last DragDelta tick, so PaneSplitV_DragDelta can read
         /// what GridSplitter actually did (which may be less than the raw drag delta, clamped by
         /// A's own MinWidth) instead of trusting the raw mouse delta and overshooting.</summary>
@@ -198,8 +202,13 @@ namespace KillerShell.Shell
         private void SetPaneLayout(int layout)
         {
             FinishPendingPaneSlide();
-            if (layout == 0) CloseSecondPane();
-            else SetPaneOrientation(layout == 1);
+            _paneLayoutKeepsWindowSize = true;
+            try
+            {
+                if (layout == 0) CloseSecondPane();
+                else SetPaneOrientation(layout == 1);
+            }
+            finally { _paneLayoutKeepsWindowSize = false; }
         }
 
         internal void DualPaneOrient_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -455,7 +464,7 @@ namespace KillerShell.Shell
                     ? System.Math.Min(need - room, MonitorRoomToGrowLeftDip())
                     : 0;
                 if (shift <= 0.5) shift = 0;
-                bool canGrow = WindowState != WindowState.Maximized
+                bool canGrow = !_paneLayoutKeepsWindowSize && WindowState != WindowState.Maximized
                                && room + shift >= PaneMinWidth + SplitPx;
 
                 if (canGrow)
@@ -509,7 +518,7 @@ namespace KillerShell.Shell
             // stretch it further" bug (interrupted toggles leaving it stale).
             // A snapped window that split in place is treated like a maximized one: shrinking it
             // would pull its edge off the side of the screen it is snapped to.
-            bool canShrinkWindow = WindowState != WindowState.Maximized
+            bool canShrinkWindow = !_paneLayoutKeepsWindowSize && WindowState != WindowState.Maximized
                                    && (_paneOpenGrewWindow || !IsWindowSnapped());
             if (!open) _paneOpenGrewWindow = false;
             double closeWidthTarget = Width - (from + SplitPx);
@@ -940,7 +949,7 @@ namespace KillerShell.Shell
                     p.Resources.Remove("SortButtonBrush");
 
                 p.ResultsPane.SetResourceReference(Border.BorderBrushProperty,
-                    lit && !retro ? "PrimaryBrush" : "PaneBorderBrush");
+                    lit && !retro ? "TabActiveRingBrush" : "PaneBorderBrush");
 
                 // The focused pane's bottom accent overlays the permanent theme border.
                 p.PaneFocusBottomEdge.Visibility = lit && !retro

@@ -128,6 +128,19 @@ public static class TabPlacementScenario
             double tabTop = pane.TabBar.TranslatePoint(new Point(), pane).Y;
             double contentTop = pane.ResultsPane.TranslatePoint(new Point(), pane).Y;
             Assert.True(bottom ? tabTop > contentTop : tabTop < contentTop);
+            var face = MenuBarTabBlendScenario.TabBorder(pane, pane.Active);
+            double faceTop = face.TranslatePoint(new Point(), pane).Y;
+            double faceBottom = face.TranslatePoint(new Point(0, face.ActualHeight), pane).Y;
+            Assert.Equal(bottom, faceTop > faceBottom);
+            var title = MenuBarTabBlendScenario.Descendants<TextBlock>(face).Single(item => item.Name == "tabLbl");
+            var close = MenuBarTabBlendScenario.Descendants<Button>(face).Single(item => item.Name == "tabClose");
+            foreach (var content in new FrameworkElement[] { title, close })
+                Assert.True(content.TranslatePoint(new Point(0, content.ActualHeight), pane).Y
+                    > content.TranslatePoint(new Point(), pane).Y, "Tab labels and controls must stay upright.");
+            var hit = pane.InputHitTest(close.TranslatePoint(new Point(close.ActualWidth / 2, close.ActualHeight / 2), pane))
+                as DependencyObject;
+            while (hit != null && !ReferenceEquals(hit, close)) hit = VisualTreeHelper.GetParent(hit);
+            Assert.Same(close, hit);
         }
     }
 

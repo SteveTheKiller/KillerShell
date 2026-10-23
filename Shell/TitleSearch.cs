@@ -32,23 +32,48 @@ namespace KillerShell.Shell
                 var item = new MenuItem
                 {
                     Header = Loc(SearchScopeKey(scope)), Icon = icon,
-                    IsCheckable = true, IsChecked = _titleSearchScope == scope
+                    IsCheckable = true, IsChecked = Pane.Active?.PipeFiles == null && _titleSearchScope == scope
                 };
                 item.Click += (_, _) =>
                 {
                     _titleSearchScope = selectedScope;
-                    if (Pane.Active != null) Pane.Active.PipeFiles = null;
+                    if (Pane.Active != null)
+                    {
+                        Pane.Active.PipeFiles = null;
+                        Pane.ScopePathLabel.Text = string.IsNullOrEmpty(Pane.Active.RootPath)
+                            ? Loc("Str_Scope_Empty") : Pane.Active.RootPath;
+                    }
                     if (!_searchOpen) ToggleSearchPanel();
                     else ApplySearchPanel(false);
                     FocusFirstTerm();
                 };
                 menu.Items.Add(item);
             }
+            var active = Pane.Active;
+            if (active?.PipeFiles != null || (active != null && !active.IsBrowsing && active.Results.Count > 0))
+            {
+                menu.Items.Add(new Separator());
+                var icon = new TextBlock { Text = "\uE71C" };
+                icon.SetResourceReference(StyleProperty, "MenuIcon");
+                var within = new MenuItem
+                {
+                    Header = Loc("Str_Menu_PipeTab"), Icon = icon, InputGestureText = "Ctrl+Shift+F",
+                    IsCheckable = true, IsChecked = active.PipeFiles != null
+                };
+                within.Click += (_, _) =>
+                {
+                    if (Pane.Active != null && !Pane.Active.IsBrowsing && Pane.Active.Results.Count > 0)
+                        PipeButton_Click(this, new RoutedEventArgs());
+                    else FocusSearchTerms();
+                };
+                menu.Items.Add(within);
+            }
         }
 
         private void SearchScopeButton_Click(object sender, RoutedEventArgs e)
         {
             var menu = new ContextMenu { PlacementTarget = SearchScopeButton };
+            SearchScopeButton.ContextMenu = menu;
             menu.Opened += SearchScopeMenu_Opened;
             menu.IsOpen = true;
         }
@@ -57,6 +82,8 @@ namespace KillerShell.Shell
         {
             _searchOpen = false;
             SearchPanelBtn.Tag = null;
+            SearchPanelBtn.Content = "\uE721";
+            SearchPanelBtn.SetResourceReference(ToolTipProperty, "Str_TT_SearchPanel");
             TitleSearchSurface.BeginAnimation(OpacityProperty, null);
             TitleSearchSurface.Opacity = 0;
         }

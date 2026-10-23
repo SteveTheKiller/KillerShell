@@ -8,6 +8,7 @@ namespace KillerShell.Shell
     public partial class MainWindow
     {
         private static readonly object TabPlacementMenuTag = new object();
+        private static readonly Transform BottomTabTransform = (Transform)new ScaleTransform(1, -1).GetAsFrozen();
         private static readonly string[] TabPlacementMargins =
         {
             "TabMargin", "TabActiveMargin", "TabInactiveFirstMargin", "TabInactiveLastMargin",
@@ -56,6 +57,9 @@ namespace KillerShell.Shell
         private void ApplyTabPlacementChrome(FilePane pane)
         {
             bool bottom = TabsAtBottom && pane.TabBar.Visibility == Visibility.Visible;
+            Transform tabTransform = bottom ? BottomTabTransform : Transform.Identity;
+            if (!ReferenceEquals(pane.TabBar.Resources["TabPlacementTransform"], tabTransform))
+                pane.TabBar.Resources["TabPlacementTransform"] = tabTransform;
             // Only this pane's strip reverses its connection gap; shared theme values stay intact.
             foreach (string key in TabPlacementMargins)
             {
@@ -66,7 +70,7 @@ namespace KillerShell.Shell
                 }
                 else pane.TabBar.Resources.Remove(key);
             }
-            pane.TabBandShadow.RenderTransform = bottom ? new ScaleTransform(1, -1) : Transform.Identity;
+            pane.TabBandShadow.RenderTransform = tabTransform;
             pane.RetroTabJoinLine.VerticalAlignment = bottom ? VerticalAlignment.Top : VerticalAlignment.Bottom;
             pane.RetroTabJoinLine.Margin = bottom ? new Thickness(0, 1, 0, 0) : new Thickness(0, 0, 0, 1);
             pane.RetroTabInnerJoin.VerticalAlignment = bottom ? VerticalAlignment.Top : VerticalAlignment.Bottom;

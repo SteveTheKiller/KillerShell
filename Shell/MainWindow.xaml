@@ -197,16 +197,22 @@
                                         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                                         <StackPanel x:Name="TitleSearchForm">
                                             <DockPanel LastChildFill="False">
-                                                <Button x:Name="TitleSearchToggle" DockPanel.Dock="Right" Style="{StaticResource ChromeButton}" Content="&#xE721;"
-                                                        Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                <Button x:Name="TitleSearchToggle" DockPanel.Dock="Right" Style="{StaticResource ChromeButton}" Content="&#xE8BB;"
+                                                        Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="13" VerticalAlignment="Top"
                                                         Tag="on" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}"/>
-                                                <Button x:Name="SearchScopeButton" Style="{StaticResource SurfaceButton}" Margin="6,0,0,0"
-                                                        Height="26" Padding="8,2" VerticalAlignment="Center"
-                                                        HorizontalContentAlignment="Left" Click="SearchScopeButton_Click"/>
-                                                <Button DockPanel.Dock="Right" Content="&#xE8BB;" Width="28" Height="26" Padding="0"
-                                                        VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                                        Style="{StaticResource DangerButton}" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_Menu_Close}"/>
+                                                <TextBlock x:Name="SearchHeading" Text="KillerSearch" FontFamily="{DynamicResource HeadingFont}"
+                                                           FontSize="20" Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True"
+                                                           Margin="12,0,8,0" VerticalAlignment="Center"/>
                                             </DockPanel>
+                                            <Button x:Name="SearchScopeButton" Style="{StaticResource SurfaceButton}" Margin="12,2,12,4"
+                                                    Height="26" Padding="8,2" HorizontalAlignment="Left"
+                                                    HorizontalContentAlignment="Left" Click="SearchScopeButton_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock x:Name="SearchScopeIcon" Text="&#xE737;" FontFamily="Segoe MDL2 Assets" Margin="0,0,7,0" VerticalAlignment="Center"/>
+                                                    <TextBlock x:Name="SearchScopeLabel" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="9" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
                                             <ContentControl x:Name="TitleSearchContent" HorizontalContentAlignment="Stretch"/>
                                         </StackPanel>
                                         <ContentControl x:Name="PatternHelpHost" Grid.Column="1" HorizontalContentAlignment="Stretch"/>
@@ -1094,9 +1100,6 @@
                                 ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click"/>
                         <Button Content="{DynamicResource Str_Btn_Clear}" Style="{StaticResource SurfaceButton}"
                                 Background="Transparent" Height="26" Padding="10,2" Margin="0,0,6,4" Click="Clear_Click"/>
-                        <Button x:Name="SearchWithinButton" Content="{DynamicResource Str_Menu_PipeTab}" Style="{StaticResource SurfaceButton}"
-                                Background="Transparent" Height="26" Padding="10,2" Margin="0,0,0,4"
-                                ToolTip="{DynamicResource Str_TT_Pipe}" Click="PipeButton_Click"/>
                     </WrapPanel>
                 </Border>
 
@@ -1285,8 +1288,6 @@
                                             <StackPanel>
                                                 <!-- Group header: ANY/ALL combiner toggle + remove-group -->
                                                 <Grid Margin="0,0,0,5">
-                                                    <TextBlock Text="KillerSearch" FontFamily="{DynamicResource HeadingFont}" FontSize="18"
-                                                               Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True" Margin="52,0,0,0"/>
                                                     <Button HorizontalAlignment="Left" Content="{Binding ModeLabel, Mode=OneWay}" Style="{StaticResource ModeButton}"
                                                             Width="44" Height="24" FontSize="10" ToolTip="{Binding ModeTooltip}" Tag="{Binding}" Click="ToggleGroupMode_Click"/>
                                                 </Grid>
