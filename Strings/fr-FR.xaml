@@ -748,6 +748,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">« {0} » enregistrée</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} n'est pas un emplacement qui existe</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">L'enregistrement élevé de {0} a aussi été refusé - vérifiez l'Accès contrôlé aux dossiers dans Sécurité Windows</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Un programme transmis à KillerShell par Windows reste dans sa propre fenêtre</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Enregistrez le document avant de le faire glisser vers une autre fenêtre</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} n'est pas un dossier qui existe</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Détails du service</sys:String>

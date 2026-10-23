@@ -745,6 +745,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" সংরক্ষিত হয়েছে</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} এমন কোনো অবস্থান নয় যা বিদ্যমান</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">{0}-এর অ্যাডমিন অনুমতিতে সংরক্ষণও প্রত্যাখ্যাত হয়েছে - Windows সিকিউরিটিতে নিয়ন্ত্রিত ফোল্ডার অ্যাক্সেস দেখুন</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows যে প্রোগ্রামটি KillerShell-কে দিয়েছে, সেটি নিজের উইন্ডোতেই থাকে</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">অন্য উইন্ডোতে টেনে নেওয়ার আগে নথিটি সংরক্ষণ করুন</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} এমন কোনো ফোল্ডার নয় যা বিদ্যমান</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">সার্ভিসের বিবরণ</sys:String>

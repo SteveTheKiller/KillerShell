@@ -746,6 +746,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">„{0}“ uloženo</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} není existující umístění</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">I uložení {0} se zvýšenými oprávněními bylo odmítnuto - zkontrolujte Řízený přístup ke složkám v Zabezpečení Windows</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Program, který Windows předal aplikaci KillerShell, zůstává ve vlastním okně</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Před přetažením dokumentu do jiného okna jej uložte</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} není existující složka</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Podrobnosti služby</sys:String>

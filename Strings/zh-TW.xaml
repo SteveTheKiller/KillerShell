@@ -745,6 +745,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">「{0}」已儲存</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} 不是一個存在的位置</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">以提升權限儲存 {0} 也遭拒 - 請檢查 Windows 安全性中的受控資料夾存取</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows 交給 KillerShell 的程式會留在它自己的視窗中</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">請先儲存文件，再將它拖曳到另一個視窗</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} 不是一個存在的資料夾</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">服務詳細資料</sys:String>

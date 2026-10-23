@@ -122,6 +122,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Ішінен іздеуге болатын нәтижелер әзірге жоқ.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Әкімші құқығымен қабықша іске қосылмады: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows KillerShell-ге берген бағдарлама өз терезесінде қалады</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Құжатты басқа терезеге сүйремес бұрын сақтаңыз</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} бар қалта емес</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} бар орналасу емес</sys:String>

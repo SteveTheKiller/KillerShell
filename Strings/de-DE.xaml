@@ -748,6 +748,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">„{0}" gespeichert</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} ist kein vorhandener Ort</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">Auch das Speichern von {0} mit erhöhten Rechten wurde verweigert - prüfen Sie den Überwachten Ordnerzugriff in Windows-Sicherheit</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Ein Programm, das Windows an KillerShell übergeben hat, bleibt in seinem eigenen Fenster</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Speichern Sie das Dokument, bevor Sie es in ein anderes Fenster ziehen</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} ist kein vorhandener Ordner</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Dienstdetails</sys:String>

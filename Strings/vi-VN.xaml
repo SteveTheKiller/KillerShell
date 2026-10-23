@@ -119,6 +119,7 @@
   <sys:String x:Key="Str_Pipe_Scope">{0} kết quả từ {1}  |  {2}</sys:String>
   <sys:String x:Key="Str_Status_NoPipe">Chưa có kết quả để tìm kiếm bên trong.</sys:String>
   <sys:String x:Key="Str_Status_ElevateFailed">Không thể khởi động shell với quyền quản trị: {0}</sys:String>
+  <sys:String x:Key="Str_Status_TearOutHandoff">Chương trình mà Windows chuyển sang KillerShell sẽ ở lại trong cửa sổ riêng</sys:String>
   <sys:String x:Key="Str_Status_TearOutNeedsSave">Hãy lưu tài liệu trước khi kéo tài liệu sang cửa sổ khác</sys:String>
   <sys:String x:Key="Str_Status_TermCwdNotFound">{0} không phải là một thư mục hiện có</sys:String>
   <sys:String x:Key="Str_Status_EdPathNotFound">{0} không phải là một vị trí hiện có</sys:String>

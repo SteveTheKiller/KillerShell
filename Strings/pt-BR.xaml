@@ -128,6 +128,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Ainda não há resultados para pesquisar.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Não foi possível iniciar um shell com privilégios elevados: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Um programa que o Windows passou ao KillerShell fica na própria janela</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Salve o documento antes de arrastá-lo para outra janela</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} não é uma pasta que existe</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} não é um local que existe</sys:String>

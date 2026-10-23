@@ -745,6 +745,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">“{0}”已保存</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} 不是一个存在的位置</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">以提升权限保存 {0} 同样被拒绝 - 请检查 Windows 安全中心的“受控文件夹访问”设置</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows 交给 KillerShell 的程序会留在它自己的窗口中</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">请先保存文档，再将其拖到另一个窗口</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} 不是一个存在的文件夹</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">服务详细信息</sys:String>

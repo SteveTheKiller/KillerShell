@@ -101,6 +101,7 @@
     <sys:String x:Key="Str_Pipe_Scope">Rezultatov: {0} iz {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Še ni rezultatov, znotraj katerih bi lahko iskali.</sys:String>
     <sys:String x:Key="Str_Status_ElevateFailed">Lupine s skrbniškimi pravicami ni bilo mogoče zagnati: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Program, ki ga je Windows predal programu KillerShell, ostane v svojem oknu</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Shranite dokument, preden ga povlečete v drugo okno</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} ni obstoječa mapa</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} ni obstoječe mesto</sys:String>

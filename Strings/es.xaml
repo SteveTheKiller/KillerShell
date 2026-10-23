@@ -748,6 +748,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" guardado</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} no es una ubicación que exista</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">El guardado con privilegios elevados de {0} también fue rechazado - comprueba el Acceso controlado a carpetas en Seguridad de Windows</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Un programa que Windows pasó a KillerShell se queda en su propia ventana</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Guarda el documento antes de arrastrarlo a otra ventana</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} no es una carpeta que exista</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Detalles del servicio</sys:String>

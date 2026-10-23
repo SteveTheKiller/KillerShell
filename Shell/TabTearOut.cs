@@ -108,6 +108,14 @@ namespace KillerShell.Shell
 
             if (t.IsTerminal)
             {
+                // A program Windows handed over (ConsoleHandoff.cs) has no command to start again
+                // elsewhere, and closing its tab here would end it. It stays where it is.
+                if (t.LaunchProfile?.Id == TerminalProfile.HandoffId)
+                {
+                    SetTabStatusKey(t, "Str_Status_TearOutHandoff");
+                    return null;
+                }
+
                 // The running shell cannot follow across a process boundary - a torn-out or
                 // merged terminal tab reopens as a FRESH shell in the same folder, not the same
                 // session (see the file header). Carry the launch profile with the current folder.

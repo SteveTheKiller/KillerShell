@@ -120,6 +120,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Non ci sono ancora risultati in cui cercare.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Impossibile avviare una shell elevata: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Un programma passato a KillerShell da Windows resta nella sua finestra</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Salva il documento prima di trascinarlo in un'altra finestra</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} non è una cartella esistente</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} non è una posizione esistente</sys:String>

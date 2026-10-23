@@ -83,8 +83,11 @@ namespace KillerShell.Terminal
                        string.Equals(file, "pwsh.exe", StringComparison.OrdinalIgnoreCase) ? TerminalShellKind.PowerShell
                      : TerminalShellKind.Custom;
             return new(look.Name, string.Empty, programPath, look.Skin,
-                       elevated ? GlyphAdmin : GlyphShell, elevated) { Id = "handoff", Kind = kind };
+                       elevated ? GlyphAdmin : GlyphShell, elevated) { Id = HandoffId, Kind = kind };
         }
+
+        /// <summary>The Id of a handed-off program's profile, which has no command to start again.</summary>
+        internal const string HandoffId = "handoff";
 
         public static TerminalProfile Cmd(bool elevated = false)
         {

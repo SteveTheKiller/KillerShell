@@ -743,6 +743,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">「{0}」を保存しました</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} は存在する場所ではありません</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">{0} の昇格した保存も拒否されました - Windows セキュリティの制御されたフォルダー アクセスを確認してください</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows から KillerShell に渡されたプログラムは自分のウィンドウに残ります</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">別のウィンドウへドラッグする前にドキュメントを保存してください</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} は存在するフォルダーではありません</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">サービスの詳細</sys:String>

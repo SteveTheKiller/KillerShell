@@ -128,6 +128,7 @@
     <sys:String x:Key="Str_Status_NoPipe">No results to search within yet.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Could not start an elevated shell: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">A program Windows handed to KillerShell stays in its own window</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Save the document before dragging it to another window</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} is not a folder that exists</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} is not a location that exists</sys:String>

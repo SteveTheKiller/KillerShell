@@ -122,6 +122,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Пока нет результатов, внутри которых можно искать.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Не удалось запустить оболочку с правами администратора: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Программа, которую Windows передала в KillerShell, остаётся в своём окне</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Сохраните документ, прежде чем перетаскивать его в другое окно</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} не является существующей папкой</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} не является существующим расположением</sys:String>

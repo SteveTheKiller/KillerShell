@@ -128,6 +128,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Ingen resultater å søke i ennå.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Kunne ikke starte et forhøyet skall: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Et program Windows ga videre til KillerShell, blir i sitt eget vindu</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Lagre dokumentet før du drar det til et annet vindu</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} er ikke en mappe som finnes</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} er ikke en plassering som finnes</sys:String>
