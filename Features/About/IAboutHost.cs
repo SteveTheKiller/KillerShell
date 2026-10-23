@@ -45,6 +45,22 @@ namespace KillerShell.Features.About
         /// turns it on.</summary>
         bool CloseToTray { set; }
 
+        /// <summary>The "Use KillerShell as the default terminal" checkbox, under Close to system
+        /// tray: whether it is on, whether it takes a click, and its tooltip.</summary>
+        bool DefaultTerminal { set; }
+        bool DefaultTerminalEnabled { set; }
+        string DefaultTerminalNote { set; }
+
+        /// <summary>Whether the note also shows as text under the checkbox.</summary>
+        bool DefaultTerminalNoteVisible { set; }
+
+        /// <summary>The "Open folders in KillerShell" checkbox, under the default terminal one,
+        /// with the same four parts.</summary>
+        bool OpenFolders { set; }
+        bool OpenFoldersEnabled { set; }
+        string OpenFoldersNote { set; }
+        bool OpenFoldersNoteVisible { set; }
+
         /// <summary>True under --demo, where the card is rendered in its signed state so marketing
         /// captures from an unsigned local build match the release (DemoMode.cs).</summary>
         bool DemoPreview { get; }

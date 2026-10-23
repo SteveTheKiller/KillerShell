@@ -904,8 +904,10 @@ namespace KillerShell.Services
             SetIfAbsent("TitleWordmarkBoldSize", 22.52);
             SetIfAbsent("TitleWordmarkSize", 15.0);
             SetIfAbsent("UseDialogCaption", false);
+            // The family's 1px app border (KillerUI: WindowEdgeThickness 1). 98SE states 0 and
+            // draws its own frame. At 0 the window had no visible edge on a dark desktop.
             Mirror("WindowEdgeBrush", "AppBorderBrush");
-            SetIfAbsent("WindowEdgeThickness", new Thickness(0));
+            SetIfAbsent("WindowEdgeThickness", new Thickness(1));
             // The frame's FACE. 98SE does not declare one, and a transparent default left a
             // see-through gutter around the window where its 5,4,5,5 padding
             // is. AppBorderBrush is the right source: it is already the frame's color,
@@ -1052,6 +1054,10 @@ namespace KillerShell.Services
                 // The bottom inset is tighter: only the one-line hint sits there.
                 combined["ShortcutsContentMargin"] = flat ? new Thickness(24, 30, 24, 12)
                                                           : new Thickness(24, 18, 24, 10);
+                // The Fonts and File associations cards, which pad their own sides: the same 12px
+                // more at the top clears the caption band.
+                combined["OverlayCardContentMargin"] = flat ? new Thickness(0, 32, 0, 20)
+                                                            : new Thickness(0, 20, 0, 20);
 
                 // The details filename's family drop shadow - null on a flat theme, which casts
                 // nothing (its 98SE depth comes from the hard white emboss copy instead).

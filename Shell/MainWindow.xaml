@@ -1681,7 +1681,7 @@
                              98SE states extra TOP inset so the wordmark gets breathing room under
                              the caption band. -->
                         <StackPanel Margin="{DynamicResource AboutContentMargin}">
-                        <StackPanel Margin="8,10,8,18">
+                        <StackPanel Margin="8,10,8,12">
                             <!-- Header: icon left, wordmark (links to the site) + tagline right.
                                  Width is pinned to the info panel below so the tagline wraps
                                  instead of widening the card - the SHA-256 line stays the driver. -->
@@ -1798,59 +1798,99 @@
                                 <TextBlock x:Name="AboutUpdateText" FontSize="12"/>
                             </Button>
 
-                            <!-- Two equal settings columns stay inside the SHA-sized info panel. -->
+                            <!-- Two equal settings columns inside the SHA-sized info panel, a pair to
+                                 a row so both columns line up however a translation wraps: startup,
+                                 the window, the two things KillerShell can take over from Windows
+                                 (with their notes under them), then the Recycle Bin question across
+                                 both. Every row is the same 6px below the one above. Children run
+                                 row by row, left to right, which is also the Tab order. -->
                             <Grid Margin="0,12,0,0" Width="{Binding ActualWidth, ElementName=AboutInfoGrid}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="12"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <CheckBox x:Name="AboutStartupUpdateCheck"
-                                                  Click="AboutStartupUpdateCheck_Click">
-                                            <TextBlock Text="{DynamicResource Str_About_StartupUpdateCheck}"
-                                                       TextWrapping="Wrap"/>
-                                        </CheckBox>
-                                        <CheckBox x:Name="AboutStartWithWindows" Margin="0,6,0,0"
-                                                  Click="AboutStartWithWindows_Click">
-                                            <TextBlock Text="{DynamicResource Str_About_StartWithWindows}"
-                                                       TextWrapping="Wrap"/>
-                                        </CheckBox>
-                                        <CheckBox x:Name="AboutCloseToTray" Margin="0,6,0,0"
-                                                  ToolTip="{DynamicResource Str_About_CloseToTrayHint}"
-                                                  Click="AboutCloseToTray_Click">
-                                            <TextBlock Text="{DynamicResource Str_About_CloseToTray}"
-                                                       TextWrapping="Wrap"/>
-                                        </CheckBox>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="2">
-                                        <CheckBox x:Name="AboutShowShortcuts"
-                                                  IsChecked="{Binding Source={x:Static kl:ShortcutHints.Current}, Path=Enabled, Mode=TwoWay}">
-                                            <TextBlock Text="{DynamicResource Str_About_ShowShortcutsInMenus}" TextWrapping="Wrap"/>
-                                        </CheckBox>
-                                        <CheckBox x:Name="AboutConfirmFolderDelete" Margin="0,6,0,0"
-                                                  Checked="AboutConfirmFolderDelete_Changed"
-                                                  Unchecked="AboutConfirmFolderDelete_Changed">
-                                            <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
-                                                       TextWrapping="Wrap"/>
-                                        </CheckBox>
-                                        <TextBlock FontFamily="{DynamicResource MonoFont}" FontSize="10"
-                                                   HorizontalAlignment="Right" Margin="0,8,0,0" TextWrapping="Wrap">
-                                            <Hyperlink TextDecorations="None" Cursor="Hand" Click="AboutClearData_Click">
-                                                <Hyperlink.Style>
-                                                    <Style TargetType="Hyperlink">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/>
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Hyperlink.Style>
-                                                <Run Text="{DynamicResource Str_About_ClearData}"/>
-                                            </Hyperlink>
-                                        </TextBlock>
-                                    </StackPanel>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <CheckBox x:Name="AboutStartWithWindows" Grid.Row="0" Grid.Column="0"
+                                          Click="AboutStartWithWindows_Click">
+                                    <TextBlock Text="{DynamicResource Str_About_StartWithWindows}"
+                                               TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="AboutStartupUpdateCheck" Grid.Row="0" Grid.Column="2"
+                                          Click="AboutStartupUpdateCheck_Click">
+                                    <TextBlock Text="{DynamicResource Str_About_StartupUpdateCheck}"
+                                               TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="AboutCloseToTray" Grid.Row="1" Grid.Column="0" Margin="0,6,0,0"
+                                          ToolTip="{DynamicResource Str_About_CloseToTrayHint}"
+                                          Click="AboutCloseToTray_Click">
+                                    <TextBlock Text="{DynamicResource Str_About_CloseToTray}"
+                                               TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="AboutShowShortcuts" Grid.Row="1" Grid.Column="2" Margin="0,6,0,0"
+                                          IsChecked="{Binding Source={x:Static kl:ShortcutHints.Current}, Path=Enabled, Mode=TwoWay}">
+                                    <TextBlock Text="{DynamicResource Str_About_ShowShortcutsInMenus}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <!-- Tooltip and enabled state come from AboutController: a disabled box
+                                     still has to say why. The note under each is the same text, shown
+                                     when it says why the box is off or cannot be ticked: keyboard focus
+                                     never reaches a disabled box. -->
+                                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,6,0,0">
+                                    <CheckBox x:Name="AboutDefaultTerminal"
+                                              ToolTipService.ShowOnDisabled="True"
+                                              Click="AboutDefaultTerminal_Click">
+                                        <TextBlock Text="{DynamicResource Str_About_DefaultTerminal}"
+                                                   TextWrapping="Wrap"/>
+                                    </CheckBox>
+                                    <TextBlock x:Name="AboutDefaultTerminalNote" Visibility="Collapsed"
+                                               Foreground="{DynamicResource DimTextBrush}" FontSize="10.5"
+                                               TextWrapping="Wrap" Margin="20,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,6,0,0">
+                                    <CheckBox x:Name="AboutOpenFolders"
+                                              ToolTipService.ShowOnDisabled="True"
+                                              Click="AboutOpenFolders_Click">
+                                        <TextBlock Text="{DynamicResource Str_About_OpenFolders}"
+                                                   TextWrapping="Wrap"/>
+                                    </CheckBox>
+                                    <TextBlock x:Name="AboutOpenFoldersNote" Visibility="Collapsed"
+                                               Foreground="{DynamicResource DimTextBrush}" FontSize="10.5"
+                                               TextWrapping="Wrap" Margin="20,2,0,0"/>
+                                </StackPanel>
+                                <!-- The Recycle Bin question with Clear all Data on the same line. -->
+                                <Grid Grid.Row="3" Grid.ColumnSpan="3" Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox x:Name="AboutConfirmFolderDelete"
+                                          Checked="AboutConfirmFolderDelete_Changed"
+                                          Unchecked="AboutConfirmFolderDelete_Changed">
+                                    <TextBlock Text="{DynamicResource Str_About_ConfirmFolderDelete}"
+                                               TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <TextBlock Grid.Column="1" FontFamily="{DynamicResource MonoFont}" FontSize="10"
+                                           VerticalAlignment="Center" Margin="12,0,0,0">
+                                    <Hyperlink TextDecorations="None" Cursor="Hand" Click="AboutClearData_Click">
+                                        <Hyperlink.Style>
+                                            <Style TargetType="Hyperlink">
+                                                <Setter Property="Foreground" Value="{DynamicResource DimTextBrush}"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Hyperlink.Style>
+                                        <Run Text="{DynamicResource Str_About_ClearData}"/>
+                                    </Hyperlink>
+                                </TextBlock>
+                                </Grid>
                             </Grid>
                         </StackPanel>
                         </StackPanel>
@@ -1872,15 +1912,31 @@
                                                  Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                <Grid Margin="0,20">
+                <!-- Raised card bevel, caption band, corner close X and Lacquer heading: the
+                     Associations card's treatment, below. -->
+                <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                        BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                        BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+                <Border VerticalAlignment="Top" ClipToBounds="True"
+                        Height="{DynamicResource AboutCaptionHeight}"
+                        Margin="{DynamicResource AboutCaptionMargin}"
+                        Background="{DynamicResource DialogTitleBarBrush}">
+                    <TextBlock Text="{DynamicResource Str_Fonts_Title}" VerticalAlignment="Center" Margin="8,0,0,0"
+                               FontFamily="{DynamicResource ChromeFontFamily}"
+                               FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"/>
+                </Border>
+                <Button Content="{DynamicResource AboutCloseGlyph}" Click="FontsClose_Click" Style="{StaticResource OverlayCloseButton}"
+                        AutomationProperties.Name="{DynamicResource Str_Menu_Close}" ToolTip="{DynamicResource Str_Menu_Close}"
+                        HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="7"
+                        Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
+                        Margin="{DynamicResource AboutCloseMargin}"/>
+                <Grid Margin="{DynamicResource OverlayCardContentMargin}">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                    <Grid Margin="24,0,24,14">
-                        <TextBlock Text="{DynamicResource Str_Fonts_Title}" Style="{StaticResource SectionHeader}"
-                                   FontSize="13" Margin="0" VerticalAlignment="Center"/>
-                        <Button Content="&#xE8BB;" Click="FontsClose_Click" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                Width="30" Height="26" FontSize="10" FontFamily="Segoe MDL2 Assets"
-                                Style="{StaticResource DangerButton}" BorderThickness="0"/>
-                    </Grid>
+                    <TextBlock Text="{DynamicResource Str_Fonts_Title}" Margin="24,0,40,14"
+                               FontFamily="{DynamicResource HeadingFont}" FontSize="18"
+                               Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True"
+                               TextWrapping="Wrap" Visibility="{DynamicResource WordmarkVisibility}"/>
 
                     <ScrollViewer Grid.Row="1" Style="{StaticResource ShadowScrollViewer}" Padding="24,0"
                                   VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -1961,15 +2017,35 @@
                                                  Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
                 <Grid>
                 <Border IsHitTestVisible="False" CornerRadius="7" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                <Grid Margin="0,20">
+                <!-- Raised card bevel, caption band and corner close X: the About and Shortcuts
+                     cards' treatment. The bevel and the band with its plain title exist only on a
+                     flat theme (0 thick and 0 high elsewhere); the band's inset is measured from
+                     that bevel. The X is OverlayCloseButton, whose glyph reddens on hover. -->
+                <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                        BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
+                <Border IsHitTestVisible="False" Panel.ZIndex="6"
+                        BorderBrush="{DynamicResource FrameOuterDarkBrush}"  BorderThickness="{DynamicResource FrameOuterDarkThickness}"/>
+                <Border VerticalAlignment="Top" ClipToBounds="True"
+                        Height="{DynamicResource AboutCaptionHeight}"
+                        Margin="{DynamicResource AboutCaptionMargin}"
+                        Background="{DynamicResource DialogTitleBarBrush}">
+                    <TextBlock Text="{DynamicResource Str_Assoc_Title}" VerticalAlignment="Center" Margin="8,0,0,0"
+                               FontFamily="{DynamicResource ChromeFontFamily}"
+                               FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"/>
+                </Border>
+                <Button Content="{DynamicResource AboutCloseGlyph}" Click="AssocClose_Click" Style="{StaticResource OverlayCloseButton}"
+                        AutomationProperties.Name="{DynamicResource Str_Menu_Close}" ToolTip="{DynamicResource Str_Menu_Close}"
+                        HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="7"
+                        Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
+                        Margin="{DynamicResource AboutCloseMargin}"/>
+                <Grid Margin="{DynamicResource OverlayCardContentMargin}">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                    <Grid Margin="24,0,24,14">
-                        <TextBlock Text="{DynamicResource Str_Assoc_Title}" Style="{StaticResource SectionHeader}"
-                                   FontSize="13" Margin="0" VerticalAlignment="Center"/>
-                        <Button Content="&#xE8BB;" Click="AssocClose_Click" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                Width="30" Height="26" FontSize="10" FontFamily="Segoe MDL2 Assets"
-                                Style="{StaticResource DangerButton}" BorderThickness="0"/>
-                    </Grid>
+                    <!-- The Lacquer heading, as on Patterns. Hidden on a flat theme, where the
+                         caption band above carries the title. -->
+                    <TextBlock Text="{DynamicResource Str_Assoc_Title}" Margin="24,0,40,14"
+                               FontFamily="{DynamicResource HeadingFont}" FontSize="18"
+                               Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True"
+                               TextWrapping="Wrap" Visibility="{DynamicResource WordmarkVisibility}"/>
 
                     <ScrollViewer Grid.Row="1" Style="{StaticResource ShadowScrollViewer}" Padding="24,0"
                                   VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -2000,6 +2076,9 @@
                     <Button x:Name="AssocSettingsBtn" Click="AssocSettings_Click"
                             Style="{StaticResource OutlineButton}" Height="30"
                             Content="{DynamicResource Str_Assoc_OpenSettings}"/>
+
+                    <TextBlock Text="{DynamicResource Str_Assoc_DefaultTerminal}" Foreground="{DynamicResource DimTextBrush}"
+                               FontSize="10.5" TextWrapping="Wrap" Margin="0,14,0,0"/>
                     </StackPanel>
                     </ScrollViewer>
                 </Grid>

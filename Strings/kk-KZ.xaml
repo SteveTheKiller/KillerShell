@@ -122,6 +122,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Ішінен іздеуге болатын нәтижелер әзірге жоқ.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Әкімші құқығымен қабықша іске қосылмады: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows KillerShell-ге берген бағдарлама өз терезесінде қалады</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Құжатты басқа терезеге сүйремес бұрын сақтаңыз</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} бар қалта емес</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} бар орналасу емес</sys:String>
@@ -147,6 +148,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Windows-пен бірге іске қосу</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Жүйелік науаға жабу</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Мәзірлерде пернелер тіркесімін көрсету</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">KillerShell-ді әдепкі терминал ретінде пайдалану</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Explorer-ден, «Орындау» терезесінен немесе төте жолдан іске қосылған консоль бағдарламалары KillerShell терезесінде ашылады. Өшірсеңіз, бұрын пайдаланған терминалыңыз қайтарылады.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Әдепкі терминал ретінде пайдалану үшін KillerShell-ді орнатыңыз. Тасымалды көшірмені жылжытуға немесе жоюға болады.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Консоль бағдарламаларын KillerShell-ге беретін Windows Terminal қажет.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Содан бері басқа әдепкі терминал таңдалды, мысалы, Windows параметрлерінде.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Қалталарды KillerShell-де ашу</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Explorer-де немесе басқа жерде қалтаны не дискіні екі рет басқанда, ол KillerShell терезесінде ашылады. «Бұл компьютер», Себет, Басқару тақтасы және жұмыс үстелі Explorer-де қалады. Өшірсеңіз, қалталарды бұрын ашқан нәрсе қайтарылады.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Қалталарды KillerShell-де ашу үшін оны орнатыңыз. Тасымалды көшірмені жылжытуға немесе жоюға болады.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Содан бері қалталарды ашу үшін басқа нәрсе орнатылды.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Қосулы болса, терезені жапқанда қолданба хабарландыру аймағында жұмысын жалғастырады.</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} ашу</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Шығу</sys:String>
@@ -358,6 +368,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Тіркелмеген. Windows әзірге KillerShell-ді ешбір файл түріне ұсынбайды.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Сіздің тіркелгіңіз үшін тіркелген. Windows әдепкіні сіз үшін ауыстырмайды - параметрлерде әр файл түріне KillerShell-ді өзіңіз таңдаңыз.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Осы компьютердің барлық пайдаланушысы үшін тіркелген. Windows әдепкіні сіз үшін ауыстырмайды - параметрлерде әр файл түріне KillerShell-ді өзіңіз таңдаңыз.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Консоль бағдарламаларын немесе қалталарды KillerShell-де ашу үшін KillerShell туралы (F12) картасындағы оның параметрлерін қосыңыз.</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Бұл тасымалды көшірме. Сәйкестіктер осы .exe қазір тұрған жерге сілтейді және оны жылжытсаңыз немесе жойсаңыз, істен шығады.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Windows-та тіркелді</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Тіркеу жойылды</sys:String>

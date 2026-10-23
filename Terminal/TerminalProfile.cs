@@ -67,6 +67,28 @@ namespace KillerShell.Terminal
                        elevated ? GlyphAdmin : GlyphShell, elevated) { Id = "pwsh", Kind = exe.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) ? TerminalShellKind.Cmd : TerminalShellKind.PowerShell };
         }
 
+        /// <summary>
+        /// A console program Windows handed over (Shell/ConsoleHandoff.cs): the default profile's
+        /// look, and no command of its own, because the program is already running.
+        /// </summary>
+        /// <remarks>
+        /// The kind follows the program, because Clear and the folder box type commands into it:
+        /// cmd and PowerShell get their own, anything else is Custom.
+        /// </remarks>
+        internal static TerminalProfile Handoff(TerminalProfile look, bool elevated, string programPath)
+        {
+            string file = Path.GetFileName(programPath);
+            var kind = string.Equals(file, "cmd.exe", StringComparison.OrdinalIgnoreCase) ? TerminalShellKind.Cmd
+                     : string.Equals(file, "powershell.exe", StringComparison.OrdinalIgnoreCase) ||
+                       string.Equals(file, "pwsh.exe", StringComparison.OrdinalIgnoreCase) ? TerminalShellKind.PowerShell
+                     : TerminalShellKind.Custom;
+            return new(look.Name, string.Empty, programPath, look.Skin,
+                       elevated ? GlyphAdmin : GlyphShell, elevated) { Id = HandoffId, Kind = kind };
+        }
+
+        /// <summary>The Id of a handed-off program's profile, which has no command to start again.</summary>
+        internal const string HandoffId = "handoff";
+
         public static TerminalProfile Cmd(bool elevated = false)
         {
             string exe = ResolveCmdExe();

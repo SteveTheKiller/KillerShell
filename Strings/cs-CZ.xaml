@@ -303,6 +303,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Nezaregistrováno. Windows zatím KillerShell pro žádný typ souboru nenabízí.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Zaregistrováno pro váš účet. Windows za vás výchozí aplikaci nepřepne; vyberte si KillerShell pro každý typ souboru sami v Nastavení.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Zaregistrováno pro všechny uživatele tohoto počítače. Windows za vás výchozí aplikaci nepřepne; vyberte si KillerShell pro každý typ souboru sami v Nastavení.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Chcete-li otevírat konzolové programy nebo složky v KillerShell, zapněte jeho nastavení v okně O aplikaci KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Tato kopie je přenosná. Přiřazení budou mířit tam, kde tento soubor .exe právě leží, a přestanou fungovat, pokud jej přesunete nebo smažete.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Zaregistrováno ve Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registrace odebrána</sys:String>
@@ -511,6 +512,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Spouštět se systémem Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Zavírat do oznamovací oblasti</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Zobrazovat zkratky v nabídkách</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">Používat KillerShell jako výchozí terminál</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Konzolové programy spuštěné z Průzkumníka, okna Spustit nebo zástupce se otevřou v okně KillerShell. Vypnutím se vrátí terminál, který jste používali předtím.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Chcete-li KillerShell používat jako výchozí terminál, nainstalujte jej. Přenosnou kopii lze přesunout nebo smazat.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Vyžaduje Windows Terminal, který předává konzolové programy aplikaci KillerShell.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Mezitím byl zvolen jiný výchozí terminál, například v Nastavení Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Otevírat složky v KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Dvojklik na složku nebo jednotku, v Průzkumníkovi i jinde, ji otevře v okně KillerShell. Tento počítač, Koš, Ovládací panely a plocha zůstávají Průzkumníkovi. Vypnutím se vrátí to, co otevíralo složky předtím.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Chcete-li otevírat složky v KillerShell, nainstalujte jej. Přenosnou kopii lze přesunout nebo smazat.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Mezitím bylo k otevírání složek nastaveno něco jiného.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Když je tato volba zapnutá, zavření okna nechá aplikaci běžet v oznamovací oblasti.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Otevřít {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Ukončit</sys:String>
@@ -745,6 +755,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">„{0}“ uloženo</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} není existující umístění</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">I uložení {0} se zvýšenými oprávněními bylo odmítnuto - zkontrolujte Řízený přístup ke složkám v Zabezpečení Windows</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Program, který Windows předal aplikaci KillerShell, zůstává ve vlastním okně</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Před přetažením dokumentu do jiného okna jej uložte</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} není existující složka</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Podrobnosti služby</sys:String>

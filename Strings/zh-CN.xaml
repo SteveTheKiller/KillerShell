@@ -253,6 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">尚未注册。Windows 目前不会为任何文件类型提供 KillerShell。</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">已为您的账户注册。Windows 不会替您切换默认应用，请在 设置 中按文件类型自行选择 KillerShell。</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">已为这台电脑上的所有用户注册。Windows 不会替您切换默认应用，请在 设置 中按文件类型自行选择 KillerShell。</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">若要在 KillerShell 中打开控制台程序或文件夹，请在“关于 KillerShell”(F12) 中开启相应设置。</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">这是便携版。关联会指向此 .exe 当前所在的位置，移动或删除它之后关联就会失效。</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">已注册到 Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">注册已移除</sys:String>
@@ -510,6 +511,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Windows 启动时运行</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">关闭时最小化到系统托盘</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">在菜单中显示快捷键</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">将 KillerShell 用作默认终端</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">从 Explorer、“运行”或快捷方式启动的控制台程序会在 KillerShell 窗口中打开。关闭此项会恢复之前使用的终端。</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">安装 KillerShell 后才能将其用作默认终端。便携版可能会被移动或删除。</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">需要 Windows Terminal，由它把控制台程序交给 KillerShell。</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">此后已选择了其他默认终端，例如在 Windows 设置中。</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">在 KillerShell 中打开文件夹</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">在 Explorer 或其他任何地方双击文件夹或驱动器，会在 KillerShell 窗口中打开。“此电脑”、回收站、控制面板和桌面仍由 Explorer 打开。关闭此项会恢复之前打开文件夹的程序。</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">安装 KillerShell 后才能在其中打开文件夹。便携版可能会被移动或删除。</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">此后已设置了其他程序来打开文件夹。</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">开启后，关闭窗口时应用会继续在通知区域运行。</sys:String>
     <sys:String x:Key="Str_Tray_Open">打开 {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">退出</sys:String>
@@ -744,6 +754,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">“{0}”已保存</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} 不是一个存在的位置</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">以提升权限保存 {0} 同样被拒绝 - 请检查 Windows 安全中心的“受控文件夹访问”设置</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows 交给 KillerShell 的程序会留在它自己的窗口中</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">请先保存文档，再将其拖到另一个窗口</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} 不是一个存在的文件夹</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">服务详细信息</sys:String>

@@ -253,6 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Non enregistré. Windows ne propose encore KillerShell pour aucun type de fichier.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Enregistré pour votre compte. Windows ne changera aucune application par défaut à votre place : choisissez vous-même KillerShell pour chaque type de fichier dans Paramètres.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Enregistré pour tous les utilisateurs de ce PC. Windows ne changera aucune application par défaut à votre place : choisissez vous-même KillerShell pour chaque type de fichier dans Paramètres.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Pour ouvrir les programmes console ou les dossiers dans KillerShell, activez ses options dans À propos de KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Cette copie est portable. Les associations pointeront vers l'emplacement actuel de ce .exe et cesseront de fonctionner si vous le déplacez ou le supprimez.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Enregistré auprès de Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Enregistrement supprimé</sys:String>
@@ -513,6 +514,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Lancer au démarrage de Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Fermer dans la zone de notification</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Afficher les raccourcis dans les menus</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">Utiliser KillerShell comme terminal par défaut</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Les programmes console lancés depuis l'Explorateur, Exécuter ou un raccourci s'ouvrent dans une fenêtre KillerShell. Désactiver cette option rétablit le terminal que vous utilisiez avant.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installez KillerShell pour l'utiliser comme terminal par défaut. Une copie portable peut être déplacée ou supprimée.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Nécessite Windows Terminal, qui transmet les programmes console à KillerShell.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Un autre terminal par défaut a été choisi depuis, par exemple dans les Paramètres de Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Ouvrir les dossiers dans KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Un double-clic sur un dossier ou un lecteur, dans l'Explorateur ou ailleurs, l'ouvre dans une fenêtre KillerShell. Ce PC, la Corbeille, le Panneau de configuration et le Bureau restent à l'Explorateur. Désactiver cette option rétablit ce qui ouvrait les dossiers avant.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Installez KillerShell pour y ouvrir les dossiers. Une copie portable peut être déplacée ou supprimée.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Un autre programme a été choisi depuis pour ouvrir les dossiers.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Lorsque cette option est activée, fermer la fenêtre laisse l'application active dans la zone de notification.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Ouvrir {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Quitter</sys:String>
@@ -747,6 +757,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">« {0} » enregistrée</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} n'est pas un emplacement qui existe</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">L'enregistrement élevé de {0} a aussi été refusé - vérifiez l'Accès contrôlé aux dossiers dans Sécurité Windows</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Un programme transmis à KillerShell par Windows reste dans sa propre fenêtre</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Enregistrez le document avant de le faire glisser vers une autre fenêtre</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} n'est pas un dossier qui existe</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">Détails du service</sys:String>

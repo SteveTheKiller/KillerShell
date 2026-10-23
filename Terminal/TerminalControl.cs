@@ -41,7 +41,7 @@ namespace KillerShell.Terminal
 
         private readonly TerminalBuffer _buf;
         private readonly VtParser _parser;
-        private ConPtySession? _pty;
+        private ITerminalConnection? _pty;
         private TerminalInput? _input;
         private TerminalPalette _palette;
 
@@ -374,9 +374,10 @@ namespace KillerShell.Terminal
             ApplySize();
             GlyphSelfTest();
 
+            ConPtySession pty;
             try
             {
-                _pty = ConPtySession.Start(commandLine, workingDir, (short)_buf.Cols, (short)_buf.Rows);
+                pty = ConPtySession.Start(commandLine, workingDir, (short)_buf.Cols, (short)_buf.Rows);
             }
             catch (Exception ex)
             {
@@ -386,6 +387,24 @@ namespace KillerShell.Terminal
                 return;
             }
 
+            Connect(pty);
+        }
+
+        /// <summary>
+        /// Shows a console Windows handed over (HandoffConnection.cs) instead of one this control
+        /// started. The program is already running, so the first thing it hears is its real size.
+        /// </summary>
+        internal void Attach(ITerminalConnection connection)
+        {
+            ApplySize();
+            GlyphSelfTest();
+            connection.Resize((short)_buf.Cols, (short)_buf.Rows);
+            Connect(connection);
+        }
+
+        private void Connect(ITerminalConnection connection)
+        {
+            _pty = connection;
             _input = new TerminalInput(_pty.Input);
             _pty.Exited += code => Dispatcher.BeginInvoke(new Action(() =>
             {

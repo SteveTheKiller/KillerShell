@@ -128,6 +128,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Még nincs kereshető találat.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Nem sikerült elindítani a megemelt parancsértelmezőt: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">A Windows által a KillerShellnek átadott program a saját ablakában marad</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Mentse el a dokumentumot, mielőtt áthúzná egy másik ablakba</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">A(z) {0} nem létező mappa</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">A(z) {0} nem létező hely</sys:String>
@@ -153,6 +154,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Indítás a Windows-zal</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Bezárás az értesítési területre</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Billentyűparancsok megjelenítése a menükben</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">A KillerShell használata alapértelmezett terminálként</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Az Intézőből, a Futtatás ablakból vagy parancsikonról indított konzolprogramok KillerShell-ablakban nyílnak meg. Kikapcsolásakor visszaáll a korábban használt terminál.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Telepítse a KillerShellt, hogy alapértelmezett terminálként használhassa. Egy hordozható példány áthelyezhető vagy törölhető.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">A Windows Terminal szükséges hozzá, amely átadja a konzolprogramokat a KillerShellnek.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Azóta egy másik alapértelmezett terminált választottak, például a Windows Gépházban.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Mappák megnyitása a KillerShellben</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Ha duplán kattint egy mappára vagy meghajtóra, az Intézőben vagy bárhol máshol, az egy KillerShell-ablakban nyílik meg. Az Ez a gép, a Lomtár, a Vezérlőpult és az asztal az Intézőnél marad. Kikapcsolásakor visszaáll, ami korábban a mappákat megnyitotta.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Telepítse a KillerShellt, hogy mappákat nyithasson meg benne. Egy hordozható példány áthelyezhető vagy törölhető.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Azóta valami más lett beállítva a mappák megnyitására.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Ha be van kapcsolva, az ablak bezárása után az alkalmazás tovább fut az értesítési területen.</sys:String>
     <sys:String x:Key="Str_Tray_Open">A(z) {0} megnyitása</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Kilépés</sys:String>
@@ -374,6 +384,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Nem regisztrált. A Windows még egyetlen fájltípushoz sem kínálja a KillerShellt.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Regisztrált a fiókjához. A Windows nem vált át az alapértelmezett beállítást - válassza ki a KillerShell-t fájltípusonként a Beállításokban.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Regisztrálva minden felhasználó számára ezen a számítógépen. A Windows nem vált át az alapértelmezett beállítást - válassza ki a KillerShell-t fájltípusonként a Beállításokban.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Ha a konzolprogramokat vagy mappákat a KillerShellben szeretné megnyitni, kapcsolja be a beállításait A KillerShellről (F12) kártyán.</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Ez a példány hordozható. Az asszociációk arra mutatnak, ahol ez az .exe jelenleg található, és megszakad, ha áthelyezi vagy törli.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Regisztrálva a Windows rendszerrel</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Regisztráció eltávolítva</sys:String>

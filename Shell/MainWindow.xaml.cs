@@ -37,7 +37,7 @@ namespace KillerShell.Shell
         {
             InitializeComponent();
             _tray = KillerFamily.Shell.CloseToTray.Attach(this, Services.AppInfo.DisplayName, Loc,
-                () => Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown);
+                () => !IsConsoleWindow && Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown);
             new KillerFamily.Accessibility.OverlayFocus(this)
                 .Track(ShortcutsOverlay, AboutOverlay, FontsOverlay, AssocOverlay);
             _about = new Features.About.AboutController(this);   // Features/About
@@ -124,7 +124,8 @@ namespace KillerShell.Shell
             // of that and was simply missed. An elevated relaunch is started with --eventviewer /
             // --processes / --shell, never --new-window, so freshWindow was false and the admin
             // window came up carrying every tab from the ordinary one.
-            if (DemoMode || freshWindow || IsElevated || !TryRestoreTabs())
+            // Nor does the window of a handed-off console program (ConsoleHandoff.cs).
+            if (DemoMode || freshWindow || IsElevated || IsConsoleWindow || !TryRestoreTabs())
                 ActivateTab(CreateTab());   // Session.cs / Tabs.cs
 
             // Restore the saved app-wide accessibility size (AppScale.cs). After the tabs so
@@ -149,8 +150,9 @@ namespace KillerShell.Shell
 
             // ... and reopen the branches that were open last time (FolderTree.cs). Not awaited:
             // every level enumerates off the UI thread, and a window that waited on a slow
-            // network branch coming back would be a window that does not open.
-            _ = RestoreTreeExpansionAsync();
+            // network branch coming back would be a window that does not open. Not for a
+            // handed-off program's window, which shuts the tree as it opens (ConsoleHandoff.cs).
+            if (!IsConsoleWindow) _ = RestoreTreeExpansionAsync();
 
             // Saved locations, in the slide-up under the tree (Bookmarks.cs). After the tree so
             // its panel row exists, and after the tabs so the star can read the active folder.
@@ -193,8 +195,9 @@ namespace KillerShell.Shell
                 // A first-run tab starts at Home rather than as an empty search form. Deferred
                 // to Loaded rather than done in the ctor because navigating reveals the folder
                 // in the tree, and the tree's roots are not built until InitFolderTree above has
-                // run. Restored tabs and piped tabs are left exactly as they were.
-                if (!DemoMode && _active.PipeFiles == null && StartupPaths.Count == 0)
+                // run. Restored tabs and piped tabs are left exactly as they were, and a handed-off
+                // program's window skips it: that first tab is closed as soon as the program's opens.
+                if (!DemoMode && !IsConsoleWindow && _active.PipeFiles == null && StartupPaths.Count == 0)
                 {
                     // A restored folder tab carries the folder it was closed in but not its
                     // listing (Session.cs), so it is re-listed here. Without this it came back as
@@ -227,10 +230,13 @@ namespace KillerShell.Shell
                 ApplyElevationHalo();   // Elevation.cs - mark an admin window before it shows
                 ApplyStartupShell();    // and open the shell an elevated relaunch asked for
                 ApplyStartupTearOut();  // TabTearOut.cs - or the Processes/document tab a tear-out asked for
+                ApplyConsoleHandoff();  // ConsoleHandoff.cs - or the console program Windows handed over
 
                 // After the first paint and any startup dialog, so an update offer never stacks on one.
-                Dispatcher.BeginInvoke(new System.Action(CheckForUpdatesOnStartup),   // About.cs
-                    System.Windows.Threading.DispatcherPriority.Background);
+                // Not over a console program's window: it is there for that program alone.
+                if (!IsConsoleWindow)
+                    Dispatcher.BeginInvoke(new System.Action(CheckForUpdatesOnStartup),   // About.cs
+                        System.Windows.Threading.DispatcherPriority.Background);
             };
             Closed += (_, _) =>
             {
@@ -241,7 +247,8 @@ namespace KillerShell.Shell
                 // An elevated window does NOT write the session back. Both instances share one
                 // settings store, so whichever quit last would clobber the other's remembered
                 // tabs - and the admin window is a task you finish, not the one you live in.
-                if (!DemoMode && !IsElevated) SaveTabsOnExit();   // Session.cs
+                // The same goes for a handed-off console program's window (ConsoleHandoff.cs).
+                if (!DemoMode && !IsElevated && !IsConsoleWindow) SaveTabsOnExit();   // Session.cs
             };
 
             // ThemeFlyout is a Button.ContextMenu now (matching LangMenu, KillerPDF's pattern),

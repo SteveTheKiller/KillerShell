@@ -128,6 +128,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Ainda não há resultados para pesquisar.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Não foi possível iniciar um shell com privilégios elevados: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Um programa que o Windows passou ao KillerShell fica na própria janela</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Salve o documento antes de arrastá-lo para outra janela</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} não é uma pasta que existe</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} não é um local que existe</sys:String>
@@ -153,6 +154,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Iniciar com o Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Fechar para a bandeja do sistema</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Mostrar atalhos nos menus</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">Usar o KillerShell como terminal padrão</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Programas de console iniciados pelo Explorador de Arquivos, Executar ou um atalho abrem em uma janela do KillerShell. Desativar traz de volta o terminal que você usava antes.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Instale o KillerShell para usá-lo como terminal padrão. Uma cópia portátil pode ser movida ou excluída.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Requer o Windows Terminal, que repassa os programas de console ao KillerShell.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Outro terminal padrão foi escolhido depois, por exemplo nas Configurações do Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Abrir pastas no KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Clicar duas vezes em uma pasta ou unidade, no Explorador de Arquivos ou em qualquer outro lugar, abre-a em uma janela do KillerShell. Este Computador, Lixeira, Painel de Controle e a área de trabalho continuam com o Explorador. Desativar traz de volta o que abria as pastas antes.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Instale o KillerShell para abrir pastas nele. Uma cópia portátil pode ser movida ou excluída.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Outro programa foi definido para abrir pastas depois.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Quando ativado, fechar a janela mantém o aplicativo em execução na área de notificação.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Abrir o {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Sair</sys:String>
@@ -374,6 +384,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Não registrado. O Windows ainda não oferece o KillerShell para nenhum tipo de arquivo.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Registrado para a sua conta. O Windows não altera um padrão por você - escolha o KillerShell para cada tipo de arquivo em Configurações.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Registrado para todos os usuários neste PC. O Windows não altera um padrão por você - escolha o KillerShell para cada tipo de arquivo em Configurações.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Para abrir programas de console ou pastas no KillerShell, ative as opções dele em Sobre o KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Esta cópia é portátil. As associações apontarão para onde este .exe está agora e deixarão de funcionar se você movê-lo ou excluí-lo.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registrado no Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registro removido</sys:String>

@@ -128,6 +128,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Поки немає результатів для пошуку.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Не вдалося запустити оболонку з підвищеними правами: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Програма, яку Windows передала в KillerShell, лишається у своєму вікні</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Збережіть документ, перш ніж перетягувати його в інше вікно</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} - не існуюча папка</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} - не існуюче розташування</sys:String>
@@ -153,6 +154,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Запускати разом із Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Згортати в системний трей під час закриття</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Показувати сполучення клавіш у меню</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">Використовувати KillerShell як термінал за замовчуванням</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Консольні програми, запущені з Провідника, вікна «Виконати» або ярлика, відкриваються у вікні KillerShell. Якщо вимкнути, повернеться термінал, який був раніше.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Установіть KillerShell, щоб використовувати його як термінал за замовчуванням. Портативну копію можна перемістити або видалити.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Потрібен Windows Terminal, який передає консольні програми в KillerShell.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Відтоді було вибрано інший термінал за замовчуванням, наприклад у Параметрах Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Відкривати папки в KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Подвійне клацання папки чи диска, у Провіднику або деінде, відкриває їх у вікні KillerShell. «Цей ПК», Кошик, Панель керування і робочий стіл лишаються за Провідником. Якщо вимкнути, повернеться те, що відкривало папки раніше.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Установіть KillerShell, щоб відкривати в ньому папки. Портативну копію можна перемістити або видалити.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Відтоді для відкриття папок було вибрано щось інше.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Якщо ввімкнено, після закриття вікна застосунок продовжує працювати в області сповіщень.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Відкрити {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Вийти</sys:String>
@@ -374,6 +384,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Не зареєстровано. Windows поки не пропонує KillerShell для жодного типу файлів.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Зареєстровано для вашого облікового запису. Windows не змінить типову програму за вас - виберіть KillerShell для кожного типу файлів у Параметрах.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Зареєстровано для всіх користувачів цього ПК. Windows не змінить типову програму за вас - виберіть KillerShell для кожного типу файлів у Параметрах.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Щоб відкривати консольні програми або папки в KillerShell, увімкніть його параметри у вікні «Про KillerShell» (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Ця копія портативна. Асоціації вказуватимуть на те місце, де зараз лежить цей .exe, і перестануть працювати, якщо його перемістити або видалити.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Зареєстровано в Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Реєстрацію скасовано</sys:String>

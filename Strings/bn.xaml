@@ -253,6 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">নিবন্ধিত নয়। Windows এখনো কোনো ফাইল ধরনের জন্য KillerShell দেখায় না।</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">আপনার অ্যাকাউন্টের জন্য নিবন্ধিত। Windows আপনার হয়ে ডিফল্ট বদলাবে না; সেটিংসে প্রতিটি ফাইল ধরনের জন্য KillerShell নিজে বেছে নিন।</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">এই পিসির সব ব্যবহারকারীর জন্য নিবন্ধিত। Windows আপনার হয়ে ডিফল্ট বদলাবে না; সেটিংসে প্রতিটি ফাইল ধরনের জন্য KillerShell নিজে বেছে নিন।</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">কনসোল প্রোগ্রাম বা ফোল্ডার KillerShell-এ খুলতে, KillerShell সম্পর্কে (F12)-তে এর সেটিংস চালু করুন।</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">এই কপিটি পোর্টেবল। অ্যাসোসিয়েশনগুলি এই .exe ফাইলটি এখন যেখানে আছে সেখানেই নির্দেশ করবে, আর ফাইলটি সরালে বা মুছলে কাজ করবে না।</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Windows-এ নিবন্ধিত হয়েছে</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">নিবন্ধন সরানো হয়েছে</sys:String>
@@ -510,6 +511,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Windows চালু হলে চালু করুন</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">সিস্টেম ট্রেতে বন্ধ করুন</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">মেনুতে শর্টকাট দেখান</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">KillerShell-কে ডিফল্ট টার্মিনাল হিসেবে ব্যবহার করুন</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">এক্সপ্লোরার, Run বা কোনো শর্টকাট থেকে চালু করা কনসোল প্রোগ্রাম KillerShell উইন্ডোতে খুলবে। এটি বন্ধ করলে আগের টার্মিনালটি ফিরে আসবে।</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">ডিফল্ট টার্মিনাল হিসেবে ব্যবহার করতে KillerShell ইনস্টল করুন। পোর্টেবল কপি সরানো বা মুছে ফেলা হতে পারে।</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Windows Terminal প্রয়োজন, যা কনসোল প্রোগ্রামগুলি KillerShell-এ পাঠায়।</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">এরপর অন্য একটি ডিফল্ট টার্মিনাল বেছে নেওয়া হয়েছে, যেমন Windows সেটিংসে।</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">ফোল্ডার KillerShell-এ খুলুন</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">এক্সপ্লোরারে বা অন্য কোথাও কোনো ফোল্ডার বা ড্রাইভে ডাবল-ক্লিক করলে সেটি KillerShell উইন্ডোতে খুলবে। এই পিসি, রিসাইকেল বিন, কন্ট্রোল প্যানেল ও ডেস্কটপ এক্সপ্লোরারেই থাকবে। এটি বন্ধ করলে আগে যা ফোল্ডার খুলত তা ফিরে আসবে।</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">ফোল্ডার খুলতে KillerShell ইনস্টল করুন। পোর্টেবল কপি সরানো বা মুছে ফেলা হতে পারে।</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">এরপর ফোল্ডার খোলার জন্য অন্য কিছু নির্ধারণ করা হয়েছে।</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">এটি চালু থাকলে, উইন্ডো বন্ধ করলেও অ্যাপটি নোটিফিকেশন এরিয়াতে চলতে থাকে।</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} খুলুন</sys:String>
     <sys:String x:Key="Str_Tray_Exit">প্রস্থান</sys:String>
@@ -744,6 +754,7 @@
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" সংরক্ষিত হয়েছে</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} এমন কোনো অবস্থান নয় যা বিদ্যমান</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">{0}-এর অ্যাডমিন অনুমতিতে সংরক্ষণও প্রত্যাখ্যাত হয়েছে - Windows সিকিউরিটিতে নিয়ন্ত্রিত ফোল্ডার অ্যাক্সেস দেখুন</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows যে প্রোগ্রামটি KillerShell-কে দিয়েছে, সেটি নিজের উইন্ডোতেই থাকে</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">অন্য উইন্ডোতে টেনে নেওয়ার আগে নথিটি সংরক্ষণ করুন</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} এমন কোনো ফোল্ডার নয় যা বিদ্যমান</sys:String>
     <sys:String x:Key="Str_Svc_DetailsTitle">সার্ভিসের বিবরণ</sys:String>

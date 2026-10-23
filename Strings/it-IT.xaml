@@ -120,6 +120,7 @@
     <sys:String x:Key="Str_Status_NoPipe">Non ci sono ancora risultati in cui cercare.</sys:String>
 
     <sys:String x:Key="Str_Status_ElevateFailed">Impossibile avviare una shell elevata: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Un programma passato a KillerShell da Windows resta nella sua finestra</sys:String>
     <sys:String x:Key="Str_Status_TearOutNeedsSave">Salva il documento prima di trascinarlo in un'altra finestra</sys:String>
     <sys:String x:Key="Str_Status_TermCwdNotFound">{0} non è una cartella esistente</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} non è una posizione esistente</sys:String>
@@ -145,6 +146,15 @@
     <sys:String x:Key="Str_About_StartWithWindows">Avvia all'avvio di Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Chiudi nell'area di notifica</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Mostra le scorciatoie nei menu</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">Usa KillerShell come terminale predefinito</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">I programmi console avviati da Explorer, Esegui o un collegamento si aprono in una finestra di KillerShell. Disattivandolo torna il terminale che usavi prima.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installa KillerShell per usarlo come terminale predefinito. Una copia portatile può essere spostata o eliminata.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Richiede Windows Terminal, che passa i programmi console a KillerShell.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Nel frattempo è stato scelto un altro terminale predefinito, ad esempio nelle Impostazioni di Windows.</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">Apri le cartelle in KillerShell</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">Facendo doppio clic su una cartella o un'unità, in Explorer o altrove, si apre in una finestra di KillerShell. Questo PC, il Cestino, il Pannello di controllo e il desktop restano a Explorer. Disattivandolo torna ciò che apriva le cartelle prima.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">Installa KillerShell per aprirci le cartelle. Una copia portatile può essere spostata o eliminata.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">Nel frattempo è stato impostato qualcos'altro per aprire le cartelle.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Se attivo, chiudendo la finestra l'app resta in esecuzione nell'area di notifica.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Apri {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Esci</sys:String>
@@ -356,6 +366,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Non registrato. Windows non offre ancora KillerShell per alcun tipo di file.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Registrato per il tuo account. Windows non cambierà un'app predefinita per te - scegli KillerShell per tipo di file nelle Impostazioni.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Registrato per tutti gli utenti di questo PC. Windows non cambierà un'app predefinita per te - scegli KillerShell per tipo di file nelle Impostazioni.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Per aprire i programmi console o le cartelle in KillerShell, attiva le sue opzioni in Informazioni su KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Questa copia è portatile. Le associazioni punteranno a dove si trova ora questo .exe, e si romperanno se lo sposti o lo elimini.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registrato in Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registrazione rimossa</sys:String>

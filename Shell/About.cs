@@ -76,6 +76,36 @@ namespace KillerShell.Shell
         bool IAboutHost.StartupUpdateCheck { set => AboutStartupUpdateCheck.IsChecked = value; }
         bool IAboutHost.StartWithWindows   { set => AboutStartWithWindows.IsChecked = value; }
         bool IAboutHost.CloseToTray        { set => AboutCloseToTray.IsChecked = value; }
+        bool IAboutHost.DefaultTerminal        { set => AboutDefaultTerminal.IsChecked = value; }
+        bool IAboutHost.DefaultTerminalEnabled { set => AboutDefaultTerminal.IsEnabled = value; }
+        string IAboutHost.DefaultTerminalNote
+        {
+            set
+            {
+                AboutDefaultTerminal.ToolTip = value;
+                AboutDefaultTerminalNote.Text = value;
+                System.Windows.Automation.AutomationProperties.SetHelpText(AboutDefaultTerminal, value);
+            }
+        }
+        bool IAboutHost.DefaultTerminalNoteVisible
+        {
+            set => AboutDefaultTerminalNote.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        }
+        bool IAboutHost.OpenFolders        { set => AboutOpenFolders.IsChecked = value; }
+        bool IAboutHost.OpenFoldersEnabled { set => AboutOpenFolders.IsEnabled = value; }
+        string IAboutHost.OpenFoldersNote
+        {
+            set
+            {
+                AboutOpenFolders.ToolTip = value;
+                AboutOpenFoldersNote.Text = value;
+                System.Windows.Automation.AutomationProperties.SetHelpText(AboutOpenFolders, value);
+            }
+        }
+        bool IAboutHost.OpenFoldersNoteVisible
+        {
+            set => AboutOpenFoldersNote.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        }
 
         bool IAboutHost.DemoPreview => DemoMode;
 
@@ -103,6 +133,12 @@ namespace KillerShell.Shell
 
         private void AboutCloseToTray_Click(object sender, RoutedEventArgs e)
             => _about.SetCloseToTray(AboutCloseToTray.IsChecked == true);
+
+        private void AboutDefaultTerminal_Click(object sender, RoutedEventArgs e)
+            => _about.SetDefaultTerminal(AboutDefaultTerminal.IsChecked == true);   // DefaultTerminal.cs
+
+        private void AboutOpenFolders_Click(object sender, RoutedEventArgs e)
+            => _about.SetOpenFolders(AboutOpenFolders.IsChecked == true);   // Services/FolderOpenerSetting.cs
 
         /// <summary>
         /// Clear all Data, the footer's destructive link. Wipes every saved preference and the

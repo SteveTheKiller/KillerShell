@@ -20,7 +20,7 @@ using Microsoft.Win32.SafeHandles;
 // No dependency added: this is kernel32 through P/Invoke.
 namespace KillerShell.Terminal
 {
-    internal sealed class ConPtySession : IDisposable
+    internal sealed class ConPtySession : ITerminalConnection
     {
         private IntPtr _pc = IntPtr.Zero;          // HPCON
         private IntPtr _process = IntPtr.Zero;

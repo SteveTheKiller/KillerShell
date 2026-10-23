@@ -4,6 +4,21 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+KillerShell can be the Windows default terminal and can open folders, so console programs, folder double-clicks and folders other programs open come up in KillerShell windows.
+
+### Added
+- Use KillerShell as the default terminal, in the About card. Console programs open in their own KillerShell window with the default terminal look, and a window closes when its program exits cleanly. Turning it off, or uninstalling, puts back the terminal you had; a choice made since in Windows Settings is left alone. Needs an installed copy and Windows Terminal, which passes the programs over.
+- Open folders in KillerShell, in the About card. Double-clicking a folder or drive, or a program asking Windows to open one, opens it in a KillerShell window; This PC, Recycle Bin, Control Panel, the desktop, open/save dialogs and programs that run explorer.exe themselves stay with Explorer. Turning it off, removing the associations, or uninstalling puts back what opened folders before, including another file manager's; removing an all-users copy does that for every user, including one removed by SYSTEM through an RMM or Intune.
+
+### Fixed
+- The main window's thin border shows again on every theme but 98SE, which draws its own frame.
+
+### Changed
+- The About card's settings sit in evenly spaced pairs: startup, the window, then the two Windows takeovers side by side with their notes, with the Recycle Bin question last.
+- The Fonts and File associations cards have Lacquer headings and the shared close X in the corner.
+
 ## [1.5.0] - 2026-10-23
 
 ### Fixed

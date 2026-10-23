@@ -217,7 +217,7 @@ namespace KillerShell
                 v.SetValue("", "Open in KillerShell");
                 v.SetValue("Icon", exe + ",0");
                 using var c = v.CreateSubKey("command");
-                c.SetValue("", "\"" + exe + "\" \"%1\\.\"");
+                c.SetValue("", Services.FolderOpenerSetting.VerbCommand(exe));   // the same command it makes the default
             }
 
             using (var v = root.CreateSubKey(@"Software\Classes\Directory\Background\shell\" + VerbOpen))
@@ -266,10 +266,20 @@ namespace KillerShell
         /// paths, because a ProgID pointing at a deleted exe is how you get a broken Open With
         /// list that nothing in the UI will ever offer to clean up.
         /// </summary>
-        internal static bool UnregisterAssociations(bool machine)
+        /// <param name="keepFolderOpener">
+        /// True when another install stays (a duplicate being removed): its own verb carries
+        /// "Open folders in KillerShell" on, so turning it off would only lose the user's choice.
+        /// </param>
+        internal static bool UnregisterAssociations(bool machine, bool keepFolderOpener = false)
         {
             var root = RootFor(machine);
             bool ok = true;
+
+            // Before the folder verb goes, put back what opened folders before. A default naming
+            // a missing verb falls back to Explorer, as Windows' own "none" does, but whatever the
+            // user had before KillerShell would never come back (FolderOpenerSetting.cs).
+            if (!keepFolderOpener)
+                try { FolderOpenerSetting().TurnOff(); } catch { ok = false; }
 
             ok &= Kill(root, @"Software\Classes\" + AssocProgId);
 

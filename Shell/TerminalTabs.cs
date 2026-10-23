@@ -72,7 +72,15 @@ namespace KillerShell.Shell
         internal void OpenStartupShell(TerminalProfile profile, string? folder)
         {
             OpenShell(profile, folder);
+            StripToShell();
+        }
 
+        /// <summary>
+        /// Makes this window about its one shell: the admin window above, and the window a
+        /// handed-off console program opens in (ConsoleHandoff.cs).
+        /// </summary>
+        private void StripToShell()
+        {
             // Only strip the window down if a terminal actually appeared. Every line below is
             // "this window exists to run ONE shell" - close the other tabs, hide the menubar,
             // shut the sidebar, widen past 90 columns - and all of it is wrong if OpenShell
@@ -162,7 +170,13 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  BUILD
         // ═══════════════════════════════════════════════════════════
-        private SearchTab? CreateTerminalTabIn(FilePane pane, TerminalProfile profile, string folder)
+        /// <param name="handoff">
+        /// A console program Windows already started and handed over (ConsoleHandoff.cs). The tab
+        /// shows it instead of starting <paramref name="profile"/>'s shell.
+        /// </param>
+        /// <param name="title">The tab title when it should not be the folder, as for a handoff.</param>
+        private SearchTab? CreateTerminalTabIn(FilePane pane, TerminalProfile profile, string folder,
+                                               HandoffConnection? handoff = null, string? title = null)
         {
             var keep = Pane;
             FocusPaneQuiet(pane);                 // Panes.cs
@@ -185,7 +199,7 @@ namespace KillerShell.Shell
             // rather than staying "PowerShell"), but the title should be the location, and one
             // tab title should not mean two different things depending on which kind of tab it
             // is (2026-08-02).
-            tab.Title = FolderTitle(folder);           // Browse.cs
+            tab.Title = title ?? FolderTitle(folder);  // Browse.cs
             tab.IsBrowsing = false;
             tab.CurrentFolder = folder;
             // So the address row reads the shell's folder instead of "no folder selected" - the
@@ -243,7 +257,8 @@ namespace KillerShell.Shell
                 tab.TabGlyph = ((char)0xE711).ToString();   // a cross, so a dead shell reads as dead
             }));
 
-            term.Start(profile.LaunchCommand(folder), profile.Kind == TerminalShellKind.Wsl ? HomeFolder : folder);
+            if (handoff != null) term.Attach(handoff);
+            else term.Start(profile.LaunchCommand(folder), profile.Kind == TerminalShellKind.Wsl ? HomeFolder : folder);
             return tab;
         }
 
