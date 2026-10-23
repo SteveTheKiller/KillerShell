@@ -95,7 +95,7 @@
     <sys:String x:Key="Str_Sort_Found">検出順</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">この結果を絞り込む (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">この結果の中を検索  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">左右に並べる / 上下に並べる (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">ペインの配置を切り替えます。Ctrl+クリックで逆順に切り替え、右クリックで配置を選択します。F10で2つ目のペインを開閉します。</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">その他のツール</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">システムツール</sys:String>
     <sys:String x:Key="Str_TT_Sort">並べ替え  (Alt+S)</sys:String>
@@ -878,6 +878,7 @@
     <sys:String x:Key="Str_Ks_Language">言語の選択を開く</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">フィルムグレインのオン/オフ</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">2 つ目のペインを開く/閉じる</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">もう一方のペインに切り替える</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">隠しファイルとシステム項目の表示を切り替え</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">詳細を下に表示 / 詳細を右に表示 / 詳細を非表示</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">一覧、アイコン、詳細表示</sys:String>
@@ -958,9 +959,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">詳細を下に表示</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">詳細を右に表示</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">詳細を非表示</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">1つのペイン</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">左右に並べる</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">上下に並べる</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">このウィンドウを検索</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">開いているすべてのタブを検索</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">コンピューター全体を検索</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">詳細を下に表示 (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">詳細を右に表示 (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">詳細を非表示 (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">画像サイズ</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">縦横比</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">色深度</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">透明度</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">対応</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">なし</sys:String>
+    <sys:String x:Key="Str_Details_Pages">ページ数</sys:String>
+    <sys:String x:Key="Str_Details_Duration">再生時間</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">ファイルバージョン</sys:String>
 </ResourceDictionary>

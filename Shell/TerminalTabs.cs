@@ -269,7 +269,7 @@ namespace KillerShell.Shell
             var profile = TerminalProfile.PowerShell();
 
             var tab = CreateTab();            // Tabs.cs - registers it in the current pane
-            var term = new TerminalControl(profile.Skin);
+            var term = new TerminalControl(profile.Skin) { ShellKind = profile.Kind };
             tab.Term = term;
             tab.TabGlyph = profile.Glyph;
             tab.Title = profile.Name;
@@ -280,6 +280,7 @@ namespace KillerShell.Shell
             tab.CurrentFolder = folder;
             tab.RootPath = folder;
 
+            term.ProfileSubmenuOpening += BuildProfileMenu;
             term.StartDemo(canned);
             SyncTerminalBar(tab);             // TerminalBar.cs
             return tab;
@@ -336,7 +337,7 @@ namespace KillerShell.Shell
         // same as ApplyResultsView/UpdateLocationColumn correct their own entries in this list.
         private static readonly string[] ListingOnlyTools =
         [
-            "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "SortBtn", "SortDirButton",
+            "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "FileDensityBtn", "SortControlsHost",
             "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "PipeBtn", "ExportBtn",
             "DetailsHeader", "DetailsPaneBtn", "DetailsPane",
         ];
@@ -398,6 +399,7 @@ namespace KillerShell.Shell
 
             // Window and overlay level, no modifier needed.
             if (key == System.Windows.Input.Key.F1) return true;    // shortcuts card
+            if (key == System.Windows.Input.Key.F6 && ctrl && !shift && !alt) return true;
             // F10 arrives as Key.System with the real key in SystemKey (see IsF10 in MenuBar.cs),
             // which the unwrap above has already resolved. Both bare F10 (hide the menubar) and
             // Shift+F10 (the shell context menu) are the window's.

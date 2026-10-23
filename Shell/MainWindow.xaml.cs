@@ -520,13 +520,16 @@ namespace KillerShell.Shell
 
             CaptureTab(tab);
 
+            var searchRoots = ResolveTitleSearchRoots();
             string root = tab.RootPath.Trim();
-            if (tab.PipeFiles == null && (string.IsNullOrEmpty(root) || !Directory.Exists(root)))
+            string? pickedRoot = null;
+            if (!DemoMode && tab.PipeFiles == null && searchRoots.Count == 0)
             {
-                // No folder picked yet? Don't scold - open the picker and carry on.
-                OpenFolderPicker();
-                root = tab.RootPath.Trim();
-                if (string.IsNullOrEmpty(root) || !Directory.Exists(root)) return;
+                // Choosing search scope must not navigate or rename the source document/tool.
+                var picker = new FolderPickerDialog(root) { Owner = this };
+                if (picker.ShowDialog() != true || string.IsNullOrEmpty(picker.SelectedPath)) return;
+                pickedRoot = root = picker.SelectedPath!;
+                searchRoots = new List<string> { root };
             }
 
             var activeGroups = tab.Groups
@@ -539,6 +542,23 @@ namespace KillerShell.Shell
                 return;
             }
 
+            if (tab.Term != null || tab.Editor != null || tab.Procs != null || tab.Events != null
+                || tab.Registry != null || tab.Perf != null || tab.Storage != null)
+            {
+                tab = CreateSearchFromTab(tab, searchRoots.Count == 1 ? searchRoots[0] : SearchFolderFor(tab));
+                activeGroups = tab.Groups.Where(g => g.Terms.Any(t => !string.IsNullOrWhiteSpace(t.Pattern))).ToList();
+                activeFilters = tab.Filters.Where(f => f.IsActive).ToList();
+            }
+            else if (pickedRoot != null)
+            {
+                tab.RootPath = tab.CurrentFolder = pickedRoot;
+                tab.Title = FolderTitle(pickedRoot);
+                Pane.RootPathBox.Text = Pane.ScopePathLabel.Text = pickedRoot;
+            }
+            StopWatching();
+            tab.IsBrowsing = false;
+            _listCts?.Cancel();
+            UpdateLocationColumn();
             tab.Results.Clear();
             foreach (var t in tab.Groups.SelectMany(g => g.Terms)) t.ResetCount();
             tab.ScannedLabel = string.Empty;
@@ -565,9 +585,20 @@ namespace KillerShell.Shell
 
             try
             {
-                await tab.Engine.SearchAsync(
-                    root, activeGroups, activeFilters, tab.IncludePatterns, tab.ExcludePatterns,
-                    tab.CaseSensitive, tab.Cts.Token, tab.PipeFiles);
+                if (DemoMode)
+                {
+                    var demo = await Services.DemoSearch.SearchAsync(searchRoots, activeGroups, activeFilters,
+                        tab.IncludePatterns, tab.ExcludePatterns, tab.CaseSensitive, tab.Cts.Token,
+                        DemoTextFor, tab.PipeFiles);
+                    tab.Cts.Token.ThrowIfCancellationRequested();
+                    for (int offset = 0; offset < demo.Results.Count; offset += 128)
+                        OnResultsBatch(tab, demo.Results.GetRange(offset, Math.Min(128, demo.Results.Count - offset)));
+                    OnProgressChanged(tab, demo.Scanned);
+                }
+                else
+                    await tab.Engine.SearchAsync(
+                        root, activeGroups, activeFilters, tab.IncludePatterns, tab.ExcludePatterns,
+                        tab.CaseSensitive, tab.Cts.Token, tab.PipeFiles, searchRoots);
 
                 // The engine's final batch is still queued on the dispatcher at this point -
                 // let it land BEFORE reading Results.Count, or "Done - 0 file(s) matched"
@@ -738,6 +769,18 @@ namespace KillerShell.Shell
         // running search, Ctrl+F opens the results quick-filter.
         private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            if (e.Key is System.Windows.Input.Key.Enter or System.Windows.Input.Key.Escape)
+                foreach (var pane in new[] { LeftPane, RightPane })
+                    foreach (var box in new[] { pane.AddressBox, pane.TermCwdBox, pane.EditorPathBox })
+                        if (ReferenceEquals(e.OriginalSource, box) || box.IsKeyboardFocusWithin) return;
+
+            if (TitleSearchPopup.IsOpen && e.Key == System.Windows.Input.Key.Escape)
+            {
+                TitleSearchPopup.IsOpen = false;
+                SearchPanelBtn.Focus();
+                e.Handled = true;
+                return;
+            }
             var mods  = System.Windows.Input.Keyboard.Modifiers;
             bool ctrl  = (mods & System.Windows.Input.ModifierKeys.Control) != 0;
             bool shift = (mods & System.Windows.Input.ModifierKeys.Shift)   != 0;

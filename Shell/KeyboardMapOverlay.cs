@@ -25,7 +25,7 @@ namespace KillerShell.Shell
     // the modifier rather than by reading.
     public partial class MainWindow
     {
-        private enum KbLayer { Base, Ctrl, CtrlShift, Shift, Alt, AltShift }
+        private enum KbLayer { Base, Ctrl, CtrlShift, Shift, Alt, AltShift, CtrlAlt, CtrlAltShift }
 
         private KbLayer _kbLayer = KbLayer.Base;
         private bool _kbBuilt;
@@ -121,6 +121,7 @@ namespace KillerShell.Shell
         [
             (KbLayer.Base, "BASE"), (KbLayer.Ctrl, "CTRL"), (KbLayer.CtrlShift, "CTRL+SHIFT"),
             (KbLayer.Shift, "SHIFT"), (KbLayer.Alt, "ALT"), (KbLayer.AltShift, "ALT+SHIFT"),
+            (KbLayer.CtrlAlt, "CTRL+ALT"), (KbLayer.CtrlAltShift, "CTRL+ALT+SHIFT"),
         ];
 
         // Modifier keycaps that light up per layer - they define the layer rather than carry a
@@ -131,6 +132,8 @@ namespace KillerShell.Shell
             [KbLayer.CtrlShift] = ["Ctrl", "RCtrl", "Shift", "RShift"],
             [KbLayer.Shift] = ["Shift", "RShift"], [KbLayer.Alt] = ["Alt", "RAlt"],
             [KbLayer.AltShift] = ["Alt", "RAlt", "Shift", "RShift"],
+            [KbLayer.CtrlAlt] = ["Ctrl", "RCtrl", "Alt", "RAlt"],
+            [KbLayer.CtrlAltShift] = ["Ctrl", "RCtrl", "Alt", "RAlt", "Shift", "RShift"],
         };
 
         // ── View toggle (LIST / KEYBOARD) ──────────────────────────────────────────────────────
@@ -517,7 +520,9 @@ namespace KillerShell.Shell
             if (!_kbBuilt || ShortcutKeyboardHost.Visibility != Visibility.Visible) return;
 
             var m = Keyboard.Modifiers;
-            var layer = m.HasFlag(ModifierKeys.Control) && m.HasFlag(ModifierKeys.Shift) ? KbLayer.CtrlShift
+            var layer = m.HasFlag(ModifierKeys.Control) && m.HasFlag(ModifierKeys.Alt)
+                          ? (m.HasFlag(ModifierKeys.Shift) ? KbLayer.CtrlAltShift : KbLayer.CtrlAlt)
+                      : m.HasFlag(ModifierKeys.Control) && m.HasFlag(ModifierKeys.Shift) ? KbLayer.CtrlShift
                       : m.HasFlag(ModifierKeys.Control) ? KbLayer.Ctrl
                       : m.HasFlag(ModifierKeys.Alt) && m.HasFlag(ModifierKeys.Shift) ? KbLayer.AltShift
                       : m.HasFlag(ModifierKeys.Alt) ? KbLayer.Alt

@@ -73,22 +73,25 @@ namespace KillerShell.Services
         /// </summary>
         private static string Pack => MainWindow.FlatChrome ? "98/" : string.Empty;
 
-        public static ImageSource? Art(string name)
+        public static ImageSource? Art(string name, int pixels = 16)
         {
             string pack = Pack;
+            bool small = pack.Length > 0 && pixels < 32;
 
             // Cached by PACK AND name, not name alone. The tab strip asks per tab per repaint, and
             // without this every repaint would decode the PNG again; a null is cached too, so a
             // missing resource costs one failed load rather than one per frame. Keying the pack in
             // lets both sets sit in the cache at once, so switching theme and back does not redecode
             // and cannot hand back the other theme's art.
-            string key = pack + name;
+            string key = pack + (small ? "small_" : string.Empty) + name;
 
             lock (ArtCache)
             {
                 if (ArtCache.TryGetValue(key, out var hit)) return hit;
 
-                var img = Load(pack + name);
+                // Native small artwork retains details lost by shrinking dithered 32px art.
+                var img = small ? Load(pack + "small_" + name) : null;
+                img ??= Load(pack + name);
 
                 // A 98 pack that is missing one of the names falls back to the brand art rather
                 // than drawing blank. Nothing is missing today; this is so adding a 25th brand icon
@@ -179,11 +182,12 @@ namespace KillerShell.Services
         /// art for those, and the generic folder for everything else. Null only when the resource
         /// failed to load, which sends the caller back to the shell icon.
         /// </summary>
-        private static ImageSource? FolderArtFor(string path)
+        private static ImageSource? FolderArtFor(string path, int pixels)
         {
             if (string.IsNullOrEmpty(path)) return null;
-            if (MainWindow.IsThisPc(path)) return ThisPcArt;      // Browse.cs sentinel
-            if (path.Length <= 3) return DriveArt;                 // "C:\" and shorter is a root
+            if (MainWindow.IsThisPc(path)) return Art("my_pc_icon", pixels);
+            if (path.Length <= 3) return Art("drive_icon", pixels);
+            var generic = Art("folder_icon", pixels);
 
             // --demo answers from the fabricated machine's own table instead (DemoFileSystem.cs
             // ArtFor). FolderArt below was built from Environment.GetFolderPath, which describes
@@ -194,12 +198,12 @@ namespace KillerShell.Services
             if (MainWindow.DemoMode)
             {
                 string? demoName = DemoFs.ArtFor(path);
-                return demoName != null ? Art(demoName) ?? GenericFolder : GenericFolder;
+                return demoName != null ? Art(demoName, pixels) ?? generic : generic;
             }
 
             return FolderArt.TryGetValue(path.TrimEnd('\\'), out var name)
-                 ? Art(name) ?? GenericFolder
-                 : GenericFolder;
+                 ? Art(name, pixels) ?? generic
+                 : generic;
         }
 
         /// <summary>The 32px icon. Kept as the default so existing callers are unaffected.</summary>
@@ -217,7 +221,7 @@ namespace KillerShell.Services
             // special folder, drive or This PC art for those, the generic folder for the rest.
             if (isDirectory)
             {
-                var art = FolderArtFor(filePath);
+                var art = FolderArtFor(filePath, px);
                 if (art != null) return art;
             }
 
@@ -396,10 +400,12 @@ namespace KillerShell.Services
         private static extern int ExtractIconEx(string file, int index,
                                                 out IntPtr large, out IntPtr small, int count);
 
-        /// <summary>The Recycle Bin's own shell icon, for its saved place (Bookmarks.cs). The
-        /// brand and 98SE packs have no art for it, so both draw what Windows draws.</summary>
+        /// <summary>The Recycle Bin's themed art, with the Windows icon as a missing-resource fallback.</summary>
         public static ImageSource? ForRecycleBin(int px)
         {
+            var art = Art("dead_shell_icon", px);
+            if (art != null) return art;
+
             string key = ":recyclebin:|" + px;
             lock (Cache)
                 if (Cache.TryGetValue(key, out var hit)) return hit;

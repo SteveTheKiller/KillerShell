@@ -28,6 +28,13 @@ namespace KillerShell.Shell
     // data. Explorer treats zip drag-out as a copy for the same reason.
     public partial class MainWindow
     {
+        private bool RefuseDemoArchiveWrite()
+        {
+            if (!DemoMode) return false;
+            SetTabStatusKey(_active, "Str_Status_ArchiveCanceled");
+            return true;
+        }
+
         // ── Where a write would land ─────────────────────────────
         /// <summary>The archive and folder the focused tab is browsing inside, if any. The
         /// counterpart to TargetFolder() (FileCommands.cs), which is null here because nothing
@@ -65,7 +72,7 @@ namespace KillerShell.Shell
                                        out string archivePath, out string entryFolder)
         {
             if (!ArchiveTarget(pane, out archivePath, out entryFolder)) return false;
-            if (!ArchiveWriter.CanWrite(archivePath)) return false;
+            if (DemoMode || !ArchiveWriter.CanWrite(archivePath)) return false;
 
             if (DataFor(ItemUnder(src)) is { IsDirectory: true } row
                 && ArchiveProvider.TrySplit(row.FilePath, out string rowArchive, out string rowEntry)
@@ -90,6 +97,7 @@ namespace KillerShell.Shell
         /// </remarks>
         internal async Task ArchiveAdd(string[] sources, string archivePath, string entryFolder)
         {
+            if (RefuseDemoArchiveWrite()) return;
             if (sources.Length == 0) return;
 
             var tab = _active;
@@ -136,6 +144,7 @@ namespace KillerShell.Shell
         /// </summary>
         internal async Task ArchiveDelete(List<string> virtualPaths)
         {
+            if (RefuseDemoArchiveWrite()) return;
             if (!ArchiveTarget(out string archivePath, out _)) return;
 
             if (!ArchiveWriter.CanWrite(archivePath))
@@ -168,6 +177,7 @@ namespace KillerShell.Shell
         /// <summary>Renames one entry. A folder takes everything under it with it.</summary>
         internal async Task ArchiveRename(string virtualPath)
         {
+            if (RefuseDemoArchiveWrite()) return;
             if (!ArchiveProvider.TrySplit(virtualPath, out string archivePath, out string entry)
                 || entry.Length == 0) return;
 
@@ -196,6 +206,7 @@ namespace KillerShell.Shell
         /// <summary>Creates a real empty-folder entry in the ZIP currently being browsed.</summary>
         internal async Task ArchiveNewFolder()
         {
+            if (RefuseDemoArchiveWrite()) return;
             if (!ArchiveTarget(out string archivePath, out string entryFolder)) return;
             if (!ArchiveWriter.CanWrite(archivePath))
             {
@@ -232,6 +243,7 @@ namespace KillerShell.Shell
         /// </remarks>
         private string[] ExtractForDragOut(List<string> virtualPaths)
         {
+            if (RefuseDemoArchiveWrite()) return [];
             var extracted = new List<string>();
             bool failed = false;
 
@@ -267,15 +279,16 @@ namespace KillerShell.Shell
         /// <summary>Whether the menu's selection is all real archives this build can read,
         /// for the extract rows.</summary>
         private List<string> MenuArchives()
-            => [.. MenuFiles().Where(p => System.IO.File.Exists(p) && ArchiveProvider.IsReadable(p))];
+            => DemoMode ? [] : [.. MenuFiles().Where(p => System.IO.File.Exists(p) && ArchiveProvider.IsReadable(p))];
 
         /// <summary>The selection as real files and folders on disk, for Compress. Empty
         /// inside an archive, where the rows are not on disk at all.</summary>
         private List<string> MenuDiskItems()
-            => InArchive(Pane) ? [] : [.. MenuFiles().Where(Exists)];
+            => DemoMode || InArchive(Pane) ? [] : [.. MenuFiles().Where(Exists)];
 
         internal void MenuCompress_Click(object sender, RoutedEventArgs e)
         {
+            if (RefuseDemoArchiveWrite()) return;
             var sources = MenuDiskItems();
             if (sources.Count == 0) return;
 
@@ -327,6 +340,7 @@ namespace KillerShell.Shell
         /// </summary>
         private void ExtractArchives(bool intoOwnFolder)
         {
+            if (RefuseDemoArchiveWrite()) return;
             var archives = MenuArchives();
             if (archives.Count == 0) return;
             var tab = _active;

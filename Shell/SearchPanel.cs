@@ -1,35 +1,23 @@
 using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
 
 namespace KillerShell.Shell
 {
-    // The search panel's open/closed state. Partial of MainWindow.
-    //
-    // Search used to BE the app, so its config panel owned the left third of the window whether
-    // you were searching or not. Now that browsing is the primary mode the panel is optional:
-    // closed by default, opened from the rail chevron or with Ctrl+Shift+S, and the choice is
-    // remembered. It sits on the RIGHT edge now - the left is the folder tree's, which is where
-    // a file manager puts it.
-    //
-    // The toggle button deliberately lives on the rail rather than on the panel: a panel
-    // collapsed to zero width would take its own handle with it and there would be no way back.
-    // The rail is on the left even though this panel is on the right, because one rail for two
-    // panels beats a second strip of chrome carrying a single button.
+    // Reuse the search controls in a titlebar flyout without changing pane widths.
     public partial class MainWindow
     {
         private bool _searchOpen;
 
-        // The width the panel opens to. There is no column splitter yet, so this is fixed; when
-        // one arrives, this is the value it should persist.
-        private const double SearchPanelWidth = 265;
-
         private void InitSearchPanel()
         {
-            _searchOpen = Services.ThemeManager.GetSetting("SearchPanelOpen") == "1";
-            ApplySearchPanel(animate: false);   // startup should not slide
+            if (SearchPanel.Parent is Panel parent) parent.Children.Remove(SearchPanel);
+            TitleSearchContent.Content = SearchPanel;
+            SearchPanel.Width = 320;
+            SearchPanel.Visibility = Visibility.Visible;
+            ScaleHost.SizeChanged += (_, _) => UpdateTitleSearchSize();
+            _searchOpen = false;
+            ApplySearchPanel(false);
         }
 
         private void SearchPanel_Click(object sender, RoutedEventArgs e) => ToggleSearchPanel();
@@ -37,62 +25,43 @@ namespace KillerShell.Shell
         internal void ToggleSearchPanel()
         {
             _searchOpen = !_searchOpen;
-            ApplySearchPanel(animate: true);
-            Services.ThemeManager.SetSetting("SearchPanelOpen", _searchOpen ? "1" : "0");
-
-            // Opening it is nearly always a prelude to typing a term, so put the caret there.
+            ApplySearchPanel(false);
             if (_searchOpen) FocusFirstTerm();
         }
 
-        // The slide itself is shared with the folder tree (PanelSlide.cs) so the two edges of
-        // the window move identically.
         private void ApplySearchPanel(bool animate)
         {
-            // The glyph stays a magnifier in both states and the accent carries the state
-            // instead (RailButton's Tag="on" trigger). Swapping it for a chevron on open read as
-            // a different button rather than the same one lit up.
             SearchPanelBtn.Tag = _searchOpen ? "on" : null;
-
-            // No gap: the panel butts straight against the results pane, so the pane's edge
-            // margin goes with it, or the two would add up to a visible trench. The tab strip
-            // travels with the pane it sits on, or the tabs hang off the pane's right edge.
-            //
-            // Both panes are set, and the dual-pane gutter is applied in the same pass
-            // (DualPane.cs). Doing it here through Pane only ever corrected whichever half had
-            // focus, which is why the other one kept the wrong margin.
-            ApplyPaneMargins();
-
-            // Right-hand panel, so its INNER edge is the LEFT one - freeze there and the panel
-            // slides out under the window's right frame, mirroring the tree, which is a left
-            // panel and freezes Right (see SlideColumn's freezeAlign doc in PanelSlide.cs).
-            // This froze Right, the OUTER edge, so the panel stood still while the results pane
-            // wiped across the top of it - the mirror image of the sidebar bug fixed 2026-08-10.
-            // With the tree on the right (TreeDock.cs) this panel is on the left edge and its
-            // inner edge is the right one.
-            SlideColumn(SearchCol, SearchPanel, _searchOpen,
-                        SearchPanelWidth, minOpen: 200, maxOpen: 380,
-                        freezeAlign: _treeRight ? HorizontalAlignment.Right : HorizontalAlignment.Left,
-                        animate: animate);
+            SearchCol.Width = new GridLength(0);
+            SearchCol.MinWidth = 0;
+            UpdateTitleSearchSize();
+            SearchScopeButton.Content = Loc(SearchScopeKey(_titleSearchScope));
+            SearchScopeButton.ToolTip = string.Join(Environment.NewLine, ResolveTitleSearchRoots());
+            TitleSearchPopup.IsOpen = _searchOpen;
         }
 
-        /// <summary>
-        /// Explorer's Ctrl+E: put the caret in the search box. Opens the panel first if it is
-        /// shut - and stops there, because ToggleSearchPanel already focuses on the way open and
-        /// focusing twice would fight the slide.
-        /// </summary>
+        private void UpdateTitleSearchSize()
+        {
+            double windowHeight = ActualHeight > 0 ? ActualHeight : Height;
+            double available = (Math.Min(windowHeight, SystemParameters.WorkArea.Height) - 100) / _appScale;
+            TitleSearchViewport.MaxHeight = Math.Max(80, available - 52);
+            // The form retains room for its existing minimum rows; the viewport scrolls it
+            // when accessibility zoom or a short window leaves less space.
+            SearchPanel.Height = Math.Max(320, Math.Min(560, TitleSearchViewport.MaxHeight));
+        }
+
         internal void FocusSearchTerms()
         {
             if (!_searchOpen) { ToggleSearchPanel(); return; }
             FocusFirstTerm();
         }
 
-        // The first term box in the first group, if the panel has one built yet.
         private void FocusFirstTerm()
         {
             Dispatcher.InvokeAsync(() =>
             {
                 TermsList.UpdateLayout();
-                var box = FindDescendant<System.Windows.Controls.TextBox>(TermsList);
+                var box = FindDescendant<TextBox>(TermsList);
                 box?.Focus();
                 box?.SelectAll();
             }, System.Windows.Threading.DispatcherPriority.Input);

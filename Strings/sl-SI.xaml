@@ -91,7 +91,7 @@
     <sys:String x:Key="Str_Sort_Found">po vrstnem redu najdb</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtriraj te rezultate (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Išči v teh rezultatih  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Podokni levo in desno / Podokni zgoraj in spodaj (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Preklopi postavitev podoken. Ctrl+klik obrne vrstni red; desni klik izbere postavitev. F10 odpre ali zapre drugo podokno.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Več orodij</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Sistemska orodja</sys:String>
     <sys:String x:Key="Str_TT_Sort">Razvrsti po  (Alt+S)</sys:String>
@@ -695,6 +695,7 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Ks_Language">odpri izbirnik jezika</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">vklopi ali izklopi filmsko zrnatost</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">odpri ali zapri drugo podokno</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">preklopi na drugo podokno</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">prikaži ali skrij skrite in sistemske elemente</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Podrobnosti spodaj / Podrobnosti desno / Izklopi podrobnosti</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">pogled seznama, ikon ali podrobnosti</sys:String>
@@ -881,9 +882,23 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Layout_DetailsBottom">Podrobnosti spodaj</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Podrobnosti desno</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Izklopi podrobnosti</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Eno podokno</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Podokni levo in desno</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Podokni zgoraj in spodaj</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Preišči to okno</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Preišči vse odprte zavihke</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Preišči celoten računalnik</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Podrobnosti spodaj (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Podrobnosti desno (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Izklopi podrobnosti (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">mere</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">razmerje stranic</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">barvna globina</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">prosojnost</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Podprta</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Brez</sys:String>
+    <sys:String x:Key="Str_Details_Pages">strani</sys:String>
+    <sys:String x:Key="Str_Details_Duration">trajanje</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">različica datoteke</sys:String>
 </ResourceDictionary>

@@ -3,22 +3,22 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-// Responsive path rows and the existing file toolbar overflow. Partial of MainWindow.
-// The same path/editor controls change grid cells; commands are never copied.
+// Responsive toolbar overflow preserves readable paths in a single row. Partial of MainWindow.
+// Existing command controls move between the toolbar and overflow.
 namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
         private static readonly string[] ShedOrder =
         [
-            "ExportBtn", "FoldersTopBtn", "ShowHiddenBtn", "DetailsPaneBtn",
-            "ExpandAllButton", "SortDirButton",
+            "ExportBtn", "PipeBtn", "FoldersTopBtn", "ShowHiddenBtn", "DetailsPaneBtn",
+            "ExpandAllButton", "FileDensityBtn", "ViewDetailsBtn", "ViewIconsBtn", "ViewListBtn",
+            "SortControlsHost",
         ];
 
         // About 36 characters at the existing 12px monospace size, excluding the
         // localized prefix, padding and recents button. App scaling is applied by WPF.
         private const double MinFilenameWidth = 260;
-        private const double PathRowHysteresis = 24;
         private readonly HashSet<FilePane> _reflowingToolbars = [];
 
         internal void ToolStrip_SizeChanged(FilePane pane) => ReflowToolStrip(pane);
@@ -29,12 +29,10 @@ namespace KillerShell.Shell
             return element.DesiredSize.Width;
         }
 
-        private static bool NeedsSecondPathRow(double width, double required, bool wasCompact)
-            => width < required + (wasCompact ? PathRowHysteresis : 0);
-
         private void ReflowToolStrip(FilePane pane)
         {
-            if (pane?.ToolStrip == null || pane.LocationRow.ActualWidth <= 0
+            if (pane?.ToolStrip == null || pane.LocationRow.ActualWidth <= 0 || pane.OverflowPopup.IsOpen
+                || pane.SortChoice.IsDropDownOpen
                 || !_reflowingToolbars.Add(pane)) return;
             try
             {
@@ -43,23 +41,19 @@ namespace KillerShell.Shell
                 double fullTools = pane.ToolStrip.Children.OfType<FrameworkElement>()
                     .Where(el => el != pane.OverflowBtn).Concat(pane.OverflowPanel.Children.OfType<FrameworkElement>())
                     .Sum(MeasuredWidth);
-                double path = MinFilenameWidth + MeasuredWidth(pane.ScopePrefixText)
-                    + MeasuredWidth(pane.RecentsBtn) + pane.ScopeBar.Padding.Left + pane.ScopeBar.Padding.Right;
-                bool wasCompact = Grid.GetRow(pane.ScopeBar) == 1;
-                bool compact = NeedsSecondPathRow(pane.LocationRow.ActualWidth, nav + fullTools + margins + path, wasCompact);
-                if (compact != wasCompact)
+                bool pathVisible = pane.ScopeBar.Visibility != Visibility.Collapsed && pane.ScopeBar.Parent == pane.LocationRow;
+                double path = pathVisible ? MinFilenameWidth + MeasuredWidth(pane.ScopePrefixText)
+                    + MeasuredWidth(pane.RecentsBtn) + pane.ScopeBar.Padding.Left + pane.ScopeBar.Padding.Right : 0;
+                if (pathVisible && Grid.GetRow(pane.ScopeBar) != 0)
                 {
-                    // Close anchored flyouts before their buttons change rows.
-                    pane.RecentsMenu.IsOpen = pane.SortPopup.IsOpen = pane.ExportPopup.IsOpen = pane.OverflowPopup.IsOpen = false;
-                    Grid.SetRow(pane.ScopeBar, compact ? 1 : 0);
-                    Grid.SetColumn(pane.ScopeBar, compact ? 0 : 1);
-                    Grid.SetColumnSpan(pane.ScopeBar, compact ? 3 : 1);
-                    pane.ScopeBar.Padding = compact ? new Thickness(6, 1, 8, 1) : new Thickness(6, 7, 8, 5);
+                    pane.RecentsMenu.IsOpen = false;
+                    Grid.SetRow(pane.ScopeBar, 0);
+                    Grid.SetColumn(pane.ScopeBar, 1);
+                    Grid.SetColumnSpan(pane.ScopeBar, 1);
                 }
 
-                // In compact mode the buttons have the entire first row. Compute from
-                // the expanded button extent, never the strip's current ActualWidth.
-                double avail = pane.LocationRow.ActualWidth - nav - margins - (compact ? 0 : path);
+                // Secondary actions yield space before the address; the sort control is last.
+                double avail = pane.LocationRow.ActualWidth - nav - margins - path;
                 double remaining = fullTools;
                 double chevron = MeasuredWidth(pane.OverflowBtn);
                 // Collapsed controls measure to zero, but the visible chevron is 20px.
@@ -100,18 +94,18 @@ namespace KillerShell.Shell
         internal void TerminalBar_SizeChanged(FilePane pane)
         {
             if (pane?.TermBarLayout == null || pane.TermBarLayout.ActualWidth <= 0
+                || pane.TermPathHost.Visibility == Visibility.Collapsed
+                || pane.TermPathHost.Parent != pane.TermBarLayout
                 || !_reflowingToolbars.Add(pane)) return;
             try
             {
-                double required = MeasuredWidth(pane.TermToolStrip) + MeasuredWidth(pane.TermPrefixText) + MinFilenameWidth;
-                bool wasCompact = Grid.GetRow(pane.TermPathHost) == 1;
-                bool compact = NeedsSecondPathRow(pane.TermBarLayout.ActualWidth, required, wasCompact);
-                if (compact == wasCompact) return;
-                Grid.SetRow(pane.TermPathHost, compact ? 1 : 0);
-                Grid.SetColumnSpan(pane.TermPathHost, compact ? 2 : 1);
-                Grid.SetColumn(pane.TermToolStrip, compact ? 0 : 1);
-                Grid.SetColumnSpan(pane.TermToolStrip, compact ? 2 : 1);
-                pane.TermToolStrip.HorizontalAlignment = compact ? HorizontalAlignment.Right : HorizontalAlignment.Stretch;
+                Grid.SetRow(pane.TermPathHost, 0);
+                Grid.SetColumn(pane.TermPathHost, 0);
+                Grid.SetColumnSpan(pane.TermPathHost, 1);
+                Grid.SetRow(pane.TermToolStrip, 0);
+                Grid.SetColumn(pane.TermToolStrip, 1);
+                Grid.SetColumnSpan(pane.TermToolStrip, 1);
+                pane.TermToolStrip.HorizontalAlignment = HorizontalAlignment.Stretch;
             }
             finally { _reflowingToolbars.Remove(pane); }
         }
@@ -133,7 +127,8 @@ namespace KillerShell.Shell
 
         private static readonly string[] StripOrder =
         [
-            "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "SortBtn", "SortDirButton",
+            "ViewListBtn", "ViewIconsBtn", "ViewDetailsBtn", "FileDensityBtn",
+            "SortControlsHost",
             "ExpandAllButton", "ShowHiddenBtn", "FoldersTopBtn", "DetailsPaneBtn",
             "PipeBtn", "ExportBtn", "OverflowBtn",
         ];

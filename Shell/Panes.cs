@@ -38,6 +38,29 @@ namespace KillerShell.Shell
             UpdatePaneFocusRing();   // DualPane.cs - the accent ring follows focus
         }
 
+        private void SwitchFocusedPane()
+        {
+            if (!DualPane || ShortcutsOverlay.IsVisible || AboutOverlay.IsVisible || FontsOverlay.IsVisible
+                || AssocOverlay.IsVisible || PatternHelpOverlay.IsVisible) return;
+
+            var target = ReferenceEquals(Pane, LeftPane) ? RightPane : LeftPane;
+            if (!target.IsVisible || target.Active == null) return;
+            if (Pane.AddressBox.IsVisible) EndEditAddress();
+            FocusPane(target);
+            var tab = target.Active;
+            QueueTabFocus(tab, () =>
+            {
+                if (tab.Term != null) tab.Term.Focus();
+                else if (tab.Editor != null) tab.Editor.TextArea.Focus();
+                else if (tab.Procs != null) tab.Procs.FocusFilter();
+                else if (tab.Events != null) tab.Events.FocusFilter();
+                else if (tab.Registry != null) tab.Registry.MoveFocus(new System.Windows.Input.TraversalRequest(System.Windows.Input.FocusNavigationDirection.First));
+                else if (tab.Perf != null) tab.Perf.MoveFocus(new System.Windows.Input.TraversalRequest(System.Windows.Input.FocusNavigationDirection.First));
+                else if (tab.Storage != null) tab.Storage.Focus();
+                else target.ResultsList.Focus();
+            });
+        }
+
         /// <summary>
         /// Move focus WITHOUT re-pointing the window chrome or the focus ring. Used only while
         /// seeding a pane that is not the one the user is looking at (DualPane.cs): the point is

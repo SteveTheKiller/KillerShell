@@ -101,6 +101,17 @@ namespace KillerShell.Editing
 
         private bool _wasDirty;
 
+        internal int DensityLevel { get; private set; } = 1;
+
+        internal void SetDensity(int level)
+        {
+            DensityLevel = Math.Max(0, Math.Min(4, level));
+            double scale = new double[] { 1.1, 1, 0.95, 0.9, 0.85 }[DensityLevel];
+            FontSize = Math.Max(EditorOptions.FontMin, EditorOptions.FontSize * scale);
+            double inset = new double[] { 8, 4, 3, 2, 1 }[DensityLevel];
+            Padding = new Thickness(inset, 0, inset, 0);
+        }
+
         internal EditorControl(string path)
         {
             FilePath = path;

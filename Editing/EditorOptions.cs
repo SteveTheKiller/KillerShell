@@ -71,7 +71,7 @@ namespace KillerShell.Editing
         {
             editor.WordWrap        = WordWrap;
             editor.ShowLineNumbers = LineNumbers;
-            editor.FontSize        = FontSize;
+            editor.SetDensity(editor.DensityLevel);
 
             // Empty means "no editor font chosen". That falls back to the app's preferred
             // monospaced face when this machine has it (Fonts.cs), and to the MonoFont resource

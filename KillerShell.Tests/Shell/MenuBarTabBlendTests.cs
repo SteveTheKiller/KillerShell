@@ -59,17 +59,15 @@ public static class MenuBarThemeScenario
         var window = fixture.Window;
         var pane = (FilePane)window.FindName("LeftPane");
         var right = (FilePane)window.FindName("RightPane");
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        window.ToggleDualPane();
         ShellWindowFixture.PumpUntil(() => right.Active != null && right.Active.IsBrowsing);
-        MenuBarTabBlendScenario.Descendants<Button>(window).Single(button => Equals(button.Content, "+"))
-            .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        window.Pane.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         window.FocusPane(pane);
         var folder = pane.Active;
         var terminal = new TerminalControl(TerminalSkin.Default);
         var tab = new SearchTab("Terminal") { Term = terminal };
         pane.Tabs.Add(tab);
-        MenuBarTabBlendScenario.Descendants<Button>(window).Single(button => Equals(button.Content, "+"))
-            .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        pane.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         window.UpdateLayout();
         foreach (Theme theme in Enum.GetValues(typeof(Theme)))
         {
@@ -127,8 +125,7 @@ public static class MenuBarAnimationScenario
         var window = fixture.Window;
         ThemeManager.Apply(Theme.Malaise);
         var pane = (FilePane)window.FindName("LeftPane");
-        MenuBarTabBlendScenario.Descendants<Button>(window).Single(button => Equals(button.Content, "+"))
-            .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        pane.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         window.UpdateLayout();
         var tab = MenuBarTabBlendScenario.TabBorder(pane, pane.Active);
         Color original = MenuBarTabBlendScenario.Paint(tab.Background);
@@ -162,8 +159,7 @@ public static class MenuBarTerminalBlendScenario
         var terminal = new TerminalControl(TerminalSkin.Default);
         var tab = new SearchTab("Terminal") { Term = terminal };
         pane.Tabs.Add(tab);
-        MenuBarTabBlendScenario.Descendants<Button>(window).Single(button => Equals(button.Content, "+"))
-            .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        pane.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         window.UpdateLayout();
         MenuBarTabBlendScenario.SelectTab(pane, tab);
         Assert.True(pane.TerminalHost.IsVisible);
@@ -221,8 +217,7 @@ public static class MenuBarTabBlendScenario
         ThemeManager.Apply(Theme.Malaise);
         var pane = (FilePane)window.FindName("LeftPane");
         // Use the visible New Tab action so the strip has two live tab templates.
-        Descendants<Button>(window).Single(button => Equals(button.Content, "+"))
-            .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        pane.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         ShellWindowFixture.PumpUntil(() => pane.TabStrip.Items.Count == 2);
         window.UpdateLayout();
         Border active = TabBorder(pane, pane.Active);

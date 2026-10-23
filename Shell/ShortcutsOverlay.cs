@@ -70,8 +70,8 @@ namespace KillerShell.Shell
         /// action reaches two layers of the board without appearing twice.</para>
         /// <para><c>Caps</c> are keycap ids from KbRows (KeyboardMapOverlay.cs) - several
         /// because one action can own several keys, as Ctrl+X / C / V and Alt+1-0 do. An empty
-        /// <c>Caps</c> means the binding is real but not drawable: Ctrl+Alt+E has no Ctrl+Alt
-        /// layer to sit on, and the board has no numpad.</para>
+        /// <c>Caps</c> keeps a binding in the list without assigning it a keycap, for example
+        /// when another command in the same scope already occupies that cap.</para>
         /// </remarks>
         private readonly struct KsBinding(MainWindow.KsScope scope, string cat, string keys,
                                           string label, MainWindow.KbLayer layer, params string[] caps)
@@ -142,6 +142,7 @@ namespace KillerShell.Shell
             new(KsScope.Global, "Tabs",   "",               "Str_Ks_Shell",        KbLayer.Ctrl, "Grave"),
             new(KsScope.Global, "Tabs",   "Shift+F8",       "Str_Ks_ShellCmd",     KbLayer.Shift, "F8"),
             new(KsScope.Global, "Tabs",   "Ctrl+F8 / Ctrl+Alt+`", "Str_Ks_ShellAdmin", KbLayer.Ctrl, "F8"),
+            new(KsScope.Global, "Tabs",   "",               "Str_Ks_ShellAdmin", KbLayer.CtrlAlt, "Grave"),
             // Ctrl+Shift+F8 is the elevated CMD. The handler has always had it (F8 with ctrl for
             // admin and shift for CMD) and the map has always lit it; only the LIST was missing
             // it, which is exactly the drift one table removes.
@@ -189,13 +190,14 @@ namespace KillerShell.Shell
             new(KsScope.Global, "View",   "Alt+M",          "Str_Ks_MenuBar",      KbLayer.Alt, "M"),
             new(KsScope.Global, "View",   "F10 / Ctrl+Shift+P", "Str_Ks_DualPane", KbLayer.Base, "F10"),
             new(KsScope.Global, "View",   "",               "Str_Ks_DualPane",     KbLayer.CtrlShift, "P"),
+            new(KsScope.Global, "View",   "Ctrl+F6",        "Str_Ks_SwitchPane",   KbLayer.Ctrl, "F6"),
             new(KsScope.Global, "View",   "Ctrl+H",         "Str_Ks_ShowHidden",   KbLayer.Ctrl, "H"),
             new(KsScope.Global, "View",   "Alt+P",          "Str_Ks_DetailsPane",  KbLayer.Alt, "P"),
-            new(KsScope.Files, "View", "Ctrl+Alt+Down", "Str_Layout_DetailsBottom", KbLayer.Base),
-            new(KsScope.Files, "View", "Ctrl+Alt+Right", "Str_Layout_DetailsRight", KbLayer.Base),
-            new(KsScope.Files, "View", "Ctrl+Alt+0", "Str_Layout_DetailsOff", KbLayer.Base),
-            new(KsScope.Global, "View", "Ctrl+Alt+Left", "Str_Layout_LeftRight", KbLayer.Base),
-            new(KsScope.Global, "View", "Ctrl+Alt+Up", "Str_Layout_TopBottom", KbLayer.Base),
+            new(KsScope.Files, "View", "Ctrl+Alt+Down", "Str_Layout_DetailsBottom", KbLayer.CtrlAlt, "Down"),
+            new(KsScope.Files, "View", "Ctrl+Alt+Right", "Str_Layout_DetailsRight", KbLayer.CtrlAlt, "Right"),
+            new(KsScope.Files, "View", "Ctrl+Alt+0", "Str_Layout_DetailsOff", KbLayer.CtrlAlt, "D0"),
+            new(KsScope.Global, "View", "Ctrl+Alt+Left", "Str_Layout_LeftRight", KbLayer.CtrlAlt, "Left"),
+            new(KsScope.Global, "View", "Ctrl+Alt+Up", "Str_Layout_TopBottom", KbLayer.CtrlAlt, "Up"),
             new(KsScope.Global, "View",   "Ctrl+Shift+S",   "Str_Ks_SearchPanel",  KbLayer.CtrlShift, "S"),
             new(KsScope.Global, "View",   "Ctrl+Right",     "Str_Ks_ExpandAll",    KbLayer.Ctrl, "Right"),
             new(KsScope.Global, "View",   "Ctrl+Left",      "Str_Ks_CollapseAll",  KbLayer.Ctrl, "Left"),
@@ -209,10 +211,8 @@ namespace KillerShell.Shell
             new(KsScope.Global, "View",   "Alt+Shift+G",    "Str_Ks_FilmGrain",    KbLayer.AltShift, "G"),
             new(KsScope.Global, "View",   "Alt+L",          "Str_Ks_Language",     KbLayer.Alt, "L"),
 
-            // Ctrl+Alt has no layer on the board and is not worth one for two rows, so these
-            // print on the list and light nothing.
-            new(KsScope.Global, "File",   "Ctrl+Alt+E",       "Str_Ks_ExportHtml", KbLayer.Base),
-            new(KsScope.Global, "File",   "Ctrl+Alt+Shift+E", "Str_Ks_ExportCsv",  KbLayer.Base),
+            new(KsScope.Global, "File",   "Ctrl+Alt+E",       "Str_Ks_ExportHtml", KbLayer.CtrlAlt, "E"),
+            new(KsScope.Global, "File",   "Ctrl+Alt+Shift+E", "Str_Ks_ExportCsv",  KbLayer.CtrlAltShift, "E"),
             // Ctrl+comma edits the preferred PowerShell host's $PROFILE (ProfileMenu.cs). It is
             // the window's even from inside a shell, which is why it sits here rather than under
             // Terminal.

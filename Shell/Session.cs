@@ -362,6 +362,7 @@ namespace KillerShell.Shell
                     t.CaseSensitive   = p[4] == "1";
                     t.SortIndex       = int.TryParse(p[5], out int si) ? si : 0;
                     t.SortAsc         = p[6] == "1";
+                    RestoreWindowSort(t, pane);
 
                     // Browse state, appended after the nine original fields. A blob from a build
                     // that predates it is nine fields long and simply restores as a search tab,

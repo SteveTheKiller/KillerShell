@@ -109,7 +109,7 @@
     <sys:String x:Key="Str_Sort_Found">come trovati</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtra questi risultati (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Cerca dentro questi risultati  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Riquadri affiancati / Riquadri sovrapposti (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Cambia la disposizione dei riquadri. Ctrl+clic inverte l'ordine; clic destro per scegliere. F10 apre o chiude il secondo riquadro.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Altri strumenti</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Strumenti di sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordina per  (Alt+S)</sys:String>
@@ -774,6 +774,7 @@
     <sys:String x:Key="Str_Ks_Language">aprire la scelta della lingua</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">attivare o disattivare la grana pellicola</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">aprire o chiudere il secondo pannello</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">passare all'altro pannello</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">mostrare o nascondere gli elementi nascosti e di sistema</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Dettagli in basso / Dettagli a destra / Nascondi dettagli</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">vista elenco, icone o dettagli</sys:String>
@@ -971,9 +972,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Dettagli in basso</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Dettagli a destra</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Nascondi dettagli</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Un riquadro</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Riquadri affiancati</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Riquadri sovrapposti</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Cerca in questa finestra</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Cerca in tutte le schede aperte</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Cerca in tutto il computer</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Dettagli in basso (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Dettagli a destra (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Nascondi dettagli (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">dimensioni</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">proporzioni</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">profondità colore</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">trasparenza</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Supportata</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Nessuna</sys:String>
+    <sys:String x:Key="Str_Details_Pages">pagine</sys:String>
+    <sys:String x:Key="Str_Details_Duration">durata</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">versione file</sys:String>
 </ResourceDictionary>

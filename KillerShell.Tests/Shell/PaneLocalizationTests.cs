@@ -29,7 +29,7 @@ public static class PaneLocalizationScenario
         var window = fixture.Window;
         var left = (FilePane)window.FindName("LeftPane");
         var right = (FilePane)window.FindName("RightPane");
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        window.ToggleDualPane();
         ShellWindowFixture.PumpUntil(() => right.Active.IsBrowsing);
         var leftTab = AddTab(left, "Left query");
         var rightTab = AddTab(right, "Right query");
@@ -70,12 +70,12 @@ public static class PaneLocalizationScenario
             Assert.Same(right, window.Pane);
             VerifyPane(left, leftTab);
             VerifyPane(right, rightTab);
-            ShellWindowFixture.Click(window, "DualPaneRailBtn");
+            window.ToggleDualPane();
             Assert.Same(left, window.Pane);
             Switch(window, Locale.Es);
             Verify(all, notifications);
             Assert.Same(left, window.Pane);
-            ShellWindowFixture.Click(window, "DualPaneRailBtn");
+            window.ToggleDualPane();
             VerifyPane(right, rightTab);
             Assert.True(leftTab.IsSearching);
         }
@@ -139,5 +139,11 @@ public static class PaneLocalizationScenario
         Assert.Equal(tab.StatsLabel, pane.StatsText.Text);
         Assert.Equal(tab.ScannedLabel, pane.ScannedText.Text);
         Assert.Equal(tab.PipeLabel, pane.ScopePathLabel.Text);
+        string[] densityKeys = ["Str_St_DensityRoomy", "Str_St_DensityFull", "Str_St_DensityCompact",
+                                "Str_St_DensityTight", "Str_St_DensityMin"];
+        string densityTip = MainWindow.LocStatic("Str_TT_Density") + ": "
+            + MainWindow.LocStatic(densityKeys[pane.ViewState.Density]);
+        foreach (var button in new[] { pane.FileDensityBtn, pane.TermDensityBtn, pane.EditorDensityBtn })
+            Assert.Equal(densityTip, button.ToolTip);
     }
 }

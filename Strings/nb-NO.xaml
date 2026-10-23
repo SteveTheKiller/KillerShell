@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">som funnet</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrer disse resultatene  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Søk i disse resultatene  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Ruter til venstre og høyre / Ruter øverst og nederst (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Bytt ruteoppsett. Ctrl+klikk går bakover; høyreklikk velger oppsett. F10 åpner eller lukker den andre ruten.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Flere verktøy</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systemverktøy</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sorter etter  (Alt+S)</sys:String>
@@ -809,6 +809,7 @@
     <sys:String x:Key="Str_Ks_Language">åpne språkvalget</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">slå filmkorn på eller av</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">åpne eller lukk det andre panelet</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">bytt til det andre panelet</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">vis eller skjul skjulte elementer og systemelementer</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Detaljer nederst / Detaljer til høyre / Skjul detaljer</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">liste-, ikon- eller detaljvisning</sys:String>
@@ -1008,9 +1009,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Detaljer nederst</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Detaljer til høyre</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Skjul detaljer</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Én rute</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Ruter til venstre og høyre</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Ruter øverst og nederst</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Søk i dette vinduet</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Søk i alle åpne faner</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Søk på hele datamaskinen</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Detaljer nederst (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Detaljer til høyre (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Skjul detaljer (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">dimensjoner</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">sideforhold</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">fargedybde</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">gjennomsiktighet</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Støttes</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Ingen</sys:String>
+    <sys:String x:Key="Str_Details_Pages">sider</sys:String>
+    <sys:String x:Key="Str_Details_Duration">varighet</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">filversjon</sys:String>
 </ResourceDictionary>

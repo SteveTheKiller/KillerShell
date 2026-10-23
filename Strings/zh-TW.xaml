@@ -73,7 +73,7 @@
     <sys:String x:Key="Str_Sort_Found">預設順序</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">篩選這些結果（Ctrl+F）</sys:String>
     <sys:String x:Key="Str_TT_Pipe">在這些結果中搜尋  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">左右窗格 / 上下窗格 (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">切換窗格配置。Ctrl+按一下可反向切換，按右鍵可選擇配置。F10開啟或關閉第二個窗格。</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">更多工具</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">系統工具</sys:String>
     <sys:String x:Key="Str_TT_Sort">排序方式  (Alt+S)</sys:String>
@@ -879,6 +879,7 @@
     <sys:String x:Key="Str_Ks_Language">開啟語言選擇器</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">開啟或關閉底片顆粒</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">開啟或關閉第二個窗格</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">切換到另一個窗格</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">顯示或隱藏隱藏和系統項目</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">在底部顯示詳細資料 / 在右側顯示詳細資料 / 隱藏詳細資料</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">清單、圖示或詳細資料檢視</sys:String>
@@ -959,9 +960,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">在底部顯示詳細資料</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">在右側顯示詳細資料</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">隱藏詳細資料</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">單一窗格</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">左右窗格</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">上下窗格</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">搜尋此視窗</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">搜尋所有開啟的分頁</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">搜尋整部電腦</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">在底部顯示詳細資料 (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">在右側顯示詳細資料 (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">隱藏詳細資料 (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">尺寸</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">長寬比</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">色彩深度</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">透明度</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">支援</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">無</sys:String>
+    <sys:String x:Key="Str_Details_Pages">頁數</sys:String>
+    <sys:String x:Key="Str_Details_Duration">長度</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">檔案版本</sys:String>
 </ResourceDictionary>

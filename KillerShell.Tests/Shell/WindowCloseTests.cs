@@ -139,9 +139,9 @@ public static class WindowCloseScenario
             editors.Add(NewDocument(window, "LeftPane"));
             if (twoPanes)
             {
-                Click(window, "DualPaneRailBtn");
+                window.ToggleDualPane();
                 editors.Add(NewDocument(window, "RightPane"));
-                if (scenario == "hidden-pane") Click(window, "DualPaneRailBtn");
+                if (scenario == "hidden-pane") window.ToggleDualPane();
                 Pump(TimeSpan.FromMilliseconds(500));
             }
             if (scenario == "clean") editors[0].IsModified = false;

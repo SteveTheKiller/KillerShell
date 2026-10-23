@@ -37,9 +37,9 @@ public static class TabCloseLifecycleScenario
         var tab = new SearchTab("Closing performance") { Perf = tool };
         try
         {
-            ShellWindowFixture.Click(window, "DualPaneRailBtn");
+            window.ToggleDualPane();
             ShellWindowFixture.PumpUntil(() => right.Active.IsBrowsing);
-            ShellWindowFixture.Click(window, "DualPaneRailBtn");
+            window.ToggleDualPane();
             // No item container exists in a hidden pane: this close must finish synchronously.
             var hidden = new SearchTab("Unrealized tool") { Events = new EventViewerControl() };
             right.Tabs.Add(hidden);
@@ -49,7 +49,7 @@ public static class TabCloseLifecycleScenario
             Assert.Null(hidden.Events);
             Assert.Same(left, window.Pane);
 
-            ShellWindowFixture.Click(window, "DualPaneRailBtn");
+            window.ToggleDualPane();
             right.Tabs.Add(tab);
             right.Active = tab;
             window.FocusPane(left);

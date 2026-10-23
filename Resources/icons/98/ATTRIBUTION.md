@@ -25,6 +25,11 @@ the brand pack uses. Integer scale, no interpolation - anything else turns hard 
 mush, and the whole point of the set is that the pixels stay pixels. Nothing was recolored or
 redrawn.
 
+The `small_` variants are the matching native 16px originals from the same source paths
+with `/16/` in place of `/32/`. They are copied unchanged and used in trees, bookmarks,
+tabs, and other small controls. Larger views retain the 32px artwork above. The exited
+shell icon retains its existing composite because it has no upstream 16px counterpart.
+
 Regenerate rather than hand-editing anything in this folder.
 
 ## Source map

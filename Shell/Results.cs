@@ -72,52 +72,30 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  RESULT SORTING (like the HTML report's clickable columns)
         // ═══════════════════════════════════════════════════════════
-        // The sort key is picked from a flyout rather than a combo (FilePane.xaml). The tab's
-        // SortIndex was always the source of truth and the combo only mirrored it, so the old
-        // _syncingSort guard is gone with it: nothing programs a selection any more, and a
-        // click on a flyout row is by definition the user.
-        internal void SortMenu_Click(object sender, RoutedEventArgs e)
+        private bool _syncSortSelection;
+
+        internal void SortChoice_SelectionChanged(FilePane pane, object sender, SelectionChangedEventArgs e)
         {
-            SyncSortMenu();                     // opened cold - reflect the tab before it shows
-            var p = Pane.SortPopup;
-            p.IsOpen = !p.IsOpen;
-            if (p.IsOpen && p.Child is UIElement child) Anim.FadeIn(child);
+            if (_syncSortSelection || pane.Active == null || sender is not ComboBox choice) return;
+            int index = choice.SelectedIndex;
+            if (index < 0 || index > 6 || pane.Active.SortIndex == index) return;
+            FocusPane(pane);
+            SetColumnSort(index);
         }
 
-        internal void SortItem_Click(object sender, RoutedEventArgs e)
-        {
-            Pane.SortPopup.IsOpen = false;
-            if (_active == null) return;
-
-            // The index rides on CommandParameter, not Tag: SurfaceButton's Tag="on" trigger is
-            // what marks the chosen row, so Tag is already spoken for.
-            if (sender is not Button b || !int.TryParse(b.CommandParameter as string, out int idx)) return;
-            if (idx == _active.SortIndex) return;
-
-            _active.SortIndex = idx;
-            ApplySort(_active);
-            SyncSortMenu();
-        }
-
-        /// <summary>
-        /// Light the active tab's sort key in the flyout, through the same Tag="on" accent
-        /// convention the toolbar toggles use.
-        /// </summary>
+        /// <summary>Reflect a tab switch or column sort without treating it as a new selection.</summary>
         private void SyncSortMenu()
         {
-            int idx = _active?.SortIndex ?? 1;
-            Pane.SortFoundItem.Tag    = idx == 0 ? "on" : null;
-            Pane.SortNameItem.Tag     = idx == 1 ? "on" : null;
-            Pane.SortFolderItem.Tag   = idx == 2 ? "on" : null;
-            Pane.SortSizeItem.Tag     = idx == 3 ? "on" : null;
-            Pane.SortModifiedItem.Tag = idx == 4 ? "on" : null;
-            Pane.SortTypeItem.Tag     = idx == 5 ? "on" : null;
-            Pane.SortCreatedItem.Tag  = idx == 6 ? "on" : null;
+            _syncSortSelection = true;
+            try { Pane.SortChoice.SelectedIndex = _active?.SortIndex ?? 4; }
+            finally { _syncSortSelection = false; }
         }
 
         internal void SortDir_Click(object sender, RoutedEventArgs e)
         {
+            if (_active == null) return;
             _active.SortAsc = !_active.SortAsc;
+            SaveWindowSort(_active);
             ApplySort(_active);
         }
 
@@ -149,6 +127,7 @@ namespace KillerShell.Shell
                 Pane.SortDirButton.SetResourceReference(System.Windows.Automation.AutomationProperties.ItemStatusProperty,
                     t.SortAsc ? "Str_A11y_SortAsc" : "Str_A11y_SortDesc");
                 UpdateColumnArrows();   // ResultsView.cs
+                SyncSortMenu();
             }
 
             // Cleared with the sort and for the same reason: a group description on a view that

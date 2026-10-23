@@ -168,7 +168,11 @@ namespace KillerShell.Shell
         /// re-rendered from their stored resource key + raw args.</summary>
         private void RelocalizeDynamicUi()
         {
-            foreach (var pane in new[] { LeftPane, RightPane }) UpdateDetailsPaneButton(pane);
+            foreach (var pane in new[] { LeftPane, RightPane })
+            {
+                UpdateDetailsPaneButton(pane);
+                ApplyContentDensity(pane);
+            }
             foreach (var root in _treeRoots) root.RefreshGroupName(Loc("Str_Term_Linux"));
             SearchButton.Content = Loc(_active.IsSearching ? "Str_Btn_Stop" : "Str_Btn_Search");
 

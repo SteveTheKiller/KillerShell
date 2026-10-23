@@ -111,7 +111,7 @@
     <sys:String x:Key="Str_Sort_Found">как найдено</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Отфильтровать эти результаты (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Искать внутри этих результатов  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Панели слева и справа / Панели сверху и снизу (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Сменить расположение панелей. Ctrl+щелчок меняет порядок на обратный; правая кнопка мыши позволяет выбрать расположение. F10 открывает или закрывает вторую панель.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Другие инструменты</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Системные инструменты</sys:String>
     <sys:String x:Key="Str_TT_Sort">Сортировать по  (Alt+S)</sys:String>
@@ -777,6 +777,7 @@
     <sys:String x:Key="Str_Ks_Language">открыть выбор языка</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">включить или выключить зернистость плёнки</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">открыть или закрыть вторую панель</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">переключиться на другую панель</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">показать или скрыть скрытые и системные элементы</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Сведения снизу / Сведения справа / Скрыть сведения</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">вид: список, значки или таблица</sys:String>
@@ -974,9 +975,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Сведения снизу</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Сведения справа</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Скрыть сведения</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Одна панель</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Панели слева и справа</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Панели сверху и снизу</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Искать в этом окне</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Искать во всех открытых вкладках</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Искать на всём компьютере</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Сведения снизу (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Сведения справа (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Скрыть сведения (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">размеры</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">соотношение сторон</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">глубина цвета</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">прозрачность</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Поддерживается</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Нет</sys:String>
+    <sys:String x:Key="Str_Details_Pages">страницы</sys:String>
+    <sys:String x:Key="Str_Details_Duration">длительность</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">версия файла</sys:String>
 </ResourceDictionary>

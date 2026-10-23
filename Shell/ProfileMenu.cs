@@ -37,6 +37,21 @@ namespace KillerShell.Shell
         {
             parent.Items.Clear();
 
+            if (DemoMode)
+            {
+                foreach (var profile in Services.DemoProfiles.All)
+                {
+                    var item = new MenuItem { Header = profile.Name };
+                    var icon = new Glyph { Text = ((char)0xE756).ToString() };
+                    icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
+                    item.Icon = icon;
+                    string path = profile.Path;
+                    item.Click += (_, _) => OpenForEditing(path);
+                    parent.Items.Add(item);
+                }
+                return;
+            }
+
             var hosts = ShellProfiles.Installed();
             if (hosts.Count == 0)
             {
@@ -106,6 +121,11 @@ namespace KillerShell.Shell
         /// </remarks>
         internal void EditPreferredProfile()
         {
+            if (DemoMode)
+            {
+                OpenForEditing(Services.DemoProfiles.PowerShellPath);
+                return;
+            }
             var hosts = ShellProfiles.Installed();
             if (hosts.Count == 0) { SetTabStatusKey(_active, "Str_Prof_None"); return; }
 

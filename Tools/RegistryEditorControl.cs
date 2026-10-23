@@ -486,6 +486,32 @@ namespace KillerShell.Tools
             return bar;
         }
 
+        private sealed class RegistryTreeView : TreeView
+        {
+            public override void OnApplyTemplate()
+            {
+                base.OnApplyTemplate();
+                ConstrainViewport(this);
+            }
+
+            private static bool ConstrainViewport(DependencyObject parent)
+            {
+                for (int index = 0; index < VisualTreeHelper.GetChildrenCount(parent); index++)
+                {
+                    var child = VisualTreeHelper.GetChild(parent, index);
+                    if (child is ScrollViewer scroll)
+                    {
+                        // Keep hive prefixes visible when selection requests BringIntoView.
+                        // Disabled also measures labels against the available viewport width.
+                        scroll.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                        return true;
+                    }
+                    if (ConstrainViewport(child)) return true;
+                }
+                return false;
+            }
+        }
+
         private Grid BuildSplit(out TreeView tree, out DataGrid grid)
         {
             var split = new Grid();
@@ -503,7 +529,7 @@ namespace KillerShell.Tools
             split.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             split.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 260 });
 
-            tree = new TreeView
+            tree = new RegistryTreeView
             {
                 Style = (Style)FindResourceStatic("FolderTreeView"),
                 Focusable = true,
@@ -529,6 +555,7 @@ namespace KillerShell.Tools
             // in both directions - the model drives Find/rename/delete's own expand-and-select,
             // and the user's own clicks drive the model back.
             var itemStyle = new Style(typeof(TreeViewItem), (Style)FindResourceStatic("FolderTreeItem"));
+            itemStyle.Setters.Add(new Setter(Control.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch));
             itemStyle.Setters.Add(new Setter(TreeViewItem.IsExpandedProperty,
                 new Binding("IsExpanded") { Mode = BindingMode.TwoWay }));
             itemStyle.Setters.Add(new Setter(TreeViewItem.IsSelectedProperty,
@@ -538,6 +565,8 @@ namespace KillerShell.Tools
             var template = new HierarchicalDataTemplate(typeof(RegistryNode)) { ItemsSource = new Binding("Children") };
             var tb = new FrameworkElementFactory(typeof(TextBlock));
             tb.SetBinding(TextBlock.TextProperty, new Binding("Name"));
+            tb.SetBinding(ToolTipProperty, new Binding("FullPath"));
+            tb.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
             tb.SetValue(TextBlock.FontFamilyProperty, new FontFamily("Consolas"));
             tb.SetValue(TextBlock.FontSizeProperty, 12.0);
             template.VisualTree = tb;
@@ -547,8 +576,7 @@ namespace KillerShell.Tools
             tree.SelectedItemChanged += Tree_SelectedItemChanged;
             tree.ContextMenuOpening += Tree_ContextMenuOpening;
             tree.PreviewKeyDown += Tree_PreviewKeyDown;
-            // Match the main folder tree: long key names dissolve just before the right edge or
-            // scrollbar instead of ending in an unexplained hard crop.
+            // Keep the existing viewport fade host and vertical scrollbar treatment.
             KillerShell.Controls.TreeSideFade.Attach(tree);
             // Sunken well around the tree - see the note on the toolbar in the constructor.
             var treeHost = ToolTabChrome.WrapContent(tree, "ToolTreeBrush");

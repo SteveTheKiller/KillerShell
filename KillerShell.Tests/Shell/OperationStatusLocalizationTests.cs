@@ -29,7 +29,7 @@ public static class OperationStatusLocalizationScenario
         var window = fixture.Window;
         var left = (FilePane)window.FindName("LeftPane");
         var right = (FilePane)window.FindName("RightPane");
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        window.ToggleDualPane();
         ShellWindowFixture.PumpUntil(() => right.Active.IsBrowsing);
         var copyTab = new SearchTab("Copy results") { IsSearching = true };
         var archiveTab = new SearchTab("Archive results");
@@ -56,11 +56,11 @@ public static class OperationStatusLocalizationScenario
         // A later normal operation must replace both the main message and its supplement.
         Complete(window.DropOntoFolder(new[] { files.File }, files.Target, DragDropEffects.Copy, true, false));
         Assert.Equal("Terminé - 1 élément(s)", copyTab.StatusMessage);
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        window.ToggleDualPane();
         Switch(window, Locale.De);
         Assert.Equal("Fertig - 1 Element(e)", copyTab.StatusMessage);
         Assert.Equal("1 zum Archiv hinzugefügt Übersprungene Ordnerverknüpfungen: 1.", archiveTab.StatusMessage);
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        window.ToggleDualPane();
         window.FocusPane(right);
         VerifyFooter(window, archiveTab, "OkBrush");
 

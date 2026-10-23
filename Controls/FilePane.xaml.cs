@@ -428,10 +428,12 @@ namespace KillerShell
 
         // ── View mode, sort, view options ────────────────────────
         private void ViewList_Click(object s, RoutedEventArgs e)           => Owner.ViewList_Click(s, e);
+        private void Density_Click(object s, RoutedEventArgs e)           => Owner.Density_Click(this, s, e);
+        private void Density_MouseWheel(object s, MouseWheelEventArgs e)   => Owner.Density_MouseWheel(this, s, e);
         private void ViewIcons_Click(object s, RoutedEventArgs e)          => Owner.ViewIcons_Click(s, e);
         private void ViewDetails_Click(object s, RoutedEventArgs e)        => Owner.ViewDetails_Click(s, e);
-        private void SortMenu_Click(object s, RoutedEventArgs e)           => Owner.SortMenu_Click(s, e);
-        private void SortItem_Click(object s, RoutedEventArgs e)           => Owner.SortItem_Click(s, e);
+        private void SortChoice_SelectionChanged(object s, SelectionChangedEventArgs e) => Owner.SortChoice_SelectionChanged(this, s, e);
+        private void SortChoice_DropDownClosed(object s, EventArgs e)      => Owner.ToolStrip_SizeChanged(this);
         private void SortDir_Click(object s, RoutedEventArgs e)            => Owner.SortDir_Click(s, e);
         private void ShowHidden_Click(object s, RoutedEventArgs e)         => Owner.ShowHidden_Click(s, e);
         private void FoldersTop_Click(object s, RoutedEventArgs e)         => Owner.FoldersTop_Click(s, e);

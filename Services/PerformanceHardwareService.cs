@@ -35,10 +35,12 @@ namespace KillerShell.Services
         internal List<PerformanceDiskInfo> Disks { get; }
         internal List<string> Gpus { get; }
         internal List<string> NetAdapters { get; }
+        internal IReadOnlyDictionary<string, string> GpuAdapterNames { get; }
 
         internal PerformanceHardwareInfo(string cpu, string ram, string gpu, string network,
             double totalRamGb, int cpuCores, int cpuThreads, int cpuBaseMhz,
-            List<PerformanceDiskInfo> disks, List<string> gpus, List<string> netAdapters)
+            List<PerformanceDiskInfo> disks, List<string> gpus, List<string> netAdapters,
+            IReadOnlyDictionary<string, string>? gpuAdapterNames = null)
         {
             Cpu = cpu;
             Ram = ram;
@@ -51,6 +53,7 @@ namespace KillerShell.Services
             Disks = disks;
             Gpus = gpus;
             NetAdapters = netAdapters;
+            GpuAdapterNames = gpuAdapterNames ?? new Dictionary<string, string>();
         }
 
         internal static PerformanceHardwareInfo Empty => new(
@@ -124,6 +127,9 @@ namespace KillerShell.Services
                 if (gpus.Count > 0) gpu = string.Join(", ", gpus);
             }
             catch (Exception ex) when (ex is not OperationCanceledException) { }
+
+            var gpuAdapterNames = PerformanceGpuAdapterService.ReadAdapterNames(cancellationToken);
+            if (gpuAdapterNames.Count > 0) gpu = string.Join(", ", gpuAdapterNames.Values);
 
             var models = new Dictionary<int, string>();
             var lettersByDisk = new Dictionary<int, List<string>>();
@@ -203,7 +209,7 @@ namespace KillerShell.Services
             catch (Exception ex) when (ex is not OperationCanceledException) { }
 
             return new PerformanceHardwareInfo(cpu, ram, gpu, network, totalRamGb, cores, threads,
-                baseMhz, disks, gpus, counterAdapters);
+                baseMhz, disks, gpus, counterAdapters, gpuAdapterNames);
         }
 
         private static List<string> ReadDriveLetters(

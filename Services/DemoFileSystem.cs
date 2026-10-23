@@ -520,7 +520,9 @@ namespace KillerShell.Services
                 D("Archive",  2026, 1, 6),
                 D("Exports",  2026, 6, 30),
                 D("Invoices", 2026, 6, 22),
+                D("PowerShell", 2026, 6, 25),
                 D("Runbooks", 2026, 6, 25),
+                D("WindowsPowerShell", 2026, 6, 25),
                 F("asset-photos.zip",               22 * Mb,  2026, 5, 23),
                 F("backup-report.html",             88 * Kb,  2026, 7, 1),
                 F("Client Onboarding.docx",         62 * Kb,  2026, 3, 4),
@@ -535,6 +537,11 @@ namespace KillerShell.Services
                 F("scope-of-work.txt",               9 * Kb,  2026, 5, 8),
                 F("Site Survey - Cedar Ridge.xlsx", 96 * Kb,  2026, 6, 5),
                 F("warranty-lookup.csv",            18 * Kb,  2026, 6, 11));
+
+            Add(@"C:\Users\Demo\Documents\PowerShell",
+                F("Microsoft.PowerShell_profile.ps1", Kb, 2026, 6, 25));
+            Add(@"C:\Users\Demo\Documents\WindowsPowerShell",
+                F("Microsoft.PowerShell_profile.ps1", Kb, 2026, 6, 25));
 
             // A year of them, the same twelve months the fabricated name search finds
             // (DemoMode.cs tab 1 walks 2025-07 forward). The two listings have to name the same

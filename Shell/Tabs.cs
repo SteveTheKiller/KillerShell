@@ -17,6 +17,7 @@ namespace KillerShell.Shell
         private SearchTab CreateTab()
         {
             var tab = new SearchTab(FolderTitle(NewTabFolder));   // named for the folder it opens on (AddressBar.cs)
+            RestoreWindowSort(tab, Pane);
             var group = new TermGroup();
             group.Terms.Add(new SearchTerm());
             tab.Groups.Add(group);
@@ -683,6 +684,8 @@ namespace KillerShell.Shell
             // ActivateTab), so this is where a newly-opened Event Viewer / Processes /
             // Performance / Registry / Storage tab first lights its rail icon.
             UpdateToolRailLights();
+            ApplyContentDensity(Pane);
+            if (updateShared) UpdateTitleContext();
         }
 
         /// <summary>

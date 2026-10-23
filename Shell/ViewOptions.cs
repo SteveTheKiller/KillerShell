@@ -81,14 +81,16 @@ namespace KillerShell.Shell
 
             // "as found" is the ENGINE'S discovery order, which only exists because a search
             // streams hits in as it walks. A folder is enumerated in one pass, so there is no
-            // discovery order to show - the entry goes away and name takes over.
-            Pane.SortFoundItem.Visibility = browsing ? Visibility.Collapsed : Visibility.Visible;
+            // discovery order to show. Browsing starts with the newest changes first.
+            Pane.SortFoundChoice.Visibility = browsing ? Visibility.Collapsed : Visibility.Visible;
 
             if (browsing && _active != null && _active.SortIndex == 0)
             {
-                _active.SortIndex = 1;               // name
+                _active.SortIndex = 4;
+                _active.SortAsc = false;
                 ApplySort(_active);                  // Results.cs
             }
+            SyncSortMenu();
         }
 
         internal async void ShowHidden_Click(object sender, RoutedEventArgs e)

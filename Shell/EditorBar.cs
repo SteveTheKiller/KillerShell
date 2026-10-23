@@ -56,8 +56,9 @@ namespace KillerShell.Shell
 
             // Click-to-edit works for an UNTITLED document too now - typing a path is the
             // save-as (EdPath_Click) - so the cursor and tooltip invite the click either way.
-            pane.EditorPathText.Cursor  = Cursors.IBeam;
-            pane.EditorPathText.ToolTip = Loc("Str_TT_EdPath");
+            bool demoDocument = DemoMode && Services.DemoTextStore.Contains(editor.FilePath);
+            pane.EditorPathText.Cursor  = demoDocument ? Cursors.Arrow : Cursors.IBeam;
+            pane.EditorPathText.ToolTip = demoDocument ? editor.FilePath : Loc("Str_TT_EdPath");
 
             pane.EditorEncodingBtn.Content = editor.EncodingLabel;
             pane.EditorEolText.Text        = editor.NewLineLabel;
@@ -239,6 +240,7 @@ namespace KillerShell.Shell
         {
             var t = _active;
             if (t.Editor == null) return;
+            if (DemoMode && Services.DemoTextStore.Contains(t.Editor.FilePath)) return;
             var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, t.Editor));
             if (pane == null) return;
 
@@ -280,6 +282,8 @@ namespace KillerShell.Shell
             if (t == null) { EndEditEdPath(pane); return; }
             var editor = t.Editor;
             if (editor == null) { EndEditEdPath(pane); return; }
+            if (DemoMode && Services.DemoTextStore.Contains(editor.FilePath))
+            { EndEditEdPath(pane); return; }
 
             string newPath = box.Text.Trim();
             if (!editor.IsUntitled && string.Equals(newPath, editor.FilePath, StringComparison.Ordinal))

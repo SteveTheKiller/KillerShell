@@ -171,12 +171,15 @@ namespace KillerShell.Shell
             // prompt should open.
             string folder = path.Length == 0 ? _active.CurrentFolder
                                              : Path.GetDirectoryName(path) ?? string.Empty;
+            if (demoText != null && Services.ArchiveProvider.TrySplit(path, out _, out string entry)
+                && entry.Length > 0)
+                folder = Services.ArchiveProvider.Parent(path) ?? folder;
 
             // Loaded BEFORE the tab is registered, so a file that cannot be read leaves no
             // half-built tab behind to close.
             var editor = new Editing.EditorControl(path);
             if (path.Length == 0) editor.LoadEmpty();    // untitled - there is nothing to read
-            else if (demoText != null) editor.LoadDemo(demoText);
+            else if (demoText != null) editor.LoadDemo(Services.DemoTextStore.Open(path, demoText));
             else if (!editor.LoadFile(out string error))
             {
                 SetTabStatusKey(_active, "Str_Ed_OpenFailed", Path.GetFileName(path), error);
@@ -236,9 +239,13 @@ namespace KillerShell.Shell
         {
             if (t.Editor == null) return;
             string name = t.Editor.IsUntitled ? Loc("Str_Ed_Untitled")
-                                              : Path.GetFileName(t.Editor.FilePath);
+                                              : EditorFileName(t.Editor.FilePath);
             t.Title = t.Editor.Dirty ? ((char)0x2022) + " " + name : name;
         }
+
+        private static string EditorFileName(string path)
+            => Path.GetFileName(Services.ArchiveProvider.TrySplit(path, out _, out string entry)
+                && entry.Length > 0 ? entry : path);
 
         // ═══════════════════════════════════════════════════════════
         //  ACTIVATION
@@ -292,6 +299,14 @@ namespace KillerShell.Shell
         private void SaveEditor(SearchTab t)
         {
             if (t.Editor == null) return;
+            if (DemoMode && Services.DemoTextStore.TrySave(t.Editor.FilePath, t.Editor.Text))
+            {
+                t.Editor.CompleteSave(t.Editor.CurrentEncoding, t.Editor.Text);
+                SetTabStatusKey(t, "Str_Ed_Saved", EditorFileName(t.Editor.FilePath));
+                SetEditorTitle(t);
+                SyncEditorBar(t);
+                return;
+            }
             if (QueuePendingEditorSave(t.Editor, () => SaveEditor(t))) return;
 
             // An untitled document has nowhere to be written yet, so the first save asks. Backing

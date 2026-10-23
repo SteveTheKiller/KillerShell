@@ -58,6 +58,15 @@ namespace KillerShell.Terminal
         private GlyphTypeface? _glyphs;
         private Typeface? _typeface;
         private double _cellW, _cellH, _baseline;
+        private int _densityLevel = 1;
+
+        internal void SetDensity(int level)
+        {
+            level = Math.Max(0, Math.Min(4, level));
+            if (_densityLevel == level) return;
+            _densityLevel = level;
+            ReloadFont();
+        }
         private double _fontSize = 12;   // overwritten from the setting in the ctor
         private float _pixelsPerDip = 1f;
 
@@ -309,7 +318,8 @@ namespace KillerShell.Terminal
                     // and the row/column arithmetic both work in.
                     double ppd = _pixelsPerDip > 0 ? _pixelsPerDip : 1.0;
                     _cellW = Math.Max(1.0, Math.Round(gt.AdvanceWidths[gt.CharacterToGlyphMap['M']] * _fontSize * ppd)) / ppd;
-                    _cellH = Math.Max(1.0, Math.Ceiling(gt.Height * _fontSize * ppd)) / ppd;
+                    double leading = new double[] { 4, 2, 1, 0.5, 0 }[_densityLevel];
+                    _cellH = Math.Max(1.0, Math.Ceiling((gt.Height * _fontSize + leading) * ppd)) / ppd;
                     _baseline = Math.Round(gt.Baseline * _fontSize * ppd) / ppd;
 
                     // Measured against the fallback's OWN advance rather than assumed to be half

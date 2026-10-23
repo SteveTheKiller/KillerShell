@@ -99,7 +99,12 @@ namespace KillerShell.Shell
 
         // Clicking away is a cancel, not a commit: an accidental click elsewhere should never
         // navigate somewhere half-typed.
-        internal void AddressBox_LostFocus(object sender, RoutedEventArgs e) => EndEditAddress();
+        internal void AddressBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var owner = ReferenceEquals(sender, RightPane.AddressBox) ? RightPane : LeftPane;
+            owner.AddressBox.Visibility = Visibility.Collapsed;
+            owner.ScopePathLabel.Visibility = Visibility.Visible;
+        }
 
         private async System.Threading.Tasks.Task NavigateToAndSelect(string folder, string file)
         {

@@ -95,7 +95,7 @@
     <sys:String x:Key="Str_Sort_Found">v pořadí nalezení</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrovat tyto výsledky (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Hledat uvnitř těchto výsledků  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Panely vlevo a vpravo / Panely nahoře a dole (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Přepínat rozložení panelů. Ctrl+kliknutí obrátí pořadí; pravým kliknutím vyberete rozložení. F10 otevře nebo zavře druhý panel.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Další nástroje</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systémové nástroje</sys:String>
     <sys:String x:Key="Str_TT_Sort">Řadit podle  (Alt+S)</sys:String>
@@ -880,6 +880,7 @@
     <sys:String x:Key="Str_Ks_Language">otevřít výběr jazyka</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">zapnout nebo vypnout filmové zrno</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">otevřít nebo zavřít druhý panel</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">přepnout na druhý panel</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">zobrazit nebo skrýt skryté a systémové položky</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Podrobnosti dole / Podrobnosti vpravo / Vypnout podrobnosti</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">zobrazení seznamu, ikon nebo podrobností</sys:String>
@@ -960,9 +961,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Podrobnosti dole</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Podrobnosti vpravo</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Vypnout podrobnosti</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Jeden panel</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Panely vlevo a vpravo</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Panely nahoře a dole</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Prohledat toto okno</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Prohledat všechny otevřené karty</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Prohledat celý počítač</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Podrobnosti dole (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Podrobnosti vpravo (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Vypnout podrobnosti (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">rozměry</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">poměr stran</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">barevná hloubka</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">průhlednost</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Podporována</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Žádná</sys:String>
+    <sys:String x:Key="Str_Details_Pages">strany</sys:String>
+    <sys:String x:Key="Str_Details_Duration">délka</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">verze souboru</sys:String>
 </ResourceDictionary>

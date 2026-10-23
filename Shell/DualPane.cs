@@ -186,12 +186,20 @@ namespace KillerShell.Shell
             else          OpenSecondPane();
         }
 
-        // The rail opens or closes the second pane; right-click also changes its layout.
-        internal void DualPane_Click(object sender, RoutedEventArgs e) => ToggleDualPane();
-
-        private void PaneOrientation_Click(object sender, RoutedEventArgs e)
+        // The rail cycles through all three layouts. Keyboard toggle commands retain their
+        // open/close behavior and remembered orientation.
+        internal void DualPane_Click(object sender, RoutedEventArgs e)
         {
-            if (DualPane) TogglePaneOrientation();
+            int current = !DualPane ? 0 : _paneSideBySide ? 1 : 2;
+            bool reverse = (System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) != 0;
+            SetPaneLayout((current + (reverse ? 2 : 1)) % 3);
+        }
+
+        private void SetPaneLayout(int layout)
+        {
+            FinishPendingPaneSlide();
+            if (layout == 0) CloseSecondPane();
+            else SetPaneOrientation(layout == 1);
         }
 
         internal void DualPaneOrient_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -276,12 +284,6 @@ namespace KillerShell.Shell
             bool cols = two && _paneSideBySide;
             bool rows = two && !_paneSideBySide;
 
-            PaneOrientationButton.Visibility = two ? Visibility.Visible : Visibility.Collapsed;
-            PaneOrientationButton.SetResourceReference(FrameworkElement.ToolTipProperty,
-                _paneSideBySide ? "Str_TT_PanesTopBottom" : "Str_TT_PanesLeftRight");
-            PaneOrientationIcon.RenderTransform = new System.Windows.Media.RotateTransform(
-                _paneSideBySide ? 0 : 90);
-
             // Splitters: exactly one is live, and only while there are two panes.
             PaneSplitV.Visibility = cols ? Visibility.Visible : Visibility.Collapsed;
             PaneSplitH.Visibility = rows ? Visibility.Visible : Visibility.Collapsed;
@@ -345,15 +347,10 @@ namespace KillerShell.Shell
             // bookmarks toggles use (RailButton keys off Tag="on").
             DualPaneRailBtn.Tag = two ? "on" : null;
 
-            // The dedicated ClosePane/OpenPane glyph pair (Segoe MDL2 codepoints 0xE89F and
-            // 0xE8A0), picked specifically for this button rather than
-            // a chevron that also tracks orientation: 0xE89F while closed (clicking opens it),
-            // 0xE8A0 while open (clicking closes it). Built from (char) casts and never typed as
-            // a literal PUA character - literal glyphs do not survive tooling (family-wide rule;
-            // the codepoint is right there in the hex if this ever needs checking against
-            // Character Map).
-            int glyph = two ? 0xE8A0 : 0xE89F;
-            DualPaneRailBtn.Content = ((char)glyph).ToString();
+            DualPaneRailBtn.Content = System.Windows.Media.Geometry.Parse(!two ? OnePaneIcon
+                : _paneSideBySide ? PanesLeftRightIcon : PanesTopBottomIcon);
+            DualPaneRailBtn.SetResourceReference(System.Windows.Automation.AutomationProperties.NameProperty,
+                !two ? "Str_Layout_OnePane" : _paneSideBySide ? "Str_Layout_LeftRight" : "Str_Layout_TopBottom");
 
             ApplyPaneMargins();
         }
@@ -868,7 +865,7 @@ namespace KillerShell.Shell
             // furniture, not a frame inset, and 98SE wants it just the same.
             var om = Application.Current?.TryFindResource("PaneOuterMargin") as Thickness?
                      ?? new Thickness(0, -1, PaneEdge, 0);
-            double edge = _searchOpen ? 0 : om.Right;      // SearchPanel.cs
+            double edge = om.Right;
             bool cols = DualPane && _paneSideBySide;
 
             // With the tree on the right (TreeDock.cs) the window edge is on the panes' left and

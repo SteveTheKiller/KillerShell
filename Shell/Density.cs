@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 // Results density. Partial of MainWindow.
 //
-// Five levels, cycled from the rail button or stepped with the wheel over it - the same
+// Five levels, cycled from each pane's toolbar or stepped with the wheel over it - the same
 // gesture KillerNotes uses for its sidebar, because a hand trained on one should not have to
 // learn the other:
 //   0 = Roomy       - looser than the app has ever been, for a big screen across the room
@@ -39,14 +39,19 @@ namespace KillerShell.Shell
         // own separate window-wide read. InitDensity is gone; nothing else called it.
 
         /// <summary>Click steps one tighter, Roomy through Minimal, then back round to Roomy.
-        /// Acts on the FOCUSED pane only now - density used to be one shared value, so the rail
-        /// button changing it changed both panes at once; each pane remembers its own.</summary>
-        private void Density_Click(object sender, RoutedEventArgs e)
-            => ApplyDensity((Pane.ViewState.Density + 1) % ResultsViewState.DensityLevels);
+        /// Each pane keeps its own density for files, terminals, and editors.</summary>
+        internal void Density_Click(FilePane pane, object sender, RoutedEventArgs e)
+        {
+            FocusPane(pane);
+            ApplyDensity((pane.ViewState.Density + 1) % ResultsViewState.DensityLevels);
+        }
+
+        private void Density_Click(object sender, RoutedEventArgs e) => Density_Click(Pane, sender, e);
 
         /// <summary>Wheel up is roomier, wheel down is tighter - the direction the list moves.</summary>
-        private void Density_MouseWheel(object sender, MouseWheelEventArgs e)
+        internal void Density_MouseWheel(FilePane pane, object sender, MouseWheelEventArgs e)
         {
+            FocusPane(pane);
             ApplyDensity(Pane.ViewState.Density + (e.Delta > 0 ? -1 : 1));
             e.Handled = true;   // never let it fall through and scroll the results underneath
         }
@@ -55,11 +60,26 @@ namespace KillerShell.Shell
         {
             var s = Pane.ViewState;
             s.Density = level;
-            Services.ThemeManager.SetSetting(SetDensity + PaneKey(Pane), s.Density.ToString());
+            SetWindowViewSetting(SetDensity + PaneKey(Pane), s.Density.ToString());
+            ApplyContentDensity(Pane);
 
             // Named rather than silent: at a glance Compact and Minimal differ by a few pixels
             // per row, and without the caption a wheel notch reads as nothing having happened.
             if (_active != null) SetTabStatusKey(_active, DensityStatusKeys[s.Density]);
+        }
+
+        private void ApplyContentDensity(FilePane pane)
+        {
+            foreach (var tab in pane.Tabs)
+            {
+                tab.Term?.SetDensity(pane.ViewState.Density);
+                tab.Editor?.SetDensity(pane.ViewState.Density);
+            }
+            foreach (var button in new[] { pane.FileDensityBtn, pane.TermDensityBtn, pane.EditorDensityBtn })
+            {
+                button.Tag = pane.ViewState.Density >= 2 ? "on" : null;
+                button.ToolTip = Loc("Str_TT_Density") + ": " + Loc(DensityStatusKeys[pane.ViewState.Density]);
+            }
         }
     }
 }

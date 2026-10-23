@@ -28,6 +28,13 @@ namespace KillerShell.Shell
             // Alt chords and F10 arrive as Key.System with the real key in SystemKey.
             var key = e.Key == Key.System ? e.SystemKey : e.Key;
 
+            if (ctrl && !alt && !shift && key == Key.F6)
+            {
+                SwitchFocusedPane();
+                e.Handled = true;
+                return true;
+            }
+
             if (ctrl && alt && !shift)
             {
                 switch (key)
@@ -44,14 +51,17 @@ namespace KillerShell.Shell
                 }
             }
 
-            // The sort flyout is a Popup declared in the pane, so its keys tunnel through this
+            // Let the standard sort dropdown commit or cancel its own selection.
+            if (Pane.SortChoice.IsDropDownOpen && key is Key.Enter or Key.Escape) return true;
+
+            // The overflow is a Popup declared in the pane, so its keys tunnel through this
             // window handler first. Enter has to pick the focused row rather than run a search,
             // and Esc has to close the flyout rather than offer to quit.
-            if (Pane.SortPopup.IsOpen)
+            if (Pane.OverflowPopup.IsOpen)
             {
                 if (key == Key.Escape)
                 {
-                    Pane.SortPopup.IsOpen = false;
+                    Pane.OverflowPopup.IsOpen = false;
                     e.Handled = true;
                     return true;
                 }
@@ -250,21 +260,22 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
-        /// Opens the sort flyout and puts the keyboard on the current sort key, so the arrows and
-        /// Enter can pick another one without the mouse.
+        /// Opens the standard sort dropdown, including when it is in the toolbar overflow.
         /// </summary>
         private void OpenSortMenuFromKeyboard()
         {
-            SortMenu_Click(this, new RoutedEventArgs());   // Results.cs
-            if (!Pane.SortPopup.IsOpen) return;
+            SyncSortMenu();
+            var pane = Pane;
+            if (pane.OverflowPanel.Children.Contains(pane.SortControlsHost))
+            {
+                pane.OverflowPopup.IsOpen = true;
+                if (pane.OverflowPopup.Child is UIElement child) Anim.FadeIn(child);
+            }
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, (Action)(() =>
             {
-                Button? on = null;
-                foreach (var b in new[] { Pane.SortFoundItem, Pane.SortNameItem, Pane.SortFolderItem,
-                                          Pane.SortSizeItem, Pane.SortModifiedItem, Pane.SortTypeItem,
-                                          Pane.SortCreatedItem })
-                    if (b?.Tag as string == "on") { on = b; break; }
-                (on ?? Pane.SortNameItem)?.Focus();
+                if (Pane != pane) return;
+                pane.SortChoice.Focus();
+                pane.SortChoice.IsDropDownOpen = true;
             }));
         }
     }

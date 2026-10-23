@@ -730,9 +730,10 @@ killershell --cli hash "C:\logs\today.log"</code></pre></div></div></div>
   var SCOPE_LABEL = {};
   SCOPES.forEach(function(s){ SCOPE_LABEL[s[0]] = s[1]; });
 
-  var LAYERS = [["base","BASE"],["ctrl","CTRL"],["ctrlshift","CTRL+SHIFT"],["shift","SHIFT"],["alt","ALT"],["altshift","ALT+SHIFT"]];
+  var LAYERS = [["base","BASE"],["ctrl","CTRL"],["ctrlshift","CTRL+SHIFT"],["shift","SHIFT"],["alt","ALT"],["altshift","ALT+SHIFT"],["ctrlalt","CTRL+ALT"],["ctrlaltshift","CTRL+ALT+SHIFT"]];
   var LAYER_MODS = { base:[], ctrl:["Ctrl","RCtrl"], ctrlshift:["Ctrl","RCtrl","Shift","RShift"],
-                      shift:["Shift","RShift"], alt:["Alt","RAlt"], altshift:["Alt","RAlt","Shift","RShift"] };
+                      shift:["Shift","RShift"], alt:["Alt","RAlt"], altshift:["Alt","RAlt","Shift","RShift"],
+                      ctrlalt:["Ctrl","RCtrl","Alt","RAlt"], ctrlaltshift:["Ctrl","RCtrl","Alt","RAlt","Shift","RShift"] };
   var CAT_LABEL = { search:"SEARCH", nav:"NAVIGATION", tabs:"TABS", view:"VIEW", file:"FILE", edit:"EDITING", help:"HELP" };
 
   var kbBuilt = false, curLayer = "base", curScope = "global", curLit = {};

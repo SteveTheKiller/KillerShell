@@ -129,9 +129,7 @@
                 </Canvas>
                 <DockPanel LastChildFill="True">
                 <Button x:Name="NewTabBtn" DockPanel.Dock="Right"
-                        Style="{StaticResource GrungeCalendarNavButton}"
-                        BorderThickness="0" BorderBrush="Transparent"
-                        Foreground="{DynamicResource MutedTextBrush}"
+                        Style="{StaticResource PaneViewButton}"
                         Width="22" Height="20" Margin="2,4,2,3" VerticalAlignment="Center"
                         AutomationProperties.Name="{DynamicResource Str_Ks_NewTab}"
                         ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click">
@@ -893,63 +891,30 @@
                                 VerticalAlignment="Center" Click="ViewDetails_Click">
                             <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_TT_ViewDetails}"/><Run Text="  (Ctrl+Shift+3)"/></TextBlock></Button.ToolTip>
                         </Button>
+                        <Button x:Name="FileDensityBtn" Style="{StaticResource PaneViewButton}" Content="&#xE8A1;"
+                                Margin="0,0,2,0" Click="Density_Click" MouseWheel="Density_MouseWheel"
+                                ToolTip="{DynamicResource Str_TT_Density}"/>
                         <!-- The one group separator in the strip, between the view modes and the
                              sort controls. Same BarSep* pair, zero width off 98SE. -->
                         <Border Width="{DynamicResource BarSepWidth}" Margin="2,3,4,3"
                                 Background="{DynamicResource BarSepBrush}"/>
-                        <!-- Sort: key + direction. The key is ONE icon with a flyout, the same
-                             shape as export - the 118px combo was the widest control in this
-                             strip and the first thing to crush the location path beside it. -->
-                        <Button x:Name="SortBtn" Content="&#xE8CB;" Width="26" Height="24" Padding="0" Margin="0,0,2,0"
-                                FontFamily="Segoe MDL2 Assets" FontSize="15" Style="{StaticResource SurfaceButton}"
-                                VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_Sort}" Click="SortMenu_Click"/>
-                        <!-- Same flyout construction as export: StaysOpen="False" so an outside
-                             click dismisses it, and the shadow on its own border so the text
-                             never renders through a bitmap effect or it loses ClearType. -->
-                        <Popup x:Name="SortPopup" PlacementTarget="{Binding ElementName=SortBtn}" Placement="Bottom"
-                               StaysOpen="False" AllowsTransparency="True" HorizontalOffset="-14" VerticalOffset="-2">
-                            <Grid Margin="14">
-                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False">
-                                    <Border.Effect><DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="4" Direction="270"
-                                                                     Opacity="{DynamicResource FlyoutShadowOpacity}"/></Border.Effect>
-                                </Border>
-                                <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                        BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
-                                    <!-- The chosen key lights accent through SurfaceButton's
-                                         Tag="on" trigger, so Tag is spoken for - the index
-                                         rides on CommandParameter instead (Results.cs). -->
-                                    <StackPanel MinWidth="104">
-                                        <!-- Collapsed while browsing (ViewOptions.cs): "as found" is the
-                                             engine's discovery order, which means nothing in a folder
-                                             listing that was enumerated in one pass. -->
-                                        <Button x:Name="SortFoundItem" CommandParameter="0" Content="{DynamicResource Str_Sort_Found}"
-                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
-                                        <Button x:Name="SortNameItem" CommandParameter="1" Content="{DynamicResource Str_Col_Name}"
-                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
-                                        <Button x:Name="SortFolderItem" CommandParameter="2" Content="{DynamicResource Str_Col_Folder}"
-                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
-                                        <Button x:Name="SortSizeItem" CommandParameter="3" Content="{DynamicResource Str_Col_Size}"
-                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
-                                        <Button x:Name="SortModifiedItem" CommandParameter="4" Content="{DynamicResource Str_Col_Modified}"
-                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
-                                        <Button x:Name="SortTypeItem" CommandParameter="5" Content="{DynamicResource Str_Col_Type}"
-                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                Padding="10,3" FontSize="11" Margin="0,0,0,3" Click="SortItem_Click"/>
-                                        <Button x:Name="SortCreatedItem" CommandParameter="6" Content="{DynamicResource Str_Col_Created}"
-                                                Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                Padding="10,3" FontSize="11" Click="SortItem_Click"/>
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
-                        </Popup>
+                        <StackPanel x:Name="SortControlsHost" Orientation="Horizontal" VerticalAlignment="Center">
+                        <ComboBox x:Name="SortChoice" Width="112" Height="24" FontSize="11" Margin="0,0,2,0"
+                                  VerticalContentAlignment="Center" ToolTip="{DynamicResource Str_TT_Sort}"
+                                  AutomationProperties.Name="{DynamicResource Str_TT_Sort}"
+                                  SelectionChanged="SortChoice_SelectionChanged" DropDownClosed="SortChoice_DropDownClosed">
+                            <ComboBoxItem x:Name="SortFoundChoice" Content="{DynamicResource Str_Sort_Found}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Col_Name}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Col_Folder}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Col_Size}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Col_Modified}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Col_Type}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Col_Created}"/>
+                        </ComboBox>
                         <Button x:Name="SortDirButton" Content="&#xE70E;" Width="24" Height="24" Padding="0" Margin="0,0,2,0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="14" Style="{StaticResource SurfaceButton}"
                                 VerticalAlignment="Center" ToolTip="{DynamicResource Str_TT_SortDir}" Click="SortDir_Click"/>
+                        </StackPanel>
                         <!-- Expand/collapse all: one glyph button, no words to shift width.
                              Hidden (not collapsed) outside list view - see ResultsView.cs. -->
                         <Button x:Name="ExpandAllButton" Style="{StaticResource SurfaceButton}"
@@ -1092,9 +1057,7 @@
                                 </Border>
                                 <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                         BorderThickness="1" CornerRadius="{DynamicResource OverflowCornerRadius}" Padding="6">
-                                    <!-- Horizontal: the shed items are icon buttons, and stacking
-                                         them would make a tall thin column of unlabeled glyphs. -->
-                                    <StackPanel x:Name="OverflowPanel" Orientation="Horizontal"/>
+                                    <WrapPanel x:Name="OverflowPanel" Orientation="Horizontal" MaxWidth="360"/>
                                 </Border>
                             </Grid>
                         </Popup>
@@ -1385,6 +1348,7 @@
                                  TextBlock stays so DetailsPane.cs's async stat still has its
                                  target without a code rewrite; nothing renders. -->
                             <TextBlock x:Name="DetailsAttrText" Visibility="Collapsed"/>
+                            <StackPanel x:Name="DetailsMetadataRows"/>
                             <Grid Margin="0,0,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{DynamicResource Str_Details_Path}" Foreground="{DynamicResource MutedTextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
@@ -1574,6 +1538,9 @@
                                     <Button x:Name="TermFontsBtn" Content="&#xE8D2;" Width="24" Height="20" Padding="0" Margin="4,0,0,0"
                                             FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                             ToolTip="{DynamicResource Str_TT_TermFonts}" Click="TermFonts_Click"/>
+                                    <Button x:Name="TermDensityBtn" Content="&#xE8A1;" Width="24" Height="20" Padding="0" Margin="4,0,0,0"
+                                            FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
+                                            ToolTip="{DynamicResource Str_TT_Density}" Click="Density_Click" MouseWheel="Density_MouseWheel"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -1721,6 +1688,9 @@
                                     <Button x:Name="EditorGearBtn" Content="&#xE713;" Width="24" Height="20" Padding="0" Margin="2,0,0,0"
                                             FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                             ToolTip="{DynamicResource Str_TT_EdSettings}" Click="EditorGear_Click"/>
+                                    <Button x:Name="EditorDensityBtn" Content="&#xE8A1;" Width="24" Height="20" Padding="0" Margin="2,0,0,0"
+                                            FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
+                                            ToolTip="{DynamicResource Str_TT_Density}" Click="Density_Click" MouseWheel="Density_MouseWheel"/>
                                     <!-- Everything that is a preference about reading code, in
                                          one place, so the bar keeps only the verbs. Same flyout
                                          construction as the sort menu above. -->
@@ -1791,16 +1761,18 @@
                                      ToolTip are set from code (SyncEditorBar), not here, because
                                      they only turn on once the document has a real path; an
                                      untitled document has nothing yet to rename. -->
-                                <TextBlock x:Name="EditorPathText" Grid.Column="1" Margin="10,0,10,0"
+                                <Grid x:Name="EditorPathHost" Grid.Column="1">
+                                <TextBlock x:Name="EditorPathText" Margin="10,0,10,0"
                                            Foreground="{DynamicResource MutedTextBrush}"
                                            FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                            VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                            MouseLeftButtonUp="EdPath_Click"/>
-                                <TextBox x:Name="EditorPathBox" Grid.Column="1" Visibility="Collapsed"
+                                <TextBox x:Name="EditorPathBox" Visibility="Collapsed"
                                          FontFamily="{DynamicResource MonoFont}" FontSize="11"
                                          VerticalContentAlignment="Center"
                                          PreviewKeyDown="EditorPathBox_KeyDown"
                                          LostFocus="EditorPathBox_LostFocus"/>
+                                </Grid>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                                     <!-- The encoding readout is a picker, not just a label - click
@@ -2217,7 +2189,9 @@
                              screen. The ListBox's ScrollViewer is switched to horizontal by
                              ApplyResultsViewToPane when this template is active. -->
                         <ItemsPanelTemplate x:Key="PanelWrapVertical">
-                            <local:VirtualizingWrapPanel Orientation="Vertical" ItemWidth="220" ItemHeight="22"/>
+                            <local:VirtualizingWrapPanel Orientation="Vertical"
+                                ItemWidth="{Binding Tag.ListItemWidth, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                ItemHeight="{Binding Tag.ListItemHeight, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                         </ItemsPanelTemplate>
 
                         <!-- ICON VIEW. Fixed-size tile: art on top, name wrapped to two lines
@@ -2272,11 +2246,7 @@
                             </Border>
                         </DataTemplate>
 
-                        <!-- COMPACT LIST ROW. Paired with PanelWrapVertical above. 16px icon +
-                             name in a 220x22 slot; identical hover/selection treatment to the
-                             other row templates so a marquee, keyboard, or right-click select
-                             reads the same across every view. TileArt.Size pinned to 16 so the
-                             icon is always the small variant, regardless of the pane's TileSize. -->
+                        <!-- Compact list geometry follows this pane's row-size ladder. -->
                         <DataTemplate x:Key="CompactListRowTemplate" DataType="{x:Type models:SearchResult}">
                             <Border Cursor="Hand" Tag="{Binding FilePath}" ToolTip="{Binding FilePath}"
                                     PreviewMouseLeftButtonDown="ResultHeader_MouseDown">
@@ -2294,11 +2264,12 @@
                                     </Style>
                                 </Border.Style>
                                 <StackPanel Orientation="Horizontal" Margin="4,2">
-                                    <Image Width="16" Height="16" VerticalAlignment="Center"
+                                    <Image Width="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                           Height="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}" VerticalAlignment="Center"
                                            RenderOptions.BitmapScalingMode="HighQuality"
                                            shellns:TileArt.Path="{Binding FilePath}"
                                            shellns:TileArt.IsDirectory="{Binding IsDirectory}"
-                                           shellns:TileArt.Size="16"/>
+                                           shellns:TileArt.Size="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                     <TextBlock Text="{Binding NameLabel, Mode=OneWay}" Style="{StaticResource ResultText}"
                                                Margin="6,0,0,0" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis"/>

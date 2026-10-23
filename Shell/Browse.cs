@@ -64,7 +64,7 @@ namespace KillerShell.Shell
             // a virtual path's separator is not a filename character), no Directory.Exists, no
             // watcher, no tree reveal. What must exist is the archive FILE.
             bool archive = Services.ArchiveProvider.TrySplit(folder, out string arcPath, out string arcEntry);
-            if (archive && !File.Exists(arcPath))
+            if (archive && (DemoMode ? !Services.DemoArchives.Contains(arcPath) : !File.Exists(arcPath)))
             {
                 SetTabStatusKey(_active, "Str_Status_BadPath", arcPath);
                 return;
@@ -127,6 +127,8 @@ namespace KillerShell.Shell
             bool listingFailed = false;
             string? archiveError = null;
             if (thisPc) entries = ListDrives();
+            else if (archive && DemoMode)
+                entries = ArchiveRows(arcPath, Services.DemoArchives.List(arcPath, arcEntry));
             else if (archive)
             {
                 // Off the UI thread like an ordinary listing: reading a tar means walking the
@@ -557,7 +559,8 @@ namespace KillerShell.Shell
             // is for, and launching it would hand the job to whatever else is installed. Only
             // formats this build can actually read enter - a .rar still launches, because
             // WinRAR opening it is more useful than an error (Services/ArchiveProvider.cs).
-            if (Services.ArchiveProvider.IsReadable(r.FilePath) && File.Exists(r.FilePath))
+            if (Services.ArchiveProvider.IsReadable(r.FilePath)
+                && (DemoMode ? Services.DemoArchives.Contains(r.FilePath) : File.Exists(r.FilePath)))
             {
                 await NavigateTo(r.FilePath);
                 return;
@@ -569,6 +572,12 @@ namespace KillerShell.Shell
             // browsing can promise.
             if (Services.ArchiveProvider.TrySplit(r.FilePath, out string arc, out string entry) && entry.Length > 0)
             {
+                if (DemoMode)
+                {
+                    if (Services.DemoArchives.TextFor(r.FilePath) != null) OpenForEditing(r.FilePath);
+                    else SetTabStatusKey(_active, "Str_Status_BadPath", r.FilePath);
+                    return;
+                }
                 SetTabStatusKey(_active, "Str_Status_Extracting", r.FileName);
                 var tab = _active;
 

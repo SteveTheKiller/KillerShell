@@ -5,6 +5,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Automation;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 // The Performance Monitor's dashboard: what goes where, and how much room it gets. The other
 // half of PerformanceMonitorControl (PerformanceMonitorControl.cs) owns the counters, the
@@ -97,11 +100,11 @@ namespace KillerShell.Tools
             // ── Summary strip ────────────────────────────────────
             // Each tile takes its panel's color, so the eye can go from a number up here to the
             // panel it came from without reading a label.
-            if (_cpuTile != null) _sumCpu = AddSummaryTile("Str_Perf_Cpu", "MonitorAccentBrush", 100);
-            if (_ramTile != null) _sumRam = AddSummaryTile("Str_Perf_Ram", "TypeWindows", 100);
-            if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile("Str_Perf_Disk", "WarnBrush", 100);
-            if (_netTiles.Count > 0) _sumNet = AddSummaryTile("Str_Perf_Network", "MonitorTextBrush", 0);
-            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile("Str_Perf_Gpu", "OkBrush", 100);
+            if (_cpuTile != null) _sumCpu = AddSummaryTile(MetricKind.Cpu, "Str_Perf_Cpu", "MonitorAccentBrush", 100);
+            if (_ramTile != null) _sumRam = AddSummaryTile(MetricKind.Ram, "Str_Perf_Ram", "TypeWindows", 100);
+            if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile(MetricKind.Disk, "Str_Perf_Disk", "WarnBrush", 100);
+            if (_netTiles.Count > 0) _sumNet = AddSummaryTile(MetricKind.Network, "Str_Perf_Network", "MonitorTextBrush", 0);
+            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile(MetricKind.Gpu, "Str_Perf_Gpu", "OkBrush", 100);
 
             // ── Band 1: CPU and memory ───────────────────────────
             if (_cpuTile != null || _ramTile != null)
@@ -126,8 +129,8 @@ namespace KillerShell.Tools
                 band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-                Border? disks = _diskTiles.Count > 0 ? BuildDevicePanel("Str_Perf_Disk", _diskTiles) : null;
-                Border? nets  = _netTiles.Count > 0 ? BuildDevicePanel("Str_Perf_Network", _netTiles) : null;
+                Border? disks = _diskTiles.Count > 0 ? BuildDevicePanel(_diskTiles) : null;
+                Border? nets  = _netTiles.Count > 0 ? BuildDevicePanel(_netTiles) : null;
 
                 // With only one of the two present it takes the whole band rather than sitting
                 // beside an empty half.
@@ -158,12 +161,9 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  SUMMARY STRIP
         // ═══════════════════════════════════════════════════════════
-        private SummaryTile AddSummaryTile(string labelKey, string brushKey, double fixedScaleMax)
+        private SummaryTile AddSummaryTile(MetricKind kind, string labelKey, string brushKey, double fixedScaleMax)
         {
-            var label = new TextBlock { FontSize = 10.5 };
-            label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            label.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
-            label.SetResourceReference(TextBlock.TextProperty, labelKey);
+            var label = BuildMetricIcon(kind, Shell.MainWindow.LocStatic(labelKey), 14);
 
             var value = new TextBlock
             {
@@ -223,20 +223,59 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  PANEL PIECES
         // ═══════════════════════════════════════════════════════════
+        private static FrameworkElement BuildMetricIcon(MetricKind kind, string label, double size)
+        {
+            string outline = kind switch
+            {
+                MetricKind.Cpu => "M4,4 H12 V12 H4 Z M6,1 V4 M10,1 V4 M6,12 V15 M10,12 V15 M1,6 H4 M1,10 H4 M12,6 H15 M12,10 H15 M6,6 H10 V10 H6 Z",
+                MetricKind.Ram => "M1,4 H15 V11 H1 Z M3,6 H6 V9 H3 Z M9,6 H12 V9 H9 Z M3,11 V14 M5,11 V14 M7,11 V14 M10,11 V14 M12,11 V14 M14,11 V14",
+                MetricKind.Disk => "M3,1 H13 V15 H3 Z M11,7 A3,3 0 1 1 5,7 A3,3 0 1 1 11,7 M8,7 L12,11 M5,13 H7 M10,13 H11",
+                MetricKind.Network => "M6,1 H10 V5 H6 Z M8,5 V8 M3,8 H13 M3,8 V11 M13,8 V11 M1,11 H5 V15 H1 Z M11,11 H15 V15 H11 Z",
+                _ => "M1,2 V14 M1,4 H15 V12 H1 M11,8 A3,3 0 1 1 5,8 A3,3 0 1 1 11,8 M8,5 V11 M5,8 H11 M4,12 V14 H12 V12",
+            };
+            var path = new Path
+            {
+                Data = Geometry.Parse(outline), StrokeThickness = 1,
+                StrokeLineJoin = PenLineJoin.Round, StrokeStartLineCap = PenLineCap.Round,
+                StrokeEndLineCap = PenLineCap.Round,
+            };
+            path.SetResourceReference(Shape.StrokeProperty, "MonitorTextBrush");
+            var canvas = new Canvas { Width = 16, Height = 16 };
+            canvas.Children.Add(path);
+            var icon = new Viewbox
+            {
+                Width = size, Height = size, Child = canvas, ToolTip = label,
+                HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center,
+            };
+            AutomationProperties.SetName(icon, label);
+            return icon;
+        }
+
+        private static FrameworkElement BuildMetricTitle(MetricTile tile, double size, bool showText = true)
+        {
+            var title = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Bottom };
+            var icon = BuildMetricIcon(tile.Kind, tile.Label, size);
+            title.Children.Add(icon);
+            if (showText)
+            {
+                var label = new TextBlock
+                {
+                    Text = tile.Label, FontSize = size, FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(6, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center,
+                };
+                label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+                label.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+                title.Children.Add(label);
+            }
+            return title;
+        }
+
         /// <summary>Title on the left, the panel's live headline on the right, at the size that
         /// makes it the first thing read. The headline block becomes the tile's
         /// TileSummaryText, which is what the sampling code writes to.</summary>
         private static Grid BuildPanelHeader(MetricTile tile, double titleSize, double valueSize)
         {
-            var title = new TextBlock
-            {
-                FontSize = titleSize,
-                FontWeight = FontWeights.Bold,
-                Text = tile.Label,
-                VerticalAlignment = VerticalAlignment.Bottom,
-            };
-            title.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            title.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+            var title = BuildMetricTitle(tile, titleSize, tile.Kind != MetricKind.Cpu && tile.Kind != MetricKind.Ram);
 
             var value = new TextBlock
             {
@@ -430,20 +469,13 @@ namespace KillerShell.Tools
         /// the burst that opened it on screen.</summary>
         private const int RowIdleTicksToFold = HistorySamples;
 
-        private static Border BuildDevicePanel(string titleKey, List<MetricTile> devices)
+        private static Border BuildDevicePanel(List<MetricTile> devices)
         {
-            var title = new TextBlock { FontSize = 16, FontWeight = FontWeights.Bold };
-            title.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            title.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
-            title.SetResourceReference(TextBlock.TextProperty, titleKey);
-
             var body = new StackPanel { VerticalAlignment = VerticalAlignment.Top };
-            body.Children.Add(title);
 
             for (int i = 0; i < devices.Count; i++)
             {
-                // A hairline between devices, none above the first: the title already separates
-                // it from the panel's edge.
+                // Separate devices while keeping the first row close to the panel's edge.
                 if (i > 0)
                 {
                     var rule = new Border { Height = 1, Opacity = 0.6, Margin = new Thickness(0, 8, 0, 0) };
@@ -462,9 +494,7 @@ namespace KillerShell.Tools
         /// </summary>
         private static StackPanel BuildDeviceRow(MetricTile tile)
         {
-            var label = new TextBlock { FontSize = 12.5, FontWeight = FontWeights.Bold, Text = tile.Label };
-            label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            label.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+            var label = BuildMetricTitle(tile, 12.5);
 
             var model = BuildDescription(tile.Description);
             model.Margin = new Thickness(10, 0, 10, 0);

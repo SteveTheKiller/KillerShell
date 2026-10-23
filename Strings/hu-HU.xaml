@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">ahogy találták</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Az eredmények szűrése (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Keresés ezeken a találatokon belül (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Bal és jobb oldali panel / Felső és alsó panel (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Panel-elrendezés váltása. Ctrl+kattintás: fordított sorrend; jobb kattintás: elrendezés kiválasztása. F10: második panel megnyitása vagy bezárása.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Több eszköz</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Rendszereszközök</sys:String>
     <sys:String x:Key="Str_TT_Sort">Rendezés (Alt+S)</sys:String>
@@ -809,6 +809,7 @@
     <sys:String x:Key="Str_Ks_Language">a nyelvválasztó megnyitása</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">a filmszemcse be- vagy kikapcsolása</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">a második ablaktábla megnyitása vagy bezárása</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">váltás a másik ablaktáblára</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">rejtett és rendszerelemek megjelenítése vagy elrejtése</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Részletek alul / Részletek jobb oldalon / Részletek kikapcsolása</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">lista, ikon vagy részletek nézet</sys:String>
@@ -1008,9 +1009,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Részletek alul</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Részletek jobb oldalon</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Részletek kikapcsolása</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Egy panel</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Bal és jobb oldali panel</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Felső és alsó panel</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Keresés ebben az ablakban</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Keresés az összes megnyitott lapon</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Keresés az egész számítógépen</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Részletek alul (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Részletek jobb oldalon (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Részletek kikapcsolása (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">méretek</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">képarány</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">színmélység</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">átlátszóság</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Támogatott</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Nincs</sys:String>
+    <sys:String x:Key="Str_Details_Pages">oldalak</sys:String>
+    <sys:String x:Key="Str_Details_Duration">időtartam</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">fájlverzió</sys:String>
 </ResourceDictionary>

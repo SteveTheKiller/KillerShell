@@ -1374,6 +1374,25 @@ namespace KillerShell.Tools
             {
                 string path = FullPath(n);
 
+                var pathText = new TextBlock
+                {
+                    Text = path,
+                    TextWrapping = TextWrapping.Wrap,
+                    TextTrimming = TextTrimming.None,
+                    MaxWidth = 440,
+                    Margin = new Thickness(12, 6, 12, 6),
+                };
+                pathText.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+                var pathHeader = new MenuItem
+                {
+                    Header = pathText,
+                    Focusable = false,
+                    IsHitTestVisible = false,
+                };
+                pathHeader.SetResourceReference(FrameworkElement.StyleProperty, "PanelMenuItem");
+                menu.Items.Add(pathHeader);
+                menu.Items.Add(new Separator());
+
                 var openTab = MakeItem("Str_Storage_OpenInTab", 0xE8DA, "Shift+Enter");
                 openTab.Click += (_, _) => OpenNodeInTab(n);
                 menu.Items.Add(openTab);

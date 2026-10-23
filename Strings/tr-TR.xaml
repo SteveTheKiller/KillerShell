@@ -73,7 +73,7 @@
     <sys:String x:Key="Str_Sort_Found">bulunma sırası</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Bu sonuçları filtrele (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Bu sonuçların içinde ara  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Sol ve sağ bölmeler / Üst ve alt bölmeler (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Bölme düzenini değiştirin. Ctrl+tıklama sırayı tersine çevirir; sağ tıklama düzen seçmenizi sağlar. F10 ikinci bölmeyi açar veya kapatır.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Diğer araçlar</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Sistem araçları</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü  (Alt+S)</sys:String>
@@ -882,6 +882,7 @@
     <sys:String x:Key="Str_Ks_Language">dil seçicisini aç</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">film grenini aç veya kapat</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">ikinci bölmeyi aç veya kapat</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">diğer bölmeye geç</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">gizli ve sistem öğelerini göster veya gizle</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Ayrıntılar altta / Ayrıntılar sağda / Ayrıntıları gizle</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">liste, simge veya ayrıntı görünümü</sys:String>
@@ -962,9 +963,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Ayrıntılar altta</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Ayrıntılar sağda</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Ayrıntıları gizle</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Tek bölme</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Sol ve sağ bölmeler</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Üst ve alt bölmeler</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Bu pencerede ara</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Tüm açık sekmelerde ara</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Tüm bilgisayarda ara</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Ayrıntılar altta (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Ayrıntılar sağda (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Ayrıntıları gizle (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">boyutlar</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">en boy oranı</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">renk derinliği</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">saydamlık</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Destekleniyor</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Yok</sys:String>
+    <sys:String x:Key="Str_Details_Pages">sayfalar</sys:String>
+    <sys:String x:Key="Str_Details_Duration">süre</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">dosya sürümü</sys:String>
 </ResourceDictionary>

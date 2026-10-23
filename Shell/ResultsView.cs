@@ -88,11 +88,15 @@ namespace KillerShell.Shell
                 Notify();
                 Notify(nameof(CardIconSize));
                 Notify(nameof(RowIconColumn));
+                Notify(nameof(ListItemWidth));
+                Notify(nameof(ListItemHeight));
             }
         }
 
         /// <summary>The list card's icon: two px up on the details row's, as it always was.</summary>
         public int CardIconSize => _rowIconSize + 2;
+        public double ListItemWidth => 220 + _rowIconSize - 16;
+        public double ListItemHeight => _rowIconSize + 6;
 
         /// <summary>
         /// The details row's icon column - the art plus the gap to the name. Duplicated into
@@ -610,6 +614,37 @@ namespace KillerShell.Shell
         // would be a large diff for no gain. Grab it once on the way past instead.
         private DataTemplate? _listTemplate;
 
+        private Services.WindowViewSettings? _windowViewSettings;
+        private Services.WindowViewSettings WindowViews
+        {
+            get
+            {
+                if (_windowViewSettings != null) return _windowViewSettings;
+                string role = (DemoMode ? "demo." : "") + (IsElevated ? "admin" : "normal");
+                _windowViewSettings = new Services.WindowViewSettings(role,
+                    Services.ThemeManager.GetSetting, Services.ThemeManager.SetSetting);
+                Closed += (_, _) => _windowViewSettings.Dispose();
+                return _windowViewSettings;
+            }
+        }
+
+        private string? GetWindowViewSetting(string key) => WindowViews.Get(key);
+        private void SetWindowViewSetting(string key, string value) => WindowViews.Set(key, value);
+        private string WindowViewSettingKey(string key) => WindowViews.Key(key);
+
+        private void RestoreWindowSort(Models.SearchTab tab, FilePane pane)
+        {
+            string? saved = GetWindowViewSetting("ResultsSort" + PaneKey(pane));
+            var parts = saved?.Split('|');
+            if (parts?.Length != 2 || !int.TryParse(parts[0], out int index) || index < 0 || index > 6) return;
+            tab.SortIndex = index;
+            tab.SortAsc = parts[1] == "1";
+        }
+
+        private void SaveWindowSort(Models.SearchTab tab)
+            => SetWindowViewSetting("ResultsSort" + PaneKey(Pane),
+                tab.SortIndex.ToString(CultureInfo.InvariantCulture) + "|" + (tab.SortAsc ? "1" : "0"));
+
         private void InitResultsView()
         {
             _listTemplate ??= Pane.ResultsList.ItemTemplate;
@@ -623,24 +658,25 @@ namespace KillerShell.Shell
             {
                 string key = PaneKey(p);
 
-                if (int.TryParse(Services.ThemeManager.GetSetting("ResultsView" + key), out int v) && v >= 0 && v <= 2)
+                if (int.TryParse(GetWindowViewSetting("ResultsView" + key), out int v) && v >= 0 && v <= 2)
                     p.ViewMode = v;
 
-                if (int.TryParse(Services.ThemeManager.GetSetting("ResultsTileSize" + key), NumberStyles.Integer,
+                if (int.TryParse(GetWindowViewSetting("ResultsTileSize" + key), NumberStyles.Integer,
                                  CultureInfo.InvariantCulture, out int px))
                     p.ViewState.TileSize = px;
 
-                if (int.TryParse(Services.ThemeManager.GetSetting("ResultsRowIconSize" + key), NumberStyles.Integer,
+                if (int.TryParse(GetWindowViewSetting("ResultsRowIconSize" + key), NumberStyles.Integer,
                                  CultureInfo.InvariantCulture, out int rowPx))
                     p.ViewState.RowIconSize = rowPx;
 
-                if (int.TryParse(Services.ThemeManager.GetSetting(SetDensity + key), out int d))
+                if (int.TryParse(GetWindowViewSetting(SetDensity + key), out int d))
                     p.ViewState.Density = d;
+                ApplyContentDensity(p);
 
                 // Dragged details-column widths. Each restored independently, so one bad or
                 // missing value leaves the others alone rather than resetting the whole row.
                 foreach (int col in new[] { 1, 2, 3, 4, 5, 6 })
-                    if (double.TryParse(Services.ThemeManager.GetSetting(ColSettingKey(col) + key), NumberStyles.Float,
+                    if (double.TryParse(GetWindowViewSetting(ColSettingKey(col) + key), NumberStyles.Float,
                                         CultureInfo.InvariantCulture, out double w))
                         p.ViewState.SetColumnWidth(col, w);
 
@@ -649,7 +685,12 @@ namespace KillerShell.Shell
                 // Name is not offered (see the remark on ResultsViewState.SizeVisible); Location
                 // already has its own context-driven show/hide and is left out of this menu so
                 // the two mechanisms cannot fight over the same column.
-                Services.ColumnVisibilityMenu.RestoreVisibility("ResultsDetails" + key, DetailsColumnEntries(p));
+                string columnsKey = WindowViewSettingKey("ResultsDetails" + key);
+                foreach (var entry in DetailsColumnEntries(p))
+                    WindowViews.MigrateColumn("ColVis_" + columnsKey + "_" + entry.Key,
+                        "ColVis_ResultsDetails" + key + "_" + entry.Key);
+                Services.ColumnVisibilityMenu.RestoreVisibility(columnsKey, DetailsColumnEntries(p));
+                p.OverflowPopup.Closed += (_, _) => ReflowToolStrip(p);
 
                 // The header menu flips DateGroups on the pane's state; grouping lives on each
                 // tab's collection view, so the tabs have to be re-sorted for it to show.
@@ -703,7 +744,7 @@ namespace KillerShell.Shell
         internal void DetailsHeader_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is not FrameworkElement el) return;
-            Services.ColumnVisibilityMenu.ShowFor(el, "ResultsDetails" + PaneKey(Pane), DetailsColumnEntries(Pane));
+            Services.ColumnVisibilityMenu.ShowFor(el, WindowViewSettingKey("ResultsDetails" + PaneKey(Pane)), DetailsColumnEntries(Pane));
             e.Handled = true;
         }
 
@@ -722,7 +763,7 @@ namespace KillerShell.Shell
             if (mode != 2) ReapplyDateSorts(Pane);
             ApplyResultsViewToPane();
             if (mode == 2) ReapplyDateSorts(Pane);
-            Services.ThemeManager.SetSetting("ResultsView" + PaneKey(Pane), mode.ToString(CultureInfo.InvariantCulture));
+            SetWindowViewSetting("ResultsView" + PaneKey(Pane), mode.ToString(CultureInfo.InvariantCulture));
         }
 
         // Each pane keeps its own view mode now - changing one pane's view used to change
@@ -836,6 +877,7 @@ namespace KillerShell.Shell
                 _active.SortAsc = index == 1 || index == 2 || index == 5;
             }
 
+            SaveWindowSort(_active);
             ApplySort(_active);
         }
 
@@ -862,10 +904,8 @@ namespace KillerShell.Shell
         // discrete because the shell only has a few real icon sizes to give - sliding smoothly
         // between them would just be resampling the same bitmap.
         //
-        // At the ends of a mode's ladder the wheel flips to the next mode (Explorer parity):
-        // scrolling smaller past Icons' smallest step lands in Compact List; scrolling smaller
-        // past Compact List lands in Details; scrolling larger reverses the same chain. Details
-        // has no size ladder, so a further scroll down there simply stays in Details.
+        // The cycle grows through list rows, details rows, and then icon tiles. Its ends wrap,
+        // so reversing the wheel walks exactly the same sequence backward.
         internal void ResultsList_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             if ((System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == 0) return;
@@ -878,39 +918,38 @@ namespace KillerShell.Shell
         /// Ctrl+- drive the same step from the keyboard (KeyCommands.cs).</summary>
         private void StepResultsSize(int dir)
         {
-            int mode = Pane.ViewMode;
             var state = Pane.ViewState;
-
-            if (mode == 1)
+            var rows = ResultsViewState.RowIconSteps;
+            var tiles = ResultsViewState.Steps;
+            int current = Pane.ViewMode switch
             {
-                // Icons: step the tile ladder. Fall off the bottom into Compact List; the top is
-                // capped at the largest step (256px is already Explorer's biggest).
-                var steps = ResultsViewState.Steps;
-                int i = NearestStep(steps, state.TileSize) + dir;
-                if (i < 0) { SetResultsView(0); return; }
-                if (i >= steps.Length) i = steps.Length - 1;
-                state.TileSize = steps[i];
-                Services.ThemeManager.SetSetting("ResultsTileSize" + PaneKey(Pane),
-                    steps[i].ToString(CultureInfo.InvariantCulture));
-                return;
-            }
-
-            if (mode == 0)
+                1 => rows.Length * 2 + NearestStep(tiles, state.TileSize),
+                2 => rows.Length + NearestStep(rows, state.RowIconSize),
+                _ => NearestStep(rows, state.RowIconSize),
+            };
+            int count = rows.Length * 2 + tiles.Length;
+            int next = (current + (dir > 0 ? 1 : -1) + count) % count;
+            string paneKey = PaneKey(Pane);
+            if (next >= rows.Length * 2)
             {
-                // Compact List has no size ladder of its own. Scrolling smaller drops to Details;
-                // scrolling larger climbs back into Icons at its smallest tile size.
-                if (dir < 0) { SetResultsView(2); return; }
-                var steps = ResultsViewState.Steps;
-                state.TileSize = steps[0];
-                Services.ThemeManager.SetSetting("ResultsTileSize" + PaneKey(Pane),
-                    steps[0].ToString(CultureInfo.InvariantCulture));
+                state.TileSize = tiles[next - rows.Length * 2];
+                SetWindowViewSetting("ResultsTileSize" + paneKey,
+                    state.TileSize.ToString(CultureInfo.InvariantCulture));
                 SetResultsView(1);
                 return;
             }
 
-            // Details: scrolling larger promotes to Compact List. Scrolling smaller is a no-op -
-            // there is nothing below Details in the chain.
-            if (dir > 0) SetResultsView(0);
+            int row = next % rows.Length;
+            state.RowIconSize = rows[row];
+            SetWindowViewSetting("ResultsRowIconSize" + paneKey,
+                state.RowIconSize.ToString(CultureInfo.InvariantCulture));
+            if (next >= rows.Length)
+            {
+                state.Density = Math.Max(0, ResultsViewState.DensityLevels - 1 - row);
+                SetWindowViewSetting(SetDensity + paneKey, state.Density.ToString(CultureInfo.InvariantCulture));
+                ApplyContentDensity(Pane);
+            }
+            SetResultsView(next >= rows.Length ? 2 : 0);
         }
 
         // Steps are strictly monotonic, so the nearest index is either the exact hit or the
@@ -963,7 +1002,7 @@ namespace KillerShell.Shell
         };
 
         private void SaveColumn(FilePane pane, int column)
-            => Services.ThemeManager.SetSetting(ColSettingKey(column) + PaneKey(pane),
+            => SetWindowViewSetting(ColSettingKey(column) + PaneKey(pane),
                    pane.ViewState.GetColumnWidth(column).ToString("0.#", CultureInfo.InvariantCulture));
 
         /// <summary>

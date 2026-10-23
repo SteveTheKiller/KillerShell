@@ -1871,7 +1871,7 @@
          scrollbars is painted with the system Control brush - the white box that showed up at
          the end of the horizontal bar. All three are replaced here rather than patched. -->
 
-    <!-- Expander triangle. Two Paths rather than a glyph font so it stays crisp at any app
+    <!-- Expander triangle. A Path rather than a glyph font so it stays crisp at any app
          scale and takes the accent on hover like everything else. -->
     <Style x:Key="TreeExpander" TargetType="ToggleButton">
         <Setter Property="Focusable" Value="False"/>
@@ -1885,34 +1885,9 @@
                              16px gutter and line up with the connecting line, which sits at
                              x=7.5-8.5. A bare Path would be positioned by layout instead, and
                              the alignment this whole style exists for would drift.
-                             The two states are separate geometries rather than one chevron on a
-                             RotateTransform: rotating about the bounding-box center swings the
-                             arms back across the line, which is what drew an X over it.
-                             FILL is what makes the line read as a zigzag rather than something
-                             with a chevron laid over it - an unclosed figure still fills as if
-                             closed, so the triangle between the arms is painted in the panel's
-                             own background and the line disappears behind it. -->
+                             The connector has its own gap, so the arrow needs no painted mask
+                             and the actual theme surface remains visible behind it. -->
                         <Canvas Width="16" Height="16">
-                            <!-- TWO paths, not one. The mask and the visible chevron want
-                                 different left edges: the stroke sits a pixel clear of the line
-                                 so the two read as separate marks, but a fill that started
-                                 there would leave the line showing along the inside of the
-                                 arms. The fill path reaches back to x=7 - past the line's left
-                                 edge at 7.5 - so the whole 1px is covered. It has no stroke, so
-                                 all it ever does is paint background. -->
-                            <!-- TreeChevronMaskBrush, which defaults to SolidBackgroundBrush -
-                                 this fill exists to vanish into whatever is behind the chevron,
-                                 and BackgroundBrush itself cannot be used because it is a
-                                 gradient on five themes and re-ramps inside this 16px box
-                                 (ThemeManager has the full note).
-                                 It is its own key rather than SolidBackgroundBrush directly
-                                 because "whatever is behind" is not the same surface in every
-                                 tree: the folder tree shows the window, the Registry Editor's
-                                 tree shows its control's PaneBrush. That tree overrides this key
-                                 on its own Resources, and a DynamicResource resolves up the tree
-                                 from the element, so it wins there and nowhere else. -->
-                            <Path x:Name="arrowFill" Data="M 7,3.5 L 13,7.5 L 7,11.5"
-                                  Fill="{DynamicResource TreeChevronMaskBrush}" SnapsToDevicePixels="False"/>
                             <Path x:Name="arrow" Data="M 8.5,3.5 L 13,7.5 L 8.5,11.5"
                                   StrokeThickness="1.4" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                                   Stroke="{DynamicResource DimTextBrush}" SnapsToDevicePixels="False"/>
@@ -1924,12 +1899,8 @@
                                  line runs into the point of the V rather than off to one side.
                                  Arm length and angle match the collapsed chevron (these are its
                                  own three points rotated 90 degrees, worked out by hand: a
-                                 RenderTransform cannot be reached by TargetName, MC4111).
-                                 Fill and stroke share a geometry here, unlike the collapsed
-                                 state - the line passes through the V's interior rather than
-                                 along its edge, so the plain triangle already covers it. -->
+                                 RenderTransform cannot be reached by TargetName, MC4111). -->
                             <Setter TargetName="arrow"     Property="Data" Value="M 4,5.25 L 8,9.75 L 12,5.25"/>
-                            <Setter TargetName="arrowFill" Property="Data" Value="M 4,5.25 L 8,9.75 L 12,5.25"/>
                             <Setter TargetName="arrow" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -1969,8 +1940,17 @@
                              its children; the horizontal is the stub out to this node's icon.
                              For the last child the vertical is cut to an elbow (see trigger)
                              so it stops at the join instead of trailing into empty space. -->
-                        <Rectangle x:Name="VerLine" Grid.RowSpan="2" Width="1"
-                                   HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                        <Grid Grid.Row="0" Width="1" HorizontalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Rectangle x:Name="VerLineTop" Grid.Row="0" Margin="0,0,0,4"
+                                       Fill="{DynamicResource TreeLineBrush}" SnapsToDevicePixels="True"/>
+                            <Rectangle x:Name="VerLineBottom" Grid.Row="1" Margin="0,4,0,0"
+                                       Fill="{DynamicResource TreeLineBrush}" SnapsToDevicePixels="True"/>
+                        </Grid>
+                        <Rectangle x:Name="VerLineTail" Grid.Row="1" Width="1" HorizontalAlignment="Center"
                                    Fill="{DynamicResource TreeLineBrush}" SnapsToDevicePixels="True"/>
                         <!-- Only drawn for a node with no expander. Where there IS one the
                              chevron is the connector - its tips meet the vertical line at x=8
@@ -2005,6 +1985,8 @@
                         <Trigger Property="HasItems" Value="False">
                             <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
                             <Setter TargetName="HorLine" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="VerLineTop" Property="Margin" Value="0"/>
+                            <Setter TargetName="VerLineBottom" Property="Margin" Value="0"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" SourceName="Bd" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
@@ -2024,9 +2006,18 @@
                              itself so a recycled container re-evaluates (LastChildConverter.cs). -->
                         <DataTrigger Value="True"
                                      Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource IsLastChild}}">
-                            <Setter TargetName="VerLine" Property="VerticalAlignment" Value="Top"/>
-                            <Setter TargetName="VerLine" Property="Height" Value="11"/>
+                            <Setter TargetName="VerLineTail" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="VerLineBottom" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource IsLastChild}}" Value="True"/>
+                                <Condition Binding="{Binding HasItems, RelativeSource={RelativeSource Self}}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="VerLineBottom" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="VerLineBottom" Property="VerticalAlignment" Value="Top"/>
+                            <Setter TargetName="VerLineBottom" Property="Height" Value="3"/>
+                        </MultiDataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -2234,13 +2225,14 @@
         <Setter Property="Padding" Value="0"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="ItemContainerStyle" Value="{StaticResource FolderTreeItem}"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TreeView">
                     <Border Background="{TemplateBinding Background}" BorderThickness="0">
                         <ScrollViewer Style="{StaticResource BareScrollViewer}"
                                       Padding="{TemplateBinding Padding}"
-                                      CanContentScroll="False"
+                                      CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Auto">
                             <ItemsPresenter/>

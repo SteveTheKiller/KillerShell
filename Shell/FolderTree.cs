@@ -152,7 +152,11 @@ namespace KillerShell.Shell
 
             string path = Path;
             var fresh = await Task.Run(() => EnumerateChildren(path)).ConfigureAwait(true);
+            await ReconcileChildrenAsync(fresh, deep);
+        }
 
+        internal async Task ReconcileChildrenAsync(IReadOnlyList<FolderNode> fresh, bool deep)
+        {
             // Reconciled IN PLACE rather than cleared and refilled. Clear() removes the container
             // holding the tree's selection, and WPF answers a lost selection by selecting the
             // PARENT node - so any file op that refreshed the tree raised SelectedItemChanged for
@@ -175,8 +179,13 @@ namespace KillerShell.Shell
                 {
                     // Anything the user has opened stays the SAME node object, so its own subtree
                     // and IsExpanded survive; only genuinely new entries get fresh nodes.
-                    int at = Children.IndexOf(existing);
-                    if (at != i) Children.Move(at, i);
+                    // Sorted survivors normally already occupy their destination. Searching
+                    // the entire collection for each one freezes large unchanged folders.
+                    if (!ReferenceEquals(Children[i], existing))
+                    {
+                        int at = Children.IndexOf(existing);
+                        Children.Move(at, i);
+                    }
                     // Its children are stale for the same reason. A shallow refresh (the tree
                     // watcher's, TreeWatcher.cs) stops here: every open branch has its own watch.
                     if (deep) await existing.RefreshAsync();
@@ -559,15 +568,38 @@ namespace KillerShell.Shell
             });
         }
 
+        private readonly ConditionalWeakTable<FolderNode, FolderTreeExpansionState> _treeExpansions = new();
+
+        private sealed class FolderTreeExpansionState
+        {
+            internal bool IsExpanded;
+            internal bool RefreshOnExpand;
+
+            internal FolderTreeExpansionState(FolderNode node)
+            {
+                node.PropertyChanged += (_, args) =>
+                {
+                    if (args.PropertyName != nameof(FolderNode.IsExpanded) || node.IsExpanded) return;
+                    IsExpanded = false;
+                    RefreshOnExpand = true;
+                };
+            }
+        }
+
         // TreeViewItem.Expanded is attached at the TreeView, so this fires for every node at any
         // depth - which is the point: one handler drives the whole lazy load.
         private async void FolderTree_Expanded(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource is not TreeViewItem tvi) return;
             if (tvi.DataContext is not FolderNode node) return;
+            var state = _treeExpansions.GetValue(node, n => new FolderTreeExpansionState(n));
+            if (state.IsExpanded) return;
+            state.IsExpanded = true;
             // A collapsed branch is not watched (TreeWatcher.cs), so the children it cached can
-            // be out of date by the time it is opened again.
-            bool reopened = node.IsLoaded && !node.IsGroup;
+            // be out of date by the time it is opened again. Recycling an already-open branch
+            // also raises Expanded, but must not start another disk enumeration.
+            bool reopened = state.RefreshOnExpand && node.IsLoaded && !node.IsGroup;
+            state.RefreshOnExpand = false;
             await node.LoadChildrenAsync();
             if (reopened && !_treeRestoring) await node.RefreshAsync(deep: false);
             SaveTreeExpansion();
@@ -579,9 +611,15 @@ namespace KillerShell.Shell
         // something to re-enumerate.
         private void FolderTree_Collapsed(object sender, RoutedEventArgs e)
         {
-            if (e.OriginalSource is not TreeViewItem) return;
-            SaveTreeExpansion();
-            SyncTreeWatchers();
+            if (e.OriginalSource is not TreeViewItem tvi || tvi.DataContext is not FolderNode node) return;
+            // Wait for the two-way binding. A recycled container can collapse while the
+            // model remains expanded; that does not change saved expansion or watchers.
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (node.IsExpanded) return;
+                SaveTreeExpansion();
+                SyncTreeWatchers();
+            }), System.Windows.Threading.DispatcherPriority.DataBind);
         }
 
         // ── Expansion memory ─────────────────────────────────────
@@ -688,6 +726,10 @@ namespace KillerShell.Shell
 
         private void FolderTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            // The previous row may already have been recycled, so its two-way binding can no
+            // longer clear the model's selection when WPF selects another container.
+            if (e.OldValue is FolderNode previous && !ReferenceEquals(previous, e.NewValue))
+                previous.IsSelected = false;
             if (_treeSyncing) return;
             if (e.NewValue is not FolderNode node) return;
             if (node.IsGroup) { node.IsExpanded = true; return; }
@@ -725,6 +767,7 @@ namespace KillerShell.Shell
             var segments = RelativeSegments(root.Path, full).ToList();
 
             var current = root;
+            var chain = new List<FolderNode> { root };
             if (segments.Count > 0)
             {
                 await current.LoadChildrenAsync();
@@ -747,6 +790,7 @@ namespace KillerShell.Shell
                 // one already expanded showing where you came from, so slamming it closed
                 // collapsed the branch under the cursor and the whole tree jumped. Dual pane only
                 // made it obvious - it did the same thing with one pane.
+                chain.Add(current);
                 if (i == segments.Count - 1) break;
 
                 await current.LoadChildrenAsync();   // needed to match the NEXT segment
@@ -760,8 +804,45 @@ namespace KillerShell.Shell
             // yield to the dispatcher and the flag can legitimately change while they run.
             bool wasSyncing = _treeSyncing;
             _treeSyncing = true;
-            try { current.IsSelected = true; }
+            try
+            {
+                var item = RealizeFolderTreePath(chain);
+                current.IsSelected = true;
+                // An expanded item's full bounds include its descendants. Reveal the header
+                // so a large subtree cannot push the selected row out of the viewport.
+                if (item?.Template.FindName("PART_Header", item) is FrameworkElement header)
+                    header.BringIntoView();
+                else item?.BringIntoView();
+            }
             finally { _treeSyncing = wasSyncing; }
+        }
+
+        private TreeViewItem? RealizeFolderTreePath(IReadOnlyList<FolderNode> chain)
+        {
+            ItemsControl parent = FolderTree;
+            TreeViewItem? item = null;
+            foreach (var node in chain)
+            {
+                parent.ApplyTemplate();
+                parent.UpdateLayout();
+                item = parent.ItemContainerGenerator.ContainerFromItem(node) as TreeViewItem;
+                if (item == null)
+                {
+                    var presenter = parent is TreeViewItem parentItem
+                        ? parentItem.Template.FindName("ItemsHost", parentItem) as ItemsPresenter
+                        : FindDescendant<ItemsPresenter>(parent);
+                    presenter?.ApplyTemplate();
+                    var panel = presenter == null ? null : FindDescendant<Controls.FolderTreeItemsPanel>(presenter);
+                    int index = parent.Items.IndexOf(node);
+                    if (panel == null || index < 0) return null;
+                    panel.Reveal(index);
+                    parent.UpdateLayout();
+                    item = parent.ItemContainerGenerator.ContainerFromItem(node) as TreeViewItem;
+                }
+                if (item == null) return null;
+                parent = item;
+            }
+            return item;
         }
 
         /// <summary>

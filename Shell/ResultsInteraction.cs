@@ -749,7 +749,7 @@ namespace KillerShell.Shell
             // so say so rather than falling into the search gesture below.
             if (InArchive(archivePane))
             {
-                SetTabStatusKey(_active, "Str_Status_ArchiveReadOnly");
+                SetTabStatusKey(_active, DemoMode ? "Str_Status_ArchiveCanceled" : "Str_Status_ArchiveReadOnly");
                 return;
             }
 

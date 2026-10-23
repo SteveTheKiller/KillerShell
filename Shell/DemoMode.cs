@@ -364,6 +364,10 @@ namespace KillerShell.Shell
         /// </remarks>
         private static string DemoTextFor(string path)
         {
+            string? profile = Services.DemoProfiles.TextFor(path);
+            if (profile != null) return profile;
+            string? archiveText = Services.DemoArchives.TextFor(path);
+            if (archiveText != null) return archiveText;
             string ext = System.IO.Path.GetExtension(path).ToLowerInvariant();
             return ext switch
             {

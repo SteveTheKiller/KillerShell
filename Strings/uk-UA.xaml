@@ -117,7 +117,7 @@
     <sys:String x:Key="Str_Sort_Found">за порядком знаходження</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Фільтрувати ці результати (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Шукати в цих результатах  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Панелі ліворуч і праворуч / Панелі зверху і знизу (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Змінити розташування панелей. Ctrl+клацання змінює порядок на зворотний; права кнопка миші дає змогу вибрати розташування. F10 відкриває або закриває другу панель.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Більше інструментів</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Системні інструменти</sys:String>
     <sys:String x:Key="Str_TT_Sort">Сортувати за  (Alt+S)</sys:String>
@@ -809,6 +809,7 @@
     <sys:String x:Key="Str_Ks_Language">відкрити вибір мови</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">увімкнути або вимкнути зернистість плівки</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">відкрити або закрити другу панель</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">перейти до іншої панелі</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">показати або сховати приховані та системні елементи</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Відомості внизу / Відомості праворуч / Приховати відомості</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">вигляд: список, значки або таблиця</sys:String>
@@ -1008,9 +1009,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Відомості внизу</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Відомості праворуч</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Приховати відомості</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Одна панель</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Панелі ліворуч і праворуч</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Панелі зверху і знизу</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Шукати в цьому вікні</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Шукати в усіх відкритих вкладках</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Шукати на всьому комп’ютері</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Відомості внизу (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Відомості праворуч (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Приховати відомості (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">розміри</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">співвідношення сторін</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">глибина кольору</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">прозорість</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Підтримується</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Немає</sys:String>
+    <sys:String x:Key="Str_Details_Pages">сторінки</sys:String>
+    <sys:String x:Key="Str_Details_Duration">тривалість</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">версія файлу</sys:String>
 </ResourceDictionary>

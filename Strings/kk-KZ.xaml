@@ -111,7 +111,7 @@
     <sys:String x:Key="Str_Sort_Found">табылғандай</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Осы нәтижелерді сүзу (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Осы нәтижелердің ішінен іздеу  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Сол және оң жақ тақталар / Жоғарғы және төменгі тақталар (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">Тақталардың орналасуын ауыстыру. Ctrl+шерту ретті кері ауыстырады; оң жақ түймемен шерту орналасуды таңдауға мүмкіндік береді. F10 екінші тақтаны ашады немесе жабады.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Басқа құралдар</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Жүйелік құралдар</sys:String>
     <sys:String x:Key="Str_TT_Sort">Бойынша сұрыптау  (Alt+S)</sys:String>
@@ -777,6 +777,7 @@
     <sys:String x:Key="Str_Ks_Language">тіл таңдауды ашу</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">пленка түйіршігін қосу немесе өшіру</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">екінші тақтаны ашу немесе жабу</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">басқа тақтаға ауысу</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">жасырын және жүйелік элементтерді көрсету немесе жасыру</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">Мәліметтер төменде / Мәліметтер оң жақта / Мәліметтерді жасыру</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">тізім, таңбашалар немесе кесте көрінісі</sys:String>
@@ -974,9 +975,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">Мәліметтер төменде</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">Мәліметтер оң жақта</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">Мәліметтерді жасыру</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">Бір тақта</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Сол және оң жақ тақталар</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Жоғарғы және төменгі тақталар</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">Осы терезеде іздеу</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">Барлық ашық қойындыларда іздеу</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">Бүкіл компьютерде іздеу</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">Мәліметтер төменде (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">Мәліметтер оң жақта (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">Мәліметтерді жасыру (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">өлшемдері</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">арақатынасы</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">түс тереңдігі</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">мөлдірлік</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">Қолдау бар</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">Жоқ</sys:String>
+    <sys:String x:Key="Str_Details_Pages">беттер</sys:String>
+    <sys:String x:Key="Str_Details_Duration">ұзақтығы</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">файл нұсқасы</sys:String>
 </ResourceDictionary>

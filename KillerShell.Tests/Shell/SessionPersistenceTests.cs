@@ -192,7 +192,7 @@ public static class SessionPersistenceScenario
                     Assert.Equal(folders.Skip(2), Tabs(restored, "RightPane").Select(tab => tab.CurrentFolder));
                     Assert.DoesNotContain(Tabs(restored, "RightPane"), tab => tab.IsEditor);
                     Assert.False(Pane(restored, "RightPane").IsVisible);
-                    Click(restored, "DualPaneRailBtn");
+                    restored.ToggleDualPane();
                     Pump(TimeSpan.FromMilliseconds(300));
                     Assert.True(Tabs(restored, "RightPane")[0].IsActive);
                     Assert.Equal(folders[2], ((TextBlock)Pane(restored, "RightPane").FindName("ScopePathLabel")).Text);
@@ -244,7 +244,7 @@ public static class SessionPersistenceScenario
             {
                 var original = ShowWindow();
                 SetSearchOptions(original, "*.before", "*.before-tmp", true);
-                Click(original, "DualPaneRailBtn");
+                original.ToggleDualPane();
                 FocusPane(original, "LeftPane");
                 Pump(TimeSpan.FromMilliseconds(300));
                 AssertSearchOptions(original, "*.before", "*.before-tmp", true);
@@ -272,7 +272,7 @@ public static class SessionPersistenceScenario
                     Assert.Equal("needle", Assert.Single(Assert.Single(tab.Groups).Terms).Pattern);
                     Assert.Equal(TermGroup.GroupMode.Or, Assert.Single(tab.Groups).Mode);
                     Assert.True(Assert.Single(Tabs(restored, "RightPane")).IsEditor);
-                    Click(restored, "DualPaneRailBtn");
+                    restored.ToggleDualPane();
                     var editor = (TextEditor)((ContentControl)Pane(restored, "RightPane").FindName("EditorSlot")).Content;
                     Assert.Equal("session fixture", editor.Text);
                     Assert.False(editor.IsModified);
@@ -285,7 +285,7 @@ public static class SessionPersistenceScenario
             Navigate(window, "LeftPane", folders[0]);
             NewTab(window);
             Navigate(window, "LeftPane", folders[1]);
-            Click(window, "DualPaneRailBtn");
+            window.ToggleDualPane();
             Pump(TimeSpan.FromMilliseconds(300));
             Navigate(window, "RightPane", folders[2]);
             NewTab(window);
@@ -296,11 +296,11 @@ public static class SessionPersistenceScenario
                 FocusPane(window, "LeftPane");
                 SetSearchOptions(window, "*.left", "*.left-tmp", true);
                 FocusPane(window, "RightPane");
-                Click(window, "DualPaneRailBtn");
+                window.ToggleDualPane();
                 Pump(TimeSpan.FromMilliseconds(300));
             }
             if (scenario == "left") FocusPane(window, "LeftPane");
-            if (scenario == "hidden") Click(window, "DualPaneRailBtn");
+            if (scenario == "hidden") window.ToggleDualPane();
             if (scenario == "opt-out") settings["RememberTabs"] = "0";
             CloseWindow(window);
 
@@ -325,7 +325,7 @@ public static class SessionPersistenceScenario
                 SelectTab(reopened, "LeftPane", 1);
                 AssertSearchOptions(reopened, "*.left", "*.left-tmp", true);
             }
-            Click(reopened, "DualPaneRailBtn");
+            reopened.ToggleDualPane();
             Pump(TimeSpan.FromMilliseconds(300));
             Assert.Equal(folders.Skip(2), Tabs(reopened, "RightPane").Select(tab => tab.CurrentFolder));
             Assert.Equal(folders[2], ((TextBlock)Pane(reopened, "RightPane").FindName("ScopePathLabel")).Text);

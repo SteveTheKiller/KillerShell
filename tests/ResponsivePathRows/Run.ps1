@@ -79,7 +79,7 @@ $address = PaneField $left 'AddressBox'
 $strip = PaneField $left 'ToolStrip'
 $overflow = PaneField $left 'OverflowPanel'
 $label.Text = 'C:\Users\Demo\Documents\Quarterly reports\2026 final report'
-$fileButtons = @('ViewListBtn', 'ViewIconsBtn', 'ViewDetailsBtn', 'SortBtn', 'SortDirButton', 'ExpandAllButton', 'ShowHiddenBtn', 'FoldersTopBtn', 'DetailsPaneBtn', 'PipeBtn', 'ExportBtn')
+$fileButtons = @('ViewListBtn', 'ViewIconsBtn', 'ViewDetailsBtn', 'FileDensityBtn', 'SortControlsHost', 'ExpandAllButton', 'ShowHiddenBtn', 'FoldersTopBtn', 'DetailsPaneBtn', 'PipeBtn', 'ExportBtn')
 $originals = @{}
 foreach ($name in $fileButtons) { $originals[$name] = PaneField $left $name }
 Set-Dual $false
@@ -89,10 +89,11 @@ Check ($label.ActualWidth -ge 259) 'Wide filename lost its minimum readable widt
 Check ([Math]::Abs((PaneField $left 'LocationRow').ActualHeight - 32) -lt 1) 'Wide file toolbar height changed'
 Capture 'file-wide' (PaneField $left 'LocationRow')
 Layout 600
-Check ([Windows.Controls.Grid]::GetRow($path) -eq 1) 'Narrow file pane did not move the path below buttons'
-Check ($path.ActualWidth -ge (PaneField $left 'LocationRow').ActualWidth - 1) 'Compact file path is not full width'
+Check ([Windows.Controls.Grid]::GetRow($path) -eq 0) 'Narrow file pane stopped using one row'
+Check ($overflow.Children.Count -gt 0) 'Narrow toolbar did not move secondary commands into overflow'
+Check ($label.ActualWidth -ge 259) 'Narrow toolbar squeezed the address before its commands overflowed'
 Check ($label.FontSize -eq 12) 'Filename font was shrunk'
-Check ([Math]::Abs((PaneField $left 'LocationRow').ActualHeight - 54) -lt 1) 'Compact file toolbar is not 32 + 22 px'
+Check ([Math]::Abs((PaneField $left 'LocationRow').ActualHeight - 32) -lt 1) 'Narrow file toolbar height changed'
 Capture 'file-narrow' (PaneField $left 'LocationRow')
 Call 'BeginEditAddress'
 # BeginEditAddress queues its own focus and select-all; let that run before setting the edit state.
@@ -120,11 +121,7 @@ for ($round = 0; $round -lt 8; $round++) {
         }
     }
 }
-# Exercise the exact hysteresis boundary independently of incidental window chrome.
-$predicate = $type.GetMethod('NeedsSecondPathRow', $static)
-Check ($predicate.Invoke($null, @([double]799, [double]800, $false))) 'Narrow transition did not use required width'
-Check ($predicate.Invoke($null, @([double]823, [double]800, $true))) 'Compact state did not retain its 24px hysteresis'
-Check (-not $predicate.Invoke($null, @([double]824, [double]800, $true))) 'Wide transition did not release at the hysteresis boundary'
+Check ((PaneField $left 'SortChoice') -is [Windows.Controls.ComboBox]) 'Sort options are not a standard dropdown'
 foreach ($theme in @('Malaise', 'Light', 'SE98')) {
     $manager.GetMethod('LoadDict', $static).Invoke($null, @([Enum]::Parse($themeType, $theme)))
     foreach ($locale in @('EnUS', 'De', 'ZhTW')) {
@@ -135,8 +132,8 @@ foreach ($theme in @('Malaise', 'Light', 'SE98')) {
             Check ($label.FontSize -eq 12 -and $address.FontSize -eq 12) 'Scale or locale changed path typography'
             # App scale is a layout transform, so 600 logical pixels need 600 * scale on screen.
             Layout (600 * $scale)
-            Check ([Windows.Controls.Grid]::GetRow($path) -eq 1) "Narrow path failed for $theme/$locale/$scale"
-            Check ($path.ActualWidth -ge (PaneField $left 'LocationRow').ActualWidth - 1) 'Scaled compact path lost full width'
+            Check ([Windows.Controls.Grid]::GetRow($path) -eq 0) "Single-row path failed for $theme/$locale/$scale"
+            Check ($overflow.Children.Count -gt 0) 'Scaled narrow toolbar did not overflow'
         }
     }
 }
@@ -146,7 +143,7 @@ Call 'ApplyAppScale' @([double]1.0, $false)
 Call 'FocusPaneQuiet' @($right)
 $terminalTab = Call 'CreateDemoTerminalTab' @('C:\Users\Demo\Documents\Quarterly reports', "Responsive path fixture`r`n")
 (PaneField $right 'TabStrip').ItemsSource = $right.GetType().GetProperty('Tabs', $flags).GetValue($right, $null)
-Call 'ActivateTab' @($terminalTab)
+Call 'ActivateTab' @($terminalTab, $true)
 Call 'FocusPane' @($left)
 Set-Dual $true
 Call 'UpdateTabBar'
@@ -155,8 +152,7 @@ $terminalPath = PaneField $right 'TermPathHost'
 Check ([Windows.Controls.Grid]::GetRow($terminalPath) -eq 0) 'Wide terminal did not use one row'
 Capture 'terminal-wide' (PaneField $right 'TerminalBarRow')
 Layout 650
-Check ([Windows.Controls.Grid]::GetRow($terminalPath) -eq 1) 'Narrow terminal did not move cwd below buttons'
-Check ($terminalPath.ActualWidth -ge (PaneField $right 'TermBarLayout').ActualWidth - 1) 'Terminal cwd is not full width'
+Check ([Windows.Controls.Grid]::GetRow($terminalPath) -eq 0) 'Narrow terminal stopped using one row'
 Check ((PaneField $right 'TermCwdText').FontSize -eq 12) 'Terminal cwd font was shrunk'
 Capture 'terminal-narrow' (PaneField $right 'TerminalBarRow')
 Capture 'mixed-narrow' $root
@@ -168,15 +164,15 @@ foreach ($columns in @($true, $false)) {
         Check ([object]::ReferenceEquals((Field '_focus'), $right)) 'Active pane switching failed after reflow'
     }
 }
-# Side by side, so the right pane is narrow enough for the compact terminal row.
+# Restore the single-row terminal bar in a narrow side-by-side pane.
 Set-Dual $true $true
 Call 'SetMenuBar' @($right, $true, $false, $false)
 Call 'SetMenuBar' @($right, $false, $false, $false)
 Layout 650
 Check ([double]::IsNaN((PaneField $right 'TerminalBarRow').Height)) 'Alt+M restoration froze responsive terminal height'
-Check ((PaneField $right 'TerminalBarRow').ActualHeight -gt 32) 'Restored terminal lost its compact row'
-Check ([object]::ReferenceEquals((PaneField $left 'SortPopup').PlacementTarget, (PaneField $left 'SortBtn'))) 'Sort flyout lost its button anchor'
+Check ([Math]::Abs((PaneField $right 'TerminalBarRow').ActualHeight - 32) -lt 1) 'Restored terminal stopped using one row'
+Check ((PaneField $left 'SortChoice') -is [Windows.Controls.ComboBox]) 'Sort dropdown was replaced during reflow'
 Check ([object]::ReferenceEquals((PaneField $left 'ExportPopup').PlacementTarget, (PaneField $left 'ExportBtn'))) 'Export flyout lost its button anchor'
 Call 'DisposeShellEnv'
-Write-Output "PASS: $checks checks; file/terminal, single/dual/stacked, thresholds, 36 theme/locale/scale cases, command identity, address edit/logical focus, flyout anchors and bar restoration. Native keyboard and popup placement remain unverified."
+Write-Output "PASS: $checks checks; file/terminal, single/dual/stacked, overflow, 36 theme/locale/scale cases, command identity, address edit/logical focus, dropdown and flyout anchors, and bar restoration. Native keyboard and popup placement remain unverified."
 [Environment]::Exit(0)

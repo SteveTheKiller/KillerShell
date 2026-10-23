@@ -180,9 +180,9 @@ namespace KillerShell.Models
         public string QueryLabel    = string.Empty;
 
         // Results sort (mirrors the HTML report): 0 = as found, 1 = name,
-        // 2 = location, 3 = size, 4 = modified.
-        public int  SortIndex;
-        public bool SortAsc = true;
+        // 2 = location, 3 = size, 4 = modified, 5 = type, 6 = created.
+        public int  SortIndex = 4;
+        public bool SortAsc;
 
         // Quick filter (Ctrl+F) narrowing the visible results by name/path.
         public string FilterText = string.Empty;

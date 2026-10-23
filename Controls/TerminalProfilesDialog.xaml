@@ -4,11 +4,40 @@
         xmlns:theme="clr-namespace:KillerFamily.Theming"
         xmlns:icons="clr-namespace:KillerShell.Controls"
         xmlns:picker="clr-namespace:KillerShell"
-        Title="KillerShell" Width="720" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        Title="KillerShell" Width="620" SizeToContent="Height" WindowStartupLocation="CenterOwner"
         WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False"
+        FontFamily="{DynamicResource UiFont}" FontSize="12"
+        TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType"
         UseLayoutRounding="True" SnapsToDevicePixels="True">
+    <Window.Resources>
+        <Style x:Key="ProfileField" TargetType="TextBox" BasedOn="{StaticResource DarkTextBox}">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="MinHeight" Value="26"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ProfileLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>
+            <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,5,0,3"/>
+        </Style>
+        <Style x:Key="ProfileChoice" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <picker:PickerBorder x:Name="RootBorder" Background="{DynamicResource BackgroundBrush}" BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="{DynamicResource DialogOuterBorderThickness}" CornerRadius="{DynamicResource PanelCornerRadius}" Margin="{DynamicResource DialogHaloMargin}">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="3" Direction="270"
+                              Opacity="{DynamicResource FlyoutShadowOpacity}"/>
+        </Border.Effect>
         <Grid>
                         <Border IsHitTestVisible="False" Panel.ZIndex="6"
                     BorderBrush="{DynamicResource FrameOuterLightBrush}" BorderThickness="{DynamicResource FrameOuterLightThickness}"/>
@@ -18,11 +47,14 @@
                     BorderBrush="{DynamicResource FrameInnerLightBrush}" BorderThickness="{DynamicResource FrameInnerLightThickness}"/>
             <Border IsHitTestVisible="False" Panel.ZIndex="6" Margin="{DynamicResource FrameInnerMargin}"
                     BorderBrush="{DynamicResource FrameInnerDarkBrush}" BorderThickness="{DynamicResource FrameInnerDarkThickness}"/>
-<Border IsHitTestVisible="False" Opacity="{DynamicResource GrainOpacity}" Background="{DynamicResource GrainTileBrush}"/>
-            <Grid Margin="20">
-                <Grid.RowDefinitions><RowDefinition Height="36"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <Border IsHitTestVisible="False" CornerRadius="{DynamicResource PanelCornerRadius}"
+                    Opacity="{DynamicResource GrainOpacity}" Background="{DynamicResource GrainTileBrush}"/>
+            <Grid Margin="{DynamicResource DialogContentMargin}">
+                <Grid.RowDefinitions><RowDefinition Height="{DynamicResource DialogTitleBarRowHeight}"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                 <Border Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Panel.ZIndex="1">
-                    <DockPanel><Button DockPanel.Dock="Right" Content="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="11" Padding="0" Click="Cancel_Click" Style="{StaticResource SurfaceButton}" Width="28"/>
+                    <Grid>
+                        <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                        <Grid Margin="{DynamicResource DialogTitleBarPadding}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <!-- The app icon leads the caption, as it does in the main title bar. -->
                         <icons:AppIcon x:Name="TitleIcon" VerticalAlignment="Center"
@@ -47,45 +79,60 @@
                                        FontSize="11" FontWeight="Bold" Foreground="{DynamicResource ChromeTextBrush}"
                                        Visibility="{DynamicResource DialogPlainTitleVisibility}"/>
                         </StackPanel>
-                    </DockPanel>
+                            <Button Content="{DynamicResource AboutCloseGlyph}" Click="Cancel_Click"
+                                    ToolTip="{DynamicResource Str_Btn_Close}"
+                                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                                    Width="{DynamicResource AboutCloseWidth}" Height="{DynamicResource AboutCloseHeight}"
+                                    Style="{StaticResource OverlayCloseButton}"/>
+                        </Grid>
+                    </Grid>
                 </Border>
-                <StackPanel Grid.Row="1" Margin="0,8,0,16">
-                    <TextBlock Text="{DynamicResource Str_Term_Profiles}" Foreground="{DynamicResource TextBrush}" FontSize="16" Margin="0,0,0,8"/>
-                    <TextBlock Text="{DynamicResource Str_Term_ProfileHint}" Foreground="{DynamicResource MutedTextBrush}" TextWrapping="Wrap"/>
+                <StackPanel Grid.Row="1" Margin="18,12,18,12">
+                    <TextBlock Text="{DynamicResource Str_Term_Profiles}" Foreground="{DynamicResource TextBrush}" FontSize="15" Margin="0,0,0,5"/>
+                    <TextBlock Text="{DynamicResource Str_Term_ProfileHint}" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextWrapping="Wrap"/>
                 </StackPanel>
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions><ColumnDefinition Width="210"/><ColumnDefinition Width="18"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <ListBox x:Name="ProfilesList" DisplayMemberPath="Name" Height="280" SelectionChanged="ProfilesList_SelectionChanged" Background="{DynamicResource TextFieldBrush}" Foreground="{DynamicResource TextBrush}"/>
-                        <WrapPanel Margin="0,10,0,0">
-                            <Button Content="{DynamicResource Str_Term_AddProfile}" Click="Add_Click" Style="{StaticResource SurfaceButton}" Margin="0,0,6,6"/>
-                            <Button x:Name="RemoveBtn" Content="{DynamicResource Str_Term_RemoveProfile}" Click="Remove_Click" Style="{StaticResource SurfaceButton}" Margin="0,0,0,6"/>
-                            <Button Content="{DynamicResource Str_Term_MoveUp}" Click="Up_Click" Style="{StaticResource SurfaceButton}" Margin="0,0,6,0"/>
-                            <Button Content="{DynamicResource Str_Term_MoveDown}" Click="Down_Click" Style="{StaticResource SurfaceButton}"/>
-                        </WrapPanel>
-                    </StackPanel>
+                <Grid Grid.Row="2" Margin="18,0,18,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <ListBox x:Name="ProfilesList" MinHeight="220" SelectionChanged="ProfilesList_SelectionChanged"
+                                 Background="{DynamicResource TextFieldBrush}" Foreground="{DynamicResource TextBrush}"
+                                 BorderBrush="{DynamicResource InputEdgeBrush}" BorderThickness="1" Padding="3"
+                                 ItemContainerStyle="{StaticResource PickerRow}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate><TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" TextTrimming="CharacterEllipsis"/></DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Grid Grid.Row="1" Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Button Content="&#xE710;" FontFamily="Segoe MDL2 Assets" Click="Add_Click" Style="{StaticResource SurfaceButton}" Padding="0" Height="28" Margin="0,0,3,0"
+                                    ToolTip="{DynamicResource Str_Term_AddProfile}" AutomationProperties.Name="{DynamicResource Str_Term_AddProfile}"/>
+                            <Button x:Name="RemoveBtn" Grid.Column="1" Content="&#xE738;" FontFamily="Segoe MDL2 Assets" Click="Remove_Click" Style="{StaticResource SurfaceButton}" Padding="0" Height="28"
+                                    ToolTip="{DynamicResource Str_Term_RemoveProfile}" AutomationProperties.Name="{DynamicResource Str_Term_RemoveProfile}"/>
+                            <Button Grid.Column="3" Content="&#xE70E;" FontFamily="Segoe MDL2 Assets" Click="Up_Click" Style="{StaticResource SurfaceButton}" Padding="0" Height="28" Margin="0,0,3,0"
+                                    ToolTip="{DynamicResource Str_Term_MoveUp}" AutomationProperties.Name="{DynamicResource Str_Term_MoveUp}"/>
+                            <Button Grid.Column="4" Content="&#xE70D;" FontFamily="Segoe MDL2 Assets" Click="Down_Click" Style="{StaticResource SurfaceButton}" Padding="0" Height="28"
+                                    ToolTip="{DynamicResource Str_Term_MoveDown}" AutomationProperties.Name="{DynamicResource Str_Term_MoveDown}"/>
+                        </Grid>
+                    </Grid>
                     <StackPanel Grid.Column="2">
-                        <StackPanel.Resources>
-                            <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="Margin" Value="0,5,0,3"/></Style>
-                            <Style TargetType="TextBox"><Setter Property="Background" Value="{DynamicResource TextFieldBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="CaretBrush" Value="{DynamicResource PrimaryBrush}"/><Setter Property="Padding" Value="5"/></Style>
-                            <Style TargetType="CheckBox"><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="Margin" Value="0,10,0,0"/></Style>
-                        </StackPanel.Resources>
-                        <TextBlock Text="{DynamicResource Str_Term_ProfileName}"/><TextBox x:Name="NameBox"/>
-                        <TextBlock Text="{DynamicResource Str_Term_Executable}"/><TextBox x:Name="ExeBox"/>
-                        <TextBlock Text="{DynamicResource Str_Term_Arguments}"/><TextBox x:Name="ArgsBox"/>
-                        <TextBlock Text="{DynamicResource Str_Term_ShellType}"/>
+                        <TextBlock Text="{DynamicResource Str_Term_ProfileName}" Style="{StaticResource ProfileLabel}" Margin="0,0,0,3"/><TextBox x:Name="NameBox" Style="{StaticResource ProfileField}"/>
+                        <TextBlock Text="{DynamicResource Str_Term_Executable}" Style="{StaticResource ProfileLabel}"/><TextBox x:Name="ExeBox" Style="{StaticResource ProfileField}"/>
+                        <TextBlock Text="{DynamicResource Str_Term_Arguments}" Style="{StaticResource ProfileLabel}"/><TextBox x:Name="ArgsBox" Style="{StaticResource ProfileField}"/>
+                        <TextBlock Text="{DynamicResource Str_Term_ShellType}" Style="{StaticResource ProfileLabel}"/>
                         <ComboBox x:Name="KindBox" SelectedValuePath="Tag">
                             <ComboBoxItem Content="{DynamicResource Str_Term_Custom}" Tag="Custom"/>
                             <ComboBoxItem Content="{DynamicResource Str_Term_PowerShell}" Tag="PowerShell"/>
                             <ComboBoxItem Content="{DynamicResource Str_Term_Cmd}" Tag="Cmd"/>
                         </ComboBox>
-                        <TextBlock Text="{DynamicResource Str_Term_StartFolder}"/><TextBox x:Name="FolderBox"/>
-                        <CheckBox x:Name="DefaultBox" Content="{DynamicResource Str_Term_DefaultProfile}"/>
-                        <CheckBox x:Name="HiddenBox" Content="{DynamicResource Str_Term_HideProfile}"/>
-                        <CheckBox x:Name="AdminBox" Content="{DynamicResource Str_Term_RunElevated}"/>
+                        <TextBlock Text="{DynamicResource Str_Term_StartFolder}" Style="{StaticResource ProfileLabel}"/><TextBox x:Name="FolderBox" Style="{StaticResource ProfileField}"/>
+                        <CheckBox x:Name="DefaultBox" Content="{DynamicResource Str_Term_DefaultProfile}" Style="{StaticResource ProfileChoice}"/>
+                        <CheckBox x:Name="HiddenBox" Content="{DynamicResource Str_Term_HideProfile}" Style="{StaticResource ProfileChoice}"/>
+                        <CheckBox x:Name="AdminBox" Content="{DynamicResource Str_Term_RunElevated}" Style="{StaticResource ProfileChoice}"/>
                     </StackPanel>
                 </Grid>
-                <StackPanel Grid.Row="3" Margin="0,16,0,0">
+                <StackPanel Grid.Row="3" Margin="18,10,18,16">
                     <TextBlock x:Name="ErrorText" Foreground="{DynamicResource PrimaryBrush}" TextWrapping="Wrap" Margin="0,0,0,8"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="{DynamicResource Str_Btn_Cancel}" Click="Cancel_Click" Style="{StaticResource SurfaceButton}" MinWidth="86" Margin="0,0,8,0"/>

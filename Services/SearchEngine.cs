@@ -51,10 +51,11 @@ namespace KillerShell.Services
             string             excludePatterns,   // e.g. "bin;obj;*.min.js"
             bool               caseSensitive,
             CancellationToken  ct,
-            IList<string>?     fileList = null)
+            IList<string>?     fileList = null,
+            IList<string>?     rootPaths = null)
         {
             await Task.Run(() => RunSearch(rootPath, groups, filters, includePatterns,
-                                           excludePatterns, caseSensitive, fileList, ct));
+                                           excludePatterns, caseSensitive, fileList, ct, rootPaths));
         }
 
         // ── Core search (producer / workers / UI pump) ───────────
@@ -66,7 +67,8 @@ namespace KillerShell.Services
             string             excludePatterns,
             bool               caseSensitive,
             IList<string>?     fileList,
-            CancellationToken  ct)
+            CancellationToken  ct,
+            IList<string>?     rootPaths)
         {
             var comparison = caseSensitive
                 ? StringComparison.Ordinal
@@ -189,7 +191,8 @@ namespace KillerShell.Services
             {
                 try
                 {
-                    foreach (var f in fileList ?? SafeEnumerateFiles(rootPath, ct, path => incomplete.TryAdd(path, 0)))
+                    var roots = SearchRoots.Normalize(rootPaths ?? new[] { rootPath });
+                    foreach (var f in fileList ?? roots.SelectMany(root => SafeEnumerateFiles(root, ct, path => incomplete.TryAdd(path, 0))))
                     {
                         if (ct.IsCancellationRequested) break;
                         feed.Add(f, ct);   // throws OCE if canceled while the queue is full

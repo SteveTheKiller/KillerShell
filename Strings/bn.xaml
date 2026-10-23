@@ -73,7 +73,7 @@
     <sys:String x:Key="Str_Sort_Found">যেমন পাওয়া</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">এই ফলাফলগুলি ফিল্টার করুন (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">বাম ও ডান প্যান / উপর ও নিচের প্যান (F10; Ctrl+Alt+Left / Ctrl+Alt+Up)</sys:String>
+    <sys:String x:Key="Str_TT_DualPane">প্যানের বিন্যাস বদলান। Ctrl+ক্লিক করলে বিপরীত ক্রমে বদলাবে; ডান-ক্লিক করে বিন্যাস বেছে নিন। F10 দিয়ে দ্বিতীয় প্যান খুলুন বা বন্ধ করুন।</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">আরও টুল</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">সিস্টেম টুল</sys:String>
     <sys:String x:Key="Str_TT_Sort">সাজান  (Alt+S)</sys:String>
@@ -879,6 +879,7 @@
     <sys:String x:Key="Str_Ks_Language">ভাষা বেছে নেওয়ার তালিকা খুলুন</sys:String>
     <sys:String x:Key="Str_Ks_FilmGrain">ফিল্ম গ্রেইন চালু বা বন্ধ করুন</sys:String>
     <sys:String x:Key="Str_Ks_DualPane">দ্বিতীয় প্যান খুলুন বা বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">অন্য প্যানে যান</sys:String>
     <sys:String x:Key="Str_Ks_ShowHidden">লুকানো ও সিস্টেম আইটেম দেখান বা লুকান</sys:String>
     <sys:String x:Key="Str_Ks_DetailsPane">নিচে বিবরণ / ডান দিকে বিবরণ / বিবরণ বন্ধ</sys:String>
     <sys:String x:Key="Str_Ks_ResultsViews">তালিকা, আইকন বা বিস্তারিত ভিউ</sys:String>
@@ -959,9 +960,23 @@
     <sys:String x:Key="Str_Layout_DetailsBottom">নিচে বিবরণ</sys:String>
     <sys:String x:Key="Str_Layout_DetailsRight">ডান দিকে বিবরণ</sys:String>
     <sys:String x:Key="Str_Layout_DetailsOff">বিবরণ বন্ধ</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">একটি প্যান</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">বাম ও ডান প্যান</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">উপর ও নিচের প্যান</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">এই উইন্ডোতে খুঁজুন</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">সব খোলা ট্যাবে খুঁজুন</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">পুরো কম্পিউটারে খুঁজুন</sys:String>
     <sys:String x:Key="Str_TT_DetailsBottom">নিচে বিবরণ (Ctrl+Alt+Down; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsRight">ডান দিকে বিবরণ (Ctrl+Alt+Right; Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_DetailsOff">বিবরণ বন্ধ (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">মাত্রা</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">অনুপাত</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">রঙের গভীরতা</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">স্বচ্ছতা</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">সমর্থিত</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">নেই</sys:String>
+    <sys:String x:Key="Str_Details_Pages">পৃষ্ঠা</sys:String>
+    <sys:String x:Key="Str_Details_Duration">সময়কাল</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">ফাইল সংস্করণ</sys:String>
 </ResourceDictionary>

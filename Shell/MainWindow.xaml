@@ -94,7 +94,12 @@
         <Grid Grid.Row="0" Height="{DynamicResource TitleBarHeight}" Panel.ZIndex="1"
               Margin="{DynamicResource TitleBarBleed}"
               Background="{DynamicResource TitleBarBrush}">
-            <Border IsHitTestVisible="False">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.ColumnSpan="3" IsHitTestVisible="False">
                 <Border.Background>
                     <ImageBrush x:Name="TitleGrainBrush" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,256,256" Stretch="None"/>
                 </Border.Background>
@@ -159,18 +164,60 @@
                      the scroll-to-zoom target, and widening its hit area with a caption would
                      mean rolling the wheel next to the logo silently resized the app.
                      On the wordmark baseline in Killer Sans, like KillerPDF's titlebar filename. -->
-                <TextBlock x:Name="ElevatedTag" Visibility="Collapsed" VerticalAlignment="Center"
-                           Margin="16,0,0,0" FontFamily="{DynamicResource FileNameFont}" FontSize="{DynamicResource FileNameFontSize}"
-                           RenderTransform="{DynamicResource FileNameTransform}" TextOptions.TextFormattingMode="Ideal"
-                           Text="{DynamicResource Str_Title_Elevated}"/>
             </StackPanel>
 
             <!-- CaptionButtonsMargin: 0 on every ordinary theme, so the buttons run flush to the
                  window edge exactly as they did. Win98 left a couple of pixels between the last
                  button and the frame, which 98SE asks for with 0,0,3,0. -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+            <Grid Grid.Column="1" Margin="6,0,8,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="SearchPanelBtn" Style="{StaticResource SurfaceButton}" Content="&#xE721;"
+                        Width="26" Height="22" Padding="0" Margin="0,0,4,0"
+                        FontFamily="Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center"
+                        Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button.ContextMenu><ContextMenu Opened="SearchScopeMenu_Opened"/></Button.ContextMenu>
+                </Button>
+                <ContentControl x:Name="TitleContextHost" Grid.Column="1"
+                                VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left"
+                                Focusable="False" IsHitTestVisible="False"/>
+                <Popup x:Name="TitleSearchPopup" PlacementTarget="{Binding ElementName=SearchPanelBtn}"
+                       Placement="Relative" HorizontalOffset="26" VerticalOffset="0"
+                       AllowsTransparency="True" StaysOpen="False" Closed="TitleSearchPopup_Closed">
+                    <Grid Margin="8" PreviewKeyDown="TitleSearch_KeyDown"
+                          LayoutTransform="{Binding LayoutTransform, ElementName=ScaleHost}"
+                          TextOptions.TextFormattingMode="{Binding Path=(TextOptions.TextFormattingMode), ElementName=ScaleHost}"
+                          TextOptions.TextRenderingMode="{Binding Path=(TextOptions.TextRenderingMode), ElementName=ScaleHost}">
+                        <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}"
+                                Opacity="{DynamicResource MenuShadowOpacity}" Effect="{DynamicResource MenuShadowEffect}"/>
+                        <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
+                                BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}">
+                            <Grid>
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <Button x:Name="SearchScopeButton" Style="{StaticResource SurfaceButton}" Margin="8,6,8,0"
+                                        HorizontalContentAlignment="Left" Click="SearchScopeButton_Click"/>
+                                <ScrollViewer x:Name="TitleSearchViewport" Grid.Row="1"
+                                              VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                              HorizontalContentAlignment="Stretch" Focusable="False">
+                                    <ContentControl x:Name="TitleSearchContent" HorizontalContentAlignment="Stretch"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                        <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
+                    </Grid>
+                </Popup>
+            </Grid>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right"
                         Margin="{DynamicResource CaptionButtonsMargin}"
                         shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                <TextBlock x:Name="ElevatedTag" Visibility="Collapsed" VerticalAlignment="Center"
+                           Margin="8,0,12,0" FontFamily="{DynamicResource FileNameFont}" FontSize="{DynamicResource FileNameFontSize}"
+                           RenderTransform="{DynamicResource FileNameTransform}" TextOptions.TextFormattingMode="Ideal"
+                           shell:WindowChrome.IsHitTestVisibleInChrome="False" Text="{DynamicResource Str_Title_Elevated}"/>
                 <!-- Language and theme moved to the icon rail (column 0), the way KillerNotes
                      has them. The title bar keeps only the window buttons. -->
                 <Button x:Name="MinimizeBtn" Click="MinimizeBtn_Click" Style="{StaticResource ChromeButton}" Content="&#xE921;" ToolTip="{DynamicResource Str_Menu_Minimize}"/>
@@ -259,6 +306,10 @@
                         </LinearGradientBrush>
                     </Border.Resources>
                     <TreeView x:Name="FolderTree" Style="{StaticResource FolderTreeView}"
+                              ScrollViewer.CanContentScroll="True"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              VirtualizingPanel.ScrollUnit="Pixel"
                               TreeViewItem.Expanded="FolderTree_Expanded"
                               TreeViewItem.Collapsed="FolderTree_Collapsed"
                               ContextMenuOpening="FolderTree_ContextMenuOpening"
@@ -330,6 +381,9 @@
                                 </MenuItem>
                             </ContextMenu>
                         </TreeView.ContextMenu>
+                        <TreeView.ItemsPanel>
+                            <ItemsPanelTemplate><icons:FolderTreeItemsPanel/></ItemsPanelTemplate>
+                        </TreeView.ItemsPanel>
                         <TreeView.ItemContainerStyle>
                             <!-- Inherits the themed template from Controls.xaml and adds the
                                  two-way state bindings, so RevealInTree can drive the tree from
@@ -338,6 +392,11 @@
                                 <Setter Property="AutomationProperties.Name" Value="{Binding NameLabel}"/>
                                 <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
                                 <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                                <Setter Property="ItemsPanel">
+                                    <Setter.Value>
+                                        <ItemsPanelTemplate><icons:FolderTreeItemsPanel/></ItemsPanelTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </TreeView.ItemContainerStyle>
                         <TreeView.ItemTemplate>
@@ -637,29 +696,63 @@
                         ToolTip="{DynamicResource Str_TT_CollapseSidebar}" Click="TreePanel_Click"/>
                 <StackPanel x:Name="RailBottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,6">
                     <!-- Workspace layout comes before the content and tool controls. -->
-                    <Button x:Name="DualPaneRailBtn" Style="{StaticResource RailButton}" Content="&#xE89F;"
-                            FontSize="12" Margin="0,0,0,10" Click="DualPane_Click"
+                    <Button x:Name="DualPaneRailBtn" Content="M0,0 H14 V14 H0 Z"
+                            Margin="0,0,0,10" Click="DualPane_Click"
                             ToolTip="{DynamicResource Str_TT_DualPane}">
                         <Button.ContextMenu><ContextMenu Opened="PaneOrientationMenu_Opened"/></Button.ContextMenu>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource RailButton}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="Transparent">
+                                                <Grid Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Grid.Resources>
+                                                        <Style TargetType="Path">
+                                                            <Setter Property="Data" Value="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                            <Setter Property="Stretch" Value="Uniform"/>
+                                                            <Setter Property="StrokeThickness" Value="1"/>
+                                                            <Setter Property="IsHitTestVisible" Value="False"/>
+                                                        </Style>
+                                                    </Grid.Resources>
+                                                    <Path x:Name="LayoutHalo" Stroke="#D8000000" Visibility="Collapsed"
+                                                          Opacity="{DynamicResource WordmarkAccentShadowOpacity}">
+                                                        <Path.RenderTransform><TranslateTransform X="1" Y="2"/></Path.RenderTransform>
+                                                        <Path.Effect><BlurEffect Radius="3"/></Path.Effect>
+                                                    </Path>
+                                                    <Path x:Name="LayoutGlyph" Stroke="{DynamicResource TextBrush}">
+                                                        <Path.Effect>
+                                                            <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="2" Direction="270"
+                                                                              Opacity="{DynamicResource IconShadowOpacity}"/>
+                                                        </Path.Effect>
+                                                    </Path>
+                                                    <Path x:Name="LayoutAccent" Stroke="{DynamicResource AccentLogo}" Visibility="Collapsed"
+                                                          Opacity="{DynamicResource WordmarkAccentShadowOpacity}"/>
+                                                </Grid>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="LayoutGlyph" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
+                                                    <Setter TargetName="LayoutHalo" Property="Visibility" Value="Visible"/>
+                                                    <Setter TargetName="LayoutAccent" Property="Visibility" Value="Visible"/>
+                                                </Trigger>
+                                                <Trigger Property="Tag" Value="on">
+                                                    <Setter TargetName="LayoutGlyph" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
+                                                    <Setter TargetName="LayoutHalo" Property="Visibility" Value="Visible"/>
+                                                    <Setter TargetName="LayoutAccent" Property="Visibility" Value="Visible"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
                     </Button>
-                    <!-- E721 (magnifier): the search panel, out on the right edge. Glyph never
-                         changes - RailButton draws it in TextBrush and switches to the accent
-                         on Tag="on", which is the open/shut tell. -->
-                    <Button x:Name="SearchPanelBtn" Style="{StaticResource RailButton}" Content="&#xE721;"
-                            FontSize="12" Margin="0,0,0,10" Click="SearchPanel_Click"
-                            ToolTip="{DynamicResource Str_TT_SearchPanel}"/>
                     <!-- E734 (star): the saved-locations slide-up under the tree
                          (Bookmarks.cs). Accents while open, like the search toggle. -->
                     <Button x:Name="BookmarksBtn" Style="{StaticResource RailButton}" Content="&#xE734;"
                             FontSize="12" Margin="0,0,0,10" Click="BookmarksBtn_Click"
                             ToolTip="{DynamicResource Str_TT_Bookmarks}"/>
-                    <!-- E8A1 (list): results density. Click cycles Comfortable -> Compact ->
-                         Minimal, the wheel steps through them - the same gesture and the same
-                         glyph KillerNotes uses for its sidebar density (Density.cs). -->
-                    <Button x:Name="DensityBtn" Style="{StaticResource RailButton}" Content="&#xE8A1;"
-                            FontSize="12" Margin="0,0,0,10" Click="Density_Click"
-                            MouseWheel="Density_MouseWheel"
-                            ToolTip="{DynamicResource Str_TT_Density}"/>
                     <!-- E70F (pencil): a blank document in a new tab in the FOCUSED pane, the
                          same glyph an editor tab carries (EditorTabs.GlyphEdit). No shortcut of
                          its own - F7 is the editor key and it belongs to the row you have
@@ -708,7 +801,7 @@
                         </Button.ContextMenu>
                     </Button>
                     <!-- System tools share one rail button; right-click offers elevated actions. -->
-                    <Button x:Name="SystemToolsRailBtn" Style="{StaticResource RailButton}" Content="&#xE713;"
+                    <Button x:Name="SystemToolsRailBtn" Style="{StaticResource RailButton}" Content="&#xE90F;"
                             FontSize="12" Margin="0,0,0,10" Click="SystemToolsRail_Click"
                             ToolTip="{DynamicResource Str_TT_SystemTools}" ContextMenuOpening="SystemToolsAdmin_Opening">
                         <Button.Resources>
@@ -1468,20 +1561,6 @@
                  short because its PARENT refused to give it the row's height. The inner content
                  keeps its own VerticalAlignment="Center" below, so the text still centers. -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0,0,16,0">
-                <Button x:Name="PaneOrientationButton"
-                        Width="22" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"
-                        Visibility="Collapsed" Click="PaneOrientation_Click">
-                    <Button.ContextMenu><ContextMenu Opened="PaneOrientationMenu_Opened"/></Button.ContextMenu>
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource GrungeCalendarNavButton}">
-                            <Setter Property="Foreground" Value="{DynamicResource TextFooter}"/>
-                        </Style>
-                    </Button.Style>
-                    <Path x:Name="PaneOrientationIcon" Width="14" Height="14"
-                          Data="M0,0 H14 V6 H0 Z M0,8 H14 V14 H0 Z"
-                          Stretch="Uniform" Stroke="{DynamicResource TextFooter}"
-                          StrokeThickness="1" RenderTransformOrigin="0.5,0.5"/>
-                </Button>
                 <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
                      bottom and right. Only the dark half was here, which drew half a box round
                      the version text. Both are zero-thickness elsewhere. -->

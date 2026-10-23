@@ -59,7 +59,7 @@ namespace KillerShell.Shell
 
         private static readonly HashSet<string> DetailsImageExtensions = new(StringComparer.OrdinalIgnoreCase)
         {
-            ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico",
+            ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico", ".tif", ".tiff",
         };
 
         // Open/closed, user-sized-or-not, and the dragged height itself all live on FilePane now
@@ -133,10 +133,12 @@ namespace KillerShell.Shell
             pane.DetailsScroll.VerticalScrollBarVisibility = right
                 ? System.Windows.Controls.ScrollBarVisibility.Auto : System.Windows.Controls.ScrollBarVisibility.Disabled;
             var content = pane.DetailsPaneContent;
-            if (!right) { content.MinHeight = 0; pane.DetailsPreviewHost.MaxHeight = double.PositiveInfinity; }
+            content.MinHeight = 0;
+            pane.DetailsPreviewHost.MaxHeight = right ? 320 : double.PositiveInfinity;
+            pane.DetailsPreviewHost.VerticalAlignment = right ? VerticalAlignment.Top : VerticalAlignment.Stretch;
             content.RowDefinitions[0].Height = right ? GridLength.Auto : new GridLength(1, GridUnitType.Star);
             content.RowDefinitions[1].Height = new GridLength(right ? 16 : 0);
-            content.RowDefinitions[2].Height = right ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+            content.RowDefinitions[2].Height = right ? GridLength.Auto : new GridLength(0);
             content.ColumnDefinitions[1].Width = new GridLength(right ? 0 : 16);
             pane.DetailsPreviewCol.Width = new GridLength(right ? 0 : 150);
             System.Windows.Controls.Grid.SetColumn(pane.DetailsPreviewHost, right ? 0 : 2);
@@ -400,16 +402,9 @@ namespace KillerShell.Shell
             {
                 double width = ClampDetailsPaneWidth(pane, pane.DetailsPaneWidth);
                 if (Math.Abs(pane.DetailsPane.Width - width) > 0.5) pane.DetailsPane.Width = width;
-                double viewport = pane.DetailsScroll.ViewportHeight;
-                if (viewport > 0 && !double.IsNaN(viewport) && !double.IsInfinity(viewport))
-                {
-                    var content = pane.DetailsPaneContent;
-                    double available = Math.Max(0, viewport - content.Margin.Top - content.Margin.Bottom);
-                    if (Math.Abs(content.MinHeight - available) > 0.5) content.MinHeight = available;
-                    double previewHeight = Math.Max(180, available - pane.DetailsFieldsGrid.ActualHeight - 16);
-                    if (Math.Abs(pane.DetailsPreviewHost.MaxHeight - previewHeight) > 0.5)
-                        pane.DetailsPreviewHost.MaxHeight = previewHeight;
-                }
+                double previewHeight = Math.Max(120, Math.Min(320, width - 28));
+                if (Math.Abs(pane.DetailsPreviewHost.MaxHeight - previewHeight) > 0.5)
+                    pane.DetailsPreviewHost.MaxHeight = previewHeight;
                 return;
             }
             ApplyDetailsPreviewWidth(pane, pane.DetailsPane.ActualHeight);
@@ -474,6 +469,7 @@ namespace KillerShell.Shell
             int count = list?.SelectedItems.Count ?? 0;
             int gen = ++pane.DetailsGen;   // invalidates any async stat/decode already in flight
 
+            pane.DetailsMetadataRows.Children.Clear();
             pane.DetailsPreviewImage.Source = null;
             pane.DetailsPreviewImage.Visibility = Visibility.Collapsed;
             pane.DetailsPreviewIcon.Source = null;
@@ -564,6 +560,7 @@ namespace KillerShell.Shell
             {
                 pane.DetailsCreatedText.Text = Models.SearchResult.DateLabel(demoEntry.Created);
                 pane.DetailsAttrText.Text = "-";
+                ApplyDetailsMetadata(pane, Services.FileDetailsMetadata.ForDemo(path));
             }
             else
             _ = Task.Run(() =>
@@ -588,12 +585,14 @@ namespace KillerShell.Shell
                     attrs = DescribeAttributes(fa);
                 }
                 catch { /* removed or inaccessible between selection and stat - leave the dash */ }
+                var metadata = Services.FileDetailsMetadata.Read(path);
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (gen != pane.DetailsGen) return;   // a newer selection already landed
                     pane.DetailsCreatedText.Text = created == default ? "-" : Models.SearchResult.DateLabel(created);
                     pane.DetailsAttrText.Text = attrs.Length > 0 ? attrs : "-";
+                    ApplyDetailsMetadata(pane, metadata);
                     CorrectDetailsPaneHeight(pane);
                 }));
             });
@@ -626,6 +625,53 @@ namespace KillerShell.Shell
                     }));
                 });
             }
+        }
+
+        private static void ApplyDetailsMetadata(FilePane pane, Services.FileDetailsMetadata details)
+        {
+            pane.DetailsMetadataRows.Children.Clear();
+            void Row(string key, string value)
+            {
+                if (string.IsNullOrEmpty(value)) return;
+                var row = new System.Windows.Controls.Grid { Margin = new Thickness(0, 0, 0, 3) };
+                row.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new GridLength(86) });
+                row.ColumnDefinitions.Add(new System.Windows.Controls.ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                var label = new System.Windows.Controls.TextBlock
+                {
+                    FontSize = 10, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 6, 0),
+                };
+                label.SetResourceReference(System.Windows.Controls.TextBlock.TextProperty, key);
+                label.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "MutedTextBrush");
+                label.SetResourceReference(System.Windows.Controls.TextBlock.FontFamilyProperty, "MonoFont");
+                var text = new System.Windows.Controls.TextBlock
+                {
+                    Text = value, FontSize = 11, TextWrapping = TextWrapping.Wrap, ToolTip = value,
+                };
+                text.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TextBrush");
+                text.SetResourceReference(System.Windows.Controls.TextBlock.FontFamilyProperty, "MonoFont");
+                System.Windows.Controls.Grid.SetColumn(text, 1);
+                row.Children.Add(label);
+                row.Children.Add(text);
+                pane.DetailsMetadataRows.Children.Add(row);
+            }
+
+            if (details.PixelWidth > 0 && details.PixelHeight > 0)
+            {
+                Row("Str_Details_Dimensions", details.PixelWidth + " × " + details.PixelHeight + " px");
+                Row("Str_Details_AspectRatio", details.AspectRatio);
+                if (details.BitsPerPixel > 0) Row("Str_Details_ColorDepth", details.BitsPerPixel + " bpp");
+                if (details.HasAlpha.HasValue)
+                    Row("Str_Details_Transparency", Loc(details.HasAlpha.Value
+                        ? "Str_Details_TransparencySupported" : "Str_Details_TransparencyNone"));
+            }
+            if (details.PageCount.HasValue) Row("Str_Details_Pages", details.PageCount.Value.ToString("N0"));
+            if (details.Duration.HasValue)
+            {
+                var duration = details.Duration.Value;
+                Row("Str_Details_Duration", ((long)duration.TotalHours).ToString("00") + ":"
+                    + duration.Minutes.ToString("00") + ":" + duration.Seconds.ToString("00"));
+            }
+            Row("Str_Details_FileVersion", details.FileVersion);
         }
 
         private static void ShowDetailsMulti(FilePane pane, List<SearchResult> items)

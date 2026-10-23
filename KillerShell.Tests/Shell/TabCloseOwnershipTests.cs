@@ -32,7 +32,7 @@ public static class TabCloseOwnershipScenario
         var window = fixture.Window;
         var left = (FilePane)window.FindName("LeftPane");
         var right = (FilePane)window.FindName("RightPane");
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        window.ToggleDualPane();
         ShellWindowFixture.PumpUntil(() => right.Active != null && right.Active.IsBrowsing);
         window.FocusPane(left);
         var survivor = new SearchTab("survivor") { StatusMessage = "left survivor" };
@@ -101,7 +101,7 @@ public static class TabCloseOwnershipScenario
         window.UpdateLayout();
         ShellWindowFixture.PumpUntil(() => right.TabStrip.ItemContainerGenerator.ContainerFromItem(hidden) is FrameworkElement);
         window.CloseTab_Click(new Button { Tag = hidden }, new RoutedEventArgs(Button.ClickEvent));
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        window.ToggleDualPane();
         ShellWindowFixture.PumpUntil(() => !right.Tabs.Contains(hidden));
         Assert.Same(left, window.Pane);
         Assert.Same(active, right.Active);
