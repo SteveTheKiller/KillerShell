@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
 namespace KillerShell.Services
 {
-    internal static class PickerDirectoryReader
+    public static class PickerDirectoryReader
     {
+        public const int MaximumEntries = 10000;
         internal static (string Label, string Path)[] ReadDrives(CancellationToken cancellationToken)
         {
             var places = new List<(string, string)>();
@@ -24,23 +27,31 @@ namespace KillerShell.Services
             return places.ToArray();
         }
 
-        internal static PickerEntry[]? Read(string directory, CancellationToken cancellationToken)
+        public static PickerEntry[]? Read(string directory, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (!Directory.Exists(directory)) return null;
             var entries = new List<PickerEntry>();
+            int visited = 0;
+            var clock = Stopwatch.StartNew();
+            void Bound()
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (++visited > MaximumEntries) throw new IOException(new Win32Exception(234).Message);
+                if (clock.Elapsed > TimeSpan.FromSeconds(10)) throw new IOException(new Win32Exception(1460).Message);
+            }
             try
             {
                 foreach (string path in Directory.EnumerateDirectories(directory))
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    Bound();
                     var info = new DirectoryInfo(path);
                     if ((info.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
                     entries.Add(new PickerEntry(info.Name, path, true, 0, SafeTime(() => info.LastWriteTime)));
                 }
                 foreach (string path in Directory.EnumerateFiles(directory))
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    Bound();
                     var info = new FileInfo(path);
                     if ((info.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
                     entries.Add(new PickerEntry(info.Name, path, false, SafeLength(info), SafeTime(() => info.LastWriteTime)));
@@ -48,7 +59,7 @@ namespace KillerShell.Services
             }
             catch (Exception error) when (error is not OperationCanceledException)
             {
-                // Preserve readable entries when a directory becomes inaccessible during enumeration.
+                throw;
             }
             return entries.ToArray();
         }

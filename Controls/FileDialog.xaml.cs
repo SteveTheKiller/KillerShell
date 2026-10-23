@@ -330,7 +330,7 @@ namespace KillerShell
                 UpButton.IsEnabled = Directory.GetParent(dir) != null;
                 UpdateInfoSummary();
                 SyncPlacesSelection();
-            }, _ => SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"));
+            }, error => SelMeta.Text = error.Message);
         }
 
         private void Up_Click(object sender, RoutedEventArgs e)
