@@ -4,24 +4,12 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.5.0] - 2026-10-23
 
-KillerShell can be the Windows default terminal and can open folders, so console programs, folder double-clicks and folders other programs open come up in KillerShell windows.
-
-### Added
-- Use KillerShell as the default terminal, in the About card. Console programs open in their own KillerShell window with the default terminal look, and a window closes when its program exits cleanly. Turning it off, or uninstalling, puts back the terminal you had; a choice made since in Windows Settings is left alone. Needs an installed copy and Windows Terminal, which passes the programs over.
-- Open folders in KillerShell, in the About card. Double-clicking a folder or drive, or a program asking Windows to open one, opens it in a KillerShell window; This PC, Recycle Bin, Control Panel, the desktop, open/save dialogs and programs that run explorer.exe themselves stay with Explorer. Turning it off, removing the associations, or uninstalling puts back what opened folders before, including another file manager's; removing an all-users copy does that for every user, including one removed by SYSTEM through an RMM or Intune.
+KillerShell can now be the Windows default terminal and open folders for you, and this release makes saves, installs, copies and archives safer across the app.
 
 ### Fixed
 - The main window's thin border shows again on every theme but 98SE, which draws its own frame.
-
-### Changed
-- The About card's settings sit in evenly spaced pairs: startup, the window, then the two Windows takeovers side by side with their notes, with the Recycle Bin question last.
-- The Fonts and File associations cards have Lacquer headings and the shared close X in the corner.
-
-## [1.5.0] - 2026-10-23
-
-### Fixed
 - Failed document saves preserve the original and retain recovery copies when restoration fails. Administrator saves keep newer edits unsaved and cannot overwrite a later save. Saving over a file another program changed since it was opened asks whether to replace it, reload it or save a copy, with Cancel as the default.
 - Installation and updates verify replacements before publishing them. Signed copies require a valid update from the same publisher, and unreadable or invalid current images cannot bypass that check. Recovery cleanup verifies file identity and contents, preserves unrelated files, and lets a successful retry be uninstalled.
 - Closing, updating, installing or signing out checks unsaved documents in both panes. Cancel preserves the session and live folder updates.
@@ -50,6 +38,8 @@ KillerShell can be the Windows default terminal and can open folders, so console
 - The website's film grain is lighter, matching KillerTools, and the theme menu can turn it off (Alt+Shift+G). The top bar no longer leaves extra space above the page on narrower windows, and the release details box lifts with an accent border on hover.
 
 ### Added
+- Use KillerShell as the default terminal, in the About card. Console programs open in their own KillerShell window with the default terminal look, and a window closes when its program exits cleanly. Turning it off, or uninstalling, puts back the terminal you had; a choice made since in Windows Settings is left alone. Needs an installed copy and Windows Terminal, which passes the programs over.
+- Open folders in KillerShell, in the About card. Double-clicking a folder or drive, or a program asking Windows to open one, opens it in a KillerShell window; This PC, Recycle Bin, Control Panel, the desktop, open/save dialogs and programs that run explorer.exe themselves stay with Explorer. Turning it off, removing the associations, or uninstalling puts back what opened folders before, including another file manager's; removing an all-users copy does that for every user, including one removed by SYSTEM through an RMM or Intune.
 - Details can dock below or to the right of either pane, or turn off. Filenames shrink to fit and use beveled Lacquer lettering. Details and pane layouts have direct shortcuts and right-click menus; the rail cycles one pane, side-by-side panes and stacked panes.
 - File details include image dimensions, document pages, media duration and file versions when available. Demo PowerShell profiles and archive contents open and edit in memory; demo archives can also be created and extracted during the session.
 - Archive options group named ZIP, TAR and TAR.GZ creation with extraction commands. Extra copy commands share a submenu, and file, folder and empty-space menus show relevant actions.
@@ -74,6 +64,8 @@ KillerShell can be the Windows default terminal and can open folders, so console
 - Hovered menu and list items show their text in the theme accent, lightened or darkened only as far as needed to stay readable on the hover fill. Theme menu rows have matching left and right insets and a fading divider below Film Grain. Black uses subtler grain in the app and website.
 - Wordmarks and headings are raised with a subtle bevel in their own color instead of a dark outline; wordmarks keep their drop shadow. The Dark theme's red accent is the brand red again instead of a pink tint.
 - With two panes open, the pane without focus dims slightly so the focused one stands out. Windows contrast themes keep both at full strength.
+- The About card's settings sit in evenly spaced pairs: startup, the window, then the two Windows takeovers side by side with their notes, with the Recycle Bin question last.
+- The Fonts and File associations cards have Lacquer headings and the shared close X in the corner.
 
 ## [1.4.0] - 2026-10-15
 
