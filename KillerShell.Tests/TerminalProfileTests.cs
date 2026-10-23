@@ -32,6 +32,21 @@ public sealed class TerminalProfileTests
         => Assert.Equal(expected, WslDistributions.ToLinuxPath(path, "Ubuntu"));
 
     [Fact]
+    public void AHandedOffProgramWearsTheDefaultProfilesLookAndStartsNothing()
+    {
+        var look = TerminalProfile.Cmd();
+        string program = System.IO.Path.Combine(Environment.SystemDirectory, "edit.exe");
+
+        var handoff = TerminalProfile.Handoff(look, elevated: false, programPath: program);
+
+        Assert.Equal(look.Skin, handoff.Skin);
+        Assert.Equal(string.Empty, handoff.CommandLine);
+        // Custom, so the title bar reads "Terminal" rather than naming a shell it is not running.
+        Assert.Equal(TerminalShellKind.Custom, handoff.Kind);
+        Assert.Equal(program, handoff.ExePath);
+    }
+
+    [Fact]
     public void LinuxFolderMembershipIsCaseSensitive()
     {
         Assert.False(WslDistributions.PathsEqual(@"\\wsl$\Ubuntu\home\Project", @"\\wsl.localhost\Ubuntu\home\project"));

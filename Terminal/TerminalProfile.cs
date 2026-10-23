@@ -67,6 +67,14 @@ namespace KillerShell.Terminal
                        elevated ? GlyphAdmin : GlyphShell, elevated) { Id = "pwsh", Kind = exe.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) ? TerminalShellKind.Cmd : TerminalShellKind.PowerShell };
         }
 
+        /// <summary>
+        /// A console program Windows handed over (Shell/ConsoleHandoff.cs): the default profile's
+        /// look, and no command of its own, because the program is already running.
+        /// </summary>
+        internal static TerminalProfile Handoff(TerminalProfile look, bool elevated, string programPath)
+            => new(look.Name, string.Empty, programPath, look.Skin,
+                   elevated ? GlyphAdmin : GlyphShell, elevated) { Id = "handoff", Kind = TerminalShellKind.Custom };
+
         public static TerminalProfile Cmd(bool elevated = false)
         {
             string exe = ResolveCmdExe();

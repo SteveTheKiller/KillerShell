@@ -34,12 +34,20 @@ namespace KillerShell.Shell
         {
             if (_console is not { } console) return;
 
-            // Command Prompt's profile, whatever the program is: it is the classic console's look
-            // and a generic console glyph, and it never tries to start a shell of its own.
-            var profile = TerminalProfile.Cmd(elevated: IsElevated);
+            // The default profile's look, so a program started from Explorer looks like the shells
+            // opened here; never its command, because the program is already running.
+            string program = ProgramPath(console.Info);
+            var profile = TerminalProfile.Handoff(TerminalProfileStore.Default(), IsElevated, program);
             var tab = CreateTerminalTabIn(Pane, profile, HomeFolder, console.Connection,
-                                          ConsoleTitle(console.Info, profile));
+                                          ConsoleTitle(console.Info));
             if (tab == null) return;
+
+            // As a console window does: a program that finishes cleanly takes its window with it,
+            // and one that fails leaves its output and exit code on screen.
+            tab.Term!.Exited += code => Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (code == 0) Close();
+            }));
 
             FocusPane(Pane);       // Panes.cs
             ActivateTab(tab);      // Tabs.cs
@@ -47,13 +55,25 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
+        /// The program's file, when the console title is its path (it is, unless a shortcut named
+        /// it): the tab strip shows that file's own icon. Command Prompt's otherwise.
+        /// </summary>
+        private static string ProgramPath(HandoffStartupInfo info)
+        {
+            string title = info.Title.Trim();
+            try { if (Path.IsPathRooted(title) && File.Exists(title)) return title; }
+            catch (ArgumentException) { }
+            return Path.Combine(Environment.SystemDirectory, "cmd.exe");
+        }
+
+        /// <summary>
         /// The console title is a shortcut's name or the program's full path. A tab has room for
         /// a name, so a path is cut to its file name, as Task Manager shows it.
         /// </summary>
-        internal static string ConsoleTitle(HandoffStartupInfo info, TerminalProfile fallback)
+        internal static string ConsoleTitle(HandoffStartupInfo info)
         {
             string title = info.Title.Trim();
-            if (title.Length == 0) return fallback.Name;
+            if (title.Length == 0) return LocStatic("Str_Ks_ScopeTerminal");   // "Terminal"
             if (title.IndexOfAny(Path.GetInvalidPathChars()) >= 0) return title;
             return Path.IsPathRooted(title) ? Path.GetFileName(title) : title;
         }
