@@ -92,6 +92,8 @@ namespace KillerShell.Shell
         {
             if (e.Key == Key.Escape)
             {
+                // An open dropdown closes itself first.
+                if (e.OriginalSource is ComboBoxItem || e.OriginalSource is ComboBox { IsDropDownOpen: true }) return;
                 if (PatternHelpOverlay.Visibility == Visibility.Visible)
                 {
                     PatternHelpClose_Click(sender, new RoutedEventArgs());

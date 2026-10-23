@@ -787,11 +787,16 @@ namespace KillerShell.Shell
                     foreach (var box in new[] { pane.AddressBox, pane.TermCwdBox, pane.EditorPathBox })
                         if (ReferenceEquals(e.OriginalSource, box) || box.IsKeyboardFocusWithin) return;
 
+            // Inside the flyout, Esc belongs to TitleSearch_KeyDown, which closes the pattern help
+            // or an open dropdown before the flyout itself.
             if (TitleSearchPopup.IsOpen && e.Key == System.Windows.Input.Key.Escape)
             {
-                TitleSearchPopup.IsOpen = false;
-                SearchPanelBtn.Focus();
-                e.Handled = true;
+                if (!TitleSearchSurface.IsKeyboardFocusWithin)
+                {
+                    TitleSearchPopup.IsOpen = false;
+                    SearchPanelBtn.Focus();
+                    e.Handled = true;
+                }
                 return;
             }
             var mods  = System.Windows.Input.Keyboard.Modifiers;
