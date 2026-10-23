@@ -135,6 +135,8 @@ namespace KillerShell.Terminal
 
             internal Handoff(Action<HandoffConnection, HandoffStartupInfo> received) => _received = received;
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope",
+                Justification = "The connection belongs to the receiver once handed over; the catch disposes it otherwise.")]
             public int EstablishPtyHandoff(out IntPtr input, out IntPtr output, IntPtr signal, IntPtr reference,
                                            IntPtr server, IntPtr client, IntPtr startupInfo)
             {

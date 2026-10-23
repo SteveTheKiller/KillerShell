@@ -66,6 +66,8 @@ namespace KillerShell.Terminal
         /// <paramref name="consoleOutput"/> are the console host's ends of the two text pipes;
         /// ownership passes to the caller, which hands them back through the COM call.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope",
+            Justification = "Each pipe end has an owner: two go to the connection's FileStreams, two back to the console host; the catch disposes all four.")]
         internal static HandoffConnection Accept(IntPtr signal, IntPtr reference, IntPtr server, IntPtr client,
                                                  out IntPtr consoleInput, out IntPtr consoleOutput)
         {
@@ -130,6 +132,8 @@ namespace KillerShell.Terminal
         /// child or a launcher's program. The exit code is still the first program's, which is
         /// what a console window reports.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope",
+            Justification = "The wait belongs to the watch thread, which disposes it with a using.")]
         private void WatchForExit()
         {
             // Both references are taken here, on the calling thread. Dispose can follow Accept
