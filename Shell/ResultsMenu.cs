@@ -180,7 +180,9 @@ namespace KillerShell.Shell
 
             var archives = onItem ? MenuArchives() : [];
             bool extract = archives.Count > 0 && archives.Count == MenuFiles().Count;
-            bool compress = onItem && MenuDiskItems().Count > 0;
+            // One pass over the selection: each call checks every row on disk.
+            var diskItems = onItem ? MenuDiskItems() : [];
+            bool compress = diskItems.Count > 0;
 
             Row("unziphere")?.Visibility = extract  ? Visibility.Visible : Visibility.Collapsed;
             Row("unzipto")?.Visibility   = extract  ? Visibility.Visible : Visibility.Collapsed;
@@ -190,7 +192,7 @@ namespace KillerShell.Shell
                 if (Row(format.Item1) is MenuItem create)
                 {
                     create.Visibility = compress ? Visibility.Visible : Visibility.Collapsed;
-                    if (compress) create.Header = string.Format(Loc("Str_Menu_AddToArchive"), ArchiveOutputName(MenuDiskItems()[0], format.Item2));
+                    if (compress) create.Header = string.Format(Loc("Str_Menu_AddToArchive"), ArchiveOutputName(diskItems[0], format.Item2));
                 }
 
             if (extract && Row("unzipto") is MenuItem to)
