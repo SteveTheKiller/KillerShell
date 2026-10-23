@@ -99,6 +99,19 @@ namespace KillerShell.Services
             }
         }
 
+        /// <summary>
+        /// Whether the About checkbox takes a click: to turn it on, or to turn it off again after
+        /// Windows Terminal has gone and the handoff no longer works.
+        /// </summary>
+        internal bool CanChange => State == DefaultTerminalState.On || Blocker == DefaultTerminalBlocker.None;
+
+        /// <summary>The About checkbox's tooltip: why it cannot be turned on, what happened, or what it does.</summary>
+        internal string NoteKey =>
+            Blocker == DefaultTerminalBlocker.Portable ? "Str_About_DefaultTerminalPortable"
+          : Blocker == DefaultTerminalBlocker.NoConsoleHost ? "Str_About_DefaultTerminalNoHost"
+          : State == DefaultTerminalState.ChangedElsewhere ? "Str_About_DefaultTerminalChanged"
+          : "Str_About_DefaultTerminalHint";
+
         /// <summary>Makes KillerShell the default terminal. False when it cannot be, with nothing changed.</summary>
         internal bool TurnOn()
         {

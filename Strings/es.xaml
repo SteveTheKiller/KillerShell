@@ -253,6 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Sin registrar. Windows todavía no ofrece KillerShell para ningún tipo de archivo.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Registrado para su cuenta. Windows no cambiará ninguna aplicación predeterminada por usted: elija KillerShell para cada tipo de archivo en Configuración.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Registrado para todos los usuarios de este equipo. Windows no cambiará ninguna aplicación predeterminada por usted: elija KillerShell para cada tipo de archivo en Configuración.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Para abrir programas de consola en KillerShell, active la opción de terminal predeterminado en Acerca de KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Esta copia es portátil. Las asociaciones apuntarán al lugar donde está ahora este .exe y dejarán de funcionar si lo mueve o lo elimina.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registrado en Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registro eliminado</sys:String>
@@ -513,6 +514,11 @@
     <sys:String x:Key="Str_About_StartWithWindows">Iniciar con Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Cerrar en la bandeja del sistema</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Mostrar atajos en los menús</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">Usar KillerShell como terminal predeterminado</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Los programas de consola iniciados desde Explorer, Ejecutar o un acceso directo se abren en una ventana de KillerShell. Al desactivarlo vuelve el terminal que tenía antes.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Instale KillerShell para usarlo como terminal predeterminado. Una copia portátil puede moverse o eliminarse.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Requiere Windows Terminal, que pasa los programas de consola a KillerShell.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Desde entonces se eligió otro terminal predeterminado, por ejemplo en la Configuración de Windows.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Si está activado, al cerrar la ventana la aplicación sigue ejecutándose en el área de notificación.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Abrir {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Salir</sys:String>

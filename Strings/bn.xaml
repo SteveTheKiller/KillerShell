@@ -253,6 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">নিবন্ধিত নয়। Windows এখনো কোনো ফাইল ধরনের জন্য KillerShell দেখায় না।</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">আপনার অ্যাকাউন্টের জন্য নিবন্ধিত। Windows আপনার হয়ে ডিফল্ট বদলাবে না; সেটিংসে প্রতিটি ফাইল ধরনের জন্য KillerShell নিজে বেছে নিন।</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">এই পিসির সব ব্যবহারকারীর জন্য নিবন্ধিত। Windows আপনার হয়ে ডিফল্ট বদলাবে না; সেটিংসে প্রতিটি ফাইল ধরনের জন্য KillerShell নিজে বেছে নিন।</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">কনসোল প্রোগ্রাম KillerShell-এ খুলতে, KillerShell সম্পর্কে (F12)-তে ডিফল্ট টার্মিনাল সেটিংটি চালু করুন।</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">এই কপিটি পোর্টেবল। অ্যাসোসিয়েশনগুলি এই .exe ফাইলটি এখন যেখানে আছে সেখানেই নির্দেশ করবে, আর ফাইলটি সরালে বা মুছলে কাজ করবে না।</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Windows-এ নিবন্ধিত হয়েছে</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">নিবন্ধন সরানো হয়েছে</sys:String>
@@ -510,6 +511,11 @@
     <sys:String x:Key="Str_About_StartWithWindows">Windows চালু হলে চালু করুন</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">সিস্টেম ট্রেতে বন্ধ করুন</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">মেনুতে শর্টকাট দেখান</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">KillerShell-কে ডিফল্ট টার্মিনাল হিসেবে ব্যবহার করুন</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">এক্সপ্লোরার, Run বা কোনো শর্টকাট থেকে চালু করা কনসোল প্রোগ্রাম KillerShell উইন্ডোতে খুলবে। এটি বন্ধ করলে আগের টার্মিনালটি ফিরে আসবে।</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">ডিফল্ট টার্মিনাল হিসেবে ব্যবহার করতে KillerShell ইনস্টল করুন। পোর্টেবল কপি সরানো বা মুছে ফেলা হতে পারে।</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Windows Terminal প্রয়োজন, যা কনসোল প্রোগ্রামগুলি KillerShell-এ পাঠায়।</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">এরপর অন্য একটি ডিফল্ট টার্মিনাল বেছে নেওয়া হয়েছে, যেমন Windows সেটিংসে।</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">এটি চালু থাকলে, উইন্ডো বন্ধ করলেও অ্যাপটি নোটিফিকেশন এরিয়াতে চলতে থাকে।</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} খুলুন</sys:String>
     <sys:String x:Key="Str_Tray_Exit">প্রস্থান</sys:String>

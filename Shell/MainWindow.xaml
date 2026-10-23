@@ -1822,6 +1822,14 @@
                                             <TextBlock Text="{DynamicResource Str_About_CloseToTray}"
                                                        TextWrapping="Wrap"/>
                                         </CheckBox>
+                                        <!-- Tooltip and enabled state come from AboutController: a
+                                             disabled box still has to say why. -->
+                                        <CheckBox x:Name="AboutDefaultTerminal" Margin="0,6,0,0"
+                                                  ToolTipService.ShowOnDisabled="True"
+                                                  Click="AboutDefaultTerminal_Click">
+                                            <TextBlock Text="{DynamicResource Str_About_DefaultTerminal}"
+                                                       TextWrapping="Wrap"/>
+                                        </CheckBox>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
                                         <CheckBox x:Name="AboutShowShortcuts"
@@ -2000,6 +2008,9 @@
                     <Button x:Name="AssocSettingsBtn" Click="AssocSettings_Click"
                             Style="{StaticResource OutlineButton}" Height="30"
                             Content="{DynamicResource Str_Assoc_OpenSettings}"/>
+
+                    <TextBlock Text="{DynamicResource Str_Assoc_DefaultTerminal}" Foreground="{DynamicResource DimTextBrush}"
+                               FontSize="10.5" TextWrapping="Wrap" Margin="0,14,0,0"/>
                     </StackPanel>
                     </ScrollViewer>
                 </Grid>

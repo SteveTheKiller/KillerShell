@@ -153,6 +153,11 @@
     <sys:String x:Key="Str_About_StartWithWindows">Start with Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Close to system tray</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Show Shortcuts in Menus</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">Use KillerShell as the default terminal</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Console programs started from Explorer, Run or a shortcut open in a KillerShell window. Turning this off puts back the terminal you had before.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Install KillerShell to use it as the default terminal. A portable copy can be moved or deleted.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Needs Windows Terminal, which passes console programs to KillerShell.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">A different default terminal was chosen since, for example in Windows Settings.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">When this is on, closing the window keeps the app running in the notification area.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Open {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Exit</sys:String>
@@ -374,6 +379,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Not registered. Windows does not offer KillerShell for any file type yet.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Registered for your account. Windows will not switch a default for you - pick KillerShell per file type in Settings.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Registered for all users on this PC. Windows will not switch a default for you - pick KillerShell per file type in Settings.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">To open console programs in KillerShell, turn on the default terminal setting in About KillerShell (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">This copy is portable. The associations will point at wherever this .exe sits right now, and break if you move or delete it.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Registered with Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registration removed</sys:String>

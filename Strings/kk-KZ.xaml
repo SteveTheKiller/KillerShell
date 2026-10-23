@@ -147,6 +147,11 @@
     <sys:String x:Key="Str_About_StartWithWindows">Windows-пен бірге іске қосу</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Жүйелік науаға жабу</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Мәзірлерде пернелер тіркесімін көрсету</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">KillerShell-ді әдепкі терминал ретінде пайдалану</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Explorer-ден, «Орындау» терезесінен немесе төте жолдан іске қосылған консоль бағдарламалары KillerShell терезесінде ашылады. Өшірсеңіз, бұрын пайдаланған терминалыңыз қайтарылады.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Әдепкі терминал ретінде пайдалану үшін KillerShell-ді орнатыңыз. Тасымалды көшірмені жылжытуға немесе жоюға болады.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Консоль бағдарламаларын KillerShell-ге беретін Windows Terminal қажет.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Содан бері басқа әдепкі терминал таңдалды, мысалы, Windows параметрлерінде.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Қосулы болса, терезені жапқанда қолданба хабарландыру аймағында жұмысын жалғастырады.</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} ашу</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Шығу</sys:String>
@@ -358,6 +363,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Тіркелмеген. Windows әзірге KillerShell-ді ешбір файл түріне ұсынбайды.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Сіздің тіркелгіңіз үшін тіркелген. Windows әдепкіні сіз үшін ауыстырмайды - параметрлерде әр файл түріне KillerShell-ді өзіңіз таңдаңыз.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Осы компьютердің барлық пайдаланушысы үшін тіркелген. Windows әдепкіні сіз үшін ауыстырмайды - параметрлерде әр файл түріне KillerShell-ді өзіңіз таңдаңыз.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Консоль бағдарламаларын KillerShell-де ашу үшін KillerShell туралы (F12) картасындағы әдепкі терминал параметрін қосыңыз.</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Бұл тасымалды көшірме. Сәйкестіктер осы .exe қазір тұрған жерге сілтейді және оны жылжытсаңыз немесе жойсаңыз, істен шығады.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Windows-та тіркелді</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Тіркеу жойылды</sys:String>

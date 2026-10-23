@@ -253,6 +253,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Nicht registriert. Windows bietet KillerShell noch für keinen Dateityp an.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Für Ihr Konto registriert. Windows stellt keine Standard-App für Sie um: Wählen Sie KillerShell in den Einstellungen je Dateityp selbst aus.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Für alle Benutzer dieses PCs registriert. Windows stellt keine Standard-App für Sie um: Wählen Sie KillerShell in den Einstellungen je Dateityp selbst aus.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Um Konsolenprogramme in KillerShell zu öffnen, schalten Sie die Standardterminal-Einstellung unter Über KillerShell (F12) ein.</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Diese Kopie ist portabel. Die Zuordnungen zeigen auf den Ort, an dem diese .exe gerade liegt, und gehen ins Leere, wenn Sie sie verschieben oder löschen.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Bei Windows registriert</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Registrierung entfernt</sys:String>
@@ -513,6 +514,11 @@
     <sys:String x:Key="Str_About_StartWithWindows">Mit Windows starten</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">In den Infobereich schließen</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Tastenkürzel in Menüs anzeigen</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">KillerShell als Standardterminal verwenden</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Konsolenprogramme, die aus dem Explorer, über Ausführen oder eine Verknüpfung gestartet werden, öffnen sich in einem KillerShell-Fenster. Beim Ausschalten kehrt das vorherige Terminal zurück.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installieren Sie KillerShell, um es als Standardterminal zu verwenden. Eine portable Kopie kann verschoben oder gelöscht werden.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Erfordert Windows Terminal, das Konsolenprogramme an KillerShell übergibt.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">Inzwischen wurde ein anderes Standardterminal gewählt, zum Beispiel in den Windows-Einstellungen.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Ist dies an, läuft die App nach dem Schließen des Fensters im Infobereich weiter.</sys:String>
     <sys:String x:Key="Str_Tray_Open">{0} öffnen</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Beenden</sys:String>

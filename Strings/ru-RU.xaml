@@ -147,6 +147,11 @@
     <sys:String x:Key="Str_About_StartWithWindows">Запускать вместе с Windows</sys:String>
     <sys:String x:Key="Str_About_CloseToTray">Сворачивать в системный трей при закрытии</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Показывать сочетания клавиш в меню</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">Использовать KillerShell как терминал по умолчанию</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">Консольные программы, запущенные из Проводника, окна «Выполнить» или ярлыка, открываются в окне KillerShell. При отключении возвращается терминал, который был раньше.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Установите KillerShell, чтобы использовать его как терминал по умолчанию. Портативную копию можно переместить или удалить.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">Требуется Windows Terminal, который передаёт консольные программы в KillerShell.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">С тех пор был выбран другой терминал по умолчанию, например в параметрах Windows.</sys:String>
     <sys:String x:Key="Str_About_CloseToTrayHint">Если включено, после закрытия окна приложение продолжает работать в области уведомлений.</sys:String>
     <sys:String x:Key="Str_Tray_Open">Открыть {0}</sys:String>
     <sys:String x:Key="Str_Tray_Exit">Выход</sys:String>
@@ -358,6 +363,7 @@
     <sys:String x:Key="Str_Assoc_StateNone">Не зарегистрировано. Windows пока не предлагает KillerShell ни для одного типа файлов.</sys:String>
     <sys:String x:Key="Str_Assoc_StateUser">Зарегистрировано для вашей учётной записи. Windows не переключит умолчание за вас - выберите KillerShell для каждого типа файлов в параметрах.</sys:String>
     <sys:String x:Key="Str_Assoc_StateMachine">Зарегистрировано для всех пользователей этого компьютера. Windows не переключит умолчание за вас - выберите KillerShell для каждого типа файлов в параметрах.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">Чтобы открывать консольные программы в KillerShell, включите параметр терминала по умолчанию в окне «О программе KillerShell» (F12).</sys:String>
     <sys:String x:Key="Str_Assoc_Portable">Это портативная копия. Сопоставления будут указывать туда, где сейчас лежит этот .exe, и перестанут работать, если его переместить или удалить.</sys:String>
     <sys:String x:Key="Str_Assoc_Registered">Зарегистрировано в Windows</sys:String>
     <sys:String x:Key="Str_Assoc_Removed">Регистрация удалена</sys:String>

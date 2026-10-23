@@ -55,6 +55,27 @@ namespace KillerShell.Features.About
             _host.CloseToTray = enabled;
         }
 
+        /// <summary>Turns KillerShell on or off as the default terminal from the About checkbox,
+        /// then shows what the registry actually holds, so a refused write unchecks the box again.</summary>
+        internal void SetDefaultTerminal(bool enabled)
+        {
+            var setting = App.DefaultTerminalSetting();   // DefaultTerminal.cs
+            try
+            {
+                if (enabled) setting.TurnOn();
+                else setting.TurnOff();
+            }
+            catch { /* shown below as whatever the registry kept */ }
+            ShowDefaultTerminal(setting);
+        }
+
+        private void ShowDefaultTerminal(DefaultTerminalSetting setting)
+        {
+            _host.DefaultTerminal        = setting.State == DefaultTerminalState.On;
+            _host.DefaultTerminalEnabled = setting.CanChange;
+            _host.DefaultTerminalNote    = _host.Loc(setting.NoteKey);
+        }
+
         /// <summary>Once per run, after the first window has loaded: when a newer release exists,
         /// offers it with an "Always check on startup" box so the check can be turned off right there.
         /// The About card's checkbox turns it back on. Skipped under --demo so captures stay clean.</summary>
@@ -118,6 +139,7 @@ namespace KillerShell.Features.About
             _host.StartupUpdateCheck = StartupCheckEnabled;
             _host.StartWithWindows = KillerFamily.Deployment.StartupRegistration.IsEnabled(AppInfo.DisplayName);
             _host.CloseToTray = CloseToTrayEnabled;
+            ShowDefaultTerminal(App.DefaultTerminalSetting());
 
             _host.ShowCard();
 

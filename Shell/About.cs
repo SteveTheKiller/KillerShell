@@ -76,6 +76,9 @@ namespace KillerShell.Shell
         bool IAboutHost.StartupUpdateCheck { set => AboutStartupUpdateCheck.IsChecked = value; }
         bool IAboutHost.StartWithWindows   { set => AboutStartWithWindows.IsChecked = value; }
         bool IAboutHost.CloseToTray        { set => AboutCloseToTray.IsChecked = value; }
+        bool IAboutHost.DefaultTerminal        { set => AboutDefaultTerminal.IsChecked = value; }
+        bool IAboutHost.DefaultTerminalEnabled { set => AboutDefaultTerminal.IsEnabled = value; }
+        string IAboutHost.DefaultTerminalNote  { set => AboutDefaultTerminal.ToolTip = value; }
 
         bool IAboutHost.DemoPreview => DemoMode;
 
@@ -103,6 +106,9 @@ namespace KillerShell.Shell
 
         private void AboutCloseToTray_Click(object sender, RoutedEventArgs e)
             => _about.SetCloseToTray(AboutCloseToTray.IsChecked == true);
+
+        private void AboutDefaultTerminal_Click(object sender, RoutedEventArgs e)
+            => _about.SetDefaultTerminal(AboutDefaultTerminal.IsChecked == true);   // DefaultTerminal.cs
 
         /// <summary>
         /// Clear all Data, the footer's destructive link. Wipes every saved preference and the

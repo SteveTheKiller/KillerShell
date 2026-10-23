@@ -161,6 +161,46 @@ public sealed class DefaultTerminalSettingTests
     }
 
     [Fact]
+    public void TheCheckboxExplainsWhyItCannotBeTurnedOn()
+    {
+        var portable = new DefaultTerminalSetting(MachineWith(WtConsole), installed: false, exePath: Exe);
+        var noHost = new DefaultTerminalSetting(MachineWith(), installed: true, exePath: Exe);
+        var ready = new DefaultTerminalSetting(MachineWith(WtConsole), installed: true, exePath: Exe);
+
+        Assert.False(portable.CanChange);
+        Assert.Equal("Str_About_DefaultTerminalPortable", portable.NoteKey);
+        Assert.False(noHost.CanChange);
+        Assert.Equal("Str_About_DefaultTerminalNoHost", noHost.NoteKey);
+        Assert.True(ready.CanChange);
+        Assert.Equal("Str_About_DefaultTerminalHint", ready.NoteKey);
+    }
+
+    [Fact]
+    public void AfterWindowsTerminalIsRemovedItCanStillBeTurnedOff()
+    {
+        var registry = MachineWith(WtConsole);
+        var setting = new DefaultTerminalSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+
+        registry.DeleteKey(RegistryHive.ClassesRoot, @"PackagedCom\ClassIndex\" + WtConsole);
+
+        Assert.True(setting.CanChange);
+        Assert.Equal("Str_About_DefaultTerminalNoHost", setting.NoteKey);
+    }
+
+    [Fact]
+    public void TheCheckboxSaysWhenSomethingElseTookOver()
+    {
+        var registry = MachineWith(WtConsole);
+        var setting = new DefaultTerminalSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+
+        registry.SetString(RegistryHive.CurrentUser, Startup, "DelegationTerminal", WtTerminal);
+
+        Assert.Equal("Str_About_DefaultTerminalChanged", setting.NoteKey);
+    }
+
+    [Fact]
     public void TurningOnTwiceKeepsTheFirstPairToPutBack()
     {
         var registry = MachineWith(WtConsole);

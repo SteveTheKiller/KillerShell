@@ -143,6 +143,11 @@
   <sys:String x:Key="Str_About_StartWithWindows">Khởi động cùng Windows</sys:String>
   <sys:String x:Key="Str_About_CloseToTray">Đóng xuống khay hệ thống</sys:String>
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Hiển thị phím tắt trong menu</sys:String>
+  <sys:String x:Key="Str_About_DefaultTerminal">Dùng KillerShell làm terminal mặc định</sys:String>
+  <sys:String x:Key="Str_About_DefaultTerminalHint">Các chương trình console mở từ Explorer, hộp Run hoặc lối tắt sẽ mở trong cửa sổ KillerShell. Tắt tùy chọn này sẽ khôi phục terminal bạn dùng trước đó.</sys:String>
+  <sys:String x:Key="Str_About_DefaultTerminalPortable">Hãy cài đặt KillerShell để dùng làm terminal mặc định. Bản di động có thể bị di chuyển hoặc xóa.</sys:String>
+  <sys:String x:Key="Str_About_DefaultTerminalNoHost">Cần có Windows Terminal để chuyển các chương trình console sang KillerShell.</sys:String>
+  <sys:String x:Key="Str_About_DefaultTerminalChanged">Sau đó đã có một terminal mặc định khác được chọn, ví dụ trong Cài đặt Windows.</sys:String>
   <sys:String x:Key="Str_About_CloseToTrayHint">Khi bật, đóng cửa sổ sẽ giữ ứng dụng chạy trong vùng thông báo.</sys:String>
   <sys:String x:Key="Str_Tray_Open">Mở {0}</sys:String>
   <sys:String x:Key="Str_Tray_Exit">Thoát</sys:String>
@@ -355,6 +360,7 @@
   <sys:String x:Key="Str_Assoc_StateNone">Chưa đăng ký. Windows chưa đề xuất KillerShell cho bất kỳ loại tệp nào.</sys:String>
   <sys:String x:Key="Str_Assoc_StateUser">Đã đăng ký cho tài khoản của bạn. Windows sẽ không tự thay đổi ứng dụng mặc định. Hãy chọn KillerShell cho từng loại tệp trong Cài đặt.</sys:String>
   <sys:String x:Key="Str_Assoc_StateMachine">Đã đăng ký cho tất cả người dùng trên PC này. Windows sẽ không tự thay đổi ứng dụng mặc định. Hãy chọn KillerShell cho từng loại tệp trong Cài đặt.</sys:String>
+  <sys:String x:Key="Str_Assoc_DefaultTerminal">Để mở các chương trình console trong KillerShell, hãy bật tùy chọn terminal mặc định trong Giới thiệu về KillerShell (F12).</sys:String>
   <sys:String x:Key="Str_Assoc_Portable">Đây là bản di động. Các liên kết sẽ trỏ đến vị trí hiện tại của tệp .exe này và sẽ bị hỏng nếu bạn di chuyển hoặc xóa tệp.</sys:String>
   <sys:String x:Key="Str_Assoc_Registered">Đã đăng ký với Windows</sys:String>
   <sys:String x:Key="Str_Assoc_Removed">Đã xóa đăng ký</sys:String>
