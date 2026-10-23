@@ -11,9 +11,10 @@ public sealed class ClearAllDataTests
     [InlineData("InstallPath")]
     [InlineData("Version")]
     [InlineData(DefaultTerminalSetting.PreviousSetting)]
-    public void InstallMarkersAndTheTerminalToPutBackSurvive(string name)
-        // The saved default terminal is not a preference: without it, turning the default
-        // terminal off after a clear would lose the terminal the user had before.
+    [InlineData(FolderOpenerSetting.PreviousSetting)]
+    public void InstallMarkersAndWhatToPutBackSurvive(string name)
+        // What the About card replaced is not a preference: without it, turning the setting off
+        // after a clear would lose what the user had before.
         => Assert.True(App.SurvivesClearAllData(name));
 
     [Theory]

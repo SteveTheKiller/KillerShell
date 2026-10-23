@@ -217,7 +217,7 @@ namespace KillerShell
                 v.SetValue("", "Open in KillerShell");
                 v.SetValue("Icon", exe + ",0");
                 using var c = v.CreateSubKey("command");
-                c.SetValue("", "\"" + exe + "\" \"%1\\.\"");
+                c.SetValue("", Services.FolderOpenerSetting.VerbCommand(exe));   // the same command it makes the default
             }
 
             using (var v = root.CreateSubKey(@"Software\Classes\Directory\Background\shell\" + VerbOpen))
@@ -270,6 +270,10 @@ namespace KillerShell
         {
             var root = RootFor(machine);
             bool ok = true;
+
+            // Before the folder verb goes: a folder default left naming a missing verb would
+            // break every folder double-click (DefaultTerminal.cs, FolderOpenerSetting.cs).
+            try { FolderOpenerSetting().TurnOff(); } catch { ok = false; }
 
             ok &= Kill(root, @"Software\Classes\" + AssocProgId);
 

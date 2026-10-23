@@ -78,6 +78,10 @@ namespace KillerShell
         internal static Services.DefaultTerminalSetting DefaultTerminalSetting()
             => new(Services.WindowsRegistryStore.Instance, installed: !IsPortable(), exePath: ExePath);
 
+        /// <summary>The About card's "Open folders in KillerShell", for this copy of KillerShell.</summary>
+        internal static Services.FolderOpenerSetting FolderOpenerSetting()
+            => new(Services.WindowsRegistryStore.Instance, installed: !IsPortable(), exePath: ExePath);
+
         /// <summary>
         /// Registers the terminal class for an install. It does nothing until the About card turns
         /// the default terminal on, and never fails an install: turning it on registers it again.
@@ -108,8 +112,10 @@ namespace KillerShell
         /// </summary>
         private static void RefreshTerminalClass()
         {
-            // A pair left pointing at no class (a removed duplicate install) is mended for this user.
+            // A pair left pointing at no class (a removed duplicate install) is mended for this user,
+            // and so is a folder default left naming no verb.
             try { DefaultTerminalSetting().Repair(); } catch { }
+            try { FolderOpenerSetting().Repair(); } catch { }
 
             string exe = ExePath;
             bool machine = string.Equals(exe, MachineInstallExe, StringComparison.OrdinalIgnoreCase);
