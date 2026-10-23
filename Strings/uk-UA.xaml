@@ -719,6 +719,7 @@
     <sys:String x:Key="Str_Perf_Disk">Диск</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">ГП</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Неприв'язані лічильники GPU</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">Скинути розташування</sys:String>
     <sys:String x:Key="Str_Perf_Cached">У кеші</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Використання</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Пропускна здатність</sys:String>

@@ -10,24 +10,29 @@ using System.Windows.Shapes;
 
 // The Performance Monitor's dashboard: what goes where, and how much room it gets. The rest of
 // PerformanceMonitorControl owns the counters, the sampling and the Sparkline
-// (PerformanceMonitorControl.cs) and the motion between samples (PerformanceMonitorMotion.cs);
-// nothing here reads a counter.
+// (PerformanceMonitorControl.cs), moving and minimizing the cards (PerformanceMonitorCards.cs)
+// and the motion between samples (PerformanceMonitorMotion.cs); nothing here reads a counter.
 //
-//   summary strip   one tile per kind of hardware: its headline number and a bare trace
-//   band 1          CPU (three fifths) beside memory (two fifths) - the two a person reads first
-//   band 2          disks beside network adapters, ONE ROW PER DEVICE inside each panel
-//   band 3          a card per GPU
+// The designed arrangement, which the user can drag into another order:
+//
+//   summary strip   one box per kind of hardware: its name, headline number and a bare trace
+//   row 1           CPU (three fifths) beside memory (two fifths) - the two a person reads first
+//   row 2           disks beside network adapters, ONE ROW PER DEVICE inside each panel
+//   row 3 on        a card per GPU, two to a row
 //
 // Designed as a whole rather than a card per device. A machine with four disks and five network
 // adapters used to get nine identical full-size cells, most of them flat lines; here a device
 // that is doing nothing is one line of text, and the space goes to whatever is busy.
+//
+// Headings follow the family's type: the summary boxes' names are primary headings in Lacquer
+// (HeadingFont), and everything else is the app face, Killer Sans UI (MonoFont).
 namespace KillerShell.Tools
 {
     internal sealed partial class PerformanceMonitorControl
     {
         private UniformGrid _summaryStrip = null!;
         private StackPanel _panels = null!;
-        private UniformGrid _gpuCounterBand = null!;
+        private ScrollViewer _panelsScroller = null!;
 
         // The summary strip's tiles. Null for hardware this machine does not have (a server
         // with no GPU counters, a VM with no physical disk), which simply gets no tile.
@@ -73,6 +78,7 @@ namespace KillerShell.Tools
             // right edge being off). It is Padding, inside the scrolling content, so the edge
             // shadows still reach the pane edges.
             scroller.SetResourceReference(Control.PaddingProperty, "MonitorGridMargin");
+            _panelsScroller = scroller;
             return scroller;
         }
 
@@ -80,14 +86,14 @@ namespace KillerShell.Tools
         //  DASHBOARD
         // ═══════════════════════════════════════════════════════════
         /// <summary>
-        /// Lays the tiles BuildTiles just made into the dashboard. Runs once per control: the
-        /// hardware list is gathered once, and the finished elements are never rebuilt, so every
-        /// graph keeps its history for the life of the tab.
+        /// Builds a card for every tile BuildTiles just made, in the designed order, and lays them
+        /// out in the order the user left them (PerformanceMonitorCards.cs). Runs once per control:
+        /// the hardware list is gathered once, and the finished cards are only ever moved, never
+        /// rebuilt, so every graph keeps its history for the life of the tab.
         /// </summary>
         private void BuildDashboard()
         {
-            _summaryStrip.Children.Clear();
-            _panels.Children.Clear();
+            ClearCards();   // PerformanceMonitorCards.cs
             _sumCpu = _sumRam = _sumDisk = _sumNet = _sumGpu = null;
 
             _cpuTile = _tiles.FirstOrDefault(t => t.Kind == MetricKind.Cpu);
@@ -100,93 +106,80 @@ namespace KillerShell.Tools
             // ── Summary strip ────────────────────────────────────
             // Each tile takes its panel's color, so the eye can go from a number up here to the
             // panel it came from without reading a label.
-            if (_cpuTile != null) _sumCpu = AddSummaryTile(MetricKind.Cpu, "Str_Perf_Cpu", "MonitorAccentBrush", 100);
-            if (_ramTile != null) _sumRam = AddSummaryTile(MetricKind.Ram, "Str_Perf_Ram", "TypeWindows", 100);
-            if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile(MetricKind.Disk, "Str_Perf_Disk", "WarnBrush", 100);
-            if (_netTiles.Count > 0) _sumNet = AddSummaryTile(MetricKind.Network, "Str_Perf_Network", "MonitorTextBrush", 0);
-            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile(MetricKind.Gpu, "Str_Perf_Gpu", "OkBrush", 100);
+            if (_cpuTile != null) _sumCpu = AddSummaryTile("cpu", MetricKind.Cpu, "Str_Perf_Cpu", "MonitorAccentBrush", 100);
+            if (_ramTile != null) _sumRam = AddSummaryTile("ram", MetricKind.Ram, "Str_Perf_Ram", "TypeWindows", 100);
+            if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile("disk", MetricKind.Disk, "Str_Perf_Disk", "WarnBrush", 100);
+            if (_netTiles.Count > 0) _sumNet = AddSummaryTile("network", MetricKind.Network, "Str_Perf_Network", "MonitorTextBrush", 0);
+            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile("gpu", MetricKind.Gpu, "Str_Perf_Gpu", "OkBrush", 100);
 
-            // ── Band 1: CPU and memory ───────────────────────────
-            if (_cpuTile != null || _ramTile != null)
-            {
-                var band = new Grid();
-                band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
-                band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
-                if (_cpuTile != null) band.Children.Add(BuildCpuPanel(_cpuTile));
-                if (_ramTile != null)
-                {
-                    var ram = BuildRamPanel(_ramTile);
-                    SetColumn(ram, 1);
-                    band.Children.Add(ram);
-                }
-                _panels.Children.Add(band);
-            }
+            // ── Panels, two to a row ─────────────────────────────
+            // CPU beside memory, disks beside network adapters, then the GPUs. A card that is
+            // alone in its row (an odd GPU, a VM with no disks) has the row to itself.
+            if (_cpuTile != null) AddPanelCard(BuildCpuPanel(_cpuTile));
+            if (_ramTile != null) AddPanelCard(BuildRamPanel(_ramTile));
+            if (_diskTiles.Count > 0) AddPanelCard(BuildDevicePanel("disks", _diskTiles));
+            if (_netTiles.Count > 0) AddPanelCard(BuildDevicePanel("network", _netTiles));
 
-            // ── Band 2: disks and network adapters ───────────────
-            if (_diskTiles.Count > 0 || _netTiles.Count > 0)
-            {
-                var band = new Grid();
-                band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            // An adapter is named by its model, so a saved layout finds it again after a restart
+            // (its LUID changes every boot).
+            foreach (var gpu in _gpuTiles) AddPanelCard(BuildGpuPanel(gpu, UniquePanelId("gpu:" + gpu.Description)));
 
-                Border? disks = _diskTiles.Count > 0 ? BuildDevicePanel(_diskTiles) : null;
-                Border? nets  = _netTiles.Count > 0 ? BuildDevicePanel(_netTiles) : null;
-
-                // With only one of the two present it takes the whole band rather than sitting
-                // beside an empty half.
-                if (disks != null)
-                {
-                    if (nets == null) SetColumnSpan(disks, 2);
-                    band.Children.Add(disks);
-                }
-                if (nets != null)
-                {
-                    if (disks == null) SetColumnSpan(nets, 2); else SetColumn(nets, 1);
-                    band.Children.Add(nets);
-                }
-                _panels.Children.Add(band);
-            }
-
-            // ── Band 3: GPUs ─────────────────────────────────────
-            if (_gpuTiles.Count > 0)
-            {
-                var band = new UniformGrid { Columns = Math.Min(2, _gpuTiles.Count) };
-                foreach (var gpu in _gpuTiles) band.Children.Add(BuildGpuPanel(gpu));
-                _panels.Children.Add(band);
-            }
-            _gpuCounterBand = new UniformGrid { Columns = 1, Visibility = Visibility.Collapsed };
-            _panels.Children.Add(_gpuCounterBand);
+            ArrangeCards();   // PerformanceMonitorCards.cs
         }
 
         // ═══════════════════════════════════════════════════════════
         //  SUMMARY STRIP
         // ═══════════════════════════════════════════════════════════
-        private SummaryTile AddSummaryTile(MetricKind kind, string labelKey, string brushKey, double fixedScaleMax)
+        /// <summary>One box of the strip: a large icon and the hardware's name in Lacquer, its
+        /// headline number in the top right corner, and a bare trace across the bottom. The
+        /// whole box is the handle it is dragged by; minimized, it keeps its top line.</summary>
+        private SummaryTile AddSummaryTile(string id, MetricKind kind, string labelKey, string brushKey, double fixedScaleMax)
         {
-            var label = BuildMetricIcon(kind, Shell.MainWindow.LocStatic(labelKey), 14);
+            var icon = BuildMetricIcon(kind, Shell.MainWindow.LocStatic(labelKey), 22);
+
+            var name = new TextBlock
+            {
+                FontSize = 18,
+                Margin = new Thickness(8, 0, 8, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+            };
+            TextOptions.SetTextFormattingMode(name, TextFormattingMode.Ideal);
+            name.SetResourceReference(TextBlock.TextProperty, labelKey);
+            name.SetResourceReference(TextBlock.FontFamilyProperty, "HeadingFont");
+            name.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
             var value = new TextBlock
             {
                 FontSize = 20,
                 FontWeight = FontWeights.Bold,
                 Text = "-",
-                Margin = new Thickness(0, 1, 0, 0),
-                TextTrimming = TextTrimming.CharacterEllipsis,
+                VerticalAlignment = VerticalAlignment.Center,
             };
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             value.SetResourceReference(TextBlock.ForegroundProperty, brushKey);
 
+            var header = new Grid();
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            SetColumn(name, 1);
+            SetColumn(value, 2);
+            header.Children.Add(icon);
+            header.Children.Add(name);
+            header.Children.Add(value);
+
             var trace = new Sparkline(_cadence, HistorySamples, fixedScaleMax, brushKey);
             trace.MakeBare();
             trace.Host.Height = 26;
-            trace.Host.Margin = new Thickness(0, 4, 0, 0);
+            trace.Host.Margin = new Thickness(0, 6, 0, 0);
 
             var body = new StackPanel { VerticalAlignment = VerticalAlignment.Top };
-            body.Children.Add(label);
-            body.Children.Add(value);
+            body.Children.Add(header);
             body.Children.Add(trace.Host);
 
-            _summaryStrip.Children.Add(BuildCard(body));
+            var frame = BuildCard(body);
+            AddStripCard(new DashboardCard(Services.DashboardLayout.Strip, id, frame, [frame], trace.Host));
             return new SummaryTile { Value = value, Trace = trace };
         }
 
@@ -251,56 +244,72 @@ namespace KillerShell.Tools
             return icon;
         }
 
-        private static FrameworkElement BuildMetricTitle(MetricTile tile, double size, bool showText = true)
+        private static FrameworkElement BuildMetricTitle(MetricTile tile, double size)
         {
             var title = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Bottom };
             var icon = BuildMetricIcon(tile.Kind, tile.Label, size);
             title.Children.Add(icon);
-            if (showText)
+            var label = new TextBlock
             {
-                var label = new TextBlock
-                {
-                    Text = tile.Label, FontSize = size, FontWeight = FontWeights.Bold,
-                    Margin = new Thickness(6, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center,
-                };
-                label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-                label.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
-                title.Children.Add(label);
-            }
+                Text = tile.Label, FontSize = size, FontWeight = FontWeights.Bold,
+                Margin = new Thickness(6, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center,
+            };
+            label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+            label.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
+            title.Children.Add(label);
             return title;
         }
 
-        /// <summary>Title on the left, the panel's live headline on the right, at the size that
-        /// makes it the first thing read. The headline block becomes the tile's
-        /// TileSummaryText, which is what the sampling code writes to.</summary>
-        private static Grid BuildPanelHeader(MetricTile tile, double titleSize, double valueSize)
+        /// <summary>
+        /// A panel's one header line: a large icon in the corner, the hardware's own name beside
+        /// it (it says more than "CPU" would, and the icon already says that), and the live
+        /// headline on the right. The headline block becomes the tile's TileSummaryText, which is
+        /// what the sampling code writes to. It is also the handle the card is dragged by, and
+        /// all of the card that is left when it is minimized.
+        /// </summary>
+        private static Grid BuildPanelHeader(MetricTile tile, double valueSize, string name)
         {
-            var title = BuildMetricTitle(tile, titleSize, tile.Kind != MetricKind.Cpu && tile.Kind != MetricKind.Ram);
+            var icon = BuildMetricIcon(tile.Kind, tile.Label, 28);
+
+            var title = new TextBlock
+            {
+                FontSize = 14,
+                Text = name,
+                ToolTip = tile.Description,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                Margin = new Thickness(10, 0, 12, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            title.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
+            title.SetResourceReference(TextBlock.ForegroundProperty, "MonitorTextBrush");
 
             var value = new TextBlock
             {
                 FontSize = valueSize,
                 FontWeight = FontWeights.Bold,
                 Text = "-",
-                VerticalAlignment = VerticalAlignment.Bottom,
+                VerticalAlignment = VerticalAlignment.Center,
             };
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             value.SetResourceReference(TextBlock.ForegroundProperty, tile.SummaryBrushKey);
             tile.TileSummaryText = value;
 
             // One height for every panel header, whatever size its headline is set in, so the
-            // titles of two panels sharing a band sit on the same line.
-            var header = new Grid { MinHeight = 32 };
+            // titles of two panels sharing a row sit on the same line.
+            var header = new Grid { MinHeight = 32, Background = Brushes.Transparent };   // hit-testable across its width
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            SetColumn(value, 1);
+            SetColumn(title, 1);
+            SetColumn(value, 2);
+            header.Children.Add(icon);
             header.Children.Add(title);
             header.Children.Add(value);
             return header;
         }
 
-        // Hardware names get their own line under the title. They are what tells two disks, two
-        // GPUs or two network adapters apart, and sharing the title's line truncated them.
+        // A device row's model, muted beside its title: what tells two disks or two network
+        // adapters apart. It trims rather than wraps, with the whole name on hover.
         private static TextBlock BuildDescription(string text)
         {
             var description = new TextBlock
@@ -337,17 +346,18 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  CPU
         // ═══════════════════════════════════════════════════════════
-        private static Border BuildCpuPanel(MetricTile tile)
+        private static DashboardCard BuildCpuPanel(MetricTile tile)
         {
             var cs = (CpuState)tile.State!;
 
             var body = new StackPanel { VerticalAlignment = VerticalAlignment.Top };
-            body.Children.Add(BuildPanelHeader(tile, titleSize: 16, valueSize: 24));
-            body.Children.Add(BuildDescription(tile.Description));
+            var header = BuildPanelHeader(tile, valueSize: 24, tile.Description);
+            body.Children.Add(header);
 
+            var details = new StackPanel();   // everything under the header line, which minimizing folds away
             cs.AggregateGraph.Host.Height = 132;
             cs.AggregateGraph.Host.Margin = new Thickness(0, 8, 0, 0);
-            body.Children.Add(cs.AggregateGraph.Host);
+            details.Children.Add(cs.AggregateGraph.Host);
 
             // The per-processor strip. Hidden until its counters exist (BuildCoreCells): a
             // machine that cannot enumerate them gets the panel without the strip, not an empty
@@ -356,10 +366,11 @@ namespace KillerShell.Tools
             var coreBlock = new StackPanel { Visibility = Visibility.Collapsed };
             coreBlock.Children.Add(BuildGraphCaption("Str_Perf_LogicalProcessors"));
             coreBlock.Children.Add(cs.CoreStrip);
-            body.Children.Add(coreBlock);
+            details.Children.Add(coreBlock);
 
-            body.Children.Add(BuildFields(tile, columns: 3));
-            return BuildCard(body);
+            details.Children.Add(BuildFields(tile, columns: 3));
+            body.Children.Add(details);
+            return new DashboardCard(Services.DashboardLayout.Panels, "cpu", BuildCard(body), [header], details) { Weight = 3 };
         }
 
         /// <summary>
@@ -408,19 +419,20 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  MEMORY
         // ═══════════════════════════════════════════════════════════
-        private static Border BuildRamPanel(MetricTile tile)
+        private static DashboardCard BuildRamPanel(MetricTile tile)
         {
             var rs = (RamState)tile.State!;
 
             var body = new StackPanel { VerticalAlignment = VerticalAlignment.Top };
             // Smaller than the CPU's headline: this one is "12.4/31.9 GB (39%)", not two digits.
-            body.Children.Add(BuildPanelHeader(tile, titleSize: 16, valueSize: 14));
-            body.Children.Add(BuildDescription(tile.Description));
+            var header = BuildPanelHeader(tile, valueSize: 14, tile.Description);
+            body.Children.Add(header);
 
+            var details = new StackPanel();   // everything under the header line, which minimizing folds away
             var graph = tile.BigGraphs[0];
             graph.Host.Height = 132;
             graph.Host.Margin = new Thickness(0, 8, 0, 0);
-            body.Children.Add(graph.Host);
+            details.Children.Add(graph.Host);
 
             // What the total is made of, as one bar: in use, cached, free. Star widths, so the
             // three sizes ARE the three numbers and SampleRamTile only has to set them.
@@ -447,14 +459,15 @@ namespace KillerShell.Tools
                 Child = bar,
             };
             barFrame.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
-            body.Children.Add(barFrame);
+            details.Children.Add(barFrame);
 
-            body.Children.Add(BuildLegend(out tile.LegendValueBlocks,
+            details.Children.Add(BuildLegend(out tile.LegendValueBlocks,
                 ("TypeWindows", "Str_Perf_InUse"), ("MonitorAccentBrush", "Str_Perf_Cached"),
                 ("MonitorMutedBrush", "Str_Perf_Free")));
 
-            body.Children.Add(BuildFields(tile, columns: 2));
-            return BuildCard(body);
+            details.Children.Add(BuildFields(tile, columns: 2));
+            body.Children.Add(details);
+            return new DashboardCard(Services.DashboardLayout.Panels, "ram", BuildCard(body), [header], details);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -469,9 +482,12 @@ namespace KillerShell.Tools
         /// the burst that opened it on screen.</summary>
         private const int RowIdleTicksToFold = HistorySamples;
 
-        private static Border BuildDevicePanel(List<MetricTile> devices)
+        /// <summary>One card for every disk, or every network adapter: a row per device. Any row's
+        /// header line picks the card up, and minimizing it holds every row on that line.</summary>
+        private static DashboardCard BuildDevicePanel(string id, List<MetricTile> devices)
         {
             var body = new StackPanel { VerticalAlignment = VerticalAlignment.Top };
+            var handles = new List<FrameworkElement>(devices.Count);
 
             for (int i = 0; i < devices.Count; i++)
             {
@@ -482,9 +498,10 @@ namespace KillerShell.Tools
                     rule.SetResourceReference(Border.BackgroundProperty, "PaneBorderBrush");
                     body.Children.Add(rule);
                 }
-                body.Children.Add(BuildDeviceRow(devices[i]));
+                body.Children.Add(BuildDeviceRow(devices[i], out var header));
+                handles.Add(header);
             }
-            return BuildCard(body);
+            return new DashboardCard(Services.DashboardLayout.Panels, id, BuildCard(body), [.. handles], details: null, devices);
         }
 
         /// <summary>
@@ -492,7 +509,7 @@ namespace KillerShell.Tools
         /// mirrored graph and the two rates. The part under the line starts folded away and
         /// opens the first time the device does anything (UpdateRowActivity).
         /// </summary>
-        private static StackPanel BuildDeviceRow(MetricTile tile)
+        private static StackPanel BuildDeviceRow(MetricTile tile, out Grid header)
         {
             var label = BuildMetricTitle(tile, 12.5);
 
@@ -512,7 +529,7 @@ namespace KillerShell.Tools
                 tile.Kind == MetricKind.Network ? "MonitorTextBrush" : tile.SummaryBrushKey);
             tile.TileSummaryText = value;
 
-            var header = new Grid { Margin = new Thickness(0, 8, 0, 0) };
+            header = new Grid { Margin = new Thickness(0, 8, 0, 0), Background = Brushes.Transparent };   // hit-testable across its width
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -569,28 +586,43 @@ namespace KillerShell.Tools
         {
             tile.RowExpanded = expanded;
             tile.IdleTicks = 0;
-            tile.RowGraph?.Visibility = expanded ? Visibility.Visible : Visibility.Collapsed;
-            tile.RowIdleText?.Visibility = expanded ? Visibility.Collapsed : Visibility.Visible;
+            ApplyRowVisibility(tile);
+        }
+
+        /// <summary>A minimized card keeps every row on its header line, busy or not; the idle
+        /// mark still says which devices are doing nothing.</summary>
+        private static void ApplyRowVisibility(MetricTile tile)
+        {
+            tile.RowGraph?.Visibility = tile.RowExpanded && !tile.Folded ? Visibility.Visible : Visibility.Collapsed;
+            tile.RowIdleText?.Visibility = tile.RowExpanded ? Visibility.Collapsed : Visibility.Visible;
         }
 
         // ═══════════════════════════════════════════════════════════
         //  GPU
         // ═══════════════════════════════════════════════════════════
-        private static Border BuildGpuPanel(MetricTile tile)
+        /// <summary>Like the CPU and memory cards, named by the adapter's model. Counters that no
+        /// adapter claimed have no model to show, so that card is named by what it is and keeps
+        /// its LUID for the hover.</summary>
+        private static DashboardCard BuildGpuPanel(MetricTile tile, string id)
         {
+            var gs = (GpuState)tile.State!;
             var body = new StackPanel { VerticalAlignment = VerticalAlignment.Top };
-            body.Children.Add(BuildPanelHeader(tile, titleSize: 16, valueSize: 24));
-            body.Children.Add(BuildDescription(tile.Description));
+            var header = BuildPanelHeader(tile, valueSize: 24, gs.Unassigned ? tile.Label : tile.Description);
+            body.Children.Add(header);
 
-            if (tile.BigGraphs.Length == 0) return BuildCard(body);
+            var details = new StackPanel();   // everything under the header line, which minimizing folds away
+            body.Children.Add(details);
+            var card = new DashboardCard(Services.DashboardLayout.Panels, id, BuildCard(body), [header], details);
+            gs.Card = card;
+            if (tile.BigGraphs.Length == 0) return card;
             var util = tile.BigGraphs[0];
             util.Host.Height = 84;
 
             if (tile.BigGraphs.Length < 2)
             {
-                body.Children.Add(BuildGraphCaption("Str_Perf_Utilization"));
-                body.Children.Add(util.Host);
-                return BuildCard(body);
+                details.Children.Add(BuildGraphCaption("Str_Perf_Utilization"));
+                details.Children.Add(util.Host);
+                return card;
             }
 
             // Utilization beside memory rather than stacked: the card is full width, and two
@@ -621,8 +653,8 @@ namespace KillerShell.Tools
             graphs.Children.Add(util.Host);
             graphs.Children.Add(memory.Host);
 
-            body.Children.Add(graphs);
-            return BuildCard(body);
+            details.Children.Add(graphs);
+            return card;
         }
     }
 }

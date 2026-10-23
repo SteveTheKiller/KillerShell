@@ -688,6 +688,7 @@
     <sys:String x:Key="Str_Perf_Disk">Диск</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Тағайындалмаған GPU есептегіштері</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">Орналасуды ысыру</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Кэштелген</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Жүктелуі</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Өткізу қабілеті</sys:String>

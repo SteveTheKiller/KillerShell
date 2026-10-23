@@ -649,6 +649,7 @@
     <sys:String x:Key="Str_Perf_Gathering">ハードウェア情報を取得しています...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">未割り当ての GPU カウンター</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">配置をリセット</sys:String>
     <sys:String x:Key="Str_Perf_InUse">使用中</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">論理プロセッサ数</sys:String>
     <sys:String x:Key="Str_Perf_Network">ネットワーク</sys:String>

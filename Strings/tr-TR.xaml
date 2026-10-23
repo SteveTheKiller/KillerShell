@@ -654,6 +654,7 @@
     <sys:String x:Key="Str_Perf_Gathering">Donanım bilgisi okunuyor...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Atanmamış GPU sayaçları</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">Düzeni sıfırla</sys:String>
     <sys:String x:Key="Str_Perf_InUse">Kullanımda</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Mantıksal işlemciler</sys:String>
     <sys:String x:Key="Str_Perf_Network">Ağ</sys:String>

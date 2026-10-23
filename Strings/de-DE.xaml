@@ -654,6 +654,7 @@
     <sys:String x:Key="Str_Perf_Gathering">Hardwareinformationen werden gelesen...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Nicht zugeordnete GPU-Zähler</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">Anordnung zurücksetzen</sys:String>
     <sys:String x:Key="Str_Perf_InUse">In Verwendung</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Logische Prozessoren</sys:String>
     <sys:String x:Key="Str_Perf_Network">Netzwerk</sys:String>

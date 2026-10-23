@@ -651,6 +651,7 @@
     <sys:String x:Key="Str_Perf_Gathering">হার্ডওয়্যার তথ্য পড়া হচ্ছে...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">GPU-এর অনির্ধারিত কাউন্টার</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">বিন্যাস রিসেট করুন</sys:String>
     <sys:String x:Key="Str_Perf_InUse">ব্যবহৃত হচ্ছে</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">লজিক্যাল প্রসেসর</sys:String>
     <sys:String x:Key="Str_Perf_Network">নেটওয়ার্ক</sys:String>

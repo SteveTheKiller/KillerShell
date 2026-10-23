@@ -22,13 +22,16 @@ using KillerShell.Shell;
 // its own panel, and each GPU gets a card. Everything is enumerated from the machine rather than
 // assumed to be exactly one, and all of it is live at once - no master/detail, no selection.
 //
-// The layout is fixed on purpose. It used to be a two-column grid of identical cells the user
-// could reorder and resize, which weighted a twelve-thread CPU and an unplugged network adapter
-// the same. Now the busy panels get the space and an idle device folds to a single line.
+// The cards are not all the same size on purpose. This used to be a two-column grid of identical
+// cells, which weighted a twelve-thread CPU and an unplugged network adapter the same. Now the
+// busy panels get the space and an idle device folds to a single line. The user can still drag
+// the cards into another order and minimize any of them to its title line, but a card keeps its
+// own weight wherever it goes.
 //
 // This file is the data side: counters, sampling, the tile model and the Sparkline. The
-// dashboard's construction lives in PerformanceMonitorLayout.cs, and the motion that carries each
-// sample into the next over its second lives in PerformanceMonitorMotion.cs.
+// dashboard's construction lives in PerformanceMonitorLayout.cs, moving and minimizing its cards
+// in PerformanceMonitorCards.cs, and the motion that carries each sample into the next over its
+// second in PerformanceMonitorMotion.cs.
 //
 // Same "own host, own control, MOVED not rebuilt between activations" rule ProcessListControl and
 // EventViewerControl already carry (Shell/ProcessTabs.cs / Shell/EventViewerTabs.cs): a
@@ -150,7 +153,8 @@ namespace KillerShell.Tools
             // is: the control is MOVED between the visual tree and nowhere as tabs switch, so a
             // Performance tab sitting in the background costs nothing until it is looked at again.
             Loaded   += Control_Loaded;
-            Unloaded += (_, _) => { _loadVersion++; _timer.Stop(); UnhookFrames(); };
+            Unloaded += (_, _) => { _loadVersion++; _timer.Stop(); UnhookFrames(); EndCardDrag(commit: false); };
+            WireCardDrag();   // PerformanceMonitorCards.cs
         }
 
         private bool _staticApplied;
@@ -408,6 +412,7 @@ namespace KillerShell.Tools
             internal TextBlock? RowIdleText;
             internal bool RowExpanded;
             internal int IdleTicks;
+            internal bool Folded;   // its card is minimized: the row stays on its header line, busy or not
         }
 
         private sealed class CpuState
@@ -455,7 +460,8 @@ namespace KillerShell.Tools
         private sealed class GpuState
         {
             internal bool MemoryAvailable;
-            internal Border? Panel;
+            internal bool Unassigned;        // counters no DXGI adapter claimed: named by its label, not a LUID
+            internal DashboardCard? Card;    // PerformanceMonitorCards.cs
         }
 
         private void BuildTiles(Services.PerformanceHardwareInfo info)
@@ -618,7 +624,7 @@ namespace KillerShell.Tools
 
         private MetricTile BuildGpuTile(string name, int index, bool liveCounters = false, bool assigned = false)
         {
-            var gs = new GpuState { MemoryAvailable = liveCounters && _gpuMemoryAvailable };
+            var gs = new GpuState { MemoryAvailable = liveCounters && _gpuMemoryAvailable, Unassigned = liveCounters && !assigned };
             var tile = new MetricTile
             {
                 Kind = MetricKind.Gpu,
@@ -1137,6 +1143,7 @@ namespace KillerShell.Tools
             IReadOnlyDictionary<string, double> luidDedicated, IReadOnlyDictionary<string, double> luidShared)
         {
             var current = new HashSet<string>(allLuids, StringComparer.OrdinalIgnoreCase);
+            bool cardsChanged = false;
             foreach (string missing in _gpuCounterTiles.Keys.Where(key => !current.Contains(key)).ToList())
             {
                 var old = _gpuCounterTiles[missing];
@@ -1150,7 +1157,7 @@ namespace KillerShell.Tools
                 else
                 {
                     ForgetReadouts(old);
-                    _gpuCounterBand.Children.Remove(((GpuState)old.State!).Panel);
+                    if (((GpuState)old.State!).Card is { } card) cardsChanged |= RemovePanelCard(card);   // PerformanceMonitorCards.cs
                     _tiles.Remove(old);
                 }
             }
@@ -1161,10 +1168,9 @@ namespace KillerShell.Tools
                     if (!_gpuHardwareTiles.TryGetValue(luid, out tile))
                     {
                         tile = BuildGpuTile("LUID " + luid, 0, liveCounters: true);
-                        var panel = BuildGpuPanel(tile);
-                        ((GpuState)tile.State!).Panel = panel;
                         _tiles.Add(tile);
-                        _gpuCounterBand.Children.Add(panel);
+                        AddPanelCard(BuildGpuPanel(tile, UniquePanelId("gpu:" + tile.Description)));   // PerformanceMonitorCards.cs
+                        cardsChanged = true;
                     }
                     _gpuCounterTiles.Add(luid, tile);
                 }
@@ -1173,9 +1179,7 @@ namespace KillerShell.Tools
                 luidShared.TryGetValue(luid, out double shr);
                 ApplyGpuSample(tile, util, ded, shr);
             }
-            int unassigned = _gpuCounterBand.Children.Count;
-            _gpuCounterBand.Columns = Math.Max(1, Math.Min(2, unassigned));
-            _gpuCounterBand.Visibility = unassigned > 0 ? Visibility.Visible : Visibility.Collapsed;
+            if (cardsChanged) ArrangePanels();   // PerformanceMonitorCards.cs
         }
 
         private static string ExtractGpuLuid(string instanceName)

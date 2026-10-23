@@ -654,6 +654,7 @@
     <sys:String x:Key="Str_Perf_Gathering">Leyendo información del hardware...</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Contadores de GPU sin asignar</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">Restablecer la disposición</sys:String>
     <sys:String x:Key="Str_Perf_InUse">En uso</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Procesadores lógicos</sys:String>
     <sys:String x:Key="Str_Perf_Network">Red</sys:String>

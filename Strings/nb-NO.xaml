@@ -719,6 +719,7 @@
     <sys:String x:Key="Str_Perf_Disk">Disk</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Ikke tilordnede GPU-tellere</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">Tilbakestill oppsett</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Bufret</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utnyttelse</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Gjennomstrømning</sys:String>

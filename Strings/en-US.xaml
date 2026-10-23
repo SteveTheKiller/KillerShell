@@ -719,6 +719,7 @@
     <sys:String x:Key="Str_Perf_Disk">Disk</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Unassigned GPU counters</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">Reset layout</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Cached</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utilization</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Throughput</sys:String>

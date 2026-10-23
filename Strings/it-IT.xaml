@@ -685,6 +685,7 @@
     <sys:String x:Key="Str_Perf_Disk">Disco</sys:String>
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Contatori GPU non assegnati</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">Ripristina la disposizione</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Nella cache</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Utilizzo</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Velocità effettiva</sys:String>
