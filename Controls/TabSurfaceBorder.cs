@@ -8,6 +8,16 @@ namespace KillerShell
     /// <summary>Joins a selected tab's face to its content as the intervening menu collapses.</summary>
     public sealed class TabSurfaceBorder : Border
     {
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            // The right-only divider shares the next tab's left outline, rather than
+            // sitting one pixel inside the preceding tab. Child content stays in place.
+            bool dividerOnly = BorderThickness == new Thickness(0, 0, 1, 0);
+            if (dividerOnly) drawingContext.PushTransform(new TranslateTransform(1, 0));
+            base.OnRender(drawingContext);
+            if (dividerOnly) drawingContext.Pop();
+        }
+
         public static readonly DependencyProperty DividerBrushProperty = DependencyProperty.Register(
             nameof(DividerBrush), typeof(Brush), typeof(TabSurfaceBorder), new PropertyMetadata(null, RefreshDivider));
         private static readonly DependencyPropertyKey FadedDividerBrushPropertyKey = DependencyProperty.RegisterReadOnly(

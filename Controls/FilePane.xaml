@@ -204,7 +204,7 @@
                                 <!-- No MaxWidth: it would cap each cell and put the dead space
                                      back. The MinWidth floor is low so a lot of open tabs still
                                      divide the bar rather than overflowing it. -->
-                                <!-- Square tab faces meet along straight, gap-free dividers. -->
+                                <!-- Tab faces meet along straight, gap-free dividers. -->
                                 <!-- No right MARGIN: the 1px right BorderThickness below already
                                      separates one tab from the next, and the margin only served
                                      to stop the last tab reaching the strip's right edge - which
