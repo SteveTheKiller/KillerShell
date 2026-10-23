@@ -88,6 +88,7 @@ namespace KillerShell.Features.About
                 else setting.TurnOff();
             }
             catch { /* shown below as whatever the registry kept */ }
+            App.NotifyAssociationsChanged();
             ShowOpenFolders(setting);
         }
 

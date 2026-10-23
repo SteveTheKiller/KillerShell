@@ -156,6 +156,93 @@ public sealed class FolderOpenerSettingTests
         Assert.Null(Default(registry, RegistryHive.CurrentUser, Directories));
     }
 
+    private const string Pilot = "\"C:\\Program Files\\Pilot\\Pilot.exe\" \"%1\"";
+
+    [Fact]
+    public void ProgramsAskingWindowsToOpenAFolderGetKillerShellToo()
+    {
+        // Start-Process and ShellExecute ask for "open", which a custom default never reaches
+        // (KillerLab-W11, first KS-C run). Directory and Drive have no "open" of their own, so
+        // Explorer's on Folder answers unless one sits in front of it.
+        var registry = new FakeRegistryStore();
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+
+        setting.TurnOn();
+
+        Assert.Equal(FolderOpenerSetting.VerbCommand(Exe),
+            registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", null));
+        Assert.Equal(FolderOpenerSetting.VerbCommand(Exe),
+            registry.GetString(RegistryHive.CurrentUser, Drives + @"\open\command", null));
+    }
+
+    [Fact]
+    public void TurningOffTakesAwayTheOpenVerbItAdded()
+    {
+        var registry = new FakeRegistryStore();
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+
+        setting.TurnOn();
+        setting.TurnOff();
+
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Directories + @"\open"));
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Drives + @"\open"));
+    }
+
+    [Fact]
+    public void AnotherFileManagersOpenVerbComesBack()
+    {
+        var registry = new FakeRegistryStore();
+        registry.SetString(RegistryHive.CurrentUser, Directories + @"\open\command", null, Pilot);
+        registry.SetString(RegistryHive.CurrentUser, Directories + @"\open\command", "DelegateExecute", "{11111111-2222-3333-4444-555555555555}");
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+
+        setting.TurnOn();
+        // A DelegateExecute beside the command would run instead of it.
+        Assert.Null(registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", "DelegateExecute"));
+        setting.TurnOff();
+
+        Assert.Equal(Pilot, registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", null));
+        Assert.Equal("{11111111-2222-3333-4444-555555555555}",
+            registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", "DelegateExecute"));
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Drives + @"\open"));
+    }
+
+    [Fact]
+    public void AnOpenVerbAnotherProgramTakesLaterIsLeftAlone()
+    {
+        var registry = new FakeRegistryStore();
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+
+        registry.SetString(RegistryHive.CurrentUser, Directories + @"\open\command", null, Pilot);
+        Assert.Equal(FolderOpenerState.ChangedElsewhere, setting.State);
+        setting.TurnOff();
+
+        Assert.Equal(Pilot, registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", null));
+        // The rest was still KillerShell's, so it goes back.
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Drives + @"\open"));
+        Assert.Null(Default(registry, RegistryHive.CurrentUser, Directories));
+    }
+
+    [Fact]
+    public void AnOpenVerbLeftByAnotherCopyIsMendedByTheOneThatStays()
+    {
+        // Removing a duplicate install keeps the setting (App.RemoveInstallConflict), so the copy
+        // that stays finds the open verb naming the one that went.
+        var registry = new FakeRegistryStore();
+        new FolderOpenerSetting(registry, installed: true, exePath: Exe).TurnOn();
+        string machineExe = @"C:\Program Files\KillerShell\KillerShell.exe";
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: machineExe);
+
+        Assert.Equal(FolderOpenerState.On, setting.State);
+        setting.Repair();
+
+        Assert.Equal(FolderOpenerSetting.VerbCommand(machineExe),
+            registry.GetString(RegistryHive.CurrentUser, Directories + @"\open\command", null));
+        Assert.Equal(FolderOpenerSetting.VerbCommand(machineExe),
+            registry.GetString(RegistryHive.CurrentUser, Drives + @"\open\command", null));
+    }
+
     [Fact]
     public void AMissingVerbIsAddedAgainWhileItIsOn()
     {

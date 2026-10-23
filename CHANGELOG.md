@@ -6,11 +6,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [Unreleased]
 
-KillerShell can be the Windows default terminal and can open folders, so console programs and folder double-clicks from Explorer open in KillerShell windows.
+KillerShell can be the Windows default terminal and can open folders, so console programs, folder double-clicks and folders other programs open come up in KillerShell windows.
 
 ### Added
 - Use KillerShell as the default terminal, in the About card. Console programs open in their own KillerShell window with the default terminal look, and a window closes when its program exits cleanly. Turning it off, or uninstalling, puts back the terminal you had; a choice made since in Windows Settings is left alone. Needs an installed copy and Windows Terminal, which passes the programs over.
-- Open folders in KillerShell, in the About card. Double-clicking a folder or drive opens it in a KillerShell window; This PC, Recycle Bin, Control Panel, the desktop and open/save dialogs stay with Explorer. Turning it off, removing the associations, or uninstalling puts back what opened folders before.
+- Open folders in KillerShell, in the About card. Double-clicking a folder or drive, or a program asking Windows to open one, opens it in a KillerShell window; This PC, Recycle Bin, Control Panel, the desktop, open/save dialogs and programs that run explorer.exe themselves stay with Explorer. Turning it off, removing the associations, or uninstalling puts back what opened folders before, including another file manager's.
+
+### Changed
+- The About card's settings sit in even pairs: startup, the window, the Recycle Bin question, then the two Windows takeovers side by side with their notes.
+- The Fonts and File associations cards have Lacquer headings and the shared close X in the corner.
 
 ## [1.5.0] - 2026-10-23
 

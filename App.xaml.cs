@@ -81,6 +81,12 @@ namespace KillerShell
         private const uint SHCNE_ASSOCCHANGED = 0x08000000;
         private const uint SHCNF_IDLIST       = 0x0000;
 
+        /// <summary>Tells Explorer to drop what it remembers of verbs and associations.</summary>
+        internal static void NotifyAssociationsChanged()
+        {
+            try { SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero); } catch { }
+        }
+
         // ============================================================
         // Startup
         // ============================================================
@@ -330,7 +336,7 @@ namespace KillerShell
         internal static bool SurvivesClearAllData(string valueName)
             => Array.IndexOf(InstallMarkers, valueName) >= 0 ||
                string.Equals(valueName, Services.DefaultTerminalSetting.PreviousSetting, StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(valueName, Services.FolderOpenerSetting.PreviousSetting, StringComparison.OrdinalIgnoreCase);
+               valueName.StartsWith(Services.FolderOpenerSetting.PreviousSetting, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Clear all Data: every saved preference, plus the temp files KillerShell extracted while
