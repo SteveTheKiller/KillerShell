@@ -114,7 +114,7 @@ namespace KillerShell.Shell
             else
             {
                 Pane.ResultsPane.SetResourceReference(Border.BorderBrushProperty, "PaneEdgeBrush");
-                Pane.ResultsPane.SetResourceReference(Border.BorderThicknessProperty, "PaneEdgeSideThickness");
+                Pane.ResultsPane.BorderThickness = PaneFrameThickness();
                 Pane.ResultsPane.Padding = new Thickness(0);
                 Pane.PaneBevelOuterDark.Margin = new Thickness(0);
                 Pane.PaneBevelOuterLight.Margin = new Thickness(0);
@@ -322,6 +322,24 @@ namespace KillerShell.Shell
                 }
             double l = left ? 0 : t, rt = right ? 0 : t;
             return bottom ? new CornerRadius(r, r, rt, l) : new CornerRadius(l, rt, r, r);
+        }
+
+        /// <summary>
+        /// The pane's whole frame, drawn by the pane border itself: the side and top stroke
+        /// (PaneEdgeSideThickness) plus the edge opposite the tabs (PaneEdgeBottomThickness).
+        /// That last edge used to be a separate overlay, ResultsPaneBottomEdge, and two shapes
+        /// meeting at one rounded corner never line up exactly: on a 150% display the overlay's
+        /// arc sat two device pixels inside the border's on the left and one on the right, which
+        /// is the lopsided corner opposite the tabs. One border draws one arc per corner. The
+        /// pane already clips its contents inside the stroke (PickerBorder), so nothing can
+        /// paint over the edge, which was the overlay's reason to exist. TabPlacement reverses
+        /// this for a bottom strip like any other thickness.
+        /// </summary>
+        internal static Thickness PaneFrameThickness()
+        {
+            var side = Application.Current?.TryFindResource("PaneEdgeSideThickness") as Thickness? ?? new Thickness(1, 1, 1, 0);
+            var foot = Application.Current?.TryFindResource("PaneEdgeBottomThickness") as Thickness? ?? new Thickness(0, 0, 0, 1);
+            return new Thickness(side.Left + foot.Left, side.Top + foot.Top, side.Right + foot.Right, side.Bottom + foot.Bottom);
         }
 
         /// <summary>The nested-bar radius: the scope bar and the details header, 5 / 0.</summary>

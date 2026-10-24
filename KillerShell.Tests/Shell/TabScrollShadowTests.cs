@@ -238,11 +238,16 @@ public static class PaneCornerScenario
         // Every connected monitor in turn, so a scaled display (150% and the like) is checked
         // with real per-monitor DPI and not only the one the hidden window happened to open on.
         // The window is sized to fit inside each monitor's work area.
+        // One pass per distinct display scale: two 100% monitors exercise the same pixels, and
+        // a pass per monitor ran past the runner's time limit on a three-monitor desk.
+        var scalesDone = new System.Collections.Generic.HashSet<double>();
         foreach (var monitor in Monitors.All())
         {
             ShellWindowFixture.PumpUntil(() => Monitors.MoveTo(window, monitor),
                 diagnostic: () => "could not place the window on " + monitor);
+            window.UpdateLayout();
             double displayScale = PaneRender.DeviceScale(window);
+            if (!scalesDone.Add(Math.Round(displayScale, 2))) continue;
             double fit = Math.Floor(monitor.Work.Width / displayScale) - 40;
             double baseWidth = Math.Min(1140, fit - 8);
         foreach (double scale in new[] { 1.0, 1.1, 1.25 })

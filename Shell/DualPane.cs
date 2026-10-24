@@ -953,10 +953,10 @@ namespace KillerShell.Shell
                 p.ResultsPane.SetResourceReference(Border.BorderBrushProperty,
                     lit && !retro ? "TabActiveRingBrush" : "PaneBorderBrush");
 
-                // The focused pane's bottom accent overlays the permanent theme border.
-                p.PaneFocusBottomEdge.Visibility = lit && !retro
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
+                // The pane border draws its whole frame in the brush set above, so the focused
+                // pane's accent already runs along the bottom too. The separate bottom overlay is
+                // retired: its arc could not meet the border's exactly (Tabs.cs PaneFrameThickness).
+                p.PaneFocusBottomEdge.Visibility = Visibility.Collapsed;
 
                 // And the active tab's own sides, via the model so the template can trigger on
                 // it. PaneDimmed is the other half: the active tab of the pane that does NOT

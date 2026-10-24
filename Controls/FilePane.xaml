@@ -739,8 +739,11 @@
                         BorderBrush="{DynamicResource DocumentPaneBevelInnerTopLeftBrush}"/>
                 <Border x:Name="PaneBevelInnerLight" IsHitTestVisible="False" Panel.ZIndex="110" Margin="1"
                         BorderBrush="{DynamicResource DocumentPaneBevelInnerBottomRightBrush}"/>
-                <!-- Keep the pane frame visible for every tab and scroll position. -->
-                <Border x:Name="ResultsPaneBottomEdge" IsHitTestVisible="False" Panel.ZIndex="100"
+                <!-- RETIRED, kept collapsed for the code that still sets it: ResultsPane now draws
+                     the edge opposite the tabs itself (Tabs.cs PaneFrameThickness). As a second
+                     shape its arc could not meet the border's exactly, which made the corners
+                     opposite the tabs lopsided on scaled displays. -->
+                <Border x:Name="ResultsPaneBottomEdge" IsHitTestVisible="False" Panel.ZIndex="100" Visibility="Collapsed"
                         BorderBrush="{DynamicResource PaneEdgeBrush}"
                         BorderThickness="{DynamicResource PaneEdgeBottomThickness}"
                         CornerRadius="{DynamicResource PanelCornerRadius}"/>
