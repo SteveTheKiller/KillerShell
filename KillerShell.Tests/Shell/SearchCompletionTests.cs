@@ -90,10 +90,18 @@ public static class SearchCompletionScenario
             active.Groups.Add(group);
             using var locked = mode == "unreadable"
                 ? new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None) : null;
+            // Search checks its folders off the UI thread first, so it starts a moment after the
+            // click; wait for it to start and then to finish.
+            bool started = false;
+            System.ComponentModel.PropertyChangedEventHandler searching = (_, e) =>
+            {
+                if (e.PropertyName == nameof(SearchTab.IsSearching) && active.IsSearching) started = true;
+            };
+            active.PropertyChanged += searching;
             ((Button)window.FindName("SearchButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             Console.WriteLine("Started locked-file content search.");
             var watch = Stopwatch.StartNew();
-            while (active.IsSearching && watch.Elapsed < TimeSpan.FromSeconds(10))
+            while ((!started || active.IsSearching) && watch.Elapsed < TimeSpan.FromSeconds(10))
             {
                 Pump();
                 CheckAsynchronousFailure();

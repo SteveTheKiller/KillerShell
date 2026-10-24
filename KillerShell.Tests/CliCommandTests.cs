@@ -9,15 +9,17 @@ namespace KillerShell.Tests;
 public sealed class CliCommandTests
 {
     [Fact]
-    public void SearchReportsASkippedJunctionRoot()
+    public void SearchWalksAJunctionRootAndSkipsTheLinkInsideIt()
     {
         using var fixture = new Services.SearchLinkFixture();
         fixture.AddLink();
 
         Result result = Run("search", fixture.Link, "--name", "*.txt");
 
+        // The folder asked for is searched even though it is a junction; the junction nested
+        // inside it, which points back up, is skipped so the walk cannot loop.
         Assert.Equal(0, result.ExitCode);
-        Assert.Contains("\"results\":[]", result.Output, StringComparison.Ordinal);
+        Assert.Contains("fixture.txt", result.Output, StringComparison.Ordinal);
         Assert.Contains("\"limitReached\":false", result.Output, StringComparison.Ordinal);
         Assert.Contains("\"skippedDirectoryLinks\":1", result.Output, StringComparison.Ordinal);
         Assert.Contains("\"incompletePaths\":0", result.Output, StringComparison.Ordinal);
