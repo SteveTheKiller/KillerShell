@@ -181,13 +181,15 @@ namespace KillerShell.Services
             }
 
             // ---- Producer: walks the tree (or the piped list) into a bounded queue ----
-            // The token is deliberately NOT handed to Task.Run or the waits below. Cancellation
+            // Blocking producers and consumers use dedicated threads so a busy shared pool
+            // cannot strand them behind the coordinator that waits for them.
+            // The token is deliberately NOT handed to task creation or the waits below. Cancellation
             // here is cooperative: the loops watch ct themselves and drain to a clean finish, so
             // the producer's CompleteAdding always runs and no exception escapes RunSearch. A task
             // created with an already-canceled token never starts, which would leave the workers
             // blocked on the feed forever. CancellationToken.None says that on purpose.
             using var feed = new BlockingCollection<string>(boundedCapacity: 8192);
-            var producer = Task.Run(() =>
+            var producer = Task.Factory.StartNew(() =>
             {
                 try
                 {
@@ -200,13 +202,13 @@ namespace KillerShell.Services
                 }
                 catch (OperationCanceledException) { /* graceful stop */ }
                 finally { feed.CompleteAdding(); }
-            }, CancellationToken.None);
+            }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
             // ---- Workers: one per core, capped so a Threadripper doesn't thrash I/O ----
             int workerCount = Math.Max(2, Math.Min(16, Environment.ProcessorCount));
             var workers = new Task[workerCount];
             for (int i = 0; i < workerCount; i++)
-                workers[i] = Task.Run(() =>
+                workers[i] = Task.Factory.StartNew(() =>
                 {
                     foreach (var filePath in feed.GetConsumingEnumerable())
                     {
@@ -215,7 +217,7 @@ namespace KillerShell.Services
                         catch (OperationCanceledException) when (ct.IsCancellationRequested) { /* graceful stop */ }
                         catch { /* one bad file never kills a worker */ }
                     }
-                }, CancellationToken.None);
+                }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
             // ---- UI pump: this task flushes batches every ~150ms until the workers finish ----
             const int UiIntervalMs = 150;
