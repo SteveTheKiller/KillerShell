@@ -501,6 +501,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">সব ফাইল</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">বর্তমান ফাইলের ধরনের সঙ্গে মিলে এমন কিছু নেই।</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">ওই ফোল্ডারটি নেই।</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">প্রথম {0:N0}টি আইটেম দেখানো হচ্ছে। বাকিগুলোতে যেতে একটি নাম বা পথ লিখুন।</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">এই ফোল্ডারটি পড়তে দেরি হয়েছে। 10 সেকেন্ডে যা এসেছে তা দেখানো হচ্ছে।</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">ওই ফাইলটি নেই।</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} প্রতিস্থাপন করবেন?</sys:String>
 

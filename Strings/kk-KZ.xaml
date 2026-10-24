@@ -579,6 +579,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Барлық файлдар</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Мұнда ағымдағы файл түріне сәйкес ештеңе жоқ.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Мұндай қалта жоқ.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Алғашқы {0:N0} элемент көрсетілген. Қалғанына жету үшін атауды немесе жолды енгізіңіз.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">Бұл қалта баяу оқылды. 10 секундта келгені көрсетілген.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Мұндай файл жоқ.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} ауыстырылсын ба?</sys:String>
 

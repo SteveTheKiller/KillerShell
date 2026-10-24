@@ -577,6 +577,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Tutti i file</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Niente qui corrisponde al tipo di file corrente.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Quella cartella non esiste.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Vengono mostrati i primi {0:N0} elementi. Digita un nome o un percorso per raggiungere gli altri.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">La lettura di questa cartella è stata lenta. Viene mostrato ciò che è arrivato in 10 secondi.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Quel file non esiste.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Sostituire {0}?</sys:String>
 

@@ -502,6 +502,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Všechny soubory</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Zde nic neodpovídá aktuálnímu typu souboru.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Tato složka neexistuje.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Zobrazuje se prvních {0:N0} položek. Ostatní otevřete zadáním názvu nebo cesty.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">Čtení této složky bylo pomalé. Zobrazuje se to, co dorazilo za 10 sekund.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Tento soubor neexistuje.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Nahradit {0}?</sys:String>
 

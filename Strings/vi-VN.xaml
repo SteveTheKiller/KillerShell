@@ -564,6 +564,8 @@
   <sys:String x:Key="Str_Dlg_AllFiles">Tất cả tệp</sys:String>
   <sys:String x:Key="Str_Dlg_NoMatchingFiles">Không có mục nào ở đây khớp với loại tệp hiện tại.</sys:String>
   <sys:String x:Key="Str_Dlg_NoSuchFolder">Thư mục đó không tồn tại.</sys:String>
+  <sys:String x:Key="Str_Dlg_ListingTooMany">Đang hiển thị {0:N0} mục đầu tiên. Nhập tên hoặc đường dẫn để tới các mục còn lại.</sys:String>
+  <sys:String x:Key="Str_Dlg_ListingTooSlow">Thư mục này đọc chậm. Đang hiển thị những gì nhận được trong 10 giây.</sys:String>
   <sys:String x:Key="Str_Dlg_NoSuchFile">Tệp đó không tồn tại.</sys:String>
   <sys:String x:Key="Str_Dlg_OverwriteMsg">Thay thế {0}?</sys:String>
   <!-- Processes/Services tab (Shell/ProcessTabs.cs, Tools/ProcessListControl.cs). The tab's

@@ -602,6 +602,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Todos os arquivos</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Nada aqui corresponde ao tipo de arquivo atual.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Essa pasta não existe.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Mostrando os primeiros {0:N0} itens. Digite um nome ou caminho para chegar aos demais.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">A leitura desta pasta foi lenta. Mostrando o que chegou em 10 segundos.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Esse arquivo não existe.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Substituir {0}?</sys:String>
 

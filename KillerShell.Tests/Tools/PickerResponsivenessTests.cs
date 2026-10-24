@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using KillerShell.Services;
 using Xunit;
 
 namespace KillerShell.Tests.Terminal;
@@ -115,8 +116,7 @@ internal static class PickerResponsivenessScenario
                 Interlocked.Exchange(ref pulseDuringRead, pulsed ? 1 : -1);
                 return [new PickerEntry("sample.txt", Path.Combine(path, "sample.txt"), false, 1, DateTime.MinValue)];
             }
-            if (picker is FileDialog file) file.ReadDirectory = Read;
-            else ((FolderPickerDialog)picker).ReadDirectory = Read;
+            SetReader(picker, Read);
             timer.Start();
             Navigate(picker, Path.GetTempPath());
             PumpUntil(() => Entries(picker).Count == 1 && Volatile.Read(ref pulseDuringRead) != 0);
@@ -293,8 +293,10 @@ internal static class PickerResponsivenessScenario
 
     private static void SetReader(Window picker, Func<string, CancellationToken, PickerEntry[]?> read)
     {
-        if (picker is FileDialog file) file.ReadDirectory = read;
-        else ((FolderPickerDialog)picker).ReadDirectory = read;
+        PickerListing? Listing(string path, CancellationToken token)
+            => read(path, token) is { } entries ? new PickerListing(entries, PickerListingLimit.None) : null;
+        if (picker is FileDialog file) file.ReadDirectory = Listing;
+        else ((FolderPickerDialog)picker).ReadDirectory = Listing;
     }
 
     private static ObservableCollection<PickerEntry> Entries(Window picker)

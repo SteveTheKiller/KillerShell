@@ -504,6 +504,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Tüm dosyalar</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Burada geçerli dosya türüyle eşleşen bir şey yok.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Böyle bir klasör yok.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">İlk {0:N0} öğe gösteriliyor. Diğerlerine ulaşmak için bir ad veya yol yazın.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">Bu klasörün okunması yavaştı. 10 saniyede gelenler gösteriliyor.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Böyle bir dosya yok.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} değiştirilsin mi?</sys:String>
 

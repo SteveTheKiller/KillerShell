@@ -602,6 +602,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Minden fájl</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Itt semmi sem egyezik az aktuális fájltípussal.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Ez a mappa nem létezik.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Az első {0:N0} elem látható. A többihez írjon be egy nevet vagy elérési utat.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">A mappa olvasása lassú volt. A 10 másodperc alatt beérkezett elemek láthatók.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Ez a fájl nem létezik.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Lecseréli a következőt: {0}?</sys:String>
 

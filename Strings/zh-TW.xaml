@@ -501,6 +501,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">所有檔案</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">此處沒有符合目前檔案類型的項目。</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">該資料夾不存在。</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">僅顯示前 {0:N0} 個項目。輸入名稱或路徑以存取其餘項目。</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">此資料夾讀取較慢。僅顯示 10 秒內讀取到的內容。</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">該檔案不存在。</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">要取代 {0} 嗎？</sys:String>
 

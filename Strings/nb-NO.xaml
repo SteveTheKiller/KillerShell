@@ -602,6 +602,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Alle filer</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Ingenting her samsvarer med gjeldende filtype.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Den mappen finnes ikke.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Viser de første {0:N0} elementene. Skriv inn et navn eller en bane for å nå resten.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">Denne mappen ble lest sakte. Viser det som kom inn på 10 sekunder.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Den filen finnes ikke.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Erstatte {0}?</sys:String>
 

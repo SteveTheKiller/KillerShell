@@ -503,6 +503,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Vse datoteke</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Tukaj ni datotek izbrane vrste.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Ta mapa ne obstaja.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Prikazanih je prvih {0:N0} elementov. Za ostale vnesite ime ali pot.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">Branje te mape je bilo počasno. Prikazano je, kar je prispelo v 10 sekundah.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Ta datoteka ne obstaja.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Zamenjam {0}?</sys:String>
     <sys:String x:Key="Str_TT_TaskManager">Procesi/Storitve  (F9), desni klik za izbiro</sys:String>

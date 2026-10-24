@@ -554,6 +554,8 @@
   <sys:String x:Key="Str_Dlg_AllFiles">Wszystkie pliki</sys:String>
   <sys:String x:Key="Str_Dlg_NoMatchingFiles">Nic tutaj nie pasuje do bieżącego typu pliku.</sys:String>
   <sys:String x:Key="Str_Dlg_NoSuchFolder">Ten folder nie istnieje.</sys:String>
+  <sys:String x:Key="Str_Dlg_ListingTooMany">Wyświetlono pierwsze {0:N0} elementów. Wpisz nazwę lub ścieżkę, aby dotrzeć do pozostałych.</sys:String>
+  <sys:String x:Key="Str_Dlg_ListingTooSlow">Odczyt tego folderu był powolny. Wyświetlono to, co dotarło w ciągu 10 sekund.</sys:String>
   <sys:String x:Key="Str_Dlg_NoSuchFile">Ten plik nie istnieje.</sys:String>
   <sys:String x:Key="Str_Dlg_OverwriteMsg">Zastąpić {0}?</sys:String>
   <sys:String x:Key="Str_TT_TaskManager">Procesy/Usługi  (F9) - kliknij prawym przyciskiem, aby wybrać</sys:String>

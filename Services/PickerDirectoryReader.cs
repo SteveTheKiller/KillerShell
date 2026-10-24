@@ -7,6 +7,15 @@ using System.Threading;
 
 namespace KillerShell.Services
 {
+    public enum PickerListingLimit { None, TooManyEntries, TooSlow }
+
+    /// <summary>One folder's rows as the picker read them, and why the read stopped early if it did.</summary>
+    public sealed class PickerListing(PickerEntry[] entries, PickerListingLimit limit)
+    {
+        public PickerEntry[] Entries { get; } = entries;
+        public PickerListingLimit Limit { get; } = limit;
+    }
+
     public static class PickerDirectoryReader
     {
         public const int MaximumEntries = 10000;
@@ -27,42 +36,48 @@ namespace KillerShell.Services
             return places.ToArray();
         }
 
-        public static PickerEntry[]? Read(string directory, CancellationToken cancellationToken)
+        /// <summary>
+        /// The folder's rows, or null when it does not exist. A folder too big or too slow to read
+        /// in full still lists what was read, marked with the limit it reached, so the picker can
+        /// open it and the user can type the rest.
+        /// </summary>
+        public static PickerListing? Read(string directory, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (!Directory.Exists(directory)) return null;
             var entries = new List<PickerEntry>();
             int visited = 0;
             var clock = Stopwatch.StartNew();
-            void Bound()
+            PickerListingLimit Bound()
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (++visited > MaximumEntries) throw new IOException(new Win32Exception(234).Message);
-                if (clock.Elapsed > TimeSpan.FromSeconds(10)) throw new IOException(new Win32Exception(1460).Message);
+                if (++visited > MaximumEntries) return PickerListingLimit.TooManyEntries;
+                return clock.Elapsed > TimeSpan.FromSeconds(10) ? PickerListingLimit.TooSlow : PickerListingLimit.None;
             }
-            try
+            foreach (string path in Directory.EnumerateDirectories(directory))
             {
-                foreach (string path in Directory.EnumerateDirectories(directory))
-                {
-                    Bound();
-                    var info = new DirectoryInfo(path);
-                    if ((info.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
-                    entries.Add(new PickerEntry(info.Name, path, true, 0, SafeTime(() => info.LastWriteTime)));
-                }
-                foreach (string path in Directory.EnumerateFiles(directory))
-                {
-                    Bound();
-                    var info = new FileInfo(path);
-                    if ((info.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
-                    entries.Add(new PickerEntry(info.Name, path, false, SafeLength(info), SafeTime(() => info.LastWriteTime)));
-                }
+                if (Bound() is var limit && limit != PickerListingLimit.None) return new PickerListing(entries.ToArray(), limit);
+                var info = new DirectoryInfo(path);
+                if ((info.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
+                entries.Add(new PickerEntry(info.Name, path, true, 0, SafeTime(() => info.LastWriteTime)));
             }
-            catch (Exception error) when (error is not OperationCanceledException)
+            foreach (string path in Directory.EnumerateFiles(directory))
             {
-                throw;
+                if (Bound() is var limit && limit != PickerListingLimit.None) return new PickerListing(entries.ToArray(), limit);
+                var info = new FileInfo(path);
+                if ((info.Attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0) continue;
+                entries.Add(new PickerEntry(info.Name, path, false, SafeLength(info), SafeTime(() => info.LastWriteTime)));
             }
-            return entries.ToArray();
+            return new PickerListing(entries.ToArray(), PickerListingLimit.None);
         }
+
+        /// <summary>Text for a listing that stopped early, in the app's language; null when complete.</summary>
+        internal static string? LimitNote(PickerListingLimit limit, Func<string, string> loc) => limit switch
+        {
+            PickerListingLimit.TooManyEntries => string.Format(loc("Str_Dlg_ListingTooMany"), MaximumEntries),
+            PickerListingLimit.TooSlow => loc("Str_Dlg_ListingTooSlow"),
+            _ => null
+        };
 
         private static DateTime SafeTime(Func<DateTime> read)
         {

@@ -504,6 +504,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Todos los archivos</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Aquí no hay nada que coincida con el tipo de archivo actual.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Esa carpeta no existe.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Se muestran los primeros {0:N0} elementos. Escriba un nombre o una ruta para llegar a los demás.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">Esta carpeta tardó en leerse. Se muestra lo que llegó en 10 segundos.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Ese archivo no existe.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">¿Reemplazar {0}?</sys:String>
 

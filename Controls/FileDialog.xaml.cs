@@ -62,7 +62,7 @@ namespace KillerShell
         // ── internals ────────────────────────────────────────────────────────────
 
         private readonly FileDialogMode _mode;
-        internal Func<string, CancellationToken, PickerEntry[]?> ReadDirectory { get; set; } = Services.PickerDirectoryReader.Read;
+        internal Func<string, CancellationToken, Services.PickerListing?> ReadDirectory { get; set; } = Services.PickerDirectoryReader.Read;
         internal Func<CancellationToken, (string Label, string Path)[]> ReadDrives { get; set; } = Services.PickerDirectoryReader.ReadDrives;
         internal Func<string, bool> FolderExists { get; set; } = Directory.Exists;
         internal Func<string, bool> PathIsFile { get; set; } = File.Exists;
@@ -307,30 +307,36 @@ namespace KillerShell
                 foreach (string? candidate in candidates)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (!string.IsNullOrWhiteSpace(candidate) && exists(candidate!)) return (candidate!, read(candidate!, token));
+                    if (string.IsNullOrWhiteSpace(candidate) || !exists(candidate!)) continue;
+                    // A starting folder that cannot be read gives way to the next candidate, so
+                    // the dialog still opens somewhere.
+                    try { return (candidate!, read(candidate!, token)); }
+                    catch (Exception error) when (error is IOException or UnauthorizedAccessException) { }
                 }
-                return (string.Empty, (PickerEntry[]?)null);
+                return (string.Empty, (Services.PickerListing?)null);
             });
         }
 
-        private void StartNavigation(Func<CancellationToken, (string Directory, PickerEntry[]? Entries)> read)
+        private void StartNavigation(Func<CancellationToken, (string Directory, Services.PickerListing? Listing)> read)
         {
             _sortWork.Cancel();
             _validationWork.Cancel();
             NavigationTask = _navigationWork.RunAsync(read, async (result, token) =>
             {
-                if (result.Entries == null) { SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"); return; }
+                if (result.Listing == null) { SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"); return; }
                 string dir = result.Directory;
                 _currentDir = dir;
                 PathBox.Text = dir;
                 _raw.Clear();
-                _raw.AddRange(result.Entries);
+                _raw.AddRange(result.Listing.Entries);
                 await ApplySortAsync();
                 token.ThrowIfCancellationRequested();
                 UpButton.IsEnabled = Directory.GetParent(dir) != null;
                 UpdateInfoSummary();
+                // A folder too big or slow to read in full still opens; say what is missing.
+                if (Services.PickerDirectoryReader.LimitNote(result.Listing.Limit, Loc) is { } note) SelMeta.Text = note;
                 SyncPlacesSelection();
-            }, error => SelMeta.Text = error.Message);
+            }, _ => SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"));
         }
 
         private void Up_Click(object sender, RoutedEventArgs e)

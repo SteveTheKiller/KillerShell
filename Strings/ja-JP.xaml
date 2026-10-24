@@ -499,6 +499,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">すべてのファイル</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">現在のファイルの種類に一致するものはありません。</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">そのフォルダーは存在しません。</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">最初の {0:N0} 項目を表示しています。残りを開くには名前またはパスを入力してください。</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">このフォルダーの読み取りに時間がかかりました。10 秒間に読み取れた内容を表示しています。</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">そのファイルは存在しません。</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">{0} を置き換えますか?</sys:String>
 

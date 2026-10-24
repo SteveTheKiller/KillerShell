@@ -579,6 +579,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">Все файлы</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Здесь нет ничего, что подходит под текущий тип файла.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Такой папки не существует.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Показаны первые {0:N0} элементов. Введите имя или путь, чтобы открыть остальные.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">Эта папка читалась медленно. Показано то, что пришло за 10 секунд.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">Такого файла не существует.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Заменить {0}?</sys:String>
 

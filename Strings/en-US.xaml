@@ -602,6 +602,8 @@
     <sys:String x:Key="Str_Dlg_AllFiles">All files</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Nothing here matches the current file type.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">That folder does not exist.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">Showing the first {0:N0} items. Type a name or path to reach the others.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">This folder was slow to read. Showing what arrived in 10 seconds.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFile">That file does not exist.</sys:String>
     <sys:String x:Key="Str_Dlg_OverwriteMsg">Replace {0}?</sys:String>
 
