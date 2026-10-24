@@ -153,6 +153,15 @@ namespace KillerShell.Services
             string command = VerbCommand(exePath);
             if (Array.Exists(Owners, o => string.Equals(OpenCommand(o), command, StringComparison.OrdinalIgnoreCase)))
                 TurnOff();
+            // A verb of this user's naming the removed copy (EnsureVerbs writes one over an
+            // all-users verb from an older version) would stay in the right-click menu, dead.
+            foreach (string owner in Owners)
+            {
+                string key = owner + @"\" + Verb;
+                if (string.Equals(_registry.GetString(RegistryHive.CurrentUser, key + @"\command", null), command,
+                                  StringComparison.OrdinalIgnoreCase))
+                    _registry.DeleteKey(RegistryHive.CurrentUser, key);
+            }
         }
 
         /// <summary>
@@ -217,7 +226,9 @@ namespace KillerShell.Services
         /// The verb the defaults name, as this copy runs it. A per-user verb wins over the
         /// all-users one, so one left by another copy (a portable copy registered from the
         /// Associations card and deleted since) is rewritten rather than made the double-click
-        /// default. An all-users verb is kept: only an all-users install writes or removes it.
+        /// default. An all-users verb that already runs this copy as this version does is used as
+        /// it is; one from an older version (an all-users copy updated in place keeps 1.4's
+        /// command, which restores the whole session) gets this user's own verb over it.
         /// </summary>
         private void EnsureVerbs()
         {
@@ -231,7 +242,8 @@ namespace KillerShell.Services
                                       StringComparison.OrdinalIgnoreCase))
                         continue;
                 }
-                else if (_registry.KeyExists(RegistryHive.LocalMachine, key))
+                else if (string.Equals(_registry.GetString(RegistryHive.LocalMachine, key + @"\command", null), command,
+                                       StringComparison.OrdinalIgnoreCase))
                     continue;
                 _registry.SetString(RegistryHive.CurrentUser, key, null, "Open in KillerShell");
                 _registry.SetString(RegistryHive.CurrentUser, key + @"\command", null, VerbCommand(_exePath));

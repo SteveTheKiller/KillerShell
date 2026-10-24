@@ -344,6 +344,39 @@ public sealed class FolderOpenerSettingTests
     }
 
     [Fact]
+    public void AnAllUsersVerbFromBeforeThisCopyIsOverriddenForThisUser()
+    {
+        // An all-users copy updated in place from 1.4 keeps 1.4's command in HKLM, which restores
+        // the whole session on every double-click. This user's own verb wins over it.
+        var registry = new FakeRegistryStore();
+        string machineExe = @"C:\Program Files\KillerShell\KillerShell.exe";
+        string old = "\"" + machineExe + "\" \"%1\"";
+        registry.SetString(RegistryHive.LocalMachine, Directories + @"\KillerShell\command", null, old);
+        registry.SetString(RegistryHive.LocalMachine, Drives + @"\KillerShell\command", null, old);
+        var setting = new FolderOpenerSetting(registry, installed: true, exePath: machineExe);
+
+        setting.TurnOn();
+
+        Assert.Equal(FolderOpenerSetting.VerbCommand(machineExe),
+            registry.GetString(RegistryHive.CurrentUser, Directories + @"\KillerShell\command", null));
+        Assert.Equal(FolderOpenerSetting.VerbCommand(machineExe),
+            registry.GetString(RegistryHive.CurrentUser, Drives + @"\KillerShell\command", null));
+    }
+
+    [Fact]
+    public void ACopyBeingRemovedTakesItsOwnVerbWithIt()
+    {
+        var registry = new FakeRegistryStore();
+        string machineExe = @"C:\Program Files\KillerShell\KillerShell.exe";
+        registry.SetString(RegistryHive.LocalMachine, Directories + @"\KillerShell\command", null, "\"" + machineExe + "\" \"%1\"");
+        new FolderOpenerSetting(registry, installed: true, exePath: machineExe).TurnOn();
+
+        new FolderOpenerSetting(registry, installed: false, exePath: machineExe).TurnOffFor(machineExe);
+
+        Assert.False(registry.KeyExists(RegistryHive.CurrentUser, Directories + @"\KillerShell"));
+    }
+
+    [Fact]
     public void AMissingVerbIsAddedAgainWhileItIsOn()
     {
         var registry = new FakeRegistryStore();
