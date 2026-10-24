@@ -553,6 +553,10 @@ namespace KillerShell
                 Services.CommandLinePath.UnregisterRequired(machine ? MachineInstallDir : InstallDir, machine);
                 // The other install stays and carries "Open folders in KillerShell" on.
                 if (!UnregisterAssociations(machine, keepFolderOpener: true)) throw new UnauthorizedAccessException();
+                // Anyone else who turned folder opening on from the all-users copy would be left
+                // with an open verb naming the deleted exe; put back what they had, as an
+                // uninstall does. The account asking for this is already on its own copy.
+                if (machine) TurnOffFolderOpenerForOtherUsers();      // DefaultTerminal.cs
                 // A per-user class left behind would win for this user and point at a deleted exe.
                 // When the all-users copy is the one staying, point this user's class at it: an
                 // all-users copy from before the class existed has none of its own until it runs
