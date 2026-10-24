@@ -264,15 +264,22 @@ namespace KillerShell.Services
         {
             var queue = new Queue<string>();
             queue.Enqueue(root);
+            bool atRoot = true;
 
             while (queue.Count > 0)
             {
                 ct.ThrowIfCancellationRequested();
                 string dir = queue.Dequeue();
+                bool isRoot = atRoot;
+                atRoot = false;
                 FileAttributes attributes;
                 try { attributes = File.GetAttributes(dir); }
                 catch { incomplete(dir); continue; }
-                if ((attributes & FileAttributes.ReparsePoint) != 0)
+                // Links found on the way down are skipped, which is what keeps a junction that
+                // points back up the tree from looping. The folder the user chose to search is
+                // walked even when it is itself a link: they asked for exactly that folder, and
+                // nothing below it can loop because every nested link is still skipped.
+                if (!isRoot && DirectoryLink.IsLink(dir, attributes))
                 {
                     SkippedDirectoryLinks++;
                     continue;

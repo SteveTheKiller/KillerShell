@@ -389,7 +389,11 @@ namespace KillerShell.Services
                     return ct.IsCancellationRequested ? 1u : 0u;
                 };
 
-                bool copiedFile = CopyFileEx(src, temp, callback, IntPtr.Zero, IntPtr.Zero, 1);
+                // COPY_FILE_FAIL_IF_EXISTS | COPY_FILE_ALLOW_DECRYPTED_DESTINATION. Without the
+                // second flag an EFS-encrypted file cannot be copied to FAT32, exFAT or most
+                // network shares (ERROR_ENCRYPTION_FAILED); the stream copy this replaced wrote
+                // the plaintext there, as Explorer does after asking.
+                bool copiedFile = CopyFileEx(src, temp, callback, IntPtr.Zero, IntPtr.Zero, CopyFileFailIfExists | CopyFileAllowDecryptedDestination);
                 int error = Marshal.GetLastWin32Error();
                 if (callbackError != null) throw callbackError;
                 ct.ThrowIfCancellationRequested();
@@ -437,6 +441,9 @@ namespace KillerShell.Services
 
         private delegate uint CopyProgressRoutine(long total, long transferred, long streamSize,
             long streamTransferred, uint streamNumber, uint reason, IntPtr source, IntPtr target, IntPtr data);
+
+        internal const uint CopyFileFailIfExists = 0x1;
+        internal const uint CopyFileAllowDecryptedDestination = 0x8;
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -523,11 +530,9 @@ namespace KillerShell.Services
             Directory.Move(src, dst);
         }
 
-        private static bool IsLink(string dir)
-        {
-            try { return (File.GetAttributes(dir) & FileAttributes.ReparsePoint) != 0; }
-            catch { return false; }
-        }
+        // Junctions and symlinks only: a folder that just carries a reparse point (dedup,
+        // ProjFS, container layers) is copied and moved like any other (DirectoryLink.cs).
+        private static bool IsLink(string dir) => DirectoryLink.IsLink(dir);
 
         private static void RemoveEmptySourceDirs(IEnumerable<string> sources)
         {

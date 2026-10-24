@@ -126,8 +126,9 @@ namespace KillerShell.Services
                 parents.Push(current!);
             while (parents.Count > 0)
             {
-                var attributes = File.GetAttributes(parents.Pop());
-                if ((attributes & FileAttributes.ReparsePoint) != 0) return attributes;
+                string current = parents.Pop();
+                var attributes = File.GetAttributes(current);
+                if (DirectoryLink.IsLink(current, attributes)) return attributes;
             }
             return null;
         }

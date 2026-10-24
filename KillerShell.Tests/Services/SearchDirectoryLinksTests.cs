@@ -63,7 +63,10 @@ public static class SearchDirectoryLinksScenario
         Assert.Equal(fixture.File, Assert.Single(results).FilePath);
         Assert.Equal(1, engine.SkippedDirectoryLinks);
         Assert.Equal("fixture", File.ReadAllText(fixture.File));
-        Assert.Empty(SearchDirectoryLinksTests.Search(engine, fixture.Link).GetAwaiter().GetResult());
+        // Searching the junction itself walks it, since the user chose that folder; the link
+        // nested inside it is still skipped, so the walk cannot loop.
+        var throughLink = SearchDirectoryLinksTests.Search(engine, fixture.Link).GetAwaiter().GetResult();
+        Assert.Equal(Path.Combine(fixture.Link, "fixture.txt"), Assert.Single(throughLink).FilePath);
         Assert.Equal(1, engine.SkippedDirectoryLinks);
     }
 }

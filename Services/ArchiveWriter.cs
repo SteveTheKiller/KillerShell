@@ -393,7 +393,7 @@ namespace KillerShell.Services
             string[] files, subs;
             try
             {
-                if ((File.GetAttributes(dir) & FileAttributes.ReparsePoint) != 0)
+                if (DirectoryLink.IsLink(dir))
                 {
                     result.SkippedDirectoryLinks++;
                     return;
