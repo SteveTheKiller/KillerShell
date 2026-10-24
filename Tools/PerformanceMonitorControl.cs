@@ -1169,7 +1169,9 @@ namespace KillerShell.Tools
                     {
                         tile = BuildGpuTile("LUID " + luid, 0, liveCounters: true);
                         _tiles.Add(tile);
-                        AddPanelCard(BuildGpuPanel(tile, UniquePanelId("gpu:" + tile.Description)));   // PerformanceMonitorCards.cs
+                        // Not the LUID, which Windows hands out again at every boot: the card's
+                        // place and fold would be lost each restart and a dead id saved each time.
+                        AddPanelCard(BuildGpuPanel(tile, UniquePanelId("gpu:unassigned")));   // PerformanceMonitorCards.cs
                         cardsChanged = true;
                     }
                     _gpuCounterTiles.Add(luid, tile);
