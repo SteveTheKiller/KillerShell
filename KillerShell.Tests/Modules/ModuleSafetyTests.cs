@@ -19,7 +19,7 @@ public sealed class ModuleSafetyTests
         Assert.NotNull(directory);
         string repo = directory!.FullName;
         string fixtureRoot = Path.Combine(repo, "KillerShell.Tests", "Modules");
-        string scratch = Path.Combine(Path.GetTempPath(), "KillerShell-modules-" + Guid.NewGuid().ToString("N"));
+        string scratch = Path.Combine(Path.GetTempPath(), "ks-mod-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(scratch);
         try
         {

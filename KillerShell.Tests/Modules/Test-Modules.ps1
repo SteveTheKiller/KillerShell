@@ -5,7 +5,7 @@ param(
     [string]$ScratchRoot = [IO.Path]::GetTempPath()
 )
 $ErrorActionPreference = 'Stop'
-$root = Join-Path $ScratchRoot ('KillerModules-tests-' + [guid]::NewGuid().ToString('N'))
+$root = Join-Path $ScratchRoot ('km-' + [guid]::NewGuid().ToString('N'))
 [IO.Directory]::CreateDirectory($root) | Out-Null
 $savedTemp = $env:TEMP
 $savedTmp = $env:TMP
