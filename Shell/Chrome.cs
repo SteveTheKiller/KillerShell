@@ -215,6 +215,10 @@ namespace KillerShell.Shell
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            // A caption right-click or Alt+Space: the themed system menu instead of Windows' white
+            // one (SystemMenu.cs).
+            if (TryHandleSystemMenu(msg, wParam, lParam)) { handled = true; return IntPtr.Zero; }
+
             // Interactive move/resize bracket, read by the dual-pane ratio logic
             // (DualPane.cs OnPaneHostResized) to tell an edge drag from a state jump.
             if (msg == 0x0231) _inWindowSizeMove = true;    // WM_ENTERSIZEMOVE
@@ -251,14 +255,6 @@ namespace KillerShell.Shell
                 handled = true;
                 return new IntPtr(1);
             }
-            if (msg == WM_NCRBUTTONUP && (int)wParam.ToInt64() == HTCAPTION)
-            {
-                // Right-click on the caption: the native system menu can't be themed,
-                // so suppress it and show our own Grunge menu instead.
-                Dispatcher.BeginInvoke((Action)ShowCaptionMenu);
-                handled = true;
-                return IntPtr.Zero;
-            }
             if (msg == WM_GETMINMAXINFO)
             {
                 WmGetMinMaxInfo(hwnd, lParam);
@@ -276,32 +272,6 @@ namespace KillerShell.Shell
                 return IntPtr.Zero;
             }
             return IntPtr.Zero;
-        }
-
-        // Themed replacement for the caption's system menu (minimize / maximize-restore /
-        // close). Uses the implicit ContextMenu/MenuItem styles, so it grains and themes.
-        private void ShowCaptionMenu()
-        {
-            var menu = new System.Windows.Controls.ContextMenu();
-
-            var mini = new System.Windows.Controls.MenuItem { Header = Loc("Str_Menu_Minimize") };
-            mini.Click += (_, _) => WindowState = WindowState.Minimized;
-            menu.Items.Add(mini);
-
-            var maxi = new System.Windows.Controls.MenuItem
-                { Header = Loc(WindowState == WindowState.Maximized ? "Str_Menu_Restore" : "Str_Menu_Maximize") };
-            maxi.Click += (_, _) => WindowState =
-                WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-            menu.Items.Add(maxi);
-
-            menu.Items.Add(new System.Windows.Controls.Separator());
-
-            var close = new System.Windows.Controls.MenuItem { Header = Loc("Str_Menu_Close") };
-            close.Click += (_, _) => Close();
-            menu.Items.Add(close);
-
-            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
-            menu.IsOpen = true;
         }
 
         // WM_GETMINMAXINFO is the OS asking how big and how SMALL this window may be. Because

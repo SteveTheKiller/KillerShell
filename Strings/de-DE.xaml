@@ -145,6 +145,12 @@
     <sys:String x:Key="Str_Status_TreeHiddenOff">Baum: versteckte und Punkt-Ordner werden ausgeblendet</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimieren</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Maximieren</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Wiederherstellen</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Verschieben</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Größe ändern</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Minimieren</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Maximieren</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Schließen</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Wiederherstellen</sys:String>
     <sys:String x:Key="Str_Menu_Close">Schließen</sys:String>
 

@@ -1159,7 +1159,7 @@
     <!-- NOTE: inside a Menu or ContextMenu, WPF does NOT use this implicit style - it looks up
          MenuItem.SeparatorStyleKey and falls back to the stock Aero separator, the bright gray
          3D line. That is what the caption system menu was showing between Maximize and Close
-         (Chrome.cs ShowCaptionMenu adds a Separator there). The keyed alias just below is what
+         (SystemMenu.cs adds a Separator there). The keyed alias just below is what
          actually applies in menus; this one covers separators used anywhere else. -->
     <Style TargetType="Separator">
         <Setter Property="OverridesDefaultStyle" Value="True"/>

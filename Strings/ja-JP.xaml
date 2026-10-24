@@ -195,6 +195,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} はすでに除外されています</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">最小化</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">最大化</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">元のサイズに戻す</sys:String>
+    <sys:String x:Key="Str_Sys_Move">移動</sys:String>
+    <sys:String x:Key="Str_Sys_Size">サイズ変更</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">最小化</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">最大化</sys:String>
+    <sys:String x:Key="Str_Sys_Close">閉じる</sys:String>
     <sys:String x:Key="Str_Menu_Restore">元のサイズに戻す</sys:String>
     <sys:String x:Key="Str_Menu_Close">閉じる</sys:String>
 

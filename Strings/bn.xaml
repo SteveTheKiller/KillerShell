@@ -145,6 +145,12 @@
     <sys:String x:Key="Str_Status_TreeHiddenOff">ট্রি: লুকানো ও ডট ফোল্ডার লুকানো হচ্ছে</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">মিনিমাইজ</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">ম্যাক্সিমাইজ</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">পুনরুদ্ধার</sys:String>
+    <sys:String x:Key="Str_Sys_Move">সরান</sys:String>
+    <sys:String x:Key="Str_Sys_Size">আকার</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">ছোট করুন</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">বড় করুন</sys:String>
+    <sys:String x:Key="Str_Sys_Close">বন্ধ করুন</sys:String>
     <sys:String x:Key="Str_Menu_Restore">পুনরুদ্ধার</sys:String>
     <sys:String x:Key="Str_Menu_Close">বন্ধ করুন</sys:String>
 

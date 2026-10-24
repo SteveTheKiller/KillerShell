@@ -260,6 +260,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} már ki van zárva</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimalizálás</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Maximalizálás</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Visszaállítás</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Áthelyezés</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Méret</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Minimalizálás</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Maximalizálás</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Bezárás</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Visszaállítás</sys:String>
     <sys:String x:Key="Str_Menu_Close">Bezárás</sys:String>
 

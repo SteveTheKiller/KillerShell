@@ -145,6 +145,12 @@
     <sys:String x:Key="Str_Status_TreeHiddenOff">目录树：正在隐藏隐藏文件夹和点文件夹</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">最小化</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">最大化</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">还原</sys:String>
+    <sys:String x:Key="Str_Sys_Move">移动</sys:String>
+    <sys:String x:Key="Str_Sys_Size">大小</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">最小化</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">最大化</sys:String>
+    <sys:String x:Key="Str_Sys_Close">关闭</sys:String>
     <sys:String x:Key="Str_Menu_Restore">还原</sys:String>
     <sys:String x:Key="Str_Menu_Close">关闭</sys:String>
 

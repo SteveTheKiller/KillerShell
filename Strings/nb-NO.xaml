@@ -260,6 +260,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} er allerede utelatt</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimer</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Maksimer</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Gjenopprett</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Flytt</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Størrelse</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Minimer</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Maksimer</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Lukk</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Gjenopprett</sys:String>
     <sys:String x:Key="Str_Menu_Close">Lukk</sys:String>
 

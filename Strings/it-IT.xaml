@@ -250,6 +250,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} è già escluso</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Riduci a icona</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Ingrandisci</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Ripristina</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Sposta</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Dimensione</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Riduci a icona</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Ingrandisci</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Chiudi</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Ripristina</sys:String>
     <sys:String x:Key="Str_Menu_Close">Chiudi</sys:String>
 

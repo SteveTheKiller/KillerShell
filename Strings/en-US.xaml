@@ -260,6 +260,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} is already excluded</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimize</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Maximize</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Restore</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Move</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Size</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Minimize</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Maximize</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Close</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Restore</sys:String>
     <sys:String x:Key="Str_Menu_Close">Close</sys:String>
 

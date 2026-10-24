@@ -252,6 +252,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} әлдеқашан шығарылған</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Жию</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Жаю</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Қалпына келтіру</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Жылжыту</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Өлшем</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Жиыру</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Жаю</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Жабу</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Қалпына келтіру</sys:String>
     <sys:String x:Key="Str_Menu_Close">Жабу</sys:String>
 

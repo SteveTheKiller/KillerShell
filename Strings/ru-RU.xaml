@@ -252,6 +252,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} уже исключён</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Свернуть</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Развернуть</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Восстановить</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Переместить</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Размер</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Свернуть</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Развернуть</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Закрыть</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Восстановить</sys:String>
     <sys:String x:Key="Str_Menu_Close">Закрыть</sys:String>
 

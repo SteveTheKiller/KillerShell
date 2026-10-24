@@ -195,6 +195,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} je už vyloučeno</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimalizovat</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Maximalizovat</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Obnovit</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Přesunout</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Velikost</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Minimalizovat</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Maximalizovat</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Zavřít</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Obnovit</sys:String>
     <sys:String x:Key="Str_Menu_Close">Zavřít</sys:String>
 

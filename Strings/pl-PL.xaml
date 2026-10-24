@@ -277,6 +277,12 @@
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} jest już wykluczony</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimalizuj</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Maksymalizuj</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Przywróć</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Przenieś</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Rozmiar</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Minimalizuj</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Maksymalizuj</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Zamknij</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Przywróć</sys:String>
     <sys:String x:Key="Str_Menu_Close">Zamknij</sys:String>
     <sys:String x:Key="Str_Status_InvalidRoot">Nieprawidłowa lub brakująca ścieżka główna.</sys:String>

@@ -145,6 +145,12 @@
     <sys:String x:Key="Str_Status_TreeHiddenOff">Ağaç: gizli ve nokta klasörleri gizleniyor</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Simge durumuna küçült</sys:String>
     <sys:String x:Key="Str_Menu_Maximize">Ekranı kapla</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">Geri Yükle</sys:String>
+    <sys:String x:Key="Str_Sys_Move">Taşı</sys:String>
+    <sys:String x:Key="Str_Sys_Size">Boyutlandır</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">Simge Durumuna Küçült</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">Ekranı Kapla</sys:String>
+    <sys:String x:Key="Str_Sys_Close">Kapat</sys:String>
     <sys:String x:Key="Str_Menu_Restore">Geri yükle</sys:String>
     <sys:String x:Key="Str_Menu_Close">Kapat</sys:String>
 
