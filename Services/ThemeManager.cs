@@ -621,10 +621,14 @@ namespace KillerShell.Services
             SetIfAbsent("TabFocusFirstThickness", new Thickness(0, 3, 1, 0));
             SetIfAbsent("TabFocusLastThickness",  new Thickness(1, 3, 0, 0));
             SetIfAbsent("TabFocusOnlyThickness",  new Thickness(0, 3, 0, 0));
-            SetIfAbsent("TabFocusPadding",      new Thickness(1, 1, 4, 5));
-            SetIfAbsent("TabFocusFirstPadding", new Thickness(2, 1, 4, 5));
-            SetIfAbsent("TabFocusLastPadding",  new Thickness(1, 1, 5, 5));
-            SetIfAbsent("TabFocusOnlyPadding",  new Thickness(2, 1, 5, 5));
+            // Every tab padding below carries 2px more on top and 2px less below than the band
+            // needs, so the icon and title sit level in the tab: the art and Killer Sans both
+            // ride high in their boxes. Same total height, and the same top in every state, so
+            // nothing jumps when a tab becomes active.
+            SetIfAbsent("TabFocusPadding",      new Thickness(1, 3, 4, 3));
+            SetIfAbsent("TabFocusFirstPadding", new Thickness(2, 3, 4, 3));
+            SetIfAbsent("TabFocusLastPadding",  new Thickness(1, 3, 5, 3));
+            SetIfAbsent("TabFocusOnlyPadding",  new Thickness(2, 3, 5, 3));
             Mirror("MonitorCellBrush", "MenuBackgroundBrush");
 
             // A terminal that overrides its BACKGROUND has to override its foreground and accent
@@ -712,7 +716,7 @@ namespace KillerShell.Services
             SetIfAbsent("TabChamfer", 0.0);
             // The tab's own padding: 2px from the tab's left edge to its icon. A flat theme
             // supplies its compact horizontal inset and state-aligned vertical padding.
-            SetIfAbsent("TabPadding", new Thickness(2, 4, 5, 5));
+            SetIfAbsent("TabPadding", new Thickness(2, 6, 5, 3));   // 2px lower: see TabFocusPadding
             // No PageBevel* keys: the tab page reuses the PaneBevel* set the sidebar well already
             // uses, so the two recesses are the same four Borders and cannot drift apart. A
             // single-ring PageBevel* pair was tried on 2026-08-09 and rejected - a Win98 recess is
@@ -1148,7 +1152,7 @@ namespace KillerShell.Services
                     combined["TabStripeThickness"] = flat ? new Thickness(0) : new Thickness(1, 3, 1, 0);
                 if (!combined.Contains("TabActivePadding"))
                     combined["TabActivePadding"] = flat ? new Thickness(12, 4, 5, 5)
-                                                        : new Thickness(1, 1, 4, 5);
+                                                        : new Thickness(1, 3, 4, 3);
 
                 // The tab's picture: larger on the rounded themes, overlapping the tab's padding by
                 // a pixel top and bottom so the tab keeps its height. 98SE keeps its 20px box.
