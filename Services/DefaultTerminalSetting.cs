@@ -166,7 +166,14 @@ namespace KillerShell.Services
         /// </summary>
         internal void Repair()
         {
-            if (State == DefaultTerminalState.On && _installed) EnsureClassRegistered();
+            if (State != DefaultTerminalState.On || !_installed) return;
+            EnsureClassRegistered();
+            // The console host recorded at turn-on may have been uninstalled since (Stable gone,
+            // Preview kept): Windows would then keep every program in its own console. Move to
+            // one still installed. The pair saved to put back stays as it is.
+            if (!_registry.KeyExists(RegistryHive.ClassesRoot, @"PackagedCom\ClassIndex\" + Read(ConsoleValue)) &&
+                ConsoleHost is { } host)
+                _registry.SetString(RegistryHive.CurrentUser, StartupKey, ConsoleValue, host);
         }
 
         private bool IsKillerShellPair()

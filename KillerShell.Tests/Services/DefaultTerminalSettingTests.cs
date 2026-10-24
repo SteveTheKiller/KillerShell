@@ -244,6 +244,23 @@ public sealed class DefaultTerminalSettingTests
     }
 
     [Fact]
+    public void WhenItsConsoleHostIsRemovedItMovesToOneStillInstalled()
+    {
+        // Stable picked at turn-on and uninstalled since, Preview still there: Windows would
+        // quietly keep every program in its own console while the box still said on.
+        var registry = MachineWith(WtConsole, PreviewConsole);
+        var setting = new DefaultTerminalSetting(registry, installed: true, exePath: Exe);
+        setting.TurnOn();
+        Assert.Equal(WtConsole, Pair(registry, "DelegationConsole"));
+
+        registry.DeleteKey(RegistryHive.ClassesRoot, @"PackagedCom\ClassIndex\" + WtConsole);
+        setting.Repair();
+
+        Assert.Equal(PreviewConsole, Pair(registry, "DelegationConsole"));
+        Assert.Equal(KillerShell, Pair(registry, "DelegationTerminal"));
+    }
+
+    [Fact]
     public void RepairWritesNothingWhileItIsOff()
     {
         var registry = MachineWith(WtConsole);
