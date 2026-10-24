@@ -2310,7 +2310,11 @@
                                  filename's hover-green to this Border's own IsMouseOver - the
                                  exact same condition that already drives the gray hover
                                  background below, so the two effects light up together. -->
-                            <Border x:Name="TileBd" CornerRadius="4" Cursor="Hand"
+                            <!-- BorderThickness is always 1 and the brush is what changes, so a tile
+                                 never shifts by a pixel when the pointer arrives. The hover stroke
+                                 is InputHoverBrush, the same lit edge a text field gets, so a
+                                 hovered tile reads as an outlined card and not only a gray wash. -->
+                            <Border x:Name="TileBd" CornerRadius="4" Cursor="Hand" BorderThickness="1"
                                     Margin="{Binding Tag.TileMargin, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     Padding="{Binding Tag.TilePad, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     Tag="{Binding FilePath}" ToolTip="{Binding FilePath}"
@@ -2318,9 +2322,11 @@
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource InputHoverBrush}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
                                                 <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
