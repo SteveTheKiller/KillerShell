@@ -2241,7 +2241,7 @@
                          BuildKeyboardView (KeyboardMapOverlay.cs), each once and lazily. -->
                     <ScrollViewer x:Name="ShortcutScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly" Focusable="False"
-                                  Style="{StaticResource ShadowScrollViewer}" BorderBrush="{DynamicResource OverlayRuleBrush}"
+                                  Style="{StaticResource ShadowScrollViewer}" BorderBrush="{DynamicResource OverlayRuleBrush}" BorderThickness="0,1,0,0"
                                   Margin="-24,0,-24,0" Padding="24,0,24,0">
                     <StackPanel>
                         <StackPanel x:Name="ShortcutListHost"/>

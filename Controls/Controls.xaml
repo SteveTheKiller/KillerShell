@@ -2099,16 +2099,17 @@
         <Setter Property="Opacity" Value="{DynamicResource EdgeFadeOpacity}"/>
         <Setter Property="Panel.ZIndex" Value="99"/>
     </Style>
-    <!-- The top cue keeps its 1px rule along the clipped edge. -->
+    <!-- The top cue draws no rule of its own: under a content border, a 1px rule along the
+         clipped edge doubled that border while scrolled. A host with no border above it (the
+         Shortcuts card) asks for one through the viewer's BorderThickness. -->
     <Style x:Key="ScrollTopCue" TargetType="Border" BasedOn="{StaticResource ScrollCueBase}">
         <Setter Property="Height" Value="24"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="BorderThickness" Value="0,1,0,0"/>
         <Setter Property="Background">
             <Setter.Value>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#50000000" Offset="0"/>
-                    <GradientStop Color="#22000000" Offset="0.35"/>
+                    <GradientStop Color="#80000000" Offset="0"/>
+                    <GradientStop Color="#38000000" Offset="0.35"/>
                     <GradientStop Color="#00000000" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
@@ -2121,8 +2122,8 @@
             <Setter.Value>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                     <GradientStop Color="#00000000" Offset="0"/>
-                    <GradientStop Color="#22000000" Offset="0.65"/>
-                    <GradientStop Color="#50000000" Offset="1"/>
+                    <GradientStop Color="#38000000" Offset="0.65"/>
+                    <GradientStop Color="#80000000" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
@@ -2134,8 +2135,8 @@
             <Setter.Value>
                 <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
                     <GradientStop Color="#00000000" Offset="0"/>
-                    <GradientStop Color="#22000000" Offset="0.65"/>
-                    <GradientStop Color="#50000000" Offset="1"/>
+                    <GradientStop Color="#38000000" Offset="0.65"/>
+                    <GradientStop Color="#80000000" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
@@ -2147,8 +2148,8 @@
             <Setter.Value>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                     <GradientStop Color="#00000000" Offset="0"/>
-                    <GradientStop Color="#22000000" Offset="0.65"/>
-                    <GradientStop Color="#50000000" Offset="1"/>
+                    <GradientStop Color="#38000000" Offset="0.65"/>
+                    <GradientStop Color="#80000000" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
@@ -2157,9 +2158,11 @@
     <!-- BareScrollViewer's layout (no corner block, the vertical bar runs through the corner)
          with the four edge cues under the bars. -->
     <Style x:Key="ShadowScrollViewer" TargetType="ScrollViewer">
-        <!-- The viewer draws no border of its own; BorderBrush is the top cue's 1px rule, so a
-             host on a gradient surface can give the rule a gradient (the Shortcuts card). -->
+        <!-- The viewer draws no border of its own; BorderBrush and BorderThickness are the top
+             cue's rule, none by default, so a host with no border above it can ask for one and
+             give it a gradient on a gradient surface (the Shortcuts card). -->
         <Setter Property="BorderBrush" Value="{DynamicResource PaneBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">
@@ -2176,7 +2179,7 @@
                                                 Grid.Row="0" Grid.Column="0" Margin="{TemplateBinding Padding}"
                                                 CanContentScroll="{TemplateBinding CanContentScroll}"/>
                         <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ScrollTopCue}"
-                                BorderBrush="{TemplateBinding BorderBrush}">
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Border.Visibility>
                                 <MultiBinding Converter="{StaticResource ScrollEdgeVisibility}" ConverterParameter="Start">
                                     <Binding Path="VerticalOffset" RelativeSource="{RelativeSource TemplatedParent}"/>
