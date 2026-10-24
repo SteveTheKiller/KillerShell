@@ -322,7 +322,7 @@
                                              surface from visually swallowing the tab. Zero-thickness on
                                              every ordinary theme and collapsed for every other tab. -->
                                         <DockPanel x:Name="tabContents" LastChildFill="True" VerticalAlignment="Center"
-                                                   RenderTransform="{DynamicResource TabContentTransform}" RenderTransformOrigin="0.5,0.5">
+                                                   RenderTransform="{DynamicResource TabPlacementTransform}" RenderTransformOrigin="0.5,0.5">
                                             <!-- The larger close target extends into existing vertical
                                                  padding without increasing the tab strip's height. -->
                                             <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Width="24" Height="24" Margin="4,-2,0,-2"

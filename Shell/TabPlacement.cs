@@ -9,15 +9,6 @@ namespace KillerShell.Shell
     {
         private static readonly object TabPlacementMenuTag = new object();
         private static readonly Transform BottomTabTransform = (Transform)new ScaleTransform(1, -1).GetAsFrozen();
-
-        // A tab's icon and title turn upright again inside the flipped tab, but the tab's padding
-        // flips with it. The rounded themes' paddings sit the content 2px low to level the art
-        // (ThemeManager TabFocusPadding), which a bottom strip turns into 2px high; moving it 4px
-        // the other way puts it 2px low there too. 98SE's paddings carry no such nudge.
-        private static readonly Transform BottomTabContentTransform = (Transform)new TransformGroup
-        {
-            Children = { new ScaleTransform(1, -1), new TranslateTransform(0, -4) }
-        }.GetAsFrozen();
         private static readonly string[] TabPlacementMargins =
         {
             "TabMargin", "TabActiveMargin", "TabInactiveFirstMargin", "TabInactiveLastMargin",
@@ -80,10 +71,6 @@ namespace KillerShell.Shell
             Transform tabTransform = bottom ? BottomTabTransform : Transform.Identity;
             if (!ReferenceEquals(pane.TabBar.Resources["TabPlacementTransform"], tabTransform))
                 pane.TabBar.Resources["TabPlacementTransform"] = tabTransform;
-            Transform contentTransform = !bottom ? Transform.Identity
-                : ThemeManager.Current == Theme.SE98 ? BottomTabTransform : BottomTabContentTransform;
-            if (!ReferenceEquals(pane.TabBar.Resources["TabContentTransform"], contentTransform))
-                pane.TabBar.Resources["TabContentTransform"] = contentTransform;
             // Only this pane's strip reverses its connection gap; shared theme values stay intact.
             foreach (string key in TabPlacementMargins)
             {
