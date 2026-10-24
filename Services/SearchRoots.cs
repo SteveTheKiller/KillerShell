@@ -39,20 +39,23 @@ namespace KillerShell.Services
         internal static System.Threading.Tasks.Task<List<string>> ProbeAsync(IReadOnlyList<string> candidates,
             Func<string, bool> exists, TimeSpan timeout)
         {
-            return System.Threading.Tasks.Task.Run(() =>
+            // Every probe gets its own thread. On the shared pool a busy moment (search workers,
+            // a parallel test run) delays the probes past the deadline before they even start,
+            // and every root then reads as missing. The deadline must measure the probe alone.
+            return System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
-                var probes = candidates.Select(path => System.Threading.Tasks.Task.Run(() =>
+                var probes = candidates.Select(path => System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
                     try { return exists(path); }
                     catch { return false; }
-                })).ToArray();
+                }, System.Threading.Tasks.TaskCreationOptions.LongRunning)).ToArray();
                 System.Threading.Tasks.Task.WaitAll(probes, timeout);
                 var found = new List<string>();
                 for (int i = 0; i < probes.Length; i++)
                     if (probes[i].Status == System.Threading.Tasks.TaskStatus.RanToCompletion && probes[i].Result)
                         found.Add(candidates[i]);
                 return found;
-            });
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning);
         }
 
         private static bool Contains(string parent, string child) =>
