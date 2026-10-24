@@ -2115,12 +2115,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!-- A pane with its tabs at the bottom sets this to 0 (TabPlacement.cs): there the list sits
-         right on the tab strip, and the bottom shadow cut a dark band across the active tab,
-         which is the list's own surface, whenever the list was not at its end. -->
-    <sys:Double x:Key="ScrollBottomCueHeight">28</sys:Double>
     <Style x:Key="ScrollBottomCue" TargetType="Border" BasedOn="{StaticResource ScrollCueBase}">
-        <Setter Property="Height" Value="{DynamicResource ScrollBottomCueHeight}"/>
+        <Setter Property="Height" Value="28"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
         <Setter Property="Background">
             <Setter.Value>
