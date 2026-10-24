@@ -630,7 +630,8 @@ namespace KillerShell
 
                 Directory.CreateDirectory(installDir);
                 string src = Process.GetCurrentProcess().MainModule!.FileName;
-                Services.InstallationImage.Publish(src, installExe);
+                string? leftover = Services.InstallationImage.Publish(src, installExe);
+                if (leftover != null) Console.Error.WriteLine(leftover);
                 Services.CommandLinePath.Register(installDir, machine: true);
 
                 Directory.CreateDirectory(startMenuDir);
@@ -659,11 +660,22 @@ namespace KillerShell
                     key.SetValue("NoRepair",             1);
                 }
 
-                // `/silent` is also the winget/choco/RMM entry point, so duplicate cleanup
-                // belongs here rather than only in the interactive caller. Settings survive.
-                RemovePerUserInstall();
                 RegisterAssociations(machine: true, exe: installExe);
                 RegisterTerminalClass(machine: true, installExe);   // DefaultTerminal.cs
+
+                // `/silent` is also the winget/choco/RMM entry point, so duplicate cleanup
+                // belongs here rather than only in the interactive caller. Settings survive.
+                // It runs LAST and cannot fail the install: a per-user copy that is open, or a
+                // per-user folder holding files the installer does not own, made it throw after
+                // the machine keys were written and before associations and the terminal class,
+                // leaving a half-registered machine install and an error code for the package
+                // manager. The machine copy's own first launch offers the same removal again
+                // (OfferInstallConflictRepair).
+                try { RemovePerUserInstall(); }
+                catch (Exception conflict)
+                {
+                    Console.Error.WriteLine("Installed for all users. The per-user copy was left in place: " + conflict.Message);
+                }
                 return KillerFamily.Deployment.InstallerExitCodes.Success;
             }
             catch (Exception ex)
@@ -700,6 +712,7 @@ namespace KillerShell
         {
             Directory.CreateDirectory(InstallDir);
             string src = Process.GetCurrentProcess().MainModule!.FileName;
+            // A cleanup leftover (the previous copy still running) is retired on a later start.
             Services.InstallationImage.Publish(src, InstallExe);
             Services.CommandLinePath.Register(InstallDir, machine: false);
 
@@ -788,7 +801,12 @@ namespace KillerShell
                 if (child == null) return KillerFamily.Deployment.InstallerExitCodes.Failure;
                 if (!relay.AuthenticateChild(child))
                     return KillerFamily.Deployment.InstallerExitCodes.SecurityRejected;
-                if (!child.WaitForExit(120000)) return KillerFamily.Deployment.InstallerExitCodes.Busy;
+                // The interactive child shows the uninstall confirmation itself, so a time limit
+                // here would give up on a user who is still reading it, report Busy, and skip the
+                // per-user cleanup below while the child went on to uninstall. Only the silent
+                // route, which has no dialog, keeps one.
+                if (silent ? !child.WaitForExit(120000) : !WaitForever(child))
+                    return KillerFamily.Deployment.InstallerExitCodes.Busy;
                 if (child.ExitCode == 0 && Directory.Exists(MachineInstallDir))
                     return KillerFamily.Deployment.InstallerExitCodes.Failure;
                 // The elevated child put back the default terminal and folder opener of the
@@ -798,6 +816,9 @@ namespace KillerShell
                 {
                     RemoveTerminalClass(machine: false, restoreDefault: true);   // DefaultTerminal.cs
                     try { FolderOpenerSetting().TurnOff(); } catch { }
+                    // Likewise "Start with Windows": the child removed the Run value from the
+                    // administrator's hive, and this user's still names the deleted exe.
+                    try { KillerFamily.Deployment.StartupRegistration.Set(Services.AppInfo.DisplayName, false); } catch { }
                 }
                 return child.ExitCode;
             }
@@ -836,6 +857,12 @@ namespace KillerShell
                 catch (ArgumentException) { /* already exited */ }
                 catch { OpenReleasesUnelevated(); return 1; }
             }
+
+            // Retire the backups earlier updates left here while this process still holds the
+            // rights to: the next normal start runs unelevated and cannot delete in Program
+            // Files, so each update used to leave a full copy of the previous exe behind. Only
+            // backups are touched, and the one that is still running stays for a later pass.
+            try { Services.RecoveryImages.Cleanup(curExe, includeUnpublished: false); } catch { }
 
             // The hash proves these are the bytes the window downloaded. The signature check, on
             // the replacement written beside this exe, proves who published them: a request that
@@ -884,6 +911,8 @@ namespace KillerShell
             try { using (Process.Start("explorer.exe", "\"" + curExe + "\"")) { } } catch { }
             return 0;
         }
+
+        private static bool WaitForever(Process child) { child.WaitForExit(); return true; }
 
         /// <summary>A failed swap sends the user to the releases page. Through explorer.exe, so the
         /// browser does not inherit this process's administrator token.</summary>

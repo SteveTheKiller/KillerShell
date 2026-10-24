@@ -8,7 +8,7 @@ namespace KillerShell.Tests.Services;
 public sealed class InstallationImageTests
 {
     [Fact]
-    public void LockedBackupReportsPublicationFailureAndRetainsBothImages()
+    public void LockedBackupStillPublishesAndRetainsBothImages()
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell-install-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
@@ -19,19 +19,26 @@ public sealed class InstallationImageTests
         string? backup = null;
         try
         {
-            var failure = Assert.Throws<IOException>(() => InstallationImage.Publish(source, target, path =>
+            // The backup is held open, as the image of a still-running previous copy is, so it
+            // cannot be retired. Publication must still succeed and report the leftover.
+            string? warning = InstallationImage.Publish(source, target, path =>
             {
                 backup = path;
                 using var held = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
                 File.Delete(path);
-            }));
+            });
 
             Assert.NotNull(backup);
             Assert.Equal("previous image", File.ReadAllText(backup!));
             Assert.Equal("complete candidate", File.ReadAllText(target));
             Assert.Equal("complete candidate", File.ReadAllText(source));
-            Assert.Contains("Recovery image: " + backup, failure.Message);
-            Assert.Contains("Installation image was published", failure.Message);
+            Assert.NotNull(warning);
+            Assert.Contains("Recovery image: " + backup, warning);
+            Assert.Contains("Installation image was published", warning);
+
+            // Once the old copy has exited, the next publish retires the backup.
+            Assert.Null(InstallationImage.Publish(source, target));
+            Assert.False(File.Exists(backup), "The retained backup was not retired once it was free.");
         }
         finally { Directory.Delete(root, recursive: true); }
     }
