@@ -693,9 +693,9 @@ namespace KillerShell.Tools
             {
                 CornerRadius = cellRadius,
                 BorderThickness = new Thickness(1),
-                // Stretch, the default: two cards sharing a band of the dashboard are meant to
-                // end on the same line. The body inside stays top-aligned, so a shorter panel's
-                // spare room falls below its content rather than being spread through it.
+                // Its height is set where it is placed (PerformanceMonitorCards.cs ApplyFold): a
+                // panel keeps its own, and the top strip's open boxes stretch to share one. The
+                // body inside stays top-aligned either way.
                 Child = cellHost,
             };
             cell.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");

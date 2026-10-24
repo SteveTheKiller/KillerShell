@@ -19,8 +19,8 @@ using CardDrop = KillerShell.Services.DashboardLayout.Drop;
 // Every box of the top strip and every panel below it is a card. A card is picked up by its
 // header line (a summary box by any of it) with the family's grab cursors and dropped on another
 // card of the same area: on its left half to go before that card's column, on its right half to
-// go after it, and into the empty space under a minimized card to stack beneath it, so the room
-// a minimized card leaves can be filled. A marker in the gutter shows where it will land. The
+// go after it, and into the empty space under a card shorter than the column beside it to stack
+// beneath it, so that room can be filled. A marker in the gutter shows where it will land. The
 // panels flow two columns to a row whatever their order, and each keeps its own weight, so the
 // CPU is still wider than whatever shares its row. Right-click minimizes a card to its header
 // line or restores it, sets a panel to one column or across both, and resets the whole dashboard
@@ -184,9 +184,8 @@ namespace KillerShell.Tools
 
         /// <summary>
         /// The user's slots for these cards, each with the element that holds it. A card alone is
-        /// its own host. A stack is a grid that gives every card its own height and the last one
-        /// whatever the row has left, so a full card at the bottom of a stack still ends level
-        /// with the column beside it and a minimized one leaves its gap below.
+        /// its own host. A stack is a grid that gives every card its own height, top to bottom,
+        /// and keeps whatever the row has left under the last one as the gap below it.
         /// </summary>
         private List<CardSlot> Slots(string area, List<DashboardCard> cards)
         {
@@ -242,14 +241,19 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  MINIMIZING
         // ═══════════════════════════════════════════════════════════
-        /// <summary>A minimized card keeps its header line: the icon, the name and the live
-        /// number. It sits at the top of its column instead of stretching to the card beside it,
-        /// which leaves room under it that another card can be dropped into.</summary>
+        /// <summary>
+        /// A minimized card keeps its header line: the icon, the name and the live number. A panel
+        /// keeps its own height either way rather than stretching to the column beside it, which a
+        /// tall stack would turn into a large empty frame; the room under a shorter card is a gap
+        /// another card can be dropped into. The top strip's open boxes still share one height, so
+        /// the strip reads as one row.
+        /// </summary>
         private void ApplyFold(DashboardCard card)
         {
             bool folded = _layout.IsFolded(card.Area, card.Id);
             card.Folded = folded;
-            card.Frame.VerticalAlignment = folded ? VerticalAlignment.Top : VerticalAlignment.Stretch;
+            card.Frame.VerticalAlignment = folded || card.Area == Services.DashboardLayout.Panels
+                ? VerticalAlignment.Top : VerticalAlignment.Stretch;
             card.Details?.Visibility = folded ? Visibility.Collapsed : Visibility.Visible;
             foreach (var row in card.Rows)
             {
@@ -411,7 +415,7 @@ namespace KillerShell.Tools
         /// <summary>
         /// Where the carried card would land. Over a card, its left half drops before that card's
         /// column and its right half after it. Below the last card of a column, in the room a
-        /// minimized card leaves, it stacks at the bottom of that column. Nothing is marked where
+        /// shorter card leaves, it stacks at the bottom of that column. Nothing is marked where
         /// the drop would change nothing.
         /// </summary>
         private void FindDropTarget(DashboardCard card, Point at)
