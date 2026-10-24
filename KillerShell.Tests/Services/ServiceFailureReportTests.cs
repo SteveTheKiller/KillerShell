@@ -93,6 +93,38 @@ public sealed class ServiceFailureReportTests
     }
 
     [Fact]
+    public async Task AReportFolderSwappedForAJunctionIsNotWrittenThrough()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell-service-link-" + Guid.NewGuid().ToString("N"));
+        string victim = Path.Combine(root, "victim");
+        string linked = Path.Combine(root, "KillerShell");
+        Directory.CreateDirectory(victim);
+        string protectedFile = Path.Combine(victim, "service-actions.log");
+        string original = new string('x', 70 * 1024);   // past the 64 KB cap, so a write would truncate it
+        File.WriteAllText(protectedFile, original);
+        try
+        {
+            using (var mklink = Process.Start(new ProcessStartInfo("cmd.exe", "/c mklink /J \"" + linked + "\" \"" + victim + "\"")
+                   { UseShellExecute = false, CreateNoWindow = true })!)
+            {
+                Assert.True(mklink.WaitForExit(5000));
+                Assert.Equal(0, mklink.ExitCode);
+            }
+            var result = await ServiceControlService.ExecuteAsync("Fixture", () => throw new InvalidOperationException("service unavailable"),
+                ServiceControlAction.Restart, CancellationToken.None, Path.Combine(linked, "service-actions.log"));
+            Assert.Equal("service unavailable", result.Error);
+            Assert.Empty(result.ReportPath);
+            Assert.Contains("link", result.ReportError);
+            Assert.Equal(original, File.ReadAllText(protectedFile));
+        }
+        finally
+        {
+            if (Directory.Exists(linked)) Directory.Delete(linked);
+            Directory.Delete(root, true);
+        }
+    }
+
+    [Fact]
     public async Task LoggingFailureDoesNotReplaceTheServiceFailure()
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell-service-report-" + Guid.NewGuid().ToString("N"));

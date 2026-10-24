@@ -1409,6 +1409,7 @@ namespace KillerShell.Tools
 
                 var del = MakeItem("Str_Storage_Delete", 0xE74D, "Del");
                 del.Click += (_, _) => RecycleNode(n, path);
+                del.IsEnabled = MayRecycle(n);
                 menu.Items.Add(del);
 
                 menu.Items.Add(new Separator());
@@ -1481,8 +1482,16 @@ namespace KillerShell.Tools
         }
 
         // ── Recycle-bin delete (the ONLY destructive action, v1) ─
+        /// <summary>
+        /// Anything inside the scan, never the scanned folder itself. Keyboard navigation can
+        /// select the scan root (Left from a top-level item), and one Delete would then have
+        /// sent the whole scanned folder to the Recycle Bin behind a single shell prompt.
+        /// </summary>
+        private static bool MayRecycle(FsNode n) => n.Parent != null;
+
         private void RecycleNode(FsNode n, string path)
         {
+            if (!MayRecycle(n)) return;
             // FOF_ALLOWUNDO and NO FOF_NOCONFIRMATION: the shell's own recycle confirmation
             // stays on, and nothing here can permanently delete.
             var op = new SHFILEOPSTRUCT
@@ -1517,7 +1526,17 @@ namespace KillerShell.Tools
         {
             var parts = new List<string>();
             for (var cur = n; cur != null; cur = cur.Parent) parts.Insert(0, cur.Name);
-            // The root's Name IS the root path, so joining from it rebuilds the absolute path.
+            return JoinScanPath(parts);
+        }
+
+        /// <summary>
+        /// The root's Name IS the root path, so joining from it rebuilds the absolute path. The
+        /// root alone is returned as it is: trimming "C:\" to "C:" made a drive-relative path,
+        /// which Windows resolves against the process's current folder on that drive.
+        /// </summary>
+        internal static string JoinScanPath(IReadOnlyList<string> parts)
+        {
+            if (parts.Count == 1) return parts[0];
             string joined = parts[0].TrimEnd('\\');
             for (int i = 1; i < parts.Count; i++) joined += "\\" + parts[i];
             return joined;

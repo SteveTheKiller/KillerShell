@@ -57,6 +57,21 @@ namespace KillerShell.Tests.Services
         }
 
         [Fact]
+        public void AnUnknownIdentityKeepsItsRowButAReusedPidDoesNot()
+        {
+            var cache = new ProcessListLogic.ProcessCache();
+            var unknownFirst = cache.Observe(0, null);
+            var unknownNext = cache.Observe(0, null);
+            Assert.NotSame(unknownFirst, unknownNext);                       // cached data still resets
+            Assert.True(ProcessListLogic.KeepsRow(unknownFirst, unknownNext)); // but the row stays put
+
+            var known = cache.Observe(42, 1000);
+            Assert.True(ProcessListLogic.KeepsRow(known, cache.Observe(42, 1000)));
+            Assert.False(ProcessListLogic.KeepsRow(known, cache.Observe(42, 2000)));
+            Assert.False(ProcessListLogic.KeepsRow(cache.Observe(43, null), cache.Observe(43, 3000)));
+        }
+
+        [Fact]
         public void StableIdentityKeepsItsCpuBaselineAndOwnerLookup()
         {
             var cache = new ProcessListLogic.ProcessCache();

@@ -175,6 +175,19 @@ namespace KillerShell.Services
             }
         }
 
+        /// <summary>
+        /// Whether a refreshed sample may keep the row already on screen. A known identity must
+        /// be the same cache entry; otherwise the PID was reused and the row is rebuilt. When
+        /// neither sample has a creation time (the Idle process, or one that cannot be opened
+        /// and WMI has not reported yet), each refresh gets a fresh cache entry by design, so
+        /// cached CPU and owner never cross a possible reuse - but rebuilding the row every
+        /// tick made it flicker, drop its selection and lose its place. Its fields are all
+        /// rewritten from the new sample anyway, so the row itself can stay.
+        /// </summary>
+        internal static bool KeepsRow(CachedProcess displayed, CachedProcess sample)
+            => ReferenceEquals(displayed, sample)
+               || (displayed.Pid == sample.Pid && displayed.CreatedUtcTicks == null && sample.CreatedUtcTicks == null);
+
         // WMI's datetime format records microseconds; the held process time has 100 ns ticks.
         internal static bool MatchesCreationTime(long? sampledUtcTicks, long? metadataUtcTicks)
             => sampledUtcTicks.HasValue && metadataUtcTicks.HasValue &&

@@ -610,7 +610,12 @@ namespace KillerShell.Tools
                     {
                         try
                         {
-                            _ = proc.Handle;
+                            // Holding the process handle keeps the PID from being reused between
+                            // the reads below. It asks for full access, which an unelevated window
+                            // is refused on the user's own elevated processes; those are still
+                            // read with the limited query StartTime and TotalProcessorTime use,
+                            // as before, instead of being marked unreadable with 0% CPU.
+                            try { _ = proc.Handle; } catch (System.ComponentModel.Win32Exception) { }
                             DateTime created = proc.StartTime;
                             startTime = created.ToString("yyyy-MM-dd HH:mm:ss");
                             startTimeUtcTicks = created.ToUniversalTime().Ticks;
@@ -711,14 +716,15 @@ namespace KillerShell.Tools
             foreach (var s in samples)
             {
                 if (!_byPid.TryGetValue(s.Pid, out var row) ||
-                    !_rowIdentities.TryGetValue(s.Pid, out var displayed) || !ReferenceEquals(displayed, s.Identity))
+                    !_rowIdentities.TryGetValue(s.Pid, out var displayed) ||
+                    !Services.ProcessListLogic.KeepsRow(displayed, s.Identity))
                 {
                     if (row != null) _items.Remove(row);
                     row = new ProcessInfo(s.Pid);
                     _byPid[s.Pid] = row;
-                    _rowIdentities[s.Pid] = s.Identity;
                     _items.Add(row);
                 }
+                _rowIdentities[s.Pid] = s.Identity;
                 row.Name          = s.Name;
                 row.MemoryBytes    = s.MemoryBytes;
                 row.CpuPercent     = s.CpuPercent;
@@ -1352,8 +1358,10 @@ namespace KillerShell.Tools
             using var pinned = Services.ProcessListLogic.PinProcess(p.Pid, p.StartTimeUtcTicks);
             if (pinned == null)
             {
+                // Windows' own, localized "Access is denied": the process could not be opened
+                // or no longer has the start time the row was showing.
                 ShowStatus(string.Format(MainWindow.LocStatic("Str_Proc_KillFailed"), p.Name,
-                    new InvalidOperationException().Message), error: true);
+                    new System.ComponentModel.Win32Exception(5).Message), error: true);
                 return;
             }
             var dlg = new ConfirmDialog(msg, p.HasPath ? p.Path : null,
