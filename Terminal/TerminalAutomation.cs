@@ -20,10 +20,27 @@ namespace KillerShell.Terminal
 
         protected override AutomationPeer OnCreateAutomationPeer() => new TerminalPeer(this);
 
+        private int _automationSnapshotTick;
+
+        /// <summary>
+        /// How long a snapshot stays current while output keeps arriving: the same 250 ms the
+        /// change events are batched to. A rebuild walks the whole scrollback, and a screen
+        /// reader answers each TextChanged with many range calls, so rebuilding whenever the
+        /// buffer version moved repeated that walk on the UI thread for every call on a busy
+        /// terminal. A screen reader cannot be told about text newer than its last event anyway.
+        /// </summary>
+        internal const int AutomationSnapshotMilliseconds = 250;
+
         private TextSnapshot AutomationSnapshot()
         {
-            if (_automationSnapshot == null || _automationSnapshot.Version != _buf.Version)
+            int now = Environment.TickCount;
+            if (_automationSnapshot == null
+                || (_automationSnapshot.Version != _buf.Version
+                    && unchecked(now - _automationSnapshotTick) >= AutomationSnapshotMilliseconds))
+            {
                 _automationSnapshot = new TextSnapshot(_buf);
+                _automationSnapshotTick = now;
+            }
             return _automationSnapshot;
         }
 

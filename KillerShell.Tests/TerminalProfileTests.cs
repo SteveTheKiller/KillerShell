@@ -205,6 +205,11 @@ public sealed class TerminalProfileTests
     [InlineData("\u001b]9;9;\\\\attacker\\share\u0007")]
     [InlineData("\u001b]9;9;//attacker/share\u0007")]
     [InlineData("\u001b]9;9;\\\\?\\UNC\\attacker\\share\u0007")]
+    // The NT object-manager spelling of the same share, which Win32 hands straight to the
+    // redirector, and its forward-slash form; a volume GUID path is not a folder to follow.
+    [InlineData("\u001b]9;9;\\??\\UNC\\attacker\\share\u0007")]
+    [InlineData("\u001b]9;9;/??/UNC/attacker/share\u0007")]
+    [InlineData("\u001b]9;9;\\??\\Volume{00000000-0000-0000-0000-000000000000}\\x\u0007")]
     public void PrintedNetworkPathsDoNotBecomeTheTabFolder(string output)
     {
         var buffer = new TerminalBuffer(80, 25);
@@ -221,6 +226,7 @@ public sealed class TerminalProfileTests
     [InlineData("\u001b]9;9;C:\\Users\\steve\u0007", "C:\\Users\\steve")]
     [InlineData("\u001b]9;9;\\\\wsl.localhost\\Ubuntu\\home\u0007", "\\\\wsl.localhost\\Ubuntu\\home")]
     [InlineData("\u001b]9;9;\\\\wsl$\\Ubuntu\\home\u0007", "\\\\wsl$\\Ubuntu\\home")]
+    [InlineData("\u001b]9;9;\\??\\C:\\Users\u0007", "\\??\\C:\\Users")]
     public void LocalAndWslFoldersStillFollowTheShell(string output, string expected)
     {
         var buffer = new TerminalBuffer(80, 25);
@@ -231,6 +237,14 @@ public sealed class TerminalProfileTests
         parser.Feed(data, data.Length);
         Assert.Equal(expected, cwd);
     }
+
+    [Theory]
+    [InlineData(System.Windows.Input.Key.F4, true, true)]
+    [InlineData(System.Windows.Input.Key.F4, false, false)]
+    [InlineData(System.Windows.Input.Key.B, true, false)]
+    [InlineData(System.Windows.Input.Key.F5, true, false)]
+    public void AltF4IsLeftForTheWindowToClose(System.Windows.Input.Key key, bool alt, bool window)
+        => Assert.Equal(window, TerminalControl.BelongsToWindow(key, alt));
 
     [Fact]
     public void ChoosingProfileDoesNotAlsoLaunchDefaultThroughParentMenu()

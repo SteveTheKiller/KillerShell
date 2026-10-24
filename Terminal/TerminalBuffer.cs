@@ -834,6 +834,9 @@ namespace KillerShell.Terminal
         internal static bool IsRemotePath(string path)
         {
             string p = path.Replace('/', '\\');
+            // \??\ is the NT object-manager prefix. Win32 passes it straight through, so
+            // \??\UNC\host\share reaches the redirector exactly as \\?\UNC\host\share does.
+            if (p.StartsWith(@"\??\", StringComparison.Ordinal)) p = @"\\?\" + p.Substring(4);
             if (!p.StartsWith(@"\\", StringComparison.Ordinal)) return false;
 
             string rest = p.Substring(2);

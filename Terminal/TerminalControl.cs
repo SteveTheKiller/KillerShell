@@ -1061,6 +1061,7 @@ namespace KillerShell.Terminal
             bool shift = (mods & ModifierKeys.Shift) != 0;
             bool alt = (mods & ModifierKeys.Alt) != 0;
 
+            if (BelongsToWindow(key, alt)) return;
             if (HandleTerminalChord(key, ctrl, shift, alt)) { e.Handled = true; return; }
 
             // Ctrl+C copies WHEN THERE IS A SELECTION and interrupts otherwise, which is what
@@ -1082,6 +1083,15 @@ namespace KillerShell.Terminal
             _scroll = 0;
             e.Handled = true;
         }
+
+        /// <summary>
+        /// Chords Windows itself acts on, which the terminal must leave unhandled so the window
+        /// receives them. Alt chords are unwrapped from Key.System so Alt+letter reaches the
+        /// shell as Meta, and without this Alt+F4 was encoded as F4 and marked handled: the
+        /// shell got a stray F4 and the window never closed. Alt+Space needs no entry here,
+        /// because Encode has nothing for it.
+        /// </summary>
+        internal static bool BelongsToWindow(Key key, bool alt) => alt && key == Key.F4;
 
         /// <summary>
         /// The TERMINAL's own chords, taken from Windows Terminal's defaults so a hand trained
