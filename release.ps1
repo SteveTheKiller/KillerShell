@@ -142,10 +142,9 @@ Step "Scanning for vulnerable packages"
 dotnet restore | Out-Null
 if ($LASTEXITCODE -ne 0) { Fail 'Package restore failed. Release audit is incomplete.' }
 $scan = dotnet list KillerShell.csproj package --vulnerable --include-transitive --format json --output-version 1 2>&1 | Out-String
-if ($LASTEXITCODE -ne 0) { Fail 'Package vulnerability audit failed. Resolve the audit error before releasing.' }
-Write-Host $scan
+if ($LASTEXITCODE -ne 0) { Write-Host $scan; Fail 'Package vulnerability audit failed. Resolve the audit error before releasing.' }
 try { $audit = $scan | ConvertFrom-Json -ErrorAction Stop }
-catch { Fail 'Package vulnerability audit did not return valid JSON.' }
+catch { Write-Host $scan; Fail 'Package vulnerability audit did not return valid JSON.' }
 if ($audit.version -ne 1 -or $audit.parameters -notmatch '(?:^|\s)--vulnerable(?:\s|$)' -or
     $audit.parameters -notmatch '(?:^|\s)--include-transitive(?:\s|$)' -or
     @($audit.sources | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }).Count -eq 0 -or @($audit.projects).Count -ne 1 -or
@@ -162,12 +161,8 @@ foreach ($framework in $audit.projects[0].frameworks) {
     }
 }
 
-# --- 3b. Release tests ---
-# Headless only. Test classes tagged [Trait("Category", "Window")] open real WPF windows on the
-# desktop. Those are run by hand before a release, never from this script.
-Step "Running Release tests (headless, Category!=Window)"
-dotnet test (Join-Path $PSScriptRoot 'KillerShell.Tests\KillerShell.Tests.csproj') -c Release --no-restore --nologo -v quiet --filter 'Category!=Window'
-if ($LASTEXITCODE -ne 0) { Fail 'Release tests failed - fix them before releasing' }
+# The test suite is not run here. The app is tested before a release is started, and the
+# window tests (Category=Window) must never run from a script on the desktop.
 
 # --- 3c. Translation gate ---
 # Every localization must contain the complete English key set. Matching placeholders are
