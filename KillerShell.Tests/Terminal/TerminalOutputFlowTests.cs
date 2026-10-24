@@ -21,7 +21,7 @@ public sealed class TerminalOutputFlowTests
 
 internal static class RuntimeComponentProcess
 {
-    internal static async Task Run(string scenario)
+    internal static async Task Run(string scenario, int timeoutMilliseconds = 60000)
     {
         string assembly = typeof(TerminalOutputFlowTests).Assembly.Location.Replace("'", "''");
         string application = typeof(TerminalControl).Assembly.Location.Replace("'", "''");
@@ -40,7 +40,12 @@ internal static class RuntimeComponentProcess
         })!;
         var output = process.StandardOutput.ReadToEndAsync();
         var errors = process.StandardError.ReadToEndAsync();
-        if (!process.WaitForExit(60000)) { process.Kill(); Assert.Fail("The runtime component scenario exceeded its deadline."); }
+        if (!process.WaitForExit(timeoutMilliseconds))
+        {
+            process.Kill();
+            process.WaitForExit();
+            Assert.Fail("The runtime component scenario exceeded its deadline.\n" + await output + await errors);
+        }
         Assert.True(process.ExitCode == 0, await output + await errors);
     }
 

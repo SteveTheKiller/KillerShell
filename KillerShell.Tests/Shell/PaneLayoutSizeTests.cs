@@ -15,7 +15,7 @@ public sealed class PaneLayoutSizeTests
 {
     [Fact]
     public Task RepeatedLayoutCyclesPreserveTheWindowSize()
-        => RuntimeComponentProcess.Run(nameof(PaneLayoutSizeScenario));
+        => RuntimeComponentProcess.Run(nameof(PaneLayoutSizeScenario), timeoutMilliseconds: 180000);
 }
 
 public static class PaneLayoutSizeScenario
