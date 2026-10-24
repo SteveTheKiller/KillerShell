@@ -106,6 +106,22 @@ namespace KillerShell.Shell
         private static bool IsNewWindow() => System.Array.Exists(System.Environment.GetCommandLineArgs(),
             a => string.Equals(a, "--new-window", System.StringComparison.OrdinalIgnoreCase));
 
+        /// <summary>
+        /// A window "Open folders in KillerShell" opened for a folder (FolderOpenerSetting.cs: a
+        /// new window and a bare path). Like a handed-off console's window it is there for that one
+        /// job: it never replaces the remembered session, asks to quit, hides to the tray or checks
+        /// for updates (IsTaskWindow).
+        /// </summary>
+        internal bool IsFolderWindow { get; } = IsFolderLaunch(System.Environment.GetCommandLineArgs(), StartupPaths.Count);
+
+        internal static bool IsFolderLaunch(string[] args, int startupPaths)
+            => startupPaths > 0
+               && System.Array.Exists(args, a => string.Equals(a, "--new-window", System.StringComparison.OrdinalIgnoreCase))
+               && !System.Array.Exists(args, a => string.Equals(a, "--edit", System.StringComparison.OrdinalIgnoreCase));
+
+        /// <summary>A window opened for one job, a handed-off program or a folder, not the one you live in.</summary>
+        internal bool IsTaskWindow => IsConsoleWindow || IsFolderWindow;
+
         /// <summary>A tab nothing has been put in yet: no folder, search, document or tool.</summary>
         private static bool IsBlankTab(SearchTab t) =>
             !t.IsBrowsing && string.IsNullOrEmpty(t.CurrentFolder) && t.PipeFiles == null

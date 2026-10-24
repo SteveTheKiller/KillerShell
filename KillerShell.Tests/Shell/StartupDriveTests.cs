@@ -13,6 +13,18 @@ public sealed class StartupDriveTests
     private static Func<string, bool> Present(params string[] folders)
         => path => folders.Contains(path, StringComparer.OrdinalIgnoreCase);
 
+    // A window Explorer opened for a folder is a task window: closing it must not replace the
+    // remembered session, ask to quit, hide to the tray or check for updates. Ctrl+N (--cwd) and
+    // torn-out documents (--edit) stay ordinary windows.
+    [Theory]
+    [InlineData(new[] { "--new-window", @"C:\Users\." }, 1, true)]
+    [InlineData(new[] { "--new-window", "--cwd", @"C:\Users" }, 0, false)]
+    [InlineData(new[] { "--new-window", "--edit", @"C:\notes.txt" }, 1, false)]
+    [InlineData(new[] { @"C:\Users\." }, 1, false)]
+    [InlineData(new[] { "--new-window" }, 0, false)]
+    public void OnlyAFolderLaunchIsAFolderWindow(string[] args, int startupPaths, bool folderWindow)
+        => Assert.Equal(folderWindow, MainWindow.IsFolderLaunch(args, startupPaths));
+
     [Theory]
     [InlineData(@"E:\", true)]                        // no disc, a card reader with no card
     [InlineData(@"Z:\Projects", true)]                // a mapped drive to reconnect

@@ -37,7 +37,7 @@ namespace KillerShell.Shell
         {
             InitializeComponent();
             _tray = KillerFamily.Shell.CloseToTray.Attach(this, Services.AppInfo.DisplayName, Loc,
-                () => !IsConsoleWindow && Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown);
+                () => !IsTaskWindow && Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown);
             new KillerFamily.Accessibility.OverlayFocus(this)
                 .Track(ShortcutsOverlay, AboutOverlay, FontsOverlay, AssocOverlay);
             _about = new Features.About.AboutController(this);   // Features/About
@@ -233,8 +233,9 @@ namespace KillerShell.Shell
                 ApplyConsoleHandoff();  // ConsoleHandoff.cs - or the console program Windows handed over
 
                 // After the first paint and any startup dialog, so an update offer never stacks on one.
-                // Not over a console program's window: it is there for that program alone.
-                if (!IsConsoleWindow)
+                // Not over a console program's or a folder's window: it is there for that alone,
+                // and every folder double-click would ask GitHub again.
+                if (!IsTaskWindow)
                     Dispatcher.BeginInvoke(new System.Action(CheckForUpdatesOnStartup),   // About.cs
                         System.Windows.Threading.DispatcherPriority.Background);
             };
@@ -247,8 +248,9 @@ namespace KillerShell.Shell
                 // An elevated window does NOT write the session back. Both instances share one
                 // settings store, so whichever quit last would clobber the other's remembered
                 // tabs - and the admin window is a task you finish, not the one you live in.
-                // The same goes for a handed-off console program's window (ConsoleHandoff.cs).
-                if (!DemoMode && !IsElevated && !IsConsoleWindow) SaveTabsOnExit();   // Session.cs
+                // The same goes for a handed-off console program's window (ConsoleHandoff.cs) and
+                // a window Explorer opened for a folder (StartupPaths.cs IsFolderWindow).
+                if (!DemoMode && !IsElevated && !IsTaskWindow) SaveTabsOnExit();   // Session.cs
             };
 
             // ThemeFlyout is a Button.ContextMenu now (matching LangMenu, KillerPDF's pattern),

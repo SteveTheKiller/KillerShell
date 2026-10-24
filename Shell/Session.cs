@@ -103,7 +103,7 @@ namespace KillerShell.Shell
         private void RequestQuit()
         {
             // Elevated windows skip the session prompt, but still check unsaved documents.
-            if (IsElevated || IsConsoleWindow) { ConfirmedClose(); return; }   // Elevation.cs, ConsoleHandoff.cs
+            if (IsElevated || IsTaskWindow) { ConfirmedClose(); return; }   // Elevation.cs, StartupPaths.cs
 
             string remembered = Services.ThemeManager.GetSetting("EscQuit") ?? string.Empty;
             if (remembered == "stay") return;
@@ -127,7 +127,7 @@ namespace KillerShell.Shell
             //
             // Elevated windows skip this session prompt because they do not persist tabs.
             // They still ask about unsaved documents below.
-            if (!_closeConfirmed && !DemoMode && !IsElevated && !IsConsoleWindow &&
+            if (!_closeConfirmed && !DemoMode && !IsElevated && !IsTaskWindow &&
                 string.IsNullOrEmpty(Services.ThemeManager.GetSetting("EscQuit")))
             {
                 e.Cancel = true;
@@ -149,7 +149,9 @@ namespace KillerShell.Shell
             // Stage 2: fade the window out once, then really close.
             if (!_fadeOutDone)
             {
-                SaveWindowBounds();   // WindowBounds.cs - the next window opens here
+                // The next window opens here (WindowBounds.cs). Not from an admin window or a
+                // handed-off program's, which may be widened or maximized for that one job.
+                if (!IsElevated && !IsConsoleWindow) SaveWindowBounds();
                 e.Cancel        = true;
                 _closeConfirmed = true;   // never re-prompt after the fade starts
                 IsEnabled = false;       // no edits after discard approval while the fade runs
