@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -133,42 +134,33 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         /// <summary>One box of the strip: the hardware's name small and muted, its headline number
         /// large in its panel's color under it, and a bare trace across the bottom, with the
-        /// hardware's large icon in the room the number leaves at the top right. The whole box is
-        /// the handle it is dragged by; minimized, it keeps its name, number and icon.</summary>
+        /// hardware's large icon in the room the number leaves at the top right. In a narrow box
+        /// the icon and then the number shrink (SummaryHeader). The whole box is the handle it is
+        /// dragged by; minimized, it keeps its name, number and icon.</summary>
         private SummaryTile AddSummaryTile(string id, MetricKind kind, string labelKey, string brushKey, double fixedScaleMax)
         {
-            var label = new TextBlock { FontSize = 10.5 };
+            var label = new TextBlock { FontSize = 10.5, TextTrimming = TextTrimming.CharacterEllipsis };
             label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             label.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
             label.SetResourceReference(TextBlock.TextProperty, labelKey);
 
             var value = new TextBlock
             {
-                FontSize = 20,
+                FontSize = Services.SummaryFit.ValueLargest,
                 FontWeight = FontWeights.Bold,
                 Text = "-",
                 Margin = new Thickness(0, 1, 0, 0),
-                TextTrimming = TextTrimming.CharacterEllipsis,
+                TextTrimming = TextTrimming.CharacterEllipsis,   // only past the smallest size
             };
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             value.SetResourceReference(TextBlock.ForegroundProperty, brushKey);
 
-            var reading = new StackPanel();
-            reading.Children.Add(label);
-            reading.Children.Add(value);
+            // The same large icon the panels below carry beside their model names.
+            var icon = BuildMetricIcon(kind, Shell.MainWindow.LocStatic(labelKey), Services.SummaryFit.IconLargest);
 
-            // The same 28px icon the panels below carry beside their model names.
-            var icon = BuildMetricIcon(kind, Shell.MainWindow.LocStatic(labelKey), 28);
-            icon.HorizontalAlignment = HorizontalAlignment.Right;
-            icon.VerticalAlignment = VerticalAlignment.Top;
-            icon.Margin = new Thickness(8, 2, 0, 0);
-
-            var header = new Grid();
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            SetColumn(icon, 1);
-            header.Children.Add(reading);
-            header.Children.Add(icon);
+            // Sized for the widest reading the box can show rather than the one on screen.
+            string widest = kind == MetricKind.Network ? FormatThroughput(999.9 * 1024 * 1024) : FormatPercent(100);
+            var header = new SummaryHeader(label, value, icon, widest);
 
             var trace = new Sparkline(_cadence, HistorySamples, fixedScaleMax, brushKey);
             trace.MakeBare();
@@ -212,6 +204,83 @@ namespace KillerShell.Tools
         {
             CountTo(tile.Value, percent, FormatPercent);
             tile.Trace.Push(percent);
+        }
+
+        /// <summary>
+        /// A summary box's top line: the name and the reading on the left, the icon at the right,
+        /// fitted to the box by Services.SummaryFit. The sizes come from the widest reading the
+        /// box can show ("100 %", "999.9 MB/s"), not the one on screen, so nothing pulses as the
+        /// number counts. Measured from the live fonts, so a theme or Fonts change refits it.
+        /// </summary>
+        private sealed class SummaryHeader : Panel
+        {
+            private readonly TextBlock _label, _value;
+            private readonly StackPanel _reading = new();
+            private readonly FrameworkElement _icon;
+            private readonly string _widest;
+            private string? _measuredFor;
+            private double _readingWidth;
+
+            internal SummaryHeader(TextBlock label, TextBlock value, FrameworkElement icon, string widest)
+            {
+                _label = label;
+                _value = value;
+                _icon = icon;
+                _widest = widest;
+                _reading.Children.Add(label);
+                _reading.Children.Add(value);
+                Children.Add(_reading);
+                Children.Add(icon);
+            }
+
+            protected override Size MeasureOverride(Size availableSize)
+            {
+                var (icon, size) = double.IsInfinity(availableSize.Width)
+                    ? (Services.SummaryFit.IconLargest, Services.SummaryFit.ValueLargest)
+                    : Services.SummaryFit.Choose(availableSize.Width, ReadingWidth());
+
+                // Changed only when they differ: each change costs another layout pass.
+                if (_value.FontSize != size)
+                {
+                    _value.FontSize = size;
+                    _reading.InvalidateMeasure();
+                }
+                var shown = icon > 0 ? Visibility.Visible : Visibility.Collapsed;
+                if (_icon.Visibility != shown) _icon.Visibility = shown;
+                if (icon > 0 && _icon.Width != icon) _icon.Width = _icon.Height = icon;
+
+                double room = icon > 0 ? icon + Services.SummaryFit.IconGap : 0;
+                _icon.Measure(new Size(icon, icon));
+                _reading.Measure(new Size(Math.Max(0, availableSize.Width - room), availableSize.Height));
+                double width = double.IsInfinity(availableSize.Width) ? _reading.DesiredSize.Width + room : availableSize.Width;
+                return new Size(width, Math.Max(_reading.DesiredSize.Height, icon > 0 ? icon + 2 : 0));
+            }
+
+            protected override Size ArrangeOverride(Size finalSize)
+            {
+                double icon = _icon.Visibility == Visibility.Visible ? _icon.Width : 0;
+                double room = icon > 0 ? icon + Services.SummaryFit.IconGap : 0;
+                _reading.Arrange(new Rect(0, 0, Math.Max(0, finalSize.Width - room), finalSize.Height));
+                if (icon > 0) _icon.Arrange(new Rect(finalSize.Width - icon, 2, icon, icon));
+                return finalSize;
+            }
+
+            /// <summary>The wider of the name and the widest reading at full size, remeasured
+            /// only when the name, a font or the screen's scale changes.</summary>
+            private double ReadingWidth()
+            {
+                double dip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+                string key = _label.Text + "|" + _label.FontFamily.Source + "|" + _value.FontFamily.Source + "|" + dip;
+                if (key == _measuredFor) return _readingWidth;
+                _measuredFor = key;
+                return _readingWidth = Math.Max(TextWidth(_label, _label.Text, _label.FontSize, dip),
+                    TextWidth(_value, _widest, Services.SummaryFit.ValueLargest, dip));
+            }
+
+            private static double TextWidth(TextBlock block, string text, double size, double dip)
+                => new FormattedText(text ?? string.Empty, CultureInfo.CurrentUICulture, block.FlowDirection,
+                    new Typeface(block.FontFamily, block.FontStyle, block.FontWeight, block.FontStretch),
+                    size, Brushes.Black, null, TextOptions.GetTextFormattingMode(block), dip).WidthIncludingTrailingWhitespace;
         }
 
         // ═══════════════════════════════════════════════════════════
