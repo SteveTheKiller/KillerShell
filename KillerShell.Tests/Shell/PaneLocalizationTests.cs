@@ -94,7 +94,7 @@ public static class PaneLocalizationScenario
         var tab = new SearchTab(title)
         {
             StatusKey = "Str_Status_Ready", StatusMessage = "Ready", ScannedCount = 23,
-            ScannedLabel = "23 files scanned", StatsLabel = "1 matches", QueryLabel = "name: needle",
+            ScannedLabel = "23 files scanned", StatsLabel = "1 match", QueryLabel = "name: needle",
             PipeFiles = new List<string> { "fixture.txt" }, PipeArgs = new object[] { 1, "source", "query" },
             PipeLabel = "1 results from source | query"
         };
@@ -123,7 +123,7 @@ public static class PaneLocalizationScenario
         {
             Assert.Equal(MainWindow.LocStatic("Str_Status_Ready"), tab.StatusMessage);
             Assert.Equal(string.Format(MainWindow.LocStatic("Str_Status_Scanned"), "23"), tab.ScannedLabel);
-            Assert.Equal(string.Format(MainWindow.LocStatic("Str_Count_Matches"), "1"), tab.StatsLabel);
+            Assert.Equal(string.Format(MainWindow.LocStatic("Str_Count_Match"), "1"), tab.StatsLabel);
             Assert.Equal(MainWindow.LocStatic("Str_Mode_Name") + ": needle", tab.QueryLabel);
             Assert.Equal(string.Format(MainWindow.LocStatic("Str_Pipe_Scope"), tab.PipeArgs!), tab.PipeLabel);
             Assert.True(notifications[tab] > 0, "The model's localized labels did not notify: " + tab.Title);
