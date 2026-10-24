@@ -144,6 +144,7 @@ namespace KillerShell.Shell
             // The window's corners and the close fill: square while maximized or snapped.
             SyncWindowCorners(force: true);   // WindowBounds.cs
             SyncElevationHaloCorners();   // Elevation.cs
+            SyncWindowEdge();
             // Segoe MDL2: E923 restore (when maximized) / E922 maximize. Built from a (char)
             // cast, never typed as a literal PUA character - literal glyphs do not survive
             // tooling (family-wide rule).
@@ -152,6 +153,21 @@ namespace KillerShell.Shell
                 int glyph = WindowState == WindowState.Maximized ? 0xE923 : 0xE922;
                 MaximizeBtn.Content = ((char)glyph).ToString();
             }
+        }
+
+        /// <summary>
+        /// A maximized window fills the work area exactly, so its 1px edge would sit on the screen
+        /// edge and take the corner pixel from Close. It goes while maximized and comes back after.
+        /// 98SE's admin band stays: on that theme it is the only sign the window is elevated.
+        /// </summary>
+        private void SyncWindowEdge()
+        {
+            if (WindowFrame == null) return;
+            if (WindowState == WindowState.Maximized && !(IsElevated && FlatChrome))
+                WindowFrame.BorderThickness = new Thickness(0);
+            else
+                WindowFrame.SetResourceReference(System.Windows.Controls.Border.BorderThicknessProperty,
+                    IsElevated ? "ElevationEdgeThickness" : "WindowEdgeThickness");
         }
 
         private void FadeInContent() => Anim.FadeIn(RootGrid);

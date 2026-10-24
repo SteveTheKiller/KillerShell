@@ -50,13 +50,11 @@ namespace KillerShell.Shell
         /// The window ghost covers RootGrid, and the theme flyout gets a second ghost of its own
         /// (below) because a ContextMenu is a separate top-level HWND that the window snapshot can
         /// neither include nor cover. The frame is a THIRD surface with the same problem and no
-        /// ghost can fix it: on the twelve rounded themes the only frame the user sees is the 1px
-        /// DWM window border, painted by the compositor in the NON-CLIENT area from
-        /// DWMWA_BORDER_COLOR (Chrome.cs ApplyThemeBorder). Nothing added to the WPF visual tree
-        /// is over it, because it is not inside the window's client area at all. (The in-tree
-        /// frame borders in MainWindow.xaml - WindowFrame, FrameOuter*, FrameInner* - are
-        /// zero-thickness on every theme but 98SE, where WindowFramePadding is 0 as well, so on
-        /// those twelve there is nothing of them to cover either way.)
+        /// ghost can fix it: on the twelve rounded themes the DWM window border is painted by the
+        /// compositor in the NON-CLIENT area from DWMWA_BORDER_COLOR (Chrome.cs ApplyThemeBorder).
+        /// Nothing added to the WPF visual tree is over it, because it is not inside the window's
+        /// client area at all. (The in-tree WindowFrame edge, 1px on every theme but 98SE, IS in
+        /// the client area: the window ghost reaches out over it, so it turns with the fade.)
         ///
         /// So the frame is held to the OLD color instead of being covered, and switched on the
         /// same clock as the fade. Before this, ApplyThemeBorder was called inline right after
@@ -77,8 +75,17 @@ namespace KillerShell.Shell
                         96, 96, PixelFormats.Pbgra32);
                     rtb.Render(this);
                     rtb.Freeze();
+                    // The snapshot is the whole window, edge included, and RootGrid sits inside the
+                    // 1px edge and 98SE's frame padding. Reaching back out by both lays it over the
+                    // window pixel for pixel, so it is not squeezed and the edge waits for the fade.
+                    var edge = WindowFrame.BorderThickness;
+                    var inset = RootGrid.Margin;
                     ghost = new System.Windows.Controls.Image
-                    { Source = rtb, Stretch = Stretch.Fill, IsHitTestVisible = false };
+                    {
+                        Source = rtb, Stretch = Stretch.Fill, IsHitTestVisible = false,
+                        Margin = new Thickness(-(edge.Left + inset.Left), -(edge.Top + inset.Top),
+                                               -(edge.Right + inset.Right), -(edge.Bottom + inset.Bottom)),
+                    };
                     Grid.SetRowSpan(ghost, 3);
                     System.Windows.Controls.Panel.SetZIndex(ghost, 9500);
                     RootGrid.Children.Add(ghost);
