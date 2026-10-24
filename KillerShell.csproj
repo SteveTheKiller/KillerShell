@@ -23,7 +23,7 @@
     <!-- Shown in the About card next to the version so a user can tell how old their build
          is. Keep the prior release date during development. On release day, match the date
          on this version's CHANGELOG section; release.ps1 preflight enforces that match. -->
-    <ReleaseDate>2026-10-23</ReleaseDate>
+    <ReleaseDate>2026-10-24</ReleaseDate>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <ApplicationIcon>Resources\ksh-icon.ico</ApplicationIcon>
     <PlatformTarget>x64</PlatformTarget>
