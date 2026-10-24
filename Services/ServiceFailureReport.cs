@@ -100,11 +100,12 @@ namespace KillerShell.Services
                     throw new IOException("The service failure report folder is a link and was not written: " + folder);
             }
 
-            var handle = CreateFileW(path, GenericWrite, FileShareRead, IntPtr.Zero, OpenAlways,
-                FileFlagOpenReparsePoint | FileFlagWriteThrough, IntPtr.Zero);
-            if (handle.IsInvalid) throw new IOException(new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error()).Message);
+            Microsoft.Win32.SafeHandles.SafeFileHandle? handle = null;
             try
             {
+                handle = CreateFileW(path, GenericWrite, FileShareRead, IntPtr.Zero, OpenAlways,
+                    FileFlagOpenReparsePoint | FileFlagWriteThrough, IntPtr.Zero);
+                if (handle.IsInvalid) throw new IOException(new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error()).Message);
                 var buffer = new StringBuilder(1024);
                 uint length = GetFinalPathNameByHandleW(handle, buffer, (uint)buffer.Capacity, 0);
                 if (length == 0 || length >= buffer.Capacity)
@@ -114,9 +115,11 @@ namespace KillerShell.Services
                 else if (final.StartsWith(@"\\?\", StringComparison.Ordinal)) final = final.Substring(4);
                 if (!string.Equals(final, LongPath(path), StringComparison.OrdinalIgnoreCase))
                     throw new IOException("The service failure report resolved somewhere else and was not written: " + final);
-                return new FileStream(handle, FileAccess.Write, 4096);
+                var stream = new FileStream(handle, FileAccess.Write, 4096);
+                handle = null; // The returned stream owns the handle after construction succeeds.
+                return stream;
             }
-            catch { handle.Dispose(); throw; }
+            finally { handle?.Dispose(); }
         }
 
         // The final path is always spelled out in full, so an 8.3 short name in the path asked
