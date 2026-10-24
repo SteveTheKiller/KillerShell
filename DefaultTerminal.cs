@@ -161,6 +161,13 @@ namespace KillerShell
             catch { }
         }
 
+        /// <summary>Puts back this user's folder opening where it runs <paramref name="exe"/>; never fails the caller.</summary>
+        private static void TurnOffFolderOpenerFor(string exe)
+        {
+            try { new Services.FolderOpenerSetting(Services.WindowsRegistryStore.Instance, installed: false, exePath: exe).TurnOffFor(exe); }
+            catch { }
+        }
+
         /// <summary>
         /// Points this user's "Open folders in KillerShell" at the copy that stays when a duplicate
         /// install goes, while it is on. Never fails the removal: the copy's next start mends it too.

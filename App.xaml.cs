@@ -561,7 +561,13 @@ namespace KillerShell
                 // Anyone else who turned folder opening on from the all-users copy would be left
                 // with an open verb naming the deleted exe; put back what they had, as an
                 // uninstall does. The account asking for this is already on its own copy.
-                if (machine) TurnOffFolderOpenerForOtherUsers();      // DefaultTerminal.cs
+                if (machine)
+                {
+                    TurnOffFolderOpenerForOtherUsers();      // DefaultTerminal.cs
+                    // And the administrator running this, when it is not the account that asked:
+                    // only an open verb that still runs the all-users copy is touched.
+                    TurnOffFolderOpenerFor(MachineInstallExe);
+                }
                 // A per-user class left behind would win for this user and point at a deleted exe.
                 // When the all-users copy is the one staying, point this user's class at it: an
                 // all-users copy from before the class existed has none of its own until it runs
