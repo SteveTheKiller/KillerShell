@@ -280,6 +280,7 @@
     <sys:String x:Key="Str_Status_Exported">Exportált: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Az exportálás sikertelen: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">{0} fájl beolvasva</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} egyezés</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0} egyezés</sys:String>
 
     <!-- About overlay -->

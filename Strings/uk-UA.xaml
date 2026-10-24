@@ -280,6 +280,7 @@
     <sys:String x:Key="Str_Status_Exported">Експортовано: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Не вдалося експортувати: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">Проскановано файлів: {0}</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} збіг</sys:String>
     <sys:String x:Key="Str_Count_Matches">Збігів: {0}</sys:String>
 
     <!-- About overlay -->

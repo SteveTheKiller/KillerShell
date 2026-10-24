@@ -165,6 +165,7 @@
     <sys:String x:Key="Str_Status_Exported">Exporté : {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Échec de l'exportation : {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">{0} fichiers analysés</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} correspondance</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0} correspondances</sys:String>
 
     <!-- About overlay -->

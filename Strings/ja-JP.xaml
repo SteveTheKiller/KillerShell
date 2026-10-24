@@ -215,6 +215,7 @@
     <sys:String x:Key="Str_Status_Exported">書き出しました: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">書き出しに失敗しました: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">{0} 個のファイルを走査</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} 件の一致</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0} 件の一致</sys:String>
 
     <!-- About overlay -->

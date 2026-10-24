@@ -165,6 +165,7 @@
     <sys:String x:Key="Str_Status_Exported">已匯出：{0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">匯出失敗：{0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">已掃描 {0} 個檔案</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} 筆相符</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0} 筆相符</sys:String>
 
     <!-- About overlay -->

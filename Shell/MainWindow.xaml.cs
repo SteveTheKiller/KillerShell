@@ -1786,7 +1786,7 @@ namespace KillerShell.Shell
                     }
                 }
                 int c = tab.Results.Count;
-                tab.StatsLabel = c > 0 ? string.Format(Loc("Str_Count_Matches"), c.ToString("N0")) : string.Empty;
+                tab.StatsLabel = c > 0 ? FormatMatchCount(c) : string.Empty;
                 if (tab == _active) { Pane.StatsText.Text = tab.StatsLabel; UpdatePaneStatusBar(); }
             }, System.Windows.Threading.DispatcherPriority.Background);
         }

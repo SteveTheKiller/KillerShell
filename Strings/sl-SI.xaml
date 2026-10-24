@@ -243,6 +243,7 @@
     <sys:String x:Key="Str_Status_Exported">Izvoženo: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Izvoz ni uspel: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">Pregledanih datotek: {0}</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} ujemanje</sys:String>
     <sys:String x:Key="Str_Count_Matches">Število ujemanj: {0}</sys:String>
     <sys:String x:Key="Str_About_Title">O programu KillerShell</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Velikost besedila: {0}%</sys:String>

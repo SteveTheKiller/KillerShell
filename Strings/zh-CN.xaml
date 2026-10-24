@@ -165,6 +165,7 @@
     <sys:String x:Key="Str_Status_Exported">已导出：{0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">导出失败：{0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">已扫描 {0} 个文件</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} 处匹配</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0} 处匹配</sys:String>
 
     <!-- About overlay -->

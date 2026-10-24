@@ -215,6 +215,7 @@
     <sys:String x:Key="Str_Status_Exported">Exportováno: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Export selhal: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">Prohledáno {0} souborů</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} shoda</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0} shod</sys:String>
 
     <!-- About overlay -->

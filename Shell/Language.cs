@@ -134,6 +134,9 @@ namespace KillerShell.Shell
         /// <summary>Look up a localized string; falls back to the key name if missing.</summary>
         private static string Loc(string key) => LocStatic(key);
 
+        private static string FormatMatchCount(int count) =>
+            string.Format(Loc(count == 1 ? "Str_Count_Match" : "Str_Count_Matches"), count.ToString("N0"));
+
         /// <summary>
         /// The same lookup, reachable from a model. Bookmark needs it to name the This PC entry
         /// (Bookmarks.cs), and a model has no window to ask.
@@ -193,7 +196,7 @@ namespace KillerShell.Shell
                 if (tab.ScannedCount >= 0)
                     tab.ScannedLabel = string.Format(Loc("Str_Status_Scanned"), tab.ScannedCount.ToString("N0"));
                 if (tab.Results.Count > 0)
-                    tab.StatsLabel = string.Format(Loc("Str_Count_Matches"), tab.Results.Count.ToString("N0"));
+                    tab.StatsLabel = FormatMatchCount(tab.Results.Count);
                 if (!string.IsNullOrEmpty(tab.QueryLabel))
                     tab.QueryLabel = BuildQueryLabel(
                         [.. tab.Groups.Where(g => g.Terms.Any(t => !string.IsNullOrWhiteSpace(t.Pattern)))],

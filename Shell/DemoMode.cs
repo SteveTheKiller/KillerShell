@@ -197,7 +197,7 @@ namespace KillerShell.Shell
             t.ScannedCount  = scanned;
             t.StatusKey     = "Str_Status_Done";
             t.StatusArgs    = [seconds.ToString("0.00"), t.Results.Count];
-            t.StatsLabel    = string.Format(Loc("Str_Count_Matches"), t.Results.Count.ToString("N0"));
+            t.StatsLabel    = FormatMatchCount(t.Results.Count);
             t.ScannedLabel  = string.Format(Loc("Str_Status_Scanned"), scanned.ToString("N0"));
             t.StatusMessage = string.Format(Loc("Str_Status_Done"),
                 seconds.ToString("0.00"), t.Results.Count);

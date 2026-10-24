@@ -294,6 +294,7 @@
     <sys:String x:Key="Str_Status_Exported">Wyeksportowano: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Eksport nie powiódł się: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">Przeskanowane pliki: {0}</sys:String>
+    <sys:String x:Key="Str_Count_Match">Dopasowanie: {0}</sys:String>
     <sys:String x:Key="Str_Count_Matches">Dopasowania: {0}</sys:String>
     <sys:String x:Key="Str_About_Title">KillerShell - informacje</sys:String>
     <sys:String x:Key="Str_Status_TextSize">Rozmiar tekstu: {0}%</sys:String>

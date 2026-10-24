@@ -267,6 +267,7 @@
   <sys:String x:Key="Str_Status_Exported">Đã xuất: {0}</sys:String>
   <sys:String x:Key="Str_Status_ExportFailed">Xuất không thành công: {0}</sys:String>
   <sys:String x:Key="Str_Status_Scanned">Đã quét {0} tệp</sys:String>
+  <sys:String x:Key="Str_Count_Match">{0} kết quả khớp</sys:String>
   <sys:String x:Key="Str_Count_Matches">{0} kết quả khớp</sys:String>
   <!-- About overlay -->
   <!-- Tagline is composed in XAML: DescA + "GPLv3 " + [Killer Tools link] + DescB.

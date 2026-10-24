@@ -165,6 +165,7 @@
     <sys:String x:Key="Str_Status_Exported">রপ্তানি করা হয়েছে: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">রপ্তানি ব্যর্থ হয়েছে: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">{0}টি ফাইল স্ক্যান করা হয়েছে</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0}টি মিল</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0}টি মিল</sys:String>
 
     <!-- About overlay -->

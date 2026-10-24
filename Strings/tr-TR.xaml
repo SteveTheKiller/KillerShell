@@ -165,6 +165,7 @@
     <sys:String x:Key="Str_Status_Exported">Dışa aktarıldı: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Dışa aktarma başarısız: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">{0} dosya tarandı</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} eşleşme</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0} eşleşme</sys:String>
 
     <!-- About overlay -->

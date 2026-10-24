@@ -280,6 +280,7 @@
     <sys:String x:Key="Str_Status_Exported">Exported: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Export failed: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">{0} files scanned</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0} match</sys:String>
     <sys:String x:Key="Str_Count_Matches">{0} matches</sys:String>
 
     <!-- About overlay -->

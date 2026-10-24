@@ -272,6 +272,7 @@
     <sys:String x:Key="Str_Status_Exported">Экспортталды: {0}</sys:String>
     <sys:String x:Key="Str_Status_ExportFailed">Экспорттау сәтсіз аяқталды: {0}</sys:String>
     <sys:String x:Key="Str_Status_Scanned">Қаралған файлдар: {0}</sys:String>
+    <sys:String x:Key="Str_Count_Match">сәйкестік: {0}</sys:String>
     <sys:String x:Key="Str_Count_Matches">сәйкестік: {0}</sys:String>
 
     <!-- About overlay -->
