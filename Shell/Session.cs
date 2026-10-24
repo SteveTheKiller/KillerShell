@@ -97,7 +97,31 @@ namespace KillerShell.Shell
             finally { _confirmingEditorClose = false; }
         }
 
-        private void ConfirmedClose() { _closeConfirmed = true; Close(); }
+        /// <summary>
+        /// The user has answered Quit. With "Close to system tray" on, a plain Close() is turned
+        /// into a hide by OnClosing's first line, which ignored that answer and left
+        /// _closeConfirmed latched, so a later close with the option off skipped the prompt.
+        /// The tray's Exit is the real quit: it checks unsaved documents and shuts down.
+        /// </summary>
+        private void ConfirmedClose()
+        {
+            if (!IsTaskWindow && Features.About.AboutController.CloseToTrayEnabled)
+            {
+                _tray.Exit();
+                return;
+            }
+            _closeConfirmed = true;
+            Close();
+        }
+
+        /// <summary>
+        /// Windows asked to end the session, the user confirmed discarding their documents, and
+        /// then the sign-out or shutdown was called off (another app blocked it and the user
+        /// chose Cancel). WM_ENDSESSION with wParam FALSE says so. The confirmations from that
+        /// prompt must not outlive it: left latched, a later close of the window skipped both
+        /// the quit prompt and the unsaved-document check, and edits made since were lost.
+        /// </summary>
+        internal void SessionEndCancelled() => CancelShutdown();
 
         // Esc path: a remembered "stay" swallows the key, a remembered "quit" closes.
         private void RequestQuit()

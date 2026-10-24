@@ -219,6 +219,10 @@ namespace KillerShell.Shell
             // one (SystemMenu.cs).
             if (TryHandleSystemMenu(msg, wParam, lParam)) { handled = true; return IntPtr.Zero; }
 
+            // WM_ENDSESSION, wParam FALSE: the session end that SessionEnding approved was
+            // called off, so its document confirmations are void (Session.cs).
+            if (msg == 0x0016 && wParam == IntPtr.Zero) SessionEndCancelled();
+
             // Interactive move/resize bracket, read by the dual-pane ratio logic
             // (DualPane.cs OnPaneHostResized) to tell an edge drag from a state jump.
             if (msg == 0x0231) _inWindowSizeMove = true;    // WM_ENTERSIZEMOVE

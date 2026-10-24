@@ -115,11 +115,16 @@ namespace KillerShell.Shell
             }
         }
 
-        private List<string> ResolveTitleSearchRoots()
+        /// <summary>
+        /// The folders the chosen scope names, before anything checks they exist. Cheap and safe
+        /// on the UI thread: listing drives and reading tab folders does not touch the disk.
+        /// The scope tooltip shows these as they are.
+        /// </summary>
+        private List<string> TitleSearchRootCandidates()
         {
             IEnumerable<string> roots;
             if (_titleSearchScope == 2)
-                roots = DemoMode ? new[] { @"C:\", @"D:\" } : DriveInfo.GetDrives().Where(d => d.IsReady).Select(d => d.RootDirectory.FullName);
+                roots = DemoMode ? new[] { @"C:\", @"D:\" } : DriveInfo.GetDrives().Select(d => d.Name);
             else if (_titleSearchScope == 1)
                 roots = new[] { LeftPane, RightPane }.SelectMany(p => p.Tabs)
                     .Where(t => t.Procs == null && t.Events == null && t.Registry == null && t.Perf == null && t.Storage == null)
@@ -132,7 +137,19 @@ namespace KillerShell.Shell
                     folder = SearchFolderFor(active);
                 roots = new[] { folder };
             }
-            return Services.SearchRoots.Normalize(roots.Where(path => DemoMode || Directory.Exists(path)));
+            return Services.SearchRoots.Normalize(roots);
+        }
+
+        /// <summary>
+        /// The candidates that exist, checked off the UI thread with a time limit per folder
+        /// (SearchRoots.ProbeAsync). Directory.Exists on a drive root is the same readiness test
+        /// DriveInfo.IsReady made, and both could stall for seconds on a dead network drive.
+        /// </summary>
+        private async System.Threading.Tasks.Task<List<string>> ResolveTitleSearchRootsAsync()
+        {
+            var candidates = TitleSearchRootCandidates();
+            if (DemoMode) return candidates;
+            return await Services.SearchRoots.ProbeAsync(candidates, Directory.Exists, Services.SearchRoots.ProbeTimeout);
         }
 
         private static string SearchFolderFor(Models.SearchTab tab)

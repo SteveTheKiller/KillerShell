@@ -528,6 +528,8 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  SEARCH / STOP  (per tab - background tabs keep searching)
         // ═══════════════════════════════════════════════════════════
+        private bool _resolvingSearchRoots;
+
         private async void Search_Click(object sender, RoutedEventArgs e)
         {
             var tab = _active;
@@ -538,9 +540,15 @@ namespace KillerShell.Shell
                 return;
             }
 
+            // A second Search while the roots are still being checked would start twice.
+            if (_resolvingSearchRoots) return;
             CaptureTab(tab);
 
-            var searchRoots = ResolveTitleSearchRoots();
+            List<string> searchRoots;
+            _resolvingSearchRoots = true;
+            try { searchRoots = await ResolveTitleSearchRootsAsync(); }
+            finally { _resolvingSearchRoots = false; }
+            if (tab.IsSearching || !ReferenceEquals(tab, _active)) return;
             string root = tab.RootPath.Trim();
             string? pickedRoot = null;
             if (!DemoMode && tab.PipeFiles == null && searchRoots.Count == 0)

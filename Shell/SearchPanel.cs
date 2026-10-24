@@ -67,7 +67,9 @@ namespace KillerShell.Shell
             SearchScopeButton.ToolTip = withinResults ? Pane.Active?.PipeLabel : Loc(SearchScopeKey(_titleSearchScope));
         }
 
-        internal string TitleSearchRootsText() => string.Join(Environment.NewLine, ResolveTitleSearchRoots());
+        // The named folders as they are: checking each one exists could stall the tooltip on a
+        // disconnected drive, and Search itself leaves out any that do not.
+        internal string TitleSearchRootsText() => string.Join(Environment.NewLine, TitleSearchRootCandidates());
 
         private void UpdateTitleSearchSize()
         {

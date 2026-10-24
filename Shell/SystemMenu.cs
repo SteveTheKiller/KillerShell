@@ -99,9 +99,15 @@ namespace KillerShell.Shell
             }
             else
             {
-                // Keyboard route: under the window's top-left corner, where Windows puts it.
-                _sysMenu.HorizontalOffset = Left + 8;
-                _sysMenu.VerticalOffset = Top + 36;
+                // Keyboard route: under the window's top-left corner, where Windows puts it. From
+                // the window's real screen position, not Left/Top: while maximized those keep the
+                // RESTORE position, which put the menu where the restored window would sit,
+                // possibly on another monitor.
+                Point corner = PointToScreen(new Point(8, 36));
+                if (PresentationSource.FromVisual(this)?.CompositionTarget is { } target)
+                    corner = target.TransformFromDevice.Transform(corner);
+                _sysMenu.HorizontalOffset = corner.X;
+                _sysMenu.VerticalOffset = corner.Y;
             }
 
             _sysMenu.IsOpen = true;

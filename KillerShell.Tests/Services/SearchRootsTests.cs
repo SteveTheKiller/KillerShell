@@ -12,6 +12,34 @@ namespace KillerShell.Tests.Services;
 public sealed class SearchRootsTests
 {
     [Fact]
+    public async Task AHangingRootIsLeftOutWithinTheTimeLimit()
+    {
+        using var hang = new ManualResetEventSlim(false);
+        try
+        {
+            var candidates = new[] { @"C:\Fast", @"Z:\Dead", @"C:\Missing", @"D:\Also" };
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var found = await SearchRoots.ProbeAsync(candidates, path =>
+            {
+                if (path.StartsWith("Z:")) { hang.Wait(); return true; }
+                return path != @"C:\Missing";
+            }, TimeSpan.FromMilliseconds(300));
+            Assert.True(watch.ElapsedMilliseconds < 3000, "The probe waited on the hanging root: " + watch.ElapsedMilliseconds + " ms");
+            Assert.Equal(new[] { @"C:\Fast", @"D:\Also" }, found);
+        }
+        finally { hang.Set(); }
+    }
+
+    [Fact]
+    public async Task AProbeThatThrowsCountsAsMissing()
+    {
+        var found = await SearchRoots.ProbeAsync(new[] { @"C:\A", @"C:\B" },
+            path => path == @"C:\A" ? throw new IOException("network name no longer available") : true,
+            TimeSpan.FromSeconds(2));
+        Assert.Equal(new[] { @"C:\B" }, found);
+    }
+
+    [Fact]
     public void NormalizationRemovesOverlappingRootsWithoutMatchingSiblingNames()
     {
         var roots = SearchRoots.Normalize(new[] { @"C:\Docs\Work", @"c:\docs", @"C:\Docs2", @"C:\DOCS\" });

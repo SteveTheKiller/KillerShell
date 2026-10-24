@@ -42,6 +42,9 @@ namespace KillerShell.Shell
 
         /// <summary>Alt+Shift+Left / Right. The arrow of the side the tree is already on opens
         /// or closes it; the other arrow moves it there.</summary>
+        /// <summary>Which side the folder tree docks to. Read by tests.</summary>
+        internal bool TreeDockedRight => _treeRight;
+
         private void TreeSideShortcut(bool right)
         {
             if (right == _treeRight) ToggleTreePanel();

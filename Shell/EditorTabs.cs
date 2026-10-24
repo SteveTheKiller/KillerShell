@@ -509,9 +509,13 @@ namespace KillerShell.Shell
                 && (e.Key == System.Windows.Input.Key.S || e.Key == System.Windows.Input.Key.G))
                 return true;
 
-            // Alt+Shift+Up/Down is the editor's column selection, not the tab placement chord.
+            // Alt+Shift+arrows are the editor's column (box) selection: Up/Down by line and
+            // Left/Right by character, with Ctrl added for Left/Right by word. They are not the
+            // tab placement or tree side chords while a document has focus; claiming Left/Right
+            // flipped or closed the folder tree in the middle of a sideways box selection.
             var key = e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key;
-            if (alt && shift && !ctrl && key is System.Windows.Input.Key.Up or System.Windows.Input.Key.Down)
+            if (alt && shift && key is System.Windows.Input.Key.Up or System.Windows.Input.Key.Down
+                    or System.Windows.Input.Key.Left or System.Windows.Input.Key.Right)
                 return false;
 
             return IsWindowChord(e, ctrl, shift, alt);

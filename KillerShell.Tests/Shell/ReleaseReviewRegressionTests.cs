@@ -135,6 +135,13 @@ public static class EditorColumnSelectionScenario
 
         ReviewKeys.Raise(text, Key.Down, ReviewKeys.Menu, ReviewKeys.LeftMenu, ReviewKeys.Shift, ReviewKeys.LeftShift);
         Assert.False(window.TabsAtBottom, "Alt+Shift+Down in the editor is column selection.");
+
+        // Left/Right are column selection by character, not the folder tree's side.
+        bool side = window.TreeDockedRight;
+        ReviewKeys.Raise(text, side ? Key.Left : Key.Right, ReviewKeys.Menu, ReviewKeys.LeftMenu, ReviewKeys.Shift, ReviewKeys.LeftShift);
+        Assert.Equal(side, window.TreeDockedRight);
+        ReviewKeys.Raise(text, side ? Key.Right : Key.Left, ReviewKeys.Menu, ReviewKeys.LeftMenu, ReviewKeys.Shift, ReviewKeys.LeftShift);
+        Assert.Equal(side, window.TreeDockedRight);
     }
 }
 
