@@ -617,7 +617,8 @@ namespace KillerShell.Shell
         {
             if (!IsElevated || ElevationHalo == null || ElevationHaloInner == null) return;
 
-            if (WindowState == WindowState.Maximized)
+            // Snapped too: Windows draws a snapped window square (WindowBounds.cs SyncWindowCorners).
+            if (WindowState == WindowState.Maximized || _squareCorners)
             {
                 ElevationHalo.CornerRadius      = new CornerRadius(0);
                 ElevationHaloInner.CornerRadius = new CornerRadius(0);

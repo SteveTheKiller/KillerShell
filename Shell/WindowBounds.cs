@@ -71,6 +71,7 @@ namespace KillerShell.Shell
             if (!force && square == _squareCorners) return;
             _squareCorners = square;
             ApplyWindowCorners(this, rounded: !square && WindowState == WindowState.Normal);
+            SyncElevationHaloCorners();   // Elevation.cs - the admin ring squares with the window
             if (CloseBtn == null) return;
             if (square) CloseBtn.Resources["CaptionCloseCornerRadius"] = new CornerRadius(0);
             else CloseBtn.Resources.Remove("CaptionCloseCornerRadius");
