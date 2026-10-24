@@ -36,7 +36,23 @@ namespace KillerShell.Services
             {
                 await _workers.WaitAsync(token).ConfigureAwait(false);
                 T result;
-                try { result = await Task.Run(() => read(token), token).ConfigureAwait(false); }
+                try
+                {
+                    // A superseded read gives its slot back as soon as it is cancelled. The read
+                    // itself may be stuck in a native folder listing on an unreachable share,
+                    // which cancellation cannot interrupt, and holding the slot until the SMB
+                    // timeout let two such reads starve every later navigation: the picker
+                    // stopped responding and OK did nothing. The abandoned read finishes on its
+                    // own and its result is dropped.
+                    var reading = Task.Run(() => read(token), token);
+                    var cancelled = Task.Delay(Timeout.Infinite, token);
+                    if (await Task.WhenAny(reading, cancelled).ConfigureAwait(false) != reading)
+                    {
+                        _ = reading.ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
+                        throw new OperationCanceledException(token);
+                    }
+                    result = await reading.ConfigureAwait(false);
+                }
                 finally { _workers.Release(); }
                 token.ThrowIfCancellationRequested();
                 await dispatcher.InvokeAsync(() =>

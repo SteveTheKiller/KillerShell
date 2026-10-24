@@ -110,6 +110,17 @@ namespace KillerShell.Shell
                 var r = FileOpDialog.RewriteArchive(this,
                     (progress, ct) => ArchiveWriter.Add(arc, folder, sources, mode, progress, ct));
 
+                // The archive's own entries collide with each other: Add and Replace would only fail
+                // the same way, so say what is wrong instead of asking how to resolve it.
+                if (r.ExistingCollisions)
+                {
+                    r.ErrorKey = "Str_Status_ArchiveWriteFailed";
+                    r.ErrorDetail = "it already holds names that Windows cannot write as separate files: "
+                        + string.Join(", ", r.Collisions.Take(3));
+                    ReportArchive(tab, r, "Str_Status_ArchiveAdded", "0");
+                    return;
+                }
+
                 if (r.Collisions.Count > 0 && policy == ArchiveCollision.Report)
                 {
                     var dlg = new ConfirmDialog(

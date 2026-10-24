@@ -322,6 +322,7 @@ namespace KillerShell.Tests.Services
                 {
                     Assert.False(result.Ok);
                     Assert.NotEmpty(result.Collisions);
+                    Assert.Equal(exactNameExists, result.ExistingCollisions);
                     Assert.Equal(original, File.ReadAllBytes(path));
                     return;
                 }

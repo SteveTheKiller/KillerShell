@@ -71,6 +71,14 @@ namespace KillerShell
         private readonly Services.PickerWork _placesWork;
         private readonly Services.PickerWork _validationWork;
         internal Task NavigationTask { get; private set; } = Task.CompletedTask;
+
+        /// <summary>OK while a folder is still opening: show the wait cursor until it has,
+        /// rather than ignoring the press with no sign of why.</summary>
+        private void ShowNavigationWait()
+        {
+            Cursor = Cursors.Wait;
+            NavigationTask.ContinueWith(_ => Dispatcher.BeginInvoke((Action)(() => Cursor = null)));
+        }
         internal Task SortTask { get; private set; } = Task.CompletedTask;
         internal Task PlacesTask { get; private set; } = Task.CompletedTask;
         internal Task AcceptanceTask { get; private set; } = Task.CompletedTask;
@@ -630,7 +638,7 @@ namespace KillerShell
             }
 
             if (!TryResolveName(typed, false, out var full)) return;
-            if (!NavigationTask.IsCompleted) return;
+            if (!NavigationTask.IsCompleted) { ShowNavigationWait(); return; }
 
             if (_mode == FileDialogMode.Save)
             {

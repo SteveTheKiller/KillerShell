@@ -448,7 +448,13 @@ namespace KillerShell
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            if (!NavigationTask.IsCompleted) return;
+            if (!NavigationTask.IsCompleted)
+            {
+                // A folder is still opening. Say so with the wait cursor rather than ignoring OK.
+                Cursor = System.Windows.Input.Cursors.Wait;
+                NavigationTask.ContinueWith(_ => Dispatcher.BeginInvoke((Action)(() => Cursor = null)));
+                return;
+            }
             var path = PathBox.Text?.Trim();
             var exists = FolderExists;
             AcceptanceTask = _validationWork.RunAsync(_ => !string.IsNullOrEmpty(path) && exists(path!), (valid, token) =>

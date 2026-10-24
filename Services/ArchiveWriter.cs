@@ -81,6 +81,14 @@ namespace KillerShell.Services
 
         internal int SkippedDirectoryLinks;
 
+        /// <summary>
+        /// The collisions are between entries ALREADY in the archive (a name stored twice, two
+        /// names that differ only in case, a name Windows cannot write), not with what was being
+        /// added. No collision policy can resolve those, so the caller reports an error instead
+        /// of offering Add or Replace.
+        /// </summary>
+        internal bool ExistingCollisions;
+
         /// <summary>Entry names already present, when the collision policy was Report.</summary>
         internal readonly List<string> Collisions = [];
 
@@ -237,7 +245,11 @@ namespace KillerShell.Services
                 {
                     ct.ThrowIfCancellationRequested();
                     if (!PlanAddPath(root, entry.FullName, null, ArchiveCollision.Report, planned,
-                                     replaced, renamedDirectories, result)) break;
+                                     replaced, renamedDirectories, result))
+                    {
+                        result.ExistingCollisions = true;
+                        break;
+                    }
                 }
             }
             catch (OperationCanceledException) { throw; }

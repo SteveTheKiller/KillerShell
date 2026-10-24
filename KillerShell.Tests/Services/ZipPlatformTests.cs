@@ -106,6 +106,7 @@ namespace KillerShell.Tests.Services
                 Assert.False(result.Ok);
                 Assert.Equal("Str_Status_ArchiveCollide", result.ErrorKey);
                 Assert.Equal("same.txt", Assert.Single(result.Collisions));
+                Assert.True(result.ExistingCollisions, "The duplicate is the archive's own, not the addition's.");
                 Assert.Equal(original, File.ReadAllBytes(path));
                 Assert.Equal("added", File.ReadAllText(added));
                 Assert.Equal(2, Directory.GetFiles(work).Length);
