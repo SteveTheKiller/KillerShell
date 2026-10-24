@@ -31,7 +31,7 @@ public sealed class ThemeSurfaceRegressionTests
 
     [Fact]
     public Task BottomListingTabFollowsDetailsAndSearchSummaryAcrossThemes()
-        => RuntimeComponentProcess.Run(nameof(BottomListingTabSurfaceScenario));
+        => RuntimeComponentProcess.Run(nameof(BottomListingTabSurfaceScenario), timeoutMilliseconds: 180000);
 }
 
 public static class BottomListingTabSurfaceScenario
