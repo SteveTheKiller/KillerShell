@@ -32,7 +32,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - At an app scale other than 100%, the pane's sides land on whole pixels, so its rounded corners match instead of one coming out crisp and the other smeared.
 - Windows contrast themes use matching system foreground and background colors, including hovered menu and dropdown text, without decorative effects, and content no longer nearly matches the window. Windows and dialogs fit small or scaled monitors, and card controls remain reachable in short windows.
 - Language changes refresh both panes and hidden tabs. A single search result shows "1 match." App, installer, website and Store translations cover remaining English labels, corrected wording and shortcut documentation. Standalone uninstall dialogs use the saved language.
-- Theme text, selections and accent colors remain readable, including Light Yellow and Orange. File and bookmark lists use theme content colors.
+- Theme text, selections and accent colors remain readable, including Light Yellow and Orange. File and bookmark lists use theme content colors. Dark text fields have a deeper fill so they stand out from their surroundings.
 - The website's screenshots support keyboard navigation and translated controls, its pages and command examples fit narrow screens, and its lighter film grain can be turned off (Alt+Shift+G).
 
 ### Changed
