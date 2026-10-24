@@ -76,13 +76,28 @@ namespace KillerShell
         /// band and the close-fade ghost get the same nudge so the strip stays flush with the
         /// pane's sides.
         /// </summary>
+        private PresentationSource? _snapSource;
+        private Matrix _snapLastMatrix;
+        private double _snapLastOffset = double.NaN, _snapLastWidth = double.NaN;
+
         private void SnapPaneSidesToPixels()
         {
-            if (PresentationSource.FromVisual(PaneStack) is not { RootVisual: Visual root } || !PaneStack.IsDescendantOf(root))
-                return;
+            // LayoutUpdated fires after every layout pass anywhere in the window, for both panes,
+            // so the common case has to be cheap: a hidden pane does nothing, the presentation
+            // source is looked up once per attach, and an unchanged position stops after one
+            // transform.
+            if (!PaneStack.IsVisible) return;
+            if (_snapSource?.RootVisual == null || _snapSource.IsDisposed)
+                _snapSource = PresentationSource.FromVisual(PaneStack);
+            if (_snapSource?.RootVisual is not Visual root || _snapSource.CompositionTarget == null) return;
             if (PaneStack.TransformToAncestor(root) is not Transform toRoot) return;
             Matrix toDevice = toRoot.Value;
-            toDevice.Append(PresentationSource.FromVisual(PaneStack)!.CompositionTarget.TransformToDevice);
+            toDevice.Append(_snapSource.CompositionTarget.TransformToDevice);
+            double offsetX = VisualTreeHelper.GetOffset(ResultsPane).X, paneWidth = ResultsPane.ActualWidth;
+            if (toDevice == _snapLastMatrix && offsetX == _snapLastOffset && paneWidth == _snapLastWidth) return;
+            _snapLastMatrix = toDevice;
+            _snapLastOffset = offsetX;
+            _snapLastWidth = paneWidth;
             double sx = toDevice.M11;
             // A rotated or sheared host has no straight edges to snap; 1:1 needs none.
             if (toDevice.M12 != 0 || toDevice.M21 != 0 || sx <= 0 || Math.Abs(sx - Math.Round(sx)) < 0.0005)
@@ -206,8 +221,10 @@ namespace KillerShell
             }
 
             clip.Freeze();
-            TabScrollShadow.Margin = new Thickness(0, top, 0, 0);
-            TabScrollShadow.Height = Math.Max(0, bottom - top);
+            var margin = new Thickness(0, top, 0, 0);
+            if (TabScrollShadow.Margin != margin) TabScrollShadow.Margin = margin;
+            double height = Math.Max(0, bottom - top);
+            if (TabScrollShadow.Height != height) TabScrollShadow.Height = height;
             TabScrollShadow.Clip = clip;
         }
 
@@ -237,29 +254,49 @@ namespace KillerShell
             // it exactly, or the icons in that overlap are drawn twice a few pixels apart and the
             // join reads as a line. Measured from the peek itself, whatever its margins and flips.
             Point origin = peek.TranslatePoint(new Point(0, 0), panelElement);
-            var brush = new VisualBrush(panelElement)
+            var viewbox = new Rect(origin.X, origin.Y, peek.ActualWidth, peek.ActualHeight);
+            var viewport = new Rect(0, 0, peek.ActualWidth, peek.ActualHeight);
+            // This runs on every scroll tick, so the brush and the mask are made once per peek
+            // and only moved afterwards: replacing them each tick allocated a new brush pair per
+            // frame and made WPF re-render the whole list panel into a fresh brush.
+            if (peek.Background is VisualBrush brush && ReferenceEquals(brush.Visual, panelElement) && !brush.IsFrozen)
             {
-                Stretch = Stretch.None,
-                AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top,
-                TileMode = TileMode.None,
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(origin.X, origin.Y, peek.ActualWidth, peek.ActualHeight),
-                ViewportUnits = BrushMappingMode.Absolute,
-                Viewport = new Rect(0, 0, peek.ActualWidth, peek.ActualHeight)
-            };
-            peek.Background = brush;
+                if (brush.Viewbox != viewbox) brush.Viewbox = viewbox;
+                if (brush.Viewport != viewport) brush.Viewport = viewport;
+            }
+            else
+            {
+                peek.Background = new VisualBrush(panelElement)
+                {
+                    Stretch = Stretch.None,
+                    AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top,
+                    TileMode = TileMode.None,
+                    ViewboxUnits = BrushMappingMode.Absolute,
+                    Viewbox = viewbox,
+                    ViewportUnits = BrushMappingMode.Absolute,
+                    Viewport = viewport
+                };
+            }
 
             // Fully there down to the seam, so the icons cross it unchanged, then gone about
             // halfway down the tab's face.
             double seam = presenter.TranslatePoint(new Point(0, presenter.ActualHeight), peek).Y;
             double faceHeight = peek.ActualHeight - seam;
+            double solidEnd = Math.Max(0, seam / peek.ActualHeight);
             double fadeEnd = Math.Min(1, (seam + faceHeight * 0.55) / peek.ActualHeight);
-            var mask = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(0, 1) };
-            mask.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0, 0, 0), 0));
-            mask.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0, 0, 0), Math.Max(0, seam / peek.ActualHeight)));
-            mask.GradientStops.Add(new GradientStop(Color.FromArgb(0x00, 0, 0, 0), fadeEnd));
-            mask.Freeze();
-            peek.OpacityMask = mask;
+            if (peek.OpacityMask is LinearGradientBrush mask && !mask.IsFrozen && mask.GradientStops.Count == 3)
+            {
+                if (mask.GradientStops[1].Offset != solidEnd) mask.GradientStops[1].Offset = solidEnd;
+                if (mask.GradientStops[2].Offset != fadeEnd) mask.GradientStops[2].Offset = fadeEnd;
+            }
+            else
+            {
+                mask = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(0, 1) };
+                mask.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0, 0, 0), 0));
+                mask.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0, 0, 0), solidEnd));
+                mask.GradientStops.Add(new GradientStop(Color.FromArgb(0x00, 0, 0, 0), fadeEnd));
+                peek.OpacityMask = mask;
+            }
         }
 
         private static Border? FindNamedBorder(DependencyObject root, string name)
