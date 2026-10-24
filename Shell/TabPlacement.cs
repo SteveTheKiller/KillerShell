@@ -71,6 +71,10 @@ namespace KillerShell.Shell
             Transform tabTransform = bottom ? BottomTabTransform : Transform.Identity;
             if (!ReferenceEquals(pane.TabBar.Resources["TabPlacementTransform"], tabTransform))
                 pane.TabBar.Resources["TabPlacementTransform"] = tabTransform;
+            // With the tabs at the bottom the list's scroll shadow carries on into the active tab
+            // (FilePane.xaml tabScrollShadow), so the list's half stops at the tab's starting shade.
+            if (bottom) pane.Resources["ScrollBottomCueBrush"] = pane.FindResource("ScrollBottomCueIntoTabBrush");
+            else pane.Resources.Remove("ScrollBottomCueBrush");
             // Only this pane's strip reverses its connection gap; shared theme values stay intact.
             foreach (string key in TabPlacementMargins)
             {

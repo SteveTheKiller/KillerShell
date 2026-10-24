@@ -2115,18 +2115,23 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <LinearGradientBrush x:Key="ScrollBottomCueBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#00000000" Offset="0"/>
+        <GradientStop Color="#38000000" Offset="0.65"/>
+        <GradientStop Color="#80000000" Offset="1"/>
+    </LinearGradientBrush>
+    <!-- A pane with its tabs at the bottom swaps this in (TabPlacement.cs): the list stops at
+         #50 and the active tab's tabScrollShadow (FilePane.xaml) carries on from #50 to #80, so
+         the shadow runs from the list into the tab as one fade with no line where they meet. -->
+    <LinearGradientBrush x:Key="ScrollBottomCueIntoTabBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#00000000" Offset="0"/>
+        <GradientStop Color="#30000000" Offset="0.65"/>
+        <GradientStop Color="#50000000" Offset="1"/>
+    </LinearGradientBrush>
     <Style x:Key="ScrollBottomCue" TargetType="Border" BasedOn="{StaticResource ScrollCueBase}">
         <Setter Property="Height" Value="28"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#00000000" Offset="0"/>
-                    <GradientStop Color="#38000000" Offset="0.65"/>
-                    <GradientStop Color="#80000000" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="Background" Value="{DynamicResource ScrollBottomCueBrush}"/>
     </Style>
     <Style x:Key="ScrollLeftCue" TargetType="Border" BasedOn="{StaticResource ScrollCueBase}">
         <Setter Property="Width" Value="28"/>

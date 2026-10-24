@@ -268,11 +268,21 @@
                                         <Border x:Name="tabGrain" IsHitTestVisible="False"
                                                 CornerRadius="{Binding CornerRadius, ElementName=tabBd}" Margin="{DynamicResource TabGrainMargin}"
                                                 Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
-                                        <!-- Continue the bottom scroll cue across the selected tab's face. -->
+                                        <!-- Continue the bottom scroll cue across the selected tab's face:
+                                             it starts at the #50 the list's cue ends on
+                                             (Controls.xaml ScrollBottomCueIntoTabBrush) and darkens to
+                                             the cue's usual #80 at the tab's foot. -->
                                         <Border x:Name="tabScrollShadow" IsHitTestVisible="False"
                                                 CornerRadius="{Binding CornerRadius, ElementName=tabBd}"
-                                                Margin="{DynamicResource TabGrainMargin}" Background="#50000000"
-                                                Opacity="{DynamicResource EdgeFadeOpacity}" Visibility="Collapsed"/>
+                                                Margin="{DynamicResource TabGrainMargin}"
+                                                Opacity="{DynamicResource EdgeFadeOpacity}" Visibility="Collapsed">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Color="#50000000" Offset="0"/>
+                                                    <GradientStop Color="#80000000" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
                                         <!-- Win98 tab bevel: light along the top and left, dark
                                              down the right. A Win98 tab is a raised control, not
                                              a flat card. The margins undo the
