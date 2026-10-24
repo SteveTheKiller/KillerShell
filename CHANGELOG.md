@@ -41,7 +41,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - With two panes open, the pane without focus dims slightly so the focused one stands out. Windows contrast themes keep both at full strength.
 - Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.
 - Dropping files on a saved place always moves them, including across drives.
-- The title bar names the active tab's kind, such as File Browser or PowerShell Terminal, instead of its folder. Toolbar icons are larger and crisp, and About sets its options out in evenly spaced pairs.
+- The title bar names the active tab's kind, such as File Browser or PowerShell Terminal, instead of its folder, and its right-click menu has Windows' own items, icons and Alt+F4. Toolbar icons are larger and crisp, and About sets its options out in evenly spaced pairs.
 - Hovered menu and list items show their text in the theme accent, lightened or darkened only as far as needed to stay readable on the hover fill.
 - Wordmarks and headings are raised with a subtle bevel in their own color instead of a dark outline. The Dark theme's red accent is the brand red again instead of a pink tint.
 
