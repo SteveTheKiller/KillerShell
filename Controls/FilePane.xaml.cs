@@ -67,8 +67,76 @@ namespace KillerShell
         private bool _paneUsesShadow;
 
         public static readonly DependencyProperty HasBottomTabShadowProperty = DependencyProperty.Register(
-            nameof(HasBottomTabShadow), typeof(bool), typeof(FilePane), new PropertyMetadata(false));
+            nameof(HasBottomTabShadow), typeof(bool), typeof(FilePane),
+            new PropertyMetadata(false, (d, _) => ((FilePane)d).ApplyBottomTabShadow()));
         public bool HasBottomTabShadow => (bool)GetValue(HasBottomTabShadowProperty);
+
+        // The list's own bottom cue steps aside while BottomTabListShadow draws it, so the two
+        // never stack. Set on the scroller, not the pane, so the details panel keeps its cue.
+        private ScrollViewer? _cueHiddenOn;
+
+        private void ApplyBottomTabShadow()
+        {
+            bool on = HasBottomTabShadow;
+            if (_cueHiddenOn != null && (!on || !ReferenceEquals(_cueHiddenOn, _paneScroller)))
+            {
+                _cueHiddenOn.Resources.Remove("ScrollBottomCueBrush");
+                _cueHiddenOn = null;
+            }
+            if (on && _paneScroller != null && _cueHiddenOn == null)
+            {
+                _paneScroller.Resources["ScrollBottomCueBrush"] = Brushes.Transparent;
+                _cueHiddenOn = _paneScroller;
+            }
+            BottomTabListShadow.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+            if (on) Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                (Action)UpdateBottomTabShadowBrush);
+        }
+
+        /// <summary>
+        /// One gradient across the list's foot and the active tab's face: transparent 28px above
+        /// the tab, darkest at the tab's foot. Each half maps the same span in its own coordinates,
+        /// so the shade is identical on both sides of the join however the frame lines up.
+        /// </summary>
+        internal void UpdateBottomTabShadowBrush()
+        {
+            if (!HasBottomTabShadow || Active == null || BottomTabListShadow.ActualHeight <= 0
+                || TabStrip.ItemContainerGenerator.ContainerFromItem(Active) is not FrameworkElement tab
+                || FindNamedBorder(tab, "tabScrollShadow") is not Border face || face.ActualHeight <= 0)
+                return;
+
+            double faceTop = face.TranslatePoint(new Point(0, 0), BottomTabListShadow).Y;
+            double end = faceTop + face.ActualHeight;
+            if (end <= 0) return;
+            BottomTabListShadow.Background = BottomShadowSpan(0, end);
+            face.Background = BottomShadowSpan(-faceTop, end - faceTop);
+        }
+
+        private static LinearGradientBrush BottomShadowSpan(double start, double end)
+        {
+            var brush = new LinearGradientBrush
+            {
+                MappingMode = BrushMappingMode.Absolute,
+                StartPoint = new Point(0, start),
+                EndPoint = new Point(0, end)
+            };
+            brush.GradientStops.Add(new GradientStop(Color.FromArgb(0x00, 0, 0, 0), 0));
+            brush.GradientStops.Add(new GradientStop(Color.FromArgb(0x38, 0, 0, 0), 0.5));
+            brush.GradientStops.Add(new GradientStop(Color.FromArgb(0x80, 0, 0, 0), 1));
+            brush.Freeze();
+            return brush;
+        }
+
+        private static Border? FindNamedBorder(DependencyObject root, string name)
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(root, i);
+                if (child is Border b && b.Name == name) return b;
+                if (FindNamedBorder(child, name) is Border found) return found;
+            }
+            return null;
+        }
 
         internal void RefreshBottomTabShadow()
         {

@@ -188,7 +188,7 @@ namespace KillerShell.Shell
             UpdateDetailsTabJoin(Pane);
             var pane = Pane;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
-                (Action)(() => { UpdateRetroTabInnerJoin(pane); UpdateDetailsTabJoin(pane); }));
+                (Action)(() => { UpdateRetroTabInnerJoin(pane); UpdateDetailsTabJoin(pane); pane.UpdateBottomTabShadowBrush(); }));
         }
 
         // A bottom strip sits right under the details panel, and the active tab opens into it the

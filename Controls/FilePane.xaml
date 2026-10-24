@@ -268,21 +268,14 @@
                                         <Border x:Name="tabGrain" IsHitTestVisible="False"
                                                 CornerRadius="{Binding CornerRadius, ElementName=tabBd}" Margin="{DynamicResource TabGrainMargin}"
                                                 Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
-                                        <!-- Continue the bottom scroll cue across the selected tab's face:
-                                             it starts at the #50 the list's cue ends on
-                                             (Controls.xaml ScrollBottomCueIntoTabBrush) and darkens to
-                                             the cue's usual #80 at the tab's foot. -->
+                                        <!-- The list's bottom scroll shadow, continued across the selected
+                                             tab's face. Its brush is the lower half of the gradient the
+                                             list's BottomTabListShadow starts (FilePane.xaml.cs
+                                             UpdateBottomTabShadowBrush). -->
                                         <Border x:Name="tabScrollShadow" IsHitTestVisible="False"
                                                 CornerRadius="{Binding CornerRadius, ElementName=tabBd}"
                                                 Margin="{DynamicResource TabGrainMargin}"
-                                                Opacity="{DynamicResource EdgeFadeOpacity}" Visibility="Collapsed">
-                                            <Border.Background>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#50000000" Offset="0"/>
-                                                    <GradientStop Color="#80000000" Offset="1"/>
-                                                </LinearGradientBrush>
-                                            </Border.Background>
-                                        </Border>
+                                                Opacity="{DynamicResource EdgeFadeOpacity}" Visibility="Collapsed"/>
                                         <!-- Win98 tab bevel: light along the top and left, dark
                                              down the right. A Win98 tab is a raised control, not
                                              a flat card. The margins undo the
@@ -711,6 +704,13 @@
                         BorderBrush="{DynamicResource DocumentPaneBevelInnerTopLeftBrush}"/>
                 <Border x:Name="PaneBevelInnerLight" IsHitTestVisible="False" Panel.ZIndex="110" Margin="1"
                         BorderBrush="{DynamicResource DocumentPaneBevelInnerBottomRightBrush}"/>
+                <!-- With the tabs at the bottom, the list's scroll shadow and its continuation on the
+                     active tab (tabScrollShadow) are one gradient, set from their real positions
+                     (FilePane.xaml.cs UpdateBottomTabShadowBrush), so the fade runs into the tab
+                     with no line where they meet. -->
+                <Border x:Name="BottomTabListShadow" IsHitTestVisible="False" Panel.ZIndex="99"
+                        Height="28" VerticalAlignment="Bottom" Visibility="Collapsed"
+                        Opacity="{DynamicResource EdgeFadeOpacity}"/>
                 <!-- Keep the pane frame visible for every tab and scroll position. -->
                 <Border x:Name="ResultsPaneBottomEdge" IsHitTestVisible="False" Panel.ZIndex="100"
                         BorderBrush="{DynamicResource PaneEdgeBrush}"
