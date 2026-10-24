@@ -61,7 +61,10 @@ namespace KillerShell.Terminal
                     if (!_closing && UIElementAutomationPeer.FromElement(this) is TerminalPeer peer)
                     {
                         if (textChanged && AutomationPeer.ListenerExists(AutomationEvents.TextPatternOnTextChanged))
+                        {
+                            _automationSnapshot = null;
                             _automationEventSink(peer, AutomationEvents.TextPatternOnTextChanged);
+                        }
                         if (selectionChanged && AutomationPeer.ListenerExists(AutomationEvents.TextPatternOnTextSelectionChanged))
                             _automationEventSink(peer, AutomationEvents.TextPatternOnTextSelectionChanged);
                     }
