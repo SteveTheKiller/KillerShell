@@ -292,9 +292,14 @@ namespace KillerShell
 
             ShutdownMode = ShutdownMode.OnLastWindowClose;
             MainWindow = new MainWindow();
-            // Started from the Run value: open minimized on the taskbar.
+            // Started from the Run value: open minimized on the taskbar. After SourceInitialized,
+            // where the window takes its saved size and maximized state (WindowBounds.cs), so the
+            // first restore comes back maximized when the last window was.
             if (KillerFamily.Deployment.StartupRegistration.HasMinimizedArgument(e.Args))
-                KillerFamily.Deployment.StartupRegistration.StartMinimized(MainWindow);
+            {
+                var window = MainWindow;
+                window.SourceInitialized += (_, _) => KillerFamily.Deployment.StartupRegistration.StartMinimized(window);
+            }
             MainWindow.Show();
         }
 
