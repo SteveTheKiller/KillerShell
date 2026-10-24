@@ -46,6 +46,16 @@ public sealed class TerminalProfileTests
         Assert.Equal(program, handoff.ExePath);
     }
 
+    // A PowerShell started from its Start menu shortcut hands over a console titled "Windows
+    // PowerShell", not a path; the process says which file it runs.
+    [Fact]
+    public void AHandedOffProgramIsKnownByTheFileItsProcessRuns()
+    {
+        using var self = System.Diagnostics.Process.GetCurrentProcess();
+        Assert.Equal(self.MainModule!.FileName, KillerShell.Shell.MainWindow.ImagePath(self.Id), ignoreCase: true);
+        Assert.Null(KillerShell.Shell.MainWindow.ImagePath(0));
+    }
+
     [Theory]
     [InlineData("cmd.exe", "Cmd", "cls\r")]
     [InlineData("powershell.exe", "PowerShell", "cls\r")]

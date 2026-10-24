@@ -36,7 +36,7 @@ namespace KillerShell.Shell
 
             // The default profile's look, so a program started from Explorer looks like the shells
             // opened here; never its command, because the program is already running.
-            string program = ProgramPath(console.Info);
+            string program = ProgramPath(console.Info, console.Connection.ProcessId);
             var profile = TerminalProfile.Handoff(TerminalProfileStore.Default(), IsElevated, program);
             var tab = CreateTerminalTabIn(Pane, profile, HomeFolder, console.Connection,
                                           ConsoleTitle(console.Info));
@@ -58,16 +58,45 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
-        /// The program's file, when the console title is its path (it is, unless a shortcut named
-        /// it): the tab strip shows that file's own icon. Command Prompt's otherwise.
+        /// The program's file: the one its process runs, which a Start menu shortcut's title
+        /// ("Windows PowerShell") cannot tell apart from Command Prompt. The tab strip shows its
+        /// icon, and Clear and the folder box speak its language (TerminalProfile.Handoff). The
+        /// console title when it is a path, and Command Prompt's as the last resort.
         /// </summary>
-        private static string ProgramPath(HandoffStartupInfo info)
+        private static string ProgramPath(HandoffStartupInfo info, int processId)
         {
+            if (ImagePath(processId) is { } image) return image;
             string title = info.Title.Trim();
             try { if (Path.IsPathRooted(title) && File.Exists(title)) return title; }
             catch (ArgumentException) { }
             return Path.Combine(Environment.SystemDirectory, "cmd.exe");
         }
+
+        /// <summary>The executable a running process was started from; null when it cannot be read.</summary>
+        internal static string? ImagePath(int processId)
+        {
+            if (processId <= 0) return null;
+            IntPtr process = OpenProcess(ProcessQueryLimitedInformation, false, processId);
+            if (process == IntPtr.Zero) return null;
+            try
+            {
+                var buffer = new System.Text.StringBuilder(1024);
+                int size = buffer.Capacity;
+                return QueryFullProcessImageName(process, 0, buffer, ref size) ? buffer.ToString(0, size) : null;
+            }
+            finally { CloseHandle(process); }
+        }
+
+        private const int ProcessQueryLimitedInformation = 0x1000;
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr OpenProcess(int access, bool inherit, int processId);
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern bool QueryFullProcessImageName(IntPtr process, int flags, System.Text.StringBuilder name, ref int size);
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern bool CloseHandle(IntPtr handle);
 
         /// <summary>
         /// The console title is a shortcut's name or the program's full path. A tab has room for
