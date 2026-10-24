@@ -8,6 +8,7 @@ using Xunit;
 namespace KillerShell.Tests.Terminal;
 
 [Collection(NativeAccessibilityCollection.Name)]
+[Trait("Category", "Window")]
 public sealed class ShortcutVisibilityTests
 {
     [Fact]

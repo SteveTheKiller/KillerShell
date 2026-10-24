@@ -163,8 +163,10 @@ foreach ($framework in $audit.projects[0].frameworks) {
 }
 
 # --- 3b. Release tests ---
-Step "Running Release tests"
-dotnet test (Join-Path $PSScriptRoot 'KillerShell.Tests\KillerShell.Tests.csproj') -c Release --no-restore --nologo -v quiet
+# Headless only. Test classes tagged [Trait("Category", "Window")] open real WPF windows on the
+# desktop. Those are run by hand before a release, never from this script.
+Step "Running Release tests (headless, Category!=Window)"
+dotnet test (Join-Path $PSScriptRoot 'KillerShell.Tests\KillerShell.Tests.csproj') -c Release --no-restore --nologo -v quiet --filter 'Category!=Window'
 if ($LASTEXITCODE -ne 0) { Fail 'Release tests failed - fix them before releasing' }
 
 # --- 3c. Translation gate ---

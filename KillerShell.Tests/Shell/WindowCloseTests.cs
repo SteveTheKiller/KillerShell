@@ -21,6 +21,7 @@ using Xunit;
 
 namespace KillerShell.Tests.Shell;
 
+[Trait("Category", "Window")]
 public sealed class WindowCloseTests
 {
     [Theory]

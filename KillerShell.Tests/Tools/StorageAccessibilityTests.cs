@@ -22,6 +22,7 @@ using Xunit;
 
 namespace KillerShell.Tests.Tools;
 
+[Trait("Category", "Window")]
 public sealed class StorageAccessibilityTests
 {
     [Theory]

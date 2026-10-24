@@ -17,6 +17,7 @@ using Xunit;
 
 namespace KillerShell.Tests.Editing;
 
+[Trait("Category", "Window")]
 public sealed class EditorSaveOrderingTests
 {
     [Fact]

@@ -19,6 +19,7 @@ using Xunit;
 
 namespace KillerShell.Tests.Services;
 
+[Trait("Category", "Window")]
 public sealed class FileArchiveDirectoryLinksTests
 {
     [Theory]

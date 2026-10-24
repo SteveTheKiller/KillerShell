@@ -10,6 +10,7 @@ using Xunit;
 
 namespace KillerShell.Tests.Terminal;
 
+[Trait("Category", "Window")]
 public sealed class ShortcutMapTests
 {
     [Fact]

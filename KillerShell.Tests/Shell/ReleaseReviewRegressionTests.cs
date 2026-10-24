@@ -17,6 +17,7 @@ namespace KillerShell.Tests.Terminal;
 
 // Regressions for the 1.5.0 release review of ef3d12f..6d8cbfc.
 [Collection(NativeAccessibilityCollection.Name)]
+[Trait("Category", "Window")]
 public sealed class ReleaseReviewRegressionTests
 {
     [Fact]

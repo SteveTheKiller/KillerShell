@@ -12,6 +12,7 @@ using Xunit;
 
 namespace KillerShell.Tests;
 
+[Trait("Category", "Window")]
 public sealed class ClassicTextBoxBevelTests
 {
     [Fact]
