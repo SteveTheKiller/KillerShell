@@ -37,9 +37,7 @@ namespace KillerShell.Services
             bool privileged = false;
             foreach (string sid in sids)
             {
-                // Local and domain accounts; not SYSTEM, LOCAL SERVICE or NETWORK SERVICE.
-                if (!sid.StartsWith("S-1-5-21-", StringComparison.Ordinal) ||
-                    string.Equals(sid, self, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!IsUserProfile(sid) || string.Equals(sid, self, StringComparison.OrdinalIgnoreCase)) continue;
                 try
                 {
                     if (IsLoaded(sid))
@@ -53,6 +51,14 @@ namespace KillerShell.Services
                 catch { /* the next profile still gets its turn */ }
             }
         }
+
+        /// <summary>
+        /// A person's profile: local and domain accounts (S-1-5-21-) and Microsoft Entra ID
+        /// accounts on an Entra-joined PC (S-1-12-1-), the people an Intune uninstall runs for.
+        /// Not SYSTEM, LOCAL SERVICE, NETWORK SERVICE or service accounts.
+        /// </summary>
+        internal static bool IsUserProfile(string sid)
+            => sid.StartsWith("S-1-5-21-", StringComparison.Ordinal) || sid.StartsWith("S-1-12-1-", StringComparison.Ordinal);
 
         private static bool IsLoaded(string name)
         {

@@ -11,6 +11,18 @@ public sealed class UserHiveStoreTests
     private const string Sid = "S-1-5-21-1-2-3-1001";
     private const string MachineExe = @"C:\Program Files\KillerShell\KillerShell.exe";
 
+    // An all-users uninstall run by Intune on an Entra-joined PC must reach the people who sign in
+    // there: their profiles carry Entra ID SIDs (S-1-12-1-), not local or domain ones (S-1-5-21-).
+    [Theory]
+    [InlineData("S-1-5-21-1-2-3-1001", true)]
+    [InlineData("S-1-12-1-1111111111-2222222222-3333333333-4444444444", true)]
+    [InlineData("S-1-5-18", false)]
+    [InlineData("S-1-5-19", false)]
+    [InlineData("S-1-5-20", false)]
+    [InlineData("S-1-5-80-1-2-3-4-5", false)]
+    public void UninstallReachesLocalDomainAndEntraAccounts(string sid, bool reached)
+        => Assert.Equal(reached, UserHives.IsUserProfile(sid));
+
     [Fact]
     public void ClassesGoToTheUsersClassesHive()
     {
