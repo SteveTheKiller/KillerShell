@@ -20,6 +20,13 @@ namespace KillerShell.Shell
             ScaleHost.SizeChanged += (_, _) => UpdateTitleSearchSize();
             TitleSearchSurface.SizeChanged += (_, _) => UpdateTitleSearchPlacement();
             LocationChanged += (_, _) => { if (_searchOpen) TitleSearchPopup.IsOpen = false; };
+            // A press anywhere else in the window closes the flyout. The flyout is its own popup
+            // window, so a press that reaches this handler is outside it by definition. The
+            // search button keeps its own toggle; closing here as well would reopen it.
+            PreviewMouseDown += (_, _) =>
+            {
+                if (_searchOpen && !SearchPanelBtn.IsMouseOver) TitleSearchPopup.IsOpen = false;
+            };
             // The flyout is a topmost popup, so switching to another app has to close it. A dialog
             // of ours, such as the folder picker, keeps it open.
             Deactivated += (_, _) => Dispatcher.BeginInvoke(new Action(() =>

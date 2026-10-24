@@ -4,6 +4,17 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - Unreleased
+
+1.5.1 closes KillerSearch when you click elsewhere, keeps search roots from reading as missing under load, and outlines hovered tiles.
+
+### Fixed
+- KillerSearch closes when you click anywhere else in the window. It stayed open until you pressed Escape or clicked its button.
+- Search roots are checked on their own threads, so a busy moment no longer makes every root read as missing and a search come back empty.
+
+### Changed
+- A hovered tile in icon view shows a thin outline as well as its gray fill, so the pointer's target reads as a card.
+
 ## [1.5.0] - 2026-10-24
 
 1.5.0 can make KillerShell your default terminal and folder opener, adds docked details and a smoother Performance tab, and makes saves, copies and installs safer.
@@ -22,7 +33,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Terminal output cannot redirect a tab to a network share. Files extracted from downloaded archives retain Windows' internet safety mark, and CSV exports treat formula-like names as text.
 - CSV and HTML exports preserve existing reports when replacement fails. File, search and storage reports declare the language they are written in, for every app language. Report columns sort from the keyboard, show visible focus and announce their sort order.
 - Bundled KillerPivot verifies tenant connections, disconnects a Graph session left from another tenant when switching, reports incomplete disconnects, and preserves configuration after failed saves. KillerScripts preserves Unicode text, complete caches, and immutable script versions needed by detached child launches.
-- Search remains cancellable with complex wildcards, empty folders and large text files. Background work no longer stalls search workers. Navigating while a search checks its folders keeps the new listing. Search roots are checked on their own threads, so a busy moment no longer makes every root read as missing. Unicode content search uses bounded previews and reports incomplete results; recursive search, copy and archive addition skip directory links and report counts.
+- Search remains cancellable with complex wildcards, empty folders and large text files. Background work no longer stalls search workers. Navigating while a search checks its folders keeps the new listing. Unicode content search uses bounded previews and reports incomplete results; recursive search, copy and archive addition skip directory links and report counts.
 - File and folder pickers remain responsive during storage reads, ignore stale results, and keep invalid input in the dialog. A folder with more than 10,000 items, or too slow to read in 10 seconds, opens with what was read and says so. Canceled administrator requests and failed file opens report errors without closing the app.
 - Both panes restore their tabs and search options, including hidden tabs. Delayed tab closure stays in its owning pane without stealing focus or interrupting the other pane's folder updates.
 - Service restarts finish after their tab or window closes, with failures reported or logged. Silent installation returns a retryable busy code when KillerShell is running.
@@ -39,7 +50,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Search opens below its title-bar button, with a KillerSearch heading, the window background, a clear accent border and one close control replacing its button. One scope dropdown chooses the current folder, open tabs, whole computer or existing results. Its compact vertical form grows with terms and filters, scrolls as one panel, and includes a sliding pattern-help drawer. Single-row pane toolbars keep the address editable, with standard sort dropdowns and responsive button overflow. Each window remembers its view settings. New folders default to Modified, newest first; Ctrl+scroll cycles list, details and icon sizes.
 - Performance graphs scroll smoothly and their numbers count to each new reading instead of jumping once a second; auto-scaled graphs zoom to fit a new peak the same way. The summary boxes carry a large hardware icon in their upper right corner that shrinks, then gives way, before the reading shrinks in a narrow window, and the CPU, memory and GPU cards name their hardware beside one.
 - Tabs can sit at the top or bottom of each window, with subtle corners, stable label spacing and larger close targets. With the tabs below, the current tab is part of the folder it shows: while there is more to scroll, the list's bottom shadow runs on into the tab as one fade, and the row of icons cut off at the list's foot carries on across the tab and fades out partway down it.
-- A hovered tile in icon view shows a thin outline as well as its gray fill, so the pointer's target reads as a card.
 - With two panes open, the pane without focus dims slightly so the focused one stands out. Windows contrast themes keep both at full strength.
 - Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.
 - Dropping files on a saved place always moves them, including across drives.

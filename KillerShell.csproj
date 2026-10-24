@@ -13,9 +13,9 @@
     <AssemblyTitle>KillerShell</AssemblyTitle>
     <Product>KillerShell</Product>
     <RootNamespace>KillerShell</RootNamespace>
-    <Version>1.5.0</Version>
-    <FileVersion>1.5.0.0</FileVersion>
-    <AssemblyVersion>1.5.0.0</AssemblyVersion>
+    <Version>1.5.1</Version>
+    <FileVersion>1.5.1.0</FileVersion>
+    <AssemblyVersion>1.5.1.0</AssemblyVersion>
     <Authors>Steve the Killer</Authors>
     <Copyright>Copyright (c) 2026 Steve the Killer</Copyright>
     <!-- Displayed semantic version, matching Version. -->
