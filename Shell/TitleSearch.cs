@@ -145,9 +145,8 @@ namespace KillerShell.Shell
         /// (SearchRoots.ProbeAsync). Directory.Exists on a drive root is the same readiness test
         /// DriveInfo.IsReady made, and both could stall for seconds on a dead network drive.
         /// </summary>
-        private async System.Threading.Tasks.Task<List<string>> ResolveTitleSearchRootsAsync()
+        private async System.Threading.Tasks.Task<List<string>> ResolveTitleSearchRootsAsync(List<string> candidates)
         {
-            var candidates = TitleSearchRootCandidates();
             if (DemoMode) return candidates;
             return await Services.SearchRoots.ProbeAsync(candidates, Directory.Exists, Services.SearchRoots.ProbeTimeout);
         }

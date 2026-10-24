@@ -543,12 +543,18 @@ namespace KillerShell.Shell
             // A second Search while the roots are still being checked would start twice.
             if (_resolvingSearchRoots) return;
             CaptureTab(tab);
+            string sourceFolder = tab.CurrentFolder;
+            int searchScope = _titleSearchScope;
+            var rootCandidates = TitleSearchRootCandidates();
 
             List<string> searchRoots;
             _resolvingSearchRoots = true;
-            try { searchRoots = await ResolveTitleSearchRootsAsync(); }
+            try { searchRoots = await ResolveTitleSearchRootsAsync(rootCandidates); }
             finally { _resolvingSearchRoots = false; }
-            if (tab.IsSearching || !ReferenceEquals(tab, _active)) return;
+            if (tab.IsSearching || !ReferenceEquals(tab, _active)
+                || !string.Equals(sourceFolder, tab.CurrentFolder, StringComparison.OrdinalIgnoreCase)
+                || searchScope != _titleSearchScope
+                || !rootCandidates.SequenceEqual(TitleSearchRootCandidates(), StringComparer.OrdinalIgnoreCase)) return;
             string root = tab.RootPath.Trim();
             string? pickedRoot = null;
             if (!DemoMode && tab.PipeFiles == null && searchRoots.Count == 0)
