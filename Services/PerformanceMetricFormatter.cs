@@ -26,6 +26,9 @@ namespace KillerShell.Services
         {
             const double kb = 1024;
             const double mb = kb * 1024;
+            const double gb = mb * 1024;
+            // From 1000 MB/s on, so no reading is wider than "999.9 MB/s".
+            if (bytesPerSecond >= 1000 * mb) return (bytesPerSecond / gb).ToString("0.0", CultureInfo.InvariantCulture) + " GB/s";
             if (bytesPerSecond >= mb) return (bytesPerSecond / mb).ToString("0.0", CultureInfo.InvariantCulture) + " MB/s";
             if (bytesPerSecond >= kb) return (bytesPerSecond / kb).ToString("0.0", CultureInfo.InvariantCulture) + " KB/s";
             return bytesPerSecond.ToString("0", CultureInfo.InvariantCulture) + " B/s";

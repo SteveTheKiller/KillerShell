@@ -16,6 +16,9 @@ namespace KillerShell.Tests.Services
         [InlineData(512, "512 B/s")]
         [InlineData(1536, "1.5 KB/s")]
         [InlineData(1572864, "1.5 MB/s")]
+        // A saturated 10 GbE link or several busy adapters summed: never wider than 999.9 MB/s,
+        // the widest reading the summary box is sized for.
+        [InlineData(1250000000, "1.2 GB/s")]
         public void Throughput_UsesBinaryUnits(double value, string expected)
             => Assert.Equal(expected, PerformanceMetricFormatter.Throughput(value));
 
