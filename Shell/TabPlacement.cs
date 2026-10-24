@@ -31,7 +31,7 @@ namespace KillerShell.Shell
             SetTabPlacement(GetWindowViewSetting("TabsAtBottom") == "1", persist: false);
         }
 
-        private void SetTabPlacement(bool bottom, bool persist = true)
+        internal void SetTabPlacement(bool bottom, bool persist = true)
         {
             TabsAtBottom = bottom;
             Grid.SetRow(LeftPane.TabBar, bottom ? 2 : 0);

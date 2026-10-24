@@ -34,6 +34,10 @@ namespace KillerShell
             // (Chrome.cs WndProc); this only points that hook at the pane under the pointer.
             PreviewMouseDown += (_, _) => Owner.FocusPane(this);
 
+            // Under a fractional app scale the pane's side edges land between device pixels and
+            // its rounded corners smear on one side and not the other; see SnapPaneSidesToPixels.
+            PaneStack.LayoutUpdated += (_, _) => SnapPaneSidesToPixels();
+
             // Every tile/row/card DataTemplate reaches ViewState through ResultsList.Tag rather
             // than a RelativeSource walk up to this UserControl, or the icons fail to load.
             // RelativeSource AncestorType=local:FilePane is what the first cut
@@ -57,6 +61,71 @@ namespace KillerShell
                 new ScrollChangedEventHandler(PaneScroller_ScrollChanged), handledEventsToo: true);
         }
 
+        /// <summary>
+        /// Lands the pane's left and right edges on whole device pixels under the app scale
+        /// (AppScale.cs ScaleHost.LayoutTransform). Layout rounding works in the element's own
+        /// units and knows nothing about a LayoutTransform above it, so at 1.1 a pane 900 wide
+        /// starting at x=46 spans 50.6 to 1040.6 device pixels: its left stroke and corner arcs
+        /// come out as two half-tone columns while the right side happens to fall crisp, or the
+        /// other way round, depending on the window width. That is the "lopsided corners" at any
+        /// scale but 1:1. A render transform nudges the pane sideways by the sub-pixel remainder
+        /// and stretches it by the fraction of a pixel that makes its width whole, which is under
+        /// a tenth of a percent and invisible, without touching layout, so nothing re-measures and
+        /// nothing can loop. Only the horizontal axis is snapped: the top and bottom edges are
+        /// shared with the tab band, and moving them would open a hairline at the tab join. The
+        /// band and the close-fade ghost get the same nudge so the strip stays flush with the
+        /// pane's sides.
+        /// </summary>
+        private void SnapPaneSidesToPixels()
+        {
+            if (PresentationSource.FromVisual(PaneStack) is not { RootVisual: Visual root } || !PaneStack.IsDescendantOf(root))
+                return;
+            if (PaneStack.TransformToAncestor(root) is not Transform toRoot) return;
+            Matrix toDevice = toRoot.Value;
+            toDevice.Append(PresentationSource.FromVisual(PaneStack)!.CompositionTarget.TransformToDevice);
+            double sx = toDevice.M11;
+            // A rotated or sheared host has no straight edges to snap; 1:1 needs none.
+            if (toDevice.M12 != 0 || toDevice.M21 != 0 || sx <= 0 || Math.Abs(sx - Math.Round(sx)) < 0.0005)
+            {
+                ClearSnap(ResultsPane); ClearSnap(TabBar); ClearSnap(TabFadeGhost);
+                return;
+            }
+            Vector offset = VisualTreeHelper.GetOffset(ResultsPane);
+            double width = ResultsPane.ActualWidth;
+            if (width <= 0) return;
+            double left = toDevice.Transform(new Point(offset.X, 0)).X;
+            double right = toDevice.Transform(new Point(offset.X + width, 0)).X;
+            double snappedLeft = Math.Round(left), snappedRight = Math.Round(right);
+            if (snappedRight - snappedLeft < 1) return;
+            double shift = (snappedLeft - left) / sx;
+            double stretch = (snappedRight - snappedLeft) / (right - left);
+            ApplySnap(ResultsPane, shift, stretch);
+            ApplySnap(TabFadeGhost, shift, stretch);
+            // The band shares the pane's side margins, so the same correction lands its edges.
+            ApplySnap(TabBar, shift, stretch);
+        }
+
+        private static void ApplySnap(FrameworkElement element, double shift, double stretch)
+        {
+            if (element.RenderTransform is TransformGroup group && group.Children.Count == 2
+                && group.Children[0] is ScaleTransform scale && group.Children[1] is TranslateTransform move)
+            {
+                if (Math.Abs(scale.ScaleX - stretch) > 1e-6) scale.ScaleX = stretch;
+                if (Math.Abs(move.X - shift) > 1e-6) move.X = shift;
+                return;
+            }
+            element.RenderTransformOrigin = new Point(0, 0);
+            element.RenderTransform = new TransformGroup
+            {
+                Children = { new ScaleTransform(stretch, 1), new TranslateTransform(shift, 0) }
+            };
+        }
+
+        private static void ClearSnap(FrameworkElement element)
+        {
+            if (element.RenderTransform is TransformGroup) element.RenderTransform = Transform.Identity;
+        }
+
         // Same rule as UnclippedGrid: a zoom-rounded arrange must not cut off the pane shadow.
         protected override Geometry? GetLayoutClip(Size layoutSlotSize)
             => ClipToBounds ? base.GetLayoutClip(layoutSlotSize) : null;
@@ -71,7 +140,7 @@ namespace KillerShell
             new PropertyMetadata(false, (d, _) => ((FilePane)d).ApplyBottomTabShadow()));
         public bool HasBottomTabShadow => (bool)GetValue(HasBottomTabShadowProperty);
 
-        // The list's own bottom cue steps aside while BottomTabListShadow draws it, so the two
+        // The list's own bottom cue steps aside while TabScrollShadow draws it, so the two
         // never stack. Set on the scroller, not the pane, so the details panel keeps its cue.
         private ScrollViewer? _cueHiddenOn;
 
@@ -88,43 +157,109 @@ namespace KillerShell
                 _paneScroller.Resources["ScrollBottomCueBrush"] = Brushes.Transparent;
                 _cueHiddenOn = _paneScroller;
             }
-            BottomTabListShadow.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
-            if (on) Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
-                (Action)UpdateBottomTabShadowBrush);
+            TabScrollShadow.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+            if (!on) return;
+            UpdateTabScrollShadow();
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                (Action)UpdateTabScrollShadow);
+        }
+
+        /// <summary>The list's bottom cue height, which the overlay's fade starts above the band.</summary>
+        private const double ScrollShadowReach = 28;
+
+        /// <summary>
+        /// Lays out TabScrollShadow (FilePane.xaml): one gradient from 28px above the pane's
+        /// foot to the active tab's foot, clipped to the list's foot and the tab's face. Both
+        /// pieces are measured in the pane stack's own coordinates, so they line up with the
+        /// pane border and the tab wherever the frame, the zoom or the margins put them. The
+        /// active tab is upside down at the bottom (TabPlacement.cs), so its TopLeft and
+        /// TopRight radii are the ones that show at its foot. Until the tab's container exists
+        /// the list's foot alone is shaded, and the Loaded pass that follows adds the tab.
+        /// </summary>
+        internal void UpdateTabScrollShadow()
+        {
+            if (!HasBottomTabShadow || ResultsPane.ActualHeight <= 0 || !ResultsPane.IsDescendantOf(PaneStack)) return;
+
+            Rect pane = ResultsPane.TransformToAncestor(PaneStack).TransformBounds(new Rect(ResultsPane.RenderSize));
+            double top = pane.Bottom - ScrollShadowReach;
+            Thickness stroke = ResultsPane.BorderThickness;
+            CornerRadius paneRadius = ResultsPane.CornerRadius;
+            Geometry clip = PickerBorder.RoundedGeometry(
+                new Rect(pane.X + stroke.Left, 0, Math.Max(0, pane.Width - stroke.Left - stroke.Right), ScrollShadowReach),
+                new Size(0, 0), new Size(0, 0),
+                new Size(Math.Max(0, paneRadius.BottomRight - stroke.Right / 2), paneRadius.BottomRight),
+                new Size(Math.Max(0, paneRadius.BottomLeft - stroke.Left / 2), paneRadius.BottomLeft));
+            double bottom = pane.Bottom;
+
+            if (Active != null
+                && TabStrip.ItemContainerGenerator.ContainerFromItem(Active) is FrameworkElement container
+                && FindNamedBorder(container, "tabBd") is Border face && face.ActualHeight > 0 && face.IsDescendantOf(PaneStack))
+            {
+                Rect tab = face.TransformToAncestor(PaneStack).TransformBounds(new Rect(face.RenderSize));
+                tab.Offset(0, -top);
+                CornerRadius tabRadius = face.CornerRadius;
+                Geometry tabFace = PickerBorder.RoundedGeometry(tab, new Size(0, 0), new Size(0, 0),
+                    new Size(tabRadius.TopRight, tabRadius.TopRight), new Size(tabRadius.TopLeft, tabRadius.TopLeft));
+                clip = new CombinedGeometry(GeometryCombineMode.Union, clip, tabFace);
+                bottom = Math.Max(bottom, tab.Bottom + top);
+                if (FindNamedBorder(container, "tabListPeek") is Border peek) UpdateTabListPeek(peek);
+            }
+
+            clip.Freeze();
+            TabScrollShadow.Margin = new Thickness(0, top, 0, 0);
+            TabScrollShadow.Height = Math.Max(0, bottom - top);
+            TabScrollShadow.Clip = clip;
         }
 
         /// <summary>
-        /// One gradient across the list's foot and the active tab's face: transparent 28px above
-        /// the tab, darkest at the tab's foot. Each half maps the same span in its own coordinates,
-        /// so the shade is identical on both sides of the join however the frame lines up.
+        /// Paints the active bottom tab's tabListPeek (FilePane.xaml) with the strip of the list
+        /// panel that lies just below the viewport, one to one and at the same x as the rows
+        /// above, so the row the list's foot cuts through carries on into the tab. The panel,
+        /// not the ScrollContentPresenter, is the brush's visual: the presenter clips to its
+        /// viewport and a VisualBrush honours that clip, which would leave the tab blank.
         /// </summary>
-        internal void UpdateBottomTabShadowBrush()
+        private void UpdateTabListPeek(Border peek)
         {
-            if (!HasBottomTabShadow || Active == null || BottomTabListShadow.ActualHeight <= 0
-                || TabStrip.ItemContainerGenerator.ContainerFromItem(Active) is not FrameworkElement tab
-                || FindNamedBorder(tab, "tabScrollShadow") is not Border face || face.ActualHeight <= 0)
-                return;
-
-            double faceTop = face.TranslatePoint(new Point(0, 0), BottomTabListShadow).Y;
-            double end = faceTop + face.ActualHeight;
-            if (end <= 0) return;
-            BottomTabListShadow.Background = BottomShadowSpan(0, end);
-            face.Background = BottomShadowSpan(-faceTop, end - faceTop);
-        }
-
-        private static LinearGradientBrush BottomShadowSpan(double start, double end)
-        {
-            var brush = new LinearGradientBrush
+            if (_paneScroller == null || peek.ActualHeight <= 0 || peek.ActualWidth <= 0
+                || FindViewportPresenter(_paneScroller) is not ScrollContentPresenter presenter
+                || presenter.Content is not UIElement content || !content.IsDescendantOf(PaneStack)
+                || !peek.IsDescendantOf(PaneStack))
             {
-                MappingMode = BrushMappingMode.Absolute,
-                StartPoint = new Point(0, start),
-                EndPoint = new Point(0, end)
+                peek.Background = null;
+                return;
+            }
+            Visual panel = VisualTreeHelper.GetChildrenCount(content) > 0 && VisualTreeHelper.GetChild(content, 0) is UIElement inner
+                ? inner : content;
+            if (panel is not FrameworkElement panelElement || panelElement.ActualWidth <= 0) { peek.Background = null; return; }
+
+            // The peek's own top-left, in the panel's coordinates: its grain margin lets it reach
+            // a few pixels up over the list's foot, and the strip it shows must be the rows under
+            // it exactly, or the icons in that overlap are drawn twice a few pixels apart and the
+            // join reads as a line. Measured from the peek itself, whatever its margins and flips.
+            Point origin = peek.TranslatePoint(new Point(0, 0), panelElement);
+            var brush = new VisualBrush(panelElement)
+            {
+                Stretch = Stretch.None,
+                AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top,
+                TileMode = TileMode.None,
+                ViewboxUnits = BrushMappingMode.Absolute,
+                Viewbox = new Rect(origin.X, origin.Y, peek.ActualWidth, peek.ActualHeight),
+                ViewportUnits = BrushMappingMode.Absolute,
+                Viewport = new Rect(0, 0, peek.ActualWidth, peek.ActualHeight)
             };
-            brush.GradientStops.Add(new GradientStop(Color.FromArgb(0x00, 0, 0, 0), 0));
-            brush.GradientStops.Add(new GradientStop(Color.FromArgb(0x38, 0, 0, 0), 0.5));
-            brush.GradientStops.Add(new GradientStop(Color.FromArgb(0x80, 0, 0, 0), 1));
-            brush.Freeze();
-            return brush;
+            peek.Background = brush;
+
+            // Fully there down to the seam, so the icons cross it unchanged, then gone about
+            // halfway down the tab's face.
+            double seam = presenter.TranslatePoint(new Point(0, presenter.ActualHeight), peek).Y;
+            double faceHeight = peek.ActualHeight - seam;
+            double fadeEnd = Math.Min(1, (seam + faceHeight * 0.55) / peek.ActualHeight);
+            var mask = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(0, 1) };
+            mask.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0, 0, 0), 0));
+            mask.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0, 0, 0), Math.Max(0, seam / peek.ActualHeight)));
+            mask.GradientStops.Add(new GradientStop(Color.FromArgb(0x00, 0, 0, 0), fadeEnd));
+            mask.Freeze();
+            peek.OpacityMask = mask;
         }
 
         private static Border? FindNamedBorder(DependencyObject root, string name)
@@ -253,6 +388,8 @@ namespace KillerShell
 
             if (!ReferenceEquals(_paneScroller, scroller)) SetPaneScroller(scroller);
             RefreshBottomTabShadow();
+            // The tab's peek into the list tracks the viewport as it scrolls.
+            if (HasBottomTabShadow) UpdateTabScrollShadow();
             if (scroller.ActualHeight <= 1) return;
 
             // The file browser and Performance read better with the original dark edge shadow:
@@ -510,7 +647,11 @@ namespace KillerShell
         // These two take the PANE rather than (sender, args): both act on this pane's own strip,
         // and the window's usual "act on whichever pane has focus" is a guess here - the band can
         // be resized by a splitter drag that never touched it.
-        private void TabBar_SizeChanged(object s, SizeChangedEventArgs e)  => Owner.TabBarResized(this);
+        private void TabBar_SizeChanged(object s, SizeChangedEventArgs e)
+        {
+            Owner.TabBarResized(this);
+            UpdateTabScrollShadow();
+        }
         private void TabOverflow_Click(object s, RoutedEventArgs e)        => Owner.TabOverflowMenu(this);
         private void TabPlacementMenu_Opened(object s, RoutedEventArgs e) => Owner.TabPlacementMenu_Opened(s, e);
         private void NewTab_Click(object s, RoutedEventArgs e)
@@ -585,6 +726,7 @@ namespace KillerShell
         private void PaneContent_SizeChanged(object s, SizeChangedEventArgs e)
         {
             if (_paneScroller != null) SyncScrollChrome(_paneScroller);
+            UpdateTabScrollShadow();
 
             // The details columns are pixel widths shared by both panes, so they have to be
             // re-fitted whenever either pane changes size (ResultsView.UpdateColumnFit).

@@ -40,12 +40,39 @@
                 </Style>
             </UserControl.Resources>
 
-            <Grid>
+            <Grid x:Name="PaneStack">
               <Grid.RowDefinitions>
                   <RowDefinition Height="Auto"/>
                   <RowDefinition Height="*"/>
                   <RowDefinition Height="Auto"/>
               </Grid.RowDefinitions>
+
+              <!-- THE BOTTOM SCROLL SHADOW WITH TABS BELOW THE LIST. The active tab is a
+                   continuation of the folder it shows, so the shadow that says "more below" is
+                   ONE gradient: transparent 28px above the band, darkest at the active tab's
+                   foot, drawn by this single overlay and clipped to the list's foot plus the
+                   active tab's face (FilePane.xaml.cs UpdateTabScrollShadow). It lives in the
+                   pane's outer stack because the tab band is a sibling of the pane, not a child,
+                   so nothing inside the pane's rounded clip could ever reach the tab. It sits
+                   ABOVE the band (ZIndex 30 over the band's 20) so the tab's icon and title
+                   darken with the rows above them instead of the tab reading as a hole in the
+                   shade, and the list's own 28px cue steps aside while it shows so the two never
+                   stack. Earlier builds drew this as two brushes, one in the list and one in the
+                   tab, and however the stops were tuned they met in a visible line or, when the
+                   handoff failed to find the tab, in no shadow at all. Hidden when the list is
+                   scrolled to its end, when the status bar or a details panel sits between the
+                   list and the band, and whenever the tabs are on top. -->
+              <Border x:Name="TabScrollShadow" Grid.Row="1" Grid.RowSpan="2" Panel.ZIndex="30"
+                      IsHitTestVisible="False" VerticalAlignment="Top" Visibility="Collapsed"
+                      Opacity="{DynamicResource EdgeFadeOpacity}">
+                  <Border.Background>
+                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                          <GradientStop Color="#00000000" Offset="0"/>
+                          <GradientStop Color="#38000000" Offset="0.5"/>
+                          <GradientStop Color="#80000000" Offset="1"/>
+                      </LinearGradientBrush>
+                  </Border.Background>
+              </Border>
 
               <!-- Tab band: hidden until there are 2+ tabs (like KillerPDF). Opaque + its own
                    grain so the strip reads as one textured band with the tabs sitting on it. -->
@@ -268,14 +295,22 @@
                                         <Border x:Name="tabGrain" IsHitTestVisible="False"
                                                 CornerRadius="{Binding CornerRadius, ElementName=tabBd}" Margin="{DynamicResource TabGrainMargin}"
                                                 Background="{DynamicResource GrainTileBrush}" Opacity="0"/>
-                                        <!-- The list's bottom scroll shadow, continued across the selected
-                                             tab's face. Its brush is the lower half of the gradient the
-                                             list's BottomTabListShadow starts (FilePane.xaml.cs
-                                             UpdateBottomTabShadowBrush). -->
-                                        <Border x:Name="tabScrollShadow" IsHitTestVisible="False"
-                                                CornerRadius="{Binding CornerRadius, ElementName=tabBd}"
-                                                Margin="{DynamicResource TabGrainMargin}"
-                                                Opacity="{DynamicResource EdgeFadeOpacity}" Visibility="Collapsed"/>
+                                        <!-- THE FOLDER CONTINUES INTO ITS TAB. With the tabs at the bottom
+                                             the active tab is part of the folder it shows, so the row of
+                                             icons cut off at the list's foot carries on across the tab's
+                                             face and fades out about halfway down it, under the same shadow
+                                             the list wears (PaneStack's TabScrollShadow). The brush is a live
+                                             view of the list panel just below its viewport, set from the real
+                                             positions in FilePane.xaml.cs UpdateTabScrollShadow so the icons
+                                             land at the same x as the rows above them. The tab is drawn
+                                             upside down at the bottom (TabPlacementTransform), so this layer
+                                             flips itself back the way tabContents does. Its brush and its
+                                             fade are both set in code from where it really sits, since its
+                                             grain margin reaches up over the list's foot. Only the active
+                                             tab shows it, and only while the list has more below. -->
+                                        <Border x:Name="tabListPeek" IsHitTestVisible="False" Visibility="Collapsed"
+                                                CornerRadius="{Binding CornerRadius, ElementName=tabBd}" Margin="{DynamicResource TabGrainMargin}"
+                                                RenderTransform="{DynamicResource TabPlacementTransform}" RenderTransformOrigin="0.5,0.5"/>
                                         <!-- Win98 tab bevel: light along the top and left, dark
                                              down the right. A Win98 tab is a raised control, not
                                              a flat card. The margins undo the
@@ -440,7 +475,7 @@
                                             <Condition Binding="{Binding IsActive}" Value="True"/>
                                             <Condition Binding="{Binding HasBottomTabShadow, RelativeSource={RelativeSource AncestorType=local:FilePane}}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
-                                        <Setter TargetName="tabScrollShadow" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="tabListPeek" Property="Visibility" Value="Visible"/>
                                     </MultiDataTrigger>
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
                                         <!-- 3px, matched by the pane's corners at each end of the band (Tabs.cs TabRadius). -->
@@ -704,13 +739,6 @@
                         BorderBrush="{DynamicResource DocumentPaneBevelInnerTopLeftBrush}"/>
                 <Border x:Name="PaneBevelInnerLight" IsHitTestVisible="False" Panel.ZIndex="110" Margin="1"
                         BorderBrush="{DynamicResource DocumentPaneBevelInnerBottomRightBrush}"/>
-                <!-- With the tabs at the bottom, the list's scroll shadow and its continuation on the
-                     active tab (tabScrollShadow) are one gradient, set from their real positions
-                     (FilePane.xaml.cs UpdateBottomTabShadowBrush), so the fade runs into the tab
-                     with no line where they meet. -->
-                <Border x:Name="BottomTabListShadow" IsHitTestVisible="False" Panel.ZIndex="99"
-                        Height="28" VerticalAlignment="Bottom" Visibility="Collapsed"
-                        Opacity="{DynamicResource EdgeFadeOpacity}"/>
                 <!-- Keep the pane frame visible for every tab and scroll position. -->
                 <Border x:Name="ResultsPaneBottomEdge" IsHitTestVisible="False" Panel.ZIndex="100"
                         BorderBrush="{DynamicResource PaneEdgeBrush}"
