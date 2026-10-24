@@ -12657,3 +12657,23 @@ if (I18N["kk"]) Object.assign(I18N["kk"], {"hx_124":"Көрсеткіштер с
 if (I18N["uk"]) Object.assign(I18N["uk"], {"hx_124":"Показники надходять раз на секунду; між ними числа доходять до нового значення, а графіки плавно прокручуються. Кожна панель зберігає власну висоту. Перетягніть картку за рядок заголовка в інше місце, зокрема у вільне місце під нижчою карткою. Подвійне клацання картки або <b>Enter</b> на ній згортає її до рядка заголовка або відновлює. Права кнопка або <b>Shift+F10</b> робить те саме, задає панелі одну чи дві колонки або скидає розташування. Розташування запам'ятовується."});
 if (I18N["nb"]) Object.assign(I18N["nb"], {"hx_124":"Målingene kommer én gang i sekundet; i mellomtiden teller tallene seg fram til den nye verdien og grafene ruller jevnt. Hvert panel beholder sin egen høyde. Dra et kort etter tittellinjen for å flytte det et annet sted, også inn i plassen under et lavere kort. Dobbeltklikk et kort, eller trykk <b>Enter</b> på det, for å minimere det til tittellinjen eller gjenopprette det. Høyreklikk eller <b>Shift+F10</b> gjør det samme, setter et panel til én eller to kolonner, eller tilbakestiller oppsettet. Oppsettet huskes."});
 if (I18N["pt"]) Object.assign(I18N["pt"], {"hx_124":"As leituras chegam uma vez por segundo; entre elas, os números contam até o novo valor e os gráficos rolam suavemente. Cada painel mantém sua própria altura. Arraste um cartão pela linha de título para colocá-lo em outro lugar, inclusive no espaço sob um cartão mais baixo. Clique duas vezes em um cartão, ou pressione <b>Enter</b> nele, para minimizá-lo à linha de título ou restaurá-lo. O botão direito ou <b>Shift+F10</b> faz o mesmo, deixa um painel com uma ou duas colunas ou redefine o layout. A disposição é lembrada."});
+// Screenshot caption part, the app's own Str_About_Title wording.
+if (I18N["sl"]) Object.assign(I18N["sl"], {"shot_about":"O programu KillerShell"});
+if (I18N["vi"]) Object.assign(I18N["vi"], {"shot_about":"Giới thiệu về KillerShell"});
+if (I18N["hu"]) Object.assign(I18N["hu"], {"shot_about":"A KillerShellről"});
+if (I18N["pl"]) Object.assign(I18N["pl"], {"shot_about":"KillerShell - informacje"});
+if (I18N["es"]) Object.assign(I18N["es"], {"shot_about":"Acerca de KillerShell"});
+if (I18N["de"]) Object.assign(I18N["de"], {"shot_about":"Über KillerShell"});
+if (I18N["fr"]) Object.assign(I18N["fr"], {"shot_about":"À propos de KillerShell"});
+if (I18N["tr"]) Object.assign(I18N["tr"], {"shot_about":"KillerShell Hakkında"});
+if (I18N["zh-cn"]) Object.assign(I18N["zh-cn"], {"shot_about":"关于 KillerShell"});
+if (I18N["zh"]) Object.assign(I18N["zh"], {"shot_about":"關於 KillerShell"});
+if (I18N["cs"]) Object.assign(I18N["cs"], {"shot_about":"O aplikaci KillerShell"});
+if (I18N["ja"]) Object.assign(I18N["ja"], {"shot_about":"KillerShell について"});
+if (I18N["bn"]) Object.assign(I18N["bn"], {"shot_about":"KillerShell সম্পর্কে"});
+if (I18N["it"]) Object.assign(I18N["it"], {"shot_about":"Informazioni su KillerShell"});
+if (I18N["ru"]) Object.assign(I18N["ru"], {"shot_about":"О программе KillerShell"});
+if (I18N["kk"]) Object.assign(I18N["kk"], {"shot_about":"KillerShell туралы"});
+if (I18N["uk"]) Object.assign(I18N["uk"], {"shot_about":"Про KillerShell"});
+if (I18N["nb"]) Object.assign(I18N["nb"], {"shot_about":"Om KillerShell"});
+if (I18N["pt"]) Object.assign(I18N["pt"], {"shot_about":"Sobre o KillerShell"});
