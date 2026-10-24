@@ -325,7 +325,7 @@
                                                    RenderTransform="{DynamicResource TabPlacementTransform}" RenderTransformOrigin="0.5,0.5">
                                             <!-- The larger close target extends into existing vertical
                                                  padding without increasing the tab strip's height. -->
-                                            <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Width="24" Height="24" Margin="4,-2,0,-2"
+                                            <Button x:Name="tabClose" DockPanel.Dock="Right" Content="x" Width="24" Height="24" Margin="4,-4,0,0"
                                                     FontSize="17" Padding="0" VerticalAlignment="Center" FocusVisualStyle="{x:Null}"
                                                     ToolTip="{DynamicResource Str_TT_CloseTab}" Tag="{Binding}" Click="CloseTab_Click">
                                                 <AutomationProperties.Name>
