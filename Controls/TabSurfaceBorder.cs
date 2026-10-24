@@ -36,6 +36,15 @@ namespace KillerShell
             var inner = new Rect(b.Left, b.Top, outer.Width - b.Left - b.Right, outer.Height - b.Top - b.Bottom);
             Geometry outerShape = TopRounded(outer, r.TopLeft, r.TopRight);
             Geometry face = TopRounded(inner, Math.Max(0, r.TopLeft - 1), Math.Max(0, r.TopRight - 1));
+            // On a single pane the outline's sides fade out toward the tab's foot, and the pane's
+            // own edge only starts below the tab, which left a gap between the two. The pane's
+            // edge runs on up the sides beneath the outline, so the accent fades into it.
+            if (DividerBrush is Brush edge && BorderBrush is not SolidColorBrush)
+            {
+                if (b.Left > 0) dc.DrawRectangle(edge, null, new Rect(0, r.TopLeft, b.Left, outer.Height - r.TopLeft));
+                if (b.Right > 0)
+                    dc.DrawRectangle(edge, null, new Rect(outer.Width - b.Right, r.TopRight, b.Right, outer.Height - r.TopRight));
+            }
             if (BorderBrush != null)
                 dc.DrawGeometry(BorderBrush, null, new CombinedGeometry(GeometryCombineMode.Exclude, outerShape, face));
             if (Background != null) dc.DrawGeometry(Background, null, face);
