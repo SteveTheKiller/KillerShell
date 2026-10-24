@@ -731,8 +731,6 @@
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Ikke tilordnede GPU-tellere</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Tilbakestill oppsett</sys:String>
-    <sys:String x:Key="Str_Perf_NetworkShort">Nett</sys:String>
-    <sys:String x:Key="Str_Perf_DiskShort">Disk</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">Én kolonne</sys:String>
     <sys:String x:Key="Str_Perf_TwoColumns">To kolonner</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Bufret</sys:String>

@@ -665,8 +665,6 @@
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Nicht zugeordnete GPU-Zähler</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Anordnung zurücksetzen</sys:String>
-    <sys:String x:Key="Str_Perf_NetworkShort">Netz</sys:String>
-    <sys:String x:Key="Str_Perf_DiskShort">Laufw.</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">Eine Spalte</sys:String>
     <sys:String x:Key="Str_Perf_TwoColumns">Zwei Spalten</sys:String>
     <sys:String x:Key="Str_Perf_InUse">In Verwendung</sys:String>

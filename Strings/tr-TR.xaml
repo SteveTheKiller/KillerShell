@@ -665,8 +665,6 @@
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Atanmamış GPU sayaçları</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Düzeni sıfırla</sys:String>
-    <sys:String x:Key="Str_Perf_NetworkShort">Ağ</sys:String>
-    <sys:String x:Key="Str_Perf_DiskShort">Disk</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">Tek sütun</sys:String>
     <sys:String x:Key="Str_Perf_TwoColumns">İki sütun</sys:String>
     <sys:String x:Key="Str_Perf_InUse">Kullanımda</sys:String>

@@ -36,7 +36,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Changed
 - Search opens below its title-bar button, with a KillerSearch heading, the window background, a clear accent border and one close control replacing its button. One scope dropdown chooses the current folder, open tabs, whole computer or existing results. Its compact vertical form grows with terms and filters, scrolls as one panel, and includes a sliding pattern-help drawer. Single-row pane toolbars keep the address editable, with standard sort dropdowns and responsive button overflow. Each window remembers its view settings. New folders default to Modified, newest first; Ctrl+scroll cycles list, details and icon sizes.
-- Performance graphs scroll smoothly and their numbers count to each new reading instead of jumping once a second; auto-scaled graphs zoom to fit a new peak the same way. The summary boxes and the CPU, memory and GPU cards name their hardware beside a large icon.
+- Performance graphs scroll smoothly and their numbers count to each new reading instead of jumping once a second; auto-scaled graphs zoom to fit a new peak the same way. The summary boxes carry a large hardware icon in their upper right corner, and the CPU, memory and GPU cards name their hardware beside one.
 - Tabs can sit at the top or bottom of each window, with subtle corners, stable label spacing and larger close targets.
 - With two panes open, the pane without focus dims slightly so the focused one stands out. Windows contrast themes keep both at full strength.
 - Light is shades of gray with nothing white: the background, sidebar and footer are the darkest gray (#cccccc), menus and bars a step lighter, then panes, then fields.

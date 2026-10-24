@@ -697,8 +697,6 @@
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Contatori GPU non assegnati</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Ripristina la disposizione</sys:String>
-    <sys:String x:Key="Str_Perf_NetworkShort">Rete</sys:String>
-    <sys:String x:Key="Str_Perf_DiskShort">Disco</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">Una colonna</sys:String>
     <sys:String x:Key="Str_Perf_TwoColumns">Due colonne</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Nella cache</sys:String>

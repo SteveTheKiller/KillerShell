@@ -665,8 +665,6 @@
     <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Contadores de GPU sin asignar</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Restablecer la disposición</sys:String>
-    <sys:String x:Key="Str_Perf_NetworkShort">Red</sys:String>
-    <sys:String x:Key="Str_Perf_DiskShort">Disco</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">Una columna</sys:String>
     <sys:String x:Key="Str_Perf_TwoColumns">Dos columnas</sys:String>
     <sys:String x:Key="Str_Perf_InUse">En uso</sys:String>

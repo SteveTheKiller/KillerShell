@@ -688,8 +688,6 @@
   <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
     <sys:String x:Key="Str_Perf_GpuUnassigned">Bộ đếm GPU chưa được gán</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Đặt lại bố cục</sys:String>
-    <sys:String x:Key="Str_Perf_NetworkShort">Mạng</sys:String>
-    <sys:String x:Key="Str_Perf_DiskShort">Đĩa</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">Một cột</sys:String>
     <sys:String x:Key="Str_Perf_TwoColumns">Hai cột</sys:String>
   <sys:String x:Key="Str_Perf_Cached">Đã lưu vào bộ nhớ đệm</sys:String>
