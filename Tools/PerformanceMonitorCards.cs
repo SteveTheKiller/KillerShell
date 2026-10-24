@@ -125,6 +125,14 @@ namespace KillerShell.Tools
                     _pressedAt = e.GetPosition(this);
                 };
             }
+            // A double-click anywhere on a card minimizes or restores it, as on a window's title bar.
+            card.Frame.MouseLeftButtonDown += (_, e) =>
+            {
+                if (e.ClickCount != 2) return;
+                _pressedCard = null;   // the second click of a double-click never starts a drag
+                e.Handled = true;
+                SetCardFolded(card, !card.Folded);
+            };
             card.Frame.MouseRightButtonUp += (_, e) =>
             {
                 e.Handled = true;
