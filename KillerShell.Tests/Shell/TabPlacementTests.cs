@@ -125,12 +125,15 @@ public static class TabPlacementScenario
                 AssertPlacement(window, bottom: true);
                 Assert.Equal(0, left.ResultsPane.Margin.Top);
                 Assert.True(left.ResultsPane.Margin.Bottom < 0);
-                Assert.Equal(0, left.ResultsPane.CornerRadius.BottomLeft);
-                Assert.Equal(0, left.ResultsPane.CornerRadius.BottomRight);
+                // The pane's corner under the active tab stays square; the other end of the band
+                // takes the tabs' 3px softening, or none on a flat theme (Tabs.cs TabSideCorners).
+                double soft = Math.Min(3.0, Application.Current.TryFindResource("PaneCornerRadiusValue") is double r ? r : 6.0);
+                Assert.Equal(left.Active.IsFirst ? 0 : soft, left.ResultsPane.CornerRadius.BottomLeft);
+                Assert.Equal(left.Active.IsLast ? 0 : soft, left.ResultsPane.CornerRadius.BottomRight);
                 var selected = MenuBarTabBlendScenario.TabBorder(left, left.Active);
                 Assert.Equal(0, selected.Margin.Top);
-                Assert.Equal(2, selected.CornerRadius.TopLeft);
-                Assert.Equal(2, selected.CornerRadius.TopRight);
+                Assert.Equal(3, selected.CornerRadius.TopLeft);
+                Assert.Equal(3, selected.CornerRadius.TopRight);
             }
             Assert.Contains(settings, pair => pair.Key.StartsWith("WindowView.")
                 && pair.Key.EndsWith(".TabsAtBottom") && pair.Value == "1");

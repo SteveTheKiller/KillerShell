@@ -268,7 +268,9 @@ public sealed class TerminalProfileTests
         });
         thread.SetApartmentState(System.Threading.ApartmentState.STA);
         thread.Start();
-        Assert.True(thread.Join(TimeSpan.FromSeconds(10)), "The profile menu fixture timed out while " + System.Threading.Volatile.Read(ref stage) + ".");
+        // 30 seconds: on the 2 GiB lab guest, mid-suite, this thread once sat over 10 seconds before
+        // its first line ran ("starting the STA thread"), with nothing of the menu yet involved.
+        Assert.True(thread.Join(TimeSpan.FromSeconds(30)), "The profile menu fixture timed out while " + System.Threading.Volatile.Read(ref stage) + ".");
         if (failure != null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
     }
 }
