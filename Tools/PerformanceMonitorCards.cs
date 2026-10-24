@@ -71,7 +71,7 @@ namespace KillerShell.Tools
             internal readonly FrameworkElement Host;
         }
 
-        private readonly Services.DashboardLayout _layout =
+        private Services.DashboardLayout _layout =
             Services.DashboardLayout.Parse(Services.ThemeManager.GetSetting(LayoutSetting));
 
         // In the designed order, and as shown.
@@ -133,11 +133,35 @@ namespace KillerShell.Tools
                 e.Handled = true;
                 SetCardFolded(card, !card.Folded);
             };
-            card.Frame.MouseRightButtonUp += (_, e) =>
+            // The menu opens from the mouse and from the keyboard (Shift+F10, the Menu key), as the
+            // other tool tabs' menus do (ProcessListControl). A card takes focus, Enter or Space
+            // minimizes or restores it, and a screen reader hears its title.
+            card.Frame.Focusable = true;
+            card.Frame.ContextMenuOpening += (_, e) =>
             {
                 e.Handled = true;
                 ShowCardMenu(card);
             };
+            card.Frame.KeyDown += (_, e) =>
+            {
+                if (e.Key is not (Key.Enter or Key.Space) || Keyboard.Modifiers != ModifierKeys.None) return;
+                e.Handled = true;
+                SetCardFolded(card, !card.Folded);
+            };
+            card.Frame.Loaded += (_, _) =>
+            {
+                if (FirstText(card.Handles[0]) is { } title)
+                    System.Windows.Automation.AutomationProperties.SetName(card.Frame, title);
+            };
+        }
+
+        /// <summary>The first non-empty text in a card's header: its name, for a screen reader.</summary>
+        private static string? FirstText(DependencyObject root)
+        {
+            if (root is TextBlock { Text: { Length: > 0 } text }) return text;
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+                if (FirstText(VisualTreeHelper.GetChild(root, i)) is { } found) return found;
+            return null;
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -264,6 +288,7 @@ namespace KillerShell.Tools
 
         private void SetCardFolded(DashboardCard card, bool folded)
         {
+            ReloadLayout();
             _layout.SetFolded(card.Area, card.Id, folded);
             SaveLayout();
             ApplyFold(card);
@@ -271,6 +296,7 @@ namespace KillerShell.Tools
 
         private void SetCardWide(DashboardCard card, bool wide)
         {
+            ReloadLayout();
             _layout.SetWide(card.Area, card.Id, wide);
             SaveLayout();
             ArrangePanels();
@@ -282,6 +308,13 @@ namespace KillerShell.Tools
             SaveLayout();
             ArrangeCards();
         }
+
+        /// <summary>
+        /// Each window has its own Performance tab and one saved layout between them: a change
+        /// starts from what is saved, so it does not write back an older copy over a change made
+        /// in another window since.
+        /// </summary>
+        private void ReloadLayout() => _layout = Services.DashboardLayout.Parse(Services.ThemeManager.GetSetting(LayoutSetting));
 
         private void SaveLayout() => Services.ThemeManager.SetSetting(LayoutSetting, _layout.Serialize());
 
@@ -405,6 +438,7 @@ namespace KillerShell.Tools
             if (!commit || target == null) return;
 
             var shown = Ids(SlotsOf(card.Area));
+            ReloadLayout();
             var slots = _layout.Move(card.Area, shown, card.Id, target.Id, drop);
             if (Services.DashboardLayout.Same(slots, shown)) return;
             SaveLayout();
