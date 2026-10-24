@@ -53,6 +53,8 @@ namespace KillerShell.Shell
 
         private void ApplyTreeSide()
         {
+            LeftPane.QueueSnap();    // the panes move to the other side at the same width
+            RightPane.QueueSnap();
             if (_treeMirrored != _treeRight)
             {
                 MirrorColumns(ScaleHost);

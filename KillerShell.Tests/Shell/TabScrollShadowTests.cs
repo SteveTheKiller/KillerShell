@@ -56,8 +56,12 @@ internal static class PaneRender
     internal static byte[] Pixels(Window window, string name, out int width, out int height, out int stride)
     {
         var root = Screen(window);
-        root.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Render, new Action(() => { }));
         root.UpdateLayout();
+        // LayoutUpdated handlers, the pane's device-pixel snap among them, run from the
+        // dispatcher after the layout pass, so let those queued passes run before reading pixels.
+        for (int pass = 0; pass < 3; pass++)
+            root.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Loaded, new Action(() => root.UpdateLayout()));
+        root.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Render, new Action(() => { }));
         double scale = DeviceScale(window);
         width = (int)Math.Ceiling(root.ActualWidth * scale);
         height = (int)Math.Ceiling(root.ActualHeight * scale);
@@ -228,14 +232,28 @@ public static class PaneCornerScenario
         // lit from the top left, white down the left and black down the right, so its two
         // corners are meant to differ.
         var themes = new[] { KillerShell.Services.Theme.Dark, KillerShell.Services.Theme.Light, KillerShell.Services.Theme.Decay };
+        // Film grain is a random texture, so the two corners' pixels differ by design wherever
+        // it shows; the frame is compared without it.
+        Application.Current.Resources["GrainOpacity"] = 0.0;
+        // Every connected monitor in turn, so a scaled display (150% and the like) is checked
+        // with real per-monitor DPI and not only the one the hidden window happened to open on.
+        // The window is sized to fit inside each monitor's work area.
+        foreach (var monitor in Monitors.All())
+        {
+            ShellWindowFixture.PumpUntil(() => Monitors.MoveTo(window, monitor),
+                diagnostic: () => "could not place the window on " + monitor);
+            double displayScale = PaneRender.DeviceScale(window);
+            double fit = Math.Floor(monitor.Work.Width / displayScale) - 40;
+            double baseWidth = Math.Min(1140, fit - 8);
         foreach (double scale in new[] { 1.0, 1.1, 1.25 })
-        foreach (double windowWidth in new[] { 1140.0, 1143.0, 1147.0 })
+        foreach (double extra in new[] { 0.0, 3.0, 7.0 })
         foreach (KillerShell.Services.Theme theme in themes)
         {
+            double windowWidth = baseWidth + extra;
             window.Width = windowWidth;
             window.ApplyAppScale(scale);
             window.UpdateLayout();
-            string label = theme + "-x" + scale.ToString("0.00") + "-w" + windowWidth;
+            string label = theme + "-display" + (PaneRender.DeviceScale(window) * 100).ToString("0") + "-x" + scale.ToString("0.00") + "-w" + windowWidth;
             KillerShell.Services.ThemeManager.Apply(theme);
             // Down and back up, the way a user who tries the option leaves it; the chrome must
             // come back exactly as it was.
@@ -249,6 +267,7 @@ public static class PaneCornerScenario
             string? worst = Compare(window, pane, label, top: false);
             if (worst != null) failures.Add(label + " (tabs above, bottom corners): " + worst);
         }
+        }
         window.ApplyAppScale(1.0);
         window.Width = 1140;
         Assert.True(failures.Count == 0, string.Join(Environment.NewLine, failures));
@@ -260,6 +279,21 @@ public static class PaneCornerScenario
     {
         byte[] pixels = PaneRender.Pixels(window, "corners-" + label, out int width, out int height, out int stride);
         Rect frame = PaneRender.BoundsIn(pane.ResultsPane, PaneRender.Screen(window));
+        string? evidence = Environment.GetEnvironmentVariable("KILLERSHELL_UI_EVIDENCE");
+        if (!string.IsNullOrEmpty(evidence))
+            File.AppendAllText(Path.Combine(evidence, "corners.txt"), label + " scale " + PaneRender.DeviceScale(window)
+                + " image " + width + "x" + height + " frame " + frame.Left.ToString("0.00") + ".." + frame.Right.ToString("0.00")
+                + " window " + window.Left + "," + window.Top + " " + window.ActualWidth + "x" + window.ActualHeight
+                + " visible w=" + window.IsVisible + " stack=" + pane.PaneStack.IsVisible + " pane=" + pane.IsVisible
+                + " state=" + window.WindowState + " paneTransform=" + Describe(pane.ResultsPane.RenderTransform) + Environment.NewLine);
+
+        // The whole frame has to be inside what was rendered, or the samples below read pixels
+        // from somewhere else entirely.
+        if (frame.Right * PaneRender.DeviceScale(window) > width + 1 || frame.Left < 0)
+            return "the pane (" + frame.Left.ToString("0") + ".." + frame.Right.ToString("0") + " DIPs) lies outside the rendered window ("
+                + (width / PaneRender.DeviceScale(window)).ToString("0") + " DIPs wide at " + (PaneRender.DeviceScale(window) * 100).ToString("0")
+                + "%), window " + window.ActualWidth.ToString("0") + "x" + window.ActualHeight.ToString("0") + " at " + window.Left.ToString("0") + "," + window.Top.ToString("0");
+
         // The pane's sides land on whole DEVICE pixels at every scale (SnapPaneSidesToPixels).
         // The frame is in DIPs, so it is multiplied by the monitor's own scale first: on a 150%
         // display a correctly snapped edge at device pixel 38 is 25.33 DIPs.
@@ -288,13 +322,6 @@ public static class PaneCornerScenario
         // side only. The arc's cut-away shows that outside, so it is left out as well. Further
         // in is content, whose icons and grain are not mirror images of each other.
         double worst = 0; string where = "";
-        // KNOWN ISSUE, display scaling above 100%: the pane's 1-DIP side stroke is 1.5 device
-        // pixels at 150%, layout rounding turns that into 2 on one side and 1 on the other, and
-        // the separately drawn bottom-edge overlay (FilePane.xaml ResultsPaneBottomEdge) then
-        // meets the stroke on one side only, which shows as a second, lighter arc in one corner.
-        // The fix is to draw the frame as one shape; until then the mirror check runs only on a
-        // 100% display, while the device-pixel snap above is checked at every display scale.
-        if (Math.Abs(dpi.DpiScaleX - 1.0) > 0.001) return null;
 
         // Device pixels per layout unit at this app scale and display scale: the 6px corner
         // radius and the sampled band grow with it.
@@ -314,4 +341,64 @@ public static class PaneCornerScenario
         return worst < 24 ? null : "the pane's corners differ at " + where
             + " (frame " + frame.Left.ToString("0.00") + ".." + frame.Right.ToString("0.00") + ", radius " + pane.ResultsPane.CornerRadius + ")";
     }
+}
+
+/// <summary>The connected monitors, and moving a window onto one by its device rectangle.</summary>
+internal static class Monitors
+{
+    internal readonly struct Monitor(Rect work, double scale)
+    {
+        internal Rect Work { get; } = work;
+        internal double Scale { get; } = scale;
+        public override string ToString() => Work + " at " + (Scale * 100).ToString("0") + "%";
+    }
+
+    internal static System.Collections.Generic.List<Monitor> All()
+    {
+        var found = new System.Collections.Generic.List<Monitor>();
+        EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, (handle, _, _, _) =>
+        {
+            var info = new MonitorInfo { Size = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MonitorInfo)) };
+            if (!GetMonitorInfo(handle, ref info)) return true;
+            uint dpi = 96;
+            try { GetDpiForMonitor(handle, 0, out dpi, out _); } catch { }
+            found.Add(new Monitor(new Rect(info.Work.Left, info.Work.Top, info.Work.Right - info.Work.Left, info.Work.Bottom - info.Work.Top), dpi / 96.0));
+            return true;
+        }, IntPtr.Zero);
+        return found;
+    }
+
+    /// <summary>Puts the window's top-left 20 device pixels inside the monitor's work area and
+    /// reports whether it is there. The monitor's scale is read from the window afterwards
+    /// (VisualTreeHelper.GetDpi): GetDpiForMonitor answers 96 for every monitor to a host that
+    /// is not DPI-aware, which the test runner's PowerShell is not.</summary>
+    internal static bool MoveTo(Window window, Monitor monitor)
+    {
+        IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+        SetWindowPos(hwnd, IntPtr.Zero, (int)monitor.Work.Left + 20, (int)monitor.Work.Top + 20, 0, 0, 0x0001 | 0x0004 | 0x0010);
+        return GetWindowRect(hwnd, out var r) && monitor.Work.Contains(new Point(r.Left + 1, r.Top + 1));
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool GetWindowRect(IntPtr hwnd, out NativeRect rect);
+
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct NativeRect { public int Left, Top, Right, Bottom; }
+
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct MonitorInfo { public int Size; public NativeRect Monitor; public NativeRect Work; public uint Flags; }
+
+    private delegate bool MonitorProc(IntPtr monitor, IntPtr hdc, IntPtr rect, IntPtr data);
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr clip, MonitorProc proc, IntPtr data);
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool GetMonitorInfo(IntPtr monitor, ref MonitorInfo info);
+
+    [System.Runtime.InteropServices.DllImport("shcore.dll")]
+    private static extern int GetDpiForMonitor(IntPtr monitor, int type, out uint dpiX, out uint dpiY);
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool SetWindowPos(IntPtr hwnd, IntPtr after, int x, int y, int cx, int cy, uint flags);
 }

@@ -36,7 +36,14 @@ namespace KillerShell
 
             // Under a fractional app scale the pane's side edges land between device pixels and
             // its rounded corners smear on one side and not the other; see SnapPaneSidesToPixels.
+            // LayoutUpdated covers moves that change no size. The size, visibility and scale
+            // hooks queue a snap of their own as well, so a pane never keeps a stale position
+            // when that notification arrives late or not at all: a hidden pane skips the snap,
+            // and showing it again need not run another layout pass.
             PaneStack.LayoutUpdated += (_, _) => SnapPaneSidesToPixels();
+            PaneStack.SizeChanged += (_, _) => QueueSnap();
+            ResultsPane.SizeChanged += (_, _) => QueueSnap();
+            PaneStack.IsVisibleChanged += (_, _) => QueueSnap();
 
             // Every tile/row/card DataTemplate reaches ViewState through ResultsList.Tag rather
             // than a RelativeSource walk up to this UserControl, or the icons fail to load.
@@ -76,6 +83,23 @@ namespace KillerShell
         /// band and the close-fade ghost get the same nudge so the strip stays flush with the
         /// pane's sides.
         /// </summary>
+        private bool _snapQueued;
+
+        /// <summary>Runs the device-pixel snap once the current layout settles, forced even if
+        /// the position looks unchanged. Called by MainWindow when the app scale or the tree's
+        /// side changes, either of which can move the pane without resizing it.</summary>
+        internal void QueueSnap()
+        {
+            _snapLastOffset = double.NaN;
+            if (_snapQueued) return;
+            _snapQueued = true;
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)(() =>
+            {
+                _snapQueued = false;
+                SnapPaneSidesToPixels();
+            }));
+        }
+
         private PresentationSource? _snapSource;
         private Matrix _snapLastMatrix;
         private double _snapLastOffset = double.NaN, _snapLastWidth = double.NaN;

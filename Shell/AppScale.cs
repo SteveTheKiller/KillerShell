@@ -60,6 +60,8 @@ namespace KillerShell.Shell
             ScaleHost.LayoutTransform = scale == 1.0
                 ? Transform.Identity
                 : new ScaleTransform(scale, scale);
+            LeftPane.QueueSnap();    // FilePane.xaml.cs: the panes' edges move to new device pixels
+            RightPane.QueueSnap();
 
             // Display-mode text is only crisp at 1:1 - under any other scale its pixel-snapped
             // ClearType lands on fractional device pixels and the whole app smears, the rail's
