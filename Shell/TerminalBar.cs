@@ -91,6 +91,25 @@ namespace KillerShell.Shell
 
             string path = box.Text.Trim();
             var profile = t.LaunchProfile ?? Terminal.TerminalProfile.PowerShell();
+
+            // A file is something to open, not somewhere to go. A program or script is staged
+            // in THIS shell after a cd to its folder, waiting for Enter; anything else opens the
+            // same way it would from the address bar (AddressBar.cs).
+            if (profile.Kind != Terminal.TerminalShellKind.Wsl && System.IO.File.Exists(path.Trim('"')))
+            {
+                string file = System.IO.Path.GetFullPath(path.Trim('"'));
+                string? staged = Services.AddressTarget.Classify(file) == Services.AddressTargetKind.Terminal
+                    ? Services.AddressTarget.StagedCommand(profile.Kind, System.IO.Path.GetFileName(file))
+                    : null;
+                EndEditTermCwd(pane);
+                if (staged == null) { OpenTypedFile(file); return; }
+
+                t.Term.Send(profile.ChangeDirectoryCommand(System.IO.Path.GetDirectoryName(file)!));
+                t.Term.Send(staged);
+                t.Term.Focus();
+                return;
+            }
+
             if (profile.Kind != Terminal.TerminalShellKind.Wsl && !System.IO.Directory.Exists(path))
             {
                 // Stays in edit mode rather than reverting - a typo is worth the chance to fix,
