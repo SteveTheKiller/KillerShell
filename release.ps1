@@ -340,19 +340,6 @@ $sumsLines = @(
 Set-Content -Path $sumsFile -Value $sumsLines -Encoding ascii
 Write-Host ($sumsLines -join "`n")
 
-# --- 6c. Microsoft Store installer (KillerShell-Store.exe) ---
-# The Store downloads killershell.net/store/<version>/KillerShell-Store.exe, which the
-# killertools-store-downloads Worker serves from this release's asset of that name, and runs it
-# with /silent. The signed exe already installs per-user with no prompt when not elevated, and
-# .NET Framework 4.8 ships with Windows, so the Store copy is the same signed bytes renamed.
-Step "Writing KillerShell-Store.exe"
-$storeExe = Join-Path $publishDir 'KillerShell-Store.exe'
-Copy-Item -LiteralPath $exe -Destination $storeExe -Force
-if ((Get-FileHash -LiteralPath $storeExe -Algorithm SHA256).Hash -ne $exeHash) {
-    Fail 'KillerShell-Store.exe does not match the signed KillerShell.exe.'
-}
-Write-Host "KillerShell-Store.exe matches KillerShell.exe ($exeHash)"
-
 # --- 7. Landing page + README release info ---
 # killershell.net is a MANUAL Cloudflare Pages drop, so nothing here deploys. The hero block
 # (version, released, size, sha256), the verEgg footer on every page, and the README's GPL3
@@ -524,7 +511,6 @@ if ($DryRun) {
     Step "DryRun: stopping before tag and release"
     Write-Host "Would create tag $Tag, push it, and publish a release with:"
     Write-Host "  KillerShell.exe ($exeMB)"
-    Write-Host "  KillerShell-Store.exe ($exeMB)"
     Write-Host "  $(Split-Path $srcZip -Leaf) ($srcZipMB)"
     Write-Host "  SHA256SUMS.txt"
     exit 0
@@ -552,7 +538,7 @@ if ($LASTEXITCODE -ne 0) { Fail 'Tag push failed' }
 # winget-pkgs; the very first submission has to be `komac new` by hand (see the workflow).
 Step "Creating GitHub release"
 Assert-PublishableArtifact
-gh release create $Tag $exe $storeExe $srcZip $sumsFile --title "KillerShell $Tag" --notes-file $notesFile --verify-tag
+gh release create $Tag $exe $srcZip $sumsFile --title "KillerShell $Tag" --notes-file $notesFile --verify-tag
 if ($LASTEXITCODE -ne 0) { Fail 'gh release create failed' }
 
 Step "Refreshing thekiller.net software page"
