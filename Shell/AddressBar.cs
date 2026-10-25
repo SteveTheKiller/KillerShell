@@ -88,15 +88,55 @@ namespace KillerShell.Shell
             try { typed = Environment.ExpandEnvironmentVariables(typed); }
             catch { }
 
-            // A file rather than a folder means "show me this": go to its parent and select it.
-            if (File.Exists(typed))
+            // A typed file means "open this", not "show me where it is": text goes to an editor
+            // tab, a program or script to a terminal in its folder, anything else to its
+            // association (Services/AddressTarget.cs). Archives stay places to browse.
+            if (File.Exists(typed) && !Services.ArchiveProvider.IsReadable(typed))
             {
-                string? parent = Path.GetDirectoryName(typed);
-                if (!string.IsNullOrEmpty(parent)) _ = NavigateToAndSelect(parent!, typed);
+                OpenTypedFile(Path.GetFullPath(typed));
                 return;
             }
 
             _ = NavigateTo(typed);   // Browse.cs - reports Str_Status_BadPath itself if it is junk
+        }
+
+        private void OpenTypedFile(string path)
+        {
+            switch (Services.AddressTarget.Classify(path))
+            {
+                case Services.AddressTargetKind.Edit:
+                    OpenForEditing(path);   // EditorTabs.cs
+                    break;
+
+                case Services.AddressTargetKind.Terminal:
+                    OpenTerminalFor(path);
+                    break;
+
+                default:
+                    ReportShellOpen(_active, Services.ShellOpen.Open(path));   // ResultsMenu.cs
+                    break;
+            }
+        }
+
+        // A shell in the file's folder with the command typed and waiting for Enter. It is staged
+        // on the shell's first prompt (its first directory report), because input sent before
+        // the shell is listening is eaten by its startup.
+        private void OpenTerminalFor(string path)
+        {
+            string folder = Path.GetDirectoryName(path)!;
+            var profile = Terminal.TerminalProfileStore.ForFolder(folder);
+            OpenShell(profile, folder);   // TerminalTabs.cs
+
+            string? command = Services.AddressTarget.StagedCommand(profile.Kind, Path.GetFileName(path));
+            var term = Pane.Active?.Term;
+            if (command == null || term == null) return;
+
+            void Stage(string _)
+            {
+                term.Buffer.DirectoryChanged -= Stage;
+                Dispatcher.BeginInvoke(new Action(() => term.Send(command)));
+            }
+            term.Buffer.DirectoryChanged += Stage;
         }
 
         // Clicking away is a cancel, not a commit: an accidental click elsewhere should never
@@ -106,18 +146,6 @@ namespace KillerShell.Shell
             var owner = ReferenceEquals(sender, RightPane.AddressBox) ? RightPane : LeftPane;
             owner.AddressBox.Visibility = Visibility.Collapsed;
             owner.ScopePathLabel.Visibility = Visibility.Visible;
-        }
-
-        private async System.Threading.Tasks.Task NavigateToAndSelect(string folder, string file)
-        {
-            await NavigateTo(folder);
-
-            var hit = _active.Results.FirstOrDefaultPath(file);
-            if (hit == null) return;
-
-            Pane.ResultsList.SelectedItems.Clear();
-            Pane.ResultsList.SelectedItems.Add(hit);
-            Pane.ResultsList.ScrollIntoView(hit);
         }
     }
 

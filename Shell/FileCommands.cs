@@ -370,8 +370,7 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
-        /// Same idea as AddressBar.cs's NavigateToAndSelect, generalized to more than one file: go
-        /// to the folder, then select and scroll to whichever of these paths actually landed
+        /// Go to the folder, then select and scroll to whichever of these paths actually landed
         /// there. Real destination paths are needed rather than the sources' own filenames because
         /// a KeepBoth conflict resolution can rename what actually landed (FileOps.UniqueName).
         /// </summary>
