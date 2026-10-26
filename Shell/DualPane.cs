@@ -387,9 +387,26 @@ namespace KillerShell.Shell
         //
         // PaneHost has to clip while that is true: a Grid does not clip its children, so a pane
         // frozen wider than its column would hang over the other one instead of being cut off.
+        //
+        // Not ClipToBounds, though: that cut pane A's shadow off on the left and over the footer
+        // for the whole slide, so it flashed away and back. The clip reaches past the host on
+        // those two sides by the shadow's spread (PaneShadow: blur 16, depth 5) and stays flush
+        // on the top and right, the sides pane B can overhang.
+        private const double PaneShadowReachSide = 16, PaneShadowReachBottom = 22;
+
+        private void ClipPaneHostForSlide(object? sender = null, SizeChangedEventArgs? e = null)
+        {
+            var clip = new System.Windows.Media.RectangleGeometry(new Rect(-PaneShadowReachSide, 0,
+                PaneHost.ActualWidth + PaneShadowReachSide, PaneHost.ActualHeight + PaneShadowReachBottom));
+            clip.Freeze();
+            PaneHost.Clip = clip;
+        }
+
         private void FreezePane(bool horizontal, double size)
         {
-            PaneHost.ClipToBounds = true;
+            PaneHost.SizeChanged -= ClipPaneHostForSlide;
+            PaneHost.SizeChanged += ClipPaneHostForSlide;
+            ClipPaneHostForSlide();
 
             if (horizontal)
             {
@@ -411,7 +428,8 @@ namespace KillerShell.Shell
             RightPane.ClearValue(FrameworkElement.HeightProperty);
             RightPane.HorizontalAlignment = HorizontalAlignment.Stretch;
             RightPane.VerticalAlignment   = VerticalAlignment.Stretch;
-            PaneHost.ClipToBounds = false;
+            PaneHost.SizeChanged -= ClipPaneHostForSlide;
+            PaneHost.ClearValue(UIElement.ClipProperty);
         }
 
         // F10 slides out a second pane from the first pane without changing the size of the
