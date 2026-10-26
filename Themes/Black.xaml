@@ -4,7 +4,7 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!-- Subtle bright grain preserves the Black theme's dark surfaces. -->
-    <sys:Double x:Key="GrainOpacity">0.20</sys:Double>
+    <sys:Double x:Key="GrainOpacity">0.18</sys:Double>
     <sys:Boolean x:Key="GrainHighlightsOnly">True</sys:Boolean>
     <sys:Double x:Key="IconShadowOpacity">0.9</sys:Double>
 
