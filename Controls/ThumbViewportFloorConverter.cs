@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace KillerShell
+namespace KillerShell.Controls
 {
     // Keeps the scrollbar thumb sized to the visible proportion while never shrinking below a
     // grabbable floor. (KillerUI / Grunge)

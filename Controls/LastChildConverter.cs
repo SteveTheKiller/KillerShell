@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace KillerShell
+namespace KillerShell.Controls
 {
     // True when a TreeViewItem is the last child of its parent - which is the one thing the
     // folder tree's connecting lines need to know.

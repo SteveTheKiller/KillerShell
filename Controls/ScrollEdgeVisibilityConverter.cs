@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace KillerShell
+namespace KillerShell.Controls
 {
     // Shows a scroll edge shadow only while more content lies past that edge. Values are the
     // scroll offset and the scrollable extent on one axis; the parameter picks the edge, "Start"

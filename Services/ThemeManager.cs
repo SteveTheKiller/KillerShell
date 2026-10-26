@@ -3,6 +3,9 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 
+// The family theme engine. Identical in every app: an app sets its defaults and its own tokens
+// through SetDefaults, AppTokens and AppDerivedTokens at startup, and never edits this file.
+// Promoted from KillerShell, the family reference for theme colors, grain and geometry.
 namespace KillerShell.Services
 {
     // Thirteen palettes, in picker order. SE98 cannot be written "98SE" because an enum member
@@ -31,7 +34,9 @@ namespace KillerShell.Services
         }
 
         /// <summary>Killer Sans UI (Killer Sans scaled to Segoe UI proportions) with the Segoe fallback stack.</summary>
-        internal static readonly FontFamily KillerSansUiStack = new(new Uri("pack://application:,,,/KillerShell;component/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
+        private static readonly string AssemblyName = typeof(ThemeManager).Assembly.GetName().Name!;
+        internal static readonly FontFamily KillerSansUiStack = new(new Uri($"pack://application:,,,/{AssemblyName};component/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
+        internal static readonly FontFamily KillerSansFont = new(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans");
         internal static readonly FontFamily LacquerHeadingStack = new(new Uri("pack://application:,,,/"), "./Fonts/#Lacquer, ./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
         /// <summary>
         /// Read a corner radius out of the live theme. For code-built controls, which cannot use a
@@ -62,11 +67,44 @@ namespace KillerShell.Services
         public static Func<string, string?> GetSetting { get; set; } = _ => null;
         public static Action<string, string> SetSetting { get; set; } = (_, _) => { };
 
-        private static Theme _current = Theme.Dark;   // KillerShell default: Dark (Blue accent)
+        /// <summary>
+        /// The app's own tokens, for keys only that app's views use. Called with the palette and
+        /// accent merged and BEFORE the family contract below, so an app value wins over a family
+        /// default; a theme file's own value has already been read and should be left alone
+        /// (use <see cref="SetIfAbsent"/>).
+        /// </summary>
+        public static Action<ResourceDictionary, Theme>? AppTokens { get; set; }
+
+        /// <summary>The app's tokens that are DERIVED from family tokens (a terminal surface that
+        /// follows ListPaneBrush). Called after the family contract, before publishing.</summary>
+        public static Action<ResourceDictionary, Theme>? AppDerivedTokens { get; set; }
+
+        /// <summary>Sets a key only when neither the theme nor anything earlier stated it.</summary>
+        public static void SetIfAbsent(ResourceDictionary dictionary, string key, object? value)
+        {
+            if (!dictionary.Contains(key)) dictionary[key] = value;
+        }
+
+        /// <summary>Points a key at another key's value when the theme did not state it.</summary>
+        public static void Mirror(ResourceDictionary dictionary, string key, string source)
+        {
+            if (!dictionary.Contains(key) && dictionary.Contains(source)) dictionary[key] = dictionary[source];
+        }
+
+        // The theme and accents an app opens on before anything is saved. Each app picks the
+        // pair that matches its own branding through SetDefaults; each neutral family defines its
+        // own shade of an accent, so a borrowed default can open in a color the app never uses.
+        private static Theme _current = Theme.Dark;
         private static Accent _darkAccent  = Accent.Blue;
         private static Accent _lightAccent = Accent.Green;
         private static Accent _blackAccent = Accent.Orange;
         private static Accent _se98Accent  = Accent.Green;
+
+        /// <summary>Call before <see cref="Initialize"/> to set the app's first-run theme and accents.</summary>
+        public static void SetDefaults(Theme theme, Accent dark, Accent light, Accent black, Accent se98)
+        {
+            _current = theme; _darkAccent = dark; _lightAccent = light; _blackAccent = black; _se98Accent = se98;
+        }
 
         public static Theme Current => _current;
         public static Accent AccentChoiceFor(Theme t) => AccentFor(t);
@@ -149,7 +187,8 @@ namespace KillerShell.Services
             _darkAccent  = Enum.TryParse<Accent>(GetSetting("DarkAccent"),  out var da) ? da : _darkAccent;
             _lightAccent = Enum.TryParse<Accent>(GetSetting("LightAccent"), out var la) ? la : _lightAccent;
             _blackAccent = Enum.TryParse<Accent>(GetSetting("BlackAccent"), out var ba) ? ba : _blackAccent;
-            _se98Accent  = Enum.TryParse<Accent>(GetSetting("98SEAccent"),  out var wa) ? wa : _se98Accent;
+            // SE98Accent is the spelling some apps once wrote.
+            _se98Accent  = Enum.TryParse<Accent>(GetSetting("98SEAccent") ?? GetSetting("SE98Accent"), out var wa) ? wa : _se98Accent;
             LoadDict(_current);
         }
 
@@ -187,7 +226,8 @@ namespace KillerShell.Services
             else merged.Add(combined);
         }
 
-        internal static ResourceDictionary CreateInstallerTheme() => CreateDictionary(Theme.Dark, Accent.Blue);
+        /// <summary>The app's first-run theme, for a standalone installer window that saves nothing.</summary>
+        internal static ResourceDictionary CreateInstallerTheme() => CreateDictionary(_current, AccentFor(_current));
 
         private static ResourceDictionary CreateDictionary(Theme theme, Accent accent)
         {
@@ -231,6 +271,9 @@ namespace KillerShell.Services
                 catch { /* overlay not present - base theme stands */ }
             }
 
+
+            // The app's own values go in before the family contract, so they win over its defaults.
+            AppTokens?.Invoke(combined, theme);
 
             // ── 98SE chrome contract ────────────────────────────────────────────────────
             //
@@ -906,7 +949,7 @@ namespace KillerShell.Services
             // completed here rather than in AppStyles.xaml so 98SE can state its own face; a font
             // picked in Fonts still overrides it from the top-level application dictionary.
             SetIfAbsent("MonoFont", new FontFamily(new Uri("pack://application:,,,/"),
-                "/KillerShell;component/Fonts/#Killer Sans UI, Segoe UI"));
+                $"/{AssemblyName};component/Fonts/#Killer Sans UI, Segoe UI"));
             SetIfAbsent("TitleIconMargin", new Thickness(0, 0, 7, 0));
             SetIfAbsent("TitleIconSize", 27.0);
             SetIfAbsent("TitleTextMargin", new Thickness(0));
@@ -1283,7 +1326,88 @@ namespace KillerShell.Services
             combined["OverlayEdgeBrush"] = gradientEdge ?? combined["AppBorderBrush"];
             combined["OverlayRuleBrush"] = gradientEdge ?? combined["PaneBorderBrush"];
 
+            ApplyFamilyAdditions(combined);
+            AppDerivedTokens?.Invoke(combined, theme);
             return combined;
+        }
+
+        /// <summary>
+        /// Family tokens from the other apps that KillerShell's own views never needed: dialog
+        /// frames, the About panel bevel, combo button metrics, the shortcut map colors and the
+        /// picker's title tokens. Every default is what the flat themes already drew; 98SE states
+        /// its own in its palette.
+        /// </summary>
+        private static void ApplyFamilyAdditions(ResourceDictionary d)
+        {
+            bool flat = d.Contains("UseDialogCaption") && d["UseDialogCaption"] is bool f && f;
+            object Clear() { var b = new SolidColorBrush(Colors.Transparent); b.Freeze(); return b; }
+
+            Mirror(d, "DialogFrameBrush", "AppBorderBrush");
+            SetIfAbsent(d, "DialogFrameThickness", new Thickness(1));
+            SetIfAbsent(d, "DialogFramePadding", new Thickness(0));
+            SetIfAbsent(d, "DialogWindowFrameThickness", new Thickness(0));
+            SetIfAbsent(d, "DialogWindowFramePadding", new Thickness(0));
+            SetIfAbsent(d, "DialogCloseCornerRadius", new CornerRadius(0, 6, 0, 0));
+            SetIfAbsent(d, "DialogTitleMargin", flat ? d["TitleBarPadding"] : new Thickness(6, 0, 0, 0));
+            SetIfAbsent(d, "OverlayFrameBleed", new Thickness(0));
+            SetIfAbsent(d, "InputDialogTitleBrush", Clear());
+            Mirror(d, "AboutPanelBrush", "PaneBrush");
+            Mirror(d, "AboutPanelEdgeBrush", "PaneBorderBrush");
+            SetIfAbsent(d, "AboutPanelBorderThickness", flat ? new Thickness(0) : new Thickness(1));
+            SetIfAbsent(d, "AboutPanelBevelTopBrush", Clear());
+            SetIfAbsent(d, "AboutPanelBevelBottomBrush", Clear());
+            SetIfAbsent(d, "AboutPanelBevelTopThickness", new Thickness(0));
+            SetIfAbsent(d, "AboutPanelBevelBottomThickness", new Thickness(0));
+            Mirror(d, "ComboButtonHoverBrush", "RowHoverBrush");
+            Mirror(d, "ComboFieldHoverBrush", "RowHoverBrush");
+            SetIfAbsent(d, "ComboButtonSize", 18.0);
+            SetIfAbsent(d, "ComboButtonHeight", d["ComboButtonSize"]);
+            Mirror(d, "ContentPaneBrush", "PaneBrush");
+            SetIfAbsent(d, "PaneGrainCornerRadius", new CornerRadius(flat ? 0 : 5));
+            // Accent swatches are round pills, and square where the small corners are (98SE).
+            SetIfAbsent(d, "AccentSwatchCornerRadius",
+                d.Contains("SmallCornerRadius") && d["SmallCornerRadius"] is CornerRadius small && small.TopLeft == 0
+                    ? new CornerRadius(0) : new CornerRadius(9));
+            Mirror(d, "FilenameBrush", "MutedTextBrush");
+            SetIfAbsent(d, "TitleSubtitleSize", 18.0);
+            Mirror(d, "TreeLineBrush", "PaneBorderBrush");
+            SetIfAbsent(d, "TableRowBrush", Clear());
+            // The kit's older styles call the outline hover fill by this name.
+            d["OutlineHoverFillBrush"] = d["OutlineHoverBrush"];
+            ApplyShortcutCategoryBrushes(d);
+        }
+
+        /// <summary>
+        /// The F1 overlay's category colors (KsCat* brushes, Shell/ShortcutsOverlay.cs). A theme
+        /// may state its own; otherwise a dark surface gets the neon set and a light surface
+        /// (Light, 98SE) the deep set, because the neon is close to invisible on white. Pure
+        /// black lifts Nav's violet so it still separates from the background.
+        /// </summary>
+        private static void ApplyShortcutCategoryBrushes(ResourceDictionary d)
+        {
+            var surface = (d.Contains("SurfaceBrush") ? d["SurfaceBrush"] : null) as SolidColorBrush;
+            var background = (d.Contains("BackgroundBrush") ? d["BackgroundBrush"] : null) as SolidColorBrush;
+            bool light = surface != null && 0.299 * surface.Color.R + 0.587 * surface.Color.G + 0.114 * surface.Color.B > 140;
+            bool pureBlack = background != null && background.Color.R == 0 && background.Color.G == 0 && background.Color.B == 0;
+
+            (string Cat, string Neon, string Deep)[] set =
+            [
+                ("File",   "#00fff9", "#009e99"),
+                ("Tools",  "#ffd319", "#a67c00"),
+                ("Edit",   "#ff2975", "#d1105a"),
+                ("Nav",    pureBlack ? "#a64dff" : "#8c1eff", "#6a11cc"),
+                ("View",   "#f222ff", "#a316b5"),
+                ("Search", "#00b3ff", "#0077b3"),
+                ("Help",   "#39ff14", "#128c07"),
+                ("Ocr",    "#ff901f", "#cc6a00"),
+            ];
+            foreach (var (cat, neon, deep) in set)
+            {
+                var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(light ? deep : neon));
+                brush.Freeze();
+                SetIfAbsent(d, "KsCat" + cat, brush);
+            }
+            SetIfAbsent(d, "ShortcutShadowOpacity", d.Contains("FlyoutShadowOpacity") ? d["FlyoutShadowOpacity"] : 0.6);
         }
 
         /// <summary>

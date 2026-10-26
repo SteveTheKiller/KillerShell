@@ -670,4 +670,24 @@
     <SolidColorBrush x:Key="FileDialogPaneBrush" Color="#ffffff" po:Freeze="True"/>
     <Thickness x:Key="CompactInputPadding">2,1</Thickness>
     <sys:Double x:Key="CompactInputMinHeight">22</sys:Double>
+
+    <!-- Family additions from KillerScan (ThemeManager.ApplyFamilyAdditions): the Win98 shapes
+         of the dialog frame, the About panel, the combo button and the input dialog caption. -->
+    <SolidColorBrush x:Key="DialogFrameBrush" Color="#000000" po:Freeze="True"/>
+    <Thickness x:Key="DialogFrameThickness">0</Thickness>
+    <Thickness x:Key="DialogFramePadding">2</Thickness>
+    <Thickness x:Key="DialogWindowFrameThickness">3</Thickness>
+    <Thickness x:Key="DialogWindowFramePadding">5</Thickness>
+    <CornerRadius x:Key="DialogCloseCornerRadius">0</CornerRadius>
+    <Thickness x:Key="OverlayFrameBleed">-5,-4,-5,-5</Thickness>
+    <SolidColorBrush x:Key="InputDialogTitleBrush" Color="#000080" po:Freeze="True"/>
+    <SolidColorBrush x:Key="AboutPanelBrush" Color="#ffffff" po:Freeze="True"/>
+    <SolidColorBrush x:Key="AboutPanelEdgeBrush" Color="#00000000" po:Freeze="True"/>
+    <SolidColorBrush x:Key="AboutPanelBevelTopBrush" Color="#808080" po:Freeze="True"/>
+    <SolidColorBrush x:Key="AboutPanelBevelBottomBrush" Color="#ffffff" po:Freeze="True"/>
+    <Thickness x:Key="AboutPanelBevelTopThickness">1,1,0,0</Thickness>
+    <Thickness x:Key="AboutPanelBevelBottomThickness">0,0,1,1</Thickness>
+    <SolidColorBrush x:Key="ComboFieldHoverBrush" Color="#ffffff" po:Freeze="True"/>
+    <SolidColorBrush x:Key="ComboButtonHoverBrush" Color="#c0c0c0" po:Freeze="True"/>
+    <sys:Double x:Key="ComboButtonHeight">26</sys:Double>
 </ResourceDictionary>

@@ -6,7 +6,16 @@
     (The old "Dark Terminal" DarkTheme.xaml is replaced by: a Grunge palette + Controls.xaml + this.)
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:kui="clr-namespace:KillerShell">
+
+    <!-- Tab art and names for the file pane's tabs (FilePane.xaml). These lived in the shared
+         Controls.xaml; they are KillerShell's own, so they sit here now that the kit is common. -->
+    <kui:TabFolderIconConverter x:Key="TabFolderIcon"/>
+    <kui:CloseTabNameConverter x:Key="CloseTabName"/>
+    <!-- True when TabFolderIcon resolves to art, so the tab template can hide the MDL2 glyph
+         and avoid drawing a picture and a character for the same tab. -->
+    <kui:TabHasArtConverter x:Key="TabHasArt"/>
 
     <!-- MonoFont, the app face used throughout the search/results UI, is completed by
          ThemeManager so 98SE can state its own face. Overridable from Fonts. -->
