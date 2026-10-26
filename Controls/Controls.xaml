@@ -1180,20 +1180,17 @@
     </Style>
 
     <!-- Glyph for a MenuItem.Icon, so an icon in the new gutter is one line at the call site
-         and the size/color live in one place (family standard, see KillerScan App.xaml).
-         Same rest/hover treatment as MenuGlyph above: plain text color at rest, accent (via
-         the 98SE-safe ComboHighlightTextBrush) on the hovered row. -->
+         and the size lives in one place (family standard, from KillerScan).
+         No Foreground here on purpose. The colour is inherited from the menu item, which is what
+         lets the highlighted state change it with the row's text in every menu style: a style
+         setter here would outrank that, and an ancestor-bound IsHighlighted trigger does not
+         reliably resolve through MenuItem.Icon, so the glyph kept its resting colour and went
+         black-on-navy under the 98SE highlight. -->
     <Style x:Key="MenuIcon" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType=MenuItem}}" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="Card" TargetType="Border">
