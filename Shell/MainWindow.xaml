@@ -1367,7 +1367,10 @@
                  wide, so a single-pane window lays out exactly as it did before. -->
             <!-- ContentPaneMargin: 0 everywhere, 0,5,0,0 on 98SE, which drops the content clear of
                  the menu bar's raised bottom edge instead of butting straight against it. -->
-            <Grid Grid.Column="3" x:Name="PaneHost" Margin="{DynamicResource ContentPaneMargin}">
+            <!-- UnclippedGrid for the same reason as ScaleHost: a star column laid out a fraction
+                 of a pixel short got a layout clip that cut pane A's shadow off on the left and
+                 over the footer. -->
+            <local:UnclippedGrid Grid.Column="3" x:Name="PaneHost" Margin="{DynamicResource ContentPaneMargin}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="PaneColA" Width="*" MinWidth="300"/>
                     <ColumnDefinition x:Name="PaneColSplit" Width="0"/>
@@ -1406,7 +1409,7 @@
 
                 <local:FilePane x:Name="RightPane" Grid.Column="2" Grid.Row="0"
                                 Visibility="Collapsed"/>
-            </Grid>
+            </local:UnclippedGrid>
         </local:UnclippedGrid>
 
         <!-- ══════════ ROW 2 - FOOTER (blends with the sidebar/panes, no divider line) ══════════ -->
