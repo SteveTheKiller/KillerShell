@@ -27,6 +27,7 @@ namespace KillerShell.Shell
                 p.DetailsPaneBottomEdge.SizeChanged += (_, _) => UpdateDetailsTabJoin(p);
                 p.TabStrip.SizeChanged += (_, _) => UpdateDetailsTabJoin(p);
                 p.PaneStatusBar.IsVisibleChanged += (_, _) => UpdateDetailsTabJoin(p);
+                p.TabBar.IsVisibleChanged += (_, _) => UpdateDetailsTabJoin(p);
             }
             SetTabPlacement(GetWindowViewSetting("TabsAtBottom") == "1", persist: false);
         }

@@ -198,6 +198,12 @@ namespace KillerShell.Shell
         private static void UpdateDetailsTabJoin(FilePane pane)
         {
             var edge = pane.DetailsPaneBottomEdge;
+            // With nothing under the panel (tabs on top, no search summary) the pane's own 1px
+            // border is the bottom edge, and drawing this rule too doubled it to 2px. Hidden, not
+            // Collapsed, so ActualWidth survives for the clip math below.
+            bool stripBelow = Grid.GetRow(pane.TabBar) == 2 && pane.TabBar.Visibility == Visibility.Visible;
+            edge.Visibility = stripBelow || pane.PaneStatusBar.Visibility == Visibility.Visible
+                ? Visibility.Visible : Visibility.Hidden;
             if (Grid.GetRow(pane.TabBar) != 2 || pane.TabBar.Visibility != Visibility.Visible || pane.Active == null
                 || pane.PaneStatusBar.Visibility == Visibility.Visible || edge.ActualWidth <= 0
                 || pane.TabStrip.ItemContainerGenerator.ContainerFromItem(pane.Active) is not FrameworkElement activeTab
