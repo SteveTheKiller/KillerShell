@@ -118,6 +118,10 @@ namespace KillerShell.Services
         private static bool HasAccents(Theme t) =>
             t == Theme.Dark || t == Theme.Light || t == Theme.Black || t == Theme.SE98;
 
+        /// <summary>True for the themes that carry an Accents/ folder, so a picker can show or hide
+        /// its accent dots without repeating the list.</summary>
+        public static bool SupportsAccents(Theme t) => HasAccents(t);
+
         /// <summary>
         /// A foreground that is actually legible on <paramref name="fill"/>. Keeps the theme's
         /// own <paramref name="preferred"/> when that already clears WCAG AA (4.5:1), and
@@ -216,11 +220,13 @@ namespace KillerShell.Services
             }
         }
 
-        private static void LoadDict(Theme theme)
+        /// <summary>Publishes a theme as MergedDictionaries[0]. The accent defaults to the one saved
+        /// for that family; a check or a standalone window can pass its own.</summary>
+        internal static void LoadDict(Theme theme, Accent? accentOverride = null)
         {
             var app = Application.Current;
             if (app == null) return;
-            var combined = CreateDictionary(theme, AccentFor(theme));
+            var combined = CreateDictionary(theme, accentOverride ?? AccentFor(theme));
             var merged = app.Resources.MergedDictionaries;
             if (merged.Count > 0) merged[0] = combined;
             else merged.Add(combined);
@@ -228,6 +234,10 @@ namespace KillerShell.Services
 
         /// <summary>The app's first-run theme, for a standalone installer window that saves nothing.</summary>
         internal static ResourceDictionary CreateInstallerTheme() => CreateDictionary(_current, AccentFor(_current));
+
+        /// <summary>Publishes the first-run theme for a standalone installer window, without reading
+        /// or writing any saved preference. Call <see cref="SetDefaults"/> first.</summary>
+        internal static void InitializeInstaller() => LoadDict(_current);
 
         private static ResourceDictionary CreateDictionary(Theme theme, Accent accent)
         {
