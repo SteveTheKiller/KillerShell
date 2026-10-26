@@ -254,7 +254,7 @@
              here, not on the root grid, so the title bar and footer keep a fixed size and the
              wordmark you scroll over never moves. LayoutTransform reflows and re-rasterizes
              text; RenderTransform would bitmap-stretch it. -->
-        <local:UnclippedGrid x:Name="ScaleHost" Grid.Row="1" Panel.ZIndex="1">
+        <kl:UnclippedGrid x:Name="ScaleHost" Grid.Row="1" Panel.ZIndex="1">
             <Grid.ColumnDefinitions>
                 <!-- Folder tree, then the permanent icon rail on the tree's inner lip, then the
                      results, then the search panel out on the right edge. Both side panels
@@ -1370,7 +1370,7 @@
             <!-- UnclippedGrid for the same reason as ScaleHost: a star column laid out a fraction
                  of a pixel short got a layout clip that cut pane A's shadow off on the left and
                  over the footer. -->
-            <local:UnclippedGrid Grid.Column="3" x:Name="PaneHost" Margin="{DynamicResource ContentPaneMargin}">
+            <kl:UnclippedGrid Grid.Column="3" x:Name="PaneHost" Margin="{DynamicResource ContentPaneMargin}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="PaneColA" Width="*" MinWidth="300"/>
                     <ColumnDefinition x:Name="PaneColSplit" Width="0"/>
@@ -1409,8 +1409,8 @@
 
                 <local:FilePane x:Name="RightPane" Grid.Column="2" Grid.Row="0"
                                 Visibility="Collapsed"/>
-            </local:UnclippedGrid>
-        </local:UnclippedGrid>
+            </kl:UnclippedGrid>
+        </kl:UnclippedGrid>
 
         <!-- ══════════ ROW 2 - FOOTER (blends with the sidebar/panes, no divider line) ══════════ -->
         <!-- The footer's own bevel. Zero-thickness on every ordinary theme; on 98SE it is the
