@@ -73,11 +73,11 @@ namespace KillerShell.Services
         /// default; a theme file's own value has already been read and should be left alone
         /// (use <see cref="SetIfAbsent"/>).
         /// </summary>
-        public static Action<ResourceDictionary, Theme>? AppTokens { get; set; }
+        public static Action<ResourceDictionary, Theme, Accent>? AppTokens { get; set; }
 
         /// <summary>The app's tokens that are DERIVED from family tokens (a terminal surface that
         /// follows ListPaneBrush). Called after the family contract, before publishing.</summary>
-        public static Action<ResourceDictionary, Theme>? AppDerivedTokens { get; set; }
+        public static Action<ResourceDictionary, Theme, Accent>? AppDerivedTokens { get; set; }
 
         /// <summary>Sets a key only when neither the theme nor anything earlier stated it.</summary>
         public static void SetIfAbsent(ResourceDictionary dictionary, string key, object? value)
@@ -283,7 +283,7 @@ namespace KillerShell.Services
 
 
             // The app's own values go in before the family contract, so they win over its defaults.
-            AppTokens?.Invoke(combined, theme);
+            AppTokens?.Invoke(combined, theme, accent);
 
             // ── 98SE chrome contract ────────────────────────────────────────────────────
             //
@@ -1337,7 +1337,7 @@ namespace KillerShell.Services
             combined["OverlayRuleBrush"] = gradientEdge ?? combined["PaneBorderBrush"];
 
             ApplyFamilyAdditions(combined);
-            AppDerivedTokens?.Invoke(combined, theme);
+            AppDerivedTokens?.Invoke(combined, theme, accent);
             return combined;
         }
 
