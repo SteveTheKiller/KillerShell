@@ -96,6 +96,7 @@ namespace KillerShell
             HookCrashLogging();   // CrashLog.cs - first, so it covers startup itself
             KillerFamily.Accessibility.AccessibleControls.Initialize();
             KillerFamily.Theming.AccentShadow.Initialize();
+            Controls.AltDrag.Register();   // Alt+drag moves any window (Controls/AltDrag.cs)
             var cliArgs = KillerFamily.CommandLine.CommandLineEntry.GetArguments(e.Args,
                 ["search", "list", "info", "read", "processes", "services", "events", "registry", "drives", "hash", "version", "--version"]);
             if (cliArgs != null)
