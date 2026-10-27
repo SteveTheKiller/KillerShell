@@ -217,14 +217,13 @@ namespace KillerShell
                 return;
             }
 
-            // Elevated half of an update to a machine-wide install:
-            // KillerShell.exe --apply-update "<download>" <sha256> <pid> "<version>".
+            // Elevated half of an update to a machine-wide install (Services/TrustedUpdate.cs).
             // Started by UpdateService.StartSwap from the installed exe, so the code running
             // elevated is the copy only an administrator could have placed. No window.
-            if (e.Args.Length > 4 &&
-                string.Equals(e.Args[0], Services.UpdateService.ApplyUpdateArgument, StringComparison.OrdinalIgnoreCase))
+            if (e.Args.Length > 0 &&
+                string.Equals(e.Args[0], Services.TrustedUpdate.HelperArgument, StringComparison.OrdinalIgnoreCase))
             {
-                Shutdown(ApplyElevatedUpdate(e.Args[1], e.Args[2], e.Args[3], e.Args[4]));
+                Shutdown(Services.TrustedUpdate.Apply(e.Args));
                 return;
             }
 
@@ -846,90 +845,7 @@ namespace KillerShell
             }
         }
 
-        /// <summary>
-        /// The elevated update swap (see the --apply-update branch in OnStartup). Reads the
-        /// download once, checks it against the hash the unelevated window verified, waits for
-        /// that window to close, then puts exactly the checked bytes in place of this exe.
-        /// </summary>
-        private static int ApplyElevatedUpdate(string download, string sha256, string pidText, string version)
-        {
-            string curExe = Process.GetCurrentProcess().MainModule!.FileName;
-            byte[]? data = Services.VerifiedFile.ReadVerified(download, sha256);
-            if (data == null) { OpenReleasesUnelevated(); return 1; }
-
-            if (int.TryParse(pidText, out int pid))
-            {
-                try
-                {
-                    using var p = Process.GetProcessById(pid);
-                    if (!p.WaitForExit(60_000)) { OpenReleasesUnelevated(); return 1; }
-                }
-                catch (ArgumentException) { /* already exited */ }
-                catch { OpenReleasesUnelevated(); return 1; }
-            }
-
-            // Retire the backups earlier updates left here while this process still holds the
-            // rights to: the next normal start runs unelevated and cannot delete in Program
-            // Files, so each update used to leave a full copy of the previous exe behind. Only
-            // backups are touched, and the one that is still running stays for a later pass.
-            try { Services.RecoveryImages.Cleanup(curExe, includeUnpublished: false); } catch { }
-
-            // The hash proves these are the bytes the window downloaded. The signature check, on
-            // the replacement written beside this exe, proves who published them: a request that
-            // reaches this helper some other way cannot put a different publisher's exe here.
-            try { Services.VerifiedFile.ReplaceImage(curExe, data, fresh => Services.CodeSignature.MayReplace(curExe, fresh)); }
-            catch (Services.PublisherMismatchException)
-            {
-                try { File.Delete(download); } catch { }
-                OpenReleasesUnelevated();
-                return KillerFamily.Deployment.InstallerExitCodes.SecurityRejected;
-            }
-            catch (Exception ex)
-            {
-                // Retain both the verified download and any sibling recovery images.
-                string report = download + ".recovery.txt";
-                try
-                {
-                    File.WriteAllText(report, ex.Message + Environment.NewLine + "Download: " + download);
-                    using (Process.Start("explorer.exe", "/select,\"" + report + "\"")) { }
-                }
-                catch { }
-                OpenReleasesUnelevated();
-                return 1;
-            }
-            try { File.Delete(download); } catch { }
-
-            // Keep Add/Remove Programs on the version actually on disk; a portable copy has no keys.
-            string hive = Services.UpdateService.RegistryHiveFor(curExe);
-            if (hive.Length > 0 && version.Length > 0)
-            {
-                RegistryKey root = hive == "HKLM" ? Registry.LocalMachine : Registry.CurrentUser;
-                try
-                {
-                    using (var k = root.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\" + Services.AppInfo.DisplayName))
-                    {
-                        k?.SetValue("DisplayVersion", version);
-                        k?.SetValue("Publisher", "Steve the Killer");
-                    }
-                    using (var k = root.CreateSubKey(@"Software\" + Services.AppInfo.DisplayName))
-                        k?.SetValue("Version", version);
-                }
-                catch { }
-            }
-
-            // Back at the user's own integrity level, not this elevated token.
-            try { using (Process.Start("explorer.exe", "\"" + curExe + "\"")) { } } catch { }
-            return 0;
-        }
-
         private static bool WaitForever(Process child) { child.WaitForExit(); return true; }
-
-        /// <summary>A failed swap sends the user to the releases page. Through explorer.exe, so the
-        /// browser does not inherit this process's administrator token.</summary>
-        private static void OpenReleasesUnelevated()
-        {
-            try { using (Process.Start("explorer.exe", "\"" + Services.UpdateService.ReleasesUrl + "\"")) { } } catch { }
-        }
 
         private static int Uninstall(bool silent, string[] arguments)
         {
