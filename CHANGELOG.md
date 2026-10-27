@@ -12,6 +12,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Typing a file's path into the address bar or a terminal's location bar opens it. Text files open in an editor tab, programs and scripts open a terminal in their folder with the command ready to run, and other files open in their usual app. It used to only select the file in its folder.
 - KillerSearch closes when you click anywhere else in the window. It stayed open until you pressed Escape or clicked its button.
 - The Registry editor's Hexadecimal and Decimal options use the themed radio button instead of the plain Windows one.
+- The file picker's Accept button can no longer fire twice: it stays off while a folder is loading or an accept is already running. A mistyped folder path now returns to the last folder that worked instead of leaving an empty list.
 
 ### Changed
 - Shared window code is lined up with the other Killer Tools apps. The tray icon can now show a silent notification, and nothing changes in how KillerShell looks.
