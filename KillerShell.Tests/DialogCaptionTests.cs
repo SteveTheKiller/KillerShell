@@ -48,7 +48,7 @@ public static class DialogCaptionScenario
                 {
                     new RenameDialog("Example.txt"),
                     new RegistryInputDialog("Name", "Example", "Rename"),
-                    new ConfirmDialog("Confirm", null, "OK")
+                    new ConfirmDialog("Confirm", "", "OK")
                 };
                 Window[] dialogs = scope == null ? prompts : prompts.Concat(new Window[]
                 {

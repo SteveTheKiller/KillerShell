@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using KillerShell.Controls;
 using KillerShell.Services;
 using KillerShell.Tests.Safety;
 using Microsoft.Win32;
@@ -60,9 +61,9 @@ public static class UninstallLocalizationScenario
                         Assert.False(confirmationSeen, "Uninstall unexpectedly opened another confirmation.");
                         confirmationSeen = true;
                         Assert.Equal("Odstranim KillerShell iz tega računalnika?",
-                            Assert.IsType<TextBlock>(dialog.FindName("MsgText")).Text);
-                        Assert.Equal("Odstrani", Assert.IsType<Button>(dialog.FindName("OkBtn")).Content);
-                        Assert.Equal("Prekliči", Assert.IsType<Button>(dialog.FindName("CancelBtn")).Content);
+                            Assert.IsType<TextBlock>(dialog.FindName("HeadingText")).Text);
+                        Assert.Equal("Odstrani", Assert.IsType<Button>(dialog.FindName("OkButton")).Content);
+                        Assert.Equal("Prekliči", Assert.IsType<Button>(dialog.FindName("CancelButton")).Content);
                         Assert.Equal(Locale.SlSI, LocaleManager.Current);
                     }
                     catch (Exception error) { confirmationFailure = error; }

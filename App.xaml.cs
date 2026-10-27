@@ -146,6 +146,10 @@ namespace KillerShell
             // KillerShell has always formatted dates and numbers by the Windows region, whatever
             // the interface language. The kit maps the old saved "Cs" and "It" names itself.
             Services.LocaleManager.KeepRegionFormats = true;
+            // High contrast maps menu hover text to the window text color, as it always has here.
+            KillerFamily.Accessibility.HighContrastResources.MapMenuHoverText = true;
+            // The confirm dialog's title icon, the same multi-size .ico the main title bar uses.
+            Controls.DialogChrome.IconUri = new Uri("pack://application:,,,/Resources/ksh-icon.ico");
             Services.LocaleManager.Initialize();
 
             // Uninstall flags (Add/Remove Programs runs /uninstall; package managers run
@@ -447,7 +451,7 @@ namespace KillerShell
             // "all-users" do not drop into the same slot in every language.
             var confirm = new ConfirmDialog(
                 AppMainWindow.LocStatic(runningMachine ? "Str_Dlg_InstalledTwiceUser" : "Str_Dlg_InstalledTwiceMachine"),
-                null, AppMainWindow.LocStatic("Str_Btn_Yes"), installer: true);
+                "", AppMainWindow.LocStatic("Str_Btn_Yes"), installer: true);
             confirm.ShowDialog();
             if (!confirm.Confirmed) return;
 
@@ -487,7 +491,7 @@ namespace KillerShell
         {
             var owner = Current.MainWindow is { IsVisible: true } window ? window : null;
             new ConfirmDialog(AppMainWindow.LocStatic("Str_Status_OpFailed") + Environment.NewLine + error.Message,
-                null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: owner == null, notification: true)
+                "", AppMainWindow.LocStatic("Str_Btn_OK"), installer: owner == null, notice: true)
                 { Owner = owner }.ShowDialog();
         }
 
@@ -706,8 +710,8 @@ namespace KillerShell
             {
                 var owner = Current.MainWindow is { IsVisible: true } window ? window : null;
                 new ConfirmDialog(string.Format(AppMainWindow.LocStatic("Str_Dlg_InstallFailed"), ex.Message),
-                    null, AppMainWindow.LocStatic("Str_Btn_OK"),
-                    installer: owner == null, notification: true) { Owner = owner }.ShowDialog();
+                    "", AppMainWindow.LocStatic("Str_Btn_OK"),
+                    installer: owner == null, notice: true) { Owner = owner }.ShowDialog();
                 return false;
             }
         }
@@ -837,7 +841,7 @@ namespace KillerShell
             {
                 string message = string.Format(AppMainWindow.LocStatic("Str_Dlg_UninstallElevateFailed"), ex.Message);
                 if (silent) Console.Error.WriteLine(message);
-                else new ConfirmDialog(message, null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notification: true).ShowDialog();
+                else new ConfirmDialog(message, "", AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notice: true).ShowDialog();
                 return KillerFamily.Deployment.InstallerExitCodes.FromException(ex);
             }
         }
@@ -948,7 +952,7 @@ namespace KillerShell
                 if (!silent)
                 {
                     var confirm = new ConfirmDialog(
-                        AppMainWindow.LocStatic("Str_Dlg_UninstallConfirm"), null,
+                        AppMainWindow.LocStatic("Str_Dlg_UninstallConfirm"), "",
                         AppMainWindow.LocStatic("Str_Btn_Uninstall"), installer: true);
                     confirm.ShowDialog();
                     if (!confirm.Confirmed) return KillerFamily.Deployment.InstallerExitCodes.Cancelled;
@@ -1009,7 +1013,7 @@ namespace KillerShell
             {
                 string message = string.Format(AppMainWindow.LocStatic("Str_Dlg_UninstallElevateFailed"), ex.Message);
                 if (silent) Console.Error.WriteLine(message);
-                else new ConfirmDialog(message, null, AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notification: true).ShowDialog();
+                else new ConfirmDialog(message, "", AppMainWindow.LocStatic("Str_Btn_OK"), installer: true, notice: true).ShowDialog();
                 return KillerFamily.Deployment.InstallerExitCodes.FromException(ex);
             }
         }

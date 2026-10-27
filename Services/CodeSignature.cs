@@ -57,10 +57,12 @@ namespace KillerShell.Services
         /// so the chain still builds offline.</summary>
         internal static (bool valid, string subject, string thumb) GetSignerInfo()
         {
-            string exePath;
-            try { exePath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty; }
-            catch { exePath = string.Empty; }
-            if (exePath.Length == 0) return (false, "(unavailable)", "(none)");
+            try { return GetSignerInfo(Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty); }
+            catch { return (false, "(unavailable)", "(none)"); }
+        }
+
+        internal static (bool valid, string subject, string thumb) GetSignerInfo(string exePath)
+        {
             var (valid, subject, thumb, _) = Inspect(exePath);
             return (valid, subject, thumb);
         }
@@ -122,8 +124,11 @@ namespace KillerShell.Services
 
             try
             {
+                if (exePath.Length == 0) return (false, "(unavailable)", "(none)", string.Empty);
+#pragma warning disable SYSLIB0057 // Authenticode signer extraction has no X509CertificateLoader equivalent.
                 using var sourceCertificate = X509Certificate.CreateFromSignedFile(exePath);
                 using var cert = new X509Certificate2(sourceCertificate);
+#pragma warning restore SYSLIB0057
                 var subj = cert.GetNameInfo(X509NameType.SimpleName, false);
                 subject   = string.IsNullOrEmpty(subj) ? cert.Subject : subj;
                 thumb     = string.IsNullOrEmpty(cert.Thumbprint) ? "(none)" : cert.Thumbprint;

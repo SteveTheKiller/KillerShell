@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit;
+using KillerShell.Controls;
 using KillerShell.Services;
 using KillerShell.Models;
 using KillerShell.Shell;
@@ -116,11 +117,11 @@ public static class WindowCloseScenario
             foreach (ConfirmDialog dialog in app.Windows.OfType<ConfirmDialog>().ToArray())
             {
                 dialog.Opacity = 0;
-                bool discard = ((TextBlock)dialog.FindName("MsgText")).Text == (string)app.FindResource("Str_Dlg_DiscardMsg");
+                bool discard = ((TextBlock)dialog.FindName("HeadingText")).Text == (string)app.FindResource("Str_Dlg_DiscardMsg");
                 if (discard) discardPrompts++;
                 bool accept = finishing || acceptClose || (twoPanes && discardPrompts == 1)
                     || (!discard && !scenario.StartsWith("generic-cancel", StringComparison.Ordinal));
-                Click(dialog, accept ? "OkBtn" : "CancelBtn");
+                Click(dialog, accept ? "OkButton" : "CancelButton");
             }
         };
         try

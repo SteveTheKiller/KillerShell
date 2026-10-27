@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Threading;
+using KillerShell.Controls;
 using System.Threading.Tasks;
 
 using KillerShell.Models;
@@ -1364,7 +1365,7 @@ namespace KillerShell.Tools
                     new System.ComponentModel.Win32Exception(5).Message), error: true);
                 return;
             }
-            var dlg = new ConfirmDialog(msg, p.HasPath ? p.Path : null,
+            var dlg = new ConfirmDialog(msg, p.HasPath ? p.Path ?? "" : "",
                                         MainWindow.LocStatic("Str_Menu_ProcKill")) { Owner = owner };
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
@@ -1445,7 +1446,7 @@ namespace KillerShell.Tools
         private void StartServiceWithConfirm(ServiceInfo s)
         {
             string msg = string.Format(MainWindow.LocStatic("Str_Dlg_SvcStartMsg"), s.DisplayName, s.Name);
-            var dlg = new ConfirmDialog(msg, null, MainWindow.LocStatic("Str_Menu_SvcStart"))
+            var dlg = new ConfirmDialog(msg, "", MainWindow.LocStatic("Str_Menu_SvcStart"))
                 { Owner = Window.GetWindow(this) };
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
@@ -1457,7 +1458,7 @@ namespace KillerShell.Tools
         private void StopServiceWithConfirm(ServiceInfo s)
         {
             string msg = string.Format(MainWindow.LocStatic("Str_Dlg_SvcStopMsg"), s.DisplayName, s.Name);
-            var dlg = new ConfirmDialog(msg, null, MainWindow.LocStatic("Str_Menu_SvcStop"))
+            var dlg = new ConfirmDialog(msg, "", MainWindow.LocStatic("Str_Menu_SvcStop"))
                 { Owner = Window.GetWindow(this) };
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
@@ -1474,7 +1475,7 @@ namespace KillerShell.Tools
         private void RestartServiceWithConfirm(ServiceInfo s)
         {
             string msg = string.Format(MainWindow.LocStatic("Str_Dlg_SvcRestartMsg"), s.DisplayName, s.Name);
-            var dlg = new ConfirmDialog(msg, null, MainWindow.LocStatic("Str_Menu_ProcRestart"))
+            var dlg = new ConfirmDialog(msg, "", MainWindow.LocStatic("Str_Menu_ProcRestart"))
                 { Owner = Window.GetWindow(this) };
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;

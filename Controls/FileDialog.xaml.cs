@@ -671,7 +671,7 @@ namespace KillerShell
                 {
                     var confirm = new ConfirmDialog(
                         string.Format(Loc("Str_Dlg_OverwriteMsg"), Path.GetFileName(full)),
-                        null,
+                        "",
                         Loc("Str_Btn_Replace")) { Owner = this };
                     confirm.ShowDialog();
                     if (!confirm.Confirmed) { FileNameBox.Focus(); return Task.CompletedTask; }

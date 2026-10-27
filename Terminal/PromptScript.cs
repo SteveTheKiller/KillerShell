@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using KillerShell.Controls;
 
 // KillerShell's own PowerShell prompt: where the script lives, and how it reaches a shell.
 //

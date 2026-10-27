@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using KillerShell.Controls;
 using System.Security;
 using System.Windows;
 using System.Windows.Controls;

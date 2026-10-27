@@ -96,7 +96,7 @@ namespace KillerShell.Shell
         /// Always asks.</summary>
         private void AboutClearData_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new ConfirmDialog(Loc("Str_Dlg_ClearDataMsg"), null,
+            var dlg = new ConfirmDialog(Loc("Str_Dlg_ClearDataMsg"), "",
                                         Loc("Str_About_ClearData")) { Owner = this };
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;

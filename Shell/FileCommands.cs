@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using KillerShell.Controls;
 using KillerShell.Models;
 using KillerShell.Services;
 
@@ -253,7 +254,7 @@ namespace KillerShell.Shell
                 string fmsg = string.Format(Loc("Str_Dlg_RecycleFolderMsg"), paths.Count.ToString("N0"));
                 var fdlg = new ConfirmDialog(fmsg, string.Join(Environment.NewLine, paths.Take(8)),
                                              Loc("Str_Btn_Delete"),
-                                             Loc("Str_Chk_DontAskAgain")) { Owner = this };
+                                             check1Label: Loc("Str_Chk_DontAskAgain")) { Owner = this };
                 fdlg.ShowDialog();
                 if (!fdlg.Confirmed) return;
 

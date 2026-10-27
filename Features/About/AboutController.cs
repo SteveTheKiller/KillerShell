@@ -116,10 +116,8 @@ namespace KillerShell.Features.About
             var dlg = new ConfirmDialog(
                 string.Format(_host.Loc("Str_About_StartupUpdateHeading"), AppInfo.DisplayName, tag),
                 _host.Loc("Str_About_StartupUpdateDetail"),
-                _host.Loc("Str_About_UpdateNow"),
+                _host.Loc("Str_About_UpdateNow"), _host.Loc("Str_About_NotNow"),
                 _host.Loc("Str_About_AlwaysCheckOnStartup"), StartupCheckEnabled) { Owner = _host.Window };
-            // KillerShell's ConfirmDialog takes no cancel text (the dialog API is an open family decision).
-            dlg.CancelBtn.Content = _host.Loc("Str_About_NotNow");
             dlg.ShowDialog();
             SetStartupCheck(dlg.Check1Checked);
             if (dlg.Confirmed) await InstallAsync(tag);
@@ -199,8 +197,8 @@ namespace KillerShell.Features.About
             var dlg = new ConfirmDialog(
                 string.Format(_host.Loc("Str_About_UpdateHeading"), AppInfo.DisplayName, tag),
                 _host.Loc("Str_About_UpdateDetail"),
-                _host.Loc("Str_About_UpdateNow")) { Owner = _host.Window };
-            dlg.CancelBtn.Content = _host.Loc("Str_Btn_Cancel");
+                _host.Loc("Str_About_UpdateNow"),
+                _host.Loc("Str_Btn_Cancel")) { Owner = _host.Window };
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
             await InstallAsync(tag!);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using KillerShell.Controls;
 using KillerShell.Models;
 using KillerShell.Tools;
 
@@ -29,8 +30,8 @@ namespace KillerShell.Shell
 
             var dlg = new ConfirmDialog(
                 Loc(messageKey), Loc(detailKey), Loc(actionKey),
-                Loc("Str_Chk_Desktop"), check1Initial: true,
-                Loc("Str_Chk_AllUsers"), check2Initial: machineWide) { Owner = this };
+                check1Label: Loc("Str_Chk_Desktop"), check1Initial: true,
+                check2Label: Loc("Str_Chk_AllUsers"), check2Initial: machineWide) { Owner = this };
             if (machineWide) dlg.LockCheck2(Loc("Str_Dlg_AlreadyAllUsers"));
             dlg.ShowDialog();
             if (!dlg.Confirmed) return;
@@ -209,9 +210,9 @@ namespace KillerShell.Shell
         private bool ShowQuitDialog()
         {
             var dlg = new ConfirmDialog(
-                Loc("Str_Dlg_QuitMsg"), null, Loc("Str_Btn_Quit"),
-                Loc("Str_Chk_CloseTabs"), Services.ThemeManager.GetSetting("RememberTabs") == "0",
-                Loc("Str_Chk_RememberChoice")) { Owner = this };
+                Loc("Str_Dlg_QuitMsg"), "", Loc("Str_Btn_Quit"),
+                check1Label: Loc("Str_Chk_CloseTabs"), check1Initial: Services.ThemeManager.GetSetting("RememberTabs") == "0",
+                check2Label: Loc("Str_Chk_RememberChoice")) { Owner = this };
             dlg.ShowDialog();
 
             Services.ThemeManager.SetSetting("RememberTabs", dlg.Check1Checked ? "0" : "1");

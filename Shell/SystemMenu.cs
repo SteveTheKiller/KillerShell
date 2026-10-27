@@ -1,30 +1,62 @@
-using KillerShell.Controls;
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
 using KillerFamily.Accessibility;
 
 // ============================================================
-// THEMED WINDOWS SYSTEM MENU (the family kit's KillerUI Shell/SystemMenu.cs)
+// THEMED WINDOWS SYSTEM MENU
 //
-// WindowChrome makes the title bar a real native caption, so Windows answers a caption
-// right-click (and Alt+Space) with its own white HMENU, which no WPF style can reach. Both
-// messages are swallowed here and a themed ContextMenu shows instead, with Windows' own items:
-// Restore, Move, Size, Minimize, Maximize and Close. Each posts back the WM_SYSCOMMAND the native
-// menu would have sent, so Move and Size hand off to Windows' own keyboard move and size loops.
-// As in Windows' menu, the item a double-click would pick is bold, what cannot apply is grayed
-// and Close shows Alt+F4.
+// WindowChrome turns the title bar into a real native caption, which is what buys free snap,
+// drag and double-click-maximize - but it also means Windows answers a caption right-click
+// (and Alt+Space) with its own stock white HMENU. That menu is drawn by Win32, not WPF, so no
+// brush, style or theme in the app can reach it. The ONLY way to theme it is to suppress the
+// two messages that raise it and show our own.
 //
-// TRAP (KillerPDF, 2026-07-31): an Absolute-placement ContextMenu with no PlacementTarget has no
-// inheritance context and sees only APP-level implicit styles. ShowSystemMenu sets
-// PlacementTarget = this, which supplies the resource context without moving the menu.
+// So: swallow them and pop a normal WPF ContextMenu, which picks up the app's implicit
+// ContextMenu / MenuItem / Separator styles for free. Each item posts back the exact
+// WM_SYSCOMMAND the native menu would have sent, so behavior is identical - including Move and
+// Size, which hand off to Windows' own modal drag loops.
+//
+// ---- Wiring it up -------------------------------------------------------------------------
+//   1. Drop this file in as a MainWindow partial and fix the namespace.
+//   2. The window needs an HwndSource hook. If Chrome.cs already has a WndProc, add this as the
+//      FIRST thing it does:
+//
+//          if (TryHandleSystemMenu(msg, wParam, lParam)) { handled = true; return IntPtr.Zero; }
+//
+//   3. Chrome.cs must define `private const int HTCAPTION = 2;` (most already do).
+//   4. Add the six Str_Sys_* keys to en-US.xaml at minimum. Missing keys fall back to English
+//      rather than rendering the key name, so a half-translated locale still reads correctly.
+//
+// TRAP (KillerPDF, 2026-07-31): an Absolute-placement ContextMenu with no PlacementTarget has
+// NO inheritance context, so it only sees APP-level implicit styles. An app that keeps its
+// ContextMenu/MenuItem styles in the window's resources (KillerPDF does) gets the stock white
+// menu. ShowSystemMenu below therefore sets PlacementTarget = this - harmless with
+// PlacementMode.Absolute (it supplies the resource context without affecting position). Do not
+// remove it when porting.
+//
+// Originally written for KillerScan; KillerShell's older Minimize/Maximize/Close-only copy in
+// Chrome.cs was replaced with this file on 2026-10-23, when Close gained Windows' Alt+F4 hint and
+// the default item its bold. Ported into
+// the kit 2026-07-30 because three of five apps were still showing the stock white menu.
+//
+// ---- App hooks (optional partial methods; leave them out to keep the kit menu) -----------
+//   CustomizeSystemMenuItem(item, icon, command, danger): runs once per item after the kit
+//      builds it. An app that styles menu icons through its own MenuIcon style clears the
+//      icon's local font, size and alignment and sets that style here, and may clear the item's
+//      Padding to use its implicit MenuItem padding.
+//   UseSystemMenuAccessKeys(ref use): set true to show and handle Windows' access letters
+//      (R, M, S, N, X and C, with Close labeled "Alt+F4 / C") while the menu is open.
 // ============================================================
 namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        private const int WM_SYSCOMMAND = 0x0112;
+        private const int WM_NCRBUTTONUP = 0x00A5;
+        private const int WM_SYSCOMMAND  = 0x0112;
 
         private const int SC_SIZE     = 0xF000;
         private const int SC_MOVE     = 0xF010;
@@ -37,8 +69,8 @@ namespace KillerShell.Shell
         private ContextMenu? _sysMenu;
 
         /// <summary>
-        /// Called first in WndProc (Chrome.cs). True when the message raised the system menu and
-        /// the native one is suppressed.
+        /// Call from WndProc. Returns true when the message was ours and the native menu should
+        /// be suppressed.
         /// </summary>
         private bool TryHandleSystemMenu(int msg, IntPtr wParam, IntPtr lParam)
         {
@@ -49,8 +81,8 @@ namespace KillerShell.Shell
                 return true;
             }
 
-            // Alt+Space. SC_KEYMENU with a space is the keyboard route to the same menu; the low
-            // nibble carries state, so it is masked off.
+            // Alt+Space. SC_KEYMENU with a space is the keyboard route to the same menu; masking
+            // the low nibble is required because Windows packs state into it.
             if (msg == WM_SYSCOMMAND && (wParam.ToInt64() & 0xFFF0) == SC_KEYMENU && lParam.ToInt64() == ' ')
             {
                 ShowSystemMenu(null);
@@ -60,10 +92,10 @@ namespace KillerShell.Shell
             return false;
         }
 
-        /// <summary>lParam of a non-client mouse message packs screen coordinates as two shorts.</summary>
+        /// <summary>lParam of a non-client mouse message packs screen coords as two shorts.</summary>
         private static Point ScreenPointFromLParam(IntPtr lParam)
         {
-            int v = unchecked((int)lParam.ToInt64());
+            int v = unchecked((int)lParam.ToInt64());   // ToInt32 throws on a 64-bit value
             return new Point((short)(v & 0xFFFF), (short)((v >> 16) & 0xFFFF));
         }
 
@@ -72,15 +104,16 @@ namespace KillerShell.Shell
             _sysMenu ??= BuildSystemMenu();
 
             bool maximized = WindowState == WindowState.Maximized;
-            // As in Windows: Restore only from maximized, Maximize only from normal, no Move or Size
-            // while maximized, and the default item in bold: Restore when maximized, Close otherwise.
+            // Windows grays out what does not apply: you cannot Restore a normal window, cannot
+            // Maximize an already-maximized one, and cannot Move or Size while maximized. It also
+            // bolds the default item: Restore when maximized, Close otherwise.
             int defaultCommand = maximized ? SC_RESTORE : SC_CLOSE;
             foreach (object o in _sysMenu.Items)
             {
                 if (o is not MenuItem mi || mi.Tag is not int cmd) continue;
                 mi.IsEnabled = cmd switch
                 {
-                    SC_RESTORE => maximized,
+                    SC_RESTORE  => maximized,
                     SC_MAXIMIZE => !maximized,
                     SC_MOVE or SC_SIZE => !maximized,
                     _ => true,
@@ -88,53 +121,99 @@ namespace KillerShell.Shell
                 mi.FontWeight = cmd == defaultCommand ? FontWeights.Bold : FontWeights.Normal;
             }
 
+            // See the TRAP note in the header: without a PlacementTarget an Absolute-placement
+            // menu has no inheritance context and misses window-level implicit styles.
             _sysMenu.PlacementTarget = this;
             _sysMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Absolute;
             if (screenPoint is { } p)
             {
-                // Screen pixels to DIPs, so the menu lands under the pointer at any DPI.
-                if (PresentationSource.FromVisual(this)?.CompositionTarget is { } target)
-                    p = target.TransformFromDevice.Transform(p);
+                // Screen pixels -> DIP, so the menu lands under the cursor at any DPI.
+                var src = PresentationSource.FromVisual(this);
+                if (src?.CompositionTarget is { } ct) p = ct.TransformFromDevice.Transform(p);
                 _sysMenu.HorizontalOffset = p.X;
                 _sysMenu.VerticalOffset = p.Y;
             }
             else
             {
-                // Keyboard route: under the window's top-left corner, where Windows puts it. From
-                // the window's real screen position, not Left/Top: while maximized those keep the
-                // RESTORE position, which put the menu where the restored window would sit,
-                // possibly on another monitor.
-                Point corner = PointToScreen(new Point(8, 36));
-                if (PresentationSource.FromVisual(this)?.CompositionTarget is { } target)
-                    corner = target.TransformFromDevice.Transform(corner);
-                _sysMenu.HorizontalOffset = corner.X;
-                _sysMenu.VerticalOffset = corner.Y;
+                // Keyboard route: hang it under the top-left of the window, like Windows does.
+                // While maximized Left/Top keep the RESTORE position, which put the menu where the
+                // restored window would sit, possibly on another monitor, so the real screen
+                // position is used there. A normal window keeps Left/Top, the same point.
+                if (maximized)
+                {
+                    Point corner = PointToScreen(new Point(8, 36));
+                    if (PresentationSource.FromVisual(this)?.CompositionTarget is { } target)
+                        corner = target.TransformFromDevice.Transform(corner);
+                    _sysMenu.HorizontalOffset = corner.X;
+                    _sysMenu.VerticalOffset = corner.Y;
+                }
+                else
+                {
+                    _sysMenu.HorizontalOffset = Left + 8;
+                    _sysMenu.VerticalOffset = Top + 36;
+                }
             }
 
             _sysMenu.IsOpen = true;
-            Anim.FadeIn(_sysMenu);
+            Controls.Anim.FadeIn(_sysMenu);
         }
+
+        partial void CustomizeSystemMenuItem(MenuItem item, Glyph icon, int command, bool danger);
+        partial void UseSystemMenuAccessKeys(ref bool use);
 
         private ContextMenu BuildSystemMenu()
         {
             var menu = new ContextMenu();
+            bool accessKeys = false;
+            UseSystemMenuAccessKeys(ref accessKeys);
 
-            // E923/E921/E922/E8BB are the glyphs the caption buttons draw, so the menu and the
-            // buttons agree. E7C2 is the four-way move arrow, E740 the diagonal resize arrow.
-            void Add(string key, string fallback, int cmd, int glyph, string gesture = "", bool danger = false)
+            // Every codepoint below was verified present in segmdl2.ttf by RENDERING it, not
+            // trusted from documentation - this repo has shipped a missing-glyph box before.
+            // E923/E921/E922/E8BB are the same four the title-bar caption buttons draw, so the
+            // menu and the caption agree. E7C2 is the four-way move arrow, E740 the diagonal
+            // resize arrow.
+            MenuItem Add(string key, string fallback, int cmd, int glyph, string gesture = "", bool danger = false)
             {
-                var mi = new MenuItem { Tag = cmd, InputGestureText = gesture };
+                var mi = new MenuItem { Tag = cmd, Padding = new Thickness(12, 7, 24, 7), InputGestureText = gesture };
                 mi.SetResourceReference(HeaderedItemsControl.HeaderProperty, key);
-                // A locale without the key would otherwise show the key name.
+                // Loc() returns the key itself when a string is missing; fall back to English so a
+                // half-translated locale never shows "Str_Sys_Move" in the menu.
                 if (Loc(key) == key) mi.Header = fallback;
 
-                var icon = new Glyph { Text = char.ConvertFromUtf32(glyph) };
-                icon.SetResourceReference(StyleProperty, "MenuIcon");
-                if (danger) icon.SetResourceReference(TextBlock.ForegroundProperty, "DangerRed");
-                mi.Icon = icon;
+                var ico = new Glyph
+                {
+                    Text = char.ConvertFromUtf32(glyph),
+                    FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
+                    FontSize = 12,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+                ico.SetResourceReference(TextBlock.ForegroundProperty,
+                                         danger ? "DangerRed" : "MutedTextBrush");
+                mi.Icon = ico;
 
+                if (accessKeys)
+                {
+                    string letter = cmd switch
+                    {
+                        SC_RESTORE => "R", SC_MOVE => "M", SC_SIZE => "S",
+                        SC_MINIMIZE => "N", SC_MAXIMIZE => "X", _ => "C",
+                    };
+                    if (cmd == SC_CLOSE) mi.InputGestureText = "Alt+F4 / C";
+                    else if (gesture.Length == 0) mi.InputGestureText = letter;
+                    menu.KeyDown += (_, e) =>
+                    {
+                        if (Keyboard.Modifiers != ModifierKeys.None || e.Key.ToString() != letter || !mi.IsEnabled) return;
+                        menu.IsOpen = false;
+                        SendSysCommand(cmd);
+                        e.Handled = true;
+                    };
+                }
+
+                CustomizeSystemMenuItem(mi, ico, cmd, danger);
                 mi.Click += (_, _) => SendSysCommand(cmd);
                 menu.Items.Add(mi);
+                return mi;
             }
 
             Add("Str_Sys_Restore",  "Restore",  SC_RESTORE,  0xE923);
@@ -151,9 +230,12 @@ namespace KillerShell.Shell
         {
             var hwnd = new WindowInteropHelper(this).Handle;
             if (hwnd == IntPtr.Zero) return;
-            // Posted, not sent: the menu is still closing, and SC_MOVE and SC_SIZE start a modal
-            // loop that must not run inside the click handler.
-            PostMessage(hwnd, WM_SYSCOMMAND, new IntPtr(cmd), IntPtr.Zero);   // TabHandoff.cs
+            // Post rather than Send: the menu is still closing, and SC_MOVE / SC_SIZE start a
+            // modal loop that must not run inside the click handler.
+            PostMessage(hwnd, WM_SYSCOMMAND, new IntPtr(cmd), IntPtr.Zero);
         }
+
+        [DllImport("user32.dll")]
+        private static extern bool PostMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
     }
 }

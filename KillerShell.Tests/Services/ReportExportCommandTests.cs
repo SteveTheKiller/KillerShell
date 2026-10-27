@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using KillerShell.Controls;
 using KillerShell.Models;
 using KillerShell.Services;
 using KillerShell.Shell;
@@ -59,7 +60,7 @@ public static class ReportExportCommandScenario
                 if (confirm != null)
                 {
                     stage = 2;
-                    ((Button)confirm.FindName("CancelBtn")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    ((Button)confirm.FindName("CancelButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     return;
                 }
                 var dialog = app.Windows.OfType<FileDialog>().FirstOrDefault();

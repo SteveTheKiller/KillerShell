@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using KillerShell.Controls;
 using KillerShell.Models;
 using KillerShell.Services;
 
@@ -127,7 +128,7 @@ namespace KillerShell.Shell
                         string.Format(Loc("Str_Dlg_ArchiveCollideMsg"), r.Collisions.Count.ToString("N0")),
                         string.Join(Environment.NewLine, r.Collisions.Take(8)),
                         Loc("Str_Btn_ArchiveAdd"),
-                        Loc("Str_Chk_ArchiveReplace")) { Owner = this };
+                        check1Label: Loc("Str_Chk_ArchiveReplace")) { Owner = this };
                     dlg.ShowDialog();
 
                     if (!dlg.Confirmed)

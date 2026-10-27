@@ -175,7 +175,6 @@ namespace KillerShell.Shell
 
         private const int WM_GETMINMAXINFO = 0x0024;
         private const int WM_ERASEBKGND    = 0x0014;
-        private const int WM_NCRBUTTONUP   = 0x00A5;
         private const int WM_XBUTTONUP     = 0x020C;
         private const int WM_APPCOMMAND    = 0x0319;
         private const int HTCAPTION        = 2;

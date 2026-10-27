@@ -74,6 +74,11 @@ namespace KillerFamily.Accessibility
             }));
         }
 
+        /// <summary>Also map MenuHoverTextBrush to the window text color in high contrast. Off by
+        /// default, which leaves menu hover text on the theme's value; an app that wants the mapped
+        /// hover text sets this once at startup.</summary>
+        internal static bool MapMenuHoverText { get; set; }
+
         private static void Refresh()
         {
             if (Application.Current == null) return;
@@ -81,6 +86,8 @@ namespace KillerFamily.Accessibility
                 SystemColors.HighlightBrush, SystemColors.HighlightTextBrush);
         }
 
+        /// <summary>The same refresh with the high contrast state and system brushes passed in, so
+        /// tests can drive it without changing the Windows setting.</summary>
         internal static void Refresh(bool highContrast, Brush windowBrush, Brush windowTextBrush,
             Brush highlightBrush, Brush highlightTextBrush)
         {
@@ -123,8 +130,9 @@ namespace KillerFamily.Accessibility
                 "ComparisonBarBrush", "ComparisonBarHoverBrush", "AnnotationBarBrush", "KeyboardKeyBrush", "TabActiveBrush",
                 "BgCanvas", "BgRecentPanel", "BgDragHandle",
                 "FooterZoomSurfaceBrush", "FooterZoomClosedBrush", "SortButtonBrush", "MonitorCellBrush", "MonitorHoverBrush");
+            if (MapMenuHoverText) Brushes(windowTextBrush, "MenuHoverTextBrush");
             Brushes(windowTextBrush, "TextBrush", "MutedTextBrush", "DimTextBrush", "ChromeTextBrush",
-                "MenuTextBrush", "MenuHoverTextBrush", "TextFooter", "FilenameBrush", "CaptionTextBrush", "DialogCaptionTextBrush",
+                "MenuTextBrush", "TextFooter", "FilenameBrush", "CaptionTextBrush", "DialogCaptionTextBrush",
                 "OverlayCloseBrush", "CaptionGlyphBrush", "ComboTextBrush", "OutlineRestBrush", "OutlineBtnBrush", "RadioAccent",
                 "RadioHoverFgBrush", "ScrollThumbBrush", "ScrollThumbHoverBrush", "AccentLogo", "HeaderLineBrush",
                 "CardBorderBrush", "PaneBorderBrush", "AppBorderBrush", "OverlayEdgeBrush", "OverlayRuleBrush",

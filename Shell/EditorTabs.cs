@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
+using KillerShell.Controls;
 using KillerShell.Models;
 
 // Editor tabs: opening a file for editing, and where it lands. Partial of MainWindow.
