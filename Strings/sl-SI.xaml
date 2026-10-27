@@ -507,6 +507,7 @@
     <sys:String x:Key="Str_Btn_Save">Shrani</sys:String>
     <sys:String x:Key="Str_Dlg_FileName">Ime datoteke:</sys:String>
     <sys:String x:Key="Str_Dlg_FileType">Vrsta datoteke:</sys:String>
+    <sys:String x:Key="Str_Dlg_Places">Mesta</sys:String>
     <sys:String x:Key="Str_Dlg_AllFiles">Vse datoteke</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Tukaj ni datotek izbrane vrste.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Ta mapa ne obstaja.</sys:String>

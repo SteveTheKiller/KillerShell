@@ -606,6 +606,7 @@
     <sys:String x:Key="Str_Btn_Save">Зберегти</sys:String>
     <sys:String x:Key="Str_Dlg_FileName">Ім'я файлу:</sys:String>
     <sys:String x:Key="Str_Dlg_FileType">Тип файлу:</sys:String>
+    <sys:String x:Key="Str_Dlg_Places">Місця</sys:String>
     <sys:String x:Key="Str_Dlg_AllFiles">Усі файли</sys:String>
     <sys:String x:Key="Str_Dlg_NoMatchingFiles">Тут немає нічого, що відповідає поточному типу файлу.</sys:String>
     <sys:String x:Key="Str_Dlg_NoSuchFolder">Такої папки не існує.</sys:String>
