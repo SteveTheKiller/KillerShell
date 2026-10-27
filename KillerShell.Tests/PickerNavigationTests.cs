@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using KillerShell.Controls;
 using KillerShell.Services;
 using KillerShell.Tests.Editing;
 using Xunit;

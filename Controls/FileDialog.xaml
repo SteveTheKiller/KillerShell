@@ -4,7 +4,7 @@
      and Open/Save behavior. The property surface deliberately mirrors the Win32 dialogs
      (Title, Filter, FilterIndex, FileName, InitialDirectory, DefaultExt, ...) so a call site
      changes by one word. -->
-<Window x:Class="KillerShell.FileDialog"
+<Window x:Class="KillerShell.Controls.FileDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:theme="clr-namespace:KillerFamily.Theming"

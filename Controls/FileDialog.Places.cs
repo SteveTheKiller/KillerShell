@@ -7,7 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace KillerShell
+namespace KillerShell.Controls
 {
     public partial class FileDialog
     {

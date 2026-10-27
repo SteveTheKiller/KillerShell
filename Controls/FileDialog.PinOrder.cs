@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
-namespace KillerShell
+namespace KillerShell.Controls
 {
     // ── Reordering pinned places ─────────────────────────────────────────────
     //

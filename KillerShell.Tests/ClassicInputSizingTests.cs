@@ -7,6 +7,7 @@ using System.Windows.Media;
 using KillerShell.Services;
 using KillerShell.Tests.Editing;
 using KillerShell.Tests.Terminal;
+using KillerShell.Controls;
 using Xunit;
 
 namespace KillerShell.Tests;

@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using KillerShell.Services;
+using KillerShell.Controls;
 using Xunit;
 
 namespace KillerShell.Tests.Terminal;

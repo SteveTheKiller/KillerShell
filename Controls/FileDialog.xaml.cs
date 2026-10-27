@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 using KillerShell.Shell;
 
-namespace KillerShell
+namespace KillerShell.Controls
 {
     /// <summary>Open or Save. Picked at construction; changes the accept button and the rules.</summary>
     public enum FileDialogMode { Open, Save }
