@@ -838,7 +838,7 @@
     <sys:String x:Key="Str_About_Computing">গণনা করা হচ্ছে...</sys:String>
     <sys:String x:Key="Str_About_Downloading">ডাউনলোড হচ্ছে...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">আপডেট উপলব্ধ: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSignedChain">(স্বাক্ষরিত নয় অথবা সার্টিফিকেট চেইন ব্যর্থ)</sys:String>
+    <sys:String x:Key="Str_About_Unsigned">(স্বাক্ষরিত নয় অথবা সার্টিফিকেট চেইন ব্যর্থ)</sys:String>
     <sys:String x:Key="Str_About_None">(কিছু নেই)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(উপলব্ধ নয়)</sys:String>
     <sys:String x:Key="Str_TT_About">সম্পর্কে  (F12)</sys:String>

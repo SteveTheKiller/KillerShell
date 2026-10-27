@@ -72,7 +72,7 @@
     <sys:String x:Key="Str_About_Computing">obliczanie...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Pobieranie...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Dostępna aktualizacja: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSignedChain">(niepodpisany lub błąd łańcucha certyfikatów)</sys:String>
+    <sys:String x:Key="Str_About_Unsigned">(niepodpisany lub błąd łańcucha certyfikatów)</sys:String>
     <sys:String x:Key="Str_About_None">(brak)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(niedostępne)</sys:String>
     <sys:String x:Key="Str_TT_About">O programie  (F12)</sys:String>

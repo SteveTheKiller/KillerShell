@@ -316,8 +316,6 @@ namespace KillerShell.Shell
             try { BookmarksList?.Items.Refresh(); } catch { }
         }
 
-        private void VersionLabel_Click(object sender, System.Windows.Input.MouseButtonEventArgs e) => ShowAboutOverlay();  // About.cs
-
         private void Wordmark_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://killershell.net") { UseShellExecute = true });

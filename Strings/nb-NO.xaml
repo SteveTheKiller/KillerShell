@@ -767,7 +767,7 @@
     <sys:String x:Key="Str_About_Computing">beregner...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Laster ned...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Oppdatering tilgjengelig: {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSignedChain">(ikke signert eller kjedekontroll mislyktes)</sys:String>
+    <sys:String x:Key="Str_About_Unsigned">(ikke signert eller kjedekontroll mislyktes)</sys:String>
     <sys:String x:Key="Str_About_None">(ingen)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(utilgjengelig)</sys:String>
     <sys:String x:Key="Str_TT_About">Om  (F12)</sys:String>

@@ -724,7 +724,7 @@
   <sys:String x:Key="Str_About_Computing">đang tính toán...</sys:String>
   <sys:String x:Key="Str_About_Downloading">Đang tải xuống...</sys:String>
   <sys:String x:Key="Str_About_UpdateAvailable">Có bản cập nhật: {0}</sys:String>
-  <sys:String x:Key="Str_About_NotSignedChain">(chưa được ký hoặc không xác thực được chuỗi chứng chỉ)</sys:String>
+  <sys:String x:Key="Str_About_Unsigned">(chưa được ký hoặc không xác thực được chuỗi chứng chỉ)</sys:String>
   <sys:String x:Key="Str_About_None">(không có)</sys:String>
   <sys:String x:Key="Str_About_Unavailable">(không khả dụng)</sys:String>
   <sys:String x:Key="Str_TT_About">Giới thiệu  (F12)</sys:String>

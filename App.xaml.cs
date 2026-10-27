@@ -92,32 +92,6 @@ namespace KillerShell
         // Startup
         // ============================================================
 
-        // KillerShell's saved "Locale" names from before the family enum: Czech, Italian and
-        // Japanese were "Cs", "It" and "Ja". The kit reads "Ja" itself; the other two move here.
-        //
-        // The kit's LocaleManager also sets the thread cultures to the chosen language. KillerShell
-        // has always formatted dates and numbers by the Windows region, so the cultures it found
-        // at startup are put back after every language change.
-        private static System.Globalization.CultureInfo? _regionCulture, _regionUICulture;
-
-        private void KeepRegionalFormats()
-        {
-            string? saved = GetSetting("Locale");
-            if (saved == "Cs") SetSetting("Locale", "CsCZ");
-            else if (saved == "It") SetSetting("Locale", "ItIT");
-            _regionCulture = System.Globalization.CultureInfo.CurrentCulture;
-            _regionUICulture = System.Globalization.CultureInfo.CurrentUICulture;
-        }
-
-        private static void RestoreRegionalFormats()
-        {
-            if (_regionCulture == null || _regionUICulture == null) return;
-            System.Globalization.CultureInfo.CurrentCulture = _regionCulture;
-            System.Globalization.CultureInfo.CurrentUICulture = _regionUICulture;
-            System.Globalization.CultureInfo.DefaultThreadCurrentCulture = null;
-            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = null;
-        }
-
         protected override void OnStartup(StartupEventArgs e)
         {
             HookCrashLogging();   // CrashLog.cs - first, so it covers startup itself
@@ -169,10 +143,10 @@ namespace KillerShell
             // The kit's LocaleManager persists through the ThemeManager hooks.
             Services.ThemeManager.GetSetting = GetSetting;
             Services.ThemeManager.SetSetting = SetSetting;
-            KeepRegionalFormats();
+            // KillerShell has always formatted dates and numbers by the Windows region, whatever
+            // the interface language. The kit maps the old saved "Cs" and "It" names itself.
+            Services.LocaleManager.KeepRegionFormats = true;
             Services.LocaleManager.Initialize();
-            RestoreRegionalFormats();
-            Services.LocaleManager.LocaleChanged += RestoreRegionalFormats;
 
             // Uninstall flags (Add/Remove Programs runs /uninstall; package managers run
             // /uninstall-silent, the registered QuietUninstallString, which shows no UI)

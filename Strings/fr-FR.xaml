@@ -841,7 +841,7 @@
     <sys:String x:Key="Str_About_Computing">calcul en cours...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Téléchargement...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Mise à jour disponible : {0}</sys:String>
-    <sys:String x:Key="Str_About_NotSignedChain">(non signé ou échec de la chaîne de certificats)</sys:String>
+    <sys:String x:Key="Str_About_Unsigned">(non signé ou échec de la chaîne de certificats)</sys:String>
     <sys:String x:Key="Str_About_None">(aucun)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(indisponible)</sys:String>
     <sys:String x:Key="Str_TT_About">À propos  (F12)</sys:String>
