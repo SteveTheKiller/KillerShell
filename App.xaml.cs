@@ -146,8 +146,6 @@ namespace KillerShell
             // KillerShell has always formatted dates and numbers by the Windows region, whatever
             // the interface language. The kit maps the old saved "Cs" and "It" names itself.
             Services.LocaleManager.KeepRegionFormats = true;
-            // High contrast maps menu hover text to the window text color, as it always has here.
-            KillerFamily.Accessibility.HighContrastResources.MapMenuHoverText = true;
             // The confirm dialog's title icon, the same multi-size .ico the main title bar uses.
             Controls.DialogChrome.IconUri = new Uri("pack://application:,,,/Resources/ksh-icon.ico");
             Services.LocaleManager.Initialize();

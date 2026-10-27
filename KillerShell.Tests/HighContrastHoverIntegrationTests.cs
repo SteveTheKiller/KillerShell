@@ -96,11 +96,13 @@ public static class InjectedHighContrastHoverScenario
 
                 // Exercise the production builder, Publish, and Restore with injected colors.
                 // This does not verify Windows contrast switching or native accessibility clients.
-                // A distinct selection pair prevents a mistaken HighlightText mapping from passing.
+                // A distinct selection pair proves hover rows take Highlight, not the Window colors.
                 HighContrastResources.Refresh(true, windowBrush, windowTextBrush, Brushes.Navy, Brushes.Yellow);
                 Pump();
                 Assert.True(HighContrastResources.GetIsActive(window), "The production high-contrast overlay is inactive.");
-                Assert.Equal(background, Paint((Brush)app.FindResource("MenuHoverBrush")));
+                // Menu and combo hover are a selection: the Highlight pair, as in the family kit.
+                Color menuHover = Colors.Navy, menuHoverText = Colors.Yellow;
+                Assert.Equal(menuHover, Paint((Brush)app.FindResource("MenuHoverBrush")));
 
                 menu.Highlight();
                 combo.Highlight();
@@ -115,29 +117,29 @@ public static class InjectedHighContrastHoverScenario
                 var menuBorder = Assert.IsType<Border>(menu.Template.FindName("MenuBd", menu));
                 var comboBorder = Assert.IsType<Border>(combo.Template.FindName("bg", combo));
                 var selectedBorder = Assert.IsType<Border>(selectedCombo.Template.FindName("bg", selectedCombo));
-                Check(Paint(menuBorder.Background) == background, name + ": menu hover background", failures);
-                Check(Paint(comboBorder.Background) == background, name + ": combo hover background", failures);
-                Check(Paint(selectedBorder.Background) == background, name + ": selected combo hover background", failures);
-                Check(Paint(menu.Foreground) == foreground, name + ": menu hover foreground is " + Paint(menu.Foreground), failures);
-                Check(Paint(combo.Foreground) == foreground, name + ": combo hover foreground is " + Paint(combo.Foreground), failures);
-                Check(Paint(selectedCombo.Foreground) == foreground,
+                Check(Paint(menuBorder.Background) == menuHover, name + ": menu hover background", failures);
+                Check(Paint(comboBorder.Background) == menuHover, name + ": combo hover background", failures);
+                Check(Paint(selectedBorder.Background) == menuHover, name + ": selected combo hover background", failures);
+                Check(Paint(menu.Foreground) == menuHoverText, name + ": menu hover foreground is " + Paint(menu.Foreground), failures);
+                Check(Paint(combo.Foreground) == menuHoverText, name + ": combo hover foreground is " + Paint(combo.Foreground), failures);
+                Check(Paint(selectedCombo.Foreground) == menuHoverText,
                     name + ": selected combo hover foreground is " + Paint(selectedCombo.Foreground), failures);
                 foreach (string part in new[] { "Check", "Gesture", "SubArrow" })
                 {
                     var text = Assert.IsType<TextBlock>(menu.Template.FindName(part, menu));
-                    Check(Paint(text.Foreground) == foreground, name + ": menu " + part + " foreground", failures);
+                    Check(Paint(text.Foreground) == menuHoverText, name + ": menu " + part + " foreground", failures);
                 }
                 var icon = Assert.IsType<ContentPresenter>(menu.Template.FindName("IconPresenter", menu));
-                Check(Paint(TextElement.GetForeground(icon)) == foreground, name + ": menu icon foreground", failures);
+                Check(Paint(TextElement.GetForeground(icon)) == menuHoverText, name + ": menu icon foreground", failures);
                 Check(ColorContrast.Contrast(Paint(menu.Foreground), Paint(menuBorder.Background)) >= 7,
                     name + ": rendered menu foreground/background contrast", failures);
                 Check(ColorContrast.Contrast(Paint(combo.Foreground), Paint(comboBorder.Background)) >= 7,
                     name + ": rendered combo foreground/background contrast", failures);
                 Check(ColorContrast.Contrast(Paint(selectedCombo.Foreground), Paint(selectedBorder.Background)) >= 7,
                     name + ": rendered selected combo foreground/background contrast", failures);
-                Capture(menu, evidence, "InjectedContrast-98SE-" + name + "-menu", foreground, failures);
-                Capture(combo, evidence, "InjectedContrast-98SE-" + name + "-combo", foreground, failures);
-                Capture(selectedCombo, evidence, "InjectedContrast-98SE-" + name + "-selected-combo", foreground, failures);
+                Capture(menu, evidence, "InjectedContrast-98SE-" + name + "-menu", menuHoverText, failures);
+                Capture(combo, evidence, "InjectedContrast-98SE-" + name + "-combo", menuHoverText, failures);
+                Capture(selectedCombo, evidence, "InjectedContrast-98SE-" + name + "-selected-combo", menuHoverText, failures);
                 Console.WriteLine("Injected-color render " + name + ": active=" + HighContrastResources.GetIsActive(window)
                     + "; Window=" + background + "; WindowText=" + foreground
                     + "; Menu=" + Paint(menu.Foreground) + "; Combo=" + Paint(combo.Foreground)
