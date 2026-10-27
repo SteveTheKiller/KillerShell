@@ -1,3 +1,4 @@
+using KillerShell.Controls;
 using System;
 using System.Linq;
 using System.Windows;
@@ -61,7 +62,7 @@ namespace KillerShell.Shell
                 _treeMirrored = _treeRight;
             }
             ApplyTreeGripSide();
-            FlyoutPlacement.RailOnRight = _treeRight;
+            FlyoutPlacement.UsePane(PaneHost, _treeRight ? SidebarSide.Right : SidebarSide.Left);
             UpdateTreeChevron();
         }
 

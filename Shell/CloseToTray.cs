@@ -44,9 +44,10 @@ namespace KillerFamily.Shell
 
         private const int WM_APP = 0x8000;
         private const int CallbackMessage = WM_APP + 0x51;
-        private const uint NIM_ADD = 0, NIM_DELETE = 2;
-        private const uint NIF_MESSAGE = 1, NIF_ICON = 2, NIF_TIP = 4;
-        private const int WM_LBUTTONUP = 0x0202, WM_RBUTTONUP = 0x0205, WM_CONTEXTMENU = 0x007B, NIN_SELECT = 0x0400, NIN_KEYSELECT = 0x0401;
+        private const uint NIM_ADD = 0, NIM_MODIFY = 1, NIM_DELETE = 2;
+        private const uint NIF_MESSAGE = 1, NIF_ICON = 2, NIF_TIP = 4, NIF_INFO = 0x10;
+        private const uint NIIF_INFO = 1, NIIF_NOSOUND = 0x10;
+        private const int WM_LBUTTONUP = 0x0202, WM_RBUTTONUP = 0x0205, WM_CONTEXTMENU = 0x007B, NIN_SELECT = 0x0400, NIN_KEYSELECT = 0x0401, NIN_BALLOONUSERCLICK = 0x0405;
 
         private readonly Window _window;
         private readonly string _appName;
@@ -138,6 +139,24 @@ namespace KillerFamily.Shell
             return true;
         }
 
+        /// <summary>
+        /// While the window is hidden in the tray, a notification from its icon - the way an app
+        /// that is out of sight says something happened. Silent: the caller decides about sound.
+        /// Clicking it brings the window back. False when the window is not in the tray.
+        /// </summary>
+        internal bool Notify(string title, string text)
+        {
+            if (!_iconShown || _disposed) return false;
+            var d = Data(NIF_INFO);
+            d.szInfoTitle = title.Length > 63 ? title[..63] : title;
+            d.szInfo = text.Length > 255 ? text[..255] : text;
+            d.dwInfoFlags = NIIF_INFO | NIIF_NOSOUND;
+            return Shell_NotifyIcon(NIM_MODIFY, ref d);
+        }
+
+        /// <summary>True while the window is hidden and its tray icon is showing.</summary>
+        internal bool InTray => _iconShown;
+
         private void ShowIcon()
         {
             if (_iconShown) return;
@@ -158,7 +177,7 @@ namespace KillerFamily.Shell
             if (msg == CallbackMessage)
             {
                 int ev = (int)(lParam.ToInt64() & 0xFFFF);
-                if (ev is WM_LBUTTONUP or NIN_SELECT or NIN_KEYSELECT) ShowWindow();
+                if (ev is WM_LBUTTONUP or NIN_SELECT or NIN_KEYSELECT or NIN_BALLOONUSERCLICK) ShowWindow();
                 else if (ev is WM_RBUTTONUP or WM_CONTEXTMENU) ShowMenu();
                 handled = true;
             }

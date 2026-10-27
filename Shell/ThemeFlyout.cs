@@ -1,3 +1,4 @@
+using KillerShell.Controls;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -489,8 +490,8 @@ namespace KillerShell.Shell
         {
             if (menu.IsOpen) { menu.IsOpen = false; return; }
 
-            FlyoutPlacement.UsePane(PaneHost);
-            FlyoutPlacement.Attach(menu, this);
+            FlyoutPlacement.UsePane(PaneHost, _treeRight ? SidebarSide.Right : SidebarSide.Left);
+            FlyoutPlacement.Attach(menu, null);   // large menus always take the corner
 
             menu.IsOpen = true;
             menu.BeginAnimation(UIElement.OpacityProperty,

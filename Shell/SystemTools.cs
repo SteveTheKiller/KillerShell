@@ -1,3 +1,4 @@
+using KillerShell.Controls;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,7 +19,7 @@ namespace KillerShell.Shell
             if (sender == LangButton) { LangButton_Click(sender, e); return; }
             if (sender == ThemeButton) { ThemeButton_Click(sender, e); return; }
             if (sender is not FrameworkElement { ContextMenu: { } menu }) return;
-            FlyoutPlacement.UsePane(PaneHost);
+            FlyoutPlacement.UsePane(PaneHost, _treeRight ? SidebarSide.Right : SidebarSide.Left);
             FlyoutPlacement.Attach(menu, (UIElement)sender);
             menu.IsOpen = true;
         }
