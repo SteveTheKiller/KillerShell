@@ -486,12 +486,15 @@ namespace KillerShell.Shell
         /// footer and the rail at once, so its bottom-left corner is the one spot a flyout can
         /// hug without covering any of them.
         /// </summary>
-        private void ToggleRailFlyout(ContextMenu menu)
+        /// <summary>Opens a rail flyout in the pane beside the rail. A menu rises with the button
+        /// that opened it; only the big theme and language menus pass no button and take the
+        /// pane corner.</summary>
+        private void ToggleRailFlyout(ContextMenu menu, UIElement? anchor = null)
         {
             if (menu.IsOpen) { menu.IsOpen = false; return; }
 
             FlyoutPlacement.UsePane(PaneHost, _treeRight ? SidebarSide.Right : SidebarSide.Left);
-            FlyoutPlacement.Attach(menu, null);   // large menus always take the corner
+            FlyoutPlacement.Attach(menu, anchor);
 
             menu.IsOpen = true;
             menu.BeginAnimation(UIElement.OpacityProperty,

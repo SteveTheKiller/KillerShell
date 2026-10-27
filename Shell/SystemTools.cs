@@ -10,7 +10,7 @@ namespace KillerShell.Shell
         {
             var menu = (ContextMenu)SystemToolsRailBtn.Resources["SystemToolsMenu"];
             SystemToolsRailBtn.ContextMenu.IsOpen = false;
-            ToggleRailFlyout(menu);
+            ToggleRailFlyout(menu, SystemToolsRailBtn);
         }
 
         private void RailMenu_Opening(object sender, ContextMenuEventArgs e)
@@ -18,9 +18,9 @@ namespace KillerShell.Shell
             e.Handled = true;
             if (sender == LangButton) { LangButton_Click(sender, e); return; }
             if (sender == ThemeButton) { ThemeButton_Click(sender, e); return; }
-            if (sender is not FrameworkElement { ContextMenu: { } menu }) return;
+            if (sender is not FrameworkElement { ContextMenu: { } menu } button) return;
             FlyoutPlacement.UsePane(PaneHost, _treeRight ? SidebarSide.Right : SidebarSide.Left);
-            FlyoutPlacement.Attach(menu, null);   // keeps the corner placement KillerShell has always used
+            FlyoutPlacement.Attach(menu, button);   // rises with the rail button that opened it
             menu.IsOpen = true;
         }
 
