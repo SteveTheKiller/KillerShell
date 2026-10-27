@@ -8,7 +8,7 @@ using Microsoft.Win32;
 namespace KillerShell.Services
 {
     /// <summary>
-    /// Puts an installed copy on PATH so a new terminal can run "killershell" from any folder. The
+    /// Puts an installed copy on PATH so a new terminal can run the app by name from any folder. The
     /// install folder is added to the current user's PATH, or to the machine PATH for an
     /// all-users install, and the same folder is taken out again on uninstall. Portable copies
     /// register nothing.
@@ -57,6 +57,8 @@ namespace KillerShell.Services
                 || ex is IOException || ex is InvalidOperationException) { }
         }
 
+        /// <summary>Unregister that lets a failure through, for an uninstall that must not leave
+        /// a stale PATH entry behind silently.</summary>
         internal static void UnregisterRequired(string installDirectory, bool machine)
         {
             using (RegistryKey key = OpenEnvironment(machine))
@@ -129,9 +131,12 @@ namespace KillerShell.Services
         {
             try
             {
-                return string.Equals(
-                    Normalize(Environment.ExpandEnvironmentVariables(entry.Trim().Trim('"'))),
-                    Normalize(directory), StringComparison.OrdinalIgnoreCase);
+                // Only a fully qualified entry can name the install folder. A relative one such
+                // as "." or "C:bin" would resolve against whatever folder setup runs from and
+                // belongs to the user.
+                string expanded = Environment.ExpandEnvironmentVariables(entry.Trim().Trim('"'));
+                if (!IsFullyQualified(expanded)) return false;
+                return string.Equals(Normalize(expanded), Normalize(directory), StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception ex) when (ex is ArgumentException || ex is NotSupportedException || ex is PathTooLongException)
             {
@@ -139,7 +144,12 @@ namespace KillerShell.Services
             }
         }
 
-        private static void BroadcastEnvironmentChange()
+        private static bool IsFullyQualified(string path) =>
+            path.StartsWith(@"\\", StringComparison.Ordinal)
+            || (path.Length >= 3 && char.IsLetter(path[0]) && path[1] == ':'
+                && (path[2] == Path.DirectorySeparatorChar || path[2] == Path.AltDirectorySeparatorChar));
+
+        internal static void BroadcastEnvironmentChange()
         {
             // Explorer rereads the environment on this broadcast, so terminals opened from the
             // desktop after setup see the new PATH without signing out.
