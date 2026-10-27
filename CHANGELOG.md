@@ -14,6 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The Registry editor's Hexadecimal and Decimal options use the themed radio button instead of the plain Windows one.
 
 ### Changed
+- Shared window code is lined up with the other Killer Tools apps. The tray icon can now show a silent notification, and nothing changes in how KillerShell looks.
 - A hovered tile in icon view shows a thin outline as well as its gray fill, so the pointer's target reads as a card.
 
 ## [1.5.0] - 2026-10-24
