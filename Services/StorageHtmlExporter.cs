@@ -42,7 +42,7 @@ namespace KillerShell.Services
             var files = all.Where(n => !n.IsDirectory).OrderByDescending(n => n.Size).Take(50).ToList();
             var sb = new StringBuilder();
 
-            sb.Append("<!doctype html><html lang='").Append(LocaleManager.LanguageTag(LocaleManager.Current))
+            sb.Append("<!doctype html><html lang='").Append(LocaleManager.LanguageTag)
               .Append("' class='theme-").Append(current)
               .Append("'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>")
               .Append("<title>").Append(E(L("Str_StRpt_Title", "KillerShell Storage Report"))).Append("</title><style>");

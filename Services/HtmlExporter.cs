@@ -45,7 +45,7 @@ namespace KillerShell.Services
             if (Application.Current?.TryFindResource("PrimaryBrush") is SolidColorBrush pb)
                 accentHex = $"#{pb.Color.R:X2}{pb.Color.G:X2}{pb.Color.B:X2}";
 
-            string lang = Services.LocaleManager.LanguageTag(Services.LocaleManager.Current);
+            string lang = Services.LocaleManager.LanguageTag;
 
             var sb = new StringBuilder();
 
