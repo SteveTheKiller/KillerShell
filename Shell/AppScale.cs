@@ -2,45 +2,74 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 
+// App-wide accessibility size, the family feature from KillerNotes and KillerPDF: roll the mouse
+// wheel over the title-bar wordmark and everything under the title bar grows or shrinks in small
+// steps. A LayoutTransform reflows and re-rasterizes text instead of stretching a bitmap, so the
+// UI stays crisp at any size. The title bar itself stays fixed, so the wordmark being scrolled
+// never moves under the cursor. Persisted app-wide through the ThemeManager settings hooks
+// ("AppScale").
+//
+// MainWindow.xaml names:
+//   LogoBar    the title-bar wordmark host, IsHitTestVisibleInChrome="True" so it gets the wheel,
+//              wired to LogoBar_MouseWheel and LogoBar_MouseLeftButtonDown
+//   ScaleHost  the element holding everything below the title bar (toolbar, sidebar, content,
+//              footer) - the one LayoutTransform target
+//   StatusText the footer status line that carries the "App size 120%" readout
+//
+// A document or canvas that has its own zoom (a PDF page, an image) should sit OUTSIDE ScaleHost
+// or reset the transform for itself: app size and content zoom are two separate controls.
 namespace KillerShell.Shell
 {
-    // App-wide accessibility size, ported from KillerNotes / KillerScan / KillerPDF: a
-    // LayoutTransform scale on ScaleHost (the 2-panel row - search config, splitter gap and
-    // results pane, MainWindow.xaml) grows or shrinks the app content crisply. LayoutTransform
-    // reflows and re-rasterizes text rather than bitmap-stretching it, which RenderTransform
-    // would. The title bar and footer stay a fixed size, so the wordmark you scroll to drive
-    // this (MainWindow.xaml, LogoBar) never moves. Persisted app-wide ("AppScale").
-    //
-    // Like KillerScan and unlike KillerNotes / KillerPDF, this needs no width bookkeeping.
-    // Those two keep a sidebar column in the UNSCALED outer grid, so every saved width has to
-    // be converted across a scale change. KillerShell's search-config column lives INSIDE
-    // ScaleHost and its width is never persisted, so its 265 / MinWidth 200 / MaxWidth 380 are
-    // logical px measured inside the transform and stay correct at any scale - the pane simply
-    // grows with everything else, which is what an accessibility zoom should do.
     public partial class MainWindow
     {
         private double _appScale = 1.0;
-        private const double AppScaleMin = 0.7, AppScaleMax = 2.5, AppScaleStep = 0.02;
+        private double AppScaleMin = 0.7, AppScaleMax = 2.5, AppScaleStep = 0.02;
+        private bool _appScaleSmoothText = true, _appScaleConfigured, _appScaleUnroundedLayout;
 
-        private void InitAppScale()
+        /// <summary>Optional app hook: keep an app's own range, step, or ClearType text under scale.</summary>
+        partial void ConfigureAppScale(ref double min, ref double max, ref double step, ref bool smoothText);
+
+        /// <summary>Optional app hook: show the size readout somewhere other than StatusText.</summary>
+        partial void ShowAppScaleReadout(double scale, ref bool handled);
+
+        /// <summary>Optional app hook: set unroundedLayout true to turn layout rounding off on
+        /// ScaleHost at fractional sizes (it comes back on at 100%). Rounded edges under a
+        /// fractional scale can leave a one-pixel stripe between panes (KillerNotes at 108%).</summary>
+        partial void ConfigureAppScaleLayout(ref bool unroundedLayout);
+
+        private void EnsureAppScaleConfigured()
         {
-            if (double.TryParse(Services.ThemeManager.GetSetting("AppScale"), NumberStyles.Float,
-                                CultureInfo.InvariantCulture, out double s))
-                ApplyAppScale(s);
+            if (_appScaleConfigured) return;
+            _appScaleConfigured = true;
+            ConfigureAppScale(ref AppScaleMin, ref AppScaleMax, ref AppScaleStep, ref _appScaleSmoothText);
+            ConfigureAppScaleLayout(ref _appScaleUnroundedLayout);
         }
 
-        // Roll the wheel over the wordmark: one small step per notch (fine-grained, no big jumps).
+        /// <summary>Call from the constructor after InitializeComponent to restore the saved size.</summary>
+        private void InitAppScale()
+        {
+            EnsureAppScaleConfigured();
+            if (double.TryParse(Services.ThemeManager.GetSetting("AppScale"), NumberStyles.Float,
+                                CultureInfo.InvariantCulture, out double saved))
+                ApplyAppScale(saved);
+        }
+
+        // One small step per wheel notch: fine-grained, no big jumps.
         private void LogoBar_MouseWheel(object sender, MouseWheelEventArgs e)
         {
+            EnsureAppScaleConfigured();
             ApplyAppScale(_appScale + (e.Delta > 0 ? AppScaleStep : -AppScaleStep), persist: true);
             e.Handled = true;
         }
 
-        // The wordmark is marked IsHitTestVisibleInChrome (MainWindow.xaml) so the scroll wheel
-        // reaches it for the zoom above - but that also takes it out of WindowChrome's native
-        // caption, so window drag and double-click-maximize are restored here by hand.
+        // The wordmark is a client hit (for the wheel above), not caption, so drag and
+        // double-click-maximize are restored here by hand. The drag is handed to Windows as a
+        // caption press rather than DragMove: DragMove throws while maximized, and the native
+        // path restores the window under the cursor and keeps following it.
         private void LogoBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -49,37 +78,27 @@ namespace KillerShell.Shell
                 e.Handled = true;
                 return;
             }
-            if (e.ButtonState == MouseButtonState.Pressed && WindowState != WindowState.Maximized)
-                DragMove();
+            if (e.ButtonState != MouseButtonState.Pressed) return;
+            e.Handled = true;
+            var hwnd = new WindowInteropHelper(this).Handle;
+            if (hwnd != IntPtr.Zero) SendMessage(hwnd, WM_NCLBUTTONDOWN, new IntPtr(HTCAPTION), IntPtr.Zero);
         }
+
+        /// <summary>Optional app hook: scale the app's own content instead of ScaleHost.</summary>
+        partial void ApplyAppScaleTo(double scale, ref bool handled);
 
         internal void ApplyAppScale(double scale, bool persist = false)
         {
+            EnsureAppScaleConfigured();
             scale = Math.Round(Math.Max(AppScaleMin, Math.Min(AppScaleMax, scale)), 3);
             _appScale = scale;
-            ScaleHost.LayoutTransform = scale == 1.0
-                ? Transform.Identity
-                : new ScaleTransform(scale, scale);
-            LeftPane.QueueSnap();    // FilePane.xaml.cs: the panes' edges move to new device pixels
-            RightPane.QueueSnap();
 
-            // Display-mode text is only crisp at 1:1 - under any other scale its pixel-snapped
-            // ClearType lands on fractional device pixels and the whole app smears, the rail's
-            // font glyphs worst of all. Ideal mode renders correctly under a transform, so the
-            // scaled host swaps to it and back. 98SE looked better only because its
-            // aliased/pixel-art pieces hide the smear; this fixes the rest.
-            System.Windows.Media.TextOptions.SetTextFormattingMode(ScaleHost,
-                scale == 1.0 ? System.Windows.Media.TextFormattingMode.Display
-                             : System.Windows.Media.TextFormattingMode.Ideal);
-
-            // The window runs Display + ClearType (MainWindow.xaml), which pixel-snaps glyphs
-            // and color-fringes them for maximum crispness at 1:1. Under a fractional scale
-            // (0.96, 1.12...) those snapped stems land on partial device pixels and the results
-            // list goes soft. Ideal + Grayscale positions glyphs at sub-pixel precision instead
-            // and stays smooth at any scale. Same trade KillerScan makes. At exactly 1.0 we hand
-            // control back to the window so the default, and by far most common, case keeps its
-            // crisp text.
-            if (scale == 1.0)
+            // The window runs Display + ClearType, which pixel-snaps glyphs for maximum crispness at
+            // 1:1. Under a fractional scale those snapped stems land on partial device pixels and
+            // the text goes soft. Ideal + Grayscale positions glyphs at sub-pixel precision and
+            // stays smooth at any size; at exactly 1.0 the window's own crisp setting comes back.
+            // An app that keeps ClearType under scale opts out through ConfigureAppScale.
+            if (scale == 1.0 || !_appScaleSmoothText)
             {
                 ScaleHost.ClearValue(TextOptions.TextFormattingModeProperty);
                 ScaleHost.ClearValue(TextOptions.TextRenderingModeProperty);
@@ -90,66 +109,60 @@ namespace KillerShell.Shell
                 TextOptions.SetTextRenderingMode(ScaleHost, TextRenderingMode.Grayscale);
             }
 
-            // Footer readout, only for changes the user just made. persist is true exactly for
-            // the wheel path, so a scale restored at startup (InitAppScale) applies silently -
-            // nothing changed, so there is nothing to announce.
+            if (_appScaleUnroundedLayout)
+            {
+                if (scale == 1.0) ScaleHost.ClearValue(UseLayoutRoundingProperty);
+                else ScaleHost.UseLayoutRounding = false;
+            }
+
+            // The app hook runs last, so whatever it sets wins over the kit defaults above. An app
+            // whose scaled content is not one element (KillerScan's scan bar rides in the title bar)
+            // implements ApplyAppScaleTo and sets handled; everyone else scales ScaleHost.
+            bool handled = false;
+            ApplyAppScaleTo(scale, ref handled);
+            if (!handled) ScaleHost.LayoutTransform = scale == 1.0 ? Transform.Identity : new ScaleTransform(scale, scale);
+
             if (persist)
             {
-                ShowScaleReadout(scale);
                 Services.ThemeManager.SetSetting("AppScale", scale.ToString("0.###", CultureInfo.InvariantCulture));
+                ShowScaleReadout(scale);
             }
         }
 
-        // The readout is transient: every wheel notch shows the percentage and restarts the
-        // hold timer, so the footer carries it while you are zooming and drops it a beat after
-        // you stop. It lives in its own label rather than the status line (KillerScan's
-        // approach) so it never clobbers a running search's status.
-        //
-        // Normal priority, not the DispatcherTimer default of Background: the search engine's
-        // callbacks are posted at Background, so during a big run a Background tick would queue
-        // behind them and the readout could sit there for seconds after the last notch.
-        private System.Windows.Threading.DispatcherTimer? _appScaleHide;
+        // The readout is transient. Every wheel notch rewrites it and restarts the hold timer, so
+        // the footer carries it while you are sizing and gives the line back a beat after you stop.
+        // Whatever was showing before the first notch of a burst is put back, but only if the
+        // readout is still the text on screen, so a status written in the meantime is never
+        // overwritten by a stale one. Normal priority rather than the DispatcherTimer default of
+        // Background, so busy work cannot leave the readout parked on the footer.
+        private DispatcherTimer? _appScaleHide;
+        private string _appScaleStatusWas = string.Empty;
+        private string _appScaleReadout = string.Empty;
 
         private void ShowScaleReadout(double scale)
         {
+            bool handled = false;
+            ShowAppScaleReadout(scale, ref handled);
+            if (handled) return;
+
             if (_appScaleHide is null)
             {
-                _appScaleHide = new System.Windows.Threading.DispatcherTimer(
-                    System.Windows.Threading.DispatcherPriority.Normal)
-                    { Interval = TimeSpan.FromSeconds(5) };
+                _appScaleHide = new DispatcherTimer(DispatcherPriority.Normal) { Interval = TimeSpan.FromSeconds(5) };
                 _appScaleHide.Tick += (_, _) =>
                 {
                     _appScaleHide!.Stop();
-                    AppScaleLabel.Visibility = Visibility.Collapsed;
-                    StatusText.Visibility    = Visibility.Visible;
+                    if (StatusText.Text == _appScaleReadout) StatusText.Text = _appScaleStatusWas;
                 };
             }
 
+            // Only the first notch of a burst snapshots; the rest are our own readout.
+            if (!_appScaleHide.IsEnabled) _appScaleStatusWas = StatusText.Text;
             _appScaleHide.Stop();
 
-            // Back at exactly 100%? Collapse at once - landing on the default is its own answer.
-            if (scale == 1.0)
-            {
-                AppScaleLabel.Visibility = Visibility.Collapsed;
-                StatusText.Visibility    = Visibility.Visible;
-                return;
-            }
-
-            // The readout REPLACES the status line in its own slot rather than sitting beside
-            // it - the traffic dot stays in the corner throughout.
-            AppScaleLabel.Text       = string.Format(Loc("Str_St_AppSize"), (int)Math.Round(scale * 100));
-            AppScaleLabel.Visibility = Visibility.Visible;
-            StatusText.Visibility    = Visibility.Collapsed;
+            string format = TryFindResource("Str_St_AppSize") as string ?? "App size {0}%";
+            _appScaleReadout = string.Format(CultureInfo.CurrentCulture, format, (int)Math.Round(scale * 100));
+            StatusText.Text = _appScaleReadout;
             _appScaleHide.Start();
         }
-
-        /// <summary>
-        /// Ctrl+wheel in a terminal: show the text size in the status line, the way the app-zoom
-        /// readout shows its own percentage. 13 is the terminal's default font size
-        /// (TerminalControl's Ctrl+0 reset), so 13 reads as 100%.
-        /// </summary>
-        internal void ShowTerminalTextSize(double fontSize)
-            => StatusText.Text = string.Format(Loc("Str_Status_TextSize"),
-                                               (int)Math.Round(fontSize / 13.0 * 100));
     }
 }
