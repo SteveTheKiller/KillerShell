@@ -1,0 +1,394 @@
+using System;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
+namespace KillerShell.Shell
+{
+    /// <summary>
+    /// APP-OWNED: KillerShell's side of the family window chrome (Shell/Chrome.cs): its own saved
+    /// window bounds, the title bar and footer metrics, the themed frame border and corners that
+    /// every KillerShell popup shares, square corners while snapped or on a flat theme, the
+    /// elevation edge, the extra window messages (system menu, session end, PATH changes, mouse
+    /// history buttons, tab handoff) and the monitor measurements DualPane uses.
+    /// </summary>
+    public partial class MainWindow
+    {
+        /// <summary>Call from the constructor right after SourceInitialized is wired to
+        /// MainWindow_SourceInitialized, so this runs after the kit's handler.</summary>
+        private void InitChromeExtras()
+        {
+            SourceInitialized += (_, _) =>
+            {
+                SyncWindowCorners(force: true);
+                // Snapping moves and resizes a window without changing its state.
+                LocationChanged += (_, _) => SyncWindowCorners();
+                SizeChanged += (_, _) => SyncWindowCorners();
+                ApplyThemeBorder(this);
+                // Added after the kit's WndProc, so it sees these messages first.
+                HwndSource.FromHwnd(new WindowInteropHelper(this).Handle)?.AddHook(ExtrasWndProc);
+            };
+        }
+
+        // Before the first show: the last window's size and place (WindowBounds.cs), or else the
+        // XAML default size (1140 x 710) capped at 90% of the work area of the monitor the window
+        // opens on, so a small desktop (a 1024 x 768 VM, a netbook, a laptop at high scaling) gets
+        // the whole window on screen.
+        partial void BeforeWorkAreaFit() => RestoreWindowBounds();
+
+        // WindowBounds.cs saves the window's bounds under its own setting instead.
+        partial void AdjustSaveWindowPlacement(ref bool save) => save = false;
+
+        // Square while snapped, and always on a flat theme; the same answer SyncWindowCorners gives.
+        partial void AdjustRoundedCorners(ref bool rounded)
+        {
+            if (FlatChrome || IsSnapped()) rounded = false;
+        }
+
+        partial void AfterWindowStateChanged()
+        {
+            // The window's corners and the close fill: square while maximized or snapped.
+            SyncWindowCorners(force: true);   // WindowBounds.cs
+            SyncElevationHaloCorners();   // Elevation.cs
+            SyncWindowEdge();
+        }
+
+        /// <summary>
+        /// Pin the title bar's ROW, and the WindowChrome caption band, to the theme's
+        /// TitleBarHeight. Called from the ctor and again on every theme change, because the two
+        /// flat/non-flat captions are different heights (22 vs 36).
+        ///
+        /// Both halves are needed and neither works alone:
+        ///   - The ROW: a hardcoded 36 with a 22px caption Grid inside it centers the caption and
+        ///     leaves 7px of frame gray above and below it. That gap is INSIDE the row, so no
+        ///     amount of trimming the window's padding could reach it.
+        ///   - CaptionHeight: WindowChrome's drag band is measured from the top of the WINDOW and
+        ///     is a plain constant. Left at 36 over a 22px caption it would keep claiming 14px of
+        ///     the tab strip below, so the top of every tab would drag the window instead of
+        ///     selecting the tab.
+        ///
+        /// Code rather than markup: a RowDefinition takes a GridLength, not a Double, and
+        /// WindowChrome is not in the visual tree so a DynamicResource on it never resolves.
+        /// </summary>
+        private void SyncTitleBarMetrics()
+        {
+            double h = TryFindResource("TitleBarHeight") is double d && d > 0 ? d : 36.0;
+
+            TitleRow?.Height = new GridLength(h);
+
+            // Same treatment for the footer. 98SE's sunken cells need more room than the 24px the
+            // rounded themes use - the cell loses 2px a side to FooterCellMargin and the bevel
+            // borders paint OVER the content rather than reserving space, so at 24 the status and
+            // version text ran into the cell edges.
+            double fh = TryFindResource("FooterHeight") is double fd && fd > 0 ? fd : 24.0;
+            FooterRow?.Height = new GridLength(fh);
+
+            var chrome = System.Windows.Shell.WindowChrome.GetWindowChrome(this);
+            chrome?.CaptionHeight = h;
+        }
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
+
+        private const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+        private const int DWMWCP_DONOTROUND = 1;
+        private const int DWMWCP_ROUND      = 2;
+        private const int DWMWA_BORDER_COLOR = 34;
+
+        /// <summary>Tints the Win11 DWM frame border to the theme's PaneBorderBrush, so the
+        /// 1px window outline follows the theme instead of staying system gray (the gray
+        /// frame appears as soon as a borderless window opts into DWM rounded corners).
+        /// Call at SourceInitialized and again after every theme change.</summary>
+        internal static void ApplyThemeBorder(Window w)
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(w).Handle;
+                if (hwnd == IntPtr.Zero) return;
+                // AppBorderBrush is the frame's OWN key, and every palette picks it deliberately -
+                // Sepulchre's #44585b desaturated teal against a #4d3d2b brown pane border, for
+                // instance. It was briefly switched to PaneBorderBrush on the theory that the
+                // vendored palettes used this key for something else; they do not, and the switch
+                // painted Sepulchre's frame brown. PaneBorderBrush stays as
+                // the fallback for a palette that declines to state one.
+                if ((w.TryFindResource("AppBorderBrush")
+                     ?? w.TryFindResource("PaneBorderBrush")) is SolidColorBrush b)
+                {
+                    // COLORREF is 0x00BBGGRR
+                    int colorref = b.Color.R | (b.Color.G << 8) | (b.Color.B << 16);
+                    _ = DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, ref colorref, sizeof(int));
+                }
+            }
+            catch { /* pre-Win11: attribute unsupported */ }
+        }
+
+        /// <summary>
+        /// True when the active theme is FLAT - 98SE. A flat theme draws its own hard frame and
+        /// must never get Win11 rounded corners: the rounding cut the corners off the bevel and
+        /// left the DWM frame curving around a square window. Read from the
+        /// palette rather than the theme name, so any future flat theme gets it for free.
+        /// </summary>
+        internal static bool FlatChrome =>
+            Application.Current?.TryFindResource("UseDialogCaption") is bool f && f;
+
+        /// <summary>
+        /// Sets the DWM rounded-corner preference for <paramref name="w"/>. Static and taking an
+        /// explicit Window, like ApplyThemeBorder above, so every other themed popup window in
+        /// the family (FileDialog, FolderPickerDialog, ...) can call it too rather than only
+        /// MainWindow ever getting rounded corners - and, on Windows 11, the standard window
+        /// drop shadow along with it: a chromeless (WindowStyle="None") popup with no corner
+        /// preference set renders with NEITHER a rounded frame NOR a shadow.
+        /// </summary>
+        internal static void ApplyWindowCorners(Window w, bool rounded)
+        {
+            if (FlatChrome) rounded = false;
+            try
+            {
+                var hwnd = new WindowInteropHelper(w).Handle;
+                if (hwnd == IntPtr.Zero) return;
+                int pref = rounded ? DWMWCP_ROUND : DWMWCP_DONOTROUND;
+                _ = DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref pref, sizeof(int));
+            }
+            catch { /* pre-Win11: no rounded-corner API */ }
+        }
+
+        /// <summary>
+        /// A maximized window fills the work area exactly, so its 1px edge would sit on the screen
+        /// edge and take the corner pixel from Close. It goes while maximized and comes back after.
+        /// 98SE's admin band stays: on that theme it is the only sign the window is elevated.
+        /// </summary>
+        private void SyncWindowEdge()
+        {
+            if (WindowFrame == null) return;
+            if (WindowState == WindowState.Maximized && !(IsElevated && FlatChrome))
+                WindowFrame.BorderThickness = new Thickness(0);
+            else
+                WindowFrame.SetResourceReference(System.Windows.Controls.Border.BorderThicknessProperty,
+                    IsElevated ? "ElevationEdgeThickness" : "WindowEdgeThickness");
+        }
+
+        private const int WM_XBUTTONUP     = 0x020C;
+        private const int WM_APPCOMMAND    = 0x0319;
+        private const int XBUTTON1         = 1;
+        private const int XBUTTON2         = 2;
+        private const int APPCOMMAND_BROWSER_BACKWARD = 1;
+        private const int APPCOMMAND_BROWSER_FORWARD  = 2;
+
+        // Another KillerShell window handing us a tab it was dragged onto (TabHandoff.cs) -
+        // the reverse of tearing one out (TabTearOut.cs).
+        private const int WM_COPYDATA = 0x004A;
+
+        // Broadcast by Windows when an environment variable changes at User or Machine scope,
+        // with lParam pointing at the string "Environment". A process only ever gets a COPY of
+        // the environment at launch, so without this a PATH change made after KillerShell
+        // started is invisible to it and to every shell it spawns until the app is restarted.
+        // Installing a CLI tool and finding the terminal still cannot see it is the case that
+        // matters (ShellEnv.cs, RefreshEnvironmentPath).
+        private const int WM_SETTINGCHANGE = 0x001A;
+
+        internal static int MouseHistoryDirectionFromMessage(int msg, IntPtr wParam, IntPtr lParam)
+        {
+            int command;
+            if (msg == WM_XBUTTONUP)
+                command = (int)((wParam.ToInt64() >> 16) & 0xFFFF);
+            else if (msg == WM_APPCOMMAND)
+                command = (int)((lParam.ToInt64() >> 16) & 0x0FFF);
+            else
+                return 0;
+
+            if (command == XBUTTON1 || command == APPCOMMAND_BROWSER_BACKWARD) return -1;
+            if (command == XBUTTON2 || command == APPCOMMAND_BROWSER_FORWARD) return 1;
+            return 0;
+        }
+
+        // KillerShell's messages. The kit's WndProc still answers WM_ERASEBKGND and
+        // WM_GETMINMAXINFO, which nothing here marks handled.
+        private IntPtr ExtrasWndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            // A caption right-click or Alt+Space: the themed system menu instead of Windows' white
+            // one (SystemMenu.cs).
+            if (TryHandleSystemMenu(msg, wParam, lParam)) { handled = true; return IntPtr.Zero; }
+
+            // WM_ENDSESSION, wParam FALSE: the session end that SessionEnding approved was
+            // called off, so its document confirmations are void (Session.cs).
+            if (msg == 0x0016 && wParam == IntPtr.Zero) SessionEndCancelled();
+
+            // Interactive move/resize bracket, read by the dual-pane ratio logic
+            // (DualPane.cs OnPaneHostResized) to tell an edge drag from a state jump.
+            if (msg == 0x0231) _inWindowSizeMove = true;    // WM_ENTERSIZEMOVE
+            else if (msg == 0x0232) _inWindowSizeMove = false;   // WM_EXITSIZEMOVE
+
+            if (msg == WM_SETTINGCHANGE)
+            {
+                string? area = null;
+                try { if (lParam != IntPtr.Zero) area = Marshal.PtrToStringAuto(lParam); }
+                catch { }
+                if (string.Equals(area, "Environment", StringComparison.OrdinalIgnoreCase))
+                    RefreshEnvironmentPath();   // ShellEnv.cs
+                // Deliberately not marked handled: this is an observation, and WPF and any other
+                // hook on this window are entitled to see the broadcast too.
+            }
+            int mouseHistoryDirection = MouseHistoryDirectionFromMessage(msg, wParam, lParam);
+            if (mouseHistoryDirection != 0)
+            {
+                // Folder history only: a shell, document or tool tab keeps its place. Search
+                // results are still a folder tab with history, like the toolbar's Back.
+                if (_active != null && CanShowListing(_active))
+                {
+                    if (mouseHistoryDirection < 0) NavBack_Click(this, new RoutedEventArgs());
+                    else                           NavForward_Click(this, new RoutedEventArgs());
+                }
+                handled = true;
+                return IntPtr.Zero;
+            }
+            if (msg == WM_COPYDATA)
+            {
+                handled = true;
+                return HandleCopyData(lParam);   // TabHandoff.cs
+            }
+            if (msg == (int)WM_KS_TABHOVER)   // TabHandoff.cs
+            {
+                handled = true;
+                HandleTabHover(wParam, lParam);   // TabHandoff.cs
+                return IntPtr.Zero;
+            }
+            return IntPtr.Zero;
+        }
+
+        /// <summary>Work-area width of the monitor this window is currently on, in DIP, so
+        /// DualPane.cs (F10 open, gutter drag) can ask "is there room to grow the window".
+        /// Returns double.MaxValue on failure so a lookup miss never blocks a grow/split decision -
+        /// the caller's own fallback (split-in-place) is a safe default either way.</summary>
+        internal double MonitorWorkAreaWidthDip()
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                if (hwnd == IntPtr.Zero) return double.MaxValue;
+                IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+                if (monitor == IntPtr.Zero) return double.MaxValue;
+                var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+                if (!GetMonitorInfo(monitor, ref info)) return double.MaxValue;
+                double workWidthPx = Math.Abs(info.rcWork.right - info.rcWork.left);
+                var dpi = VisualTreeHelper.GetDpi(this);
+                return workWidthPx / dpi.DpiScaleX;
+            }
+            catch
+            {
+                return double.MaxValue;
+            }
+        }
+
+        /// <summary>How much further this window's RIGHT edge could move before leaving its
+        /// monitor's work area, in DIP - what DualPane.cs's F10-grow decision actually needs.
+        /// Growing happens IN PLACE (Left never moves, only the right edge does), so this measures
+        /// the actual gap between the right edge and the work area's own right edge. Both edges
+        /// are read in native pixels and converted once, so WPF's Left never mixes with a
+        /// monitor's native coordinates. double.MaxValue on failure.</summary>
+        internal double MonitorRoomToGrowRightDip()
+        {
+            try
+            {
+                if (!TryGetWindowAndWork(out RECT win, out RECT work)) return double.MaxValue;
+                var dpi = VisualTreeHelper.GetDpi(this);
+                return (work.right - win.right) / dpi.DpiScaleX;
+            }
+            catch
+            {
+                return double.MaxValue;
+            }
+        }
+
+        /// <summary>How far this window's LEFT edge could move left before leaving its monitor's
+        /// work area, in DIP. F10 slides the window left by up to this much when there is not
+        /// enough room to the right for the second pane. Returns 0 on failure so a lookup miss
+        /// never moves the window.</summary>
+        internal double MonitorRoomToGrowLeftDip()
+        {
+            try
+            {
+                if (!TryGetWindowAndWork(out RECT win, out RECT work)) return 0;
+                var dpi = VisualTreeHelper.GetDpi(this);
+                return Math.Max(0, (win.left - work.left) / dpi.DpiScaleX);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>Moves the window horizontally by <paramref name="dx"/> DIP on its native
+        /// rectangle, without resizing or activating it.</summary>
+        internal void ShiftWindowDip(double dx)
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                if (hwnd == IntPtr.Zero || !GetWindowRect(hwnd, out RECT win)) return;
+                var dpi = VisualTreeHelper.GetDpi(this);
+                int x = win.left + (int)Math.Round(dx * dpi.DpiScaleX);
+                SetWindowPos(hwnd, IntPtr.Zero, x, win.top, 0, 0,
+                             SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+            }
+            catch
+            {
+                // A failed move leaves the window where it was; the split still opens.
+            }
+        }
+
+        /// <summary>True when the window sits flush against a side of its monitor's work area and
+        /// against its top or bottom, which is where every half and quarter snap puts it. Snapped
+        /// windows are not slid by F10. Judged by position because IsWindowArranged stays true
+        /// after Win+Shift+Arrow moves a floating window to another monitor.</summary>
+        internal bool IsWindowSnapped()
+        {
+            try
+            {
+                if (!TryGetWindowAndWork(out RECT win, out RECT work)) return false;
+                bool side = win.left == work.left || win.right == work.right;
+                bool edge = win.top == work.top || win.bottom == work.bottom;
+                return side && edge;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool TryGetWindowAndWork(out RECT win, out RECT work)
+        {
+            win = default;
+            work = default;
+            var hwnd = new WindowInteropHelper(this).Handle;
+            if (hwnd == IntPtr.Zero || !GetWindowRect(hwnd, out win)) return false;
+            IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            if (monitor == IntPtr.Zero) return false;
+            var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+            if (!GetMonitorInfo(monitor, ref info)) return false;
+            work = info.rcWork;
+            return true;
+        }
+
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOZORDER = 0x0004;
+        private const uint SWP_NOACTIVATE = 0x0010;
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+                                                int x, int y, int cx, int cy, uint flags);
+
+        /// <summary>
+        /// Publishes the grain tile as the app-level GrainTileBrush. App startup calls this too, so
+        /// dialogs shown before any main window exists (install, uninstall, install repair) are
+        /// textured like the rest of the app.
+        /// </summary>
+        internal static BitmapSource PublishGrainTile() => Controls.GrainTexture.Publish();
+    }
+}

@@ -45,7 +45,8 @@ namespace KillerShell.Shell
 
             // KillerUI / Grunge shell wiring.
             SourceInitialized += MainWindow_SourceInitialized;   // Chrome.cs
-            ApplyGrainTexture();                                 // Chrome.cs
+            InitChromeExtras();                                  // Chrome.Extras.cs
+            ApplyGrainTexture();                                // Chrome.cs
             Loaded += (_, _) => FadeInContent();                 // Chrome.cs
             UpdateThemeSwatchSelection();                        // ThemeFlyout.cs
             UpdateAccentStrip(animate: false);
