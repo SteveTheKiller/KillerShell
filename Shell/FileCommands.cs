@@ -362,6 +362,17 @@ namespace KillerShell.Shell
             var r = FileOpDialog.CopyOrMove(this, sources, target, move);
             await RefreshAfterFileOp();
 
+            // The watcher only follows the focused pane, so the other pane sat stale when it was
+            // showing the destination (or, for a move, the source) until it was clicked or F5'd.
+            var touched = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { target.TrimEnd('\\') };
+            if (move)
+                foreach (var s in sources)
+                    if (Path.GetDirectoryName(s.TrimEnd('\\')) is string p) touched.Add(p.TrimEnd('\\'));
+            foreach (var other in LivePanes().ToList())
+                if (other != Pane && other.Active is { IsBrowsing: true } t
+                    && !string.IsNullOrEmpty(t.CurrentFolder) && touched.Contains(t.CurrentFolder.TrimEnd('\\')))
+                    await RefreshSourcePaneIfStale(other);   // ResultsInteraction.cs
+
             // Awaited rather than fired-and-forgotten: DropOntoFolder's caller (Window_Drop)
             // needs this pane's own refresh to be fully landed before it goes near focus again
             // for the source-pane refresh, or the two race (see RefreshSourcePaneIfStale).
