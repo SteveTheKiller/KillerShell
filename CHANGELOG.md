@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.5.1 opens files you type into the address bar, closes KillerSearch when you click elsewhere and outlines hovered tiles.
 
 ### Fixed
+- Hover tooltips clear large pointers while preserving custom placement.
 - Self-update runs on the family update code. It keeps KillerShell's same-publisher rule and hash-checked swap, and adds signature checks inside the update helper, pinned publication folders, strict checks on the elevated request and stable-only releases. Installed paths, registry keys and the exe name are unchanged.
 - Typing a file's path into the address bar or a terminal's location bar opens it. Text files open in an editor tab, programs and scripts open a terminal in their folder with the command ready to run, and other files open in their usual app. It used to only select the file in its folder.
 - KillerSearch closes when you click anywhere else in the window. It stayed open until you pressed Escape or clicked its button.
