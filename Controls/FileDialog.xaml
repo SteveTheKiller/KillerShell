@@ -9,7 +9,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:theme="clr-namespace:KillerFamily.Theming"
         xmlns:icons="clr-namespace:KillerShell.Controls"
-        xmlns:picker="clr-namespace:KillerShell"
+        xmlns:picker="clr-namespace:KillerShell.Controls"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="{DynamicResource Str_Dlg_SelectFile}"
         Width="720" Height="520" MinWidth="560" MinHeight="420"

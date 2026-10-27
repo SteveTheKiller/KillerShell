@@ -1,3 +1,4 @@
+using KillerShell.Controls;
 using System;
 using System.Threading;
 using System.Windows;

@@ -37,7 +37,7 @@ using System.Windows.Media.Animation;
 //     dialog records the result, fades, and assigns it in the callback (see KillerPDF's
 //     FileDialog.OnClosing).
 // ============================================================
-namespace KillerShell
+namespace KillerShell.Controls
 {
     internal static class Anim
     {
@@ -94,16 +94,12 @@ namespace KillerShell
 
             var clock = System.Diagnostics.Stopwatch.StartNew();
             double from = window.Opacity;
-            // Named, not discarded. `_` twice is legal for a LAMBDA's parameters (they are
-            // discards) and illegal here, because this is a local FUNCTION and those are ordinary
-            // parameter names - CS0100, duplicate parameter name. dotnet format's unused-parameter
-            // rewrite does not make that distinction, so do not let it "simplify" these again.
-            void tick(object sender, EventArgs e)
+            void Tick(object? sender, EventArgs e)
             {
                 double t = clock.Elapsed.TotalMilliseconds / FadeMs;
                 if (t >= 1)
                 {
-                    CompositionTarget.Rendering -= tick;
+                    CompositionTarget.Rendering -= Tick;
                     window.Opacity = 0;
                     // Off the render callback before closing: tearing the window down inside a
                     // Rendering handler reenters composition.
@@ -129,8 +125,7 @@ namespace KillerShell
                 }
                 window.Opacity = from * (1 - t * t);   // quadratic ease-in, mirrors FadeIn
             }
-
-            CompositionTarget.Rendering += tick;
+            CompositionTarget.Rendering += Tick;
             return true;
         }
 

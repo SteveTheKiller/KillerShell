@@ -14,6 +14,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:a11y="clr-namespace:KillerFamily.Accessibility"
              xmlns:local="clr-namespace:KillerShell"
+             xmlns:kc="clr-namespace:KillerShell.Controls"
              xmlns:theme="clr-namespace:KillerFamily.Theming"
              xmlns:svc="clr-namespace:KillerShell.Services"
              xmlns:shellns="clr-namespace:KillerShell.Shell"
@@ -259,7 +260,7 @@
                                 <!-- TabPadding keeps each label aligned within its tab state. The
                                      98SE value also uses a tighter left inset so the icon leaves
                                      more room for the title. -->
-                                <local:TabSurfaceBorder x:Name="tabBd" CornerRadius="0" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
+                                <kc:TabSurfaceBorder x:Name="tabBd" CornerRadius="0" Margin="{DynamicResource TabMargin}" Padding="{DynamicResource TabPadding}"
                                         RetroBottomEdges="{DynamicResource TabRetroBottomEdges}"
                                         MinWidth="160" MaxWidth="260"
                                         RenderTransform="{DynamicResource TabPlacementTransform}" RenderTransformOrigin="0.5,0.5"
@@ -419,7 +420,7 @@
                                                        TextTrimming="CharacterEllipsis"/>
                                         </DockPanel>
                                     </Grid>
-                                </local:TabSurfaceBorder>
+                                </kc:TabSurfaceBorder>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding TabGlyph}" Value="">
                                         <Setter TargetName="tabGlyph" Property="Visibility" Value="Collapsed"/>
@@ -724,7 +725,7 @@
                    client area fills its frame.
                    The bottom frame is an overlay inside PaneContent so scrolling children
                    cannot paint over it. Scroll cues are independent of the pane frame. -->
-              <local:PickerBorder x:Name="ResultsPane" Grid.Row="1" Margin="{DynamicResource PaneOuterMargin}" Background="{DynamicResource MenuBackgroundBrush}"
+              <kc:PickerBorder x:Name="ResultsPane" Grid.Row="1" Margin="{DynamicResource PaneOuterMargin}" Background="{DynamicResource MenuBackgroundBrush}"
                     BorderBrush="{DynamicResource PaneEdgeBrush}" BorderThickness="{DynamicResource PaneEdgeSideThickness}" CornerRadius="{DynamicResource PanelCornerRadius}"
                     Effect="{DynamicResource PaneShadowEffect}">
               <!-- The frame clips content to its inner stroke edge, including headers exposed by F10. -->
@@ -2681,6 +2682,6 @@
                   </Grid>
               </Border>
               </Grid>
-              </local:PickerBorder>
+              </kc:PickerBorder>
             </Grid>
 </UserControl>

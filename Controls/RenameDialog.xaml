@@ -7,7 +7,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:theme="clr-namespace:KillerFamily.Theming"
-        xmlns:picker="clr-namespace:KillerShell"
+        xmlns:picker="clr-namespace:KillerShell.Controls"
         xmlns:icons="clr-namespace:KillerShell.Controls"
         Title="KillerShell"
         Width="420" SizeToContent="Height"

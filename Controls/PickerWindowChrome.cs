@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using KillerShell.Controls;
 using KillerShell.Shell;
 
 namespace KillerShell

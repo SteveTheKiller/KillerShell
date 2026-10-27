@@ -11,6 +11,55 @@ using System.Windows.Media.Effects;
 
 namespace KillerFamily.Theming
 {
+    /// <summary>Uses the logo color for headings, raised with the family bevel.</summary>
+    public static class HeadingAccent
+    {
+        public static readonly DependencyProperty EnabledProperty = DependencyProperty.RegisterAttached(
+            "Enabled", typeof(bool), typeof(HeadingAccent), new PropertyMetadata(false, OnEnabledChanged));
+
+        public static bool GetEnabled(DependencyObject element) => (bool)element.GetValue(EnabledProperty);
+        public static void SetEnabled(DependencyObject element, bool value) => element.SetValue(EnabledProperty, value);
+
+        private static readonly IValueConverter Converter = new HeadingOutlineConverter();
+
+        private static void OnEnabledChanged(DependencyObject element, DependencyPropertyChangedEventArgs args)
+        {
+            if (element is not TextBlock text) return;
+            text.Loaded -= RefreshOutline;
+            text.SizeChanged -= RefreshOutline;
+            if (!(bool)args.NewValue)
+            {
+                text.ClearValue(TextBlock.ForegroundProperty);
+                text.ClearValue(UIElement.EffectProperty);
+                return;
+            }
+            text.SetResourceReference(TextBlock.ForegroundProperty, "AccentLogo");
+            text.SetBinding(UIElement.EffectProperty, new Binding(nameof(TextBlock.Foreground))
+            {
+                RelativeSource = RelativeSource.Self,
+                Converter = Converter,
+                ConverterParameter = text,
+            });
+            text.Loaded += RefreshOutline;
+            text.SizeChanged += RefreshOutline;
+        }
+
+        private static void RefreshOutline(object sender, RoutedEventArgs args) =>
+            ((TextBlock)sender).GetBindingExpression(UIElement.EffectProperty)?.UpdateTarget();
+
+        private sealed class HeadingOutlineConverter : IValueConverter
+        {
+            public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                // Raised lettering in the heading's own color, not a dark edge around it (Bevel.cs).
+                if (SystemParameters.HighContrast || value is not SolidColorBrush || parameter is not TextBlock text) return null;
+                return Bevel.For(text, text.FontSize);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
+        }
+    }
+
     /// <summary>
     /// Light with the Yellow accent keeps its accent yellow and draws a thin gray outline around every
     /// yellow text and glyph so it reads on the light surfaces. A theme turns it on by giving

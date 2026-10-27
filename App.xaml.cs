@@ -1,3 +1,4 @@
+using KillerShell.Controls;
 using System;
 using System.Diagnostics;
 using System.IO;

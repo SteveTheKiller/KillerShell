@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace KillerShell
+namespace KillerShell.Controls
 {
     /// <summary>
     /// Gives the standalone install and uninstall windows their own taskbar button, labeled
@@ -13,7 +13,7 @@ namespace KillerShell
     /// </summary>
     internal static class TaskbarIdentity
     {
-        private const string AppName = "KillerShell";
+        private const string AppName = Services.AppInfo.DisplayName;
         private const int WmDestroy = 0x0002;
 
         private static string? _label;

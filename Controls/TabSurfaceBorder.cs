@@ -3,10 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace KillerShell
+namespace KillerShell.Controls
 {
     /// <summary>Joins a selected tab's face to its content as the intervening menu collapses.</summary>
-    public sealed class TabSurfaceBorder : Border
+    public class TabSurfaceBorder : Border
     {
         protected override void OnRender(DrawingContext drawingContext)
         {
