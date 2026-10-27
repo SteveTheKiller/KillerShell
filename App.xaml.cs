@@ -143,9 +143,8 @@ namespace KillerShell
             // The kit's LocaleManager persists through the ThemeManager hooks.
             Services.ThemeManager.GetSetting = GetSetting;
             Services.ThemeManager.SetSetting = SetSetting;
-            // KillerShell has always formatted dates and numbers by the Windows region, whatever
-            // the interface language. The kit maps the old saved "Cs" and "It" names itself.
-            Services.LocaleManager.KeepRegionFormats = true;
+            // The kit keeps the Windows region format for dates and numbers, as KillerShell always
+            // has, and maps the old saved "Cs" and "It" names itself.
             // The confirm dialog's title icon, the same multi-size .ico the main title bar uses.
             Controls.DialogChrome.IconUri = new Uri("pack://application:,,,/Resources/ksh-icon.ico");
             Services.LocaleManager.Initialize();

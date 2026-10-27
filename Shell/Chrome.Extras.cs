@@ -215,11 +215,6 @@ namespace KillerShell.Shell
             // called off, so its document confirmations are void (Session.cs).
             if (msg == 0x0016 && wParam == IntPtr.Zero) SessionEndCancelled();
 
-            // Interactive move/resize bracket, read by the dual-pane ratio logic
-            // (DualPane.cs OnPaneHostResized) to tell an edge drag from a state jump.
-            if (msg == 0x0231) _inWindowSizeMove = true;    // WM_ENTERSIZEMOVE
-            else if (msg == 0x0232) _inWindowSizeMove = false;   // WM_EXITSIZEMOVE
-
             if (msg == WM_SETTINGCHANGE)
             {
                 string? area = null;

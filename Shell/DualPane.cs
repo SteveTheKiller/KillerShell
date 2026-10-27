@@ -76,10 +76,6 @@ namespace KillerShell.Shell
         /// the two apart. Ported from KillerPDF 1.7.4 (Shell/SplitPane.cs).</summary>
         private double _paneARatio;
 
-        /// <summary>True while the user is interactively moving or resizing the window
-        /// (WM_ENTERSIZEMOVE..WM_EXITSIZEMOVE, tracked in Chrome.cs WndProc).</summary>
-        private bool _inWindowSizeMove;
-
         /// <summary>True between the gutter's DragStarted and DragCompleted, so the state-jump
         /// path never fights a drag in progress.</summary>
         private bool _paneGutterDragging;
