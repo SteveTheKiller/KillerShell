@@ -736,6 +736,8 @@
     <sys:String x:Key="Str_About_Computing">вычисление...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Загрузка...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Доступно обновление: {0}</sys:String>
+    <sys:String x:Key="Str_TT_RecentLocations">Недавние расположения</sys:String>
+    <sys:String x:Key="Str_Dlg_Preview">Предпросмотр</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(не подписано или ошибка цепочки сертификатов)</sys:String>
     <sys:String x:Key="Str_About_None">(нет)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(недоступно)</sys:String>

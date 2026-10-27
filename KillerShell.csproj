@@ -167,6 +167,9 @@
 
   <ItemGroup>
     <Reference Include="System.Net.Http" />
+    <!-- The family FileDialog reads Quick Access through Shell.Application with dynamic, which
+         on .NET Framework needs this framework assembly. -->
+    <Reference Include="Microsoft.CSharp" />
     <!-- Task Manager tab (Shell/ProcessListControl.cs): WMI lookups for a process's command
          line, full path and owner - Win32_Process via System.Management, not present in the
          default net48 reference set. -->

@@ -837,6 +837,8 @@
     <sys:String x:Key="Str_About_Computing">計算中...</sys:String>
     <sys:String x:Key="Str_About_Downloading">ダウンロード中...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">更新があります: {0}</sys:String>
+    <sys:String x:Key="Str_TT_RecentLocations">最近の場所</sys:String>
+    <sys:String x:Key="Str_Dlg_Preview">プレビュー</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(署名なし、または証明書チェーンの検証に失敗)</sys:String>
     <sys:String x:Key="Str_About_None">(なし)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(利用不可)</sys:String>

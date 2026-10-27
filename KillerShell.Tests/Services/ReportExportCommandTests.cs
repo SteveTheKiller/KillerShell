@@ -67,7 +67,7 @@ public static class ReportExportCommandScenario
                 if (dialog == null) return;
                 if (stage == 0)
                 {
-                    if (!dialog.NavigationTask.IsCompleted) return;
+                    if (!dialog.DirectoryListingTask.IsCompleted) return;
                     stage = 1;
                     ((TextBox)dialog.FindName("FileNameBox")).Text = path;
                     dialog.Dispatcher.BeginInvoke((Action)(() =>

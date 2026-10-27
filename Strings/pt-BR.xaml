@@ -767,6 +767,8 @@
     <sys:String x:Key="Str_About_Computing">calculando...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Baixando...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Atualização disponível: {0}</sys:String>
+    <sys:String x:Key="Str_TT_RecentLocations">Locais recentes</sys:String>
+    <sys:String x:Key="Str_Dlg_Preview">Visualização</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(não assinado ou falha na cadeia)</sys:String>
     <sys:String x:Key="Str_About_None">(nenhum)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(indisponível)</sys:String>

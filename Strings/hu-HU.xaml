@@ -767,6 +767,8 @@
     <sys:String x:Key="Str_About_Computing">számítás...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Letöltés...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Frissítés érhető el: {0}</sys:String>
+    <sys:String x:Key="Str_TT_RecentLocations">Legutóbbi helyek</sys:String>
+    <sys:String x:Key="Str_Dlg_Preview">Előnézet</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(nincs aláírva, vagy a tanúsítványlánc hibás)</sys:String>
     <sys:String x:Key="Str_About_None">(nincs)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(nem érhető el)</sys:String>

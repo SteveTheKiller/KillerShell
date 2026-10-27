@@ -650,6 +650,8 @@
     <sys:String x:Key="Str_About_Computing">računanje...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Prenašanje...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Na voljo je posodobitev: {0}</sys:String>
+    <sys:String x:Key="Str_TT_RecentLocations">Nedavne lokacije</sys:String>
+    <sys:String x:Key="Str_Dlg_Preview">Predogled</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(ni podpisano ali preverjanje verige ni uspelo)</sys:String>
     <sys:String x:Key="Str_About_None">(brez)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(ni na voljo)</sys:String>

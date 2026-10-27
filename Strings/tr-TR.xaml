@@ -841,6 +841,8 @@
     <sys:String x:Key="Str_About_Computing">hesaplanıyor...</sys:String>
     <sys:String x:Key="Str_About_Downloading">İndiriliyor...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Güncelleme var: {0}</sys:String>
+    <sys:String x:Key="Str_TT_RecentLocations">Son konumlar</sys:String>
+    <sys:String x:Key="Str_Dlg_Preview">Önizleme</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(imzalı değil veya sertifika zinciri başarısız)</sys:String>
     <sys:String x:Key="Str_About_None">(yok)</sys:String>
     <sys:String x:Key="Str_About_Unavailable">(kullanılamıyor)</sys:String>
