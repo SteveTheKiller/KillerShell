@@ -20,7 +20,7 @@ namespace KillerShell.Shell
             if (sender == ThemeButton) { ThemeButton_Click(sender, e); return; }
             if (sender is not FrameworkElement { ContextMenu: { } menu }) return;
             FlyoutPlacement.UsePane(PaneHost, _treeRight ? SidebarSide.Right : SidebarSide.Left);
-            FlyoutPlacement.Attach(menu, (UIElement)sender);
+            FlyoutPlacement.Attach(menu, null);   // keeps the corner placement KillerShell has always used
             menu.IsOpen = true;
         }
 
