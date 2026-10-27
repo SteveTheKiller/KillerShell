@@ -706,10 +706,11 @@ namespace KillerShell.Services
             // accent text, filling with the accent on hover under the AA-derived label color.
             // 98SE turns it into a real raised gray button - a #c0c0c0 face at rest, lighter on
             // hover, darker when pressed, black text throughout and NO accent anywhere.
-            // Rest is bare, as KillerPDF's buttons always were: no fill and no edge, just the
-            // accent text. Hover and press fill with the accent.
+            // The accent outline at rest is the family's confirm button (dialogs). Title-bar and
+            // toolbar buttons that should be bare until hover use BareButton (Controls.xaml).
             SetIfAbsent("OutlineFaceBrush", Transparent);          // rest FILL
-            SetIfAbsent("OutlineRestBrush", Transparent);          // rest EDGE
+            Mirror("OutlineRestBrush", "OutlineBtnBrush");         // rest EDGE
+            SetIfAbsent("OutlineLiftRestVisibility", Visibility.Visible);   // resting shadow
             Mirror("OutlineTextBrush", "OutlineBtnBrush");         // rest TEXT
             Mirror("OutlineHoverBrush", "OutlineBtnBrush");        // hover FILL
             // OutlineHoverTextBrush is set AFTER the accent overlay, next to OnOutlineBtnBrush -
@@ -938,6 +939,14 @@ namespace KillerShell.Services
             // binding them; 98SE states its own and is the only theme that changes.
             SetIfAbsent("TitleBarPadding", new Thickness(14, 0, 14, 0));
             // The main window logo (icon + wordmark) sits 5px off the top-left corner, as in KillerPDF.
+            // The file picker's caption close (Controls/FileDialog.xaml): the caption button's size on a
+            // theme that draws a dialog caption, a compact 28x26 everywhere else, flush with the
+            // caption buttons' right inset.
+            bool pickerCaption = combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fp && fp;
+            SetIfAbsent("DialogCloseWidth", pickerCaption ? combined["CaptionButtonWidth"] : 28.0);
+            SetIfAbsent("DialogCloseHeight", pickerCaption ? combined["CaptionButtonHeight"] : 26.0);
+            SetIfAbsent("DialogCaptionButtonsMargin", new Thickness(0, 0,
+                combined["CaptionButtonsMargin"] is Thickness pickerButtons ? pickerButtons.Right : 0, 0));
             SetIfAbsent("TitleLogoMargin", combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool fc && fc
                 ? combined["TitleBarPadding"] : new Thickness(4, 3, 0, 0));
             // The UI face for everything that is not the app (mono) slot; a flat theme keeps its caption font.
