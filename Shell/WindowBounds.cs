@@ -52,16 +52,29 @@ namespace KillerShell.Shell
         }
 
         /// <summary>
-        /// Windows draws a maximized or snapped window square. A snapped window is Normal but sits
-        /// somewhere other than its ordinary bounds, which RestoreBounds keeps.
+        /// Windows draws a maximized or snapped window square. A snapped window is Normal but fills
+        /// the work area's height flush against one side. Compared in device pixels against the
+        /// monitor, as KillerNotes does: the old RestoreBounds-versus-Left/Top test in DIPs drifted
+        /// on mixed-DPI monitors, called a floating window snapped, and squared it, and a square
+        /// window gets no Windows 11 drop shadow.
         /// </summary>
         private bool IsSnapped()
         {
             if (WindowState != WindowState.Normal || !IsLoaded) return false;
-            Rect normal = RestoreBounds;
-            if (normal.IsEmpty) return false;
-            return Math.Abs(normal.Left - Left) > 1 || Math.Abs(normal.Top - Top) > 1 ||
-                   Math.Abs(normal.Width - ActualWidth) > 1 || Math.Abs(normal.Height - ActualHeight) > 1;
+            try
+            {
+                var hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+                if (hwnd == IntPtr.Zero) return false;
+                IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+                if (monitor == IntPtr.Zero) return false;
+                var info = new MONITORINFO { cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFO)) };
+                if (!GetMonitorInfo(monitor, ref info) || !GetWindowRect(hwnd, out RECT wr)) return false;
+                return Math.Abs(wr.top - info.rcWork.top) <= 2
+                    && Math.Abs(wr.bottom - info.rcWork.bottom) <= 2
+                    && (Math.Abs(wr.left - info.rcWork.left) <= 2
+                        || Math.Abs(wr.right - info.rcWork.right) <= 2);
+            }
+            catch { return false; }
         }
 
         /// <summary>Square window corners and close hover while maximized or snapped, rounded otherwise.</summary>
