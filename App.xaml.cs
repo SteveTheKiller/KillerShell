@@ -258,6 +258,17 @@ namespace KillerShell
                 AppMainWindow.StartupPaths.Add(a);
             }
 
+            // The taskbar or Start icon while a KillerShell is hidden in the notification area
+            // (Close to system tray, About card): bring that one back instead of starting a
+            // second copy. Only a launch with no arguments does this; a folder, --new-window,
+            // --cwd, --edit and the Run value's --minimized still open their own window
+            // (Services/TrayWake.cs).
+            if (Services.TrayWake.IsPlainLaunch(e.Args) && Services.TrayWake.TryWakeHiddenInstance())
+            {
+                Shutdown();
+                return;
+            }
+
             // Persist the theme/accent choice in HKCU so it survives restarts.
             Services.ThemeManager.GetSetting = GetSetting;
             Services.ThemeManager.SetSetting = SetSetting;
