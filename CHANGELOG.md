@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.5.1 opens files you type into the address bar, closes KillerSearch when you click elsewhere and outlines hovered tiles.
 
 ### Fixed
+- The elevated part of an update compiles its helper code in a folder only administrators can open, so another program running as you cannot slip code into it, and an update that finished is no longer reported as failed when the app cannot be reopened afterward.
 - The tray icon's menu opens from the pointer upward, out of the notification area, the same way in every Killer app. A short menu no longer covers the tray icons and a taller one no longer floats about 40 pixels above them.
 - Hover tooltips clear large pointers while preserving custom placement.
 - Self-update runs on the family update code. It keeps KillerShell's same-publisher rule and hash-checked swap, and adds signature checks inside the update helper, pinned publication folders, strict checks on the elevated request and stable-only releases. Installed paths, registry keys and the exe name are unchanged.
