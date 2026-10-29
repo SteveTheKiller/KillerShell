@@ -60,7 +60,6 @@
                  TitleBarBrush, which is what gives the dialog a real Win98 caption. -->
             <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Panel.ZIndex="1">
                 <Grid>
-                    <Border IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
                 <Grid Margin="16,0">
                     <!-- KillerScan-style wordmark: a blurred dark copy behind the crisp text,
                          faded by WordmarkShadowOpacity (off on 98SE). -->
