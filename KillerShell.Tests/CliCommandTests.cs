@@ -179,6 +179,19 @@ public sealed class CliCommandTests
         Assert.Equal(typeof(SearchEngine).Assembly.GetName().Version + Environment.NewLine, result.Output);
     }
 
+    [Theory]
+    [InlineData("--version")]
+    [InlineData("-v")]
+    [InlineData("/version")]
+    [InlineData("--help")]
+    public void TheJsonSwitchAfterVersionOrHelpPrintsAsBeforeAndExitsZero(string flag)
+    {
+        Result plain = Run(flag);
+        Result withJson = Run(flag, "--json");
+        Assert.Equal(0, withJson.ExitCode);
+        Assert.Equal(plain.Output, withJson.Output);
+    }
+
     [Fact]
     public void UsageNamesVersionExitCodesAndEveryVerb()
     {

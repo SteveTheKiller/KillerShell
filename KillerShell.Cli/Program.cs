@@ -97,6 +97,9 @@ namespace KillerShell.Cli
 
         private static string[] DropJsonSwitch(string[] args)
         {
+            if (args.Length == 2 && args[1] == "--json"
+                && (args[0] == "--version" || args[0] == "-v" || args[0] == "/version" || args[0] == "version" || args[0] == "--help"))
+                return new[] { args[0] };
             if (args.Length < 2 || !VerbLayouts.TryGetValue(args[0], out var layout)) return args;
             var kept = new List<string>(args.Length);
             for (int i = 0; i < args.Length; i++)
