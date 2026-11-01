@@ -906,8 +906,13 @@ namespace KillerShell.Shell
             // Ctrl+Alt+` (elevated shell); the pane layout chords were taken just above. Any
             // other Ctrl+Alt key must not fall into a plain Ctrl+letter branch, because the
             // chain's Ctrl tests do not look at Alt.
+            // With the right Alt key down on a layout that has an AltGr layer, Ctrl+Alt is that
+            // layer even for a key it leaves empty, so AltGr+O-umlaut (German's Ctrl+Alt+` key)
+            // cannot elevate and AltGr+E cannot export.
+            bool rightAltDown = ctrl && alt && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightAlt);
             if (!CtrlAltChord.ReachesChain(ctrl, alt,
-                    e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key)) return;
+                    e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key,
+                    rightAltDown, rightAltDown && LayoutKeyTextProbe.ForCurrentLayout().HasAltGr())) return;
 
             // Alt+1-0 jumps to a saved location. Alt chords arrive as Key.System with the real
             // key parked in SystemKey, so they have to be unwrapped before anything can match -

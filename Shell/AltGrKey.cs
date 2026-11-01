@@ -43,6 +43,19 @@ namespace KillerShell.Shell
 
         public static LayoutKeyTextProbe ForCurrentLayout() => new LayoutKeyTextProbe(GetKeyboardLayout(0));
 
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<IntPtr, bool> AltGrByLayout = new();
+
+        /// <summary>Whether the layout has an AltGr layer: any letter or digit key gives text with
+        /// Ctrl+Alt held. Asked once per layout handle and cached.</summary>
+        public bool HasAltGr() => AltGrByLayout.GetOrAdd(_hkl, _ => ScanForAltGr());
+
+        private bool ScanForAltGr()
+        {
+            for (int vk = 0x30; vk <= 0x39; vk++) if (ProducesChar(vk, false) || ProducesChar(vk, true)) return true;
+            for (int vk = 0x41; vk <= 0x5A; vk++) if (ProducesChar(vk, false) || ProducesChar(vk, true)) return true;
+            return false;
+        }
+
         [DllImport("user32.dll")] private static extern IntPtr GetKeyboardLayout(uint idThread);
         [DllImport("user32.dll")] private static extern uint MapVirtualKeyEx(uint code, uint mapType, IntPtr hkl);
         [DllImport("user32.dll")]
