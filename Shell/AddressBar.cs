@@ -131,12 +131,12 @@ namespace KillerShell.Shell
             var term = Pane.Active?.Term;
             if (command == null || term == null) return;
 
-            void Stage(string _)
-            {
-                term.Buffer.DirectoryChanged -= Stage;
-                Dispatcher.BeginInvoke(new Action(() => term.Send(command)));
-            }
-            term.Buffer.DirectoryChanged += Stage;
+            // Sent on the first prompt report, the first title, or after the timeout, so cmd and a
+            // shell without the prompt script still get the command. A closed terminal drops it.
+            var staged = new Terminal.StagedInput(term.Buffer, command,
+                text => Dispatcher.BeginInvoke(new Action(() => term.Send(text))), TimeSpan.FromSeconds(3));
+            term.Exited += _ => staged.Dispose();
+            term.Unloaded += (_, _) => staged.Dispose();
         }
 
         // Clicking away is a cancel, not a commit: an accidental click elsewhere should never
