@@ -110,6 +110,27 @@ namespace KillerShell.Controls
 
         private readonly List<PickerEntry> _raw = [];
         private string _currentDir = string.Empty;
+        private readonly List<string> _startCandidates = new List<string>();
+
+        /// <summary>The existence checks the accept rules use. They run on a background thread
+        /// under a timeout, so a dead network path cannot freeze the dialog.</summary>
+        public Func<string, bool> FolderExistsProbe { get; set; } = Directory.Exists;
+        public Func<string, bool> FileExistsProbe { get; set; } = File.Exists;
+
+        private string? NextStartCandidate()
+        {
+            if (_startCandidates.Count == 0) return null;
+            string next = _startCandidates[0];
+            _startCandidates.RemoveAt(0);
+            return next;
+        }
+
+        private async Task<bool> ProbeAsync(Func<string, bool> probe, string path)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+            try { return await OnStaWorker(() => probe(path), ProbeTimeout); }
+            catch (Exception) { return false; }
+        }
 
         /// <summary>A typed name or path, resolved against the folder shown. "C:shot.png" and
         /// "\shot.png" are rooted but not fully qualified; they must not fall back on the
@@ -361,28 +382,27 @@ namespace KillerShell.Controls
             ApplyView();
 
             // A seeded FileName can be a bare name ("export.ics"), a full path, or empty.
-            string startDir = InitialDirectory;
+            // The first of these that lists becomes the start folder. The listing runs off the UI
+            // thread, so a dead network path cannot freeze the dialog before it shows.
             string seedName = "";
+            _startCandidates.Clear();
             if (!string.IsNullOrWhiteSpace(FileName))
             {
                 if (FileName.IndexOfAny(['\\', '/']) >= 0)
                 {
                     var d = Path.GetDirectoryName(FileName);
-                    if (!string.IsNullOrEmpty(d) && Directory.Exists(d)) startDir = d!;
+                    if (!string.IsNullOrEmpty(d)) _startCandidates.Add(d!);
                     seedName = Path.GetFileName(FileName);
                 }
                 else seedName = FileName;
             }
-            if (string.IsNullOrWhiteSpace(startDir) || !Directory.Exists(startDir))
-            {
-                string? remembered = Services.ThemeManager.GetSetting(LastDirKey);
-                startDir = !string.IsNullOrWhiteSpace(remembered) && Directory.Exists(remembered)
-                    ? remembered!
-                    : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            }
+            if (!string.IsNullOrWhiteSpace(InitialDirectory)) _startCandidates.Add(InitialDirectory);
+            string? remembered = Services.ThemeManager.GetSetting(LastDirKey);
+            if (!string.IsNullOrWhiteSpace(remembered)) _startCandidates.Add(remembered!);
+            _startCandidates.Add(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
 
             _built = true;
-            NavigateTo(startDir);
+            NavigateTo(NextStartCandidate()!);
             FileNameBox.Text = seedName;
             FileNameBox.IsReadOnly = IsFileNameReadOnly;
 
@@ -959,6 +979,8 @@ namespace KillerShell.Controls
             if (_treeSyncing) return;
             if (e.NewValue is not FolderNode node) return;
             if (string.IsNullOrEmpty(node.Path)) return;   // the placeholder, mid-load
+            // The tree follows the listing, so its node for the folder already shown is no request to list it again.
+            if (string.Equals(node.Path.TrimEnd('\\'), _currentDir.TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)) return;
             NavigateTo(node.Path);
         }
 
@@ -1059,11 +1081,14 @@ namespace KillerShell.Controls
             Services.ThemeManager.SetSetting(RecentsKey, string.Join("|", list));
         }
 
-        private void RecentsBtn_Click(object sender, RoutedEventArgs e)
+        private async void RecentsBtn_Click(object sender, RoutedEventArgs e)
         {
             // Stale entries (unplugged drive, deleted folder) are filtered at open rather than
             // scrubbed from the store - the drive may be back tomorrow.
-            var list = LoadRecents().Where(Directory.Exists).ToList();
+            var recent = LoadRecents();
+            List<string> list;
+            try { list = await OnStaWorker(() => recent.Where(FolderExistsProbe.Invoke).ToList(), ProbeTimeout); }
+            catch (Exception) { return; }
             if (list.Count == 0) return;
 
             _navigating = true;              // rebinding must not raise a navigation
@@ -1206,7 +1231,7 @@ namespace KillerShell.Controls
             NavigateTo(resolved);
         }
 
-        private void FileNameBox_KeyDown(object sender, KeyEventArgs e)
+        private async void FileNameBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Enter) return;
             e.Handled = true;
@@ -1223,7 +1248,7 @@ namespace KillerShell.Controls
             if (typed.Length > 0)
             {
                 var asDir = ResolveTyped(typed);
-                if (Directory.Exists(asDir)) { NavigateTo(asDir); FileNameBox.Clear(); return; }
+                if (await ProbeAsync(FolderExistsProbe, asDir)) { NavigateTo(asDir); FileNameBox.Clear(); return; }
             }
 
             // A wildcard retargets the listing rather than naming a file.
@@ -1404,14 +1429,14 @@ namespace KillerShell.Controls
         /// leaves the dialog OPEN with focus back in the name box - a file dialog that closes on a
         /// bad name and makes you start over is the worst outcome.
         /// </summary>
-        private void Accept()
+        private async void Accept()
         {
             // Accept stays off while a listing loads or an accept is already running, so a double
             // press or an Enter during the overwrite prompt cannot run it twice.
             if (IsDirectoryListingBusy || !IsDirectoryListingAvailable || _accepting) return;
             _accepting = true;
             AcceptButton.IsEnabled = false;
-            try { AcceptCore(); }
+            try { await AcceptCoreAsync(); }
             finally
             {
                 _accepting = false;
@@ -1421,16 +1446,16 @@ namespace KillerShell.Controls
 
         private bool _accepting;
 
-        private void AcceptCore()
+        private async Task AcceptCoreAsync()
         {
             if (_mode == FileDialogMode.Folder)
             {
                 string folder = AcceptHighlightedFolder && FileList.SelectedItem is PickerEntry { IsFolder: true } selected
                     ? selected.FullPath : _currentDir;
-                if (!Directory.Exists(folder)) return;
+                if (!await ProbeAsync(FolderExistsProbe, folder)) return;
                 FileName  = folder;
                 FileNames = [folder];
-                if (AcceptHighlightedFolder) RememberAcceptedDirectory();
+                if (AcceptHighlightedFolder) RememberAcceptedDirectory(folder);
                 _pendingResult = true;   // applied after the fade - see OnClosing
                 Close();
                 return;
@@ -1466,7 +1491,7 @@ namespace KillerShell.Controls
                     if (IsMalformedTyped(quoted[index])) { RejectTyped(); return; }
                     named[index] = ResolveTyped(quoted[index]);
                 }
-                if (CheckFileExists && named.Any(x => !File.Exists(x)))
+                if (CheckFileExists && !await AllExistAsync(named))
                 {
                     SelMeta.Text = Loc("Str_Dlg_NoSuchFile");
                     FileNameBox.Focus();
@@ -1506,14 +1531,14 @@ namespace KillerShell.Controls
 
                 // The directory must exist; we do not silently create trees on the user's behalf.
                 var dir = Path.GetDirectoryName(full);
-                if (CheckPathExists && (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)))
+                if (CheckPathExists && (string.IsNullOrEmpty(dir) || !await ProbeAsync(FolderExistsProbe, dir!)))
                 {
                     SelMeta.Text = Loc("Str_Dlg_NoSuchFolder");
                     FileNameBox.Focus();
                     return;
                 }
 
-                if (OverwritePrompt && File.Exists(full))
+                if (OverwritePrompt && await ProbeAsync(FileExistsProbe, full))
                 {
                     // The app's own themed ConfirmDialog, the same prompt every other question in
                     // the app uses, rather than a system MessageBox.
@@ -1530,7 +1555,7 @@ namespace KillerShell.Controls
             }
             else
             {
-                if (CheckFileExists && !File.Exists(full))
+                if (CheckFileExists && !await ProbeAsync(FileExistsProbe, full))
                 {
                     SelMeta.Text = Loc("Str_Dlg_NoSuchFile");
                     FileNameBox.Focus();
@@ -1546,10 +1571,18 @@ namespace KillerShell.Controls
             Close();
         }
 
-        private void RememberAcceptedDirectory()
+        private async Task<bool> AllExistAsync(string[] paths)
         {
-            if (_currentDir.Length > 0 && Directory.Exists(_currentDir))
-                Services.ThemeManager.SetSetting(LastDirKey, _currentDir);
+            foreach (string path in paths)
+                if (!await ProbeAsync(FileExistsProbe, path)) return false;
+            return true;
+        }
+
+        // _currentDir only changes after its listing succeeded, so it needs no existence check here.
+        private void RememberAcceptedDirectory(string? accepted = null)
+        {
+            string remembered = string.IsNullOrEmpty(accepted) ? _currentDir : accepted!;
+            if (remembered.Length > 0) Services.ThemeManager.SetSetting(LastDirKey, remembered);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e) => Close();

@@ -86,7 +86,13 @@ namespace KillerShell.Controls
             if (_currentDir.Length > 0 && !sameFolder) target = _currentDir;
             else if (sameFolder && vanished) target = System.IO.Directory.GetParent(failed)?.FullName;
             if (target != null) { NavigateTo(target); return; }
-            if (_currentDir.Length == 0) return;
+            if (_currentDir.Length == 0)
+            {
+                // Still starting up: the next start folder takes over.
+                string? next = NextStartCandidate();
+                if (next != null) NavigateTo(next);
+                return;
+            }
             AcceptButton.IsEnabled = !_accepting;
             UpButton.IsEnabled = System.IO.Directory.GetParent(_currentDir) != null;
         }
