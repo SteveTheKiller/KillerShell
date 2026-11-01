@@ -479,6 +479,10 @@ public static class KillerUpdateGuard {
         if (!elevated) {
             var start = new ProcessStartInfo(target, arguments);
             start.UseShellExecute = false; start.CreateNoWindow = true; start.WorkingDirectory = Path.GetDirectoryName(target);
+            // The helper runs with PSModulePath cut down to PowerShell's own folder; the app gets the user's back.
+            string original = Environment.GetEnvironmentVariable("KillerOriginalPSModulePath");
+            if (!string.IsNullOrEmpty(original)) start.EnvironmentVariables["PSModulePath"] = original;
+            start.EnvironmentVariables.Remove("KillerOriginalPSModulePath");
             using (var process = Process.Start(start))
                 if (process == null) throw new IOException("The updated application did not start.");
             return;
