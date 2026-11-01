@@ -842,6 +842,8 @@
     <sys:String x:Key="Str_About_Computing">wird berechnet...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Wird heruntergeladen...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Update verfügbar: {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">Das heruntergeladene Update konnte nicht überprüft werden und wurde verworfen. Es wurde nichts installiert.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Das Update konnte nicht gestartet werden.&#10;{0}&#10;&#10;Die Releases-Seite öffnen, um es selbst herunterzuladen?</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Zuletzt besuchte Orte</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Vorschau</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(nicht signiert oder Zertifikatskette fehlgeschlagen)</sys:String>

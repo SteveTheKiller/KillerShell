@@ -29,6 +29,14 @@ namespace KillerShell.Services
         private const int WM_LBUTTONUP = 0x0202;
         private const uint SMTO_BLOCK = 0x0001, SMTO_ABORTIFHUNG = 0x0002;
 
+        /// <summary>The update helper's relaunch passes this, so the freshly updated app opens its own
+        /// window rather than waking some other hidden copy and exiting. Like any other option it is
+        /// not a path, and a launch carrying it is not a plain one.</summary>
+        internal const string NoWakeArgument = "--no-tray-wake";
+
+        /// <summary>Makes the update helpers reopen the app with <see cref="NoWakeArgument"/>.</summary>
+        internal static void UseForUpdateRelaunch() => UpdateService.RelaunchArgument = NoWakeArgument;
+
         /// <summary>A launch with no arguments: the taskbar or Start icon, or the exe double-clicked.
         /// Anything else is a job of its own and opens its own window.</summary>
         internal static bool IsPlainLaunch(string[] args) => args.Length == 0;

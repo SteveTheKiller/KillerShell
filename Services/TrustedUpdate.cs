@@ -149,7 +149,7 @@ namespace KillerShell.Services
             int parentId, long parentTicks, int helperId, long helperTicks)
         {
             string publication = UpdateImagePublication.Script(staged, target, true, UpdateService.ReleasesUrl,
-                AppInfo.DisplayName, version, "HKLM", guardEmitted: true);
+                AppInfo.DisplayName, version, "HKLM", reopen: UpdateService.RelaunchArgument, guardEmitted: true);
             string report = staged + ".recovery.txt";
             // The guard type comes first, so a failure before the publication text has run (the app
             // did not close, another install holds the mutex, the installed image changed) can still
@@ -168,7 +168,7 @@ namespace KillerShell.Services
                 // Nothing was published, so the installed copy is reopened for the user the same way
                 // a finished update is, never as this administrator (Start-KillerUpdatedApp). The
                 // report beside the staged copy still says what happened.
-                + "try{Start-KillerUpdatedApp " + Data(target) + " '' $true}catch{};exit 1}"
+                + "try{Start-KillerUpdatedApp (" + Data(target) + ") '" + UpdateService.RelaunchArgument.Replace("'", "''") + "' $true}catch{};exit 1}"
                 + "finally{if($null -ne $lease){if($owned){$lease.ReleaseMutex()};$lease.Dispose()}}";
             return new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),
                 @"WindowsPowerShell\v1.0\powershell.exe"), ImmutablePowerShell.Arguments(body))

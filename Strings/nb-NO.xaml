@@ -768,6 +768,8 @@
     <sys:String x:Key="Str_About_Computing">beregner...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Laster ned...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Oppdatering tilgjengelig: {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">Den nedlastede oppdateringen kunne ikke bekreftes og ble forkastet. Ingenting ble installert.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Oppdateringen kunne ikke starte.&#10;{0}&#10;&#10;Åpne utgivelsessiden for å laste den ned selv?</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Nylige plasseringer</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Forhåndsvisning</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(ikke signert eller kjedekontroll mislyktes)</sys:String>

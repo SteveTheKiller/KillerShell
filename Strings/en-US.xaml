@@ -768,6 +768,8 @@
     <sys:String x:Key="Str_About_Computing">computing...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Downloading...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Update available: {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">The downloaded update could not be verified and was discarded. Nothing was installed.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">The update could not start.&#10;{0}&#10;&#10;Open the releases page to download it yourself?</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Recent locations</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Preview</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(not signed or chain failed)</sys:String>

@@ -737,6 +737,8 @@
     <sys:String x:Key="Str_About_Computing">вычисление...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Загрузка...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Доступно обновление: {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">Не удалось проверить загруженное обновление, поэтому оно было удалено. Ничего не установлено.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Не удалось запустить обновление.&#10;{0}&#10;&#10;Открыть страницу релизов, чтобы скачать его самостоятельно?</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Недавние расположения</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Предпросмотр</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(не подписано или ошибка цепочки сертификатов)</sys:String>

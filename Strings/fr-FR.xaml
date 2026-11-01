@@ -842,6 +842,8 @@
     <sys:String x:Key="Str_About_Computing">calcul en cours...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Téléchargement...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Mise à jour disponible : {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">La mise à jour téléchargée n'a pas pu être vérifiée et a été supprimée. Rien n'a été installé.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">La mise à jour n'a pas pu démarrer.&#10;{0}&#10;&#10;Ouvrir la page des versions pour la télécharger vous-même ?</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Emplacements récents</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Aperçu</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(non signé ou échec de la chaîne de certificats)</sys:String>

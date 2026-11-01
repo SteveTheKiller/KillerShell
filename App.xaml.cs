@@ -95,6 +95,7 @@ namespace KillerShell
         protected override void OnStartup(StartupEventArgs e)
         {
             HookCrashLogging();   // CrashLog.cs - first, so it covers startup itself
+            Services.TrayWake.UseForUpdateRelaunch();   // the updated app opens a window, never wakes a tray copy
             KillerFamily.Accessibility.AccessibleControls.Initialize();
             KillerFamily.Theming.AccentShadow.Initialize();
             Controls.AltDrag.Register();   // Alt+drag moves any window (Controls/AltDrag.cs)

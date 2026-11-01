@@ -838,6 +838,8 @@
     <sys:String x:Key="Str_About_Computing">計算中...</sys:String>
     <sys:String x:Key="Str_About_Downloading">ダウンロード中...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">更新があります: {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">ダウンロードした更新を検証できなかったため、破棄しました。何もインストールされていません。</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">更新を開始できませんでした。&#10;{0}&#10;&#10;リリースページを開いて、自分でダウンロードしますか？</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">最近の場所</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">プレビュー</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(署名なし、または証明書チェーンの検証に失敗)</sys:String>

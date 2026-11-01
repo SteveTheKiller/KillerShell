@@ -839,6 +839,8 @@
     <sys:String x:Key="Str_About_Computing">গণনা করা হচ্ছে...</sys:String>
     <sys:String x:Key="Str_About_Downloading">ডাউনলোড হচ্ছে...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">আপডেট উপলব্ধ: {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">ডাউনলোড করা আপডেটটি যাচাই করা যায়নি এবং এটি বাতিল করা হয়েছে। কিছুই ইনস্টল করা হয়নি।</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">আপডেট শুরু করা যায়নি।&#10;{0}&#10;&#10;নিজে ডাউনলোড করতে রিলিজ পেজ খুলবেন?</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">সাম্প্রতিক অবস্থান</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">প্রিভিউ</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(স্বাক্ষরিত নয় অথবা সার্টিফিকেট চেইন ব্যর্থ)</sys:String>

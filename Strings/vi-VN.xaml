@@ -725,6 +725,8 @@
   <sys:String x:Key="Str_About_Computing">đang tính toán...</sys:String>
   <sys:String x:Key="Str_About_Downloading">Đang tải xuống...</sys:String>
   <sys:String x:Key="Str_About_UpdateAvailable">Có bản cập nhật: {0}</sys:String>
+  <sys:String x:Key="Str_About_UpdateNotVerified">Không thể xác minh bản cập nhật đã tải xuống nên bản cập nhật đã bị loại bỏ. Chưa có gì được cài đặt.</sys:String>
+  <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Không thể bắt đầu bản cập nhật.&#10;{0}&#10;&#10;Mở trang bản phát hành để tự tải xuống?</sys:String>
   <sys:String x:Key="Str_TT_RecentLocations">Vị trí gần đây</sys:String>
   <sys:String x:Key="Str_Dlg_Preview">Xem trước</sys:String>
   <sys:String x:Key="Str_About_Unsigned">(chưa được ký hoặc không xác thực được chuỗi chứng chỉ)</sys:String>

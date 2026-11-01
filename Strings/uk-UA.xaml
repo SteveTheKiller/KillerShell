@@ -768,6 +768,8 @@
     <sys:String x:Key="Str_About_Computing">обчислення...</sys:String>
     <sys:String x:Key="Str_About_Downloading">Завантаження...</sys:String>
     <sys:String x:Key="Str_About_UpdateAvailable">Доступне оновлення: {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">Не вдалося перевірити завантажене оновлення, тому його відхилено. Нічого не встановлено.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Не вдалося запустити оновлення.&#10;{0}&#10;&#10;Відкрити сторінку випусків, щоб завантажити його самостійно?</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Нещодавні розташування</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Попередній перегляд</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(не підписано або помилка ланцюжка)</sys:String>
