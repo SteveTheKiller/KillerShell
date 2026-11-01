@@ -35,6 +35,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Rail menus such as System Tools open beside the button that opened them, like the other Killer Tools apps. The theme and language menus still open in the pane corner.
 - The file picker is the shared Killer Tools card, with corners that follow the theme and a soft shadow. On Windows 98 SE it no longer has a status bar.
 - Dragging the title-bar wordmark of a maximized window restores the window and follows the pointer, the same as dragging the title bar.
+- The close X on a tab sits as far from the tab's right edge as the icon does from its left.
 - A hovered tile in icon view shows a thin outline as well as its gray fill, so the pointer's target reads as a card.
 - The window chrome and caption centering come from the shared Killer Tools code. KillerShell's window behaves the same, and caption text can sit about one pixel differently.
 
