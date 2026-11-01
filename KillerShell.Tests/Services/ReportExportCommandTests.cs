@@ -36,6 +36,10 @@ public static class ReportExportCommandScenario
         File.WriteAllText(path, "previous report");
         Environment.SetEnvironmentVariable("KS_STATE", Path.Combine(root, "state.json"));
         var app = RuntimeComponentProcess.StartApplication();
+        // The command is called here, outside the dispatcher's frame, so the dialog's first listing
+        // would resume its async work on a pool thread and touch the dialog from it. Inside the
+        // running app a click always arrives on a frame that installs this context.
+        System.Threading.SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         var settings = new Dictionary<string, string>
         {
             ["EscQuit"] = "quit", ["RememberTabs"] = "0", ["HomeFolder"] = root,
