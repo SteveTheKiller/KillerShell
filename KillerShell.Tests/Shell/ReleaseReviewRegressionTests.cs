@@ -174,8 +174,6 @@ public static class SearchFlyoutEscapeScenario
 
 public static class MouseBackFromResultsScenario
 {
-    private const int WM_XBUTTONUP = 0x020C;
-
     public static void Run()
     {
         using var fixture = new ShellWindowFixture();
@@ -194,10 +192,7 @@ public static class MouseBackFromResultsScenario
 
         // A search on this folder tab shows results but keeps its folder history.
         pane.Active.IsBrowsing = false;
-        object[] args = [IntPtr.Zero, WM_XBUTTONUP, new IntPtr(1 << 16), IntPtr.Zero, false];
-        typeof(KillerShell.Shell.MainWindow)
-            .GetMethod("WndProc", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, args);
-        Assert.True((bool)args[4]);
+        MouseHistoryStepScenario.SendXButtonUp(window, 1);
         ShellWindowFixture.PumpUntil(() => pane.Active.CurrentFolder == a);
     }
 }

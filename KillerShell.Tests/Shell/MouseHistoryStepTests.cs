@@ -1,8 +1,11 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using Xunit;
 
 namespace KillerShell.Tests.Terminal;
@@ -19,6 +22,14 @@ public sealed class MouseHistoryStepTests
 public static class MouseHistoryStepScenario
 {
     private const int WM_XBUTTONUP = 0x020C;
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr SendMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
+
+    /// <summary>Delivers the message Windows sends for a real XButton release, through the window's
+    /// own message pump and every hook installed on it, as the mouse does.</summary>
+    internal static void SendXButtonUp(Window window, int button)
+        => SendMessage(new WindowInteropHelper(window).Handle, WM_XBUTTONUP, new IntPtr(button << 16), IntPtr.Zero);
 
     public static void Run()
     {
@@ -41,10 +52,7 @@ public static class MouseHistoryStepScenario
         // window. Both used to navigate, so one press went back two folders.
         pane.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.XButton1)
             { RoutedEvent = Mouse.PreviewMouseDownEvent });
-        object[] args = [IntPtr.Zero, WM_XBUTTONUP, new IntPtr(1 << 16), IntPtr.Zero, false];
-        typeof(KillerShell.Shell.MainWindow)
-            .GetMethod("WndProc", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, args);
-        Assert.True((bool)args[4]);
+        SendXButtonUp(window, 1);
         ShellWindowFixture.PumpUntil(() => pane.Active.CurrentFolder != c);
         // Let a second, duplicate navigation land if one was started.
         var settle = System.Diagnostics.Stopwatch.StartNew();
