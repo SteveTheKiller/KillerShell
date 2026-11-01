@@ -125,12 +125,48 @@ namespace KillerShell.Controls
             return next;
         }
 
-        private async Task<bool> ProbeAsync(Func<string, bool> probe, string path)
+        /// <summary>A folder remembered from an earlier run, or null when it cannot name a folder at all
+        /// (empty, relative, or holding characters no path can carry). Whether it still exists is the
+        /// listing's question.</summary>
+        internal static string? UsableRemembered(string? remembered)
         {
-            if (string.IsNullOrEmpty(path)) return false;
-            try { return await OnStaWorker(() => probe(path), ProbeTimeout); }
-            catch (Exception) { return false; }
+            if (string.IsNullOrWhiteSpace(remembered)) return null;
+            return IsMalformedTyped(remembered!) || !IsFullyQualified(remembered!) ? null : remembered;
         }
+
+        /// <summary>The folders that exist, each probed on its own worker and under its own timeout, so one
+        /// dead network entry does not hide the healthy ones.</summary>
+        internal static async Task<List<string>> ExistingFoldersAsync(IEnumerable<string> folders, Func<string, bool> probe, TimeSpan timeout)
+        {
+            var all = folders.ToList();
+            var checks = all.Select(async folder =>
+            {
+                try { return await OnStaWorker(() => probe(folder), timeout); }
+                catch (Exception) { return false; }
+            }).ToList();
+            bool[] exists = await Task.WhenAll(checks);
+            return all.Where((_, index) => exists[index]).ToList();
+        }
+
+        private enum Presence { No, Yes, Unknown }
+
+        /// <summary>Whether a path exists, as a probe answers it. A probe that throws or times out has not
+        /// answered: that is Unknown, with the reason in the system's words, never a quiet "no".</summary>
+        private async Task<(Presence State, string Reason)> CheckAsync(Func<string, bool> probe, string path)
+        {
+            if (string.IsNullOrEmpty(path)) return (Presence.No, "");
+            try { return (await OnStaWorker(() => probe(path), ProbeTimeout) ? Presence.Yes : Presence.No, ""); }
+            catch (TimeoutException) { return (Presence.Unknown, new System.ComponentModel.Win32Exception(1460).Message); }
+            catch (Exception error) { return (Presence.Unknown, error.Message); }
+        }
+
+        private async Task<bool> ProbeAsync(Func<string, bool> probe, string path)
+            => (await CheckAsync(probe, path)).State == Presence.Yes;
+
+        /// <summary>Whether the dialog is closing or closed. Work that resumes after an await checks this
+        /// first: a cancel or a close that landed meanwhile must not become an accept, a navigation or a
+        /// prompt owned by a window that is gone.</summary>
+        private bool _closing;
 
         /// <summary>A typed name or path, resolved against the folder shown. "C:shot.png" and
         /// "\shot.png" are rooted but not fully qualified; they must not fall back on the
@@ -258,18 +294,27 @@ namespace KillerShell.Controls
             if (!_fadingOut)
             {
                 _fadingOut = true;
+                _closing = true;
                 e.Cancel = true;
+                // The result is fixed here: an accept still waiting on an existence check finds _closing
+                // set when it resumes and does nothing, so a cancel can never turn into an OK.
+                bool? result = _pendingResult;
                 // Stop folder listing now, not after the fade, so a slow listing cannot land on a closing dialog.
                 CloseDirectoryListing();
                 Anim.FadeOut(RootFade, () =>
                 {
-                    if (_pendingResult.HasValue) DialogResult = _pendingResult;   // this closes it
-                    else Close();                                                 // cancel path
+                    _fadeDone = true;
+                    if (result.HasValue) DialogResult = result;   // this closes it
+                    else Close();                                  // cancel path
                 });
                 return;
             }
+            // A second close request while the fade runs waits for it instead of cutting it short.
+            if (!_fadeDone) { e.Cancel = true; return; }
             base.OnClosing(e);
         }
+
+        private bool _fadeDone;
 
         public FileDialog(FileDialogMode mode = FileDialogMode.Open)
         {
@@ -397,7 +442,7 @@ namespace KillerShell.Controls
                 else seedName = FileName;
             }
             if (!string.IsNullOrWhiteSpace(InitialDirectory)) _startCandidates.Add(InitialDirectory);
-            string? remembered = Services.ThemeManager.GetSetting(LastDirKey);
+            string? remembered = UsableRemembered(Services.ThemeManager.GetSetting(LastDirKey));
             if (!string.IsNullOrWhiteSpace(remembered)) _startCandidates.Add(remembered!);
             _startCandidates.Add(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
 
@@ -776,6 +821,7 @@ namespace KillerShell.Controls
         // ── Navigation ───────────────────────────────────────────────────────────
 
         private void NavigateTo(string dir) => DirectoryListingTask = NavigateDirectoryAsync(dir);
+        private void RecoverTo(string dir, int attempt) => DirectoryListingTask = NavigateCoreAsync(dir, attempt);
 
         private static DateTime SafeTime(Func<DateTime> get)
         {
@@ -980,7 +1026,9 @@ namespace KillerShell.Controls
             if (e.NewValue is not FolderNode node) return;
             if (string.IsNullOrEmpty(node.Path)) return;   // the placeholder, mid-load
             // The tree follows the listing, so its node for the folder already shown is no request to list it again.
-            if (string.Equals(node.Path.TrimEnd('\\'), _currentDir.TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)) return;
+            // Only while that listing is available and idle: after a failed or unfinished one the node is a retry.
+            if (IsDirectoryListingAvailable && !IsDirectoryListingBusy
+                && string.Equals(node.Path.TrimEnd('\\'), _currentDir.TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)) return;
             NavigateTo(node.Path);
         }
 
@@ -1086,10 +1134,8 @@ namespace KillerShell.Controls
             // Stale entries (unplugged drive, deleted folder) are filtered at open rather than
             // scrubbed from the store - the drive may be back tomorrow.
             var recent = LoadRecents();
-            List<string> list;
-            try { list = await OnStaWorker(() => recent.Where(FolderExistsProbe.Invoke).ToList(), ProbeTimeout); }
-            catch (Exception) { return; }
-            if (list.Count == 0) return;
+            var list = await ExistingFoldersAsync(recent, FolderExistsProbe, ProbeTimeout);
+            if (list.Count == 0 || _closing) return;
 
             _navigating = true;              // rebinding must not raise a navigation
             RecentsList.ItemsSource = list;
@@ -1245,10 +1291,13 @@ namespace KillerShell.Controls
 
             // A directory typed into the name box navigates instead of accepting - matches the
             // Win32 dialogs, and is how people paste a path in.
-            if (typed.Length > 0)
+            string unquoted = typed.Trim('"');
+            if (unquoted.Length > 0)
             {
-                var asDir = ResolveTyped(typed);
-                if (await ProbeAsync(FolderExistsProbe, asDir)) { NavigateTo(asDir); FileNameBox.Clear(); return; }
+                var asDir = ResolveTyped(unquoted);
+                bool isDirectory = await ProbeAsync(FolderExistsProbe, asDir);
+                if (_closing) return;
+                if (isDirectory) { NavigateTo(asDir); FileNameBox.Clear(); return; }
             }
 
             // A wildcard retargets the listing rather than naming a file.
@@ -1440,11 +1489,21 @@ namespace KillerShell.Controls
             finally
             {
                 _accepting = false;
-                if (_pendingResult != true) AcceptButton.IsEnabled = IsDirectoryListingAvailable && !IsDirectoryListingBusy;
+                if (_pendingResult != true && !_closing) RefreshAcceptEnabled();
             }
         }
 
         private bool _accepting;
+
+        // Accept is on exactly when pressing it would do something.
+        private void RefreshAcceptEnabled()
+            => AcceptButton.IsEnabled = IsDirectoryListingAvailable && !IsDirectoryListingBusy && !_accepting;
+
+        private void ReportUnanswered(string reason)
+        {
+            SelMeta.Text = reason;
+            FileNameBox.Focus();
+        }
 
         private async Task AcceptCoreAsync()
         {
@@ -1452,7 +1511,10 @@ namespace KillerShell.Controls
             {
                 string folder = AcceptHighlightedFolder && FileList.SelectedItem is PickerEntry { IsFolder: true } selected
                     ? selected.FullPath : _currentDir;
-                if (!await ProbeAsync(FolderExistsProbe, folder)) return;
+                var folderState = await CheckAsync(FolderExistsProbe, folder);
+                if (_closing) return;
+                if (folderState.State == Presence.Unknown) { SelMeta.Text = folderState.Reason; return; }
+                if (folderState.State == Presence.No) { SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"); return; }
                 FileName  = folder;
                 FileNames = [folder];
                 if (AcceptHighlightedFolder) RememberAcceptedDirectory(folder);
@@ -1491,11 +1553,17 @@ namespace KillerShell.Controls
                     if (IsMalformedTyped(quoted[index])) { RejectTyped(); return; }
                     named[index] = ResolveTyped(quoted[index]);
                 }
-                if (CheckFileExists && !await AllExistAsync(named))
+                if (CheckFileExists)
                 {
-                    SelMeta.Text = Loc("Str_Dlg_NoSuchFile");
-                    FileNameBox.Focus();
-                    return;
+                    var all = await AllExistAsync(named);
+                    if (_closing) return;
+                    if (all.State == Presence.Unknown) { ReportUnanswered(all.Reason); return; }
+                    if (all.State == Presence.No)
+                    {
+                        SelMeta.Text = Loc("Str_Dlg_NoSuchFile");
+                        FileNameBox.Focus();
+                        return;
+                    }
                 }
                 FileNames = named;
                 FileName  = named[0];
@@ -1531,14 +1599,24 @@ namespace KillerShell.Controls
 
                 // The directory must exist; we do not silently create trees on the user's behalf.
                 var dir = Path.GetDirectoryName(full);
-                if (CheckPathExists && (string.IsNullOrEmpty(dir) || !await ProbeAsync(FolderExistsProbe, dir!)))
+                if (CheckPathExists)
                 {
-                    SelMeta.Text = Loc("Str_Dlg_NoSuchFolder");
-                    FileNameBox.Focus();
-                    return;
+                    var dirState = await CheckAsync(FolderExistsProbe, dir ?? "");
+                    if (_closing) return;
+                    if (dirState.State == Presence.Unknown) { ReportUnanswered(dirState.Reason); return; }
+                    if (dirState.State == Presence.No)
+                    {
+                        SelMeta.Text = Loc("Str_Dlg_NoSuchFolder");
+                        FileNameBox.Focus();
+                        return;
+                    }
                 }
 
-                if (OverwritePrompt && await ProbeAsync(FileExistsProbe, full))
+                // An overwrite check that cannot be answered is not "nothing there": Save stops rather than replace unasked.
+                var overwriteState = OverwritePrompt ? await CheckAsync(FileExistsProbe, full) : (State: Presence.No, Reason: "");
+                if (_closing) return;
+                if (overwriteState.State == Presence.Unknown) { ReportUnanswered(overwriteState.Reason); return; }
+                if (overwriteState.State == Presence.Yes)
                 {
                     // The app's own themed ConfirmDialog, the same prompt every other question in
                     // the app uses, rather than a system MessageBox.
@@ -1550,17 +1628,24 @@ namespace KillerShell.Controls
                     // Enter keeps the existing file, as Windows' own replace prompt does.
                     confirm.DefaultToCancel();
                     confirm.ShowDialog();
+                    if (_closing) return;
                     if (!confirm.Confirmed) { FileNameBox.Focus(); return; }
                 }
             }
             else
             {
-                if (CheckFileExists && !await ProbeAsync(FileExistsProbe, full))
+                if (CheckFileExists)
                 {
-                    SelMeta.Text = Loc("Str_Dlg_NoSuchFile");
-                    FileNameBox.Focus();
-                    FileNameBox.SelectAll();
-                    return;
+                    var fileState = await CheckAsync(FileExistsProbe, full);
+                    if (_closing) return;
+                    if (fileState.State == Presence.Unknown) { ReportUnanswered(fileState.Reason); return; }
+                    if (fileState.State == Presence.No)
+                    {
+                        SelMeta.Text = Loc("Str_Dlg_NoSuchFile");
+                        FileNameBox.Focus();
+                        FileNameBox.SelectAll();
+                        return;
+                    }
                 }
             }
 
@@ -1571,11 +1656,14 @@ namespace KillerShell.Controls
             Close();
         }
 
-        private async Task<bool> AllExistAsync(string[] paths)
+        private async Task<(Presence State, string Reason)> AllExistAsync(string[] paths)
         {
             foreach (string path in paths)
-                if (!await ProbeAsync(FileExistsProbe, path)) return false;
-            return true;
+            {
+                var one = await CheckAsync(FileExistsProbe, path);
+                if (one.State != Presence.Yes) return one;
+            }
+            return (Presence.Yes, "");
         }
 
         // _currentDir only changes after its listing succeeded, so it needs no existence check here.

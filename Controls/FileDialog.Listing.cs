@@ -22,7 +22,13 @@ namespace KillerShell.Controls
         public bool IsDirectoryListingAvailable { get; private set; }
         public bool IsDirectoryListingComplete { get; private set; }
 
-        public Task NavigateDirectoryAsync(string directory)
+        // How many times in a row a failed listing may send the dialog to another folder before it stops
+        // and shows the error, so folders that keep failing cannot send it back and forth.
+        private const int MaxRecoveries = 8;
+
+        public Task NavigateDirectoryAsync(string directory) => NavigateCoreAsync(directory, 0);
+
+        private Task NavigateCoreAsync(string directory, int attempt)
         {
             if (_listingClosed || string.IsNullOrWhiteSpace(directory)) return Task.CompletedTask;
             _listingRows?.Cancel();
@@ -47,7 +53,7 @@ namespace KillerShell.Controls
                     // A bad typed path goes back to the last folder that listed. _currentDir only
                     // changes after a listing succeeds, so it is always that folder. When that
                     // folder is the one that vanished, the nearest parent takes its place.
-                    RecoverListing(directory, vanished: true);
+                    RecoverListing(directory, vanished: true, attempt);
                     return;
                 }
                 IsDirectoryListingComplete = result.Complete && result.Entries.Count <= PickerDirectoryListing.MaximumEntries;
@@ -62,7 +68,7 @@ namespace KillerShell.Controls
                 token.ThrowIfCancellationRequested();
                 IsDirectoryListingBusy = false;
                 IsDirectoryListingAvailable = true;
-                AcceptButton.IsEnabled = !_accepting;
+                RefreshAcceptEnabled();
                 UpButton.IsEnabled = System.IO.Directory.GetParent(directory) != null;
                 UpdateInfoSummary();
                 MutateListingRows(SyncPlacesSelection);
@@ -73,28 +79,49 @@ namespace KillerShell.Controls
                 IsDirectoryListingBusy = false;
                 _listingError = error.Message;
                 SelMeta.Text = error.Message;
-                RecoverListing(directory, vanished: false);
+                RecoverListing(directory, vanished: false, attempt);
             });
         }
 
         // Puts the dialog back on a folder it can use after a listing failed, so Up and Accept do
-        // not stay off behind a failed or vanished folder.
-        private void RecoverListing(string failed, bool vanished)
+        // not stay off behind a failed or vanished folder. A path the user asked for goes back to the
+        // last folder that listed; from there, and from any folder that vanished, it walks up to the
+        // nearest parent that lists. Each hop is counted, and past MaxRecoveries the error stays.
+        private void RecoverListing(string failed, bool vanished, int attempt)
         {
-            string? target = null;
-            bool sameFolder = _currentDir.Length > 0 && string.Equals(_currentDir, failed, StringComparison.OrdinalIgnoreCase);
-            if (_currentDir.Length > 0 && !sameFolder) target = _currentDir;
-            else if (sameFolder && vanished) target = System.IO.Directory.GetParent(failed)?.FullName;
-            if (target != null) { NavigateTo(target); return; }
+            if (_listingClosed) return;
             if (_currentDir.Length == 0)
             {
                 // Still starting up: the next start folder takes over.
-                string? next = NextStartCandidate();
-                if (next != null) NavigateTo(next);
+                string? next = attempt < MaxRecoveries ? NextStartCandidate() : null;
+                if (next != null) RecoverTo(next, attempt + 1);
+                else SettleListingError();
                 return;
             }
-            AcceptButton.IsEnabled = !_accepting;
-            UpButton.IsEnabled = System.IO.Directory.GetParent(_currentDir) != null;
+            bool sameFolder = string.Equals(_currentDir, failed, StringComparison.OrdinalIgnoreCase);
+            string? target = null;
+            if (attempt < MaxRecoveries)
+            {
+                if (vanished && (sameFolder || attempt > 0)) target = ParentOf(failed);
+                else if (attempt == 0 && !sameFolder) target = _currentDir;
+            }
+            if (target != null) RecoverTo(target, attempt + 1);
+            else SettleListingError();
+        }
+
+        private static string? ParentOf(string folder)
+        {
+            try { return System.IO.Directory.GetParent(folder)?.FullName; }
+            catch (Exception error) when (error is ArgumentException or NotSupportedException or System.IO.PathTooLongException) { return null; }
+        }
+
+        // The error stays on screen, the path box and Cancel work, and Up walks on from the last good
+        // folder when there is one. Accept follows the listing, which is not available.
+        private void SettleListingError()
+        {
+            IsDirectoryListingBusy = false;
+            RefreshAcceptEnabled();
+            UpButton.IsEnabled = _currentDir.Length > 0 && ParentOf(_currentDir) != null;
         }
 
         private void CloseDirectoryListing()
