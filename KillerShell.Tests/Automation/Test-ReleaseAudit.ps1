@@ -2,7 +2,7 @@ param([string]$ReleasePath = (Join-Path $PSScriptRoot '..\..\release.ps1'))
 $ErrorActionPreference = 'Stop'
 $source = [IO.File]::ReadAllText((Resolve-Path -LiteralPath $ReleasePath))
 $start = $source.IndexOf('# --- 3. Vulnerable package scan')
-$end = $source.IndexOf('# --- 3b. Release tests')
+$end = $source.IndexOf('# --- 3c. Translation gate')
 if ($start -lt 0 -or $end -le $start) { throw 'Audit fixture boundaries changed.' }
 $audit = $source.Substring($start, $end - $start)
 $clean = '{"version":1,"parameters":"--vulnerable --include-transitive","sources":["https://api.nuget.org/v3/index.json"],"projects":[{"path":"KillerShell.csproj"}]}'
