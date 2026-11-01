@@ -36,12 +36,28 @@ namespace KillerShell.Tests.Terminal
         }
 
         [Fact]
-        public void AWindowTitleAloneCountsAsTheShellListening()
+        public void AWindowTitleAloneCountsAsTheShellListeningAfterAShortSettle()
         {
             var buffer = new TerminalBuffer(80, 25);
             var sent = new List<string>();
-            using var staged = new StagedInput(buffer, "run", sent.Add, TimeSpan.FromSeconds(30));
-            Feed(buffer, "\u001b]0;Command Prompt\u0007");
+            using var sentEvent = new ManualResetEventSlim(false);
+            using var staged = new StagedInput(buffer, "run", text => { sent.Add(text); sentEvent.Set(); }, TimeSpan.FromSeconds(30), reportsDirectory: false, settle: TimeSpan.FromMilliseconds(150));
+            Feed(buffer, "]0;Command Prompt");
+            Assert.Empty(sent);
+            Assert.True(sentEvent.Wait(TimeSpan.FromSeconds(5)));
+            Assert.Equal(new[] { "run" }, sent);
+        }
+
+        [Fact]
+        public void AShellThatReportsADirectoryIgnoresItsTitleAndWaitsForThePrompt()
+        {
+            var buffer = new TerminalBuffer(80, 25);
+            var sent = new List<string>();
+            using var staged = new StagedInput(buffer, "run", sent.Add, TimeSpan.FromSeconds(30), reportsDirectory: true, settle: TimeSpan.FromMilliseconds(20));
+            Feed(buffer, "]0;Windows PowerShell");
+            Thread.Sleep(300);
+            Assert.Empty(sent);
+            Feed(buffer, "]7;file:///C:/one");
             Assert.Equal(new[] { "run" }, sent);
         }
 

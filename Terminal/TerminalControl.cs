@@ -80,6 +80,11 @@ namespace KillerShell.Terminal
         /// <summary>Raised when the child exits, so the tab can close or show a notice.</summary>
         public event Action<int>? Exited;
 
+        /// <summary>Raised once when the terminal is closed for good (its tab closed), as opposed to
+        /// the control merely leaving the visual tree when another tab is shown.</summary>
+        public event Action? Closed;
+        private int _closedRaised;
+
         public TerminalBuffer Buffer => _buf;
 
         private static readonly DependencyPropertyKey ScreenBackgroundPropertyKey = DependencyProperty.RegisterReadOnly(
@@ -563,6 +568,7 @@ namespace KillerShell.Terminal
             _pty = null;
             if (pty != null)
                 new Thread(pty.Dispose) { IsBackground = true, Name = "ConPTY cleanup" }.Start();
+            if (Interlocked.Exchange(ref _closedRaised, 1) == 0) Closed?.Invoke();
         }
 
         // ═══════════════════════════════════════════════════════════
