@@ -95,4 +95,18 @@ public sealed class UpdateRelaunchArgumentTests
         }
         finally { UpdateService.RelaunchArgument = ""; Clean(download); }
     }
+
+    [Fact]
+    public void InstallerHelperReopensWithTheArgument()
+    {
+        string download = Download();
+        try
+        {
+            TrayWake.UseForUpdateRelaunch();
+            string script = UpdateImagePublication.Installer(download, "/S", false,
+                Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "KillerShell.exe"), Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "stage"), "https://example.invalid/");
+            Assert.Contains(Reopen(TrayWake.NoWakeArgument), script);
+        }
+        finally { UpdateService.RelaunchArgument = ""; Clean(download); }
+    }
 }

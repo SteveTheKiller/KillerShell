@@ -61,6 +61,7 @@ namespace KillerShell.Services
             Value(script, "Reopen", reopen ?? "");
             Value(script, "Signer", AppInfo.SignerName); Value(script, "Thumb", verified.Signer);
             script.AppendLine("Elevated = " + (elevated ? "$true" : "$false"));
+            script.AppendLine("Unsafe = $false");
             script.AppendLine("ShowReport = " + (showReport ? "$true" : "$false")).AppendLine("}");
             if (!guardEmitted) script.AppendLine(Guard);
             script.AppendLine(Operations);
@@ -70,7 +71,7 @@ namespace KillerShell.Services
             // helper must not open a window as administrator, so it shows no report. The old version then runs without a message; the report stays beside the staged copy
             // in the installation folder, and the next update check offers the release again.
             script.AppendLine("if (Invoke-UpdateImagePublication $plan $ops) { exit 0 } else { if ($plan.ShowReport) { try { & $ops.ShowReport $plan.Report } catch { } }; "
-                + "if (& $ops.Exists $plan.Target) { try { & $ops.Relaunch $plan } catch { } }; exit 1 }");
+                + "if ((& $ops.Exists $plan.Target) -and -not $plan.Unsafe) { try { & $ops.Relaunch $plan } catch { } }; exit 1 }");
             return script.ToString();
         }
 
@@ -90,7 +91,7 @@ namespace KillerShell.Services
             Value(script, "Download", download); Value(script, "Hash", verified.Hash.ToUpperInvariant());
             Value(script, "Signer", AppInfo.SignerName); Value(script, "Thumb", verified.Signer);
             Value(script, "Arguments", arguments); Value(script, "Setup", AppInfo.DisplayName + "-Setup.exe");
-            Value(script, "Target", Path.GetFullPath(relaunch)); Value(script, "Reopen", "");
+            Value(script, "Target", Path.GetFullPath(relaunch)); Value(script, "Reopen", UpdateService.RelaunchArgument);
             Value(script, "StageRoot", Path.GetFullPath(stageRoot));
             Value(script, "Releases", releasesUrl); Value(script, "Report", download + ".update-failure.txt");
             script.AppendLine("Elevated = " + (elevated ? "$true" : "$false")).AppendLine("}");
@@ -116,6 +117,7 @@ function Invoke-UpdateImagePublication {
     param($plan, $ops)
     $stageVerified = $false
     $published = $false
+    $unverified = $false
     $parents = $null
     $image = $null
     try {
@@ -142,15 +144,30 @@ function Invoke-UpdateImagePublication {
             & $ops.Replace $plan.Staged $plan.Target $plan.Backup
         }
         else { & $ops.Move $plan.Staged $plan.Target }
+        # From here the target holds an image nothing has checked yet; a failure puts the backup back.
+        $unverified = $true
         $image = & $ops.OpenImage $plan.Target
         if ((& $ops.HashStream $image) -ne $plan.Hash) { throw 'The published image failed SHA-256 verification.' }
         if (-not (& $ops.Publisher $plan.Target $plan)) { throw 'The published image is not signed by the publisher.' }
+        $unverified = $false
         & $ops.Metadata $plan
         $published = $true
     }
     catch {
         $failure = $_.Exception.ToString()
         $restoration = ''
+        if ($unverified) {
+            # The published image failed its checks. It is released, then replaced by the backup (or
+            # removed when there was none), and the relaunch below is skipped unless that worked.
+            $plan.Unsafe = $true
+            try {
+                if ($null -ne $image) { $image.Dispose(); $image = $null }
+                if (& $ops.Exists $plan.Backup) { & $ops.Restore $plan.Backup $plan.Target $plan.Restore }
+                else { & $ops.Delete $plan.Target }
+                $plan.Unsafe = $false
+            }
+            catch { $restoration = [Environment]::NewLine + 'Restoration failed: ' + $_.Exception.ToString() }
+        }
         try {
             if (!(& $ops.Exists $plan.Target) -and (& $ops.Exists $plan.Backup)) {
                 & $ops.Restore $plan.Backup $plan.Target $plan.Restore
@@ -241,7 +258,8 @@ $ops = @{
         $expected = & $ops.Hash $bytes
         & $ops.Stage $restore $bytes
         if ((& $ops.Hash (& $ops.Read $restore)) -ne $expected) { throw 'The restoration image failed SHA-256 verification.' }
-        & $ops.Move $restore $target
+        if (& $ops.Exists $target) { [IO.File]::Replace($restore, $target, [NullString]::Value) }
+        else { & $ops.Move $restore $target }
     }
     Report = { param($path, $message) [IO.File]::WriteAllText($path, $message) }
     ShowReport = { param($path)
