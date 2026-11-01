@@ -805,6 +805,11 @@ namespace KillerShell.Shell
         // running search, Ctrl+F opens the results quick-filter.
         private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            // AltGr is text on every focus target, a terminal included, so it leaves before any
+            // chord gate or branch below can read it as Ctrl+Alt (AltGrKey.cs).
+            if (AltGrKey.IsText(System.Windows.Input.Keyboard.Modifiers,
+                    System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightAlt))) return;
+
             if (e.Key is System.Windows.Input.Key.Enter or System.Windows.Input.Key.Escape)
                 foreach (var pane in new[] { LeftPane, RightPane })
                     foreach (var box in new[] { pane.AddressBox, pane.TermCwdBox, pane.EditorPathBox })
@@ -958,12 +963,12 @@ namespace KillerShell.Shell
                 return;
             }
 
-            if (ctrl && !shift && e.Key == System.Windows.Input.Key.B)
+            if (ctrl && !shift && !alt && e.Key == System.Windows.Input.Key.B)
             {
                 BookmarksBtn_Click(this, new RoutedEventArgs());   // Bookmarks.cs
                 e.Handled = true;
             }
-            else if (ctrl && !shift && e.Key == System.Windows.Input.Key.H)
+            else if (ctrl && !shift && !alt && e.Key == System.Windows.Input.Key.H)
             {
                 // Show hidden and system items. This had no chord at all - only the toolbar
                 // toggle, which is also the first thing shed into the overflow chevron on a
@@ -972,12 +977,12 @@ namespace KillerShell.Shell
                 ShowHidden_Click(this, new RoutedEventArgs());     // ViewOptions.cs
                 e.Handled = true;
             }
-            else if (e.Key == System.Windows.Input.Key.F && ctrl && !shift)
+            else if (e.Key == System.Windows.Input.Key.F && ctrl && !shift && !alt)
             {
                 ShowResultFilterBar();   // Results.cs
                 e.Handled = true;
             }
-            else if (e.Key == System.Windows.Input.Key.F && ctrl && shift)
+            else if (e.Key == System.Windows.Input.Key.F && ctrl && shift && !alt)
             {
                 PipeButton_Click(this, new RoutedEventArgs());   // Results.cs
                 e.Handled = true;
@@ -991,14 +996,14 @@ namespace KillerShell.Shell
                 EditPreferredProfile();
                 e.Handled = true;
             }
-            else if (e.Key == System.Windows.Input.Key.G && ctrl && !shift && _active.Editor != null)
+            else if (e.Key == System.Windows.Input.Key.G && ctrl && !shift && !alt && _active.Editor != null)
             {
                 // Go to line, the chord every editor uses. Guarded on there being a document for
                 // the same reason Ctrl+S is (EditorBar.cs).
                 EditorGoto_Click(this, new RoutedEventArgs());
                 e.Handled = true;
             }
-            else if (e.Key == System.Windows.Input.Key.S && ctrl && !shift && _active.Editor != null)
+            else if (e.Key == System.Windows.Input.Key.S && ctrl && !shift && !alt && _active.Editor != null)
             {
                 // Ctrl+S saves the document. Guarded on there BEING one rather than handled
                 // unconditionally, so the chord stays free on every other kind of tab instead of
@@ -1006,7 +1011,7 @@ namespace KillerShell.Shell
                 SaveActiveEditor();
                 e.Handled = true;
             }
-            else if (e.Key == System.Windows.Input.Key.S && ctrl && shift)
+            else if (e.Key == System.Windows.Input.Key.S && ctrl && shift && !alt)
             {
                 // Search is an optional panel now, so it needs a way in from the keyboard
                 // (SearchPanel.cs). The chevron's tooltip names this chord.
@@ -1229,14 +1234,14 @@ namespace KillerShell.Shell
                 SetExpandAllLabel(expand);   // Results.cs
                 e.Handled = true;
             }
-            else if (ctrl && !shift && e.Key == System.Windows.Input.Key.L)
+            else if (ctrl && !shift && !alt && e.Key == System.Windows.Input.Key.L)
             {
                 // Ctrl+L is the address bar in Explorer and in every browser, and this is a
                 // shell now, so it goes there. Clear moved to Ctrl+Shift+L (AddressBar.cs).
                 BeginEditAddress();
                 e.Handled = true;
             }
-            else if (ctrl && shift && e.Key == System.Windows.Input.Key.L)
+            else if (ctrl && shift && !alt && e.Key == System.Windows.Input.Key.L)
             {
                 Clear_Click(this, new RoutedEventArgs());
                 e.Handled = true;
@@ -1247,27 +1252,27 @@ namespace KillerShell.Shell
                 else if (!alt) NewTab_Click(this, new RoutedEventArgs());
                 e.Handled = true;
             }
-            else if (ctrl && e.Key == System.Windows.Input.Key.W)
+            else if (ctrl && !alt && e.Key == System.Windows.Input.Key.W)
             {
                 CloseActiveTab_Click(this, new RoutedEventArgs());
                 e.Handled = true;
             }
-            else if (ctrl && e.Key == System.Windows.Input.Key.Tab)
+            else if (ctrl && !alt && e.Key == System.Windows.Input.Key.Tab)
             {
                 CycleTab(shift ? -1 : 1);   // Tabs.cs
                 e.Handled = true;
             }
-            else if (ctrl && e.Key >= System.Windows.Input.Key.D1 && e.Key <= System.Windows.Input.Key.D9)
+            else if (ctrl && !alt && e.Key >= System.Windows.Input.Key.D1 && e.Key <= System.Windows.Input.Key.D9)
             {
                 JumpToTab(e.Key - System.Windows.Input.Key.D1 + 1);   // Tabs.cs; 9 = last
                 e.Handled = true;
             }
-            else if (ctrl && e.Key >= System.Windows.Input.Key.NumPad1 && e.Key <= System.Windows.Input.Key.NumPad9)
+            else if (ctrl && !alt && e.Key >= System.Windows.Input.Key.NumPad1 && e.Key <= System.Windows.Input.Key.NumPad9)
             {
                 JumpToTab(e.Key - System.Windows.Input.Key.NumPad1 + 1);
                 e.Handled = true;
             }
-            else if (ctrl && !shift && e.Key == System.Windows.Input.Key.N)
+            else if (ctrl && !shift && !alt && e.Key == System.Windows.Input.Key.N)
             {
                 // Explorer's New Window, which is what every hand arriving here expects Ctrl+N
                 // to be. It held "add a search term" only because there was no second window to
@@ -1302,7 +1307,7 @@ namespace KillerShell.Shell
                 AddFilter_Click(this, new RoutedEventArgs());
                 e.Handled = true;
             }
-            else if (ctrl && !shift && e.Key == System.Windows.Input.Key.O)
+            else if (ctrl && !shift && !alt && e.Key == System.Windows.Input.Key.O)
             {
                 // !shift matters: without it this swallows Ctrl+Shift+O (Open with), because
                 // this branch sits ahead of it in the chain.

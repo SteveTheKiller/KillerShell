@@ -36,11 +36,9 @@ namespace KillerShell.Shell
                 return true;
             }
 
-            // AltGr arrives as Ctrl+Alt with the right Alt key down. In a text box it types a
-            // character (AltGr+0 is "}" on German and Nordic layouts), so the box keeps it.
-            bool altGrText = Keyboard.IsKeyDown(Key.RightAlt)
-                && Keyboard.FocusedElement is System.Windows.Controls.Primitives.TextBoxBase;
-            if (ctrl && alt && !shift && !altGrText)
+            // AltGr (Ctrl+Alt with the right Alt key down) never gets here: Window_PreviewKeyDown
+            // returns it as text first (AltGrKey.cs).
+            if (ctrl && alt && !shift)
             {
                 switch (key)
                 {
