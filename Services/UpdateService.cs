@@ -202,28 +202,40 @@ namespace KillerShell.Services
             return false;
         }
 
-        /// <summary>Steps over one JSON value: a string, a nested object or array (matching brackets, with
-        /// strings read whole so a quoted bracket does not count), or a bare number or literal.</summary>
-        private static bool SkipValue(string json, ref int i)
+        /// <summary>Steps over one well-formed JSON value: a string, an object or array whose brackets match
+        /// and whose members are themselves well formed, or a number or true, false or null.</summary>
+        private static bool SkipValue(string json, ref int i, int depth = 0)
         {
-            if (i >= json.Length) return false;
-            if (json[i] == '"') return ReadString(json, ref i, out _);
-            if (json[i] == '{' || json[i] == '[')
+            if (i >= json.Length || depth > 64) return false;
+            char first = json[i];
+            if (first == '"') return ReadString(json, ref i, out _);
+            if (first == '{' || first == '[')
             {
-                int depth = 0;
-                while (i < json.Length)
+                char close = first == '{' ? '}' : ']';
+                i++;
+                SkipSpace(json, ref i);
+                if (i < json.Length && json[i] == close) { i++; return true; }
+                while (true)
                 {
-                    char c = json[i];
-                    if (c == '"') { if (!ReadString(json, ref i, out _)) return false; continue; }
-                    i++;
-                    if (c == '{' || c == '[') depth++;
-                    else if ((c == '}' || c == ']') && --depth == 0) return true;
+                    SkipSpace(json, ref i);
+                    if (first == '{')
+                    {
+                        if (!ReadString(json, ref i, out _)) return false;
+                        SkipSpace(json, ref i);
+                        if (i >= json.Length || json[i++] != ':') return false;
+                        SkipSpace(json, ref i);
+                    }
+                    if (!SkipValue(json, ref i, depth + 1)) return false;
+                    SkipSpace(json, ref i);
+                    if (i >= json.Length) return false;
+                    char next = json[i++];
+                    if (next == close) return true;
+                    if (next != ',') return false;
                 }
-                return false;
             }
             int start = i;
             while (i < json.Length && json[i] != ',' && json[i] != '}' && json[i] != ']' && !char.IsWhiteSpace(json[i])) i++;
-            return i > start;
+            return i > start && Regex.IsMatch(json.Substring(start, i - start), "^(true|false|null|-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?)\\z");
         }
 
         /// <summary>Downloads the released exe for <paramref name="tag"/>, checks it against the

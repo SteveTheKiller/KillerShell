@@ -55,4 +55,19 @@ public sealed class UpdateReleaseTagTests
     [InlineData("")]
     public void NothingNewerOrUnreadableIsNotOffered(string json)
         => Assert.Null(UpdateService.NewerReleaseTag(json, Current));
+
+    [Theory]
+    [InlineData("{\"a\":[},\"tag_name\":\"v1.6.0\"}")]
+    [InlineData("{\"a\":{],\"tag_name\":\"v1.6.0\"}")]
+    [InlineData("{\"a\":[{]},\"tag_name\":\"v1.6.0\"}")]
+    [InlineData("{\"a\":tru,\"tag_name\":\"v1.6.0\"}")]
+    [InlineData("{\"a\":abc,\"tag_name\":\"v1.6.0\"}")]
+    [InlineData("{\"tag_name\":\"v1.6.0\",\"prerelease\":yes}")]
+    [InlineData("{\"a\":1.,\"tag_name\":\"v1.6.0\"}")]
+    public void MismatchedBracketsAndInvalidBareTokensAreNotAReleaseDocument(string json)
+        => Assert.Null(UpdateService.NewerReleaseTag(json, Current));
+
+    [Fact]
+    public void ValidNestedValuesAndLiteralsStillRead()
+        => Assert.Equal("v1.6.0", UpdateService.NewerReleaseTag("{\"a\":[{\"b\":[1,-2.5e3,true,false,null]}],\"c\":{},\"d\":[],\"tag_name\":\"v1.6.0\"}", Current));
 }
