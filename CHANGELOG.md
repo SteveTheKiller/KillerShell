@@ -9,13 +9,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.5.1 hardens self-update and uninstall, stops the file picker crashing or overwriting files it could not check, fixes AltGr typing, and opens files you type into the address bar.
 
 ### Fixed
+
 - The file picker refuses to save over a file it could not check, so a slow network share can no longer skip the overwrite prompt.
 - A failed update puts the previous copy back rather than reopening a replacement that failed its checks, and a canceled picker can no longer come back as OK.
 - Update and uninstall helpers load PowerShell modules only from Windows' own folder, so a module planted in your Documents cannot run inside them as administrator; a failed uninstall reports the real reason and retries when a copy is still running; a stalled update says so instead of silently doing nothing; and the window no longer freezes while an update is handed off.
 - The elevated part of an update compiles its helper code in a folder only administrators can open, so another program running as you cannot slip code into it, and an update that finished is no longer reported as failed when the app cannot be reopened afterward.
 - The file picker no longer crashes on a typed name with characters Windows does not allow, stays responsive on a dead network path, and walks up to the nearest folder that still exists.
 - Window chrome hyperlinks no longer crash when no handler is registered for the link.
-- AltGr characters such as @, { and the euro sign type normally on AltGr keyboards in every box and terminal. They were being read as Ctrl+Alt shortcuts that could jump tabs, close a tab or start an export. Left Ctrl+Alt no longer triggers the plain Ctrl shortcuts.
+- AltGr characters such as @, { and the euro sign type normally on AltGr keyboards in every box and terminal. They were being read as Ctrl+Alt shortcuts that could jump tabs, close a tab or start an export. AltGr no longer starts an export or elevation either, and left Ctrl+Alt no longer triggers the plain Ctrl shortcuts.
 - An all-users update reopens KillerShell for the signed-in user at normal rights, whether it finishes or stops early. Windows was refusing that relaunch, so the app stayed closed. Files more than a day old left behind by earlier failed all-users updates are cleared when the next one is staged.
 - A failed per-user or portable update reopens the installed copy, a failed hand-off tells you and offers the releases page, a stalled download ends at its deadline, and a reopened app keeps your PowerShell module path and opens its own window.
 - Uninstall removes files left by a failed update instead of refusing to run.
@@ -42,9 +43,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The Registry editor's Hexadecimal and Decimal options use the themed radio button instead of the plain Windows one.
 
 ### Added
+
+- A `storage <folder>` command lists the largest folders and files, read-only, with an optional HTML report.
+- `search` exports to a new file with `--csv` or `--html`, and refuses a file that already exists.
+- `processes` and `services` take `--detail`, `processes`, `services` and `events` take `--filter`, and `events` takes `--level`.
+- `--version`, `-v` and `/version` report the version, and the command line help lists its exit codes.
+- The Help page carries a full command line guide in every site language.
 - Alt+drag moves any window.
 
 ### Changed
+
 - Rail menus such as System Tools open beside the button that opened them, like the other Killer Tools apps. The theme and language menus still open in the pane corner.
 - The file picker is the shared Killer Tools card, with corners that follow the theme and a soft shadow. On Windows 98 SE it no longer has a status bar.
 - Dragging the title-bar wordmark of a maximized window restores the window and follows the pointer, the same as dragging the title bar.
@@ -60,6 +68,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.5.0 can make KillerShell your default terminal and folder opener, adds docked details and a smoother Performance tab, and makes saves, copies and installs safer.
 
 ### Fixed
+
 - Failed document saves preserve the original and retain recovery copies when restoration fails. Administrator saves keep newer edits unsaved and cannot overwrite a later save. Saving over a file another program changed since it was opened asks whether to replace it, reload it or save a copy, with Cancel as the default.
 - Failed or canceled copies and moves preserve existing destinations and recovery copies. Read-only moves retain file attributes, cancellation stops pending link moves, and cleanup leaves skipped link targets untouched. Cross-drive and mounted-volume moves stay cancellable, retain alternate streams, honor conflict choices, and report incomplete work. Canceling a permanent delete stops before the next file and reports a folder left partly deleted.
 - Installation and updates verify replacements before publishing them. Signed copies require a valid update from the same publisher, and unreadable or invalid current images cannot bypass that check. Recovery cleanup verifies file identity and contents, preserves unrelated files, and lets a successful retry be uninstalled.
@@ -87,6 +96,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The website's screenshots support keyboard navigation and translated controls, its pages and command examples fit narrow screens, and its lighter film grain can be turned off (Alt+Shift+G).
 
 ### Changed
+
 - Search opens below its title-bar button, with a KillerSearch heading, the window background, a clear accent border and one close control replacing its button. One scope dropdown chooses the current folder, open tabs, whole computer or existing results. Its compact vertical form grows with terms and filters, scrolls as one panel, and includes a sliding pattern-help drawer. Single-row pane toolbars keep the address editable, with standard sort dropdowns and responsive button overflow. Each window remembers its view settings. New folders default to Modified, newest first; Ctrl+scroll cycles list, details and icon sizes.
 - Performance graphs scroll smoothly and their numbers count to each new reading instead of jumping once a second; auto-scaled graphs zoom to fit a new peak the same way. The summary boxes carry a large hardware icon in their upper right corner that shrinks, then gives way, before the reading shrinks in a narrow window, and the CPU, memory and GPU cards name their hardware beside one.
 - Tabs can sit at the top or bottom of each window, with subtle corners, stable label spacing and larger close targets. With the tabs below, the current tab is part of the folder it shows: while there is more to scroll, the list's bottom shadow runs on into the tab as one fade, and the row of icons cut off at the list's foot carries on across the tab and fades out partway down it.
@@ -98,6 +108,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Wordmarks and headings are raised with a subtle bevel in their own color instead of a dark outline. The Dark theme's red accent is the brand red again instead of a pink tint.
 
 ### Added
+
 - Use KillerShell as the default terminal, in the About card. Console programs open in their own KillerShell window with the default terminal look, and a window closes when its program exits cleanly. Turning it off, or uninstalling, puts back the terminal you had; a choice made since in Windows Settings is left alone. Needs an installed copy and Windows Terminal, which passes the programs over.
 - Open folders in KillerShell, in the About card. Double-clicking a folder or drive, or a program asking Windows to open one, opens it in a KillerShell window; This PC, Recycle Bin, Control Panel, the desktop, open/save dialogs and programs that run explorer.exe themselves stay with Explorer. Turning it off, removing the associations, or uninstalling puts back what opened folders before, including another file manager's; removing an all-users copy does that for every user, including Microsoft Entra accounts and a copy removed by SYSTEM through an RMM or Intune. A window opened for a folder leaves your remembered tabs alone.
 - Details can dock below or to the right of either pane, or turn off. Filenames shrink to fit and use beveled Lacquer lettering. Details and pane layouts have direct shortcuts and right-click menus; the rail cycles one pane, side-by-side panes and stacked panes.
@@ -117,6 +128,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.4.0] - 2026-10-15
 
 ### Added
+
 - Files and folders can have a nickname, set from the right-click menu in the folder tree, saved places and listing. It shows as "Nickname (name)" without renaming anything on disk.
 - A Film Grain switch in the theme menu turns the grain texture on or off on every surface. It is on by default.
 - The maximize button opens the Windows 11 snap layouts menu.
@@ -124,6 +136,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - KillerShell checks for updates on startup and offers a newer release in a dialog with an Always check on startup box. A Check for updates on startup checkbox on the About card turns the check back on.
 
 ### Changed
+
 - The saved places drawer takes at most 40% of the sidebar height and scrolls past that, so a long list leaves the folder tree usable.
 - The wordmarks use Punktype and Lacquer, dialog headings use Lacquer, and the interface text and footers use Killer Sans, in place of the typewriter font in the app and on the website.
 - Confirm, install and uninstall dialogs use the family setup dialog layout, with a notice icon, a larger Lacquer heading and evenly sized buttons.
@@ -134,6 +147,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A new tab is named for the folder it opens on instead of "new search", the new tab button reads "New tab", and the shortcut list says Ctrl+T opens a new tab at Home.
 
 ### Fixed
+
 - Files dragged out of KillerShell drop into Microsoft Teams and other apps that refused them, because the drag now carries the same shell data Explorer sends.
 - Terminal autocomplete suggestions are drawn clearly faded, so they no longer look like typed text.
 - Ctrl+C in the terminal stops a running command even when KillerShell was started by a program that ignores Ctrl+C.
@@ -176,9 +190,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.3.2] - 2026-10-07
 
 ### Added
+
 - Bash prompts match the PowerShell style, identify the WSL distribution, and support theme colors, Git status, and prompt editing.
 
 ### Fixed
+
 - "Open terminal here" launches Ubuntu and other WSL distributions correctly.
 - Ubuntu browsing no longer loops through "Opening..." when folder monitoring is unsupported. Folder loading shows a busy indicator, background refreshes preserve selection, and unreadable folders report an error.
 - Pinned places resize immediately when folders are added or removed.
@@ -190,9 +206,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.3.1 improves selection contrast, theme consistency and wordmark readability.
 
 ### Changed
+
 - Filled buttons, hovered outline buttons, selected picker rows, calendar selections and accent picker pills use gradients outside 98SE, and accent swatches lift on hover.
 
 ### Fixed
+
 - The standalone CLI builds correctly for .NET Framework 4.8.
 - Selected rows in the Registry Editor, Processes and Event Viewer are readable in Light, Ectoplasm and the other themes where the text matched the highlight.
 - Shared theme colors, dropdown highlights, footers, title styling and shadows match the family palette, including cream Blood, Greed and Cyanotic wordmarks. Rail flyouts sit 8 pixels from the rail and bottom content edges.
@@ -206,6 +224,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.3.0 adds terminal profiles with WSL, file picker pins, a System tools rail flyout, and Ukrainian, Norwegian, and Brazilian Portuguese localization.
 
 ### Added
+
 - Terminal profiles with a default shell, custom commands, and automatic WSL shortcuts. Browse Linux folders in the sidebar, pin them, and open a terminal there.
 - Ctrl+Shift+T opens the current folder in a new browser tab. Terminal actions now have shortcuts shown in their menu, shortcut list, keyboard map, and online guide.
 - File picker pins can be added, removed, and reordered. Explorer Quick Access appears in the places rail, and Open and Save remember their last successful folder separately.
@@ -216,12 +235,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Added yellow and magenta accents to the neutral and 98SE themes.
 
 ### Changed
+
 - Processes, Performance, Storage, Registry Editor, and Event Viewer share a System tools rail button, with administrator actions on right-click; both menus align with the theme and language flyouts without a black outer frame.
 - Improved menu and selection contrast, softened material-theme footers and 98SE footer text, matched the 98SE About bevel to the sidebar, and used subtle gray Delirium dividers.
 - Both shortcut views link to the full online guide from an aligned header, with more space beside the close button.
 - The language menu now shows its 19 languages in two columns, with a faint divider that fades at both ends.
 
 ### Fixed
+
 - Linux terminals report their current folder and use the correct clear and folder-change commands. PowerShell profile actions stay scoped to PowerShell.
 - On Greed, Blood and Cyanotic the folder block in the terminal prompt is drawn in the theme's own color, so its text is readable instead of light on white.
 - Inactive 98SE pane toolbar buttons match the dimmed menubar.
@@ -243,10 +264,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.2.6 adds Vietnamese localization, family tab geometry, and local MCP file tools.
 
 ### Added
+
 - KillerMCP can use the installed app to inspect files, processes, services, event logs, registry keys, and drives without changing them.
 - Vietnamese localization for the app and website.
 
 ### Fixed
+
 - On the 98SE theme the Elevated Privileges caption in an admin window's title bar is white instead of disappearing into the title bar.
 - Mouse Back and Forward buttons navigate folder history again.
 - Tabs use bounded left-aligned widths and continuous pane borders. The 98SE theme now matches Windows 98 pixel for pixel: tab edges and the page under them, the 4px window frame, the 18px caption and its buttons, four-color button bevels, flat toolbar buttons that raise on hover, and double-recessed wells.
@@ -256,6 +279,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.2.5 keeps the List view responsive in folders with thousands of files.
 
 ### Fixed
+
 - Opening a folder with thousands of files in List view no longer freezes the app until Windows closes it; the view now builds only the columns on screen.
 
 ## [1.2.4] - 2026-09-20
@@ -263,10 +287,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.2.4 rebuilds the file list around an Explorer-style compact view with Ctrl+wheel view cycling, moves the pane menubar toggle to the family-standard Alt+M, and adds automated test coverage across the tool suite.
 
 ### Added
+
 - Details view has sortable Type and Created columns; Type shows the same names Explorer does. Show or hide them from the column header's right-click menu.
 - Sorting Details view by a date groups the files under Explorer's headings, from Today to A long time ago. Group by date in the header menu turns it off.
 
 ### Changed
+
 - Performance Monitor is one fixed dashboard in place of the rearrangeable tile grid: a summary strip, large CPU and RAM panels, a row per disk and network adapter that folds to one line when idle, and a card per GPU.
 - Performance graphs are filled and carry a scale; send/receive and read/write are mirrored around a center line. The CPU panel shows a load square per logical processor plus live clock speed, process and thread counts, and up time; RAM shows an in use, cached, and free bar.
 - Dates in the file list and details pane use the Windows short date and time format, such as 9/14/2026 10:09 PM.
@@ -278,6 +304,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Core tool logic is separated from its interface and covered by local release tests.
 
 ### Fixed
+
 - Killer scripts such as `wursa` and `amort`, and the KillerShell prompt, now load in PowerShell tabs on machines still on the default Restricted execution policy. The policy is relaxed to RemoteSigned for that shell process only; AllSigned and Group Policy settings are left alone.
 - About panel states, save dialog titles, details window titles, and terminal start and exit messages follow the interface language instead of staying in English.
 - The storage report, install and uninstall dialogs, and file/archive operation error messages now follow the interface language instead of staying in English.
@@ -295,15 +322,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 1.2.3 adds much faster elevated storage scans, completes fifteen-language coverage, and improves reliability across browsing, terminals, installation, themes, and killershell.net.
 
 ### Added
+
 - Storage Analyzer uses a Master File Table fast path for elevated local NTFS scans, with automatic fallback to the parallel directory walker.
 - Hungarian, Italian, Russian, and Kazakh localization completes the app and website in fifteen languages.
 - Performance Monitor cell headers use the family open-hand and closed-hand grab cursors.
 
 ### Changed
+
 - killershell.net's Help, Technical, and generated 90-row shortcut reference now have complete fifteen-language coverage.
 - The release workflow now rejects incomplete translations, placeholder mismatches, prohibited punctuation, and inconsistent UTF-8 parsing.
 
 ### Fixed
+
 - Installed copies register as editors for common text and configuration formats, and duplicate installations and self-update metadata are handled correctly.
 - The folder tree follows external changes and navigation, while browsing-tab icons follow the current folder.
 - Dual panes preserve their proportions across snapping, maximizing, and restoring.
@@ -315,6 +345,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 This release makes portable installs and updates safer, expands Storage Analyzer and ZIP workflows, completes localization and theme coverage, and gives the 98SE interface a substantial polish pass.
 
 ### Added
+
 - Storage Analyzer scans can now be exported as self-contained HTML reports with the current filters, an SVG treemap, ranked folder and file tables, and a compact file-type color legend.
 - ZIP archives now support creating empty folders, dragging complete folder trees out, and canceling any rewrite without changing the original archive.
 - The folder tree has an independent Show hidden folders option and now lists every Windows drive, including mapped network drives; reopening the sidebar discovers new drives, and elevated windows can recover hidden mappings.
@@ -322,6 +353,7 @@ This release makes portable installs and updates safer, expands Storage Analyzer
 - The About card now has Clear all Data, which removes saved preferences and temporary archive extractions without touching user files or the installation.
 
 ### Changed
+
 - All thirteen app themes are complete app-owned resources and are available in HTML reports; website palettes are generated from those same XAML resources. 98SE web geometry remains deliberately deferred.
 - Polish is now fully translated, and all ten non-English interfaces have complete string coverage, including Storage Analyzer, install/update prompts, and the latest file, tree, and performance commands.
 - The technical website now localizes its administration and Performance Monitor content, restores native Spanish, French, and Turkish diacritics, and generates its shortcut reference from the app's bindings and English resources.
@@ -331,6 +363,7 @@ This release makes portable installs and updates safer, expands Storage Analyzer
 - The technical guide now documents KillerShell's Zip Slip protections, and internal cancellation resource keys use the same spelling as their displayed text.
 
 ### Fixed
+
 - Storage Analyzer opens normally again; initializing its new file-type legend no longer crashes the tab. Its tab uses the same theme-aware hard-drive artwork as the folder tree, its map is textured before and after scanning, and common data, package/game, font, and configuration files now use distinct colors instead of falling into gray Other blocks.
 - Portable installs now distinguish fresh installs from per-user and all-users updates, honor the desktop-shortcut choice, verify the installed file before relaunch, and enforce one installed copy. Machine-wide installs and uninstalls correctly elevate, clean up the current account's older copy and registrations, and remove shared files and shortcuts.
 - Performance Monitor tiles now form independent, gap-free columns with half-height graphs, a compact 2x2 hardware summary, varied metric colors, and one authoritative readout per value. Multi-series values live beside their legend keys, repeated field rows are gone, and full device names wrap on their own line. GPU memory shares one two-series plot. The 98SE tab has a full-width sunken frame that connects the card dividers and separates the active tab from the black client area.
@@ -349,6 +382,7 @@ This release makes portable installs and updates safer, expands Storage Analyzer
 1.2.1 is a single-fix release, and an urgent one: in 1.2.0 every confirmation dialog closed the app instead of opening. Anyone on 1.2.0 should update.
 
 ### Fixed
+
 - Confirmation dialogs open instead of closing the app. Deleting files, replacing an entry inside an archive, ending a process and installing the portable copy all ask before they act, and in 1.2.0 the window that does the asking died the instant it was built, taking the app and the open session with it. The actions themselves were never broken - the dialog in front of them could not appear. Its caption row was sized from a theme value that held the right number in the wrong form, which a theme file can express safely and a live theme lookup cannot. It affected every theme, and it went unnoticed through 1.2.0 because it only shows when a confirmation is actually reached.
 
 ## [1.2.0] - 2026-08-10
@@ -356,6 +390,7 @@ This release makes portable installs and updates safer, expands Storage Analyzer
 1.2.0 opens archives like folders and lets you write to a .zip from inside one, adds a Storage Analyzer that draws a whole drive as a treemap, and brings the theme picker to thirteen with a full Windows 98 recreation and its own period icon set - plus a KillerShell icon pack throughout, a shortcuts card that knows the app is eight applets rather than one, and a rebuilt Performance tab. It also fixes the two drag bugs that had been chased since 1.1.4: one could corrupt the process heap and take the app down, the other left the drag icon stranded on the window.
 
 ### Added
+
 - Archives open like folders. Double-click a .zip, .tar, .tar.gz, .tgz or .gz and you are inside it, browsing with the same rows, sorting, icons and keys as anywhere else; Up climbs back out to the folder holding it. Opening a file inside one extracts a copy and hands it to whatever normally opens it, and dragging a file out drops a copy wherever you let go. No new dependencies were added for any of this, and .rar and .7z still open in whatever you already use for them.
 - A .zip can be changed from inside it: drag or paste files and folders in, Delete an entry, F2 to rename one. A folder takes everything under it, and an empty folder dragged in still arrives. Nothing already in the archive is ever quietly overwritten - a name that is already taken stops the write and asks, with keeping both as the default and replacing as a tick box. Every change is made by building a complete new archive beside the original and swapping it in only after it has been reopened and checked, so a crash, a full disk or a cancel leaves the original file exactly as it was. Adding one file to a zip rewrites the whole zip, so the status line carries a percentage rather than going quiet. Tar, tar.gz, tgz and gz stay read-only and say which they are: rebuilding a tar from what this build can read would drop the links, devices and other members it does not model, and a lone gzip has nowhere to put a second file. Moving out of an archive is deliberately not offered - that would be an extract plus a delete-from-archive with no way to make the two one, and Explorer treats zip drag-out as a copy for the same reason.
 - A Storage Analyzer tab, on F4 (Ctrl+F4 for an elevated scan that can read folders an ordinary account cannot) and on the sidebar rail. Point it at a folder or a drive, press Scan, and every file becomes a rectangle sized by how much room it takes - the WizTree and WinDirStat way of seeing where a disk went. Double-click a folder to zoom in, and a breadcrumb climbs back out. The scan is a parallel walk that never follows junctions or symlinks, so nothing is counted twice, and folders it is not allowed to open are counted and skipped rather than stopping it. A depth control flattens the map to the folders that matter, a minimum-size control hides the noise, and coloring switches between file type and top-level folder; all three are drawing filters, so they apply instantly and never change the totals. Right-click for open in a new tab, open in Explorer, copy path, or delete - and delete only ever goes to the Recycle Bin. The footer names whatever is under the pointer with its size and share of the map, plus the drive's total and free space.
@@ -364,6 +399,7 @@ This release makes portable installs and updates safer, expands Storage Analyzer
 - The 98SE theme draws a period icon set instead of the brand one, so the folders, drives, tabs and tool icons match the rest of the theme rather than sitting on it. Switching theme swaps the whole set live. The art is Chicago95 (GPL-3.0+/MIT, the same license family as KillerShell), upscaled with nearest-neighbor so the pixels stay pixels; `Resources\icons\98\ATTRIBUTION.md` maps every icon to its source.
 
 ### Changed
+
 - The shortcuts card (F1) knows the app is eight applets, not one. Every binding now carries a scope - everywhere, file browser, terminal, editor, Processes/Services, Event Viewer, Registry Editor or Storage Analyzer - and both views group by it, so a key that only exists inside one tab stops reading as though it worked everywhere. The keyboard map draws the meaning that belongs to the tab you are actually on and says which scope that is above the board; hovering a key that is local to a tab names that tab. Two chords that had to be left off the map because a keycap could only say one thing are on it now: Ctrl+Shift+C is Copy full path in the listing and Copy in a terminal, and Ctrl+Shift+A adds a search term, runs a process as administrator, or selects all in a terminal, depending on where you are.
 - The card's list and the keyboard map are generated from one table instead of two. They had drifted: the map showed bare F7 as "add a filter" long after that moved to Shift+F7, showed Ctrl+Shift+C as case-sensitive matching after that moved to Alt+C, and the list was missing Ctrl+Shift+F8 (elevated CMD) entirely. All three are right now, and Alt+C appears on the map for the first time.
 - The Performance tab is a grid of full-size cells instead of a list of small tiles beside one big graph. Every metric is live at once, each cell can be half or full width, and dragging a cell's header reorders the grid. The layout is remembered.
@@ -378,6 +414,7 @@ This release makes portable installs and updates safer, expands Storage Analyzer
 - The invented machine's profile is `C:\Users\Demo` everywhere - the folder tree, the browse listings, the search results, the saved places, the icon map, the fabricated registry, the Task Manager rows and the Event Viewer records. It used to carry a real account name and a real machine name, which put one person's directory layout into a public repository and into every screenshot taken from it.
 
 ### Fixed
+
 - Dragging a file out to another application no longer corrupts memory and takes the app down with it. The object KillerShell hands to the drag was releasing every piece of data it held by freeing the raw memory handle, which is only correct when that memory belongs to us - and during a drag that shows a drag image, Windows attaches data whose memory belongs to the shell, then re-attaches it repeatedly as the drag moves. Freeing that does not raise an error; it damages the process heap, so the crash landed later and somewhere unrelated, as a heap fault inside Windows itself rather than anything pointing back here. Releases now go through the OS routine that respects who owns what, data that cannot be safely copied is skipped rather than aliased, and every memory allocation on the drag path is checked before it is written through.
 - The drag icon no longer stays stuck on the window after dragging a file into another application. Two halves, both fixed. KillerShell tells Windows the cursor arrived whenever a drag crosses its own window, but never told it the cursor LEFT - it assumed the receiving app would take over the drag image, which Explorer does and nearly nothing else does, so dragging into Telegram or GIMP left the icon painted at the window edge where the cursor exited, until the app was closed. A real exit is now reported the moment it happens, while the child-to-child crossings WPF disguises as exits are still left alone, since reacting to those is what used to crash mid-drag. And separately, the data Windows attaches during the drag carries a reference to the shell object that owns the drag image; nothing released that data when the drag finished, so even the paths that should have cleaned up could not. Every drag now releases what the shell stored the moment it completes. Chased since 2026-08-03.
 - Opening any elevated tab no longer buries the desktop in Explorer windows. An admin window already refused to save the session, but still restored it, so it came up carrying every tab from the ordinary window - and each restored shell tab then asked for a non-elevated terminal inside an elevated window, which is answered by handing the request back out through explorer.exe. One stray Explorer window per open tab, every time. An elevated window no longer restores the session, matching its existing refusal to save one.
@@ -396,6 +433,7 @@ This release makes portable installs and updates safer, expands Storage Analyzer
 1.1.4 fixes a crash when dragging files to external applications like Teams and Telegram, plus a ghost icon that persisted on the desktop after dragging to external apps.
 
 ### Fixed
+
 - Dragging a file to Teams, Telegram, or other external apps could crash KillerShell with an `AccessViolationException` - `NativeDataObject` did not check for NULL returns from `GlobalAlloc` and `GlobalLock`, so when either failed the code would attempt to access invalid memory. Error checking and exception handling added for all Win32 global-memory operations.
 - `NativeDataObject.GetData` could throw unhandled exceptions when called from a different thread (which happens when dragging to external apps), crashing the entire drag operation - now wrapped in a try-catch to return an empty medium on error, matching the same defensive behavior for in-process calls.
 - The HDROP structure building could overflow with very large file paths or many files - overflow checks added to prevent negative size calculations that could cause `GlobalAlloc` to fail.
@@ -410,6 +448,7 @@ refresh bugs, and a drag that needed a warm-up click), and a couple of smaller c
 About-card fixes.
 
 ### Fixed
+
 - Dragging a file or folder onto a folder ROW in the listing did not move or copy it into that folder - the drop target was always resolved as the currently browsed folder, never the specific row under the pointer, so a drop onto a folder icon silently landed back in the same folder it started in and the "already there" filter then treated it as a no-op. The drop target now checks for a folder row under the pointer first and falls back to the browsed folder only when there isn't one.
 - Renaming the selected file could leave the details-pane preview showing a different, wrong file's thumbnail (and could drop the selection outright) - a rename was queued as two unrelated file-system events (old path gone, new path appeared) and handled as a plain delete-then-add, which replaced the row with a brand new object. That threw away the object identity selection and the async preview decode were both keyed on, and could let a recycled virtualized row briefly show another row's already-decoded thumbnail. Renames are now matched as a pair and applied to the SAME row in place, so its identity, selection and preview all stay put and only its name/path fields refresh.
 - "More Windows options" did nothing when right-clicking empty pane space instead of an actual file or folder - the context menu item has nothing to open a shell menu FOR without something under the pointer. It is now hidden from the menu entirely unless a file or folder is actually there.
@@ -423,6 +462,7 @@ About-card fixes.
 - Dragging a file needed a "warm-up" click first - clicking and dragging in one motion on a row that wasn't already selected silently did nothing. A freshly-realized row's container can still report no item for the press that lands on it (both the item-container generator lookup and the DataContext fallback could come back empty at that exact tick), so the seed the drag needs was lost immediately and never retried. The lookup is now retried once the drag actually clears the move threshold, by which point the container has always caught up.
 
 ### Changed
+
 - KillerPrompt's path shortening kept 2 segments in full before abbreviating everything above them to a single letter, which could abbreviate a short, meaningful folder name like `code` down to `c` (`~\c\KillerShell\shell-landing`). Now keeps 3.
 
 ## [1.1.2] - 2026-08-03
@@ -434,6 +474,7 @@ stale-state bugs - alongside image thumbnails in the file listing, the app's own
 dialog finally wired into Save As and exports, and a handful of smaller polish fixes.
 
 ### Fixed
+
 - 1.1.1 shipped with the terminal and text editor's grain texture removed outright instead of
   correctly relocated (both paint their own background as one opaque fill with no exposed gap for
   a Border behind them to show through, so the fix that worked for the file listing did not apply
@@ -450,12 +491,14 @@ dialog finally wired into Save As and exports, and a handful of smaller polish f
 - A restored terminal (or editor/registry/processes/events) tab could show the file listing's column-heading row ("name / location / size / modified") sitting above it if the saved view mode was Details - the row's visibility was decided purely by view mode, with no idea whether a listing was even on screen, so `InitResultsView`'s own startup pass re-showed it a moment after tab restore had already correctly hidden it. Now also gated on the pane actually showing its results list, the same signal every non-listing tab already sets on activation.
 
 ### Changed
+
 - Dual pane's two panes no longer share one results view state. Tile/row icon zoom, density, the details-view column widths/visibility, and now the list/icons/details view mode itself used to be shared across both panes (view mode was a single MainWindow field mirrored into both), so changing any of them in one pane did the same thing to the other. Each pane now keeps all of it independently, and each remembers its own across restarts.
   - First cut of this reached each pane's state through a `RelativeSource` walk up to the `FilePane` UserControl, which broke every icon in every view (list, icons, details) - the walk resolved fine for the details header (a direct, non-templated descendant) but never for anything inside the results list's own item templates, realized and recycled by the custom virtualizing panels, so the icon size binding stayed at its default and every image blanked out. Fixed by reaching the state through the `ListBox`'s own `Tag` instead - shallower, and not dependent on how the virtualizing panels manage their realized containers.
 - The details/preview strip's open/closed state, dragged height, and whether the user had ever dragged it were still one shared MainWindow-wide state after the change above - opening, closing or resizing the strip in one pane did the same thing to the other, even though its content already read the right pane's own selection. Now per pane like everything else in this release, and each pane's strip remembers its own height across restarts too.
 - The About card's tagline trimmed "...one tab strip and one set of keys" down to "...one tab strip", dropping the keys clause.
 
 ### Added
+
 - The file listing shows a real thumbnail for image files (.jpg, .jpeg, .png, .gif, .bmp, .tif, .tiff, .webp) instead of the generic shared icon, decoded and cached per file (keyed on its last-write time, so an edited image's thumbnail refreshes instead of staying stale).
 
 ## [1.1.1] - 2026-08-02
@@ -466,6 +509,7 @@ in the file browser - plus expanded `--demo` coverage for the admin tools and a 
 canned editor/terminal samples.
 
 ### Fixed
+
 - Opening HKEY_CLASSES_ROOT in the Registry Editor tab crashed the app - the merged HKLM+HKCU classes view often has a stray key or value with an invalid name (embedded NUL, over-length) from some installer's COM registration, and `GetSubKeyNames()`/`GetValueNames()` throws for the whole call instead of skipping just that entry. That `ArgumentException` was already handled everywhere else in the tab (rename, delete, create); it is now caught in the tree-load and value-load paths too.
 - Selecting a value under HKEY_CLASSES_ROOT could still freeze the app afterward (Windows shows "not responding") even with the crash above fixed - a stray HKCR entry's DATA, not just its name, can be pathologically large, and the value grid handed the raw string/hex straight to a DataGrid cell with no cap, which is a genuine multi-second-or-worse WPF layout cost for a multi-megabyte cell rather than anything that throws. The grid now caps what it displays (4000 characters, or ~1300 bytes worth of hex for REG_BINARY) and says how much was cut off; Modify still reads and writes the real, untruncated value.
 - `text-file.ico` - the icon Explorer shows for every text extension (.txt, .md, .ps1, .yml, .csv, .ini and the rest of `Associations.TextExtensions`) defaulted to KillerShell - never refreshed once written next to the exe. A rebranded icon in a newer build sat unused forever unless someone unregistered and re-registered associations by hand. `EnsureFileIcon` now compares the on-disk file against the one embedded in the current build and rewrites it when they differ; a launch also refreshes it automatically when associations are already registered, so an upgrade alone is enough.
@@ -474,6 +518,7 @@ canned editor/terminal samples.
 - Removed the grain layer over the terminal and the text editor - both paint their own background and every character as one opaque surface with no exposed gap, so grain there could only ever sit on top of the writing, never behind it.
 
 ### Added
+
 - `--demo` now fabricates data for the Registry Editor, Event Viewer and Processes/Services tabs too, each reading from its own fixed fake source (`Services/DemoRegistry.cs` for the registry tree/values) instead of the real machine, the same "everything fixed, nothing live" rule the rest of demo mode already follows. HKEY_CLASSES_ROOT\.386's `PerceivedType` value in the fake registry is the same key/value that crashed the tab before this release's fix.
 - Two more fabricated file bodies for the text editor demo (`.md`, `.yml`/`.yaml`), and a second canned terminal session (network triage at a client site) for a second demo shell tab, so a capture does not repeat the same script/session twice.
 
@@ -482,6 +527,7 @@ canned editor/terminal samples.
 1.1.0 is primarily an admin tools release - Processes/Services, Registry Editor, Event Viewer and a Performance Monitor tab all built into the shell - plus the theme/language flyout rebuild, a file details/preview strip, and other smaller additions and fixes.
 
 ### Changed
+
 - Repo root decomposed into `Shell/`/`Controls/`/`Services/`, matching KillerPDF and Killendar. Pure reorganization, no behavior change.
 - More tooltips show their shortcut (bookmark folder, hidden items, new search tab, second-pane toggle); F1 card gained missing rows (Alt+D, editor-only Ctrl+G/Ctrl+S, Ctrl+Shift+P documented as the Dual Pane legacy alias).
 - The saved-locations drawer is called "Bookmarks" everywhere now, not "favorites" in some places and "saved locations" in others.
@@ -491,6 +537,7 @@ canned editor/terminal samples.
 - New app icon and site branding, regenerated from the current logo art (app icon, site favicon and header/hero icon, README wordmark and banner, and the social-share image).
 
 ### Added
+
 - A details/preview strip (toolbar toggle or Alt+P) slides out of the bottom of the file browser with size/dates/type/attributes/path and an image thumbnail (or the shell icon) for the selected item, tracking the selection live; the filename is accented in the typewriter font, the strip matches the toolbar's background, and dragging its top edge resizes the strip's height (capped at half the pane, floored at the real measured height of its fields) with the image preview widening into any leftover space, remembered across restarts; it collapses to a thin line when there's nothing to show.
 - A saved document's path readout is editable too: type a path and Enter renames and/or moves the file on disk. Only available once the document has been saved at least once - an untitled document has nothing yet to rename.
 - The editor's encoding readout is a picker now: click it to change what the next save writes (UTF-8, UTF-8 with BOM, UTF-16 LE, UTF-16 BE, ANSI), instead of only ever reporting what was detected on open.
@@ -507,6 +554,7 @@ canned editor/terminal samples.
 - **A Registry Editor tab**, Ctrl+F11 only (admin-only, no bare key - most of what it touches refuses a standard token anyway). Browse all five hives with a lazily-loaded tree (children load on expand, never eagerly walked), view a key's values with type-correct formatting (DWORD/QWORD shown as hex and decimal, binary as hex byte pairs, multi-string entries visibly separated), and edit/create/rename/delete both keys and values through the right-click menu or local shortcuts (F2, Delete, Enter, Ctrl+F to find a key or value name in the loaded tree, Ctrl+C to copy a name or path). Every value edit goes through one themed dialog that adapts its input to the value's type and needs an explicit Save click - nothing here auto-saves on a lost focus. Deleting a key warns explicitly that it takes everything nested underneath it with it, through the same themed confirm dialog (never a stock message box) the Processes tab's End Process already uses. The tree defaults to a narrower width and the value grid's Data column now takes the lion's share of the remaining space, so the default view no longer needs horizontal scrolling to read a long value; the value-edit dialog's Hex/Decimal radio labels are readable now (they had no explicit Foreground); and the toolbar/tree/value grid backgrounds match the pane/content-surface treatment used elsewhere in the app instead of reading a step darker, and the control's own root background is now painted PaneBrush too so the margins around those rows no longer show the darker menu background through as a black band; the tree sidebar now matches the plain main-window background instead of a content-surface tone, and the value grid's header row has rounded top corners with its own redundant background layer removed.
 
 ### Fixed
+
 - Tab-strip overflow dropdown icons rendered as the same placeholder shape for every row; now shows the real shell icon (or a color dot for Processes).
 - Recents dropdown menu icons sat flush against their labels with no gutter margin.
 - A shell, document or Processes tab open at quit now reopens fresh on restart instead of coming back as a broken, state-less tab; a shell tab restored this way also gets its themed prompt now (`InitShellEnv()` runs before restore, not after).
@@ -528,6 +576,7 @@ canned editor/terminal samples.
 1.0.2 is a small bug fix release - the results scrollbar takes clicks again, Ctrl+N opens a genuinely new window instead of your last session, F7 with nothing selected opens a blank document, and the Update button's label no longer disappears when you hover it.
 
 ### Fixed
+
 - **The results scrollbar can be clicked and dragged again.** The press handler treated anything that was not a row as empty space, started the rubber-band selection and captured the mouse - so a click on the scrollbar was swallowed before the scrollbar ever saw it, and dragging the thumb did nothing at all. A press that lands inside the scrollbar now returns before the marquee branch. The scrollbar is not empty space, it is the one piece of chrome inside that control that owns its own clicks.
 - **Ctrl+N opens a new window, not a copy of your last session.** A second window runs as its own process, and that process was reading the same saved tab list the first one did, so a new window came up carrying every tab from last time. It now launches with a `--new-window` flag that skips the session restore, giving one fresh tab pointed at the folder you were in, or Home if there was not one. Both windows still write the same saved session on exit, so whichever you close last is the one that is remembered.
 - **F7 with nothing selected opens a blank document instead of doing nothing.** The key only ever acted on a selection, and an empty one set a status line and returned, which from the outside was indistinguishable from a dead key. It now opens an untitled document, the same one the rail's pencil gives you. With a file selected it still opens that file, and the Edit row on the context menu is unchanged, since it is always seeded by whatever is under the pointer.
@@ -538,9 +587,11 @@ canned editor/terminal samples.
 1.0.1 is a bug fix release - a delete no longer walks the pane up a folder, a restored tab comes back as the folder it was instead of an empty search form, a refused delete asks in KillerShell's own dialog rather than Windows', a file operation stops throwing the listing back to the top of the folder, and the toolbar stops hiding a lone button behind an overflow chevron. The selected file's full path also lands in the footer, where a trimmed name cannot hide it.
 
 ### Added
+
 - **The selected file's full path shows in the footer.** Every view has to trim a name that will not fit - the icon grid worst of all, where a tile is as wide as the icon - and the part it trims is the tail, which is the part that tells two files apart. Selecting a row or a tile now puts its full path on the footer status line, which is the one place in the window sized for an unbounded string and which already elides from the front, so a narrow window costs you the drive letter rather than the file name. More than one selected shows a count instead. Clearing a selection leaves the line alone rather than wiping whatever a file operation just reported.
 
 ### Fixed
+
 - **Deleting a file no longer moves you up a folder.** Deleting something in Documents left you sitting in your home folder. Refreshing the folder tree after any file operation rebuilt each node's children by clearing the collection and refilling it, which threw away the container holding the tree's selection - and WPF answers a lost selection by selecting the PARENT node, which the tree then followed by navigating there. The refresh now reconciles in place, removing only entries that actually left the disk and inserting only new ones, so the selected folder and its container survive and nothing re-selects behind you. It affected every file operation that refreshes the tree, not just delete: a rename, a paste or a new folder could move you the same way.
 - **A restored tab comes back as the folder it was, not an empty search form.** The session format was still KillerFind's and had no field for browse state, so every folder tab was written out as a search scoped at that folder and restored as one: the location box showed the path, the listing was empty, and the first-run Home navigation was skipped because it only ran for a tab with no search root. The saved line now carries the current folder and a browsing flag, appended after the original nine fields so a session written by an older build still loads, and a restored folder tab is re-listed on startup. A session saved before those fields existed has no folder to resume, so the test is now whether the tab has a pattern to run at all: one with nothing to search browses its scope instead of showing an empty pane, and a scope that has since been deleted or unmounted falls back to Home. A real search tab with terms in it still comes back as a search form, untouched.
 - **A refused delete asks in KillerShell's own dialog instead of Windows'.** When the shell would not recycle a file on permissions - Controlled Folder Access, a locked-down ACL, a file owned by another account - it drew its own "You'll need to provide administrator permission" box, the one piece of UI in the app that was never ours. `FOF_NOERRORUI` suppresses it, the refusal comes back as a return code, and the answer is a themed prompt offering the one thing that can still do it: an elevated retry, which starts a second instance with `--recycle`, does the delete and exits without a window. Declining leaves everything where it was. The shell's progress dialog is untouched in the interactive path, since a long recycle still needs to show something, but the headless helper suppresses it as well - it has no message pump to draw one with. The dialog also says out loud that elevation will not defeat Controlled Folder Access, which blocks by binary rather than by token, and that the fix there is adding KillerShell to the allowed apps list in Windows Security. The helper's exit code is now checked, so an elevated retry that gets refused says so in the status bar instead of looking exactly like one that worked: a UAC prompt, then nothing, and the file still sitting there.
@@ -552,6 +603,7 @@ canned editor/terminal samples.
 **KillerShell 1.0.0 is KillerFind 2.0.0 under the name it should have had.** The 1.x line was a search box that happened to list files. This release is a shell for power users: a file browser, a terminal and a text editor sharing one window, one keyboard and one tab strip, still a single portable exe with nothing to install. Search became one of the things it does rather than the whole of it, so the name went with it. Nothing is removed and no setting moves - it is the same codebase, renamed, versioned from 1.0.0 because the product it describes starts here.
 
 ### Added
+
 - **Windows knows what KillerShell is now.** A File associations card under the theme flyout registers the app with the shell: a ProgID, an entry in the Open With list for the 19 text types the editor handles, "Open in KillerShell" and "Open KillerShell terminal here" on any folder, drive and folder background, and the Capabilities block that puts KillerShell in Settings under Default apps. Per-user by default, all-users when the window is elevated, and taken back out by both uninstall paths so a ProgID never outlives the exe it points at. Registering is all it does: since Windows 8 the `UserChoice` key has been protected by a signed hash, so an app that sets itself as the default is either forging that hash or lying about it. The card says so and hands you to Settings, which is the only place the switch can honestly be thrown. `.bat`, `.cmd` and `.reg` get an "Edit with KillerShell" row rather than the open verb, because their double-click runs or merges them and quietly changing what that means is how someone loses an afternoon.
 - **A path on the command line opens.** `KillerShell.exe "C:\some\folder"` browses it and `KillerShell.exe "C:\some\file.log"` opens it in an editor tab, which is what makes the shell verbs and the associations above actually do something. Without it every one of them would have launched the app on Home and ignored what it was asked for. `--shell` and `--cwd` take a value, so their value is skipped rather than opened a second time as a tab.
 - **A text editor, in a tab.** Open any file with F7, the results menu's Edit row, or a double-click on the prompt script. It is AvalonEdit, vendored as source into `third_party/AvalonEdit` and compiled into the exe, so KillerShell is still one portable file with no runtime to install - it costs about 640 KB. Syntax highlighting, line numbers, undo, Ctrl+F find, Ctrl+G go to line, Ctrl+S save, and a right-click menu (AvalonEdit ships with none at all). Word wrap is on by default. The whole vendored tree was audited to zero compiler warnings on the way in, without suppressing any.
@@ -588,6 +640,7 @@ canned editor/terminal samples.
 - **F1 opens a shortcuts card** listing every gesture in one place, translated into all ten languages. The pattern cheat-sheet is still one click away on its own button. Ctrl+Right and Ctrl+Left expand and collapse every result (skipped inside a text box so Ctrl+arrow keeps its word-jump meaning), Ctrl+Shift+F pipes the results into a new tab, Ctrl+Shift+L clears them, and Ctrl+Shift+C toggles case-sensitive matching.
 
 ### Changed
+
 - **The results pane is its own control now** (`FilePane`). It was six hundred lines inside MainWindow.xaml, which was fine while there was one of it; the dual-pane split needs two, and two copies of a six-hundred-line pane drift apart the way the two panel-slide animations did before they were shared. The markup moved out untouched and every named control is reached through one `Pane` property, so a second pane is a layout change rather than another sweep through every file.
 - F5 is Refresh rather than Run search, which is what it means everywhere else in Windows. It refreshes whatever the tab is showing: a browsed folder re-lists off disk, a search tab re-runs. Enter still runs a search, so nothing was taken away.
 - Ctrl+E puts the caret in the search box, as it does in Explorer. Export moved to F9 for HTML and Shift+F9 for CSV, because F8 went to the shell - a primary feature deserved the key you can reach without looking, and export is not something you press twenty times an hour. Adding a filter moved from Ctrl+Shift+N to Shift+F7, because New Folder wanted its Explorer chord back and bare F7 belongs to the editor.
@@ -604,6 +657,7 @@ canned editor/terminal samples.
 - `release.ps1` brought up to the family standard. It was build / sign / hash / print; it now runs a preflight (default branch, clean tree, in sync with origin, tag free locally and remotely, CHANGELOG section dated), scans for vulnerable packages, checks the built FileVersion against the csproj, tries three timestamp authorities and gates on `signtool verify /pa`, rewrites the `find-landing` hero block, the verEgg footers and the README source-zip link, then tags and publishes the release with the exe, source zip and SHA256SUMS.txt. `-DryRun` skips the pushes and leaves the working tree untouched.
 
 ### Fixed
+
 - **F7 never opened the editor.** Two branches of the same keyboard chain both claimed the key, and the one that came first - add a filter - had no modifier guard, so it swallowed every F7 and the editor's branch below it was unreachable code. Pressing F7 added a filter row while the shortcuts card, the results menu's gesture hint, the README and the how-to page all said it opened the file. The editor has the bare key now and adding a filter moved to Shift+F7, which is the pattern the shell and export keys already use.
 - The focus ring came out uneven around the active tab. The ring is four elements - the pane's border, the line across the tab band, the tab's own outline and the band's two verticals - and on a first or last tab the outer side was drawn twice, by the band and by the tab. Two 1px borders at the same x is a 2px edge on a ring that is 1px everywhere else, and only sometimes: whether the tab's own outer border cleared the strip's clip depended on how the bar divided a fractional width, so it changed as you moved the split. The tab drops the side the band already owns, and the ring is 1px all the way round.
 - The details column headings hung around over shell and document tabs. Whether that band showed was decided by the view mode alone, which knows nothing about what kind of tab is on screen, so switching to a terminal or an open file while in details view left a row of name / location / size / modified sort buttons floating on top of it, sorting a listing that was not there.
@@ -627,6 +681,7 @@ KillerShell 1.0.0 is the release that would have been KillerFind 2.0.0; its chan
 ## KillerFind 1.0.0 - 2026-07-04
 
 ### Added
+
 - Tabs: each tab is a full independent search (folder, terms, filters, results); drag to reorder, optionally remembered across restarts.
 - Filters: extension / date modified / size rows, AND-ed with the search terms.
 - Search within results: pipe one search's results into a new tab and drill deeper (funnel button or tab right-click).
@@ -640,22 +695,26 @@ KillerShell 1.0.0 is the release that would have been KillerFind 2.0.0; its chan
 - `--demo` mode with fabricated results for screenshots. You think I'm gonna let you see my **real** files?
 
 ### Changed
+
 - Reskin to the shared KillerUI "Grunge" theme: custom chrome, multi-theme switcher with Dark/Blue default, film grain, typewriter wordmark, and a UI refresh throughout (real file icons, collapsed-by-default results, themed dialogs and menus).
 - Multicore search engine: the scan parallelizes across cores with precompiled patterns; the window stays responsive mid-search.
 - Searching with no folder selected opens the folder picker instead of an error.
 
 ### Fixed
+
 - Name terms without wildcards now match as contains instead of silently matching nothing.
 
 ## KillerFind 0.1.1 - 2026-05-04
 
 ### Added
+
 - Code signing on the release binary (Certum).
 - `find-landing` marketing site.
 
 ## KillerFind 0.1.0 - 2026-04-26
 
 ### Added
+
 - Initial release. Fast file search for Windows with no indexing:
   - Filename search with wildcard patterns (`*.log`, `report_*.xlsx`).
   - Content search that streams files line by line without loading them into RAM, skipping likely-binary files (null byte in the first 4 KB).
@@ -666,7 +725,3 @@ KillerShell 1.0.0 is the release that would have been KillerFind 2.0.0; its chan
   - HTML export of results.
   - Dark terminal-style UI, single portable exe, no installer.
 - Targets .NET Framework 4.8 (x64). GPL-3.0 licensed.
-
-[1.0.0]: https://github.com/SteveTheKiller/KillerFind/compare/v0.1.1...v1.0.0
-[0.1.1]: https://github.com/SteveTheKiller/KillerFind/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/SteveTheKiller/KillerFind/releases/tag/v0.1.0
