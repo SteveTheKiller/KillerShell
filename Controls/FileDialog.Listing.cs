@@ -45,8 +45,9 @@ namespace KillerShell.Controls
                     IsDirectoryListingBusy = false;
                     SelMeta.Text = Loc("Str_Dlg_NoSuchFolder");
                     // A bad typed path goes back to the last folder that listed. _currentDir only
-                    // changes after a listing succeeds, so it is always that folder.
-                    if (_currentDir.Length > 0 && !string.Equals(_currentDir, directory, StringComparison.OrdinalIgnoreCase)) NavigateTo(_currentDir);
+                    // changes after a listing succeeds, so it is always that folder. When that
+                    // folder is the one that vanished, the nearest parent takes its place.
+                    RecoverListing(directory, vanished: true);
                     return;
                 }
                 IsDirectoryListingComplete = result.Complete && result.Entries.Count <= PickerDirectoryListing.MaximumEntries;
@@ -72,7 +73,22 @@ namespace KillerShell.Controls
                 IsDirectoryListingBusy = false;
                 _listingError = error.Message;
                 SelMeta.Text = error.Message;
+                RecoverListing(directory, vanished: false);
             });
+        }
+
+        // Puts the dialog back on a folder it can use after a listing failed, so Up and Accept do
+        // not stay off behind a failed or vanished folder.
+        private void RecoverListing(string failed, bool vanished)
+        {
+            string? target = null;
+            bool sameFolder = _currentDir.Length > 0 && string.Equals(_currentDir, failed, StringComparison.OrdinalIgnoreCase);
+            if (_currentDir.Length > 0 && !sameFolder) target = _currentDir;
+            else if (sameFolder && vanished) target = System.IO.Directory.GetParent(failed)?.FullName;
+            if (target != null) { NavigateTo(target); return; }
+            if (_currentDir.Length == 0) return;
+            AcceptButton.IsEnabled = !_accepting;
+            UpButton.IsEnabled = System.IO.Directory.GetParent(_currentDir) != null;
         }
 
         private void CloseDirectoryListing()

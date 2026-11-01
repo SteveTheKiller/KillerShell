@@ -125,6 +125,8 @@ namespace KillerShell.Controls
                 }
                 return new PickerListingResult(entries, true, complete, failure);
             }
+            catch (Exception error) when (error is ArgumentException || error is NotSupportedException)
+            { return new PickerListingResult(new List<PickerEntry>(), false, false); }
             catch (Exception error) when (error is IOException || error is UnauthorizedAccessException || error is System.Security.SecurityException)
             { return new PickerListingResult(entries, true, false, error.Message); }
         }

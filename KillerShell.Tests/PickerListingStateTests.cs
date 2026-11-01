@@ -39,6 +39,22 @@ public sealed class PickerListingStateTests
     }
 }
 
+public sealed class PickerListingArgumentTests
+{
+    // DirectoryInfo throws ArgumentException or NotSupportedException on .NET Framework for text
+    // no path can hold; the listing reports the folder as missing instead of failing the worker.
+    [Theory]
+    [InlineData("C:\\bad|name")]
+    [InlineData("C:\\bad:name")]
+    [InlineData("C:\\bad\0name")]
+    public void MalformedFolderTextListsAsMissing(string folder)
+    {
+        var result = PickerDirectoryListing.Read(folder, false, CancellationToken.None);
+        Assert.False(result.Exists);
+        Assert.Empty(result.Entries);
+    }
+}
+
 public static class PickerListingStateScenario
 {
     private static readonly PickerListingResult Empty = new(Array.Empty<KillerShell.Controls.PickerEntry>(), true, true);
@@ -116,6 +132,38 @@ public static class PickerListingStateScenario
                     Wait(() => !picker.IsDirectoryListingBusy, picker);
                     Assert.False(picker.IsDirectoryListingAvailable);
                     Assert.Equal((string)app.FindResource("Str_Dlg_NoSuchFolder"), ((TextBlock)picker.FindName("SelMeta")).Text);
+                    picker.Close();
+                }
+
+                // Failed after a good folder: the dialog goes back to it and Up and Accept return.
+                {
+                    var picker = new FileDialog(FileDialogMode.Open);
+                    picker.DirectoryListingReader = (dir, _, _) => dir == second ? throw new IOException("listing broke") : Empty;
+                    _ = picker.NavigateDirectoryAsync(first);
+                    Wait(() => picker.IsDirectoryListingAvailable, picker);
+                    _ = picker.NavigateDirectoryAsync(second);
+                    Wait(() => picker.IsDirectoryListingAvailable && !picker.IsDirectoryListingBusy, picker);
+                    Assert.Equal(first, ((TextBox)picker.FindName("PathBox")).Text);
+                    Assert.True(((Button)picker.FindName("AcceptButton")).IsEnabled);
+                    Assert.True(((Button)picker.FindName("UpButton")).IsEnabled);
+                    picker.Close();
+                }
+
+                // Vanished current folder: the nearest existing parent is shown, with Up and Accept on.
+                {
+                    var picker = new FileDialog(FileDialogMode.Open);
+                    picker.DirectoryListingReader = (dir, _, _) => dir == first
+                        ? new PickerListingResult(Array.Empty<KillerShell.Controls.PickerEntry>(), false, false) : Empty;
+                    _ = picker.NavigateDirectoryAsync(second);
+                    Wait(() => picker.IsDirectoryListingAvailable, picker);
+                    picker.DirectoryListingReader = (dir, _, _) => dir == second || dir == first
+                        ? new PickerListingResult(Array.Empty<KillerShell.Controls.PickerEntry>(), dir != second, dir != second) : Empty;
+                    _ = picker.NavigateDirectoryAsync(second);
+                    string grand = Path.GetDirectoryName(second)!;
+                    Wait(() => picker.IsDirectoryListingAvailable && !picker.IsDirectoryListingBusy, picker);
+                    Assert.Equal(grand, ((TextBox)picker.FindName("PathBox")).Text);
+                    Assert.True(((Button)picker.FindName("AcceptButton")).IsEnabled);
+                    Assert.True(((Button)picker.FindName("UpButton")).IsEnabled == (Path.GetDirectoryName(grand) != null));
                     picker.Close();
                 }
             }
