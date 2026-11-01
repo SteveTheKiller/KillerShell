@@ -11,7 +11,9 @@ public sealed class UpdateRestoreAfterReplaceTests
 {
     // Runs the real publication helper with the checks on the published image made to fail after
     // the Replace, and reports what is left on disk and what the helper started again.
-    private static (int exit, string targetText, string? relaunchedText) RunPublication(string overrides)
+    private int attempts;
+
+    private (int exit, string targetText, string? relaunchedText) RunPublication(string overrides, bool installed = true)
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "restore", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
@@ -21,13 +23,15 @@ public sealed class UpdateRestoreAfterReplaceTests
             string target = Path.Combine(root, "KillerShell.exe");
             string relaunched = Path.Combine(root, "relaunched.txt");
             File.WriteAllText(download, "release bytes");
-            File.WriteAllText(target, "installed bytes");
+            if (installed) File.WriteAllText(target, "installed bytes");
             string hash;
             using (var sha = SHA256.Create()) hash = BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(download))).Replace("-", "");
             UpdateImagePublication.RememberVerified(download, hash, new string('A', 40));
             string replaced = Path.Combine(root, "replaced.txt");
             string all = "$realReplace = $ops.Replace\n"
                 + "$ops.Replace = { param($source, $target, $backup) & $realReplace $source $target $backup; [IO.File]::WriteAllText('" + replaced + "', 'x') }\n"
+                + "$realMove = $ops.Move\n"
+                + "$ops.Move = { param($source, $target) & $realMove $source $target; [IO.File]::WriteAllText('" + replaced + "', 'x') }\n"
                 + overrides
                 + "$ops.Relaunch = { param($plan) $t = if ([IO.File]::Exists($plan.Target)) { [IO.File]::ReadAllText($plan.Target) } else { '' }; [IO.File]::WriteAllText('" + relaunched + "', $t) }\n";
             string script = UpdateImagePublication.Script(download, target, false, "https://example.invalid/", "KillerShell", overrides: all);
@@ -40,6 +44,8 @@ public sealed class UpdateRestoreAfterReplaceTests
             string output = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
             Assert.True(process.WaitForExit(120000));
             Assert.True(File.Exists(replaced), "The helper never reached the Replace: " + output);
+            string log = Path.Combine(root, "attempts.txt");
+            attempts = File.Exists(log) ? File.ReadAllText(log).Length : 0;
             return (process.ExitCode, File.Exists(target) ? File.ReadAllText(target) : "", File.Exists(relaunched) ? File.ReadAllText(relaunched) : null);
         }
         finally { Directory.Delete(root, true); }
@@ -80,5 +86,33 @@ public sealed class UpdateRestoreAfterReplaceTests
         Assert.Equal(1, exit);
         Assert.Equal("release bytes", target);
         Assert.Equal("release bytes", relaunched);
+    }
+
+    private const string Busy = "(New-Object IO.IOException('busy', -2147024864))";
+    private const string Attempt = "[IO.File]::AppendAllText((Join-Path ([IO.Path]::GetDirectoryName($plan.Target)) 'attempts.txt'), 'x'); ";
+
+    [Fact]
+    public void RestoreRetriesASharingViolationBeforeGivingUp()
+    {
+        var (exit, target, relaunched) = RunPublication("$ops.Publisher = { param($path, $plan) $path -ne $plan.Target }\n"
+            + "$realSwap = $ops.Swap\n"
+            + "$ops.Swap = { param($source, $target, $backup) if (-not $backup) { " + Attempt + "if ((Get-Content (Join-Path ([IO.Path]::GetDirectoryName($plan.Target)) 'attempts.txt') -Raw).Length -le 2) { throw " + Busy + " } }; & $realSwap $source $target $backup }\n");
+        Assert.Equal(1, exit);
+        Assert.Equal(3, attempts);
+        Assert.Equal("installed bytes", target);
+        Assert.Equal("installed bytes", relaunched);
+    }
+
+    [Fact]
+    public void RemovingAnUnverifiedFirstInstallRetriesASharingViolationBeforeGivingUp()
+    {
+        var (exit, target, relaunched) = RunPublication("$ops.Publisher = { param($path, $plan) $path -ne $plan.Target }\n"
+            + "$realDelete = $ops.Delete\n"
+            + "$ops.Delete = { param($path) if ($path -eq $plan.Target) { " + Attempt + "if ((Get-Content (Join-Path ([IO.Path]::GetDirectoryName($plan.Target)) 'attempts.txt') -Raw).Length -le 2) { throw " + Busy + " } }; & $realDelete $path }\n",
+            installed: false);
+        Assert.Equal(1, exit);
+        Assert.Equal(3, attempts);
+        Assert.Equal("", target);
+        Assert.Null(relaunched);
     }
 }

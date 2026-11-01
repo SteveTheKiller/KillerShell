@@ -301,12 +301,16 @@ namespace KillerShell.Controls
                 bool? result = _pendingResult;
                 // Stop folder listing now, not after the fade, so a slow listing cannot land on a closing dialog.
                 CloseDirectoryListing();
-                Anim.FadeOut(RootFade, () =>
+                var completion = new FadeCompletion(() =>
                 {
                     _fadeDone = true;
                     if (result.HasValue) DialogResult = result;   // this closes it
                     else Close();                                  // cancel path
                 });
+                Anim.FadeOut(RootFade, completion.Complete);
+                // A lost Completed callback (animation suppressed, element out of the tree) would leave the
+                // dialog open and refusing every close, so a timer finishes it a little after the fade.
+                completion.ArmFallback(Dispatcher);
                 return;
             }
             // A second close request while the fade runs waits for it instead of cutting it short.
@@ -835,6 +839,12 @@ namespace KillerShell.Controls
 
         private void Up_Click(object sender, RoutedEventArgs e)
         {
+            // After a recovery walk gave up, Up continues from where it stopped, not from the vanished folder.
+            if (_walkStopped != null)
+            {
+                if (ParentOf(_walkStopped) is { } above) RecoverTo(above, 1);
+                return;
+            }
             var parent = Directory.GetParent(_currentDir);
             if (parent != null) NavigateTo(parent.FullName);
         }
@@ -1129,13 +1139,25 @@ namespace KillerShell.Controls
             Services.ThemeManager.SetSetting(RecentsKey, string.Join("|", list));
         }
 
+        // Recents are probed for a couple of seconds at most, and a click while a probe is still out does nothing.
+        private bool _recentsProbing;
+        internal static readonly TimeSpan RecentsDeadline = TimeSpan.FromSeconds(2);
+
+        /// <summary>The recent folders that answered in time, or null when a probe is already running.</summary>
+        internal async Task<List<string>?> ProbeRecentsAsync()
+        {
+            if (_recentsProbing) return null;
+            _recentsProbing = true;
+            try { return await ExistingFoldersAsync(LoadRecents(), FolderExistsProbe, RecentsDeadline); }
+            finally { _recentsProbing = false; }
+        }
+
         private async void RecentsBtn_Click(object sender, RoutedEventArgs e)
         {
             // Stale entries (unplugged drive, deleted folder) are filtered at open rather than
             // scrubbed from the store - the drive may be back tomorrow.
-            var recent = LoadRecents();
-            var list = await ExistingFoldersAsync(recent, FolderExistsProbe, ProbeTimeout);
-            if (list.Count == 0 || _closing) return;
+            var list = await ProbeRecentsAsync();
+            if (list == null || list.Count == 0 || _closing) return;
 
             _navigating = true;              // rebinding must not raise a navigation
             RecentsList.ItemsSource = list;

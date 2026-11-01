@@ -52,17 +52,18 @@ namespace KillerShell.Services
             return found;
         }
 
-        // An unreadable registration date counts as old, so one odd task cannot stay forever.
+        // A blank or unreadable registration date counts as old, so one odd task cannot stay forever.
+        // Helpers from before the date was stamped left it blank, and a task they registered and
+        // never ran is long finished by the time a later sweep sees it.
         private static DateTime Registered(dynamic task)
         {
-            try
-            {
-                if (DateTime.TryParse((string)task.Definition.RegistrationInfo.Date, System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeLocal, out var date)) return date;
-            }
-            catch { }
-            return DateTime.MinValue;
+            try { return ParseRegistered((string)task.Definition.RegistrationInfo.Date); }
+            catch { return DateTime.MinValue; }
         }
+
+        internal static DateTime ParseRegistered(string? text) =>
+            DateTime.TryParse(text, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.AdjustToUniversal | System.Globalization.DateTimeStyles.AssumeLocal, out var date) ? date : DateTime.MinValue;
 
         private static void DeleteRootTask(string name)
         {

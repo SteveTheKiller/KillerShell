@@ -16,6 +16,10 @@ namespace KillerShell.Controls
         // Bumped on every navigation, so a slow tree reveal for an older folder stops instead of
         // selecting it over the folder now shown.
         private long _navigationVersion;
+        // Where a recovery walk gave up inside a tree that is gone. _currentDir is still the folder
+        // that vanished, so Up carries on from here; a listing that works, or a folder the user asks
+        // for, clears it.
+        private string? _walkStopped;
         public Func<string, bool, CancellationToken, PickerListingResult> DirectoryListingReader { get; set; } = PickerDirectoryListing.Read;
         public Task DirectoryListingTask { get; private set; } = Task.CompletedTask;
         public bool IsDirectoryListingBusy { get; private set; }
@@ -31,6 +35,7 @@ namespace KillerShell.Controls
         private Task NavigateCoreAsync(string directory, int attempt)
         {
             if (_listingClosed || string.IsNullOrWhiteSpace(directory)) return Task.CompletedTask;
+            if (attempt == 0) _walkStopped = null;
             _listingRows?.Cancel();
             long version = ++_navigationVersion;
             UpdateImagePreview(null);
@@ -61,6 +66,7 @@ namespace KillerShell.Controls
                 MutateListingRows(() =>
                 {
                     _currentDir = directory;
+                    _walkStopped = null;
                     PathBox.Text = directory;
                     _raw.AddRange(result.Entries.Take(PickerDirectoryListing.MaximumEntries));
                 });
@@ -95,7 +101,7 @@ namespace KillerShell.Controls
                 // Still starting up: the next start folder takes over.
                 string? next = attempt < MaxRecoveries ? NextStartCandidate() : null;
                 if (next != null) RecoverTo(next, attempt + 1);
-                else SettleListingError();
+                else SettleListingError(failed);
                 return;
             }
             bool sameFolder = string.Equals(_currentDir, failed, StringComparison.OrdinalIgnoreCase);
@@ -106,7 +112,7 @@ namespace KillerShell.Controls
                 else if (attempt == 0 && !sameFolder) target = _currentDir;
             }
             if (target != null) RecoverTo(target, attempt + 1);
-            else SettleListingError();
+            else SettleListingError(failed);
         }
 
         private static string? ParentOf(string folder)
@@ -115,13 +121,14 @@ namespace KillerShell.Controls
             catch (Exception error) when (error is ArgumentException or NotSupportedException or System.IO.PathTooLongException) { return null; }
         }
 
-        // The error stays on screen, the path box and Cancel work, and Up walks on from the last good
-        // folder when there is one. Accept follows the listing, which is not available.
-        private void SettleListingError()
+        // The error stays on screen, the path box and Cancel work, and Up walks on from the folder the
+        // walk stopped at, so each press carries it further. Accept follows the listing, which is not available.
+        private void SettleListingError(string failed)
         {
             IsDirectoryListingBusy = false;
             RefreshAcceptEnabled();
-            UpButton.IsEnabled = _currentDir.Length > 0 && ParentOf(_currentDir) != null;
+            _walkStopped = failed;
+            UpButton.IsEnabled = ParentOf(failed) != null;
         }
 
         private void CloseDirectoryListing()

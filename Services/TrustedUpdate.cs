@@ -154,11 +154,11 @@ namespace KillerShell.Services
             // The guard type comes first, so a failure before the publication text has run (the app
             // did not close, another install holds the mutex, the installed image changed) can still
             // reopen the installed copy the safe way below.
-            string body = "$ErrorActionPreference='Stop';$lease=$null;$owned=$false;$ready=$false;try{\n"
+            string body = "$ErrorActionPreference='Stop';$lease=$null;$owned=$false;$exited=$false;try{\n"
                 + UpdateImagePublication.Guard + "\n"
-                + Wait(parentId, parentTicks, Abandoned) + Wait(helperId, helperTicks, Abandoned)
+                + Wait(parentId, parentTicks, Abandoned) + Wait(helperId, helperTicks, Abandoned) + "$exited=$true;"
                 + "$lease=New-Object Threading.Mutex($false,'Global\\KillerTools-Install-" + AppInfo.DisplayName + "');"
-                + "try{$owned=$lease.WaitOne(0)}catch [Threading.AbandonedMutexException]{$owned=$true};if(-not $owned){throw 'Another KillerTools install or update is running, so this update was not applied.'};$ready=$true;"
+                + "try{$owned=$lease.WaitOne(5000)}catch [Threading.AbandonedMutexException]{$owned=$true};if(-not $owned){throw 'Another KillerTools install or update is running, so this update was not applied.'};"
                 + "$original=[IO.File]::OpenRead(" + Data(target) + ");$hash=[Security.Cryptography.SHA256]::Create();"
                 + "try{if([BitConverter]::ToString($hash.ComputeHash($original)).Replace('-','') -ne " + Data(originalHash)
                 + "){throw 'The installed image changed before update publication.'}}finally{$hash.Dispose();$original.Dispose()};\n"
@@ -168,9 +168,9 @@ namespace KillerShell.Services
                 // Nothing was published, so the installed copy is reopened for the user the same way
                 // a finished update is, never as this administrator (Start-KillerUpdatedApp). The
                 // report beside the staged copy still says what happened. That only follows once the
-                // old copy has exited and this helper holds the install lock: an app that is still
-                // running, or another install in progress, is left alone.
-                + "if(-not $ready){exit 1};try{Start-KillerUpdatedApp (" + Data(target) + ") '" + UpdateService.RelaunchArgument.Replace("'", "''") + "' $true}catch{};exit 1}"
+                // old copy has exited, and it follows even when another install holds the lock (waited on
+                // briefly), which only means nothing is published. An app still running is left alone.
+                + "if(-not $exited){exit 1};try{Start-KillerUpdatedApp (" + Data(target) + ") '" + UpdateService.RelaunchArgument.Replace("'", "''") + "' $true}catch{};exit 1}"
                 + "finally{if($null -ne $lease){if($owned){$lease.ReleaseMutex()};$lease.Dispose()}}";
             return new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),
                 @"WindowsPowerShell\v1.0\powershell.exe"), ImmutablePowerShell.Arguments(body))

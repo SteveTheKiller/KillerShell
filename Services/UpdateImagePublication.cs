@@ -163,7 +163,7 @@ function Invoke-UpdateImagePublication {
             try {
                 if ($null -ne $image) { $image.Dispose(); $image = $null }
                 if (& $ops.Exists $plan.Backup) { & $ops.Restore $plan.Backup $plan.Target $plan.Restore }
-                else { & $ops.Delete $plan.Target }
+                else { & $ops.Retry { & $ops.Delete $plan.Target } }
                 $plan.Unsafe = $false
             }
             catch { $restoration = [Environment]::NewLine + 'Restoration failed: ' + $_.Exception.ToString() }
@@ -237,18 +237,26 @@ $ops = @{
     Replace = { param($source, $target, $backup)
         $originalHash = & $ops.Hash (& $ops.Read $target)
         $replacementHash = & $ops.Hash (& $ops.Read $source)
+        & $ops.Retry { & $ops.Swap $source $target $backup } {
+            (& $ops.Exists $source) -and (& $ops.Exists $target) -and -not (& $ops.Exists $backup) -and
+            (& $ops.Hash (& $ops.Read $source)) -eq $replacementHash -and (& $ops.Hash (& $ops.Read $target)) -eq $originalHash
+        }
+    }
+    Swap = { param($source, $target, $backup)
+        if ($backup) { [IO.File]::Replace($source, $target, $backup) } else { [IO.File]::Replace($source, $target, [NullString]::Value) }
+    }
+    # Runs an action, trying again for up to ten seconds while another process holds a file it needs
+    # (sharing violation 32, lock violation 33); an anti-virus scan or indexer usually lets go in time.
+    # The optional check must still hold before and after each wait, or the failure stands.
+    Retry = { param($action, $check)
         for ($attempt = 0; $attempt -lt 10; $attempt++) {
-            try { [IO.File]::Replace($source, $target, $backup); return }
+            try { & $action; return }
             catch {
                 $code = $_.Exception.GetBaseException().HResult -band 65535
                 if ($attempt -ge 9 -or $code -notin @(32, 33)) { throw }
-                if (!(& $ops.Exists $source) -or !(& $ops.Exists $target) -or (& $ops.Exists $backup)) { throw }
-                if ((& $ops.Hash (& $ops.Read $source)) -ne $replacementHash -or
-                    (& $ops.Hash (& $ops.Read $target)) -ne $originalHash) { throw }
+                if ($check -and -not (& $check)) { throw }
                 Start-Sleep -Seconds 1
-                if (!(& $ops.Exists $source) -or !(& $ops.Exists $target) -or (& $ops.Exists $backup)) { throw }
-                if ((& $ops.Hash (& $ops.Read $source)) -ne $replacementHash -or
-                    (& $ops.Hash (& $ops.Read $target)) -ne $originalHash) { throw }
+                if ($check -and -not (& $check)) { throw }
             }
         }
     }
@@ -258,7 +266,7 @@ $ops = @{
         $expected = & $ops.Hash $bytes
         & $ops.Stage $restore $bytes
         if ((& $ops.Hash (& $ops.Read $restore)) -ne $expected) { throw 'The restoration image failed SHA-256 verification.' }
-        if (& $ops.Exists $target) { [IO.File]::Replace($restore, $target, [NullString]::Value) }
+        if (& $ops.Exists $target) { & $ops.Retry { & $ops.Swap $restore $target $null } }
         else { & $ops.Move $restore $target }
     }
     Report = { param($path, $message) [IO.File]::WriteAllText($path, $message) }
@@ -579,6 +587,17 @@ public static class KillerUpdateGuard {
     if ($null -ne $killerTemp) { Remove-Item -LiteralPath $killerTemp -Recurse -Force -ErrorAction SilentlyContinue }
 }
 }
+# The registration date of the reopen task, in Task Scheduler's own ISO form and the local time its
+# sweep reads it back in.
+function New-KillerUpdateTaskDate { (Get-Date).ToString('s') }
+# A task registered within five minutes belongs to a helper that has not started it yet. A blank or
+# unreadable date counts as old, so one odd task cannot stay forever.
+function Test-KillerUpdateTaskRecent {
+    param($date, $now)
+    $parsed = [DateTime]::MinValue
+    if (-not [DateTime]::TryParse([string]$date, [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref]$parsed)) { return $false }
+    return (($now - $parsed) -lt [TimeSpan]::FromMinutes(5))
+}
 # Reopens the updated app for the person at this desktop. Someone who elevated with another
 # administrator's account has no shell token this helper can use, and that account must never
 # start the app itself, so a one-time task for the Users group starts it in this session, as
@@ -594,13 +613,17 @@ function Start-KillerUpdatedApp {
     $service.Connect()
     $folder = $service.GetFolder('')
     # An earlier helper killed before its cleanup leaves its hidden task behind; tasks still queued
-    # or running belong to a start in progress and stay.
+    # or running belong to a start in progress and stay, and so does one registered only minutes ago.
     foreach ($old in @($folder.GetTasks(1))) {
         if ($old.Name -like 'KillerUpdate-*' -and $old.State -ne 2 -and $old.State -ne 4) {
+            $registeredOn = ''
+            try { $registeredOn = $old.Definition.RegistrationInfo.Date } catch { }
+            if (Test-KillerUpdateTaskRecent $registeredOn (Get-Date)) { continue }
             try { $folder.DeleteTask($old.Name, 0) } catch { }
         }
     }
     $task = $service.NewTask(0)
+    $task.RegistrationInfo.Date = New-KillerUpdateTaskDate
     $task.Settings.Hidden = $true
     $task.Settings.DisallowStartIfOnBatteries = $false
     $task.Settings.StopIfGoingOnBatteries = $false

@@ -52,4 +52,23 @@ public sealed class UpdateTaskSweepTests
         };
         Assert.Equal(1, UpdateTaskSweep.Run(scheduler));
     }
+
+    [Fact]
+    public void ABlankOrUnreadableRegistrationDateCountsAsOldAndAReadableOneKeepsItsTime()
+    {
+        Assert.Equal(DateTime.MinValue, UpdateTaskSweep.ParseRegistered(null));
+        Assert.Equal(DateTime.MinValue, UpdateTaskSweep.ParseRegistered(""));
+        Assert.Equal(DateTime.MinValue, UpdateTaskSweep.ParseRegistered("not a date"));
+        var local = new DateTime(2026, 11, 1, 12, 0, 0, DateTimeKind.Local);
+        Assert.Equal(local.ToUniversalTime(), UpdateTaskSweep.ParseRegistered(local.ToString("s", System.Globalization.CultureInfo.InvariantCulture)));
+        var deleted = new List<string>();
+        var scheduler = new UpdateTaskSweep.Scheduler
+        {
+            Tasks = () => new[] { ("KillerUpdate-blank", 3, UpdateTaskSweep.ParseRegistered("")), ("KillerUpdate-recent", 3, Now.AddMinutes(-1)) },
+            Delete = deleted.Add,
+            Now = () => Now,
+        };
+        Assert.Equal(1, UpdateTaskSweep.Run(scheduler));
+        Assert.Equal(new[] { "KillerUpdate-blank" }, deleted);
+    }
 }

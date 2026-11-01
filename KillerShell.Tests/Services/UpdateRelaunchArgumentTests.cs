@@ -111,19 +111,18 @@ public sealed class UpdateRelaunchArgumentTests
     }
 
     [Fact]
-    public void MachineHelperReopensAfterAFailureOnlyOnceTheOldCopyHasExitedAndTheInstallLockIsHeld()
+    public void MachineHelperReopensAfterAFailureOnlyOnceTheOldCopyHasExited()
     {
         string download = Download();
         try
         {
             string target = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "KillerShell.exe");
             string script = Decompressed(TrustedUpdate.Publication(download, target, "1.5.1", new string('B', 64), 1, 1, 1, 1));
-            int closed = script.IndexOf("$ready=$true", StringComparison.Ordinal);
+            int closed = script.IndexOf("$exited=$true", StringComparison.Ordinal);
             int lastWait = script.LastIndexOf("WaitForExit(60000)", StringComparison.Ordinal);
-            int mutexCheck = script.IndexOf("this update was not applied.'};", StringComparison.Ordinal);
-            int reopen = script.IndexOf("if(-not $ready){exit 1};try{Start-KillerUpdatedApp", StringComparison.Ordinal);
-            Assert.True(closed > lastWait && closed > mutexCheck, "The ready flag is set only after both waits and the mutex check.");
-            Assert.True(script.IndexOf("if(-not $ready){exit 1};try{Start-KillerUpdatedApp", StringComparison.Ordinal) > 0, "The failure reopen is gated by the ready flag.");
+            int reopen = script.IndexOf("if(-not $exited){exit 1};try{Start-KillerUpdatedApp", StringComparison.Ordinal);
+            Assert.True(closed > lastWait, "The exited flag is set only after both waits.");
+            Assert.True(reopen > 0, "The failure reopen is gated by the exited flag.");
             Assert.True(reopen > closed);
         }
         finally { Clean(download); }

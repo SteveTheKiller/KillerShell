@@ -47,6 +47,8 @@ public sealed class FileDialogHardeningTests
     [Fact] public Task AcceptIsEnabledOnlyWhileTheListingIsAvailable() => RunScenario("AcceptState");
     [Fact] public Task TheTreeNodeOfAFolderThatDidNotListIsHonored() => RunScenario("TreeGuard");
     [Fact] public Task QuotedDirectoryInTheNameBoxNavigates() => RunScenario("QuotedDirectory");
+    [Fact] public Task UpKeepsWalkingPastTheRecoveryLimitOfAVanishedTenLevelTree() => RunScenario("DeepVanishedTree");
+    [Fact] public Task RecentsIgnoreAClickWhileProbingAndAnswerWithinTheShortDeadline() => RunScenario("Recents");
 
     [Fact]
     public async Task RecentsAreProbedPerEntryAndADeadOneDoesNotHideTheRest()
@@ -107,6 +109,8 @@ public static class FileDialogHardeningScenario
                     case "AcceptState": AcceptState(); break;
                     case "TreeGuard": TreeGuard(); break;
                     case "QuotedDirectory": QuotedDirectory(); break;
+                    case "DeepVanishedTree": DeepVanishedTree(); break;
+                    case "Recents": Recents(); break;
                     default: throw new ArgumentException(name);
                 }
             }
@@ -328,6 +332,69 @@ public static class FileDialogHardeningScenario
         Enter(picker, "\"" + parent + "\"");
         Wait(() => { lock (asked) return asked.Contains(parent); }, "the unquoted folder");
         Assert.Equal("", Find<TextBox>(picker, "FileNameBox").Text);
+        picker.Close();
+    }
+
+    private static void DeepVanishedTree()
+    {
+        string tree = Path.Combine(Shown, "KillerShellDeep-" + Guid.NewGuid().ToString("N"));
+        string deep = tree;
+        for (int level = 1; level <= 10; level++) deep = Path.Combine(deep, "d" + level);
+        Directory.CreateDirectory(deep);
+        try
+        {
+            var picker = new FileDialog(FileDialogMode.Open);
+            _ = picker.NavigateDirectoryAsync(deep);
+            Wait(() => picker.IsDirectoryListingAvailable, "the deep folder");
+            Directory.Delete(tree, true);
+            _ = picker.NavigateDirectoryAsync(deep);
+            Wait(() => !picker.IsDirectoryListingBusy, "the walk to stop");
+            Pump(300);
+            Assert.False(picker.IsDirectoryListingAvailable);
+            // The walk gave up inside the vanished tree. Each Up carries it further, until a folder lists.
+            Assert.True(Find<Button>(picker, "UpButton").IsEnabled);
+            for (int press = 0; press < 3 && !picker.IsDirectoryListingAvailable; press++)
+            {
+                Find<Button>(picker, "UpButton").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                Wait(() => !picker.IsDirectoryListingBusy, "Up to settle");
+                Pump(300);
+            }
+            Assert.True(picker.IsDirectoryListingAvailable, "Up never got past the recovery limit.");
+            Assert.Equal(Shown, Find<TextBox>(picker, "PathBox").Text);
+            picker.Close();
+        }
+        finally { try { Directory.Delete(tree, true); } catch (DirectoryNotFoundException) { } }
+    }
+
+    private static void Recents()
+    {
+        ThemeManager.GetSetting = key => key == "FileDlgRecents" ? @"C:\good1|C:\dead|C:\good2" : null;
+        using var gate = new ManualResetEventSlim(false);
+        int deadProbes = 0;
+        var picker = Listed(FileDialogMode.Open, Shown);
+        picker.FolderExistsProbe = path =>
+        {
+            if (path.StartsWith(@"C:\good")) return true;
+            Interlocked.Increment(ref deadProbes);
+            gate.Wait();
+            return false;
+        };
+        var started = Stopwatch.StartNew();
+        var first = picker.ProbeRecentsAsync();
+        var second = picker.ProbeRecentsAsync();
+        // A click while the probe is in flight does nothing: no second round of probes, no second popup.
+        Assert.True(second.IsCompleted);
+        Assert.Null(second.Result);
+        Wait(() => first.IsCompleted, "the deadline");
+        started.Stop();
+        Assert.Equal(new[] { @"C:\good1", @"C:\good2" }, first.Result);
+        Assert.True(started.Elapsed < TimeSpan.FromSeconds(5), "Took " + started.Elapsed);
+        Assert.Equal(1, deadProbes);
+        // Once it has answered, the next click probes again.
+        gate.Set();
+        var third = picker.ProbeRecentsAsync();
+        Wait(() => third.IsCompleted, "the next probe");
+        Assert.NotNull(third.Result);
         picker.Close();
     }
 
