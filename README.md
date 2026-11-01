@@ -21,11 +21,35 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 - Monitor CPU, RAM, disks, networks, and GPUs with live graphs and per-core CPU history
 - Use the built-in Event Viewer, Registry Editor, and Storage Analyzer without leaving the tab strip
 - Keyboard-first operation using familiar Explorer keys plus F4 storage, F7 edit, F8 shell, F9 processes, F10 split, F11 performance, and F1 for the complete shortcut overlay
-- Read-only JSON CLI queries for files, processes, services, event logs, registry keys, and drives; run `KillerShell --cli --help` for commands
+- Read-only JSON CLI queries for files, processes, services, event logs, registry keys, drives, and folder sizes; run `KillerShell --cli --help` for commands
 - Thirteen themes, including a full 98SE recreation; eight accents on Dark, Light, Black, and 98SE give 41 looks
 - Localized in 20 languages, with live switching and English fallback for incomplete translations
 - Runs portable or self-installs per-user without UAC or machine-wide with UAC; `/silent` supports WinGet and managed deployment
 - Local-only: no indexing service, cloud account, advertisements, or telemetry
+
+## Command line
+
+The CLI is read-only and prints JSON. Run it as `KillerShell --cli <verb>`, or `killershell <verb>` from an installed copy.
+
+| Verb | What it does |
+| --- | --- |
+| `search <folder> --name <pattern> [--content <text>] [--limit 1..500] [--csv <new file>] [--html <new file>]` | Find files by name or content |
+| `list <folder> [--limit 1..500]` | List a folder |
+| `info <path>` | Size, dates and attributes |
+| `read <file> [--max-chars 1..65536]` | Read a text file |
+| `processes [--limit 1..500] [--detail] [--filter <text>]` | Running processes; `--detail` adds parent, path, command line and start time |
+| `services [--limit 1..500] [--detail] [--filter <text>]` | Services; `--detail` adds start mode, path, account and description |
+| `events <Application\|System\|Security> [--limit 1..100] [--filter <text>] [--level Critical\|Error\|Warning\|Information\|Verbose]` | Newest events first |
+| `registry <hive\key> [--limit 1..100]` | Subkeys and values |
+| `drives` | Drives and free space |
+| `hash <file>` | SHA-256 |
+| `storage <folder> [--limit 1..500] [--html <new file>]` | The largest folders and files under a folder |
+
+`--version`, `-v` and `/version` print the version. Files named by `--csv` and `--html` must not exist yet; an existing file is refused with exit code 2 and nothing is written.
+
+Exit codes: `0` succeeded, `1` the command failed, `2` usage error (bad or missing arguments).
+
+The app itself also takes these switches: `--new-window` (a window of its own), `--cwd <folder>`, `--shell <kind>`, `--terminal-profile <token>`, `--edit <file>`, and `--processes`, `--eventviewer`, `--performance`, `--storage`, `--registry` to open that tool in a tab.
 
 ## Screenshots
 

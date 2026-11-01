@@ -203,7 +203,41 @@ html[data-theme="light"] .help-cat, html[data-theme="light"] .kbd-group h4 { tex
 <div class="acc-item"><button class="acc-head" data-i18n="hx_010">Command-line arguments<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_win_p5">Handing KillerShell a path works whether or not you register anything: <code>KillerShell.exe "C:\logs"</code> browses that folder, and <code>KillerShell.exe "C:\logs\today.log"</code> opens the file in an editor tab.</p><p data-i18n="t_cli_p">The read-only CLI returns JSON for files, search, processes, services, events, registry, drives and SHA-256 hashes. Security-log access requires administrator privileges. An installed copy is on PATH, so it can be run from any new terminal. A portable copy is not, so run it by its file name instead. PowerShell and Command Prompt can return to the prompt before the output appears. To make a script wait, pipe the output, for example <code>killershell --cli drives | Out-String</code>.</p><pre><code>killershell --help
 killershell --cli list "C:\logs"
 killershell --cli search "C:\logs" --content "error"
-killershell --cli hash "C:\logs\today.log"</code></pre></div></div></div>
+killershell --cli hash "C:\logs\today.log"
+killershell --cli storage "C:\logs" --limit 10
+killershell --cli processes --detail --filter shell
+killershell --cli events System --level Error --filter disk
+killershell --cli search "C:\logs" --content "error" --csv "C:\temp\hits.csv"
+killershell -v</code></pre></div></div></div>
+<div class="acc-item"><button class="acc-head" data-i18n="cl_h">Command line guide<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="cl_intro">Every command prints JSON and never changes your files, settings or registry. The only thing a command writes is a new file named by --csv or --html, and only when nothing exists at that path. Run a command as KillerShell.exe --cli followed by the verb, or as killershell from an installed copy.</p>
+<p><b>search</b> <span data-i18n="cl_v_search">Find files by name pattern, by content, or both. Results come back sorted by path.</span></p><pre><code>killershell search &lt;folder&gt; --name &lt;pattern&gt; [--content &lt;text&gt;] [--limit 1..500] [--csv &lt;new file&gt;] [--html &lt;new file&gt;]
+killershell search &lt;folder&gt; --content &lt;text&gt; [--limit 1..500]
+killershell --cli search "C:\logs" --content "error" --limit 20</code></pre>
+<p><b>list</b> <span data-i18n="cl_v_list">List the entries of a folder, folders first.</span></p><pre><code>killershell list &lt;folder&gt; [--limit 1..500]
+killershell --cli list "C:\logs" --limit 50</code></pre>
+<p><b>info</b> <span data-i18n="cl_v_info">Show size, dates and attributes of one file or folder.</span></p><pre><code>killershell info &lt;path&gt;
+killershell --cli info "C:\logs\today.log"</code></pre>
+<p><b>read</b> <span data-i18n="cl_v_read">Read the start of a text file; a binary file is refused.</span></p><pre><code>killershell read &lt;file&gt; [--max-chars 1..65536]
+killershell --cli read "C:\logs\today.log" --max-chars 4096</code></pre>
+<p><b>processes</b> <span data-i18n="cl_v_processes">List running processes with memory use; add --detail for parent, path, command line and start time.</span></p><pre><code>killershell processes [--limit 1..500] [--detail] [--filter &lt;text&gt;]
+killershell --cli processes --detail --filter shell</code></pre>
+<p><b>services</b> <span data-i18n="cl_v_services">List services and their status; add --detail for start mode, path, account and description.</span></p><pre><code>killershell services [--limit 1..500] [--detail] [--filter &lt;text&gt;]
+killershell --cli services --detail --filter spool</code></pre>
+<p><b>events</b> <span data-i18n="cl_v_events">Read the newest events of a log, newest first. The Security log needs administrator rights.</span></p><pre><code>killershell events &lt;Application|System|Security&gt; [--limit 1..100] [--filter &lt;text&gt;] [--level Critical|Error|Warning|Information|Verbose]
+killershell --cli events System --level Error --filter disk --limit 10</code></pre>
+<p><b>registry</b> <span data-i18n="cl_v_registry">List the subkeys and values of a key. Hive names such as HKLM and HKCU are accepted.</span></p><pre><code>killershell registry &lt;hive\key&gt; [--limit 1..100]
+killershell --cli registry "HKLM\SOFTWARE\Microsoft" --limit 20</code></pre>
+<p><b>drives</b> <span data-i18n="cl_v_drives">List drives with format, size and free space.</span></p><pre><code>killershell drives
+killershell --cli drives</code></pre>
+<p><b>hash</b> <span data-i18n="cl_v_hash">Print the SHA-256 hash of a file.</span></p><pre><code>killershell hash &lt;file&gt;
+killershell --cli hash "C:\logs\today.log"</code></pre>
+<p><b>storage</b> <span data-i18n="cl_v_storage">Report the largest folders and files under a folder, without changing anything.</span></p><pre><code>killershell storage &lt;folder&gt; [--limit 1..500] [--html &lt;new file&gt;]
+killershell --cli storage "C:\logs" --limit 10 --html "C:\temp\storage.html"</code></pre>
+<p><b>--version</b> <span data-i18n="cl_v_version">Print the version number.</span></p><pre><code>killershell --version
+killershell -v
+killershell /version</code></pre>
+<p data-i18n="t_cli_more">Besides the commands above, <code>storage</code> lists the largest folders and files under a folder and changes nothing. <code>--detail</code> adds paths, command lines and start modes to <code>processes</code> and <code>services</code>, <code>--filter</code> narrows <code>processes</code>, <code>services</code> and <code>events</code>, and <code>--level</code> picks an event severity. <code>--csv</code> and <code>--html</code> on <code>search</code>, and <code>--html</code> on <code>storage</code>, write a report to a file that must not exist yet; an existing file is refused. <code>--version</code>, <code>-v</code> and <code>/version</code> print the version. Exit codes: 0 succeeded, 1 the command failed, 2 bad or missing arguments.</p>
+<p data-i18n="t_cli_gui">KillerShell.exe also takes launch switches: <code>--new-window</code> opens a window of its own, <code>--cwd</code> starts it in a folder, <code>--shell</code> and <code>--terminal-profile</code> start a terminal, <code>--edit</code> opens a file in the editor, and <code>--processes</code>, <code>--eventviewer</code>, <code>--performance</code>, <code>--storage</code> and <code>--registry</code> open that tool in a tab.</p></div></div></div>
 
 <h2 class="help-cat" id="start" data-i18n="h_nav_start">Getting started</h2>
 <div class="acc-item"><button class="acc-head" data-i18n="hx_011">First launch<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="h_start_p1">Requires .NET Framework 4.8 (x64). The app's other dependencies are packaged in one executable. Run the .exe from anywhere and a <b>PORTABLE</b> badge appears in the title bar. Click it to install: for just your account, which needs no admin rights, or for every user on the PC, which asks for permission once and puts KillerShell in Program Files with a Start Menu and Add/Remove Programs entry for everybody.</p></div></div></div>

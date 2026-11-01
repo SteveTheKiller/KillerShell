@@ -314,7 +314,14 @@ killershell --cli services
 killershell --cli events System
 killershell --cli registry "HKLM\SOFTWARE"
 killershell --cli drives
-killershell --cli hash "C:\logs\today.log"</code></pre>
+killershell --cli hash "C:\logs\today.log"
+killershell --cli storage "C:\logs" --limit 10
+killershell --cli processes --detail --filter shell
+killershell --cli events System --level Error --filter disk
+killershell --cli search "C:\logs" --content "error" --csv "C:\temp\hits.csv"
+killershell -v</code></pre>
+<p data-i18n="t_cli_more">Besides the commands above, <code>storage</code> lists the largest folders and files under a folder and changes nothing. <code>--detail</code> adds paths, command lines and start modes to <code>processes</code> and <code>services</code>, <code>--filter</code> narrows <code>processes</code>, <code>services</code> and <code>events</code>, and <code>--level</code> picks an event severity. <code>--csv</code> and <code>--html</code> on <code>search</code>, and <code>--html</code> on <code>storage</code>, write a report to a file that must not exist yet; an existing file is refused. <code>--version</code>, <code>-v</code> and <code>/version</code> print the version. Exit codes: 0 succeeded, 1 the command failed, 2 bad or missing arguments.</p>
+<p data-i18n="t_cli_gui">KillerShell.exe also takes launch switches: <code>--new-window</code> opens a window of its own, <code>--cwd</code> starts it in a folder, <code>--shell</code> and <code>--terminal-profile</code> start a terminal, <code>--edit</code> opens a file in the editor, and <code>--processes</code>, <code>--eventviewer</code>, <code>--performance</code>, <code>--storage</code> and <code>--registry</code> open that tool in a tab.</p>
 </div>
 
 <div class="tech-sec" id="terminal">
