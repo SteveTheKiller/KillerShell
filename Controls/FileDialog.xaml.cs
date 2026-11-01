@@ -119,21 +119,63 @@ namespace KillerShell.Controls
             // Written by hand: .NET Framework apps share this file and lack the two-argument GetFullPath.
             if (typed.Length == 0 || _currentDir.Length == 0) return typed;
             if (typed.StartsWith(@"\\") || typed.StartsWith("//")) return typed;
-            string combined;
-            if (typed.Length >= 2 && char.IsLetter(typed[0]) && typed[1] == ':')
+            string combined = typed;
+            try
             {
-                if (typed.Length >= 3 && (typed[2] == '\\' || typed[2] == '/')) return typed;
-                // "C:shot.png": the shown folder when it is on that drive, otherwise that drive's root.
-                bool sameDrive = _currentDir.Length >= 2 && _currentDir[1] == ':'
-                    && char.ToUpperInvariant(_currentDir[0]) == char.ToUpperInvariant(typed[0]);
-                combined = Path.Combine(sameDrive ? _currentDir : typed.Substring(0, 2) + @"\", typed.Substring(2));
+                if (typed.Length >= 2 && char.IsLetter(typed[0]) && typed[1] == ':')
+                {
+                    if (typed.Length >= 3 && (typed[2] == '\\' || typed[2] == '/')) return typed;
+                    // "C:shot.png": the shown folder when it is on that drive, otherwise that drive's root.
+                    bool sameDrive = _currentDir.Length >= 2 && _currentDir[1] == ':'
+                        && char.ToUpperInvariant(_currentDir[0]) == char.ToUpperInvariant(typed[0]);
+                    combined = Path.Combine(sameDrive ? _currentDir : typed.Substring(0, 2) + @"\", typed.Substring(2));
+                }
+                else if (typed[0] == '\\' || typed[0] == '/')
+                    combined = Path.Combine(Path.GetPathRoot(_currentDir) ?? _currentDir, typed.TrimStart('\\', '/'));
+                else combined = Path.Combine(_currentDir, typed);
+                return Path.GetFullPath(combined);
             }
-            else if (typed[0] == '\\' || typed[0] == '/')
-                combined = Path.Combine(Path.GetPathRoot(_currentDir) ?? _currentDir, typed.TrimStart('\\', '/'));
-            else combined = Path.Combine(_currentDir, typed);
-            try { return Path.GetFullPath(combined); }
             catch (Exception error) when (error is ArgumentException or NotSupportedException or PathTooLongException)
             { return combined; }
+        }
+
+        /// <summary>Whether typed text holds a character or a name length no path can carry. The
+        /// checks run before the text is combined with the folder, because Path.Combine throws on
+        /// these on .NET Framework.</summary>
+        internal static bool IsMalformedTyped(string typed)
+        {
+            string rest = typed.StartsWith(@"\\?\") ? typed.Substring(4) : typed;
+            for (int index = 0; index < rest.Length; index++)
+            {
+                char c = rest[index];
+                if (c < ' ' || c == '"' || c == '<' || c == '>' || c == '|') return true;
+                if (c == ':' && !(index == 1 && char.IsLetter(rest[0]))) return true;
+            }
+            foreach (string part in rest.Split('\\', '/'))
+                if (part.Length > 255) return true;
+            return false;
+        }
+
+        /// <summary>The names in quoted multiselect text such as "a.txt" "b.txt", or null when the
+        /// text is not made only of quoted names.</summary>
+        private static string[]? QuotedNames(string typed)
+        {
+            if (typed.IndexOf('"') < 0) return null;
+            var matches = Regex.Matches(typed, "\"([^\"]*)\"");
+            if (matches.Count == 0 || Regex.Replace(typed, "\"[^\"]*\"", "").Trim().Length != 0) return null;
+            return matches.Cast<Match>().Select(x => x.Groups[1].Value).Where(x => x.Length > 0).ToArray();
+        }
+
+        private static bool IsFullyQualified(string path)
+        {
+            if (path.StartsWith(@"\\") || path.StartsWith("//")) return true;
+            return path.Length >= 3 && char.IsLetter(path[0]) && path[1] == ':' && (path[2] == '\\' || path[2] == '/');
+        }
+
+        private void RejectTyped()
+        {
+            SelMeta.Text = Loc("Str_Err_InvalidChars");
+            FileNameBox.Focus();
         }
         private bool _navigating;
         private bool _built;                 // suppresses filter events during construction
@@ -1154,9 +1196,14 @@ namespace KillerShell.Controls
         private void PathBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Enter) return;
-            var typed = PathBox.Text?.Trim();
-            if (!string.IsNullOrEmpty(typed)) NavigateTo(typed!);
+            var typed = PathBox.Text?.Trim().Trim('"');
             e.Handled = true;
+            if (string.IsNullOrEmpty(typed)) return;
+            if (IsMalformedTyped(typed!)) { SelMeta.Text = Loc("Str_Err_InvalidChars"); return; }
+            string resolved = ResolveTyped(typed!);
+            // A drive-relative or unresolvable entry would otherwise be looked up against the process's folder.
+            if (!IsFullyQualified(resolved)) { SelMeta.Text = Loc("Str_Dlg_NoSuchFolder"); return; }
+            NavigateTo(resolved);
         }
 
         private void FileNameBox_KeyDown(object sender, KeyEventArgs e)
@@ -1165,6 +1212,11 @@ namespace KillerShell.Controls
             e.Handled = true;
 
             var typed = FileNameBox.Text?.Trim() ?? "";
+
+            // Several quoted names are a multiselect answer, not a path.
+            var quoted = Multiselect && _mode == FileDialogMode.Open ? QuotedNames(typed) : null;
+            if (quoted != null && quoted.Length > 1) { Accept(); return; }
+            if (IsMalformedTyped(typed.Trim('"'))) { RejectTyped(); return; }
 
             // A directory typed into the name box navigates instead of accepting - matches the
             // Win32 dialogs, and is how people paste a path in.
@@ -1404,7 +1456,32 @@ namespace KillerShell.Controls
                 }
             }
 
-            var typed = FileNameBox.Text?.Trim().Trim('"') ?? "";
+            var rawTyped = FileNameBox.Text?.Trim() ?? "";
+            var quoted = Multiselect && _mode == FileDialogMode.Open ? QuotedNames(rawTyped) : null;
+            if (quoted != null && quoted.Length > 1)
+            {
+                var named = new string[quoted.Length];
+                for (int index = 0; index < quoted.Length; index++)
+                {
+                    if (IsMalformedTyped(quoted[index])) { RejectTyped(); return; }
+                    named[index] = ResolveTyped(quoted[index]);
+                }
+                if (CheckFileExists && named.Any(x => !File.Exists(x)))
+                {
+                    SelMeta.Text = Loc("Str_Dlg_NoSuchFile");
+                    FileNameBox.Focus();
+                    return;
+                }
+                FileNames = named;
+                FileName  = named[0];
+                RememberAcceptedDirectory();
+                _pendingResult = true;   // applied after the fade - see OnClosing
+                Close();
+                return;
+            }
+
+            var typed = rawTyped.Trim('"');
+            if (typed.Length > 0 && IsMalformedTyped(typed)) { RejectTyped(); return; }
             if (typed.Length == 0)
             {
                 // Nothing typed but a file is highlighted: take that.
