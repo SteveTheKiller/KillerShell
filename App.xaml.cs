@@ -269,6 +269,9 @@ namespace KillerShell
                 return;
             }
 
+            // An update helper killed before its cleanup leaves its finished one-time task behind.
+            System.Threading.Tasks.Task.Run(() => Services.UpdateTaskSweep.Run());
+
             // Persist the theme/accent choice in HKCU so it survives restarts.
             Services.ThemeManager.GetSetting = GetSetting;
             Services.ThemeManager.SetSetting = SetSetting;
@@ -910,6 +913,7 @@ namespace KillerShell
                     hive.DeleteSubKeyTree(RegKey, throwOnMissingSubKey: false);
                     hive.DeleteSubKeyTree(uninstallKey, throwOnMissingSubKey: false);
                     removal.Commit();
+                    Services.UpdateTaskSweep.Run();
                 }
                 catch (Exception failure)
                 {
