@@ -100,7 +100,7 @@ namespace KillerShell
             KillerFamily.Theming.AccentShadow.Initialize();
             Controls.AltDrag.Register();   // Alt+drag moves any window (Controls/AltDrag.cs)
             var cliArgs = KillerFamily.CommandLine.CommandLineEntry.GetArguments(e.Args,
-                ["search", "list", "info", "read", "processes", "services", "events", "registry", "drives", "hash", "version", "--version"]);
+                ["search", "list", "info", "read", "processes", "services", "events", "registry", "drives", "hash", "storage", "version", "--version", "-v", "/version"]);
             if (cliArgs != null)
             {
                 Services.CliConsole.AttachToParent();

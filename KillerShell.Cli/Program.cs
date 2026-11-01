@@ -21,6 +21,7 @@ namespace KillerShell.Cli
         private const int MaximumLimit = 500;
         private const int DefaultReadCharacters = 32768;
         private const int MaximumReadCharacters = 65536;
+        private const int MaximumEventScan = 20000;
 
         internal static int Main(string[] args)
         {
@@ -28,7 +29,7 @@ namespace KillerShell.Cli
                 args = args.Take(args.Length - 1).ToArray();
             try { Console.OutputEncoding = new UTF8Encoding(false); }
             catch (IOException) { /* A GUI process with redirected output can lack a console handle. */ }
-            if (args.Length == 1 && args[0] == "--version")
+            if (args.Length == 1 && (args[0] == "--version" || args[0] == "-v" || args[0] == "/version" || args[0] == "version"))
             {
                 Console.WriteLine(typeof(SearchEngine).Assembly.GetName().Version);
                 return 0;
@@ -58,6 +59,7 @@ namespace KillerShell.Cli
                     case "registry": return Registry(args);
                     case "drives": return Drives(args);
                     case "hash": return HashFile(args);
+                    case "storage": return Storage(args);
                     default:
                         PrintUsage();
                         return 2;
@@ -166,11 +168,27 @@ namespace KillerShell.Cli
 
         private static int Processes(string[] args)
         {
-            int limit = ReadSingleIntegerOption(args, "--limit", DefaultLimit, 1, MaximumLimit, 1);
-            var rows = Process.GetProcesses().OrderBy(item => item.ProcessName, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(item => item.Id).Take(limit + 1).ToList();
+            var options = ParseOptions(args, 1, ["--limit", "--filter"], ["--detail"]);
+            int limit = LimitOption(options, DefaultLimit, 1, MaximumLimit);
+            bool detail = options.Flags.Contains("--detail");
+            string? filter = options.Values.TryGetValue("--filter", out var filterText) ? filterText : null;
+            // The WMI read is the slow part, so it runs only when a detail column or the filter needs it.
+            var details = detail ? ProcessListQueryService.QueryProcesses()
+                : new Dictionary<int, (string Name, string CommandLine, string Path, string ParentPid, long? CreatedUtcTicks)>();
+            var all = Process.GetProcesses().OrderBy(item => item.ProcessName, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(item => item.Id).ToList();
+            var rows = new List<Process>();
+            foreach (var candidate in all)
+            {
+                bool keep = rows.Count <= limit && (filter == null
+                    || Contains(candidate.ProcessName, filter)
+                    || candidate.Id.ToString(CultureInfo.InvariantCulture).Equals(filter, StringComparison.Ordinal)
+                    || (detail && details.TryGetValue(candidate.Id, out var info)
+                        && (Contains(info.CommandLine, filter) || Contains(info.Path, filter))));
+                if (keep) rows.Add(candidate); else candidate.Dispose();
+            }
             bool limitReached = rows.Count > limit;
-            if (limitReached) rows.RemoveAt(rows.Count - 1);
+            if (limitReached) { rows[rows.Count - 1].Dispose(); rows.RemoveAt(rows.Count - 1); }
             var output = new StringBuilder("{\"processes\":[");
             for (int i = 0; i < rows.Count; i++)
             {
@@ -180,6 +198,16 @@ namespace KillerShell.Cli
                 output.Append(",\"pid\":").Append(process.Id.ToString(CultureInfo.InvariantCulture));
                 try { output.Append(",\"memoryBytes\":").Append(process.WorkingSet64.ToString(CultureInfo.InvariantCulture)); }
                 catch { output.Append(",\"memoryBytes\":null"); }
+                if (detail)
+                {
+                    details.TryGetValue(process.Id, out var info);
+                    output.Append(",\"parentPid\":").Append(int.TryParse(info.ParentPid, NumberStyles.None, CultureInfo.InvariantCulture, out int parent)
+                        ? parent.ToString(CultureInfo.InvariantCulture) : "null");
+                    output.Append(",\"path\":").Append(JsonString(info.Path ?? string.Empty));
+                    output.Append(",\"commandLine\":").Append(JsonString(info.CommandLine ?? string.Empty));
+                    output.Append(",\"startedUtc\":").Append(info.CreatedUtcTicks.HasValue
+                        ? JsonString(new DateTime(info.CreatedUtcTicks.Value, DateTimeKind.Utc).ToString("O", CultureInfo.InvariantCulture)) : "null");
+                }
                 output.Append('}');
             }
             output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false").Append('}');
@@ -189,9 +217,16 @@ namespace KillerShell.Cli
 
         private static int Services(string[] args)
         {
-            int limit = ReadSingleIntegerOption(args, "--limit", DefaultLimit, 1, MaximumLimit, 1);
+            var options = ParseOptions(args, 1, ["--limit", "--filter"], ["--detail"]);
+            int limit = LimitOption(options, DefaultLimit, 1, MaximumLimit);
+            bool detail = options.Flags.Contains("--detail");
+            string? filter = options.Values.TryGetValue("--filter", out var filterText) ? filterText : null;
+            var details = detail ? ProcessListQueryService.QueryServices()
+                : new Dictionary<string, (string StartMode, string Path, string LogOnAs, string Description)>();
             using var services = new DisposableList<ServiceController>(ServiceController.GetServices());
-            var rows = services.Items.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase).Take(limit + 1).ToList();
+            var rows = services.Items.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase)
+                .Where(item => filter == null || Contains(item.ServiceName, filter) || Contains(item.DisplayName, filter))
+                .Take(limit + 1).ToList();
             bool limitReached = rows.Count > limit;
             if (limitReached) rows.RemoveAt(rows.Count - 1);
             var output = new StringBuilder("{\"services\":[");
@@ -201,7 +236,16 @@ namespace KillerShell.Cli
                 var service = rows[i];
                 output.Append("{\"name\":").Append(JsonString(service.ServiceName));
                 output.Append(",\"displayName\":").Append(JsonString(service.DisplayName));
-                output.Append(",\"status\":").Append(JsonString(service.Status.ToString())).Append('}');
+                output.Append(",\"status\":").Append(JsonString(service.Status.ToString()));
+                if (detail)
+                {
+                    details.TryGetValue(service.ServiceName, out var info);
+                    output.Append(",\"startMode\":").Append(JsonString(info.StartMode ?? string.Empty));
+                    output.Append(",\"path\":").Append(JsonString(info.Path ?? string.Empty));
+                    output.Append(",\"logOnAs\":").Append(JsonString(info.LogOnAs ?? string.Empty));
+                    output.Append(",\"description\":").Append(JsonString(info.Description ?? string.Empty));
+                }
+                output.Append('}');
             }
             output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false").Append('}');
             Console.WriteLine(output.ToString());
@@ -210,29 +254,52 @@ namespace KillerShell.Cli
 
         private static int Events(string[] args)
         {
-            if (args.Length < 2 || args.Length > 4) throw new ArgumentException("Events need a log name and optional limit");
+            if (args.Length < 2) throw new ArgumentException("Events need a log name and optional limit");
             string log = args[1];
             if (log != "Application" && log != "System" && log != "Security")
                 throw new ArgumentException("Log must be Application, System, or Security");
-            int limit = ReadSingleIntegerOption(args, "--limit", 50, 1, 100, 2);
-            var query = new EventLogQuery(log, PathType.LogName) { ReverseDirection = true };
+            var options = ParseOptions(args, 2, ["--limit", "--filter", "--level"], []);
+            int limit = LimitOption(options, 50, 1, 100);
+            string? filter = options.Values.TryGetValue("--filter", out var filterText) ? filterText : null;
+            string queryText = "*";
+            if (options.Values.TryGetValue("--level", out var levelText))
+            {
+                int level = levelText.ToLowerInvariant() switch
+                {
+                    "critical" => 1,
+                    "error" => 2,
+                    "warning" => 3,
+                    "information" or "info" => 4,
+                    "verbose" => 5,
+                    _ => throw new ArgumentException("--level must be Critical, Error, Warning, Information, or Verbose"),
+                };
+                queryText = "*[System[(Level=" + level.ToString(CultureInfo.InvariantCulture) + ")]]";
+            }
+            var query = new EventLogQuery(log, PathType.LogName, queryText) { ReverseDirection = true };
             using var reader = new EventLogReader(query);
             var output = new StringBuilder("{\"log\":").Append(JsonString(log)).Append(",\"events\":[");
             int count = 0;
-            for (; count < limit; count++)
+            int scanned = 0;
+            while (count < limit && scanned < MaximumEventScan)
             {
                 using EventRecord record = reader.ReadEvent();
                 if (record == null) break;
+                scanned++;
+                string message;
+                try { message = record.FormatDescription() ?? string.Empty; } catch { message = string.Empty; }
+                if (filter != null && !(Contains(record.ProviderName, filter) || Contains(message, filter)
+                    || record.Id.ToString(CultureInfo.InvariantCulture).Equals(filter, StringComparison.Ordinal)))
+                    continue;
                 if (count > 0) output.Append(',');
                 output.Append("{\"id\":").Append(record.Id.ToString(CultureInfo.InvariantCulture));
                 output.Append(",\"level\":").Append(JsonString(record.LevelDisplayName ?? string.Empty));
                 output.Append(",\"provider\":").Append(JsonString(record.ProviderName ?? string.Empty));
                 output.Append(",\"timeUtc\":").Append(record.TimeCreated.HasValue ? JsonString(record.TimeCreated.Value.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture)) : "null");
-                string message;
-                try { message = record.FormatDescription() ?? string.Empty; } catch { message = string.Empty; }
                 output.Append(",\"message\":").Append(JsonString(message.Length <= 2000 ? message : message[..2000])).Append('}');
+                count++;
             }
-            output.Append("],\"limitReached\":").Append(count == limit ? "true" : "false").Append('}');
+            output.Append("],\"limitReached\":").Append(count == limit ? "true" : "false");
+            output.Append(",\"scanLimitReached\":").Append(count < limit && scanned >= MaximumEventScan ? "true" : "false").Append('}');
             Console.WriteLine(output.ToString());
             return 0;
         }
@@ -348,6 +415,8 @@ namespace KillerShell.Cli
 
             string? name = null;
             string? content = null;
+            string? csvPath = null;
+            string? htmlPath = null;
             int limit = DefaultLimit;
             for (int i = 2; i < args.Length; i += 2)
             {
@@ -362,11 +431,15 @@ namespace KillerShell.Cli
                             || limit < 1 || limit > MaximumLimit)
                             throw new ArgumentException("Limit must be between 1 and 500");
                         break;
+                    case "--csv": csvPath = ValidateNewOutput(args[i + 1], csvPath, "--csv"); break;
+                    case "--html": htmlPath = ValidateNewOutput(args[i + 1], htmlPath, "--html"); break;
                     default: throw new ArgumentException("Unknown search option: " + args[i]);
                 }
             }
             if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(content))
                 throw new ArgumentException("Provide --name or --content");
+            if (csvPath != null && htmlPath != null && string.Equals(csvPath, htmlPath, StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("--csv and --html need different files");
 
             var group = new TermGroup { Mode = TermGroup.GroupMode.And };
             if (!string.IsNullOrWhiteSpace(name))
@@ -389,9 +462,22 @@ namespace KillerShell.Cli
             System.Threading.Tasks.Task.Run(() => engine.SearchAsync(root, [group], Array.Empty<SearchFilter>(),
                 string.Empty, string.Empty, false, cancellation.Token)).GetAwaiter().GetResult();
 
+            var ordered = found.OrderBy(item => item.FilePath, StringComparer.OrdinalIgnoreCase).ToList();
+            if (csvPath != null)
+            {
+                byte[] bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(CsvExport.Build(ordered))).ToArray();
+                using var stream = CreateNewOutput(csvPath);
+                stream.Write(bytes, 0, bytes.Length);
+            }
+            if (htmlPath != null)
+            {
+                CreateNewOutput(htmlPath).Dispose();   // claims the name; the exporter then fills it
+                HtmlExporter.Export(htmlPath, ordered, group.Terms.ToList(), root);
+            }
+
             var output = new StringBuilder("{\"results\":[");
             bool first = true;
-            foreach (var item in found.OrderBy(item => item.FilePath, StringComparer.OrdinalIgnoreCase))
+            foreach (var item in ordered)
             {
                 if (!first) output.Append(',');
                 first = false;
@@ -402,9 +488,120 @@ namespace KillerShell.Cli
             }
             output.Append("],\"limitReached\":").Append(cancellation.IsCancellationRequested ? "true" : "false");
             output.Append(",\"incompletePaths\":").Append(engine.IncompletePaths.ToString(CultureInfo.InvariantCulture));
-            output.Append(",\"skippedDirectoryLinks\":").Append(engine.SkippedDirectoryLinks.ToString(CultureInfo.InvariantCulture)).Append('}');
-            Console.WriteLine(output.ToString());
+            output.Append(",\"skippedDirectoryLinks\":").Append(engine.SkippedDirectoryLinks.ToString(CultureInfo.InvariantCulture));
+            if (csvPath != null) output.Append(",\"csv\":").Append(JsonString(csvPath));
+            if (htmlPath != null) output.Append(",\"html\":").Append(JsonString(htmlPath));
+            Console.WriteLine(output.Append('}').ToString());
             return 0;
+        }
+
+        private static int Storage(string[] args)
+        {
+            if (args.Length < 2) throw new ArgumentException("Storage needs one directory path");
+            string root = Path.GetFullPath(args[1]);
+            if (!Directory.Exists(root))
+                throw new ArgumentException("Storage path is not a directory");
+            var options = ParseOptions(args, 2, ["--limit", "--html"], []);
+            int limit = LimitOption(options, 20, 1, MaximumLimit);
+            string? htmlPath = options.Values.TryGetValue("--html", out var htmlText) ? ValidateNewOutput(htmlText, null, "--html") : null;
+
+            var scan = StorageScan.Scan(root, limit, htmlPath != null, CancellationToken.None);
+            if (htmlPath != null)
+            {
+                CreateNewOutput(htmlPath).Dispose();   // claims the name; the exporter then fills it
+                StorageHtmlExporter.Export(htmlPath, new KillerShell.Tools.StorageReport(root, root, scan.TotalBytes, 0, 0, false,
+                    scan.Tree ?? new KillerShell.Tools.StorageReportNode(root, root, scan.TotalBytes, true)));
+            }
+
+            var output = new StringBuilder("{\"path\":").Append(JsonString(root));
+            output.Append(",\"totalBytes\":").Append(scan.TotalBytes.ToString(CultureInfo.InvariantCulture));
+            output.Append(",\"files\":").Append(scan.Files.ToString(CultureInfo.InvariantCulture));
+            output.Append(",\"directories\":").Append(scan.Directories.ToString(CultureInfo.InvariantCulture));
+            output.Append(",\"skippedDirectories\":").Append(scan.SkippedDirectories.ToString(CultureInfo.InvariantCulture));
+            AppendStorageList(output, "topFolders", scan.TopFolders, scan.TotalBytes, false);
+            AppendStorageList(output, "topFiles", scan.TopFiles, scan.TotalBytes, true);
+            output.Append(",\"limitReached\":").Append(scan.LimitReached(limit) ? "true" : "false");
+            output.Append(",\"truncated\":").Append(scan.Truncated ? "true" : "false");
+            if (htmlPath != null) output.Append(",\"html\":").Append(JsonString(htmlPath));
+            Console.WriteLine(output.Append('}').ToString());
+            return 0;
+        }
+
+        private static void AppendStorageList(StringBuilder output, string name, List<StorageScanEntry> entries, long total, bool files)
+        {
+            output.Append(",\"").Append(name).Append("\":[");
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (i > 0) output.Append(',');
+                output.Append("{\"path\":").Append(JsonString(entries[i].Path));
+                output.Append(",\"sizeBytes\":").Append(entries[i].Size.ToString(CultureInfo.InvariantCulture));
+                output.Append(",\"size\":").Append(JsonString(StorageAnalysisLogic.FormatSize(entries[i].Size)));
+                output.Append(",\"percent\":").Append((total > 0 ? 100.0 * entries[i].Size / total : 0).ToString("0.0", CultureInfo.InvariantCulture));
+                if (files) output.Append(",\"category\":").Append(JsonString(StorageAnalysisLogic.CategoryFor(Path.GetFileName(entries[i].Path))));
+                output.Append('}');
+            }
+            output.Append(']');
+        }
+
+        /// <summary>An export target must be a new file in an existing folder, so a command can
+        /// never replace or change something already on disk. A failure is a usage error (exit 2).</summary>
+        private static string ValidateNewOutput(string value, string? already, string option)
+        {
+            if (already != null) throw new ArgumentException(option + " was given twice");
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException(option + " needs a file path");
+            string full = Path.GetFullPath(value);
+            if (File.Exists(full) || Directory.Exists(full))
+                throw new ArgumentException(option + " file already exists; choose a path that does not exist");
+            string? folder = Path.GetDirectoryName(full);
+            if (folder == null || !Directory.Exists(folder))
+                throw new ArgumentException(option + " folder does not exist");
+            return full;
+        }
+
+        // CreateNew fails if anything appeared at the path since the check above.
+        private static FileStream CreateNewOutput(string path)
+        {
+            try { return new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None); }
+            catch (IOException) when (File.Exists(path)) { throw new ArgumentException("Output file already exists"); }
+        }
+
+        private static bool Contains(string? value, string text)
+            => value != null && value.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0;
+
+        private sealed class Options
+        {
+            internal Dictionary<string, string> Values { get; } = new(StringComparer.Ordinal);
+            internal HashSet<string> Flags { get; } = new(StringComparer.Ordinal);
+        }
+
+        private static Options ParseOptions(string[] args, int start, string[] valueOptions, string[] flagOptions)
+        {
+            var options = new Options();
+            for (int i = start; i < args.Length; i++)
+            {
+                string arg = args[i];
+                if (Array.IndexOf(flagOptions, arg) >= 0)
+                {
+                    if (!options.Flags.Add(arg)) throw new ArgumentException(arg + " was given twice");
+                }
+                else if (Array.IndexOf(valueOptions, arg) >= 0)
+                {
+                    if (i + 1 >= args.Length) throw new ArgumentException(arg + " needs a value");
+                    if (options.Values.ContainsKey(arg)) throw new ArgumentException(arg + " was given twice");
+                    options.Values[arg] = args[++i];
+                }
+                else throw new ArgumentException("Unknown option: " + arg);
+            }
+            return options;
+        }
+
+        private static int LimitOption(Options options, int defaultValue, int minimum, int maximum)
+        {
+            if (!options.Values.TryGetValue("--limit", out var text)) return defaultValue;
+            if (!int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out int value) || value < minimum || value > maximum)
+                throw new ArgumentException("--limit must be between " + minimum.ToString(CultureInfo.InvariantCulture)
+                    + " and " + maximum.ToString(CultureInfo.InvariantCulture));
+            return value;
         }
 
         private static string JsonString(string value)
@@ -427,18 +624,22 @@ namespace KillerShell.Cli
 
         private static void PrintUsage()
         {
-            Console.WriteLine("killershell search <folder> --name <pattern> [--content <text>] [--limit 1..500]");
-            Console.WriteLine("killershell search <folder> --content <text> [--limit 1..500]");
+            Console.WriteLine("killershell search <folder> --name <pattern> [--content <text>] [--limit 1..500] [--csv <new file>] [--html <new file>]");
+            Console.WriteLine("killershell search <folder> --content <text> [--limit 1..500] [--csv <new file>] [--html <new file>]");
             Console.WriteLine("killershell list <folder> [--limit 1..500]");
             Console.WriteLine("killershell info <path>");
             Console.WriteLine("killershell read <file> [--max-chars 1..65536]");
-            Console.WriteLine("killershell processes [--limit 1..500]");
-            Console.WriteLine("killershell services [--limit 1..500]");
-            Console.WriteLine("killershell events <Application|System|Security> [--limit 1..100]");
+            Console.WriteLine("killershell processes [--limit 1..500] [--detail] [--filter <text>]");
+            Console.WriteLine("killershell services [--limit 1..500] [--detail] [--filter <text>]");
+            Console.WriteLine("killershell events <Application|System|Security> [--limit 1..100] [--filter <text>] [--level Critical|Error|Warning|Information|Verbose]");
             Console.WriteLine("killershell registry <hive\\key> [--limit 1..100]");
             Console.WriteLine("killershell drives");
             Console.WriteLine("killershell hash <file>");
+            Console.WriteLine("killershell storage <folder> [--limit 1..500] [--html <new file>]");
+            Console.WriteLine("killershell --version (also -v and /version)");
             Console.WriteLine("Output is JSON by default; an optional trailing --json is accepted.");
+            Console.WriteLine("Export files (--csv, --html) must not exist yet; an existing file is refused with exit code 2.");
+            Console.WriteLine("Exit codes: 0 succeeded, 1 the command failed, 2 usage error (bad or missing arguments, or help).");
         }
 
         private sealed class DisposableList<T> : IDisposable where T : IDisposable

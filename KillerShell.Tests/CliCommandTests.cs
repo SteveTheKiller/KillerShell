@@ -168,6 +168,124 @@ public sealed class CliCommandTests
         Assert.Contains("\"subkeys\":[", key.Output, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("--version")]
+    [InlineData("-v")]
+    [InlineData("/version")]
+    public void VersionSwitchesPrintTheAssemblyVersion(string flag)
+    {
+        Result result = Run(flag);
+        Assert.Equal(0, result.ExitCode);
+        Assert.Equal(typeof(SearchEngine).Assembly.GetName().Version + Environment.NewLine, result.Output);
+    }
+
+    [Fact]
+    public void UsageNamesVersionExitCodesAndEveryVerb()
+    {
+        Result result = Run("--help");
+        Assert.Equal(0, result.ExitCode);
+        foreach (string text in new[] { "--version", "Exit codes", "0 ", "1 ", "2 ", "storage <", "--detail", "--filter", "--level", "--csv", "--html" })
+            Assert.Contains(text, result.Output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ProcessesDetailAndFilterNarrowTheList()
+    {
+        Result result = Run("processes", "--filter", "killershell", "--detail");
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("\"commandLine\":", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"parentPid\":", result.Output, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"name\":\"explorer\"", result.Output, StringComparison.Ordinal);
+
+        Result none = Run("processes", "--filter", "no-such-process-" + Guid.NewGuid().ToString("N"));
+        Assert.Equal(0, none.ExitCode);
+        Assert.Contains("\"processes\":[]", none.Output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ServicesDetailAndFilterNarrowTheList()
+    {
+        Result result = Run("services", "--filter", "RpcSs", "--detail", "--limit", "5");
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("\"name\":\"RpcSs\"", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"startMode\":", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"logOnAs\":", result.Output, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"name\":\"Spooler\"", result.Output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void EventsLevelAndFilterNarrowTheList()
+    {
+        Result errors = Run("events", "System", "--level", "Error", "--limit", "3");
+        Assert.Equal(0, errors.ExitCode);
+        Assert.DoesNotContain("\"level\":\"Information\"", errors.Output, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"level\":\"Warning\"", errors.Output, StringComparison.Ordinal);
+
+        Result badLevel = Run("events", "System", "--level", "Loud");
+        Assert.Equal(2, badLevel.ExitCode);
+
+        Result filtered = Run("events", "System", "--filter", "no-such-text-" + Guid.NewGuid().ToString("N"), "--limit", "3");
+        Assert.Equal(0, filtered.ExitCode);
+        Assert.Contains("\"events\":[]", filtered.Output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void SearchWritesCsvAndHtmlToNewPathsAndRefusesExistingOnes()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            File.WriteAllText(Path.Combine(root, "alpha.txt"), "needle");
+            string csv = Path.Combine(root, "out.csv");
+            string html = Path.Combine(root, "out.html");
+
+            Result first = Run("search", root, "--name", "alpha*", "--csv", csv, "--html", html);
+            Assert.True(first.ExitCode == 0, first.Error);
+            Assert.Contains("alpha.txt", first.Output, StringComparison.Ordinal);
+            Assert.StartsWith("Name,Folder,SizeBytes", File.ReadAllText(csv).TrimStart('﻿'), StringComparison.Ordinal);
+            Assert.Contains("alpha.txt", File.ReadAllText(html), StringComparison.Ordinal);
+
+            string before = File.ReadAllText(csv);
+            Result again = Run("search", root, "--name", "alpha*", "--csv", csv);
+            Assert.Equal(2, again.ExitCode);
+            Assert.Equal(before, File.ReadAllText(csv));
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
+    [Fact]
+    public void StorageReportsTopEntriesBySizeAndWritesHtmlOnce()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
+        string scan = Path.Combine(root, "scan");
+        Directory.CreateDirectory(Path.Combine(scan, "big"));
+        Directory.CreateDirectory(Path.Combine(scan, "small"));
+        try
+        {
+            File.WriteAllBytes(Path.Combine(scan, "big", "huge.bin"), new byte[5000]);
+            File.WriteAllBytes(Path.Combine(scan, "small", "tiny.bin"), new byte[10]);
+            string html = Path.Combine(root, "storage.html");
+
+            Result result = Run("storage", scan, "--limit", "2", "--html", html);
+            Assert.True(result.ExitCode == 0, result.Error);
+            Assert.Contains("\"totalBytes\":5010", result.Output, StringComparison.Ordinal);
+            Assert.Contains("\"files\":2", result.Output, StringComparison.Ordinal);
+            Assert.True(result.Output.IndexOf("huge.bin", StringComparison.Ordinal) < result.Output.IndexOf("tiny.bin", StringComparison.Ordinal));
+            Assert.Contains("huge.bin", File.ReadAllText(html), StringComparison.Ordinal);
+
+            Result limited = Run("storage", scan, "--limit", "1");
+            Assert.Equal(0, limited.ExitCode);
+            Assert.DoesNotContain("tiny.bin", limited.Output, StringComparison.Ordinal);
+            Assert.Contains("\"limitReached\":true", limited.Output, StringComparison.Ordinal);
+
+            Assert.Equal(2, Run("storage", scan, "--html", html).ExitCode);
+            Assert.Equal(2, Run("storage", Path.Combine(root, "missing")).ExitCode);
+            Assert.Equal(2, Run("storage").ExitCode);
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
     private static Result Run(params string[] arguments)
     {
         string executable = typeof(SearchEngine).Assembly.Location;
