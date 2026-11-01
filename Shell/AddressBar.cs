@@ -133,10 +133,12 @@ namespace KillerShell.Shell
 
             // Sent on the first prompt report, the first title, or after the timeout, so cmd and a
             // shell without the prompt script still get the command. A closed terminal drops it.
+#pragma warning disable CA2000 // disposed by the terminal closing, or by sending
             var staged = new Terminal.StagedInput(term.Buffer, command,
                 text => Dispatcher.BeginInvoke(new Action(() => term.Send(text))), TimeSpan.FromSeconds(3));
             term.Exited += _ => staged.Dispose();
             term.Unloaded += (_, _) => staged.Dispose();
+#pragma warning restore CA2000
         }
 
         // Clicking away is a cancel, not a commit: an accidental click elsewhere should never
