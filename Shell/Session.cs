@@ -12,6 +12,30 @@ namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
+        /// <summary>One filter row as the session blob stores it: six fields joined by '~'.</summary>
+        public static string EncodeSessionFilter(SearchFilter f) =>
+            $"{f.FieldIndex}~{f.ConditionIndex}~{EscapeRowText(f.Text)}~{(f.Date.HasValue ? f.Date.Value.Ticks.ToString() : "")}~{EscapeRowText(f.SizeText)}~{f.UnitIndex}";
+
+        // EscapeDataString leaves ~ alone (it is unreserved), but ~ is the field separator here.
+        private static string EscapeRowText(string text) => Uri.EscapeDataString(text).Replace("~", "%7E");
+
+        /// <summary>Reads one filter row back; null when it has fewer than six fields.</summary>
+        public static SearchFilter? DecodeSessionFilter(string row)
+        {
+            var fp = row.Split('~');
+            if (fp.Length < 6) return null;
+            var f = new SearchFilter
+            {
+                FieldIndex     = int.TryParse(fp[0], out int fi) ? fi : 0,
+                ConditionIndex = int.TryParse(fp[1], out int ci) ? ci : 0,
+                Text           = Uri.UnescapeDataString(fp[2]),
+                SizeText       = Uri.UnescapeDataString(fp[4]),
+                UnitIndex      = int.TryParse(fp[5], out int ui) ? ui : 0,
+            };
+            if (long.TryParse(fp[3], out long ticks)) f.Date = new DateTime(ticks);
+            return f;
+        }
+
         // ═══════════════════════════════════════════════════════════
         //  PORTABLE INSTALL (ported from KillerScan)
         // ═══════════════════════════════════════════════════════════
@@ -291,8 +315,7 @@ namespace KillerShell.Shell
                     (g.Mode == TermGroup.GroupMode.And ? "1:" : "0:") +
                     string.Join(";", g.Terms.Select(x =>
                         $"{(x.Mode == SearchTerm.SearchMode.Content ? 1 : 0)}~{Uri.EscapeDataString(x.Pattern)}"))));
-                string filters = string.Join(";", t.Filters.Select(f =>
-                    $"{f.FieldIndex}~{f.ConditionIndex}~{Uri.EscapeDataString(f.Text)}~{(f.Date.HasValue ? f.Date.Value.Ticks.ToString() : "")}~{Uri.EscapeDataString(f.SizeText)}~{f.UnitIndex}"));
+                string filters = string.Join(";", t.Filters.Select(EncodeSessionFilter));
                 // The browse fields are APPENDED, never inserted: the nine original fields keep
                 // their indices, so a blob written by an older build still parses. They are what
                 // makes a folder tab come back as a folder tab - CaptureTab stores a browsed
@@ -429,18 +452,8 @@ namespace KillerShell.Shell
 
                     foreach (var fs in p[8].Split(';'))
                     {
-                        var fp = fs.Split('~');
-                        if (fp.Length < 6) continue;
-                        var f = new SearchFilter
-                        {
-                            FieldIndex     = int.TryParse(fp[0], out int fi) ? fi : 0,
-                            ConditionIndex = int.TryParse(fp[1], out int ci) ? ci : 0,
-                            Text           = Uri.UnescapeDataString(fp[2]),
-                            SizeText       = Uri.UnescapeDataString(fp[4]),
-                            UnitIndex      = int.TryParse(fp[5], out int ui) ? ui : 0,
-                        };
-                        if (long.TryParse(fp[3], out long ticks)) f.Date = new DateTime(ticks);
-                        t.Filters.Add(f);
+                        var f = DecodeSessionFilter(fs);
+                        if (f != null) t.Filters.Add(f);
                     }
 
                     // Set once the terms and filters are back, so the tab strip redraws a restored
