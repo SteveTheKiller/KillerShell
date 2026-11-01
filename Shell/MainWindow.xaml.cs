@@ -805,10 +805,24 @@ namespace KillerShell.Shell
         // running search, Ctrl+F opens the results quick-filter.
         private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            // The board follows the hand: holding a modifier previews that layer on the visual
+            // keyboard (KeyboardMapOverlay.cs). No-op unless the board is showing, and first so
+            // it runs for every key, including the ones returned or swallowed below.
+            KbSyncLayerFromModifiers();
+
             // AltGr is text on every focus target, a terminal included, so it leaves before any
-            // chord gate or branch below can read it as Ctrl+Alt (AltGrKey.cs).
-            if (AltGrKey.IsText(System.Windows.Input.Keyboard.Modifiers,
-                    System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightAlt))) return;
+            // chord gate or branch below can read it as Ctrl+Alt (AltGrKey.cs). Whether it is
+            // text is decided per key: the layout says if this key gives a character with AltGr.
+            {
+                var mk = System.Windows.Input.Keyboard.Modifiers;
+                bool altGrHeld = (mk & System.Windows.Input.ModifierKeys.Control) != 0
+                    && (mk & System.Windows.Input.ModifierKeys.Alt) != 0
+                    && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightAlt);
+                var textKey = e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key;
+                if (altGrHeld && AltGrKey.IsText(mk, true, AltGrKey.KeyProducesChar(textKey,
+                        (mk & System.Windows.Input.ModifierKeys.Shift) != 0, LayoutKeyTextProbe.ForCurrentLayout())))
+                    return;
+            }
 
             if (e.Key is System.Windows.Input.Key.Enter or System.Windows.Input.Key.Escape)
                 foreach (var pane in new[] { LeftPane, RightPane })
@@ -831,12 +845,6 @@ namespace KillerShell.Shell
             bool ctrl  = (mods & System.Windows.Input.ModifierKeys.Control) != 0;
             bool shift = (mods & System.Windows.Input.ModifierKeys.Shift)   != 0;
             bool alt   = (mods & System.Windows.Input.ModifierKeys.Alt)     != 0;
-
-            // Holding a modifier previews that layer on the visual keyboard, so a chord can be
-            // found by pressing Ctrl rather than by reading. No-op unless the board is showing
-            // (KeyboardMapOverlay.cs), and deliberately BEFORE the handling below so it still
-            // runs for chords that go on to be swallowed.
-            KbSyncLayerFromModifiers();
 
             // A FOCUSED SHELL OWNS THE KEYBOARD.
             //
@@ -893,6 +901,13 @@ namespace KillerShell.Shell
             // (KeyCommands.cs). Ahead of the chain below so a focused tree can claim F3, F6,
             // Ctrl+D and the rest for its selected node rather than for the listing's selection.
             if (HandleCommandKey(e, ctrl, shift, alt)) return;
+
+            // The only Ctrl+Alt chords below are Ctrl+Alt+E (HTML export, with Shift CSV) and
+            // Ctrl+Alt+` (elevated shell); the pane layout chords were taken just above. Any
+            // other Ctrl+Alt key must not fall into a plain Ctrl+letter branch, because the
+            // chain's Ctrl tests do not look at Alt.
+            if (!CtrlAltChord.ReachesChain(ctrl, alt,
+                    e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key)) return;
 
             // Alt+1-0 jumps to a saved location. Alt chords arrive as Key.System with the real
             // key parked in SystemKey, so they have to be unwrapped before anything can match -
