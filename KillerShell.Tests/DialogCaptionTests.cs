@@ -28,11 +28,16 @@ public sealed class DialogCaptionTests
 
 public static class DialogCaptionScenario
 {
+    private const string PickerCaption = "Select a file";
+
     public static void Run(string? scope = null)
     {
         ThemeManager.GetSetting = _ => null;
         ThemeManager.SetSetting = (_, _) => { };
         Application.ResourceAssembly = typeof(RenameDialog).Assembly;
+        // App.OnStartup hands the shared dialog chrome its icon; this scenario has no App, so it
+        // does the same host setup. Without it a ConfirmDialog collapses its icon by design.
+        DialogChrome.IconUri = new Uri("pack://application:,,,/Resources/ksh-icon.ico");
         var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
         foreach (string resource in new[] { "Themes/Dark.xaml", "Controls/Controls.xaml", "Controls/AppStyles.xaml", "Strings/en-US.xaml" })
             app.Resources.MergedDictionaries.Add(new ResourceDictionary
@@ -52,7 +57,7 @@ public static class DialogCaptionScenario
                 };
                 Window[] dialogs = scope == null ? prompts : prompts.Concat(new Window[]
                 {
-                    new FileDialog(),
+                    new FileDialog { Title = PickerCaption },
                     new FolderPickerDialog(),
                     new RegistryValueEditDialog("Example", Microsoft.Win32.RegistryValueKind.String, "Value"),
                     new ProcessDetailsDialog(new[] { new ProcessInfo(42) { Name = "Example" } }, 0),
@@ -75,10 +80,14 @@ public static class DialogCaptionScenario
                         Assert.NotNull(icon.Source);
                         Assert.True(icon.IsVisible && icon.ActualWidth > 0 && icon.ActualHeight > 0,
                             dialog.GetType().Name + " must show its app icon.");
+                        // A file picker's caption is the caller's title in every theme, because it names
+                        // the operation. Every other dialog shows the plain app name only in 98SE.
+                        bool namesOperation = dialog is FileDialog;
+                        string captionText = namesOperation ? PickerCaption : "KillerShell";
                         var caption = Descendants(dialog).OfType<TextBlock>()
-                            .SingleOrDefault(text => text.Text == "KillerShell" && text.FontWeight == FontWeights.Bold);
+                            .SingleOrDefault(text => text.Text == captionText && text.FontWeight == FontWeights.Bold);
                         Assert.NotNull(caption);
-                        Assert.Equal(theme == Theme.SE98, caption!.IsVisible);
+                        Assert.Equal(namesOperation || theme == Theme.SE98, caption!.IsVisible);
                         if (theme == Theme.SE98)
                         {
                             Assert.Equal(11, caption.FontSize);
@@ -87,6 +96,16 @@ public static class DialogCaptionScenario
                             {
                                 var root = Assert.IsAssignableFrom<Border>(dialog.FindName("RootBorder"));
                                 var surface = Assert.IsAssignableFrom<FrameworkElement>(root.Child);
+                                if (dialog is FileDialog)
+                                {
+                                    // The picker draws its raised frame as a sibling overlay above the card,
+                                    // inside RootFade, and holds RootFade at opacity 0 until its fade-in runs.
+                                    // Composite the whole thing at full opacity, as the user sees it.
+                                    surface = Assert.IsAssignableFrom<FrameworkElement>(dialog.FindName("RootFade"));
+                                    surface.BeginAnimation(UIElement.OpacityProperty, null);
+                                    surface.Opacity = 1;
+                                    surface.UpdateLayout();
+                                }
                                 var bitmap = new RenderTargetBitmap((int)surface.ActualWidth, (int)surface.ActualHeight,
                                     96, 96, PixelFormats.Pbgra32);
                                 bitmap.Render(surface);
