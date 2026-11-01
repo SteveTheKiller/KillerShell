@@ -311,8 +311,8 @@ namespace KillerShell
                 {
                     using (var k = root.OpenSubKey(@"Software\Classes\" + ext + @"\OpenWithProgids", writable: true))
                         k?.DeleteValue(AssocProgId, throwOnMissingValue: false);
-                    ok &= PruneIfEmpty(root, @"Software\Classes\" + ext + @"\OpenWithProgids");
-                    ok &= PruneIfEmpty(root, @"Software\Classes\" + ext);
+                    PruneIfEmpty(root, @"Software\Classes\" + ext + @"\OpenWithProgids");
+                    PruneIfEmpty(root, @"Software\Classes\" + ext);
                 }
                 catch { ok = false; }
             }
@@ -320,8 +320,8 @@ namespace KillerShell
             foreach (var (_, shellProgId) in EditOnlyExtensions)
             {
                 ok &= Kill(root, @"Software\Classes\" + shellProgId + @"\shell\" + VerbEdit);
-                ok &= PruneIfEmpty(root, @"Software\Classes\" + shellProgId + @"\shell");
-                ok &= PruneIfEmpty(root, @"Software\Classes\" + shellProgId);
+                PruneIfEmpty(root, @"Software\Classes\" + shellProgId + @"\shell");
+                PruneIfEmpty(root, @"Software\Classes\" + shellProgId);
             }
 
             // Background before Directory: it sits inside it.
@@ -329,14 +329,14 @@ namespace KillerShell
             {
                 ok &= Kill(root, @"Software\Classes\" + owner + @"\shell\" + VerbOpen);
                 ok &= Kill(root, @"Software\Classes\" + owner + @"\shell\" + VerbTerm);
-                ok &= PruneIfEmpty(root, @"Software\Classes\" + owner + @"\shell");
-                ok &= PruneIfEmpty(root, @"Software\Classes\" + owner);
+                PruneIfEmpty(root, @"Software\Classes\" + owner + @"\shell");
+                PruneIfEmpty(root, @"Software\Classes\" + owner);
             }
 
             ok &= Kill(root, @"Software\KillerShell\Capabilities");
             // Capabilities may be the only thing registration put under it; the app's own
             // settings and install markers live here too, so it goes only when empty.
-            ok &= PruneIfEmpty(root, @"Software\KillerShell");
+            PruneIfEmpty(root, @"Software\KillerShell");
 
             try
             {
@@ -349,21 +349,21 @@ namespace KillerShell
         }
 
         /// <summary>Deletes <paramref name="path"/> only when it has no values (the default included)
-        /// and no subkeys. A key that is not there counts as done.</summary>
-        private static bool PruneIfEmpty(RegistryKey root, string path)
+        /// and no subkeys. Best effort: an empty key is no data of ours, so one that cannot be
+        /// opened or deleted does not make the removal fail.</summary>
+        private static void PruneIfEmpty(RegistryKey root, string path)
         {
             try
             {
                 bool empty;
                 using (var key = root.OpenSubKey(path))
                 {
-                    if (key == null) return true;
+                    if (key == null) return;
                     empty = key.ValueCount == 0 && key.SubKeyCount == 0;
                 }
                 if (empty) root.DeleteSubKey(path, throwOnMissingSubKey: false);
-                return true;
             }
-            catch { return false; }
+            catch { }
         }
 
         /// <summary>Delete a subtree, treating "was not there" as success.</summary>

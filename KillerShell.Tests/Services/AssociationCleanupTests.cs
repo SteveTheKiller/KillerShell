@@ -1,4 +1,6 @@
 using System;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using Microsoft.Win32;
 using Xunit;
 
@@ -88,5 +90,46 @@ public sealed class AssociationCleanupTests
             Assert.True(Exists(root, Classes + "Drive"));
         }
         finally { Registry.CurrentUser.DeleteSubKeyTree(path, false); }
+    }
+
+    [Fact]
+    public void AnEmptyKeyThatCannotBeDeletedStillCountsAsRemoved()
+    {
+        using var root = NewRoot(out string path);
+        string locked = Classes + @".err\OpenWithProgids";
+        var me = WindowsIdentity.GetCurrent().User!;
+        var deny = new RegistryAccessRule(me, RegistryRights.Delete, AccessControlType.Deny);
+        try
+        {
+            App.WriteAssociationKeys(root, @"C:\Test\KillerShell.exe");
+            using (var k = root.OpenSubKey(locked, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ChangePermissions | RegistryRights.ReadKey))
+            {
+                var sec = k!.GetAccessControl();
+                sec.AddAccessRule(deny);
+                k.SetAccessControl(sec);
+            }
+
+            Assert.True(App.RemoveAssociationKeys(root));
+
+            using (var k = root.OpenSubKey(locked))
+            {
+                Assert.NotNull(k);
+                Assert.Null(k!.GetValue(App.AssocProgId));
+            }
+            Assert.False(Exists(root, Classes + @"Directory\shell\KillerShell"));
+        }
+        finally
+        {
+            using (var k = root.OpenSubKey(locked, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ChangePermissions | RegistryRights.ReadKey))
+            {
+                if (k != null)
+                {
+                    var sec = k.GetAccessControl();
+                    sec.RemoveAccessRuleAll(deny);
+                    k.SetAccessControl(sec);
+                }
+            }
+            Registry.CurrentUser.DeleteSubKeyTree(path, false);
+        }
     }
 }
