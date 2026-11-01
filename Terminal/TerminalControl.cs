@@ -1167,6 +1167,10 @@ namespace KillerShell.Terminal
             InvalidateVisual();
         }
 
+        /// <summary>What the Space key sends: NUL for Ctrl+Space, nothing for any other chord
+        /// here (a plain Space is text and reaches the shell through TextInput).</summary>
+        internal static string? SpaceBytes(bool ctrl, bool alt) => ctrl && !alt ? Nul : null;
+
         private string? Encode(Key key, bool ctrl, bool shift, bool alt)
         {
             // Arrows and Home/End change form when the shell asks for application mode, which
@@ -1227,7 +1231,7 @@ namespace KillerShell.Terminal
                 case Key.F11: return Csi + "23~";
                 case Key.F12: return Csi + "24~";
 
-                case Key.Space: return ctrl ? Nul : null;
+                case Key.Space: return SpaceBytes(ctrl, alt);
             }
 
             if (ctrl && !alt && key >= Key.A && key <= Key.Z)
