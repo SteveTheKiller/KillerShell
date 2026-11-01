@@ -1,0 +1,69 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Security.Cryptography;
+using KillerShell.Services;
+using Xunit;
+
+namespace KillerShell.Tests.Services;
+
+public sealed class UpdateFailureRelaunchTests
+{
+    // Runs the real publication helper with only the publisher check and the two process-starting
+    // operations replaced, so a failed publication can be observed without opening anything.
+    private static (int exit, bool relaunched, bool reported) RunFailedPublication(bool elevated, bool targetExists, bool installer)
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "relaunch", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            string download = Path.Combine(root, "download.exe");
+            string target = Path.Combine(root, "KillerShell.exe");
+            string relaunched = Path.Combine(root, "relaunched.txt");
+            string reported = Path.Combine(root, "reported.txt");
+            File.WriteAllText(download, "release bytes");
+            if (targetExists) File.WriteAllText(target, "installed bytes");
+            string hash;
+            using (var sha = SHA256.Create()) hash = BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(download))).Replace("-", "");
+            UpdateImagePublication.RememberVerified(download, hash, new string('A', 40));
+            string overrides = "$ops.Publisher = { param($path, $plan) $false }\n"
+                + "$ops.ShowReport = { param($path) [IO.File]::WriteAllText('" + reported + "', 'shown') }\n"
+                + "$ops.Relaunch = { param($plan) [IO.File]::WriteAllText('" + relaunched + "', 'started') }\n"
+                + "$ops.Releases = { param($url) }\n";
+            string script = installer
+                ? UpdateImagePublication.Installer(download, "/S", elevated, target, Path.Combine(root, "stage"), "https://example.invalid/", overrides)
+                : UpdateImagePublication.Script(download, target, elevated, "https://example.invalid/", "KillerShell", showReport: true, overrides: overrides);
+            string file = Path.Combine(root, "helper.ps1");
+            File.WriteAllText(file, script, new System.Text.UTF8Encoding(true));
+            var start = new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"WindowsPowerShell\v1.0\powershell.exe"),
+                "-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"" + file + "\"")
+            { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+            using var process = Process.Start(start)!;
+            process.StandardOutput.ReadToEnd(); process.StandardError.ReadToEnd();
+            Assert.True(process.WaitForExit(120000));
+            return (process.ExitCode, File.Exists(relaunched), File.Exists(reported));
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void FailedPublicationRelaunchesTheExistingCopy(bool elevated, bool installer)
+    {
+        var (exit, relaunched, reported) = RunFailedPublication(elevated, targetExists: true, installer);
+        Assert.Equal(1, exit);
+        Assert.True(relaunched, "The existing copy must be started again after a failed update.");
+        if (!installer && !elevated) Assert.True(reported);
+    }
+
+    [Fact]
+    public void FailedPublicationWithNoTargetStartsNothing()
+    {
+        var (exit, relaunched, _) = RunFailedPublication(elevated: false, targetExists: false, installer: false);
+        Assert.Equal(1, exit);
+        Assert.False(relaunched);
+    }
+}

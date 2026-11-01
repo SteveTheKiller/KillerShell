@@ -65,12 +65,12 @@ namespace KillerShell.Services
             if (!guardEmitted) script.AppendLine(Guard);
             script.AppendLine(Operations);
             if (overrides is not null) script.AppendLine(overrides);
-            // The elevated helper must not open a window as administrator, so instead of showing the
-            // report it reopens whatever copy is installed: the user is not left with the app closed.
-            // The old version then runs without a message; the report stays beside the staged copy
+            // Whatever the mode, a failed publication reopens the copy that is installed (after the
+            // report, where one is shown): the user is not left with the app closed. The elevated
+            // helper must not open a window as administrator, so it shows no report. The old version then runs without a message; the report stays beside the staged copy
             // in the installation folder, and the next update check offers the release again.
             script.AppendLine("if (Invoke-UpdateImagePublication $plan $ops) { exit 0 } else { if ($plan.ShowReport) { try { & $ops.ShowReport $plan.Report } catch { } }; "
-                + "if ($plan.Elevated) { try { & $ops.Relaunch $plan } catch { } }; exit 1 }");
+                + "if (& $ops.Exists $plan.Target) { try { & $ops.Relaunch $plan } catch { } }; exit 1 }");
             return script.ToString();
         }
 
@@ -285,6 +285,7 @@ function Invoke-UpdateInstaller {
     $stage = $null
     $hold = $null
     $installed = $false
+    $failed = $false
     try {
         $source = & $ops.OpenImage $plan.Download
         try {
@@ -309,13 +310,18 @@ function Invoke-UpdateInstaller {
             [Environment]::NewLine + 'Manual download: ' + $plan.Releases
         try { & $ops.Report $plan.Report $message } catch { [Console]::Error.WriteLine($message) }
         try { & $ops.Releases $plan.Releases } catch { }
-        return $false
+        $failed = $true
     }
     finally {
         if ($null -ne $hold) { $hold.Dispose() }
         if ($null -ne $stage) { try { [IO.Directory]::Delete($stage, $true) } catch { } }
         # A failed install keeps the download its report names for recovery.
         if ($installed) { try { [IO.File]::Delete($plan.Download) } catch { } }
+    }
+    # A failed install leaves the installed copy as it was, so it is reopened rather than leaving the app closed.
+    if ($failed) {
+        if (& $ops.Exists $plan.Target) { try { & $ops.Relaunch $plan } catch { } }
+        return $false
     }
     try { & $ops.Relaunch $plan } catch { }
     return $true
