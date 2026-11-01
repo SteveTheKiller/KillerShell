@@ -28,6 +28,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The file picker no longer crashes on a typed name with characters Windows does not allow, refuses to save over a file it could not check, stays responsive on a dead network path, and walks up to the nearest folder that still exists.
 - The file picker's recent locations and places lists are named for screen readers.
 - A floating window keeps its rounded corners and Windows drop shadow. On monitors with different scaling, KillerShell could mistake it for a snapped window and square it off, which also removed the shadow.
+- Uninstalling no longer leaves empty file-type and folder-menu entries behind in your registry. Entries another program still uses are left alone.
 
 ### Changed
 - Shared window code is lined up with the other Killer Tools apps. The tray icon can now show a silent notification, and nothing changes in how KillerShell looks.

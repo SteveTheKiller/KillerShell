@@ -150,16 +150,22 @@ namespace KillerShell
                 var root = RootFor(machine);
 
                 EnsureFileIcon(exe);   // must land before WriteProgId, which tests for the file
-                WriteProgId(root, exe);
-                WriteOpenWithHints(root);
-                WriteEditVerbs(root, exe);
-                WriteFolderVerbs(root, exe);
-                WriteCapabilities(root, exe);
+                WriteAssociationKeys(root, exe);
 
                 SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
                 return true;
             }
             catch { return false; }
+        }
+
+        /// <summary>Every key registration writes, under <paramref name="root"/> (a hive, or a test fixture).</summary>
+        internal static void WriteAssociationKeys(RegistryKey root, string exe)
+        {
+            WriteProgId(root, exe);
+            WriteOpenWithHints(root);
+            WriteEditVerbs(root, exe);
+            WriteFolderVerbs(root, exe);
+            WriteCapabilities(root, exe);
         }
 
         // One ProgID for every text type rather than one per extension. Windows 11 lists
@@ -281,28 +287,56 @@ namespace KillerShell
             if (!keepFolderOpener)
                 try { FolderOpenerSetting().TurnOff(); } catch { ok = false; }
 
+            ok &= RemoveAssociationKeys(root);
+
+            try { SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero); } catch { }
+            return ok;
+        }
+
+        /// <summary>
+        /// Deletes what registration wrote under <paramref name="root"/>. Creating a value or verb
+        /// also creates the keys above it (the extension and its OpenWithProgids, a class and its
+        /// shell key), so once ours is gone each of those is deleted when it is empty, and only then:
+        /// a key that still holds another program's value or subkey stays.
+        /// </summary>
+        internal static bool RemoveAssociationKeys(RegistryKey root)
+        {
+            bool ok = true;
+
             ok &= Kill(root, @"Software\Classes\" + AssocProgId);
 
             foreach (string ext in TextExtensions)
             {
                 try
                 {
-                    using var k = root.OpenSubKey(@"Software\Classes\" + ext + @"\OpenWithProgids", writable: true);
-                    k?.DeleteValue(AssocProgId, throwOnMissingValue: false);
+                    using (var k = root.OpenSubKey(@"Software\Classes\" + ext + @"\OpenWithProgids", writable: true))
+                        k?.DeleteValue(AssocProgId, throwOnMissingValue: false);
+                    ok &= PruneIfEmpty(root, @"Software\Classes\" + ext + @"\OpenWithProgids");
+                    ok &= PruneIfEmpty(root, @"Software\Classes\" + ext);
                 }
                 catch { ok = false; }
             }
 
             foreach (var (_, shellProgId) in EditOnlyExtensions)
+            {
                 ok &= Kill(root, @"Software\Classes\" + shellProgId + @"\shell\" + VerbEdit);
+                ok &= PruneIfEmpty(root, @"Software\Classes\" + shellProgId + @"\shell");
+                ok &= PruneIfEmpty(root, @"Software\Classes\" + shellProgId);
+            }
 
-            foreach (string owner in new[] { "Directory", "Drive", @"Directory\Background" })
+            // Background before Directory: it sits inside it.
+            foreach (string owner in new[] { @"Directory\Background", "Directory", "Drive" })
             {
                 ok &= Kill(root, @"Software\Classes\" + owner + @"\shell\" + VerbOpen);
                 ok &= Kill(root, @"Software\Classes\" + owner + @"\shell\" + VerbTerm);
+                ok &= PruneIfEmpty(root, @"Software\Classes\" + owner + @"\shell");
+                ok &= PruneIfEmpty(root, @"Software\Classes\" + owner);
             }
 
             ok &= Kill(root, @"Software\KillerShell\Capabilities");
+            // Capabilities may be the only thing registration put under it; the app's own
+            // settings and install markers live here too, so it goes only when empty.
+            ok &= PruneIfEmpty(root, @"Software\KillerShell");
 
             try
             {
@@ -311,8 +345,25 @@ namespace KillerShell
             }
             catch { ok = false; }
 
-            try { SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero); } catch { }
             return ok;
+        }
+
+        /// <summary>Deletes <paramref name="path"/> only when it has no values (the default included)
+        /// and no subkeys. A key that is not there counts as done.</summary>
+        private static bool PruneIfEmpty(RegistryKey root, string path)
+        {
+            try
+            {
+                bool empty;
+                using (var key = root.OpenSubKey(path))
+                {
+                    if (key == null) return true;
+                    empty = key.ValueCount == 0 && key.SubKeyCount == 0;
+                }
+                if (empty) root.DeleteSubKey(path, throwOnMissingSubKey: false);
+                return true;
+            }
+            catch { return false; }
         }
 
         /// <summary>Delete a subtree, treating "was not there" as success.</summary>
