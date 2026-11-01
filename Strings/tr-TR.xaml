@@ -860,6 +860,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell profili yeniden yüklendi.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell Depolama Raporu</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Oluşturulma: {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Kısmi tarama: Tarama erken durdu veya bazı klasörler okunamadı, bu nedenle toplamlar düşük olabilir. Okunamayan klasörler: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Görünüm: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Tarama kökü: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Gösterilen toplam</sys:String>

@@ -743,6 +743,7 @@
   <sys:String x:Key="Str_Term_ProfileReloaded">Đã tải lại hồ sơ PowerShell.</sys:String>
   <sys:String x:Key="Str_StRpt_Title">Báo cáo lưu trữ KillerShell</sys:String>
   <sys:String x:Key="Str_StRpt_Generated">Được tạo lúc {0}</sys:String>
+  <sys:String x:Key="Str_StRpt_Partial">Quét một phần: quá trình quét đã dừng sớm hoặc không đọc được một số thư mục nên tổng có thể thấp hơn thực tế. Thư mục chưa đọc: {0}</sys:String>
   <sys:String x:Key="Str_StRpt_View">Chế độ xem: {0}</sys:String>
   <sys:String x:Key="Str_StRpt_ScanRoot">Thư mục gốc quét: {0}</sys:String>
   <sys:String x:Key="Str_StRpt_TotalShown">Tổng dung lượng hiển thị</sys:String>

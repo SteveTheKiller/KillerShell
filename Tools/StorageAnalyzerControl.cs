@@ -154,7 +154,7 @@ namespace KillerShell.Tools
             Func<string, CancellationToken, Services.StorageMftReadResult?>? readMft = null,
             Func<ModifierKeys>? keyboardModifiers = null)
         {
-            _readDirectory = readDirectory ?? Services.StorageDirectoryReader.Read;
+            _readDirectory = readDirectory ?? Services.StorageDirectoryReader.ReadForMap;
             _canUseMft = canUseMft ?? CanUseMftFastPath;
             _readMft = readMft ?? ReadMft;
             _keyboardModifiers = keyboardModifiers ?? (() => Keyboard.Modifiers);

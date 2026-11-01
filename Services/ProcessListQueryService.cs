@@ -10,10 +10,20 @@ namespace KillerShell.Services
     {
         internal static Dictionary<int, (string Name, string CommandLine, string Path, string ParentPid, long? CreatedUtcTicks)> QueryProcesses()
         {
+            TryQueryProcesses(out var details);
+            return details;
+        }
+
+        /// <summary>As QueryProcesses, and says whether WMI answered. A false answer comes with
+        /// whatever rows were read before it failed (none, usually).</summary>
+        internal static bool TryQueryProcesses(out Dictionary<int, (string Name, string CommandLine, string Path, string ParentPid, long? CreatedUtcTicks)> details,
+            string scope = @"root\cimv2")
+        {
             var result = new Dictionary<int, (string, string, string, string, long?)>();
+            details = result;
             try
             {
-                using var searcher = new ManagementObjectSearcher(
+                using var searcher = new ManagementObjectSearcher(scope,
                     "SELECT ProcessId, Name, ParentProcessId, CommandLine, ExecutablePath, CreationDate FROM Win32_Process");
                 using var rows = searcher.Get();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
@@ -40,9 +50,10 @@ namespace KillerShell.Services
             catch
             {
                 // WMI may be unavailable or restricted. The caller displays empty details.
+                return false;
             }
 
-            return result;
+            return true;
         }
 
         internal static string QueryOwner(int pid, long expectedCreatedUtcTicks)
@@ -92,10 +103,19 @@ namespace KillerShell.Services
 
         internal static Dictionary<string, (string StartMode, string Path, string LogOnAs, string Description)> QueryServices()
         {
+            TryQueryServices(out var details);
+            return details;
+        }
+
+        /// <summary>As QueryServices, and says whether WMI answered.</summary>
+        internal static bool TryQueryServices(out Dictionary<string, (string StartMode, string Path, string LogOnAs, string Description)> details,
+            string scope = @"root\cimv2")
+        {
             var result = new Dictionary<string, (string, string, string, string)>(StringComparer.OrdinalIgnoreCase);
+            details = result;
             try
             {
-                using var searcher = new ManagementObjectSearcher(
+                using var searcher = new ManagementObjectSearcher(scope,
                     "SELECT Name, StartMode, PathName, StartName, Description FROM Win32_Service");
                 using var rows = searcher.Get();
                 foreach (ManagementObject row in rows.Cast<ManagementObject>())
@@ -115,9 +135,10 @@ namespace KillerShell.Services
             catch
             {
                 // ServiceController data remains usable when WMI details are unavailable.
+                return false;
             }
 
-            return result;
+            return true;
         }
     }
 }

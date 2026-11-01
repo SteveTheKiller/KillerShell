@@ -22,11 +22,11 @@ namespace KillerShell.Cli
         private const int DefaultReadCharacters = 32768;
         private const int MaximumReadCharacters = 65536;
         private const int MaximumEventScan = 20000;
+        private const int MaximumScanSeconds = 3600;
 
         internal static int Main(string[] args)
         {
-            if (args.Length > 1 && args[args.Length - 1] == "--json")
-                args = args.Take(args.Length - 1).ToArray();
+            args = DropJsonSwitch(args);
             try { Console.OutputEncoding = new UTF8Encoding(false); }
             catch (IOException) { /* A GUI process with redirected output can lack a console handle. */ }
             if (args.Length == 1 && (args[0] == "--version" || args[0] == "-v" || args[0] == "/version" || args[0] == "version"))
@@ -75,6 +75,38 @@ namespace KillerShell.Cli
                 Console.Error.WriteLine(ex.Message);
                 return 1;
             }
+        }
+
+        // Where each verb's options begin and which of them take a value. The optional --json
+        // switch is accepted only where an option can stand, so a path, a pattern or any other
+        // option's value that is spelled --json stays what it is.
+        private static readonly Dictionary<string, (int Start, string[] ValueOptions)> VerbLayouts = new(StringComparer.Ordinal)
+        {
+            ["search"] = (2, ["--name", "--content", "--limit", "--csv", "--html"]),
+            ["list"] = (2, ["--limit"]),
+            ["info"] = (2, []),
+            ["read"] = (2, ["--max-chars"]),
+            ["processes"] = (1, ["--limit", "--filter"]),
+            ["services"] = (1, ["--limit", "--filter"]),
+            ["events"] = (2, ["--limit", "--filter", "--level"]),
+            ["registry"] = (2, ["--limit"]),
+            ["drives"] = (1, []),
+            ["hash"] = (2, []),
+            ["storage"] = (2, ["--limit", "--html", "--max-seconds"]),
+        };
+
+        private static string[] DropJsonSwitch(string[] args)
+        {
+            if (args.Length < 2 || !VerbLayouts.TryGetValue(args[0], out var layout)) return args;
+            var kept = new List<string>(args.Length);
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (i >= layout.Start && args[i] == "--json") continue;
+                kept.Add(args[i]);
+                if (i >= layout.Start && Array.IndexOf(layout.ValueOptions, args[i]) >= 0 && i + 1 < args.Length)
+                    kept.Add(args[++i]);
+            }
+            return kept.ToArray();
         }
 
         private static int ListDirectory(string[] args)
@@ -172,9 +204,11 @@ namespace KillerShell.Cli
             int limit = LimitOption(options, DefaultLimit, 1, MaximumLimit);
             bool detail = options.Flags.Contains("--detail");
             string? filter = options.Values.TryGetValue("--filter", out var filterText) ? filterText : null;
-            // The WMI read is the slow part, so it runs only when a detail column or the filter needs it.
-            var details = detail ? ProcessListQueryService.QueryProcesses()
-                : new Dictionary<int, (string Name, string CommandLine, string Path, string ParentPid, long? CreatedUtcTicks)>();
+            // The WMI read is the slow part, so it runs only with --detail, which adds the extra
+            // columns and lets --filter also match the path and command line. Without --detail the
+            // filter matches the process name or the exact PID and WMI is never asked.
+            var details = new Dictionary<int, (string Name, string CommandLine, string Path, string ParentPid, long? CreatedUtcTicks)>();
+            bool detailAvailable = !detail || ProcessListQueryService.TryQueryProcesses(out details);
             var all = Process.GetProcesses().OrderBy(item => item.ProcessName, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(item => item.Id).ToList();
             var rows = new List<Process>();
@@ -210,8 +244,9 @@ namespace KillerShell.Cli
                 }
                 output.Append('}');
             }
-            output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false").Append('}');
-            Console.WriteLine(output.ToString());
+            output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false");
+            if (detail) output.Append(",\"detailAvailable\":").Append(detailAvailable ? "true" : "false");
+            Console.WriteLine(output.Append('}').ToString());
             return 0;
         }
 
@@ -221,8 +256,8 @@ namespace KillerShell.Cli
             int limit = LimitOption(options, DefaultLimit, 1, MaximumLimit);
             bool detail = options.Flags.Contains("--detail");
             string? filter = options.Values.TryGetValue("--filter", out var filterText) ? filterText : null;
-            var details = detail ? ProcessListQueryService.QueryServices()
-                : new Dictionary<string, (string StartMode, string Path, string LogOnAs, string Description)>();
+            var details = new Dictionary<string, (string StartMode, string Path, string LogOnAs, string Description)>();
+            bool detailAvailable = !detail || ProcessListQueryService.TryQueryServices(out details);
             using var services = new DisposableList<ServiceController>(ServiceController.GetServices());
             var rows = services.Items.OrderBy(item => item.DisplayName, StringComparer.OrdinalIgnoreCase)
                 .Where(item => filter == null || Contains(item.ServiceName, filter) || Contains(item.DisplayName, filter))
@@ -247,8 +282,9 @@ namespace KillerShell.Cli
                 }
                 output.Append('}');
             }
-            output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false").Append('}');
-            Console.WriteLine(output.ToString());
+            output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false");
+            if (detail) output.Append(",\"detailAvailable\":").Append(detailAvailable ? "true" : "false");
+            Console.WriteLine(output.Append('}').ToString());
             return 0;
         }
 
@@ -273,7 +309,7 @@ namespace KillerShell.Cli
                     "verbose" => 5,
                     _ => throw new ArgumentException("--level must be Critical, Error, Warning, Information, or Verbose"),
                 };
-                queryText = "*[System[(Level=" + level.ToString(CultureInfo.InvariantCulture) + ")]]";
+                queryText = EventLevelQuery.For(level);
             }
             var query = new EventLogQuery(log, PathType.LogName, queryText) { ReverseDirection = true };
             using var reader = new EventLogReader(query);
@@ -463,16 +499,24 @@ namespace KillerShell.Cli
                 string.Empty, string.Empty, false, cancellation.Token)).GetAwaiter().GetResult();
 
             var ordered = found.OrderBy(item => item.FilePath, StringComparer.OrdinalIgnoreCase).ToList();
-            if (csvPath != null)
+            // Both names are claimed before either report is written, so a refusal on the second
+            // leaves nothing behind. Whatever this run created is removed if anything fails.
+            using (var claims = new OutputClaims())
             {
-                byte[] bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(CsvExport.Build(ordered))).ToArray();
-                using var stream = CreateNewOutput(csvPath);
-                stream.Write(bytes, 0, bytes.Length);
-            }
-            if (htmlPath != null)
-            {
-                CreateNewOutput(htmlPath).Dispose();   // claims the name; the exporter then fills it
-                HtmlExporter.Export(htmlPath, ordered, group.Terms.ToList(), root);
+                FileStream? csvStream = csvPath != null ? claims.Claim(csvPath) : null;
+                FileStream? htmlStream = htmlPath != null ? claims.Claim(htmlPath) : null;
+                if (csvStream != null)
+                {
+                    byte[] bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(CsvExport.Build(ordered))).ToArray();
+                    csvStream.Write(bytes, 0, bytes.Length);
+                    csvStream.Dispose();
+                }
+                if (htmlStream != null)
+                {
+                    htmlStream.Dispose();   // the name is ours; the exporter now fills it
+                    HtmlExporter.Export(htmlPath!, ordered, group.Terms.ToList(), root);
+                }
+                claims.Keep();
             }
 
             var output = new StringBuilder("{\"results\":[");
@@ -501,16 +545,34 @@ namespace KillerShell.Cli
             string root = Path.GetFullPath(args[1]);
             if (!Directory.Exists(root))
                 throw new ArgumentException("Storage path is not a directory");
-            var options = ParseOptions(args, 2, ["--limit", "--html"], []);
+            var options = ParseOptions(args, 2, ["--limit", "--html", "--max-seconds"], []);
             int limit = LimitOption(options, 20, 1, MaximumLimit);
             string? htmlPath = options.Values.TryGetValue("--html", out var htmlText) ? ValidateNewOutput(htmlText, null, "--html") : null;
+            int? maxSeconds = null;
+            if (options.Values.TryGetValue("--max-seconds", out var secondsText))
+            {
+                if (!int.TryParse(secondsText, NumberStyles.None, CultureInfo.InvariantCulture, out int seconds)
+                    || seconds < 1 || seconds > MaximumScanSeconds)
+                    throw new ArgumentException("--max-seconds must be between 1 and "
+                        + MaximumScanSeconds.ToString(CultureInfo.InvariantCulture));
+                maxSeconds = seconds;
+            }
 
-            var scan = StorageScan.Scan(root, limit, htmlPath != null, CancellationToken.None);
+            using var timeLimit = new CancellationTokenSource();
+            if (maxSeconds.HasValue) timeLimit.CancelAfter(TimeSpan.FromSeconds(maxSeconds.Value));
+            var scan = StorageScan.Scan(root, limit, htmlPath != null, timeLimit.Token);
+            // Nothing is claimed on disk for a folder that could not be read at all.
+            if (scan.RootUnreadable)
+                throw new IOException("Storage folder cannot be read");
             if (htmlPath != null)
             {
-                CreateNewOutput(htmlPath).Dispose();   // claims the name; the exporter then fills it
-                StorageHtmlExporter.Export(htmlPath, new KillerShell.Tools.StorageReport(root, root, scan.TotalBytes, 0, 0, false,
-                    scan.Tree ?? new KillerShell.Tools.StorageReportNode(root, root, scan.TotalBytes, true)));
+                using var claims = new OutputClaims();
+                claims.Claim(htmlPath).Dispose();   // claims the name; the exporter then fills it
+                StorageHtmlExporter.Export(htmlPath, new KillerShell.Tools.StorageReport(root, root, scan.TotalBytes, 0,
+                    scan.PruneThresholdBytes, false,
+                    scan.Tree ?? new KillerShell.Tools.StorageReportNode(root, root, scan.TotalBytes, true),
+                    scan.Truncated, scan.SkippedDirectories));
+                claims.Keep();
             }
 
             var output = new StringBuilder("{\"path\":").Append(JsonString(root));
@@ -518,6 +580,7 @@ namespace KillerShell.Cli
             output.Append(",\"files\":").Append(scan.Files.ToString(CultureInfo.InvariantCulture));
             output.Append(",\"directories\":").Append(scan.Directories.ToString(CultureInfo.InvariantCulture));
             output.Append(",\"skippedDirectories\":").Append(scan.SkippedDirectories.ToString(CultureInfo.InvariantCulture));
+            output.Append(",\"skippedReparsePoints\":").Append(scan.SkippedReparsePoints.ToString(CultureInfo.InvariantCulture));
             AppendStorageList(output, "topFolders", scan.TopFolders, scan.TotalBytes, false);
             AppendStorageList(output, "topFiles", scan.TopFiles, scan.TotalBytes, true);
             output.Append(",\"limitReached\":").Append(scan.LimitReached(limit) ? "true" : "false");
@@ -563,6 +626,35 @@ namespace KillerShell.Cli
         {
             try { return new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None); }
             catch (IOException) when (File.Exists(path)) { throw new ArgumentException("Output file already exists"); }
+        }
+
+        /// <summary>The export files this run created. Disposed without Keep, it removes them, so a
+        /// failed run never leaves a half-made report and never touches a file that was not its own.</summary>
+        private sealed class OutputClaims : IDisposable
+        {
+            private readonly List<(string Path, FileStream Stream)> _claimed = [];
+            private bool _keep;
+
+            internal FileStream Claim(string path)
+            {
+                var stream = CreateNewOutput(path);
+                _claimed.Add((path, stream));
+                return stream;
+            }
+
+            internal void Keep() => _keep = true;
+
+            public void Dispose()
+            {
+                foreach (var item in _claimed)
+                {
+                    try { item.Stream.Dispose(); } catch (IOException) { /* already closed or unwritable */ }
+                    if (!_keep)
+                    {
+                        try { File.Delete(item.Path); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+                    }
+                }
+            }
         }
 
         private static bool Contains(string? value, string text)
@@ -635,11 +727,14 @@ namespace KillerShell.Cli
             Console.WriteLine("killershell registry <hive\\key> [--limit 1..100]");
             Console.WriteLine("killershell drives");
             Console.WriteLine("killershell hash <file>");
-            Console.WriteLine("killershell storage <folder> [--limit 1..500] [--html <new file>]");
+            Console.WriteLine("killershell storage <folder> [--limit 1..500] [--max-seconds 1..3600] [--html <new file>]");
             Console.WriteLine("killershell --version (also -v and /version)");
-            Console.WriteLine("Output is JSON by default; an optional trailing --json is accepted.");
+            Console.WriteLine("killershell --help");
+            Console.WriteLine("Data commands print JSON; --help and --version print plain text. An optional --json after a command's options is accepted.");
+            Console.WriteLine("--filter matches a process name or exact PID (with --detail also its path or command line), a service name or display name, or an event provider, ID or message text.");
+            Console.WriteLine("--max-seconds stops a storage scan after that many seconds; the report then says \"truncated\":true.");
             Console.WriteLine("Export files (--csv, --html) must not exist yet; an existing file is refused with exit code 2.");
-            Console.WriteLine("Exit codes: 0 succeeded, 1 the command failed, 2 usage error (bad or missing arguments, or help).");
+            Console.WriteLine("Exit codes: 0 succeeded (--help included), 1 the command failed, 2 bad or missing arguments.");
         }
 
         private sealed class DisposableList<T> : IDisposable where T : IDisposable

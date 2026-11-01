@@ -752,6 +752,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">Profilo PowerShell ricaricato.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Report dello spazio di KillerShell</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Generato {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Scansione parziale: la scansione si è interrotta prima del tempo o non ha potuto leggere alcune cartelle, quindi i totali possono essere più bassi. Cartelle non lette: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Vista: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Radice della scansione: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Totale mostrato</sys:String>

@@ -669,6 +669,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">Profil PowerShell je znova naložen.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Poročilo o shrambi KillerShell</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Ustvarjeno {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Delno skeniranje: skeniranje se je ustavilo predčasno ali nekaterih map ni mogel prebrati, zato so vsote lahko prenizke. Neprebrane mape: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Pogled: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Koren pregleda: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Skupaj prikazano</sys:String>

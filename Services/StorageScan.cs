@@ -22,6 +22,12 @@ namespace KillerShell.Services
         internal int Directories { get; set; }
         internal int SkippedDirectories { get; set; }
         internal bool Truncated { get; set; }
+        /// <summary>Directory links left out of the walk (junctions and symbolic links to folders).</summary>
+        internal int SkippedReparsePoints { get; set; }
+        /// <summary>The folder asked for could not be read at all, so the figures describe nothing.</summary>
+        internal bool RootUnreadable { get; set; }
+        /// <summary>Entries below this size were cut from the report tree (zero when no tree was built).</summary>
+        internal long PruneThresholdBytes { get; set; }
         /// <summary>Files and folders with a nonzero size, before the top lists cut them down.</summary>
         internal int SizedFiles { get; set; }
         internal int SizedFolders { get; set; }
@@ -33,7 +39,8 @@ namespace KillerShell.Services
 
     /// <summary>
     /// A read-only walk of one folder for the command line (the storage verb). It reads each
-    /// folder with StorageDirectoryReader, which skips reparse points so a junction cannot loop,
+    /// folder with StorageDirectoryReader, which skips linked folders so a junction cannot loop
+    /// (and counts them) while linked files keep the size the directory reports,
     /// and never touches the MFT, so it needs no elevation and no volume handle.
     /// </summary>
     internal static class StorageScan
@@ -54,13 +61,20 @@ namespace KillerShell.Services
                     var walker = new Walker(result, top, buildTree, cancellationToken);
                     var node = walker.Walk(root, root, isRoot: true);
                     result.TotalBytes = node.Size;
-                    if (buildTree) { Prune(node, node.Size / 5000); result.Tree = node; }
+                    if (buildTree)
+                    {
+                        result.PruneThresholdBytes = node.Size / 5000;
+                        Prune(node, result.PruneThresholdBytes);
+                        result.Tree = node;
+                    }
                 }
                 catch (Exception ex) { failure = ex; }
             }, StackBytes);
             thread.Start();
             thread.Join();
             if (failure != null) throw failure;
+            // A token that fired means the walk may have stopped anywhere, an empty folder included.
+            if (cancellationToken.IsCancellationRequested) result.Truncated = true;
             return result;
         }
 
@@ -88,8 +102,13 @@ namespace KillerShell.Services
                 var children = new List<StorageReportNode>();
                 long total = 0;
                 var read = StorageDirectoryReader.Read(path, _token);
-                if (read.Skipped) _result.SkippedDirectories++;
+                if (read.Skipped)
+                {
+                    _result.SkippedDirectories++;
+                    if (isRoot) _result.RootUnreadable = true;
+                }
                 else if (!isRoot) _result.Directories++;
+                _result.SkippedReparsePoints += read.SkippedReparsePoints;
                 foreach (var entry in read.Entries)
                 {
                     if (_token.IsCancellationRequested) { _result.Truncated = true; break; }

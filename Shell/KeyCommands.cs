@@ -36,10 +36,17 @@ namespace KillerShell.Shell
                 return true;
             }
 
-            // AltGr (Ctrl+Alt with the right Alt key down) never gets here: Window_PreviewKeyDown
-            // returns it as text first (AltGrKey.cs).
+            // AltGr (Ctrl+Alt with the right Alt key down) reaches here when its key gives no
+            // character on the layout: Window_PreviewKeyDown returns it as text first only for a
+            // key the layer fills (AltGrKey.cs), and the arrow keys and 0 are often empty. So the
+            // pane chords refuse the right Alt key on a layout that has an AltGr layer; a layout
+            // with none, US included, keeps its right Ctrl+Alt chords.
             if (ctrl && alt && !shift)
             {
+                bool rightAltDown = Keyboard.IsKeyDown(Key.RightAlt);
+                if (!CtrlAltChord.AllowsPaneChord(ctrl, alt, rightAltDown,
+                        rightAltDown && LayoutKeyTextProbe.ForCurrentLayout().HasAltGr()))
+                    return false;
                 switch (key)
                 {
                     case Key.Left: SetPaneOrientation(true); e.Handled = true; return true;

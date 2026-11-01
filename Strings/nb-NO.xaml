@@ -786,6 +786,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell-profilen er lastet inn på nytt.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell lagringsrapport</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Opprettet {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Delvis skanning: Skanningen stoppet tidlig eller kunne ikke lese noen mapper, så summene kan være for lave. Mapper som ikke ble lest: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Visning: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Skannerot: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Totalt vist</sys:String>

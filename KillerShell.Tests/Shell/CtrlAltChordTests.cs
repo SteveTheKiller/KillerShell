@@ -67,6 +67,25 @@ public sealed class CtrlAltChordTests
         Assert.False(new LayoutKeyTextProbe(LoadKeyboardLayout("00000409", 0)).HasAltGr());
     }
 
+    [Fact]
+    public void AltGrLayerNeverRunsAPaneChord()
+    {
+        // Arrow keys give no character on an AltGr layout, so AltGr+Left is not text and
+        // reaches the pane chords unless they refuse it themselves.
+        Assert.False(CtrlAltChord.AllowsPaneChord(true, true, rightAltDown: true, layoutHasAltGr: true));
+        var german = new LayoutKeyTextProbe(LoadKeyboardLayout("00000407", 0));
+        Assert.False(CtrlAltChord.AllowsPaneChord(true, true, true, german.HasAltGr()));
+    }
+
+    [Fact]
+    public void LeftCtrlAltAndLayoutsWithoutAltGrKeepTheirPaneChords()
+    {
+        Assert.True(CtrlAltChord.AllowsPaneChord(true, true, rightAltDown: false, layoutHasAltGr: true));
+        var us = new LayoutKeyTextProbe(LoadKeyboardLayout("00000409", 0));
+        Assert.True(CtrlAltChord.AllowsPaneChord(true, true, true, us.HasAltGr()));
+        Assert.True(CtrlAltChord.AllowsPaneChord(true, false, true, true));
+    }
+
     [Theory]
     [InlineData(false, false, Key.C)]
     [InlineData(true, false, Key.C)]

@@ -857,6 +857,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">已重新載入 PowerShell 設定檔。</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell 儲存空間報告</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">產生於 {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">部分掃描：掃描提前停止或無法讀取某些資料夾，因此總計可能偏低。未讀取的資料夾：{0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">檢視: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">掃描根目錄: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">顯示總計</sys:String>

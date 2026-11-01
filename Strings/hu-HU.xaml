@@ -786,6 +786,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">A PowerShell-profil újratöltve.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell tárhelyjelentés</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Készült: {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Részleges vizsgálat: a vizsgálat idő előtt leállt, vagy néhány mappát nem tudott beolvasni, ezért az összegek alacsonyabbak lehetnek. Be nem olvasott mappák: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Nézet: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Vizsgálat gyökere: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Összes megjelenített</sys:String>

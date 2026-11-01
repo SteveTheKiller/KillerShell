@@ -856,6 +856,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell プロファイルを再読み込みしました。</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell ストレージ レポート</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">作成日時 {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">部分的なスキャン: スキャンが途中で停止したか、一部のフォルダーを読み取れなかったため、合計が実際より小さい可能性があります。読み取れなかったフォルダー: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">表示: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">スキャンのルート: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">表示中の合計</sys:String>

@@ -857,6 +857,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">已重新加载 PowerShell 配置文件。</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell 存储报告</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">生成于 {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">部分扫描：扫描提前停止或无法读取某些文件夹，因此总计可能偏低。未读取的文件夹：{0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">视图: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">扫描根目录: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">显示总计</sys:String>

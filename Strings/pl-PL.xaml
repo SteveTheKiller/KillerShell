@@ -90,6 +90,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">Ponownie załadowano profil PowerShell.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Raport magazynu KillerShell</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Wygenerowano {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Skanowanie częściowe: skanowanie zatrzymało się wcześniej lub nie mogło odczytać niektórych folderów, więc sumy mogą być zaniżone. Nieodczytane foldery: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Widok: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Korzeń skanowania: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Łącznie pokazano</sys:String>

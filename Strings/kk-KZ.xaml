@@ -755,6 +755,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell профилі қайта жүктелді.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell жинақтауыш есебі</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Жасалған уақыты: {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Ішінара сканерлеу: сканерлеу мерзімінен бұрын тоқтады немесе кейбір қалталарды оқу мүмкін болмады, сондықтан жалпы көлем нақты мәннен аз болуы мүмкін. Оқылмаған қалталар: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Көрініс: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Қарау түбірі: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Көрсетілгені барлығы</sys:String>

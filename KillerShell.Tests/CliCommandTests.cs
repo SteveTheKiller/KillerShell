@@ -189,6 +189,165 @@ public sealed class CliCommandTests
     }
 
     [Fact]
+    public void UsageSaysWhichOutputIsJsonWhatExitCodesMeanAndWhatFilterMatches()
+    {
+        Result result = Run("--help");
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("--help and --version print plain text", result.Output, StringComparison.Ordinal);
+        Assert.Contains("2 bad or missing arguments", result.Output, StringComparison.Ordinal);
+        Assert.Contains("--help included", result.Output, StringComparison.Ordinal);
+        Assert.DoesNotContain("or help)", result.Output, StringComparison.Ordinal);
+        Assert.Contains("exact PID", result.Output, StringComparison.Ordinal);
+        Assert.Contains("display name", result.Output, StringComparison.Ordinal);
+        Assert.Contains("--max-seconds", result.Output, StringComparison.Ordinal);
+
+        Result none = Run();
+        Assert.Equal(2, none.ExitCode);
+    }
+
+    [Fact]
+    public void JsonIsASwitchOnlyWhereASwitchCanStand()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            File.WriteAllText(Path.Combine(root, "--json"), "a file whose name is the switch");
+            File.WriteAllText(Path.Combine(root, "other.txt"), "x");
+
+            // As the value of --name it is a pattern, not the trailing switch.
+            Result asValue = Run("search", root, "--name", "--json");
+            Assert.True(asValue.ExitCode == 0, asValue.Error);
+            Assert.Contains("--json", asValue.Output, StringComparison.Ordinal);
+            Assert.DoesNotContain("other.txt", asValue.Output, StringComparison.Ordinal);
+
+            // Where an option could stand it is still accepted, after any verb.
+            Assert.Equal(0, Run("search", root, "--name", "other*", "--json").ExitCode);
+            Assert.Equal(0, Run("list", root, "--limit", "5", "--json").ExitCode);
+            Assert.Equal(0, Run("drives", "--json").ExitCode);
+            Assert.Equal(0, Run("hash", Path.Combine(root, "other.txt"), "--json").ExitCode);
+            Assert.Equal(0, Run("processes", "--limit", "1", "--json").ExitCode);
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
+    [Fact]
+    public void DetailReportsWhetherWmiAnswered()
+    {
+        Result processes = Run("processes", "--limit", "1", "--detail");
+        Assert.Equal(0, processes.ExitCode);
+        Assert.Contains("\"detailAvailable\":true", processes.Output, StringComparison.Ordinal);
+
+        Result services = Run("services", "--limit", "1", "--detail");
+        Assert.Equal(0, services.ExitCode);
+        Assert.Contains("\"detailAvailable\":true", services.Output, StringComparison.Ordinal);
+
+        Result plain = Run("processes", "--limit", "1");
+        Assert.DoesNotContain("detailAvailable", plain.Output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void StorageSkipsDirectoryLinksAndCountsLinkedFiles()
+    {
+        using var fixture = new Services.ReparseFixture();
+        fixture.AddJunction("junction");
+        fixture.AddDirectorySymlink("folderlink");
+        fixture.AddFileSymlink("filelink.bin", Path.Combine(fixture.Outside, "elsewhere.bin"));
+
+        Result result = Run("storage", fixture.Scan);
+
+        Assert.True(result.ExitCode == 0, result.Error);
+        Assert.Contains("\"files\":2", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"totalBytes\":100", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"skippedReparsePoints\":2", result.Output, StringComparison.Ordinal);
+        Assert.Contains("\"truncated\":false", result.Output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void StorageTakesAScanTimeLimit()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            File.WriteAllBytes(Path.Combine(root, "a.bin"), new byte[10]);
+            Result result = Run("storage", root, "--max-seconds", "30");
+            Assert.True(result.ExitCode == 0, result.Error);
+            Assert.Contains("\"truncated\":false", result.Output, StringComparison.Ordinal);
+
+            Assert.Equal(2, Run("storage", root, "--max-seconds", "0").ExitCode);
+            Assert.Equal(2, Run("storage", root, "--max-seconds", "soon").ExitCode);
+            Assert.Equal(2, Run("storage", root, "--max-seconds").ExitCode);
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
+    [Fact]
+    public void StorageOfAnUnreadableFolderFailsBeforeClaimingTheReport()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
+        string locked = Path.Combine(root, "locked");
+        Directory.CreateDirectory(locked);
+        string html = Path.Combine(root, "storage.html");
+        using var deny = Services.DenyAccess.To(locked, System.Security.AccessControl.FileSystemRights.ListDirectory);
+        try
+        {
+            Assert.ThrowsAny<UnauthorizedAccessException>(() => Directory.GetFileSystemEntries(locked));
+
+            Result result = Run("storage", locked, "--html", html);
+
+            Assert.Equal(1, result.ExitCode);
+            Assert.False(File.Exists(html), "The report file must not be created when the folder cannot be read.");
+            Assert.Contains("cannot be read", result.Error, StringComparison.Ordinal);
+        }
+        finally { deny.Dispose(); Directory.Delete(root, true); }
+    }
+
+    [Fact]
+    public void SearchClaimsBothOutputsBeforeWritingEitherAndRemovesWhatItMade()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
+        string open = Path.Combine(root, "open");
+        string closed = Path.Combine(root, "closed");
+        Directory.CreateDirectory(open);
+        Directory.CreateDirectory(closed);
+        File.WriteAllText(Path.Combine(root, "alpha.txt"), "needle");
+        string csv = Path.Combine(open, "out.csv");
+        string html = Path.Combine(closed, "out.html");
+        using var deny = Services.DenyAccess.To(closed, System.Security.AccessControl.FileSystemRights.CreateFiles);
+        try
+        {
+            Result result = Run("search", root, "--name", "alpha*", "--csv", csv, "--html", html);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.False(File.Exists(csv), "The first report must be removed when the second cannot be claimed.");
+            Assert.False(File.Exists(html));
+        }
+        finally { deny.Dispose(); Directory.Delete(root, true); }
+    }
+
+    [Fact]
+    public void SearchLeavesAnExistingFolderFileAloneWhenTheOtherOutputIsRefused()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Cli.Tests-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            File.WriteAllText(Path.Combine(root, "alpha.txt"), "needle");
+            string kept = Path.Combine(root, "kept.html");
+            File.WriteAllText(kept, "mine");
+            string csv = Path.Combine(root, "out.csv");
+
+            Result result = Run("search", root, "--name", "alpha*", "--csv", csv, "--html", kept);
+
+            Assert.Equal(2, result.ExitCode);
+            Assert.Equal("mine", File.ReadAllText(kept));
+            Assert.False(File.Exists(csv));
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
+    [Fact]
     public void ProcessesDetailAndFilterNarrowTheList()
     {
         Result result = Run("processes", "--filter", "killershell", "--detail");

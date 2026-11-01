@@ -11,6 +11,15 @@ namespace KillerShell.Shell
             => !(ctrl && alt) || key == Key.E || key == Key.OemTilde;
 
         /// <summary>
+        /// Whether Ctrl+Alt can be a pane layout chord (Ctrl+Alt+arrows and 0) at all. With the
+        /// right Alt key down on a layout that has an AltGr layer it is that layer, which gives no
+        /// character on an arrow key yet still never means a chord.
+        /// A layout with no AltGr layer, US included, keeps its right Ctrl+Alt chords.
+        /// </summary>
+        public static bool AllowsPaneChord(bool ctrl, bool alt, bool rightAltDown, bool layoutHasAltGr)
+            => !(ctrl && alt && rightAltDown && layoutHasAltGr);
+
+        /// <summary>
         /// As above, plus the AltGr rule: with the right Alt key down on a layout that has an AltGr
         /// layer at all, Ctrl+Alt is that layer and never a chord, even for a key the layer leaves
         /// empty (AltGr+O-umlaut on German is the same physical key as Ctrl+Alt+`, and AltGr+E must
@@ -18,6 +27,6 @@ namespace KillerShell.Shell
         /// included, keeps its right Ctrl+Alt chords.
         /// </summary>
         public static bool ReachesChain(bool ctrl, bool alt, Key key, bool rightAltDown, bool layoutHasAltGr)
-            => !(ctrl && alt && rightAltDown && layoutHasAltGr) && ReachesChain(ctrl, alt, key);
+            => AllowsPaneChord(ctrl, alt, rightAltDown, layoutHasAltGr) && ReachesChain(ctrl, alt, key);
     }
 }

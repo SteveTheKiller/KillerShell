@@ -786,6 +786,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">Perfil do PowerShell recarregado.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Relatório de armazenamento do KillerShell</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Gerado em {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Verificação parcial: a verificação parou antes do fim ou não conseguiu ler algumas pastas, então os totais podem ser menores. Pastas não lidas: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Exibição: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Raiz da verificação: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Total exibido</sys:String>

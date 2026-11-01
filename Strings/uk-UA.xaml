@@ -786,6 +786,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">Профіль PowerShell перезавантажено.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Звіт KillerShell про сховище</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Створено {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Часткове сканування: сканування зупинилося достроково або не змогло прочитати деякі папки, тому підсумки можуть бути занижені. Непрочитані папки: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Вигляд: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Корінь сканування: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Усього показано</sys:String>

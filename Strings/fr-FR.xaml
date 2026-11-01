@@ -860,6 +860,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">Profil PowerShell rechargé.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Rapport de stockage KillerShell</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Généré le {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Analyse partielle : l'analyse s'est arrêtée prématurément ou n'a pas pu lire certains dossiers, les totaux peuvent donc être trop bas. Dossiers non lus : {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Vue : {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Racine de l'analyse : {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Total affiché</sys:String>

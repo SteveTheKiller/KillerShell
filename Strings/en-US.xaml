@@ -786,6 +786,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell profile reloaded.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell Storage Report</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Generated {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Partial scan: the scan stopped early or could not read some folders, so the totals can be low. Folders not read: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">View: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Scan root: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Total shown</sys:String>

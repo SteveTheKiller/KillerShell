@@ -857,6 +857,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell প্রোফাইল পুনরায় লোড হয়েছে।</sys:String>
     <sys:String x:Key="Str_StRpt_Title">KillerShell স্টোরেজ রিপোর্ট</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">তৈরির সময় {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">আংশিক স্ক্যান: স্ক্যানটি আগেই থেমে গেছে বা কিছু ফোল্ডার পড়তে পারেনি, তাই মোট সংখ্যা কম হতে পারে। পড়া হয়নি এমন ফোল্ডার: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">ভিউ: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">স্ক্যানের মূল: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">মোট দেখানো</sys:String>

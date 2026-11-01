@@ -209,7 +209,7 @@ killershell --cli processes --detail --filter shell
 killershell --cli events System --level Error --filter disk
 killershell --cli search "C:\logs" --content "error" --csv "C:\temp\hits.csv"
 killershell -v</code></pre></div></div></div>
-<div class="acc-item"><button class="acc-head" data-i18n="cl_h">Command line guide<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="cl_intro">Every command prints JSON and never changes your files, settings or registry. The only thing a command writes is a new file named by --csv or --html, and only when nothing exists at that path. Run a command as KillerShell.exe --cli followed by the verb, or as killershell from an installed copy.</p>
+<div class="acc-item"><button class="acc-head" data-i18n="cl_h">Command line guide<span class="chev">&#9656;</span></button><div class="acc-body"><div class="acc-body-inner"><p data-i18n="cl_intro">Data commands print JSON, while --help and --version print plain text. No command changes your files, settings or registry; the only thing one writes is a new file named by --csv or --html, and only when nothing exists at that path. Run a command as KillerShell.exe --cli followed by the verb, or as killershell from an installed copy. Exit code 2 means bad or missing arguments; --help exits 0.</p>
 <p><b>search</b> <span data-i18n="cl_v_search">Find files by name pattern, by content, or both. Results come back sorted by path.</span></p><pre><code>killershell search &lt;folder&gt; --name &lt;pattern&gt; [--content &lt;text&gt;] [--limit 1..500] [--csv &lt;new file&gt;] [--html &lt;new file&gt;]
 killershell search &lt;folder&gt; --content &lt;text&gt; [--limit 1..500]
 killershell --cli search "C:\logs" --content "error" --limit 20</code></pre>
@@ -231,8 +231,8 @@ killershell --cli registry "HKLM\SOFTWARE\Microsoft" --limit 20</code></pre>
 killershell --cli drives</code></pre>
 <p><b>hash</b> <span data-i18n="cl_v_hash">Print the SHA-256 hash of a file.</span></p><pre><code>killershell hash &lt;file&gt;
 killershell --cli hash "C:\logs\today.log"</code></pre>
-<p><b>storage</b> <span data-i18n="cl_v_storage">Report the largest folders and files under a folder, without changing anything.</span></p><pre><code>killershell storage &lt;folder&gt; [--limit 1..500] [--html &lt;new file&gt;]
-killershell --cli storage "C:\logs" --limit 10 --html "C:\temp\storage.html"</code></pre>
+<p><b>storage</b> <span data-i18n="cl_v_storage">Report the largest folders and files under a folder, without changing anything. Add --max-seconds to stop a long scan; the report then says it is truncated.</span></p><pre><code>killershell storage &lt;folder&gt; [--limit 1..500] [--max-seconds 1..3600] [--html &lt;new file&gt;]
+killershell --cli storage "C:\logs" --limit 10 --max-seconds 25 --html "C:\temp\storage.html"</code></pre>
 <p><b>--version</b> <span data-i18n="cl_v_version">Print the version number.</span></p><pre><code>killershell --version
 killershell -v
 killershell /version</code></pre>
@@ -649,7 +649,7 @@ killershell /version</code></pre>
 <span class="right"><span id="verEgg" title="click me">v1.5.0</span> &middot; &copy; 2026 <b><a href="https://thekiller.net" target="_blank" rel="noopener">Steve the Killer</a></b></span>
 </footer>
 <div class="egg-toast" id="eggToast"></div>
-<script src="ks-i18n.js?v=16"></script>
+<script src="ks-i18n.js?v=17"></script>
 <script src="shortcuts.generated.js?v=7"></script>
 <script src="ks.js?v=17"></script>
 <script>

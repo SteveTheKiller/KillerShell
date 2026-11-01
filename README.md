@@ -29,7 +29,7 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 
 ## Command line
 
-The CLI is read-only and prints JSON. Run it as `KillerShell --cli <verb>`, or `killershell <verb>` from an installed copy.
+The CLI is read-only. Data commands print JSON; `--help` and `--version` print plain text. Run it as `KillerShell --cli <verb>`, or `killershell <verb>` from an installed copy.
 
 | Verb | What it does |
 | --- | --- |
@@ -43,11 +43,11 @@ The CLI is read-only and prints JSON. Run it as `KillerShell --cli <verb>`, or `
 | `registry <hive\key> [--limit 1..100]` | Subkeys and values |
 | `drives` | Drives and free space |
 | `hash <file>` | SHA-256 |
-| `storage <folder> [--limit 1..500] [--html <new file>]` | The largest folders and files under a folder |
+| `storage <folder> [--limit 1..500] [--max-seconds 1..3600] [--html <new file>]` | The largest folders and files under a folder; `--max-seconds` stops a long scan and the report says `"truncated":true` |
 
 `--version`, `-v` and `/version` print the version. Files named by `--csv` and `--html` must not exist yet; an existing file is refused with exit code 2 and nothing is written.
 
-Exit codes: `0` succeeded, `1` the command failed, `2` usage error (bad or missing arguments).
+Exit codes: `0` succeeded (`--help` included), `1` the command failed, `2` bad or missing arguments.
 
 The app itself also takes these switches: `--new-window` (a window of its own), `--cwd <folder>`, `--shell <kind>`, `--terminal-profile <token>`, `--edit <file>`, and `--processes`, `--eventviewer`, `--performance`, `--storage`, `--registry` to open that tool in a tab.
 

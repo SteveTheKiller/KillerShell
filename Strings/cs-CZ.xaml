@@ -858,6 +858,7 @@
     <sys:String x:Key="Str_Term_ProfileReloaded">Profil PowerShellu byl znovu načten.</sys:String>
     <sys:String x:Key="Str_StRpt_Title">Zpráva o úložišti KillerShell</sys:String>
     <sys:String x:Key="Str_StRpt_Generated">Vytvořeno {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">Částečné skenování: skenování se zastavilo předčasně nebo některé složky nešlo přečíst, takže součty mohou být nižší. Nepřečtené složky: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_View">Zobrazení: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_ScanRoot">Kořen analýzy: {0}</sys:String>
     <sys:String x:Key="Str_StRpt_TotalShown">Zobrazeno celkem</sys:String>

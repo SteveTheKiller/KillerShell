@@ -61,6 +61,10 @@ namespace KillerShell.Services
             sb.Append("<div class='cards'><div class='card'><span>").Append(E(L("Str_StRpt_TotalShown", "Total shown"))).Append("</span><b>").Append(Size(report.TotalSize))
               .Append("</b></div><div class='card'><span>").Append(E(L("Str_StRpt_DepthFilter", "Depth filter"))).Append("</span><b>").Append(report.DepthLimit == 0 ? E(L("Str_Storage_DepthAll", "All")) : report.DepthLimit.ToString())
               .Append("</b></div><div class='card'><span>").Append(E(L("Str_StRpt_MinSize", "Minimum size"))).Append("</span><b>").Append(report.MinimumSize == 0 ? E(L("Str_Storage_MinAll", "All")) : Size(report.MinimumSize)).Append("</b></div></div>");
+            if (report.Truncated || report.SkippedDirectories > 0)
+                sb.Append("<p class='meta'>").Append(E(string.Format(CultureInfo.CurrentCulture,
+                    L("Str_StRpt_Partial", "Partial scan: the scan stopped early or could not read some folders, so the totals can be low. Folders not read: {0}"),
+                    report.SkippedDirectories))).Append("</p>");
             sb.Append("<h2>").Append(treemap).Append("</h2><div class='map'><svg viewBox='0 0 1200 500' role='img' aria-label='").Append(treemap).Append("'>");
             DrawChildren(sb, report.Root, 0, 0, 1200, 500, 1, report.DepthLimit, report.TotalSize);
             sb.Append("</svg></div><div class='tables'>");
