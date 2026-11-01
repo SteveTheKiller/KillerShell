@@ -90,8 +90,9 @@ namespace KillerShell.Shell
         private static readonly KsBinding[] KsAll =
         [
             // ══ GLOBAL ══════════════════════════════════════════════════════════════════════
-            // The window runs these whatever tab is showing. An applet that owns the keyboard
-            // still lets them through - that is what IsWindowChord (TerminalTabs.cs) is for.
+            // The window runs these on the tabs that do not own the keyboard. A focused applet
+            // keeps its keys and lets through only the chords IsWindowChord (TerminalTabs.cs)
+            // lists, so a Global row is not promised inside an applet unless that list has it.
             new(KsScope.Global, "Search", "Enter",          "Str_Ks_Run",          KbLayer.Base, "Enter"),
             new(KsScope.Global, "Search", "Ctrl+E",         "Str_Ks_FocusSearch",  KbLayer.Ctrl, "E"),
             new(KsScope.Global, "Search", "Ctrl+Shift+A",   "Str_Ks_AddTerm",      KbLayer.CtrlShift, "A"),

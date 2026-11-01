@@ -443,10 +443,8 @@ namespace KillerShell.Shell
                 // shell - editing your profile is the one thing you are most likely to want
                 // WHILE looking at a prompt, and PSReadLine does not bind it.
                 System.Windows.Input.Key.OemComma => !shift,
-                // Ctrl+PageUp/Down moves between tabs, but adding SHIFT makes it the
-                // terminal's own scrollback paging (Windows Terminal's binding), so the shift
-                // variant has to be let through rather than swallowed here.
-                System.Windows.Input.Key.PageUp or System.Windows.Input.Key.PageDown => !shift,
+                // Ctrl+PageUp/Down is not a window chord: the window has no handler for it, so it
+                // falls through to the shell with the other unlisted Ctrl keys.
                 // Ctrl+Shift +/- and 0 size the whole app, and Ctrl+Shift+B shows or hides the
                 // side panels (KeyCommands.cs). The window's from inside any tab; the shell's own
                 // text size is the unshifted Ctrl +/- and 0, which still pass through.
