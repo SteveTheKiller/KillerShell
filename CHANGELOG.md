@@ -10,7 +10,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 - Keyboard focus cues respect the theme, Windows contrast refreshes are coalesced and restore frame colors, and picker selections keep text and icons shadow-free.
-- An all-users update reopens KillerShell for the signed-in user at normal rights, whether it finishes or stops early. Windows was refusing that relaunch, so the app stayed closed. Files left behind by earlier failed updates are cleared when the next update is staged.
+- An all-users update reopens KillerShell for the signed-in user at normal rights, whether it finishes or stops early. Windows was refusing that relaunch, so the app stayed closed. Files more than a day old left behind by earlier failed all-users updates are cleared when the next one is staged.
+- Uninstall removes files left by a failed update instead of refusing to run, and a failed update puts the previous copy back rather than reopening a replacement that failed its checks.
+- A failed per-user or portable update reopens the installed copy, a failed hand-off tells you and offers the releases page, a stalled download ends at its deadline, and a reopened app keeps your PowerShell module path and opens its own window.
 - Dialog title bars match the rest of the dialog in every theme except 98SE. They had their own band, a lighter strip in Light and a gradient in several dark themes, and the title bar painted its film grain twice.
 - Update and uninstall helpers load PowerShell modules only from Windows' own folder, so a module planted in your Documents cannot run inside them as administrator; a failed uninstall reports the real reason and retries when a copy is still running; a stalled update says so instead of silently doing nothing; and the window no longer freezes while an update is handed off.
 - An update that cannot finish because the app did not close says so in its recovery report, the Update button stays off once an update has started, and a translation file can no longer give a setting the wrong kind of value.
@@ -23,6 +25,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - KillerSearch closes when you click anywhere else in the window. It stayed open until you pressed Escape or clicked its button.
 - The Registry editor's Hexadecimal and Decimal options use the themed radio button instead of the plain Windows one.
 - The file picker's Accept button can no longer fire twice: it stays off while a folder is loading or an accept is already running. A mistyped folder path now returns to the last folder that worked instead of leaving an empty list.
+- The file picker no longer crashes on a typed name with characters Windows does not allow, refuses to save over a file it could not check, stays responsive on a dead network path, and walks up to the nearest folder that still exists.
 - The file picker's recent locations and places lists are named for screen readers.
 - A floating window keeps its rounded corners and Windows drop shadow. On monitors with different scaling, KillerShell could mistake it for a snapped window and square it off, which also removed the shadow.
 
