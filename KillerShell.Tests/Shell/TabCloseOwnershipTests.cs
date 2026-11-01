@@ -51,7 +51,7 @@ public static class TabCloseOwnershipScenario
             ready.Replace("'", "''") + "'; [IO.File]::WriteAllText($ready+'.tmp', [string]$PID); " +
             "[IO.File]::Move($ready+'.tmp', $ready); Start-Sleep -Seconds 30\"", fixture.Root);
         ShellWindowFixture.PumpUntil(() => File.Exists(ready));
-        using var child = Process.GetProcessById(int.Parse(File.ReadAllText(ready)));
+        using var child = Process.GetProcessById(TerminalInputFlowScenario.ReadPid(ready));
         int canceled = 0;
         using var registration = victim.Cts.Token.Register(() => canceled++);
         bool ghostShown = false;

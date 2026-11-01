@@ -98,6 +98,18 @@ internal static class TerminalFixtureOutput
 
 public static class TerminalInputFlowScenario
 {
+    /// <summary>Reads the pid the child published. The file is renamed into place, but a scanner or
+    /// indexer can still hold it open for a moment right after, so a sharing violation is retried.</summary>
+    internal static int ReadPid(string path)
+    {
+        var wait = Stopwatch.StartNew();
+        while (true)
+        {
+            try { return int.Parse(File.ReadAllText(path)); }
+            catch (IOException) when (wait.ElapsedMilliseconds < 3000) { Thread.Sleep(20); }
+        }
+    }
+
     public static void Run()
     {
         using var finished = new ManualResetEventSlim();
@@ -121,7 +133,7 @@ public static class TerminalInputFlowScenario
                 ready.Replace("'", "''") + "'; [IO.File]::WriteAllText($ready+'.tmp', [string]$PID); " +
                 "[IO.File]::Move($ready+'.tmp', $ready); Start-Sleep -Seconds 30\"", root);
             Assert.True(SpinWait.SpinUntil(() => File.Exists(ready), 3000), "The controlled child did not start.");
-            using var child = Process.GetProcessById(int.Parse(File.ReadAllText(ready)));
+            using var child = Process.GetProcessById(ReadPid(ready));
             int heartbeats = 0;
             var heartbeat = new DispatcherTimer(DispatcherPriority.Background) { Interval = TimeSpan.FromMilliseconds(20) };
             heartbeat.Tick += (_, _) => heartbeats++;
