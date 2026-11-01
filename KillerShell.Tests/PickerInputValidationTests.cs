@@ -88,6 +88,22 @@ public static class PickerInputValidationScenario
                     Assert.Equal(invalid, ((TextBlock)picker.FindName("SelMeta")).Text);
                     picker.Close();
                 }
+
+                // The path box only navigates to fully qualified paths: relative and drive-relative
+                // text would otherwise be looked up against the process's own folder.
+                foreach (string text in new[] { "documents", "C:documents", @"\documents" })
+                {
+                    int reads = 0;
+                    var picker = new FileDialog(FileDialogMode.Open);
+                    picker.DirectoryListingReader = (_, _, _) => { reads++; return new PickerListingResult(Array.Empty<KillerShell.Controls.PickerEntry>(), true, true); };
+                    var path = (TextBox)picker.FindName("PathBox");
+                    path.Text = text;
+                    path.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, new TestPresentationSource(), 0, Key.Enter)
+                    { RoutedEvent = Keyboard.KeyDownEvent });
+                    Assert.Equal(0, reads);
+                    Assert.Equal((string)app.FindResource("Str_Dlg_NoSuchFolder"), ((TextBlock)picker.FindName("SelMeta")).Text);
+                    picker.Close();
+                }
             }
             catch (Exception error) { failure = error; }
             finally
