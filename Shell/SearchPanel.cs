@@ -21,12 +21,15 @@ namespace KillerShell.Shell
             ScaleHost.SizeChanged += (_, _) => UpdateTitleSearchSize();
             TitleSearchSurface.SizeChanged += (_, _) => UpdateTitleSearchPlacement();
             LocationChanged += (_, _) => { if (_searchOpen) TitleSearchPopup.IsOpen = false; };
-            // A press anywhere else in the window closes the flyout. The flyout is its own popup
-            // window, so a press that reaches this handler is outside it by definition. The
-            // search button keeps its own toggle; closing here as well would reopen it.
-            PreviewMouseDown += (_, _) =>
+            // A press anywhere else in the window closes the flyout. Presses inside the flyout
+            // surface, which holds the pattern help, still route through this window, so they
+            // are skipped. The search button keeps its own toggle; closing here as well would reopen it.
+            PreviewMouseDown += (_, e) =>
             {
-                if (_searchOpen && !SearchPanelBtn.IsMouseOver) TitleSearchPopup.IsOpen = false;
+                if (!_searchOpen || SearchPanelBtn.IsMouseOver) return;
+                var source = e.OriginalSource as DependencyObject;
+                if (IsPressInside(source, TitleSearchSurface) || IsPressInside(source, TitleSearchPopup)) return;
+                TitleSearchPopup.IsOpen = false;
             };
             // The flyout is a topmost popup, so switching to another app has to close it. A dialog
             // of ours, such as the folder picker, keeps it open.
@@ -43,6 +46,20 @@ namespace KillerShell.Shell
             };
             _searchOpen = false;
             ApplySearchPanel(false);
+        }
+
+        // Whether a press began in root's own visual or logical tree. The flyout's content lives
+        // in a popup window but its events still route through this window.
+        internal static bool IsPressInside(DependencyObject? source, DependencyObject? root)
+        {
+            while (source != null)
+            {
+                if (ReferenceEquals(source, root)) return true;
+                source = source is System.Windows.Media.Visual || source is System.Windows.Media.Media3D.Visual3D
+                    ? System.Windows.Media.VisualTreeHelper.GetParent(source) ?? LogicalTreeHelper.GetParent(source)
+                    : LogicalTreeHelper.GetParent(source);
+            }
+            return false;
         }
 
         private void SearchPanel_Click(object sender, RoutedEventArgs e) => ToggleSearchPanel();
