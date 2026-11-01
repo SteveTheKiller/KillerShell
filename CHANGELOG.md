@@ -44,7 +44,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 
-- A `storage <folder>` command lists the largest folders and files, read-only, with an optional HTML report.
+- A `storage <folder>` command lists the largest folders and files, read-only, with an optional HTML report and a `--max-seconds` limit that returns a partial result.
 - `search` exports to a new file with `--csv` or `--html`, and refuses a file that already exists.
 - `processes` and `services` take `--detail`, `processes`, `services` and `events` take `--filter`, and `events` takes `--level`.
 - `--version`, `-v` and `/version` report the version, and the command line help lists its exit codes.
