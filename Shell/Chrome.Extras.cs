@@ -107,6 +107,7 @@ namespace KillerShell.Shell
             {
                 var hwnd = new WindowInteropHelper(w).Handle;
                 if (hwnd == IntPtr.Zero) return;
+                KillerShell.Controls.DwmChrome.ObserveThemeBorder(w, () => ApplyThemeBorder(w));
                 // AppBorderBrush is the frame's OWN key, and every palette picks it deliberately -
                 // Sepulchre's #44585b desaturated teal against a #4d3d2b brown pane border, for
                 // instance. It was briefly switched to PaneBorderBrush on the theory that the
