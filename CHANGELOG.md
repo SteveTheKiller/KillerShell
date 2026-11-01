@@ -33,7 +33,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Menus and submenus scroll when they are taller than the screen.
 - A floating window keeps its rounded corners and Windows drop shadow. On monitors with different scaling, KillerShell could mistake it for a snapped window and square it off, which also removed the shadow.
 - The tray icon's menu opens from the pointer upward, out of the notification area, the same way in every Killer app. A short menu no longer covers the tray icons and a taller one no longer floats about 40 pixels above them.
-- Uninstalling no longer leaves empty file-type and folder-menu entries behind in your registry. Entries another program still uses are left alone.
+- Uninstalling clears the empty file-type and folder-menu entries it created in your registry. Entries another program still uses are left alone, and an empty entry that cannot be removed no longer stops the uninstall.
 - The file picker's recent locations and places lists are named for screen readers.
 - Keyboard focus cues respect the theme, Windows contrast refreshes are coalesced and restore frame colors, and picker selections keep text and icons shadow-free.
 - Dialog title bars match the rest of the dialog in every theme except 98SE. They had their own band, a lighter strip in Light and a gradient in several dark themes, and the title bar painted its film grain twice.
