@@ -53,6 +53,14 @@ namespace KillerShell.Tests.Services
             => Assert.Equal(AddressTargetKind.Associated, AddressTarget.Classify(Make("scan.pdf", [0x25, 0x50, 0x44, 0x46, 0x00, 0x01])));
 
         [Fact]
+        public void ATextFileOverTheEditorLimitOpensThroughItsAssociation()
+        {
+            string big = Path.Combine(_dir, "huge.md");
+            using (var stream = new FileStream(big, FileMode.Create)) stream.SetLength(32L * 1024 * 1024 + 1);
+            Assert.Equal(AddressTargetKind.Associated, AddressTarget.Classify(big));
+        }
+
+        [Fact]
         public void AMissingPathIsMissing()
             => Assert.Equal(AddressTargetKind.Missing, AddressTarget.Classify(Path.Combine(_dir, "nope.md")));
 

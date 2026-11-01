@@ -36,9 +36,16 @@ namespace KillerShell.Services
 
             string ext = Path.GetExtension(path).ToLowerInvariant();
             if (Array.IndexOf(TerminalExtensions, ext) >= 0) return AddressTargetKind.Terminal;
+            if (TooBigToEdit(path)) return AddressTargetKind.Associated;
             if (Array.IndexOf(App.TextExtensions, ext) >= 0) return AddressTargetKind.Edit;
 
             return LooksLikeText(path) ? AddressTargetKind.Edit : AddressTargetKind.Associated;
+        }
+
+        private static bool TooBigToEdit(string path)
+        {
+            try { return new FileInfo(path).Length > MaxEditBytes; }
+            catch { return false; }
         }
 
         // A NUL byte in the first 8 KB is the same test git uses to call a file binary. UTF-16
