@@ -60,6 +60,8 @@ namespace KillerShell.Services
                 ownedRecovery.Add(recovery.Record);
                 ownedRecovery.Add(recovery.Image);
             }
+            var leftovers = ExecutableDeployment.UninstallLeftovers(directory, Path.GetFileName(image));
+            foreach (string name in leftovers) ownedRecovery.Add(Path.Combine(directory, name));
             foreach (string entry in Directory.EnumerateFileSystemEntries(directory))
                 if (!string.Equals(entry, image, StringComparison.OrdinalIgnoreCase)
                     && !string.Equals(entry, icon, StringComparison.OrdinalIgnoreCase)
@@ -82,6 +84,12 @@ namespace KillerShell.Services
                 // Uninstall explicitly retires failed candidates too. Finish this before
                 // detaching the installed image so cleanup failure leaves a working install.
                 foreach (var recovery in recoveries) recovery.Remove();
+                foreach (string name in leftovers)
+                {
+                    string path = Path.Combine(directory, name);
+                    RejectLinks(path);
+                    File.Delete(path);
+                }
                 RejectLinks(icon);
                 if (File.Exists(image))
                 {
