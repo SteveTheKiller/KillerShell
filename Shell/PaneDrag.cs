@@ -61,10 +61,7 @@ namespace KillerShell.Shell
             if (!_ghostShown)
             {
                 _ghostShown = true;
-                TabDragGhostGlyph.Text = t.TabGlyph;
-                TabDragGhostGlyph.Visibility = t.TabGlyph.Length > 0
-                    ? Visibility.Visible : Visibility.Collapsed;
-                TabDragGhostText.Text = t.Title;
+                TabDragGhost.Source = TabContainer(t);
                 DragLayer.Visibility = Visibility.Visible;
                 Anim.FadeIn(DragLayer);          // Anim.cs
             }
@@ -135,6 +132,7 @@ namespace KillerShell.Shell
         {
             if (!_ghostShown) return;
             _ghostShown = false;
+            TabDragGhost.Source = null;
             DragLayer.Visibility = Visibility.Collapsed;
             TabDropCaret.Visibility = Visibility.Collapsed;
         }

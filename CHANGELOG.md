@@ -4,6 +4,12 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.2] - Unreleased
+
+### Fixed
+
+- Dragged tabs keep their current appearance and size.
+
 ## [1.5.1] - 2026-11-01
 
 1.5.1 hardens self-update and uninstall, stops the file picker crashing or overwriting files it could not check, fixes AltGr typing, and opens files you type into the address bar.
