@@ -4,12 +4,17 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.1] - Unreleased
+## [1.5.1] - 2026-11-01
 
 1.5.1 hardens self-update and uninstall, stops the file picker crashing or overwriting files it could not check, fixes AltGr typing, and opens files you type into the address bar.
 
 ### Fixed
 
+- A folder name with a curly apostrophe no longer breaks the terminal location box, the address bar's run command or the update helper, and cannot run text from the name as a command.
+- An update started from an administrator's copy reopens KillerShell at normal rights. An update that is applied but cannot record its version in the registry now finishes and reopens instead of reporting failure, and putting the previous copy back after a failed update retries a busy file and survives a leftover from an earlier attempt.
+- A relative folder or file typed into a terminal's location box is resolved against that tab's folder, and a path Windows cannot read says it was not found instead of failing.
+- A pattern such as *.log typed in the file picker's name box and accepted with the button filters the list, as Enter does, and a listing that arrived in time is no longer reported as timed out while it is being shown.
+- The command line tool exits with 2, not 1, for a path Windows cannot read, and its events list reports a reached limit only when more events exist.
 - The file picker refuses to save over a file it could not check, so a slow network share can no longer skip the overwrite prompt.
 - A failed update puts the previous copy back rather than reopening a replacement that failed its checks, and a canceled picker can no longer come back as OK.
 - Update and uninstall helpers load PowerShell modules only from Windows' own folder, so a module planted in your Documents cannot run inside them as administrator; a failed uninstall reports the real reason and retries when a copy is still running; a stalled update says so instead of silently doing nothing; and the window no longer freezes while an update is handed off.

@@ -42,7 +42,7 @@ public sealed class UpdateLockHeldRelaunchTests
             using (var sha = System.Security.Cryptography.SHA256.Create()) hash = BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(download))).Replace("-", "");
             UpdateImagePublication.RememberVerified(download, hash, new string('A', 40));
             // A process id of 1 never matches the recorded start time, so both waits find nothing running.
-            var helper = TrustedUpdate.Publication(download, target, "1.5.1", new string('B', 64), 1, 1, 1, 1);
+            var helper = TrustedUpdate.Publication(download, target, "1.5.1", new string('B', 64), 1, 1, 1, 1, new string('C', 40));
             string reopened = Path.Combine(root, "reopened.txt");
             string script = "function Start-KillerUpdatedApp { param($t, $r, $e) [IO.File]::WriteAllText('" + reopened + "', $t) }\n"
                 + Decompressed(helper).Replace("function Start-KillerUpdatedApp", "function Start-KillerUpdatedAppReal");
@@ -82,7 +82,7 @@ public sealed class UpdateLockHeldRelaunchTests
             // The owner is a real running process, identified by its real id and start time, so the wait
             // finds it. The helper's one-minute wait is cut to half a second so the check does not take a minute.
             var helper = TrustedUpdate.Publication(download, target, "1.5.1", new string('B', 64),
-                parent.Id, parent.StartTime.ToUniversalTime().Ticks, 1, 1);
+                parent.Id, parent.StartTime.ToUniversalTime().Ticks, 1, 1, new string('C', 40));
             string reopened = Path.Combine(root, "reopened.txt");
             string decompressed = Decompressed(helper);
             Assert.Contains("WaitForExit(60000)", decompressed);

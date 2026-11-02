@@ -87,11 +87,11 @@ public sealed class UpdateRelaunchArgumentTests
         {
             TrayWake.UseForUpdateRelaunch();
             string target = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "KillerShell.exe");
-            var helper = TrustedUpdate.Publication(download, target, "1.5.1", new string('B', 64), 1, 1, 1, 1);
+            var helper = TrustedUpdate.Publication(download, target, "1.5.1", new string('B', 64), 1, 1, 1, 1, new string('C', 40));
             string script = Decompressed(helper);
             Assert.Contains(Reopen(TrayWake.NoWakeArgument), script);
             Assert.Contains("Start-KillerUpdatedApp ([Text.Encoding]::Unicode.GetString(", script);
-            Assert.Contains("'" + TrayWake.NoWakeArgument + "' $true}catch{};exit 1}", script);
+            Assert.Contains("'" + TrayWake.NoWakeArgument + "' $true (", script);
         }
         finally { UpdateService.RelaunchArgument = ""; Clean(download); }
     }
@@ -127,7 +127,8 @@ public sealed class UpdateRelaunchArgumentTests
             string overrides = "function Start-KillerUpdatedApp { param($t, $r, $e) [IO.File]::WriteAllText('" + reopened + "', $t + '|' + $r + '|' + $e) }\n"
                 + "$ops.Publisher = { param($path, $plan) $true }\n"
                 + "$ops.Run = { param($path, $arguments) " + installerExit + " }\n"
-                + "$ops.Releases = { param($url) }\n";
+                + "$ops.Releases = { param($url) }\n"
+                + "$ops.Recover = { param($plan) & $ops.Relaunch $plan }\n$ops.RelaunchInstalled = { param($plan) & $ops.Relaunch $plan }\n";
             string script = UpdateImagePublication.Installer(download, "/S", false, target, Path.Combine(root, "stage"), "https://example.invalid/", overrides);
             string file = Path.Combine(root, "helper.ps1");
             File.WriteAllText(file, script, new UTF8Encoding(true));
@@ -173,7 +174,7 @@ public sealed class UpdateRelaunchArgumentTests
         try
         {
             string target = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "KillerShell.exe");
-            string script = Decompressed(TrustedUpdate.Publication(download, target, "1.5.1", new string('B', 64), 1, 1, 1, 1));
+            string script = Decompressed(TrustedUpdate.Publication(download, target, "1.5.1", new string('B', 64), 1, 1, 1, 1, new string('C', 40)));
             int closed = script.IndexOf("$exited=$true", StringComparison.Ordinal);
             int lastWait = script.LastIndexOf("WaitForExit(60000)", StringComparison.Ordinal);
             int reopen = script.IndexOf("if(-not $exited){exit 1};try{Start-KillerUpdatedApp", StringComparison.Ordinal);

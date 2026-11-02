@@ -29,6 +29,7 @@ public sealed class UpdateFailureRelaunchTests
             string overrides = "$ops.Publisher = { param($path, $plan) $false }\n"
                 + "$ops.ShowReport = { param($path) [IO.File]::WriteAllText('" + reported + "', 'shown') }\n"
                 + "$ops.Relaunch = { param($plan) [IO.File]::WriteAllText('" + relaunched + "', 'started') }\n"
+                + "$ops.Recover = { param($plan) & $ops.Relaunch $plan }\n$ops.RelaunchInstalled = { param($plan) & $ops.Relaunch $plan }\n"
                 + "$ops.Releases = { param($url) }\n";
             string script = installer
                 ? UpdateImagePublication.Installer(download, "/S", elevated, target, Path.Combine(root, "stage"), "https://example.invalid/", overrides)

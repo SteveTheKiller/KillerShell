@@ -156,7 +156,7 @@ namespace KillerShell.Terminal
         internal string ChangeDirectoryCommand(string path) => Kind switch
         {
             TerminalShellKind.Wsl => path == "~" ? "cd ~\r" : "cd -- " + Services.WslDistributions.BashQuote(Services.WslDistributions.ToLinuxPath(path, Distribution!)) + "\r",
-            TerminalShellKind.PowerShell => "Set-Location -LiteralPath '" + path.Replace("'", "''") + "'\r",
+            TerminalShellKind.PowerShell => "Set-Location -LiteralPath " + Services.PowerShellText.Literal(path) + "\r",
             TerminalShellKind.Cmd => "cd /d " + Services.WslDistributions.QuoteArgument(path) + "\r",
             _ => "cd -- " + Services.WslDistributions.BashQuote(path) + "\r"
         };

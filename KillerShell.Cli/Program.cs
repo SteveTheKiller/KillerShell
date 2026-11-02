@@ -65,7 +65,7 @@ namespace KillerShell.Cli
                         return 2;
                 }
             }
-            catch (ArgumentException ex)
+            catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
             {
                 Console.Error.WriteLine(ex.Message);
                 return 2;
@@ -319,7 +319,9 @@ namespace KillerShell.Cli
             var output = new StringBuilder("{\"log\":").Append(JsonString(log)).Append(",\"events\":[");
             int count = 0;
             int scanned = 0;
-            while (count < limit && scanned < MaximumEventScan)
+            // One match past the limit is read so the flag says whether more exist, not just that the limit was met.
+            bool more = false;
+            while (scanned < MaximumEventScan)
             {
                 using EventRecord record = reader.ReadEvent();
                 if (record == null) break;
@@ -329,6 +331,7 @@ namespace KillerShell.Cli
                 if (filter != null && !(Contains(record.ProviderName, filter) || Contains(message, filter)
                     || record.Id.ToString(CultureInfo.InvariantCulture).Equals(filter, StringComparison.Ordinal)))
                     continue;
+                if (count == limit) { more = true; break; }
                 if (count > 0) output.Append(',');
                 output.Append("{\"id\":").Append(record.Id.ToString(CultureInfo.InvariantCulture));
                 output.Append(",\"level\":").Append(JsonString(record.LevelDisplayName ?? string.Empty));
@@ -337,8 +340,8 @@ namespace KillerShell.Cli
                 output.Append(",\"message\":").Append(JsonString(message.Length <= 2000 ? message : message[..2000])).Append('}');
                 count++;
             }
-            output.Append("],\"limitReached\":").Append(count == limit ? "true" : "false");
-            output.Append(",\"scanLimitReached\":").Append(count < limit && scanned >= MaximumEventScan ? "true" : "false").Append('}');
+            output.Append("],\"limitReached\":").Append(more ? "true" : "false");
+            output.Append(",\"scanLimitReached\":").Append(!more && scanned >= MaximumEventScan ? "true" : "false").Append('}');
             Console.WriteLine(output.ToString());
             return 0;
         }

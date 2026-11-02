@@ -378,10 +378,15 @@ namespace KillerShell.Services
 
             // The whole helper travels in the process command line, so no file the user account can
             // write is read after it starts. A failed publication opens the recovery report.
+            // A copy run as administrator runs this helper at the same level. It must reopen the app
+            // through the de-elevated path (and fail closed when that is unavailable) and must not open
+            // a window of its own as administrator, so it takes the elevated helper's settings.
+            bool elevated = platform.IsElevated();
             string script = "$ErrorActionPreference = 'Stop'\n"
-                + TrustedUpdate.Wait(self.Id, self.StartTime.ToUniversalTime().Ticks, NotClosed(newExe + ".recovery.txt")) + "\n"
-                + UpdateImagePublication.Script(newExe, curExe, false, ReleasesUrl, AppInfo.DisplayName,
-                    newVersion, hive, reopen: RelaunchArgument, showReport: true);
+                + (elevated ? TrustedUpdate.Wait(self.Id, self.StartTime.ToUniversalTime().Ticks)
+                    : TrustedUpdate.Wait(self.Id, self.StartTime.ToUniversalTime().Ticks, NotClosed(newExe + ".recovery.txt"))) + "\n"
+                + UpdateImagePublication.Script(newExe, curExe, elevated, ReleasesUrl, AppInfo.DisplayName,
+                    newVersion, hive, reopen: RelaunchArgument, showReport: !elevated);
             var psi = HelperStart(script);
             if (platform.Start(psi) is null)
                 throw new IOException("The update helper did not start. Download retained at: " + newExe);
@@ -390,9 +395,10 @@ namespace KillerShell.Services
         /// <summary>The per-user helper's timeout when the app has not closed within a minute: the
         /// reason goes into the recovery report Script already wrote, and the report opens, as a
         /// failed publication's does, instead of the update silently doing nothing.</summary>
-        private static string NotClosed(string report)
+        internal static string NotClosed(string report)
         {
-            string quoted = "'" + report.Replace("'", "''") + "'";
+            // The path travels as Base64 data, as the publication script's values do, so no quote character in it can end a literal.
+            string quoted = "([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('" + Convert.ToBase64String(Encoding.UTF8.GetBytes(report)) + "')))";
             return "try{[IO.File]::AppendAllText(" + quoted + ",[Environment]::NewLine+'KillerTools: the app did not close within a minute, so this update was not applied.');"
                 + "[void][Diagnostics.Process]::Start([IO.Path]::Combine([Environment]::SystemDirectory,'notepad.exe'),'\"'+" + quoted + "+'\"')}catch{};exit 1618";
         }

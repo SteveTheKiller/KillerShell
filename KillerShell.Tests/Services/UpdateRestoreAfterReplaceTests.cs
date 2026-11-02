@@ -33,7 +33,8 @@ public sealed class UpdateRestoreAfterReplaceTests
                 + "$realMove = $ops.Move\n"
                 + "$ops.Move = { param($source, $target) & $realMove $source $target; [IO.File]::WriteAllText('" + replaced + "', 'x') }\n"
                 + overrides
-                + "$ops.Relaunch = { param($plan) $t = if ([IO.File]::Exists($plan.Target)) { [IO.File]::ReadAllText($plan.Target) } else { '' }; [IO.File]::WriteAllText('" + relaunched + "', $t) }\n";
+                + "$ops.Relaunch = { param($plan) $t = if ([IO.File]::Exists($plan.Target)) { [IO.File]::ReadAllText($plan.Target) } else { '' }; [IO.File]::WriteAllText('" + relaunched + "', $t) }\n"
+                + "$ops.Recover = { param($plan) & $ops.Relaunch $plan }\n$ops.RelaunchInstalled = { param($plan) & $ops.Relaunch $plan }\n";
             string script = UpdateImagePublication.Script(download, target, false, "https://example.invalid/", "KillerShell", overrides: all);
             string file = Path.Combine(root, "helper.ps1");
             File.WriteAllText(file, script, new System.Text.UTF8Encoding(true));
@@ -83,7 +84,7 @@ public sealed class UpdateRestoreAfterReplaceTests
     {
         var (exit, target, relaunched) = RunPublication("$ops.Publisher = { param($path, $plan) $true }\n"
             + "$ops.Metadata = { param($plan) throw 'registry blocked' }\n");
-        Assert.Equal(1, exit);
+        Assert.Equal(0, exit);
         Assert.Equal("release bytes", target);
         Assert.Equal("release bytes", relaunched);
     }

@@ -49,6 +49,7 @@ public sealed class FileDialogHardeningTests
     [Fact] public Task QuotedDirectoryInTheNameBoxNavigates() => RunScenario("QuotedDirectory");
     [Fact] public Task UpKeepsWalkingPastTheRecoveryLimitOfAVanishedTenLevelTree() => RunScenario("DeepVanishedTree");
     [Fact] public Task RecentsIgnoreAClickWhileProbingAndAnswerWithinTheShortDeadline() => RunScenario("Recents");
+    [Fact] public Task AWildcardAcceptedFromTheButtonRetargetsTheListing() => RunScenario("WildcardAccept");
 
     [Fact]
     public async Task RecentsAreProbedPerEntryAndADeadOneDoesNotHideTheRest()
@@ -111,6 +112,7 @@ public static class FileDialogHardeningScenario
                     case "QuotedDirectory": QuotedDirectory(); break;
                     case "DeepVanishedTree": DeepVanishedTree(); break;
                     case "Recents": Recents(); break;
+                    case "WildcardAccept": WildcardAccept(); break;
                     default: throw new ArgumentException(name);
                 }
             }
@@ -321,6 +323,38 @@ public static class FileDialogHardeningScenario
         Select();
         Wait(() => reads > afterFailure && picker.IsDirectoryListingAvailable, "the retry");
         picker.Close();
+    }
+
+    private static void WildcardAccept()
+    {
+        // A pattern typed into the name box and accepted with the button retargets the listing, as
+        // Enter does, instead of being looked up as the name of a file.
+        {
+            var picker = Listed(FileDialogMode.Open, Shown);
+            picker.FileExistsProbe = _ => false;
+            var combo = Find<ComboBox>(picker, "FilterCombo");
+            Find<TextBox>(picker, "FileNameBox").Text = "*.log";
+            Click(picker);
+            Wait(() => combo.Items.Count > 0 && Equals(combo.Items[0], "*.log"), "the pattern as the first filter");
+            Assert.Equal(0, combo.SelectedIndex);
+            Assert.Equal("", Find<TextBox>(picker, "FileNameBox").Text);
+            Assert.Equal("", picker.FileName);
+            Assert.NotEqual((string)Application.Current.FindResource("Str_Dlg_NoSuchFile"), Meta(picker));
+            picker.Close();
+        }
+        // Several quoted names in a multiselect keep their own path and are not read as a pattern.
+        {
+            var picker = Listed(FileDialogMode.Open, Shown);
+            picker.Multiselect = true;
+            picker.FileExistsProbe = _ => true;
+            var combo = Find<ComboBox>(picker, "FilterCombo");
+            int filters = combo.Items.Count;
+            Find<TextBox>(picker, "FileNameBox").Text = "\"a.txt\" \"b.txt\"";
+            Click(picker);
+            Wait(() => picker.FileNames.Length == 2, "the quoted names");
+            Assert.Equal(filters, combo.Items.Count);
+            picker.Close();
+        }
     }
 
     private static void QuotedDirectory()

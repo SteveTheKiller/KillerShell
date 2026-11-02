@@ -1322,17 +1322,21 @@ namespace KillerShell.Controls
                 if (isDirectory) { NavigateTo(asDir); FileNameBox.Clear(); return; }
             }
 
-            // A wildcard retargets the listing rather than naming a file.
-            if (typed.IndexOfAny(['*', '?']) >= 0)
-            {
-                _filterPatterns.Insert(0, [typed]);
-                FilterCombo.Items.Insert(0, typed);
-                FilterCombo.SelectedIndex = 0;
-                FileNameBox.Clear();
-                return;
-            }
+            if (TryApplyWildcard(typed)) return;
 
             Accept();
+        }
+
+        /// <summary>A wildcard retargets the listing rather than naming a file: it becomes the first
+        /// filter and the name box is cleared. False when <paramref name="typed"/> holds no wildcard.</summary>
+        private bool TryApplyWildcard(string typed)
+        {
+            if (typed.IndexOfAny(['*', '?']) < 0) return false;
+            _filterPatterns.Insert(0, [typed]);
+            FilterCombo.Items.Insert(0, typed);
+            FilterCombo.SelectedIndex = 0;
+            FileNameBox.Clear();
+            return true;
         }
 
         private void UpdateInfoSummary()
@@ -1596,6 +1600,7 @@ namespace KillerShell.Controls
             }
 
             var typed = rawTyped.Trim('"');
+            if (TryApplyWildcard(typed)) return;
             if (typed.Length > 0 && IsMalformedTyped(typed)) { RejectTyped(); return; }
             if (typed.Length == 0)
             {

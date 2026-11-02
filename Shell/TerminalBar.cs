@@ -89,15 +89,16 @@ namespace KillerShell.Shell
             var t = pane.Active;
             if (t?.Term == null) { EndEditTermCwd(pane); return; }
 
-            string path = box.Text.Trim();
             var profile = t.LaunchProfile ?? Terminal.TerminalProfile.PowerShell();
+            var target = TermCwdInput.Resolve(box.Text, profile, t.CurrentFolder);
+            string path = target.Path;
 
             // A file is something to open, not somewhere to go. A program or script is staged
             // in THIS shell after a cd to its folder, waiting for Enter; anything else opens the
             // same way it would from the address bar (AddressBar.cs).
-            if (profile.Kind != Terminal.TerminalShellKind.Wsl && System.IO.File.Exists(path.Trim('"')))
+            if (target.Kind == TermCwdKind.File)
             {
-                string file = System.IO.Path.GetFullPath(path.Trim('"'));
+                string file = path;
                 string? staged = Services.AddressTarget.Classify(file) == Services.AddressTargetKind.Terminal
                     ? Services.AddressTarget.StagedCommand(profile.Kind, System.IO.Path.GetFileName(file))
                     : null;
@@ -110,7 +111,8 @@ namespace KillerShell.Shell
                 return;
             }
 
-            if (profile.Kind != Terminal.TerminalShellKind.Wsl && !System.IO.Directory.Exists(path))
+            if (target.Kind == TermCwdKind.Ignore) return;
+            if (target.Kind == TermCwdKind.NotFound)
             {
                 // Stays in edit mode rather than reverting - a typo is worth the chance to fix,
                 // not a round trip back through click-to-edit.
@@ -119,7 +121,6 @@ namespace KillerShell.Shell
             }
 
             // Send a literal path using this shell's quoting and directory-change command.
-            if (path.IndexOfAny(['\r', '\n', '\0']) >= 0) return;
             t.Term.Send(profile.ChangeDirectoryCommand(path));
             t.Term.Focus();
             EndEditTermCwd(pane);

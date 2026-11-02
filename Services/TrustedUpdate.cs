@@ -102,12 +102,18 @@ namespace KillerShell.Services
                     signer = thumb;
                     if (image == download) UpdateImagePublication.RememberVerified(download, expected, signer);
                 });
-                string originalHash;
+                string originalHash, originalSigner;
                 using (var original = new FileStream(target, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
                     originalHash = Hex(hash.ComputeHash(original));
+                    var identity = CodeSignature.GetSignerInfo(target);
+                    if (!identity.valid || !CodeSignature.SamePublisher(identity.subject, AppInfo.SignerName))
+                        throw new SecurityException("The installed recovery image publisher is invalid.");
+                    originalSigner = identity.thumb;
+                }
                 UpdateImagePublication.RememberVerified(staged, expected, signer);
                 var start = Publication(staged, target, version, originalHash,
-                    parentId, parentTicks, self.Id, self.StartTime.ToUniversalTime().Ticks);
+                    parentId, parentTicks, self.Id, self.StartTime.ToUniversalTime().Ticks, originalSigner);
                 using var child = Process.Start(start) ?? throw new IOException("The immutable publication helper did not start.");
                 return 0;
             }
@@ -146,10 +152,11 @@ namespace KillerShell.Services
         }
 
         internal static ProcessStartInfo Publication(string staged, string target, string version, string originalHash,
-            int parentId, long parentTicks, int helperId, long helperTicks)
+            int parentId, long parentTicks, int helperId, long helperTicks, string originalSigner)
         {
             string publication = UpdateImagePublication.Script(staged, target, true, UpdateService.ReleasesUrl,
-                AppInfo.DisplayName, version, "HKLM", reopen: UpdateService.RelaunchArgument, guardEmitted: true);
+                AppInfo.DisplayName, version, "HKLM", reopen: UpdateService.RelaunchArgument, guardEmitted: true,
+                    originalHash: originalHash, originalSigner: originalSigner);
             string report = staged + ".recovery.txt";
             // The guard type comes first, so a failure before the publication text has run (the app
             // did not close, another install holds the mutex, the installed image changed) can still
@@ -170,7 +177,8 @@ namespace KillerShell.Services
                 // report beside the staged copy still says what happened. That only follows once the
                 // old copy has exited, and it follows even when another install holds the lock (waited on
                 // briefly), which only means nothing is published. An app still running is left alone.
-                + "if(-not $exited){exit 1};try{Start-KillerUpdatedApp (" + Data(target) + ") '" + UpdateService.RelaunchArgument.Replace("'", "''") + "' $true}catch{};exit 1}"
+                + "if(-not $exited){exit 1};try{Start-KillerUpdatedApp (" + Data(target) + ") '" + UpdateService.RelaunchArgument.Replace("'", "''") + "' $true (" + Data(originalSigner) + ") ("
+                + Data(AppInfo.SignerName) + ") (" + Data(report) + ") (" + Data(originalHash) + ")}catch{};exit 1}"
                 + "finally{if($null -ne $lease){if($owned){$lease.ReleaseMutex()};$lease.Dispose()}}";
             return new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),
                 @"WindowsPowerShell\v1.0\powershell.exe"), ImmutablePowerShell.Arguments(body))

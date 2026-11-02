@@ -71,7 +71,7 @@ namespace KillerShell.Services
         /// </summary>
         internal static string? StagedCommand(TerminalShellKind shell, string fileName) => shell switch
         {
-            TerminalShellKind.PowerShell => "& '.\\" + fileName.Replace("'", "''") + "'",
+            TerminalShellKind.PowerShell => "& " + PowerShellText.Literal(@".\" + fileName),
             TerminalShellKind.Cmd        => "\"" + fileName + "\"",
             _                            => null,
         };
