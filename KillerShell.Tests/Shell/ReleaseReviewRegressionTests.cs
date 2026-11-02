@@ -88,28 +88,48 @@ internal static class ReviewKeys
 
 public static class AltGrZeroScenario
 {
+    [DllImport("user32.dll")] private static extern IntPtr LoadKeyboardLayout(string id, uint flags);
+    [DllImport("user32.dll")] private static extern IntPtr ActivateKeyboardLayout(IntPtr hkl, uint flags);
+    [DllImport("user32.dll")] private static extern IntPtr GetKeyboardLayout(uint thread);
+
     public static void Run()
     {
         using var fixture = new ShellWindowFixture();
         var window = fixture.Window;
-        var pane = (FilePane)window.FindName("LeftPane");
-        if (!pane.DetailsPaneOpen) window.DetailsPaneToggle_Click(pane);
-        Assert.True(pane.DetailsPaneOpen);
-        pane.ResultsList.Focus();
-        PaneKeyboardScenario.Raise(pane.ResultsList, Key.L, ModifierKeys.Control);
-        ShellWindowFixture.PumpUntil(() => pane.AddressBox.IsKeyboardFocusWithin);
+        // AltGr is text only on a layout that has an AltGr layer (US has none, so its right
+        // Ctrl+Alt+0 stays the details chord). Pin the German layout on this thread so the
+        // scenario does not depend on the machine's input language.
+        IntPtr previous = GetKeyboardLayout(0);
+        IntPtr german = LoadKeyboardLayout("00000407", 0);
+        Assert.NotEqual(IntPtr.Zero, german);
+        ActivateKeyboardLayout(german, 0);
+        try
+        {
+            Assert.Equal(german, GetKeyboardLayout(0));
+            var pane = (FilePane)window.FindName("LeftPane");
+            if (!pane.DetailsPaneOpen) window.DetailsPaneToggle_Click(pane);
+            Assert.True(pane.DetailsPaneOpen);
+            pane.ResultsList.Focus();
+            PaneKeyboardScenario.Raise(pane.ResultsList, Key.L, ModifierKeys.Control);
+            ShellWindowFixture.PumpUntil(() => pane.AddressBox.IsKeyboardFocusWithin);
 
-        ReviewKeys.Raise(pane.AddressBox, Key.D0,
-            ReviewKeys.Control, ReviewKeys.LeftControl, ReviewKeys.Menu, ReviewKeys.RightMenu);
-        Assert.True(pane.DetailsPaneOpen, "AltGr+0 types a character in the address box.");
+            // Focus changes hand the thread back to the window's own layout, so pin German again
+            // right before the keys are raised.
+            ActivateKeyboardLayout(german, 0);
+            Assert.Equal(german, GetKeyboardLayout(0));
+            ReviewKeys.Raise(pane.AddressBox, Key.D0,
+                ReviewKeys.Control, ReviewKeys.LeftControl, ReviewKeys.Menu, ReviewKeys.RightMenu);
+            Assert.True(pane.DetailsPaneOpen, "AltGr+0 types a character in the address box.");
 
-        // Ctrl+Alt+0 with the left keys still turns details off.
-        pane.ResultsList.Focus();
-        ShellWindowFixture.PumpUntil(() => pane.ResultsList.IsKeyboardFocusWithin);
-        var chord = ReviewKeys.Raise(pane.ResultsList, Key.D0,
-            ReviewKeys.Control, ReviewKeys.LeftControl, ReviewKeys.Menu, ReviewKeys.LeftMenu);
-        Assert.True(chord.Handled);
-        Assert.False(pane.DetailsPaneOpen);
+            // Ctrl+Alt+0 with the left keys still turns details off.
+            pane.ResultsList.Focus();
+            ShellWindowFixture.PumpUntil(() => pane.ResultsList.IsKeyboardFocusWithin);
+            var chord = ReviewKeys.Raise(pane.ResultsList, Key.D0,
+                ReviewKeys.Control, ReviewKeys.LeftControl, ReviewKeys.Menu, ReviewKeys.LeftMenu);
+            Assert.True(chord.Handled);
+            Assert.False(pane.DetailsPaneOpen);
+        }
+        finally { ActivateKeyboardLayout(previous, 0); }
     }
 }
 
