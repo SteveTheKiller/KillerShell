@@ -16,6 +16,8 @@ namespace KillerShell.Tests.Terminal;
 // is written to the registry. The call is marshaled by the proxy Windows Terminal's package
 // registers for ITerminalHandoff3, the same proxy a real handoff uses, and its handles really
 // are copied between processes. (In one process COM refuses handle marshaling outright.)
+// It runs alone because it timed out waiting for pipe EOF only alongside parallel tests.
+[Collection(NativeAccessibilityCollection.Name)]
 public sealed class TerminalHandoffTests
 {
     [WindowsTerminalProxyFact]
