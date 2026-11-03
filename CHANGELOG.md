@@ -17,6 +17,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A per-user or portable update reopens KillerShell even when antivirus or a locked-down PowerShell stops the update helper from loading.
 - Updating KillerShell no longer removes a relaunch another Killer app scheduled for its own update.
 - The file picker accepts a full path typed into the name box when the folder listing failed or timed out, and refuses a name no path can carry with its message even while a folder is still loading.
+- Changing the file type in the save picker while the name box holds characters no file name can carry no longer crashes KillerShell; the name keeps its text and shows the invalid-path message.
 
 ## [1.5.1] - 2026-11-01
 
