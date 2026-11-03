@@ -14,7 +14,7 @@ namespace KillerShell.Shell
     {
         /// <summary>One filter row as the session blob stores it: six fields joined by '~'.</summary>
         public static string EncodeSessionFilter(SearchFilter f) =>
-            $"{f.FieldIndex}~{f.ConditionIndex}~{EscapeRowText(f.Text)}~{(f.Date.HasValue ? f.Date.Value.Ticks.ToString() : "")}~{EscapeRowText(f.SizeText)}~{f.UnitIndex}";
+            $"{f.FieldIndex}~{f.ConditionIndex}~{EscapeRowText(f.Text)}~{(f.Date.HasValue ? f.Date.Value.Ticks.ToString() : "")}~{EscapeRowText(SearchFilter.SizeTextToStored(f.SizeText))}~{f.UnitIndex}";
 
         // EscapeDataString leaves ~ alone (it is unreserved), but ~ is the field separator here.
         private static string EscapeRowText(string text) => Uri.EscapeDataString(text).Replace("~", "%7E");
@@ -29,7 +29,7 @@ namespace KillerShell.Shell
                 FieldIndex     = int.TryParse(fp[0], out int fi) ? fi : 0,
                 ConditionIndex = int.TryParse(fp[1], out int ci) ? ci : 0,
                 Text           = Uri.UnescapeDataString(fp[2]),
-                SizeText       = Uri.UnescapeDataString(fp[4]),
+                SizeText       = SearchFilter.SizeTextFromStored(Uri.UnescapeDataString(fp[4])),
                 UnitIndex      = int.TryParse(fp[5], out int ui) ? ui : 0,
             };
             if (long.TryParse(fp[3], out long ticks)) f.Date = new DateTime(ticks);

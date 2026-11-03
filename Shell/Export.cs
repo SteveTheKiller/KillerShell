@@ -35,7 +35,7 @@ namespace KillerShell.Shell
             var dlg = new FileDialog(FileDialogMode.Save)
             {
                 Filter   = "CSV File|*.csv",
-                FileName = $"KillerShell-{DateTime.Now:yyyyMMdd-HHmmss}.csv",
+                FileName = $"KillerShell-{DateTime.Now.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture)}.csv",
                 Title    = Loc("Str_Export_TitleCsv")
             };
             if (dlg.ShowDialog(this) != true) return;
@@ -64,7 +64,7 @@ namespace KillerShell.Shell
             var dlg = new FileDialog(FileDialogMode.Save)
             {
                 Filter   = "HTML Files|*.html",
-                FileName = $"KillerShell-{DateTime.Now:yyyyMMdd-HHmmss}.html",
+                FileName = $"KillerShell-{DateTime.Now.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture)}.html",
                 Title    = Loc("Str_Export_TitleHtml")
             };
 
@@ -101,7 +101,7 @@ namespace KillerShell.Shell
             var dlg = new FileDialog(FileDialogMode.Save)
             {
                 Filter = "HTML Files|*.html",
-                FileName = $"KillerShell-Storage-{DateTime.Now:yyyyMMdd-HHmmss}.html",
+                FileName = $"KillerShell-Storage-{DateTime.Now.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture)}.html",
                 Title = Loc("Str_Export_TitleStorage")
             };
             if (dlg.ShowDialog(this) != true) return;

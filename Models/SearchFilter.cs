@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 using KillerShell.Shell;
@@ -95,6 +96,19 @@ namespace KillerShell.Models
                 return (long)(v * (_unitIndex == UnitMb ? 1024L * 1024L : 1024L));
             }
         }
+
+        /// <summary>The size text in the form the session stores: invariant, so it reads back
+        /// under any region. Text that is not a number is kept as typed.</summary>
+        public static string SizeTextToStored(string text) =>
+            double.TryParse(text, out double v) ? v.ToString("R", CultureInfo.InvariantCulture) : text;
+
+        /// <summary>Reads a stored size back for the size box. Invariant first; a value saved
+        /// before the stored form was invariant (typed under a comma-decimal region) falls back
+        /// to the current region. Shown in the current region, as the user would type it.</summary>
+        public static string SizeTextFromStored(string text) =>
+            double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double v)
+            || double.TryParse(text, out v)
+                ? v.ToString(CultureInfo.CurrentCulture) : text;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void Notify([CallerMemberName] string? name = null)

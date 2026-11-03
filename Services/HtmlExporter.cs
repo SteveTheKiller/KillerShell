@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,7 +38,7 @@ namespace KillerShell.Services
         {
             string current = Services.ThemeManager.Current == Theme.SE98
                 ? "98se" : Services.ThemeManager.Current.ToString().ToLowerInvariant();
-            string ts = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+            string ts = DateTime.Now.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 
             // The live PrimaryBrush IS the current accent (family overlay included),
             // so the report defaults to the exact color on screen at export time.
@@ -130,9 +131,9 @@ namespace KillerShell.Services
             // does. Reporting "0 matches" over a full listing read as a broken export.
             string meta = browsing
                 ? string.Format(L("Str_Rpt_MetaList", "Generated {0} · {1} items"),
-                    $"<b>{ts}</b>", $"<b>{results.Count:N0}</b>")
+                    $"<b>{ts}</b>", $"<b>{results.Count.ToString("N0", CultureInfo.InvariantCulture)}</b>")
                 : string.Format(L("Str_Rpt_Meta", "Generated {0} · {1} files · {2} matches"),
-                    $"<b>{ts}</b>", $"<b>{results.Count:N0}</b>", $"<b>{totalMatches:N0}</b>");
+                    $"<b>{ts}</b>", $"<b>{results.Count.ToString("N0", CultureInfo.InvariantCulture)}</b>", $"<b>{totalMatches.ToString("N0", CultureInfo.InvariantCulture)}</b>");
             sb.AppendLine($"<p class='meta'>{meta}</p>");
 
             // Plain-language description of what was searched, instead of raw term chips.
@@ -177,7 +178,7 @@ namespace KillerShell.Services
                   .Append($"<td class='name'>{Esc(r.FileName)}</td>")
                   .Append($"<td class='dir'>{Esc(r.Directory)}</td>")
                   .Append($"<td class='num' data-sort='{size}'>{FormatSize(size)}</td>")
-                  .Append($"<td class='mod' data-sort='{(mod == DateTime.MinValue ? "0" : mod.ToString("yyyyMMddHHmmss"))}'>{(mod == DateTime.MinValue ? "" : mod.ToString("yyyy-MM-dd HH:mm"))}</td>")
+                  .Append($"<td class='mod' data-sort='{(mod == DateTime.MinValue ? "0" : mod.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture))}'>{(mod == DateTime.MinValue ? "" : mod.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture))}</td>")
                   .Append($"<td class='found'>{FoundCell(r)}</td>")
                   .AppendLine("</tr>");
             }
@@ -248,10 +249,10 @@ namespace KillerShell.Services
             if (b <= 0) return "";
             if (b < 1024) return b + " B";
             double kb = b / 1024.0;
-            if (kb < 1024) return kb.ToString("0") + " KB";
+            if (kb < 1024) return kb.ToString("0", CultureInfo.InvariantCulture) + " KB";
             double mb = kb / 1024.0;
-            if (mb < 1024) return mb.ToString("0.0") + " MB";
-            return (mb / 1024.0).ToString("0.00") + " GB";
+            if (mb < 1024) return mb.ToString("0.0", CultureInfo.InvariantCulture) + " MB";
+            return (mb / 1024.0).ToString("0.00", CultureInfo.InvariantCulture) + " GB";
         }
 
         private static string Esc(string? s) => System.Net.WebUtility.HtmlEncode(s ?? "");

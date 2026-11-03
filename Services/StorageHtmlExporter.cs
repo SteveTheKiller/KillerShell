@@ -54,12 +54,12 @@ namespace KillerShell.Services
                   .Append(";--hover:").Append(p.Hover).Append('}');
             sb.Append("*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--text);font:14px 'Segoe UI',sans-serif}.wrap{max-width:1280px;margin:auto}h1,h2{font-family:Consolas,monospace}h1{margin:0}.accent{color:var(--accent)}.top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.switch{display:flex;gap:6px;flex-wrap:wrap;max-width:340px}.switch button{width:19px;height:19px;border-radius:50%;border:2px solid var(--border);cursor:pointer}.switch button.active{border-color:var(--text)}.meta{color:var(--muted);line-height:1.8}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.card,.map,table{background:var(--pane);border:1px solid var(--border)}.card{padding:13px}.card b{display:block;font:20px Consolas,monospace;color:var(--accent)}.map{padding:8px;overflow:hidden}svg{display:block;width:100%;height:auto}rect{stroke:var(--bg);stroke-width:1}text{fill:#fff;font:11px Consolas,monospace;pointer-events:none;text-shadow:0 1px 2px #000}.tables{display:grid;grid-template-columns:1fr 1fr;gap:18px}table{border-collapse:collapse;width:100%;table-layout:fixed}th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}th{background:var(--surface);color:var(--muted)}tr:hover td{background:var(--hover)}td.path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}td.num{width:110px;text-align:right;font-family:Consolas,monospace}.foot{color:var(--muted);font-size:11px;margin-top:18px}@media(max-width:800px){body{padding:12px}.cards,.tables{grid-template-columns:1fr}}</style></head><body><div class='wrap'>");
             sb.Append("<div class='top'><div><h1>Killer<span class='accent'>Shell</span> Storage</h1><div class='meta'>")
-              .Append(E(string.Format(L("Str_StRpt_Generated", "Generated {0}"), DateTime.Now.ToString("yyyy-MM-dd HH:mm"))))
+              .Append(E(string.Format(L("Str_StRpt_Generated", "Generated {0}"), DateTime.Now.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture))))
               .Append("<br>").Append(E(string.Format(L("Str_StRpt_View", "View: {0}"), report.ViewRoot)))
               .Append("<br>").Append(E(string.Format(L("Str_StRpt_ScanRoot", "Scan root: {0}"), report.ScanRoot))).Append("</div></div><div id='themes' class='switch'></div></div>");
             string treemap = E(L("Str_StRpt_Treemap", "Treemap"));
             sb.Append("<div class='cards'><div class='card'><span>").Append(E(L("Str_StRpt_TotalShown", "Total shown"))).Append("</span><b>").Append(Size(report.TotalSize))
-              .Append("</b></div><div class='card'><span>").Append(E(L("Str_StRpt_DepthFilter", "Depth filter"))).Append("</span><b>").Append(report.DepthLimit == 0 ? E(L("Str_Storage_DepthAll", "All")) : report.DepthLimit.ToString())
+              .Append("</b></div><div class='card'><span>").Append(E(L("Str_StRpt_DepthFilter", "Depth filter"))).Append("</span><b>").Append(report.DepthLimit == 0 ? E(L("Str_Storage_DepthAll", "All")) : report.DepthLimit.ToString(CultureInfo.InvariantCulture))
               .Append("</b></div><div class='card'><span>").Append(E(L("Str_StRpt_MinSize", "Minimum size"))).Append("</span><b>").Append(report.MinimumSize == 0 ? E(L("Str_Storage_MinAll", "All")) : Size(report.MinimumSize)).Append("</b></div></div>");
             if (report.Truncated || report.SkippedDirectories > 0)
                 sb.Append("<p class='meta'>").Append(E(string.Format(CultureInfo.CurrentCulture,
@@ -142,6 +142,6 @@ namespace KillerShell.Services
         private static string BrushHex(object? value, string fallback) => value is SolidColorBrush b ? $"#{b.Color.R:X2}{b.Color.G:X2}{b.Color.B:X2}" : fallback;
         private static string N(double n) => n.ToString("0.##", CultureInfo.InvariantCulture);
         private static string E(string? s) => System.Net.WebUtility.HtmlEncode(s ?? "");
-        private static string Size(long b) { const double k=1024,m=k*1024,g=m*1024,t=g*1024; return b>=t?$"{b/t:0.00} TB":b>=g?$"{b/g:0.00} GB":b>=m?$"{b/m:0.0} MB":b>=k?$"{b/k:0.0} KB":$"{b} B"; }
+        private static string Size(long b) { const double k=1024,m=k*1024,g=m*1024,t=g*1024; return b>=t?string.Format(CultureInfo.InvariantCulture,"{0:0.00} TB",b/t):b>=g?string.Format(CultureInfo.InvariantCulture,"{0:0.00} GB",b/g):b>=m?string.Format(CultureInfo.InvariantCulture,"{0:0.0} MB",b/m):b>=k?string.Format(CultureInfo.InvariantCulture,"{0:0.0} KB",b/k):$"{b} B"; }
     }
 }

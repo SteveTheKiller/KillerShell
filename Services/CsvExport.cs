@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -28,10 +29,15 @@ namespace KillerShell.Services
                     m.Lines.Count > 0 ? $"{m.Term.ModeName} ({m.Lines.Count})" : m.Term.ModeName));
                 sb.AppendLine(string.Join(",",
                     Text(r.FileName), Text(r.Directory), r.SizeBytes.ToString(CultureInfo.InvariantCulture),
-                    Text(r.ModifiedLabel), Text(found)));
+                    Text(Modified(r.Modified)), Text(found)));
             }
             return sb.ToString();
         }
+
+        // ISO, whatever the Windows region: the UI label follows the region, but a file read
+        // elsewhere (or by a script) must not get a Thai year or a Finnish "14.30".
+        private static string Modified(DateTime d) =>
+            d == default ? string.Empty : d.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
         /// <summary>
         /// One quoted text cell. A cell a spreadsheet would read as a formula starts with an
