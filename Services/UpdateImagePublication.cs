@@ -66,7 +66,16 @@ namespace KillerShell.Services
             script.AppendLine("Elevated = " + (elevated ? "$true" : "$false"));
             script.AppendLine("Unsafe = $false");
             script.AppendLine("ShowReport = " + (showReport ? "$true" : "$false")).AppendLine("}");
-            if (!guardEmitted) script.AppendLine(Guard);
+            // An antivirus or a locked-down PowerShell can refuse Add-Type, which would end the helper
+            // with the app already closed. The per-user helper runs as the same user at the same rights
+            // as the app, so it starts the installed copy plainly instead. The elevated helper never
+            // does: without the guard it has no safe way to start the app at normal rights.
+            if (!guardEmitted && !elevated)
+                script.AppendLine("try {").AppendLine(Guard).AppendLine("} catch {")
+                    .AppendLine("    try { [IO.File]::AppendAllText($plan.Report, [Environment]::NewLine + 'The update helper could not load: ' + $_.Exception.Message) } catch { }")
+                    .AppendLine("    if (Test-Path -LiteralPath $plan.Target) { try { if ($plan.Reopen) { Start-Process -FilePath $plan.Target -ArgumentList $plan.Reopen } else { Start-Process -FilePath $plan.Target } } catch { } }")
+                    .AppendLine("    exit 1").AppendLine("}");
+            else if (!guardEmitted) script.AppendLine(Guard);
             script.AppendLine(Operations);
             if (overrides is not null) script.AppendLine(overrides);
             // Whatever the mode, a failed publication reopens the copy that is installed (after the
@@ -481,9 +490,23 @@ $ops.Releases = { param($url)
 }
 """;
 
+        /// <summary>The scheduled-task name prefix of one app: "KillerUpdate-" + its display name reduced to letters
+        /// and digits + "-". Every Killer app shares the "KillerUpdate-" stem, so the sweep that removes stale
+        /// tasks must only match its own app's prefix, never another app's freshly registered task.</summary>
+        internal static string TaskPrefix(string displayName)
+        {
+            var name = new StringBuilder();
+            foreach (char c in displayName) if (c < 128 && char.IsLetterOrDigit(c)) name.Append(c);
+            return "KillerUpdate-" + (name.Length == 0 ? "App" : name.ToString()) + "-";
+        }
+
+        /// <summary>The guard script for this app: the template with its per-app task prefix filled in.</summary>
+        internal static string Guard => _guard ??= GuardTemplate.Replace("__KILLER_TASK_PREFIX__", TaskPrefix(AppInfo.DisplayName));
+        private static string? _guard;
+
         // Compiled by Windows PowerShell 5.1, so it stays within C# 5. TrustedUpdate.Publication emits
         // it ahead of its own prologue too; the type check at the top makes a second copy a no-op.
-        internal const string Guard = """
+        private const string GuardTemplate = """
 if (-not ('KillerUpdateGuard' -as [type])) {
 # A helper running as administrator (the trusted machine path, or a per-user copy run as
 # administrator) compiles in a fresh folder only Administrators and SYSTEM can open. Add-Type
@@ -784,12 +807,12 @@ function Start-KillerUpdatedApp {
         '''));$reader=[IO.StreamReader]::new([IO.Compression.GZipStream]::new($stream,[IO.Compression.CompressionMode]::Decompress));try{&([scriptblock]::Create($reader.ReadToEnd()))}finally{$reader.Dispose();$stream.Dispose()}'
     $arguments = '-NoLogo -NoProfile -NonInteractive -Command "' + $bootstrap + '"'
     if ($arguments.Length -gt 28000) { throw 'The deferred launch verifier exceeds its command margin.' }
-    $name = 'KillerUpdate-' + [Guid]::NewGuid().ToString('N')
+    $name = '__KILLER_TASK_PREFIX__' + [Guid]::NewGuid().ToString('N')
     $service = New-Object -ComObject Schedule.Service
     $service.Connect()
     $folder = $service.GetFolder('')
     foreach ($old in @($folder.GetTasks(1))) {
-        if ($old.Name -notlike 'KillerUpdate-*') { continue }
+        if ($old.Name -notlike '__KILLER_TASK_PREFIX__*') { continue }
         try {
             if ($old.State -notin @(1, 3)) { continue }
             $registeredOn = $old.Definition.RegistrationInfo.Date

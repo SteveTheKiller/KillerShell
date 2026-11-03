@@ -6,7 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.5.2] - Unreleased
 
-1.5.2 makes exported search results and saved size filters read the same on every Windows region, and keeps dragged tabs looking right.
+1.5.2 makes exported search results and saved size filters read the same on every Windows region, keeps dragged tabs looking right, and makes updates and the file picker recover from more failures.
 
 ### Fixed
 
@@ -14,6 +14,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A size filter such as 1,5 MB saved with your session loads back the same under any region, and sizes saved by earlier versions still load.
 - Suggested export file names use the same date and time digits whatever the Windows region.
 - Dragged tabs keep their current appearance and size.
+- A per-user or portable update reopens KillerShell even when antivirus or a locked-down PowerShell stops the update helper from loading.
+- Updating KillerShell no longer removes a relaunch another Killer app scheduled for its own update.
+- The file picker accepts a full path typed into the name box when the folder listing failed or timed out.
 
 ## [1.5.1] - 2026-11-01
 

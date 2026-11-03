@@ -1508,7 +1508,7 @@ namespace KillerShell.Controls
         {
             // Accept stays off while a listing loads or an accept is already running, so a double
             // press or an Enter during the overwrite prompt cannot run it twice.
-            if (IsDirectoryListingBusy || !IsDirectoryListingAvailable || _accepting) return;
+            if (!PickerAcceptRule.CanAccept(IsDirectoryListingBusy, IsDirectoryListingAvailable, _accepting, _mode == FileDialogMode.Folder, FileNameBox.Text)) return;
             _accepting = true;
             AcceptButton.IsEnabled = false;
             try { await AcceptCoreAsync(); }
@@ -1523,7 +1523,7 @@ namespace KillerShell.Controls
 
         // Accept is on exactly when pressing it would do something.
         private void RefreshAcceptEnabled()
-            => AcceptButton.IsEnabled = IsDirectoryListingAvailable && !IsDirectoryListingBusy && !_accepting;
+            => AcceptButton.IsEnabled = PickerAcceptRule.CanAccept(IsDirectoryListingBusy, IsDirectoryListingAvailable, _accepting, _mode == FileDialogMode.Folder, FileNameBox.Text);
 
         private void ReportUnanswered(string reason)
         {
