@@ -10,6 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
+- The file picker loads icons and picture previews in the background, refreshes overwritten previews, and restores its position on any monitor.
 - Exported search results write dates as 2026-11-02 14:30:00 whatever the Windows region, so Thai and Finnish settings no longer produce years like 2569 or times like 14.30 in the CSV and HTML, and sizes and counts in the HTML reports keep a decimal point.
 - A size filter such as 1,5 MB saved with your session loads back the same under any region, and sizes saved by earlier versions still load.
 - Suggested export file names use the same date and time digits whatever the Windows region.
