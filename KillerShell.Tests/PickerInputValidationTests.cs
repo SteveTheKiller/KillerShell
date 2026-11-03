@@ -63,7 +63,7 @@ public static class PickerInputValidationScenario
                     });
                 // The listing continues on the context captured when the picker is built, as it is under Dispatcher.Run.
                 SynchronizationContext.SetSynchronizationContext(new System.Windows.Threading.DispatcherSynchronizationContext(System.Windows.Threading.Dispatcher.CurrentDispatcher));
-                string invalid = (string)app.FindResource("Str_Err_InvalidChars");
+                string invalid = (string)app.FindResource("Str_Dlg_InvalidPath");
                 foreach (var mode in new[] { FileDialogMode.Open, FileDialogMode.Save })
                 foreach (bool enter in new[] { false, true })
                 foreach (string text in new[]

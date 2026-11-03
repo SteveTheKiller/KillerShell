@@ -16,7 +16,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Dragged tabs keep their current appearance and size.
 - A per-user or portable update reopens KillerShell even when antivirus or a locked-down PowerShell stops the update helper from loading.
 - Updating KillerShell no longer removes a relaunch another Killer app scheduled for its own update.
-- The file picker accepts a full path typed into the name box when the folder listing failed or timed out.
+- The file picker accepts a full path typed into the name box when the folder listing failed or timed out, and refuses a name no path can carry with its message even while a folder is still loading.
 
 ## [1.5.1] - 2026-11-01
 
