@@ -87,6 +87,8 @@ public sealed class UpdateHelperQuotingTests
         try
         {
             var target = new UpdateService.UpdateTarget { Replace = Path.Combine(Path.GetDirectoryName(download)!, "Launcher.exe") };
+            // The helper records the installed copy's hash, so the stand-in has to exist.
+            File.WriteAllText(target.Replace!, "installed bytes");
             string script = UpdateService.PackageHelperScript(download, target.Replace!, target, elevate: false, 1, 1);
 
             Assert.Null(PowerShellParse.Parse(script).Error);

@@ -9,6 +9,13 @@ namespace KillerShell.Tests.Services;
 
 public sealed class UpdateFailureRelaunchTests
 {
+    // The helper holds the installed copy to the hash recorded before publication.
+    private static string HashOf(string text)
+    {
+        using var sha = SHA256.Create();
+        return BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(text))).Replace("-", "");
+    }
+
     // Runs the real publication helper with only the publisher check and the two process-starting
     // operations replaced, so a failed publication can be observed without opening anything.
     private static (int exit, bool relaunched, bool reported) RunFailedPublication(bool elevated, bool targetExists, bool installer)
@@ -30,10 +37,13 @@ public sealed class UpdateFailureRelaunchTests
                 + "$ops.ShowReport = { param($path) [IO.File]::WriteAllText('" + reported + "', 'shown') }\n"
                 + "$ops.Relaunch = { param($plan) [IO.File]::WriteAllText('" + relaunched + "', 'started') }\n"
                 + "$ops.Recover = { param($plan) & $ops.Relaunch $plan }\n$ops.RelaunchInstalled = { param($plan) & $ops.Relaunch $plan }\n"
-                + "$ops.Releases = { param($url) }\n";
+                + "$ops.Releases = { param($url) }\n"
+                // The stand-in installed copy carries no signature, so its certificate identity is replaced too.
+                + "$ops.VerifiedTargetThumb = { param($path, $signer) '" + new string('A', 40) + "' }\n";
             string script = installer
                 ? UpdateImagePublication.Installer(download, "/S", elevated, target, Path.Combine(root, "stage"), "https://example.invalid/", overrides)
-                : UpdateImagePublication.Script(download, target, elevated, "https://example.invalid/", "KillerShell", showReport: true, overrides: overrides);
+                : UpdateImagePublication.Script(download, target, elevated, "https://example.invalid/", "KillerShell", showReport: true, overrides: overrides,
+                    originalHash: targetExists ? HashOf("installed bytes") : new string('C', 64));
             string file = Path.Combine(root, "helper.ps1");
             File.WriteAllText(file, script, new System.Text.UTF8Encoding(true));
             var start = new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"WindowsPowerShell\v1.0\powershell.exe"),
@@ -64,7 +74,8 @@ public sealed class UpdateFailureRelaunchTests
     public void FailedPublicationWithNoTargetStartsNothing()
     {
         var (exit, relaunched, _) = RunFailedPublication(elevated: false, targetExists: false, installer: false);
-        Assert.Equal(1, exit);
+        // 1618: the installed image the helper recorded is missing, so the update is not applied.
+        Assert.Equal(1618, exit);
         Assert.False(relaunched);
     }
 }

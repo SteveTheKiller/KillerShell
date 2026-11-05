@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 1.5.2 makes exported search results and saved size filters read the same on every Windows region, keeps dragged tabs looking right, and makes updates and the file picker recover from more failures.
 
+### Security
+
+- An all-users install can apply later updates. The elevated update compared the certificate's full name against part of it and refused every release. Update signatures must now carry the exact publisher name and pass a revocation check, falling back to an offline check only when the revocation server cannot be reached. Update metadata downloads are capped at 1 MB, and an install and an update of one folder lock each other out.
+
 ### Fixed
 
 - The file picker loads icons and picture previews in the background, refreshes overwritten previews, and restores its position on any monitor.

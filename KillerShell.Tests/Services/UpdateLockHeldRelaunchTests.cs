@@ -29,7 +29,8 @@ public sealed class UpdateLockHeldRelaunchTests
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "lockheld", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
-        string name = @"Global\KillerTools-Install-" + AppInfo.DisplayName;
+        // The lease is per install folder, the same name the helper takes for this target.
+        string name = KillerFamily.Deployment.InstallerExitCodes.MutexName(AppInfo.DisplayName, root);
         using var held = new Mutex(false, name);
         Assert.True(held.WaitOne(0));
         try

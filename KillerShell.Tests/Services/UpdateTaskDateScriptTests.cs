@@ -33,7 +33,7 @@ public sealed class UpdateTaskDateScriptTests
                 + "$blank = Test-KillerUpdateTaskRecent '' (Get-Date)\n"
                 + "$odd = Test-KillerUpdateTaskRecent 'not a date' (Get-Date)\n"
                 + "[IO.File]::WriteAllText('" + result + "', ($fresh, $recent, $old, $blank, $odd) -join ','); exit 0\n";
-            string script = UpdateImagePublication.Script(download, Path.Combine(root, "KillerShell.exe"), false, "https://example.invalid/", "KillerShell", overrides: overrides);
+            string script = UpdateImagePublication.Script(download, Path.Combine(root, "KillerShell.exe"), false, "https://example.invalid/", "KillerShell", overrides: overrides, originalHash: new string('C', 64));
             string file = Path.Combine(root, "helper.ps1");
             File.WriteAllText(file, script, new System.Text.UTF8Encoding(true));
             var start = new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"WindowsPowerShell\v1.0\powershell.exe"),

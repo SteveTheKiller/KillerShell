@@ -13,6 +13,13 @@ public sealed class UpdateRestoreAfterReplaceTests
     // the Replace, and reports what is left on disk and what the helper started again.
     private int attempts;
 
+    // The helper holds the installed copy to the hash recorded before publication.
+    private static string HashOf(string text)
+    {
+        using var sha = SHA256.Create();
+        return BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(text))).Replace("-", "");
+    }
+
     private (int exit, string targetText, string? relaunchedText) RunPublication(string overrides, bool installed = true)
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "restore", Guid.NewGuid().ToString("N"));
@@ -33,9 +40,13 @@ public sealed class UpdateRestoreAfterReplaceTests
                 + "$realMove = $ops.Move\n"
                 + "$ops.Move = { param($source, $target) & $realMove $source $target; [IO.File]::WriteAllText('" + replaced + "', 'x') }\n"
                 + overrides
+                // The stand-in installed copy carries no signature, so its certificate identity is replaced
+                // too: recovery reopens only an image whose identity was recorded before publication.
+                + "$ops.VerifiedTargetThumb = { param($path, $signer) '" + new string('A', 40) + "' }\n"
                 + "$ops.Relaunch = { param($plan) $t = if ([IO.File]::Exists($plan.Target)) { [IO.File]::ReadAllText($plan.Target) } else { '' }; [IO.File]::WriteAllText('" + relaunched + "', $t) }\n"
                 + "$ops.Recover = { param($plan) & $ops.Relaunch $plan }\n$ops.RelaunchInstalled = { param($plan) & $ops.Relaunch $plan }\n";
-            string script = UpdateImagePublication.Script(download, target, false, "https://example.invalid/", "KillerShell", overrides: all);
+            string script = UpdateImagePublication.Script(download, target, false, "https://example.invalid/", "KillerShell", overrides: all,
+                originalHash: installed ? HashOf("installed bytes") : new string('C', 64));
             string file = Path.Combine(root, "helper.ps1");
             File.WriteAllText(file, script, new System.Text.UTF8Encoding(true));
             var start = new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"WindowsPowerShell\v1.0\powershell.exe"),
@@ -64,7 +75,7 @@ public sealed class UpdateRestoreAfterReplaceTests
     [Fact]
     public void HashFailureAfterReplaceRestoresTheBackupAndRelaunchesOnlyIt()
     {
-        var (exit, target, relaunched) = RunPublication("$ops.Publisher = { param($path, $plan) $true }\n$ops.HashStream = { param($stream) $global:calls++; $h = [Security.Cryptography.SHA256]::Create(); try { $stream.Position = 0; $sum = [BitConverter]::ToString($h.ComputeHash($stream)).Replace('-', ''); if ($global:calls -ge 2) { 'BAD' } else { $sum } } finally { $h.Dispose() } }\n");
+        var (exit, target, relaunched) = RunPublication("$ops.Publisher = { param($path, $plan) $true }\n$ops.HashStream = { param($stream) $global:calls++; $h = [Security.Cryptography.SHA256]::Create(); try { $stream.Position = 0; $sum = [BitConverter]::ToString($h.ComputeHash($stream)).Replace('-', ''); if ($global:calls -ge 4) { 'BAD' } else { $sum } } finally { $h.Dispose() } }\n");
         Assert.Equal(1, exit);
         Assert.Equal("installed bytes", target);
         Assert.Equal("installed bytes", relaunched);
@@ -105,15 +116,31 @@ public sealed class UpdateRestoreAfterReplaceTests
     }
 
     [Fact]
-    public void RemovingAnUnverifiedFirstInstallRetriesASharingViolationBeforeGivingUp()
+    public void APublicationWithNoInstalledCopyIsRefusedBeforeAnythingIsReplaced()
     {
-        var (exit, target, relaunched) = RunPublication("$ops.Publisher = { param($path, $plan) $path -ne $plan.Target }\n"
-            + "$realDelete = $ops.Delete\n"
-            + "$ops.Delete = { param($path) if ($path -eq $plan.Target) { " + Attempt + "if ((Get-Content (Join-Path ([IO.Path]::GetDirectoryName($plan.Target)) 'attempts.txt') -Raw).Length -le 2) { throw " + Busy + " } }; & $realDelete $path }\n",
-            installed: false);
-        Assert.Equal(1, exit);
-        Assert.Equal(3, attempts);
-        Assert.Equal("", target);
-        Assert.Null(relaunched);
+        // The helper records the installed image before the app closes, so a missing one cannot be
+        // published over: the update is refused (1618) and nothing is replaced or started.
+        string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "restore", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            string download = Path.Combine(root, "download.exe");
+            string target = Path.Combine(root, "KillerShell.exe");
+            File.WriteAllText(download, "release bytes");
+            UpdateImagePublication.RememberVerified(download, HashOf("release bytes"), new string('A', 40));
+            string script = UpdateImagePublication.Script(download, target, false, "https://example.invalid/", "KillerShell",
+                originalHash: new string('C', 64));
+            string file = Path.Combine(root, "helper.ps1");
+            File.WriteAllText(file, script, new System.Text.UTF8Encoding(true));
+            var start = new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"WindowsPowerShell\v1.0\powershell.exe"),
+                "-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"" + file + "\"")
+            { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+            using var process = Process.Start(start)!;
+            process.StandardOutput.ReadToEnd(); process.StandardError.ReadToEnd();
+            Assert.True(process.WaitForExit(120000));
+            Assert.Equal(1618, process.ExitCode);
+            Assert.False(File.Exists(target));
+        }
+        finally { Directory.Delete(root, true); }
     }
 }

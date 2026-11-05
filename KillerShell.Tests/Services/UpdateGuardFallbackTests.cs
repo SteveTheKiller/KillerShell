@@ -16,7 +16,7 @@ public sealed class UpdateGuardFallbackTests
         try
         {
             return UpdateImagePublication.Script(path, @"C:\Apps\KillerShell.exe", elevated,
-                "https://example.invalid/releases", "KillerShell");
+                "https://example.invalid/releases", "KillerShell", originalHash: new string('C', 64));
         }
         finally { if (File.Exists(path + ".recovery.txt")) File.Delete(path + ".recovery.txt"); }
     }

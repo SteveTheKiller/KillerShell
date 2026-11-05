@@ -571,7 +571,7 @@ namespace KillerShell
 
         private static void RemoveInstallConflict(bool machine)
         {
-            using var lease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName);
+            using var lease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName, machine ? MachineInstallDir : InstallDir);
             const string uninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\KillerShell";
             var hive = machine ? Registry.LocalMachine : Registry.CurrentUser;
             var metadata = new Services.UninstallMetadata(hive, RegKey, uninstallKey);
@@ -624,7 +624,10 @@ namespace KillerShell
         {
             try
             {
-                using var installLease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName);
+                // The same per-folder lease the update helpers take, so an install and an update of
+                // one folder never publish over each other. With admin rights it is the machine folder.
+                using var installLease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName,
+                    KillerFamily.Deployment.InstallerExitCodes.IsElevated() ? MachineInstallDir : InstallDir);
 
                 // An unsigned or tampered exe must not be able to write itself into
                 // Program Files, least of all while elevated.
@@ -876,7 +879,8 @@ namespace KillerShell
                     ? Services.UninstallRelay.ConnectCoordinator(arguments[2], MachineInstallExe) : null;
                 int? forwarded = RelaunchMachineUninstallElevatedIfNeeded(machine, silent);
                 if (forwarded.HasValue) return forwarded.Value;
-                using var uninstallLease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName);
+                using var uninstallLease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName,
+                    machine ? MachineInstallDir : InstallDir);
 
                 if (!silent)
                 {
