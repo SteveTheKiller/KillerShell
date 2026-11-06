@@ -23,6 +23,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Updating KillerShell no longer removes a relaunch another Killer app scheduled for its own update.
 - The file picker accepts a full path typed into the name box when the folder listing failed or timed out, and refuses a name no path can carry with its message even while a folder is still loading.
 - Changing the file type in the save picker while the name box holds characters no file name can carry no longer crashes KillerShell; the name keeps its text and shows the invalid-path message.
+- The window menu from a right-click on the title bar or Alt+Space opens at the pointer instead of about 20 pixels below and to the right of it.
+- Clicking or pressing a key while KillerShell fades out after Exit no longer leaves it hidden in the tray, and a window hidden partway through that fade comes back visible.
 
 ## [1.5.1] - 2026-11-01
 
