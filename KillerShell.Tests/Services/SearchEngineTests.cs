@@ -395,7 +395,11 @@ namespace KillerShell.Tests.Services
                     search.Wait(300);
                     cts.Cancel();
                     var watch = System.Diagnostics.Stopwatch.StartNew();
-                    Assert.True(search.Wait(TimeSpan.FromSeconds(1)),
+                    // Five seconds, not one. The defect this guards is a match that never ends,
+                    // so any bound catches it; on a quiet machine the search stops well inside
+                    // a second. One second failed under a full parallel suite run, where the
+                    // search's continuation simply waited its turn on a busy thread pool.
+                    Assert.True(search.Wait(TimeSpan.FromSeconds(5)),
                         $"Search was still running {watch.Elapsed.TotalSeconds:0.0}s after cancellation (round {round + 1}).");
                 }
             }

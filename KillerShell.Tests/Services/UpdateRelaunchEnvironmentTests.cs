@@ -11,7 +11,7 @@ public sealed class UpdateRelaunchEnvironmentTests
     // The helper strips PSModulePath down to Windows PowerShell's own folder so a planted module
     // cannot run inside it. The app it reopens must get the user's value back, not that stripped one.
     [Fact]
-    public void RelaunchedAppGetsTheOriginalModulePathNotTheHelpersStrippedOne()
+    public async System.Threading.Tasks.Task RelaunchedAppGetsTheOriginalModulePathNotTheHelpersStrippedOne()
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "relaunch-env", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
@@ -30,7 +30,7 @@ public sealed class UpdateRelaunchEnvironmentTests
             var errors = process.StandardError.ReadToEndAsync();
             process.StandardOutput.ReadToEnd();
             Assert.True(process.WaitForExit(120000));
-            Assert.True(process.ExitCode == 0, errors.Result);
+            Assert.True(process.ExitCode == 0, await errors);
             var end = DateTime.UtcNow.AddSeconds(15);
             while (!File.Exists(output) && DateTime.UtcNow < end) System.Threading.Thread.Sleep(50);
             System.Threading.Thread.Sleep(200);

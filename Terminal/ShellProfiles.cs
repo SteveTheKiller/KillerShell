@@ -105,12 +105,16 @@ namespace KillerShell.Terminal
                 p.StandardInput.Close();
                 // Read in the background, so the wait below is what bounds the call. A plain
                 // ReadToEnd blocks until the child exits, which made the limit bound nothing.
-                var output = p.StandardOutput.ReadToEndAsync();
+                // On a thread of its own, not the pool, so a busy pool cannot hold the answer
+                // back after the host has already exited.
+                var output = System.Threading.Tasks.Task.Factory.StartNew(() => p.StandardOutput.ReadToEnd(),
+                    System.Threading.CancellationToken.None, System.Threading.Tasks.TaskCreationOptions.LongRunning,
+                    System.Threading.Tasks.TaskScheduler.Default);
                 _ = p.StandardError.ReadToEndAsync();
 
                 // Bounded. A host that never exits must not take the window with it, and five
                 // seconds is far longer than a -NoProfile start has ever needed.
-                if (!p.WaitForExit(timeoutMs) || !output.Wait(1000))
+                if (!p.WaitForExit(timeoutMs) || !output.Wait(5000))
                 {
                     try { p.Kill(); } catch { }
                     return string.Empty;

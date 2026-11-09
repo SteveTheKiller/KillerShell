@@ -12,7 +12,7 @@ namespace KillerShell.Tests.Terminal;
 public sealed class KillerPromptGitTests
 {
     [Fact]
-    public void AFolderThatBecomesARepositoryIsSeenAsOne()
+    public async System.Threading.Tasks.Task AFolderThatBecomesARepositoryIsSeenAsOne()
     {
         string repo = FindRepoRoot();
         string prompt = Path.Combine(repo, "Terminal", "KillerPrompt.ps1");
@@ -32,8 +32,8 @@ public sealed class KillerPromptGitTests
             var output = p.StandardOutput.ReadToEndAsync();
             var errors = p.StandardError.ReadToEndAsync();
             Assert.True(p.WaitForExit(30000), "The prompt fixture timed out.");
-            Assert.True(p.ExitCode == 0, errors.Result);
-            Assert.Equal("False True", output.Result.Trim());
+            Assert.True(p.ExitCode == 0, await errors);
+            Assert.Equal("False True", (await output).Trim());
         }
         finally { Directory.Delete(folder, true); }
     }

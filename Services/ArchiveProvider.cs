@@ -954,9 +954,21 @@ namespace KillerShell.Services
         }
 
         /// <summary>A read-only window of exactly one tar entry's bytes over the archive stream.</summary>
-        private sealed class TarPayload(Stream inner, long size, CancellationToken ct) : Stream
+        private sealed class TarPayload : Stream
         {
-            internal long Remaining { get; private set; } = size;
+            private readonly Stream inner;
+            private readonly long size;
+            private readonly CancellationToken ct;
+
+            internal TarPayload(Stream inner, long size, CancellationToken ct)
+            {
+                this.inner = inner;
+                this.size = size;
+                this.ct = ct;
+                Remaining = size;
+            }
+
+            internal long Remaining { get; private set; }
 
             public override int Read(byte[] buffer, int offset, int count)
             {

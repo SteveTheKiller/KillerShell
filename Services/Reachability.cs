@@ -20,7 +20,10 @@ namespace KillerShell.Services
         internal static List<string> Reachable(IEnumerable<string> paths, Func<string, bool> probe, TimeSpan budget)
         {
             var list = paths.ToList();
-            var probes = list.Select(path => Task.Run(() => { try { return probe(path); } catch { return false; } })).ToArray();
+            // A thread each rather than the pool: a busy pool (a scan, a search) would queue the
+            // probes behind its own work and spend the whole budget before one even started.
+            var probes = list.Select(path => Task.Factory.StartNew(() => { try { return probe(path); } catch { return false; } },
+                System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default)).ToArray();
             try { Task.WaitAll(probes, budget); } catch { }
             var live = new List<string>();
             for (int i = 0; i < list.Count; i++)
