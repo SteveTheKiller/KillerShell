@@ -989,7 +989,7 @@ namespace KillerShell.Tools
                     RamState rs => rs.Avail != null || rs.Committed != null || rs.Free != null,
                     DiskState ds => ds.PercentTime != null || ds.ReadBytes != null || ds.WriteBytes != null,
                     NetState ns => ns.Sent != null || ns.Recv != null,
-                    _ => true,   // GPU opens its counters lazily, so it never proves the service is off
+                    _ => false,  // GPU opens its counters lazily, so it proves nothing either way
                 };
                 if (any) return true;
             }
