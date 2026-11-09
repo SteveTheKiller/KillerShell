@@ -48,6 +48,23 @@ namespace KillerShell.Services
         /// </summary>
         internal static double Height(double sample, double scale, double ceiling)
             => scale > 0 ? Math.Min(ceiling, sample / scale) : 0;
+
+        /// <summary>
+        /// The tops of series drawn stacked: each one sits on the ones before it, so its top is
+        /// the running total. Memory in use and cached memory are drawn this way, the same order
+        /// as the bar under the graph. A negative reading counts as nothing.
+        /// </summary>
+        internal static double[] Stacked(double[] values)
+        {
+            var tops = new double[values.Length];
+            double total = 0;
+            for (int i = 0; i < values.Length; i++)
+            {
+                total += Math.Max(0, values[i]);
+                tops[i] = total;
+            }
+            return tops;
+        }
     }
 
     /// <summary>

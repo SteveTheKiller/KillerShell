@@ -555,7 +555,9 @@ namespace KillerShell.Tools
                 Description = info.Ram,
                 State = new RamState(),
                 SummaryBrushKey = PerformanceGraphBrushes.Ram,
-                BigGraphs = [new Sparkline(_cadence, HistorySamples, 100, PerformanceGraphBrushes.Ram)],
+                // In use from the floor and cached stacked on it, the same order and colors as
+                // the composition bar below the graph.
+                BigGraphs = [new Sparkline(_cadence, HistorySamples, 100, PerformanceGraphBrushes.Ram, PerformanceGraphBrushes.RamCached) { Stacked = true }],
                 // In use is already the complete headline (used / total and percentage).
                 FieldLabelKeys = ["Str_Perf_Available", "Str_Perf_Committed"],
                 FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush"],
@@ -913,7 +915,6 @@ namespace KillerShell.Tools
                     CountTo(tile.TileSummaryText, usedGb, FormatRamInUse);
                     double clamped = Math.Min(100, pct);
                     tile.Primary = clamped;
-                    if (tile.BigGraphs.Length > 0) tile.BigGraphs[0].Push(clamped);
                     CountField(tile, 0, availGb, FormatGb);
 
                     // The composition bar: in use, then cached (available memory that still holds
@@ -923,6 +924,8 @@ namespace KillerShell.Tools
                     if (rs.Free != null && Services.PerformanceCounterService.TrySample(rs.Free, out double freeBytes))
                         freeGb = Math.Min(availGb, freeBytes / 1024.0 / 1024.0 / 1024.0);
                     double cachedGb = Math.Max(0, availGb - freeGb);
+                    if (tile.BigGraphs.Length > 0)
+                        tile.BigGraphs[0].Push(clamped, Math.Min(100 - clamped, cachedGb / _totalRamGb * 100.0));
                     if (rs.BarColumns.Length == 3)
                     {
                         BlendColumn(rs.BarColumns[0], usedGb);
@@ -1342,6 +1345,14 @@ namespace KillerShell.Tools
             /// </summary>
             internal bool Mirrored { get; set; }
 
+            /// <summary>
+            /// Series drawn on top of each other instead of from the floor: each trace is the
+            /// running total, and its fill is the band between it and the trace below. For parts
+            /// of one whole, like memory in use and cached, so the graph reads like the bar under
+            /// it and the upper band never tints the lower one.
+            /// </summary>
+            internal bool Stacked { get; set; }
+
             /// <summary>What the top of an AUTO-scaled graph is worth, in words. A trace with no
             /// stated scale only shows shape; this is what makes it a measurement. Fixed-scale
             /// graphs are percentages and label themselves.</summary>
@@ -1507,12 +1518,26 @@ namespace KillerShell.Tools
                 // A plain graph grows up from its floor. A mirrored one has its axis across the
                 // middle and half the height to each side of it.
                 bool mirrored = Mirrored && _lines.Length == 2;
+                bool stacked = Stacked && !mirrored;
                 double axis = mirrored ? h / 2 : h;
                 double reach = mirrored ? h / 2 : h;
+                PointCollection? below = null;
 
                 for (int s = 0; s < _lines.Length; s++)
                 {
                     var samples = _seriesSamples[s];
+                    if (stacked && samples.Count > 0)
+                    {
+                        // Every series sits on the ones before it, sample by sample.
+                        var totals = new List<double>(samples.Count);
+                        for (int i = 0; i < samples.Count; i++)
+                        {
+                            var column = new double[s + 1];
+                            for (int k = 0; k <= s; k++) column[k] = i < _seriesSamples[k].Count ? _seriesSamples[k][i] : 0;
+                            totals.Add(Services.MetricMotion.Stacked(column)[s]);
+                        }
+                        samples = totals;
+                    }
                     if (w <= 0 || h <= 0 || samples.Count == 0)
                     {
                         _lines[s].Points = [];
@@ -1531,12 +1556,19 @@ namespace KillerShell.Tools
                     }
                     _lines[s].Points = pts;
 
-                    // The same outline closed back along the axis.
+                    // The same outline closed back along the axis, or, stacked, back along the
+                    // trace below it so the fill is only this series' band.
                     var area = new PointCollection(samples.Count + 2);
                     foreach (var p in pts) area.Add(p);
-                    area.Add(new Point(pts[^1].X, axis));
-                    area.Add(new Point(pts[0].X, axis));
+                    if (stacked && below != null && below.Count == pts.Count)
+                        for (int i = below.Count - 1; i >= 0; i--) area.Add(below[i]);
+                    else
+                    {
+                        area.Add(new Point(pts[^1].X, axis));
+                        area.Add(new Point(pts[0].X, axis));
+                    }
                     _fills[s].Points = area;
+                    below = pts;
                 }
             }
         }

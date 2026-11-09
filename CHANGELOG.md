@@ -67,6 +67,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Every Performance graph has its own color on every theme: CPU green, memory blue, disk amber for reads and red for writes, network magenta for sends and yellow for receives, and GPU cyan, so no two graphs share a color.
 - Single-line text fields are as tall as the dropdowns beside them, so form rows line up instead of the text boxes standing oversized. A field given its own height, such as the editor's Find box, keeps it.
 
+### Added
+
+- The memory graph shows cached memory stacked on top of memory in use, in the same colors and order as the bar under it, so the graph tells the same story as the bar.
+
 ## [1.5.1] - 2026-11-01
 
 1.5.1 hardens self-update and uninstall, stops the file picker crashing or overwriting files it could not check, fixes AltGr typing, and opens files you type into the address bar.

@@ -16,6 +16,16 @@ namespace KillerShell.Tests.Services
             Assert.Equal(1, MetricMotion.Progress(now: 10, startedAt: 10, duration: 0));
         }
 
+        // Memory in use and cached memory are drawn stacked, like the bar under the graph: cached
+        // sits on top of in use, so its band's top is the two added together.
+        [Fact]
+        public void Stacked_EachSeriesSitsOnTheOnesBelowIt()
+        {
+            Assert.Equal(new[] { 60.0, 85.0 }, MetricMotion.Stacked(new[] { 60.0, 25.0 }));
+            Assert.Equal(new[] { 0.0, 10.0, 30.0 }, MetricMotion.Stacked(new[] { -5.0, 10.0, 20.0 }));
+            Assert.Empty(MetricMotion.Stacked(new double[0]));
+        }
+
         [Fact]
         public void BlendedValue_FirstSampleLandsAsIs()
         {
