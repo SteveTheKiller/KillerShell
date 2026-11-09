@@ -29,9 +29,9 @@ namespace KillerShell.Shell
         /// <remarks>
         /// PSModulePath is set on THIS process, and the pty child inherits our environment block
         /// (ConPty passes lpEnvironment as null), so every shell opened from here sees it with
-        /// no per-launch plumbing. It is APPENDED, never prepended: if the user has installed
-        /// either module properly from the gallery, their copy is the one that should win, and
-        /// ours is only the fallback that makes a portable run work.
+        /// no per-launch plumbing. It is PREPENDED (BundledModulePath): the copies that ship with
+        /// this KillerShell win over any installed from PSGallery, so a launcher fix reaches every
+        /// terminal tab the day KillerShell updates instead of waiting on a gallery publish.
         /// </remarks>
         internal static void EnsureBundledModules()
         {
@@ -44,10 +44,8 @@ namespace KillerShell.Shell
                 foreach (var name in BundledModules) Unpack(name, root);
 
                 string current = Environment.GetEnvironmentVariable("PSModulePath") ?? string.Empty;
-                if (current.IndexOf(root, StringComparison.OrdinalIgnoreCase) >= 0) return;
-
                 Environment.SetEnvironmentVariable("PSModulePath",
-                    current.Length == 0 ? root : current.TrimEnd(';') + ";" + root);
+                    Services.BundledModulePath.WithBundledFirst(current, root));
             }
             catch
             {

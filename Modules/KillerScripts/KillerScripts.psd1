@@ -1,18 +1,17 @@
 @{
     RootModule        = 'KillerScripts.psm1'
-    ModuleVersion     = '1.0.1'
+    ModuleVersion     = '1.0.2'
     GUID              = 'b7e6f2a4-9c1d-4f3b-8a2e-5d6c7f8a9b01'
     Author            = 'Steve'
     CompanyName       = 'killertools.net'
     Copyright         = '(c) Steve. GPL-3.0.'
-    Description       = 'Always-latest launcher for the killer-scripts repo. Each MSP field tool is pulled fresh from GitHub the moment you run it, with a local cache for offline use.'
+    Description       = 'Always-latest launcher for the killer-scripts repo. Each MSP field tool is downloaded fresh from GitHub to %TEMP% and run the moment you call it.'
     PowerShellVersion = '5.1'
     CompatiblePSEditions = @('Desktop', 'Core')
 
     FunctionsToExport = @(
         'Get-KillerScript',
         'Invoke-KillerScript',
-        'Update-KillerScripts',
         'Invoke-AMORT',
         'Invoke-BEAM',
         'Invoke-BERET',
@@ -23,6 +22,7 @@
         'Invoke-MACE',
         'Invoke-ODD',
         'Invoke-ORCA',
+        'Invoke-PEEK',
         'Invoke-PRINT',
         'Invoke-PRUNE',
         'Invoke-SHADE',
@@ -35,7 +35,7 @@
 
     AliasesToExport = @(
         'amort', 'beam', 'beret', 'debloat', 'defend', 'depot', 'facts', 'mace',
-        'odd', 'orca', 'KillerPrint', 'prune', 'shade', 'stare', 'tick', 'urt',
+        'odd', 'orca', 'peek', 'KillerPrint', 'prune', 'shade', 'stare', 'tick', 'urt',
         'vitals', 'wursa'
     )
 

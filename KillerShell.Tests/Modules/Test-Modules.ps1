@@ -18,10 +18,6 @@ try {
         @('KillerPivot','ConnectSafety'),
         @('KillerPivot','ConnectionIdentity'),
         @('KillerPivot','ConfigurationSafety'),
-        @('KillerScripts','EncodingSafety'),
-        @('KillerScripts','CacheSafety'),
-        @('KillerScripts','SnapshotSafety'),
-        @('KillerScripts','ConcurrentSafety'),
         @('KillerScripts','ArgumentSafety')
     )
     foreach ($case in $cases) {
