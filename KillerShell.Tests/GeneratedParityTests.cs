@@ -87,6 +87,31 @@ namespace KillerShell.Tests
             Assert.True(unguarded.Count == 0, "Unguarded DragMove: " + string.Join(", ", unguarded));
         }
 
+        // A theme or high-contrast switch swaps the theme dictionary under a window that is already
+        // open. StaticResource reads a theme key once, so that text keeps the old theme's color;
+        // theme keys are bound with DynamicResource. ConfirmDialog and FileDialog are KillerUI kit
+        // files and change there first.
+        [Fact]
+        public void ThemeKeys_AreBoundDynamically()
+        {
+            string repo = FindRepoRoot();
+            HashSet<string> themeKeys = ReadKeys(Path.Combine(repo, "Themes", "Dark.xaml"));
+            var kit = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "ConfirmDialog.xaml", "FileDialog.xaml" };
+            var pattern = new System.Text.RegularExpressions.Regex(@"\{StaticResource\s+([A-Za-z0-9_]+)\s*\}");
+            var stale = new List<string>();
+            foreach (string file in Directory.GetFiles(repo, "*.xaml", SearchOption.AllDirectories))
+            {
+                string relative = file.Substring(repo.Length + 1);
+                if (relative.Split('\\').Any(part => part is "bin" or "obj" or "Themes" or "Strings" or "KillerShell.Tests")) continue;
+                if (kit.Contains(Path.GetFileName(file))) continue;
+                string[] lines = File.ReadAllLines(file);
+                for (int i = 0; i < lines.Length; i++)
+                    foreach (System.Text.RegularExpressions.Match m in pattern.Matches(lines[i]))
+                        if (themeKeys.Contains(m.Groups[1].Value)) stale.Add(relative + ":" + (i + 1) + " " + m.Groups[1].Value);
+            }
+            Assert.True(stale.Count == 0, "Theme keys bound with StaticResource: " + string.Join(", ", stale));
+        }
+
         private static HashSet<string> ReadKeys(string path)
         {
             XNamespace x = "http://schemas.microsoft.com/winfx/2006/xaml";

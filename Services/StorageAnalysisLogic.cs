@@ -10,6 +10,14 @@ namespace KillerShell.Services
     {
         private static readonly Dictionary<string, string> ExtensionCategories = BuildCategories();
 
+        /// <summary>The scan progress line: folder and file counts, total size, and what was skipped.</summary>
+        internal static string ScanSummary(long dirs, long files, string size, long skipped, Func<string, string> loc)
+        {
+            var ci = System.Globalization.CultureInfo.InvariantCulture;
+            return string.Format(ci, loc("Str_Storage_ScanCounts"), dirs.ToString("N0", ci), files.ToString("N0", ci)) + "  " + size +
+                   (skipped > 0 ? "  (" + skipped.ToString("N0", ci) + " " + loc("Str_Storage_Skipped") + ")" : "");
+        }
+
         internal static string ShortSize(long bytes)
         {
             const long mb = 1L << 20;

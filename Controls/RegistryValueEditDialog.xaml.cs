@@ -49,6 +49,15 @@ namespace KillerShell
             Loaded += (_, _) => Anim.FadeIn(RootBorder);
             SourceInitialized += (_, _) => MainWindow.ApplyThemeBorder(this);
 
+            // Escape cancels without writing, the same as every other dialog here.
+            KeyDown += (_, e) =>
+            {
+                if (e.Key != System.Windows.Input.Key.Escape) return;
+                e.Handled = true;
+                Confirmed = false;
+                Close();
+            };
+
             NameText.Text = displayName;
             KindText.Text = Services.RegistryEditorLogic.KindLabel(kind);
 

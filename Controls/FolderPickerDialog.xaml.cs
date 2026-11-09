@@ -55,6 +55,14 @@ namespace KillerShell
         private static readonly string ArrowUp        = ((char)0xE70E).ToString();   // chevron up
         private static readonly string ArrowDown      = ((char)0xE70D).ToString();   // chevron down
 
+        /// <summary>
+        /// Whether a saved top-left corner is worth restoring. Any real number is: a monitor
+        /// to the left of or above the primary one has negative coordinates, and a spot that is
+        /// now off every screen is pulled back by WorkAreaFit when the window opens.
+        /// </summary>
+        internal static bool UsableSavedPosition(double x, double y)
+            => !double.IsNaN(x) && !double.IsInfinity(x) && !double.IsNaN(y) && !double.IsInfinity(y);
+
         public FolderPickerDialog(string? initialPath = null)
         {
             _navigationWork = new Services.PickerWork(Dispatcher);
@@ -88,18 +96,17 @@ namespace KillerShell
                     double.TryParse(Services.ThemeManager.GetSetting("PickerH"),
                         System.Globalization.NumberStyles.Float, ci, out double h))
                 {
-                    Width  = Math.Max(MinWidth,  Math.Min(w, SystemParameters.WorkArea.Width));
-                    Height = Math.Max(MinHeight, Math.Min(h, SystemParameters.WorkArea.Height));
+                    // Not capped to the primary monitor's work area: the picker may come back on
+                    // a bigger one. WorkAreaFit sizes it to whichever monitor it lands on.
+                    if (!double.IsNaN(w) && !double.IsInfinity(w) && w > 0) Width = Math.Max(MinWidth, w);
+                    if (!double.IsNaN(h) && !double.IsInfinity(h) && h > 0) Height = Math.Max(MinHeight, h);
                 }
                 if (double.TryParse(Services.ThemeManager.GetSetting("PickerX"),
                         System.Globalization.NumberStyles.Float, ci, out double x) &&
                     double.TryParse(Services.ThemeManager.GetSetting("PickerY"),
                         System.Globalization.NumberStyles.Float, ci, out double y))
                 {
-                    // Clamp so a saved spot from a detached monitor can't strand it off-screen.
-                    var wa = SystemParameters.VirtualScreenWidth;
-                    var ha = SystemParameters.VirtualScreenHeight;
-                    if (x > -Width + 60 && x < wa - 60 && y >= 0 && y < ha - 60)
+                    if (UsableSavedPosition(x, y))
                     {
                         WindowStartupLocation = WindowStartupLocation.Manual;
                         Left = x;
@@ -133,6 +140,8 @@ namespace KillerShell
                     return IntPtr.Zero;
                 });
             };
+            // Same as FileDialog: pull a restored spot back onto a monitor that still exists.
+            SourceInitialized += (_, _) => KillerFamily.Windowing.WorkAreaFit.Fit(this);
 
             BuildPlaces();
             PlacesList.ItemsSource = Places;
@@ -506,7 +515,7 @@ namespace KillerShell
         public System.Windows.Media.ImageSource? IconLarge
             => Services.ShellIcons.Large(FullPath, IsFolder);
         public string SizeLabel     => IsFolder ? string.Empty : FormatSize(SizeBytes);
-        public string ModifiedLabel => Modified == DateTime.MinValue ? string.Empty : Modified.ToString("yyyy-MM-dd HH:mm");
+        public string ModifiedLabel => Modified == DateTime.MinValue ? string.Empty : Services.DisplayTime.Minutes(Modified);
 
         private static string FormatSize(long b)
         {

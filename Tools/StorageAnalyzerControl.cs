@@ -683,6 +683,14 @@ namespace KillerShell.Tools
             CancelScan();
             _scan = null;
             _progressTimer.Stop();
+            // A path pinned to the status bar just before the tab closed would otherwise come
+            // back five seconds later and write this closed tab's summary over the window status.
+            if (_pinnedPathTimer != null)
+            {
+                _pinnedPathTimer.Stop();
+                _pinnedPathTimer.Tick -= PinnedPathExpired;
+                _pinnedPathTimer = null;
+            }
             Services.ThemeManager.ThemeChanged -= OnThemeChanged;
         }
 
@@ -942,11 +950,7 @@ namespace KillerShell.Tools
             long files = scan == null ? 0 : Interlocked.Read(ref scan.Files);
             long bytes = scan == null ? 0 : Interlocked.Read(ref scan.Bytes);
             long skipped = scan == null ? 0 : Interlocked.Read(ref scan.Skipped);
-            return dirs.ToString("N0", CultureInfo.InvariantCulture) + " dirs  " +
-                   files.ToString("N0", CultureInfo.InvariantCulture) + " files  " + FormatSize(bytes) +
-                   (skipped > 0
-                       ? "  (" + skipped.ToString("N0", CultureInfo.InvariantCulture) + " " + MainWindow.LocStatic("Str_Storage_Skipped") + ")"
-                       : "");
+            return Services.StorageAnalysisLogic.ScanSummary(dirs, files, FormatSize(bytes), skipped, MainWindow.LocStatic);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1300,6 +1304,7 @@ namespace KillerShell.Tools
         private void PinnedPathExpired(object? sender, EventArgs e)
         {
             _pinnedPathTimer?.Stop();
+            if (_accessibilityClosed) return;   // shut down: the tab is gone
             // Back to whatever the tab would otherwise be saying - the scan summary, or the
             // progress line if a scan is running.
             ReportStatus?.Invoke(ProgressSummary());

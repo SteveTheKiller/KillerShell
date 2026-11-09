@@ -29,7 +29,7 @@ namespace KillerShell.Models
         public string Level { get; } = level;
 
         public DateTime Time { get; } = time;
-        public string TimeLabel { get; } = time.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+        public string TimeLabel { get; } = Services.DisplayTime.Seconds(time.ToLocalTime());
 
         public string Source { get; } = source;
         public int EventId { get; } = eventId;

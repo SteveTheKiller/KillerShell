@@ -805,6 +805,11 @@ namespace KillerShell.Tools
                     }
                 }
 
+                // Create returns null rather than throwing, so a machine whose counter service is
+                // off ends here with nothing opened. Say so instead of showing a tab of dashes.
+                if (!AnyCounterOpened())
+                    throw new InvalidOperationException(Services.PerformanceCounterService.LastCreateError ?? string.Empty);
+
                 _countersAvailable = true;
             }
             catch (Exception ex)
@@ -951,9 +956,14 @@ namespace KillerShell.Tools
             var ds = (DiskState)tile.State!;
             try
             {
-                if (!Services.PerformanceCounterService.TrySample(ds.PercentTime, out double activeRaw) ||
-                    !Services.PerformanceCounterService.TrySample(ds.ReadBytes, out double readBps) ||
-                    !Services.PerformanceCounterService.TrySample(ds.WriteBytes, out double writeBps)) return;
+                // A counter that never opened is no reading, not a reading of 0.
+                if (!Services.PerformanceCounterService.TrySampleRequired(ds.PercentTime, out double activeRaw) ||
+                    !Services.PerformanceCounterService.TrySampleRequired(ds.ReadBytes, out double readBps) ||
+                    !Services.PerformanceCounterService.TrySampleRequired(ds.WriteBytes, out double writeBps))
+                {
+                    DashTile(tile);
+                    return;
+                }
                 double activePct = Services.PerformanceCounterService.ClampPercent(activeRaw);
 
                 CountTo(tile.TileSummaryText, activePct, FormatPercent);
@@ -969,13 +979,40 @@ namespace KillerShell.Tools
             catch { }
         }
 
+        private bool AnyCounterOpened()
+        {
+            foreach (var tile in _tiles)
+            {
+                bool any = tile.State switch
+                {
+                    CpuState cs => cs.Total != null || cs.Performance != null || cs.Processes != null || cs.Threads != null || cs.CoreCounters.Length > 0,
+                    RamState rs => rs.Avail != null || rs.Committed != null || rs.Free != null,
+                    DiskState ds => ds.PercentTime != null || ds.ReadBytes != null || ds.WriteBytes != null,
+                    NetState ns => ns.Sent != null || ns.Recv != null,
+                    _ => true,   // GPU opens its counters lazily, so it never proves the service is off
+                };
+                if (any) return true;
+            }
+            return _tiles.Count == 0;
+        }
+
+        private void DashTile(MetricTile tile)
+        {
+            if (tile.TileSummaryText != null) ShowDash(tile.TileSummaryText);
+            foreach (var block in tile.LegendValueBlocks) ShowDash(block);
+        }
+
         private void SampleNetworkTile(MetricTile tile)
         {
             var ns = (NetState)tile.State!;
             try
             {
-                if (!Services.PerformanceCounterService.TrySample(ns.Sent, out double sent) ||
-                    !Services.PerformanceCounterService.TrySample(ns.Recv, out double recv)) return;
+                if (!Services.PerformanceCounterService.TrySampleRequired(ns.Sent, out double sent) ||
+                    !Services.PerformanceCounterService.TrySampleRequired(ns.Recv, out double recv))
+                {
+                    DashTile(tile);
+                    return;
+                }
 
                 if (tile.LegendValueBlocks.Length >= 2)
                 {

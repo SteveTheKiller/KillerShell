@@ -20,6 +20,20 @@ namespace KillerShell.Tests.Services
             Assert.Equal(0, value);
         }
 
+        // The disk and network tiles have no reading without their counters. A counter that
+        // could not be opened is not a sample of zero, so those tiles show a dash.
+        [Fact]
+        public void TrySampleRequired_AMissingCounterIsNotASample()
+            => Assert.False(PerformanceCounterService.TrySampleRequired(null, out _));
+
+        // When no counter opens at all, the tab says why instead of showing zeros.
+        [Fact]
+        public void Create_AFailedCounterKeepsItsReason()
+        {
+            Assert.Null(PerformanceCounterService.Create("KillerShell No Such Category " + System.Guid.NewGuid().ToString("N"), "Nothing"));
+            Assert.False(string.IsNullOrWhiteSpace(PerformanceCounterService.LastCreateError));
+        }
+
         [Fact]
         public void GpuUtilization_SumsProcessesOnEachEngineAndUsesTheBusiestEngine()
         {

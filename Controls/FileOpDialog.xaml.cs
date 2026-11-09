@@ -297,7 +297,7 @@ namespace KillerShell
             string line = path;
             if (!isDirectory) line += Environment.NewLine + Human(size);
             if (modified != default)
-                line += (isDirectory ? Environment.NewLine : "   ") + modified.ToString("yyyy-MM-dd HH:mm");
+                line += (isDirectory ? Environment.NewLine : "   ") + Services.DisplayTime.Minutes(modified);
             return line;
         }
 

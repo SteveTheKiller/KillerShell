@@ -88,7 +88,7 @@
                 </Border>
 
                 <StackPanel Grid.Row="1" Margin="24,20,24,16">
-                    <TextBlock x:Name="MsgText" Foreground="{StaticResource TextBrush}"
+                    <TextBlock x:Name="MsgText" Foreground="{DynamicResource TextBrush}"
                                FontSize="13" TextWrapping="Wrap" Margin="0,0,0,12"/>
                     <TextBox x:Name="InputBox" Style="{StaticResource DarkTextBox}"
                              FontFamily="{DynamicResource MonoFont}" FontSize="12.5"

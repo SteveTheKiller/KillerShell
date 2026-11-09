@@ -618,7 +618,7 @@ namespace KillerShell.Tools
                             // as before, instead of being marked unreadable with 0% CPU.
                             try { _ = proc.Handle; } catch (System.ComponentModel.Win32Exception) { }
                             DateTime created = proc.StartTime;
-                            startTime = created.ToString("yyyy-MM-dd HH:mm:ss");
+                            startTime = Services.DisplayTime.Seconds(created);
                             startTimeUtcTicks = created.ToUniversalTime().Ticks;
                             identity = _processCache.Observe(pid, startTimeUtcTicks);
                         }

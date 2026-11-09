@@ -28,6 +28,21 @@ namespace KillerShell.Tests.Services
             finally { CultureInfo.CurrentCulture = saved; }
         }
 
+        // On-screen date labels (process start times, event times, the file operation and folder
+        // picker rows) read the same ISO way as the exports, whatever the Windows region.
+        [Theory]
+        [InlineData("th-TH")]
+        [InlineData("fi-FI")]
+        public void DisplayTime_LabelsReadAsInvariantIso(string culture)
+        {
+            UnderCulture(culture, () =>
+            {
+                var when = new DateTime(2026, 11, 2, 14, 30, 5);
+                Assert.Equal("2026-11-02 14:30", DisplayTime.Minutes(when));
+                Assert.Equal("2026-11-02 14:30:05", DisplayTime.Seconds(when));
+            });
+        }
+
         [Theory]
         [InlineData("th-TH")]
         [InlineData("fi-FI")]

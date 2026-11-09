@@ -12,6 +12,21 @@ namespace KillerShell.Tests.Services
 {
     public sealed class StorageAnalysisLogicTests
     {
+        // The scan progress line reads in the interface language, counts and all.
+        [Fact]
+        public void ScanSummary_UsesTheLocalizedCountWords()
+        {
+            string Loc(string key) => key switch
+            {
+                "Str_Storage_ScanCounts" => "Ordner: {0}  Dateien: {1}",
+                "Str_Storage_Skipped" => "übersprungen",
+                _ => key,
+            };
+            Assert.Equal("Ordner: 1,204  Dateien: 9  3.2 GB  (2 übersprungen)",
+                StorageAnalysisLogic.ScanSummary(1204, 9, "3.2 GB", 2, Loc));
+            Assert.Equal("Ordner: 0  Dateien: 0  0 B", StorageAnalysisLogic.ScanSummary(0, 0, "0 B", 0, Loc));
+        }
+
         private sealed class Node
         {
             internal long Size;

@@ -15,8 +15,9 @@ namespace KillerShell.Services
                     ? new PerformanceCounter(category, counter, readOnly)
                     : new PerformanceCounter(category, counter, instance, readOnly);
             }
-            catch
+            catch (Exception ex)
             {
+                LastCreateError = ex.Message;
                 return null;
             }
         }
@@ -35,6 +36,19 @@ namespace KillerShell.Services
                 return false;
             }
         }
+
+        /// <summary>
+        /// Like TrySample, but a counter that never opened is no reading at all, for tiles
+        /// whose whole display is that one counter.
+        /// </summary>
+        internal static bool TrySampleRequired(PerformanceCounter? counter, out double value)
+        {
+            value = 0;
+            return counter != null && TrySample(counter, out value);
+        }
+
+        /// <summary>Why the most recent Create returned null, for the "counters unavailable" status.</summary>
+        internal static string? LastCreateError { get; private set; }
 
         internal static bool Prime(PerformanceCounter? counter)
             => TrySample(counter, out _);
