@@ -58,7 +58,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The terminal prompt shows the git branch in a folder that became a repository after the prompt first visited it, such as after `git init` or a clone.
 - KillerPivot stores a key typed in capitals as lowercase, refuses a blank `-Name` before writing anything, keeps one `tenants.json.pivot-backup` instead of adding a new backup file on every save, and clears the per-save backups older versions left.
 - KillerPivot and the killer script commands add TLS 1.2 to what the session already allows instead of replacing it, so they no longer switch off TLS 1.3 for the rest of a PowerShell session.
-- The editor's option checkboxes, the sidebar rail buttons and the folder tree keep their keyboard focus ring after a theme change. It used to disappear from them, so a keyboard user could no longer see which of them had focus.
 
 ### Changed
 
