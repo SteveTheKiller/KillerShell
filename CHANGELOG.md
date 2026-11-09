@@ -25,7 +25,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Changing the file type in the save picker while the name box holds characters no file name can carry no longer crashes KillerShell; the name keeps its text and shows the invalid-path message.
 - The window menu from a right-click on the title bar or Alt+Space opens at the pointer instead of about 20 pixels below and to the right of it.
 - Clicking or pressing a key while KillerShell fades out after Exit no longer leaves it hidden in the tray, and a window hidden partway through that fade comes back visible.
-- Killer script commands such as `amort` run with their own defaults when typed with no options, and every option reaches the script as typed, so `-RetainDays 30` keeps its name and `amort -D` means the script's `-DryRun` instead of PowerShell's `-Debug`. Each command now does exactly what the website's one-liner does: it downloads the latest script to `%TEMP%` and runs it. The copy of the commands that ships with KillerShell loads ahead of one installed from PSGallery, and `peek` is available.
+- Killer script commands such as `amort` run with their own defaults when typed with no options, and every option reaches the script as typed, so `-RetainDays 30` keeps its name and `amort -D` means the script's `-DryRun` instead of PowerShell's `-Debug`. Each command now does exactly what the website's one-liner does: it downloads the latest script to `%TEMP%` and runs it. The copy of the commands that ships with KillerShell loads ahead of one installed from PSGallery, and `peek` is available. When the download fails, the command stops instead of running an older copy left in `%TEMP%`, and a computer where Group Policy sets the execution policy shows no error.
 - Dragging the title bar of the registry, rename, file operation, folder picker, process, service, event and terminal profile dialogs no longer crashes KillerShell when the click arrives after the mouse button is already up.
 - A favorite on a share that is offline or a drive that is unplugged stays in its place in the favorites drawer, dimmed, with a tooltip that says it can't be reached, and it lights up again once the folder is back the next time the drawer opens. Before, it disappeared at launch and the next save deleted it for good, and upgrading from a version before 1.5.0 triggered that save on the first launch.
 - Pulling a USB drive or losing a share while browsing it moves the pane to This PC instead of leaving a listing of a place that is gone.
@@ -48,7 +48,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Text in the registry and confirmation dialogs follows a theme or high-contrast switch made while the dialog is open.
 - A per-user update that finds another install running, or finds the installed copy changed, reopens KillerShell instead of leaving it closed.
 - A failed all-users update says what went wrong, such as a refused download, another install running or a full disk, instead of Windows' "This installation is forbidden by system policy" or "Incorrect function."
-- Extract All reads a zip, tar or tgz twice in total instead of once per file, so a large archive extracts in a steady run instead of looking hung. Names that escape the destination or collide on Windows are still refused before anything is written.
+- Extract All reads a zip, tar or tgz twice in total instead of once per file, so a large archive extracts in a steady run instead of looking hung. Names that escape the destination or collide on Windows are still refused before anything is written, and a name stored with a doubled slash extracts instead of refusing the archive.
+- Changing the file type in the save picker while the name is in quotes, such as "report.csv", no longer crashes KillerShell, and the Save button turns on as soon as a full path is typed while the folder listing is unavailable.
+- A picture that can't be shown as a thumbnail is no longer locked until KillerShell closes, so it can be renamed or deleted, and it isn't read again every time its row redraws.
 - Archive error messages, including names that collide on Windows, appear in the interface language.
 - The Install button refuses while an update or another install of the same folder is running, the same way the silent install and the update helpers do.
 - A portable copy no longer rewrites the text file icon beside itself when a different copy owns the file associations.
@@ -61,9 +63,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Changed
 
-- Only the main window remembers your tabs. Closing a Ctrl+N window or a torn-out tab's window no longer replaces the saved session with that window's tabs, and those windows close without the quit prompt about keeping tabs, the same as an administrator window. They still ask about unsaved documents.
+- Only the main window remembers your tabs. Closing a Ctrl+N window or a torn-out tab's window no longer replaces the saved session with that window's tabs, and those windows close without the quit prompt about keeping tabs, the same as an administrator window. They still ask about unsaved documents, and a remembered choice to keep Esc from closing the window still applies.
 - Every Performance graph has its own color on every theme: CPU green, memory blue, disk amber for reads and red for writes, network magenta for sends and yellow for receives, and GPU cyan, so no two graphs share a color.
-- Single-line text fields are as tall as the dropdowns beside them, so form rows line up instead of the text boxes standing oversized.
+- Single-line text fields are as tall as the dropdowns beside them, so form rows line up instead of the text boxes standing oversized. A field given its own height, such as the editor's Find box, keeps it.
 
 ## [1.5.1] - 2026-11-01
 

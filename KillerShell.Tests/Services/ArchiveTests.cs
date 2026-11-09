@@ -721,6 +721,24 @@ namespace KillerShell.Tests.Services
             finally { Directory.Delete(work, true); }
         }
 
+        // Some writers store a doubled slash ("a//b.txt"). It names the same file as "a/b.txt"
+        // and must not refuse the whole extraction.
+        [Theory]
+        [InlineData(".zip")]
+        [InlineData(".tar")]
+        public void ExtractAll_ReadsANameWithAnEmptySegment(string extension)
+        {
+            string path = CreateCaseArchive(extension, "a/x.txt", "a//b.txt");
+            string destination = Path.Combine(Path.GetDirectoryName(path)!, "out");
+            try
+            {
+                Assert.True(ArchiveProvider.ExtractAll(path, destination, CancellationToken.None, out string? error), error);
+                Assert.Equal("a//b.txt", File.ReadAllText(Path.Combine(destination, "a", "b.txt")));
+                Assert.Equal("a/x.txt", File.ReadAllText(Path.Combine(destination, "a", "x.txt")));
+            }
+            finally { Directory.Delete(Path.GetDirectoryName(path)!, true); }
+        }
+
         private static string CreateCaseArchive(string extension, params string[] names)
         {
             string work = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));

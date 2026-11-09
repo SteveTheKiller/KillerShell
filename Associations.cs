@@ -122,10 +122,6 @@ namespace KillerShell
         }
 
         /// <summary>
-        /// True when our ProgID is present, which is the one key everything else hangs off.
-        /// Cheap enough to call whenever the card opens.
-        /// </summary>
-        /// <summary>
         /// Whether this exe is the one the associations open files with, read from the ProgID's
         /// open command. Only that copy keeps text-file.ico beside itself current.
         /// </summary>
@@ -144,6 +140,10 @@ namespace KillerShell
             catch { return null; }
         }
 
+        /// <summary>
+        /// True when our ProgID is present, which is the one key everything else hangs off.
+        /// Cheap enough to call whenever the card opens.
+        /// </summary>
         internal static bool AssociationsRegistered(bool machine)
         {
             try

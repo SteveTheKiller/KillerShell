@@ -39,6 +39,21 @@ public sealed class StartupDriveTests
     public void OnlyTheMainWindowKeepsTheSession(string[] args, bool elevated, bool taskWindow, bool keepsNone)
         => Assert.Equal(keepsNone, MainWindow.KeepsNoSession(args, elevated, taskWindow));
 
+    // Esc in a window: a remembered "stay" holds in a Ctrl+N or torn-out window too. Those
+    // windows keep no session, so with nothing remembered they close without the keep-tabs
+    // prompt. An admin or task window closes as it always has.
+    [Theory]
+    [InlineData(false, false, "", MainWindow.EscAction.Prompt)]
+    [InlineData(false, false, "stay", MainWindow.EscAction.Stay)]
+    [InlineData(false, false, "quit", MainWindow.EscAction.Close)]
+    [InlineData(false, true, "stay", MainWindow.EscAction.Stay)]
+    [InlineData(false, true, "", MainWindow.EscAction.Close)]
+    [InlineData(false, true, "quit", MainWindow.EscAction.Close)]
+    [InlineData(true, true, "stay", MainWindow.EscAction.Close)]
+    [InlineData(true, true, "", MainWindow.EscAction.Close)]
+    public void EscHonorsTheRememberedChoice(bool elevatedOrTask, bool keepsNoSession, string remembered, MainWindow.EscAction expected)
+        => Assert.Equal(expected, MainWindow.DecideEsc(elevatedOrTask, keepsNoSession, remembered));
+
     [Theory]
     [InlineData(@"E:\", true)]                        // no disc, a card reader with no card
     [InlineData(@"Z:\Projects", true)]                // a mapped drive to reconnect

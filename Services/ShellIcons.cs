@@ -85,6 +85,15 @@ namespace KillerShell.Services
         /// and the user cannot rename or delete what they just looked at. Frozen and cached by
         /// path so scrolling a folder decodes each file once.
         /// </summary>
+        /// <summary>Whether a thumbnail answer, image or none, is cached for this file as it is now.</summary>
+        internal static bool HasThumbnailEntry(string path, int px)
+        {
+            var file = new FileInfo(path);
+            if (!file.Exists) return false;
+            string key = path + "|" + px + "|" + file.LastWriteTimeUtc.Ticks + "|" + file.Length;
+            lock (CacheGate) return _thumbs.ContainsKey(key);
+        }
+
         internal static ImageSource? Thumbnail(string path, int px)
         {
             ImageSource? img = null;
@@ -103,10 +112,17 @@ namespace KillerShell.Services
                         return hit.Image;
                     }
                 }
+                // A picture that will not decode is remembered as having none, under the same key,
+                // so a corrupt file or a missing codec is tried once, not on every redraw.
+                // Read through a stream this code closes: when a decode FAILS, a UriSource load
+                // keeps its own handle until a garbage collection, so the broken file stays locked
+                // and cannot be renamed or deleted.
+                try
                 {
+                    using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
                     var bmp = new BitmapImage();
                     bmp.BeginInit();
-                    bmp.UriSource = new Uri(path);
+                    bmp.StreamSource = stream;
                     bmp.DecodePixelWidth = px;
                     bmp.CacheOption = BitmapCacheOption.OnLoad;
                     bmp.CreateOptions = BitmapCreateOptions.IgnoreColorProfile | BitmapCreateOptions.IgnoreImageCache;
@@ -114,6 +130,7 @@ namespace KillerShell.Services
                     bmp.Freeze();
                     img = bmp;
                 }
+                catch { img = null; }
                 lock (CacheGate)
                 {
                     if (_thumbs.ContainsKey(key)) return _thumbs[key].Image;

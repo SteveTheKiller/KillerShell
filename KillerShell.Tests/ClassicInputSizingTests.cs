@@ -82,15 +82,23 @@ public static class ClassicInputSizingScenario
         {
             var single = CreateField(app, false);
             var multiline = CreateField(app, true);
+            // A box given its own height, like the editor's find box, keeps it.
+            var fixedHeight = CreateField(app, false);
+            fixedHeight.Height = 24;
             var panel = new StackPanel();
             panel.Children.Add(single);
             panel.Children.Add(multiline);
+            panel.Children.Add(fixedHeight);
             var window = new Window { Content = panel, Width = 400, Height = 300,
                 ShowActivated = false, ShowInTaskbar = false, Left = -32000, Top = -32000 };
             window.Show();
             ThemeManager.Apply(Theme.Dark);
             double modernHeight = Height(single);
             double modernMultilineHeight = Height(multiline);
+            Assert.Equal(24, Height(fixedHeight), 3);
+            // The bug was clipping, not growth: the template's own floor stood taller than the box.
+            var root = (FrameworkElement)fixedHeight.Template.FindName("InputRoot", fixedHeight);
+            Assert.True(root.ActualHeight <= 24.01, "The field's content was clipped: " + root.ActualHeight);
             ThemeManager.Apply(Theme.SE98);
             Assert.InRange(Height(single), 22, 24);
             Assert.True(Height(multiline) > 35, "Multiline fields must retain room for both lines.");

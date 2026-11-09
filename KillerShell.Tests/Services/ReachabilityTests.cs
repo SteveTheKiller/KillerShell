@@ -26,6 +26,23 @@ public sealed class ReachabilityTests
         Assert.True(clock.Elapsed < TimeSpan.FromSeconds(3), "took " + clock.Elapsed);
     }
 
+    // A dead share that is still being checked from the last time is not checked again on top
+    // of it, so opening the favorites drawer repeatedly does not pile up stuck threads.
+    [Fact]
+    public void AProbeStillRunningIsReusedNotRepeated()
+    {
+        using var release = new ManualResetEventSlim();
+        int calls = 0;
+        string path = @"\\dead-" + Guid.NewGuid().ToString("N") + @"\share";
+        bool Probe(string p) { Interlocked.Increment(ref calls); release.Wait(TimeSpan.FromSeconds(10)); return true; }
+
+        Assert.Empty(Reachability.Reachable(new[] { path }, Probe, TimeSpan.FromMilliseconds(100)));
+        Assert.Empty(Reachability.Reachable(new[] { path }, Probe, TimeSpan.FromMilliseconds(100)));
+        release.Set();
+
+        Assert.Equal(1, Volatile.Read(ref calls));
+    }
+
     [Fact]
     public void OrderIsKeptAndMissingFoldersAreDropped()
         => Assert.Equal(new[] { "1", "3" },

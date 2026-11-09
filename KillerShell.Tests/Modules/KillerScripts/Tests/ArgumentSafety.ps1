@@ -17,8 +17,12 @@ param(
 '@
 $global:KsDownloads = [System.Collections.Generic.List[string]]::new()
 function global:Invoke-RestMethod {
+    # Advanced, so -ErrorAction works on it the way it does on the real cmdlet.
+    [CmdletBinding()]
     param($Uri, $OutFile)
     $global:KsDownloads.Add([string]$Uri)
+    # Offline: the error a failed download writes, non-terminating unless the caller says Stop.
+    if ($global:KsOffline) { Write-Error 'Unable to connect to the remote server'; return }
     if ($Uri -like '*descriptions.json') { return [pscustomobject]@{ 'AMORT.ps1' = [pscustomobject]@{ name = 'Fixture'; description = 'Harmless' } } }
     [IO.File]::WriteAllText($OutFile, $global:KsArgumentFixture, [Text.UTF8Encoding]::new($true))
 }
@@ -60,6 +64,29 @@ try {
     if ($global:KsDownloads[$global:KsDownloads.Count - 1] -cne 'https://raw.githubusercontent.com/SteveTheKiller/killer-scripts/main/AMORT.ps1') { throw 'The download did not come from killer-scripts main.' }
     if ([IO.File]::ReadAllText((Join-Path $root 'AMORT.ps1')).Trim() -cne "'newer version'") { throw 'The script was not saved as %TEMP%\AMORT.ps1.' }
     Write-Output 'PASS every run downloads the latest script to %TEMP% and runs it'
+
+    # A download that fails stops the command. The copy an earlier run left in %TEMP% is not run.
+    [IO.File]::WriteAllText((Join-Path $root 'AMORT.ps1'), "[IO.File]::WriteAllText('$root\stale-ran.txt','ran')")
+    $global:KsOffline = $true
+    $failed = $false
+    # A terminal tab runs with the default Continue preference, not this fixture's Stop.
+    & { $ErrorActionPreference = 'Continue'; try { Invoke-AMORT 2>$null | Out-Null } catch { $script:failedRun = $true } }
+    $failed = [bool]$script:failedRun
+    $global:KsOffline = $false
+    if (-not $failed) { throw 'A failed download did not stop the command.' }
+    if (Test-Path (Join-Path $root 'stale-ran.txt')) { throw 'A failed download ran the stale copy left in %TEMP%.' }
+    Write-Output 'PASS a failed download stops the command'
+
+    # Where Group Policy pins the execution policy, Set-ExecutionPolicy throws; the command still runs, quietly.
+    function global:Set-ExecutionPolicy { throw 'Windows PowerShell updated your execution policy successfully, but the setting is overridden by a policy defined at a more specific scope.' }
+    try {
+        # Nothing red on screen: no error record in what the command writes.
+        $written = & { $ErrorActionPreference = 'Continue'; Invoke-AMORT 2>&1 }
+        $errors = @($written | Where-Object { $_ -is [Management.Automation.ErrorRecord] })
+        if ($errors.Count) { throw "A pinned execution policy printed an error: $($errors[0])" }
+        if ((@($written) -join '') -cne 'newer version') { throw "A run under a pinned policy returned '$written'." }
+    } finally { Remove-Item function:global:Set-ExecutionPolicy }
+    Write-Output 'PASS a pinned execution policy is not an error'
 
     # A run adds TLS 1.2 when the session lacks it, and leaves the rest of the session's TLS alone.
     $savedProtocol = [Net.ServicePointManager]::SecurityProtocol

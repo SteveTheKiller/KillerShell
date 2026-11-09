@@ -33,10 +33,14 @@ function Get-KsLatest {
     # script saved to %TEMP%\<script>. Returns the path to run.
     param([string]$Name)
     $file = if ($Name -like '*.ps1') { $Name } else { "$Name.ps1" }
-    Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue
+    # Where Group Policy pins the execution policy this throws even with SilentlyContinue; the
+    # policy that applies is then the machine's, and the run goes on under it, as the website's does.
+    try { Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Stop } catch { }
     Enable-KsTls12
     $path = Join-Path $env:TEMP $file
-    Invoke-RestMethod -Uri ($script:RawBase + $file) -OutFile $path
+    # Stop, not Continue: a failed download must end the command here, or the copy an earlier run
+    # left in %TEMP% would run in its place.
+    Invoke-RestMethod -Uri ($script:RawBase + $file) -OutFile $path -ErrorAction Stop
     $path
 }
 

@@ -19,7 +19,7 @@ public sealed class UpdateFailureRelaunchTests
     // Runs the real publication helper with only the publisher check and the two process-starting
     // operations replaced, so a failed publication can be observed without opening anything.
     private static (int exit, bool relaunched, bool reported) RunFailedPublication(bool elevated, bool targetExists, bool installer,
-        bool holdLease = false, bool targetChanged = false)
+        bool holdLease = false, bool targetChanged = false, bool realRecover = false, bool unsignedTarget = false)
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "relaunch", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
@@ -37,13 +37,15 @@ public sealed class UpdateFailureRelaunchTests
             string hash;
             using (var sha = SHA256.Create()) hash = BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(download))).Replace("-", "");
             UpdateImagePublication.RememberVerified(download, hash, new string('A', 40));
-            string overrides = "$ops.Publisher = { param($path, $plan) $false }\n"
+            // realRecover keeps the helper's own Recover, with its identity checks, and a publisher
+            // that passes, so the test sees whether Recover really reaches Relaunch.
+            string overrides = "$ops.Publisher = { param($path, $plan) " + (realRecover ? "$true" : "$false") + " }\n"
                 + "$ops.ShowReport = { param($path) [IO.File]::WriteAllText('" + reported + "', 'shown') }\n"
                 + "$ops.Relaunch = { param($plan) [IO.File]::WriteAllText('" + relaunched + "', 'started') }\n"
-                + "$ops.Recover = { param($plan) & $ops.Relaunch $plan }\n$ops.RelaunchInstalled = { param($plan) & $ops.Relaunch $plan }\n"
+                + (realRecover ? "" : "$ops.Recover = { param($plan) & $ops.Relaunch $plan }\n") + "$ops.RelaunchInstalled = { param($plan) & $ops.Relaunch $plan }\n"
                 + "$ops.Releases = { param($url) }\n"
                 // The stand-in installed copy carries no signature, so its certificate identity is replaced too.
-                + "$ops.VerifiedTargetThumb = { param($path, $signer) '" + new string('A', 40) + "' }\n";
+                + "$ops.VerifiedTargetThumb = { param($path, $signer) '" + (unsignedTarget ? "" : new string('A', 40)) + "' }\n";
             string script = installer
                 ? UpdateImagePublication.Installer(download, "/S", elevated, target, Path.Combine(root, "stage"), "https://example.invalid/", overrides)
                 : UpdateImagePublication.Script(download, target, elevated, "https://example.invalid/", "KillerShell", showReport: true, overrides: overrides,
@@ -73,9 +75,20 @@ public sealed class UpdateFailureRelaunchTests
     [InlineData(true)]
     public void ABusyFolderReopensTheInstalledCopy(bool elevated)
     {
-        var (exit, relaunched, _) = RunFailedPublication(elevated, targetExists: true, installer: false, holdLease: true);
+        // The helper's own Recover, as the app calls it: no installed signer is passed in.
+        var (exit, relaunched, _) = RunFailedPublication(elevated, targetExists: true, installer: false, holdLease: true, realRecover: true);
         Assert.Equal(1618, exit);
         Assert.True(relaunched, "The installed copy must be started again when another install holds the folder.");
+    }
+
+    // Reopening is for a copy that carries the publisher's signature. One that changed into
+    // something unsigned is left closed.
+    [Fact]
+    public void AChangedUnsignedCopyIsNotStarted()
+    {
+        var (exit, relaunched, _) = RunFailedPublication(false, targetExists: true, installer: false, targetChanged: true, realRecover: true, unsignedTarget: true);
+        Assert.Equal(1618, exit);
+        Assert.False(relaunched, "An unsigned installed copy must not be started.");
     }
 
     [Theory]
@@ -83,7 +96,7 @@ public sealed class UpdateFailureRelaunchTests
     [InlineData(true)]
     public void AChangedInstalledCopyIsReopenedNotReplaced(bool elevated)
     {
-        var (exit, relaunched, _) = RunFailedPublication(elevated, targetExists: true, installer: false, targetChanged: true);
+        var (exit, relaunched, _) = RunFailedPublication(elevated, targetExists: true, installer: false, targetChanged: true, realRecover: true);
         Assert.Equal(1618, exit);
         Assert.True(relaunched, "The installed copy must be started again when it changed before publication.");
     }

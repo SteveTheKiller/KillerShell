@@ -149,16 +149,31 @@ namespace KillerShell.Shell
         /// </summary>
         internal void SessionEndCancelled() => CancelShutdown();
 
+        public enum EscAction { Stay, Close, Prompt }
+
         // Esc path: a remembered "stay" swallows the key, a remembered "quit" closes.
         private void RequestQuit()
         {
-            // Elevated windows skip the session prompt, but still check unsaved documents.
-            if (KeepsNoSessionHere) { ConfirmedClose(); return; }   // StartupPaths.cs
-
             string remembered = Services.ThemeManager.GetSetting("EscQuit") ?? string.Empty;
-            if (remembered == "stay") return;
-            if (remembered == "quit") { ConfirmedClose(); return; }
-            if (ShowQuitDialog()) ConfirmedClose();
+            switch (DecideEsc(IsElevated || IsTaskWindow, KeepsNoSessionHere, remembered))
+            {
+                case EscAction.Stay: return;
+                case EscAction.Close: ConfirmedClose(); return;   // still checks unsaved documents
+                default: if (ShowQuitDialog()) ConfirmedClose(); return;
+            }
+        }
+
+        /// <summary>
+        /// What Esc does. Admin and task windows close, as they always have. Everywhere else a
+        /// remembered choice holds, including in a Ctrl+N or torn-out window; such a window keeps no
+        /// session, so with nothing remembered it closes instead of asking about keeping tabs.
+        /// </summary>
+        internal static EscAction DecideEsc(bool elevatedOrTask, bool keepsNoSession, string remembered)
+        {
+            if (elevatedOrTask) return EscAction.Close;
+            if (remembered == "stay") return EscAction.Stay;
+            if (remembered == "quit" || keepsNoSession) return EscAction.Close;
+            return EscAction.Prompt;
         }
 
         // X button / Alt+F4 / caption-menu Close land here without RequestQuit, so the

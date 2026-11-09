@@ -1128,7 +1128,10 @@ namespace KillerShell.Services
         {
             string p = entryName.Replace('\\', '/').Trim('/');
             if (p.Length == 0) return "";
-            if (p.IndexOf("..", StringComparison.Ordinal) < 0 && p.IndexOf("./", StringComparison.Ordinal) < 0)
+            // "//" too: an empty segment names the same place as none, and left in it splits the
+            // path into a blank folder name that Extract All cannot write.
+            if (p.IndexOf("..", StringComparison.Ordinal) < 0 && p.IndexOf("./", StringComparison.Ordinal) < 0
+                && p.IndexOf("//", StringComparison.Ordinal) < 0)
                 return p;
 
             var parts = p.Split('/')
