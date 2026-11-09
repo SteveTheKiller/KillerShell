@@ -125,6 +125,25 @@ namespace KillerShell
         /// True when our ProgID is present, which is the one key everything else hangs off.
         /// Cheap enough to call whenever the card opens.
         /// </summary>
+        /// <summary>
+        /// Whether this exe is the one the associations open files with, read from the ProgID's
+        /// open command. Only that copy keeps text-file.ico beside itself current.
+        /// </summary>
+        internal static bool ShouldRefreshFileIcon(string? registeredCommand, string exe)
+            => !string.IsNullOrEmpty(registeredCommand)
+               && registeredCommand!.StartsWith("\"" + exe + "\"", StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>The ProgID's open command in HKCU or HKLM, or null when neither has one.</summary>
+        internal static string? RegisteredOpenCommand(bool machine)
+        {
+            try
+            {
+                using var k = RootFor(machine).OpenSubKey(@"Software\Classes\" + AssocProgId + @"\shell\open\command");
+                return k?.GetValue("") as string;
+            }
+            catch { return null; }
+        }
+
         internal static bool AssociationsRegistered(bool machine)
         {
             try

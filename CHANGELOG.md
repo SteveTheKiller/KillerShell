@@ -46,6 +46,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The Storage scan progress line counts folders and files in the interface language.
 - Escape cancels the registry value editor without saving, and its close button has a name for screen readers.
 - Text in the registry dialogs follows a theme or high-contrast switch made while the dialog is open.
+- Extract All reads a zip, tar or tgz twice in total instead of once per file, so a large archive extracts in a steady run instead of looking hung. Names that escape the destination or collide on Windows are still refused before anything is written.
+- Archive error messages, including names that collide on Windows, appear in the interface language.
+- The Install button refuses while an update or another install of the same folder is running, the same way the silent install and the update helpers do.
+- A portable copy no longer rewrites the text file icon beside itself when a different copy owns the file associations.
+- A command-line search that finds exactly as many matches as its `--limit` reports `limitReached: false`.
 
 ### Changed
 

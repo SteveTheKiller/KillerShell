@@ -29,6 +29,36 @@ public sealed class CliPathAndEventLimitTests
         Assert.True(result.ExitCode == 2, "exited " + result.ExitCode + ": " + result.Error);
     }
 
+    // A search that finds exactly as many matches as its limit found them all, so it does not
+    // claim more were left behind. One fewer than the matches does.
+    [Fact]
+    public void SearchReportsTheLimitOnlyWhenMoreMatchesExist()
+    {
+        string root = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+        System.IO.Directory.CreateDirectory(root);
+        try
+        {
+            for (int i = 0; i < 3; i++) System.IO.File.WriteAllText(System.IO.Path.Combine(root, "match" + i + ".txt"), "x");
+
+            var exact = Run("search", root, "--name", "match*.txt", "--limit", "3");
+            Assert.Equal(0, exact.ExitCode);
+            Assert.Contains("\"limitReached\":false", exact.Output, StringComparison.Ordinal);
+            Assert.Equal(3, CountOf(exact.Output, "\"path\":"));
+
+            var short1 = Run("search", root, "--name", "match*.txt", "--limit", "2");
+            Assert.Contains("\"limitReached\":true", short1.Output, StringComparison.Ordinal);
+            Assert.Equal(2, CountOf(short1.Output, "\"path\":"));
+        }
+        finally { System.IO.Directory.Delete(root, true); }
+    }
+
+    private static int CountOf(string text, string part)
+    {
+        int count = 0;
+        for (int at = text.IndexOf(part, StringComparison.Ordinal); at >= 0; at = text.IndexOf(part, at + part.Length, StringComparison.Ordinal)) count++;
+        return count;
+    }
+
     // A level whose newest events number between 1 and 100, so a limit can be set to exactly that
     // count. Null when this machine's System log has no such level.
     private static (int Level, int Count)? SmallLevel()

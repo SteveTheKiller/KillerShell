@@ -7,6 +7,41 @@ namespace KillerShell.Tests.Services;
 
 public sealed class InstallationImageTests
 {
+    // The Install button takes the same per-folder lease as the silent install and the update
+    // helpers, so an install and an update of one folder never publish over each other.
+    [Fact]
+    public void TheInteractiveInstallRefusesWhileTheFolderIsLeased()
+    {
+        string folder = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "lease-" + Guid.NewGuid().ToString("N"));
+        using var held = new System.Threading.ManualResetEventSlim();
+        using var release = new System.Threading.ManualResetEventSlim();
+        var holder = new System.Threading.Thread(() =>
+        {
+            using (KillerFamily.Deployment.InstallerExitCodes.Acquire("KillerShell", folder))
+            {
+                held.Set();
+                release.Wait(TimeSpan.FromSeconds(30));
+            }
+        });
+        holder.Start();
+        try
+        {
+            Assert.True(held.Wait(TimeSpan.FromSeconds(10)));
+            bool installed = false;
+            Assert.ThrowsAny<Exception>(() => App.InstallUnderLease(folder, () => installed = true));
+            Assert.False(installed);
+        }
+        finally
+        {
+            release.Set();
+            holder.Join();
+        }
+
+        bool ran = false;
+        App.InstallUnderLease(folder, () => ran = true);
+        Assert.True(ran);
+    }
+
     [Fact]
     public void LockedBackupStillPublishesAndRetainsBothImages()
     {

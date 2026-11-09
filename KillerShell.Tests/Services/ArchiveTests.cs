@@ -681,6 +681,46 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        // Extract All reads the archive a fixed number of times however many entries it holds.
+        // Reopening it per entry made the cost grow with the square of the count, so a big tgz
+        // (which has to be decompressed from the start every time) looked hung.
+        [Theory]
+        [InlineData(".zip")]
+        [InlineData(".tgz")]
+        public void ExtractAll_ReadsTheArchiveAFixedNumberOfTimes(string extension)
+        {
+            var names = Enumerable.Range(0, 200).Select(i => "dir" + (i % 7) + "/sub" + (i % 3) + "/file" + i + ".txt").ToArray();
+            string work = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(work);
+            string path = Path.Combine(work, "many" + extension);
+            try
+            {
+                if (extension == ".zip")
+                {
+                    using var archive = ZipFile.Open(path, ZipArchiveMode.Create);
+                    foreach (string name in names)
+                        using (var writer = new StreamWriter(archive.CreateEntry(name).Open())) writer.Write(name);
+                }
+                else
+                {
+                    using var file = File.Create(path);
+                    using var gz = new GZipStream(file, CompressionMode.Compress);
+                    foreach (string name in names) WriteTarFile(gz, name, name);
+                    gz.Write(new byte[1024], 0, 1024);
+                }
+
+                string output = Path.Combine(work, "out");
+                int before = ArchiveProvider.ArchiveOpensOnThisThread;
+                Assert.True(ArchiveProvider.ExtractAll(path, output, CancellationToken.None, out string? error), error);
+                int opens = ArchiveProvider.ArchiveOpensOnThisThread - before;
+
+                Assert.InRange(opens, 1, 3);
+                foreach (string name in names)
+                    Assert.Equal(name, File.ReadAllText(Path.Combine(output, name.Replace('/', '\\'))));
+            }
+            finally { Directory.Delete(work, true); }
+        }
+
         private static string CreateCaseArchive(string extension, params string[] names)
         {
             string work = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));

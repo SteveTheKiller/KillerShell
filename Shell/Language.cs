@@ -153,16 +153,21 @@ namespace KillerShell.Shell
         /// else is an exception message, which Windows already wrote in its own language, and
         /// passes through untouched.
         /// </remarks>
-        internal static string LocReason(string reason) => reason switch
+        internal static string LocReason(string reason)
+            => ReasonKey(reason) is string key ? LocStatic(key) : reason;
+
+        /// <summary>The string key for a fixed service-layer reason token, or null for anything else.</summary>
+        internal static string? ReasonKey(string reason) => reason switch
         {
-            "empty name"                      => LocStatic("Str_Err_EmptyName"),
-            "invalid characters"              => LocStatic("Str_Err_InvalidChars"),
-            "already exists"                  => LocStatic("Str_Err_AlreadyExists"),
-            "no file name"                    => LocStatic("Str_Err_NoFileName"),
-            "no folder name"                  => LocStatic("Str_Err_NoFolderName"),
-            "entry not found"                 => LocStatic("Str_Err_EntryNotFound"),
-            "entry escaped extraction folder" => LocStatic("Str_Err_EntryEscaped"),
-            _                                 => reason,
+            "empty name"                      => "Str_Err_EmptyName",
+            "invalid characters"              => "Str_Err_InvalidChars",
+            "already exists"                  => "Str_Err_AlreadyExists",
+            "no file name"                    => "Str_Err_NoFileName",
+            "no folder name"                  => "Str_Err_NoFolderName",
+            "entry not found"                 => "Str_Err_EntryNotFound",
+            "entry escaped extraction folder" => "Str_Err_EntryEscaped",
+            "archive entries map to the same output path" => "Str_Err_ArchiveSamePath",
+            _                                 => null,
         };
 
         /// <summary>Re-applies strings set in code so a live language switch updates them.

@@ -26,6 +26,18 @@ public sealed class AssociationCleanupTests
         return key != null;
     }
 
+    // Only the copy the file associations point at keeps text-file.ico fresh. A portable copy
+    // started from a USB stick, with an installed copy owning the associations, writes nothing
+    // beside itself.
+    [Theory]
+    [InlineData("\"C:\\Program Files\\KillerShell\\KillerShell.exe\" \"%1\"", @"C:\Program Files\KillerShell\KillerShell.exe", true)]
+    [InlineData("\"c:\\program files\\killershell\\KILLERSHELL.EXE\" \"%1\"", @"C:\Program Files\KillerShell\KillerShell.exe", true)]
+    [InlineData("\"C:\\Program Files\\KillerShell\\KillerShell.exe\" \"%1\"", @"E:\Tools\KillerShell.exe", false)]
+    [InlineData(null, @"E:\Tools\KillerShell.exe", false)]
+    [InlineData("", @"E:\Tools\KillerShell.exe", false)]
+    public void OnlyTheRegisteredCopyRefreshesTheFileIcon(string? registeredCommand, string exe, bool expected)
+        => Assert.Equal(expected, App.ShouldRefreshFileIcon(registeredCommand, exe));
+
     [Fact]
     public void RemovalLeavesNoEmptyKeysWhereNothingWasThereBefore()
     {

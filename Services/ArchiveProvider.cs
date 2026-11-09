@@ -56,6 +56,24 @@ namespace KillerShell.Services
 
     internal static class ArchiveProvider
     {
+        // How many times this thread has opened an archive file. Extraction runs on the caller's
+        // thread, so a test can see that Extract All does not reopen the archive per entry.
+        [ThreadStatic] private static int _archiveOpens;
+
+        internal static int ArchiveOpensOnThisThread => _archiveOpens;
+
+        private static FileStream OpenArchiveFile(string archivePath)
+        {
+            _archiveOpens++;
+            return File.OpenRead(archivePath);
+        }
+
+        private static ZipArchive OpenZip(string archivePath)
+        {
+            _archiveOpens++;
+            return ZipFile.OpenRead(archivePath);
+        }
+
         // Kept as a set rather than a switch so the two callers that need "is this openable"
         // and "is this a known archive we refuse" cannot drift apart.
         private static readonly HashSet<string> ReadableExts = new(StringComparer.OrdinalIgnoreCase)
@@ -234,7 +252,7 @@ namespace KillerShell.Services
         private static List<ArchiveEntryInfo> ReadZip(string archivePath)
         {
             var list = new List<ArchiveEntryInfo>();
-            using var zip = ZipFile.OpenRead(archivePath);
+            using var zip = OpenZip(archivePath);
             foreach (var e in zip.Entries)
             {
                 string p = Normalize(e.FullName);
@@ -275,7 +293,7 @@ namespace KillerShell.Services
                 // gzip stores the uncompressed size mod 2^32 in the last four bytes. That is
                 // exact for anything under 4GB and the only way to know without inflating the
                 // whole stream, which a folder listing must never do.
-                using var fs = File.OpenRead(archivePath);
+                using var fs = OpenArchiveFile(archivePath);
                 if (fs.Length >= 4)
                 {
                     fs.Seek(-4, SeekOrigin.End);
@@ -312,7 +330,7 @@ namespace KillerShell.Services
         {
             var list = new List<ArchiveEntryInfo>();
 
-            using FileStream file = File.OpenRead(archivePath);
+            using FileStream file = OpenArchiveFile(archivePath);
             using Stream s = gzip ? new GZipStream(file, CompressionMode.Decompress) : file;
 
             var header = new byte[TarBlock];
@@ -649,14 +667,14 @@ namespace KillerShell.Services
 
                 if (archivePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase))
                 {
-                    using var fs = File.OpenRead(archivePath);
+                    using var fs = OpenArchiveFile(archivePath);
                     using var gz = new GZipStream(fs, CompressionMode.Decompress);
                     using var outFs = (outputFactory ?? CreateExtractionOutput)(dest);
                     CopyExtraction(gz, outFs, ct);
                     return true;
                 }
 
-                using (var zip = ZipFile.OpenRead(archivePath))
+                using (var zip = OpenZip(archivePath))
                 {
                     var entry = zip.Entries.FirstOrDefault(
                         x => string.Equals(Normalize(x.FullName), entryPath.Trim('/'), StringComparison.Ordinal));
@@ -731,7 +749,7 @@ namespace KillerShell.Services
             try
             {
                 Directory.CreateDirectory(destination);
-                return ExtractFolderChildren(archivePath, "", destination, out error, ct, outputFactory);
+                return ExtractAllSinglePass(archivePath, destination, out error, ct, outputFactory);
             }
             catch (OperationCanceledException) { throw; }
             catch (Exception ex)
@@ -739,6 +757,229 @@ namespace KillerShell.Services
                 error ??= ex.Message;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Extract All in two reads of the archive however many entries it holds: one to list
+        /// and check every target, one to write them. Reopening per entry (the folder-by-folder
+        /// path the drag-out still uses) made a large tgz decompress from the start once per file.
+        /// </summary>
+        /// <remarks>
+        /// Every destination is checked before anything is written, as before: a name that
+        /// escapes the destination, or two archive paths (files or folders) that differ only in
+        /// case and so land on one Windows path, refuses the whole extraction.
+        /// </remarks>
+        private static bool ExtractAllSinglePass(string archivePath, string destination, out string? error,
+                                                 CancellationToken ct, Func<string, Stream>? outputFactory)
+        {
+            error = null;
+            var entries = ReadEntries(archivePath, ct).ToList();
+
+            string root = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar)
+                          + Path.DirectorySeparatorChar;
+            // Windows path -> the archive path that claims it. Folders are claimed both by their
+            // own entries and as the parents of every file, since most zips store no folder entries.
+            var claims = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var folders = new List<string>();
+            var files = new Dictionary<string, string>(StringComparer.Ordinal);   // archive path -> target
+
+            bool Claim(string archive, string target)
+            {
+                if (claims.TryGetValue(target, out string? owner))
+                    return string.Equals(owner, archive, StringComparison.Ordinal);
+                claims[target] = archive;
+                return true;
+            }
+
+            foreach (var e in entries)
+            {
+                ct.ThrowIfCancellationRequested();
+                string[] parts = e.EntryPath.Split('/');
+
+                // One segment at a time, as Windows resolves each folder it creates: a name
+                // such as "docs " loses its trailing space only when it is the last segment.
+                var levels = new string[parts.Length];
+                string at = destination;
+                bool escaped = false;
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    at = Path.GetFullPath(Path.Combine(at, parts[i]));
+                    if (!at.StartsWith(root, StringComparison.OrdinalIgnoreCase)) { escaped = true; break; }
+                    levels[i] = at;
+                }
+                if (escaped)
+                {
+                    error = "entry escaped extraction folder";
+                    return false;
+                }
+                string target = levels[parts.Length - 1];
+
+                int folderParts = e.IsDirectory ? parts.Length : parts.Length - 1;
+                for (int i = 1; i <= folderParts; i++)
+                {
+                    string archiveFolder = string.Join("/", parts, 0, i) + "/";
+                    string folderTarget = levels[i - 1];
+                    if (claims.TryGetValue(folderTarget, out string? seen) && string.Equals(seen, archiveFolder, StringComparison.Ordinal)) continue;
+                    if (!Claim(archiveFolder, folderTarget)) { error = "archive entries map to the same output path"; return false; }
+                    folders.Add(folderTarget);
+                }
+                if (e.IsDirectory) continue;
+
+                if (files.ContainsKey(e.EntryPath) || !Claim(e.EntryPath, target))
+                {
+                    error = "archive entries map to the same output path";
+                    return false;
+                }
+                files[e.EntryPath] = target;
+            }
+
+            foreach (string folder in folders)
+            {
+                ct.ThrowIfCancellationRequested();
+                Directory.CreateDirectory(folder);
+            }
+
+            void Write(string target, Stream input)
+            {
+                try
+                {
+                    using (var output = (outputFactory ?? CreateExtractionOutput)(target)) CopyExtraction(input, output, ct);
+                    ct.ThrowIfCancellationRequested();
+                }
+                catch (OperationCanceledException)
+                {
+                    try { File.Delete(target); } catch { }
+                    throw;
+                }
+                CopyDownloadMark(archivePath, target);
+            }
+
+            if (files.Count == 0) return true;
+
+            bool tar = archivePath.EndsWith(".tar.gz", StringComparison.OrdinalIgnoreCase)
+                       || archivePath.EndsWith(".tgz", StringComparison.OrdinalIgnoreCase)
+                       || archivePath.EndsWith(".tar", StringComparison.OrdinalIgnoreCase);
+            if (tar)
+            {
+                try { return ExtractTarFiles(archivePath, files, Write, ct); }
+                catch (InvalidDataException ex) when (ex.Message == "entry not found") { error = ex.Message; return false; }
+            }
+
+            if (archivePath.EndsWith(".gz", StringComparison.OrdinalIgnoreCase))
+            {
+                using var fs = OpenArchiveFile(archivePath);
+                using var gz = new GZipStream(fs, CompressionMode.Decompress);
+                Write(files.Values.First(), gz);
+                return true;
+            }
+
+            using (var zip = OpenZip(archivePath))
+            {
+                var written = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var entry in zip.Entries)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    if (entry.FullName.EndsWith("/", StringComparison.Ordinal)) continue;
+                    string p = Normalize(entry.FullName);
+                    if (!files.TryGetValue(p, out string? target) || !written.Add(p)) continue;
+                    using var input = entry.Open();
+                    Write(target, input);
+                }
+                if (written.Count < files.Count) { error = "entry not found"; return false; }
+            }
+            return true;
+        }
+
+        /// <summary>One sequential read of a tar or tgz, writing every listed file as it passes.</summary>
+        private static bool ExtractTarFiles(string archivePath, Dictionary<string, string> files,
+                                            Action<string, Stream> write, CancellationToken ct)
+        {
+            using FileStream file = OpenArchiveFile(archivePath);
+            using Stream s = archivePath.EndsWith(".tar", StringComparison.OrdinalIgnoreCase)
+                ? file
+                : new GZipStream(file, CompressionMode.Decompress);
+
+            var header = new byte[TarBlock];
+            var buf = new byte[81920];
+            var metadata = new TarMetadata();
+            var written = new HashSet<string>(StringComparer.Ordinal);
+
+            while (ReadExactly(s, header, TarBlock, ct))
+            {
+                bool allZero = true;
+                for (int i = 0; i < TarBlock && allZero; i++) if (header[i] != 0) allZero = false;
+                if (allZero) break;
+
+                string name = TarString(header, 0, 100);
+                string prefix = TarString(header, 345, 155);
+                if (prefix.Length > 0) name = prefix + "/" + name;
+
+                long size = TarOctal(header, 124, 12);
+                char type = (char)header[156];
+
+                if (type == 'L' || type == 'x' || type == 'X' || type == 'g')
+                {
+                    if (size < 0 || size > MaxTarMetadataSize)
+                        throw new InvalidDataException("tar metadata size exceeds the supported limit");
+                    var metaBuf = new byte[size];
+                    if (!ReadExactly(s, metaBuf, (int)size, ct))
+                        throw new InvalidDataException("truncated tar metadata");
+                    metadata.Read(metaBuf, type);
+                    SkipPadding(s, size, buf, ct);
+                    continue;
+                }
+
+                metadata.Apply(ref name, ref size);
+                string p = Normalize(name);
+                if ((type == '0' || type == '\0') && files.TryGetValue(p, out string? target) && written.Add(p))
+                {
+                    using var payload = new TarPayload(s, size, ct);
+                    write(target, payload);
+                    if (payload.Remaining > 0) throw new InvalidDataException("truncated tar payload");
+                }
+                else
+                {
+                    long skipLeft = size;
+                    while (skipLeft > 0)
+                    {
+                        int n = (int)Math.Min(buf.Length, skipLeft);
+                        if (!ReadExactly(s, buf, n, ct)) throw new InvalidDataException("truncated tar payload");
+                        skipLeft -= n;
+                    }
+                }
+                SkipPadding(s, size, buf, ct);
+            }
+            if (written.Count < files.Count) throw new InvalidDataException("entry not found");
+            return true;
+        }
+
+        /// <summary>A read-only window of exactly one tar entry's bytes over the archive stream.</summary>
+        private sealed class TarPayload(Stream inner, long size, CancellationToken ct) : Stream
+        {
+            internal long Remaining { get; private set; } = size;
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                if (Remaining <= 0) return 0;
+                ct.ThrowIfCancellationRequested();
+                int n = inner.Read(buffer, offset, (int)Math.Min(count, Remaining));
+                if (n <= 0) throw new InvalidDataException("truncated tar payload");
+                Remaining -= n;
+                return n;
+            }
+
+            public override bool CanRead => true;
+            public override bool CanSeek => false;
+            public override bool CanWrite => false;
+            public override long Length => size;
+            public override long Position { get => size - Remaining; set => throw new NotSupportedException(); }
+            public override void Flush() { }
+            public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+            public override void SetLength(long value) => throw new NotSupportedException();
+            public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+            // Never closes the archive stream under the reader.
+            protected override void Dispose(bool disposing) { }
         }
 
         private static bool ExtractFolderChildren(string archivePath, string entryPath,
@@ -794,7 +1035,7 @@ namespace KillerShell.Services
                                             Func<string, Stream>? outputFactory = null, CancellationToken ct = default)
         {
             string want = entryPath.Trim('/');
-            using FileStream file = File.OpenRead(archivePath);
+            using FileStream file = OpenArchiveFile(archivePath);
             using Stream s = archivePath.EndsWith(".tar", StringComparison.OrdinalIgnoreCase)
                 ? file
                 : new GZipStream(file, CompressionMode.Decompress);

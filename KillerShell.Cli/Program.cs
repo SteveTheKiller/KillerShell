@@ -492,19 +492,22 @@ namespace KillerShell.Cli
             var found = new List<SearchResult>();
             using var cancellation = new CancellationTokenSource();
             var engine = new SearchEngine();
+            // One past the limit is collected, so "the limit was reached" means a match was left
+            // out, not merely that exactly limit matches existed.
             engine.ResultsBatch += batch =>
             {
                 foreach (var item in batch)
                 {
-                    if (found.Count >= limit) break;
+                    if (found.Count > limit) break;
                     found.Add(item);
                 }
-                if (found.Count >= limit) cancellation.Cancel();
+                if (found.Count > limit) cancellation.Cancel();
             };
             System.Threading.Tasks.Task.Run(() => engine.SearchAsync(root, [group], Array.Empty<SearchFilter>(),
                 string.Empty, string.Empty, false, cancellation.Token)).GetAwaiter().GetResult();
 
-            var ordered = found.OrderBy(item => item.FilePath, StringComparer.OrdinalIgnoreCase).ToList();
+            bool limitReached = found.Count > limit;
+            var ordered = found.OrderBy(item => item.FilePath, StringComparer.OrdinalIgnoreCase).Take(limit).ToList();
             // Both names are claimed before either report is written, so a refusal on the second
             // leaves nothing behind. Whatever this run created is removed if anything fails.
             using (var claims = new OutputClaims())
@@ -536,7 +539,7 @@ namespace KillerShell.Cli
                 output.Append(",\"modifiedUtc\":").Append(JsonString(item.Modified.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture)));
                 output.Append('}');
             }
-            output.Append("],\"limitReached\":").Append(cancellation.IsCancellationRequested ? "true" : "false");
+            output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false");
             output.Append(",\"incompletePaths\":").Append(engine.IncompletePaths.ToString(CultureInfo.InvariantCulture));
             output.Append(",\"skippedDirectoryLinks\":").Append(engine.SkippedDirectoryLinks.ToString(CultureInfo.InvariantCulture));
             if (csvPath != null) output.Append(",\"csv\":").Append(JsonString(csvPath));

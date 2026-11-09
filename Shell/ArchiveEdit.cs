@@ -116,8 +116,7 @@ namespace KillerShell.Shell
                 if (r.ExistingCollisions)
                 {
                     r.ErrorKey = "Str_Status_ArchiveWriteFailed";
-                    r.ErrorDetail = "it already holds names that Windows cannot write as separate files: "
-                        + string.Join(", ", r.Collisions.Take(3));
+                    r.ErrorDetail = string.Format(Loc("Str_Err_ArchiveNamesCollide"), string.Join(", ", r.Collisions.Take(3)));
                     ReportArchive(tab, r, "Str_Status_ArchiveAdded", "0");
                     return;
                 }
@@ -426,7 +425,7 @@ namespace KillerShell.Shell
                         ct.ThrowIfCancellationRequested();
                         res.Ok = true;
                     }
-                    else { res.ErrorKey = "Str_Status_ArchiveExtractFailed"; res.ErrorDetail = error; }
+                    else { res.ErrorKey = "Str_Status_ArchiveExtractFailed"; res.ErrorDetail = error == null ? null : LocReason(error); }
                     return res;
                 }, "Str_Status_ArchiveExtracting");
 

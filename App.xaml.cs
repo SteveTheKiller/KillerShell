@@ -296,7 +296,10 @@ namespace KillerShell
             // opted into associations for still gets no write here - "never registers anything on
             // its own" (Associations.cs file header) covers refreshing the icon too, not just
             // creating the association in the first place.
-            if (AssociationsRegistered(machine: false) || AssociationsRegistered(machine: true))
+            // And only for the copy the associations actually open files with: a portable copy run
+            // beside an installed one has no business rewriting an icon file next to itself.
+            if (ShouldRefreshFileIcon(RegisteredOpenCommand(machine: false), ExePath)
+                || ShouldRefreshFileIcon(RegisteredOpenCommand(machine: true), ExePath))
                 EnsureFileIcon(ExePath);
             RefreshTerminalClass();   // DefaultTerminal.cs - installs from before the class existed
 
@@ -725,7 +728,7 @@ namespace KillerShell
         {
             try
             {
-                InstallForCurrentUser(wantDesktop);
+                InstallUnderLease(InstallDir, () => InstallForCurrentUser(wantDesktop));
                 return true;
             }
             catch (Exception ex)
@@ -736,6 +739,16 @@ namespace KillerShell
                     installer: owner == null, notice: true) { Owner = owner }.ShowDialog();
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Runs an install while holding the target folder's install lease.
+        /// </summary>
+        internal static void InstallUnderLease(string folder, Action install)
+        {
+            // Throws the localized "busy" error when an update or another install holds it.
+            using var lease = KillerFamily.Deployment.InstallerExitCodes.Acquire(AppName, folder);
+            install();
         }
 
         /// <summary>The per-user install itself, shared by the Install button and a silent install
