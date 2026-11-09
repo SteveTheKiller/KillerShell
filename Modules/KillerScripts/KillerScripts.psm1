@@ -197,7 +197,52 @@ function Invoke-KillerScript {
     $parseErrors = $null
     [System.Management.Automation.Language.Parser]::ParseFile($snapshot, [ref]$parseTokens, [ref]$parseErrors) | Out-Null
     if ($parseErrors.Count) { throw "KillerScripts: invalid cached script for $file." }
-    & $snapshot @ScriptArgs
+    $invocation = ConvertTo-KsInvocation -Path $snapshot -Arguments $ScriptArgs
+    $named = $invocation.Named
+    $positional = $invocation.Positional
+    & $snapshot @named @positional
+}
+
+function ConvertTo-KsInvocation {
+    # A remaining-arguments list loses its parameter names when it is splatted again: every item
+    # arrives positionally, so "-RetainDays 30" reaches the script as two plain values and an empty
+    # call can hand it a lone $null that lands on its first positional parameter. Rebuild the named
+    # and positional arguments against the script's own parameters, the way the binder reads a
+    # typed command line.
+    param([string]$Path, [object[]]$Arguments)
+    $named = @{}
+    $positional = [System.Collections.Generic.List[object]]::new()
+    if ($null -eq $Arguments) { return @{ Named = $named; Positional = @() } }
+
+    $parameters = $ExecutionContext.InvokeCommand.GetCommand($Path, [System.Management.Automation.CommandTypes]::ExternalScript).Parameters
+    $lookup = @{}
+    foreach ($parameter in $parameters.Values) {
+        $lookup[$parameter.Name] = $parameter
+        foreach ($alias in $parameter.Aliases) { $lookup[$alias] = $parameter }
+    }
+
+    $i = 0
+    while ($i -lt $Arguments.Count) {
+        $item = $Arguments[$i]
+        $i++
+        if (-not ($item -is [string] -and $item -match '^-([A-Za-z_][\w-]*)(:?)$')) { $positional.Add($item); continue }
+        $token = $Matches[1]
+        $colon = $Matches[2] -eq ':'
+        $parameter = $lookup[$token]
+        if ($null -eq $parameter) {
+            $candidates = @($lookup.Keys | Where-Object { $_ -like "$token*" } | ForEach-Object { $lookup[$_].Name } | Select-Object -Unique)
+            if ($candidates.Count -gt 1) { throw "KillerScripts: parameter -$token is ambiguous. Possible matches: -$($candidates -join ', -')." }
+            if ($candidates.Count -eq 1) { $parameter = $parameters[$candidates[0]] }
+        }
+        # Not one of the script's parameters: pass it on as written and let the script decide.
+        if ($null -eq $parameter) { $positional.Add($item); continue }
+        if ($named.ContainsKey($parameter.Name)) { throw "KillerScripts: parameter -$($parameter.Name) is specified more than once." }
+        if (-not $colon -and $parameter.SwitchParameter) { $named[$parameter.Name] = $true; continue }
+        if ($i -ge $Arguments.Count) { throw "KillerScripts: missing an argument for parameter -$($parameter.Name)." }
+        $named[$parameter.Name] = $Arguments[$i]
+        $i++
+    }
+    @{ Named = $named; Positional = $positional.ToArray() }
 }
 
 function Update-KillerScripts {
@@ -253,7 +298,8 @@ if (Test-Path -LiteralPath $shippedManifest) {
         $base = $p.Name -replace '\.ps1$', ''
         $fn   = "Invoke-$base"
         Set-Item -Path "function:\$fn" -Value ([ScriptBlock]::Create(
-            "param([Parameter(ValueFromRemainingArguments=`$true)]`$ScriptArgs) Invoke-KillerScript -Name '$($p.Name)' @ScriptArgs"
+            # With no arguments $ScriptArgs is $null, and splatting $null passes one positional $null.
+            "param([Parameter(ValueFromRemainingArguments=`$true)]`$ScriptArgs) if (`$null -eq `$ScriptArgs) { Invoke-KillerScript -Name '$($p.Name)' } else { Invoke-KillerScript -Name '$($p.Name)' @ScriptArgs }"
         )) -Force
         $script:KsFunctions += $fn
 

@@ -21,7 +21,8 @@ try {
         @('KillerScripts','EncodingSafety'),
         @('KillerScripts','CacheSafety'),
         @('KillerScripts','SnapshotSafety'),
-        @('KillerScripts','ConcurrentSafety')
+        @('KillerScripts','ConcurrentSafety'),
+        @('KillerScripts','ArgumentSafety')
     )
     foreach ($case in $cases) {
         $fixture = Join-Path $FixtureRoot ($case[0] + '\Tests\' + $case[1] + '.ps1')
@@ -31,7 +32,7 @@ try {
         & $hostPath @arguments
         if ($LASTEXITCODE -ne 0) { throw "Module fixture failed: $($case -join '/') (exit $LASTEXITCODE)." }
     }
-    Write-Output "PASS all 8 module fixtures on PowerShell $($PSVersionTable.PSVersion)"
+    Write-Output "PASS all $($cases.Count) module fixtures on PowerShell $($PSVersionTable.PSVersion)"
 } finally {
     $env:TEMP = $savedTemp
     $env:TMP = $savedTmp
