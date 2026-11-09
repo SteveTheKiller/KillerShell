@@ -760,7 +760,7 @@
   <sys:String x:Key="Str_Storage_BadTarget">Ten folder nie istnieje</sys:String>
   <sys:String x:Key="Str_Storage_Stopped">Skanowanie zatrzymane - pokazano odczytane dane</sys:String>
   <sys:String x:Key="Str_Storage_Skipped">pominięto</sys:String>
-  <sys:String x:Key="Str_Storage_ScanCounts">folderów: {0}  plików: {1}</sys:String>
+  <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">folderów: {0}  plików: {1}</sys:String>
   <sys:String x:Key="Str_Storage_OpenInTab">Otwórz na nowej karcie</sys:String>
   <sys:String x:Key="Str_Storage_RevealExplorer">Otwórz w Eksploratorze</sys:String>
   <sys:String x:Key="Str_Storage_CopyPath">Kopiuj ścieżkę</sys:String>

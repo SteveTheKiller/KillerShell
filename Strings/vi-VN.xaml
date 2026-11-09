@@ -841,7 +841,7 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Storage_BadTarget">Thư mục đó không tồn tại</sys:String>
   <sys:String x:Key="Str_Storage_Stopped">Đã dừng quét, đang hiển thị dữ liệu đã đọc</sys:String>
   <sys:String x:Key="Str_Storage_Skipped">đã bỏ qua</sys:String>
-  <sys:String x:Key="Str_Storage_ScanCounts">{0} thư mục  {1} tệp</sys:String>
+  <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} thư mục  {1} tệp</sys:String>
   <sys:String x:Key="Str_Storage_OpenInTab">Mở trong tab mới</sys:String>
   <sys:String x:Key="Str_Storage_RevealExplorer">Mở trong File Explorer</sys:String>
   <sys:String x:Key="Str_Storage_CopyPath">Sao chép đường dẫn</sys:String>

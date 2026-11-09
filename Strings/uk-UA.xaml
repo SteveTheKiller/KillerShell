@@ -879,7 +879,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Такої папки не існує</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Сканування зупинено - показано те, що встигли прочитати</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">пропущено</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">папок: {0}  файлів: {1}</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">папок: {0}  файлів: {1}</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Відкрити в новій вкладці</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Відкрити в Провіднику</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Копіювати шлях</sys:String>

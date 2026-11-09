@@ -765,7 +765,7 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">Ta mapa ne obstaja</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Pregled je ustavljen. Prikazani so prebrani podatki</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">preskočeno</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">map: {0}  datotek: {1}</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">map: {0}  datotek: {1}</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Odpri v novem zavihku</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Odpri v Raziskovalcu</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Kopiraj pot</sys:String>

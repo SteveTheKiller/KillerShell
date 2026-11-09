@@ -953,7 +953,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Dieser Ordner ist nicht vorhanden</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Scan gestoppt - gelesene Daten werden angezeigt</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">übersprungen</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} Ordner  {1} Dateien</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} Ordner  {1} Dateien</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">In neuem Tab öffnen</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Im Explorer öffnen</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Pfad kopieren</sys:String>

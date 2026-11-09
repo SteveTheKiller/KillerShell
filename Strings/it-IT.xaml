@@ -844,7 +844,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Quella cartella non esiste</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Scansione fermata - mostro ciò che è stato letto</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">saltati</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} cartelle  {1} file</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} cartelle  {1} file</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Apri in una nuova scheda</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Apri in Explorer</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copia il percorso</sys:String>

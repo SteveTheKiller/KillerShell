@@ -949,7 +949,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">そのフォルダーは存在しません</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">スキャンを停止しました - 読み取った内容を表示しています</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">スキップ</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} フォルダー  {1} ファイル</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} フォルダー  {1} ファイル</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">新しいタブで開く</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">エクスプローラーで開く</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">パスをコピー</sys:String>

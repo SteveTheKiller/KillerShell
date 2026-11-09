@@ -933,9 +933,13 @@
                                      CaretBrush="{DynamicResource PrimaryBrush}"
                                      BorderBrush="{DynamicResource PrimaryBrush}" BorderThickness="1"
                                      FontFamily="{DynamicResource MonoFont}" FontSize="12"
-                                     Padding="4,1" VerticalAlignment="Center"
+                                     Padding="4,1" Height="22" VerticalAlignment="Center"
                                      VerticalContentAlignment="Center"
                                      KeyDown="AddressBox_KeyDown" LostFocus="AddressBox_LostFocus"/>
+                            <!-- Height pinned: the editor stands in for the path label in a toolbar
+                                 row, so it keeps the label's footprint instead of the 26px floor a
+                                 form field beside a dropdown gets. Without it the row grows 4px the
+                                 moment you click the path. -->
                             <!-- Recents chevron, on the right edge of the row (Recents.cs). Its
                                  own button rather than opening the list on every address click:
                                  clicking the row means "let me type a path", and a list that

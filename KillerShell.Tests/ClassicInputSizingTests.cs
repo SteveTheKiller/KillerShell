@@ -46,7 +46,10 @@ public static class ClassicPickerSizingScenario
                     window.UpdateLayout();
                     var inputs = Descendants(window).OfType<TextBox>().Where(input => input.IsVisible).ToArray();
                     Assert.NotEmpty(inputs);
-                    Assert.All(inputs, input => Assert.Equal(theme == Theme.SE98 ? 22 : 28, input.ActualHeight));
+                    Assert.All(inputs, input => Assert.Equal(theme == Theme.SE98 ? 22 : 26, input.ActualHeight));
+                    // The file type dropdown under the name field stands exactly as tall as it.
+                    if (window is FileDialog && theme != Theme.SE98)
+                        Assert.Equal(26, ((ComboBox)window.FindName("FilterCombo")).ActualHeight);
                     if (theme == Theme.SE98)
                     {
                         double originalFontSize = inputs[0].FontSize;

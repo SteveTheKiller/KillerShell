@@ -847,7 +847,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Мұндай қалта жоқ</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Қарау тоқтатылды - оқылып үлгергені көрсетілген</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">өткізілді</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} қалта  {1} файл</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} қалта  {1} файл</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Жаңа қойындыда ашу</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Explorer-де ашу</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Жолды көшіру</sys:String>

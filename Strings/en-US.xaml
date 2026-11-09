@@ -879,7 +879,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">That folder doesn't exist</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Scan stopped - showing what was read</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">skipped</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} folders  {1} files</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} folders  {1} files</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Open in new tab</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Open in Explorer</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copy path</sys:String>

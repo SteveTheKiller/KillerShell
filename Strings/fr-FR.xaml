@@ -953,7 +953,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Ce dossier n'existe pas</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Analyse arrêtée - affichage des données lues</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">ignorés</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} dossiers  {1} fichiers</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} dossiers  {1} fichiers</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Ouvrir dans un nouvel onglet</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Ouvrir dans l'Explorateur</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copier le chemin</sys:String>

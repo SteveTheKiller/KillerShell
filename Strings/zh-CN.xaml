@@ -950,7 +950,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">该文件夹不存在</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">扫描已停止 - 正在显示已读取的内容</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">已跳过</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} 个文件夹  {1} 个文件</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} 个文件夹  {1} 个文件</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">在新标签页中打开</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">在文件资源管理器中打开</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">复制路径</sys:String>

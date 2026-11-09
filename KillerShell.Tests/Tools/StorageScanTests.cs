@@ -154,7 +154,7 @@ public static class StorageScanScenario
             control.ScanFolder(first);
             Assert.True(firstEntered.Wait(TimeSpan.FromSeconds(5)), "The old scan must reach its filesystem read.");
             if (!useMft)
-                PumpUntil(() => statuses.Contains("1 dirs  1 files  19 B"), "The old scan must report its partial total.");
+                PumpUntil(() => statuses.Contains("1 folders  1 files  19 B"), "The old scan must report its partial total.");
             app.Dispatcher.Hooks.OperationPosted += posted;
             if (scenario == "dispatcher-shutdown")
             {
@@ -241,7 +241,7 @@ public static class StorageScanScenario
         Assert.Collection(report.Root.Children,
             file => Assert.Equal("new.bin", file.Name),
             folder => Assert.Equal("tail.bin", Assert.Single(folder.Children).Name));
-        Assert.Equal("1 dirs  2 files  48 B", statuses.Last());
+        Assert.Equal("1 folders  2 files  48 B", statuses.Last());
     }
 
     private static IEnumerable<DependencyObject> Descendants(DependencyObject root)

@@ -879,7 +879,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Ez a mappa nem létezik</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">A beolvasás leállt - az olvasottak megjelenítése</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">átugrott</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} mappa  {1} fájl</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} mappa  {1} fájl</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Megnyitás új lapon</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Nyissa meg az Explorerben</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Útvonal másolása</sys:String>

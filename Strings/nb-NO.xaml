@@ -879,7 +879,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Den mappen finnes ikke</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Skanningen ble stoppet - viser det som ble lest</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">hoppet over</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} mapper  {1} filer</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} mapper  {1} filer</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Åpne i ny fane</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Åpne i Filutforsker</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Kopier sti</sys:String>

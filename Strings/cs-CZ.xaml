@@ -951,7 +951,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Tato složka neexistuje</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Analýza zastavena - zobrazuji načtená data</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">přeskočeno</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">složek: {0}  souborů: {1}</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">složek: {0}  souborů: {1}</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Otevřít na nové kartě</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Otevřít v Průzkumníku</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Kopírovat cestu</sys:String>

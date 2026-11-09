@@ -953,7 +953,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Bu klasör mevcut değil</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Tarama durduruldu - okunanlar gösteriliyor</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">atlandı</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} klasör  {1} dosya</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} klasör  {1} dosya</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Yeni sekmede aç</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Explorer'da aç</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Yolu kopyala</sys:String>

@@ -950,7 +950,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">ফোল্ডারটি নেই</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">স্ক্যান থামানো হয়েছে - যতটুকু পড়া হয়েছে তা দেখানো হচ্ছে</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">এড়ানো হয়েছে</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} ফোল্ডার  {1} ফাইল</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} ফোল্ডার  {1} ফাইল</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">নতুন ট্যাবে খুলুন</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">এক্সপ্লোরারে খুলুন</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">পাথ কপি করুন</sys:String>

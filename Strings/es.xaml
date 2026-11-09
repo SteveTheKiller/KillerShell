@@ -953,7 +953,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Esa carpeta no existe</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Análisis detenido; se muestra lo leído</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">omitidos</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} carpetas  {1} archivos</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} carpetas  {1} archivos</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Abrir en una pestaña nueva</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Abrir en el Explorador</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copiar ruta</sys:String>

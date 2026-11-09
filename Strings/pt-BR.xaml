@@ -879,7 +879,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Essa pasta não existe</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Verificação interrompida - mostrando o que foi lido</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">ignorado</sys:String>
-    <sys:String x:Key="Str_Storage_ScanCounts">{0} pastas  {1} arquivos</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">{0} pastas  {1} arquivos</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Abrir em nova guia</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Abrir no Explorador de Arquivos</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copiar caminho</sys:String>
