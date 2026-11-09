@@ -4,15 +4,16 @@ $root = Join-Path $ScratchRoot ('KillerScripts-arguments-' + [guid]::NewGuid().T
 [IO.Directory]::CreateDirectory($root) | Out-Null
 # Wrappers come from the manifest that ships with the module, so the fixture borrows AMORT's name.
 # The downloaded body is a harmless stand-in with AMORT's shape: a switch first, then a validated
-# int with a default, so a stray positional value lands where it did in the real failure.
+# int with a default, so a stray positional value lands where it did in the real failure. Like
+# AMORT it is a plain script with no [Parameter()] attribute, so it has no common parameters and
+# extra values fall into $args.
 $global:KsArgumentFixture = @'
 param(
     [switch]$DryRun,
     [ValidateRange(1, 365)][int]$RetainDays = 14,
-    [Alias('Label')]$Tag = 'none',
-    [Parameter(ValueFromRemainingArguments = $true)]$Rest
+    [Alias('Label')]$Tag = 'none'
 )
-'DryRun=' + [bool]$DryRun + ' RetainDays=' + $RetainDays + ' Tag=' + $(if ($null -eq $Tag) { '<null>' } else { $Tag }) + ' Rest=' + (@($Rest) -join ',')
+'DryRun=' + [bool]$DryRun + ' RetainDays=' + $RetainDays + ' Tag=' + $(if ($null -eq $Tag) { '<null>' } else { $Tag }) + ' Rest=' + (@($args) -join ',')
 '@
 function global:Invoke-WebRequest {
     [CmdletBinding()] param($Uri, [switch]$UseBasicParsing)
@@ -40,6 +41,12 @@ try {
     Assert-Run 'Mixed named and positional arguments' 'DryRun=True RetainDays=21 Tag=z Rest=' { Invoke-AMORT -DryRun 21 -Tag z }
     Assert-Run 'Extra positional arguments' 'DryRun=False RetainDays=2 Tag=a Rest=b,c' { Invoke-AMORT 2 a b c }
     Assert-Run 'A direct call with named arguments' 'DryRun=True RetainDays=3 Tag=none Rest=' { Invoke-KillerScript -Name 'AMORT.ps1' -RetainDays 3 -DryRun }
+    # Short options that also prefix a PowerShell common parameter (-D for -Debug, -V for -Verbose)
+    # belong to the script. "amort -D" swallowed by -Debug ran AMORT for real instead of a dry run.
+    Assert-Run 'A switch prefix that also prefixes -Debug' 'DryRun=True RetainDays=14 Tag=none Rest=' { Invoke-AMORT -D }
+    Assert-Run 'A direct call with that prefix' 'DryRun=True RetainDays=14 Tag=none Rest=' { Invoke-KillerScript -Name 'AMORT.ps1' -D }
+    Assert-Run 'A positional name with that prefix' 'DryRun=True RetainDays=14 Tag=none Rest=' { Invoke-KillerScript AMORT -D }
+    Assert-Run 'A dry run with a value after it' 'DryRun=True RetainDays=5 Tag=none Rest=' { Invoke-AMORT -D -R 5 }
     $failed = $false
     try { Invoke-AMORT -RetainDays 0 | Out-Null } catch { $failed = $_.Exception.Message -like '*RetainDays*' }
     if (-not $failed) { throw 'An out-of-range value was not refused by the script itself.' }

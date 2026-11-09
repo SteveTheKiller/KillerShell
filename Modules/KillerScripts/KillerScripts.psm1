@@ -122,16 +122,34 @@ function Get-KillerScript {
 function Invoke-KillerScript {
     # Fetch the latest version of a killer-script from the repo and run it.
     # Falls back to the cached copy only if the repo is unreachable.
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [string]$Name,
+    #
+    # A plain function on purpose, with no [CmdletBinding()] and no [Parameter()]: either one adds
+    # the common parameters, and then a short script option such as "-D" binds to -Debug and never
+    # reaches the script. Only -Name is declared, which keeps it positional and tab-completable;
+    # -Offline and -ScriptArgs are read from $args by their exact full names, because a declared
+    # parameter in a plain function is positional and would take a value meant for the script.
+    param([string]$Name)
+    if ([string]::IsNullOrWhiteSpace($Name)) { throw 'KillerScripts: name the script to run, for example Invoke-KillerScript AMORT.' }
+    $offline = $false
+    $forward = [System.Collections.Generic.List[object]]::new()
+    for ($i = 0; $i -lt $args.Count; $i++) {
+        $item = $args[$i]
+        if ($item -is [string] -and $item -ieq '-Offline') { $offline = $true; continue }
+        if ($item -is [string] -and $item -ieq '-Offline:' -and $i + 1 -lt $args.Count) { $offline = [bool]$args[++$i]; continue }
+        if ($item -is [string] -and $item -ieq '-ScriptArgs' -and $i + 1 -lt $args.Count) {
+            foreach ($value in @($args[++$i])) { $forward.Add($value) }
+            continue
+        }
+        $forward.Add($item)
+    }
+    Invoke-KsCore -Name $Name -Offline:$offline -Arguments $forward.ToArray()
+}
 
-        [switch]$Offline,
-
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [object[]]$ScriptArgs
-    )
+function Invoke-KsCore {
+    # Not exported. The argument list is one value here, never a splat, so no token in it can be
+    # captured by a parameter of this function on the way through.
+    param([string]$Name, [switch]$Offline, [object[]]$Arguments)
+    $ScriptArgs = $Arguments
 
     $file      = if ($Name -like '*.ps1') { $Name } else { "$Name.ps1" }
     $cachePath = Join-Path (Get-KsCacheDir) $file
@@ -297,9 +315,12 @@ if (Test-Path -LiteralPath $shippedManifest) {
         if ($p.Name -notlike '*.ps1') { continue }
         $base = $p.Name -replace '\.ps1$', ''
         $fn   = "Invoke-$base"
-        Set-Item -Path "function:\$fn" -Value ([ScriptBlock]::Create(
-            # With no arguments $ScriptArgs is $null, and splatting $null passes one positional $null.
-            "param([Parameter(ValueFromRemainingArguments=`$true)]`$ScriptArgs) if (`$null -eq `$ScriptArgs) { Invoke-KillerScript -Name '$($p.Name)' } else { Invoke-KillerScript -Name '$($p.Name)' @ScriptArgs }"
+        # Bound to this module so the wrapper can reach the private Invoke-KsCore.
+        Set-Item -Path "function:\$fn" -Value $ExecutionContext.SessionState.Module.NewBoundScriptBlock([ScriptBlock]::Create(
+            # No param block: a [Parameter()] attribute would make the wrapper advanced, and its
+            # common parameters would swallow script options ("amort -D" became -Debug). $args
+            # carries every token as typed and is handed on as one value, never splatted.
+            "Invoke-KsCore -Name '$($p.Name)' -Arguments `$args"
         )) -Force
         $script:KsFunctions += $fn
 

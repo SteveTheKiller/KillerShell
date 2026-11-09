@@ -25,7 +25,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Changing the file type in the save picker while the name box holds characters no file name can carry no longer crashes KillerShell; the name keeps its text and shows the invalid-path message.
 - The window menu from a right-click on the title bar or Alt+Space opens at the pointer instead of about 20 pixels below and to the right of it.
 - Clicking or pressing a key while KillerShell fades out after Exit no longer leaves it hidden in the tray, and a window hidden partway through that fade comes back visible.
-- Killer script commands such as `amort` run with their own defaults when typed with no options, and options such as `-RetainDays 30` or `-DryRun` reach the script by name instead of arriving as stray values the script refuses.
+- Killer script commands such as `amort` run with their own defaults when typed with no options, and options such as `-RetainDays 30` or `-DryRun` reach the script by name instead of arriving as stray values the script refuses. A short option such as `amort -D` now means the script's `-DryRun` instead of being taken as PowerShell's `-Debug` and dropped.
 
 ### Changed
 
