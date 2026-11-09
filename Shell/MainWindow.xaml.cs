@@ -251,8 +251,9 @@ namespace KillerShell.Shell
                 // settings store, so whichever quit last would clobber the other's remembered
                 // tabs - and the admin window is a task you finish, not the one you live in.
                 // The same goes for a handed-off console program's window (ConsoleHandoff.cs) and
-                // a window Explorer opened for a folder (StartupPaths.cs IsFolderWindow).
-                if (!DemoMode && !IsElevated && !IsTaskWindow) SaveTabsOnExit();   // Session.cs
+                // a window Explorer opened for a folder (StartupPaths.cs IsFolderWindow), and a
+                // Ctrl+N or torn-out window, which never restored the session in the first place.
+                if (!DemoMode && !KeepsNoSessionHere) SaveTabsOnExit();   // Session.cs
             };
 
             // ThemeFlyout is a Button.ContextMenu now (matching LangMenu, KillerPDF's pattern),

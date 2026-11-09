@@ -62,7 +62,8 @@ namespace KillerShell.Shell
             if (!ConfirmShutdown()) return;
 
             PortableBadge.Visibility = Visibility.Collapsed;
-            SaveTabsOnExit();
+            // Not from a Ctrl+N or torn-out window: its tabs are not the remembered session.
+            if (!KeepsNoSession(System.Environment.GetCommandLineArgs(), elevated: false, taskWindow: false)) SaveTabsOnExit();
 
             // An all-users install needs UAC. If that is declined the app carries on running as
             // it was, so put the badge back rather than leaving the UI mid-install.
@@ -152,7 +153,7 @@ namespace KillerShell.Shell
         private void RequestQuit()
         {
             // Elevated windows skip the session prompt, but still check unsaved documents.
-            if (IsElevated || IsTaskWindow) { ConfirmedClose(); return; }   // Elevation.cs, StartupPaths.cs
+            if (KeepsNoSessionHere) { ConfirmedClose(); return; }   // StartupPaths.cs
 
             string remembered = Services.ThemeManager.GetSetting("EscQuit") ?? string.Empty;
             if (remembered == "stay") return;
@@ -176,7 +177,7 @@ namespace KillerShell.Shell
             //
             // Elevated windows skip this session prompt because they do not persist tabs.
             // They still ask about unsaved documents below.
-            if (!_closeConfirmed && !DemoMode && !IsElevated && !IsTaskWindow &&
+            if (!_closeConfirmed && !DemoMode && !KeepsNoSessionHere &&
                 string.IsNullOrEmpty(Services.ThemeManager.GetSetting("EscQuit")))
             {
                 e.Cancel = true;

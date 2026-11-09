@@ -122,6 +122,21 @@ namespace KillerShell.Shell
         /// <summary>A window opened for one job, a handed-off program or a folder, not the one you live in.</summary>
         internal bool IsTaskWindow => IsConsoleWindow || IsFolderWindow;
 
+        /// <summary>
+        /// Whether this window leaves the remembered session alone: it never writes its tabs back
+        /// and skips the quit prompt that offers to keep them.
+        /// </summary>
+        internal bool KeepsNoSessionHere => KeepsNoSession(System.Environment.GetCommandLineArgs(), IsElevated, IsTaskWindow);
+
+        /// <remarks>
+        /// --new-window marks a Ctrl+N window and a torn-out tab. They start without restoring the
+        /// session, and both instances share one settings store, so letting them write it back
+        /// meant whichever window closed last replaced the main window's tabs with its own.
+        /// </remarks>
+        internal static bool KeepsNoSession(string[] args, bool elevated, bool taskWindow)
+            => elevated || taskWindow
+               || System.Array.Exists(args, a => string.Equals(a, "--new-window", System.StringComparison.OrdinalIgnoreCase));
+
         /// <summary>A tab nothing has been put in yet: no folder, search, document or tool.</summary>
         private static bool IsBlankTab(SearchTab t) =>
             !t.IsBrowsing && string.IsNullOrEmpty(t.CurrentFolder) && t.PipeFiles == null

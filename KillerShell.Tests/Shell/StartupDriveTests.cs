@@ -25,6 +25,20 @@ public sealed class StartupDriveTests
     public void OnlyAFolderLaunchIsAFolderWindow(string[] args, int startupPaths, bool folderWindow)
         => Assert.Equal(folderWindow, MainWindow.IsFolderLaunch(args, startupPaths));
 
+    // Only the main window keeps the remembered session. A Ctrl+N window and a torn-out tab start
+    // without restoring it, so closing one must not overwrite the main window's tabs either, the
+    // same as an admin window or a task window.
+    [Theory]
+    [InlineData(new string[0], false, false, false)]
+    [InlineData(new[] { @"C:\Users" }, false, false, false)]
+    [InlineData(new[] { "--new-window", "--cwd", @"C:\Users" }, false, false, true)]
+    [InlineData(new[] { "--new-window", "--edit", @"C:\notes.txt" }, false, false, true)]
+    [InlineData(new[] { "--new-window" }, false, false, true)]
+    [InlineData(new string[0], true, false, true)]
+    [InlineData(new string[0], false, true, true)]
+    public void OnlyTheMainWindowKeepsTheSession(string[] args, bool elevated, bool taskWindow, bool keepsNone)
+        => Assert.Equal(keepsNone, MainWindow.KeepsNoSession(args, elevated, taskWindow));
+
     [Theory]
     [InlineData(@"E:\", true)]                        // no disc, a card reader with no card
     [InlineData(@"Z:\Projects", true)]                // a mapped drive to reconnect
