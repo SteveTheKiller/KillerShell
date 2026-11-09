@@ -79,6 +79,7 @@
     <sys:String x:Key="Str_TT_Sort">排序方式  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">本機</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">資源回收筒</sys:String>
+    <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;目前無法連線。請檢查磁碟機是否已連接，或共用是否在線上。</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">在這些結果中搜尋</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">來自 {1} 的 {0} 個結果  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">還沒有可供搜尋的結果。</sys:String>

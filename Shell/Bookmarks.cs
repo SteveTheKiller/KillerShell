@@ -30,9 +30,26 @@ namespace KillerShell.Shell
 
         /// <summary>The row's tooltip: the folder's path, or the place's name when it has no
         /// path to show (This PC, the Recycle Bin).</summary>
-        public string Tip => MainWindow.IsPlaceSentinel(Path) ? Name : Path;
+        public string Tip => MainWindow.IsPlaceSentinel(Path) ? Name
+            : Unreachable ? string.Format(MainWindow.LocStatic("Str_Bm_Unreachable"), Path) : Path;
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        private bool _unreachable;
+
+        /// <summary>The folder could not be reached when last checked: an offline share or an
+        /// unplugged drive. The row stays, dimmed, and opening it still tries.</summary>
+        public bool Unreachable
+        {
+            get => _unreachable;
+            set
+            {
+                if (_unreachable == value) return;
+                _unreachable = value;
+                PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Unreachable)));
+                PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Tip)));
+            }
+        }
 
         internal void NotifyNickname()
             => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(NameLabel)));
@@ -57,11 +74,6 @@ namespace KillerShell.Shell
     public partial class MainWindow
     {
         private readonly ObservableCollection<Bookmark> _bookmarks = [];
-
-        // Saved favorites whose folder was unreachable at launch: an offline share, an unplugged
-        // drive. They are not shown, but every save writes them back, so they return the next
-        // time KillerShell starts with the folder there.
-        private System.Collections.Generic.IReadOnlyList<string> _heldBookmarks = [];
 
         private bool _bookmarksOpen;
 
@@ -161,14 +173,12 @@ namespace KillerShell.Shell
             if (saved == null) SeedBookmarks();
             else
             {
-                // Somewhere that cannot be reached right now is held back rather than shown as a
-                // dead row, and kept in the setting (SaveBookmarks writes it back), so a share
-                // that is offline today is still a favorite tomorrow. This PC is not a
-                // directory, so it is exempt from that check.
-                var loaded = Services.SavedBookmarks.Parse(saved, p =>
-                    IsPlaceSentinel(p) || Services.WslDistributions.TryParsePath(p, out _, out _) || Directory.Exists(p));
-                foreach (string p in loaded.Visible) _bookmarks.Add(new Bookmark { Path = p });
-                _heldBookmarks = loaded.Held;
+                // Somewhere that cannot be reached right now keeps its row, dimmed, and stays in
+                // the setting, so a share that is offline today is still a favorite tomorrow.
+                // Rows are checked again whenever the drawer opens (RecheckBookmarks).
+                var loaded = Services.SavedBookmarks.Parse(saved, BookmarkReachable);
+                foreach (string p in loaded.Paths)
+                    _bookmarks.Add(new Bookmark { Path = p, Unreachable = loaded.Unreachable.Contains(p) });
             }
 
             // The Recycle Bin joined the places in 1.5.0. Added once to a list saved before then,
@@ -406,7 +416,29 @@ namespace KillerShell.Shell
         {
             if (DemoMode) return;
             Services.ThemeManager.SetSetting("Bookmarks",
-                Services.SavedBookmarks.Serialize(_bookmarks.Select(b => b.Path), _heldBookmarks));
+                Services.SavedBookmarks.Serialize(_bookmarks.Select(b => b.Path)));
+        }
+
+        // This PC and the Recycle Bin are not directories, and a WSL path is answered by its own
+        // distribution, so only real folders are checked.
+        private static bool BookmarkReachable(string path)
+            => IsPlaceSentinel(path) || Services.WslDistributions.TryParsePath(path, out _, out _) || Directory.Exists(path);
+
+        /// <summary>
+        /// Check the dimmed rows again, off the UI thread, so a share that came back since launch
+        /// lights up and one that dropped dims. All at once with one short budget: a dead share
+        /// must not hold the others (Reachability.cs).
+        /// </summary>
+        private async void RecheckBookmarks()
+        {
+            var rows = _bookmarks.Where(b => !IsPlaceSentinel(b.Path)).ToList();
+            if (rows.Count == 0) return;
+            var paths = rows.Select(b => b.Path).ToList();
+            List<string> live;
+            try { live = await System.Threading.Tasks.Task.Run(() => Services.Reachability.Reachable(paths, BookmarkReachable, TimeSpan.FromSeconds(2))); }
+            catch { return; }
+            var reachable = new HashSet<string>(live, StringComparer.OrdinalIgnoreCase);
+            foreach (var b in rows) b.Unreachable = !reachable.Contains(b.Path);
         }
 
         /// <summary>
@@ -569,6 +601,7 @@ namespace KillerShell.Shell
             // It lives inside the tree sidebar, so there is nowhere for it to appear while that
             // is collapsed. Opening it opens the sidebar with it.
             if (_bookmarksOpen && !_treeOpen) ToggleTreePanel();   // TreePanel.cs
+            if (_bookmarksOpen) RecheckBookmarks();
 
             ApplyBookmarksPanel(animate: true);
         }

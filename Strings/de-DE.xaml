@@ -79,6 +79,7 @@
     <sys:String x:Key="Str_TT_Sort">Sortieren nach  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Dieser PC</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">Papierkorb</sys:String>
+    <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;Derzeit nicht erreichbar. Prüfen Sie, ob das Laufwerk verbunden oder die Netzwerkfreigabe online ist.</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">In diesen Ergebnissen suchen</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} Ergebnisse aus {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Noch keine Ergebnisse zum Durchsuchen.</sys:String>

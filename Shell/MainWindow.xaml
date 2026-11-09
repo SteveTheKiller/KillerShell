@@ -578,6 +578,12 @@
                                                      selected trigger below can flip both at once. -->
                                                 <Setter Property="TextElement.Foreground" Value="{DynamicResource TextBrush}"/>
                                                 <Style.Triggers>
+                                                    <!-- A favorite that could not be reached (an offline share, an
+                                                         unplugged drive) stays in its place in the muted text color.
+                                                         Before the hover and selection triggers, so those still win. -->
+                                                    <DataTrigger Binding="{Binding Unreachable}" Value="True">
+                                                        <Setter Property="TextElement.Foreground" Value="{DynamicResource MutedTextBrush}"/>
+                                                    </DataTrigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
                                                     </Trigger>

@@ -123,6 +123,7 @@
     <sys:String x:Key="Str_TT_Sort">Ordenar por  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Este Computador</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">Lixeira</sys:String>
+    <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;Não está acessível no momento. Verifique se a unidade está conectada ou se o compartilhamento está online.</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Pesquisar dentro destes resultados</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{0} resultados de {1}  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">Ainda não há resultados para pesquisar.</sys:String>

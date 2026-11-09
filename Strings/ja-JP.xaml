@@ -101,6 +101,7 @@
     <sys:String x:Key="Str_TT_Sort">並べ替え  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">PC</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">ごみ箱</sys:String>
+    <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;現在アクセスできません。ドライブが接続されているか、共有フォルダーがオンラインか確認してください。</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">この結果の中を検索</sys:String>
     <sys:String x:Key="Str_Pipe_Scope">{1} からの {0} 件  |  {2}</sys:String>
     <sys:String x:Key="Str_Status_NoPipe">まだ検索できる結果がありません。</sys:String>

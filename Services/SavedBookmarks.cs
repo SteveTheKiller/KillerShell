@@ -5,7 +5,9 @@ using System.Linq;
 namespace KillerShell.Services
 {
     /// <summary>
-    /// The saved favorites setting, split into the rows the drawer shows and the ones it holds back.
+    /// The saved favorites setting. Every saved place stays in the drawer in its saved order; the
+    /// ones that cannot be reached right now (an offline share, an unplugged drive) are marked so
+    /// the drawer can show them dimmed, and they are saved back like any other.
     /// </summary>
     internal static class SavedBookmarks
     {
@@ -13,38 +15,24 @@ namespace KillerShell.Services
 
         internal sealed class Loaded
         {
-            internal Loaded(IReadOnlyList<string> visible, IReadOnlyList<string> held)
+            internal Loaded(IReadOnlyList<string> paths, IReadOnlyList<string> unreachable)
             {
-                Visible = visible;
-                Held = held;
+                Paths = paths;
+                Unreachable = unreachable;
             }
 
-            internal IReadOnlyList<string> Visible { get; }
-            internal IReadOnlyList<string> Held { get; }
+            internal IReadOnlyList<string> Paths { get; }
+            internal IReadOnlyList<string> Unreachable { get; }
         }
 
         internal static Loaded Parse(string saved, Func<string, bool> reachable)
         {
-            var visible = new List<string>();
-            var held = new List<string>();
-            foreach (string path in saved.Split([Separator], StringSplitOptions.RemoveEmptyEntries))
-                (reachable(path) ? visible : held).Add(path);
-            return new Loaded(visible, held);
+            var paths = saved.Split([Separator], StringSplitOptions.RemoveEmptyEntries).ToList();
+            var unreachable = paths.Where(path => { try { return !reachable(path); } catch { return true; } }).ToList();
+            return new Loaded(paths, unreachable);
         }
 
-        /// <summary>
-        /// The drawer's rows in order, then every held favorite the drawer does not already show.
-        /// A held one goes to the end: it is invisible, so its old position means nothing to anyone.
-        /// </summary>
-        internal static string Serialize(IEnumerable<string> visible, IEnumerable<string> held)
-        {
-            var rows = visible.ToList();
-            var seen = new HashSet<string>(rows.Select(Key), StringComparer.OrdinalIgnoreCase);
-            foreach (string path in held)
-                if (seen.Add(Key(path))) rows.Add(path);
-            return string.Join(Separator.ToString(), rows);
-        }
-
-        private static string Key(string path) => path.TrimEnd('\\', '/');
+        internal static string Serialize(IEnumerable<string> paths)
+            => string.Join(Separator.ToString(), paths);
     }
 }
