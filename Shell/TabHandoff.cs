@@ -29,23 +29,13 @@ namespace KillerShell.Shell
         [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr hwnd);
         [DllImport("user32.dll")] private static extern bool IsWindow(IntPtr hwnd);
 
-        // Used by FindElevatedKillerShellWindow (Elevation.cs) as well as the point-hit search
-        // below - one set of P/Invokes for "is this HWND one of ours" and "what does its title
-        // bar say", regardless of which caller needs them. A private member declared in one file
-        // of a partial class is visible from every other file of the same class, so Elevation.cs
-        // needs no declarations of its own.
-        [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern int GetWindowTextLength(IntPtr hWnd);
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        private static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder lpString, int nMaxCount);
-        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
         private const uint GA_ROOT = 2;
 
         /// <summary>
         /// True when <paramref name="hwnd"/> belongs to another KillerShell.exe process - same
         /// exe path as this one, whichever process actually owns the window. Shared by the
-        /// point-hit search below and by FindElevatedKillerShellWindow (Elevation.cs).
+        /// point-hit search below.
         /// </summary>
         private static bool IsKillerShellProcessWindow(IntPtr hwnd)
         {
@@ -299,10 +289,8 @@ namespace KillerShell.Shell
             }
             else if (tok.Exists(a => string.Equals(a, "--eventviewer", StringComparison.OrdinalIgnoreCase)))
             {
-                // Only ever arrives here already elevated: RelaunchElevatedEventViewer only
-                // hands off to a window FindElevatedKillerShellWindow (Elevation.cs) already
-                // confirmed is elevated, the same way ApplyStartupTearOut's own --eventviewer
-                // branch (TabTearOut.cs) only ever runs in a process that was launched elevated.
+                // A handoff only ever comes from a window at the same integrity level (UIPI
+                // drops the rest), so an elevated sender means an elevated receiver.
                 OpenEventViewer();   // EventViewerTabs.cs - singleton; fine even as an extra tab
             }
             else if (tok.Exists(a => string.Equals(a, "--performance", StringComparison.OrdinalIgnoreCase)))
@@ -315,9 +303,7 @@ namespace KillerShell.Shell
             }
             else if (tok.Exists(a => string.Equals(a, "--registry", StringComparison.OrdinalIgnoreCase)))
             {
-                // Only ever arrives here already elevated: RelaunchElevatedRegistryEditor only
-                // hands off to a window FindElevatedKillerShellWindow (Elevation.cs) already
-                // confirmed is elevated, the same way --eventviewer above does.
+                // Same integrity-level reasoning as --eventviewer above.
                 OpenRegistryEditor();   // RegistryEditorTabs.cs - singleton; fine even as an extra tab
             }
             else

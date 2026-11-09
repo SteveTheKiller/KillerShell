@@ -261,7 +261,8 @@ namespace KillerShell.Shell
 
         // Guards the two-way sync between tree and results pane. Selecting a node navigates, and
         // navigating selects a node; without this they ping-pong.
-        private bool _treeSyncing;
+        private readonly TreeSyncGate _treeSync = new();
+        private bool _treeSyncing => _treeSync.IsActive;
 
         /// <summary>
         /// Whether the TREE shows hidden, system and dot-prefixed folders. Its own switch
@@ -305,15 +306,12 @@ namespace KillerShell.Shell
             // was not filtered, it was navigated somewhere else.
             // _treeSyncing is the existing guard for "the tree is being driven, do not echo it
             // back into the listing" - RevealInTree already uses it for its own selection.
-            bool wasSyncing = _treeSyncing;
-            _treeSyncing = true;
-            try
+            using (_treeSync.Enter())
             {
                 foreach (var r in _treeRoots.ToList()) await r.RefreshAsync();
                 if (_active?.IsBrowsing == true && !string.IsNullOrEmpty(_active.CurrentFolder))
                     await RevealInTree(_active.CurrentFolder!);
             }
-            finally { _treeSyncing = wasSyncing; }
         }
 
         private void TreeHidden_Click(object sender, RoutedEventArgs e) => ToggleTreeHidden();
@@ -453,9 +451,7 @@ namespace KillerShell.Shell
             // is being acted on. Guarded, or this would navigate on every right-click.
             if (_treeMenuNode != null && !_treeMenuNode.IsSelected)
             {
-                _treeSyncing = true;
-                _treeMenuNode.IsSelected = true;
-                _treeSyncing = false;
+                using (_treeSync.Enter()) _treeMenuNode.IsSelected = true;
             }
 
             if (_treeMenuNode == null || _treeMenuNode.IsGroup) { e.Handled = true; return; }
@@ -797,14 +793,10 @@ namespace KillerShell.Shell
                 current.IsExpanded = true;
             }
 
-            // Restore what was found, never assign false: ToggleTreeHidden calls in here from
-            // inside its own _treeSyncing = true guard, and stamping false on the way out would
-            // reopen that guard early - the same class of bug as the tree toggle navigating the
-            // pane. Saved at the last moment rather than method entry, because the awaits above
-            // yield to the dispatcher and the flag can legitimately change while they run.
-            bool wasSyncing = _treeSyncing;
-            _treeSyncing = true;
-            try
+            // A nested hold, never a flag set to false: ToggleTreeHidden calls in here from
+            // inside its own hold, and releasing early would reopen that guard under it - the
+            // same class of bug as the tree toggle navigating the pane (TreeSyncGate.cs).
+            using (_treeSync.Enter())
             {
                 var item = RealizeFolderTreePath(chain);
                 current.IsSelected = true;
@@ -814,7 +806,6 @@ namespace KillerShell.Shell
                     header.BringIntoView();
                 else item?.BringIntoView();
             }
-            finally { _treeSyncing = wasSyncing; }
         }
 
         private TreeViewItem? RealizeFolderTreePath(IReadOnlyList<FolderNode> chain)

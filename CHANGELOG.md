@@ -31,6 +31,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Pulling a USB drive or losing a share while browsing it moves the pane to This PC instead of leaving a listing of a place that is gone.
 - Clear all Data keeps the file associations KillerShell registered, so it stays listed in Windows Default apps.
 - Modifying a REG_NONE value edits its bytes and saves it as REG_NONE, and the value list shows its data as hex instead of "System.Byte[]". A value of a type KillerShell cannot write back says so instead of opening the text editor.
+- A relative address typed in the address bar, such as `..`, `Downloads` or `\Windows`, opens relative to the folder the tab is showing, and `D:` opens that drive's root, instead of resolving against the folder KillerShell was started from.
+- Paste refuses to copy or move a folder into itself or one of its own subfolders, the same way drag and drop already did.
+- Opening the recents menu no longer freezes the window while a folder on a dead share times out. Every folder is checked at once, and one that doesn't answer within a second is left out of that opening.
+- Toggling hidden folders in the tree twice in quick succession no longer leaves tree clicks unable to navigate.
+- Opening a file that is already open in the hidden second pane switches to that tab instead of opening the file a second time.
+- Copy SHA-256 reports to the tab that asked for it, even when you switch tabs while a large file is hashing.
+- An HTML export says it was exported when the file was written but no browser could open it.
+- A file that grows or changes while its folder is open keeps its selection and keyboard focus.
 
 ### Changed
 

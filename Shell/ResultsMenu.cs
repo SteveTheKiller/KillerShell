@@ -435,20 +435,24 @@ namespace KillerShell.Shell
             string? p = MenuFile();
             if (p == null || !File.Exists(p)) { SetTabStatusKey(_active, "Str_Status_FileOnly"); return; }
 
-            SetTabStatusKey(_active, "Str_Status_Hashing", Path.GetFileName(p));
-            string? hash = await Task.Run(() =>
-            {
-                try
+            var tab = _active;   // the tab that asked, not whichever is in front when hashing ends
+            await HashCopy.Run(p,
+                file => Task.Run(() =>
                 {
-                    using var sha = SHA256.Create();
-                    using var fs  = new FileStream(p, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 65536);
-                    return BitConverter.ToString(sha.ComputeHash(fs)).Replace("-", string.Empty);
-                }
-                catch { return null; }
-            });
-
-            if (hash == null) { SetTabStatusKey(_active, "Str_Status_HashFailed"); return; }
-            PutOnClipboard(hash, "Str_Status_HashCopied", Path.GetFileName(p));
+                    try
+                    {
+                        using var sha = SHA256.Create();
+                        using var fs  = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 65536);
+                        return (string?)BitConverter.ToString(sha.ComputeHash(fs)).Replace("-", string.Empty);
+                    }
+                    catch { return null; }
+                }),
+                (key, args) => SetTabStatusKey(tab, key, args),
+                text =>
+                {
+                    try { Clipboard.SetText(text); return true; }
+                    catch { return false; }
+                });
         }
 
         // ── Turning a result into the next search ────────────────

@@ -65,12 +65,10 @@ namespace KillerShell.Shell
             string flags = "--terminal-profile " + profile.HandoffToken()
                           + " --cwd " + QuoteToken(TrimForArg(folder));
 
-            // Same reuse as RelaunchElevatedProcesses/RelaunchElevatedEventViewer below: an
-            // already-elevated window gets the shell tab handed to it instead of a fresh UAC
-            // prompt and another window.
-            IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero && SendHandoffArgs(flags, existing)) return;
-
+            // Always a fresh elevated window. Handing the tab to an admin window that is already
+            // open cannot work from here: Windows refuses window messages from a lower integrity
+            // level to a higher one (UIPI), and opening that filter would let any unelevated
+            // process drive the admin window.
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
@@ -112,13 +110,7 @@ namespace KillerShell.Shell
             // RelaunchElevated above. No relaunch, no window search, nothing to hand off.
             if (IsElevated) { OpenTaskManager(); return; }   // ProcessTabs.cs
 
-            // Reuse an already-elevated window if one is open, rather than prompting UAC again
-            // for a second one that would show the exact same machine-wide process list a
-            // heartbeat apart (TabHandoff.cs SendHandoffArgs / FindElevatedKillerShellWindow
-            // above).
-            IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero && SendHandoffArgs("--processes", existing)) return;
-
+            // A fresh elevated window, for RelaunchElevated's UIPI reason above.
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
@@ -156,10 +148,7 @@ namespace KillerShell.Shell
             // Already elevated: just open/switch to the tab in THIS window.
             if (IsElevated) { OpenStorageAnalyzer(); return; }   // StorageTabs.cs
 
-            // Reuse an already-elevated window if one is open, rather than prompting UAC again.
-            IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero && SendHandoffArgs("--storage", existing)) return;
-
+            // A fresh elevated window, for RelaunchElevated's UIPI reason above.
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
@@ -204,11 +193,7 @@ namespace KillerShell.Shell
             // path hitting the exact same gap RelaunchElevatedProcesses had.
             if (IsElevated) { OpenEventViewer(); return; }   // EventViewerTabs.cs
 
-            // Same reuse as RelaunchElevatedProcesses above: an already-elevated window gets the
-            // Event Viewer tab handed to it instead of a fresh UAC prompt and another window.
-            IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero && SendHandoffArgs("--eventviewer", existing)) return;
-
+            // A fresh elevated window, for RelaunchElevated's UIPI reason above.
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
@@ -467,12 +452,7 @@ namespace KillerShell.Shell
             // EventViewerRail_Click/RelaunchElevatedEventViewer already make for their own paths.
             if (IsElevated) { OpenRegistryEditor(); return; }   // RegistryEditorTabs.cs
 
-            // Same reuse as RelaunchElevatedProcesses/RelaunchElevatedEventViewer above: an
-            // already-elevated window gets the Registry Editor tab handed to it instead of a
-            // fresh UAC prompt and another window.
-            IntPtr existing = FindElevatedKillerShellWindow();
-            if (existing != IntPtr.Zero && SendHandoffArgs("--registry", existing)) return;
-
+            // A fresh elevated window, for RelaunchElevated's UIPI reason above.
             string exe = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
             if (string.IsNullOrEmpty(exe)) return;
 
@@ -597,10 +577,7 @@ namespace KillerShell.Shell
             // it is not the one you are looking at. Localized (not a hardcoded English literal):
             // the exact same string the custom title bar shows beside the wordmark
             // (MainWindow.xaml ElevatedTag, Str_Title_Elevated), so the one thing a user actually
-            // reads and the one thing Windows itself reports for the window agree - and so
-            // FindElevatedKillerShellWindow below can find another elevated window's title by
-            // matching against this process's own copy of that same string, in whatever locale
-            // is active, rather than an English word that would only ever match an en-US window.
+            // reads and the one thing Windows itself reports for the window agree.
             // The caption string carries no separator of its own, so the window title adds it.
             Title = "KillerShell - " + Loc("Str_Title_Elevated");
             SyncElevationHaloCorners();
@@ -628,53 +605,6 @@ namespace KillerShell.Shell
                 ElevationHalo.SetResourceReference(Border.CornerRadiusProperty, "WindowCornerRadius");
                 ElevationHaloInner.SetResourceReference(Border.CornerRadiusProperty, "PanelCornerRadius");
             }
-        }
-
-        // ═══════════════════════════════════════════════════════════
-        //  REUSE - hand an admin tab request to an already-elevated window instead of
-        //  prompting UAC and opening yet another one.
-        // ═══════════════════════════════════════════════════════════
-        /// <summary>
-        /// Any other, already-elevated KillerShell top-level window, or <see cref="IntPtr.Zero"/>
-        /// when none is open. Used by RelaunchElevatedProcesses/RelaunchElevatedEventViewer below
-        /// so opening a second admin tab does not re-prompt UAC and spawn another window when one
-        /// is already sitting there idle - the request is handed off into it instead
-        /// (TabHandoff.cs SendHandoffArgs), the same WM_COPYDATA path a dragged tab merges through.
-        /// </summary>
-        /// <remarks>
-        /// Elevation cannot be read off another process's token from here: a non-elevated caller
-        /// is denied access to query a higher-integrity process's token, and this caller may
-        /// itself be unelevated - that is the whole point, catching the case BEFORE prompting.
-        /// Instead this reads the window's own title text, which ApplyElevationHalo above already
-        /// stamps with the localized "Escalated Privileges" suffix (Str_Title_Elevated) the
-        /// moment a window comes up elevated, and compares it against THIS process's own
-        /// localized copy of that same string - never a hardcoded English literal - so the match
-        /// still works whatever locale either window is running in.
-        /// </remarks>
-        private IntPtr FindElevatedKillerShellWindow()
-        {
-            string suffix = Loc("Str_Title_Elevated");
-            if (string.IsNullOrEmpty(suffix)) return IntPtr.Zero;
-
-            var self = new System.Windows.Interop.WindowInteropHelper(this).Handle;
-            IntPtr found = IntPtr.Zero;
-
-            EnumWindows((hwnd, lParam) =>
-            {
-                if (hwnd == self || !IsKillerShellProcessWindow(hwnd)) return true;   // keep looking
-
-                int len = GetWindowTextLength(hwnd);
-                if (len == 0) return true;
-
-                var sb = new System.Text.StringBuilder(len + 1);
-                _ = GetWindowText(hwnd, sb, sb.Capacity);
-                if (sb.ToString().IndexOf(suffix, StringComparison.Ordinal) < 0) return true;
-
-                found = hwnd;
-                return false;   // one elevated window is enough - stop enumerating
-            }, IntPtr.Zero);
-
-            return found;
         }
     }
 }

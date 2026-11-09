@@ -58,6 +58,9 @@ namespace KillerShell.Services
         public int SkippedDirectoryLinks;
         public bool Canceled;
 
+        /// <summary>A folder was asked to go into itself or one of its own children; nothing ran.</summary>
+        public bool IntoItself;
+
         /// <summary>
         /// The shell refused the operation on permissions. Its own Access Denied box is
         /// suppressed (FOF_NOERRORUI), so the caller owns the answer - see DeleteSelection.
@@ -204,6 +207,18 @@ namespace KillerShell.Services
             Action<string, string>? moveDirectory = null, Action<string, string, uint>? renameFile = null)
             => CopyOrMoveCore(sources, targetDir, move, onConflict, onProgress, ct, true, replace, moveDirectory, renameFile);
 
+        private static bool IsSameOrInside(string candidate, string ancestor)
+        {
+            try
+            {
+                string a = Path.GetFullPath(ancestor).TrimEnd(Path.DirectorySeparatorChar);
+                string c = Path.GetFullPath(candidate).TrimEnd(Path.DirectorySeparatorChar);
+                return c.Equals(a, StringComparison.OrdinalIgnoreCase)
+                    || c.StartsWith(a + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+            }
+            catch { return false; }
+        }
+
         private static FileOpResult CopyOrMoveCore(IEnumerable<string> sources, string targetDir, bool move,
                                                    Func<ConflictInfo, ConflictChoice> onConflict,
                                                    Action<FileOpProgress> onProgress,
@@ -216,6 +231,17 @@ namespace KillerShell.Services
             var result = new FileOpResult();
             var dirsToCreate = new List<string>();
             List<WorkItem> work;
+
+            // A folder into itself or its own child: copy would chase its own output and move
+            // cannot be done at all. Refused before anything is planned or written, for paste,
+            // drop and every other caller alike.
+            sources = new List<string>(sources);
+            foreach (string s in sources)
+                if (Directory.Exists(s) && IsSameOrInside(targetDir, s))
+                {
+                    result.IntoItself = true;
+                    return result;
+                }
 
             // A same-volume MOVE of a whole directory is a rename: one call, no walk, no byte
             // copying. Worth catching before the per-file loop, because moving a 40 GB folder

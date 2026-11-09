@@ -103,15 +103,16 @@ namespace KillerShell.Shell
 
             // Already open? Go there. Two views over one file is how an edit gets overwritten by
             // the other copy's save, and nothing about the second tab would say so.
-            foreach (var pane in LivePanes())            // Panes.cs
-                foreach (var open in pane.Tabs)
-                    if (open.Editor != null &&
-                        string.Equals(open.Editor.FilePath, path, StringComparison.OrdinalIgnoreCase))
-                    {
-                        FocusPane(pane);                 // Panes.cs
-                        SwitchToTab(open);               // Tabs.cs
-                        return;
-                    }
+            // The hidden second pane keeps its tabs, so it is searched too and opened to show
+            // the copy that is already there.
+            if (OpenEditorLookup.Find(new[] { LeftPane, RightPane },
+                    p => p == LeftPane || DualPane, p => p.Tabs, t => t.Editor?.FilePath, path) is { } hit)
+            {
+                if (hit.Pane == RightPane && !DualPane) ToggleDualPane();   // DualPane.cs
+                FocusPane(hit.Pane);             // Panes.cs
+                SwitchToTab(hit.Tab);            // Tabs.cs
+                return;
+            }
 
             CaptureTab(_active);                         // Tabs.cs - the outgoing tab keeps its state
             var tab = CreateEditorTab(path);

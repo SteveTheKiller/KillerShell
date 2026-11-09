@@ -663,6 +663,33 @@ namespace KillerShell.Tests.Services
             }
         }
 
+        // Paste and drop both end here. A folder copied or moved into itself, or into one of its
+        // own children, is refused before anything is written.
+        [Theory]
+        [InlineData(false, "sub")]
+        [InlineData(true, "sub")]
+        [InlineData(false, "")]
+        [InlineData(true, "")]
+        public void AFolderIsNeverCopiedOrMovedIntoItself(bool move, string child)
+        {
+            string root = NewTempDirectory();
+            try
+            {
+                string folder = Directory.CreateDirectory(Path.Combine(root, "X")).FullName;
+                string target = child.Length == 0 ? folder : Directory.CreateDirectory(Path.Combine(folder, child)).FullName;
+                File.WriteAllText(Path.Combine(folder, "a.txt"), "a");
+
+                var result = FileOps.CopyOrMove(new[] { folder }, target, move, _ => ConflictChoice.Skip,
+                    _ => { }, CancellationToken.None);
+
+                Assert.True(result.IntoItself);
+                Assert.Equal(0, result.Succeeded);
+                Assert.False(Directory.Exists(Path.Combine(target, "X")));
+                Assert.Equal("a", File.ReadAllText(Path.Combine(folder, "a.txt")));
+            }
+            finally { Directory.Delete(root, true); }
+        }
+
         private static string NewTempDirectory()
         {
             string path = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", Guid.NewGuid().ToString("N"));

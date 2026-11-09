@@ -404,6 +404,11 @@ namespace KillerShell.Shell
         private void ReportResult(FileOpResult r, SearchTab? owner = null)
         {
             var tab = owner ?? _active;
+            if (r.IntoItself)
+            {
+                SetTabStatusKey(tab, "Str_Status_DropIntoSelf");
+                return;
+            }
             if (r.Failed.Count > 0)
                 SetTabStatusKey(tab, "Str_Status_OpPartial",
                                 r.Succeeded.ToString("N0"), r.Failed.Count.ToString("N0"));

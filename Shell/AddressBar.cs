@@ -84,9 +84,12 @@ namespace KillerShell.Shell
             if (typed.Length == 0) return;
 
             // Environment variables are expanded, so %TEMP% and %APPDATA% work the way they do
-            // in Explorer's address bar - which is most of why anyone types a path at all.
-            try { typed = Environment.ExpandEnvironmentVariables(typed); }
-            catch { }
+            // in Explorer's address bar - which is most of why anyone types a path at all - and a
+            // relative address is relative to the folder this tab is showing, not to wherever
+            // KillerShell was started (Services/AddressTarget.cs).
+            var tab = _active;
+            typed = Services.AddressTarget.ResolveTyped(typed,
+                tab != null && tab.IsBrowsing ? tab.CurrentFolder ?? string.Empty : string.Empty);
 
             // A typed file means "open this", not "show me where it is": text goes to an editor
             // tab, a program or script to a terminal in its folder, anything else to its

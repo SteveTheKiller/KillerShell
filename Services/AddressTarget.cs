@@ -29,6 +29,44 @@ namespace KillerShell.Services
         private const long MaxEditBytes = 32L * 1024 * 1024;
         private const int SniffBytes = 8192;
 
+        /// <summary>
+        /// What a typed address means, given the folder the tab is showing.
+        /// </summary>
+        /// <remarks>
+        /// Explorer's reading: <c>..</c> and <c>Downloads</c> are relative to the tab's folder,
+        /// <c>D:</c> is that drive's root, <c>D:work</c> is a folder on its root, and
+        /// <c>\Windows</c> is on the tab folder's own drive. Nothing is resolved against
+        /// KillerShell's working directory, which is wherever it happened to start. A place
+        /// sentinel such as This PC, or anything with a scheme, is passed through untouched,
+        /// and so is a relative address on a tab that is not showing a real folder.
+        /// </remarks>
+        internal static string ResolveTyped(string typed, string tabFolder)
+        {
+            try { typed = Environment.ExpandEnvironmentVariables(typed); }
+            catch { }
+
+            try
+            {
+                if (typed.Length >= 2 && typed[1] == ':' && char.IsLetter(typed[0]))
+                {
+                    string rest = typed.Substring(2).TrimStart('\\', '/');
+                    return Path.GetFullPath(char.ToUpperInvariant(typed[0]) + @":\" + rest);
+                }
+                if (typed.StartsWith(@"\\", StringComparison.Ordinal) || typed.StartsWith("//", StringComparison.Ordinal))
+                    return typed;
+                if (typed.IndexOf(':') >= 0) return typed;   // a place sentinel or a scheme
+
+                bool folderBehind = tabFolder.Length > 0 && !tabFolder.StartsWith(":", StringComparison.Ordinal)
+                    && Path.IsPathRooted(tabFolder);
+                if (!folderBehind) return typed;
+
+                if (typed.StartsWith(@"\", StringComparison.Ordinal) || typed.StartsWith("/", StringComparison.Ordinal))
+                    return Path.GetFullPath(Path.Combine(Path.GetPathRoot(tabFolder), typed.TrimStart('\\', '/')));
+                return Path.GetFullPath(Path.Combine(tabFolder, typed));
+            }
+            catch { return typed; }
+        }
+
         internal static AddressTargetKind Classify(string path)
         {
             if (Directory.Exists(path)) return AddressTargetKind.Folder;

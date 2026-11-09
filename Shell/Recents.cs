@@ -63,7 +63,9 @@ namespace KillerShell.Shell
             // Folders that have since been deleted or unplugged are dropped rather than shown
             // grayed: a recents list is a shortcut, and a shortcut that cannot be taken is
             // just a row you have to read past every time.
-            var live = _recents.Where(Directory.Exists).ToList();
+            // All checked at once with one short budget, so a dead share costs the menu a
+            // second at most instead of freezing the window until SMB gives up on it.
+            var live = Services.Reachability.Reachable(_recents, Directory.Exists, TimeSpan.FromSeconds(1));
 
             if (live.Count == 0)
             {

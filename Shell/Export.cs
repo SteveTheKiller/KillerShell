@@ -70,22 +70,14 @@ namespace KillerShell.Shell
 
             if (dlg.ShowDialog(this) == true)
             {
-                try
-                {
-                    // Browsing tabs take their path from CurrentFolder, not the search panel's
-                    // root box - that box is empty while browsing, so the report used to head
-                    // itself "Searched  for everything."
-                    Services.HtmlExporter.Export(dlg.FileName, tab.Results,
-                        [.. tab.Groups.SelectMany(g => g.Terms)],
-                        tab.IsBrowsing ? tab.CurrentFolder ?? string.Empty : Pane.RootPathBox.Text,
-                        tab.IsBrowsing);
-                    SetTabStatusKey(tab, "Str_Status_Exported", dlg.FileName);
-                    System.Diagnostics.Process.Start(dlg.FileName);
-                }
-                catch (Exception ex)
-                {
-                    SetTabStatusKey(tab, "Str_Status_ExportFailed", ex.Message);
-                }
+                // Browsing tabs take their path from CurrentFolder, not the search panel's
+                // root box - that box is empty while browsing, so the report used to head
+                // itself "Searched  for everything."
+                string root = tab.IsBrowsing ? tab.CurrentFolder ?? string.Empty : Pane.RootPathBox.Text;
+                var terms = tab.Groups.SelectMany(g => g.Terms).ToList();
+                ReportExport(tab, dlg.FileName, ExportAndOpen.Run(
+                    () => Services.HtmlExporter.Export(dlg.FileName, tab.Results, [.. terms], root, tab.IsBrowsing),
+                    () => System.Diagnostics.Process.Start(dlg.FileName)));
             }
         }
 
@@ -106,16 +98,16 @@ namespace KillerShell.Shell
             };
             if (dlg.ShowDialog(this) != true) return;
 
-            try
-            {
-                Services.StorageHtmlExporter.Export(dlg.FileName, report);
-                SetTabStatusKey(tab, "Str_Status_Exported", dlg.FileName);
-                System.Diagnostics.Process.Start(dlg.FileName);
-            }
-            catch (Exception ex)
-            {
-                SetTabStatusKey(tab, "Str_Status_ExportFailed", ex.Message);
-            }
+            ReportExport(tab, dlg.FileName, ExportAndOpen.Run(
+                () => Services.StorageHtmlExporter.Export(dlg.FileName, report),
+                () => System.Diagnostics.Process.Start(dlg.FileName)));
+        }
+
+        // The file was written even when no browser could open it, so that still reads as exported.
+        private void ReportExport(Models.SearchTab tab, string file, ExportAndOpen.Outcome outcome)
+        {
+            if (outcome.Exported) SetTabStatusKey(tab, "Str_Status_Exported", file);
+            else SetTabStatusKey(tab, "Str_Status_ExportFailed", outcome.Error ?? string.Empty);
         }
     }
 }

@@ -319,8 +319,21 @@ namespace KillerShell.Shell
                     if (fresh != null && (fresh.SizeBytes != existing.SizeBytes ||
                                           fresh.Modified  != existing.Modified))
                     {
-                        int at = tab.Results.IndexOf(existing);
-                        if (at >= 0) { tab.Results[at] = fresh; changed = true; }
+                        // Replacing drops the row from the list's selection, so a selected file
+                        // that grew is selected again (RowReplace.cs). Only for the tab on screen:
+                        // the list's selection belongs to it, not to a tab in the background.
+                        var list = ReferenceEquals(tab, _active) ? Pane.ResultsList : null;
+                        bool hadFocus = list?.ItemContainerGenerator.ContainerFromItem(existing)
+                            is System.Windows.UIElement { IsKeyboardFocusWithin: true };
+                        if (RowReplace.Replace(tab.Results, list?.SelectedItems, existing, fresh))
+                        {
+                            changed = true;
+                            // The keyboard caret was on the old row: put it on the fresh one.
+                            if (hadFocus) list!.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                if (list.ItemContainerGenerator.ContainerFromItem(fresh) is System.Windows.UIElement row) row.Focus();
+                            }), System.Windows.Threading.DispatcherPriority.Loaded);
+                        }
                     }
                 }
             }

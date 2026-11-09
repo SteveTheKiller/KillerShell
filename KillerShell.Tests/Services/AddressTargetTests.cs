@@ -24,6 +24,32 @@ namespace KillerShell.Tests.Services
             return p;
         }
 
+        // A relative address is relative to the folder the tab is showing, the way Explorer's
+        // address bar reads it, never to KillerShell's own working directory.
+        [Theory]
+        [InlineData("..", @"C:\Users\x\Documents", @"C:\Users\x")]
+        [InlineData("Downloads", @"C:\Users\x", @"C:\Users\x\Downloads")]
+        [InlineData(@"..\Music", @"C:\Users\x\Documents", @"C:\Users\x\Music")]
+        [InlineData(@".\sub", @"\\nas\share\top", @"\\nas\share\top\sub")]
+        [InlineData("D:", @"C:\Users\x", @"D:\")]
+        [InlineData(@"D:work", @"C:\Users\x", @"D:\work")]
+        [InlineData(@"\Windows", @"D:\games\deep", @"D:\Windows")]
+        [InlineData(@"E:\abs\path", @"C:\Users\x", @"E:\abs\path")]
+        [InlineData(@"\\server\share", @"C:\Users\x", @"\\server\share")]
+        public void ATypedAddressResolvesAgainstTheTabFolder(string typed, string tabFolder, string expected)
+            => Assert.Equal(expected, AddressTarget.ResolveTyped(typed, tabFolder));
+
+        [Fact]
+        public void AnEnvironmentVariableExpandsFirst()
+            => Assert.Equal(Path.GetFullPath(Environment.GetEnvironmentVariable("TEMP")!),
+                AddressTarget.ResolveTyped("%TEMP%", @"C:\Users\x"));
+
+        [Theory]
+        [InlineData("Documents", ":ThisPC:")]
+        [InlineData(":ThisPC:", @"C:\Users\x")]
+        public void APlaceOrAnAddressWithNoFolderBehindItIsLeftAlone(string typed, string tabFolder)
+            => Assert.Equal(typed, AddressTarget.ResolveTyped(typed, tabFolder));
+
         [Fact]
         public void AFolderIsBrowsed()
             => Assert.Equal(AddressTargetKind.Folder, AddressTarget.Classify(_dir));
