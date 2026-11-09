@@ -273,7 +273,8 @@
                                         MouseDown="Tab_MouseDown"
                                         PreviewMouseLeftButtonDown="Tab_DragDown"
                                         PreviewMouseMove="Tab_DragMove"
-                                        PreviewMouseLeftButtonUp="Tab_DragUp">
+                                        PreviewMouseLeftButtonUp="Tab_DragUp"
+                                        LostMouseCapture="Tab_LostCapture">
                                     <Border.ContextMenu>
                                         <ContextMenu Opened="TabPlacementMenu_Opened">
                                             <MenuItem Header="{DynamicResource Str_Menu_PipeTab}"

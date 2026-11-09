@@ -1320,12 +1320,14 @@ namespace KillerShell.Shell
         internal void Tab_DragUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is not FrameworkElement bd || !bd.IsMouseCaptured) return;
-            bd.ReleaseMouseCapture();
             e.Handled = true;
             bool wasDragging = _tabDragging;
             var  t = _tabDragTab;
+            // Cleared before the release: releasing raises LostMouseCapture, and with the drag
+            // already over, Tab_LostCapture leaves this ending to the code below.
             _tabDragTab  = null;
             _tabDragging = false;
+            bd.ReleaseMouseCapture();
             HideDragFeedback();       // PaneDrag.cs - the ghost goes whatever the drop turns out to be
             ClearCrossWindowHover();  // TabHandoff.cs - and so does any OTHER window's caret
 
@@ -1360,8 +1362,32 @@ namespace KillerShell.Shell
             }
 
             UpdateTabBar();   // a reorder may have moved the active tab on/off the corner
+            SettleDraggedTab(t);
+        }
 
-            // Settle the grabbed tab from its dragged offset into its final slot.
+        /// <summary>
+        /// The capture went away mid-drag without a release here: Alt+Tab, a UAC prompt or
+        /// another window took it, so Tab_DragUp will never run. The drag ends where it is:
+        /// any reorder already made stands, and the grabbed tab settles into its slot instead
+        /// of staying drawn wherever the pointer left it.
+        /// </summary>
+        internal void Tab_LostCapture(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (_tabDragTab is not { } t) return;   // a normal release already ended the drag
+            bool wasDragging = _tabDragging;
+            _tabDragTab  = null;
+            _tabDragging = false;
+            HideDragFeedback();
+            ClearCrossWindowHover();
+            if (!wasDragging) return;
+            UpdateTabBar();
+            SettleDraggedTab(t);
+        }
+
+        // The grabbed tab glides from its dragged offset into its slot, then every tab's drag
+        // transform and z-order are cleared.
+        private void SettleDraggedTab(SearchTab? t)
+        {
             var cont = t != null ? TabContainer(t) : null;
             if (cont?.RenderTransform is System.Windows.Media.TranslateTransform tt && Math.Abs(tt.X) > 0.5)
             {

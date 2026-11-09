@@ -809,6 +809,7 @@ namespace KillerShell
         private void Tab_DragDown(object s, MouseButtonEventArgs e)        => Owner.Tab_DragDown(s, e);
         private void Tab_DragMove(object s, MouseEventArgs e)              => Owner.Tab_DragMove(s, e);
         private void Tab_DragUp(object s, MouseButtonEventArgs e)          => Owner.Tab_DragUp(s, e);
+        private void Tab_LostCapture(object s, MouseEventArgs e)           => Owner.Tab_LostCapture(s, e);
         private void CloseTab_Click(object s, RoutedEventArgs e)           => Owner.CloseTab_Click(s, e);
 
         // ── Results list: rows, gestures, quick filter ───────────
