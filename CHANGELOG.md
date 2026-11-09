@@ -27,6 +27,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Clicking or pressing a key while KillerShell fades out after Exit no longer leaves it hidden in the tray, and a window hidden partway through that fade comes back visible.
 - Killer script commands such as `amort` run with their own defaults when typed with no options, and options such as `-RetainDays 30` or `-DryRun` reach the script by name instead of arriving as stray values the script refuses.
 
+### Changed
+
+- Every Performance graph has its own color on every theme: CPU green, memory blue, disk amber for reads and red for writes, network magenta for sends and yellow for receives, and GPU cyan, so no two graphs share a color.
+- Single-line text fields are as tall as the dropdowns beside them, so form rows line up instead of the text boxes standing oversized.
+
 ## [1.5.1] - 2026-11-01
 
 1.5.1 hardens self-update and uninstall, stops the file picker crashing or overwriting files it could not check, fixes AltGr typing, and opens files you type into the address bar.

@@ -95,7 +95,7 @@
                              CaretBrush="{DynamicResource PrimaryBrush}"
                              BorderBrush="{DynamicResource PrimaryBrush}" BorderThickness="1"
                              FontFamily="{DynamicResource MonoFont}" FontSize="12.5"
-                             Padding="6,5" KeyDown="NameBox_KeyDown"/>
+                             Padding="6,0" KeyDown="NameBox_KeyDown"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="24,0,24,18">

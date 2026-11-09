@@ -2674,7 +2674,7 @@
                           </Canvas>
                           <a11y:Glyph Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                      Foreground="{DynamicResource DimTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                          <TextBox x:Name="ResultFilterBox" Width="280" Height="28" FontSize="13" VerticalContentAlignment="Center"
+                          <TextBox x:Name="ResultFilterBox" Width="280" Height="26" FontSize="13" VerticalContentAlignment="Center"
                                    ToolTip="{DynamicResource Str_TT_FilterResults}" TextChanged="ResultFilterBox_TextChanged"/>
                           <Button Content="x" Style="{StaticResource DangerButton}" Width="24" Height="24" Margin="7,0,0,0" FontSize="12"
                                   Click="ResultFilterClose_Click"/>
