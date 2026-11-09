@@ -51,6 +51,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The Install button refuses while an update or another install of the same folder is running, the same way the silent install and the update helpers do.
 - A portable copy no longer rewrites the text file icon beside itself when a different copy owns the file associations.
 - A command-line search that finds exactly as many matches as its `--limit` reports `limitReached: false`.
+- Edit profile finds the right PowerShell profile for a user folder with an accented name, such as José, and gives up after five seconds when PowerShell hangs instead of freezing the menu.
+- A terminal tab closed right after it opens reports its shell's real exit code instead of a made-up 0.
+- The terminal prompt shows the git branch in a folder that became a repository after the prompt first visited it, such as after `git init` or a clone.
+- KillerPivot stores a key typed in capitals as lowercase, refuses a blank `-Name` before writing anything, keeps one `tenants.json.pivot-backup` instead of adding a new backup file on every save, and clears the per-save backups older versions left.
+- KillerPivot and the killer script commands add TLS 1.2 to what the session already allows instead of replacing it, so they no longer switch off TLS 1.3 for the rest of a PowerShell session.
 
 ### Changed
 

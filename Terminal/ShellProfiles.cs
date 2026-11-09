@@ -77,12 +77,20 @@ namespace KillerShell.Terminal
         /// from Installed(), which only stats files.
         /// </remarks>
         internal static string PathFor(ShellHost host)
+            => PathFor(host, "$PROFILE.CurrentUserCurrentHost", 5000);
+
+        /// <summary>The probe itself, with the expression and the time limit open for tests.</summary>
+        internal static string PathFor(ShellHost host, string expression, int timeoutMs)
         {
             try
             {
+                // The answer comes back as Base64 of its UTF-16 bytes. Windows PowerShell writes
+                // redirected output in the console's OEM code page whatever is asked of it, so a
+                // plain path through a user folder like José arrived garbled; Base64 is ASCII
+                // in every code page.
                 var psi = new ProcessStartInfo(host.Exe)
                 {
-                    Arguments              = "-NoProfile -NonInteractive -Command \"$PROFILE.CurrentUserCurrentHost\"",
+                    Arguments              = "-NoProfile -NonInteractive -Command \"[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes([string]$(" + expression + ")))\"",
                     UseShellExecute        = false,
                     CreateNoWindow         = true,
                     RedirectStandardOutput = true,
@@ -95,17 +103,22 @@ namespace KillerShell.Terminal
                 if (p == null) return string.Empty;
 
                 p.StandardInput.Close();
-                string output = p.StandardOutput.ReadToEnd();
+                // Read in the background, so the wait below is what bounds the call. A plain
+                // ReadToEnd blocks until the child exits, which made the limit bound nothing.
+                var output = p.StandardOutput.ReadToEndAsync();
+                _ = p.StandardError.ReadToEndAsync();
 
                 // Bounded. A host that never exits must not take the window with it, and five
                 // seconds is far longer than a -NoProfile start has ever needed.
-                if (!p.WaitForExit(5000))
+                if (!p.WaitForExit(timeoutMs) || !output.Wait(1000))
                 {
                     try { p.Kill(); } catch { }
                     return string.Empty;
                 }
 
-                string path = output.Trim();
+                string path;
+                try { path = Encoding.Unicode.GetString(Convert.FromBase64String(output.Result.Trim())).Trim(); }
+                catch (FormatException) { return string.Empty; }
 
                 // Sanity, not trust: this is the output of another process, and a hooked
                 // Write-Host or a banner from a machine-wide profile could put anything on

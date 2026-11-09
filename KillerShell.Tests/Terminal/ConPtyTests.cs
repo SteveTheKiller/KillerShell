@@ -11,6 +11,27 @@ namespace KillerShell.Tests.Terminal;
 
 public sealed class ConPtyTests
 {
+    // Closing a tab right after its shell starts disposes the session while the exit watcher is
+    // still parked on the process. The watcher owns its own handle, so the exit it reports is
+    // the shell's real one, never a 0 read from a handle Dispose already closed.
+    [Fact]
+    public void DisposingRightAfterStartReportsTheRealExitCode()
+    {
+        // A child that ends on its own with a nonzero code, so nothing is left running. Closed
+        // this early it either finishes with 7 or fails its console start (0xC0000142); both
+        // are real exits. The defect reported 0, read from a handle Dispose had closed.
+        string command = Path.Combine(Environment.SystemDirectory, "cmd.exe") + " /D /Q /C \"ping -n 2 127.0.0.1 >nul & exit 7\"";
+        var session = ConPtySession.Start(command, Path.GetTempPath(), 80, 25);
+        using var exited = new ManualResetEventSlim();
+        int code = int.MinValue;
+        session.Exited += value => { code = value; exited.Set(); };
+        session.Dispose();
+
+        Assert.True(exited.Wait(TimeSpan.FromSeconds(15)), "The exit watcher never reported.");
+        Assert.NotEqual(0, code);
+        Assert.NotEqual(259, code);   // STILL_ACTIVE: read before the process had ended
+    }
+
     [Fact]
     public async Task RedirectedHostKeepsShellInputAndOutputInsidePseudoConsole()
     {

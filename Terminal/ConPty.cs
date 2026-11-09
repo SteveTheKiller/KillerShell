@@ -160,14 +160,26 @@ namespace KillerShell.Terminal
         /// only thing that can tell a real exit from a pipe that went quiet because the shell
         /// is simply sitting at its prompt waiting for input.
         /// </summary>
+        /// <remarks>
+        /// The thread waits on its OWN duplicate of the process handle and closes it itself.
+        /// Reading the shared field meant a Dispose right after start closed the handle under
+        /// the wait, and the exit code then came from handle 0: a made-up 0.
+        /// </remarks>
         private void WatchForExit()
         {
+            IntPtr self = GetCurrentProcess();
+            if (!DuplicateHandle(self, _process, self, out IntPtr watched, 0, false, DUPLICATE_SAME_ACCESS))
+                throw new Win32Exception(Marshal.GetLastWin32Error(), "DuplicateHandle");
             var t = new Thread(() =>
             {
-                _ = WaitForSingleObject(_process, INFINITE);
-                GetExitCodeProcess(_process, out int code);
-                HasExited = true;
-                try { Exited?.Invoke(code); } catch { /* a dying tab is not worth a crash */ }
+                try
+                {
+                    _ = WaitForSingleObject(watched, INFINITE);
+                    if (!GetExitCodeProcess(watched, out int code)) return;
+                    HasExited = true;
+                    try { Exited?.Invoke(code); } catch { /* a dying tab is not worth a crash */ }
+                }
+                finally { CloseHandle(watched); }
             })
             { IsBackground = true, Name = "ConPTY exit watch" };
             t.Start();
@@ -289,5 +301,14 @@ namespace KillerShell.Terminal
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool CloseHandle(IntPtr hObject);
+
+        private const uint DUPLICATE_SAME_ACCESS = 0x00000002;
+
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetCurrentProcess();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool DuplicateHandle(IntPtr hSourceProcessHandle, IntPtr hSourceHandle,
+            IntPtr hTargetProcessHandle, out IntPtr lpTargetHandle, uint dwDesiredAccess, bool bInheritHandle, uint dwOptions);
     }
 }

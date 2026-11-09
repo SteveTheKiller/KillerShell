@@ -139,9 +139,14 @@ function script:KFPath {
 # is cached per directory, so `git` is never even launched.
 $script:KFRepoCache = @{}
 
+#
+# Only a YES is cached. A "not a repo" answer is re-checked on every prompt, because
+# `git init` or a clone into a folder already visited would otherwise never show
+# its branch; the re-check is the same few file tests, still with no git process.
+# A cached yes that goes stale (the .git deleted) only costs one failed `git status`.
 function script:KFInRepo {
     $dir = (Get-Location).Path
-    if ($script:KFRepoCache.ContainsKey($dir)) { return $script:KFRepoCache[$dir] }
+    if ($script:KFRepoCache.ContainsKey($dir)) { return $true }
 
     $found = $false
     $probe = $dir
@@ -151,7 +156,7 @@ function script:KFInRepo {
         if ($parent -eq $probe) { break }
         $probe = $parent
     }
-    $script:KFRepoCache[$dir] = $found
+    if ($found) { $script:KFRepoCache[$dir] = $true }
     return $found
 }
 

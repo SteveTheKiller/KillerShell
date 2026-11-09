@@ -61,6 +61,19 @@ try {
     if ([IO.File]::ReadAllText((Join-Path $root 'AMORT.ps1')).Trim() -cne "'newer version'") { throw 'The script was not saved as %TEMP%\AMORT.ps1.' }
     Write-Output 'PASS every run downloads the latest script to %TEMP% and runs it'
 
+    # A run adds TLS 1.2 when the session lacks it, and leaves the rest of the session's TLS alone.
+    $savedProtocol = [Net.ServicePointManager]::SecurityProtocol
+    try {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]0
+        Invoke-AMORT | Out-Null
+        if ([int][Net.ServicePointManager]::SecurityProtocol -ne 0) { throw "A run pinned the system default TLS to $([Net.ServicePointManager]::SecurityProtocol)." }
+        $both = [Net.SecurityProtocolType]3072 -bor [Net.SecurityProtocolType]12288
+        [Net.ServicePointManager]::SecurityProtocol = $both
+        Invoke-AMORT | Out-Null
+        if ([Net.ServicePointManager]::SecurityProtocol -ne $both) { throw "A run replaced the session TLS with $([Net.ServicePointManager]::SecurityProtocol)." }
+    } finally { [Net.ServicePointManager]::SecurityProtocol = $savedProtocol }
+    Write-Output 'PASS TLS settings kept'
+
     # The manifest's export list and the shipped script list name the same commands, so a script
     # added to the repo cannot ship without its command (PEEK once did).
     $moduleDir = Split-Path -Parent $ModulePath

@@ -41,6 +41,27 @@ try {
             $script:GraphActive = $false
         }
     }
+    # Tenant lookup adds TLS 1.2 to what the session allows; it never takes TLS 1.3 away.
+    $savedProtocol=[Net.ServicePointManager]::SecurityProtocol
+    try {
+        $tls13=[Net.SecurityProtocolType]3072 -bor [Net.SecurityProtocolType]12288
+        [Net.ServicePointManager]::SecurityProtocol=$tls13
+        & $module {
+            function script:Invoke-RestMethod { throw 'offline' }
+            Get-PivotTenantIdFromDomain -Domain example.invalid | Out-Null
+            Get-PivotBrandName -Upn admin@example.invalid | Out-Null
+            Remove-Item function:script:Invoke-RestMethod
+        }
+        if ([Net.ServicePointManager]::SecurityProtocol -ne $tls13) {throw "TLS settings replaced: $([Net.ServicePointManager]::SecurityProtocol)"}
+        [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]0
+        & $module {
+            function script:Invoke-RestMethod { throw 'offline' }
+            Get-PivotTenantIdFromDomain -Domain example.invalid | Out-Null
+            Remove-Item function:script:Invoke-RestMethod
+        }
+        if ([int][Net.ServicePointManager]::SecurityProtocol -ne 0) {throw "System default TLS pinned: $([Net.ServicePointManager]::SecurityProtocol)"}
+    } finally {[Net.ServicePointManager]::SecurityProtocol=$savedProtocol}
+    Write-Output 'PASS TLS settings kept'
     foreach ($case in 'empty','metadata-error','missing-tenant','wrong-tenant','connect-error','teardown-error','success','graph-metadata-error','graph-connect-error','graph-teardown-error') {
         & $module {
             param($case)

@@ -16,14 +16,25 @@ $script:RawBase = 'https://raw.githubusercontent.com/SteveTheKiller/killer-scrip
 # built-in (PRINT.ps1 -> KillerPrint, since 'print' is print.exe).
 $script:AliasOverrides = @{ 'PRINT.ps1' = 'KillerPrint' }
 
+function Enable-KsTls12 {
+    # GitHub requires TLS 1.2, which Windows PowerShell 5.1 on older systems does not enable on its
+    # own. It is added to what the session allows, never put in its place, and SystemDefault (0)
+    # is left alone: OR-ing 1.2 into 0 would pin the whole session to TLS 1.2 only.
+    try {
+        $current = [Net.ServicePointManager]::SecurityProtocol
+        if ([int]$current -ne 0 -and -not ($current -band [Net.SecurityProtocolType]::Tls12)) {
+            [Net.ServicePointManager]::SecurityProtocol = $current -bor [Net.SecurityProtocolType]::Tls12
+        }
+    } catch { }
+}
+
 function Get-KsLatest {
     # The website's one-liner, minus the run: Bypass for this process, then the latest copy of the
     # script saved to %TEMP%\<script>. Returns the path to run.
     param([string]$Name)
     $file = if ($Name -like '*.ps1') { $Name } else { "$Name.ps1" }
     Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue
-    # GitHub requires TLS 1.2, which Windows PowerShell 5.1 on older systems does not enable on its own.
-    try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
+    Enable-KsTls12
     $path = Join-Path $env:TEMP $file
     Invoke-RestMethod -Uri ($script:RawBase + $file) -OutFile $path
     $path
@@ -44,7 +55,7 @@ function Get-KillerScript {
     # List the killer scripts with their titles and descriptions, from the repo's own list, or from
     # the list this module shipped with when the repo cannot be reached.
     try {
-        try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
+        Enable-KsTls12
         $m = Invoke-RestMethod -Uri ($script:RawBase + 'descriptions.json')
     }
     catch {

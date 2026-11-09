@@ -193,8 +193,16 @@ function Write-PivotConfig {
             $file.Flush($true)
         } finally { $file.Dispose() }
         if ($Expected.Exists) {
-            $backup = "$path.previous.$([guid]::NewGuid().ToString('N'))"
+            # One previous copy under one fixed name, replaced on every save. A new name per
+            # save left a file behind forever. The name is our own, so a tenants.json.previous
+            # someone keeps beside it is never touched.
+            $backup = "$path.pivot-backup"
             [IO.File]::Replace($temporary, $path, $backup)
+            # Per-save copies an older KillerPivot left: each is an older version of what the
+            # fixed backup now holds.
+            Get-ChildItem -LiteralPath $dir -File -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -match ('^' + [regex]::Escape([IO.Path]::GetFileName($path)) + '\.previous\.[a-f0-9]{32}$') } |
+                ForEach-Object { try { [IO.File]::Delete($_.FullName) } catch { } }
         } else {
             [IO.File]::Move($temporary, $path)
         }
@@ -232,10 +240,22 @@ function Resolve-PivotTenant {
 # The OIDC discovery document is public and unauthenticated. Its issuer URL
 # carries the tenant GUID, which saves hunting for it in the portal.
 
+# Windows PowerShell 5.1 on an old .NET can start with TLS 1.2 switched off. Add it to what
+# the session allows, never replace the list: assigning Tls12 alone took TLS 1.3 away for the
+# rest of the session. SystemDefault (0) already lets Windows pick, so it is left alone.
+function Enable-PivotTls12 {
+    try {
+        $current = [Net.ServicePointManager]::SecurityProtocol
+        if ([int]$current -ne 0 -and -not ($current -band [Net.SecurityProtocolType]::Tls12)) {
+            [Net.ServicePointManager]::SecurityProtocol = $current -bor [Net.SecurityProtocolType]::Tls12
+        }
+    } catch { }
+}
+
 function Get-PivotTenantIdFromDomain {
     param([Parameter(Mandatory)][string]$Domain)
 
-    try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 } catch { }
+    Enable-PivotTls12
 
     $uri = "https://login.microsoftonline.com/$Domain/v2.0/.well-known/openid-configuration"
     try {
@@ -253,7 +273,7 @@ function Get-PivotTenantIdFromDomain {
 function Get-PivotBrandName {
     param([Parameter(Mandatory)][string]$Upn)
 
-    try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 } catch { }
+    Enable-PivotTls12
 
     $uri = "https://login.microsoftonline.com/getuserrealm.srf?login=$Upn&api-version=2.1"
     try {
@@ -291,6 +311,15 @@ function Add-PivotTenant {
         [string]$Name,
         [switch]$Force
     )
+
+    # Checked before anything else, so a bad value is refused with its own message instead of
+    # being saved and then read back as a corrupt configuration. ValidatePattern ignores case,
+    # but keys are stored lowercase.
+    if ($Key) { $Key = $Key.ToLowerInvariant() }
+    if ($PSBoundParameters.ContainsKey('Name')) {
+        $Name = $Name.Trim()
+        if ($Name.Length -eq 0) { throw "PIVOT: -Name cannot be blank. Leave it out to use the tenant's own name." }
+    }
 
     $interactive = [string]::IsNullOrWhiteSpace($Upn)
 

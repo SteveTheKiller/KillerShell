@@ -40,9 +40,26 @@ try {
     [IO.File]::WriteAllText("$env:PIVOT_CONFIG.previous",'unrelated sibling')
     Add-PivotTenant -Key second -Upn admin@example.invalid -TenantId 22222222-2222-2222-2222-222222222222 -Name Second
     if (@(Get-PivotTenant).Count -ne 2) {throw 'Valid add lost tenant'}
-    $backups=@(Get-ChildItem -LiteralPath $root | Where-Object {$_.Name -match '^tenants\.json\.previous\.[a-f0-9]{32}$'})
-    if ($backups.Count -ne 1 -or [IO.File]::ReadAllText($backups[0].FullName) -cne $first) {throw 'Previous copy unavailable'}
+    $backup="$env:PIVOT_CONFIG.pivot-backup"
+    if (-not (Test-Path -LiteralPath $backup) -or [IO.File]::ReadAllText($backup) -cne $first) {throw 'Previous copy unavailable'}
     if ([IO.File]::ReadAllText("$env:PIVOT_CONFIG.previous") -cne 'unrelated sibling') {throw 'Unrelated backup sibling overwritten'}
+    # Every save keeps one previous copy, not one more file per save.
+    [IO.File]::WriteAllText("$env:PIVOT_CONFIG.previous.0123456789abcdef0123456789abcdef",'left by an older KillerPivot')
+    $second=[IO.File]::ReadAllText($env:PIVOT_CONFIG)
+    Add-PivotTenant -Key third -Upn admin@example.invalid -TenantId 33333333-3333-3333-3333-333333333333 -Name Third
+    if ([IO.File]::ReadAllText($backup) -cne $second) {throw 'Backup does not hold the copy before the latest save'}
+    if (@(Get-ChildItem -LiteralPath $root | Where-Object {$_.Name -match '^tenants\.json\.previous\.[a-f0-9]{32}$'}).Count) {throw 'Per-save backups pile up'}
+    Remove-PivotTenant third
+    Write-Output 'PASS one previous copy kept'
+    # Keys are lowercase and names are real, checked before anything is written.
+    Add-PivotTenant -Key UPPER -Upn admin@example.invalid -TenantId 44444444-4444-4444-4444-444444444444 -Name Upper
+    if (-not (Get-PivotTenant upper)) {throw 'An uppercase key was not stored lowercase'}
+    Remove-PivotTenant upper
+    $beforeBlank=[IO.File]::ReadAllText($env:PIVOT_CONFIG)
+    $failure=$null
+    try {Add-PivotTenant -Key blank -Upn admin@example.invalid -TenantId 44444444-4444-4444-4444-444444444444 -Name '   '} catch {$failure=$_.Exception.Message}
+    if ($failure -notmatch '-Name' -or [IO.File]::ReadAllText($env:PIVOT_CONFIG) -cne $beforeBlank) {throw "A blank name was not refused up front: $failure"}
+    Write-Output 'PASS key case and blank name'
     Remove-PivotTenant first
     if (@(Get-PivotTenant).Count -ne 1 -or (Get-PivotTenant).key -ne 'second') {throw 'Valid remove failed'}
     Write-Output 'PASS create add remove and recovery copy'
