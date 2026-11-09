@@ -123,7 +123,7 @@
     var captions = [
       dict.f_panes_t + ': PowerShell, ' + dict.f_editor_t + ', ' + dict.f_browse_t,
       dict.f_panes_t + ': ' + dict.f_fname_t + ', ' + dict.f_fileops_t,
-      dict.f_pipe_t + ', ' + dict.f_editor_t,
+      dict.theme_cyanotic + ', ' + dict.ui_size + ' 125%: ' + dict.f_pipe_t + ', ' + dict.f_editor_t,
       dict.f_panes_t + ': ' + dict.f_procsvc_t + ', ' + dict.f_reg_t,
       dict.f_evt_t + ' (Ctrl+F12)',
       dict.f_panes_t + ': ' + dict.f_tabs_t + ', ' + dict.f_browse_t,
@@ -131,7 +131,9 @@
       dict.theme_light + ': ' + dict.f_fname_t,
       dict.theme_98se + ': ' + dict.f_fname_t + ', ' + dict.f_tabs_t,
       dict.shot_tabs_bottom + ': ' + dict.shot_panes_top_bottom + ', ' + dict.f_fname_t + ', ' + dict.f_browse_t,
-      dict.shot_about + ' (F12), ' + dict.f_fname_t
+      dict.shot_about + ' (F12), ' + dict.f_fname_t,
+      dict.shot_elevated + ', ' + dict.theme_blood + ', ' + dict.ui_size + ' 90%: ' + dict.f_procsvc_t + ', ' + dict.f_browse_t,
+      dict.f_perf_t + ' (F11), ' + dict.theme_dark + ', ' + dict.site_ui_magenta
     ];
     // Demo is a fixed command-line mode; feature and theme names use the site locale.
     var caption = captions[index - 1];
