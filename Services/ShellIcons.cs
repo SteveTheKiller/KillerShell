@@ -74,6 +74,15 @@ namespace KillerShell.Services
         internal static bool CanThumbnail(string path) =>
             !string.IsNullOrEmpty(path) && ThumbExts.Contains(Path.GetExtension(path));
 
+        /// <summary>Whether a thumbnail answer, image or none, is cached for this file as it is now.</summary>
+        internal static bool HasThumbnailEntry(string path, int px)
+        {
+            var file = new FileInfo(path);
+            if (!file.Exists) return false;
+            string key = path + "|" + px + "|" + file.LastWriteTimeUtc.Ticks + "|" + file.Length;
+            lock (CacheGate) return _thumbs.ContainsKey(key);
+        }
+
         /// <summary>
         /// A real thumbnail of an image file, or null when it is not an image / cannot be decoded.
         /// Picking an image from a list of generic type icons is guesswork, which is what this
@@ -85,15 +94,6 @@ namespace KillerShell.Services
         /// and the user cannot rename or delete what they just looked at. Frozen and cached by
         /// path so scrolling a folder decodes each file once.
         /// </summary>
-        /// <summary>Whether a thumbnail answer, image or none, is cached for this file as it is now.</summary>
-        internal static bool HasThumbnailEntry(string path, int px)
-        {
-            var file = new FileInfo(path);
-            if (!file.Exists) return false;
-            string key = path + "|" + px + "|" + file.LastWriteTimeUtc.Ticks + "|" + file.Length;
-            lock (CacheGate) return _thumbs.ContainsKey(key);
-        }
-
         internal static ImageSource? Thumbnail(string path, int px)
         {
             ImageSource? img = null;

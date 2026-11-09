@@ -435,7 +435,11 @@ namespace KillerShell.Shell
             if (rows.Count == 0) return;
             var paths = rows.Select(b => b.Path).ToList();
             List<string> live;
-            try { live = await System.Threading.Tasks.Task.Run(() => Services.Reachability.Reachable(paths, BookmarkReachable, TimeSpan.FromSeconds(2))); }
+            try
+            {
+                live = await System.Threading.Tasks.Task.Run(() => Services.SavedBookmarks.Live(paths,
+                    onDisk => Services.Reachability.Reachable(onDisk, Directory.Exists, TimeSpan.FromSeconds(2))));
+            }
             catch { return; }
             var reachable = new HashSet<string>(live, StringComparer.OrdinalIgnoreCase);
             foreach (var b in rows) b.Unreachable = !reachable.Contains(b.Path);

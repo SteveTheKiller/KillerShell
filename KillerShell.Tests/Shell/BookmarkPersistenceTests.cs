@@ -39,4 +39,21 @@ public sealed class BookmarkPersistenceTests
         Assert.Empty(loaded.Paths);
         Assert.Equal("", SavedBookmarks.Serialize(loaded.Paths));
     }
+
+    // A WSL favorite is answered by its own distribution and never reaches the disk check, so a
+    // slow disk probe of the same folder started elsewhere (the recents menu) cannot dim it.
+    [Fact]
+    public void AWslFavoriteIsLiveWithoutTheDiskCheck()
+    {
+        const string Wsl = @"\\wsl.localhost\Ubuntu\home";
+        var asked = new List<string>();
+        var live = SavedBookmarks.Live(new[] { Local, Wsl, Share }, paths =>
+        {
+            asked.AddRange(paths);
+            return paths.Where(p => p != Share).ToList();
+        });
+
+        Assert.Equal(new[] { Local, Share }, asked);
+        Assert.Equal(new[] { Local, Wsl }, live);
+    }
 }

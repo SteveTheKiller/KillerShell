@@ -13,7 +13,8 @@ namespace KillerShell.Services
     {
         // Checks still running, one per path. A dead share can take the whole SMB timeout to
         // answer; a second check of it while the first is still stuck joins the first instead of
-        // parking another thread on the same share.
+        // parking another thread on the same share. Because a joined check is shared, every
+        // caller's probe must give the same answer for a path (all of them are Directory.Exists).
         private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, Task<bool>> Running =
             new(StringComparer.OrdinalIgnoreCase);
 

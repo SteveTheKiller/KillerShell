@@ -124,6 +124,28 @@ public static class PickerListingStateScenario
                     picker.Close();
                 }
 
+                // Failed, saving: a full path typed into the name box turns Accept on, and clearing
+                // it turns Accept off again, without anything else having to change.
+                {
+                    var picker = new FileDialog(FileDialogMode.Save);
+                    picker.DirectoryListingReader = (_, _, _) => throw new IOException("listing broke");
+                    _ = picker.NavigateDirectoryAsync(first);
+                    Wait(() => !picker.IsDirectoryListingBusy, picker);
+                    Assert.False(picker.IsDirectoryListingAvailable);
+                    var accept = (Button)picker.FindName("AcceptButton");
+                    var name = (TextBox)picker.FindName("FileNameBox");
+                    name.Text = "";
+                    Pump(50);
+                    Assert.False(accept.IsEnabled);
+                    name.Text = Path.Combine(first, "report.csv");
+                    Pump(50);
+                    Assert.True(accept.IsEnabled);
+                    name.Text = "";
+                    Pump(50);
+                    Assert.False(accept.IsEnabled);
+                    picker.Close();
+                }
+
                 // Vanished: a folder that no longer exists says so in the app's language.
                 {
                     var picker = new FileDialog(FileDialogMode.Open);
