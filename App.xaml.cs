@@ -366,6 +366,13 @@ namespace KillerShell
                valueName.StartsWith(Services.FolderOpenerSetting.PreviousSetting, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
+        /// Subkeys under the app key that Clear all Data keeps. Capabilities is the file
+        /// association registration (Associations.cs) that puts KillerShell in Default apps.
+        /// </summary>
+        internal static bool SurvivesClearAllDataSubKey(string subKeyName)
+            => string.Equals(subKeyName, "Capabilities", StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
         /// Clear all Data: every saved preference, plus the temp files KillerShell extracted while
         /// browsing archives. The user's own files are never touched, and neither is the install.
         /// </summary>
@@ -393,7 +400,7 @@ namespace KillerShell
                     // preference hiding in one would survive a clear that only walked values.
                     foreach (var sub in k.GetSubKeyNames())
                     {
-                        if (SurvivesClearAllData(sub)) continue;
+                        if (SurvivesClearAllDataSubKey(sub)) continue;
                         try { k.DeleteSubKeyTree(sub, throwOnMissingSubKey: false); } catch { }
                     }
                 }

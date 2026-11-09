@@ -18,6 +18,18 @@ public sealed class ClearAllDataTests
         // after a clear would lose what the user had before.
         => Assert.True(App.SurvivesClearAllData(name));
 
+    // Default apps lists KillerShell through this subkey. Deleting it with the preferences
+    // silently undoes the file associations the user set up.
+    [Theory]
+    [InlineData("Capabilities")]
+    [InlineData("capabilities")]
+    public void TheAssociationRegistrationSurvives(string subKey)
+        => Assert.True(App.SurvivesClearAllDataSubKey(subKey));
+
+    [Fact]
+    public void AnyOtherSubKeyIsCleared()
+        => Assert.False(App.SurvivesClearAllDataSubKey("SomeFuturePreference"));
+
     [Theory]
     [InlineData("Theme")]
     [InlineData("DefaultTerminalProfile")]

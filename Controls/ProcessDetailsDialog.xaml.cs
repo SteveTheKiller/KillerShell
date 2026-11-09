@@ -113,7 +113,7 @@ namespace KillerShell
             target.Children.Add(stack);
         }
 
-        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DialogChrome.Drag(this, e);
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {

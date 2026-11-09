@@ -1130,8 +1130,11 @@ namespace KillerShell.Tools
 
         private void ModifyValueRow(RegistryNode node, RegistryValueRow row)
         {
-            var kind = row.Kind is RegistryValueKind.Unknown or RegistryValueKind.None
-                ? RegistryValueKind.String : row.Kind;
+            if (KillerShell.Services.RegistryEditorLogic.EditKindFor(row.Kind) is not RegistryValueKind kind)
+            {
+                ShowStatus(string.Format(MainWindow.LocStatic("Str_RegEd_KindReadOnly"), row.DisplayName), error: true);
+                return;
+            }
             var dlg = new RegistryValueEditDialog(row.DisplayName, kind, row.RawValue)
                 { Owner = Window.GetWindow(this) };
             dlg.ShowDialog();

@@ -764,6 +764,7 @@
     <sys:String x:Key="Str_RegEd_ValueData">Değer verisi</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" silindi</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" kaydedildi</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">"{0}" değerinin türü KillerShell tarafından geri yazılamıyor, bu yüzden değiştirilemez</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0}, var olan bir konum değil</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">{0} dosyasının yükseltilmiş kaydı da reddedildi - Windows Güvenliği'nde Denetimli Klasör Erişimi'ni kontrol edin</sys:String>
     <sys:String x:Key="Str_Status_TearOutHandoff">Windows'un KillerShell'e aktardığı program kendi penceresinde kalır</sys:String>
@@ -880,6 +881,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">klasör adı yok</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">giriş bulunamadı</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">giriş, çıkarma klasörünün dışına taşıyordu</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">iki giriş aynı dosyaya çıkarılıyor</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">Windows'un ayrı dosyalar olarak yazamadığı adlar zaten içeriyor: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell iki kez kurulmuş. Diğer kopya, yani bu kullanıcıya özel olan şimdi kaldırılsın mı?&#x0A;&#x0A;Ayarlarınız kaldırılmaz.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell iki kez kurulmuş. Diğer kopya, yani tüm kullanıcılar için olan şimdi kaldırılsın mı?&#x0A;&#x0A;Ayarlarınız kaldırılmaz.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Kurulum başarısız oldu:&#x0A;{0}</sys:String>
@@ -944,6 +947,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Bu klasör mevcut değil</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Tarama durduruldu - okunanlar gösteriliyor</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">atlandı</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} klasör  {1} dosya</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Yeni sekmede aç</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Explorer'da aç</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Yolu kopyala</sys:String>

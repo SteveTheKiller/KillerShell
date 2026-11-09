@@ -109,6 +109,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">brak nazwy folderu</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">nie znaleziono wpisu</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">wpis wychodził poza folder wyodrębniania</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">dwa wpisy są wyodrębniane do tego samego pliku</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">zawiera już nazwy, których system Windows nie może zapisać jako osobnych plików: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell jest zainstalowany dwa razy. Usunąć teraz drugą kopię, tę dla tego użytkownika?&#x0A;&#x0A;Twoje ustawienia nie zostaną usunięte.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell jest zainstalowany dwa razy. Usunąć teraz drugą kopię, tę dla wszystkich użytkowników?&#x0A;&#x0A;Twoje ustawienia nie zostaną usunięte.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Instalacja nie powiodła się:&#x0A;{0}</sys:String>
@@ -752,6 +754,7 @@
   <sys:String x:Key="Str_Storage_BadTarget">Ten folder nie istnieje</sys:String>
   <sys:String x:Key="Str_Storage_Stopped">Skanowanie zatrzymane - pokazano odczytane dane</sys:String>
   <sys:String x:Key="Str_Storage_Skipped">pominięto</sys:String>
+  <sys:String x:Key="Str_Storage_ScanCounts">folderów: {0}  plików: {1}</sys:String>
   <sys:String x:Key="Str_Storage_OpenInTab">Otwórz na nowej karcie</sys:String>
   <sys:String x:Key="Str_Storage_RevealExplorer">Otwórz w Eksploratorze</sys:String>
   <sys:String x:Key="Str_Storage_CopyPath">Kopiuj ścieżkę</sys:String>
@@ -819,6 +822,7 @@
   <sys:String x:Key="Str_RegEd_KeyDeleted">Usunięto „{0}” i całą zawartość</sys:String>
   <sys:String x:Key="Str_RegEd_ValueDeleted">Usunięto „{0}”</sys:String>
   <sys:String x:Key="Str_RegEd_ValueSaved">Zapisano „{0}”</sys:String>
+  <sys:String x:Key="Str_RegEd_KindReadOnly">„{0}” ma typ wartości, którego KillerShell nie może zapisać z powrotem, więc nie można jej zmienić</sys:String>
   <sys:String x:Key="Str_RegEd_NameCopied">Skopiowano nazwę</sys:String>
   <sys:String x:Key="Str_RegEd_PathCopied">Skopiowano ścieżkę</sys:String>
   <sys:String x:Key="Str_RegEd_CopyFailed">Nie udało się skopiować do schowka - {0}</sys:String>

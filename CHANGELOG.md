@@ -26,6 +26,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The window menu from a right-click on the title bar or Alt+Space opens at the pointer instead of about 20 pixels below and to the right of it.
 - Clicking or pressing a key while KillerShell fades out after Exit no longer leaves it hidden in the tray, and a window hidden partway through that fade comes back visible.
 - Killer script commands such as `amort` run with their own defaults when typed with no options, and every option reaches the script as typed, so `-RetainDays 30` keeps its name and `amort -D` means the script's `-DryRun` instead of PowerShell's `-Debug`. Each command now does exactly what the website's one-liner does: it downloads the latest script to `%TEMP%` and runs it. The copy of the commands that ships with KillerShell loads ahead of one installed from PSGallery, and `peek` is available.
+- Dragging the title bar of the registry, rename, file operation, folder picker, process, service, event and terminal profile dialogs no longer crashes KillerShell when the click arrives after the mouse button is already up.
+- A favorite on a share that is offline or a drive that is unplugged at launch stays saved, and it comes back the next time the folder is there. Before, the next save deleted it for good, and upgrading from a version before 1.5.0 triggered that save on the first launch.
+- Pulling a USB drive or losing a share while browsing it moves the pane to This PC instead of leaving a listing of a place that is gone.
+- Clear all Data keeps the file associations KillerShell registered, so it stays listed in Windows Default apps.
+- Modifying a REG_NONE value edits its bytes and saves it as REG_NONE, and the value list shows its data as hex instead of "System.Byte[]". A value of a type KillerShell cannot write back says so instead of opening the text editor.
 
 ### Changed
 

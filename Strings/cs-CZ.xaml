@@ -762,6 +762,7 @@
     <sys:String x:Key="Str_RegEd_ValueData">Údaj hodnoty</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">„{0}“ bylo smazáno</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">„{0}“ uloženo</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">„{0}“ má typ hodnoty, který KillerShell nedokáže zapsat zpět, proto ji nelze změnit</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} není existující umístění</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">I uložení {0} se zvýšenými oprávněními bylo odmítnuto - zkontrolujte Řízený přístup ke složkám v Zabezpečení Windows</sys:String>
     <sys:String x:Key="Str_Status_TearOutHandoff">Program, který Windows předal aplikaci KillerShell, zůstává ve vlastním okně</sys:String>
@@ -878,6 +879,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">chybí název složky</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">položka nenalezena</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">položka mířila mimo složku pro rozbalení</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">dvě položky se rozbalují do stejného souboru</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">už obsahuje názvy, které Windows nedokáže zapsat jako samostatné soubory: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell je nainstalován dvakrát. Odebrat nyní druhou kopii, tu pro tohoto uživatele?&#x0A;&#x0A;Vaše nastavení odebráno nebude.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell je nainstalován dvakrát. Odebrat nyní druhou kopii, tu pro všechny uživatele?&#x0A;&#x0A;Vaše nastavení odebráno nebude.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Instalace se nezdařila:&#x0A;{0}</sys:String>
@@ -942,6 +945,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Tato složka neexistuje</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Analýza zastavena - zobrazuji načtená data</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">přeskočeno</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">složek: {0}  souborů: {1}</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Otevřít na nové kartě</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Otevřít v Průzkumníku</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Kopírovat cestu</sys:String>

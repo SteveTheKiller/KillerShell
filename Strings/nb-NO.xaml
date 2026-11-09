@@ -806,6 +806,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">mangler mappenavn</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">oppføringen ble ikke funnet</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">oppføringen havnet utenfor utpakkingsmappen</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">to oppføringer pakkes ut til samme fil</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">den inneholder allerede navn som Windows ikke kan skrive som egne filer: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell er installert to ganger. Fjerne den andre kopien per bruker nå?&#x0A;&#x0A;Innstillingene dine fjernes ikke.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell er installert to ganger. Fjerne den andre kopien for alle brukere nå?&#x0A;&#x0A;Innstillingene dine fjernes ikke.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Installasjonen mislyktes:&#x0A;{0}</sys:String>
@@ -871,6 +873,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Den mappen finnes ikke</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Skanningen ble stoppet - viser det som ble lest</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">hoppet over</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} mapper  {1} filer</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Åpne i ny fane</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Åpne i Filutforsker</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Kopier sti</sys:String>
@@ -945,6 +948,7 @@
     <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}" og alt i den ble slettet</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" ble slettet</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" ble lagret</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">"{0}" har en verditype som KillerShell ikke kan skrive tilbake, så den kan ikke endres</sys:String>
     <sys:String x:Key="Str_RegEd_NameCopied">Navnet er kopiert</sys:String>
     <sys:String x:Key="Str_RegEd_PathCopied">Stien er kopiert</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Kunne ikke kopiere til utklippstavlen - {0}</sys:String>

@@ -95,6 +95,15 @@ namespace KillerShell.Services
             _ => "REG_NONE",
         };
 
+        /// <summary>
+        /// The kind Modify edits a value as and writes it back as, or null when the value's
+        /// type cannot be written back at all.
+        /// </summary>
+        internal static RegistryValueKind? EditKindFor(RegistryValueKind kind)
+            // REG_NONE goes to the byte editor and back as REG_NONE. Unknown is a type .NET does
+            // not map (REG_RESOURCE_LIST and friends); SetValue cannot write it, so it is read-only.
+            => kind == RegistryValueKind.Unknown ? null : kind;
+
         internal static string DataLabel(object? value, RegistryValueKind kind)
         {
             switch (kind)
@@ -109,6 +118,7 @@ namespace KillerShell.Services
                     ulong qword = unchecked((ulong)Convert.ToInt64(value ?? 0L, CultureInfo.InvariantCulture));
                     return $"0x{qword:x16} ({qword})";
                 case RegistryValueKind.Binary:
+                case RegistryValueKind.None:
                     var bytes = value as byte[] ?? [];
                     if (bytes.Length == 0) return string.Empty;
                     int shown = Math.Min(bytes.Length, MaxDisplayChars / 3);
@@ -118,6 +128,8 @@ namespace KillerShell.Services
                 case RegistryValueKind.MultiString:
                     return Truncate(string.Join("  |  ", value as string[] ?? []));
                 default:
+                    // REG_NONE and unmapped types come back as raw bytes.
+                    if (value is byte[]) goto case RegistryValueKind.Binary;
                     return Truncate(value?.ToString() ?? string.Empty);
             }
         }

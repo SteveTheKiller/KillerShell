@@ -761,6 +761,7 @@
     <sys:String x:Key="Str_RegEd_ValueData">মানের ডেটা</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" মোছা হয়েছে</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" সংরক্ষিত হয়েছে</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">"{0}"-এর মানের ধরন KillerShell ফেরত লিখতে পারে না, তাই এটি পরিবর্তন করা যাবে না</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} এমন কোনো অবস্থান নয় যা বিদ্যমান</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">{0}-এর অ্যাডমিন অনুমতিতে সংরক্ষণও প্রত্যাখ্যাত হয়েছে - Windows সিকিউরিটিতে নিয়ন্ত্রিত ফোল্ডার অ্যাক্সেস দেখুন</sys:String>
     <sys:String x:Key="Str_Status_TearOutHandoff">Windows যে প্রোগ্রামটি KillerShell-কে দিয়েছে, সেটি নিজের উইন্ডোতেই থাকে</sys:String>
@@ -877,6 +878,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">ফোল্ডারের নাম নেই</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">এন্ট্রি পাওয়া যায়নি</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">এন্ট্রিটি এক্সট্র্যাকশন ফোল্ডারের বাইরে নির্দেশ করছিল</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">দুটি এন্ট্রি একই ফাইলে এক্সট্র্যাক্ট হয়</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">এতে এমন নাম আছে যেগুলো Windows আলাদা ফাইল হিসেবে লিখতে পারে না: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell দুবার ইনস্টল করা আছে। অন্য কপিটি, অর্থাৎ শুধু এই ব্যবহারকারীর জন্য যেটি, এখনই সরাবেন?&#x0A;&#x0A;আপনার সেটিংস সরানো হবে না।</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell দুবার ইনস্টল করা আছে। অন্য কপিটি, অর্থাৎ সব ব্যবহারকারীর জন্য যেটি, এখনই সরাবেন?&#x0A;&#x0A;আপনার সেটিংস সরানো হবে না।</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">ইনস্টলেশন ব্যর্থ হয়েছে:&#x0A;{0}</sys:String>
@@ -941,6 +944,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">ফোল্ডারটি নেই</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">স্ক্যান থামানো হয়েছে - যতটুকু পড়া হয়েছে তা দেখানো হচ্ছে</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">এড়ানো হয়েছে</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} ফোল্ডার  {1} ফাইল</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">নতুন ট্যাবে খুলুন</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">এক্সপ্লোরারে খুলুন</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">পাথ কপি করুন</sys:String>

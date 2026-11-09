@@ -229,7 +229,7 @@ namespace KillerShell
         {
             if (e.ChangedButton != MouseButton.Left) return;
             e.Handled = true; // do not let the press bubble into the halo's resize handler
-            DragMove();
+            DialogChrome.Drag(this, e);
         }
 
         // AllowsTransparency is what lets the shadow render outside the visible card, but a

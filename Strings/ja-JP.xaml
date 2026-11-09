@@ -759,6 +759,7 @@
     <sys:String x:Key="Str_RegEd_ValueData">値のデータ</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">「{0}」を削除しました</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">「{0}」を保存しました</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">「{0}」は KillerShell が書き戻せない値の種類のため、変更できません</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} は存在する場所ではありません</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">{0} の昇格した保存も拒否されました - Windows セキュリティの制御されたフォルダー アクセスを確認してください</sys:String>
     <sys:String x:Key="Str_Status_TearOutHandoff">Windows から KillerShell に渡されたプログラムは自分のウィンドウに残ります</sys:String>
@@ -876,6 +877,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">フォルダー名がありません</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">エントリが見つかりません</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">エントリが展開先フォルダーの外を指していました</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">2 つのエントリが同じファイルに展開されます</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">Windows が別々のファイルとして書き込めない名前が含まれています: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell が 2 つインストールされています。もう一方の、このユーザー用のコピーを今すぐ削除しますか?&#x0A;&#x0A;設定は削除されません。</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell が 2 つインストールされています。もう一方の、すべてのユーザー用のコピーを今すぐ削除しますか?&#x0A;&#x0A;設定は削除されません。</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">インストールに失敗しました:&#x0A;{0}</sys:String>
@@ -940,6 +943,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">そのフォルダーは存在しません</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">スキャンを停止しました - 読み取った内容を表示しています</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">スキップ</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} フォルダー  {1} ファイル</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">新しいタブで開く</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">エクスプローラーで開く</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">パスをコピー</sys:String>

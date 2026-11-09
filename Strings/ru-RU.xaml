@@ -775,6 +775,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">нет имени папки</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">элемент не найден</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">элемент выходил за пределы папки извлечения</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">два элемента извлекаются в один и тот же файл</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">в нём уже есть имена, которые Windows не может записать как отдельные файлы: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell установлен дважды. Удалить сейчас другую копию, установленную для этого пользователя?&#x0A;&#x0A;Ваши настройки удалены не будут.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell установлен дважды. Удалить сейчас другую копию, установленную для всех пользователей?&#x0A;&#x0A;Ваши настройки удалены не будут.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Установка не удалась:&#x0A;{0}</sys:String>
@@ -839,6 +841,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Такой папки не существует</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Сканирование остановлено - показано то, что успело прочитаться</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">пропущено</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">папок: {0}  файлов: {1}</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Открыть в новой вкладке</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Открыть в Проводнике</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Копировать путь</sys:String>
@@ -913,6 +916,7 @@
     <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}" и всё его содержимое удалено</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" удалён</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" сохранён</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">У "{0}" тип значения, который KillerShell не может записать обратно, поэтому изменить его нельзя</sys:String>
     <sys:String x:Key="Str_RegEd_NameCopied">Имя скопировано</sys:String>
     <sys:String x:Key="Str_RegEd_PathCopied">Путь скопирован</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Не удалось скопировать в буфер обмена - {0}</sys:String>

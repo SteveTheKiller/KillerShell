@@ -157,6 +157,18 @@ namespace KillerShell.Shell
             return t;
         }
 
+        /// <summary>
+        /// The closest parent of a vanished folder that still exists. When the whole drive or
+        /// share is gone, every parent fails, and the walk ends at This PC, which is not a
+        /// directory and never "exists" on disk.
+        /// </summary>
+        internal static string? NearestSurvivingAncestor(string folder, Func<string, bool> exists)
+        {
+            string? up = folder;
+            while (up != null && !IsThisPc(up) && !exists(up)) up = ParentOf(up);
+            return up;
+        }
+
         private async void FlushWatchChanges()
         {
             var tab = _active;
@@ -171,8 +183,7 @@ namespace KillerShell.Shell
                 _touched.Clear();
                 _renamedPairs.Clear();
                 _watchOverflow = false;
-                string? up = folder;
-                while (up != null && !Directory.Exists(up)) up = ParentOf(up);
+                string? up = NearestSurvivingAncestor(folder, Directory.Exists);
                 if (up != null)
                 {
                     await NavigateTo(up);

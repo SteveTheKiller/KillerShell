@@ -63,6 +63,30 @@ namespace KillerShell.Tests
             }
         }
 
+        // A promoted touch press, or a click whose button is already up by the time the handler
+        // runs, makes Window.DragMove throw InvalidOperationException, and an unhandled throw
+        // there takes the whole app down. Every title bar goes through DialogChrome.Drag, which
+        // checks the button and swallows that throw.
+        [Fact]
+        public void TitleBarDrags_AreGuarded()
+        {
+            string repo = FindRepoRoot();
+            var exempt = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DialogChrome.cs", "AltDrag.cs" };
+            var unguarded = new List<string>();
+            foreach (string file in Directory.GetFiles(repo, "*.cs", SearchOption.AllDirectories))
+            {
+                string relative = file.Substring(repo.Length + 1);
+                if (relative.StartsWith("KillerShell.Tests", StringComparison.OrdinalIgnoreCase)) continue;
+                if (relative.Split('\\').Any(part => part is "bin" or "obj")) continue;
+                if (exempt.Contains(Path.GetFileName(file))) continue;
+                string[] lines = File.ReadAllLines(file);
+                for (int i = 0; i < lines.Length; i++)
+                    if (lines[i].Contains("DragMove()") && !lines[i].Contains("try"))
+                        unguarded.Add(relative + ":" + (i + 1));
+            }
+            Assert.True(unguarded.Count == 0, "Unguarded DragMove: " + string.Join(", ", unguarded));
+        }
+
         private static HashSet<string> ReadKeys(string path)
         {
             XNamespace x = "http://schemas.microsoft.com/winfx/2006/xaml";

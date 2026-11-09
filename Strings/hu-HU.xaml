@@ -806,6 +806,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">nincs mappanév</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">a bejegyzés nem található</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">a bejegyzés a kibontási mappán kívülre mutatott</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">két bejegyzés ugyanabba a fájlba bontódik ki</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">már tartalmaz olyan neveket, amelyeket a Windows nem tud külön fájlként kiírni: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">A KillerShell kétszer van telepítve. Eltávolítja most a másik, csak ennek a felhasználónak szóló példányt?&#x0A;&#x0A;A beállításai megmaradnak.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">A KillerShell kétszer van telepítve. Eltávolítja most a másik, minden felhasználónak szóló példányt?&#x0A;&#x0A;A beállításai megmaradnak.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">A telepítés sikertelen:&#x0A;{0}</sys:String>
@@ -871,6 +873,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Ez a mappa nem létezik</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">A beolvasás leállt - az olvasottak megjelenítése</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">átugrott</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} mappa  {1} fájl</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Megnyitás új lapon</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Nyissa meg az Explorerben</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Útvonal másolása</sys:String>
@@ -945,6 +948,7 @@
     <sys:String x:Key="Str_RegEd_KeyDeleted">&quot;{0}&quot; és minden benne lévő elem törölve lett</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">&quot;{0}&quot; törölve</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">&quot;{0}&quot; mentve</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">&quot;{0}&quot; értéktípusát a KillerShell nem tudja visszaírni, ezért nem módosítható</sys:String>
     <sys:String x:Key="Str_RegEd_NameCopied">Név másolva</sys:String>
     <sys:String x:Key="Str_RegEd_PathCopied">Útvonal másolva</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Nem sikerült a vágólapra másolni - {0}</sys:String>

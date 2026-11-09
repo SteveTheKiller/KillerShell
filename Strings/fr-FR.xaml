@@ -764,6 +764,7 @@
     <sys:String x:Key="Str_RegEd_ValueData">Données de la valeur</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">« {0} » a été supprimée</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">« {0} » enregistrée</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">« {0} » a un type de valeur que KillerShell ne peut pas réécrire, elle ne peut donc pas être modifiée</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} n'est pas un emplacement qui existe</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">L'enregistrement élevé de {0} a aussi été refusé - vérifiez l'Accès contrôlé aux dossiers dans Sécurité Windows</sys:String>
     <sys:String x:Key="Str_Status_TearOutHandoff">Un programme transmis à KillerShell par Windows reste dans sa propre fenêtre</sys:String>
@@ -880,6 +881,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">aucun nom de dossier</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">entrée introuvable</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">l'entrée sortait du dossier d'extraction</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">deux entrées s'extraient vers le même fichier</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">il contient déjà des noms que Windows ne peut pas écrire comme fichiers distincts : {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell est installé deux fois. Supprimer maintenant l'autre copie, celle de cet utilisateur ?&#x0A;&#x0A;Vos paramètres ne seront pas supprimés.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell est installé deux fois. Supprimer maintenant l'autre copie, celle de tous les utilisateurs ?&#x0A;&#x0A;Vos paramètres ne seront pas supprimés.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Échec de l'installation :&#x0A;{0}</sys:String>
@@ -944,6 +947,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Ce dossier n'existe pas</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Analyse arrêtée - affichage des données lues</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">ignorés</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} dossiers  {1} fichiers</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Ouvrir dans un nouvel onglet</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Ouvrir dans l'Explorateur</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copier le chemin</sys:String>

@@ -761,6 +761,7 @@
     <sys:String x:Key="Str_RegEd_ValueData">数值数据</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">“{0}”已被删除</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">“{0}”已保存</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">“{0}”的值类型 KillerShell 无法写回，因此无法修改</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} 不是一个存在的位置</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">以提升权限保存 {0} 同样被拒绝 - 请检查 Windows 安全中心的“受控文件夹访问”设置</sys:String>
     <sys:String x:Key="Str_Status_TearOutHandoff">Windows 交给 KillerShell 的程序会留在它自己的窗口中</sys:String>
@@ -877,6 +878,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">没有文件夹名</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">未找到该项</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">该项指向解压文件夹之外</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">有两个项解压到同一个文件</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">其中已有 Windows 无法写成独立文件的名称：{0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell 安装了两次。是否立即移除另一个仅限当前用户的副本?&#x0A;&#x0A;你的设置不会被移除。</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell 安装了两次。是否立即移除另一个面向所有用户的副本?&#x0A;&#x0A;你的设置不会被移除。</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">安装失败:&#x0A;{0}</sys:String>
@@ -941,6 +944,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">该文件夹不存在</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">扫描已停止 - 正在显示已读取的内容</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">已跳过</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} 个文件夹  {1} 个文件</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">在新标签页中打开</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">在文件资源管理器中打开</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">复制路径</sys:String>

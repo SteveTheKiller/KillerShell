@@ -764,6 +764,7 @@
     <sys:String x:Key="Str_RegEd_ValueData">Información del valor</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" se eliminó</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" guardado</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">"{0}" tiene un tipo de valor que KillerShell no puede volver a escribir, por lo que no se puede modificar</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} no es una ubicación que exista</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">El guardado con privilegios elevados de {0} también fue rechazado - comprueba el Acceso controlado a carpetas en Seguridad de Windows</sys:String>
     <sys:String x:Key="Str_Status_TearOutHandoff">Un programa que Windows pasó a KillerShell se queda en su propia ventana</sys:String>
@@ -880,6 +881,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">sin nombre de carpeta</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">entrada no encontrada</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">la entrada salía de la carpeta de extracción</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">dos entradas se extraen al mismo archivo</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">ya contiene nombres que Windows no puede escribir como archivos independientes: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell está instalado dos veces. ¿Quitar ahora la otra copia, la de este usuario?&#x0A;&#x0A;Tu configuración no se eliminará.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell está instalado dos veces. ¿Quitar ahora la otra copia, la de todos los usuarios?&#x0A;&#x0A;Tu configuración no se eliminará.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">La instalación falló:&#x0A;{0}</sys:String>
@@ -944,6 +947,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Esa carpeta no existe</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Análisis detenido; se muestra lo leído</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">omitidos</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} carpetas  {1} archivos</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Abrir en una pestaña nueva</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Abrir en el Explorador</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copiar ruta</sys:String>

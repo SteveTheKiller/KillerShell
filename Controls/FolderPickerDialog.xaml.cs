@@ -430,7 +430,7 @@ namespace KillerShell
         }
 
         // ── Chrome / confirm ─────────────────────────────────────────────────────
-        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DialogChrome.Drag(this, e);
 
         // The status bar's size grip (98SE): hand the drag to Windows as a bottom-right resize,
         // the same as the main window footer's grip (Chrome.cs).

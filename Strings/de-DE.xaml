@@ -764,6 +764,7 @@
     <sys:String x:Key="Str_RegEd_ValueData">Wertdaten</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">„{0}" wurde gelöscht</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">„{0}" gespeichert</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">„{0}" hat einen Werttyp, den KillerShell nicht zurückschreiben kann, daher lässt sich der Wert nicht ändern</sys:String>
     <sys:String x:Key="Str_Status_EdPathNotFound">{0} ist kein vorhandener Ort</sys:String>
     <sys:String x:Key="Str_Status_ElevatedSaveFailed">Auch das Speichern von {0} mit erhöhten Rechten wurde verweigert - prüfen Sie den Überwachten Ordnerzugriff in Windows-Sicherheit</sys:String>
     <sys:String x:Key="Str_Status_TearOutHandoff">Ein Programm, das Windows an KillerShell übergeben hat, bleibt in seinem eigenen Fenster</sys:String>
@@ -880,6 +881,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">kein Ordnername</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">Eintrag nicht gefunden</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">Eintrag liegt außerhalb des Extraktionsordners</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">zwei Einträge werden in dieselbe Datei extrahiert</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">enthält bereits Namen, die Windows nicht als getrennte Dateien schreiben kann: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell ist zweimal installiert. Die andere benutzerspezifische Kopie jetzt entfernen?&#x0A;&#x0A;Ihre Einstellungen werden nicht entfernt.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell ist zweimal installiert. Die andere Kopie für alle Benutzer jetzt entfernen?&#x0A;&#x0A;Ihre Einstellungen werden nicht entfernt.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Installation fehlgeschlagen:&#x0A;{0}</sys:String>
@@ -944,6 +947,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Dieser Ordner ist nicht vorhanden</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Scan gestoppt - gelesene Daten werden angezeigt</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">übersprungen</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} Ordner  {1} Dateien</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">In neuem Tab öffnen</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Im Explorer öffnen</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Pfad kopieren</sys:String>

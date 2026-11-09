@@ -23,6 +23,18 @@ public sealed class BrowseStatusTests
     public void FolderStatusDistinguishesLoadingSuccessAndFailure(string? key, bool searching, string expected)
         => Assert.Equal(expected, MainWindow.StatusBrushKey(key, searching));
 
+    // A pulled USB stick or a dropped share takes the whole drive with it. The pane lands on
+    // This PC instead of sitting on a listing of a place that is gone.
+    [Theory]
+    [InlineData(@"E:\gone\deep")]
+    [InlineData(@"\\nas\share\folder")]
+    public void AVanishedDriveLandsOnThisPc(string folder)
+        => Assert.Equal(MainWindow.ThisPc, MainWindow.NearestSurvivingAncestor(folder, _ => false));
+
+    [Fact]
+    public void AVanishedFolderLandsOnItsNearestParent()
+        => Assert.Equal(@"C:\keep", MainWindow.NearestSurvivingAncestor(@"C:\keep\gone\deep", p => p == @"C:\keep"));
+
     [Fact]
     public void UnreadableLocationIsNotReportedAsAnEmptyFolder()
     {

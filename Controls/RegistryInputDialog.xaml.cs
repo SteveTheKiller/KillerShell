@@ -81,6 +81,6 @@ namespace KillerShell
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-            => DragMove();
+            => DialogChrome.Drag(this, e);
     }
 }

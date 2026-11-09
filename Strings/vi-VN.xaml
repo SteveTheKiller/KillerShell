@@ -763,6 +763,8 @@
   <sys:String x:Key="Str_Err_NoFolderName">không có tên thư mục</sys:String>
   <sys:String x:Key="Str_Err_EntryNotFound">không tìm thấy mục</sys:String>
   <sys:String x:Key="Str_Err_EntryEscaped">mục đã thoát khỏi thư mục giải nén</sys:String>
+  <sys:String x:Key="Str_Err_ArchiveSamePath">hai mục được giải nén vào cùng một tệp</sys:String>
+  <sys:String x:Key="Str_Err_ArchiveNamesCollide">đã có các tên mà Windows không thể ghi thành các tệp riêng biệt: {0}</sys:String>
   <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell đã được cài đặt hai lần. Bạn có muốn xóa ngay bản cài đặt khác dành cho người dùng hiện tại không?
 
 Các cài đặt của bạn sẽ không bị xóa.</sys:String>
@@ -833,6 +835,7 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Storage_BadTarget">Thư mục đó không tồn tại</sys:String>
   <sys:String x:Key="Str_Storage_Stopped">Đã dừng quét, đang hiển thị dữ liệu đã đọc</sys:String>
   <sys:String x:Key="Str_Storage_Skipped">đã bỏ qua</sys:String>
+  <sys:String x:Key="Str_Storage_ScanCounts">{0} thư mục  {1} tệp</sys:String>
   <sys:String x:Key="Str_Storage_OpenInTab">Mở trong tab mới</sys:String>
   <sys:String x:Key="Str_Storage_RevealExplorer">Mở trong File Explorer</sys:String>
   <sys:String x:Key="Str_Storage_CopyPath">Sao chép đường dẫn</sys:String>
@@ -903,6 +906,7 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_RegEd_KeyDeleted">Đã xóa "{0}" cùng toàn bộ nội dung bên trong</sys:String>
   <sys:String x:Key="Str_RegEd_ValueDeleted">Đã xóa "{0}"</sys:String>
   <sys:String x:Key="Str_RegEd_ValueSaved">Đã lưu "{0}"</sys:String>
+  <sys:String x:Key="Str_RegEd_KindReadOnly">"{0}" có kiểu giá trị mà KillerShell không thể ghi lại, nên không thể sửa đổi</sys:String>
   <sys:String x:Key="Str_RegEd_NameCopied">Đã sao chép tên</sys:String>
   <sys:String x:Key="Str_RegEd_PathCopied">Đã sao chép đường dẫn</sys:String>
   <sys:String x:Key="Str_RegEd_CopyFailed">Không thể sao chép vào bảng tạm: {0}</sys:String>

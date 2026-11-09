@@ -58,6 +58,11 @@ namespace KillerShell.Shell
     {
         private readonly ObservableCollection<Bookmark> _bookmarks = [];
 
+        // Saved favorites whose folder was unreachable at launch: an offline share, an unplugged
+        // drive. They are not shown, but every save writes them back, so they return the next
+        // time KillerShell starts with the folder there.
+        private System.Collections.Generic.IReadOnlyList<string> _heldBookmarks = [];
+
         private bool _bookmarksOpen;
 
         // The drawer ALWAYS sizes itself to its content (up to BookmarksCeiling): the resize
@@ -155,13 +160,16 @@ namespace KillerShell.Shell
             // put back exactly what they just deleted, every launch.
             if (saved == null) SeedBookmarks();
             else
-                foreach (string p in saved.Split([BookmarkSep], StringSplitOptions.RemoveEmptyEntries))
-                {
-                    // Somewhere that no longer exists is dropped rather than shown as a dead
-                    // row - a favorite that cannot be opened is worse than one that quietly
-                    // went away. This PC is not a directory, so it is exempt from that check.
-                    if (IsPlaceSentinel(p) || Services.WslDistributions.TryParsePath(p, out _, out _) || Directory.Exists(p)) _bookmarks.Add(new Bookmark { Path = p });
-                }
+            {
+                // Somewhere that cannot be reached right now is held back rather than shown as a
+                // dead row, and kept in the setting (SaveBookmarks writes it back), so a share
+                // that is offline today is still a favorite tomorrow. This PC is not a
+                // directory, so it is exempt from that check.
+                var loaded = Services.SavedBookmarks.Parse(saved, p =>
+                    IsPlaceSentinel(p) || Services.WslDistributions.TryParsePath(p, out _, out _) || Directory.Exists(p));
+                foreach (string p in loaded.Visible) _bookmarks.Add(new Bookmark { Path = p });
+                _heldBookmarks = loaded.Held;
+            }
 
             // The Recycle Bin joined the places in 1.5.0. Added once to a list saved before then,
             // after This PC, and never again - so removing it sticks.
@@ -398,7 +406,7 @@ namespace KillerShell.Shell
         {
             if (DemoMode) return;
             Services.ThemeManager.SetSetting("Bookmarks",
-                string.Join(BookmarkSep.ToString(), _bookmarks.Select(b => b.Path)));
+                Services.SavedBookmarks.Serialize(_bookmarks.Select(b => b.Path), _heldBookmarks));
         }
 
         /// <summary>

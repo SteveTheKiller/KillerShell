@@ -806,6 +806,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">no folder name</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">entry not found</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">entry escaped extraction folder</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">two entries extract to the same file</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">it already holds names that Windows cannot write as separate files: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell is installed twice. Remove the other per-user copy now?&#x0A;&#x0A;Your settings will not be removed.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell is installed twice. Remove the other all-users copy now?&#x0A;&#x0A;Your settings will not be removed.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Installation failed:&#x0A;{0}</sys:String>
@@ -871,6 +873,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">That folder doesn't exist</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Scan stopped - showing what was read</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">skipped</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} folders  {1} files</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Open in new tab</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Open in Explorer</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copy path</sys:String>
@@ -945,6 +948,7 @@
     <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}" and everything inside it was deleted</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" was deleted</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" saved</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">"{0}" has a value type KillerShell can't write back, so it can't be modified</sys:String>
     <sys:String x:Key="Str_RegEd_NameCopied">Name copied</sys:String>
     <sys:String x:Key="Str_RegEd_PathCopied">Path copied</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Could not copy to the clipboard - {0}</sys:String>

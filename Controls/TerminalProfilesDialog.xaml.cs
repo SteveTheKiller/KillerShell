@@ -103,6 +103,6 @@ namespace KillerShell
             Close();
         }
         private void Cancel_Click(object sender, RoutedEventArgs e) => Close();
-        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => Controls.DialogChrome.Drag(this, e);
     }
 }

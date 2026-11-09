@@ -806,6 +806,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">немає імені папки</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">запис не знайдено</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">запис вийшов за межі папки видобування</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">два записи видобуваються в один і той самий файл</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">в ньому вже є імена, які Windows не може записати як окремі файли: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell установлено двічі. Видалити іншу копію для користувача зараз?&#x0A;&#x0A;Ваші налаштування не буде видалено.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell установлено двічі. Видалити іншу копію для всіх користувачів зараз?&#x0A;&#x0A;Ваші налаштування не буде видалено.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Не вдалося встановити:&#x0A;{0}</sys:String>
@@ -871,6 +873,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Такої папки не існує</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Сканування зупинено - показано те, що встигли прочитати</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">пропущено</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">папок: {0}  файлів: {1}</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Відкрити в новій вкладці</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Відкрити в Провіднику</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Копіювати шлях</sys:String>
@@ -945,6 +948,7 @@
     <sys:String x:Key="Str_RegEd_KeyDeleted">«{0}» і все всередині нього видалено</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">«{0}» видалено</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">«{0}» збережено</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">«{0}» має тип значення, який KillerShell не може записати назад, тому його не можна змінити</sys:String>
     <sys:String x:Key="Str_RegEd_NameCopied">Назву скопійовано</sys:String>
     <sys:String x:Key="Str_RegEd_PathCopied">Шлях скопійовано</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Не вдалося скопіювати в буфер обміну - {0}</sys:String>

@@ -806,6 +806,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">sem nome de pasta</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">entrada não encontrada</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">a entrada escapou da pasta de extração</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">duas entradas são extraídas para o mesmo arquivo</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">ele já contém nomes que o Windows não consegue gravar como arquivos separados: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">O KillerShell está instalado duas vezes. Remover agora a outra cópia por usuário?&#x0A;&#x0A;Suas configurações não serão removidas.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">O KillerShell está instalado duas vezes. Remover agora a outra cópia para todos os usuários?&#x0A;&#x0A;Suas configurações não serão removidas.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Falha na instalação:&#x0A;{0}</sys:String>
@@ -871,6 +873,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Essa pasta não existe</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Verificação interrompida - mostrando o que foi lido</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">ignorado</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} pastas  {1} arquivos</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Abrir em nova guia</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Abrir no Explorador de Arquivos</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copiar caminho</sys:String>
@@ -945,6 +948,7 @@
     <sys:String x:Key="Str_RegEd_KeyDeleted">“{0}” e tudo que havia dentro dela foram excluídos</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">“{0}” foi excluído</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">“{0}” salvo</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">“{0}” tem um tipo de valor que o KillerShell não consegue gravar de volta, então não pode ser modificado</sys:String>
     <sys:String x:Key="Str_RegEd_NameCopied">Nome copiado</sys:String>
     <sys:String x:Key="Str_RegEd_PathCopied">Caminho copiado</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Não foi possível copiar para a área de transferência - {0}</sys:String>

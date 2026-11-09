@@ -689,6 +689,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">ni imena mape</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">vnos ni najden</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">vnos je zunaj mape za razširjanje</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">dva vnosa se razširita v isto datoteko</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">že vsebuje imena, ki jih Windows ne more zapisati kot ločene datoteke: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell je nameščen dvakrat. Odstranim drugo kopijo za uporabnika?
 
 Nastavitve bodo ohranjene.</sys:String>
@@ -757,6 +759,7 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Storage_BadTarget">Ta mapa ne obstaja</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Pregled je ustavljen. Prikazani so prebrani podatki</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">preskočeno</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">map: {0}  datotek: {1}</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Odpri v novem zavihku</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Odpri v Raziskovalcu</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Kopiraj pot</sys:String>
@@ -824,6 +827,7 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_RegEd_KeyDeleted">»{0}« in vsa njegova vsebina sta izbrisana</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">»{0}« je izbrisan</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">»{0}« je shranjen</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">»{0}« ima vrsto vrednosti, ki je KillerShell ne more zapisati nazaj, zato je ni mogoče spremeniti</sys:String>
     <sys:String x:Key="Str_RegEd_NameCopied">Ime je kopirano</sys:String>
     <sys:String x:Key="Str_RegEd_PathCopied">Pot je kopirana</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Kopiranje v odložišče ni uspelo: {0}</sys:String>

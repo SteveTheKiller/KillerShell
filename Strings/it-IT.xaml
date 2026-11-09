@@ -772,6 +772,8 @@
     <sys:String x:Key="Str_Err_NoFolderName">nessun nome di cartella</sys:String>
     <sys:String x:Key="Str_Err_EntryNotFound">voce non trovata</sys:String>
     <sys:String x:Key="Str_Err_EntryEscaped">la voce usciva dalla cartella di estrazione</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">due voci vengono estratte nello stesso file</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">contiene già nomi che Windows non può scrivere come file separati: {0}</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell è installato due volte. Rimuovere ora l'altra copia, quella per questo utente?&#x0A;&#x0A;Le impostazioni non verranno rimosse.</sys:String>
     <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell è installato due volte. Rimuovere ora l'altra copia, quella per tutti gli utenti?&#x0A;&#x0A;Le impostazioni non verranno rimosse.</sys:String>
     <sys:String x:Key="Str_Dlg_InstallFailed">Installazione non riuscita:&#x0A;{0}</sys:String>
@@ -836,6 +838,7 @@
     <sys:String x:Key="Str_Storage_BadTarget">Quella cartella non esiste</sys:String>
     <sys:String x:Key="Str_Storage_Stopped">Scansione fermata - mostro ciò che è stato letto</sys:String>
     <sys:String x:Key="Str_Storage_Skipped">saltati</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts">{0} cartelle  {1} file</sys:String>
     <sys:String x:Key="Str_Storage_OpenInTab">Apri in una nuova scheda</sys:String>
     <sys:String x:Key="Str_Storage_RevealExplorer">Apri in Explorer</sys:String>
     <sys:String x:Key="Str_Storage_CopyPath">Copia il percorso</sys:String>
@@ -910,6 +913,7 @@
     <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}" e tutto il suo contenuto sono stati eliminati</sys:String>
     <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}" è stato eliminato</sys:String>
     <sys:String x:Key="Str_RegEd_ValueSaved">"{0}" salvato</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">"{0}" ha un tipo di valore che KillerShell non può riscrivere, quindi non può essere modificato</sys:String>
     <sys:String x:Key="Str_RegEd_NameCopied">Nome copiato</sys:String>
     <sys:String x:Key="Str_RegEd_PathCopied">Percorso copiato</sys:String>
     <sys:String x:Key="Str_RegEd_CopyFailed">Impossibile copiare negli appunti - {0}</sys:String>
