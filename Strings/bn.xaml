@@ -843,6 +843,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">আপডেট উপলব্ধ: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">ডাউনলোড করা আপডেটটি যাচাই করা যায়নি এবং এটি বাতিল করা হয়েছে। কিছুই ইনস্টল করা হয়নি।</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">আপডেট শুরু করা যায়নি।&#10;{0}&#10;&#10;নিজে ডাউনলোড করতে রিলিজ পেজ খুলবেন?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">আপডেটটি প্রত্যাখ্যান করা হয়েছে, কারণ ডাউনলোড বা ইনস্টলেশন ফোল্ডার নিরাপত্তা পরীক্ষায় উত্তীর্ণ হয়নি। কিছুই ইনস্টল করা হয়নি।</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">KillerShell-এর আরেকটি ইনস্টল বা আপডেট চলছে। কিছুই ইনস্টল করা হয়নি।</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">আপডেটটি ইনস্টল করার জন্য পর্যাপ্ত ডিস্ক স্পেস নেই।</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">Windows ইনস্টলেশন ফোল্ডারে অ্যাক্সেস দিতে অস্বীকার করেছে।</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">আপডেট হেল্পার {0} কোডসহ বন্ধ হয়ে গেছে।</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">সাম্প্রতিক অবস্থান</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">প্রিভিউ</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(স্বাক্ষরিত নয় অথবা সার্টিফিকেট চেইন ব্যর্থ)</sys:String>

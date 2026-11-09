@@ -740,6 +740,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">Жаңарту қолжетімді: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">Жүктелген жаңартуды тексеру мүмкін болмады, сондықтан ол жойылды. Ештеңе орнатылған жоқ.</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Жаңартуды іске қосу мүмкін болмады.&#10;{0}&#10;&#10;Өзіңіз жүктеп алу үшін шығарылымдар бетін ашу керек пе?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">Жаңарту қабылданбады, себебі жүктелген файл немесе орнату қалтасы қауіпсіздік тексерулерінен өтпеді. Ештеңе орнатылған жоқ.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">KillerShell бағдарламасының басқа орнатуы немесе жаңартуы орындалып жатыр. Ештеңе орнатылған жоқ.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">Жаңартуды орнату үшін дискіде бос орын жеткіліксіз.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">Windows орнату қалтасына қолжетімділікті бас тартты.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">Жаңарту көмекшісі {0} кодымен тоқтады.</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Соңғы орындар</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Алдын ала қарау</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(қол қойылмаған немесе сертификат тізбегі сәтсіз)</sys:String>

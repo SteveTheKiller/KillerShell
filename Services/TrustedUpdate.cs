@@ -13,9 +13,30 @@ using System.Text;
 
 namespace KillerShell.Services
 {
+    /// <summary>
+    /// The elevated update helper stopped with an installer exit code. The code is kept so the app
+    /// can say what it means in the interface language; Windows' own text for these numbers
+    /// ("This installation is forbidden by system policy", "Incorrect function.") misleads.
+    /// </summary>
+    internal sealed class UpdateHelperException : Exception
+    {
+        internal UpdateHelperException(int exitCode)
+            : base("The update helper stopped with exit code " + exitCode.ToString(CultureInfo.InvariantCulture) + ".")
+            => ExitCode = exitCode;
+
+        internal int ExitCode { get; }
+    }
+
     internal static class TrustedUpdate
     {
         internal const string HelperArgument = "/apply-verified-update";
+
+        /// <summary>What a non-zero helper exit becomes. A cancel (1223) stays the Win32 cancel the
+        /// app already treats as the user's own answer; every other code is kept as a number.</summary>
+        internal static Exception FailureFor(int exitCode)
+            => exitCode == KillerFamily.Deployment.InstallerExitCodes.Cancelled
+                ? new Win32Exception(exitCode)
+                : new UpdateHelperException(exitCode);
 
         /// <summary>The protected machine installation folder, the only one the elevated helper updates.</summary>
         internal static string MachineDirectory =>
@@ -51,7 +72,7 @@ namespace KillerShell.Services
                 WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.System) };
             using var helper = platform.Start(start) ?? throw new IOException("The trusted update helper did not start.");
             helper.WaitForExit();
-            if (helper.ExitCode != 0) throw new Win32Exception(helper.ExitCode);
+            if (helper.ExitCode != 0) throw FailureFor(helper.ExitCode);
             // The verified copy now sits in protected staging, and its own report lives beside it, so
             // the download and the report written above are no longer anyone's recovery path.
             UpdateService.DiscardDownload(download);

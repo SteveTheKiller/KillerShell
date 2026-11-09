@@ -104,7 +104,10 @@ namespace KillerShell.Controls
         public static bool ShowThumbnails { get; set; } = true;
 
         public string SizeLabel     => IsFolder ? string.Empty : FormatSize(SizeBytes);
-        public string ModifiedLabel => Modified == DateTime.MinValue ? string.Empty : Modified.ToString("yyyy-MM-dd HH:mm");
+        // InvariantCulture: the current culture picks the calendar and the time separator, so Thai
+        // settings showed 2569 and Finnish ones 14.30 in an ISO-shaped label.
+        public string ModifiedLabel => Modified == DateTime.MinValue ? string.Empty
+            : Modified.ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 
         private static string FormatSize(long b)
         {

@@ -843,6 +843,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">有可用更新: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">无法验证已下载的更新，已将其丢弃。未安装任何内容。</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">无法启动更新。&#10;{0}&#10;&#10;是否打开发布页面自行下载？</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">更新已被拒绝，因为下载内容或安装文件夹未通过安全检查。未安装任何内容。</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">另一个 KillerShell 的安装或更新正在运行。未安装任何内容。</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">磁盘空间不足，无法安装更新。</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">Windows 拒绝访问安装文件夹。</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">更新辅助程序已停止，代码为 {0}。</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">最近位置</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">预览</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(未签名或证书链验证失败)</sys:String>

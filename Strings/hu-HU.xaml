@@ -771,6 +771,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">Frissítés érhető el: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">A letöltött frissítést nem sikerült ellenőrizni, ezért elvetettük. Semmi sem lett telepítve.</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">A frissítést nem sikerült elindítani.&#10;{0}&#10;&#10;Megnyitja a kiadások oldalát, hogy saját maga letöltse?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">A frissítést elutasítottuk, mert a letöltés vagy a telepítési mappa nem felelt meg a biztonsági ellenőrzéseknek. Semmi sem lett telepítve.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">A KillerShell egy másik telepítése vagy frissítése már fut. Semmi sem lett telepítve.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">Nincs elég lemezterület a frissítés telepítéséhez.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">A Windows megtagadta a hozzáférést a telepítési mappához.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">A frissítési segédprogram a következő kóddal állt le: {0}.</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Legutóbbi helyek</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Előnézet</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(nincs aláírva, vagy a tanúsítványlánc hibás)</sys:String>

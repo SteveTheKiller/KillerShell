@@ -39,13 +39,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Copy SHA-256 reports to the tab that asked for it, even when you switch tabs while a large file is hashing.
 - An HTML export says it was exported when the file was written but no browser could open it.
 - A file that grows or changes while its folder is open keeps its selection and keyboard focus.
-- Process start times, event times, and the dates in the file operation and folder picker windows read as 2026-11-02 14:30 whatever the Windows region, the same as the exports.
+- Process start times, event times, and the dates in the file operation window and both file pickers read as 2026-11-02 14:30 whatever the Windows region, the same as the exports.
 - The folder picker comes back on a monitor to the left of or above the main one instead of forgetting where it was, and a spot that is no longer on any screen is pulled back onto one.
 - The disk and network tiles on the Performance tab show a dash when their counters can't be read, instead of a steady 0, and a machine with performance counters switched off says so.
 - Closing a Storage tab right after clicking a square no longer writes that tab's summary into the status bar five seconds later.
 - The Storage scan progress line counts folders and files in the interface language.
 - Escape cancels the registry value editor without saving, and its close button has a name for screen readers.
-- Text in the registry dialogs follows a theme or high-contrast switch made while the dialog is open.
+- Text in the registry and confirmation dialogs follows a theme or high-contrast switch made while the dialog is open.
+- A per-user update that finds another install running, or finds the installed copy changed, reopens KillerShell instead of leaving it closed.
+- A failed all-users update says what went wrong, such as a refused download, another install running or a full disk, instead of Windows' "This installation is forbidden by system policy" or "Incorrect function."
 - Extract All reads a zip, tar or tgz twice in total instead of once per file, so a large archive extracts in a steady run instead of looking hung. Names that escape the destination or collide on Windows are still refused before anything is written.
 - Archive error messages, including names that collide on Windows, appear in the interface language.
 - The Install button refuses while an update or another install of the same folder is running, the same way the silent install and the update helpers do.

@@ -74,6 +74,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">Dostępna aktualizacja: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">Nie udało się zweryfikować pobranej aktualizacji, więc została odrzucona. Nic nie zostało zainstalowane.</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Nie udało się uruchomić aktualizacji.&#10;{0}&#10;&#10;Otworzyć stronę wydań, aby pobrać ją samodzielnie?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">Aktualizacja została odrzucona, ponieważ pobrany plik lub folder instalacji nie przeszedł kontroli bezpieczeństwa. Nic nie zostało zainstalowane.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">Trwa inna instalacja lub aktualizacja programu KillerShell. Nic nie zostało zainstalowane.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">Brak wystarczającej ilości miejsca na dysku, aby zainstalować aktualizację.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">System Windows odmówił dostępu do folderu instalacji.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">Program pomocniczy aktualizacji zakończył działanie z kodem {0}.</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Ostatnie lokalizacje</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Podgląd</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(niepodpisany lub błąd łańcucha certyfikatów)</sys:String>

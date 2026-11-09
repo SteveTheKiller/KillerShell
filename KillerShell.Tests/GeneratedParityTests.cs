@@ -89,14 +89,13 @@ namespace KillerShell.Tests
 
         // A theme or high-contrast switch swaps the theme dictionary under a window that is already
         // open. StaticResource reads a theme key once, so that text keeps the old theme's color;
-        // theme keys are bound with DynamicResource. ConfirmDialog and FileDialog are KillerUI kit
-        // files and change there first.
+        // theme keys are bound with DynamicResource, kit files included.
         [Fact]
         public void ThemeKeys_AreBoundDynamically()
         {
             string repo = FindRepoRoot();
             HashSet<string> themeKeys = ReadKeys(Path.Combine(repo, "Themes", "Dark.xaml"));
-            var kit = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "ConfirmDialog.xaml", "FileDialog.xaml" };
+            var kit = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var pattern = new System.Text.RegularExpressions.Regex(@"\{StaticResource\s+([A-Za-z0-9_]+)\s*\}");
             var stale = new List<string>();
             foreach (string file in Directory.GetFiles(repo, "*.xaml", SearchOption.AllDirectories))

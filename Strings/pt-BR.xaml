@@ -771,6 +771,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">Atualização disponível: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">Não foi possível verificar a atualização baixada, e ela foi descartada. Nada foi instalado.</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Não foi possível iniciar a atualização.&#10;{0}&#10;&#10;Abrir a página de versões para baixá-la manualmente?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">A atualização foi recusada porque o download ou a pasta de instalação não passou nas verificações de segurança. Nada foi instalado.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">Outra instalação ou atualização do KillerShell está em andamento. Nada foi instalado.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">Não há espaço suficiente em disco para instalar a atualização.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">O Windows negou o acesso à pasta de instalação.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">O auxiliar de atualização foi encerrado com o código {0}.</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Locais recentes</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Visualização</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(não assinado ou falha na cadeia)</sys:String>

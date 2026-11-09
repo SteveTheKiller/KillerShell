@@ -771,6 +771,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">Update available: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">The downloaded update could not be verified and was discarded. Nothing was installed.</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">The update could not start.&#10;{0}&#10;&#10;Open the releases page to download it yourself?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">The update was refused because the download or the installation folder did not pass its safety checks. Nothing was installed.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">Another install or update of KillerShell is running. Nothing was installed.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">There is not enough disk space to install the update.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">Windows denied access to the installation folder.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">The update helper stopped with code {0}.</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Recent locations</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Preview</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(not signed or chain failed)</sys:String>

@@ -844,6 +844,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">K dispozici je aktualizace: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">Staženou aktualizaci nebylo možné ověřit, proto byla zahozena. Nic nebylo nainstalováno.</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">Aktualizaci se nepodařilo spustit.&#10;{0}&#10;&#10;Otevřít stránku vydání a stáhnout ji ručně?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">Aktualizace byla odmítnuta, protože stažený soubor nebo instalační složka neprošly bezpečnostními kontrolami. Nic nebylo nainstalováno.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">Právě běží jiná instalace nebo aktualizace KillerShell. Nic nebylo nainstalováno.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">Na disku není dostatek místa pro instalaci aktualizace.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">Systém Windows odepřel přístup k instalační složce.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">Pomocný program aktualizace skončil s kódem {0}.</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Nedávná umístění</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Náhled</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(nepodepsáno nebo selhal řetěz certifikátů)</sys:String>

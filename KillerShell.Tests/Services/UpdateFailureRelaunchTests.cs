@@ -18,10 +18,14 @@ public sealed class UpdateFailureRelaunchTests
 
     // Runs the real publication helper with only the publisher check and the two process-starting
     // operations replaced, so a failed publication can be observed without opening anything.
-    private static (int exit, bool relaunched, bool reported) RunFailedPublication(bool elevated, bool targetExists, bool installer)
+    private static (int exit, bool relaunched, bool reported) RunFailedPublication(bool elevated, bool targetExists, bool installer,
+        bool holdLease = false, bool targetChanged = false)
     {
         string root = Path.Combine(Path.GetTempPath(), "KillerShell.Tests", "relaunch", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
+        // Another install or update of this folder, holding its lease while the helper runs.
+        using var held = holdLease ? new System.Threading.Mutex(false, KillerFamily.Deployment.InstallerExitCodes.MutexName("KillerShell", root)) : null;
+        if (held != null) Assert.True(held.WaitOne(0));
         try
         {
             string download = Path.Combine(root, "download.exe");
@@ -43,7 +47,7 @@ public sealed class UpdateFailureRelaunchTests
             string script = installer
                 ? UpdateImagePublication.Installer(download, "/S", elevated, target, Path.Combine(root, "stage"), "https://example.invalid/", overrides)
                 : UpdateImagePublication.Script(download, target, elevated, "https://example.invalid/", "KillerShell", showReport: true, overrides: overrides,
-                    originalHash: targetExists ? HashOf("installed bytes") : new string('C', 64));
+                    originalHash: targetExists && !targetChanged ? HashOf("installed bytes") : new string('C', 64));
             string file = Path.Combine(root, "helper.ps1");
             File.WriteAllText(file, script, new System.Text.UTF8Encoding(true));
             var start = new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"WindowsPowerShell\v1.0\powershell.exe"),
@@ -54,7 +58,34 @@ public sealed class UpdateFailureRelaunchTests
             Assert.True(process.WaitForExit(120000));
             return (process.ExitCode, File.Exists(relaunched), File.Exists(reported));
         }
-        finally { Directory.Delete(root, true); }
+        finally
+        {
+            held?.ReleaseMutex();
+            Directory.Delete(root, true);
+        }
+    }
+
+    // The app has already closed when the helper finds another install holding the folder, or the
+    // installed copy changed since the update started. The update is not applied, and the copy that
+    // is there is started again instead of leaving the user with nothing running.
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ABusyFolderReopensTheInstalledCopy(bool elevated)
+    {
+        var (exit, relaunched, _) = RunFailedPublication(elevated, targetExists: true, installer: false, holdLease: true);
+        Assert.Equal(1618, exit);
+        Assert.True(relaunched, "The installed copy must be started again when another install holds the folder.");
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void AChangedInstalledCopyIsReopenedNotReplaced(bool elevated)
+    {
+        var (exit, relaunched, _) = RunFailedPublication(elevated, targetExists: true, installer: false, targetChanged: true);
+        Assert.Equal(1618, exit);
+        Assert.True(relaunched, "The installed copy must be started again when it changed before publication.");
     }
 
     [Theory]

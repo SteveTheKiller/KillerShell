@@ -134,7 +134,7 @@ namespace KillerShell.Features.About
         partial void UpdateHandoffFailed(Exception failure)
         {
             if (!OffersManualDownload(failure)) return;
-            var dialog = new ConfirmDialog(AppInfo.DisplayName, string.Format(_host.Loc("Str_About_UpdateHandoffFailed"), failure.Message),
+            var dialog = new ConfirmDialog(AppInfo.DisplayName, string.Format(_host.Loc("Str_About_UpdateHandoffFailed"), HandoffReason(failure, _host.Loc)),
                 _host.Loc("Str_Btn_Yes"), _host.Loc("Str_Btn_Cancel")) { Owner = _host.Window };
             dialog.ShowDialog();
             if (dialog.Confirmed) WebLink.Open(UpdateService.ReleasesUrl);
@@ -144,5 +144,19 @@ namespace KillerShell.Features.About
         /// prompt (Win32 1223) is the user's own answer, so it stays quiet.</summary>
         internal static bool OffersManualDownload(Exception failure)
             => !(failure is Win32Exception { NativeErrorCode: 1223 });
+
+        /// <summary>The reason line of the failed hand-off dialog. An elevated helper's exit code is
+        /// explained in the interface language; any other failure keeps its own message.</summary>
+        internal static string HandoffReason(Exception failure, Func<string, string> loc)
+            => failure is Services.UpdateHelperException helper
+                ? helper.ExitCode switch
+                {
+                    KillerFamily.Deployment.InstallerExitCodes.SecurityRejected => loc("Str_About_UpdateHelperRefused"),
+                    KillerFamily.Deployment.InstallerExitCodes.Busy => loc("Str_About_UpdateHelperBusy"),
+                    KillerFamily.Deployment.InstallerExitCodes.DiskFull => loc("Str_About_UpdateHelperDiskFull"),
+                    KillerFamily.Deployment.InstallerExitCodes.AccessDenied => loc("Str_About_UpdateHelperDenied"),
+                    _ => string.Format(loc("Str_About_UpdateHelperFailed"), helper.ExitCode.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+                }
+                : failure.Message;
     }
 }

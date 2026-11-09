@@ -846,6 +846,11 @@
     <sys:String x:Key="Str_About_UpdateAvailable">Actualización disponible: {0}</sys:String>
     <sys:String x:Key="Str_About_UpdateNotVerified">No se pudo verificar la actualización descargada y se ha descartado. No se ha instalado nada.</sys:String>
     <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">No se pudo iniciar la actualización.&#10;{0}&#10;&#10;¿Abrir la página de versiones para descargarla usted mismo?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">Se rechazó la actualización porque la descarga o la carpeta de instalación no superó las comprobaciones de seguridad. No se ha instalado nada.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">Hay otra instalación o actualización de KillerShell en curso. No se ha instalado nada.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">No hay espacio suficiente en el disco para instalar la actualización.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">Windows denegó el acceso a la carpeta de instalación.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">El asistente de actualización se detuvo con el código {0}.</sys:String>
     <sys:String x:Key="Str_TT_RecentLocations">Ubicaciones recientes</sys:String>
     <sys:String x:Key="Str_Dlg_Preview">Vista previa</sys:String>
     <sys:String x:Key="Str_About_Unsigned">(sin firmar o falló la cadena de certificados)</sys:String>

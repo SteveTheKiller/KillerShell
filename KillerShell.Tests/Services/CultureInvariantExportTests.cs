@@ -40,6 +40,9 @@ namespace KillerShell.Tests.Services
                 var when = new DateTime(2026, 11, 2, 14, 30, 5);
                 Assert.Equal("2026-11-02 14:30", DisplayTime.Minutes(when));
                 Assert.Equal("2026-11-02 14:30:05", DisplayTime.Seconds(when));
+                // The file picker's rows (a KillerUI kit file) read the same way.
+                var row = new KillerShell.Controls.PickerEntry("a.txt", @"C:\a.txt", false, 1, when);
+                Assert.Equal("2026-11-02 14:30", row.ModifiedLabel);
             });
         }
 
