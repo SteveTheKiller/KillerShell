@@ -107,11 +107,11 @@ namespace KillerShell.Tools
             // ── Summary strip ────────────────────────────────────
             // Each tile takes its panel's color, so the eye can go from a number up here to the
             // panel it came from without reading a label.
-            if (_cpuTile != null) _sumCpu = AddSummaryTile("cpu", MetricKind.Cpu, "Str_Perf_Cpu", "MonitorAccentBrush", 100);
-            if (_ramTile != null) _sumRam = AddSummaryTile("ram", MetricKind.Ram, "Str_Perf_Ram", "TypeWindows", 100);
-            if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile("disk", MetricKind.Disk, "Str_Perf_Disk", "WarnBrush", 100);
-            if (_netTiles.Count > 0) _sumNet = AddSummaryTile("network", MetricKind.Network, "Str_Perf_Network", "MonitorTextBrush", 0);
-            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile("gpu", MetricKind.Gpu, "Str_Perf_Gpu", "OkBrush", 100);
+            if (_cpuTile != null) _sumCpu = AddSummaryTile("cpu", MetricKind.Cpu, "Str_Perf_Cpu", PerformanceGraphBrushes.Cpu, 100);
+            if (_ramTile != null) _sumRam = AddSummaryTile("ram", MetricKind.Ram, "Str_Perf_Ram", PerformanceGraphBrushes.Ram, 100);
+            if (_diskTiles.Count > 0) _sumDisk = AddSummaryTile("disk", MetricKind.Disk, "Str_Perf_Disk", PerformanceGraphBrushes.DiskRead, 100);
+            if (_netTiles.Count > 0) _sumNet = AddSummaryTile("network", MetricKind.Network, "Str_Perf_Network", PerformanceGraphBrushes.NetSend, 0);
+            if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile("gpu", MetricKind.Gpu, "Str_Perf_Gpu", PerformanceGraphBrushes.Gpu, 100);
 
             // ── Panels, two to a row ─────────────────────────────
             // CPU beside memory, disks beside network adapters, then the GPUs. A card that is
@@ -466,7 +466,7 @@ namespace KillerShell.Tools
                 // The fill is a separate element so its opacity can carry the load without
                 // fading the square's outline along with it.
                 var fill = new Border { CornerRadius = radius, Opacity = 0.10 };
-                fill.SetResourceReference(Border.BackgroundProperty, "MonitorAccentBrush");
+                fill.SetResourceReference(Border.BackgroundProperty, PerformanceGraphBrushes.Cpu);
 
                 var cell = new Border
                 {
@@ -507,7 +507,7 @@ namespace KillerShell.Tools
             // What the total is made of, as one bar: in use, cached, free. Star widths, so the
             // three sizes ARE the three numbers and SampleRamTile only has to set them.
             var bar = new Grid { Height = 12 };
-            string[] segmentBrushes = ["TypeWindows", "MonitorAccentBrush", "MonitorMutedBrush"];
+            string[] segmentBrushes = [PerformanceGraphBrushes.Ram, PerformanceGraphBrushes.RamCached, "MonitorMutedBrush"];
             rs.BarColumns = new ColumnDefinition[segmentBrushes.Length];
             for (int i = 0; i < segmentBrushes.Length; i++)
             {
@@ -532,7 +532,7 @@ namespace KillerShell.Tools
             details.Children.Add(barFrame);
 
             details.Children.Add(BuildLegend(out tile.LegendValueBlocks,
-                ("TypeWindows", "Str_Perf_InUse"), ("MonitorAccentBrush", "Str_Perf_Cached"),
+                (PerformanceGraphBrushes.Ram, "Str_Perf_InUse"), (PerformanceGraphBrushes.RamCached, "Str_Perf_Cached"),
                 ("MonitorMutedBrush", "Str_Perf_Free")));
 
             details.Children.Add(BuildFields(tile, columns: 2));
@@ -595,8 +595,7 @@ namespace KillerShell.Tools
 
             var value = new TextBlock { FontSize = 12.5, FontWeight = FontWeights.Bold, Text = "-", VerticalAlignment = VerticalAlignment.Bottom };
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
-            value.SetResourceReference(TextBlock.ForegroundProperty,
-                tile.Kind == MetricKind.Network ? "MonitorTextBrush" : tile.SummaryBrushKey);
+            value.SetResourceReference(TextBlock.ForegroundProperty, tile.SummaryBrushKey);
             tile.TileSummaryText = value;
 
             header = new Grid { Margin = new Thickness(0, 8, 0, 0), Background = Brushes.Transparent };   // hit-testable across its width
@@ -620,9 +619,9 @@ namespace KillerShell.Tools
             detail.Children.Add(graph.Host);
             detail.Children.Add(tile.Kind == MetricKind.Network
                 ? BuildLegend(out tile.LegendValueBlocks,
-                    ("TypeWindows", "Str_Perf_Send"), ("OkBrush", "Str_Perf_Receive"))
+                    (PerformanceGraphBrushes.NetSend, "Str_Perf_Send"), (PerformanceGraphBrushes.NetReceive, "Str_Perf_Receive"))
                 : BuildLegend(out tile.LegendValueBlocks,
-                    ("MonitorAccentBrush", "Str_Perf_ReadSpeed"), ("TypeWindows", "Str_Perf_WriteSpeed")));
+                    (PerformanceGraphBrushes.DiskRead, "Str_Perf_ReadSpeed"), (PerformanceGraphBrushes.DiskWrite, "Str_Perf_WriteSpeed")));
             tile.RowGraph = detail;
 
             var row = new StackPanel();
@@ -711,7 +710,7 @@ namespace KillerShell.Tools
             // The memory graph's caption IS its legend: it names both series and carries their
             // live values, so a second caption would only repeat it.
             var memoryLegend = BuildLegend(out tile.LegendValueBlocks,
-                ("MonitorAccentBrush", "Str_Perf_DedicatedMemory"), ("TypeWindows", "Str_Perf_SharedMemory"));
+                (PerformanceGraphBrushes.Gpu, "Str_Perf_DedicatedMemory"), (PerformanceGraphBrushes.GpuShared, "Str_Perf_SharedMemory"));
             memoryLegend.VerticalAlignment = VerticalAlignment.Bottom;
 
             SetColumn(memoryLegend, 2);

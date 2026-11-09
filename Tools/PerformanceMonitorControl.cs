@@ -523,15 +523,15 @@ namespace KillerShell.Tools
                 PhysicalCores = info.CpuCores,
                 LogicalProcessors = info.CpuThreads,
                 BaseMhz = info.CpuBaseMhz,
-                AggregateGraph = new Sparkline(_cadence, HistorySamples, 100, "MonitorAccentBrush"),
+                AggregateGraph = new Sparkline(_cadence, HistorySamples, 100, PerformanceGraphBrushes.Cpu),
             };
 
             tile.State = cs;
-            tile.SummaryBrushKey = "MonitorAccentBrush";
+            tile.SummaryBrushKey = PerformanceGraphBrushes.Cpu;
             // Two facts that never change, then four that do (SampleCpuTile fills those in).
             tile.FieldLabelKeys = ["Str_Perf_Cores", "Str_Perf_BaseSpeed", "Str_Perf_Speed",
                                    "Str_Perf_Processes", "Str_Perf_Threads", "Str_Perf_UpTime"];
-            tile.FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush", "MonitorAccentBrush",
+            tile.FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush", PerformanceGraphBrushes.Cpu,
                                    "MonitorTextBrush", "MonitorTextBrush", "MonitorTextBrush"];
             tile.FieldValues =
             [
@@ -554,8 +554,8 @@ namespace KillerShell.Tools
                 Label = MainWindow.LocStatic("Str_Perf_Ram"),
                 Description = info.Ram,
                 State = new RamState(),
-                SummaryBrushKey = "TypeWindows",
-                BigGraphs = [new Sparkline(_cadence, HistorySamples, 100, "TypeWindows")],
+                SummaryBrushKey = PerformanceGraphBrushes.Ram,
+                BigGraphs = [new Sparkline(_cadence, HistorySamples, 100, PerformanceGraphBrushes.Ram)],
                 // In use is already the complete headline (used / total and percentage).
                 FieldLabelKeys = ["Str_Perf_Available", "Str_Perf_Committed"],
                 FieldBrushKeys = ["MonitorTextBrush", "MonitorTextBrush"],
@@ -580,15 +580,13 @@ namespace KillerShell.Tools
                 Label = label,
                 Description = d.Model,
                 State = new DiskState { InstanceName = d.InstanceName },
-                SummaryBrushKey = "WarnBrush",
-                // Read = accent (the app's own "primary flow" color everywhere else), Write = the
-                // family's second bright, theme-stable color (TypeWindows, reused from KillerScan's
-                // device-type palette) - same two-color convention as the network graph below.
+                SummaryBrushKey = PerformanceGraphBrushes.DiskRead,
+                // Read = amber, Write = red (PerformanceGraphBrushes.cs), colors no other graph uses.
                 // Mirrored: reads rise from the center line and writes hang below it, so the two
                 // never hide each other. Active time is the row's headline number, not a graph.
                 BigGraphs =
                 [
-                    new Sparkline(_cadence, HistorySamples, 0, "MonitorAccentBrush", "TypeWindows")
+                    new Sparkline(_cadence, HistorySamples, 0, PerformanceGraphBrushes.DiskRead, PerformanceGraphBrushes.DiskWrite)
                         { Mirrored = true, ScaleFormatter = FormatThroughput },
                 ],
                 FieldLabelKeys = [],
@@ -608,10 +606,11 @@ namespace KillerShell.Tools
                 Label = label,
                 Description = instanceName,
                 State = new NetState { InstanceName = instanceName },
-                // Send = blue, rising from the center line; Receive = theme-aware green, below it.
+                SummaryBrushKey = PerformanceGraphBrushes.NetSend,
+                // Send = magenta, rising from the center line; Receive = yellow, below it.
                 BigGraphs =
                 [
-                    new Sparkline(_cadence, HistorySamples, 0, "TypeWindows", "OkBrush")
+                    new Sparkline(_cadence, HistorySamples, 0, PerformanceGraphBrushes.NetSend, PerformanceGraphBrushes.NetReceive)
                         { Mirrored = true, ScaleFormatter = FormatThroughput },
                 ],
                 FieldLabelKeys = [],
@@ -632,18 +631,18 @@ namespace KillerShell.Tools
                     : MainWindow.LocStatic("Str_Perf_Gpu") + " " + index,
                 Description = name,
                 State = gs,
-                SummaryBrushKey = "OkBrush",
+                SummaryBrushKey = PerformanceGraphBrushes.Gpu,
             };
 
             if (!liveCounters) return tile;
-            var utilGraph = new Sparkline(_cadence, HistorySamples, 100, "OkBrush");
+            var utilGraph = new Sparkline(_cadence, HistorySamples, 100, PerformanceGraphBrushes.Gpu);
             if (gs.MemoryAvailable)
             {
                 // Dedicated and shared memory use the same byte scale, so they belong in one
                 // two-series plot. The colored legend below identifies both lines; repeating
                 // those labels as graph captions only spends vertical space and separates data
                 // that is easier to compare when overlaid.
-                var memory = new Sparkline(_cadence, HistorySamples, 0, "MonitorAccentBrush", "TypeWindows")
+                var memory = new Sparkline(_cadence, HistorySamples, 0, PerformanceGraphBrushes.Gpu, PerformanceGraphBrushes.GpuShared)
                     { ScaleFormatter = FormatBytes };
                 tile.BigGraphs = [utilGraph, memory];
                 tile.FieldLabelKeys = [];

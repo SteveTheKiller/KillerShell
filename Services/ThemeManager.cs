@@ -584,6 +584,9 @@ namespace KillerShell.Services
             // states its own for the same reason too: its accent is picked against light gray
             // and all but disappears on the black cells.
             Mirror("MonitorAccentBrush", "PrimaryBrush");
+            // One fixed color per Performance graph, so no two metrics share one; Light states
+            // its own darker set.
+            KillerShell.Tools.PerformanceGraphBrushes.Complete(combined);
             // The DataGrids' alternate-row stripe (Events, Processes, Registry). RowAltBrush
             // everywhere, exactly as the style hardcoded; 98SE states a real Win98-adjacent
             // stripe - white rows with a gray that is NOT the window face gray.
