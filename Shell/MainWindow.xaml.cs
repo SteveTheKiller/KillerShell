@@ -253,7 +253,7 @@ namespace KillerShell.Shell
                 // The same goes for a handed-off console program's window (ConsoleHandoff.cs) and
                 // a window Explorer opened for a folder (StartupPaths.cs IsFolderWindow), and a
                 // Ctrl+N or torn-out window, which never restored the session in the first place.
-                if (!DemoMode && !KeepsNoSessionHere) SaveTabsOnExit();   // Session.cs
+                SaveTabsOnExit();   // Session.cs, which leaves the session alone in all of these
             };
 
             // ThemeFlyout is a Button.ContextMenu now (matching LangMenu, KillerPDF's pattern),

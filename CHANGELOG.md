@@ -15,6 +15,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Fixed
 
 - The file picker loads icons and picture previews in the background, refreshes overwritten previews, and restores its position on any monitor.
+- About opens at once instead of waiting on the signature check, which can stall for many seconds on a network that drops revocation traffic; the publisher and thumbprint fill in when it finishes.
+- A folder typed into the file picker that cannot be opened keeps its reason on the status line after the picker goes back to the last folder that listed.
 - Exported search results write dates as 2026-11-02 14:30:00 whatever the Windows region, so Thai and Finnish settings no longer produce years like 2569 or times like 14.30 in the CSV and HTML, and sizes and counts in the HTML reports keep a decimal point.
 - A size filter such as 1,5 MB saved with your session loads back the same under any region, and sizes saved by earlier versions still load.
 - Suggested export file names use the same date and time digits whatever the Windows region.
@@ -64,7 +66,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Changed
 
-- Only the main window remembers your tabs. Closing a Ctrl+N window or a torn-out tab's window no longer replaces the saved session with that window's tabs, and those windows close without the quit prompt about keeping tabs, the same as an administrator window. They still ask about unsaved documents, and a remembered choice to keep Esc from closing the window still applies.
+- Only the main window remembers your tabs. Closing a Ctrl+N window or a torn-out tab's window no longer replaces the saved session with that window's tabs, and those windows close without the quit prompt about keeping tabs, the same as an administrator window. They still ask about unsaved documents, and a remembered choice to keep Esc from closing the window still applies. Installing or updating from one of those windows, or from an administrator window, leaves the saved session alone too.
 - Every Performance graph has its own color on every theme: CPU green, memory blue, disk amber for reads and red for writes, network magenta for sends and yellow for receives, and GPU cyan, so no two graphs share a color.
 - The two columns of Performance cards flow on their own, so a short card no longer leaves a gap under it: the next card in its column moves up to meet it. A dragged card drops above or below the card under the pointer, or at the bottom of a column, and stays in that column; the cards you didn't move keep theirs.
 - The memory card names the installed memory by type and speed, such as DDR4-3200, instead of repeating the amount the card already shows. A virtual machine that reports neither calls it Memory.
@@ -77,8 +79,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ## [1.5.1] - 2026-11-01
 
 1.5.1 hardens self-update and uninstall, stops the file picker crashing or overwriting files it could not check, fixes AltGr typing, and opens files you type into the address bar.
-- About opens at once instead of waiting on the signature check, which can stall for many seconds on a network that drops revocation traffic; the publisher and thumbprint fill in when it finishes.
-- A folder typed into the file picker that cannot be opened keeps its reason on the status line after the picker goes back to the last folder that listed.
 
 ### Fixed
 

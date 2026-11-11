@@ -62,8 +62,8 @@ namespace KillerShell.Shell
             if (!ConfirmShutdown()) return;
 
             PortableBadge.Visibility = Visibility.Collapsed;
-            // Not from a Ctrl+N or torn-out window: its tabs are not the remembered session.
-            if (!KeepsNoSession(System.Environment.GetCommandLineArgs(), elevated: false, taskWindow: false)) SaveTabsOnExit();
+            // Only the main window's tabs are the remembered session (SaveTabsOnExit checks).
+            SaveTabsOnExit();
 
             // An all-users install needs UAC. If that is declined the app carries on running as
             // it was, so put the badge back rather than leaving the UI mid-install.
@@ -268,6 +268,11 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         private void SaveTabsOnExit()
         {
+            // Only the main window writes the session: never demo mode, an administrator window,
+            // a task window or a Ctrl+N or torn-out window (StartupPaths.cs KeepsNoSession). Held
+            // here rather than at each caller, so closing and Install/Update agree.
+            if (DemoMode || KeepsNoSessionHere) return;
+
             // Opt-out model: tabs are remembered UNLESS the user ticked "Close my
             // open tabs" (RememberTabs == "0"). Unset means remember.
             if (Services.ThemeManager.GetSetting("RememberTabs") == "0")
