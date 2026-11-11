@@ -245,6 +245,25 @@ namespace KillerShell.Tests.Services
         }
 
         [Fact]
+        public void MoveInColumn_AColumnEmptiedByDragsTakesACardBack()
+        {
+            var layout = Parse(null);
+            string[] four = ["a", "b", "c", "d"];
+            Dictionary<string, int> Now() => Bands(layout.Slots(Panels, four), _ => false, slot => layout.Column(Panels, slot[0]))
+                .SelectMany(band => band.Select((column, c) => (column, c)))
+                .SelectMany(pair => pair.column.SelectMany(slot => slot).Select(id => (id, pair.c)))
+                .ToDictionary(pair => pair.id, pair => pair.c);
+
+            layout.MoveInColumn(Panels, layout.Slots(Panels, four), Now(), "b", "c", Drop.After);
+            layout.MoveInColumn(Panels, layout.Slots(Panels, four), Now(), "d", "b", Drop.After);
+            Assert.Equal("a+c+b+d / ", Picture(layout, four));
+
+            // Dropped into the empty right column, placed after the last card of the band.
+            layout.MoveInColumn(Panels, layout.Slots(Panels, four), Now(), "b", "d", Drop.After, column: 1);
+            Assert.Equal("a+c+d / b", Picture(layout, four));
+        }
+
+        [Fact]
         public void MoveInColumn_ANewCardJoinsTheShorterColumn()
         {
             var layout = Parse(null);

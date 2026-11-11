@@ -44,13 +44,17 @@ namespace KillerShell.Services
         /// <paramref name="target"/> in that slot's column, or stacked at the bottom of it.
         /// <paramref name="shown"/> gives the column every card is in now; those are remembered
         /// with the new order, so the cards the user did not touch stay in their columns.
+        /// <paramref name="column"/> names the column instead when it is an empty one, which has
+        /// no card of its own to drop on; the card then goes after <paramref name="target"/> in the order.
         /// </summary>
         internal List<List<string>> MoveInColumn(string area, IReadOnlyList<IReadOnlyList<string>> shownSlots,
-            IReadOnlyDictionary<string, int> shown, string id, string target, Drop drop)
+            IReadOnlyDictionary<string, int> shown, string id, string target, Drop drop, int? column = null)
         {
             var slots = Rearranged(shownSlots, id, target, drop);
-            if (!shown.TryGetValue(target, out int column)) return slots;
-            var columns = Placed(shown, id, column);
+            int into;
+            if (column is { } named) into = named;
+            else if (!shown.TryGetValue(target, out into)) return slots;
+            var columns = Placed(shown, id, into);
             if (Same(slots, shownSlots) && columns.TryGetValue(id, out int now) && shown.TryGetValue(id, out int was) && now == was)
                 return slots;
             Remember(area, slots);

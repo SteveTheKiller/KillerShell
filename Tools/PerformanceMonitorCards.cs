@@ -80,6 +80,9 @@ namespace KillerShell.Tools
         private List<CardSlot> _stripSlots = [];
         private List<CardSlot> _panelSlots = [];
         private Dictionary<string, int> _panelColumns = new(StringComparer.Ordinal);   // the column each panel card is in now
+        // Each empty panel column: the element filling it, which column it is, and the last card
+        // of its band, which a card dropped there follows in the order.
+        private readonly List<(FrameworkElement Zone, int Column, DashboardCard After)> _emptyColumns = [];
 
         private void ClearCards()
         {
@@ -191,6 +194,7 @@ namespace KillerShell.Tools
             DetachPanelRows();
             _panelSlots = Slots(Services.DashboardLayout.Panels, _panelCards);
             _panelColumns = new Dictionary<string, int>(StringComparer.Ordinal);
+            _emptyColumns.Clear();
             foreach (var columns in Services.DashboardLayout.Bands(_panelSlots, IsWide, PanelColumn))
             {
                 for (int c = 0; c < columns.Length; c++)
@@ -205,9 +209,19 @@ namespace KillerShell.Tools
                 }
                 for (int c = 0; c < columns.Length; c++)
                 {
-                    // An empty right column beside a lone card is weighted like any other card.
+                    // An empty column (a lone card, or every card dragged to the other side) is
+                    // weighted like any other card, and its whole height takes a drop, so a card
+                    // can always be put back in it.
                     double weight = columns[c].Count == 0 ? 2 : columns[c].SelectMany(slot => slot.Cards).Max(card => card.Weight);
                     band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(weight, GridUnitType.Star) });
+                    if (columns[c].Count == 0)
+                    {
+                        var zone = new Border { Background = Brushes.Transparent, MinHeight = 48 };
+                        SetColumn(zone, c);
+                        band.Children.Add(zone);
+                        _emptyColumns.Add((zone, c, columns[1 - c][^1].Cards[^1]));
+                        continue;
+                    }
                     // Stretched to the band's height, so the room under its last card belongs to
                     // the column and a card can be dropped into it (FindDropTarget).
                     var column = new StackPanel { Orientation = Orientation.Vertical, Background = Brushes.Transparent };
@@ -401,6 +415,8 @@ namespace KillerShell.Tools
         private bool _cardDragging;
         private DashboardCard? _dropTarget;
         private CardDrop _drop;
+        private FrameworkElement? _dropZone;   // an empty panel column being dropped into
+        private int? _dropColumn;              // and which column that is
         private DropMarker? _dropMarker;
 
         /// <summary>The drag runs on the control rather than the card: a card is moved into
@@ -447,6 +463,7 @@ namespace KillerShell.Tools
             var card = _pressedCard;
             var target = _dropTarget;
             var drop = _drop;
+            int? column = _dropColumn;
             bool dragging = _cardDragging;
             // Cleared first: releasing the capture raises LostMouseCapture, which lands back here.
             _pressedCard = null;
@@ -470,7 +487,7 @@ namespace KillerShell.Tools
                 return;
             }
             // FindDropTarget only marks a drop that changes the picture, so this one does.
-            _layout.MoveInColumn(card.Area, shown, _panelColumns, card.Id, target.Id, drop);
+            _layout.MoveInColumn(card.Area, shown, _panelColumns, card.Id, target.Id, drop, column);
             SaveLayout();
             ArrangePanels();
         }
@@ -500,8 +517,26 @@ namespace KillerShell.Tools
                         ? at.X > bounds.Left + bounds.Width / 2
                         : at.Y > bounds.Top + bounds.Height / 2;
                     drop = later ? CardDrop.After : CardDrop.Before;
+                    // A panel lands before or after the whole stack a card is in (a layout saved
+                    // before 1.5.2 can still stack panels), so the marker goes on that stack's
+                    // top or bottom card, where the card will really land.
+                    if (card.Area == Services.DashboardLayout.Panels
+                        && slots.FirstOrDefault(slot => slot.Cards.Contains(other)) is { Cards.Count: > 1 } stack)
+                        target = later ? stack.Cards[^1] : stack.Cards[0];
                 }
                 break;
+            }
+
+            if (!overCard && card.Area == Services.DashboardLayout.Panels)
+            {
+                // An empty column has no card to drop on: its whole height takes the drop, and the
+                // card follows the band's last card in the order.
+                foreach (var (zone, column, after) in _emptyColumns)
+                {
+                    if (BoundsOf(zone, withMargin: false) is not { } room || !room.Contains(at)) continue;
+                    ShowDropMarker(after, CardDrop.After, zone, column);
+                    return;
+                }
             }
 
             if (!overCard)
@@ -571,21 +606,29 @@ namespace KillerShell.Tools
                 _panelsScroller.ScrollToVerticalOffset(_panelsScroller.VerticalOffset + step);
         }
 
-        private void ShowDropMarker(DashboardCard? target, CardDrop drop)
+        /// <summary>Marks where the carried card would land: on <paramref name="target"/>'s edge,
+        /// or across the top of an empty panel <paramref name="zone"/>, which drops the card into
+        /// <paramref name="column"/> after <paramref name="target"/> in the order.</summary>
+        private void ShowDropMarker(DashboardCard? target, CardDrop drop, FrameworkElement? zone = null, int? column = null)
         {
-            if (_dropMarker != null && (_dropTarget != target || _drop != drop))
+            if (_dropMarker != null && (_dropTarget != target || _drop != drop || _dropZone != zone))
             {
                 AdornerLayer.GetAdornerLayer(_dropMarker.AdornedElement)?.Remove(_dropMarker);
                 _dropMarker = null;
             }
             _dropTarget = target;
             _drop = drop;
+            _dropZone = zone;
+            _dropColumn = column;
             if (target == null || _dropMarker != null) return;
 
-            var layer = AdornerLayer.GetAdornerLayer(target.Frame);
+            UIElement marked = zone ?? target.Frame;
+            var layer = AdornerLayer.GetAdornerLayer(marked);
             if (layer == null) return;
             var brush = TryFindResource("MonitorAccentBrush") as Brush ?? SystemColors.HighlightBrush;
-            _dropMarker = new DropMarker(target.Frame, drop, brush, across: target.Area == Services.DashboardLayout.Panels);
+            _dropMarker = zone != null
+                ? new DropMarker(zone, CardDrop.Before, brush, across: true)
+                : new DropMarker(target.Frame, drop, brush, across: target.Area == Services.DashboardLayout.Panels);
             layer.Add(_dropMarker);
         }
 
