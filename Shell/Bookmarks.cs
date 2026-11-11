@@ -54,6 +54,14 @@ namespace KillerShell.Shell
         internal void NotifyNickname()
             => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(NameLabel)));
 
+        /// <summary>The language changed: the place names and the "not reachable" tooltip are
+        /// read from the strings each time, so asking for them again is all a switch needs.</summary>
+        internal void NotifyLocalized()
+        {
+            foreach (string name in new[] { nameof(Name), nameof(NameLabel), nameof(Tip) })
+                PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
+        }
+
         public string Name => MainWindow.IsThisPc(Path)             // Browse.cs
                             ? MainWindow.LocStatic("Str_Nav_ThisPc")
                             : MainWindow.IsRecycleBin(Path)
@@ -173,12 +181,12 @@ namespace KillerShell.Shell
             if (saved == null) SeedBookmarks();
             else
             {
-                // Somewhere that cannot be reached right now keeps its row, dimmed, and stays in
-                // the setting, so a share that is offline today is still a favorite tomorrow.
-                // Rows are checked again whenever the drawer opens (RecheckBookmarks).
-                var loaded = Services.SavedBookmarks.Parse(saved, BookmarkReachable);
-                foreach (string p in loaded.Paths)
-                    _bookmarks.Add(new Bookmark { Path = p, Unreachable = loaded.Unreachable.Contains(p) });
+                // Somewhere that cannot be reached right now keeps its row and stays in the
+                // setting, so a share that is offline today is still a favorite tomorrow. Nothing
+                // is checked here, on the UI thread while the window is built: the drawer checks
+                // its rows off the thread when it opens (RecheckBookmarks) and dims the dead ones.
+                foreach (string p in Services.SavedBookmarks.Paths(saved))
+                    _bookmarks.Add(new Bookmark { Path = p });
             }
 
             // The Recycle Bin joined the places in 1.5.0. Added once to a list saved before then,
@@ -205,6 +213,9 @@ namespace KillerShell.Shell
 
             ApplyBookmarksPanel(animate: false);
             UpdateFavoriteStar();
+
+            // A drawer left open shows its rows at once, so they are checked now, off the thread.
+            if (_bookmarksOpen) RecheckBookmarks();
         }
 
         // How much room the sidebar can spare for the drawer, whatever its content needs -
@@ -418,11 +429,6 @@ namespace KillerShell.Shell
             Services.ThemeManager.SetSetting("Bookmarks",
                 Services.SavedBookmarks.Serialize(_bookmarks.Select(b => b.Path)));
         }
-
-        // This PC and the Recycle Bin are not directories, and a WSL path is answered by its own
-        // distribution, so only real folders are checked.
-        private static bool BookmarkReachable(string path)
-            => IsPlaceSentinel(path) || Services.WslDistributions.TryParsePath(path, out _, out _) || Directory.Exists(path);
 
         /// <summary>
         /// Check the dimmed rows again, off the UI thread, so a share that came back since launch

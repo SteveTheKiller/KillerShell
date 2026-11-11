@@ -182,6 +182,7 @@ namespace KillerShell.Shell
                 ApplyContentDensity(pane);
             }
             foreach (var root in _treeRoots) root.RefreshGroupName(Loc("Str_Term_Linux"));
+            foreach (var bookmark in _bookmarks) bookmark.NotifyLocalized();   // Bookmarks.cs
             SearchButton.Content = Loc(_active.IsSearching ? "Str_Btn_Stop" : "Str_Btn_Search");
 
             // Hidden panes retain their tabs, so their stored text must change too.
