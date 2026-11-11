@@ -62,14 +62,17 @@ namespace KillerShell.Shell
             UpdatePaneFocusRing();
         }
 
+        /// <summary>A pane shows its tab strip only while it holds more than one tab.</summary>
+        internal static bool ShowsTabBar(int tabsInPane) => tabsInPane > 1;
+
         private void UpdateTabBarInPane()
         {
-            // With two panes open the band shows in BOTH as soon as EITHER has more than one
-            // tab. A single-tab pane then shows its one tab, which is still a thing you can
-            // click; reserving blank strip height instead would line the tops up with dead
-            // space. With one pane LivePanes() yields only that pane, so this is the old
-            // "2+ tabs" rule unchanged.
-            bool show = LivePanes().Any(p => p.Tabs.Count > 1);
+            // Each pane decides for itself, in dual pane too: the band shows once that pane has a
+            // second tab and goes again when it is back to one. A tab dragged in from the other
+            // pane is that second tab, so the band appears as it lands (2026-11-11, Steve's call:
+            // a single tab sitting in a strip of its own was clutter, and the tops of the two
+            // panes differing by the band's height is the accepted cost).
+            bool show = ShowsTabBar(Pane.Tabs.Count);
             Pane.TabBar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
 
             bool retroTheme = Services.ThemeManager.Current == Services.Theme.SE98;
