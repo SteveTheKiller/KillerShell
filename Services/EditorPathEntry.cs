@@ -14,6 +14,14 @@ namespace KillerShell.Services
     /// </summary>
     internal static class EditorPathEntry
     {
+        /// <summary>
+        /// Whether a file opened from this document's path box takes over its tab. Only a blank,
+        /// never-saved document gives its tab up: there is nothing in it to lose. Anything typed
+        /// into it, or a document with a file behind it, keeps its tab and the file opens in a new one.
+        /// </summary>
+        internal static bool ReusesTab(bool untitled, bool dirty, int textLength)
+            => untitled && !dirty && textLength == 0;
+
         internal static EditorPathResult Resolve(string typed, string currentFile, string folder,
                                                  Func<string, bool> fileExists, Func<string, bool> folderExists)
         {

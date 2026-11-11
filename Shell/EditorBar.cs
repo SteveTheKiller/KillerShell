@@ -301,7 +301,7 @@ namespace KillerShell.Shell
                     return;
                 case Services.EditorPathAction.Open:
                     EndEditEdPath(pane);
-                    OpenForEditing(newPath);     // EditorTabs.cs - goes to the copy already open
+                    OpenInPlaceOf(pane, t, newPath);
                     return;
                 case Services.EditorPathAction.NotFound:
                     // Stays in edit mode rather than reverting - same convention as the shell's cwd
@@ -351,6 +351,31 @@ namespace KillerShell.Shell
             SetEditorTitle(t);     // EditorTabs.cs - the tab's file name follows the new path
             SyncEditorBar(t);      // the bar's own readout follows too
             EndEditEdPath(pane);
+        }
+
+        /// <summary>
+        /// Open a file named in the path box. A blank untitled tab (EditorPathEntry.ReusesTab)
+        /// hands its place in the strip to the file and closes, so the file reads as opening in
+        /// that tab; any other document keeps its tab and the file opens in a new one. A file
+        /// already open somewhere is switched to, and the blank tab is left alone then.
+        /// </summary>
+        private void OpenInPlaceOf(FilePane pane, SearchTab t, string path)
+        {
+            var editor = t.Editor!;
+            bool reuse = Services.EditorPathEntry.ReusesTab(editor.IsUntitled, editor.Dirty, editor.Document.TextLength);
+            var before = new System.Collections.Generic.HashSet<SearchTab>(pane.Tabs);
+
+            OpenForEditing(path);        // EditorTabs.cs - goes to the copy already open
+
+            var opened = _active;
+            if (!reuse || opened == null || opened.Editor == null || before.Contains(opened)
+                || !pane.Tabs.Contains(opened) || !pane.Tabs.Contains(t))
+                return;
+
+            // A Ctrl+F7 tab's elevated save belongs to the tab, and the file now lives in it.
+            opened.Editor.ElevatedSaveOnFail |= editor.ElevatedSaveOnFail;
+            pane.Tabs.Move(pane.Tabs.IndexOf(opened), pane.Tabs.IndexOf(t));
+            CloseTab(t);                 // Tabs.cs - blank, so nothing asks first
         }
 
         /// <summary>Clicking away without pressing Enter cancels rather than commits.</summary>

@@ -24,6 +24,12 @@ namespace KillerShell.Tests.Services
             return p;
         }
 
+        // A dotfile such as .env has no extension Windows knows, so the text sniff is what sends
+        // it to an editor tab instead of to an association that asks which app to use.
+        [Fact]
+        public void ADotEnvFileOpensInTheEditor()
+            => Assert.Equal(AddressTargetKind.Edit, AddressTarget.Classify(Make(".env", Encoding.UTF8.GetBytes("API_KEY=x\nDEBUG=1\n"))));
+
         // A relative address is relative to the folder the tab is showing, the way Explorer's
         // address bar reads it, never to KillerShell's own working directory.
         [Theory]

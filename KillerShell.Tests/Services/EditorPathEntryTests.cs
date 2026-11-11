@@ -99,5 +99,13 @@ namespace KillerShell.Tests.Services
             Assert.Equal(EditorPathAction.Rename, r.Action);
             Assert.Equal(Path.Combine(Folder, "notes.txt"), r.Path);
         }
+
+        [Theory]
+        [InlineData(true, false, 0, true)]
+        [InlineData(true, false, 12, false)]
+        [InlineData(true, true, 0, false)]
+        [InlineData(false, false, 0, false)]
+        public void OnlyABlankUntitledTabIsReused(bool untitled, bool dirty, int textLength, bool reused)
+            => Assert.Equal(reused, EditorPathEntry.ReusesTab(untitled, dirty, textLength));
     }
 }
