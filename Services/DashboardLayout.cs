@@ -119,7 +119,7 @@ namespace KillerShell.Services
         internal bool IsFolded(string area, string id) => Has(_folded, area, id);
         internal void SetFolded(string area, string id, bool folded) => Set(_folded, area, id, folded);
 
-        /// <summary>A card that spans both columns of its row rather than one of them.</summary>
+        /// <summary>A card that spans both columns rather than one of them.</summary>
         internal bool IsWide(string area, string id) => Has(_wide, area, id);
         internal void SetWide(string area, string id, bool wide) => Set(_wide, area, id, wide);
 
@@ -149,19 +149,35 @@ namespace KillerShell.Services
         }
 
         /// <summary>
-        /// Two slots to a row, in order. A slot that spans both columns has its row to itself, and
-        /// a one-column slot that cannot pair (the last one, or one followed by a spanning slot)
-        /// keeps its one column of a row of its own rather than stretching across it.
+        /// The slots in bands, in order. A slot that spans both columns is a band of one column to
+        /// itself. Between those, the slots take turns down a left and a right column that each
+        /// run on their own, so a slot sits right under the one above it in its column rather than
+        /// waiting for a taller slot in the other column to end. A lone slot before a spanning one
+        /// keeps the left column of its band rather than stretching across it.
         /// </summary>
-        internal static List<T[]> Rows<T>(IReadOnlyList<T> slots, Func<T, bool> wide)
+        internal static List<List<T>[]> Bands<T>(IReadOnlyList<T> slots, Func<T, bool> wide)
         {
-            var rows = new List<T[]>((slots.Count + 1) / 2);
-            for (int i = 0; i < slots.Count; i++)
+            var bands = new List<List<T>[]>();
+            List<T>[]? columns = null;
+            int next = 0;
+            foreach (var slot in slots)
             {
-                if (!wide(slots[i]) && i + 1 < slots.Count && !wide(slots[i + 1])) rows.Add([slots[i], slots[++i]]);
-                else rows.Add([slots[i]]);
+                if (wide(slot))
+                {
+                    bands.Add([[slot]]);
+                    columns = null;
+                    continue;
+                }
+                if (columns == null)
+                {
+                    columns = [[], []];
+                    bands.Add(columns);
+                    next = 0;
+                }
+                columns[next].Add(slot);
+                next = 1 - next;
             }
-            return rows;
+            return bands;
         }
 
         // ── The setting ─────────────────────────────────────────

@@ -103,9 +103,33 @@ namespace KillerShell.Services
                     {
                         if (row["TotalPhysicalMemory"] is not { } total) continue;
                         totalRamGb = Convert.ToInt64(total) / 1024.0 / 1024.0 / 1024.0;
-                        ram = totalRamGb.ToString("0.0", CultureInfo.InvariantCulture) + " GB installed";
                     }
                 }
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException) { }
+
+            // The memory card's name: "DDR4-3200". The amount is already its headline number.
+            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                using var searcher = new ManagementObjectSearcher(
+                    "SELECT SMBIOSMemoryType, Speed, ConfiguredClockSpeed FROM Win32_PhysicalMemory");
+                using var rows = searcher.Get();
+                var modules = new List<MemoryModule>();
+                foreach (ManagementObject row in rows.Cast<ManagementObject>())
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    using (row)
+                    {
+                        int type = row["SMBIOSMemoryType"] is { } t ? Convert.ToInt32(t) : 0;
+                        // The speed the stick is set to run at, else the speed it is rated for.
+                        int speed = row["ConfiguredClockSpeed"] is { } c ? Convert.ToInt32(c) : 0;
+                        if (speed <= 0 && row["Speed"] is { } s) speed = Convert.ToInt32(s);
+                        modules.Add(new MemoryModule(type, speed));
+                    }
+                }
+                string kind = PerformanceMetricFormatter.MemoryKind(modules);
+                if (kind.Length > 0) ram = kind;
             }
             catch (Exception ex) when (ex is not OperationCanceledException) { }
 

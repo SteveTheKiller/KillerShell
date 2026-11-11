@@ -66,6 +66,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 - Only the main window remembers your tabs. Closing a Ctrl+N window or a torn-out tab's window no longer replaces the saved session with that window's tabs, and those windows close without the quit prompt about keeping tabs, the same as an administrator window. They still ask about unsaved documents, and a remembered choice to keep Esc from closing the window still applies.
 - Every Performance graph has its own color on every theme: CPU green, memory blue, disk amber for reads and red for writes, network magenta for sends and yellow for receives, and GPU cyan, so no two graphs share a color.
+- The two columns of Performance cards flow on their own, so a short card no longer leaves a gap under it: the next card in its column moves up to meet it. A card can still be dropped into the space at the bottom of a column.
+- The memory card names the installed memory by type and speed, such as DDR4-3200, instead of repeating the amount the card already shows.
 - Single-line text fields are as tall as the dropdowns beside them, so form rows line up instead of the text boxes standing oversized. A field given its own height, such as the editor's Find box, keeps it.
 
 ### Added

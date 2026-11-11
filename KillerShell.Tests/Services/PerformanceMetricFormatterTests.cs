@@ -30,6 +30,27 @@ namespace KillerShell.Tests.Services
         public void UpTime_LeadsWithDaysOnceThereAreAny(int days, int hours, int minutes, int seconds, string expected)
             => Assert.Equal(expected, PerformanceMetricFormatter.UpTime(new System.TimeSpan(days, hours, minutes, seconds)));
 
+        [Theory]
+        [InlineData(26, 3200, "DDR4-3200")]
+        [InlineData(34, 5600, "DDR5-5600")]
+        [InlineData(24, 1600, "DDR3-1600")]
+        [InlineData(30, 4267, "LPDDR4-4267")]
+        [InlineData(35, 6400, "LPDDR5-6400")]
+        [InlineData(26, 0, "DDR4")]
+        [InlineData(0, 3200, "3200 MT/s")]
+        [InlineData(2, 0, "")]   // a virtual machine's memory: SMBIOS "Unknown" and no speed
+        public void MemoryKind_NamesTypeAndDataRate(int smbiosType, int speedMts, string expected)
+            => Assert.Equal(expected, PerformanceMetricFormatter.MemoryKind([new MemoryModule(smbiosType, speedMts)]));
+
+        [Fact]
+        public void MemoryKind_ReadsTheSpeedTheSlowestStickRuns()
+            => Assert.Equal("DDR4-2666", PerformanceMetricFormatter.MemoryKind(
+                [new MemoryModule(26, 3200), new MemoryModule(26, 2666), new MemoryModule(0, 0)]));
+
+        [Fact]
+        public void MemoryKind_WithNoModulesIsEmpty()
+            => Assert.Equal("", PerformanceMetricFormatter.MemoryKind([]));
+
         [Fact]
         public void GpuLuid_ExtractsCounterInstanceIdentifier()
             => Assert.Equal("0x00000000_0x0000abcd",

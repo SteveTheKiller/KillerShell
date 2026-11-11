@@ -178,22 +178,25 @@ namespace KillerShell.Tests.Services
             Assert.False(layout.IsFolded(Strip, "cpu"));
         }
 
+        // "a+c / b+d" reads as one band of two columns: a then c down the left, b then d down the right.
+        private static string ShowBands(IEnumerable<List<string>[]> bands)
+            => string.Join(" | ", bands.Select(band => string.Join(" / ", band.Select(column => string.Join("+", column)))));
+
         [Fact]
-        public void Rows_PairsSlotsTwoToARow()
+        public void Bands_FlowSlotsDownTwoColumnsInOrder()
         {
-            List<string[]> rows = Rows(new[] { "a", "b", "c", "d", "e" }, _ => false);
-            Assert.Equal(3, rows.Count);
-            Assert.Equal(new[] { "a", "b" }, rows[0]);
-            Assert.Equal(new[] { "c", "d" }, rows[1]);
-            Assert.Equal(new[] { "e" }, rows[2]);
+            // Each column runs on its own, so a card sits right under the one above it in its
+            // column instead of waiting for a taller card in the other column to end.
+            var bands = Bands(new[] { "a", "b", "c", "d", "e" }, _ => false);
+            Assert.Equal("a+c+e / b+d", ShowBands(bands));
         }
 
         [Fact]
-        public void Rows_GiveATwoColumnSlotItsRowToItself()
+        public void Bands_GiveATwoColumnSlotABandToItself()
         {
-            // "a" cannot pair with the wide slot after it, so it keeps one column of its own row.
-            List<string[]> rows = Rows(new[] { "a", "B", "c", "d", "e" }, slot => slot == "B");
-            Assert.Equal("a|B|c+d|e", Show(rows));
+            // "a" cannot pair with the wide slot after it, so it keeps the left column of its band.
+            var bands = Bands(new[] { "a", "B", "c", "d", "e" }, slot => slot == "B");
+            Assert.Equal("a /  | B | c+e / d", ShowBands(bands));
         }
 
         [Fact]

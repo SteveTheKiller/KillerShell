@@ -17,9 +17,12 @@ using System.Windows.Shapes;
 // The designed arrangement, which the user can drag into another order:
 //
 //   summary strip   one box per kind of hardware: its name, headline number, icon and a bare trace
-//   row 1           CPU (three fifths) beside memory (two fifths) - the two a person reads first
-//   row 2           disks beside network adapters, ONE ROW PER DEVICE inside each panel
-//   row 3 on        a card per GPU, two to a row
+//   left column     CPU (three fifths of the width), then disks, then every other GPU
+//   right column    memory (two fifths), then network adapters, then the remaining GPUs
+//
+// The two columns flow on their own, so a card sits right under the one above it in its column
+// whatever the height of the card beside it. Inside the disk and network panels there is ONE ROW
+// PER DEVICE.
 //
 // Designed as a whole rather than a card per device. A machine with four disks and five network
 // adapters used to get nine identical full-size cells, most of them flat lines; here a device
@@ -113,10 +116,9 @@ namespace KillerShell.Tools
             if (_netTiles.Count > 0) _sumNet = AddSummaryTile("network", MetricKind.Network, "Str_Perf_Network", PerformanceGraphBrushes.NetSend, 0);
             if (_gpuTiles.Count > 0 || _gpuEngineAvailable) _sumGpu = AddSummaryTile("gpu", MetricKind.Gpu, "Str_Perf_Gpu", PerformanceGraphBrushes.Gpu, 100);
 
-            // ── Panels, two to a row ─────────────────────────────
-            // CPU beside memory, disks beside network adapters, then the GPUs. A card that is
-            // alone in its row (an odd GPU, a VM with no disks) keeps one column of it unless
-            // the user sets it to two (PerformanceMonitorCards.cs).
+            // ── Panels, taking turns down two columns ────────────
+            // CPU beside memory, disks beside network adapters, then the GPUs. A card keeps one
+            // column unless the user sets it to two (PerformanceMonitorCards.cs).
             if (_cpuTile != null) AddPanelCard(BuildCpuPanel(_cpuTile));
             if (_ramTile != null) AddPanelCard(BuildRamPanel(_ramTile));
             if (_diskTiles.Count > 0) AddPanelCard(BuildDevicePanel("disks", _diskTiles));

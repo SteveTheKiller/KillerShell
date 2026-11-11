@@ -1,10 +1,51 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace KillerShell.Services
 {
+    /// <summary>One installed memory stick as Win32_PhysicalMemory reports it: its SMBIOS memory
+    /// type code and the data rate it runs at, in MT/s (0 when the firmware does not say).</summary>
+    internal readonly record struct MemoryModule(int SmbiosType, int SpeedMts);
+
     internal static class PerformanceMetricFormatter
     {
+        /// <summary>"DDR4-3200": the memory generation and the data rate the installed sticks run
+        /// at together, which is the slowest of them. Either half alone when the firmware reports
+        /// only that half, and empty when it reports neither (a virtual machine's memory).</summary>
+        internal static string MemoryKind(IReadOnlyList<MemoryModule> modules)
+        {
+            string type = modules
+                .Select(module => MemoryTypeName(module.SmbiosType))
+                .Where(name => name.Length > 0)
+                .GroupBy(name => name, StringComparer.Ordinal)
+                .OrderByDescending(group => group.Count())
+                .Select(group => group.Key)
+                .FirstOrDefault() ?? string.Empty;
+            int speed = modules.Where(module => module.SpeedMts > 0).Select(module => module.SpeedMts).DefaultIfEmpty(0).Min();
+            string rate = speed.ToString(CultureInfo.InvariantCulture);
+
+            if (type.Length > 0) return speed > 0 ? type + "-" + rate : type;
+            return speed > 0 ? rate + " MT/s" : string.Empty;
+        }
+
+        // SMBIOS memory device types (DMTF DSP0134, 7.18.2) for the generations still in use.
+        private static string MemoryTypeName(int smbiosType) => smbiosType switch
+        {
+            0x12 => "DDR",
+            0x13 or 0x14 => "DDR2",
+            0x18 => "DDR3",
+            0x1A => "DDR4",
+            0x1B => "LPDDR",
+            0x1C => "LPDDR2",
+            0x1D => "LPDDR3",
+            0x1E => "LPDDR4",
+            0x22 => "DDR5",
+            0x23 => "LPDDR5",
+            _ => string.Empty,
+        };
+
         internal static string LinkSpeed(ulong bitsPerSecond)
         {
             if (bitsPerSecond == 0) return string.Empty;

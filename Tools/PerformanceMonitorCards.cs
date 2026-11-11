@@ -19,10 +19,10 @@ using CardDrop = KillerShell.Services.DashboardLayout.Drop;
 // Every box of the top strip and every panel below it is a card. A card is picked up by its
 // header line (a summary box by any of it) with the family's grab cursors and dropped on another
 // card of the same area: on its left half to go before that card's column, on its right half to
-// go after it, and into the empty space under a card shorter than the column beside it to stack
-// beneath it, so that room can be filled. A marker in the gutter shows where it will land. The
-// panels flow two columns to a row whatever their order, and each keeps its own weight, so the
-// CPU is still wider than whatever shares its row. Right-click minimizes a card to its header
+// go after it, and into the empty space at the bottom of a column to stack beneath the last card
+// there. A marker in the gutter shows where it will land. The panels take turns down two columns
+// that each flow on their own, so a short card leaves no gap under it, and a column is as wide as
+// the heaviest card in it, so the CPU's column is still the wider one. Right-click minimizes a card to its header
 // line or restores it, sets a panel to one column or across both, and resets the whole dashboard
 // to the designed arrangement. All of it is
 // saved as one setting (Services/DashboardLayout.cs), so it comes back after a restart.
@@ -180,27 +180,38 @@ namespace KillerShell.Tools
             foreach (var slot in _stripSlots) _summaryStrip.Children.Add(slot.Host);
         }
 
-        /// <summary>Two columns to a row, in the user's order. A card moved, added or taken away
-        /// re-forms the rows; the cards themselves are moved into them, never rebuilt. A card set
-        /// to two columns spans its row; any other card alone in a row keeps one column of it.</summary>
+        /// <summary>Two columns that each flow on their own, in the user's order, so a short card
+        /// leaves no gap under it: the next card in its column moves up to meet it. A card moved,
+        /// added or taken away re-forms the bands; the cards themselves are moved into them, never
+        /// rebuilt. A card set to two columns spans a band of its own. A column is as wide as the
+        /// heaviest card in it, so the CPU's column is still the wider one.</summary>
         private void ArrangePanels()
         {
             DetachPanelRows();
             _panelSlots = Slots(Services.DashboardLayout.Panels, _panelCards);
-            foreach (var pair in Services.DashboardLayout.Rows(_panelSlots, IsWide))
+            foreach (var columns in Services.DashboardLayout.Bands(_panelSlots, IsWide))
             {
-                var row = new Grid();
-                for (int c = 0; c < pair.Length; c++)
+                var band = new Grid();
+                if (columns.Length == 1)
                 {
-                    double weight = pair.Length == 1 && IsWide(pair[c]) ? 1 : pair[c].Cards.Max(card => card.Weight);
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(weight, GridUnitType.Star) });
-                    SetColumn(pair[c].Host, c);
-                    row.Children.Add(pair[c].Host);
+                    band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                    band.Children.Add(columns[0][0].Host);
+                    _panels.Children.Add(band);
+                    continue;
                 }
-                // The empty half beside a lone one-column card, weighted like any other card.
-                if (pair.Length == 1 && !IsWide(pair[0]))
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
-                _panels.Children.Add(row);
+                for (int c = 0; c < columns.Length; c++)
+                {
+                    // An empty right column beside a lone card is weighted like any other card.
+                    double weight = columns[c].Count == 0 ? 2 : columns[c].SelectMany(slot => slot.Cards).Max(card => card.Weight);
+                    band.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(weight, GridUnitType.Star) });
+                    // Stretched to the band's height, so the room under its last card belongs to
+                    // the column and a card can be dropped into it (FindDropTarget).
+                    var column = new StackPanel { Orientation = Orientation.Vertical, Background = Brushes.Transparent };
+                    foreach (var slot in columns[c]) column.Children.Add(slot.Host);
+                    SetColumn(column, c);
+                    band.Children.Add(column);
+                }
+                _panels.Children.Add(band);
             }
         }
 
@@ -208,8 +219,7 @@ namespace KillerShell.Tools
 
         /// <summary>
         /// The user's slots for these cards, each with the element that holds it. A card alone is
-        /// its own host. A stack is a grid that gives every card its own height, top to bottom,
-        /// and keeps whatever the row has left under the last one as the gap below it.
+        /// its own host. A stack is a grid that gives every card its own height, top to bottom.
         /// </summary>
         private List<CardSlot> Slots(string area, List<DashboardCard> cards)
         {
@@ -233,8 +243,7 @@ namespace KillerShell.Tools
                 var host = new Grid();
                 for (int i = 0; i < stack.Count; i++)
                 {
-                    host.RowDefinitions.Add(new RowDefinition
-                        { Height = i < stack.Count - 1 ? GridLength.Auto : new GridLength(1, GridUnitType.Star) });
+                    host.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                     SetRow(stack[i].Frame, i);
                     host.Children.Add(stack[i].Frame);
                 }
@@ -243,16 +252,13 @@ namespace KillerShell.Tools
             return slots;
         }
 
-        // A card can belong to one parent at a time, so the old rows and stacks let go of them first.
-        private void DetachPanelRows()
-        {
-            foreach (var row in _panels.Children.OfType<Grid>()) DetachSlots(row.Children);
-            _panels.Children.Clear();
-        }
+        // A card can belong to one parent at a time, so the old bands, columns and stacks let go
+        // of them first. Every Panel under _panels is one of those; a card itself is a Border.
+        private void DetachPanelRows() => DetachSlots(_panels.Children);
 
         private static void DetachSlots(UIElementCollection hosts)
         {
-            foreach (var stack in hosts.OfType<Grid>()) stack.Children.Clear();
+            foreach (var holder in hosts.OfType<Panel>()) DetachSlots(holder.Children);
             hosts.Clear();
         }
 
@@ -267,10 +273,9 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         /// <summary>
         /// A minimized card keeps its header line: the icon, the name and the live number. A panel
-        /// keeps its own height either way rather than stretching to the column beside it, which a
-        /// tall stack would turn into a large empty frame; the room under a shorter card is a gap
-        /// another card can be dropped into. The top strip's open boxes still share one height, so
-        /// the strip reads as one row.
+        /// keeps its own height either way rather than stretching to the column beside it, and the
+        /// next card in its column moves up to meet it. The top strip's open boxes still share one
+        /// height, so the strip reads as one row.
         /// </summary>
         private void ApplyFold(DashboardCard card)
         {
@@ -473,8 +478,11 @@ namespace KillerShell.Tools
 
             if (!overCard)
             {
-                foreach (var slot in slots)
+                // From the end, so the room at the bottom of a panel column goes to the last slot
+                // in that column, whose bounds are the only ones reaching it first.
+                for (int i = slots.Count - 1; i >= 0; i--)
                 {
+                    var slot = slots[i];
                     var last = slot.Cards[^1];
                     if (SlotBounds(slot) is not { } column || !column.Contains(at)) continue;
                     if (BoundsOf(last.Frame, withMargin: true) is { } lastBounds && at.Y > lastBounds.Bottom)
@@ -507,12 +515,16 @@ namespace KillerShell.Tools
                 bounds.Width + m.Left + m.Right, bounds.Height + m.Top + m.Bottom);
         }
 
-        /// <summary>The whole column a slot was given, gap and all, in this control.</summary>
+        /// <summary>The room a slot was given, in this control. In a panel column that is
+        /// everything from the slot's top to the bottom of the column, gap and all.</summary>
         private Rect? SlotBounds(CardSlot slot)
         {
             if (!slot.Host.IsVisible || VisualTreeHelper.GetParent(slot.Host) is not Visual parent || !parent.IsDescendantOf(this))
                 return null;
-            return parent.TransformToAncestor(this).TransformBounds(LayoutInformation.GetLayoutSlot(slot.Host));
+            Rect room = LayoutInformation.GetLayoutSlot(slot.Host);
+            if (parent is StackPanel { Orientation: Orientation.Vertical } column)
+                room = new Rect(room.Left, room.Top, room.Width, Math.Max(room.Height, column.ActualHeight - room.Top));
+            return parent.TransformToAncestor(this).TransformBounds(room);
         }
 
         // Near the top or bottom of the panels, a carried card scrolls them, so a card can be
