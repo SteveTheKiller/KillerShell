@@ -232,7 +232,7 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         /// <summary>
         /// Click the document's path to edit it in place - type a path and press Enter to rename
-        /// and/or move the file on disk. Only wired up once there IS a real file: an untitled
+        /// and/or move the file on disk, or name another file that exists to open it. Only wired up once there IS a real file: an untitled
         /// document has never been saved, so there is nothing yet to rename (SyncEditorBar gates
         /// the cursor/tooltip on the same check, this is the belt-and-braces guard against a
         /// stray click landing between the two).
@@ -286,30 +286,32 @@ namespace KillerShell.Shell
             if (DemoMode && Services.DemoTextStore.Contains(editor.FilePath))
             { EndEditEdPath(pane); return; }
 
-            string newPath = box.Text.Trim();
-            if (!editor.IsUntitled && string.Equals(newPath, editor.FilePath, StringComparison.Ordinal))
-            { EndEditEdPath(pane); return; }   // genuinely unchanged
-
-            string? dir = Path.GetDirectoryName(newPath);
-            if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
+            // EditorPathEntry decides what the typed path means: another file that exists opens,
+            // a bare name resolves beside the document, and a name nothing has yet renames it.
+            string folder = editor.IsUntitled
+                ? (string.IsNullOrEmpty(t.CurrentFolder) ? HomeFolder : t.CurrentFolder)
+                : Path.GetDirectoryName(editor.FilePath) ?? string.Empty;
+            var entry = Services.EditorPathEntry.Resolve(box.Text, editor.FilePath, folder,
+                                                         File.Exists, Directory.Exists);
+            string newPath = entry.Path;
+            switch (entry.Action)
             {
-                // Stays in edit mode rather than reverting - same convention as the shell's cwd
-                // box (TerminalBar.cs): a typo is worth the chance to fix, not a round trip back
-                // through click-to-edit.
-                SetTabStatusKey(t, "Str_Status_EdPathNotFound", newPath);
-                return;
-            }
-
-            // A case-only rename ("readme.txt" -> "README.txt") is a real rename and has to skip
-            // the exists check, the same carve-out FileOps.Rename makes: on a case-insensitive
-            // volume that check would find the very file being renamed and refuse it. Never
-            // applies to an untitled document, which has no original to case-rename.
-            bool caseOnly = !editor.IsUntitled
-                         && string.Equals(newPath, editor.FilePath, StringComparison.OrdinalIgnoreCase);
-            if (!caseOnly && (File.Exists(newPath) || Directory.Exists(newPath)))
-            {
-                SetTabStatusKey(t, "Str_Status_RenameFailed", LocReason("already exists"));
-                return;
+                case Services.EditorPathAction.Unchanged:
+                    EndEditEdPath(pane);
+                    return;
+                case Services.EditorPathAction.Open:
+                    EndEditEdPath(pane);
+                    OpenForEditing(newPath);     // EditorTabs.cs - goes to the copy already open
+                    return;
+                case Services.EditorPathAction.NotFound:
+                    // Stays in edit mode rather than reverting - same convention as the shell's cwd
+                    // box (TerminalBar.cs): a typo is worth the chance to fix, not a round trip back
+                    // through click-to-edit.
+                    SetTabStatusKey(t, "Str_Status_EdPathNotFound", newPath);
+                    return;
+                case Services.EditorPathAction.Exists:
+                    SetTabStatusKey(t, "Str_Status_RenameFailed", LocReason("already exists"));
+                    return;
             }
 
             if (editor.IsUntitled)

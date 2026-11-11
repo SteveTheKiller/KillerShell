@@ -486,7 +486,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Nyissa meg ezt a mappát egy lapon (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Törlés (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Betűtípusok... (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Kattintson a szerkesztéshez - írjon be egy elérési utat, és nyomja meg az Enter billentyűt a fájl átnevezéséhez/áthelyezéséhez</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Kattintson a szerkesztéshez - írjon be egy elérési utat, és nyomja meg az Enter billentyűt a fájl átnevezéséhez/áthelyezéséhez. Meglévő fájl megadásával megnyithatja azt.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Szótördelés bekapcsolva.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Szótördelés kikapcsolva - görgessen a hosszú sorok megtekintéséhez.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Mentve: {0}.</sys:String>

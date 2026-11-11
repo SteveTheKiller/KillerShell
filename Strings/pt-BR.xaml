@@ -486,7 +486,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Abrir esta pasta em uma guia  (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Limpar  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Fontes...  (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Clique para editar - digite um caminho e pressione Enter para renomear/mover o arquivo</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Clique para editar - digite um caminho e pressione Enter para renomear/mover o arquivo. Digite um arquivo existente para abri-lo.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Quebra de linha ativada.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Quebra de linha desativada - role para ver as linhas longas.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} salvo.</sys:String>

@@ -486,7 +486,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Åpne denne mappen i en fane  (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Tøm  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Skrifttyper...  (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Klikk for å redigere - skriv en sti og trykk Enter for å gi filen nytt navn eller flytte den</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Klikk for å redigere - skriv en sti og trykk Enter for å gi filen nytt navn eller flytte den. Skriv en eksisterende fil for å åpne den.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Tekstbryting på.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Tekstbryting av - rull for å se lange linjer.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Lagret {0}.</sys:String>

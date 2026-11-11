@@ -486,7 +486,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Відкрити цю папку у вкладці  (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Очистити  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Шрифти...  (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Клацніть, щоб редагувати - введіть шлях і натисніть Enter, щоб перейменувати/перемістити файл</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Клацніть, щоб редагувати - введіть шлях і натисніть Enter, щоб перейменувати/перемістити файл. Введіть наявний файл, щоб відкрити його.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Перенесення слів увімкнено.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Перенесення слів вимкнено - прокручуйте, щоб бачити довгі рядки.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Збережено {0}.</sys:String>

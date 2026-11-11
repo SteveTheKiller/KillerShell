@@ -782,7 +782,7 @@
     <sys:String x:Key="Str_Svc_Stopped">{0} detenido</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Detalles abajo / Detalles a la derecha / Ocultar detalles (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Haz clic para cambiar la codificación con la que se guardará la próxima vez</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Haz clic para editar - escribe una ruta y pulsa Entrar para renombrar/mover el archivo</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Haz clic para editar - escribe una ruta y pulsa Entrar para renombrar/mover el archivo. Escribe un archivo existente para abrirlo.</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Visor de eventos  (Ctrl+F12)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Cerrar  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Copiar detalles  (Ctrl+C)</sys:String>

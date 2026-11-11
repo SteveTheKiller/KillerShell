@@ -486,7 +486,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Open this folder in a tab  (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Clear  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Fonts...  (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Click to edit - type a path and press Enter to rename/move the file</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Click to edit - type a path and press Enter to rename/move the file. Type an existing file to open it.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Word wrap on.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Word wrap off - scroll to see long lines.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">Saved {0}.</sys:String>

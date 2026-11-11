@@ -470,7 +470,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Осы қалтаны қойындыда ашу  (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Тазалау  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Қаріптер...  (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Өзгерту үшін басыңыз - файлдың атын өзгерту немесе жылжыту үшін жолды теріп, Enter басыңыз</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Өзгерту үшін басыңыз - файлдың атын өзгерту немесе жылжыту үшін жолды теріп, Enter басыңыз. Бар файлды ашу үшін оның атын теріңіз.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Сөз бойынша тасымалдау қосулы.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Сөз бойынша тасымалдау өшірулі - ұзын жолдарды көру үшін айналдырыңыз.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} сақталды.</sys:String>

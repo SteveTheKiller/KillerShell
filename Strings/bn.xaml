@@ -779,7 +779,7 @@
     <sys:String x:Key="Str_Svc_Stopped">{0} বন্ধ হয়েছে</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">নিচে বিবরণ / ডান দিকে বিবরণ / বিবরণ বন্ধ (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">পরবর্তী সংরক্ষণের এনকোডিং বদলাতে ক্লিক করুন</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">সম্পাদনা করতে ক্লিক করুন - ফাইলটির নাম বদলাতে বা সরাতে একটি পাথ লিখে Enter চাপুন</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">সম্পাদনা করতে ক্লিক করুন - ফাইলটির নাম বদলাতে বা সরাতে একটি পাথ লিখে Enter চাপুন। বিদ্যমান কোনো ফাইলের নাম লিখলে সেটি খুলবে।</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">ইভেন্ট ভিউয়ার  (Ctrl+F12)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">বন্ধ করুন  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">বিবরণ কপি করুন  (Ctrl+C)</sys:String>

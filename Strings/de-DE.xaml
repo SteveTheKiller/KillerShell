@@ -782,7 +782,7 @@
     <sys:String x:Key="Str_Svc_Stopped">{0} beendet</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Details unten / Details rechts / Details aus (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Klicken, um die Kodierung für den nächsten Speichervorgang zu ändern</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Klicken zum Bearbeiten - Pfad eingeben und Eingabetaste drücken, um die Datei umzubenennen/zu verschieben</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Klicken zum Bearbeiten - Pfad eingeben und Eingabetaste drücken, um die Datei umzubenennen/zu verschieben. Eine vorhandene Datei angeben, um sie zu öffnen.</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Ereignisanzeige  (Strg+F12)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Schließen  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Details kopieren  (Strg+C)</sys:String>

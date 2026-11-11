@@ -777,7 +777,7 @@
     <sys:String x:Key="Str_Svc_Stopped">{0} を停止しました</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">詳細を下に表示 / 詳細を右に表示 / 詳細を非表示 (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">クリックすると、次回保存時のエンコードを変更できます</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">クリックして編集 - パスを入力して Enter を押すとファイルの名前変更・移動ができます</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">クリックして編集 - パスを入力して Enter を押すとファイルの名前変更・移動ができます。既存のファイルを入力するとそのファイルを開きます。</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">イベント ビューアー  (Ctrl+F12)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">閉じる  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">詳細をコピー  (Ctrl+C)</sys:String>

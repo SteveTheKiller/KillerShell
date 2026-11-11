@@ -780,7 +780,7 @@
     <sys:String x:Key="Str_Svc_Stopped">{0} zastavena</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Podrobnosti dole / Podrobnosti vpravo / Vypnout podrobnosti (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Kliknutím změníte kódování, se kterým se příště uloží</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Kliknutím upravíte - zadejte cestu a stiskněte Enter pro přejmenování/přesun souboru</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Kliknutím upravíte - zadejte cestu a stiskněte Enter pro přejmenování/přesun souboru. Zadáním existujícího souboru jej otevřete.</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Prohlížeč událostí  (Ctrl+F12)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Zavřít  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Kopírovat podrobnosti  (Ctrl+C)</sys:String>

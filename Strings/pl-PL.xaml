@@ -474,7 +474,7 @@
   <sys:String x:Key="Str_TT_TermFolder">Otwórz ten folder na karcie  (Ctrl+Shift+T)</sys:String>
   <sys:String x:Key="Str_TT_TermClear">Wyczyść  (Ctrl+Shift+L)</sys:String>
   <sys:String x:Key="Str_TT_TermFonts">Czcionki...  (Ctrl+Shift+,)</sys:String>
-  <sys:String x:Key="Str_TT_EdPath">Kliknij, aby edytować - wpisz ścieżkę i naciśnij Enter, aby zmienić nazwę lub przenieść plik</sys:String>
+  <sys:String x:Key="Str_TT_EdPath">Kliknij, aby edytować - wpisz ścieżkę i naciśnij Enter, aby zmienić nazwę lub przenieść plik. Wpisz istniejący plik, aby go otworzyć.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOn">Zawijanie wierszy włączone.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOff">Zawijanie wierszy wyłączone - przewiń, aby zobaczyć długie wiersze.</sys:String>
   <sys:String x:Key="Str_Ed_Saved">Zapisano {0}.</sys:String>

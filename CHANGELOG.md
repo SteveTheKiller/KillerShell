@@ -34,6 +34,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Clear all Data keeps the file associations KillerShell registered, so it stays listed in Windows Default apps.
 - Modifying a REG_NONE value edits its bytes and saves it as REG_NONE, and the value list shows its data as hex instead of "System.Byte[]". A value of a type KillerShell cannot write back says so instead of opening the text editor.
 - A relative address typed in the address bar, such as `..`, `Downloads` or `\Windows`, opens relative to the folder the tab is showing, and `D:` opens that drive's root, instead of resolving against the folder KillerShell was started from.
+- Typing the name or path of another file in the text editor's path box and pressing Enter opens that file in the editor instead of refusing it as already existing, and a bare name such as `.env` means the file beside the open document.
 - Paste refuses to copy or move a folder into itself or one of its own subfolders, the same way drag and drop already did.
 - Opening the recents menu no longer freezes the window while a folder on a dead share times out. Every folder is checked at once, and one that doesn't answer within a second is left out of that opening.
 - Toggling hidden folders in the tree twice in quick succession no longer leaves tree clicks unable to navigate.

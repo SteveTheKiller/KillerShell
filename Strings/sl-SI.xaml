@@ -411,7 +411,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Odpri to mapo v zavihku  (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Počisti  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Pisave...  (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Kliknite za urejanje, vnesite pot in pritisnite Enter za preimenovanje/premik datoteke</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Kliknite za urejanje, vnesite pot in pritisnite Enter za preimenovanje/premik datoteke. Vnesite obstoječo datoteko, da jo odprete.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Prelom vrstic je vklopljen.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Prelom vrstic je izklopljen. Za dolge vrstice uporabite drsenje.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} je shranjen.</sys:String>

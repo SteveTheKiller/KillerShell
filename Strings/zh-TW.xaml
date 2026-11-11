@@ -779,7 +779,7 @@
     <sys:String x:Key="Str_Svc_Stopped">{0} 已停止</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">在底部顯示詳細資料 / 在右側顯示詳細資料 / 隱藏詳細資料 (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">按一下即可變更下次儲存所使用的編碼</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">按一下即可編輯 - 輸入路徑後按 Enter 以重新命名/移動檔案</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">按一下即可編輯 - 輸入路徑後按 Enter 以重新命名/移動檔案。輸入現有檔案即可開啟。</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">事件檢視器  (Ctrl+F12)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">關閉  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">複製詳細資料  (Ctrl+C)</sys:String>

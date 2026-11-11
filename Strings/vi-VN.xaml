@@ -458,7 +458,7 @@
   <sys:String x:Key="Str_TT_TermFolder">Mở thư mục này trong một tab  (Ctrl+Shift+T)</sys:String>
   <sys:String x:Key="Str_TT_TermClear">Xóa  (Ctrl+Shift+L)</sys:String>
   <sys:String x:Key="Str_TT_TermFonts">Phông chữ...  (Ctrl+Shift+,)</sys:String>
-  <sys:String x:Key="Str_TT_EdPath">Bấm để chỉnh sửa, nhập đường dẫn rồi nhấn Enter để đổi tên hoặc di chuyển tệp</sys:String>
+  <sys:String x:Key="Str_TT_EdPath">Bấm để chỉnh sửa, nhập đường dẫn rồi nhấn Enter để đổi tên hoặc di chuyển tệp. Nhập một tệp có sẵn để mở tệp đó.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOn">Đã bật ngắt dòng.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOff">Đã tắt ngắt dòng. Hãy cuộn để xem các dòng dài.</sys:String>
   <sys:String x:Key="Str_Ed_Saved">Đã lưu {0}.</sys:String>

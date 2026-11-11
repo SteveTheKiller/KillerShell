@@ -470,7 +470,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Открыть эту папку во вкладке  (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Очистить  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Шрифты...  (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Нажмите, чтобы изменить - введите путь и нажмите Enter, чтобы переименовать или переместить файл</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Нажмите, чтобы изменить - введите путь и нажмите Enter, чтобы переименовать или переместить файл. Введите существующий файл, чтобы открыть его.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Перенос по словам включён.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">Перенос по словам выключен - прокручивайте, чтобы видеть длинные строки.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} сохранён.</sys:String>

@@ -782,7 +782,7 @@
     <sys:String x:Key="Str_Svc_Stopped">{0} durduruldu</sys:String>
     <sys:String x:Key="Str_TT_DetailsPane">Ayrıntılar altta / Ayrıntılar sağda / Ayrıntıları gizle (Alt+P)</sys:String>
     <sys:String x:Key="Str_TT_EdEncoding">Sonraki kaydetmede kullanılacak kodlamayı değiştirmek için tıklayın</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Düzenlemek için tıklayın - dosyayı yeniden adlandırmak/taşımak için bir yol yazıp Enter'a basın</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Düzenlemek için tıklayın - dosyayı yeniden adlandırmak/taşımak için bir yol yazıp Enter'a basın. Açmak için var olan bir dosyanın adını yazın.</sys:String>
     <sys:String x:Key="Str_TT_EventViewer">Olay Görüntüleyicisi  (Ctrl+F12)</sys:String>
     <sys:String x:Key="Str_TT_EvtClose">Kapat  (Esc)</sys:String>
     <sys:String x:Key="Str_TT_EvtCopyDetails">Ayrıntıları kopyala  (Ctrl+C)</sys:String>

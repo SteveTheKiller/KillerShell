@@ -468,7 +468,7 @@
     <sys:String x:Key="Str_TT_TermFolder">Apri questa cartella in una scheda  (Ctrl+Shift+T)</sys:String>
     <sys:String x:Key="Str_TT_TermClear">Pulisci  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Font...  (Ctrl+Shift+,)</sys:String>
-    <sys:String x:Key="Str_TT_EdPath">Clicca per modificare - digita un percorso e premi Enter per rinominare/spostare il file</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">Clicca per modificare - digita un percorso e premi Enter per rinominare/spostare il file. Digita un file esistente per aprirlo.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">A capo automatico attivo.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOff">A capo automatico disattivato - scorri per vedere le righe lunghe.</sys:String>
     <sys:String x:Key="Str_Ed_Saved">{0} salvato.</sys:String>
