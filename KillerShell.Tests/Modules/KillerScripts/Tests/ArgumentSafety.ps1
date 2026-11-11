@@ -56,17 +56,25 @@ try {
     if (-not $failed) { throw 'An out-of-range value was not refused by the script itself.' }
     Write-Output 'PASS wrapper and direct calls pass defaults, named, colon, alias, prefix and positional arguments through'
 
-    # Always the latest: every run downloads again, to %TEMP%\<script>, and runs what it got.
+    # Always the latest: every run downloads again, to %TEMP%\<script>-<process id>, and runs what it got.
     $before = $global:KsDownloads.Count
     $global:KsArgumentFixture = "'newer version'"
     if ((Invoke-AMORT) -cne 'newer version') { throw 'A run did not use the version it just downloaded.' }
     if ($global:KsDownloads.Count -ne $before + 1) { throw 'A run did not download the script again.' }
     if ($global:KsDownloads[$global:KsDownloads.Count - 1] -cne 'https://raw.githubusercontent.com/SteveTheKiller/killer-scripts/main/AMORT.ps1') { throw 'The download did not come from killer-scripts main.' }
-    if ([IO.File]::ReadAllText((Join-Path $root 'AMORT.ps1')).Trim() -cne "'newer version'") { throw 'The script was not saved as %TEMP%\AMORT.ps1.' }
+    if ([IO.File]::ReadAllText((Join-Path $root "AMORT-$PID.ps1")).Trim() -cne "'newer version'") { throw 'The script was not saved as %TEMP%\AMORT-<process id>.ps1.' }
     Write-Output 'PASS every run downloads the latest script to %TEMP% and runs it'
 
+    # Each terminal tab is its own PowerShell process with its own copy, so two tabs running the
+    # same command at once never write over the script the other is about to run. The website
+    # one-liner's %TEMP%\AMORT.ps1 is not touched either.
+    [IO.File]::WriteAllText((Join-Path $root 'AMORT.ps1'), "'another tab'")
+    if ((Invoke-AMORT) -cne 'newer version') { throw 'A run ran a copy another process saved.' }
+    if ([IO.File]::ReadAllText((Join-Path $root 'AMORT.ps1')) -cne "'another tab'") { throw "A run wrote over another process's copy." }
+    Write-Output 'PASS each process downloads to its own copy'
+
     # A download that fails stops the command. The copy an earlier run left in %TEMP% is not run.
-    [IO.File]::WriteAllText((Join-Path $root 'AMORT.ps1'), "[IO.File]::WriteAllText('$root\stale-ran.txt','ran')")
+    [IO.File]::WriteAllText((Join-Path $root "AMORT-$PID.ps1"), "[IO.File]::WriteAllText('$root\stale-ran.txt','ran')")
     $global:KsOffline = $true
     $failed = $false
     # A terminal tab runs with the default Continue preference, not this fixture's Stop.

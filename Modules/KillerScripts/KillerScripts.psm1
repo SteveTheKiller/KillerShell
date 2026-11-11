@@ -30,14 +30,18 @@ function Enable-KsTls12 {
 
 function Get-KsLatest {
     # The website's one-liner, minus the run: Bypass for this process, then the latest copy of the
-    # script saved to %TEMP%\<script>. Returns the path to run.
+    # script saved to %TEMP%. Returns the path to run.
     param([string]$Name)
     $file = if ($Name -like '*.ps1') { $Name } else { "$Name.ps1" }
     # Where Group Policy pins the execution policy this throws even with SilentlyContinue; the
     # policy that applies is then the machine's, and the run goes on under it, as the website's does.
     try { Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Stop } catch { }
     Enable-KsTls12
-    $path = Join-Path $env:TEMP $file
+    # %TEMP%\<SCRIPT>-<process id>.ps1: every terminal tab is its own PowerShell process, so two
+    # tabs running the same command at once each run their own copy instead of one of them
+    # writing over the file the other is about to run. The copy stays after the run, as the
+    # website's does, so a script that starts itself again still finds its file.
+    $path = Join-Path $env:TEMP ('{0}-{1}.ps1' -f [IO.Path]::GetFileNameWithoutExtension($file), $PID)
     # Stop, not Continue: a failed download must end the command here, or the copy an earlier run
     # left in %TEMP% would run in its place.
     Invoke-RestMethod -Uri ($script:RawBase + $file) -OutFile $path -ErrorAction Stop
