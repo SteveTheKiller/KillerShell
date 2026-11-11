@@ -193,9 +193,16 @@ namespace KillerShell.Shell
         {
             if (LeftPane.Tabs.Count == 0)
             {
-                // Detach before moving: a TerminalControl can only have one visual parent, and
-                // the left pane is about to be asked to show it.
-                RightPane.TerminalSlot.Content = null;
+                // Detach before moving: a control can only have one visual parent, and the left
+                // pane is about to be asked to show whichever one the right pane was showing.
+                // Every slot, not just the terminal's: a Performance or Registry tab arrives too.
+                RightPane.TerminalSlot.Content       = null;
+                RightPane.EditorSlot.Content         = null;
+                RightPane.PerformanceSlot.Content    = null;
+                RightPane.ProcessListSlot.Content    = null;
+                RightPane.EventViewerSlot.Content    = null;
+                RightPane.RegistryEditorSlot.Content = null;
+                RightPane.StorageSlot.Content        = null;
 
                 foreach (var tab in RightPane.Tabs.ToList()) LeftPane.Tabs.Add(tab);
                 RightPane.Tabs.Clear();

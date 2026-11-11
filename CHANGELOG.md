@@ -36,6 +36,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A relative address typed in the address bar, such as `..`, `Downloads` or `\Windows`, opens relative to the folder the tab is showing, and `D:` opens that drive's root, instead of resolving against the folder KillerShell was started from.
 - Typing the name or path of another file in the text editor's path box and pressing Enter opens that file in the editor instead of refusing it as already existing, and a bare name such as `.env` means the file beside the open document. A blank untitled document gives its tab to the file; one with text in it keeps its tab and the file opens in a new one.
 - A log or other file that another program still has open for writing, such as a running service's log, opens in the text editor instead of failing because the file is in use.
+- Closing the last tab in the first pane while two panes are open folds the window back to one pane holding the second pane's tabs, the same as dragging that tab out does, instead of opening a new folder tab in its place.
 - Paste refuses to copy or move a folder into itself or one of its own subfolders, the same way drag and drop already did.
 - Opening the recents menu no longer freezes the window while a folder on a dead share times out. Every folder is checked at once, and one that doesn't answer within a second is left out of that opening.
 - Toggling hidden folders in the tree twice in quick succession no longer leaves tree clicks unable to navigate.

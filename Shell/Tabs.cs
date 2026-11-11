@@ -1123,7 +1123,9 @@ namespace KillerShell.Shell
             finally
             {
                 _closingTabs.Remove(t);
-                if (background) FocusPaneQuiet(focused);
+                // With one pane left, focus belongs to LeftPane whichever pane had it: the close
+                // may have folded the window, or the second pane may have closed mid-fade.
+                if (background) FocusPaneQuiet(DualPane ? focused : LeftPane);
                 UpdatePaneFocusRing();
             }
         }
@@ -1164,6 +1166,16 @@ namespace KillerShell.Shell
                 {
                     if (!updateShared) FocusPaneQuiet(LeftPane);
                     CloseSecondPane();   // DualPane.cs
+                    return;
+                }
+
+                // The FIRST pane's last tab: the right pane's tabs come home and the window folds
+                // to one pane, the same way dragging that last tab out does (PaneDrag.cs). A fresh
+                // blank tab here left you looking at a folder you never opened while the tab you
+                // were working in sat in the other half (2026-11-11).
+                if (DualPane && RightPane.Active is { } keep)
+                {
+                    CollapseToSinglePane(keep);   // PaneDrag.cs
                     return;
                 }
 

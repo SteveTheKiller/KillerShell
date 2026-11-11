@@ -99,6 +99,10 @@ public static class TabCloseOwnershipScenario
         window.FocusPane(right);
         var hidden = new SearchTab("hidden close");
         right.Tabs.Add(hidden);
+        // Each pane shows its own strip only from its second tab, so re-activate the right pane
+        // for its strip to come up around the tab added behind the window's back.
+        window.FocusPane(left);
+        window.FocusPane(right);
         window.UpdateLayout();
         ShellWindowFixture.PumpUntil(() => right.TabStrip.ItemContainerGenerator.ContainerFromItem(hidden) is FrameworkElement);
         window.CloseTab_Click(new Button { Tag = hidden }, new RoutedEventArgs(Button.ClickEvent));
