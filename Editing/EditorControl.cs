@@ -183,7 +183,7 @@ namespace KillerShell.Editing
         {
             try
             {
-                byte[] bytes = File.ReadAllBytes(FilePath);
+                byte[] bytes = ReadShared(FilePath);
                 if (!TryDecode(bytes, out Encoding encoding, out string text, out string badLabel))
                 {
                     // Refused rather than opened with replacement characters: an unchanged save
@@ -391,6 +391,20 @@ namespace KillerShell.Editing
         /// written by an older tool actually is - and it is only ever reached when there is no
         /// mark and the bytes are not valid UTF-8, so plain ASCII never lands there.
         /// </remarks>
+        /// <summary>
+        /// The file's bytes, read alongside any program that still has it open. File.ReadAllBytes
+        /// shares only reads, so a log a service or a running build is writing refused to open at
+        /// all. Reading never blocks that writer; a save over it still fails and says so.
+        /// </summary>
+        private static byte[] ReadShared(string path)
+        {
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read,
+                                              FileShare.ReadWrite | FileShare.Delete);
+            using var copy = new MemoryStream(stream.CanSeek ? (int)Math.Min(stream.Length, int.MaxValue) : 0);
+            stream.CopyTo(copy);
+            return copy.ToArray();
+        }
+
         private static bool TryDecode(byte[] bytes, out Encoding encoding, out string text, out string badLabel)
         {
             badLabel = string.Empty;
