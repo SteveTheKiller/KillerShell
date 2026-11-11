@@ -30,6 +30,21 @@ namespace KillerShell.Services
             return speed > 0 ? rate + " MT/s" : string.Empty;
         }
 
+        /// <summary>The data rate a stick runs at, in MT/s, from Win32_PhysicalMemory's configured and
+        /// rated speeds. SMBIOS before 2.8 gave the configured speed as a clock in MHz, half the
+        /// data rate, so a configured speed that is exactly half the rated one is that old clock.</summary>
+        internal static int DataRate(int configured, int rated)
+        {
+            if (configured <= 0) return Math.Max(rated, 0);
+            if (rated > 0 && Math.Abs(configured * 2 - rated) <= 2) return rated;
+            return configured;
+        }
+
+        /// <summary>A panel's title: what the hardware is, or the card's own name when the machine
+        /// does not say (a virtual machine's memory has no type or speed).</summary>
+        internal static string PanelTitle(string described, string label)
+            => string.IsNullOrWhiteSpace(described) || described == "-" ? label : described;
+
         // SMBIOS memory device types (DMTF DSP0134, 7.18.2) for the generations still in use.
         private static string MemoryTypeName(int smbiosType) => smbiosType switch
         {

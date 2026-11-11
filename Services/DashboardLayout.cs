@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 // The Performance Monitor's arrangement as the user left it: the order its cards were dragged
-// into, which cards are stacked in the gap under another, which are folded to their title line
-// and which span both columns of a row, for the top strip and for the panels below it separately. One setting holds all of it, so
-// it survives restarts, and Reset layout clears it back to the designed dashboard.
+// into, which column of the panels each one went to, which cards are stacked under another,
+// which are folded to their title line and which span both columns, for the top strip and for
+// the panels below it separately. One setting holds all of it, so it survives restarts, and Reset
+// layout clears it back to the designed dashboard.
 //
-// A slot is one column of a row: usually one card, or a card with others stacked under it in the
-// room a minimized card leaves. Cards are named by a stable id ("cpu", "disks", "gpu:<adapter
+// A slot is one place in the order: usually one card, or a card with others stacked under it.
+// The panels flow down two columns; a slot that has never been moved takes the shorter column of
+// its band, which alternates them from the designed order. Cards are named by a stable id ("cpu", "disks", "gpu:<adapter
 // name>") rather than by position, so a saved layout still fits when hardware comes and goes: a
 // card that is gone is skipped and keeps its saved place for when it returns, and a card that is
 // new joins at the end.
@@ -26,9 +28,70 @@ namespace KillerShell.Services
         private readonly Dictionary<string, List<string>> _order = new(StringComparer.Ordinal);
         private readonly Dictionary<string, HashSet<string>> _stacked = new(StringComparer.Ordinal);   // sit under the card before them
         private readonly Dictionary<string, HashSet<string>> _folded = new(StringComparer.Ordinal);
-        private readonly Dictionary<string, HashSet<string>> _wide = new(StringComparer.Ordinal);     // span both columns of a row
+        private readonly Dictionary<string, HashSet<string>> _wide = new(StringComparer.Ordinal);     // span both columns
+        private readonly Dictionary<string, HashSet<string>> _left = new(StringComparer.Ordinal);     // the column a moved card went to
+        private readonly Dictionary<string, HashSet<string>> _right = new(StringComparer.Ordinal);
 
-        internal bool IsDefault => _order.Count == 0 && _stacked.Count == 0 && _folded.Count == 0 && _wide.Count == 0;
+        internal bool IsDefault => _order.Count == 0 && _stacked.Count == 0 && _folded.Count == 0 && _wide.Count == 0
+                                   && _left.Count == 0 && _right.Count == 0;
+
+        /// <summary>The panel column a card was put in, 0 left and 1 right, or null when it has
+        /// never been placed and takes the shorter column of its band.</summary>
+        internal int? Column(string area, string id) => Has(_right, area, id) ? 1 : Has(_left, area, id) ? 0 : null;
+
+        /// <summary>
+        /// Moves <paramref name="id"/> within the panel columns: before or after the slot holding
+        /// <paramref name="target"/> in that slot's column, or stacked at the bottom of it.
+        /// <paramref name="shown"/> gives the column every card is in now; those are remembered
+        /// with the new order, so the cards the user did not touch stay in their columns.
+        /// </summary>
+        internal List<List<string>> MoveInColumn(string area, IReadOnlyList<IReadOnlyList<string>> shownSlots,
+            IReadOnlyDictionary<string, int> shown, string id, string target, Drop drop)
+        {
+            var slots = Rearranged(shownSlots, id, target, drop);
+            if (!shown.TryGetValue(target, out int column)) return slots;
+            var columns = Placed(shown, id, column);
+            if (Same(slots, shownSlots) && columns.TryGetValue(id, out int now) && shown.TryGetValue(id, out int was) && now == was)
+                return slots;
+            Remember(area, slots);
+            RememberColumns(area, slots, columns);
+            return slots;
+        }
+
+        /// <summary>The columns after <paramref name="id"/> goes to <paramref name="column"/>.</summary>
+        internal static Dictionary<string, int> Placed(IReadOnlyDictionary<string, int> shown, string id, int column)
+        {
+            var columns = shown.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+            columns[id] = column;
+            return columns;
+        }
+
+        // Every card of a slot is in the column of the slot's top card. A card that is gone keeps
+        // the column it was in.
+        private void RememberColumns(string area, List<List<string>> slots, IReadOnlyDictionary<string, int> columns)
+        {
+            var present = new HashSet<string>(slots.SelectMany(slot => slot), StringComparer.Ordinal);
+            var left = Kept(_left, area, present);
+            var right = Kept(_right, area, present);
+            foreach (var slot in slots)
+            {
+                if (!columns.TryGetValue(slot[0], out int column)) continue;
+                foreach (string card in slot) (column == 1 ? right : left).Add(card);
+            }
+            Store(_left, area, left);
+            Store(_right, area, right);
+        }
+
+        private static HashSet<string> Kept(Dictionary<string, HashSet<string>> flags, string area, HashSet<string> present)
+            => flags.TryGetValue(area, out var old)
+                ? new HashSet<string>(old.Where(id => !present.Contains(id)), StringComparer.Ordinal)
+                : new HashSet<string>(StringComparer.Ordinal);
+
+        private static void Store(Dictionary<string, HashSet<string>> flags, string area, HashSet<string> ids)
+        {
+            if (ids.Count > 0) flags[area] = ids;
+            else flags.Remove(area);
+        }
 
         /// <summary>The cards that exist now, in the user's slots.</summary>
         internal List<List<string>> Slots(string area, IEnumerable<string> present)
@@ -146,20 +209,23 @@ namespace KillerShell.Services
             _stacked.Clear();
             _folded.Clear();
             _wide.Clear();
+            _left.Clear();
+            _right.Clear();
         }
 
         /// <summary>
         /// The slots in bands, in order. A slot that spans both columns is a band of one column to
-        /// itself. Between those, the slots take turns down a left and a right column that each
-        /// run on their own, so a slot sits right under the one above it in its column rather than
-        /// waiting for a taller slot in the other column to end. A lone slot before a spanning one
-        /// keeps the left column of its band rather than stretching across it.
+        /// itself. Between those, the slots go down a left and a right column that each run on
+        /// their own, so a slot sits right under the one above it in its column rather than
+        /// waiting for a taller slot in the other column to end. A slot goes to the column
+        /// <paramref name="column"/> remembers for it, and one with none to the shorter column of
+        /// its band, which alternates them. A lone slot before a spanning one keeps the left
+        /// column of its band rather than stretching across it.
         /// </summary>
-        internal static List<List<T>[]> Bands<T>(IReadOnlyList<T> slots, Func<T, bool> wide)
+        internal static List<List<T>[]> Bands<T>(IReadOnlyList<T> slots, Func<T, bool> wide, Func<T, int?>? column = null)
         {
             var bands = new List<List<T>[]>();
             List<T>[]? columns = null;
-            int next = 0;
             foreach (var slot in slots)
             {
                 if (wide(slot))
@@ -172,10 +238,9 @@ namespace KillerShell.Services
                 {
                     columns = [[], []];
                     bands.Add(columns);
-                    next = 0;
                 }
-                columns[next].Add(slot);
-                next = 1 - next;
+                int side = column?.Invoke(slot) ?? (columns[0].Count <= columns[1].Count ? 0 : 1);
+                columns[side == 1 ? 1 : 0].Add(slot);
             }
             return bands;
         }
@@ -190,6 +255,8 @@ namespace KillerShell.Services
             Write(parts, "stacked.", _stacked.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             Write(parts, "folded.", _folded.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             Write(parts, "wide.", _wide.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
+            Write(parts, "left.", _left.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
+            Write(parts, "right.", _right.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             return string.Join(";", parts);
         }
 
@@ -217,6 +284,8 @@ namespace KillerShell.Services
                 else if (Area(key, "stacked.") is { } stacked) layout._stacked[stacked] = new HashSet<string>(ids, StringComparer.Ordinal);
                 else if (Area(key, "folded.") is { } folded) layout._folded[folded] = new HashSet<string>(ids, StringComparer.Ordinal);
                 else if (Area(key, "wide.") is { } wide) layout._wide[wide] = new HashSet<string>(ids, StringComparer.Ordinal);
+                else if (Area(key, "left.") is { } left) layout._left[left] = new HashSet<string>(ids, StringComparer.Ordinal);
+                else if (Area(key, "right.") is { } right) layout._right[right] = new HashSet<string>(ids, StringComparer.Ordinal);
             }
             return layout;
         }

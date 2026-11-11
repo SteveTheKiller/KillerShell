@@ -367,7 +367,7 @@ namespace KillerShell.Tools
             tile.TileSummaryText = value;
 
             // One height for every panel header, whatever size its headline is set in, so the
-            // titles of two panels sharing a row sit on the same line.
+            // titles of the two panels at the top of each pair of columns sit on the same line.
             var header = new Grid { MinHeight = 32, Background = Brushes.Transparent };   // hit-testable across its width
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });

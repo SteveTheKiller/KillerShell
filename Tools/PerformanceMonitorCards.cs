@@ -53,11 +53,11 @@ namespace KillerShell.Tools
             internal readonly FrameworkElement[] Handles;
             internal readonly FrameworkElement? Details;      // null for a device card, whose rows fold instead
             internal readonly IReadOnlyList<MetricTile> Rows;
-            internal double Weight = 2;                       // its share of a row it shares
+            internal double Weight = 2;                       // its column's share of the width, the heaviest card's
             internal bool Folded;
         }
 
-        /// <summary>One column of the dashboard as shown: its cards, top to bottom, and the
+        /// <summary>One place in the dashboard's order as shown: its cards, top to bottom, and the
         /// element that holds them (the card itself when it is alone).</summary>
         private sealed class CardSlot
         {
@@ -79,6 +79,7 @@ namespace KillerShell.Tools
         private readonly List<DashboardCard> _panelCards = [];
         private List<CardSlot> _stripSlots = [];
         private List<CardSlot> _panelSlots = [];
+        private Dictionary<string, int> _panelColumns = new(StringComparer.Ordinal);   // the column each panel card is in now
 
         private void ClearCards()
         {
@@ -189,8 +190,11 @@ namespace KillerShell.Tools
         {
             DetachPanelRows();
             _panelSlots = Slots(Services.DashboardLayout.Panels, _panelCards);
-            foreach (var columns in Services.DashboardLayout.Bands(_panelSlots, IsWide))
+            _panelColumns = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (var columns in Services.DashboardLayout.Bands(_panelSlots, IsWide, PanelColumn))
             {
+                for (int c = 0; c < columns.Length; c++)
+                    foreach (var card in columns[c].SelectMany(slot => slot.Cards)) _panelColumns[card.Id] = c;
                 var band = new Grid();
                 if (columns.Length == 1)
                 {
@@ -216,6 +220,16 @@ namespace KillerShell.Tools
         }
 
         private bool IsWide(CardSlot slot) => slot.Cards.Any(card => _layout.IsWide(card.Area, card.Id));
+
+        private int? PanelColumn(CardSlot slot) => _layout.Column(Services.DashboardLayout.Panels, slot.Cards[0].Id);
+
+        /// <summary>The panels as they would look with these slots in these columns: two drops that
+        /// give the same picture are the same drop, whatever they do to the order between columns.</summary>
+        private string PanelPicture(IReadOnlyList<IReadOnlyList<string>> slots, IReadOnlyDictionary<string, int> columns)
+            => string.Join("|", Services.DashboardLayout.Bands(slots,
+                    slot => slot.Any(id => _layout.IsWide(Services.DashboardLayout.Panels, id)),
+                    slot => columns.TryGetValue(slot[0], out int c) ? c : null)
+                .Select(band => string.Join("/", band.Select(column => string.Join(",", column.Select(slot => string.Join("+", slot)))))));
 
         /// <summary>
         /// The user's slots for these cards, each with the element that holds it. A card alone is
@@ -243,7 +257,10 @@ namespace KillerShell.Tools
                 var host = new Grid();
                 for (int i = 0; i < stack.Count; i++)
                 {
-                    host.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                    // In the strip the last box of a stack still fills its cell, so the strip
+                    // reads as one row; a panel column has no height to fill.
+                    bool fills = i == stack.Count - 1 && area == Services.DashboardLayout.Strip;
+                    host.RowDefinitions.Add(new RowDefinition { Height = fills ? new GridLength(1, GridUnitType.Star) : GridLength.Auto });
                     SetRow(stack[i].Frame, i);
                     host.Children.Add(stack[i].Frame);
                 }
@@ -386,8 +403,8 @@ namespace KillerShell.Tools
         private CardDrop _drop;
         private DropMarker? _dropMarker;
 
-        /// <summary>The drag runs on the control rather than the card: a card is moved between
-        /// rows when it is dropped, and a capture held by the card would be lost with it.</summary>
+        /// <summary>The drag runs on the control rather than the card: a card is moved into
+        /// another column or band when it is dropped, and a capture held by the card would be lost with it.</summary>
         private void WireCardDrag()
         {
             PreviewMouseMove += CardDrag_Move;
@@ -444,18 +461,26 @@ namespace KillerShell.Tools
 
             var shown = Ids(SlotsOf(card.Area));
             ReloadLayout();
-            var slots = _layout.Move(card.Area, shown, card.Id, target.Id, drop);
-            if (Services.DashboardLayout.Same(slots, shown)) return;
+            if (card.Area == Services.DashboardLayout.Strip)
+            {
+                var slots = _layout.Move(card.Area, shown, card.Id, target.Id, drop);
+                if (Services.DashboardLayout.Same(slots, shown)) return;
+                SaveLayout();
+                ArrangeStrip();
+                return;
+            }
+            // FindDropTarget only marks a drop that changes the picture, so this one does.
+            _layout.MoveInColumn(card.Area, shown, _panelColumns, card.Id, target.Id, drop);
             SaveLayout();
-            if (card.Area == Services.DashboardLayout.Strip) ArrangeStrip();
-            else ArrangePanels();
+            ArrangePanels();
         }
 
         /// <summary>
-        /// Where the carried card would land. Over a card, its left half drops before that card's
-        /// column and its right half after it. Below the last card of a column, in the room a
-        /// shorter card leaves, it stacks at the bottom of that column. Nothing is marked where
-        /// the drop would change nothing.
+        /// Where the carried card would land. In the top strip, a box's left half drops before it
+        /// and its right half after it. In the panels, a card's top half drops above it and its
+        /// bottom half below it, in that card's column, and the room under the last card of a
+        /// column drops at the bottom of that column. Nothing is marked where the drop would
+        /// change nothing.
         /// </summary>
         private void FindDropTarget(DashboardCard card, Point at)
         {
@@ -471,15 +496,18 @@ namespace KillerShell.Tools
                 if (other != card)
                 {
                     target = other;
-                    drop = at.X > bounds.Left + bounds.Width / 2 ? CardDrop.After : CardDrop.Before;
+                    bool later = card.Area == Services.DashboardLayout.Strip
+                        ? at.X > bounds.Left + bounds.Width / 2
+                        : at.Y > bounds.Top + bounds.Height / 2;
+                    drop = later ? CardDrop.After : CardDrop.Before;
                 }
                 break;
             }
 
             if (!overCard)
             {
-                // From the end, so the room at the bottom of a panel column goes to the last slot
-                // in that column, whose bounds are the only ones reaching it first.
+                // From the end: SlotBounds stretches every slot of a panel column down to the
+                // column's bottom, so the first one found from the end is the column's last slot.
                 for (int i = slots.Count - 1; i >= 0; i--)
                 {
                     var slot = slots[i];
@@ -488,17 +516,23 @@ namespace KillerShell.Tools
                     if (BoundsOf(last.Frame, withMargin: true) is { } lastBounds && at.Y > lastBounds.Bottom)
                     {
                         target = last;
-                        drop = CardDrop.Below;
+                        // A strip box stacks; a panel goes to the bottom of the column, its own slot.
+                        drop = card.Area == Services.DashboardLayout.Strip ? CardDrop.Below : CardDrop.After;
                     }
                     break;
                 }
             }
 
+            if (target == card) target = null;
             if (target != null)
             {
                 var ids = Ids(slots);
-                if (Services.DashboardLayout.Same(Services.DashboardLayout.Rearranged(ids, card.Id, target.Id, drop), ids))
-                    target = null;
+                var moved = Services.DashboardLayout.Rearranged(ids, card.Id, target.Id, drop);
+                bool same = card.Area == Services.DashboardLayout.Strip
+                    ? Services.DashboardLayout.Same(moved, ids)
+                    : PanelPicture(moved, Services.DashboardLayout.Placed(_panelColumns, card.Id, _panelColumns[target.Id]))
+                      == PanelPicture(ids, _panelColumns);
+                if (same) target = null;
             }
             ShowDropMarker(target, drop);
         }
@@ -528,7 +562,7 @@ namespace KillerShell.Tools
         }
 
         // Near the top or bottom of the panels, a carried card scrolls them, so a card can be
-        // taken to a row that is out of view.
+        // taken to a place that is out of view.
         private void ScrollWhileDragging(Point inScroller)
         {
             const double edge = 28, step = 14;
@@ -551,7 +585,7 @@ namespace KillerShell.Tools
             var layer = AdornerLayer.GetAdornerLayer(target.Frame);
             if (layer == null) return;
             var brush = TryFindResource("MonitorAccentBrush") as Brush ?? SystemColors.HighlightBrush;
-            _dropMarker = new DropMarker(target.Frame, drop, brush);
+            _dropMarker = new DropMarker(target.Frame, drop, brush, across: target.Area == Services.DashboardLayout.Panels);
             layer.Add(_dropMarker);
         }
 
@@ -561,11 +595,13 @@ namespace KillerShell.Tools
         {
             private readonly CardDrop _drop;
             private readonly Brush _brush;
+            private readonly bool _across;   // a panel: the bar runs across its top or bottom edge
 
-            internal DropMarker(UIElement card, CardDrop drop, Brush brush) : base(card)
+            internal DropMarker(UIElement card, CardDrop drop, Brush brush, bool across) : base(card)
             {
                 _drop = drop;
                 _brush = brush;
+                _across = across;
                 IsHitTestVisible = false;
             }
 
@@ -575,10 +611,16 @@ namespace KillerShell.Tools
                 Size size = AdornedElement.RenderSize;
                 Thickness margin = AdornedElement is FrameworkElement card ? card.Margin : new Thickness(0);
                 Rect bar;
-                if (_drop == CardDrop.Below)
+                if (_drop == CardDrop.Below || (_across && _drop == CardDrop.After))
                 {
                     // Centered in the card's bottom margin, or just inside its edge where it has none (98SE).
                     double y = margin.Bottom >= thickness ? size.Height + (margin.Bottom - thickness) / 2 : size.Height - thickness;
+                    bar = new Rect(0, y, size.Width, thickness);
+                }
+                else if (_across)
+                {
+                    // Centered in the card's top margin, or just inside its edge where it has none.
+                    double y = margin.Top >= thickness ? -(margin.Top + thickness) / 2 : 0;
                     bar = new Rect(0, y, size.Width, thickness);
                 }
                 else

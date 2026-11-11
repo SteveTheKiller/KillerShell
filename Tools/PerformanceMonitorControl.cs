@@ -552,7 +552,7 @@ namespace KillerShell.Tools
             {
                 Kind = MetricKind.Ram,
                 Label = MainWindow.LocStatic("Str_Perf_Ram"),
-                Description = info.Ram,
+                Description = Services.PerformanceMetricFormatter.PanelTitle(info.Ram, MainWindow.LocStatic("Str_Perf_Ram")),
                 State = new RamState(),
                 SummaryBrushKey = PerformanceGraphBrushes.Ram,
                 // In use from the floor and cached stacked on it, the same order and colors as

@@ -47,6 +47,23 @@ namespace KillerShell.Tests.Services
             => Assert.Equal("DDR4-2666", PerformanceMetricFormatter.MemoryKind(
                 [new MemoryModule(26, 3200), new MemoryModule(26, 2666), new MemoryModule(0, 0)]));
 
+        [Theory]
+        [InlineData("DDR4-3200", "Memory", "DDR4-3200")]
+        [InlineData("", "Memory", "Memory")]     // a virtual machine reports neither type nor speed
+        [InlineData("-", "Speicher", "Speicher")] // nothing could be read at all
+        public void PanelTitle_FallsBackToTheCardsName(string described, string label, string expected)
+            => Assert.Equal(expected, PerformanceMetricFormatter.PanelTitle(described, label));
+
+        [Theory]
+        // SMBIOS before 2.8 gave the configured speed as a clock in MHz, half the data rate.
+        [InlineData(800, 1600, 1600)]
+        [InlineData(3200, 3200, 3200)]
+        [InlineData(2666, 3200, 2666)]   // set to run slower than it is rated for
+        [InlineData(0, 3200, 3200)]
+        [InlineData(3200, 0, 3200)]
+        public void DataRate_ReadsAnOldClockFieldAsTheRateItHalves(int configured, int rated, int expected)
+            => Assert.Equal(expected, PerformanceMetricFormatter.DataRate(configured, rated));
+
         [Fact]
         public void MemoryKind_WithNoModulesIsEmpty()
             => Assert.Equal("", PerformanceMetricFormatter.MemoryKind([]));

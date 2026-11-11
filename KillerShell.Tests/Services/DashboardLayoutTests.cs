@@ -191,6 +191,69 @@ namespace KillerShell.Tests.Services
             Assert.Equal("a+c+e / b+d", ShowBands(bands));
         }
 
+        // The panels as the layout would show them: each slot in its remembered column, or
+        // taking turns when it has none.
+        private static string Picture(DashboardLayout layout, IEnumerable<string> present)
+            => ShowBands(Bands(layout.Slots(Panels, present), slot => layout.IsWide(Panels, slot[0]),
+                slot => layout.Column(Panels, slot[0]))
+                .Select(band => band.Select(column => column.Select(slot => string.Join("&", slot)).ToList()).ToArray()));
+
+        private static readonly string[] Five = ["a", "b", "c", "d", "e"];
+
+        // a, c and e down the left; b and d down the right: how five cards first come up.
+        private static Dictionary<string, int> Shown(DashboardLayout layout)
+            => Bands(layout.Slots(Panels, Five), _ => false, slot => layout.Column(Panels, slot[0]))
+                .SelectMany(band => band.Select((column, c) => (column, c)))
+                .SelectMany(pair => pair.column.SelectMany(slot => slot).Select(id => (id, pair.c)))
+                .ToDictionary(pair => pair.id, pair => pair.c);
+
+        [Fact]
+        public void MoveInColumn_DroppedUnderTheLastCardOfAColumnLandsThere()
+        {
+            var layout = Parse(null);
+            Assert.Equal("a+c+e / b+d", Picture(layout, Five));
+
+            layout.MoveInColumn(Panels, layout.Slots(Panels, Five), Shown(layout), "a", "d", Drop.After);
+
+            // Only a moves: c and e stay down the left, and a joins b and d on the right.
+            Assert.Equal("c+e / b+d+a", Picture(layout, Five));
+        }
+
+        [Fact]
+        public void MoveInColumn_DroppedAboveACardTakesItsPlaceInItsColumn()
+        {
+            var layout = Parse(null);
+            layout.MoveInColumn(Panels, layout.Slots(Panels, Five), Shown(layout), "a", "d", Drop.Before);
+            Assert.Equal("c+e / b+a+d", Picture(layout, Five));
+
+            layout.MoveInColumn(Panels, layout.Slots(Panels, Five), Shown(layout), "e", "c", Drop.Before);
+            Assert.Equal("e+c / b+a+d", Picture(layout, Five));
+        }
+
+        [Fact]
+        public void MoveInColumn_ColumnsSurviveARestart()
+        {
+            var layout = Parse(null);
+            layout.MoveInColumn(Panels, layout.Slots(Panels, Five), Shown(layout), "a", "d", Drop.After);
+
+            var reread = Parse(layout.Serialize());
+
+            Assert.Equal("c+e / b+d+a", Picture(reread, Five));
+            reread.Reset();
+            Assert.True(reread.IsDefault);
+            Assert.Equal("a+c+e / b+d", Picture(reread, Five));
+        }
+
+        [Fact]
+        public void MoveInColumn_ANewCardJoinsTheShorterColumn()
+        {
+            var layout = Parse(null);
+            layout.MoveInColumn(Panels, layout.Slots(Panels, Five), Shown(layout), "a", "d", Drop.After);
+
+            // Left holds c and e, right holds b, d and a, so a sixth card goes left.
+            Assert.Equal("c+e+f / b+d+a", Picture(layout, [.. Five, "f"]));
+        }
+
         [Fact]
         public void Bands_GiveATwoColumnSlotABandToItself()
         {

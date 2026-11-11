@@ -123,9 +123,9 @@ namespace KillerShell.Services
                     {
                         int type = row["SMBIOSMemoryType"] is { } t ? Convert.ToInt32(t) : 0;
                         // The speed the stick is set to run at, else the speed it is rated for.
-                        int speed = row["ConfiguredClockSpeed"] is { } c ? Convert.ToInt32(c) : 0;
-                        if (speed <= 0 && row["Speed"] is { } s) speed = Convert.ToInt32(s);
-                        modules.Add(new MemoryModule(type, speed));
+                        int configured = row["ConfiguredClockSpeed"] is { } c ? Convert.ToInt32(c) : 0;
+                        int rated = row["Speed"] is { } s ? Convert.ToInt32(s) : 0;
+                        modules.Add(new MemoryModule(type, PerformanceMetricFormatter.DataRate(configured, rated)));
                     }
                 }
                 string kind = PerformanceMetricFormatter.MemoryKind(modules);
